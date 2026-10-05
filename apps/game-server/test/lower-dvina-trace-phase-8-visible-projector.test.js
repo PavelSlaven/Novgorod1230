@@ -64,6 +64,15 @@ test('visible item profile keeps approved item vocabulary and rejects extra publ
   { code: 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' });
 });
 
+test('player-safe visible projection preserves the current scene perception', () => {
+  const projected = projectVisibleContext({ version: 1,
+    schema: 'visible_context_package', visible_scene: 'Окрестности.',
+    visible_changes: [], sensory_details: ['Вода у берега.'], visible_npc: [],
+    visible_objects: [], known_context: [], uncertainties: [] }, { strict: true });
+  assert.equal(projected.visible_scene, 'Окрестности.');
+  assert.deepEqual(projected.sensory_details, ['Вода у берега.']);
+});
+
 test('Phase 8 projects NPCs through the player-safe entity contract',
   async () => {
     const projector = createTracePhase8VisibleProjector({

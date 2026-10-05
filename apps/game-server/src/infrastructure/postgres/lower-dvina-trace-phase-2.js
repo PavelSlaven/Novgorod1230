@@ -39,6 +39,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   loadInitialNaturalScenePerceptionInput = null,
   readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
   readCurrentConnectionDisclosure = null,
+  readCurrentVisibleContext = null,
   projectEnvironmentAtClock = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
@@ -198,12 +199,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       loadedPayload, await loadPhase2VisibleContext(partyPool, {
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));
-    const current = await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
-      includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
-      includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
-      includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
-    return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, hydrateNpcRoutineState(await withSceneNpcs(readPool, partyId, {
-      ...current,
+    const loadedWithSceneNpcs = await withSceneNpcs(readPool, partyId, {
+      ...loadedWithCurrentVisible,
       world_identity: {
         world_revision_id: row.world_revision_id,
         world_catalog_digest: row.world_catalog_digest
@@ -213,7 +210,18 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       temporal_source_proof: structuredClone(temporalSourceProof),
       npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
-      })))));
+      });
+    const hydrated = hydrateNpcRoutineState(loadedWithSceneNpcs);
+    const containers = await withCommittedRuntimeContainers(readPool, partyId, hydrated);
+    const visible = includeCurrentVisibleContext
+      ? await refreshCurrentSpatialNpcs(containers, turnBudget)
+      : containers;
+    const current = await withPhase2CurrentLocalEdges(visible,
+      includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
+      includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
+      includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
+    return withLowerDvinaTracePostActionKnowledge(readPool, partyId,
+      await withSpatialSemanticCommittedState(readPool, partyId, current));
   }
   async function loadPhase2Replay({ partyId, idempotencyKey, turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
@@ -224,7 +232,24 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   }
   async function loadPreparedMovementScene({ partyId, state, turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
-    return withSceneNpcs(readPool, partyId, withoutSceneNpcs(state));
+    const { prepared_destination_visible_context: preparedDestinationVisibleContext,
+      ...sceneInput } = state;
+    const scene = await withSceneNpcs(readPool, partyId,
+      withoutSceneNpcs(sceneInput));
+    return refreshCurrentSpatialNpcs(scene, turnBudget,
+      preparedDestinationVisibleContext);
+  }
+  async function refreshCurrentSpatialNpcs(state, turnBudget,
+    preparedDestinationVisibleContext = null) {
+    if (typeof state?.position?.position_id !== 'string'
+        || typeof state?.actor_id !== 'string') return state;
+    const visibleContext = preparedDestinationVisibleContext
+      ?? (typeof readCurrentVisibleContext === 'function'
+        ? await readCurrentVisibleContext({ partyId: state.party_id,
+          actorId: state.actor_id, positionId: state.position.position_id,
+          state, turnBudget }) : null);
+    return visibleContext == null ? state
+      : withPhase2CurrentVisibleContext(state, visibleContext);
   }
   async function replayPhase2Turn({ partyId, replay, narrator, turnBudget = null }) {
     return replayLowerDvinaTracePhase2Presentation({ partyPool, partyId, replay,

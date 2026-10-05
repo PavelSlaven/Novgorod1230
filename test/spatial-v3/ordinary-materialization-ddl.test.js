@@ -28,3 +28,23 @@ test('037 extends ordinary scope_kind with g5 and adds weather log', async () =>
   assert.match(ddl, /interval_index_6h numeric NOT NULL/u);
   assert.match(ddl, /game_timestamp_parts_valid/u);
 });
+
+test('038 permits factual placements under location_gap and forbids placements under offstage_away', async () => {
+  const ddl = await readFile('schemas/party-db/038_party_runtime_npc_seasonal_presence.sql', 'utf8');
+  assert.match(ddl, /CREATE OR REPLACE FUNCTION party_runtime\.party_npc_schedule_party_reference_valid\(\)/u);
+  assert.match(ddl, /position\.id=NEW\.current_position_node_id AND position\.party_id=NEW\.party_id/u);
+  assert.match(ddl, /placement->>'kind'='prepared_scene'/u);
+  assert.match(ddl, /placement->>'kind'='legacy_anchor'/u);
+  assert.match(ddl, /presence_state = 'offstage_away'/u);
+  assert.match(ddl, /presence_state = 'location_gap'/u);
+  assert.match(ddl, /party_npc_schedule_placement_integrity\(\)/u);
+  assert.match(ddl, /DROP TRIGGER IF EXISTS party_npc_schedule_placement_integrity_on_schedule ON party_runtime\.party_npc_spatial_schedules;\s+CREATE CONSTRAINT TRIGGER party_npc_schedule_placement_integrity_on_schedule/u);
+  assert.match(ddl, /DROP TRIGGER IF EXISTS party_npc_schedule_placement_integrity_on_placement ON party_runtime\.entity_placements;\s+CREATE CONSTRAINT TRIGGER party_npc_schedule_placement_integrity_on_placement/u);
+  assert.match(ddl, /DEFERRABLE INITIALLY DEFERRED/u);
+  assert.match(ddl, /offstage NPC schedule requires no physical or deferred placement/u);
+  assert.match(ddl, /NPC location gap position must match existing entity placement/u);
+  assert.match(ddl, /before_profile IS DISTINCT FROM after_profile/u);
+  assert.match(ddl, /schedule profile may change only with a pinned seasonal rule selection/u);
+  assert.match(ddl, /npc\.party_id=NEW\.party_id AND npc\.npc_id=NEW\.npc_id/u);
+  assert.match(ddl, /execution\.party_id=NEW\.party_id/u);
+});

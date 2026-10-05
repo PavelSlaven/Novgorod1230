@@ -166,7 +166,8 @@ async function productionMessages(fixture) {
     call = next;
     return { output: {} };
   } } });
-  const payload = JSON.parse(fixture.messages.at(-1).content);
+  const payload = fixture.role_id === 'world_process_step'
+    ? fixture.request : JSON.parse(fixture.messages.at(-1).content);
   if (!fixture.repair) await model(payload);
   else if (fixture.role_id === 'turn_step_planner_repair') await model(
     payload.request?.request ?? payload.request, {

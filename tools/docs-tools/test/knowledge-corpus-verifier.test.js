@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -18,8 +18,9 @@ const requiredNormatives = [
   ['world-base-materialization-table-requirements', 'world_base_materialization_table_requirements.md', 'active']
 ];
 
-async function fixture({ corrupt = false } = {}) {
+async function fixture(t, { corrupt = false } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'rus-corpus-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   const source = join(root, 'data/knowledge-source');
   const corpus = join(source, 'corpus/DOCUMENTS');
   await mkdir(corpus, { recursive: true });
@@ -80,15 +81,15 @@ async function mutateJson(root, relativePath, mutate) {
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`);
 }
 
-test('accepts canonical documents without legacy provenance', async () => {
-  const result = await verifyCanonicalCorpus({ root: await fixture() });
+test('accepts canonical documents without legacy provenance', async (t) => {
+  const result = await verifyCanonicalCorpus({ root: await fixture(t) });
   assert.equal(result.ok, true, result.errors.join('\n'));
   assert.equal(result.document_count, 2);
   assert.equal(result.legacy_document_count, 1);
 });
 
-test('accepts proposed documents but reports them separately', async () => {
-  const root = await fixture();
+test('accepts proposed documents but reports them separately', async (t) => {
+  const root = await fixture(t);
   await mutateJson(root, 'corpus-manifest.json', (manifest) => { manifest.documents[1].status = 'proposed'; manifest.documents[1].priority_tier = 'proposed'; });
   const manifestBytes = await readFile(join(root, 'data/knowledge-source/corpus-manifest.json'));
   await mutateJson(root, 'retrieval-policy.json', (policy) => {
@@ -100,14 +101,14 @@ test('accepts proposed documents but reports them separately', async () => {
   assert.equal(result.proposed_document_count, 1);
 });
 
-test('rejects a registered document with a stale digest', async () => {
-  const result = await verifyCanonicalCorpus({ root: await fixture({ corrupt: true }) });
+test('rejects a registered document with a stale digest', async (t) => {
+  const result = await verifyCanonicalCorpus({ root: await fixture(t, { corrupt: true }) });
   assert.equal(result.ok, false);
   assert.match(result.errors.join('\n'), /native: document hash or size mismatch/u);
 });
 
-test('repin updates native bytes and policy pin, but rejects changed legacy provenance', async () => {
-  const root = await fixture();
+test('repin updates native bytes and policy pin, but rejects changed legacy provenance', async (t) => {
+  const root = await fixture(t);
   const source = join(root, 'data/knowledge-source');
   await writeFile(join(source, 'retrieval-policy.json'), `${JSON.stringify({ baseline_manifest_sha256: '0'.repeat(64) }, null, 2)}\n`);
   await writeFile(join(source, 'corpus/DOCUMENTS/native.md'), '# Updated native document\n');
@@ -123,7 +124,7 @@ test('repin updates native bytes and policy pin, but rejects changed legacy prov
   await assert.rejects(repinCanonicalCorpus({ root }), /non-native document requires its provenance procedure/u);
 });
 
-test('rejects duplicate ids, duplicate paths, unknown aliases and traversal paths', async () => {
+test('rejects duplicate ids, duplicate paths, unknown aliases and traversal paths', async (t) => {
   const cases = [
     ['duplicate document id', 'corpus-manifest.json', (manifest) => { manifest.documents[1].document_id = manifest.documents[0].document_id; }, /duplicate document_id/u],
     ['duplicate canonical path', 'corpus-manifest.json', (manifest) => { manifest.documents[1].canonical_path = manifest.documents[0].canonical_path; }, /duplicate canonical_path/u],
@@ -132,7 +133,7 @@ test('rejects duplicate ids, duplicate paths, unknown aliases and traversal path
   ];
 
   for (const [label, path, mutate, pattern] of cases) {
-    const root = await fixture();
+    const root = await fixture(t);
     await mutateJson(root, path, mutate);
     const result = await verifyCanonicalCorpus({ root });
     assert.equal(result.ok, false, label);

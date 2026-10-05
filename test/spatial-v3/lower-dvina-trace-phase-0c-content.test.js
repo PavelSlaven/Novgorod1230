@@ -121,8 +121,8 @@ const principalIsEstablished = (evidence, availableEvidenceRefs) =>
 
 const withFixture = (callback) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-trace-0c-'));
-  cpSync(source, directory, { recursive: true });
   try {
+    cpSync(source, directory, { recursive: true });
     return callback(directory);
   } finally {
     rmSync(directory, { recursive: true, force: true });

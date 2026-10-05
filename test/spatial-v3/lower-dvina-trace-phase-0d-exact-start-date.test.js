@@ -55,8 +55,8 @@ const refreshDigests = (directory, { synchronizeBodyRef = true } = {}) => {
 };
 const withFixture = (mutate, options) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'trace-0d-v2-'));
-  cpSync(source, directory, { recursive: true });
   try {
+    cpSync(source, directory, { recursive: true });
     mutate(directory);
     refreshDigests(directory, options);
     return runChecker(directory);

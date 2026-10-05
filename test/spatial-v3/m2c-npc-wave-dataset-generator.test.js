@@ -159,8 +159,9 @@ test('parseVariants fail-closed on malformed CSV JSON', () => {
   assert.throws(() => parseVariants('["it_str"]'), /string elements are forbidden/u);
 });
 
-test('buildM2cNpcWaveDatasets fixture is deterministic in tmpdir', async () => {
+test('buildM2cNpcWaveDatasets fixture is deterministic in tmpdir', async (t) => {
   const parent = await mkdtemp(join(tmpdir(), 'm2c-gen-'));
+  t.after(() => rm(parent, { recursive: true, force: true }));
   const outA = join(parent, 'a');
   const outB = join(parent, 'b');
   const opts = {
@@ -212,13 +213,13 @@ test('buildM2cNpcWaveDatasets fixture is deterministic in tmpdir', async () => {
   const slots = JSON.parse(await readFile(join(outA, 'datasets/slot_instance_variants.json'), 'utf8'));
   assert.deepEqual(slots.map((row) => row.weight), [1, 2]);
 
-  await rm(parent, { recursive: true, force: true });
 });
 
-test('starter territory place families each have a primary binding on pin 3ab1c890', async () => {
+test('starter territory place families each have a primary binding on pin 3ab1c890', async (t) => {
   const commit = '3ab1c890c1caee2c1247ee144bf66bd35de705ec';
   const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   const parent = await mkdtemp(join(tmpdir(), 'm2c-starter-'));
+  t.after(() => rm(parent, { recursive: true, force: true }));
   const outRoot = join(parent, 'v1');
   const result = await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
   assert.equal(result.starterPlaceFamilies, 16, `starter PF count ${result.starterPlaceFamilies}`);
@@ -236,21 +237,20 @@ test('starter territory place families each have a primary binding on pin 3ab1c8
   assert.equal(manifest.bundle_kind, 'dependency_closure');
   assert.deepEqual(manifest.data_gaps, []);
   assert.equal(manifest.source_commit, undefined);
-  await rm(parent, { recursive: true, force: true });
 });
 
-test('schedule routine rules count matches schedules CSV rows on approval pin', async () => {
+test('schedule routine rules count matches schedules CSV rows on approval pin', async (t) => {
   const approval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json', 'utf8'));
   const commit = approval.source_commit;
   const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   const csvRows = parseCsv(gitShow('data/world-catalogs/novgorod/game-base-v1/time-calendar-church/time/schedules_routines.csv'));
   const parent = await mkdtemp(join(tmpdir(), 'm2c-sched-count-'));
+  t.after(() => rm(parent, { recursive: true, force: true }));
   const outRoot = join(parent, 'v1');
   await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
   const rules = JSON.parse(await readFile(join(outRoot, 'datasets/npc_schedule_routine_rules.json'), 'utf8'));
   assert.equal(rules.length, csvRows.length, 'one routine rule per schedules.csv row');
   assert.equal(csvRows.length, 161);
-  await rm(parent, { recursive: true, force: true });
 });
 
 test('committed m2c-npc-wave dataset files match generator output on approval pin', async (t) => {
@@ -291,7 +291,7 @@ test('generator excludes subject_kind=environment presence rules with a typed co
     ['category', 'occupation', 'social_role']);
 });
 
-test('generator refuses a presence subject_kind it neither imports nor explicitly excludes', async () => {
+test('generator refuses a presence subject_kind it neither imports nor explicitly excludes', async (t) => {
   const gitShow = (path) => {
     const text = fixtureGitShow(path);
     if (!path.endsWith('places-binding/presence/presence_rules.csv')) return text;
@@ -302,6 +302,8 @@ test('generator refuses a presence subject_kind it neither imports nor explicitl
     cells[index] = 'mystery_kind';
     return [header, cells.join(','), ...rest].join('\n');
   };
-  await assert.rejects(buildM2cNpcWaveDatasets({ sourceCommit: 'f'.repeat(40), gitShow,
-    outRoot: join(tmpdir(), 'm2c-unsupported-kind-out') }), /M2C_WAVE_PRESENCE_SUBJECT_KIND_UNSUPPORTED/u);
+  const outRoot = await mkdtemp(join(tmpdir(), 'm2c-unsupported-kind-out-'));
+  t.after(() => rm(outRoot, { recursive: true, force: true }));
+  await assert.rejects(buildM2cNpcWaveDatasets({ sourceCommit: 'f'.repeat(40), gitShow, outRoot }),
+    /M2C_WAVE_PRESENCE_SUBJECT_KIND_UNSUPPORTED/u);
 });

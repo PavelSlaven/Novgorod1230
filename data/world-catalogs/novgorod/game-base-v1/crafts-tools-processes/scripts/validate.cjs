@@ -223,7 +223,7 @@ add('materials_have_origin_and_sources', !noOrigin.length, noOrigin.join(',') ||
 const xwPath = P('materials_registry/material_crosswalk.csv');
 const crosswalk = fs.existsSync(xwPath) ? readCsv(xwPath) : [];
 const resolveValue = L.makeResolver(mats, deny, crosswalk);
-function* walk(dir) { for (const e of fs.readdirSync(dir, { withFileTypes: true })) { const p = path.join(dir, e.name); if (e.isDirectory()) { if (e.name !== 'node_modules') yield* walk(p); } else if (e.name.endsWith('.csv')) yield p; } }
+function* walk(dir) { for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) { const p = path.join(dir, e.name); if (e.isDirectory()) { if (e.name !== 'node_modules') yield* walk(p); } else if (e.name.endsWith('.csv')) yield p; } }
 const resRows = []; const perFile = {};
 for (const f of walk(GAME_BASE)) {
   if (f.includes(`${path.sep}materials_registry${path.sep}`)) continue;

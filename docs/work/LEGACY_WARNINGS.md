@@ -112,7 +112,9 @@
 | 120 | `tools/spatial-v3/m2c-npc-wave-approval.mjs`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json` | approval-валидатор не проверяет `resign_required`; зелёная проверка может принять подпись старого пина | — |
 | 121 | `data/novgorod-region/novgorod_occupations_v1_enriched.tsv`, `data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupations/occupation_term_status.csv`, `game-base-v1/items-weapons-armour/military/security.csv` | недоказанный термин «сторож брода» и его занятие/снаряжение остаются; term-status помечен not_attested | — |
 | 122 | `packages/items-property` A1 admission; `apps/game-server` A1 planner/wiring | A1 не сверяет вид материала и работоспособность результата | — |
-| 123 | D-1 `presence_state`/`location_ref`, D-2 `scheduled_absences`; `packages/npc-runtime` routine movement | сезонное местонахождение/отсутствие людей не исполняются | — |
+| 125 | `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js`, `packages/npc-runtime`, `apps/game-server/src/runtime/npc-routine-temporal.js` | typed gap при first-entry может потерять D-1 schedule context и не получить следующую календарную переоценку | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
+| 126 | `packages/time-events-history/src/calendar.js`, `packages/npc-runtime/src/routine-schedule.js` | month-boundary D-1 applicability остаётся отложенной; leap-day учёт в календаре исправлен | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
+| 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -667,8 +669,20 @@
 - **Как жить.** Не считать положительный A1 admission доказательством подходящего материала или работоспособности. Отдельная задача `a1-physics` должна использовать знания мира о технологии и сохранять/проверять вид материала.
 - **Issue.** —
 
-### LW-123 — сезонные отсутствие и местонахождение из D-1 не исполняются NPC routine runtime (npc-runtime)
-- **Где.** `packages/runtime-catalog/src/m2c-npc-wave-readers.js` (D-1 `presence_state`/`location_ref` and D-2 `scheduled_absences`); `packages/npc-runtime/src/routine-schedule.js`; first-arrival composition in `apps/game-server/src/infrastructure/postgres/ordinary-materialization-presence-first-arrival.js` and `packages/materialization/src/place-people-first-arrival.js`.
-- **Что.** Runtime catalog отдаёт сезонные поля распорядка, но routine runtime игнорирует D-1 `presence_state`/`location_ref`; D-2 `scheduled_absences` не передаётся в first-arrival materialization. Поэтому субъект создаётся вместе с местом без учёта сезона, а сезонное перемещение возможно только через явный `movement_handoff`. Перехода по сезонной границе из D-1 данных нет.
-- **Как жить.** Не считать авторские поля отсутствия/места исполненным состоянием NPC. Существование остаётся за first-arrival composition, местонахождение — за `@rus/npc-runtime`; сезонное местонахождение требует отдельной задачи владельца со связью распорядка, перемещения и persistence, собственными PLAN и CA.
-- **Issue.** —
+### LW-125 — first-entry location gap может потерять календарный D-1 контекст (npc-season)
+- **Где.** `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js` (обработка typed selection gap), `packages/npc-runtime` (schedule context и следующая boundary), интеграция в `apps/game-server/src/runtime/npc-routine-temporal.js`.
+- **Что.** Если будущий утверждённый стартовый D-1 bundle одновременно даёт `location_gap` и не позволяет выбрать ровно одно правило, first-entry сохраняет typed gap, но после сборки runtime может не сохранить schedule context для повторного выбора на календарной границе. Для текущих утверждённых стартов issue #227 это условие недостижимо; проверено по доступным правилам, не отдельным live-сценарием.
+- **Как жить.** Не подставлять generic routine или выдуманное место. Если появится утверждённый случай с таким gap, владелец `@rus/npc-runtime` решает сохранение/переоценку контекста, а game-server только интегрирует; сначала покрыть first-entry и календарную границу тестом.
+- **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)
+
+### LW-126 — month-boundary D-1 applicability остаётся отложенной (npc-season)
+- **Где.** `packages/time-events-history/src/calendar.js` (`dayOfYear`), вызывается month-boundary applicability в `packages/npc-runtime/src/routine-schedule.js`.
+- **Что.** Календарный owner `@rus/time-events-history` исправил учёт дополнительного дня юлианского високосного года в `dayOfYear` (c01dc6fe). При этом month-boundary applicability D-1 в `@rus/npc-runtime` остаётся отдельной отложенной работой и текущими данными не включена: применимость расписаний задана по сезонам.
+- **Как жить.** Не включать month-boundary переоценку D-1 без отдельной задачи владельца `@rus/npc-runtime`; перед включением покрыть границу месяца и повторный выбор правила тестом. Календарная leap-day зависимость исправлена владельцем календаря.
+- **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)
+
+### LW-127 — несколько D-1 перемещений могут конфликтовать по placement CAS (npc-season)
+- **Где.** `apps/game-server/src/runtime/npc-routine-temporal.js` (`routinePlacementWrites` и `npcRoutineTemporalRegistration.resolve`), утверждённые D-1 `movement_handoff` profiles.
+- **Что.** Если когда-либо утверждённый набор расписаний даст одному NPC два завершённых `movement_handoff` в одном temporal window, адаптер берёт placement CAS из evolving `row.npc_placement.state_version`: фрагменты ожидают версии `[1, 2]`, хотя в БД до коммита есть только версия `1`. Общая temporal integration отвергнет такой план. В проверенных 161 утверждённых D-1 правилах `movement_handoff` нет; это отложенный риск, не текущий путь данных.
+- **Как жить.** Не включать такой набор расписаний без регрессии двух смен позиции в одном окне. Перед включением привязать все placement CAS фрагменты к исходному persisted `entity_placements` snapshot того же temporal window и сохранить одну итоговую запись версии.
+- **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)

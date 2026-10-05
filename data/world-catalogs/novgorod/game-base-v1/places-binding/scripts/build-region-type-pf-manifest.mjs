@@ -31,7 +31,7 @@ export function build() {
     if (seen.has(key)) throw new Error(`duplicate type: ${key}`);
     seen.add(key);
 
-    const matches = families.filter((pf) => split(pf[FIELD[kind]]).includes(id)).sort((a, b) => a.pf_id.localeCompare(b.pf_id));
+    const matches = families.filter((pf) => split(pf[FIELD[kind]]).includes(id)).sort((a, b) => a.pf_id.localeCompare(b.pf_id, 'en'));
     const pf_refs = matches.map((pf) => pf.pf_id).sort();
     const source_refs = [
       `${rel(INPUT)}#${source.entries.includes(item) ? 'entries' : 'start_only_water_entries'}[kind=${kind},template_id=${id}]`,
@@ -76,7 +76,7 @@ export function build() {
       });
     }
     return row;
-  }).sort((a, b) => a.kind.localeCompare(b.kind) || a.template_id.localeCompare(b.template_id));
+  }).sort((a, b) => a.kind.localeCompare(b.kind, 'en') || a.template_id.localeCompare(b.template_id, 'en'));
   const gaps = entries.filter((row) => row.coverage === 'gap').map((row) => `${row.kind}:${row.template_id}`).sort();
   const planned = Object.keys(authoring.region_type_gap_closures ?? {}).sort();
   if (JSON.stringify(gaps) !== JSON.stringify(planned)) throw new Error('gap closure keys differ from current gaps');

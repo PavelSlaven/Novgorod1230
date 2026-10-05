@@ -459,3 +459,49 @@ test('developer report route is unavailable outside developer mode', async (t) =
   assert.equal(payload.data.aggregate.llm_total_ms, 0);
   assert.equal(JSON.stringify(payload).includes('Authorization'), false);
 });
+
+test('accepted opening attempt is stored on developer LLM turn report', async () => {
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const snapshot = {
+    writer_prose: 'Финал.',
+    stage23: { pass: true, concerns: [], evidence: [], codes: [] },
+    repair: { observed: true, attempted: true }
+  };
+  await diagnostics.runTurn({ party_id: 'party:open', request_id: 'slice-r-start' }, async () => {
+    diagnostics.recordOpeningAttempt(snapshot);
+    return { ok: true };
+  });
+  const report = diagnostics.report({ party_id: 'party:open', request_id: 'slice-r-start' });
+  assert.equal(report.opening_attempt.writer_prose, 'Финал.');
+  assert.equal(report.opening_attempt.stage23.pass, true);
+  assert.equal(report.failure, null);
+});
+
+test('authored opening rejection survives runTurn report sanitization', async () => {
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const prose = 'Вы у сруба.';
+  await assert.rejects(diagnostics.runTurn({ party_id: 'party:open', request_id: 'slice-r-start' },
+    async () => {
+      throw Object.assign(new Error('rejected'), {
+        code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+        status: 409,
+        details: {
+          codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'],
+          opening_rejection: {
+            writer_prose: prose,
+            stage23: {
+              pass: false,
+              concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
+                message: 'gap' }],
+              evidence: ['gap'],
+              codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']
+            },
+            repair: { observed: true, attempted: true, outcome: 'still_rejected' }
+          }
+        }
+      });
+    }), { code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
+  const report = diagnostics.report({ party_id: 'party:open', request_id: 'slice-r-start' });
+  assert.equal(report.failure.opening_rejection.writer_prose, prose);
+  assert.equal(report.failure.opening_rejection.repair.outcome, 'still_rejected');
+});

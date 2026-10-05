@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
-import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { buildKnowledgeSourceOutputsV2 } from '../src/knowledge-materializer-v2.js';
@@ -12,8 +12,9 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
-async function materializerFixture() {
+async function materializerFixture(t) {
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-materializer-v2-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
   await writeFile(join(fixtureRoot, 'package.json'), JSON.stringify({ version: 'test' }));
   return fixtureRoot;
@@ -71,8 +72,8 @@ test('knowledge materializer builds structural graph nodes for every active docu
   assert.equal(structuralNodes.some((node) => node.id === 'canonical-document:weapons-and-armor'), false);
 });
 
-test('knowledge materializer includes changed proposed documents lexically without activating them in the graph', async () => {
-  const fixtureRoot = await materializerFixture();
+test('knowledge materializer includes changed proposed documents lexically without activating them in the graph', async (t) => {
+  const fixtureRoot = await materializerFixture(t);
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
   const manifestPath = join(sourceRoot, 'corpus-manifest.json');
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
@@ -95,8 +96,8 @@ test('knowledge materializer includes changed proposed documents lexically witho
   assert.equal(graph.nodes.some((node) => node.id === `canonical-document:${proposed.document_id}`), false);
 });
 
-test('unseen-equivalent: index row then repin/generate/check yields reference without manual status edits', async () => {
-  const fixtureRoot = await materializerFixture();
+test('unseen-equivalent: index row then repin/generate/check yields reference without manual status edits', async (t) => {
+  const fixtureRoot = await materializerFixture(t);
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
   const indexPath = join(sourceRoot, 'corpus/DOCUMENTS/CONTRACT_INDEX.md');
   const fileName = 'unseen_equivalent_lexical.md';

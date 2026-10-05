@@ -7,7 +7,7 @@ import test from 'node:test';
 
 import { EXIT, PreflightError, UsageError, createFinalizers, describeServerError, installLlmMeter, parseArgs, summarizeLlm,
   createHttpApi, readLlmSettingsRecord, runHarness } from '../v17-slice-run.mjs';
-import { capturePeoplePanel, RESERVE_MAKE_TURNS, runLegs } from '../v17-slice-legs.js';
+import { capturePeoplePanel, positionProgressed, RESERVE_MAKE_TURNS, runLegs } from '../v17-slice-legs.js';
 import { createRedactor, d49MinimumOf, exitCodeOf, renderPlaytestMarkdown, verdictOf } from '../v17-slice-report.js';
 
 const SECRET_KEY = 'sk-test-secret-key-0123456789';
@@ -144,8 +144,13 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
   hidePeople = false, hidePanelPeople = hidePeople, hideSqlPeople = hidePeople, npcAtStart = false, npcAtDestination = true,
   peoplePanelVisible = true, hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true,
   priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false,
-  npcSite = null, resourceSites = ['B'], routeThroughC = false } = {}) {
-  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: priorNpcReply ? [{
+  npcSite = null, resourceSites = ['B'], routeThroughC = false,
+  walkLocalLabels = [], walkExits = null, walkLocalNoProgress = false,
+  walkSlotSteps = null,
+  presentationPendingOnce = false, presentationStaysPending = false } = {}) {
+  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', slotChain: 0,
+    pendingTurnOnce: presentationPendingOnce,
+    presentationStaysPending, statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
   }] : [], nodeQuantities: Object.fromEntries(resourceSites.map((site) => [site, 60])), held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
@@ -163,8 +168,16 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     resource_nodes: resourceSites.map((site) => ({
       resource_node_id: `m2c_finite_deadwood_v1:${site}`, site_id: site, quantity_numerator: String(w.nodeQuantities[site])
     })) });
-  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа']
-    : w.site === 'B' && routeThroughC ? ['Дальше'] : (hideReturnPassage ? [] : ['Назад']),
+  const labelsAt = () => {
+    if (w.looks < blindLooks) return [];
+    if (w.site === 'A' && (walkLocalLabels.length > 0 || walkExits != null || walkSlotSteps)) {
+      return [...walkLocalLabels, ...Object.keys(walkExits ?? walkSlotSteps ?? { 'Тропа': 'B' })];
+    }
+    if (w.site === 'A') return ['Тропа'];
+    if (w.site === 'B' && routeThroughC) return ['Дальше'];
+    return hideReturnPassage ? [] : ['Назад'];
+  };
+  const screen = () => ({ main_prose: w.prose, labels: labelsAt(),
     visible_context: { schema: 'visible_context_package', visible_npc: npcHere()
       ? [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc1' }, display_label: 'человек' }] : [] },
     panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
@@ -173,13 +186,54 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     async newGame() { w.newGames += 1; return w.newGames <= openingRejections
       ? { status: 409, ok: false, data: null, error: { code: 'AUTHORED_OPENING_AUDIT_REJECTED' } }
       : env({ party_id: 'p1', screen: { main_prose: 'Открытие.' } }); },
+    async llmTurnReport() {
+      return env({ failure: {
+        code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+        opening_rejection: {
+          writer_prose: 'Черновик вступления.',
+          stage23: { pass: false, concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING',
+            severity: 'repairable', message: 'gap' }], evidence: ['gap'], codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'] },
+          repair: { observed: true, attempted: false }
+        }
+      } });
+    },
     async ack() { return env({}); },
     async screen() { return env({ screen: screen() }); },
-    async recover() { w.recovered += 1; w.prose = 'Восстановлено.'; return env({}); },
+    async recover() {
+      w.recovered += 1;
+      if (w.presentationStaysPending) {
+        return env({ screen: { screen_status: 'committed_presentation_pending', main_prose: '' } });
+      }
+      w.prose = 'Восстановлено.';
+      return env({ screen: screen() });
+    },
     async turn(_id, { raw_text: text }) {
       w.turns.push(text);
+      if (w.pendingTurnOnce) {
+        w.pendingTurnOnce = false;
+        w.sv += 1;
+        return env({ screen: { ...screen(), screen_status: 'committed_presentation_pending',
+          main_prose: '' } });
+      }
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
-      if (text === 'Тропа') {
+      if (walkLocalLabels.includes(text)) {
+        if (!walkLocalNoProgress) {
+          w.slot = w.slot === 'arrival' ? 'local_bend' : 'arrival';
+        }
+        w.sv += 1;
+      }
+      else if (walkSlotSteps && Object.hasOwn(walkSlotSteps, text)) {
+        const steps = walkSlotSteps[text];
+        w.slotChain += 1;
+        if (w.slotChain <= steps.length) w.slot = steps[w.slotChain - 1];
+        else { w.site = 'B'; w.slot = 'arrival'; w.prose = 'Лесная тропа.'; }
+        w.sv += 1;
+      }
+      else if (walkExits != null && Object.hasOwn(walkExits, text)) {
+        w.site = walkExits[text]; w.sv += 1;
+        w.prose = w.site === 'B' ? 'Лесная тропа.' : w.site === 'C' ? 'У реки.' : 'Дальше.';
+      }
+      else if (text === 'Тропа') {
         if (w.turns.filter((turn) => turn === 'Тропа').length > samePlaceWalks) w.site = routeThroughC && w.site === 'B' ? 'C' : 'B';
         w.sv += 1; w.prose = w.site === 'B' ? 'Лесная тропа.' : 'Тропа всё ещё впереди.';
       }
@@ -354,10 +408,59 @@ test('legs: an errored snapshot cannot make an old NPC answer pass after an unco
 });
 
 test('legs: committed walks without a site change stay visible in the walk detail', async () => {
-  const result = await runFake(fakeWorld({ samePlaceWalks: 2 }));
+  const result = await runFake(fakeWorld({ samePlaceWalks: 1 }));
   const walk = result.legs.find(({ id }) => id === 'walk');
   assert.equal(walk.status, 'pass');
-  assert.match(walk.detail, /ходов движения: 3, из них без смены места: 2/u);
+  assert.match(walk.detail, /ходов движения: 2, из них без смены места: 1/u);
+});
+
+test('legs: three local slot changes at one site still allow finding the exit label', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля', 'Третья петля'],
+    walkExits: { 'Тропа': 'B' }
+  }));
+  assert.equal(statusOf(result).walk, 'pass');
+  const walkTurns = result.turns.filter(({ leg }) => leg === 'walk');
+  assert.ok(walkTurns.length <= 8);
+  assert.ok(walkTurns.some(({ input }) => input === 'Тропа'));
+});
+
+test('legs: local committed walks do not reset stuck counter; exits still found', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля'],
+    walkExits: { 'Тропа': 'B', 'К реке': 'C' },
+    resourceSites: ['B', 'C']
+  }));
+  assert.equal(statusOf(result).walk, 'pass');
+  const walkTurns = result.turns.filter(({ leg }) => leg === 'walk');
+  assert.ok(walkTurns.length <= 7, `too many walk turns: ${walkTurns.length}`);
+  assert.ok(walkTurns.some(({ before, after }) => before?.position?.site_id !== after?.position?.site_id));
+});
+
+test('legs: when every passage label fails to change site, walk ends with label diagnostics', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля'],
+    walkLocalNoProgress: true,
+    walkExits: {},
+    npcAtStart: true,
+    npcAtDestination: false
+  }));
+  assert.equal(statusOf(result).walk, 'fail');
+  assert.match(result.legs.find(({ id }) => id === 'walk').reason,
+    /ни одна подпись.*Петля на месте.*Ещё петля/u);
+});
+
+test('legs: multi-step exit through three positions on one label keeps walking', async () => {
+  const world = fakeWorld({
+    walkSlotSteps: { 'Глинистая тропа': ['focus', 'departure'] }
+  });
+  const result = await runFake(world, { maxTurns: 12 });
+  assert.equal(statusOf(result).walk, 'pass');
+  const walkTurns = result.turns.filter(({ leg }) => leg === 'walk');
+  assert.ok(walkTurns.length >= 3);
+  assert.ok(walkTurns.filter(({ input }) => input === 'Глинистая тропа').length >= 3);
+  assert.ok(walkTurns.every(({ before, after }) => positionProgressed(before, after)
+    || before?.position?.site_id !== after?.position?.site_id));
 });
 
 test('D49 harness minimum passes with take alone, make alone, and fails the item requirement without either', async () => {
@@ -411,6 +514,19 @@ test('legs: an opening rejected three times fails start and blocks the rest; two
   const flaky = await runFake(fakeWorld({ openingRejections: 2 }));
   assert.equal(statusOf(flaky).start, 'pass');
   assert.equal(flaky.opening.rejections, 2);
+  assert.equal(flaky.opening.opening_attempts.filter(({ outcome }) => outcome === 'rejected').length, 2);
+  assert.equal(flaky.opening.opening_attempts[0].writer_prose, 'Черновик вступления.');
+});
+
+test('legs: a failed opening diagnostics fetch does not block later new-game retries', async () => {
+  const world = fakeWorld({ openingRejections: 2 });
+  world.api.llmTurnReport = async () => {
+    throw Object.assign(new TypeError('fetch failed'), { transport: { phase: 'opening_llm_report' } });
+  };
+  const result = await runFake(world);
+  assert.equal(statusOf(result).start, 'pass');
+  assert.equal(result.opening.opening_attempts[0].repair.observed, false);
+  assert.equal(result.opening.opening_attempts[0].repair.attempted, null);
 });
 
 test('legs: a committed turn without text triggers one presentation-recovery', async () => {
@@ -419,6 +535,27 @@ test('legs: a committed turn without text triggers one presentation-recovery', a
   assert.ok(world.w.recovered >= 1);
   assert.equal(result.turns[0].recovered, true);
   assert.equal(result.turns[0].prose, 'Восстановлено.');
+});
+
+test('legs: committed_presentation_pending triggers presentation-recovery like the web client', async () => {
+  const world = fakeWorld({ presentationPendingOnce: true });
+  const result = await runFake(world, { maxTurns: 6 });
+  assert.ok(world.w.recovered >= 1);
+  assert.equal(result.presentation_recovery.attempts, 1);
+  assert.equal(result.presentation_recovery.recovered, 1);
+  assert.equal(result.turns[0].presentation_recovery_outcome, 'recovered');
+  assert.equal(statusOf(result).walk, 'pass');
+});
+
+test('legs: still pending after presentation-recovery stops the leg with delivery diagnostics', async () => {
+  const world = fakeWorld({ presentationPendingOnce: true, presentationStaysPending: true });
+  const result = await runFake(world, { maxTurns: 6 });
+  assert.equal(result.presentation_recovery.still_pending, 1);
+  assert.match(result.legs.find(({ id }) => id === 'walk').reason, /доставка прозы не завершена/u);
+  assert.equal(result.turns.length, 1);
+  assert.equal(result.turns[0].delivery_failed, true);
+  assert.equal(result.turns[0].request_id, 'slice-r-1');
+  assert.equal(world.w.turns.length, 1, 'no further POST turns after delivery failure');
 });
 
 test('meter: counts LLM calls by role without content and turns the masked server error log into a summary', async () => {
@@ -486,8 +623,9 @@ test('finalizers all run in reverse order even when one throws, and only once', 
   assert.deepEqual(order, ['c', 'a']);
 });
 
-function fakeDeps(order, { rootFails = false, legsFail = false, transportFail = false } = {}) {
-  const world = fakeWorld();
+function fakeDeps(order, { rootFails = false, legsFail = false, transportFail = false,
+  ...worldOpts } = {}) {
+  const world = fakeWorld(worldOpts);
   let roleTelemetry = null;
   let sceneProjectionCapture = null;
   return {
@@ -524,6 +662,23 @@ function fakeDeps(order, { rootFails = false, legsFail = false, transportFail = 
     createSql: () => world.sql
   };
 }
+
+test('runHarness: persists presentation_recovery into report.json and playtest', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'v17-slice-test-'));
+  try {
+    const order = [];
+    const options = parseArgs(['--out-dir', dir, '--playtest-dir', join(dir, 'pt'), '--run-id', 'recovery'], {});
+    const { code, report } = await runHarness(options,
+      fakeDeps(order, { presentationPendingOnce: true }), { env: { RUS_LLM_SETTINGS_PATH: '/p' } });
+    assert.equal(code, EXIT.PASS);
+    assert.equal(report.presentation_recovery.attempts, 1);
+    assert.equal(report.presentation_recovery.recovered, 1);
+    const saved = JSON.parse(await readFile(join(dir, 'report.json'), 'utf8'));
+    assert.deepEqual(saved.presentation_recovery, report.presentation_recovery);
+    const md = await readFile(join(dir, 'pt', (await readdir(join(dir, 'pt')))[0]), 'utf8');
+    assert.ok(md.includes('Presentation recovery'));
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
 
 test('runHarness: happy path writes report.json and playtest, then cleans in reverse order', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'v17-slice-test-'));

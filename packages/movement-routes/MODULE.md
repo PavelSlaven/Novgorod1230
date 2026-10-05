@@ -21,9 +21,11 @@ Planner receives explicit `resolveKnowledgeTarget`, `loadTopology`, `snapshotEnd
 
 Approved actor-destination proposals distinguish immediate local position transitions from `requires_traversal_runtime_completion` routes. A consumer may apply the former only after the pinned local access/capacity admission; a route changes position only after the existing traversal runtime returns a completed interval proof.
 
-NPC routine consumers используют тот же route owner: schedule задаёт только
-source/destination intent, а adapter сверяет committed source, exact endpoints и
-доступ. Ни начало routine phase, ни заблокированный traversal не меняют position.
+NPC routine consumer передаёт handoff через текущий game-server `npc-routine-movement`
+path. Он сверяет committed source, exact endpoints и доступ, затем использует
+заданную handoff длительность для обычного completion. Это не sealed traversal
+proof. `movement_execution` interval хранится в routine state NPC owner; этот
+пакет предоставляет request/result helpers, но не сохраняет schedule snapshot.
 
 Когда traversal является time-bearing дочерним действием combat exchange,
 он принимает exact parent slice и возвращает `paused_in_transit` либо

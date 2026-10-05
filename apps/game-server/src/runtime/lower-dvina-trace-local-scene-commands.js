@@ -63,8 +63,13 @@ export async function createTraceLocalSceneCommands({ state, inputDigest,
       },
       async consequence({ retrievedState: current, playerInput }) {
         if (!currentSource(current)) fail('SPATIAL_V3_LOCAL_SOURCE_STALE');
-        return spatialLocalSceneRuntime.prepareLocalMovement({ ...identity,
+        const prepared = await spatialLocalSceneRuntime.prepareLocalMovement({ ...identity,
           state: current, edgeId, playerInput, inputDigest });
+        return { ...prepared, visible_seed: {
+          ...prepared.visible_seed,
+          turn_step_local_movement_signature: { kind: 'local_movement_signature',
+            display_label: visibleLabel }
+        } };
       },
       writeTargets: () => []
     };

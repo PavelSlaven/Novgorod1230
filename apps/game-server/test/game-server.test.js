@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { computeStage26ScreenDigest } from '@rus/contracts';
@@ -60,6 +60,31 @@ test('unresolved ordinary discovery is a non-5xx conflict without private detail
   });
   assert.equal(JSON.stringify(response).includes('budget_or_cap'), false);
   assert.equal(error.details.reason, 'budget_or_cap_exhausted');
+});
+
+test('authored opening audit rejection stays code-only on the public HTTP envelope', () => {
+  const response = errorEnvelope(Object.assign(new Error('internal'), {
+    code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+    status: 409,
+    details: {
+      codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'],
+      opening_rejection: {
+        writer_prose: 'Вы у берега.',
+        audit: {
+          pass: false,
+          concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
+            message: 'Missing fact.' }],
+          evidence: ['Shore required.'],
+          codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']
+        },
+        repair: { attempted: true, outcome: 'still_rejected' }
+      }
+    }
+  }));
+  assert.equal(response.status, 409);
+  assert.equal(response.body.error.code, 'AUTHORED_OPENING_AUDIT_REJECTED');
+  assert.equal(response.body.error.opening_rejection, undefined);
+  assert.equal(JSON.stringify(response.body).includes('Вы у берега'), false);
 });
 
 test('known turn failures use safe public categories and never expose internal diagnostics', () => {
@@ -370,9 +395,11 @@ test('HTTP publishes only exact player-safe live turn progress', async (t) => {
   assert.equal(JSON.stringify(live).includes('provider'), false);
 });
 
-test('static asset resolver serves only allowlisted web paths', async () => {
+test('static asset resolver serves only allowlisted web paths', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'rus-web-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   const contractsRoot = await mkdtemp(join(tmpdir(), 'rus-contracts-'));
+  t.after(() => rm(contractsRoot, { recursive: true, force: true }));
   await mkdir(join(root, 'public'), { recursive: true });
   await mkdir(join(root, 'public', 'assets'), { recursive: true });
   await mkdir(join(root, 'src'), { recursive: true });

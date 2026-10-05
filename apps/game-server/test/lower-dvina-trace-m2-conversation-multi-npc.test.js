@@ -165,12 +165,21 @@ test('Phase 3 presents an unrecognized ordinary NPC speaker without an invented 
       throw new Error('Unexpected Phase 2 projection.');
     } },
     contracts
-  }).project({ consequence: { phase3_kind: 'conversation', conversation: {
-    npc_id: fisher.instance_id, semantic_exchange: exchange.result
-  } } });
+  }).project({
+    retrieved_state: { current_visible_context: {
+      visible_scene: 'рыбацкий стан', visible_npc: []
+    } },
+    consequence: { phase3_kind: 'conversation', conversation: {
+      npc_id: fisher.instance_id, semantic_exchange: exchange.result
+    } }
+  });
 
-  assert.match(visible.visible_scene, /^человек говорит:/u);
-  assert.deepEqual(visible.visible_changes, [visible.visible_scene]);
+  assert.equal(visible.visible_scene, 'рыбацкий стан');
+  const utterance = exchange.result.statements.find(({ speaker_ref: speaker }) =>
+    speaker.entity_kind === 'npc'
+      && speaker.entity_id === fisher.instance_id).utterance_text;
+  assert.ok(visible.visible_changes.some((change) =>
+    change.startsWith('человек говорит:') && change.includes(utterance)));
   assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_scene.includes('Еремей'), false);
   assert.equal(visible.visible_npc.find(({ entity_ref: ref }) =>
@@ -201,12 +210,18 @@ test('Phase 3 preserves terminal speech punctuation without duplicating it',
           throw new Error('Unexpected Phase 2 projection.');
         } },
         contracts
-      }).project({ consequence: { phase3_kind: 'conversation', conversation: {
-        npc_id: fisher.instance_id, semantic_exchange: exchange.result
-      } } });
+      }).project({
+        retrieved_state: { current_visible_context: {
+          visible_scene: 'рыбацкий стан', visible_npc: []
+        } },
+        consequence: { phase3_kind: 'conversation', conversation: {
+          npc_id: fisher.instance_id, semantic_exchange: exchange.result
+        } }
+      });
 
-      assert.equal(visible.visible_scene, `человек говорит: «${utterance}»`);
-      assert.deepEqual(visible.visible_changes, [visible.visible_scene]);
+      assert.equal(visible.visible_scene, 'рыбацкий стан');
+      assert.deepEqual(visible.visible_changes,
+        [`человек говорит: «${utterance}»`]);
     }
   });
 
@@ -400,13 +415,17 @@ test('NPC A may decide again after NPC B creates a new causal batch',
       phase2Projector: { project: async () => null },
       contracts
     }).project({
+      retrieved_state: { current_visible_context: {
+        visible_scene: 'рыбацкий стан', visible_npc: []
+      } },
       consequence: {
         phase3_kind: 'conversation',
         conversation: { semantic_exchange: exchange.result }
       }
     });
-    assert.equal(visible.visible_scene,
-      'человек говорит: «Я отвечу лишь на то, что сам видел.»');
+    assert.equal(visible.visible_scene, 'рыбацкий стан');
+    assert.deepEqual(visible.visible_changes,
+      ['человек говорит: «Я отвечу лишь на то, что сам видел.»']);
   });
 
 test('NPC A may perceive and react when NPC B deliberately stays silent',

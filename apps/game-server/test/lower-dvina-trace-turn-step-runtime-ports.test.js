@@ -111,6 +111,10 @@ test('prepared movement hydrates the destination scene and captures IDs without 
     anchor_id: 'anchor:destination', position_id: 'position:destination',
     g6_instance_id: 'g6:destination', runtime_source: 'party_db_scene_read' };
   const diagnostics = [];
+  const admissionCountsAtDiagnostic = [];
+  let admissionCount = 0;
+  let admittedProjection = null;
+  const projectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
   let loaderSite = null;
   let loaderPartyId = null;
   const state = {
@@ -141,9 +145,18 @@ test('prepared movement hydrates the destination scene and captures IDs without 
       return { ...preparedState, npcs: [destinationNpc],
         scene_position_g6: { 'position:destination': 'g6:destination' } };
     },
-    onNpcSceneProjection: (event) => diagnostics.push(event),
+    onNpcSceneProjection: (event) => {
+      admissionCountsAtDiagnostic.push(admissionCount);
+      diagnostics.push(event);
+    },
     requestId: 'request:move',
-    workingProjectionAuthority: createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()
+    workingProjectionAuthority: {
+      admit(projection) {
+        admittedProjection = projectionAuthority.admit(projection);
+        admissionCount += 1;
+        return admittedProjection;
+      }
+    }
   });
   const projection = { position: { location_ref: 'source',
     g5_anchor_id: 'anchor:source', g5_node_id: 'node:source' } };
@@ -168,7 +181,17 @@ test('prepared movement hydrates the destination scene and captures IDs without 
   assert.deepEqual(result.current_visible_context.visible_npc[0].entity_ref,
     { entity_kind: 'npc', entity_id: 'npc:destination' });
   assert.equal(diagnostics[0].request_id, 'request:move');
+  assert.equal(admissionCount, 1,
+    'the opt-in diagnostic runs after working projection admission');
+  assert.deepEqual(admissionCountsAtDiagnostic, [1],
+    'the admission has completed when the diagnostic callback runs');
+  assert.deepEqual(diagnostics[0].after.current_visible_npc_ids,
+    admittedProjection.current_visible_context.visible_npc
+      .map(({ entity_ref: ref }) => ref.entity_id),
+    'the diagnostic reads the exact projection returned by admission');
   assert.deepEqual(diagnostics[0].after.projection_npc_ids,
+    ['npc:destination']);
+  assert.deepEqual(diagnostics[0].after.current_visible_npc_ids,
     ['npc:destination']);
   assert.deepEqual(diagnostics[0].after.candidates[0], {
     npc_id: 'npc:destination', source: 'party_db_scene_read',

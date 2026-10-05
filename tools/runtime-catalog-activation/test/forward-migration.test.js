@@ -172,7 +172,7 @@ test('v17 bootstrap forward migrations pin chain matches the 30-part world schem
   );
   assert.equal(
     PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
-    '6db02f06bea2a5ce9eee3633131c16a772525287135910e4043f6f66c7fcc6d6'
+    '936cef1082163f1a5ee518c917fb074ed81f8478e1c941a57130ed7aea91550a'
   );
   assert.equal(
     ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,

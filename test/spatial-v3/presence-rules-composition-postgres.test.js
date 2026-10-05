@@ -217,11 +217,14 @@ async function setupWorldPool(pool) {
   await loadWorldSchema(pool);
   await pool.query(await buildTransactionalImportSql({ root: process.cwd(), manifestPath: expansion }));
   const dir = await mkdtemp(join(tmpdir(), 'm2c-wave-composition-pg-'));
-  const { manifestFile, approvalPath } = await prepareApprovedWaveCopy(dir);
-  await pool.query(await buildImportWithReadbackSql({
-    root: process.cwd(), manifestPath: manifestFile, m2cWaveApprovalPath: approvalPath,
-  }));
-  await rm(dir, { recursive: true, force: true });
+  try {
+    const { manifestFile, approvalPath } = await prepareApprovedWaveCopy(dir);
+    await pool.query(await buildImportWithReadbackSql({
+      root: process.cwd(), manifestPath: manifestFile, m2cWaveApprovalPath: approvalPath,
+    }));
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
   for (const sql of SPATIAL_V3_TARGET_MIGRATIONS) await pool.query(sql);
   await pool.query(await readFile(new URL(
     '../../tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql', import.meta.url), 'utf8'));

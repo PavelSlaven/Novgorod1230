@@ -106,6 +106,18 @@ test('authored background NPC uses the common persisted conversation owner',
     const npc = state.npcs[0];
     npc.anchor_id = state.position.g5_anchor_id;
     npc.location_profile_ref = state.position.location_ref;
+    state.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Окрестности.', visible_changes: [],
+      sensory_details: ['Виден речной проток.'],
+      visible_npc: [{ entity_ref: { entity_kind: 'npc',
+        entity_id: npc.instance_id }, display_label: 'человек',
+        recognition: 'unrecognized' }],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: []
+    };
+    const currentSceneTitle = state.current_visible_context.visible_scene;
+    const currentSceneFacts = [...state.current_visible_context.sensory_details];
     const conversation = createM2ConversationModels();
     const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
       artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
@@ -127,6 +139,9 @@ test('authored background NPC uses the common persisted conversation owner',
       npcSemanticModel: conversation.npcSemanticModel,
       temporalAdvanceOwner: conversationTemporalOwner(state),
       turnStepModel: async (request) => {
+        if (request.root_player_action === 'Осматриваюсь.') {
+          return observationPlan(request);
+        }
         const interaction = request.available_domain_operations.find(
           ({ op }) => op === 'emit_interaction');
         assert.ok(interaction, JSON.stringify(request.player_safe_state));
@@ -168,6 +183,16 @@ test('authored background NPC uses the common persisted conversation owner',
     assert.equal(npcStatements.length > firstNpcStatements.length, true);
     assert.equal(npcStatements.every(({ speaker_ref: speaker }) =>
       speaker.entity_id === npc.instance_id), true);
+    const previousUtterance = npcStatements.at(-1).utterance_text;
+
+    await submit(f, turn('live-world-after-talk', 'Осматриваюсь.'));
+
+    const currentScene = f.narratorInput().visible_context;
+    assert.equal(currentScene.visible_scene, currentSceneTitle);
+    assert.deepEqual(currentScene.sensory_details, currentSceneFacts);
+    assert.equal(JSON.stringify(currentScene).includes(previousUtterance), false);
+    assert.equal(f.state.conversation_statements.some(({ utterance_text: text }) =>
+      text === previousUtterance), true);
   });
 
 test('revision 13 discovery delegates to the unchanged Phase 2 mechanics',
@@ -471,6 +496,15 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
       raw_text: 'Осмотреть место крушения подробно.'
     });
     const before = stateWithCommittedBlueWool(bootstrap.state);
+    before.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'У места крушения.', visible_changes: [],
+      sensory_details: ['Под ногами влажная земля.'], visible_npc: [],
+      visible_objects: [], known_context: [
+      'Вас зовут Микула.',
+      'Ваш род занятий: лесной промысловик.'
+      ], uncertainties: [], allowed_tensions: [], do_not_imply: []
+    };
     const semantic = fixture({
       scenarioBundle: bundle13,
       materializationBundle: bundle13,
@@ -487,6 +521,13 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
       'turn-step-rev13-production-move',
       'Хочу выбраться к рыбакам по тропинке, заметной от берега.'
     ));
+
+    const scene = semantic.narratorInput().visible_context;
+    assert.equal(scene.visible_changes.includes('Вас зовут Микула.'), false);
+    assert.equal(scene.visible_changes.includes(
+      'Ваш род занятий: лесной промысловик.'), false);
+    assert.equal(scene.visible_changes.includes(
+      'Вы переместились в пределах текущего места.'), false);
 
     const writePlan = semantic.lastWritePlan();
     const envelope = writePlan.turn_step_commit;

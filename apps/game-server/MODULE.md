@@ -217,18 +217,21 @@ and adds no second transaction owner.
   не поступают writer/auditor/repair. Newly relevant sensory details уже входят
   в required visible changes; полный пересказ окружения запрещён.
   Newly relevant facts приходят через visible_changes: applied observation
-  продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
+  продвигает воспринимаемые scene facts, а подтверждённое прибытие — одно событие
+  из player-safe факта места назначения,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums
   не становятся prose и не требуют нового словаря,
   ordinary scene seed — только факты текущего результата. Общая projection
-  выполняет arrival promotion после NPC enrichment, но берёт route knowledge
-  из исходного arrival result. Snapshot self-knowledge и carried objects
+  использует arrival result и факты destination-пакета; неизменные route knowledge
+  и self-knowledge остаются контекстом. Snapshot carried objects
   не продвигаются общим осмотром; ими владеет explicit item observation. Без current beat
   descriptive support сохраняется для scene-only perception. Outcome/intent
   передаются только своим ролям; used_references остаётся [].
-  Initial current-scene projection reads persisted player/local items plus
-  player-safe NPC appearance, activity and equipped-item refs; state version 0
-  does not replace existing rows with an empty `visible_objects` list.
+  Current-scene projection resolves place title and environmental facts from
+  the current scene presentation (or the Spatial owner's current package), then
+  rebuilds item placement/status/facts and visible NPCs from committed state.
+  It retains only movement disclosures from the prior package; a stale object
+  or NPC row cannot override the current position or placement.
   Private auditor возвращает только полный ordered reviewed_segments,
   ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,
@@ -365,9 +368,25 @@ causal transitions и один CAS итогового состояния. Deferr
 допустим до первого входа; first-entry связывает точную позицию без сброса
 занятия или времени. Сон меняет доступность NPC для разговора. Этот cutover
 не расширяет историческую Phase-7 activation свободных решений NPC.
-Routine movement проходит существующий route owner с проверкой committed source
-и exact endpoints; adapter переносит NPC только при completed handoff, а blocked
-handoff сохраняет исходную позицию и следующий причинный schedule state.
+Routine movement проходит текущий `npc-routine-movement` path: adapter сверяет
+committed source, exact endpoints и доступ, а handoff duration задаёт обычное
+completion; это не sealed traversal proof. Blocked handoff сохраняет исходную
+позицию и следующий причинный schedule state. При seasonal profile switch
+persisted `movement_execution` сохраняет исходный interval и `ends_at`; новый
+профиль не перезапускает движение и не переносит NPC.
+Temporal and first-entry adapters collect current-position, completed-movement,
+active-execution and exact approved-binding facts for `resolveNpcRoutinePresence`;
+phase location is intent only. Adapters apply its presence/location result and
+do not authorize a planned destination from the phase.
+Temporal readback accepts exact current-node/source/scene proof for an unchanged
+initial placement; home schedule scope alone does not authorize that mapping.
+Seasonal D-1 rules reselect from the party clock at the exact calendar boundary.
+`location_gap` preserves any already-known physical placement; it does not
+create an endpoint or authorize a planned destination. An explicit away phase
+with a known placement resolves to a gap until an approved departure is
+established. On first-entry, an away phase with no physical placement remains
+`offstage_away` and unplaced; neither state creates a deferred first-entry
+placement.
 
 Semantic continuation без изменения тела использует existing prepared-effect
 chain уже с первого timed шага. Runtime передаёт advanced committed projection
@@ -545,6 +564,14 @@ items, environment and spatial topology. Existing Stage 22 writes 2–4 natural
 paragraphs and Stage 23 audits factual/agency/unknown boundaries before the
 screen is saved. Whole opening runs in the existing six-minute LLM diagnostics
 deadline: writer, audit, optional one semantic repair and final audit only.
+Before each role call the server projects NPC appearance facts under that NPC's
+visible label, deduplicates only within the same NPC, translates the admitted
+appearance vocabularies to Russian, and fails closed on unknown enum values.
+The writer receives each NPC label once as the group name; the auditor retains
+the source-backed label fact with its opaque fact key. Unsupported appearance
+values fail with a field-specific server error without echoing the supplied value.
+Weather evidence uses stable field references; weather instance ids and movement
+factors stay out of the player-safe role payload.
 Session identity persists the complete approved opening narration flow and the
 original Stage 23 audit. Static profile prose is hint-only; the eight-question reader
 control and exact entity/topology refs fail closed before any model call.
@@ -562,8 +589,10 @@ but creates no presence resolution and incurs no discovery activity.
 The admitted activity projects a performed discovery with its exact duration;
 its separate candidate query remains a question, never ownership or success.
 An admitted O1 item adds a strict `ordinary_presence_seed` with resolution
-`materialized`, exact query and admitted `display_name`. The current beat reports
-that discovery once. Applied step traces and prepared ledger slice seed keys group
+`materialized`, exact query and admitted `display_name`. Its current-scene placement
+supports one natural discovery fact using that name; the beat never emits a bare
+name or claims a surface or position beyond the committed placement. Applied step
+traces and prepared ledger slice seed keys group
 each step into one required change: exact speech then its elapsed time; discovery time
 then discovery; physical result after its activity. The ordinary material prerequisite
 mapping binds `inspect` for an exact full-intent continuation in ordinary scope;
@@ -662,7 +691,11 @@ execution ledger or A1-specific plan hashes.
 
 A1 v1 limits are explicit: single-source preserve has no small subtractive mass-loss/waste model; one action produces homogeneous outputs; tools are unchanged pins without wear or consumption; finite partial partition and partial additional finite consumption are unsupported. Unspecified requested output count is `null` and resolves to one owner-chosen entity; impossible explicit count is a time-spending physical no-result without item writes.
 
-Public new-game replay uses an exact persisted creation identity. Trace
+Public new-game replay uses an exact persisted creation identity. The
+diagnostic-only `diagnostics.start_parameter_extraction` records its
+candidate-vocabulary catalog id and revision outside that identity; it does not
+affect creation identity equality, Phase 1A recovery, start selection or
+compatibility. Trace
 publications pin materializer and RNG versions as historical execution
 identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.
@@ -964,6 +997,8 @@ prose wire: её вычисляет temporal owner и показывает serve
 обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
 dump остаётся static_context_dump. При отсутствии current beat scene-only wire
 сохраняет `visible_scene` и grounded descriptive sensory support.
+Материализованная обычная вещь передаётся как одно естественное сообщение о находке,
+подтверждённое её размещением в текущей сцене, без неподтверждённой детали о поверхности.
 Полный grounded пересказ required sources по одному в исходном порядке является
 weak_literary_composition, если действие или воспринятый результат не организует
 поддержанные пространственные детали в сцену; выдуманная связка недопустима.
@@ -1091,5 +1126,5 @@ approval, не меняет default release и сохраняет historical aut
 
 - Party calendar clock wins over `request.historical_context.year`.
 - `partyHistoricalEventsOf(committedState)` + `withPartyHistoricalEvents(model, stateOf)` — server port: adapters pass `historical_events` explicitly in grounder `authoritative` / model-call context from committed party state (F1/F2). No `request_id` Map and no request-body injection. Turn step: `buildLowerDvinaTracePhase2Services` wraps `turnStepModel` per request as `(req, repair) => model(req, repair, { historical_events })` (3rd arg; no mutable function property). Conversation exchange wraps `npcSemanticModel` with exchange `context.state` (party state at exchange start; working overlay does not own `historical_events`). `partyWorldKnowledgeAuthoritative` always rebuilds `started_historical_events` from those events + party clock via `@rus/time-events-history` (never accepts a ready id list).
-- Part B (D16/D20): `createLowerDvinaTraceNarrationService` grounds `purpose: narration` once per flow; `withPlayerWorldKnowledgeAuthoritative` / `playerActorFacetsFromState` bind player dossier `social_role_id` → `role_ref` for conversation/narration. Committed state always wins over callContext (F9). Narration authoritative comes from post-commit state via options port, shared with presentation replay (F7).
+- Part B (D16/D20): `createLowerDvinaTraceNarrationService` grounds `purpose: narration` once per flow; `withPlayerWorldKnowledgeAuthoritative` / `playerActorFacetsFromState` bind player dossier `social_role_id` → `role_ref` for conversation/narration. Committed state always wins over callContext (F9). Narration authoritative comes from post-commit state via options port, shared with presentation replay (F7). Phase-2 readback and replay re-read current visibility through Spatial's `readCurrentVisibleContext` using the committed party, actor, and position.
 - Focus refs are filtered by claim `conditions` / access before the planner wire.

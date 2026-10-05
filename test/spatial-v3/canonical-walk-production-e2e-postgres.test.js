@@ -1,13 +1,18 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { createLowerDvinaTracePhase2PostgresRepository } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { SCENE_NPC_SOURCE } from
+  '../../apps/game-server/src/infrastructure/postgres/scene-npcs-readback.js';
+import { npcSharesPlayerScene } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-scene-presence.js';
 
 import {
   VIKHTUY_LOCALITY_G4,
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
   installPresenceProductionE2eFetch,
-  publicStartScenario,
 } from './presence-rules-production-e2e-fixture.js';
 
 const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url)));
@@ -36,31 +41,56 @@ async function whereIs(partyPool, partyId) {
 test('work_storage -> water_access -> forest_path -> meeting_area and back, across process restarts',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
+    let partyId = null;
+    let pendingScreenRead = null;
     const narrationLog = [];
+    const pushNarration = narrationLog.push.bind(narrationLog);
+    narrationLog.push = (entry) => {
+      const length = pushNarration(entry);
+      if (partyId != null) pendingScreenRead = env.partyPool.query(
+        'SELECT screen FROM party_runtime.party_server_sessions WHERE party_id=$1',
+        [partyId]).then(({ rows }) => rows[0]?.screen ?? null);
+      return length;
+    };
     const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs: { exactMovement: true }, narrationLog });
     t.after(() => restoreFetch());
-    let { runtime } = await createPresenceProductionRoot(env);
+    let { runtime, readCurrentVisibleContext } = await createPresenceProductionRoot(env);
     t.after(() => runtime.close());
-    const restart = async () => { await runtime.close(); ({ runtime } = await createPresenceProductionRoot(env)); };
-    const partyId = await publicStartScenario(runtime, 'novgorod_vikhtuy_work_storage_v1');
+    const restart = async () => { await runtime.close();
+      ({ runtime, readCurrentVisibleContext } = await createPresenceProductionRoot(env)); };
+    const opening = await runtime.startNewGame({
+      scenario_id: 'novgorod_vikhtuy_work_storage_v1',
+      request_id: 'slice-20261003T105907Z-cc80771c-start',
+    });
+    assert.equal(opening.screen.schema, 'first_game_screen');
+    partyId = opening.party_id;
+    await runtime.acknowledgeOpening(partyId, {
+      client_ack_id: 'slice-20261003T105907Z-cc80771c-ack',
+    });
     let step = 0;
-    const turn = (raw_text) => runtime.submitTurn(partyId, { raw_text, request_id: `walk-${partyId}-${step++}` });
+    const turn = (raw_text) => {
+      const request_id = `walk-${partyId}-${step++}`;
+      return runtime.submitTurn(partyId, { raw_text,
+        request_id });
+    };
     const count = async (sql) => Number((await env.partyPool.query(sql, [partyId])).rows[0].count);
 
     /** Walk to the departure position of the current place, then take the named passage. */
     async function walkTo(to) {
       const from = (await whereIs(env.partyPool, partyId)).name;
       const named = passage(from, to);
+      let result = null;
       for (let attempt = 0; attempt < 4; attempt += 1) {
         const at = await whereIs(env.partyPool, partyId);
         if (at.name !== from) break;
         narrationLog.length = 0;
-        await turn(at.slot === 'departure' ? named : `${named} — подход`);
+        result = await turn(at.slot === 'departure' ? named : `${named} — подход`);
       }
       const arrived = await whereIs(env.partyPool, partyId);
       assert.equal(arrived.name, to, `${from} -> ${to} via "${named}"`);
       assert.equal(arrived.slot, 'arrival', 'the traveller stands at the arrival endpoint of the new place');
-      assert.ok(narrationLog.at(-1)?.changes.length > 0, 'the arrival turn gives the narrator a committed change');
+      assert.ok(result?.screen?.turn_id, 'the arrival turn returns its committed screen');
+      return result;
     }
 
     const start = await whereIs(env.partyPool, partyId);
@@ -70,7 +100,54 @@ test('work_storage -> water_access -> forest_path -> meeting_area and back, acro
     await walkTo('water_access');
     await restart();
     await walkTo('forest_path');
-    await walkTo('meeting_area');
+    const arrival = await walkTo('meeting_area');
+    assert.ok(narrationLog.at(-1)?.changes.length > 0,
+      'arrival turn narrates a committed visible change');
+    const pendingScreen = await pendingScreenRead;
+    assert.equal(pendingScreen?.turn_id, arrival?.screen?.turn_id,
+      'the pending destination screen is saved during narration');
+    const readVisibleNpcs = async (screen) => {
+      const packageId = screen?.current_projection_anchor?.package_id;
+      const row = packageId == null ? null : (await env.partyPool.query(
+        `SELECT visible_payload FROM party_runtime.party_visible_packages
+          WHERE party_id=$1 AND package_id=$2`, [partyId, packageId])).rows[0];
+      assert.ok(row?.visible_payload, 'the screen package is persisted');
+      const packageNpcIds = row.visible_payload.visible_npcs
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort();
+      const screenNpcIds = (screen.visible_context?.visible_npc ?? [])
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort();
+      assert.deepEqual(packageNpcIds, screenNpcIds,
+        'persisted package and screen use the same destination NPC context');
+      return { packageNpcIds, screenNpcIds };
+    };
+    const { packageNpcIds } = await readVisibleNpcs(pendingScreen);
+    const panelLabels = (screen) => screen?.panels?.people?.data?.visible_npcs
+      ?.map(({ display_label }) => display_label).sort() ?? [];
+    const labelsById = new Map((pendingScreen.visible_context?.visible_npc ?? [])
+      .map(({ entity_ref: ref, display_label }) => [ref?.entity_id, display_label]));
+    const expectedLabels = [...new Set(packageNpcIds.map((id) => labelsById.get(id)))].sort();
+    assert.deepEqual(panelLabels(pendingScreen), expectedLabels,
+      'pending People panel matches admitted destination observations');
+    assert.deepEqual((await readVisibleNpcs(arrival.screen)).screenNpcIds, packageNpcIds);
+    const firstReadback = (await runtime.getPartyScreen(partyId)).screen;
+    const secondReadback = (await runtime.getPartyScreen(partyId)).screen;
+    assert.deepEqual(secondReadback.current_projection_anchor,
+      firstReadback.current_projection_anchor, 'repeated screen reads keep package anchor');
+    assert.deepEqual((await readVisibleNpcs(secondReadback)).packageNpcIds, packageNpcIds,
+      'repeated screen read keeps the same NPC IDs in package and visible context');
+    assert.deepEqual(panelLabels(secondReadback), expectedLabels,
+      'repeated screen read keeps People panel aligned to the package');
+    await restart();
+    const restartReadback = (await runtime.getPartyScreen(partyId)).screen;
+    assert.deepEqual(restartReadback.current_projection_anchor,
+      firstReadback.current_projection_anchor, 'restart reads the same visible package');
+    assert.deepEqual((await readVisibleNpcs(restartReadback)).packageNpcIds, packageNpcIds,
+      'restart read keeps the same NPC IDs in package and visible context');
+    assert.deepEqual((restartReadback.visible_context?.visible_npc ?? [])
+      .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort(), packageNpcIds,
+    'restart read keeps the persisted admitted NPC IDs in visible context');
+    assert.deepEqual(panelLabels(restartReadback), expectedLabels,
+      'restart read keeps People panel aligned to the package');
     const meeting = (await env.partyPool.query(
       `SELECT a.aggregate_payload FROM party_runtime.party_ordinary_materialization_aggregates a
          JOIN party_runtime.party_g6_instances g6 ON g6.party_id=a.party_id AND g6.id=a.scope_id AND a.scope_kind='g6'
@@ -80,6 +157,48 @@ test('work_storage -> water_access -> forest_path -> meeting_area and back, acro
     assert.ok(meeting?.aggregate_payload, 'presence is resolved once, by the existing first-arrival owner, at the new place');
     await restart();
     assert.equal(await count(`SELECT count(*) FROM party_runtime.g5_site_connections WHERE party_id=$1`), 3);
+
+    // First arrival commits the authored household; return once so the readback
+    // and destination projection both observe that persisted SQL-loaded NPC.
+    await walkTo('forest_path');
+    const returnedArrival = await walkTo('meeting_area');
+    assert.ok(narrationLog.at(-1)?.changes.length > 0,
+      'return arrival still narrates its committed visible change');
+    const admittedPendingScreen = await pendingScreenRead;
+    assert.equal(admittedPendingScreen?.turn_id, returnedArrival?.screen?.turn_id);
+    const repository = createLowerDvinaTracePhase2PostgresRepository({
+      partyPool: env.partyPool,
+      readCurrentVisibleContext,
+      committer: { async commit() { throw new Error('read-only'); } }
+    });
+    const state = await repository.loadPhase2State(partyId);
+    const productionVisibleNpcIds = (state.current_visible_context?.visible_npc ?? [])
+      .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort();
+    assert.deepEqual(productionVisibleNpcIds, packageNpcIds,
+      'independent production visibility reader matches the persisted destination package');
+    const sceneNpcIds = state.npcs.filter((npc) => npc.runtime_source === SCENE_NPC_SOURCE
+      && npcSharesPlayerScene(state, npc))
+      .map(({ instance_id: id }) => id).sort();
+    assert.ok(sceneNpcIds.length > 0,
+      'production phase-2 readback loads a placed destination NPC in the player scene');
+    await restart();
+    const admittedRestartReadback = (await runtime.getPartyScreen(partyId)).screen;
+    assert.equal(admittedRestartReadback?.turn_id, returnedArrival?.screen?.turn_id,
+      'restart reads the committed arrival screen');
+    const restartState = await repository.loadPhase2State(partyId);
+    const restartProductionVisibleNpcIds =
+      (restartState.current_visible_context?.visible_npc ?? [])
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort();
+    assert.deepEqual(restartProductionVisibleNpcIds, packageNpcIds,
+      'production visibility readback still matches the destination package after restart');
+    const restartPlacedIds = restartState.npcs.filter((npc) =>
+      npc.runtime_source === SCENE_NPC_SOURCE
+        && npcSharesPlayerScene(restartState, npc))
+      .map(({ instance_id: id }) => id).sort();
+    assert.ok(restartPlacedIds.length > 0,
+      'production phase-2 readback still loads the placed destination NPC after restart');
+    assert.deepEqual(restartPlacedIds, sceneNpcIds,
+      'restart production readback returns the same SQL-loaded destination NPCs');
 
     await walkTo('forest_path');
     await walkTo('water_access');

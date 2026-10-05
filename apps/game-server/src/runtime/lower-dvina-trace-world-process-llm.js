@@ -1,11 +1,5 @@
 import { serverError } from '../errors.js';
 
-function choiceShape() {
-  return JSON.stringify({
-    interpretation: { grounded_transition: '<grounded_transition>' },
-    outcome_choice: '<supplied outcome choice_id>', affected_ref_choices: [] });
-}
-
 export function createLowerDvinaTraceWorldProcessStepModel({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING', 'World-process model is required.',
@@ -13,19 +7,19 @@ export function createLowerDvinaTraceWorldProcessStepModel({ roleRunner } = {}) 
   return async function worldProcessStep(request) {
     const outcomeChoices = request.outcome_contract.map((outcome, index) => ({
       choice_id: `outcome_${index + 1}`,
-      applicability: outcome.applicability
+      meaning: outcomeMeaning(outcome.process_outcome)
     }));
     const refChoices = worldProcessRefChoices(request);
+    const projection = worldProcessProjection(request, outcomeChoices, refChoices);
     const response = await roleRunner.run({ scope: 'turn_runtime',
       role_id: 'world_process_step', overrides: { temperature: 0,
         maxTokens: 20_000 }, messages: [{ role: 'system', content: [
-        'Return only the qualitative world-process semantic choice.',
-        `Use this complete semantic shape:\n${choiceShape()}`,
-        `Choose one applicable code-owned outcome by choice_id: ${JSON.stringify(outcomeChoices)}`,
-        `Choose affected refs only through these opaque code-owned choices: ${JSON.stringify(refChoices.map(({ choice_id, source }) => ({ choice_id, source })))}`,
-        'The server assembles schema, request/process identity, exact outcome pair, affected_refs, and empty fact_changes. Never copy or invent exact refs.',
-        'Do not invent numbers, resources, timestamps, process IDs, damage, hidden facts, or authority.'
-      ].join(' ') }, { role: 'user', content: JSON.stringify(request) }] });
+        'Верни JSON точно этой формы: {"interpretation":{"grounded_transition":"<переход>"},"outcome_choice":"<choice_id>","affected_ref_choices":[]}.',
+        'Значение outcome_choice — один строковый идентификатор из переданного списка исходов; каждый элемент affected_ref_choices — один строковый идентификатор из переданного списка ссылок. Массив affected_ref_choices может быть пустым.',
+        'Заполни interpretation.grounded_transition кратким описанием перехода, опирающимся на переданные факты.',
+        'Выбери один исход из outcomes и, если нужно, ссылки из affected_ref_choices.',
+        'Каждое смысловое утверждение опирай на переданные факты; отсутствующие факты считай неизвестными, неразрешённые противоречия сохраняй.'
+      ].join(' ') }, { role: 'user', content: JSON.stringify(projection) }] });
     if (!response?.output || typeof response.output !== 'object'
         || Array.isArray(response.output)) throw serverError(
       'TRACE_WORLD_PROCESS_MODEL_RESPONSE_INVALID',
@@ -62,6 +56,81 @@ function worldProcessRefChoices(request) {
   return choices.map((choice, index) => ({
     choice_id: `ref_${index + 1}`, ...choice
   }));
+}
+
+function worldProcessProjection(request, outcomeChoices, refChoices) {
+  const environmentFacts = qualitativeFacts(request.environment_state);
+  const subjectFacts = qualitativeFacts(request.subject_state);
+  const normalizedSubjectFacts = new Set(subjectFacts.map(normalizeFact));
+  const processFactsForModel = processFacts(request).filter((fact) =>
+    !normalizedSubjectFacts.has(normalizeFact(fact)));
+  const quantityFacts = waterQuantityFacts(request.subject_state, subjectFacts);
+  const fuelFacts = [...new Set((request.process?.fuel_bindings ?? [])
+    .map(({ fuel_class }) => fuelFact(fuel_class))
+    .filter(Boolean))];
+  return {
+    ...(processFactsForModel.length > 0 ? { process_facts: processFactsForModel } : {}),
+    ...(fuelFacts.length > 0 ? { fuel_facts: fuelFacts } : {}),
+    ...(subjectFacts.length > 0 ? { subject_facts: subjectFacts } : {}),
+    ...(quantityFacts.length > 0 ? { quantity_facts: quantityFacts } : {}),
+    ...(environmentFacts.length > 0 ? { environment_facts: environmentFacts } : {}),
+    outcomes: outcomeChoices,
+    affected_ref_choices: refChoices.map(({ choice_id, source }) => ({
+      choice_id, role: refRole(source)
+    }))
+  };
+}
+
+function processFacts(request) {
+  if (request.process_kind !== 'fire') throw serverError(
+    'TRACE_WORLD_PROCESS_REQUEST_INVALID', 'Unsupported world process kind.',
+    { status: 400 });
+  return [request.process?.status === 'active'
+    ? 'Огонь горит.' : 'Состояние огня не установлено.'];
+}
+
+function fuelFact(fuelClass) {
+  return fuelClass === 'ordinary_solid_fuel_unit' ? 'обычное твёрдое топливо' : null;
+}
+
+function qualitativeFacts(value) {
+  if (!value || typeof value !== 'object') return [];
+  const facts = [...(Array.isArray(value.facts) ? value.facts : []),
+    ...(Array.isArray(value.qualitative_facts) ? value.qualitative_facts : [])];
+  return [...new Set(facts.filter((fact) => typeof fact === 'string'
+    && fact.trim().length > 0 && !/^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/u.test(fact)))];
+}
+
+function normalizeFact(fact) {
+  return fact.trim().replace(/\s+/gu, ' ').toLocaleLowerCase('ru');
+}
+
+function waterQuantityFacts(subject, facts) {
+  if (!facts.some((fact) => fact.toLocaleLowerCase('ru').includes('вод'))) return [];
+  const quantities = subject?.quantities;
+  if (!Array.isArray(quantities) || quantities.length !== 1) return [];
+  const [{ mass_grams: grams, unit }] = quantities;
+  if (unit !== 'item' || !Number.isSafeInteger(grams) || grams < 1) return [];
+  const liters = grams / 1000;
+  const amount = liters === 0.75 ? 'трёх четвертей литра'
+    : `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 })
+      .format(liters)} л`;
+  return [`Около ${amount} воды (${grams} г).`];
+}
+
+function outcomeMeaning(outcome) {
+  return ({ start: 'Процесс начинается.',
+    no_effect: 'Воздействие не меняет процесс.',
+    continue: 'Воздействие меняет процесс, но не завершает его.',
+    complete: 'Воздействие завершает процесс.' })[outcome]
+    ?? 'Исход не описан в доступных фактах.';
+}
+
+function refRole(source) {
+  const key = source.slice(source.lastIndexOf('.') + 1).replace(/\[\d+\]$/u, '');
+  return ({ process_ref: 'процесс', scope_ref: 'место процесса',
+    causal_basis_ref: 'причина процесса', fuel_ref: 'топливо процесса',
+    source_refs: 'затронутый предмет' })[key] ?? 'связанное явление';
 }
 
 function collectRefChoices(value, path, choices, seen) {

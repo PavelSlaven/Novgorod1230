@@ -88,6 +88,17 @@ test('position transition without prepared route loads destination NPCs for pend
       entity_ref: { entity_kind: 'npc', entity_id: destinationNpc.instance_id },
       display_label: 'человек', recognition: 'unrecognized'
     }];
+    envelope.visible_context.visible_changes = ['Текущий ход завершился у нового места.'];
+    envelope.visible_context.uncertainties = ['Пока неясно, кто находится во дворе.'];
+    envelope.consequence.visible_seed = {
+      ...envelope.consequence.visible_seed,
+      destination_visible_context: {
+        ...envelope.visible_context,
+        visible_scene: 'Двор у избы.',
+        visible_changes: ['Перед путником открылся двор.'],
+        uncertainties: ['Из избы не видно, кто там.']
+      }
+    };
     const loadedPositions = [];
     const f = fixture({ direct: true, envelopeOverride: envelope,
       stateOverride: {
@@ -110,6 +121,14 @@ test('position transition without prepared route loads destination NPCs for pend
 
     await f.commit();
 
+    const visible = f.plans[0].appends.find(({ target_table: table }) =>
+      table === 'party_visible_packages').record;
+    assert.deepEqual(visible.visible_payload.perceived_changes, [
+      'Перед путником открылся двор.', 'Текущий ход завершился у нового места.'
+    ]);
+    assert.deepEqual(visible.visible_payload.uncertainties, [
+      'Из избы не видно, кто там.', 'Пока неясно, кто находится во дворе.'
+    ]);
     assert.deepEqual(loadedPositions, [{ partyId: 'p',
       position: 'position:destination', sourceNpcPersisted: false }]);
     const screen = f.plans[0].updates.find(({ target_table: table }) =>

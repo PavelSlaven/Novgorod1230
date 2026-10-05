@@ -1,0 +1,107 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "codex-gpt-6.1-sol-ap-fresh-v9-2026-10-02",
+  "independence_basis": "Issued by the independent Codex approval session ap-fresh-v9 under owner decision D67 (sol 6.1 approval role). This session did not author the npc-season request, generator, migration 038 or other issue #227 changes, and did not communicate with their author. Three gpt-6-luna helpers checked bytes/source/rebuild, v6 delta/chain, and DDL/logs/gate. The primary approver inspected their scripts and results, corrected the gate verification method, read the scoped sources, and made this verdict. Supplied PostgreSQL logs are author evidence, read and parsed but not rerun. No repository or database was modified by this review; final approval remains with the lead.",
+  "reviewed_repository_head": "6eaa52e38432aaba3047c32b639fc8cf6bc78c18",
+  "source_commit": "77ce16ed90c6d00a372271d49da6cfbbd965c478",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+  "request_digest": "1e9e220476ac97fe47f8d6ce0de62e62a073eff429b1d7289b4ffc3423bb945a",
+  "request_bytes": 16181,
+  "review_request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md",
+  "supersedes": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v6.json",
+    "sha256_at_reviewed_head": "64d318f0cefef707e5309d074c0452706176cd7f53531160e047aae863647b55",
+    "request_digest": "9ceaa9fb49f36d8756d0e511fe508110ce51d6a32ef646b2781fb103b2cb70e1",
+    "reason": "The v6 request has 37 party migrations and chain digest 872412c5875e37896e3633caf300bbaff884ee6f99dba6e60c5f957fa66c9d01. The current request appends 038_party_runtime_npc_seasonal_presence.sql (10875 bytes, sha256 bd90769eb40e0735a294a672c308c0694d32947d347c28197c754f8b1043ff73), changes the owner migration-module bytes/hash (5408 to 5455 bytes), source_commit, chain digest and expected migration count 37 to 38. World entrypoint/parts, 224 expected world tables and party migrations 001-037 are unchanged. v6 stays unchanged as history and cannot approve the new request digest."
+  },
+  "scope": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "party_database": "novgorod_party_v17",
+    "party_owner": "party_operator",
+    "world_schema": "The exact hashed infra/world-base/schema.sql entrypoint and ordered 01.sql-30.sql parts in the request; all are byte-identical to the v6 world inputs.",
+    "party_schema": "The exact hashed runSpatialV3TargetMigrations owner module and ordered party migrations 001-038 in the request, including NPC seasonal presence 038.",
+    "party_chain_digest": "39913e1bc00ccb70ef8330734d6ef75ce1245e2e2eb3d00333789486e1fc7993",
+    "expected_world_base_tables": 224,
+    "expected_party_runtime_tables": 133,
+    "expected_party_migrations_applied": 38
+  },
+  "verified_by_approver": {
+    "request_digest_recomputed": "1e9e220476ac97fe47f8d6ce0de62e62a073eff429b1d7289b4ffc3423bb945a; 16181 raw bytes; HEAD blob equals working file. Review MD: 2166 bytes, sha256 e9e8163ba1695bed0a3c2b7884df323fdb5aa816bedfff471363ab8dace8ef42, also equal to HEAD.",
+    "source_commit_is_ancestor_of_reviewed_head": true,
+    "schema_inputs_unchanged_source_commit_to_reviewed_head": true,
+    "ordered_parts_and_migrations": "verify-bytes.py PASS: all 70 unique inputs (entrypoint, 30 world parts, owner module, 38 migrations) match request lengths and SHA-256 at source_commit, reviewed HEAD and working copy. Source-to-HEAD input diff is empty.",
+    "request_unchanged_vs_v6_except": "verify-diff-chain.py PASS: recursive delta is exactly source_commit, owner_migration_module bytes and sha256, ordered_migrations length and appended element 37, chain_digest and expected_readback.party_migrations_applied. Old request is extracted from v6 reviewed_repository_head bf1462e187791baec62e97865604082c4326b90b and matches its binding (15975 bytes). All 31 world inputs and first 37 party migrations are raw-byte identical between source pins. Both 37- and 38-migration chain digests independently recomputed with the owner algorithm.",
+    "generator_rebuild": "verify-generator.mjs PASS: exported buildFreshSchemaRequest with explicit full source_commit and both renderers reproduce request and review MD byte-for-byte. Generator CLI was not invoked.",
+    "migration_038_statements": "verify-ddl-log.py PASS plus primary static review: two exact DROP TRIGGER IF EXISTS precede the corresponding CREATE CONSTRAINT TRIGGER on party_runtime.party_npc_spatial_schedules and party_runtime.entity_placements. Both remain FOR EACH ROW, DEFERRABLE INITIALLY DEFERRED, calling party_npc_schedule_placement_integrity. Comparing against the timestamped author A-05 backup removes only those two DROP lines; function bodies and guards in this idempotency delta are unchanged. The backup is author evidence, not a Git ancestor blob. CREATE OR REPLACE FUNCTION plus exact drop/recreate makes 038 repeat-applicable in its required existing 001-037 schema; author fresh/restart evidence corroborates this. No new table or data-write statement is introduced by 038.",
+    "seasonal_guard_scope": "Primary read of 038 and party-store MODULE: offstage_away forbids physical/deferred placement; location_gap admits a known physical position only with same-party ownership and matching entity placement. NPC/activity ownership and prepared/legacy scope remain checked. Schedule identity/candidate bindings, state_version+1 and monotonic time guards remain; changed profile/dependency pins require a persisted matching seasonal rule. This approves the fresh DDL, not a new full gameplay/LLM acceptance audit.",
+    "postgres_tests": {
+      "fresh_chain": {
+        "file": "/srv/novgorod-work/fleet/tasks/npc-season/pg/res-20261002T164354.913482Z-1.log",
+        "sha256": "68c470b255f8ce19cce4740a4150327f7d558d7641c957898f0d8cb275b9a4cd",
+        "test_count_reported_by_author": 5,
+        "pass_count_reported_by_author": 5,
+        "fail_count_reported_by_author": 0,
+        "skipped_count_reported_by_author": 0,
+        "gate_error_reported_by_author": false,
+        "evidence_owner": "author; not rerun by this reviewer"
+      },
+      "npc_persistence": {
+        "file": "/srv/novgorod-work/fleet/tasks/npc-season/pg/res-20261002T164402.849366Z-1.log",
+        "sha256": "77e9ceab388410fabec162254e8253bbe26279d09005f067ec2931bc35a390ae",
+        "test_count_reported_by_author": 6,
+        "pass_count_reported_by_author": 6,
+        "fail_count_reported_by_author": 0,
+        "skipped_count_reported_by_author": 0,
+        "gate_error_reported_by_author": false,
+        "evidence_owner": "author; not rerun by this reviewer"
+      },
+      "gate_fail_closed": {
+        "file": "/srv/novgorod-work/fleet/tasks/npc-season/pg/res-20261002T171140.660749Z-1.log",
+        "sha256": "2f1a5bac918275a0d7ba384a6bba758f50651d840de5d252a2c30a7beba27880",
+        "test_count_reported_by_author": 1,
+        "pass_count_reported_by_author": 0,
+        "fail_count_reported_by_author": 1,
+        "skipped_count_reported_by_author": 0,
+        "gate_error_reported_by_author": true,
+        "evidence_owner": "author; not rerun by this reviewer"
+      }
+    },
+    "fresh_schema_gate": {
+      "pass": true,
+      "source": "scripts/bootstrap-live-world-v17.mjs; selector and digest assertion function bodies evaluated verbatim",
+      "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+      "new_request_digest": "1e9e220476ac97fe47f8d6ce0de62e62a073eff429b1d7289b4ffc3423bb945a",
+      "v6_request_digest": "9ceaa9fb49f36d8756d0e511fe508110ce51d6a32ef646b2781fb103b2cb70e1",
+      "v6_attestation_sha256": "64d318f0cefef707e5309d074c0452706176cd7f53531160e047aae863647b55",
+      "cases": {
+        "in_memory_mockfs_selector": "V17_FRESH_SCHEMA_ATTESTATION_REQUIRED",
+        "direct_v6_digest_guard": "V17_FRESH_SCHEMA_ATTESTATION_DIGEST_MISMATCH",
+        "actual_read_only_catalog_selector": "V17_FRESH_SCHEMA_ATTESTATION_REQUIRED"
+      },
+      "method": "in-memory mockfs selector + read-only actual catalog + direct digest guard; no temporary files, DB, PG, bootstrap, or migration call"
+    },
+    "documentation_notes": "Inherited request.execution_order[3] still says 001-037; the actual ordered list, owner runner and expected_readback require 38. This review approves the exact 001-038 list. v6 execution preconditions also contain stale 222/v5 references; this v9 uses 224/38/v9. Reviewed files remain unchanged. Table counts are expected future readbacks, not live measurements by this approver; 133 party tables is inherited from v6 and 038 adds no tables.",
+    "limitations": "No independent PostgreSQL run, full bootstrap/readback, v9 repository integration, post-integration gate suite, database identity/backup/row-count inspection or activation/cutover was performed. Codebase-memory MCP is not exposed; owners and scope were established through direct source reading and rg. Successful author log counters do not prove every SQL guard branch."
+  },
+  "approval": "Conditional approval of only the exact fresh world/party schema definitions and ordered DDL inputs bound to request SHA-256 1e9e220476ac97fe47f8d6ce0de62e62a073eff429b1d7289b4ffc3423bb945a at reviewed HEAD 6eaa52e38432aaba3047c32b639fc8cf6bc78c18. This file grants no permission to create or rename any database, import data, run bootstrap, activate a catalog or cut over runtime. Any database action needs a separate explicit owner command and the applicable approvals; final acceptance and repository integration remain with the lead.",
+  "execution_preconditions": [
+    "The lead gives final acceptance and integrates this v9 byte-identically as data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v9.json; v6 remains unchanged as history. At the execution head the fresh-schema selector must select exactly v9 by the full request path/digest, assertV17FreshSchemaAttestation must accept it, and the gate suite updated for v9 must pass. Integration and the post-integration gate suite are not evidence supplied by this review.",
+    "At the separately authorized execution head, verify all 70 reviewed source lengths/hashes, ordered world parts 01-30 and party migrations 001-038, request digest 1e9e220476ac97fe47f8d6ce0de62e62a073eff429b1d7289b4ffc3423bb945a, review MD sha256 e9e8163ba1695bed0a3c2b7884df323fdb5aa816bedfff471363ab8dace8ef42 and party chain 39913e1bc00ccb70ef8330734d6ef75ce1245e2e2eb3d00333789486e1fc7993. Stop on any mismatch; request descriptive text 001-037 is not permission to omit 038.",
+    "Obtain a separate explicit owner command for every database creation/rename or schema write. This schema approval alone authorizes none of them. Verify managed cluster system_identifier, PostgreSQL version 16.14, target names and owners, current checked backups and existing per-table row counts before any separately authorized write; record operator evidence. Existing databases are not targets for this fresh-schema approval.",
+    "For separately authorized fresh-schema execution, prove the exact target databases empty and owned by world_operator/party_operator; if names already exist or the fresh-target proof fails, stop. Use the complete world entrypoint with stop-on-error in one transaction and the standard runSpatialV3TargetMigrations owner applying all 001-038 in its transaction. Creation or rename to make targets available still requires its own owner command.",
+    "Any later import stage has its own current independent approval bound to its exact request at the execution head, including npc_identity_import with schema rus.npc_identity_v17_import_approval.v1; this v9 substitutes for no import or activation approval.",
+    "After separately authorized schema execution, record exact readbacks in a separate execution attestation referencing v9: 224 world_base tables, world_reader USAGE and SELECT on all 224 tables, 133 party_runtime tables, 38 applied migrations with chain 39913e1bc00ccb70ef8330734d6ef75ce1245e2e2eb3d00333789486e1fc7993, no imported world data or parties, and unchanged row counts in all protected existing databases. Counts here are requirements, not claims that this review executed them."
+  ],
+  "excludes": [
+    "database creation, rename, drop, reuse or overwrite (all require separate owner authority)",
+    "any data import (each import stage requires its own current approval)",
+    "catalog registration or activation",
+    "runtime or default startup cutover",
+    "migration or mutation of any existing database or save",
+    "execution attestation, live readback or full issue #227 gameplay/LLM acceptance"
+  ],
+  "database_mutated_by_review": false
+}

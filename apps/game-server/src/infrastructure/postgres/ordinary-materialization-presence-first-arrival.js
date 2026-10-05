@@ -8,6 +8,7 @@ import {
   loadG1NodeIdForSpatialNode,
   loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
+  loadScheduleRoutineRules,
 } from '@rus/runtime-catalog';
 import { serverError } from '../../errors.js';
 
@@ -15,6 +16,8 @@ export const PRESENCE_FIRST_ARRIVAL_GAP = Object.freeze({
   NO_PLACE_FAMILY_BINDING: 'no_place_family_binding',
   NO_MERGED_PRESENCE_RULES: 'no_merged_presence_rules',
 });
+
+const SCHEDULE_SEASONS = ['spring', 'summer', 'autumn', 'winter'];
 
 const APPROVED_O1_ITEM_TEMPLATE_BY_REF = Object.freeze([
   ['it_hh_awl', 'item_tpl_nov_awl_v1'],
@@ -205,11 +208,18 @@ async function resolvePresenceRulesFirstArrivalForSiteInner({
     runtimeCatalogPin,
   };
   // D-2 people of a canonical place: the composition of its primary place family (empty or absent = none).
-  const people = withPlacePeople ? { compositions: await loadPrimaryPlaceFamilyCompositions({ ...readerInput, primaryIds }) } : null;
-  const [primaryRules, secondaryRules] = await Promise.all([
+  const [peopleData, primaryRules, secondaryRules] = await Promise.all([
+    withPlacePeople ? Promise.all([
+      loadPrimaryPlaceFamilyCompositions({ ...readerInput, primaryIds }),
+      loadPrimaryPlaceFamilyScheduleRules({ ...readerInput, primaryIds }),
+    ]).then(([compositions, scheduleRoutineRules]) => ({
+      compositions,
+      schedule_routine_rules_by_place_family: scheduleRoutineRules,
+    })) : null,
     loadPresenceRulesForPlaceFamilies({ ...readerInput, placeFamilyIds: primaryIds }),
     loadPresenceRulesForPlaceFamilies({ ...readerInput, placeFamilyIds: secondaryIds }),
   ]);
+  const people = peopleData;
   const rules = mergePlaceFamilyPresenceRules({
     primaryRules,
     secondaryRules,
@@ -249,10 +259,22 @@ async function loadPrimaryPlaceFamilyCompositions({ primaryIds, ...readerInput }
   for (const placeFamilyId of [...primaryIds].sort()) {
     const composition = await loadPlacePopulationComposition({ ...readerInput, placeFamilyId });
     if (composition?.population_groups?.length) {
-      compositions.push({ composition_ref: composition.composition_ref, population_groups: composition.population_groups });
+      compositions.push({ place_family_id: composition.place_family_id,
+        composition_ref: composition.composition_ref,
+        population_groups: composition.population_groups,
+        scheduled_absences: structuredClone(composition.scheduled_absences ?? []) });
     }
   }
   return compositions;
+}
+
+/** D-1 schedules paired with canonical D-2 people; temporal selection remains with runtime consumer. */
+async function loadPrimaryPlaceFamilyScheduleRules({ primaryIds, ...readerInput }) {
+  return Promise.all([...primaryIds].sort().map(async (placeFamilyId) => ({
+    place_family_id: placeFamilyId,
+    rules: (await Promise.all(SCHEDULE_SEASONS.map((season) =>
+      loadScheduleRoutineRules({ ...readerInput, placeFamilyId, season })))).flat(),
+  })));
 }
 
 export function applyResolvedPresenceRulesFirstArrival({ aggregate, context }) {

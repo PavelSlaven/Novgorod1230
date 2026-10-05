@@ -28,7 +28,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 70);
+  assert.equal(corpus.corpus_version, 75);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -44,6 +44,10 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
       corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 19 }
     } });
     assert.equal(report.fixture_count, 38);
+    const worldProcessResult = report.results.find(({ fixture_id }) =>
+      fixture_id === 'world-process-water-affect');
+    assert.ok(worldProcessResult, 'world-process fixture result must exist');
+    assert.equal(worldProcessResult.pass, true);
     assert.equal(report.aggregates.total.passed, 38,
       JSON.stringify(report.results.filter(({ pass }) => !pass)));
     assert.equal(report.aggregates.total.errors, 0);
@@ -510,10 +514,11 @@ test('planner structurally invalid output fails after exactly one call', async (
 test('world-process semantic mismatch fails even when owner validator accepts plan', async () => {
   const fixture = structuredClone(corpus.fixtures.find(({ id }) =>
     id === 'world-process-water-affect'));
-  const request = JSON.parse(fixture.messages.at(-1).content);
+  const request = structuredClone(fixture.request);
   request.outcome_contract.push({ process_outcome: 'no_effect',
     reason_code: 'water_unaffected',
     applicability: 'the supplied water does not reach the fire' });
+  fixture.request = request;
   let invocation;
   await createLowerDvinaTraceWorldProcessStepModel({ roleRunner: {
     async run(call) { invocation = call; return { output: {} }; }
@@ -533,6 +538,30 @@ test('world-process semantic mismatch fails even when owner validator accepts pl
     assert.equal(report.results[0].pass, false);
     assert.ok(report.results[0].errors.includes('unexpected_value:process_outcome'));
     assert.equal(report.aggregates.total.semantic_failures, 1);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('world-process eval validates assembled plan against its authoritative request', async () => {
+  const fixture = structuredClone(corpus.fixtures.find(({ id }) =>
+    id === 'world-process-water-affect'));
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(fixture.expected_output)
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(report.results[0].valid, true);
+    assert.equal(report.results[0].pass, true);
+    assert.deepEqual(report.results[0].errors, []);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 

@@ -227,10 +227,19 @@ test('repaired prerequisites reach O1 with catalog support, zero query evidence 
     const roleRunner = { async run(call) {
       roles.push(call.role_id);
       const payload = JSON.parse(call.messages[1].content);
-      if (call.role_id === 'world_knowledge_query_planner') return { output: {
-        schema: 'world_knowledge_query_plan_v1', query_locale: 'ru', domains: [claim.domain],
-        focus_refs: [claim.subject_ref], requested_predicates: [], search_hints: [entry.query]
-      } };
+      if (call.role_id === 'world_knowledge_query_planner') {
+        const concept = bundle.concepts.find(({ concept_ref }) =>
+          concept_ref === claim.subject_ref);
+        const label = concept?.localizations?.ru?.labels?.[0];
+        const focusKey = Object.entries(payload.available_knowledge_refs)
+          .find(([, metadata]) => metadata.label === label)?.[0];
+        assert.ok(focusKey, `expected projected focus for ${claim.subject_ref}`);
+        return { output: {
+          schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+          domains: [claim.domain], focus_refs: [focusKey],
+          requested_predicates: [], search_hints: [entry.query]
+        } };
+      }
       assert.equal(call.role_id, 'ordinary_materialization');
       for (const sensory of entry.sensory) assert.ok(call.messages[0].content.includes(sensory), 'O1 sees exact committed sensory basis');
       assert.ok(call.messages[0].content.includes(entry.background), `${payload.mode} receives the catalog ordinary background`);

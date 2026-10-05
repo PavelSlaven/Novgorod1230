@@ -6,6 +6,8 @@ import { localeOf, semanticInputOf, situationSummaryOf, actorFacetsOf,
 import { WorldKnowledgeError, candidateWorldKnowledgeFocusRefs,
   isApplicable, canAccess } from '@rus/world-knowledge';
 import { retrievalObservabilityOf } from './world-knowledge-retrieval-observability.js';
+import { playerSafeAppearanceSummary } from
+  './player-safe-appearance-summary.js';
 import { cacheGrounded, modelSlice, noKnowledgeRequirement,
   worldKnowledgeNoNeedTrace, worldKnowledgeTrace } from
   './world-knowledge-grounding-trace.js';
@@ -70,6 +72,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       const queryLocale = localeOf(request, bundle);
       const semanticInput = semanticInputOf(request);
       const situationSummary = situationSummaryOf(request, mergedAuthoritative);
+      const visibleSituation = situationContextOf(request, mergedAuthoritative);
       const actorFacets = actorFacetsOf(request, mergedAuthoritative);
       const context = authoritativeContextOf(request, mergedAuthoritative, {
         year, placeRefs, calendarProfile: worldKnowledge.calendar_profile
@@ -95,7 +98,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         request: plannerRequest, bundle,
         plannerModel: async (input, repair) => {
           const result = await runPlanner(roleRunner, input, repair, bundle,
-            { purpose, context });
+            { purpose, context, visibleSituation });
           plannerCalls.push(result.provider_record ?? null);
           return result.output;
         } });
@@ -360,10 +363,12 @@ function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
   }));
 }
 async function runPlanner(roleRunner, request, repair, bundle,
-  { purpose = null, context = null } = {}) {
+  { purpose = null, context = null, visibleSituation = null } = {}) {
   const claims = new Map(bundle.claims.map((claim) => [claim.claim_ref, claim]));
   const concepts = new Map(bundle.concepts.map(concept =>
     [concept.concept_ref, concept]));
+  const focusKeys = new Map(request.available_knowledge_refs
+    .map((ref, index) => [ref, `f${index.toString(36)}`]));
   const focusMetadata = Object.fromEntries(request.available_knowledge_refs
     .map(ref => {
       const localization = concepts.get(ref)?.localizations?.[request.input_locale];
@@ -386,14 +391,28 @@ async function runPlanner(roleRunner, request, repair, bundle,
           })
           .map((claim) => claim.domain)
       )].sort();
-      return [ref, {
+      return [focusKeys.get(ref), {
         domains,
         label: localization?.labels?.[0] ?? '',
         description: localization?.short_definition ?? ''
       }];
     }));
-  // Only the private model wire combines refs with their selection metadata.
-  const wireRequest = { ...request, available_knowledge_refs: focusMetadata };
+  const keyFocus = new Map([...focusKeys].map(([ref, key]) => [key, ref]));
+  const wireRequest = {
+    purpose: request.purpose,
+    input_locale: request.input_locale,
+    semantic_input: request.semantic_input,
+    situation_summary: playerSituationText(visibleSituation),
+    allowed_domains: request.allowed_domains,
+    available_knowledge_refs: focusMetadata,
+    planner_limits: request.planner_limits
+  };
+  const wireRepair = repair == null ? null : {
+    original_output: plannerOutputForWire(repair.original_output, focusKeys),
+    structural_errors: repair.structural_errors.map(error =>
+      maskFocusRefs(error, focusKeys)),
+    repair_instruction: 'Return the corrected six-key plan, not original_output. Copy domains only from request.allowed_domains and focus_refs only from keys of request.available_knowledge_refs. Keep the information need in search_hints; an empty focus_refs array is valid. Never copy a rejected domain or ref.'
+  };
   const response = await roleRunner.run({
     scope: 'turn_runtime',
     role_id: 'world_knowledge_query_planner',
@@ -420,12 +439,186 @@ async function runPlanner(roleRunner, request, repair, bundle,
       'Return requested_predicates as an empty array. This semantic lookup preserves mixed typed and generic factual premises; restrictive predicate filters belong to exact code-owned queries.',
       'Do not return facts, outcomes, actions, party mutations, context overrides, or new refs.',
       repair == null ? 'Plan the smallest useful factual lookup.'
-        : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(repair.structural_errors)} Remove every domain absent from request.allowed_domains. Remove unavailable focus_refs, or replace them only by verbatim keys from request.available_knowledge_refs. Do not return any domain or ref named as unavailable.`
+        : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(wireRepair.structural_errors)} Remove every domain absent from request.allowed_domains. Remove unavailable focus_refs, or replace them only by verbatim keys from request.available_knowledge_refs. Do not return any domain or ref named as unavailable.`
     ].join(' ') }, { role: 'user', content: JSON.stringify(repair == null
-      ? wireRequest : { request: wireRequest, original_output: repair.original_output,
-        structural_errors: repair.structural_errors,
-        repair_instruction: 'Return the corrected six-key plan, not original_output. Copy domains only from request.allowed_domains and focus_refs only from keys of request.available_knowledge_refs. Keep the information need in search_hints; an empty focus_refs array is valid. Never copy a rejected domain or ref.' }) }],
+      ? wireRequest : { request: wireRequest,
+        original_output: wireRepair.original_output,
+        structural_errors: wireRepair.structural_errors,
+        repair_instruction: wireRepair.repair_instruction }) }],
     overrides: { temperature: 0 }
   });
-  return response;
+  if (!plain(response?.output)
+      || !Array.isArray(response.output.focus_refs)) return response;
+  const focusRefs = response.output.focus_refs;
+  return { ...response, output: { ...response.output,
+    focus_refs: focusRefs.map(key => keyFocus.get(key) ?? key) } };
+}
+
+export function plannerOutputForWire(output, focusKeys) {
+  if (!plain(output) || !Array.isArray(output.focus_refs)) return output;
+  return { ...output, focus_refs: output.focus_refs.map(ref =>
+    focusKeys.get(ref) ?? ref) };
+}
+
+export function maskFocusRefs(error, focusKeys) {
+  if (typeof error !== 'string') return error;
+  let result = error;
+  for (const [ref, key] of [...focusKeys]
+    .sort(([left], [right]) => right.length - left.length)) {
+    result = result.replaceAll(JSON.stringify(ref), JSON.stringify(key));
+  }
+  return result;
+}
+
+function situationContextOf(request, authoritative) {
+  if (request.schema === 'ordinary_materialization_request_v1') {
+    return authoritative?.semantic_context ?? null;
+  }
+  return request.player_safe_state?.current_visible_context
+    ?? request.npc_safe_state?.visible_context
+    ?? authoritative?.semantic_context ?? null;
+}
+
+const BODY_STATE_TEXT = Object.freeze({
+  wet: 'Одежда промокла насквозь.',
+  damp: 'Одежда остаётся влажной.',
+  cold_with_possible_shivering: 'Вас знобит.',
+  mild_shivering: 'Вас слегка знобит.',
+  strong_shivering: 'Вас трясёт от холода.',
+  headache: 'Голова отзывается тупой болью.',
+  shoulder_bruise: 'Ушибленное плечо ноет.'
+});
+
+function playerSituationText(visible) {
+  if (!plain(visible)) return 'Видимые сведения о месте не указаны.';
+  const lines = [];
+  const add = (label, text) => {
+    const safe = playerSafeText(text);
+    if (safe) lines.push(`${label}: ${safe}`);
+  };
+  add('Место', visible.visible_scene ?? visible.scene);
+  for (const [label, field] of [
+    ['Изменения вокруг', 'visible_changes'],
+    ['Ощущения', 'sensory_details'],
+    ['Известное', 'known_context'],
+    ['Неясности', 'uncertainties']
+  ]) {
+    for (const entry of Array.isArray(visible[field]) ? visible[field] : []) {
+      const text = field === 'known_context'
+        ? knownContextText(entry) : entry;
+      add(label, text);
+    }
+  }
+  for (const person of Array.isArray(visible.visible_npc)
+    ? visible.visible_npc : []) {
+    add('Видимый человек', visibleEntityDescription(person, 'человек'));
+  }
+  for (const object of Array.isArray(visible.visible_objects)
+    ? visible.visible_objects : []) {
+    add('Видимый предмет', visibleEntityDescription(object,
+      entityFallback(object?.entity_ref?.entity_kind)));
+  }
+  return lines.join('\n') || 'Видимые подробности о месте не указаны.';
+}
+
+function knownContextText(value) {
+  if (typeof value !== 'string') return null;
+  const match = value.match(/^Текущие состояния вашего тела:\s*(\[[\s\S]*\])$/u);
+  if (!match) return value;
+  let conditions;
+  try { conditions = JSON.parse(match[1]); } catch { return null; }
+  if (!Array.isArray(conditions)) return null;
+  const descriptions = conditions
+    .filter(condition => plain(condition) && condition.status === 'active')
+    .map(condition => {
+      const description = BODY_STATE_TEXT[condition.id]
+        ?? playerSafeText(condition.label);
+      if (!description) {
+        throw new WorldKnowledgeError('WORLD_KNOWLEDGE_BODY_CONDITION_LABEL_GAP',
+          'Active body condition has no player-safe description.', {
+            source: 'known_context'
+          });
+      }
+      return description;
+    });
+  return descriptions.length > 0 ? descriptions.join(' ') : null;
+}
+
+function visibleEntityDescription(entity, fallback) {
+  if (typeof entity === 'string') return playerSafeText(entity) ?? fallback;
+  if (!plain(entity)) return fallback;
+  const kind = entity.entity_ref?.entity_kind;
+  const label = playerVisibleEntityLabel(entity.display_label, kind, fallback);
+  const status = playerSafeText(entity.visible_status);
+  const recognition = entity.recognition === 'recognized' ? 'узнанный'
+    : entity.recognition === 'unrecognized' ? 'незнакомый' : null;
+  const appearance = kind === 'npc'
+    ? playerSafeAppearanceSummary(entity) : null;
+  const cues = [];
+  collectPlayerSafeText({
+    outward_presentation: entity.observable_cues?.outward_presentation,
+    ordinary_remainder: entity.observable_cues?.ordinary_remainder
+  }, cues);
+  const bounds = ambientBoundsText(entity.ambient_portion_bounds);
+  return [recognition, label, status, appearance, ...cues, bounds]
+    .filter(Boolean).join(', ');
+}
+
+function collectPlayerSafeText(value, out) {
+  if (typeof value === 'string') {
+    const text = playerSafeText(value);
+    if (text) out.push(text);
+  } else if (Array.isArray(value)) {
+    for (const entry of value) collectPlayerSafeText(entry, out);
+  } else if (plain(value)) {
+    for (const entry of Object.values(value)) collectPlayerSafeText(entry, out);
+  }
+}
+
+function ambientBoundsText(value) {
+  if (!plain(value)) return null;
+  const parts = [];
+  if (Number.isFinite(value.min_quantity)
+      && Number.isFinite(value.max_quantity)) {
+    const unit = value.quantity_unit === 'item' ? 'штук' : 'единиц';
+    parts.push(`количество от ${value.min_quantity} до ${value.max_quantity} ${unit}`);
+  }
+  if (Number.isFinite(value.min_mass_grams)
+      && Number.isFinite(value.max_mass_grams)) {
+    parts.push(`масса от ${value.min_mass_grams} до ${value.max_mass_grams} г`);
+  }
+  return parts.length > 0 ? `видимое количество: ${parts.join(', ')}` : null;
+}
+
+function entityFallback(kind) {
+  if (kind === 'npc' || kind === 'actor') return 'человек';
+  if (kind === 'scene_movement_edge' || kind === 'g4_directional_exit'
+      || kind === 'g5_site_connection') return 'проход';
+  return 'предмет';
+}
+
+function playerVisibleEntityLabel(value, kind, fallback) {
+  const text = playerSafeText(value);
+  if (!text) return fallback;
+  if (kind !== 'scene_movement_edge' && kind !== 'g4_directional_exit'
+      && kind !== 'g5_site_connection') return text;
+  const withoutExitNumber = text.replace(/\s*[—–-]\s*выход\s*№?\s*\d+\s*$/iu, '').trim();
+  if (!withoutExitNumber
+      || /^(?:продолжить путь|выход|проход)(?:\s*№?\s*\d+)?$/iu.test(withoutExitNumber)) {
+    return fallback;
+  }
+  return withoutExitNumber;
+}
+
+function playerSafeText(value) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const text = value.trim();
+  if (!/[А-ЯЁа-яё]/u.test(text)
+      || /\b[a-z][a-z\d]*(?:_[a-z\d]+)+\b|\b[a-f\d]{24,}\b|[{}]/iu.test(text)
+      || /^Продолжить путь(?:\s|$)/iu.test(text)) return null;
+  return text;
+}
+
+function plain(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value);
 }

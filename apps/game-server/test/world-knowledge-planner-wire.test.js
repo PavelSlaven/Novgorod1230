@@ -135,10 +135,10 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
       assert.match(userText, /Рядом лежит мокрая верёвка\./u);
       assert.match(userText, /Пахнет дымом\./u);
       assert.match(userText, /чинит сети/u);
-      assert.match(userText, /Видимый человек: узнанный, Олег, русые волнистые волосы средней длины, короткая борода, охряная одежда/u);
+      assert.match(userText, /Видимый человек: узнанный, Олег, русые волнистые волосы средней длины, короткая борода, охряная одежда, верхняя одежда из шерсти/u);
       assert.match(userText, /Последний ориентир видимой сцены\./u);
       for (let index = 1; index <= 8; index += 1) {
-        assert.match(userText, new RegExp(`Видимый человек: незнакомый, Видимый человек ${index}, русые волнистые волосы средней длины, короткая борода, охряная одежда`, 'u'));
+        assert.match(userText, new RegExp(`Видимый человек: незнакомый, Видимый человек ${index}, русые волнистые волосы средней длины, короткая борода, охряная одежда, верхняя одежда из шерсти`, 'u'));
       }
       assert.doesNotMatch(userText,
         /\b(?:male|adult|blond|wool|ochre|short_beard|braid|none|suspicious|medium|viewer|three_quarter|slightly_turned|neutral)\b/u);
@@ -228,6 +228,77 @@ test('unknown active body condition without safe label raises a typed gap', asyn
     } }, 'semantic_resolution'), error =>
     error.code === 'WORLD_KNOWLEDGE_BODY_CONDITION_LABEL_GAP');
 });
+
+test('production WK payload preserves visible fabric and item condition on main and repair', async () => {
+  for (const repairPath of [false, true]) {
+    const wool = await captureSituationSummary({ fabric: 'wool', status: 'serviceable',
+      repairPath });
+    const linen = await captureSituationSummary({ fabric: 'light_linen', status: 'serviceable',
+      repairPath });
+    const broken = await captureSituationSummary({ fabric: 'wool', status: 'broken',
+      repairPath });
+    assert.match(wool.main, /верхняя одежда из шерсти/u);
+    assert.match(linen.main, /верхняя одежда из льна/u);
+    assert.match(wool.main, /лодка, исправное состояние/u);
+    assert.match(broken.main, /лодка, сломанное состояние/u);
+    assert.notEqual(wool.main, linen.main);
+    assert.notEqual(wool.main, broken.main);
+    for (const capture of [wool, linen, broken]) {
+      assert.doesNotMatch(capture.main, /\b(?:wool|light_linen|serviceable|broken)\b|weather_state_id|wx_clear/u);
+      if (repairPath) assert.equal(capture.main, capture.repair);
+    }
+  }
+});
+
+async function captureSituationSummary({ fabric, status, repairPath }) {
+  const { bundle } = fixture('sample');
+  const calls = [];
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { bundle,
+      encoder: { encode: async () => [1] },
+      vector_index: { search: () => new Map() },
+      core: { resolveWorldKnowledge(query) {
+        return { schema: 'world_knowledge_slice_v1', pack_ref: 'pack:test',
+          pack_revision: 'revision:test', purpose: query.purpose,
+          coverage: [], verdict: 'insufficient', hard_constraints: [], facts: [],
+          disputes: [], gaps: [] };
+      } } },
+    roleRunner: { async run(call) {
+      calls.push(call);
+      const payload = JSON.parse(call.messages[1].content);
+      const request = payload.request ?? payload;
+      const key = Object.keys(request.available_knowledge_refs)[0];
+      const domain = request.available_knowledge_refs[key].domains[0];
+      const plan = { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
+        domains: [domain], focus_refs: [key], requested_predicates: [],
+        search_hints: ['common rare'] };
+      return { output: repairPath && calls.length === 1
+        ? { ...plan, domains: ['unavailable-domain'] } : plan };
+    } }
+  });
+  const context = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'У берега.', visible_changes: [], sensory_details: [],
+    visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc-visible' },
+      display_label: 'рыбак', recognition: 'known',
+      observable_cues: npcCues(fabric, 'ochre') }],
+    visible_objects: [{ entity_ref: { entity_kind: 'item', entity_id: 'boat-visible' },
+      display_label: 'лодка', visible_status: status }],
+    known_context: [], uncertainties: [] };
+  await grounder.ground({ input_locale: 'en', remaining_intent: 'common rare',
+    player_safe_state: { actor_id: 'player-visible', position: {},
+      current_visible_context: context } }, 'semantic_resolution');
+  assert.equal(calls.length, repairPath ? 2 : 1);
+  const config = { model: 'qwen3.8-27b-uncensored-w4a16-tp2', maxTokens: 20000,
+    responseFormat: { type: 'json_object' }, compatibility: 'openai_compatible',
+    thinking: { type: 'disabled' }, temperature: 0, topP: 1 };
+  const bodies = calls.map((call) => buildProviderRequestPayload(config,
+    call.messages));
+  const main = JSON.parse(bodies[0].messages[1].content).situation_summary;
+  const repair = repairPath
+    ? JSON.parse(bodies[1].messages[1].content).request.situation_summary
+    : null;
+  return { main, repair };
+}
 
 function fixture(prefix) {
   const refs = Array.from({ length: 257 }, (_, i) => `wk:${prefix}:${String(i).padStart(3, '0')}`);

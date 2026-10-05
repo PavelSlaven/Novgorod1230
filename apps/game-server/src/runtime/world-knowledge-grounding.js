@@ -5,6 +5,7 @@ import { localeOf, semanticInputOf, situationSummaryOf, actorFacetsOf,
 } from './world-knowledge-request-context.js';
 import { WorldKnowledgeError, candidateWorldKnowledgeFocusRefs,
   isApplicable, canAccess } from '@rus/world-knowledge';
+import { playerSafeItemConditionLabel } from '@rus/items-property';
 import { retrievalObservabilityOf } from './world-knowledge-retrieval-observability.js';
 import { playerSafeAppearanceSummary } from
   './player-safe-appearance-summary.js';
@@ -549,7 +550,10 @@ function visibleEntityDescription(entity, fallback) {
   if (!plain(entity)) return fallback;
   const kind = entity.entity_ref?.entity_kind;
   const label = playerVisibleEntityLabel(entity.display_label, kind, fallback);
-  const status = playerSafeText(entity.visible_status);
+  const status = entity.entity_ref?.entity_kind === 'item'
+    ? playerSafeItemConditionLabel(entity.visible_status)
+      ?? playerSafeText(entity.visible_status)
+    : playerSafeText(entity.visible_status);
   const recognition = entity.recognition === 'recognized' ? 'узнанный'
     : entity.recognition === 'unrecognized' ? 'незнакомый' : null;
   const appearance = kind === 'npc'

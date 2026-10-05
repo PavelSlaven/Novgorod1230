@@ -40,6 +40,7 @@ export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryP
 export {
   createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
   createRuntimeInstanceMechanicsSnapshot,
+  playerSafeItemConditionLabel,
   resolveInventoryMechanicsProfile,
   resolvePhysicalItemCondition,
   validateRuntimeInstanceMechanics

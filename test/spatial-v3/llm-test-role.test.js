@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { identifyLlmTestRole } from './llm-test-role.js';
+import { buildProviderRequestPayload } from '../../packages/llm-runtime/src/provider-request.js';
 
 test('uses explicit role metadata and normalizes planner repair calls', () => {
   assert.equal(identifyLlmTestRole({ role_id: 'intent_router' }), 'intent_router');
@@ -12,12 +13,26 @@ test('uses explicit role metadata and normalizes planner repair calls', () => {
     'world_knowledge_query_planner');
 });
 
-test('recognizes WK planner from the stable user request schema', () => {
-  assert.equal(identifyLlmTestRole({ messages: [
-    { role: 'user', content: JSON.stringify({ request: {
-      schema: 'world_knowledge_query_planner_request_v1'
-    } }) }
-  ] }), 'world_knowledge_query_planner');
+test('recognizes schema-less production WK planner main and repair bodies', () => {
+  const request = { purpose: 'semantic_resolution', input_locale: 'ru',
+    semantic_input: 'Как ловят рыбу?', situation_summary: 'У берега.',
+    allowed_domains: ['craft_technology'],
+    available_knowledge_refs: { f0: { domains: ['craft_technology'],
+      label: 'Ловля рыбы', description: 'Способы ловли рыбы.' } },
+    planner_limits: { max_domains: 3, max_search_hints: 8, max_focus_refs: 8 } };
+  const bodyFor = (input) => buildProviderRequestPayload({
+    compatibility: 'openai_compatible', model: 'fixture', maxTokens: 100,
+    responseFormat: { type: 'json_object' }, temperature: 0, topP: 1
+  }, [{ role: 'system', content: 'fixture' },
+    { role: 'user', content: JSON.stringify(input) }]);
+  const main = bodyFor(request);
+  const repair = bodyFor({ request, original_output: {
+    schema: 'world_knowledge_query_plan_v1', focus_refs: ['f0'] },
+  structural_errors: ['invalid plan'], repair_instruction: 'Исправьте план.' });
+  assert.equal(JSON.parse(main.messages[1].content).schema, undefined);
+  assert.equal(JSON.parse(repair.messages[1].content).request.schema, undefined);
+  assert.equal(identifyLlmTestRole(main), 'world_knowledge_query_planner');
+  assert.equal(identifyLlmTestRole(repair), 'world_knowledge_query_planner');
 });
 
 test('recognizes turn-step planner from structured request identity fields', () => {

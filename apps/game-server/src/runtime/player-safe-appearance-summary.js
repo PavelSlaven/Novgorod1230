@@ -16,6 +16,10 @@ const CLOTHING_COLORS = Object.freeze({
   forest_green: 'зелёная', madder_red: 'красная', ochre: 'охряная',
   brown: 'коричневая', charcoal: 'угольно-серая'
 });
+const CLOTHING_FABRICS = Object.freeze({
+  light_linen: 'льна', wool: 'шерсти', coarse_wool: 'грубой шерсти',
+  furred: 'меха'
+});
 
 export function playerSafeAppearanceSummary(npc) {
   const appearance = npc?.observable_cues?.identity?.appearance;
@@ -44,5 +48,17 @@ export function playerSafeAppearanceSummary(npc) {
   const garmentColor = CLOTHING_COLORS[
     garment?.visual_profile_snapshot?.main_visible_color];
   if (garmentColor != null) details.push(`${garmentColor} одежда`);
+  const equipment = npc?.observable_cues?.equipment ?? [];
+  for (const item of equipment) {
+    const visual = item?.visual_profile_snapshot;
+    const fabric = CLOTHING_FABRICS[visual?.visible_fabric];
+    if (!fabric) continue;
+    const slot = visual.equipment_slot ?? item.equipment_slot_category_id;
+    const label = slot === 'base_garment' || slot === 'base'
+      ? 'нижняя одежда' : slot === 'outer_garment' || slot === 'outer'
+        ? 'верхняя одежда' : slot === 'headwear' ? 'головной убор'
+          : 'видимая вещь';
+    details.push(`${label} из ${fabric}`);
+  }
   return details.length > 0 ? details.join(', ') : null;
 }

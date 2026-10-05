@@ -640,4 +640,5 @@
 - Stage 26 first-screen behavior.
 - LLM provider transport.
 - UI и database schemas.
+- feat(local-play): v17 slice walk driver treats slot or site as progress, chains multi-step exits, site walk budget 8 (slice-reject-trace)
 - feat(local-play): v17 slice report persists opening-attempt trace, presentation_recovery and failed delivery turns (slice-reject-trace)

@@ -7,7 +7,7 @@ import test from 'node:test';
 
 import { EXIT, PreflightError, UsageError, createFinalizers, describeServerError, installLlmMeter, parseArgs, summarizeLlm,
   createHttpApi, readLlmSettingsRecord, runHarness } from '../v17-slice-run.mjs';
-import { capturePeoplePanel, RESERVE_MAKE_TURNS, runLegs } from '../v17-slice-legs.js';
+import { capturePeoplePanel, positionProgressed, RESERVE_MAKE_TURNS, runLegs } from '../v17-slice-legs.js';
 import { createRedactor, d49MinimumOf, exitCodeOf, renderPlaytestMarkdown, verdictOf } from '../v17-slice-report.js';
 
 const SECRET_KEY = 'sk-test-secret-key-0123456789';
@@ -145,9 +145,11 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
   peoplePanelVisible = true, hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true,
   priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false,
   npcSite = null, resourceSites = ['B'], routeThroughC = false,
-  walkLocalLabels = [], walkExits = null,
+  walkLocalLabels = [], walkExits = null, walkLocalNoProgress = false,
+  walkSlotSteps = null,
   presentationPendingOnce = false, presentationStaysPending = false } = {}) {
-  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', pendingTurnOnce: presentationPendingOnce,
+  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', slotChain: 0,
+    pendingTurnOnce: presentationPendingOnce,
     presentationStaysPending, statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
@@ -168,8 +170,8 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     })) });
   const labelsAt = () => {
     if (w.looks < blindLooks) return [];
-    if (w.site === 'A' && (walkLocalLabels.length > 0 || walkExits != null)) {
-      return [...walkLocalLabels, ...Object.keys(walkExits ?? { 'Тропа': 'B' })];
+    if (w.site === 'A' && (walkLocalLabels.length > 0 || walkExits != null || walkSlotSteps)) {
+      return [...walkLocalLabels, ...Object.keys(walkExits ?? walkSlotSteps ?? { 'Тропа': 'B' })];
     }
     if (w.site === 'A') return ['Тропа'];
     if (w.site === 'B' && routeThroughC) return ['Дальше'];
@@ -215,7 +217,16 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
       }
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
       if (walkLocalLabels.includes(text)) {
-        w.slot = w.slot === 'arrival' ? 'local_bend' : 'arrival';
+        if (!walkLocalNoProgress) {
+          w.slot = w.slot === 'arrival' ? 'local_bend' : 'arrival';
+        }
+        w.sv += 1;
+      }
+      else if (walkSlotSteps && Object.hasOwn(walkSlotSteps, text)) {
+        const steps = walkSlotSteps[text];
+        w.slotChain += 1;
+        if (w.slotChain <= steps.length) w.slot = steps[w.slotChain - 1];
+        else { w.site = 'B'; w.slot = 'arrival'; w.prose = 'Лесная тропа.'; }
         w.sv += 1;
       }
       else if (walkExits != null && Object.hasOwn(walkExits, text)) {
@@ -403,9 +414,9 @@ test('legs: committed walks without a site change stay visible in the walk detai
   assert.match(walk.detail, /ходов движения: 2, из них без смены места: 1/u);
 });
 
-test('legs: three local slot changes at one site still allow finding the exit label', async () => {
+test('legs: local slot loops at one site still allow finding the exit within the site walk budget', async () => {
   const result = await runFake(fakeWorld({
-    walkLocalLabels: ['Петля на месте', 'Ещё петля', 'Третья петля'],
+    walkLocalLabels: ['Петля на месте', 'Ещё петля'],
     walkExits: { 'Тропа': 'B' }
   }));
   assert.equal(statusOf(result).walk, 'pass');
@@ -429,13 +440,27 @@ test('legs: local committed walks do not reset stuck counter; exits still found'
 test('legs: when every passage label fails to change site, walk ends with label diagnostics', async () => {
   const result = await runFake(fakeWorld({
     walkLocalLabels: ['Петля на месте', 'Ещё петля'],
+    walkLocalNoProgress: true,
     walkExits: {},
     npcAtStart: true,
     npcAtDestination: false
   }));
   assert.equal(statusOf(result).walk, 'fail');
   assert.match(result.legs.find(({ id }) => id === 'walk').reason,
-    /все подписи проходов.*Петля на месте.*Ещё петля/u);
+    /ни одна подпись.*Петля на месте.*Ещё петля/u);
+});
+
+test('legs: multi-step exit through three positions on one label keeps walking', async () => {
+  const world = fakeWorld({
+    walkSlotSteps: { 'Глинистая тропа': ['focus', 'departure'] }
+  });
+  const result = await runFake(world, { maxTurns: 12 });
+  assert.equal(statusOf(result).walk, 'pass');
+  const walkTurns = result.turns.filter(({ leg }) => leg === 'walk');
+  assert.ok(walkTurns.length >= 3);
+  assert.ok(walkTurns.filter(({ input }) => input === 'Глинистая тропа').length >= 3);
+  assert.ok(walkTurns.every(({ before, after }) => positionProgressed(before, after)
+    || before?.position?.site_id !== after?.position?.site_id));
 });
 
 test('D49 harness minimum passes with take alone, make alone, and fails the item requirement without either', async () => {

@@ -32,7 +32,7 @@ import { withSceneNpcs, withoutSceneNpcs } from './scene-npcs-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
 import { serverError } from '../../errors.js';
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
-import { loadLowerDvinaTraceScenePresentation } from '../../internal/lower-dvina-trace-scene-presentation.js'; import { withLowerDvinaTracePostActionKnowledge } from './lower-dvina-trace-post-action-knowledge.js';
+import { withLowerDvinaTracePostActionKnowledge } from './lower-dvina-trace-post-action-knowledge.js';
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
@@ -134,6 +134,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       const naturalScenePerceptionInput = includeCurrentVisibleContext && canonicalInitialState
         ? await loadInitialNaturalScenePerceptionInput({ partyId,
           actorId: initial.actor_id, initialState: initial }) : null;
+      const screenPresentation = canonicalInitialState ? null
+        : await loadLowerDvinaTraceScreenPresentation(initial);
       const visible = !includeCurrentVisibleContext ? initial : withPhase2CurrentVisibleContext(
         initial,
         phase2InitialCurrentVisibleContext({
@@ -143,10 +145,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
           canonicalInitialState,
           initialNaturalPerceptionRulePin: naturalPin,
           naturalScenePerceptionInput,
-          scenePresentation: canonicalInitialState ? null : await loadLowerDvinaTraceScenePresentation({
-            scenarioDefinitionRevision: initial.materialization_trace?.seed_context
-              ?.scenario_definition_revision
-          })
+          scenePresentation: screenPresentation?.scenePresentation ?? null,
+          itemLabels: screenPresentation?.itemLabels ?? {}
         })
       );
       const journeyLocation = await loadPhase2JourneyLocation(

@@ -19,6 +19,9 @@ import { activeConversationChoiceExample, preparedFollowupPrompt,
   './lower-dvina-trace-turn-step-planner-prompt.js';
 import { groundTurnRequest } from './world-knowledge-grounding.js';
 import { worldKnowledgePromptData } from '@rus/turn';
+import { containsAny, projectTurnStepModelRequest, redactGapItemData,
+  untransmittedGapItemSecrets } from
+  './lower-dvina-trace-turn-step-model-projection.js';
 import { correctOrdinaryDiscoveryScope, correctSupportedAssessment,
   correctTemporalQualifierContinuation,
   correctVisibleNpcStatusObservation } from
@@ -80,30 +83,40 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
     // Explicit party events from services wrapper 3rd arg (N1); no function props.
     const historicalEvents = Array.isArray(modelCallContext?.historical_events)
       ? modelCallContext.historical_events : [];
-    const input = await groundTurnRequest(worldKnowledgeGrounder, request, {
-      historical_events: historicalEvents
-    });
+    const grounded = await groundTurnRequest(worldKnowledgeGrounder,
+      projectTurnStepModelRequest(request).request,
+      { historical_events: historicalEvents });
+    const input = { ...request };
+    if (grounded != null && Object.hasOwn(grounded, 'world_knowledge')) {
+      if (grounded.world_knowledge == null) delete input.world_knowledge;
+      else input.world_knowledge = grounded.world_knowledge;
+    }
+    const modelRequest = projectTurnStepModelRequest(input);
+    const modelRepairContext = repairContext == null ? null
+      : redactGapItemData(repairContext, modelRequest.gapItemSecrets);
     const worldKnowledge = input?.world_knowledge;
-    const wireInput = worldKnowledge == null
+    const baseWireInput = worldKnowledge == null
       || (worldKnowledge.schema === 'world_knowledge_requirement_v1'
         && worldKnowledge.sufficiency === 'NO_KNOWLEDGE_REQUIRED')
       ? input
       : { ...input, world_knowledge: worldKnowledgePromptData(worldKnowledge) };
+    const wireInput = projectTurnStepModelRequest(baseWireInput).request;
     const repairing = repairContext != null;
     const payload = repairing
       ? {
           request: wireInput,
-          original_output: structuredClone(repairContext.original_output ?? null),
+          original_output: structuredClone(modelRepairContext.original_output ?? null),
           structural_errors:
-            structuredClone(repairContext.structural_errors ?? [])
+            structuredClone(modelRepairContext.structural_errors ?? [])
         }
       : wireInput;
-    const operationChoices = turnStepOperationChoices(request,
-      repairing ? repairContext : null);
+    const operationChoices = turnStepOperationChoices(modelRequest.request,
+      repairing ? modelRepairContext : null).filter(({ operation }) =>
+      !containsAny(operation, modelRequest.gapItemSecrets));
     const activeConversationExample = activeConversationChoiceExample(
-      request, operationChoices);
+      modelRequest.request, operationChoices);
     const visibleConversationExamples = visibleConversationChoiceExamples(
-      request, operationChoices);
+      modelRequest.request, operationChoices);
     const call = {
         scope: 'turn_runtime',
         role_id: repairing
@@ -154,12 +167,12 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             ]),
             ...(activeConversationExample == null ? [] : [activeConversationExample]),
             ...visibleConversationExamples,
-            ...Object.entries(JSON.parse(turnStepPlanMappings(request))).map(([label, mapping]) =>
+            ...Object.entries(JSON.parse(turnStepPlanMappings(modelRequest.request))).map(([label, mapping]) =>
               `\nСопоставление: ${label}\n${JSON.stringify(mapping)}\n`),
-            ...observedEvidencePrompts(request, repairing),
+            ...observedEvidencePrompts(modelRequest.request, repairing),
             ...turnStepWorldKnowledgeFactualClosure(input),
-            ...(request.prepared_followup_candidates?.length ? [
-              preparedFollowupPrompt(request.prepared_followup_candidates)
+            ...(modelRequest.request.prepared_followup_candidates?.length ? [
+              preparedFollowupPrompt(modelRequest.request.prepared_followup_candidates)
             ] : []),
             repairing
               ? 'Исправь original_output по переданному вводу. Перепланируй поля, указанные в structural_errors, и причинно зависящие от них поля; используй переданные семантические сопоставления и существующие refs, никогда не выдумывай refs. Если рядом с operation_choice нужны operations, они должны быть пустыми или точно совпадать с выбранным DTO; иначе установи operation_choice в null и оставь только подходящую семантическую операцию. Для пустого domain_request восстанови подходящее переданное семантическое сопоставление (если применимо, ordinary_material_prerequisite); никогда не подменяй авторский вариант операции широкого охвата фиксированным запросом, который ему не соответствует. Используй direct без operations, только если текущее намерение правомерно разрешается напрямую; отсутствующий ref обычного материала требует discovery, а не отказа из-за отсутствующей операции. Исправь перечисленные ошибки и зависящие от них причинные поля; сохрани не связанные с ними намерения. Если единственная ошибка — $.activity.owner: для action production нужна semantic activity, сохрани domain_request и исходную операцию action_production. Выбери подходящие для owner semantic duration_class и effort: от них зависят эти поля. Никогда не очищай operations и не переключайся на direct. Для continuation_progress сохрани исходный порядок действий. Если выбранная операция покрывает самое раннее действие, за которое отвечает владелец, сохрани её и удали из continuation.remaining_intent только покрытое событие; сохрани независимые непокрытые действия. Никогда не отбрасывай более раннюю ещё не зафиксированную реплику: сначала спланируй явно заданные слова без владельца как direct player_utterance с точным текстом реплики и текущим говорящим, затем сохрани дальнейшие действия. Если operation_semantic_grounding указывает на $.utterance, поскольку речь идёт после ещё не выполненного более раннего действия, отбрось речевой шаг, спланируй то более раннее действие через подходящее переданное сопоставление и сохрани utterance вместе со всем дальнейшим намерением в continuation. Нельзя исправить авторский discovery с неизменным continuation удалением несвязанного намерения: сначала проверь, отвечает ли его семантический охват на заданный вопрос. Для прямого наблюдения или жеста без операции удали обработанное событие и сохрани последующее независимое намерение; если его нет, верни not_achieved с continuation null. Одного равенства continuation.remaining_intent и request.remaining_intent недостаточно, чтобы доказать, что выбранная операция ничего из намерения не выполнила. Отбрасывай выбранную операцию, только если continuation содержит более раннее непокрытое действие; затем спланируй это действие через его существующее семантическое сопоставление и никогда не возвращай отброшенную более позднюю операцию в operations, с operation_choice или без него. При operation_semantic_grounding для $.resolution у буквального прямого отказа используй ordinary_material_prerequisite, сохрани literal adaptation и полное исходное физическое намерение в continuation. При operation_semantic_grounding для operations отбрось вариант, не покрывающий самое раннее действие, спланируй только следующий шаг с подходящим переданным вариантом или существующим семантическим сопоставлением и сохрани непокрытые части в continuation. Если отклонённая операция уже представляет отделение части одного источника через independent_outputs, direct_partition, partial_transformation, объём minor|half|major и source_fact_delta, сохрани эту заданную топологию идентичности и количества; requested_output_count null уже означает один отделённый результат. Исправляй только неподтверждённое семантическое покрытие или описания отдельных предметов, никогда не переключай эту структуру туда и обратно на preserve_source или ordinary_physical_result. Если самое раннее действие требует обычного материала и доступен подходящий ordinary discovery, сначала используй ordinary_material_prerequisite и сохрани предполагаемое преобразование в continuation. Иначе, если для самого раннего физически возможного действия нет операции под управлением кода, используй direct reality_limited и сохрани дальнейшие действия; никогда не пропускай это действие ради более позднего переданного варианта. Не указывай requested_duration_minutes, если длительность не названа. Для material_transformation_grounding используй action_production с семантически подходящим переданным item ref; сохрани последующую неподтверждённую цель или эффект в continuation и не стирай более раннее физическое изменение из-за отсутствия владельца последующего действия. Для action_production_identity_grounding сохрани обоснованный источник и восстанови топологию идентичности: изменение на месте использует preserve_source; разрезание, разрыв или отделение используют independent_outputs; частичное отделение использует direct_partition вместе с partial_transformation, качественным объёмом minor, half или major, output physical_form и source_fact_delta. Сохрани последующее использование результата и независимые действия в continuation. Привязывай источники action_production к player-safe описаниям материала; никогда не сохраняй ref, описание которого указывает на другой объект. Если подходящего item ref нет, используй ordinary_material_prerequisite. Для source_semantic_grounding материал, известный только по ощущениям, требует ordinary_material_prerequisite. Если одновременно указаны source_semantic_grounding и source_placement_grounding, приоритет у семантической привязки: не перемещай отброшенный ref. Если указан только source_placement_grounding, замени action_production одной прямой move_entity строго такой формы: {"op":"move_entity","entity_ref":"<обоснованный ref источника>","placement":{"relation":"<разрешённое отношение>","target_ref":"<player-safe ref цели>"}}; сохрани невыполненное преобразование. Никогда не объединяй move_entity и action_production в одном плане. При domain_owner_unavailable удали недоступную domain operation и выполни правомерную прямую попытку reality_limited, ограниченную переданными видимыми фактами, сохранив независимое последующее намерение. Отсутствие владельца не доказывает физическую невозможность или фантастику; механикой и состоянием управляет код, поэтому не выдумывай успех, физическую невозможность или отсутствующий фантастический объект.'
@@ -169,7 +182,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
               'Если operation_semantic_grounding отклоняет move_entity из-за явного несоответствия количества, отбрось это перемещение. Используй ordinary_material_prerequisite для запрошенной обычной группы и сохрани полное намерение получить её; никогда молча не уменьшай, не округляй и не игнорируй количество.',
               'Если operation_semantic_grounding отклоняет $.utterance, заново оцени сам request.remaining_intent. Оставляй player_utterance только для реальной речи или голосового сигнала. Иначе отбрось недопустимый utterance и используй подходящее неречевое семантическое сопоставление, сохранив явно заданную длительность. Напечатанное от первого лица описание действия не является речью.'
             ] : []),
-            ...turnStepRepairSpecificInstructions(repairContext, request)
+            ...turnStepRepairSpecificInstructions(modelRepairContext, modelRequest.request)
           ].join(' ')
         }, {
           role: 'user',
@@ -211,21 +224,64 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
         && repairedOutput.direct_result_kind !== 'player_utterance') {
       delete semanticOutput.utterance;
     }
+    const projectedFollowupRefs = new Set(
+      (modelRequest.request.prepared_followup_candidates ?? [])
+        .map(({ prepared_followup_ref }) => prepared_followup_ref));
+    const unprojectedFollowup = findUnprojectedFollowupRef(
+      semanticOutput, projectedFollowupRefs);
+    if (unprojectedFollowup != null) {
+      throw serverError('TURN_STEP_PLAN_INVALID',
+        'Turn-step plan references a prepared follow-up unavailable to the planner.', {
+          details: { errors: [{ path: unprojectedFollowup.path,
+            rule: 'operation_semantic_grounding',
+            code: 'prepared_followup_not_in_projected_allowlist',
+            message: 'must select a prepared follow-up from the projected request' }] }
+        });
+    }
+    if (containsAny(semanticOutput, untransmittedGapItemSecrets(request))) {
+      throw serverError('TURN_STEP_PLAN_INVALID',
+        'Turn-step plan references player-safe item data unavailable to the planner.', {
+          details: { errors: [{ path: '$.operations',
+            rule: 'operation_semantic_grounding',
+            code: 'operation_semantic_grounding',
+            message: 'must not reference an item without a player-safe label' }] }
+        });
+    }
     const assembled = assembleTurnStepPlan(semanticOutput, input,
       operationChoices);
     const discoveryScope = correctOrdinaryDiscoveryScope({
-      plan: assembled, input
+      plan: assembled, input: modelRequest.request
     });
     const temporalQualifier = await correctTemporalQualifierContinuation({
-      plan: discoveryScope, input, roleRunner
+      plan: discoveryScope, input: modelRequest.request, roleRunner
     });
     const visibleNpcObservation = await correctVisibleNpcStatusObservation({
-      plan: temporalQualifier, input, roleRunner
+      plan: temporalQualifier, input: modelRequest.request, roleRunner
     });
     return correctSupportedAssessment({ plan: visibleNpcObservation,
-      input, roleRunner });
+      input: modelRequest.request, roleRunner });
   };
   return model;
+}
+
+function findUnprojectedFollowupRef(value, allowedRefs, path = '$') {
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index += 1) {
+      const result = findUnprojectedFollowupRef(value[index], allowedRefs,
+        `${path}[${index}]`);
+      if (result != null) return result;
+    }
+    return null;
+  }
+  if (value == null || typeof value !== 'object') return null;
+  for (const [key, entry] of Object.entries(value)) {
+    const childPath = `${path}.${key}`;
+    if (key === 'prepared_followup_ref' && entry != null
+        && !allowedRefs.has(entry)) return { path: childPath };
+    const result = findUnprojectedFollowupRef(entry, allowedRefs, childPath);
+    if (result != null) return result;
+  }
+  return null;
 }
 
 function preserveUnrelatedOperationSelection(original, repaired, errors,

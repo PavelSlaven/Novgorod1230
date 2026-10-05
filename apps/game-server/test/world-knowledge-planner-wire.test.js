@@ -2,35 +2,36 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateWorldKnowledgeQueryPlannerRequest } from '@rus/world-knowledge';
 import { buildProviderRequestPayload } from '../../../packages/llm-runtime/src/provider-request.js';
+import { identifyLlmTestRole } from '../../../test/spatial-v3/llm-test-role.js';
+import { canonicalDigest } from '@rus/materialization';
+import { phase2InitialCurrentVisibleContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { withLowerDvinaTraceCurrentScene } from
+  '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { createProductionWorldKnowledgeGrounder, maskFocusRefs,
-  plannerOutputForWire } from
+  plannerFocusKeyMaps, plannerOutputForWire } from
   '../src/runtime/world-knowledge-grounding.js';
 
-test('repair error masking replaces whole refs that share a prefix', () => {
-  const focusKeys = new Map([
-    ['wk:material_culture:belt', 'f0'],
-    ['wk:material_culture:belt-fitting', 'f1']
+test('WK concept refs are menu keys; non-concept refs stay opaque', () => {
+  const refs = ['wk:material_culture:belt',
+    'wk:material_culture:belt-fitting', 'item_instance_secret'];
+  const maps = plannerFocusKeyMaps(refs, refs.slice(0, 2)
+    .map(concept_ref => ({ concept_ref })));
+  assert.deepEqual([...maps.refToKey], [
+    [refs[0], refs[0]], [refs[1], refs[1]], [refs[2], 'f2']
   ]);
+  assert.equal(maps.keyToRef.get('f2'), refs[2]);
   assert.equal(maskFocusRefs(
-    'plan focus_refs are unavailable: ["wk:material_culture:belt", "wk:material_culture:belt-fitting"]',
-    focusKeys),
-  'plan focus_refs are unavailable: ["f0", "f1"]');
-});
-
-test('repair output remaps available refs and preserves unrecognized values', () => {
-  const output = { schema: 'world_knowledge_query_plan_v1',
-    focus_refs: ['wk:material_culture:belt', 'unavailable-ref'],
-    marker: 'preserved' };
-  assert.deepEqual(plannerOutputForWire(output,
-    new Map([['wk:material_culture:belt', 'f0']])), {
-    schema: 'world_knowledge_query_plan_v1',
-    focus_refs: ['f0', 'unavailable-ref'], marker: 'preserved'
-  });
+    `unavailable: ${JSON.stringify(refs[0])}, ${JSON.stringify(refs[2])}`,
+    maps.refToKey),
+  `unavailable: ${JSON.stringify(refs[0])}, "f2"`);
+  assert.deepEqual(plannerOutputForWire({ focus_refs: refs },
+    maps.refToKey), { focus_refs: [refs[0], refs[1], 'f2'] });
 });
 
 for (const prefix of ['sample', 'unseen-other-vocabulary']) {
  for (const repairPath of [false, true]) {
-  test(`planner projects visible state and restores opaque focus keys: ${prefix}, repair=${repairPath}`, async () => {
+  test(`planner sends WK concept refs as focus keys: ${prefix}, repair=${repairPath}`, async () => {
     const { bundle, refs, expectedDomains } = fixture(prefix);
     const calls = [], traces = [], queries = [];
     const grounder = createProductionWorldKnowledgeGrounder({
@@ -61,6 +62,7 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
     });
     const input = { input_locale: 'en', remaining_intent: 'common rare',
       player_safe_state: { actor_id: 'player_character_abcdef1234567890',
+        actor_role: 'кожевник',
         position: { g4_id: 'g4v3__secret', location_ref: 'trace_ld_v1_hidden' },
         current_visible_context: { version: 1,
           schema: 'visible_context_package', visible_scene: `У берега. ${'Дальний участок сцены тоже виден. '.repeat(180)} Последний ориентир видимой сцены.`,
@@ -77,15 +79,16 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
             observable_cues: npcCues('wool', 'ochre')
           }))],
           visible_objects: [{ entity_ref: { entity_kind: 'item',
-            entity_id: 'item_abcdef1234567890' }, display_label: 'Продолжить путь — выход 3' },
-          { entity_ref: { entity_kind: 'item', entity_id: 'item_1234567890abcdef' } },
+            entity_id: 'item_abcdef1234567890' }, display_label: 'кожаный мешок' },
+          { entity_ref: { entity_kind: 'item', entity_id: 'item_1234567890abcdef' },
+            display_label: 'шерстяная одежда' },
           { entity_ref: { entity_kind: 'g4_directional_exit', entity_id: 'g4_exit_abcdef1234567890' },
             display_label: 'По руслу — выход 1' },
           { entity_ref: { entity_kind: 'g4_directional_exit', entity_id: 'g4_exit_1234567890abcdef' },
             display_label: 'Проход 3' },
-          'item_abcdefabcdefabcdef', { entity_ref: { entity_kind:
+          'плетёная корзина', { entity_ref: { entity_kind:
             'ambient_ordinary_capability', entity_id: 'ambient_abcdef1234567890' },
-          display_label: '', ambient_portion_bounds: { quantity_unit: 'item',
+          display_label: 'порция воды', ambient_portion_bounds: { quantity_unit: 'item',
             min_quantity: 1, max_quantity: 3, min_mass_grams: 200,
             max_mass_grams: 700 } } ],
           known_context: ['Вас зовут Микула.',
@@ -115,10 +118,15 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
       const providerUser = providerBody.messages[1].content;
       const payload = JSON.parse(providerUser);
       const wire = payload.request ?? payload;
+      assert.ok(Object.keys(wire.available_knowledge_refs)
+        .some(key => key.startsWith('wk:')));
+      assert.equal(identifyLlmTestRole(providerBody),
+        'world_knowledge_query_planner');
       assert.deepEqual(Object.keys(wire.available_knowledge_refs),
-        canonical.available_knowledge_refs.map((_, index) => `f${index.toString(36)}`));
+        canonical.available_knowledge_refs);
       assert.equal(Object.hasOwn(wire, 'schema'), false);
       assert.equal(Object.hasOwn(wire, 'pack_ref'), false);
+      assert.match(wire.situation_summary, /^Действующее лицо: кожевник$/mu);
       for (const [index, key] of Object.keys(wire.available_knowledge_refs).entries()) {
         const ref = canonical.available_knowledge_refs[index];
         assert.deepEqual(wire.available_knowledge_refs[key], {
@@ -143,13 +151,15 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
       assert.doesNotMatch(userText,
         /\b(?:male|adult|blond|wool|ochre|short_beard|braid|none|suspicious|medium|viewer|three_quarter|slightly_turned|neutral)\b/u);
       assert.doesNotMatch(userText, /Олег, Олег/u);
-      assert.match(userText, /Видимый предмет: предмет/u);
+      assert.match(userText, /Видимый предмет: кожаный мешок/u);
+      assert.match(userText, /Видимый предмет: шерстяная одежда/u);
+      assert.match(userText, /Видимый предмет: плетёная корзина/u);
+      assert.doesNotMatch(userText, /Видимый предмет: предмет(?:,|\n)/u);
       assert.match(userText, /Видимый предмет: По руслу/u);
       assert.match(userText, /Видимый предмет: проход/u);
       assert.doesNotMatch(userText, /выход 1|Проход 3/u);
-      assert.match(userText, /Видимый предмет: предмет, видимое количество: количество от 1 до 3 штук, масса от 200 до 700 г/u);
-      assert.doesNotMatch(userText, /item_1234567890abcdef/u);
-      assert.doesNotMatch(userText, /item_abcdefabcdefabcdef/u);
+      assert.match(userText, /Видимый предмет: порция воды, видимое количество: количество от 1 до 3 штук, масса от 200 до 700 г/u);
+      assert.doesNotMatch(userText, /item_1234567890abcdef|item_abcdefabcdefabcdef/u);
       assert.match(userText, /Вас зовут Микула\./u);
       for (const state of [
         'Одежда промокла насквозь.', 'Вас знобит.',
@@ -166,7 +176,7 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
         /focus_refs only from keys of request\.available_knowledge_refs/u);
       assert.deepEqual(repairPayload.original_output, {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
-        domains: ['unavailable-domain'], focus_refs: ['f0'],
+        domains: ['unavailable-domain'], focus_refs: [refs[256]],
         requested_predicates: [], search_hints: ['common rare']
       });
     }
@@ -180,7 +190,7 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
  }
 }
 
-test('normalization drops unknown opaque focus keys and keeps valid selections', async () => {
+test('normalization drops unavailable concept refs and keeps valid selections', async () => {
   const { bundle } = fixture('unknown-key');
   const calls = [];
   const queries = [];
@@ -197,8 +207,12 @@ test('normalization drops unknown opaque focus keys and keeps valid selections',
       } } },
     roleRunner: { async run(call) {
       calls.push(call);
+      const wire = JSON.parse(call.messages[1].content);
+      const request = wire.request ?? wire;
+      const availableRef = Object.keys(request.available_knowledge_refs)[0];
       const output = { schema: 'world_knowledge_query_plan_v1',
-        query_locale: 'en', domains: ['material'], focus_refs: ['f0', 'f-unknown'],
+        query_locale: 'en', domains: ['material'],
+        focus_refs: [availableRef, 'wk:unavailable:concept'],
         requested_predicates: [], search_hints: ['common rare'] };
       return { output };
     } }
@@ -235,22 +249,113 @@ test('production WK payload preserves visible fabric and item condition on main 
       repairPath });
     const linen = await captureSituationSummary({ fabric: 'light_linen', status: 'serviceable',
       repairPath });
-    const broken = await captureSituationSummary({ fabric: 'wool', status: 'broken',
+    const damaged = await captureSituationSummary({ fabric: 'wool', status: 'damaged',
       repairPath });
     assert.match(wool.main, /верхняя одежда из шерсти/u);
     assert.match(linen.main, /верхняя одежда из льна/u);
-    assert.match(wool.main, /лодка, исправное состояние/u);
-    assert.match(broken.main, /лодка, сломанное состояние/u);
+    assert.match(wool.main, /При вас: лодка/u);
+    assert.match(wool.main, /Состояние вещи «лодка»: исправное состояние\./u);
+    assert.match(damaged.main, /При вас: лодка/u);
+    assert.match(damaged.main, /Состояние вещи «лодка»: повреждённое состояние\./u);
     assert.notEqual(wool.main, linen.main);
-    assert.notEqual(wool.main, broken.main);
-    for (const capture of [wool, linen, broken]) {
-      assert.doesNotMatch(capture.main, /\b(?:wool|light_linen|serviceable|broken)\b|weather_state_id|wx_clear/u);
+    assert.notEqual(wool.main, damaged.main);
+    for (const capture of [wool, linen, damaged]) {
+      assert.doesNotMatch(capture.main, /\b(?:wool|light_linen|serviceable|damaged)\b|weather_state_id|wx_clear/u);
       if (repairPath) assert.equal(capture.main, capture.repair);
     }
   }
 });
 
-async function captureSituationSummary({ fabric, status, repairPath }) {
+test('synchronized item condition and environment reach WK after scene rebuild', async () => {
+  const current = withLowerDvinaTraceCurrentScene({ committedState: {
+    actor_id: 'player', position: { location_ref: 'shore' }, items: [{
+      item_id: 'boat', name: 'лодка', condition_state: 'damaged',
+      placement: { location_ref: 'shore' }
+    }], current_visible_context: {
+      version: 1, schema: 'visible_context_package', visible_scene: 'берег',
+      visible_changes: ['Лето.', 'Небо ясное.'], sensory_details: [],
+      visible_npc: [], visible_objects: [], known_context: [],
+      uncertainties: [], allowed_tensions: [], do_not_imply: []
+    }, environment_snapshot: { schema: 'rus.approved_initial_environment.v1',
+      season: 'autumn', day_part: 'evening', light_state: 'dark',
+      weather_state: { sky: 'overcast', precipitation: 'rain',
+        visibility: 'reduced', wind: 'strong' } }
+  }, locationProfiles: [{ location_profile_id: 'shore',
+    display_name: 'Берег', player_visible_physical_facts: [] }] })
+    .current_visible_context;
+
+  for (const repairPath of [false, true]) {
+    const capture = await captureSituationSummary({ fabric: 'wool',
+      status: 'при вас', repairPath, visibleContext: current,
+      visibleItems: [{ item_id: 'boat', condition_state: 'damaged' }] });
+    assert.match(capture.main, /Идёт дождь\./u);
+    assert.match(capture.main, /лодка/u);
+    assert.match(capture.main, /Состояние вещи «лодка»: повреждённое состояние\./u);
+    if (repairPath) {
+      assert.match(capture.repair, /Идёт дождь\./u);
+      assert.match(capture.repair, /Состояние вещи «лодка»: повреждённое состояние\./u);
+    }
+  }
+});
+
+test('visible item label_gap is omitted while supplied uncertainty stays separate', async () => {
+  const capture = await captureSituationSummary({ fabric: 'wool',
+    status: 'serviceable', itemLabel: null, labelGap: true,
+    uncertainties: ['Наблюдение ещё не дало результата.'] });
+  assert.match(capture.main, /Неясности: Наблюдение ещё не дало результата\./u);
+  assert.doesNotMatch(capture.main,
+    /Видимый предмет:|boat-visible|предмет, исправное состояние/u);
+});
+
+test('WK provider payload omits structural label gap without making a scene uncertainty', async () => {
+  const capture = await captureSituationSummary({ fabric: 'wool',
+    status: 'serviceable', itemLabel: null, labelGap: true,
+    repairPath: true, uncertainties: [] });
+  assert.doesNotMatch(`${capture.main}\n${capture.repair}`,
+    /Видны вещи, названия которых пока не удалось установить|label_gap|boat-visible|player_safe_item_label_required|Видимый предмет:/u);
+});
+
+test('unmarked visible item without a safe name retains its typed projection gap', async () => {
+  for (const itemLabel of ['предмет', 'item_template_123']) {
+    await assert.rejects(captureSituationSummary({ fabric: 'wool',
+      status: 'serviceable', itemLabel }), error =>
+      error.code === 'WORLD_KNOWLEDGE_VISIBLE_ENTITY_LABEL_GAP');
+  }
+});
+
+test('WK main and repair receive the same player-safe environment text as opening', async () => {
+  const screen = { version: 1, schema: 'first_game_screen',
+    screen_status: 'ready', party_id: 'party', main_prose: 'Старт.',
+    visible_context: { place: 'берег', environment: { facts: [] } } };
+  const weatherState = { weather_state_id: 'dense_fog', sky: 'obscured',
+    precipitation: 'none', visibility: 'poor', wind: 'calm_or_light' };
+  const visible = phase2InitialCurrentVisibleContext({ screen,
+    openingScreenDigest: canonicalDigest(screen), initialState: {
+      actor_id: 'player', position: { g5_anchor_id: 'anchor' },
+      environment_snapshot: { schema: 'rus.approved_initial_environment.v1',
+        season: 'summer', day_part: 'civil_dawn', light_state: 'civil_dawn',
+        weather_state: weatherState }, items: [] } });
+  const expected = ['Лето.', 'Рассвет.', 'Светает.', 'Небо не видно.',
+    'Осадков нет.', 'Видимость плохая.', 'Ветер отсутствует или слабый.'];
+  assert.deepEqual(visible.visible_changes, expected);
+  assert.doesNotMatch(JSON.stringify(visible.visible_changes),
+    /weather_state_id|dense_fog|obscured|weather_state/u);
+  for (const repairPath of [false, true]) {
+    const capture = await captureSituationSummary({ fabric: 'wool',
+      status: 'serviceable', repairPath,
+      visibleChanges: visible.visible_changes });
+    for (const text of expected) {
+      assert.ok(capture.main.includes(text), text);
+      if (repairPath) assert.ok(capture.repair.includes(text), text);
+    }
+  }
+});
+
+async function captureSituationSummary({ fabric, status, repairPath,
+  visibleChanges = [], itemLabel = 'лодка', actorRole = null,
+  labelGap = false, uncertainties = [], visibleContext = null,
+  visibleItems = ['serviceable', 'damaged'].includes(status)
+    ? [{ item_id: 'boat-visible', condition_state: status }] : [] }) {
   const { bundle } = fixture('sample');
   const calls = [];
   const grounder = createProductionWorldKnowledgeGrounder({
@@ -276,17 +381,24 @@ async function captureSituationSummary({ fabric, status, repairPath }) {
         ? { ...plan, domains: ['unavailable-domain'] } : plan };
     } }
   });
-  const context = { version: 1, schema: 'visible_context_package',
-    visible_scene: 'У берега.', visible_changes: [], sensory_details: [],
+  const context = visibleContext ?? { version: 1, schema: 'visible_context_package',
+    visible_scene: 'У берега.', visible_changes: visibleChanges,
+    sensory_details: [],
     visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc-visible' },
       display_label: 'рыбак', recognition: 'known',
       observable_cues: npcCues(fabric, 'ochre') }],
     visible_objects: [{ entity_ref: { entity_kind: 'item', entity_id: 'boat-visible' },
-      display_label: 'лодка', visible_status: status }],
-    known_context: [], uncertainties: [] };
+      ...(labelGap ? { label_gap: {
+        code: 'player_safe_item_label_required' } } : {}),
+      ...(itemLabel == null ? {} : { display_label: itemLabel }),
+      visible_status: ['serviceable', 'damaged'].includes(status)
+        ? 'при вас' : status }],
+    known_context: [], uncertainties };
+  const playerSafeState = { actor_id: 'player_character_abcdef1234567890',
+    position: {}, current_visible_context: context, items: visibleItems };
+  if (typeof actorRole === 'string') playerSafeState.actor_role = actorRole;
   await grounder.ground({ input_locale: 'en', remaining_intent: 'common rare',
-    player_safe_state: { actor_id: 'player-visible', position: {},
-      current_visible_context: context } }, 'semantic_resolution');
+    player_safe_state: playerSafeState }, 'semantic_resolution');
   assert.equal(calls.length, repairPath ? 2 : 1);
   const config = { model: 'qwen3.8-27b-uncensored-w4a16-tp2', maxTokens: 20000,
     responseFormat: { type: 'json_object' }, compatibility: 'openai_compatible',
@@ -299,6 +411,18 @@ async function captureSituationSummary({ fabric, status, repairPath }) {
     : null;
   return { main, repair };
 }
+
+test('WK projection includes safe actor role on main and repair; omits actor ID when role absent', async () => {
+  const labeled = await captureSituationSummary({ fabric: 'wool',
+    status: 'serviceable', repairPath: true, actorRole: 'кожевник' });
+  assert.match(labeled.main, /^Действующее лицо: кожевник$/mu);
+  assert.match(labeled.repair, /^Действующее лицо: кожевник$/mu);
+
+  const unlabeled = await captureSituationSummary({ fabric: 'wool',
+    status: 'serviceable', repairPath: true });
+  assert.doesNotMatch(`${unlabeled.main}\n${unlabeled.repair}`,
+    /Действующее лицо:|player_character_abcdef1234567890/u);
+});
 
 function fixture(prefix) {
   const refs = Array.from({ length: 257 }, (_, i) => `wk:${prefix}:${String(i).padStart(3, '0')}`);

@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { buildProviderRequestPayload } from
+  '../../../packages/llm-runtime/src/provider-request.js';
 import {
   requestTurnStepPlan,
   validateTurnStepPlan
@@ -8,6 +10,10 @@ import { assembleTurnStepPlan, createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
+import { groundingState } from
+  '../src/runtime/lower-dvina-trace-turn-step-grounding-rules.js';
+import { projectTurnStepModelRequest } from
+  '../src/runtime/lower-dvina-trace-turn-step-model-projection.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
 function promptMappings(prompt) {
@@ -23,6 +29,53 @@ function normalizePromptPlaceholders(value) {
       normalizePromptPlaceholders(child)]));
   return value;
 }
+
+test('turn-step item projection excludes only rows linked to typed label gaps', () => {
+  const gapItem = { item_id: 'gap-item', instance_id: 'gap-instance',
+    name: 'SECRET_GAP_NAME' };
+  const unnamedWithoutGap = { item_id: 'ordinary-item', name: null };
+  const namedItem = { item_id: 'named-item', name: 'сосновое весло' };
+  const projected = projectTurnStepModelRequest(request({ player_safe_state: {
+    items: [gapItem, unnamedWithoutGap, namedItem],
+    inventory: { items: ['gap-item', 'ordinary-item', 'named-item'] },
+    current_visible_context: { visible_objects: [{ entity_ref: {
+      entity_kind: 'item', entity_id: 'gap-instance' },
+    label_gap: { code: 'player_safe_item_label_required' } }] }
+  } })).request;
+
+  assert.deepEqual(projected.player_safe_state.items,
+    [unnamedWithoutGap, namedItem]);
+  assert.deepEqual(projected.player_safe_state.inventory.items,
+    ['ordinary-item', 'named-item']);
+});
+
+test('gap scrubbing is reference-typed, filters target refs, and preserves matching facts', () => {
+  const fact = 'Деревянный.';
+  const projected = projectTurnStepModelRequest(request({
+    root_player_action: 'Осматриваю берег.',
+    player_safe_state: {
+      items: [{ item_id: 'gap-item', instance_id: 'gap-instance',
+        name: 'SECRET_GAP', physical_facts: [fact] },
+      { item_id: 'named-item', name: 'весло', physical_facts: [fact] }],
+      current_visible_context: { sensory_details: [fact], visible_objects: [
+        { entity_ref: { entity_kind: 'item', entity_id: 'gap-instance' },
+          label_gap: { code: 'player_safe_item_label_required' } },
+        { entity_ref: { entity_kind: 'item', entity_id: 'named-item' },
+          display_label: 'весло' }],
+        ordinary_resolution: { target_refs: ['gap-instance', 'named-item'] }
+      }
+    }
+  })).request;
+
+  assert.deepEqual(projected.player_safe_state.items,
+    [{ item_id: 'named-item', name: 'весло', physical_facts: [fact] }]);
+  assert.deepEqual(projected.player_safe_state.current_visible_context
+    .sensory_details, [fact]);
+  assert.deepEqual(projected.player_safe_state.current_visible_context
+    .visible_objects.map(({ entity_ref: ref }) => ref.entity_id), ['named-item']);
+  assert.deepEqual(projected.player_safe_state.current_visible_context
+    .ordinary_resolution.target_refs, ['named-item']);
+});
 
 function worldKnowledgeSlice(facts) {
   return { schema: 'world_knowledge_slice_v1', pack_ref: 'wk-pack:test',
@@ -88,6 +141,238 @@ test('planner assembly admits only a World Knowledge-supported assessment', () =
   const currentObservation = assembleTurnStepPlan({ ...semantic,
     assessment: undefined }, grounded);
   assert.equal(Object.hasOwn(currentObservation, 'assessment'), false);
+});
+
+test('visible item label gap is scrubbed before grounding and kept out of main/repair payloads', async () => {
+  const base = request();
+  const input = { ...base, player_safe_state: {
+    ...base.player_safe_state,
+    items: [
+      { item_id: 'opaque-item-ref', instance_id: 'private-gap-instance',
+        template_id: 'private-gap-template', name: 'SECRET_GAP_ITEM_NAME',
+        physical_facts: ['GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_MODEL.'] },
+      { item_id: 'named-visible-item', instance_id: 'named-instance',
+        template_id: 'named-template', name: 'сосновое весло',
+        physical_facts: ['NAMED_ITEM_PHYSICAL_FACT_REMAINS_VISIBLE.'] }
+    ],
+    inventory: { items: ['opaque-item-ref', {
+      item_id: 'inventory-item-alias', instance_id: 'private-gap-instance',
+      name: 'SECRET_INVENTORY_GAP_ALIAS'
+    }, { item_id: 'named-visible-item', name: 'сосновое весло' }] },
+    current_visible_context: { visible_objects: [{ entity_ref: {
+      entity_kind: 'item', entity_id: 'private-gap-instance' },
+      label_gap: { code: 'player_safe_item_label_required' } }], uncertainties: [] }
+  }, prepared_followup_candidates: [
+    { prepared_followup_ref: 'followup:gap', precursor_operation: {
+      op: 'move_entity', entity_ref: 'private-gap-instance',
+      description: 'GAP_FOLLOWUP_DESCRIPTION_MUST_NOT_REACH_MODEL'
+    }, operation: { op: 'request_item_use', item_ref: 'opaque-item-ref' } },
+    { prepared_followup_ref: 'followup:named', precursor_operation: {
+      op: 'move_entity', entity_ref: 'named-visible-item'
+    }, operation: { op: 'request_item_use', item_ref: 'named-visible-item',
+      description: 'сосновое весло' } }
+  ] };
+  const calls = [];
+  const groundingRequests = [];
+  const model = createLowerDvinaTraceTurnStepModel({
+    worldKnowledgeGrounder: { async ground(safeRequest) {
+      groundingRequests.push(safeRequest);
+      return { ...safeRequest, world_knowledge: worldKnowledgeSlice([
+        { claim_ref: 'wk:named-support', domain: 'craft_technology',
+          runtime_text: 'NAMED_WORLD_KNOWLEDGE_SUPPORT_REMAINS.' }
+      ]) };
+    } },
+    roleRunner: { async run(call) {
+      calls.push(call);
+      if (call.role_id === 'turn_step_grounding_auditor') return { output: {
+        mode: 'unsupported', support_refs: []
+      } };
+      return { output: output() };
+    } }
+  });
+  const plan = await model(input);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  assert.equal(groundingRequests.length, 1);
+  assert.deepEqual(groundingRequests[0].player_safe_state.current_visible_context
+    .visible_objects, []);
+  assert.deepEqual(groundingRequests[0].player_safe_state.items,
+    [input.player_safe_state.items[1]]);
+  assert.deepEqual(groundingRequests[0].player_safe_state.inventory.items,
+    [input.player_safe_state.inventory.items[2]]);
+  const plannerCall = calls.find(({ role_id }) => role_id === 'turn_step_planner');
+  assert.ok(plannerCall);
+  const providerPayload = buildProviderRequestPayload({
+    model: 'qwen3.8-27b-uncensored-w4a16-tp2', maxTokens: 20_000,
+    responseFormat: { type: 'json_object' },
+    compatibility: 'openai_compatible', thinking: { type: 'disabled' },
+    temperature: 0, topP: 1
+  }, plannerCall.messages);
+  const plannerInput = JSON.parse(providerPayload.messages[1].content);
+  assert.equal(plannerInput.actor.actor_id, input.actor.actor_id);
+  assert.equal(plannerInput.player_safe_state.actor_id,
+    input.player_safe_state.actor_id);
+  assert.equal(plannerInput.world_knowledge.facts[0].claim_ref,
+    'wk:named-support');
+  assert.match(providerPayload.messages[1].content,
+    /NAMED_WORLD_KNOWLEDGE_SUPPORT_REMAINS/u);
+  assert.deepEqual(plannerInput.player_safe_state.current_visible_context
+    .uncertainties, []);
+  assert.deepEqual(plannerInput.player_safe_state.current_visible_context
+    .visible_objects, []);
+  assert.deepEqual(plannerInput.player_safe_state.items,
+    [input.player_safe_state.items[1]]);
+  assert.match(providerPayload.messages[1].content,
+    /named-visible-item|NAMED_ITEM_PHYSICAL_FACT_REMAINS_VISIBLE/u);
+  const gapSecrets = /opaque-item-ref|inventory-item-alias|private-gap-instance|private-gap-template|SECRET_GAP_ITEM_NAME|SECRET_INVENTORY_GAP_ALIAS|GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_MODEL|GAP_FOLLOWUP_DESCRIPTION_MUST_NOT_REACH_MODEL|followup:gap|label_gap|player_safe_item_label_required|Видны вещи, названия которых пока не удалось установить/u;
+  assert.match(JSON.stringify(plannerCall.messages), /followup:named/u);
+  assert.deepEqual([...JSON.stringify(plannerCall.messages).matchAll(
+    new RegExp(gapSecrets.source, 'gu'))].map(([match]) => match), []);
+
+  calls.length = 0;
+  await model(input, { original_output: { rejected: true },
+    structural_errors: [{ path: '$.operations', code: 'operation_semantic_grounding',
+      rejected_operation: { op: 'move_entity', entity_ref: 'opaque-item-ref',
+        description: 'GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_MODEL' } }] });
+  assert.equal(groundingRequests.length, 2);
+  const repairCall = calls.find(({ role_id }) =>
+    role_id === 'turn_step_planner_repair');
+  assert.ok(repairCall);
+  const repairPayload = buildProviderRequestPayload({
+    model: 'qwen3.8-27b-uncensored-w4a16-tp2', maxTokens: 20_000,
+    responseFormat: { type: 'json_object' },
+    compatibility: 'openai_compatible', thinking: { type: 'disabled' },
+    temperature: 0, topP: 1
+  }, repairCall.messages);
+  const repairInput = JSON.parse(repairPayload.messages[1].content).request;
+  assert.deepEqual(repairInput.player_safe_state.current_visible_context
+    .uncertainties, []);
+  assert.deepEqual(repairInput.player_safe_state.current_visible_context
+    .visible_objects, []);
+  assert.equal(repairInput.world_knowledge.facts[0].claim_ref,
+    'wk:named-support');
+  assert.deepEqual(repairInput.player_safe_state.items,
+    [input.player_safe_state.items[1]]);
+  assert.match(JSON.stringify(repairCall.messages),
+    /named-visible-item|NAMED_ITEM_PHYSICAL_FACT_REMAINS_VISIBLE|NAMED_WORLD_KNOWLEDGE_SUPPORT_REMAINS/u);
+  assert.deepEqual([...JSON.stringify(repairCall.messages).matchAll(
+    new RegExp(gapSecrets.source, 'gu'))].map(([match]) => match), [],
+  JSON.stringify(repairCall.messages.map(({ role, content }) => ({ role,
+    leaked: content.includes('GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_MODEL'),
+    gapMarker: content.includes('player_safe_item_label_required') }))));
+  assert.match(JSON.stringify(repairCall.messages), /followup:named/u);
+  assert.equal(input.player_safe_state.items.length, 2);
+  assert.deepEqual(input.player_safe_state.inventory.items, ['opaque-item-ref', {
+    item_id: 'inventory-item-alias', instance_id: 'private-gap-instance',
+    name: 'SECRET_INVENTORY_GAP_ALIAS'
+  }, { item_id: 'named-visible-item', name: 'сосновое весло' }]);
+});
+
+test('grounder failures propagate after typed item gaps are scrubbed', async () => {
+  const base = request();
+  const error = Object.assign(new Error('item label gap'), {
+    code: 'WORLD_KNOWLEDGE_VISIBLE_ENTITY_LABEL_GAP',
+    details: { entity_kind: 'item' }
+  });
+  const typedGapModel = createLowerDvinaTraceTurnStepModel({
+    worldKnowledgeGrounder: { async ground() { throw error; } },
+    roleRunner: { async run() { return { output: output() }; } }
+  });
+  await assert.rejects(typedGapModel(base), error);
+
+  const unavailable = Object.assign(new Error('WK unavailable'), {
+    code: 'WORLD_KNOWLEDGE_UNAVAILABLE'
+  });
+  const unavailableModel = createLowerDvinaTraceTurnStepModel({
+    worldKnowledgeGrounder: { async ground() { throw unavailable; } },
+    roleRunner: { async run() { throw new Error('turn planner must not run'); } }
+  });
+  await assert.rejects(unavailableModel(base), unavailable);
+});
+
+test('turn-step planner rejects gap-linked output before follow-on corrections', async () => {
+  const base = request();
+  const input = { ...base, player_safe_state: {
+    ...base.player_safe_state,
+    items: [{ item_id: 'opaque-item-ref', instance_id: 'private-gap-instance',
+      name: 'SECRET_GAP_ITEM_NAME',
+      physical_facts: ['GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_MODEL'] }],
+    current_visible_context: { visible_objects: [{ entity_ref: {
+      entity_kind: 'item', entity_id: 'private-gap-instance' },
+      label_gap: { code: 'player_safe_item_label_required' } }] }
+  } };
+  const calls = [];
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      calls.push(call);
+      return { output: { ...output(), operations: [{ op: 'request_item_use',
+        item_ref: 'opaque-item-ref' }] } };
+    } }
+  });
+  await assert.rejects(model(input), (error) => {
+    assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+    assert.equal(error.details.errors[0].code, 'operation_semantic_grounding');
+    return true;
+  });
+  assert.equal(calls.length, 1, 'hidden item data must be rejected before another model call');
+});
+
+test('turn-step planner rejects guessed hidden prepared follow-up refs before assembly',
+  async () => {
+    const base = request();
+    const input = { ...base, player_safe_state: {
+      ...base.player_safe_state,
+      items: [{ item_id: 'opaque-item-ref', instance_id: 'private-gap-instance',
+        name: 'SECRET_GAP_ITEM_NAME' }],
+      current_visible_context: { visible_objects: [{ entity_ref: {
+        entity_kind: 'item', entity_id: 'private-gap-instance' },
+        label_gap: { code: 'player_safe_item_label_required' } }] }
+    }, prepared_followup_candidates: [{
+      prepared_followup_ref: 'followup:hidden',
+      precursor_operation: { op: 'move_entity', entity_ref: 'private-gap-instance' },
+      operation: { op: 'request_item_use', item_ref: 'opaque-item-ref' }
+    }] };
+    const calls = [];
+    const model = createLowerDvinaTraceTurnStepModel({
+      roleRunner: { async run(call) {
+        calls.push(call);
+        assert.doesNotMatch(call.messages[1].content, /followup:hidden/u);
+        return { output: { ...output(), continuation: {
+          remaining_intent: 'затем использовать вещь', depends_on_refs: [],
+          prepared_followup_ref: 'followup:hidden'
+        } } };
+      } }
+    });
+
+    await assert.rejects(model(input), (error) => {
+      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+      assert.equal(error.details.errors[0].code,
+        'prepared_followup_not_in_projected_allowlist');
+      assert.equal(error.details.errors[0].path,
+        '$.continuation.prepared_followup_ref');
+      return true;
+    });
+    assert.equal(calls.length, 1, 'hidden candidate must fail before follow-on calls');
+  });
+
+test('turn-step grounding auditor state uses the same typed item-gap projection', () => {
+  const base = request();
+  const state = { ...base.player_safe_state,
+    items: [{ item_id: 'opaque-item-ref', instance_id: 'private-gap-instance',
+      name: 'SECRET_GAP_ITEM_NAME', physical_facts: ['GAP_ITEM_FACT'] },
+    { item_id: 'named-visible-item', name: 'сосновое весло' }],
+    inventory: { items: ['opaque-item-ref',
+      'named-visible-item'] },
+    current_visible_context: { visible_objects: [{ entity_ref: {
+      entity_kind: 'item', entity_id: 'private-gap-instance' },
+      label_gap: { code: 'player_safe_item_label_required' } }], uncertainties: [] }
+  };
+  const projected = groundingState(state);
+  assert.deepEqual(projected.current_visible_context.visible_objects, []);
+  assert.deepEqual(projected.items, [{ item_id: 'named-visible-item',
+    name: 'сосновое весло' }]);
+  assert.deepEqual(projected.inventory.items, ['named-visible-item']);
+  assert.doesNotMatch(JSON.stringify(projected),
+    /opaque-item-ref|inventory-item-alias|private-gap-instance|SECRET_GAP_ITEM_NAME|GAP_ITEM_FACT|label_gap/u);
 });
 
 test('planner assembly preserves resolved ownerless speech for quoted and unquoted input', () => {

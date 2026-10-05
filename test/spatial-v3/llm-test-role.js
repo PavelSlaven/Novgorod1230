@@ -52,7 +52,8 @@ function isProjectedWorldKnowledgeRequest(request) {
     && Array.isArray(request.allowed_domains)
     && request.allowed_domains.every((value) => typeof value === 'string')
     && refs != null && typeof refs === 'object' && !Array.isArray(refs)
-    && Object.entries(refs).every(([key, value]) => /^f[0-9a-z]+$/u.test(key)
+    && Object.entries(refs).every(([key, value]) =>
+      /^(?:f[0-9a-z]+|wk:[a-z0-9_-]+:[a-z0-9_-]+)$/u.test(key)
       && value != null && typeof value === 'object' && !Array.isArray(value)
       && Array.isArray(value.domains)
       && value.domains.every((domain) => typeof domain === 'string')

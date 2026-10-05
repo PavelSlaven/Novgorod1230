@@ -50,7 +50,7 @@ test('production grounding plans once and injects only an applicable bounded sli
       const fishFocusKey = Object.entries(
         plannerRequest.available_knowledge_refs
       ).find(([, metadata]) => metadata.label.includes('рыбных ресурсов'))?.[0];
-      assert.ok(fishFocusKey, 'request exposes a matching opaque focus key');
+      assert.ok(fishFocusKey, 'request exposes a matching focus key');
       return { output: {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: ['environment'],
@@ -102,22 +102,23 @@ test('production grounding plans once and injects only an applicable bounded sli
   const canonicalFocusRefs = gameplayTraces[0].planner_request
     .available_knowledge_refs;
   const wireKeys = Object.keys(owners);
-  assert.deepEqual(wireKeys,
-    canonicalFocusRefs.map((_, index) => `f${index.toString(36)}`));
+  assert.deepEqual(wireKeys, canonicalFocusRefs.map((ref, index) =>
+    worldKnowledge.bundle.concepts.some(concept =>
+      concept.concept_ref === ref) ? ref : `f${index.toString(36)}`));
   const fishFocusKey = Object.keys(owners).find(key =>
     owners[key].label.includes('рыбных ресурсов'));
   assert.equal(canonicalFocusRefs[wireKeys.indexOf(fishFocusKey)],
     'wk:environment:regional-fish-exploitation');
-  assert.match(fishFocusKey, /^f[0-9a-z]+$/u);
+  assert.equal(fishFocusKey, 'wk:environment:regional-fish-exploitation');
   assert.deepEqual(owners[fishFocusKey], {
     domains: ['environment'],
     label: 'Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода',
     description: 'Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода; это не устанавливает вид, запас, доступ, сезон или улов в сцене.'
   });
   assert.ok(Object.keys(owners).length <= 256);
-  assert.ok(Object.keys(owners).every(key => /^f[0-9a-z]+$/u.test(key)));
-  assert.doesNotMatch(JSON.stringify(plannerRequest),
-    /wk:environment:regional-fish-exploitation/u);
+  assert.ok(Object.keys(owners).every(key =>
+    /^wk:[a-z0-9_-]+:[a-z0-9_-]+$/u.test(key)
+      || /^f[0-9a-z]+$/u.test(key)));
   assert.equal(first, second);
   assert.equal(Object.hasOwn(request, 'world_knowledge'), false);
   assert.equal(first.world_knowledge.pack_revision, 'revision:production-v2');

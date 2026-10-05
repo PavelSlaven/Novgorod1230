@@ -115,6 +115,8 @@
 | 125 | `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js`, `packages/npc-runtime`, `apps/game-server/src/runtime/npc-routine-temporal.js` | typed gap при first-entry может потерять D-1 schedule context и не получить следующую календарную переоценку | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 126 | `packages/time-events-history/src/calendar.js`, `packages/npc-runtime/src/routine-schedule.js` | month-boundary D-1 applicability остаётся отложенной; leap-day учёт в календаре исправлен | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
+| 128 | `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, Lower Dvina phase-5 placed item templates | шесть видимых шаблонов не имеют утверждённой player-safe подписи; runtime обязан сохранять typed gap | — |
+| 129 | `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` | item/inventory rows с typed label gap временно скрыты от planner вопреки §7.2 | [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -686,3 +688,15 @@
 - **Что.** Если когда-либо утверждённый набор расписаний даст одному NPC два завершённых `movement_handoff` в одном temporal window, адаптер берёт placement CAS из evolving `row.npc_placement.state_version`: фрагменты ожидают версии `[1, 2]`, хотя в БД до коммита есть только версия `1`. Общая temporal integration отвергнет такой план. В проверенных 161 утверждённых D-1 правилах `movement_handoff` нет; это отложенный риск, не текущий путь данных.
 - **Как жить.** Не включать такой набор расписаний без регрессии двух смен позиции в одном окне. Перед включением привязать все placement CAS фрагменты к исходному persisted `entity_placements` snapshot того же temporal window и сохранить одну итоговую запись версии.
 - **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)
+
+### LW-128 — шесть шаблонов вещей крушения ждут утверждённых подписей (prompt-rev-turn)
+- **Где.** `data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/item-container-set.json` (`placement_slot_ref`), resolver `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, current-visible/WK/narrator/screen projections.
+- **Что.** `trace_ld_v1_item_blue_wool_fragment`, `trace_ld_v1_item_cut_bag_fastening`, `trace_ld_v1_item_persistent_debris`, `trace_ld_v1_item_broken_oar`, `trace_ld_v1_item_side_collision_trace` и `trace_ld_v1_item_hidden_trunk_trace` стоят в сцене и могут быть осмотрены, но у них пока нет утверждённого имени. Сценовые наблюдения не являются стабильными подписями вещей.
+- **Как жить.** Не придумывать имя или категорию и не терять сам видимый объект: сохранять typed `player_safe_item_label_required` gap; исключать только его текстовую строку и продолжать показ остальных вещей. Тест данных перечисляет ровно эти шесть известных gaps и падает на новом. Закрыть запись после отдельного data-owner утверждения подписей и снятия соответствующих исключений.
+- **Issue.** Отдельную задачу данных создаёт владелец проекта.
+
+### LW-129 — typed-gap вещи временно исключены из turn-step model inventory (prompt-rev-turn)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` проецирует `items` и `inventory.items` в planner/auditor payload.
+- **Что.** До закрытия #236 typed `player_safe_item_label_required` строки не попадают в модельный инвентарь, вопреки полному текущему инвентарю в `turn_step_llm_contract.md` §7.2. Это временное исключение A-05-02; решение D92 требует утверждённое точное имя или русское название общей категории для каждой материализуемой вещи. По данным v17/Lower Dvina реальных gap в инвентаре нет.
+- **Как жить.** Исключать только item rows, связанные с точной typed label-gap строкой; сохранять named и остальные item rows, факты и World Knowledge. Не добавлять opaque inventory keys. Удалить исключение после закрытия #236 и снятия gap у вещей.
+- **Issue.** [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236); разрешено A-prompt-rev-turn-04, временное исключение A-05-02.

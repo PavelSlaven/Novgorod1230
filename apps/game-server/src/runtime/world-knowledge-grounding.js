@@ -5,7 +5,8 @@ import { localeOf, semanticInputOf, situationSummaryOf, actorFacetsOf,
 } from './world-knowledge-request-context.js';
 import { WorldKnowledgeError, candidateWorldKnowledgeFocusRefs,
   isApplicable, canAccess } from '@rus/world-knowledge';
-import { playerSafeItemConditionLabel } from '@rus/items-property';
+import { playerSafeItemConditionLabel, resolvePhysicalItemCondition } from
+  '@rus/items-property';
 import { retrievalObservabilityOf } from './world-knowledge-retrieval-observability.js';
 import { playerSafeAppearanceSummary } from
   './player-safe-appearance-summary.js';
@@ -99,7 +100,9 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         request: plannerRequest, bundle,
         plannerModel: async (input, repair) => {
           const result = await runPlanner(roleRunner, input, repair, bundle,
-            { purpose, context, visibleSituation });
+            { purpose, context, visibleSituation,
+              actorRole: request.player_safe_state?.actor_role,
+              visibleItems: request.player_safe_state?.items });
           plannerCalls.push(result.provider_record ?? null);
           return result.output;
         } });
@@ -364,12 +367,13 @@ function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
   }));
 }
 async function runPlanner(roleRunner, request, repair, bundle,
-  { purpose = null, context = null, visibleSituation = null } = {}) {
+  { purpose = null, context = null, visibleSituation = null,
+    actorRole = null, visibleItems = [] } = {}) {
   const claims = new Map(bundle.claims.map((claim) => [claim.claim_ref, claim]));
   const concepts = new Map(bundle.concepts.map(concept =>
     [concept.concept_ref, concept]));
-  const focusKeys = new Map(request.available_knowledge_refs
-    .map((ref, index) => [ref, `f${index.toString(36)}`]));
+  const focusKeys = plannerFocusKeyMaps(request.available_knowledge_refs,
+    bundle.concepts).refToKey;
   const focusMetadata = Object.fromEntries(request.available_knowledge_refs
     .map(ref => {
       const localization = concepts.get(ref)?.localizations?.[request.input_locale];
@@ -398,16 +402,17 @@ async function runPlanner(roleRunner, request, repair, bundle,
         description: localization?.short_definition ?? ''
       }];
     }));
-  const keyFocus = new Map([...focusKeys].map(([ref, key]) => [key, ref]));
   const wireRequest = {
     purpose: request.purpose,
     input_locale: request.input_locale,
     semantic_input: request.semantic_input,
-    situation_summary: playerSituationText(visibleSituation),
+    situation_summary: playerSituationText(visibleSituation, actorRole,
+      visibleItems),
     allowed_domains: request.allowed_domains,
     available_knowledge_refs: focusMetadata,
     planner_limits: request.planner_limits
   };
+  const keyFocus = new Map([...focusKeys].map(([ref, key]) => [key, ref]));
   const wireRepair = repair == null ? null : {
     original_output: plannerOutputForWire(repair.original_output, focusKeys),
     structural_errors: repair.structural_errors.map(error =>
@@ -450,9 +455,8 @@ async function runPlanner(roleRunner, request, repair, bundle,
   });
   if (!plain(response?.output)
       || !Array.isArray(response.output.focus_refs)) return response;
-  const focusRefs = response.output.focus_refs;
   return { ...response, output: { ...response.output,
-    focus_refs: focusRefs.map(key => keyFocus.get(key) ?? key) } };
+    focus_refs: response.output.focus_refs.map(key => keyFocus.get(key) ?? key) } };
 }
 
 export function plannerOutputForWire(output, focusKeys) {
@@ -465,10 +469,24 @@ export function maskFocusRefs(error, focusKeys) {
   if (typeof error !== 'string') return error;
   let result = error;
   for (const [ref, key] of [...focusKeys]
+    .filter(([ref, alias]) => ref !== alias)
     .sort(([left], [right]) => right.length - left.length)) {
     result = result.replaceAll(JSON.stringify(ref), JSON.stringify(key));
   }
   return result;
+}
+
+/** Concept refs remain meaningful menu keys; non-concept refs stay opaque. */
+export function plannerFocusKeyMaps(availableRefs, canonicalConcepts) {
+  const conceptRefs = new Set((Array.isArray(canonicalConcepts)
+    ? canonicalConcepts : []).map(concept => concept?.concept_ref)
+    .filter(ref => typeof ref === 'string'));
+  const refs = [...new Set((Array.isArray(availableRefs) ? availableRefs : [])
+    .filter(ref => typeof ref === 'string'))];
+  const refToKey = new Map(refs.map((ref, index) => [ref,
+    conceptRefs.has(ref) ? ref : `f${index.toString(36)}`]));
+  const keyToRef = new Map([...refToKey].map(([ref, key]) => [key, ref]));
+  return { refToKey, keyToRef };
 }
 
 function situationContextOf(request, authoritative) {
@@ -490,7 +508,7 @@ const BODY_STATE_TEXT = Object.freeze({
   shoulder_bruise: 'Ушибленное плечо ноет.'
 });
 
-function playerSituationText(visible) {
+function playerSituationText(visible, actorRole = null, visibleItems = []) {
   if (!plain(visible)) return 'Видимые сведения о месте не указаны.';
   const lines = [];
   const add = (label, text) => {
@@ -498,6 +516,7 @@ function playerSituationText(visible) {
     if (safe) lines.push(`${label}: ${safe}`);
   };
   add('Место', visible.visible_scene ?? visible.scene);
+  add('Действующее лицо', actorRole);
   for (const [label, field] of [
     ['Изменения вокруг', 'visible_changes'],
     ['Ощущения', 'sensory_details'],
@@ -516,8 +535,22 @@ function playerSituationText(visible) {
   }
   for (const object of Array.isArray(visible.visible_objects)
     ? visible.visible_objects : []) {
-    add('Видимый предмет', visibleEntityDescription(object,
-      entityFallback(object?.entity_ref?.entity_kind)));
+    if (object?.entity_ref?.entity_kind === 'item') {
+      const description = visibleItemSituationDescription(object);
+      if (description) {
+        lines.push(description);
+        const item = visibleItems.find((candidate) =>
+          [candidate?.item_id, candidate?.instance_id].includes(
+            object.entity_ref.entity_id));
+        const condition = item == null ? null
+          : playerSafeItemConditionLabel(resolvePhysicalItemCondition(item));
+        if (condition) lines.push(`Состояние вещи «${playerSafeText(
+          object.display_label)}»: ${condition}.`);
+      }
+    } else {
+      add('Видимый предмет', visibleEntityDescription(object,
+        entityFallback(object?.entity_ref?.entity_kind)));
+    }
   }
   return lines.join('\n') || 'Видимые подробности о месте не указаны.';
 }
@@ -546,9 +579,19 @@ function knownContextText(value) {
 }
 
 function visibleEntityDescription(entity, fallback) {
-  if (typeof entity === 'string') return playerSafeText(entity) ?? fallback;
+  if (typeof entity === 'string') {
+    const text = playerSafeText(entity);
+    if (!text) throw visibleEntityLabelGap(null);
+    return text;
+  }
   if (!plain(entity)) return fallback;
   const kind = entity.entity_ref?.entity_kind;
+  if (kind === 'item'
+      && entity.label_gap?.code === 'player_safe_item_label_required') return null;
+  const playerLabel = playerSafeText(entity.display_label);
+  if (kind === 'item' && (!playerLabel || /^предмет\s*[,.;:]?$/iu.test(playerLabel))) {
+    throw visibleEntityLabelGap(kind);
+  }
   const label = playerVisibleEntityLabel(entity.display_label, kind, fallback);
   const status = entity.entity_ref?.entity_kind === 'item'
     ? playerSafeItemConditionLabel(entity.visible_status)
@@ -566,6 +609,23 @@ function visibleEntityDescription(entity, fallback) {
   const bounds = ambientBoundsText(entity.ambient_portion_bounds);
   return [recognition, label, status, appearance, ...cues, bounds]
     .filter(Boolean).join(', ');
+}
+
+function visibleItemSituationDescription(entity) {
+  if (entity.label_gap?.code === 'player_safe_item_label_required') return null;
+  const label = playerSafeText(entity.display_label);
+  if (!label || /^предмет\s*[,.;:]?$/iu.test(label)) {
+    throw visibleEntityLabelGap('item');
+  }
+  const placement = entity.visible_status === 'при вас' ? 'При вас: '
+    : entity.visible_status === 'у вас в руках' ? 'В руках: '
+      : 'Видимый предмет: ';
+  return `${placement}${playerVisibleEntityLabel(label, 'item', 'предмет')}`;
+}
+
+function visibleEntityLabelGap(kind) {
+  return new WorldKnowledgeError('WORLD_KNOWLEDGE_VISIBLE_ENTITY_LABEL_GAP',
+    'Visible entity has no player-safe name or category.', { entity_kind: kind });
 }
 
 function collectPlayerSafeText(value, out) {

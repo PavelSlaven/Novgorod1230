@@ -820,14 +820,14 @@ The private O1 wire carries the structured `world_knowledge` factual slice.
 Facts, qualifiers, constraints, coverage, disputes and gaps remain; claim
 binding and telemetry use the full request.
 The private WK planner wire projects the ordered candidate refs to an object
-keyed by opaque base-36 handles (`f0`, `f1`, …); each value is
+keyed by stable `wk:<domain>:<concept>` refs for canonical concepts and short
+opaque base-36 handles (`f0`, `f1`, …) for non-concept refs; each value is
 `{ domains, label, description }`. Domains include only allowed, applicable and
 accessible claim domains; label and description are localized selection
 metadata, not evidence. Native planner requests retain the complete ordered ref
-array. Main and repair responses use opaque focus keys on the wire; the server
-maps available keys back to canonical refs before validation and retrieval,
-while unknown keys follow normal planner normalization. Candidate and retrieval
-budgets are unchanged.
+array. Main and repair responses use these menu keys on the wire; the server
+maps only keys from that request back to canonical refs before validation and
+retrieval. Candidate and retrieval budgets are unchanged.
 Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
 The Giga/vector path is mandatory whenever v16 needs a WK slice. Missing local

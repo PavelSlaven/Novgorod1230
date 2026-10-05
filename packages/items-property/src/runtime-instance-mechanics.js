@@ -29,9 +29,7 @@ const SOURCE_KINDS = new Set([
 const CARRY_FORMS = new Set(['compact', 'regular', 'long', 'bulky']);
 const PHYSICAL_CONDITIONS = new Set(['serviceable', 'damaged']);
 const PLAYER_SAFE_ITEM_CONDITION_LABELS = Object.freeze({
-  serviceable: 'исправное состояние', sound: 'исправное состояние',
-  intact: 'целое состояние', worn: 'изношенное состояние',
-  damaged: 'повреждённое состояние', broken: 'сломанное состояние'
+  serviceable: 'исправное состояние', damaged: 'повреждённое состояние'
 });
 const ACTIVE_RUNTIME_MECHANICS_SOURCES = new Set([
   'runtime_instance_snapshot', 'ordinary_world_materialization_snapshot'

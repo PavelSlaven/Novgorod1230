@@ -19,7 +19,10 @@ test('physical condition separates runtime lifecycle marker from damage', () => 
 
 test('player-safe item condition labels are shared with visible surfaces', () => {
   assert.equal(playerSafeItemConditionLabel('serviceable'), 'исправное состояние');
-  assert.equal(playerSafeItemConditionLabel('broken'), 'сломанное состояние');
+  assert.equal(playerSafeItemConditionLabel('damaged'), 'повреждённое состояние');
+  for (const value of ['sound', 'intact', 'worn', 'broken']) {
+    assert.equal(playerSafeItemConditionLabel(value), null);
+  }
   assert.equal(playerSafeItemConditionLabel('unrecognized-state'), null);
 });
 

@@ -14,9 +14,10 @@ import { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-st
 import { failCurrentScene, validCurrentScene, visibleNpc } from
   './lower-dvina-trace-turn-step-current-scene-validation.js';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
+import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
 export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 export function withLowerDvinaTraceCurrentScene({ committedState,
-  locationProfiles, scenePresentation = null }) {
+  locationProfiles, scenePresentation = null, itemLabels = {} }) {
   const projectionSource = structuredClone(committedState);
   const { actor, player_safe_state: playerSafe } = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
@@ -27,7 +28,8 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     ...(playerSafe.available_routes ?? []).map(route => route.label).filter(Boolean)];
   const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
     playerSafe.position,
-    playerSafe.actor_id);
+    playerSafe.actor_id,
+    itemLabels);
   const locationRef = playerSafe.position?.location_ref;
   const presented = scenePresentation == null ? null
     : scenePresentationForLocation({ scenePresentation, locationRef });
@@ -59,12 +61,14 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     ?? (priorSceneIsNotSpeech
       ? currentSpatialFacts(prior, sceneItems, sceneNpcs) : profile.player_visible_physical_facts);
   const sensoryDetails = unique([...(placeFacts ?? []),
-    ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)]);
+    ...sceneItems.filter(({ visibleObject }) => text(visibleObject?.display_label))
+      .flatMap(({ physicalFacts }) => physicalFacts)]);
+  const currentUncertainties = playerSafe.current_visible_context?.uncertainties ?? [];
   const current = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
     version: 1,
     schema: 'visible_context_package',
     visible_scene: profile.display_name,
-    visible_changes: [],
+    visible_changes: currentEnvironmentChanges(committedState),
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
     visible_objects: uniqueLowerDvinaTraceVisibleObjects([
@@ -72,7 +76,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       ...(playerSafe.current_visible_context?.visible_objects ?? [])
         .filter((object) => isMovementVisibleObject(object))]),
     known_context: unique([profile.display_name, ...selfKnowledge]),
-    uncertainties: [],
+    uncertainties: unique(currentUncertainties).filter(text),
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
   }, committedState: projectionSource });
@@ -81,6 +85,13 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     ...committedState,
     current_visible_context: deepFreeze(current)
   };
+}
+function currentEnvironmentChanges(state) {
+  const environment = state?.environment_snapshot;
+  if (environment?.schema !== 'rus.approved_initial_environment.v1') return [];
+  return playerSafeWeatherLightFacts({ season: environment.season,
+    day_part: environment.day_part, light_state: environment.light_state,
+    weather_state: environment.weather_state }).map(({ text }) => text);
 }
 function historicalLocationProfile(locationProfiles, locationRef) {
   const matches = Array.isArray(locationProfiles)

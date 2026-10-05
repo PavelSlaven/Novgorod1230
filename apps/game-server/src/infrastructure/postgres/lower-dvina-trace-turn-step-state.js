@@ -21,7 +21,8 @@ export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
     perceived_changes: structuredClone(context.visible_changes),
     sensory_details: structuredClone(context.sensory_details),
     visible_npcs: structuredClone(context.visible_npc),
-    visible_objects: structuredClone(context.visible_objects),
+    visible_objects: structuredClone(context.visible_objects.filter((item) =>
+      item?.label_gap?.code !== 'player_safe_item_label_required')),
     known_context: structuredClone(context.known_context),
     uncertainties: structuredClone(context.uncertainties),
     hypotheses: [],

@@ -57,13 +57,16 @@ function projectVisibleRefs(records, strict, path) {
     const isAmbientCapability = entityRef?.entity_kind
       === AMBIENT_ORDINARY_CAPABILITY;
     const allowed = new Set([
-      'entity_ref', 'display_label', 'recognition', 'visible_status',
+      'entity_ref', 'display_label', 'label_gap', 'recognition', 'visible_status',
       'observable_cues', ...(isAmbientCapability ? ['ambient_portion_bounds'] : [])
     ]);
     if (strict) assertAllowedKeys(record, allowed, `${path}[]`, invalidCode());
+    const labelGap = projectItemLabelGap(record.label_gap, entityRef, strict,
+      `${path}[].label_gap`);
     return compact({
       entity_ref: entityRef,
-      display_label: text(record.display_label),
+      display_label: labelGap ? undefined : text(record.display_label),
+      label_gap: labelGap,
       recognition: text(record.recognition),
       visible_status: text(record.visible_status),
       observable_cues: projectObservableCues(record.observable_cues, strict,
@@ -73,6 +76,18 @@ function projectVisibleRefs(records, strict, path) {
           `${path}[].ambient_portion_bounds`) : undefined
     });
   }).filter(Boolean);
+}
+
+function projectItemLabelGap(value, entityRef, strict, path) {
+  if (value === undefined) return undefined;
+  const valid = entityRef?.entity_kind === 'item'
+    && plain(value)
+    && Object.keys(value).length === 1
+    && value.code === 'player_safe_item_label_required';
+  if (!valid && strict) {
+    throw projectionError(invalidCode(), `${path} is invalid.`);
+  }
+  return valid ? { code: value.code } : undefined;
 }
 
 function projectAmbientPortionBounds(value, strict, path) {

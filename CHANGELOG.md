@@ -3,6 +3,8 @@
 ## Unreleased
 
 - fix(prompts): перевести промпты планировщика хода и маршрутизатора на русский (prompt-rev-turn)
+- fix(turn): reject prepared follow-up refs outside projected allowlist; LW-129 added (#236)
+- fix(items): keep unnamed visible items as typed label gaps; LW-128 added (prompt-rev-turn)
 - fix(turn): current scene rebuilt from committed state each turn (departed items/NPCs dropped, speech never becomes the place title); movement narration from owner facts - site arrival from the destination package, route visible change, Spatial-signed local label (#98)
 - feat(opening): opening narrator gets a compact Russian projection without ids or service fields and Russian instructions (measured arm P, D80); every Temporal day/light phase translated, held items keep «при вас» and condition, unknown values fail closed (#98)
 - fix(npc): seasonal routine compare-and-set anchored on the schedule proof of the turn; destination visible NPCs captured from the admitted projection; LW-127 added (#98)

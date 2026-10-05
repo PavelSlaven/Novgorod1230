@@ -204,6 +204,46 @@ test('ownerless speech crosses the existing grounding auditor before its factual
   }
 });
 
+test('speech audit uses the projected intent and completed steps while validation keeps the original text',
+  async () => {
+    const intent = 'Говорю: «private-gap-instance, стой»';
+    const gapFact = 'SPEECH_AUDIT_GAP_FACT_MUST_NOT_REACH_MODEL';
+    const speechRequest = { ...request, request_id: 'turn-step:speech-gap',
+      remaining_intent: intent, completed_steps: [{ description: gapFact }],
+      actor: { actor_ref: 'actor:1' }, player_safe_state: {
+        actor_id: 'actor:1', items: [{ item_id: 'opaque-item-ref',
+          instance_id: 'private-gap-instance', name: 'SECRET_GAP_ITEM_NAME',
+          physical_facts: [gapFact] }, { item_id: 'named-visible-item',
+          name: 'сосновое весло', physical_facts: ['NAMED_ITEM_FACT_REMAINS'] }],
+        current_visible_context: { visible_objects: [{ entity_ref: {
+          entity_kind: 'item', entity_id: 'private-gap-instance' },
+        label_gap: { code: 'player_safe_item_label_required' } }] }
+      } };
+    const utterance = { speaker_ref: 'actor:1', input_mode: 'verbatim',
+      utterance_text: 'private-gap-instance, стой' };
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run(call) {
+        const payload = JSON.parse(call.messages[1].content);
+        assert.equal(payload.remaining_intent,
+          'Говорю: «[скрыто], стой»');
+        assert.deepEqual(payload.completed_steps, [{ description: gapFact }]);
+        assert.deepEqual(payload.utterance, { ...utterance,
+          utterance_text: '[скрыто], стой' });
+        assert.deepEqual(payload.player_safe_state.items, [{
+          item_id: 'named-visible-item', name: 'сосновое весло',
+          physical_facts: ['NAMED_ITEM_FACT_REMAINS']
+        }]);
+        assert.doesNotMatch(call.messages[1].content,
+          /private-gap-instance|opaque-item-ref|SECRET_GAP_ITEM_NAME|label_gap/u);
+        return { output: { speech_faithful: false,
+          required_input_mode: 'verbatim', unexecuted_intent: null } };
+      } }
+    });
+    await assert.rejects(validate({ request: speechRequest, plan: {
+      direct_result_kind: 'player_utterance', utterance, operations: []
+    } }), (error) => error.code === 'TURN_STEP_PLAN_INVALID');
+  });
+
 test('generic discovery keeps deterministic intent identity after focused classification',
   async () => {
     let calls = 0;
@@ -211,8 +251,14 @@ test('generic discovery keeps deterministic intent identity after focused classi
       roleRunner: { async run(call) {
         calls += 1;
         const payload = JSON.parse(call.messages[1].content);
-        if (payload.operation != null) assert.match(call.messages[0].content,
-          /осматривает, ищет или выбирает по указанным признакам[\s\S]*не приобретая, не перемещая, не изменяя и не используя/u);
+        if (payload.operation != null) {
+          assert.match(call.messages[0].content,
+            /осматривает, ищет или выбирает по указанным признакам[\s\S]*не приобретая, не перемещая, не изменяя и не используя/u);
+          assert.doesNotMatch(call.messages[1].content,
+            /opaque-item-ref|private-gap-instance|private-gap-template|SECRET_GAP_ITEM_NAME|GAP_ITEM_PHYSICAL_FACT|player_safe_item_label_required/u);
+          assert.match(call.messages[1].content,
+            /named-visible-item|NAMED_ITEM_PHYSICAL_FACT_REMAINS_VISIBLE/u);
+        }
         return { output: payload.operation == null
           ? { pass: true, concerns: [] }
           : payload.operation.query === 'искать на берегу следы лодки'
@@ -227,6 +273,15 @@ test('generic discovery keeps deterministic intent identity after focused classi
         active_conditions: []
       } }, player_safe_state: {
         position: { location_ref: 'location:riverbank' },
+        items: [{ item_id: 'opaque-item-ref', instance_id: 'private-gap-instance',
+          template_id: 'private-gap-template', name: 'SECRET_GAP_ITEM_NAME',
+          physical_facts: ['GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_AUDITOR.'] },
+        { item_id: 'named-visible-item', name: 'сосновое весло',
+          physical_facts: ['NAMED_ITEM_PHYSICAL_FACT_REMAINS_VISIBLE.'] }],
+        inventory: { items: ['opaque-item-ref', 'named-visible-item'] },
+        current_visible_context: { visible_objects: [{ entity_ref: {
+          entity_kind: 'item', entity_id: 'private-gap-instance' },
+          label_gap: { code: 'player_safe_item_label_required' } }], uncertainties: [] },
         ordinary_resolution: { discovery_available: true,
           container_resolution_available: false, scene_seed_available: false }
       } };
@@ -267,6 +322,15 @@ test('generic discovery keeps deterministic intent identity after focused classi
       return true;
     });
     assert.equal(calls, 5);
+    await assert.rejects(validate({ request: genericRequest, plan: {
+      ...genericPlan, operations: [{ ...genericPlan.operations[0],
+        query: 'GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_AUDITOR private-gap-instance' }]
+    }, resolved_domain_operations: ordinaryOwner }), (error) => {
+      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+      assert.equal(error.details.errors[0].code, 'operation_semantic_grounding');
+      return true;
+    });
+    assert.equal(calls, 5, 'gap-linked generated text must fail before auditor call');
   });
 
 test('focused discovery removes a duplicated suffix after consuming the complete intent',

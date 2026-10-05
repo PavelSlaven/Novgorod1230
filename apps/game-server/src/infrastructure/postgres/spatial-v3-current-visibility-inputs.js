@@ -109,10 +109,19 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
     const snapshot = row.state?.visual_profile_snapshot;
     const visual_profile_snapshot = snapshot == null ? null : safeVisualProfile(snapshot);
     if (snapshot != null && !visual_profile_snapshot) gap('committed_entity_exterior_required');
+    const display_name = itemDisplayName(row.state);
     return { condition_state: row.condition_state,
+      ...(display_name == null ? {} : { display_name }),
       ...(visual_profile_snapshot == null ? {} : { visual_profile_snapshot }) };
   }
   gap('committed_entity_exterior_required');
+}
+
+function itemDisplayName(state) {
+  const value = typeof state?.display_name === 'string' ? state.display_name : null;
+  if (typeof value !== 'string') return null;
+  const label = value.trim();
+  return label.length > 0 ? label : null;
 }
 
 /** A name is known only through a committed, fully heard self-introduction. */

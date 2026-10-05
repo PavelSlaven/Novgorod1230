@@ -5,6 +5,9 @@
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
 - fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)
 
+- fix(local-play): v17 slice acceptance requires a visible people panel for meet, a committed readable NPC answer for talk, and prior talk at the current place for take/make; D49 minimum is additive (#98)
+- data(spatial): world-routes b2 candidate and generator with 24 cross pairs @2, Opus APPROVE_WITH_LIMITS and M1–M5 mechanical continuation; draft for b2 runtime reader (#98)
+- fix(turn): repeated NPC waits pause the fire-rest schedule; first ordinary search after seed-only preflight costs 15 minutes under the shared plan-binding predicate; NPC inspects an available committed item by ref (#98)
 - fix(turn-step): committed S1 resolutions stay visible at the formal destination after the move (visibility-only projection; no planner capability marker) (#98)
 - feat(opening): opening narrator gets a compact Russian projection without ids or service fields and Russian instructions (measured arm P, D80); every Temporal day/light phase translated, held items keep «при вас» and condition, unknown values fail closed (#98)
 - fix(npc): seasonal routine compare-and-set anchored on the schedule proof of the turn; destination visible NPCs captured from the admitted projection; LW-127 added (#98)

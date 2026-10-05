@@ -13,6 +13,7 @@ import {
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
   installPresenceProductionE2eFetch,
+  routeMovementLabels,
 } from './presence-rules-production-e2e-fixture.js';
 
 const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url)));
@@ -90,6 +91,12 @@ test('work_storage -> water_access -> forest_path -> meeting_area and back, acro
       assert.equal(arrived.name, to, `${from} -> ${to} via "${named}"`);
       assert.equal(arrived.slot, 'arrival', 'the traveller stands at the arrival endpoint of the new place');
       assert.ok(result?.screen?.turn_id, 'the arrival turn returns its committed screen');
+      const exitLabels = (result.screen.visible_context?.visible_objects ?? [])
+        .filter((item) => item.entity_ref?.entity_kind === 'g4_directional_exit')
+        .map((item) => item.display_label);
+      const menuLabels = routeMovementLabels(result.screen);
+      assert.ok(exitLabels.every((label) => menuLabels.includes(label)),
+        `${from} -> ${to}: committed submitTurn screen keeps every visible G4 exit label in the route panel`);
       return result;
     }
 

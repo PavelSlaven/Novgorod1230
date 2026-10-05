@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { loadApprovedExitLineLabels } from
+  '../../../data/world-catalogs/novgorod/m2c-exit-line-labels/approved-labels.mjs';
 import { createSpatialV3WorldBaseReader } from
   '../src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { approvedNaturalStableCover } from
@@ -14,6 +16,7 @@ import { withPhase2CurrentLocalEdges } from
 
 const label = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url))).labels[0];
+const exitLineLabels = loadApprovedExitLineLabels();
 const localLabel = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json', import.meta.url))).labels[0];
 const naturalProfiles = JSON.parse(readFileSync(new URL(
@@ -66,7 +69,7 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   return { scene, natural, provider, queries };
 }
 
-test('current snapshot admits committed identities, edges and approved exit label only', async () => {
+test('current snapshot selects an approved exit label through the F3 policy', async () => {
   const { provider, queries } = fixture();
   const observations = await provider.readEntityObservations({ partyId: 'party', actorId: 'actor' });
   assert.deepEqual(observations.map((row) => row.display_name), ['Known person', undefined]);
@@ -83,7 +86,7 @@ test('current snapshot admits committed identities, edges and approved exit labe
     position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit] }),
   [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
     direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
-    display_label: label.display_label }]);
+    display_label: exitLineLabels.get(`${exit.id}@${exit.version}`).display_label }]);
   await assert.rejects(provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
     position: { id: 'a' }, site: { parent_g4_id: g4 },
     directional_exits: [{ ...exit, canonical_digest: '0'.repeat(64) }] }),
@@ -112,7 +115,7 @@ function label2AtSameG4() {
     && row.directional_exit_ref.id !== label.directional_exit_ref.id);
 }
 
-test('two visible exits with the same pass-target description disambiguate by the approved ordinal',
+test('two visible exits with the same pass-target description use approved line labels before ordinals',
   async () => {
     const { provider } = fixture();
     const exitOne = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
@@ -121,14 +124,16 @@ test('two visible exits with the same pass-target description disambiguate by th
     const exitTwo = { id: secondExitLabel.directional_exit_ref.id, version: secondExitLabel.directional_exit_ref.version,
       canonical_digest: secondExitLabel.directional_exit_ref.canonical_digest,
       direction_context_id: secondExitLabel.direction_context_ref.id };
-    // Same pass-target slot forced on both exits: the collision is real regardless of their
-    // own distinct exit-ordinal labels ("По руслу — выход 1" vs "...2").
+    // Same pass-target slot forced on both exits: line labels replace the ordinal fallback.
     const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
       position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exitOne, exitTwo],
       slotByExit: new Map([[exitOne.id, passTargetSlot], [exitTwo.id, passTargetSlot]]) });
     assert.equal(disclosed.length, 2);
     assert.notEqual(disclosed[0].display_label, disclosed[1].display_label);
-    for (const row of disclosed) assert.match(row.display_label, /^к руслу \(\d+\)$/u);
+    for (const row of disclosed) {
+      assert.ok(!Object.hasOwn(row, 'pass_target_description'));
+      assert.doesNotMatch(row.display_label, /—\s*выход\s+\d+/iu);
+    }
   });
 
 test('an exit discloses its slot pass-target text; a slot the catalog only records as a gap keeps the exit label; an unknown slot is a typed gap (F4/F11)',
@@ -143,9 +148,11 @@ test('an exit discloses its slot pass-target text; a slot the catalog only recor
     assert.equal((await disclose(passTargetSlot)).display_label, 'к руслу');
     const forest = await disclose({ id: 'm2c_slot_g4exitv3__g4dirv3f__cross_g4_20', version: 1 });
     assert.equal(forest.display_label, 'в лес');
+    assert.ok(!Object.hasOwn(forest, 'pass_target_description'));
     assert.ok(!('approach_phrase' in forest), 'no way-of-going wording is disclosed');
     const gapSlot = await disclose({ id: 'm2c_slot_g4exitv3__g4dirv3f__cross_g4_12', version: 1 });
-    assert.equal(gapSlot.display_label, label.display_label);
+    assert.equal(gapSlot.display_label, exitLineLabels.get(`${exit.id}@${exit.version}`).display_label);
+    assert.ok(!Object.hasOwn(gapSlot, 'pass_target_description'));
     await assert.rejects(disclose({ id: 'no-such-slot', version: 1 }),
       (error) => error.details?.reason === 'approved_pass_target_label_required');
   });
@@ -215,9 +222,11 @@ test('P12 pine arrival discloses its approved G4 exit before local topology exis
   const approved = JSON.parse(readFileSync(new URL(
     '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url)))
     .labels.find((row) => row.directional_exit_ref.id === expected[0].id);
+  const approvedLine = exitLineLabels.get(`${expected[0].id}@${expected[0].version}`);
   assert.deepEqual(disclosed.map(({ directional_exit_id, display_label }) =>
     ({ directional_exit_id, display_label })), [{
-    directional_exit_id: expected[0].id, display_label: approved.display_label }]);
+    directional_exit_id: expected[0].id,
+    display_label: approvedLine?.display_label ?? approved.display_label }]);
   const state = { party_id: 'party', actor_id: 'actor', journey_location: {
     scene_position_id: 'a' }, current_visible_context: {
     version: 1, schema: 'visible_context_package', visible_scene: 'Лес',
@@ -227,7 +236,7 @@ test('P12 pine arrival discloses its approved G4 exit before local topology exis
     provider.readLocalEdgeDisclosure, provider.readCurrentExitDisclosure);
   assert.deepEqual(current.current_visible_context.visible_objects, [{
     entity_ref: { entity_kind: 'g4_directional_exit', entity_id: expected[0].id },
-    display_label: approved.display_label, recognition: 'known' }]);
+    display_label: approvedLine?.display_label ?? approved.display_label, recognition: 'known' }]);
   worldBaseReader.readApprovedG4DirectionalExits = async () => ({ ok: false });
   await assert.rejects(provider.readCurrentExitDisclosure({ partyId: 'party', actorId: 'actor' }),
     (error) => error.details?.reason === 'approved_g4_directional_exits_required');

@@ -148,10 +148,10 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
   walkLocalLabels = [], walkExits = null, walkLocalNoProgress = false,
   walkSlotSteps = null,
   presentationPendingOnce = false, presentationStaysPending = false,
-  factualRecovery = false, factualAfterTurn = false } = {}) {
+  factualRecovery = false, emptyReadyRecovery = false, factualAfterTurn = false } = {}) {
   const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', slotChain: 0,
     pendingTurnOnce: presentationPendingOnce,
-    presentationStaysPending, factualRecovery, factualAfterTurn, factualVisible: false,
+    presentationStaysPending, factualRecovery, emptyReadyRecovery, factualAfterTurn, factualVisible: false,
     statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
@@ -213,6 +213,10 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
         w.factualVisible = true;
         w.prose = '';
         return env({ screen: screen() });
+      }
+      if (w.emptyReadyRecovery) {
+        w.prose = '';
+        return env({ screen: { screen_status: 'ready', main_prose: '' } });
       }
       w.prose = 'Восстановлено.';
       return env({ screen: screen() });
@@ -622,6 +626,21 @@ test('legs: still pending after presentation-recovery stops the leg with deliver
     createRedactor());
   assert.match(md, /подача: pending/u);
   assert.equal(world.w.turns.length, 1, 'no further POST turns after delivery failure');
+});
+
+test('legs: ready recovery with empty prose fails delivery and sends no next POST', async () => {
+  const world = fakeWorld({ presentationPendingOnce: true, emptyReadyRecovery: true,
+    npcAtStart: true, npcAtDestination: false });
+  const result = await runFake(world, { maxTurns: 6 });
+  assert.equal(result.turns.length, 1);
+  assert.equal(result.turns[0].presentation_recovery_outcome, 'empty');
+  assert.equal(result.turns[0].delivery_kind, 'empty');
+  assert.equal(result.turns[0].delivery_failed, true);
+  assert.equal(result.turns[0].error.code, 'PRESENTATION_EMPTY_AFTER_RECOVERY');
+  assert.equal(world.w.turns.length, 1, 'no later POST, including reserved make turns');
+  assert.notEqual(statusOf(result).talk, 'pass');
+  assert.match(result.legs.find(({ id }) => id === 'walk').reason, /пустой экран после presentation-recovery/u);
+  assert.equal(statusOf(result).make, 'blocked');
 });
 
 test('meter: counts LLM calls by role without content and turns the masked server error log into a summary', async () => {

@@ -323,6 +323,15 @@ export function installPresenceProductionE2eFetch({
           reason: 'Следую выбранному видимому пути.',
         };
       }
+    } else if (system.startsWith('Верните только {"prose"')) {
+      const facts = modelInput.сцена?.факты ?? [];
+      output = { prose: facts.map((fact) => typeof fact === 'string' ? fact : fact.текст)
+        .filter(Boolean).join(' ') };
+    } else if (system.startsWith('Верните только {"pass"')) {
+      output = {
+        pass: true, failed_checks: [], concerns: [],
+        evidence: ['Тестовая проверка использует факты из переданной сцены.'],
+      };
     } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
       const sources = [...modelInput.required_current_beat.changes,
         ...modelInput.required_current_beat.uncertainties];

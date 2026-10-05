@@ -90,6 +90,7 @@ const PEOPLE_VERSION = 'place_people_compile_v1';
  * The regional context applies when its applicability names this G4 without a canonical or template scope.
  */
 export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, scene, closure, people,
+  placement_state_by_identity: placementStates,
   approved_bundle: approvedBundle, environment, actor_base_attributes_runtime_profile: actorProfile,
   equipment_activation: activation, equipment_catalog_digest: equipmentDigest, world_catalog_digest: worldDigest } = {}) {
   const world = closure?.world_revision_id;
@@ -100,10 +101,17 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
     || people.some((person) => !text(person.place_family_id) || Boolean(person.place_population_composition_ref)
       === Boolean(person.presence_rule_ref))
     || !text(canonical?.id)) gap('NPC_COMPOSITION_SCOPE_GAP');
+  if (placementStates !== undefined && (!Array.isArray(placementStates)
+    || placementStates.length !== people.length
+    || placementStates.some((entry, index) => !validPlacementState(entry, people[index])))) {
+    gap('NPC_COMPOSITION_PLACEMENT_STATE_GAP');
+  }
   const runtimeRows = approvedIndex(closure.runtime_profiles, world);
   const regionalRows = approvedIndex(closure.regional_context_profiles, world);
   const positionResult = approvedPositions(scene, closure.placement_policy);
-  if (people.length > positionResult.positions.length) gap('NPC_COMPOSITION_POSITION_CAPACITY_GAP');
+  const onSiteCount = placementStates === undefined ? people.length
+    : placementStates.filter((entry) => entry.state === 'on_site').length;
+  if (onSiteCount > positionResult.positions.length) gap('NPC_COMPOSITION_POSITION_CAPACITY_GAP');
   if (!approvedBundle || environment?.schema !== 'rus.approved_initial_environment.v1'
     || activation?.status !== 'active' || !text(equipmentDigest) || !actorProfile) gap('NPC_COMPOSITION_RUNTIME_PIN_GAP');
   const seed = deriveSeed({ version: PEOPLE_VERSION, rng_version: RNG_VERSION, party_id: partyId, run_id: runId,
@@ -124,14 +132,24 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
     approvedBundle, environment, seed, canonical, template: null, positionResult, usedRows, regionalApplicability: 'g4',
     applicable: (profile) => Array.isArray(profile.applicability) && profile.applicability.some((entry) =>
       same(entry.g4_ref, g4) && entry.canonical_g5_ref == null && entry.generation_template_ref == null) };
-  const npcInputs = people.map((person, index) => buildNpcInput({ ...ctx,
+  let positionOrdinal = 0;
+  const npcInputs = people.map((person, index) => {
+    const placementState = placementStates?.[index];
+    const hasPosition = placementState === undefined || placementState.state === 'on_site';
+    const positionIndex = hasPosition ? positionOrdinal++ : null;
+    return buildNpcInput({ ...ctx,
     candidates: (person.candidate_refs ?? [person.profile_ref]).map((ref) => key(ref)).sort() },
   resolve(runtimeRows, person.profile_ref, 'npc_binding'), index, select, {
     location: person.place_family_id,
+    placementState,
+    positionIndex,
     source: { ...(person.place_population_composition_ref
       ? { place_population_composition_ref: { ...person.place_population_composition_ref } }
       : { presence_rule_ref: { ...person.presence_rule_ref } }),
-    ...(person.group_id ? { group_id: person.group_id } : {}) } }));
+    ...(person.place_population_composition_ref
+      ? { place_family_id: person.place_family_id } : {}),
+    ...(person.group_id ? { group_id: person.group_id } : {}) } });
+  });
   return { npc_inputs: npcInputs, equipment_catalog: equipmentCatalog(usedRows, activation, equipmentDigest),
     selection_trace: { algorithm_version: PEOPLE_VERSION, rng_version: RNG_VERSION, seed_digest: seed.digest,
       count: people.length, choices, equipment_catalog_digest: equipmentDigest ?? null } };
@@ -180,13 +198,16 @@ function buildNpcInput(ctx, selected, ordinal, select, origin = null) {
   if (!text(selected.role_ref) || !text(selected.occupation_ref)
     || activity.status !== 'approved' || clothing.status !== 'approved'
     || !text(activity.record_id)) gap('NPC_COMPOSITION_RUNTIME_PROFILE_GAP');
-  const position = positionResult.positions[ordinal];
+  const placementState = origin?.placementState;
+  const positionIndex = origin && Object.hasOwn(origin, 'positionIndex') ? origin.positionIndex : ordinal;
+  const position = positionResult.positions[positionIndex];
+  if (!position && (!placementState || placementState.state === 'on_site')) gap('NPC_COMPOSITION_POSITION_GAP');
   const actorSeed = deriveSeed({ parent_seed_digest: seed.digest, actor_slot_ref: actorSlot, domain: 'appearance' });
   const temporal = [...approvedBundle.temporal_records];
   const existing = temporal.filter((record) => record.record_id === activity.record_id);
   if (existing.length > 1 || (existing.length === 1 && canonicalDigest(existing[0]) !== canonicalDigest(activity))) gap('NPC_COMPOSITION_ACTIVITY_CONFLICT');
   if (!existing.length) temporal.push(activity);
-  return { position_id: position.id, environment,
+  return { position_id: position?.id ?? null, environment,
     random: createRandomSource({ seed: actorSeed.uint32 }), routine_profile: routine,
     approved_bundle: { ...approvedBundle, temporal_records: temporal,
       clothing_profiles: [clothing], regional_context_profiles: [region.payload] },
@@ -200,8 +221,9 @@ function buildNpcInput(ctx, selected, ordinal, select, origin = null) {
       actor_slot_ref: actorSlot, ordinal, role_ref: selected.role_ref, occupation_ref: selected.occupation_ref,
       profile_level: payload.profile_level, actor_profile_rule_ref: payload.actor_profile_rule_ref,
       demographic_profile_ref: payload.demographic_profile_ref, appearance_profile_ref: payload.appearance_profile_ref,
-      anchor_id: position.id, g5_node_id: scene.site_id, location_profile_ref: origin ? origin.location : composition.id,
-      zone_ref: position.template_slot_key, activity_record_ref: activity.record_id,
+      anchor_id: position?.id ?? null, g5_node_id: scene.site_id, location_profile_ref: origin ? origin.location : composition.id,
+      zone_ref: position?.template_slot_key ?? null, activity_record_ref: activity.record_id,
+      ...(placementState ? { initial_presence_state: placementState.state } : {}),
       observable_activity: structuredClone(payload.observable_activity), body_profile: body,
       profile_candidate_set_digest: canonicalDigest(candidates), profile_record_digest: canonicalDigest(selected.payload),
       world_revision_id: world, world_catalog_digest: worldDigest, parent_seed_digest: actorSeed.digest,
@@ -216,6 +238,17 @@ function buildNpcInput(ctx, selected, ordinal, select, origin = null) {
         ? { sex_category_applicability: [...payload.actor_applicability.sex_category] } : {}),
       ...(ctx.regionalApplicability ? { regional_applicability: ctx.regionalApplicability } : {}),
       ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) } };
+}
+
+function validPlacementState(entry, person) {
+  if (!entry || Object.keys(entry).length !== 2 || !Object.hasOwn(entry, 'state')
+    || !Object.hasOwn(entry, 'location_ref')
+    || !['on_site', 'offstage_away', 'location_gap'].includes(entry.state)
+    || !(entry.location_ref === null || text(entry.location_ref))) return false;
+  if (entry.state === 'on_site') return text(entry.location_ref)
+    && entry.location_ref === person.place_family_id;
+  if (entry.state === 'offstage_away') return entry.location_ref === null;
+  return true;
 }
 
 function approvedPositions(scene, policy) {

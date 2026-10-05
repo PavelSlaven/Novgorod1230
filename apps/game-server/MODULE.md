@@ -365,9 +365,25 @@ causal transitions и один CAS итогового состояния. Deferr
 допустим до первого входа; first-entry связывает точную позицию без сброса
 занятия или времени. Сон меняет доступность NPC для разговора. Этот cutover
 не расширяет историческую Phase-7 activation свободных решений NPC.
-Routine movement проходит существующий route owner с проверкой committed source
-и exact endpoints; adapter переносит NPC только при completed handoff, а blocked
-handoff сохраняет исходную позицию и следующий причинный schedule state.
+Routine movement проходит текущий `npc-routine-movement` path: adapter сверяет
+committed source, exact endpoints и доступ, а handoff duration задаёт обычное
+completion; это не sealed traversal proof. Blocked handoff сохраняет исходную
+позицию и следующий причинный schedule state. При seasonal profile switch
+persisted `movement_execution` сохраняет исходный interval и `ends_at`; новый
+профиль не перезапускает движение и не переносит NPC.
+Temporal and first-entry adapters collect current-position, completed-movement,
+active-execution and exact approved-binding facts for `resolveNpcRoutinePresence`;
+phase location is intent only. Adapters apply its presence/location result and
+do not authorize a planned destination from the phase.
+Temporal readback accepts exact current-node/source/scene proof for an unchanged
+initial placement; home schedule scope alone does not authorize that mapping.
+Seasonal D-1 rules reselect from the party clock at the exact calendar boundary.
+`location_gap` preserves any already-known physical placement; it does not
+create an endpoint or authorize a planned destination. An explicit away phase
+with a known placement resolves to a gap until an approved departure is
+established. On first-entry, an away phase with no physical placement remains
+`offstage_away` and unplaced; neither state creates a deferred first-entry
+placement.
 
 Semantic continuation без изменения тела использует existing prepared-effect
 chain уже с первого timed шага. Runtime передаёт advanced committed projection
@@ -1090,5 +1106,5 @@ approval, не меняет default release и сохраняет historical aut
 
 - Party calendar clock wins over `request.historical_context.year`.
 - `partyHistoricalEventsOf(committedState)` + `withPartyHistoricalEvents(model, stateOf)` — server port: adapters pass `historical_events` explicitly in grounder `authoritative` / model-call context from committed party state (F1/F2). No `request_id` Map and no request-body injection. Turn step: `buildLowerDvinaTracePhase2Services` wraps `turnStepModel` per request as `(req, repair) => model(req, repair, { historical_events })` (3rd arg; no mutable function property). Conversation exchange wraps `npcSemanticModel` with exchange `context.state` (party state at exchange start; working overlay does not own `historical_events`). `partyWorldKnowledgeAuthoritative` always rebuilds `started_historical_events` from those events + party clock via `@rus/time-events-history` (never accepts a ready id list).
-- Part B (D16/D20): `createLowerDvinaTraceNarrationService` grounds `purpose: narration` once per flow; `withPlayerWorldKnowledgeAuthoritative` / `playerActorFacetsFromState` bind player dossier `social_role_id` → `role_ref` for conversation/narration. Committed state always wins over callContext (F9). Narration authoritative comes from post-commit state via options port, shared with presentation replay (F7).
+- Part B (D16/D20): `createLowerDvinaTraceNarrationService` grounds `purpose: narration` once per flow; `withPlayerWorldKnowledgeAuthoritative` / `playerActorFacetsFromState` bind player dossier `social_role_id` → `role_ref` for conversation/narration. Committed state always wins over callContext (F9). Narration authoritative comes from post-commit state via options port, shared with presentation replay (F7). Phase-2 readback and replay re-read current visibility through Spatial's `readCurrentVisibleContext` using the committed party, actor, and position.
 - Focus refs are filtered by claim `conditions` / access before the planner wire.

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- fix(turn): current scene rebuilt from committed state each turn (departed items/NPCs dropped, speech never becomes the place title); movement narration from owner facts - site arrival from the destination package, route visible change, Spatial-signed local label (#98)
+- feat(opening): opening narrator gets a compact Russian projection without ids or service fields and Russian instructions (measured arm P, D80); every Temporal day/light phase translated, held items keep «при вас» and condition, unknown values fail closed (#98)
+- fix(npc): seasonal routine compare-and-set anchored on the schedule proof of the turn; destination visible NPCs captured from the admitted projection; LW-127 added (#98)
+- fix(slice): v17 slice driver seeds the walk chain from the position before the turn and follows multi-step exit chains (#98)
 - data(v17): 34 connection labels of the v17 start territories name the route line («Уйти по глинистой тропе») instead of «Проход N»; Opus approval, 4 rows withheld (#160, D49)
 - fix(slice): v17 slice driver counts walk progress only on a site change, recovers pending presentation like the web client and keeps pre-repair opening prose in the trace (#98)
 - fix(turn): world_process_step drops only exact duplicate facts, so a negated or conditional fact no longer hides the code-owned process state (#230)

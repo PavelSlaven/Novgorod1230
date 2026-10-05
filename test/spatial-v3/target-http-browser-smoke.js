@@ -55,7 +55,35 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     const captured = { model: call.model, system: call.messages[0].content, input };
     report.model_calls.push(captured);
     let output;
-    if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+    const hasScene = typeof input?.сцена?.граница === 'string';
+    const hasRejectedProse = Object.hasOwn(input ?? {}, 'отклонённая_проза');
+    const hasCheckedProse = Object.hasOwn(input ?? {}, 'проверяемая_проза');
+    const isOpeningWriter = hasScene && Object.keys(input).length === 1;
+    const openingFacts = () => {
+      const scene = input.сцена ?? {};
+      return [
+        ...(Array.isArray(scene.факты) ? scene.факты : []),
+        ...(Array.isArray(scene.персонажи) ? scene.персонажи.flatMap(({ имя, факты: personFacts }) =>
+          [имя, ...(Array.isArray(personFacts) ? personFacts : [])]) : [])
+      ].map((fact) => typeof fact === 'string' ? fact : fact?.текст)
+        .filter((fact) => typeof fact === 'string' && fact.length > 0);
+    };
+    if (hasScene && hasRejectedProse) {
+      captured.role = 'gameplay_narrator_semantic_repair';
+      const facts = openingFacts();
+      const split = Math.ceil(facts.length / 2);
+      output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+        .filter(Boolean).join('\n\n') };
+    } else if (hasScene && hasCheckedProse) {
+      captured.role = 'gameplay_narrator_auditor';
+      output = { pass: true, failed_checks: [], concerns: [], evidence: openingFacts() };
+    } else if (isOpeningWriter) {
+      captured.role = 'gameplay_narrator';
+      const facts = openingFacts();
+      const split = Math.ceil(facts.length / 2);
+      output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+        .filter(Boolean).join('\n\n') };
+    } else if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
       captured.role = 'world_knowledge_query_planner';
       assert.equal(typeof (input.request ?? input).semantic_input, 'string');
       output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
@@ -106,8 +134,9 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
       captured.output = await response.clone().json(); captured.duration_ms = performance.now() - started;
       await save(); return response;
     } else {
-      captured.role = 'unconfigured_observed_role';
-      await save(); throw new Error('TARGET_SMOKE_UNCONFIGURED_PROVIDER_ROLE');
+      captured.role = 'unknown';
+      await save();
+      throw new Error(`TARGET_SMOKE_UNCONFIGURED_PROVIDER_ROLE: role=unknown, schema=<absent>; system=${system.slice(0, 120)}`);
     }
     captured.output = output; captured.duration_ms = performance.now() - started;
     await save();

@@ -276,7 +276,17 @@ export function installPresenceProductionE2eFetch({
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     requestLog?.push({ system, user: modelInput });
     let output;
-    if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+    const openingRole = presenceOpeningRole(modelInput);
+    if (openingRole === 'gameplay_narrator') {
+      output = { prose: presenceOpeningProse(modelInput) };
+    } else if (openingRole === 'gameplay_narrator_auditor') {
+      output = {
+        pass: true, failed_checks: [], concerns: [],
+        evidence: ['Проверено по переданным фактам вступления.'],
+      };
+    } else if (openingRole === 'gameplay_narrator_semantic_repair') {
+      output = { prose: presenceOpeningProse(modelInput) };
+    } else if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
       output = {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: [], focus_refs: [], requested_predicates: [], search_hints: [],
@@ -357,15 +367,45 @@ export function installPresenceProductionE2eFetch({
         evidence: ['Test response uses the supplied committed visible facts.'],
       };
     } else if (MATERIALIZATION_ROLES.some((role) => system.includes(role))) {
-      throw new Error(`unexpected materialization LLM role in presence e2e: ${system.slice(0, 120)}`);
+      const role = MATERIALIZATION_ROLES.find((name) => system.includes(name));
+      throw new Error(`presence production e2e: unexpected role=${role}`
+        + ` schema=${modelInput.schema ?? '<absent>'} system=${system.slice(0, 120)}`);
     } else {
-      throw new Error(`presence production e2e: unconfigured LLM role: ${system.slice(0, 160)}`);
+      throw new Error(`presence production e2e: unconfigured role=unknown`
+        + ` schema=${modelInput.schema ?? '<absent>'} system=${system.slice(0, 120)}`);
     }
     return new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify(output) } }],
     }), { status: 200 });
   };
   return () => { globalThis.fetch = previousFetch; };
+}
+
+function presenceOpeningRole(input) {
+  const scene = input?.сцена;
+  if (!scene || typeof scene !== 'object' || typeof scene.граница !== 'string'
+      || (scene.факты != null && !Array.isArray(scene.факты))
+      || (scene.персонажи != null && !Array.isArray(scene.персонажи))) return null;
+  if (Object.hasOwn(input, 'отклонённая_проза')) return 'gameplay_narrator_semantic_repair';
+  if (Object.hasOwn(input, 'проверяемая_проза')) return 'gameplay_narrator_auditor';
+  return 'gameplay_narrator';
+}
+
+function presenceOpeningFacts(input) {
+  const scene = input.сцена;
+  const values = [...(scene.факты ?? []),
+    ...(scene.персонажи ?? []).flatMap(({ имя, факты = [] }) => [имя, ...факты])];
+  return values.flatMap((value) => {
+    if (typeof value === 'string') return value.trim() ? [value] : [];
+    return typeof value?.текст === 'string' && value.текст.trim() ? [value.текст] : [];
+  });
+}
+
+function presenceOpeningProse(input) {
+  const facts = presenceOpeningFacts(input);
+  const split = Math.ceil(facts.length / 2);
+  return [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+    .filter(Boolean).join('\n\n');
 }
 
 const FIXTURE_ROOT_ENV = Object.freeze({

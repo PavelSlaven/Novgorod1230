@@ -33,7 +33,8 @@ import { applyLocalFireProjection, createLocalFireAtomicWritePlan } from
 import { createSpatialSemanticAtomicWritePlan } from
   './spatial-semantic-atomic-write-plan.js';
 import { spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
-import { projectLowerDvinaTraceS1Resolutions } from
+import { projectLowerDvinaTraceS1Resolutions,
+  projectLowerDvinaTraceS1Visible } from
   '../../runtime/releases/lower-dvina-trace-s1-production.js';
 import { applyBackgroundNpcSemanticPlan,
   createBackgroundNpcSemanticAtomicWritePlan } from
@@ -162,21 +163,23 @@ export async function commitLowerDvinaTraceTurnStep({
   const currentPosition = envelope.consequence?.position_transition?.to_position_ref
     ?? state.position?.position_id
     ?? state.position?.position_ref;
-  const committedSpatialResolutions = (state.spatial_semantic ?? [])
-    .flatMap(({ resolutions = [] }) => resolutions)
-    .filter(({ position_ref: positionRef }) => positionRef === currentPosition);
   const npcVisibleContext = projectBackgroundNpcRemainder({
     visibleContext: ordinaryVisibleContext,
     remainder: backgroundNpcSemanticPlan?.remainder
   });
-  const visibleContext = projectLowerDvinaTraceS1Resolutions({
+  const committedS1VisibleContext = projectLowerDvinaTraceS1Visible({
     playerSafeState: npcVisibleContext,
-    resolutions: [...committedSpatialResolutions,
-      ...(spatialSemanticPlan == null ? [] : [{
+    committedState: { ...state, position: { ...state.position,
+      position_id: currentPosition } },
+    resolverAvailable: true
+  });
+  const visibleContext = projectLowerDvinaTraceS1Resolutions({
+    playerSafeState: committedS1VisibleContext,
+    resolutions: spatialSemanticPlan == null ? [] : [{
         local_ref: spatialSemanticPlan.resolution.local_ref,
         position_ref: spatialSemanticPlan.resolution.position_ref,
         semantics: { kind: spatialSemanticPlan.formal_spatial_context.kind,
-          ...spatialSemanticPlan.resolution.outcome } }])]
+          ...spatialSemanticPlan.resolution.outcome } }]
   });
   const visibleEnvelopeInput = visibleContext === envelope.visible_context ? envelope
     : { ...envelope, visible_context: visibleContext };

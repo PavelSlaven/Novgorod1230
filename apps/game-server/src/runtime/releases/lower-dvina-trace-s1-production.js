@@ -167,6 +167,26 @@ async function resolveLocalMovement({ value, authority, partyId, target }) {
 }
 export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   committedState, resolverAvailable }) {
+  const next = projectLowerDvinaTraceS1Visible({ playerSafeState,
+    committedState, resolverAvailable });
+  let committed;
+  try { strictSnapshot(playerSafeState); committed = strictSnapshot(committedState); }
+  catch { return next; }
+  if (!resolverAvailable || !Array.isArray(committed.spatial_semantic)) return next;
+  const position = committed.position?.position_id ?? committed.position?.position_ref;
+  if (!text(position)) return next;
+  const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
+    capacity_total: total, consumed_count: used }) => status === 'committed'
+      && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
+      && Number.isSafeInteger(used) && used < total);
+  return available == null ? next : { ...next, spatial_semantic: {
+    semantic_grounding_available: true,
+    position_ref: position } };
+}
+// Player-visible S1 projection only; the planner marker stays in
+// projectLowerDvinaTraceS1Capability.
+export function projectLowerDvinaTraceS1Visible({ playerSafeState,
+  committedState, resolverAvailable }) {
   let player; let committed;
   try { player = strictSnapshot(playerSafeState); committed = strictSnapshot(committedState); }
   catch { return player ?? {}; }
@@ -175,16 +195,9 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   if (!text(position)) return player;
   const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
     resolutions.filter((resolution) => visibleAtPosition(resolution, position)));
-  const next = projectLocalPositionStatus(
+  return projectLocalPositionStatus(
     projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
       resolutions }), resolutions, position);
-  const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
-    capacity_total: total, consumed_count: used }) => status === 'committed'
-      && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
-      && Number.isSafeInteger(used) && used < total);
-  return available == null ? next : { ...next, spatial_semantic: {
-    semantic_grounding_available: true,
-    position_ref: position } };
 }
 function projectLocalPositionStatus(state, resolutions, position) {
   const inside = new Set(resolutions.filter((resolution) =>

@@ -116,7 +116,8 @@ function strip(value, dropMap = false) {
   for (const [key, child] of Object.entries(value)) {
     if (dropMap && key === 'scene_position_g6') { changed = true; continue; }
     if (key === 'scene_readback_present'
-        || key === 'scene_readback_prior_locus') {
+        || key === 'scene_readback_prior_locus'
+        || key === 'body_state_initialization_profile') {
       changed = true; continue;
     }
     if (sceneReadback && priorLocus != null

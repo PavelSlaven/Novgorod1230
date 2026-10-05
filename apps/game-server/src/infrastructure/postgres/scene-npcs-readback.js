@@ -1,5 +1,7 @@
 import { SCENE_NPC_SOURCE, withoutSceneNpcs } from
   '../../runtime/lower-dvina-trace-scene-presence.js';
+import { loadApprovedMaterializedNpcBodyInitializationProfile } from
+  '../../runtime/combat-min-data.js';
 
 export { SCENE_NPC_SOURCE, withoutSceneNpcs };
 
@@ -9,8 +11,12 @@ export { SCENE_NPC_SOURCE, withoutSceneNpcs };
  * scene placement, so the NPCs of the player's current site are read here, with the
  * G6 of their position (same-G6 is the conversation co-presence rule).
  */
-export async function withSceneNpcs(pool, partyId, state) {
-  state = await withCombatParticipantBodies(pool, partyId, state);
+export async function withSceneNpcs(pool, partyId, state, {
+  loadBodyInitializationProfile =
+    loadApprovedMaterializedNpcBodyInitializationProfile
+} = {}) {
+  state = await withCombatParticipantBodies(pool, partyId, state,
+    loadBodyInitializationProfile);
   const siteId = state?.position?.site_id;
   if (typeof siteId !== 'string' || siteId === '') return state;
   const { rows } = await pool.query(
@@ -73,7 +79,8 @@ export async function withSceneNpcs(pool, partyId, state) {
     npcs: [...current.values(), ...loaded] };
 }
 
-async function withCombatParticipantBodies(pool, partyId, state) {
+async function withCombatParticipantBodies(pool, partyId, state,
+  loadBodyInitializationProfile) {
   const participantIds = combatNpcParticipantIds(state);
   if (participantIds.length === 0) return state;
   const { rows } = await pool.query(
@@ -83,10 +90,15 @@ async function withCombatParticipantBodies(pool, partyId, state) {
       WHERE party_id=$1 AND actor_kind='npc' AND actor_id=ANY($2::text[])
       ORDER BY actor_id`, [partyId, participantIds]);
   const persisted = new Map(rows.map((row) => [row.actor_id, row]));
+  const initializationProfile = participantIds.some((id) => !persisted.has(id))
+    ? await loadBodyInitializationProfile() : null;
   const npcs = (state.npcs ?? []).map((npc) => {
     const body = persisted.get(npc.instance_id);
-    return body == null ? npc : { ...npc,
-      ...sceneNpcBodyState(body, npc.body_state_profile) };
+    if (body != null) return { ...npc,
+      ...sceneNpcBodyState(body, npc.body_state_profile),
+      body_state_initialization_profile: null };
+    return participantIds.includes(npc.instance_id) ? { ...npc,
+      body_state_initialization_profile: initializationProfile } : npc;
   });
   const known = new Set(npcs.map(({ instance_id: id }) => id));
   const missingIds = participantIds.filter((id) => !known.has(id));
@@ -113,7 +125,8 @@ async function withCombatParticipantBodies(pool, partyId, state) {
         AND body.actor_id=n.npc_id
       WHERE n.party_id=$1 AND n.npc_id=ANY($2::text[])
       ORDER BY n.npc_id`, [partyId, missingIds]);
-  return { ...state, npcs: [...npcs, ...missing.map(sceneNpcSnapshot)] };
+  return { ...state, npcs: [...npcs, ...missing.map((row) =>
+    sceneNpcSnapshot(row, initializationProfile, false))] };
 }
 
 function combatNpcParticipantIds(state) {
@@ -130,7 +143,8 @@ function combatNpcParticipantIds(state) {
     }))];
 }
 
-function sceneNpcSnapshot(row) {
+function sceneNpcSnapshot(row, initializationProfile = null,
+  sceneReadback = true) {
   return {
     instance_id: row.npc_id,
     participant_slot_ref: row.semantic_state?.participant_slot_ref,
@@ -152,7 +166,10 @@ function sceneNpcSnapshot(row) {
     profile_candidate_set_digest: row.profile_candidate_set_digest,
     position_id: row.position_id,
     g6_instance_id: row.g6_instance_id,
-    scene_readback_present: true,
+    ...(sceneReadback ? { scene_readback_present: true } : {}),
+    ...(initializationProfile == null ? {} : {
+      body_state_initialization_profile: initializationProfile
+    }),
     runtime_source: SCENE_NPC_SOURCE
   };
 }

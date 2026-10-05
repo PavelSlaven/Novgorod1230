@@ -1,5 +1,9 @@
 import { serverError } from '../errors.js';
 import { npcSharesPlayerScene } from './lower-dvina-trace-scene-presence.js';
+import { loadApprovedMaterializedNpcBodyInitializationProfile } from
+  './combat-min-data.js';
+import { projectTraceCombatWorkingState } from
+  './lower-dvina-trace-combat-working-state.js';
 
 const COMMAND_ID = 'live_world.request_combat';
 const blocked = (reason) => ({ version: 1, schema: 'turn_availability_decision',
@@ -8,7 +12,9 @@ const blocked = (reason) => ({ version: 1, schema: 'turn_availability_decision',
 
 /** One generic live-world entry, with targets derived from the current scene readback. */
 export function createLiveWorldCombatCommand({ state, repository, partyId,
-  idempotencyKey, turnBudget = null }) {
+  idempotencyKey, turnBudget = null,
+  loadBodyInitializationProfile =
+    loadApprovedMaterializedNpcBodyInitializationProfile }) {
   if (typeof repository?.loadPhase2State !== 'function'
       || typeof partyId !== 'string' || !partyId) return null;
   if (combatTargetIds(state).length === 0) return null;
@@ -44,12 +50,7 @@ export function createLiveWorldCombatCommand({ state, repository, partyId,
         && !(candidate.combat_sessions ?? []).some(({ status }) =>
           status !== 'ended');
       if (!present) return blocked('combat_target_unavailable');
-      const hasBody = combatTargetIds(candidate).some((targetId) =>
-        candidate.npcs.find(({ instance_id: id }) => id === targetId)
-          ?.body_state_persisted === true);
-      return blocked(hasBody
-        ? 'combat_actor_execution_profile_required'
-        : 'combat_actor_body_state_required');
+      return blocked('combat_actor_execution_profile_required');
     },
     async consequence({ semanticPlan, playerInput }) {
       const raw = semanticPlan?.operations?.[0];
@@ -68,8 +69,21 @@ export function createLiveWorldCombatCommand({ state, repository, partyId,
       }
       const actor = current.npcs.find(({ instance_id: id }) =>
         id === raw.target_refs[0]);
-      if (actor?.body_state_persisted !== true) {
-        throw gap('combat_actor_body_state_required', raw.target_refs[0]);
+      if (!actor) throw gap('combat_actor_unavailable', raw.target_refs[0]);
+      if (actor.body_state_persisted !== true) {
+        const profile = actor.body_state_initialization_profile
+          ?? await loadBodyInitializationProfile();
+        const participantState = { ...current, npcs: current.npcs.map((npc) =>
+          npc.instance_id === actor.instance_id ? { ...npc,
+            body_state_initialization_profile: profile } : npc) };
+        // The exchange owner initializes and writes this participant with its
+        // first atomic P16 combat commit; v17 execution remains gated below.
+        projectTraceCombatWorkingState(participantState, {
+          participant_refs: [
+            { entity_kind: 'player_character', entity_id: current.actor_id },
+            { entity_kind: 'npc', entity_id: actor.instance_id }
+          ]
+        });
       }
       // v17 has no approved generic combat execution profile yet. Do not borrow a
       // scenario binding or activate the candidate bundle at this boundary.
@@ -84,7 +98,8 @@ function combatTargetIds(state) {
     typeof npc.instance_id === 'string' && npc.instance_id
       && npc.scene_readback_present === true
       && npcSharesPlayerScene(state, npc));
-  return actors.map(({ instance_id: id }) => id);
+  return actors.map(({ instance_id: id }) => id)
+    .filter((id) => typeof id === 'string' && id !== '');
 }
 
 function validOperation(operation, actorId) {

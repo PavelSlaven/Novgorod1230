@@ -54,6 +54,39 @@ export async function loadCombatMinScopedBodyProfile(repositoryRoot) {
     scopedProductionApproval: scopedApproval, mode: 'runtime' });
 }
 
+const MATERIALIZED_BODY_INIT_SHA256 = '208672c3b1faa36def01470e81dd517cc3417eec1c87f850ece8b321c2f361bf';
+
+/** Builds the body-state owner DTO from the exact Opus-approved source bytes. */
+export async function loadApprovedMaterializedNpcBodyInitializationProfile({
+  readFileImpl = readFile
+} = {}) {
+  const path = new URL('../../../../data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/body-init-profile-source.json', import.meta.url);
+  let bytes;
+  let source;
+  try {
+    bytes = await readFileImpl(path);
+    if (createHash('sha256').update(bytes).digest('hex')
+        !== MATERIALIZED_BODY_INIT_SHA256) throw new Error('source digest mismatch');
+    source = JSON.parse(bytes.toString('utf8'));
+  } catch {
+    throw Object.assign(new Error('combat_actor_body_state_profile_gap'), {
+      code: 'combat_actor_body_state_profile_gap'
+    });
+  }
+  if (source?.candidate_status !== 'candidate_not_approved'
+      || source.target_schema !== 'rus.body_state.initialization_profile.v1'
+      || source.profile_id !== 'combat-min-materialized-npc-default-v1'
+      || source.version !== 1 || source.selection_rule?.variants?.length !== 0
+      || source.approval_state?.candidate_emission !== null) {
+    throw Object.assign(new Error('combat_actor_body_state_profile_gap'), {
+      code: 'combat_actor_body_state_profile_gap'
+    });
+  }
+  return Object.freeze({ schema: source.target_schema, status: 'approved',
+    profile_ref: structuredClone(source.profile_ref),
+    initial_state: structuredClone(source.initial_state_proposal) });
+}
+
 /** Reads the approved authoring package without activating it in gameplay. */
 export async function loadCombatMinDataPackage(repositoryRoot) {
   const directory = resolve(repositoryRoot, DATA_DIR);

@@ -130,6 +130,7 @@ const BODY_METRIC_MEANINGS = {
   health: 'здоровья', energy: 'запаса энергии', satiety: 'сытости'
 };
 const PRIVATE_FIELD = /(?:^|_)(?:id|ref|version|ordinal|counter|trace|schema|digest|calibration|profile)(?:_|$)/iu;
+const PRIVATE_CONTENT_FIELD = /(?:^|_)(?:calibration|profile)(?:_|$)/iu;
 
 function projectCombatChoices(choices) {
   const refChoice = (reference) => choices.refs.find(({ value }) =>
@@ -300,8 +301,9 @@ function collectPrivateIds(value, result = new Set()) {
   } else if (value && typeof value === 'object') {
     for (const [key, item] of Object.entries(value)) {
       if (typeof item === 'string'
-          && ['entity_id', 'request_id', 'boundary_id', 'combat_id',
-            'signal_id', 'source_id', 'trace_id'].includes(key)) {
+          && (['entity_id', 'request_id', 'boundary_id', 'combat_id',
+            'signal_id', 'source_id', 'trace_id'].includes(key)
+            || PRIVATE_CONTENT_FIELD.test(key))) {
         result.add(item);
       }
       collectPrivateIds(item, result);

@@ -9,6 +9,8 @@ import { bindLowerDvinaTraceTurnStepIdempotency } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-idempotency.js';
 import { projectTraceCombatWorkingState } from
   '../src/runtime/lower-dvina-trace-combat-working-state.js';
+import { loadApprovedMaterializedNpcBodyInitializationProfile } from
+  '../src/runtime/combat-min-data.js';
 
 const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'profile',
   profile_level: 'background', anchor_id: null,
@@ -54,6 +56,7 @@ test('scene NPCs are read from the database for the current site with the G6', a
   assert.deepEqual(loaded.body_profile_ref, row('x').body_profile_ref);
   assert.equal(loaded.body_state_version, 4);
   assert.equal(loaded.body_state_persisted, true);
+  assert.equal(loaded.scene_readback_present, true);
   assert.equal(loaded.location_profile_ref, 'loc');
   assert.equal(loaded.runtime_source, SCENE_NPC_SOURCE);
   assert.equal(state.npcs.length, 2);
@@ -193,6 +196,7 @@ test('active combat participant reloads from party records after leaving player 
   const participant = loaded.npcs.find(({ instance_id: id }) => id === npc.npc_id);
   assert.ok(participant);
   assert.equal(participant.runtime_source, SCENE_NPC_SOURCE);
+  assert.equal(Object.hasOwn(participant, 'scene_readback_present'), false);
   assert.equal(participant.position_id, npc.position_id);
   const participantRead = p.calls.find(({ text }) =>
     /FROM party_runtime\.party_npcs n/u.test(text)
@@ -205,6 +209,76 @@ test('active combat participant reloads from party records after leaving player 
     actor_id: 'player', body_state: { health: 90 } }, session);
   assert.equal(working.actor_states[`npc:${npc.npc_id}`].body_state.health, 73);
 });
+
+test('scene readback leaves body initialization profile loading to combat owner',
+  async () => {
+    const npc = row('npc_without_body', { body_state_version: null,
+      health: null, energy: null, satiety: null, body_profile_ref: null });
+    const loaded = await withSceneNpcs(pool([npc]), 'party', base());
+    const sceneNpc = loaded.npcs.find(({ instance_id: id }) =>
+      id === 'npc_without_body');
+    assert.equal(sceneNpc.body_state_persisted, false);
+    assert.equal(Object.hasOwn(sceneNpc,
+      'body_state_initialization_profile'), false);
+    assert.equal(sceneNpc.scene_readback_present, true);
+  });
+
+test('profile source gap does not break ordinary readback but remains typed for combat',
+  async () => {
+    let loads = 0;
+    const loadBrokenProfile = () => {
+      loads += 1;
+      return loadApprovedMaterializedNpcBodyInitializationProfile({
+        readFileImpl: async () => Buffer.from('{}\n')
+      });
+    };
+    const ordinary = await withSceneNpcs(pool([]), 'party', base(), {
+      loadBodyInitializationProfile: loadBrokenProfile
+    });
+    assert.equal(loads, 0);
+    assert.ok(ordinary);
+
+    const combat = base({ position: { position_id: 'pos:me' },
+      combat_sessions: [{ status: 'paused_for_player', participant_refs: [
+        { entity_kind: 'npc', entity_id: 'npc_missing_body' }
+      ] }], npcs: [{ instance_id: 'npc_missing_body' }] });
+    await assert.rejects(withSceneNpcs(pool([]), 'party', combat, {
+      loadBodyInitializationProfile: loadBrokenProfile
+    }), { code: 'combat_actor_body_state_profile_gap' });
+    assert.equal(loads, 1);
+  });
+
+test('combat body readback errors propagate and are never treated as an absent row', async () => {
+  const error = new Error('readback failed');
+  const pool = { async query(text) {
+    if (/party_actor_body_states/u.test(text)) throw error;
+    return { rows: [] };
+  } };
+  const state = base({ position: { position_id: 'pos:me' },
+    combat_sessions: [{ status: 'paused_for_player', participant_refs: [
+      { entity_kind: 'npc', entity_id: 'npc_missing_body' }
+    ] }], npcs: [{ instance_id: 'npc_missing_body' }] });
+  await assert.rejects(withSceneNpcs(pool, 'party', state), error);
+});
+
+test('combat-only participant readback initializes missing body without scene marker',
+  async () => {
+    const combatSession = { status: 'paused_for_player', participant_refs: [
+      { entity_kind: 'npc', entity_id: 'npc_missing_body' }
+    ] };
+    const snapshot = base({ position: { position_id: 'pos:me' },
+      npcs: [{ instance_id: 'npc_missing_body', body_state_persisted: false }],
+      combat_sessions: [combatSession] });
+    const loaded = await withSceneNpcs(pool([], [], [], []), 'party', snapshot);
+    const participant = loaded.npcs[0];
+    assert.equal(participant.body_state_persisted, false);
+    assert.equal(Object.hasOwn(participant, 'scene_readback_present'), false);
+    const working = projectTraceCombatWorkingState({ ...loaded,
+      actor_id: 'player', body_state: { health: 90 } }, combatSession);
+    assert.deepEqual(working.actor_states['npc:npc_missing_body'].body_state,
+      { health: 100, satiety: 70, energy: 80, active_conditions: [],
+        body_parts: {}, prose: null });
+  });
 
 test('scene-loaded NPCs are stripped before a snapshot and nothing else is touched', () => {
   const keep = { instance_id: 'npc_start', anchor_id: 'a' };
@@ -305,4 +379,13 @@ test('withoutSceneRead cuts the position→G6 map at any depth as well', () => {
   assert.deepEqual(cut, { working_state: { world_state: { npcs: [{ instance_id: 's' }] } } });
   const clean = { a: 1 };
   assert.equal(withoutSceneRead(clean), clean);
+});
+
+test('snapshot stripping removes transient body initialization DTOs', () => {
+  const profile = { profile_ref: { entity_id: 'init-profile' },
+    initial_state: { health: 100, energy: 80, satiety: 70 } };
+  const stripped = withoutSceneNpcs({ npcs: [{ instance_id: 'combat-only',
+    body_state_initialization_profile: profile }] });
+  assert.equal(Object.hasOwn(stripped.npcs[0],
+    'body_state_initialization_profile'), false);
 });

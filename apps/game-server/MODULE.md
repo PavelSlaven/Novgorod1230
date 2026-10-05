@@ -726,15 +726,19 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
-Combat #224/D65 keeps mechanics in the shared `@rus/body-state` and `@rus/npc-runtime` owners; scenario code does not own combat rules. `combat-min-data.js` validates the scoped qualitative-profile approval and source pin, while the active v17 bindings intentionally omit `combatBodyBandContext`. Combat body bands therefore remain typed gaps in production until authoritative actor scope and a separate versioned v17 cutover are approved; the scoped profile approval alone does not activate them.
+Combat #224/D65 keeps mechanics in the shared `@rus/body-state` and `@rus/npc-runtime` owners; scenario code does not own combat rules. `combat-min-data.js` validates the scoped qualitative-profile approval and source pin, and builds the materialized-NPC initialization DTO only from the exact D67-approved bytes. Active v17 bindings still omit `combatBodyBandContext`; combat body bands therefore remain typed gaps in production until authoritative actor scope and a separate versioned v17 cutover are approved. The body initialization approval does not activate the broader combat bundle.
 
 The generic live-world `request_combat` command implementation derives
-candidate presence only from `scene_readback_present`, which records the scene
-owner readback and is not combat approval. It is not registered in the live
-world turn registry until the separate common body initialization CR and
-approved execution profile are ready. Before that, an attempted request follows
-the ordinary owner-preflight and repair path, so the turn can still complete
-with normal narration. The codes `combat_actor_body_state_required`,
+candidate presence only from `scene_readback_present`, which marks rows read by
+the current scene owner and is not combat approval. An absent body row receives
+the exact D67-approved initialization DTO only after successful authoritative
+readback; a conflicting approved materialization profile remains a typed gap.
+The command is registered when the current scene has a target, regardless of
+unrelated NPC body rows. The initialization DTO is transient combat-owner input:
+snapshots and ordinary-turn/model projections do not retain or expose it.
+Execution remains fail-closed until a separate generic profile and v17 cutover
+are approved, so registration alone cannot start combat.
+The codes `combat_actor_body_state_required`,
 `combat_actor_unavailable`, and
 `combat_actor_execution_profile_required` remain private diagnostics and are
 not whole-turn HTTP 409 responses. When registered, its mode uses only blocks

@@ -9,6 +9,8 @@ import { assembleNpcCombatPlan } from
   '../src/runtime/lower-dvina-trace-combat-llm.js';
 import { projectTraceCombatSubjectiveState } from
   '../src/runtime/lower-dvina-trace-combat-subjective.js';
+import { projectNpcs } from
+  '../src/runtime/lower-dvina-trace-player-safe-entities.js';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createCombatMinD65ProbeData, loadCombatMinDataPackage,
@@ -192,7 +194,10 @@ test('ordinary and authored combat actors produce identical provider payloads', 
     reason: 'Угроза требует решения.' } };
   } };
   const model = createLowerDvinaTraceNpcCombatModel({ roleRunner });
-  const repair = { repair: { original_output: {},
+  const repair = { repair: { original_output: {
+    profile_ref: { entity_id: 'combat-min-materialized-npc-default-v1' },
+    calibration: 'D71-private-calibration',
+    reason: 'D71-private-calibration combat-min-materialized-npc-default-v1' },
     validation_errors: ['operation_choice: invalid_structure'] } };
 
   for (const [index, fixture] of fixtures.entries()) {
@@ -207,7 +212,11 @@ test('ordinary and authored combat actors produce identical provider payloads', 
       request.npc_subjective_state = {
         identity: { name_or_label: 'Воин' },
         goals: [fixture.goal],
-        equipment: fixture.equipment ?? []
+        equipment: fixture.equipment ?? [],
+        body_state_initialization_profile: {
+          profile_ref: { entity_id: 'combat-min-materialized-npc-default-v1' },
+          calibration: 'D71-private-calibration'
+        }
       };
       request.perceived_combat_state = {
         visible_opponents: [ref('player_character', 'opponent-1')],
@@ -244,6 +253,10 @@ test('ordinary and authored combat actors produce identical provider payloads', 
     assert.deepEqual(pair[0].map(({ body }) => body),
       pair[1].map(({ body }) => body),
       `provider payload differs by ordinary/authored source for fixture ${index + 1}`);
+    for (const { body } of pair.flat()) {
+      assert.doesNotMatch(body,
+        /combat-min-materialized-npc-default-v1|D71-private-calibration|body_state_initialization_profile|calibration/u);
+    }
   }
 });
 
@@ -282,7 +295,11 @@ test('NPC combat model omits stale body prose and reports unavailable metric gap
     condition_summary: 'старое описание', pain: 'умеренная', mobility: 'ограничена',
     usable_hands: 1, active_conditions: ['injury-id:closed-wound'], health: 73, satiety: 62,
     energy: 41, calibration_marker: 'internal-calibration-only',
-    body_state_profile: { status: 'approved', private_id: 'profile-secret' }
+    body_state_profile: { status: 'approved', private_id: 'profile-secret' },
+    body_state_initialization_profile: { schema: 'rus.body_state.initialization_profile.v1',
+      profile_ref: { entity_ref: { entity_id: 'combat-min-materialized-npc-default-v1' } },
+      initial_state: { health: 100, satiety: 70, energy: 80 },
+      calibration: { label_internal_only: 'D71-private-calibration' } }
   } }], actor_states: { 'npc:npc-1': { body_state: {
     condition_summary: 'свежее описание', pain: 'умеренная',
     mobility: 'ограничена', usable_hands: 1,
@@ -292,7 +309,9 @@ test('NPC combat model omits stale body prose and reports unavailable metric gap
   const request = combatRequest();
   request.npc_subjective_state = projectTraceCombatSubjectiveState(
     request.npc_ref, state);
-  for (const context of [undefined, { repair: { original_output: {},
+  for (const context of [undefined, { repair: { original_output: {
+    profile_ref: { entity_id: 'combat-min-materialized-npc-default-v1' },
+    calibration: 'D71-private-calibration' },
     validation_errors: ['invalid'] } }]) {
     await model(request, context);
   }
@@ -305,9 +324,22 @@ test('NPC combat model omits stale body prose and reports unavailable metric gap
     assert.doesNotMatch(userMessage,
       /старое описание|свежее описание|умеренная|ограничена|usable_hands/u);
     assert.doesNotMatch(userMessage,
-      /"health"|"satiety"|"energy"|body_state_qualitative_metric_gap|internal-calibration-only|profile-secret|body_state_profile/u);
+      /"health"|"satiety"|"energy"|body_state_qualitative_metric_gap|internal-calibration-only|profile-secret|body_state_profile|combat-min-materialized-npc-default-v1|D71-private-calibration/u);
     assert.doesNotMatch(userMessage, /injury-id:closed-wound/u);
   }
+});
+
+test('player-safe NPC projection excludes init profile refs and calibration', () => {
+  const projected = projectNpcs([{ instance_id: 'npc-1',
+    scene_readback_present: true, profile_ref: {
+      entity_id: 'combat-min-materialized-npc-default-v1' },
+    body_state_initialization_profile: { profile_ref: {
+      entity_id: 'combat-min-materialized-npc-default-v1' },
+    calibration: 'D71-private-calibration' }, body_state: {
+      health: 100, satiety: 70, energy: 80 } }], { explicitlyVisible: true });
+  const serialized = JSON.stringify(projected);
+  assert.doesNotMatch(serialized,
+    /combat-min-materialized-npc-default-v1|D71-private-calibration|body_state_initialization_profile|profile_ref|calibration/u);
 });
 
 test('missing qualitative body bands return per-metric typed gaps', () => {

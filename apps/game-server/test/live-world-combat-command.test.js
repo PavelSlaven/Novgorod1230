@@ -1,4 +1,6 @@
 import test from 'node:test';
+import { loadApprovedMaterializedNpcBodyInitializationProfile } from
+  '../src/runtime/combat-min-data.js';
 import assert from 'node:assert/strict';
 import { createTurnCommandRegistry, validateTurnModeResolution } from '@rus/turn';
 import { resolveConsequenceStage } from '../../../packages/turn/src/stages/consequence.js';
@@ -10,14 +12,14 @@ const partyId = 'party-1';
 const actorId = 'player-1';
 
 function state({ targetId = 'npc-1', bodyPersisted = false,
-  anchorId = 'anchor-1', readbackPresent = true } = {}) {
+  anchorId = 'anchor-1', readbackPresent = true, extraNpcs = [] } = {}) {
   return {
     party_id: partyId,
     actor_id: actorId,
     position: { g5_anchor_id: 'anchor-1' },
     npcs: [{ instance_id: targetId, anchor_id: anchorId,
       body_state_persisted: bodyPersisted,
-      scene_readback_present: readbackPresent }],
+      scene_readback_present: readbackPresent }, ...extraNpcs],
     current_visible_context: { visible_npc: [{
       entity_ref: { entity_kind: 'npc', entity_id: targetId }
     }] }
@@ -31,11 +33,11 @@ function operation(targetId = 'npc-1') {
     risk_posture: 'ordinary' };
 }
 
-function fixture(currentState) {
+function fixture(currentState, commandOptions = {}) {
   let reads = 0;
   const repository = { async loadPhase2State() { reads += 1; return currentState; } };
   const command = createLiveWorldCombatCommand({ state: state(), repository,
-    partyId, idempotencyKey: 'idem-1' });
+    partyId, idempotencyKey: 'idem-1', ...commandOptions });
   return { command, reads: () => reads };
 }
 
@@ -53,23 +55,27 @@ test('one generic binding admits current scene NPC refs without per-actor bindin
   }), false);
   assert.deepEqual(command.availability({ committed_state: state() }), {
     version: 1, schema: 'turn_availability_decision', status: 'blocked',
-    can_attempt: false, reasons: ['combat_actor_body_state_required'],
+    can_attempt: false, reasons: ['combat_actor_execution_profile_required'],
     check_requests: []
   });
 });
 
-test('live-world registry does not register combat before body initialization',
+test('live-world registry ignores an unrelated scene NPC without a body row',
   async () => {
-    const currentState = state();
+    const currentState = state({ bodyPersisted: true, extraNpcs: [{
+      instance_id: 'npc-unrelated', anchor_id: 'anchor-1',
+      body_state_persisted: false, scene_readback_present: true
+    }] });
     assert.equal(currentState.npcs[0].scene_readback_present, true);
     const registry = await liveWorldTurnRegistry({ state: currentState,
       repository: { async loadPhase2State() { return currentState; } },
       partyId, idempotencyKey: 'idem-1',
       spatialExpansionRuntime: null, spatialLocalSceneRuntime: null });
     assert.equal(registry.registered().some(({ command_id: id }) =>
-      id === 'live_world.request_combat'), false);
-    const baseStateBlocks = [];
-    assert.deepEqual(registry.stateBlocks(), baseStateBlocks);
+      id === 'live_world.request_combat'), true);
+    assert.deepEqual(registry.stateBlocks(), [
+      'current_position', 'party_state', 'relevant_npcs'
+    ]);
     const modeResolution = { schema: 'turn_mode_resolution', turn_id: 'turn-1',
       selected_primary_mode: 'attention', secondary_modes: [],
       intent: { player_words_are_world_facts: false },
@@ -91,13 +97,55 @@ test('consequence rereads scene and returns typed gap when the target disappeare
     assert.equal(reads(), 1);
   });
 
-test('missing persisted NPC body returns the body-state typed gap', async () => {
-  const { command, reads } = fixture(state());
+test('missing persisted NPC body initializes from profile then keeps execution gate closed', async () => {
+  const initializationProfile = { schema:
+    'rus.body_state.initialization_profile.v1', status: 'approved',
+  profile_ref: { entity_ref: { entity_kind: 'body_state_profile',
+    entity_id: 'combat-min-materialized-npc-default-v1' }, authoring_version: '1' },
+  initial_state: { health: 100, satiety: 70, energy: 80 } };
+  const current = state();
+  const { command, reads } = fixture(current, {
+    loadBodyInitializationProfile: async () => initializationProfile
+  });
   await assert.rejects(command.consequence({ semanticPlan: {
     operations: [operation()]
-  } }), { code: 'combat_actor_body_state_required' });
+  } }), { code: 'combat_actor_execution_profile_required' });
   assert.equal(reads(), 1);
 });
+
+test('body profile source gap stays scoped to the combat participant', async () => {
+  const current = state({ extraNpcs: [{ instance_id: 'npc-unrelated',
+    anchor_id: 'anchor-1', body_state_persisted: true,
+    scene_readback_present: true }] });
+  const { command } = fixture(current, {
+    loadBodyInitializationProfile: () =>
+      loadApprovedMaterializedNpcBodyInitializationProfile({
+        readFileImpl: async () => Buffer.from('{}\n')
+      })
+  });
+  await assert.rejects(command.consequence({ semanticPlan: {
+    operations: [operation()]
+  } }), { code: 'combat_actor_body_state_profile_gap' });
+});
+
+test('live-world registry registers persisted target and keeps the execution gate',
+  async () => {
+    const currentState = state({ bodyPersisted: true });
+    const registry = await liveWorldTurnRegistry({ state: currentState,
+      repository: { async loadPhase2State() { return currentState; } },
+      partyId, idempotencyKey: 'idem-1', spatialExpansionRuntime: null,
+      spatialLocalSceneRuntime: null });
+    const command = registry.registered().find(({ command_id: id }) =>
+      id === 'live_world.request_combat');
+    assert.ok(command);
+    assert.deepEqual(registry.stateBlocks(), [
+      'current_position', 'party_state', 'relevant_npcs'
+    ]);
+    assert.equal(registry.stateBlocks().includes('combat_state'), false);
+    await assert.rejects(command.consequence({ semanticPlan: {
+      operations: [operation()]
+    } }), { code: 'combat_actor_execution_profile_required' });
+  });
 
 test('persisted body without an approved generic profile remains fail-closed',
   async () => {
@@ -110,7 +158,7 @@ test('persisted body without an approved generic profile remains fail-closed',
 test('consequence stage passes the last applied player-boundary plan to combat',
   async () => {
     for (const { current, expected } of [
-      { current: state(), expected: 'combat_actor_body_state_required' },
+      { current: state(), expected: 'combat_actor_execution_profile_required' },
       { current: state({ readbackPresent: false }),
         expected: 'combat_actor_unavailable' }
     ]) {

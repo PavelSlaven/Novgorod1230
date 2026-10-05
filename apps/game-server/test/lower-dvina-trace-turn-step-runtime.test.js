@@ -17,7 +17,7 @@ import LIVE_WORLD_TURN_PROFILE from
   '../../../data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json'
   with { type: 'json' };
 import { canonicalDigest } from '@rus/materialization';
-import { liveWorldConversationCommands } from
+import { liveWorldConversationCommands, liveWorldTurnRegistry } from
   '../src/runtime/lower-dvina-trace-phase-2.js';
 import { SCENE_NPC_SOURCE, withSceneNpcs } from
   '../src/infrastructure/postgres/scene-npcs-readback.js';
@@ -105,6 +105,12 @@ test('blocked live-world combat request repairs into an ordinary narrated turn',
           force_limit: 'ordinary', risk_posture: 'ordinary' });
       }
     });
+    const state = await f.repository.loadPhase2State(f.partyId);
+    const registry = await liveWorldTurnRegistry({ state,
+      repository: f.repository, partyId: f.partyId,
+      idempotencyKey: 'combat-blocked-repair-registry' });
+    assert.ok(registry.registered().some(({ command_id: id }) =>
+      id === 'live_world.request_combat'));
 
     const result = await submit(f, turn('combat-blocked-repair',
       'Начинаю бой с человеком рядом.'));

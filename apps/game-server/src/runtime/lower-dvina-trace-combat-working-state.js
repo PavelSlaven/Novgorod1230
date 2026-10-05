@@ -21,8 +21,13 @@ export function projectTraceCombatWorkingState(state, combatSession = null) {
     if (!npc) fail('TRACE_COMBAT_NPC_BODY_PARTICIPANT_GAP', npcId);
     let body = npc.body_state;
     if (!npc.body_state_persisted) {
+      const initializationProfile = npc.body_state_initialization_profile
+        ?? npc.body_state_profile;
+      if (hasConflictingApprovedBodyProfile(npc.body_state_profile,
+        initializationProfile)) fail('combat_actor_body_state_profile_conflict',
+        npcId);
       const initialized = initializeBodyState({
-        body_state_profile: npc.body_state_profile
+        body_state_profile: initializationProfile
       });
       if (!initialized.ok) fail(initialized.error.code, npcId);
       body = { ...initialized.body_state, active_conditions: [], body_parts: {},
@@ -35,6 +40,25 @@ export function projectTraceCombatWorkingState(state, combatSession = null) {
     };
   }
   return { ...working, actor_states: actorStates };
+}
+
+function hasConflictingApprovedBodyProfile(profile, initialization) {
+  if (profile?.status !== 'approved') return false;
+  const expected = initialization?.initial_state;
+  if (profile.schema === 'rus.body_state.initialization_profile.v1') {
+    return expected != null
+      && (profile.profile_ref?.entity_ref?.entity_id
+          !== initialization.profile_ref?.entity_ref?.entity_id
+        || profile.initial_state?.health !== expected.health
+        || profile.initial_state?.energy !== expected.energy
+        || profile.initial_state?.satiety !== expected.satiety);
+  }
+  if (profile.schema !== 'rus.body_state.profile.v1') return false;
+  const values = profile.values;
+  return !expected || !values || values.health !== expected.health
+    || values.energy !== expected.energy || values.satiety !== expected.satiety
+    || !Array.isArray(profile.condition_bindings)
+    || profile.condition_bindings.length !== 0;
 }
 
 function fail(code, npcId) {

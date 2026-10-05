@@ -136,10 +136,9 @@ function resolveInitialSchedulePlacements({ people, scheduleRulesByPlaceFamily,
         && row.scope_ref === person.place_family_id
         && row.subject_kind === person.subject_kind
         && row.subject_ref === person.subject_ref);
-    const dayTypes = [...new Set(rows.map((row) => row.day_type))];
     const scheduleContext = { home_scope_ref: person.place_family_id,
       subject_kind: person.subject_kind, subject_ref: person.subject_ref,
-      day_type: dayTypes[0] ?? 'normal', approved_rule_rows: structuredClone(rows),
+      day_type: 'normal', approved_rule_rows: structuredClone(rows),
       calendar_profile: structuredClone(calendarProfile),
       scheduled_absences: structuredClone(scheduledAbsences),
       ...(composition?.composition_ref ? {
@@ -154,19 +153,6 @@ function resolveInitialSchedulePlacements({ people, scheduleRulesByPlaceFamily,
       if (presence.gap_reason) gaps.push({ code: presence.gap_reason,
         subject_kind: person.subject_kind, subject_ref: person.subject_ref,
         place_family_id: person.place_family_id, location_ref: presence.location_ref });
-      continue;
-    }
-    if (dayTypes.length !== 1) {
-      const presence = resolveNpcRoutinePresence({ schedule_context: scheduleContext,
-        intent: { presence_state: 'on_site', location_ref: null },
-        scheduled_at: startedAt,
-        facts: { first_entry_binding: firstEntryBinding(composition, person) } });
-      const gapReason = presence.gap_reason ?? 'npc_schedule_gap';
-      byPerson.push({ gap_reason: gapReason });
-      placementStates.push({ state: presence.presence_state, location_ref: presence.location_ref });
-      gaps.push({ code: gapReason, subject_kind: person.subject_kind,
-        subject_ref: person.subject_ref, place_family_id: person.place_family_id,
-        location_ref: presence.location_ref });
       continue;
     }
     try {

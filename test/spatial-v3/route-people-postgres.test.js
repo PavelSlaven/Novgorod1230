@@ -12,14 +12,14 @@ import { createRouteWalker, peopleAt } from './route-people-helpers.js';
 /**
  * D49: every place of the Vikhtuy slice route after the start has at least one person, made from approved data
  * (people-d49 approval: game-base D-2 thresholds, wave, profiles). The route table is exact: who stands where
- * (occupation and sex from the profile) and that no place has a gap. D53: the ferry landing has the ferryman only
+ * (social role or occupation and sex from the profile) and that no place has a gap. D53: the ferry landing has the ferryman only
  * (no crossing guard in the sources). Tighten, never loosen.
  */
 const FISHER = { nov_occ_fisher: 'male' };
-const HOUSEHOLDER = { nov_occ_haymaker: 'male' };
+const HOUSEHOLDER = { nov_role_smerd_householder: 'male' };
 const HOMESTEAD = { nov_occ_haymaker: 'male', nov_occ_cook_baker: 'female' };
 const ROUTE = [
-  // place, place family, expected people (occupation -> sex), expected gaps
+  // place, place family, expected people (role or occupation -> sex), expected gaps
   ['water_access', 'pf_riverbank', FISHER, []],
   ['forest_path', 'pf_village_lane', HOUSEHOLDER, []],
   ['meeting_area', 'pf_rural_yard', HOUSEHOLDER, []],
@@ -50,11 +50,13 @@ test('route of Vikhtuy: the start may be empty, every other place has at least o
       assert.equal(at.slot, 'arrival');
       const { npcs, trace } = await peopleAt(env, partyId, at.site_id);
       assert.ok(trace, `${place}: the first-arrival trace carries the people part (${family})`);
-      t.diagnostic(`${place} (${family}): people=${npcs.length} roles=${npcs.map((npc) => npc.occupation).join(',')} gaps=${JSON.stringify(trace.gaps)}`);
+      t.diagnostic(`${place} (${family}): people=${npcs.length} roles=${npcs.map((npc) => npc.role ?? npc.occupation).join(',')} gaps=${JSON.stringify(trace.gaps)}`);
       const gaps = trace.gaps.map(({ code, subject_ref }) => ({ code, subject_ref }));
       assert.deepEqual(gaps, expectedGaps, `${place}: the only gap is the one the approved data explains`);
       assert.ok(npcs.length >= 1, `${place}: D49 at least one person`);
-      assert.deepEqual(Object.fromEntries(npcs.map((npc) => [npc.occupation, npc.sex]).sort()), expected,
+      const expectedSubject = Object.keys(expected)[0];
+      const actualSubject = expectedSubject.startsWith('nov_role_') ? 'role' : 'occupation';
+      assert.deepEqual(Object.fromEntries(npcs.map((npc) => [npc[actualSubject], npc.sex]).sort()), expected,
         `${place}: people by occupation and sex`);
       const wanted = trace.groups.reduce((sum, group) => sum + group.count, 0) + trace.rules.reduce((sum, rule) => sum + rule.count, 0);
       assert.equal(npcs.length, wanted - gaps.length, `${place}: created people = wanted people - gaps`);

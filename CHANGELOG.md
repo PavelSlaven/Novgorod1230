@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)
 
 - fix(turn-step): committed S1 resolutions stay visible at the formal destination after the move (visibility-only projection; no planner capability marker) (#98)
 - feat(opening): opening narrator gets a compact Russian projection without ids or service fields and Russian instructions (measured arm P, D80); every Temporal day/light phase translated, held items keep «при вас» and condition, unknown values fail closed (#98)

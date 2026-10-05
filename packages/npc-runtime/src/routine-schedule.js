@@ -32,8 +32,11 @@ export function validateNpcRoutineProfile(profile) {
 }
 
 /** Select one exact approved D-1 rule from a persisted schedule snapshot. */
-export function selectNpcRoutineSchedule({ schedule_context, scheduled_at } = {}) {
+export function selectNpcRoutineSchedule({ schedule_context, scheduled_at,
+  calendar_day_type = null, assigned_work_variant = null } = {}) {
   validateNpcScheduleContext(schedule_context, { requireSelectedRule: false });
+  const dayType = assigned_work_variant ?? calendar_day_type ?? 'normal';
+  if (!text(dayType)) fail('npc_schedule_gap');
   let projected;
   try {
     projected = projectCalendar(scheduled_at, schedule_context.calendar_profile);
@@ -45,14 +48,14 @@ export function selectNpcRoutineSchedule({ schedule_context, scheduled_at } = {}
       && row.scope_ref === schedule_context.home_scope_ref
       && row.subject_kind === schedule_context.subject_kind
       && row.subject_ref === schedule_context.subject_ref
-      && row.day_type === schedule_context.day_type
+      && row.day_type === dayType
       && row.season === projected.season_id
       && (row.months == null || row.months.includes(Number(projected.month))));
   if (matches.length !== 1) fail('npc_schedule_gap');
   const rule = matches[0];
   const selected_rule_ref = scheduleRuleRef(rule);
   return freeze({ rule, selected_rule_ref,
-    schedule_context: { ...schedule_context, selected_rule_ref },
+    schedule_context: { ...schedule_context, day_type: dayType, selected_rule_ref },
     season: projected.season_id, month: Number(projected.month) });
 }
 

@@ -34,11 +34,16 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const consequence = input?.consequence;
       if (consequence?.position_transition?.owner
           === '@rus/turn/spatial-v3-site-connection-traversal') {
-        // Arriving is what the narrator must tell: the destination's own approved scene text
-        // becomes the committed visible change, as the known place does for other arrivals.
         const destination = structuredClone(consequence.visible_seed?.destination_visible_context);
-        return { ...destination,
-          visible_changes: unique([...destination.visible_changes, destination.visible_scene]) };
+        if (!plain(destination) || !Array.isArray(destination.sensory_details)) {
+          ownerFail('TRACE_SITE_TRAVERSAL_DESTINATION_PERCEPTION_INVALID');
+        }
+        const fact = destination.sensory_details.find(text);
+        if (fact == null) {
+          ownerFail('TRACE_SITE_TRAVERSAL_DESTINATION_PERCEPTION_MISSING');
+        }
+        destination.visible_changes = [arrivalChange(fact)];
+        return destination;
       }
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
@@ -79,10 +84,12 @@ function finishVisibleProjection(base, input, calendarProfile) {
     || (consequence?.phase6_kind === 'synchronized_carry'
       && consequence.carry?.intent?.execution_after?.status === 'completed');
   return overlayTurnStepResults(arrival ? { ...enriched,
-    visible_changes: unique([...enriched.visible_changes,
-      ...base.known_context]),
     sensory_details: lowerDvinaTraceObservedSceneChanges(enriched)
   } : enriched, input);
+}
+function arrivalChange(fact) {
+  const detail = fact[0].toLocaleLowerCase('ru-RU') + fact.slice(1);
+  return `Вы пришли туда, где ${detail}${/[.!?…]$/u.test(detail) ? '' : '.'}`;
 }
 function overlayTurnStepResults(base, input) {
   const itemInspections = Object.values(input?.consequence?.visible_seed ?? {})
@@ -123,12 +130,7 @@ function overlayTurnStepResults(base, input) {
       .sort((a, b) => Number(seeds[b]?.kind === 'semantic_activity') - Number(seeds[a]?.kind === 'semantic_activity'));
     orderedKeys.forEach(key => usedKeys.add(key));
     projectDirectSeedChanges({ input, directSeedKeys: orderedKeys }).forEach(change => components.add(change));
-    const localMovement = plan.operations?.some((operation) =>
-      operation?.op === 'request_movement'
-        && operation.movement_kind === 'local') === true
-      && input.consequence?.position_transition?.owner === '@rus/movement-routes';
     const changes = [
-      ...(localMovement ? ['Вы переместились в пределах текущего места.'] : []),
       ...projectDirectSeedChanges({ input, directSeedKeys: orderedKeys,
         appliedPlan: plan })
     ];

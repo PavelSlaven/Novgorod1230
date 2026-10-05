@@ -299,8 +299,8 @@ test('generic visible projector overlays F1 facts on domain projection',
     const base = {
       ...currentVisibleContext(),
       visible_scene: 'Микула пришёл в рыбацкий стан.',
-      visible_changes: ['route'],
-      known_context: ['стан']
+      visible_changes: [],
+      known_context: ['стан', 'route']
     };
     const visible = createLowerDvinaTraceTurnStepVisibleProjector({
       fallback: { project() { fallbackCalls += 1; return base; } }
@@ -316,9 +316,7 @@ test('generic visible projector overlays F1 facts on domain projection',
     assert.deepEqual(result, {
       ...base,
       visible_scene: 'Микула пришёл в рыбацкий стан. Огонь разгорелся.',
-      visible_changes: [
-        'route', 'turn_step_world_process_1:local_fire:started', 'стан'
-      ],
+      visible_changes: ['turn_step_world_process_1:local_fire:started'],
       sensory_details: ['cold', 'wet', 'В поле зрения — Еремей.']
     });
   });

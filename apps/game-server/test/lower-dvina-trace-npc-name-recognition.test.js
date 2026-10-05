@@ -33,7 +33,9 @@ test('exact self-introduction recognizes only its stable speaking NPC', () => {
     retrieved_state: { current_visible_context: priorContext }
   }, { actors, ids: { eremeyRef: actors[0].ref } });
 
-  assert.match(visible.visible_scene, /^Еремей говорит:/u);
+  assert.equal(visible.visible_scene, 'рыбацкий стан');
+  assert.deepEqual(visible.visible_changes,
+    [`Еремей говорит: «${utterance}»`]);
   assert.deepEqual(visible.visible_npc.map(({ entity_ref: ref, display_label,
     recognition }) => [ref.entity_id, display_label, recognition]), [
     ['npc-eremey', 'Еремей', 'recognized'],
@@ -162,8 +164,9 @@ test('group conversation keeps identical replies attributable', () => {
       uncertainties: [], allowed_tensions: [], do_not_imply: []
     } });
 
-  assert.equal(visible.visible_scene.match(/человек \(\d\) говорит:/gu)?.length,
-    3);
+  assert.equal(visible.visible_scene, 'стан');
+  assert.equal(visible.visible_changes.filter((change) =>
+    /человек \(\d\) говорит:/u.test(change)).length, 3);
   assert.deepEqual(visible.visible_changes, [
     'Вы пришли в стан.',
     'человек (1) говорит: «Одинаковый ответ.»',

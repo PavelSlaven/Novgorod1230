@@ -23,6 +23,8 @@ import {
 } from '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
 import { commitEnvelope } from
   './lower-dvina-trace-turn-step-envelope-fixture.js';
+import { withPhase2CurrentVisibleContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 import { backgroundNpc, body, fixture, semanticActivity } from
   './lower-dvina-trace-turn-step-commit-fixture.js';
 import { SCENE_NPC_SOURCE } from
@@ -66,6 +68,78 @@ test('S1 local turn updates journey position without rewriting G4/G5', () => {
   assert.equal(writes.updates.find(({ target_table: table }) =>
     table === 'party_journey_locations').record.scene_position_id, 'inside');
 });
+
+test('commit keeps open-one-space S1 resolution visible at formal destination',
+  async () => {
+    const envelope = commitEnvelope({ clarification: false, check: false });
+    envelope.consequence.position_transition = {
+      owner: '@rus/movement-routes', actor_id: 'actor-1',
+      from_position_ref: 'position:outside',
+      to_position_ref: 'position:inside'
+    };
+    const f = fixture({ direct: true, envelopeOverride: envelope,
+      stateOverride: {
+        position: { location_ref: 'shore', position_id: 'position:outside' },
+        journey_location: { id: 'journey',
+          scene_position_id: 'position:outside', state_version: 3 },
+        spatial_semantic: [{ resolutions: [{
+          local_ref: 'local:bank', position_ref: 'position:outside',
+          formal_spatial_refs: { structural_variant: 'open_one_space',
+            position_ref: 'position:inside' },
+          semantics: { kind: 'shelter', name: 'Навес',
+            description: 'У берега стоит навес.' }
+        }] }]
+      } });
+
+    await f.commit();
+
+    const visible = f.plans[0].appends.find(({ target_table: table }) =>
+      table === 'party_visible_packages').record.visible_payload.visible_objects;
+    assert.deepEqual(visible.find(({ entity_ref }) =>
+      entity_ref.entity_id === 'local:bank'), {
+      entity_ref: { entity_kind: 'spatial_local_reference',
+        entity_id: 'local:bank' },
+      display_label: 'Навес', recognition: 'recognized',
+      visible_status: 'внутри'
+    });
+  });
+
+for (const capacityLeft of [true, false]) {
+  test(`destination commit keeps the S1 planner marker out of visible context (capacity left: ${capacityLeft})`,
+    async () => {
+      const envelope = commitEnvelope({ clarification: false, check: false });
+      envelope.consequence.position_transition = {
+        owner: '@rus/movement-routes', actor_id: 'actor-1',
+        from_position_ref: 'position:source', to_position_ref: 'position:destination'
+      };
+      const { canonical_digest: _digest, ...destination } = envelope.visible_context;
+      envelope.consequence.visible_seed = { ...envelope.consequence.visible_seed,
+        destination_visible_context: { ...destination, visible_scene: 'Двор у избы.' } };
+      let prepared = null;
+      const f = fixture({ direct: true, envelopeOverride: envelope,
+        stateOverride: {
+          journey_location: { id: 'journey', scene_position_id: 'position:source',
+            state_version: 3 },
+          position: { site_id: 'site', position_id: 'position:source', location_ref: 'site' },
+          spatial_semantic: [{ envelope_ref: 'env:destination', status: 'committed',
+            envelope: { position_ref: 'position:destination' }, capacity_total: 1,
+            consumed_count: capacityLeft ? 0 : 1, resolutions: [] }]
+        },
+        turnStepApprovedOwners: { async loadPreparedMovementScene({ state }) {
+          const { prepared_destination_visible_context: context, ...rest } = state;
+          prepared = context;
+          return context == null ? rest : withPhase2CurrentVisibleContext(rest, context);
+        } } });
+
+      await f.commit();
+
+      assert.ok(prepared, 'destination visible context reached the scene loader');
+      assert.equal(Object.hasOwn(prepared, 'spatial_semantic'), false);
+      const payload = f.plans[0].appends.find(({ target_table: table }) =>
+        table === 'party_visible_packages').record.visible_payload;
+      assert.doesNotMatch(JSON.stringify(payload), /semantic_grounding_available/u);
+    });
+}
 
 test('position transition without prepared route loads destination NPCs for pending screen',
   async () => {

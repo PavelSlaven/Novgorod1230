@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- data(v17): 34 connection labels of the v17 start territories name the route line («Уйти по глинистой тропе») instead of «Проход N»; Opus approval, 4 rows withheld (#160, D49)
+- fix(slice): v17 slice driver counts walk progress only on a site change, recovers pending presentation like the web client and keeps pre-repair opening prose in the trace (#98)
+- fix(turn): world_process_step drops only exact duplicate facts, so a negated or conditional fact no longer hides the code-owned process state (#230)
 - fix(wk): remove context_text, max_context_chars and omitWorldKnowledgeContextText from the World Knowledge wire (#98)
 - fix(test): remove temporary fixture directories after tests, including setup failures (#231)
 

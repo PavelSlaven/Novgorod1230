@@ -85,7 +85,7 @@ function turnSection(turn) {
   const lines = [`### Ход ${turn.n} · нога ${LEG_TITLES[turn.leg] ?? turn.leg}`, '',
     `- Ввод игрока: «${turn.input}»`,
     `- HTTP: ${turn.http_status}${turn.error ? `, ошибка ${turn.error.code}${turn.error.turn_commit_status ? ` (turn_commit_status ${turn.error.turn_commit_status})` : ''}` : ''}`,
-    `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}${turn.recovered ? '; текст получен через presentation-recovery' : ''}`,
+    `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}${turn.recovered ? '; текст получен через presentation-recovery' : ''}${turn.presentation_recovery_attempts > 0 ? `; presentation-recovery: ${turn.presentation_recovery_attempts}× (${turn.presentation_recovery_outcome ?? '—'})` : ''}`,
     `- Domain outcome (SQL): ${describeDelta(turn.before, turn.after)}`,
     ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (внутренняя, только в логе; в HTTP — публичная категория или маскировка): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',
@@ -116,6 +116,10 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     `- Бюджет: ${preconditions.max_turns} ходов (из них ${preconditions.reserve_make} зарезервированы под make), дедлайн ${preconditions.deadline_min} мин.`,
     `- Квалификация модели при старте: ${preconditions.qualification}.`, '');
   out.push('## Gameplay transcript', '');
+  if (report.presentation_recovery?.attempts > 0) {
+    out.push('### Presentation recovery', '',
+      `- Вызовов POST presentation-recovery: ${report.presentation_recovery.attempts}; успешно: ${report.presentation_recovery.recovered}; остались pending: ${report.presentation_recovery.still_pending}.`, '');
+  }
   if (opening) {
     out.push('### Открытие партии', '',
       `- Партия \`${opening.party_id ?? '—'}\`; попыток new-game: ${opening.attempts}; отказов открытия (AUTHORED_OPENING_AUDIT_REJECTED): ${opening.rejections}.`, '');

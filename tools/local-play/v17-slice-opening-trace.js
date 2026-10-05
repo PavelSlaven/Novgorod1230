@@ -20,7 +20,8 @@ export function openingAttemptFromNewGame({ n, ok, data, error, devReport = null
     return Object.freeze({
       n, outcome: 'accepted', writer_prose: String(prose ?? ''),
       stage23: snapshot?.stage23 ?? null,
-      repair: snapshot?.repair ?? Object.freeze({ observed: false, attempted: null })
+      repair: snapshot?.repair ?? Object.freeze({ observed: false, attempted: null }),
+      ...(snapshot?.pre_repair ? { pre_repair: snapshot.pre_repair } : {})
     });
   }
   if (error?.code !== OPENING_REJECTED) return null;
@@ -29,7 +30,8 @@ export function openingAttemptFromNewGame({ n, ok, data, error, devReport = null
       n, outcome: 'rejected',
       writer_prose: snapshot.writer_prose ?? '',
       stage23: snapshot.stage23 ?? { pass: false, concerns: [], evidence: [], codes: [] },
-      repair: snapshot.repair ?? { observed: true, attempted: false }
+      repair: snapshot.repair ?? { observed: true, attempted: false },
+      ...(snapshot.pre_repair ? { pre_repair: snapshot.pre_repair } : {})
     });
   }
   const codes = Array.isArray(error?.codes) ? error.codes
@@ -45,8 +47,8 @@ export function openingAttemptFromNewGame({ n, ok, data, error, devReport = null
 export function renderOpeningAttemptsTable(attempts = []) {
   if (!attempts.length) return '';
   const lines = [
-    '| # | исход | коды | repair | concerns | prose (начало) |',
-    '|---:|---|---|---|---|---|'
+    '| # | исход | коды | repair | concerns | prose (начало) | prose до repair | коды до repair |',
+    '|---:|---|---|---|---|---|---|---|'
   ];
   for (const attempt of attempts) {
     const codes = attempt.stage23?.codes?.join(', ') ?? '—';
@@ -57,7 +59,10 @@ export function renderOpeningAttemptsTable(attempts = []) {
     const concerns = attempt.stage23?.concerns?.map(({ code }) => code).join(', ') ?? '—';
     const prose = String(attempt.writer_prose ?? '').replace(/\s+/gu, ' ').slice(0, 80)
       .replaceAll('|', '/') || '—';
-    lines.push(`| ${attempt.n} | ${attempt.outcome} | ${codes || '—'} | ${repair} | ${concerns || '—'} | ${prose} |`);
+    const preProse = String(attempt.pre_repair?.writer_prose ?? '').replace(/\s+/gu, ' ').slice(0, 80)
+      .replaceAll('|', '/') || '—';
+    const preCodes = attempt.pre_repair?.stage23?.codes?.join(', ') ?? '—';
+    lines.push(`| ${attempt.n} | ${attempt.outcome} | ${codes || '—'} | ${repair} | ${concerns || '—'} | ${prose} | ${preProse} | ${preCodes || '—'} |`);
   }
   return lines.join('\n');
 }

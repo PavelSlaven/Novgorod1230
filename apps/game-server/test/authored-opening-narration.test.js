@@ -254,6 +254,11 @@ test('opening bounds one semantic repair and final audit inside aggregate deadli
       'gameplay_narrator_auditor']);
     assert.equal(result.original_stage23_audit.pass, false);
     assert.equal(result.flow.status, 'approved');
+    const report = diagnostics.report({ party_id: 'party:1', request_id: 'opening:1' });
+    assert.equal(report.opening_attempt.pre_repair.writer_prose, 'Первый неполный вариант.');
+    assert.deepEqual(report.opening_attempt.pre_repair.stage23.codes,
+      ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']);
+    assert.match(report.opening_attempt.writer_prose, /Любава/u);
 
     now = 0; audits = 0; calls.length = 0;
     const slowBudget = createLlmTurnBudget({ now: () => now });

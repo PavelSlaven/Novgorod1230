@@ -17,6 +17,7 @@ const TAKE_PHRASES = Object.freeze([
   { match: /.*/u, texts: ['Беру то, что лежит рядом.'] }
 ]);
 const OPENING_REJECTED = 'AUTHORED_OPENING_AUDIT_REJECTED';
+const PRESENTATION_PENDING = 'committed_presentation_pending';
 
 class Blocked extends Error {}
 
@@ -42,7 +43,7 @@ const peopleOf = (screen) => {
   const data = panel.data ?? {};
   return (data.people ?? data.visible_npcs ?? data.npcs ?? []).map(labelOf).filter(Boolean);
 };
-const positionKey = (snap) => `${snap?.position?.site_id ?? '?'}|${snap?.position?.slot ?? '?'}`;
+const siteKey = (snap) => String(snap?.position?.site_id ?? '?');
 const npcsHere = (snap) => (snap?.placements_here ?? []).filter((row) => row.entity_kind === 'npc');
 const liveNodes = (snap) => (snap?.resource_nodes ?? []).filter((row) => Number(row.quantity_numerator) > 0);
 const liveNodesHere = (snap) => liveNodes(snap).filter((row) => row.site_id === snap?.position?.site_id);
@@ -66,7 +67,8 @@ export async function runLegs({
   const legs = Object.fromEntries(['start', 'walk', 'meet', 'talk', 'take', 'make'].map((id) => [id,
     { id, status: 'blocked', reason: 'не достигнута', detail: null }]));
   const state = { legs, turns: [], opening: null, party_id: null, final_snapshot: null,
-    transport_errors: [] };
+    transport_errors: [],
+    presentation_recovery: { attempts: 0, recovered: 0, still_pending: 0 } };
   const set = (id, status, reason, detail = null) => { Object.assign(legs[id], { status, reason, detail }); };
   const blockRest = (from, reason) => {
     for (const leg of Object.values(legs)) if (leg.status === 'blocked' && leg.reason === 'не достигнута' && from.includes(leg.id)) leg.reason = reason;
@@ -95,7 +97,22 @@ export async function runLegs({
     return last;
   }
 
-  /** One player turn: budget/deadline guard, snapshots around it, presentation recovery when the text is missing. */
+  const recordPresentationRecovery = (attempts, outcome) => {
+    if (attempts > 0) state.presentation_recovery.attempts += attempts;
+    if (outcome === 'recovered') state.presentation_recovery.recovered += 1;
+    if (outcome === 'still_pending') state.presentation_recovery.still_pending += 1;
+  };
+
+  async function recoverPendingPresentation(phase, leg, requestId) {
+    const recoverResponse = await apiCall('recover', 'presentation_recovery', leg, partyId,
+      { request_id: requestId });
+    const view = await refresh(phase, leg);
+    const screen = recoverResponse.data?.screen ?? view.screen;
+    const stillPending = screen?.screen_status === PRESENTATION_PENDING;
+    return { view: { screen, snap: view.snap }, stillPending };
+  }
+
+  /** One player turn: budget/deadline guard, snapshots around it, presentation recovery when pending or prose missing. */
   async function play(leg, text, { reserved = false } = {}) {
     if (now() >= deadlineAt) throw new Blocked('дедлайн прогона');
     if (reserved ? total() >= maxTurns : exploreBudget() <= 0) throw new Blocked('бюджет ходов исчерпан');
@@ -108,22 +125,51 @@ export async function runLegs({
     const calls = llm.count();
     const roleCalls = llm.roleCalls?.length ?? 0;
     const errorsBefore = llm.serverErrorCount?.() ?? 0;
+    let presentationRecoveryAttempts = 0;
+    let presentationRecoveryOutcome = null;
+    if (last?.screen?.screen_status === PRESENTATION_PENDING) {
+      const priorRequestId = state.turns.at(-1)?.request_id;
+      if (!priorRequestId) throw new Blocked('доставка прозы не завершена: pending без request_id');
+      const { view: cleared, stillPending } = await recoverPendingPresentation(
+        'screen_before_turn', leg, priorRequestId);
+      last = { screen: cleared.screen, snap: cleared.snap };
+      presentationRecoveryAttempts += 1;
+      if (stillPending) {
+        recordPresentationRecovery(presentationRecoveryAttempts, 'still_pending');
+        throw new Blocked('доставка прозы не завершена: committed_presentation_pending до хода');
+      }
+      presentationRecoveryOutcome = 'recovered';
+    }
     const response = await apiCall('turn', 'turn', leg, partyId,
       { raw_text: text, request_id: requestId });
-    let recovered = false;
+    let recovered = presentationRecoveryOutcome === 'recovered';
     let view = await refresh('screen_after_turn', leg);
     let prose = view.screen?.main_prose ?? response.data?.screen?.main_prose ?? '';
     const committed = Number(view.snap?.state_version) > Number(before?.state_version);
-    if (committed && !String(prose).trim()) {
-      await apiCall('recover', 'presentation_recovery', leg, partyId,
-        { request_id: requestId });
-      recovered = true;
-      view = await refresh('screen_after_recovery', leg);
+    const responsePending = response.data?.screen?.screen_status === PRESENTATION_PENDING
+      || view.screen?.screen_status === PRESENTATION_PENDING;
+    if (responsePending || (committed && !String(prose).trim())) {
+      const { view: recoveredView, stillPending } = await recoverPendingPresentation(
+        'screen_after_recovery', leg, requestId);
+      presentationRecoveryAttempts += 1;
+      view = recoveredView;
       prose = view.screen?.main_prose ?? '';
+      recovered = !stillPending;
+      presentationRecoveryOutcome = stillPending ? 'still_pending' : 'recovered';
+      if (stillPending) {
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        throw new Blocked('доставка прозы не завершена: committed_presentation_pending после presentation-recovery');
+      }
+    }
+    if (presentationRecoveryAttempts > 0) {
+      recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome ?? 'recovered');
     }
     const turn = {
       n, leg, input: text, request_id: requestId, http_status: response.status, error: response.ok ? null : response.error,
-      committed, recovered, prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
+      committed, recovered,
+      presentation_recovery_attempts: presentationRecoveryAttempts,
+      presentation_recovery_outcome: presentationRecoveryOutcome,
+      prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
       llm_calls: llm.count() - calls,
       llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
       people_panel: capturePeoplePanel(view.screen, view.snap),
@@ -193,8 +239,8 @@ export async function runLegs({
 
   // --- explore: walk out, meeting, talk, take ---
   const visited = new Map(); // site_id -> place name
-  const tried = new Map(); // positionKey -> Map(label -> count)
-  const looked = new Map(); // positionKey -> looks done; a second look is cheap and shows whether the first was a fluke
+  const tried = new Map(); // site_id -> Map(label -> count)
+  const looked = new Map(); // site_id -> looks done; a second look is cheap and shows whether the first was a fluke
   const seen = { npc: null, hiddenNpc: null };
   const placesAfterTalk = new Map();
   let stuck = 0;
@@ -295,19 +341,34 @@ export async function runLegs({
       }
       if (legs.talk.status === 'pass' && done('take')) break;
       // a step: the first least-tried passage label of this spot, or a look when the spot offers none yet
-      const key = positionKey(last.snap);
+      const key = siteKey(last.snap);
       const labels = routeLabels(last.screen);
       if (labels.length === 0 && (looked.get(key) ?? 0) < 2) { looked.set(key, (looked.get(key) ?? 0) + 1); await play('walk', LOOK); continue; }
       if (labels.length === 0) { exploreEnd.reason = `на месте ${placeName(last.snap)} экран не показывает проходов после ${looked.get(key)} осмотров`; break; }
       const counts = tried.get(key) ?? new Map();
       tried.set(key, counts);
+      const noProgressLimit = labels.length + 1;
       const label = [...labels].sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0))[0];
       counts.set(label, (counts.get(label) ?? 0) + 1);
-      const sitesBefore = visited.size;
       const turn = await play('walk', label);
       noteHere();
-      stuck = turn.committed || visited.size > sitesBefore ? 0 : stuck + 1;
-      if (stuck >= 3) { exploreEnd.reason = `3 хода подряд без сдвига (последняя ошибка: ${turn.error?.code ?? 'нет'})`; break; }
+      const siteChanged = turn.before?.position?.site_id != null
+        && turn.after?.position?.site_id != null
+        && turn.before.position.site_id !== turn.after.position.site_id;
+      if (siteChanged) stuck = 0;
+      else {
+        stuck += 1;
+        if (stuck >= noProgressLimit) {
+          exploreEnd.reason = `${stuck} ходов подряд без смены места (порог ${noProgressLimit}; последняя ошибка: ${turn.error?.code ?? 'нет'})`;
+          break;
+        }
+        const triedAllOnce = labels.length > 1
+          && labels.every((entry) => (counts.get(entry) ?? 0) >= 1);
+        if (triedAllOnce) {
+          exploreEnd.reason = `на месте ${placeName(turn.after ?? last.snap)} все подписи проходов (${labels.join(', ')}) не сменили место`;
+          break;
+        }
+      }
     }
   } catch (error) {
     exploreEnd.reason = error instanceof Blocked ? error.message : `сбой: ${error.message}`;

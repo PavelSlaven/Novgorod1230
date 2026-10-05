@@ -144,8 +144,11 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
   hidePeople = false, hidePanelPeople = hidePeople, hideSqlPeople = hidePeople, npcAtStart = false, npcAtDestination = true,
   peoplePanelVisible = true, hideReturnPassage = false, samePlaceWalks = 0, talkCommitted = true,
   priorNpcReply = false, snapshotErrorAt = null, openingRejections = 0, emptyProse = false,
-  npcSite = null, resourceSites = ['B'], routeThroughC = false } = {}) {
-  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', statements: priorNpcReply ? [{
+  npcSite = null, resourceSites = ['B'], routeThroughC = false,
+  walkLocalLabels = [], walkExits = null,
+  presentationPendingOnce = false, presentationStaysPending = false } = {}) {
+  const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', pendingTurnOnce: presentationPendingOnce,
+    presentationStaysPending, statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
   }] : [], nodeQuantities: Object.fromEntries(resourceSites.map((site) => [site, 60])), held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
@@ -163,8 +166,16 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     resource_nodes: resourceSites.map((site) => ({
       resource_node_id: `m2c_finite_deadwood_v1:${site}`, site_id: site, quantity_numerator: String(w.nodeQuantities[site])
     })) });
-  const screen = () => ({ main_prose: w.prose, labels: w.looks < blindLooks ? [] : w.site === 'A' ? ['Тропа']
-    : w.site === 'B' && routeThroughC ? ['Дальше'] : (hideReturnPassage ? [] : ['Назад']),
+  const labelsAt = () => {
+    if (w.looks < blindLooks) return [];
+    if (w.site === 'A' && (walkLocalLabels.length > 0 || walkExits != null)) {
+      return [...walkLocalLabels, ...Object.keys(walkExits ?? { 'Тропа': 'B' })];
+    }
+    if (w.site === 'A') return ['Тропа'];
+    if (w.site === 'B' && routeThroughC) return ['Дальше'];
+    return hideReturnPassage ? [] : ['Назад'];
+  };
+  const screen = () => ({ main_prose: w.prose, labels: labelsAt(),
     visible_context: { schema: 'visible_context_package', visible_npc: npcHere()
       ? [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc1' }, display_label: 'человек' }] : [] },
     panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
@@ -186,11 +197,32 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     },
     async ack() { return env({}); },
     async screen() { return env({ screen: screen() }); },
-    async recover() { w.recovered += 1; w.prose = 'Восстановлено.'; return env({}); },
+    async recover() {
+      w.recovered += 1;
+      if (w.presentationStaysPending) {
+        return env({ screen: { screen_status: 'committed_presentation_pending', main_prose: '' } });
+      }
+      w.prose = 'Восстановлено.';
+      return env({ screen: screen() });
+    },
     async turn(_id, { raw_text: text }) {
       w.turns.push(text);
+      if (w.pendingTurnOnce) {
+        w.pendingTurnOnce = false;
+        w.sv += 1;
+        return env({ screen: { ...screen(), screen_status: 'committed_presentation_pending',
+          main_prose: '' } });
+      }
       if (text === 'Осматриваюсь вокруг.') w.looks += 1;
-      if (text === 'Тропа') {
+      if (walkLocalLabels.includes(text)) {
+        w.slot = w.slot === 'arrival' ? 'local_bend' : 'arrival';
+        w.sv += 1;
+      }
+      else if (walkExits != null && Object.hasOwn(walkExits, text)) {
+        w.site = walkExits[text]; w.sv += 1;
+        w.prose = w.site === 'B' ? 'Лесная тропа.' : w.site === 'C' ? 'У реки.' : 'Дальше.';
+      }
+      else if (text === 'Тропа') {
         if (w.turns.filter((turn) => turn === 'Тропа').length > samePlaceWalks) w.site = routeThroughC && w.site === 'B' ? 'C' : 'B';
         w.sv += 1; w.prose = w.site === 'B' ? 'Лесная тропа.' : 'Тропа всё ещё впереди.';
       }
@@ -365,10 +397,45 @@ test('legs: an errored snapshot cannot make an old NPC answer pass after an unco
 });
 
 test('legs: committed walks without a site change stay visible in the walk detail', async () => {
-  const result = await runFake(fakeWorld({ samePlaceWalks: 2 }));
+  const result = await runFake(fakeWorld({ samePlaceWalks: 1 }));
   const walk = result.legs.find(({ id }) => id === 'walk');
   assert.equal(walk.status, 'pass');
-  assert.match(walk.detail, /ходов движения: 3, из них без смены места: 2/u);
+  assert.match(walk.detail, /ходов движения: 2, из них без смены места: 1/u);
+});
+
+test('legs: three local slot changes at one site still allow finding the exit label', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля', 'Третья петля'],
+    walkExits: { 'Тропа': 'B' }
+  }));
+  assert.equal(statusOf(result).walk, 'pass');
+  const walkTurns = result.turns.filter(({ leg }) => leg === 'walk');
+  assert.ok(walkTurns.length <= 8);
+  assert.ok(walkTurns.some(({ input }) => input === 'Тропа'));
+});
+
+test('legs: local committed walks do not reset stuck counter; exits still found', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля'],
+    walkExits: { 'Тропа': 'B', 'К реке': 'C' },
+    resourceSites: ['B', 'C']
+  }));
+  assert.equal(statusOf(result).walk, 'pass');
+  const walkTurns = result.turns.filter(({ leg }) => leg === 'walk');
+  assert.ok(walkTurns.length <= 7, `too many walk turns: ${walkTurns.length}`);
+  assert.ok(walkTurns.some(({ before, after }) => before?.position?.site_id !== after?.position?.site_id));
+});
+
+test('legs: when every passage label fails to change site, walk ends with label diagnostics', async () => {
+  const result = await runFake(fakeWorld({
+    walkLocalLabels: ['Петля на месте', 'Ещё петля'],
+    walkExits: {},
+    npcAtStart: true,
+    npcAtDestination: false
+  }));
+  assert.equal(statusOf(result).walk, 'fail');
+  assert.match(result.legs.find(({ id }) => id === 'walk').reason,
+    /все подписи проходов.*Петля на месте.*Ещё петля/u);
 });
 
 test('D49 harness minimum passes with take alone, make alone, and fails the item requirement without either', async () => {
@@ -443,6 +510,23 @@ test('legs: a committed turn without text triggers one presentation-recovery', a
   assert.ok(world.w.recovered >= 1);
   assert.equal(result.turns[0].recovered, true);
   assert.equal(result.turns[0].prose, 'Восстановлено.');
+});
+
+test('legs: committed_presentation_pending triggers presentation-recovery like the web client', async () => {
+  const world = fakeWorld({ presentationPendingOnce: true });
+  const result = await runFake(world, { maxTurns: 6 });
+  assert.ok(world.w.recovered >= 1);
+  assert.equal(result.presentation_recovery.attempts, 1);
+  assert.equal(result.presentation_recovery.recovered, 1);
+  assert.equal(result.turns[0].presentation_recovery_outcome, 'recovered');
+  assert.equal(statusOf(result).walk, 'pass');
+});
+
+test('legs: still pending after presentation-recovery stops the leg with delivery diagnostics', async () => {
+  const result = await runFake(fakeWorld({ presentationPendingOnce: true, presentationStaysPending: true }),
+    { maxTurns: 6 });
+  assert.equal(result.presentation_recovery.still_pending, 1);
+  assert.match(result.legs.find(({ id }) => id === 'walk').reason, /доставка прозы не завершена/u);
 });
 
 test('meter: counts LLM calls by role without content and turns the masked server error log into a summary', async () => {

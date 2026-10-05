@@ -414,9 +414,9 @@ test('legs: committed walks without a site change stay visible in the walk detai
   assert.match(walk.detail, /ходов движения: 2, из них без смены места: 1/u);
 });
 
-test('legs: local slot loops at one site still allow finding the exit within the site walk budget', async () => {
+test('legs: three local slot changes at one site still allow finding the exit label', async () => {
   const result = await runFake(fakeWorld({
-    walkLocalLabels: ['Петля на месте', 'Ещё петля'],
+    walkLocalLabels: ['Петля на месте', 'Ещё петля', 'Третья петля'],
     walkExits: { 'Тропа': 'B' }
   }));
   assert.equal(statusOf(result).walk, 'pass');

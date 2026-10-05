@@ -397,11 +397,16 @@ export async function runLegs({
       if (moved) {
         stuck = 0;
         progressed.add(label);
+        const slotBefore = String(turn.before?.position?.slot ?? '');
         const slotAfter = String(turn.after?.position?.slot ?? '');
         if (continuing && walkChainSlots.includes(slotAfter)) {
           continueWalkLabel = null;
           walkChainSlots = [];
         } else {
+          if (!continuing) {
+            walkChainSlots = [];
+            if (slotBefore) walkChainSlots.push(slotBefore);
+          }
           if (slotAfter) walkChainSlots.push(slotAfter);
           continueWalkLabel = label;
         }

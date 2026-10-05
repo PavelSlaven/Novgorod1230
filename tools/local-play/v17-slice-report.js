@@ -85,7 +85,7 @@ function turnSection(turn) {
   const lines = [`### Ход ${turn.n} · нога ${LEG_TITLES[turn.leg] ?? turn.leg}`, '',
     `- Ввод игрока: «${turn.input}»`,
     `- HTTP: ${turn.http_status}${turn.error ? `, ошибка ${turn.error.code}${turn.error.turn_commit_status ? ` (turn_commit_status ${turn.error.turn_commit_status})` : ''}` : ''}`,
-    `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}${turn.recovered ? '; текст получен через presentation-recovery' : ''}${turn.presentation_recovery_attempts > 0 ? `; presentation-recovery: ${turn.presentation_recovery_attempts}× (${turn.presentation_recovery_outcome ?? '—'})` : ''}`,
+    `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}${turn.recovered ? '; текст получен через presentation-recovery' : ''}${turn.presentation_recovery_attempts > 0 ? `; presentation-recovery: ${turn.presentation_recovery_attempts}× (${turn.presentation_recovery_outcome ?? '—'})` : ''}${turn.delivery_failed ? '; доставка прозы не завершена (pending после recovery)' : ''}`,
     `- Domain outcome (SQL): ${describeDelta(turn.before, turn.after)}`,
     ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (внутренняя, только в логе; в HTTP — публичная категория или маскировка): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',

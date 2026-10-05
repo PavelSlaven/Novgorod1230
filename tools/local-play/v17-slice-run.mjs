@@ -335,7 +335,8 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
   const started = now();
   const startedAt = new Date(started).toISOString();
   const report = { schema: 'v17_slice_run_v1', identity: null, preconditions: null, opening: null, legs: [], turns: [],
-    transport_errors: [], llm: { total: 0, failed: 0, by_role: {} }, readback: null, infra_error: null, cleanup_errors: [] };
+    transport_errors: [], presentation_recovery: { attempts: 0, recovered: 0, still_pending: 0 },
+    llm: { total: 0, failed: 0, by_role: {} }, readback: null, infra_error: null, cleanup_errors: [] };
   const git = gitIdentity(deps.repoRoot ?? process.cwd());
   let redact = createRedactor([]);
   let meter = null;
@@ -387,10 +388,12 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
       maxTurns: options.maxTurns, deadlineAt: now() + options.deadlineMin * 60_000, now, // the play window starts after bootstrap and qualification
       sceneProjectionDiagnostics: () => sceneProjectionDiagnostics,
       persist: (state) => { Object.assign(report, { legs: state.legs, turns: state.turns,
-        opening: state.opening, transport_errors: state.transport_errors }); persist().catch(() => {}); }
+        opening: state.opening, transport_errors: state.transport_errors,
+        presentation_recovery: state.presentation_recovery }); persist().catch(() => {}); }
     });
     Object.assign(report, { legs: result.legs, turns: result.turns, opening: result.opening,
-      transport_errors: result.transport_errors, readback: result.final_snapshot });
+      transport_errors: result.transport_errors, presentation_recovery: result.presentation_recovery,
+      readback: result.final_snapshot });
     code = exitCodeOf(result.legs);
   } catch (error) {
     report.infra_error = error.message;

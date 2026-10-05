@@ -640,3 +640,4 @@
 - Stage 26 first-screen behavior.
 - LLM provider transport.
 - UI и database schemas.
+- feat(local-play): v17 slice report persists opening-attempt trace, presentation_recovery and failed delivery turns (slice-reject-trace)

@@ -523,10 +523,14 @@ test('legs: committed_presentation_pending triggers presentation-recovery like t
 });
 
 test('legs: still pending after presentation-recovery stops the leg with delivery diagnostics', async () => {
-  const result = await runFake(fakeWorld({ presentationPendingOnce: true, presentationStaysPending: true }),
-    { maxTurns: 6 });
+  const world = fakeWorld({ presentationPendingOnce: true, presentationStaysPending: true });
+  const result = await runFake(world, { maxTurns: 6 });
   assert.equal(result.presentation_recovery.still_pending, 1);
   assert.match(result.legs.find(({ id }) => id === 'walk').reason, /доставка прозы не завершена/u);
+  assert.equal(result.turns.length, 1);
+  assert.equal(result.turns[0].delivery_failed, true);
+  assert.equal(result.turns[0].request_id, 'slice-r-1');
+  assert.equal(world.w.turns.length, 1, 'no further POST turns after delivery failure');
 });
 
 test('meter: counts LLM calls by role without content and turns the masked server error log into a summary', async () => {
@@ -594,8 +598,9 @@ test('finalizers all run in reverse order even when one throws, and only once', 
   assert.deepEqual(order, ['c', 'a']);
 });
 
-function fakeDeps(order, { rootFails = false, legsFail = false, transportFail = false } = {}) {
-  const world = fakeWorld();
+function fakeDeps(order, { rootFails = false, legsFail = false, transportFail = false,
+  ...worldOpts } = {}) {
+  const world = fakeWorld(worldOpts);
   let roleTelemetry = null;
   let sceneProjectionCapture = null;
   return {
@@ -632,6 +637,23 @@ function fakeDeps(order, { rootFails = false, legsFail = false, transportFail = 
     createSql: () => world.sql
   };
 }
+
+test('runHarness: persists presentation_recovery into report.json and playtest', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'v17-slice-test-'));
+  try {
+    const order = [];
+    const options = parseArgs(['--out-dir', dir, '--playtest-dir', join(dir, 'pt'), '--run-id', 'recovery'], {});
+    const { code, report } = await runHarness(options,
+      fakeDeps(order, { presentationPendingOnce: true }), { env: { RUS_LLM_SETTINGS_PATH: '/p' } });
+    assert.equal(code, EXIT.PASS);
+    assert.equal(report.presentation_recovery.attempts, 1);
+    assert.equal(report.presentation_recovery.recovered, 1);
+    const saved = JSON.parse(await readFile(join(dir, 'report.json'), 'utf8'));
+    assert.deepEqual(saved.presentation_recovery, report.presentation_recovery);
+    const md = await readFile(join(dir, 'pt', (await readdir(join(dir, 'pt')))[0]), 'utf8');
+    assert.ok(md.includes('Presentation recovery'));
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
 
 test('runHarness: happy path writes report.json and playtest, then cleans in reverse order', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'v17-slice-test-'));

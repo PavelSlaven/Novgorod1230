@@ -158,33 +158,48 @@ export async function runLegs({
       presentationRecoveryOutcome = stillPending ? 'still_pending' : 'recovered';
       if (stillPending) {
         recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        commitTurn({
+          recovered: false,
+          delivery_failed: true,
+          prose: '',
+          error: { code: 'PRESENTATION_PENDING',
+            message: 'Факты хода сохранены; экран ещё готовится.' }
+        });
         throw new Blocked('доставка прозы не завершена: committed_presentation_pending после presentation-recovery');
       }
     }
     if (presentationRecoveryAttempts > 0) {
       recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome ?? 'recovered');
     }
-    const turn = {
-      n, leg, input: text, request_id: requestId, http_status: response.status, error: response.ok ? null : response.error,
-      committed, recovered,
-      presentation_recovery_attempts: presentationRecoveryAttempts,
-      presentation_recovery_outcome: presentationRecoveryOutcome,
-      prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
-      llm_calls: llm.count() - calls,
-      llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
-      people_panel: capturePeoplePanel(view.screen, view.snap),
-      current_visible_context: {
-        before: visibleContextBefore,
-        response: structuredClone(response.data?.screen?.visible_context ?? null),
-        after: structuredClone(view.screen?.visible_context ?? null)
-      },
-      npc_scene_projection_diagnostics: sceneProjectionDiagnostics()
-        .filter((event) => event?.request_id === requestId),
-      server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [], route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
-    };
-    state.turns.push(turn);
-    persist(result());
-    return turn;
+    return commitTurn();
+
+    function commitTurn(overrides = {}) {
+      const turn = {
+        n, leg, input: text, request_id: requestId, http_status: response.status,
+        error: overrides.error ?? (response.ok ? null : response.error),
+        committed, recovered: overrides.recovered ?? recovered,
+        delivery_failed: overrides.delivery_failed === true,
+        presentation_recovery_attempts: presentationRecoveryAttempts,
+        presentation_recovery_outcome: presentationRecoveryOutcome,
+        prose: String(overrides.prose ?? prose ?? ''), before,
+        after: overrides.after ?? view.snap, ms: now() - started,
+        llm_calls: llm.count() - calls,
+        llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
+        people_panel: capturePeoplePanel(view.screen, view.snap),
+        current_visible_context: {
+          before: visibleContextBefore,
+          response: structuredClone(response.data?.screen?.visible_context ?? null),
+          after: structuredClone(view.screen?.visible_context ?? null)
+        },
+        npc_scene_projection_diagnostics: sceneProjectionDiagnostics()
+          .filter((event) => event?.request_id === requestId),
+        server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [],
+        route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
+      };
+      state.turns.push(turn);
+      persist(result());
+      return turn;
+    }
   }
 
   // --- start ---

@@ -84,6 +84,7 @@ export async function runLegs({
   let partyId = null;
   let last = null; // { screen, snap }
   let turnNo = 0;
+  let presentationDeliveryFailure = null;
   const apiCall = async (method, phase, leg, ...args) => {
     try { return await api[method](...args); }
     catch (error) {
@@ -109,6 +110,9 @@ export async function runLegs({
     if (outcome === 'recovered') state.presentation_recovery.recovered += 1;
     if (outcome === 'still_pending') state.presentation_recovery.still_pending += 1;
   };
+  const recoveryOutcome = (screen, stillPending) => stillPending ? 'still_pending'
+    : screen?.schema === 'factual_turn_delivery_screen' ? 'factual'
+      : String(screen?.main_prose ?? '').trim() ? 'recovered' : 'empty';
 
   async function recoverPendingPresentation(phase, leg, requestId) {
     const recoverResponse = await apiCall('recover', 'presentation_recovery', leg, partyId,
@@ -121,6 +125,7 @@ export async function runLegs({
 
   /** One player turn: budget/deadline guard, snapshots around it, presentation recovery when pending or prose missing. */
   async function play(leg, text, { reserved = false } = {}) {
+    if (presentationDeliveryFailure) throw new Blocked(presentationDeliveryFailure);
     if (now() >= deadlineAt) throw new Blocked('дедлайн прогона');
     if (reserved ? total() >= maxTurns : exploreBudget() <= 0) throw new Blocked('бюджет ходов исчерпан');
     const n = ++turnNo;
@@ -141,11 +146,24 @@ export async function runLegs({
         'screen_before_turn', leg, priorRequestId);
       last = { screen: cleared.screen, snap: cleared.snap };
       presentationRecoveryAttempts += 1;
+      presentationRecoveryOutcome = recoveryOutcome(cleared.screen, stillPending);
       if (stillPending) {
-        recordPresentationRecovery(presentationRecoveryAttempts, 'still_pending');
-        throw new Blocked('доставка прозы не завершена: committed_presentation_pending до хода');
+        presentationDeliveryFailure = 'доставка прозы не завершена: committed_presentation_pending до хода';
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        throw new Blocked(presentationDeliveryFailure);
       }
-      presentationRecoveryOutcome = 'recovered';
+      if (presentationRecoveryOutcome === 'empty') {
+        presentationDeliveryFailure = 'доставка прозы не завершена: пустой экран после presentation-recovery';
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        const priorTurn = state.turns.at(-1);
+        if (priorTurn) Object.assign(priorTurn, { recovered: false, delivery_kind: 'empty',
+          delivery_failed: true, prose: '', presentation_recovery_attempts:
+            priorTurn.presentation_recovery_attempts + presentationRecoveryAttempts,
+          presentation_recovery_outcome: 'empty', error: { code: 'PRESENTATION_EMPTY_AFTER_RECOVERY',
+            message: 'Ход сохранён, но экран после восстановления пуст.' } });
+        persist(result());
+        throw new Blocked(presentationDeliveryFailure);
+      }
     }
     const response = await apiCall('turn', 'turn', leg, partyId,
       { raw_text: text, request_id: requestId });
@@ -153,17 +171,20 @@ export async function runLegs({
     let view = await refresh('screen_after_turn', leg);
     let prose = view.screen?.main_prose ?? response.data?.screen?.main_prose ?? '';
     const committed = Number(view.snap?.state_version) > Number(before?.state_version);
-    const responsePending = response.data?.screen?.screen_status === PRESENTATION_PENDING
-      || view.screen?.screen_status === PRESENTATION_PENDING;
-    if (responsePending || (committed && !String(prose).trim())) {
+    const currentScreen = response.data?.screen ?? view.screen;
+    const factualDelivery = currentScreen?.schema === 'factual_turn_delivery_screen';
+    const responsePending = !factualDelivery && (response.data?.screen?.screen_status === PRESENTATION_PENDING
+      || view.screen?.screen_status === PRESENTATION_PENDING);
+    if (!factualDelivery && (responsePending || (committed && !String(prose).trim()))) {
       const { view: recoveredView, stillPending } = await recoverPendingPresentation(
         'screen_after_recovery', leg, requestId);
       presentationRecoveryAttempts += 1;
       view = recoveredView;
       prose = view.screen?.main_prose ?? '';
-      recovered = !stillPending;
-      presentationRecoveryOutcome = stillPending ? 'still_pending' : 'recovered';
+      presentationRecoveryOutcome = recoveryOutcome(view.screen, stillPending);
+      recovered = presentationRecoveryOutcome === 'recovered';
       if (stillPending) {
+        presentationDeliveryFailure = 'доставка прозы не завершена: committed_presentation_pending после presentation-recovery';
         recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
         commitTurn({
           recovered: false,
@@ -172,7 +193,15 @@ export async function runLegs({
           error: { code: 'PRESENTATION_PENDING',
             message: 'Факты хода сохранены; экран ещё готовится.' }
         });
-        throw new Blocked('доставка прозы не завершена: committed_presentation_pending после presentation-recovery');
+        throw new Blocked(presentationDeliveryFailure);
+      }
+      if (presentationRecoveryOutcome === 'empty') {
+        presentationDeliveryFailure = 'доставка прозы не завершена: пустой экран после presentation-recovery';
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        commitTurn({ recovered: false, delivery_failed: true, prose: '',
+          error: { code: 'PRESENTATION_EMPTY_AFTER_RECOVERY',
+            message: 'Ход сохранён, но экран после восстановления пуст.' } });
+        throw new Blocked(presentationDeliveryFailure);
       }
     }
     if (presentationRecoveryAttempts > 0) {
@@ -181,10 +210,34 @@ export async function runLegs({
     return commitTurn();
 
     function commitTurn(overrides = {}) {
+      const screen = view.screen ?? response.data?.screen ?? null;
+      const factualScreen = screen?.schema === 'factual_turn_delivery_screen'
+        ? {
+            visible_scene: screen.visible_context?.visible_scene ?? '',
+            visible_changes: [...(screen.visible_changes ?? [])],
+            uncertainties: [...(screen.uncertainties ?? [])],
+            visible_people: (screen.panels?.people?.visible === false ? []
+              : screen.panels?.people?.data?.visible_npcs
+                ?? screen.panels?.people?.data?.people ?? [])
+              .map((person) => typeof person === 'string'
+                ? person : person?.display_label)
+              .filter((label) => typeof label === 'string' && label.trim())
+          } : null;
+      const factualText = factualScreen == null ? '' : [
+        factualScreen.visible_scene,
+        ...factualScreen.visible_changes,
+        ...factualScreen.uncertainties,
+        ...factualScreen.visible_people.map((person) => `Рядом: ${person}.`)
+      ].filter((value) => typeof value === 'string' && value.trim()).join('\n');
+      const deliveryKind = screen?.screen_status === PRESENTATION_PENDING ? 'pending'
+        : String(overrides.prose ?? prose ?? '').trim() ? 'narrated'
+          : factualText ? 'factual' : 'empty';
       const turn = {
         n, leg, input: text, request_id: requestId, http_status: response.status,
         error: overrides.error ?? (response.ok ? null : response.error),
         committed, recovered: overrides.recovered ?? recovered,
+        delivery_kind: deliveryKind,
+        factual_screen: factualScreen,
         delivery_failed: overrides.delivery_failed === true,
         presentation_recovery_attempts: presentationRecoveryAttempts,
         presentation_recovery_outcome: presentationRecoveryOutcome,

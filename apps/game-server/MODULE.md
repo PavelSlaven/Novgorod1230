@@ -907,6 +907,15 @@ the same edge, because binding `matches()` compares structure and ignores
 `description` (without it two commands claim one operation,
 `TURN_STEP_DOMAIN_BINDING_AMBIGUOUS`). The way-of-going wording is approved data
 (`m2c-pass-target-labels` `passage_phrases`), not text composed in code.
+Exit labels are selected by `spatial-v3-exit-label-policy.js`: a unique approved
+pass-target description at the current place, then the exact exit row in the
+Opus `approved_rows` attestation for `m2c-exit-line-labels`. If that line label
+contains only `выход N` while the existing approved `m2c-exit-labels` row names
+the destination, keep the more useful old label temporarily; otherwise use the
+old approved row as fallback, then a typed data gap with place and exit
+diagnostics. The legacy fallback still contains ordinal wording. Current
+coverage uses that fallback for 12 exits: 8 without an approved target or line
+label, and 4 whose target descriptions collide. These are recorded in LW-075.
 Limit: after that first step the path search (`findReachableDeparturePosition`, raw SQL
 of `spatial-v3-expansion-context.js`) walks raw active scene edges without visibility or
 eligibility (admission exists only for the current position). Safe while every scene

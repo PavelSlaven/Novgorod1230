@@ -82,17 +82,26 @@ export function describeDelta(before, after) {
 }
 
 function turnSection(turn) {
+  const delivery = turn.delivery_kind === 'factual'
+    ? ['Игроку показан фактический экран после хода:', '',
+      quote([turn.factual_screen?.visible_scene,
+        ...(turn.factual_screen?.visible_changes ?? []),
+        ...(turn.factual_screen?.uncertainties ?? []),
+        ...(turn.factual_screen?.visible_people ?? [])
+          .map((person) => `Рядом: ${person}.`)]
+        .filter((value) => typeof value === 'string' && value.trim()).join('\n'))]
+    : turn.delivery_kind === 'empty'
+      ? ['Экран игрока не содержит прозы или фактов.']
+      : ['Что увидел игрок (дословно):', '', quote(turn.prose)];
   const lines = [`### Ход ${turn.n} · нога ${LEG_TITLES[turn.leg] ?? turn.leg}`, '',
     `- Ввод игрока: «${turn.input}»`,
     `- HTTP: ${turn.http_status}${turn.error ? `, ошибка ${turn.error.code}${turn.error.turn_commit_status ? ` (turn_commit_status ${turn.error.turn_commit_status})` : ''}` : ''}`,
-    `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}${turn.recovered ? '; текст получен через presentation-recovery' : ''}${turn.presentation_recovery_attempts > 0 ? `; presentation-recovery: ${turn.presentation_recovery_attempts}× (${turn.presentation_recovery_outcome ?? '—'})` : ''}${turn.delivery_failed ? '; доставка прозы не завершена (pending после recovery)' : ''}`,
+    `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}; подача: ${turn.delivery_kind ?? (turn.prose ? 'narrated' : 'empty')}${turn.recovered && turn.delivery_kind !== 'factual' ? '; подача получена через presentation-recovery' : ''}${turn.presentation_recovery_attempts > 0 ? `; presentation-recovery: ${turn.presentation_recovery_attempts}× (${turn.presentation_recovery_outcome ?? '—'})` : ''}${turn.delivery_failed ? '; доставка не завершена после presentation-recovery' : ''}`,
     `- Domain outcome (SQL): ${describeDelta(turn.before, turn.after)}`,
     ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (внутренняя, только в логе; в HTTP — публичная категория или маскировка): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',
     ...(turn.people_panel ? [`- Снимок панели людей: \`${json(turn.people_panel)}\``] : []),
-    'Что увидел игрок (дословно):', '',
-    // A refused turn shows the error text of the response, not the screen left over from the previous turn.
-    turn.error ? quote(turn.error.message ?? turn.error.code ?? 'ошибка без текста') : turn.prose ? quote(turn.prose) : '> (текста нет)'];
+    ...(turn.error ? ['Что увидел игрок:', '', quote(turn.error.message ?? turn.error.code ?? 'ошибка без текста')] : delivery)];
   if (turn.route_labels?.length > 0) lines.push('', `Проходы на экране: ${turn.route_labels.map((label) => `«${label}»`).join(', ')}`);
   if (turn.people_labels?.length > 0) lines.push('', `Люди на экране: ${turn.people_labels.map((label) => `«${label}»`).join(', ')}`);
   return lines.join('\n');
@@ -116,9 +125,16 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     `- Бюджет: ${preconditions.max_turns} ходов (из них ${preconditions.reserve_make} зарезервированы под make), дедлайн ${preconditions.deadline_min} мин.`,
     `- Квалификация модели при старте: ${preconditions.qualification}.`, '');
   out.push('## Gameplay transcript', '');
+  const deliveryCounts = turns.reduce((counts, turn) => {
+    const kind = turn.delivery_kind ?? (turn.prose ? 'narrated' : 'empty');
+    if (Object.hasOwn(counts, kind)) counts[kind] += 1;
+    return counts;
+  }, { narrated: 0, factual: 0, pending: 0, empty: 0 });
+  out.push('### Подача ходов', '',
+    `- Проза: ${deliveryCounts.narrated}; фактический экран: ${deliveryCounts.factual}; ожидание: ${deliveryCounts.pending}; пусто: ${deliveryCounts.empty}.`, '');
   if (report.presentation_recovery?.attempts > 0) {
     out.push('### Presentation recovery', '',
-      `- Вызовов POST presentation-recovery: ${report.presentation_recovery.attempts}; успешно: ${report.presentation_recovery.recovered}; остались pending: ${report.presentation_recovery.still_pending}.`, '');
+      `- Вызовов POST presentation-recovery: ${report.presentation_recovery.attempts}; восстановлено прозы: ${report.presentation_recovery.recovered}; остались pending: ${report.presentation_recovery.still_pending}.`, '');
   }
   if (opening) {
     out.push('### Открытие партии', '',

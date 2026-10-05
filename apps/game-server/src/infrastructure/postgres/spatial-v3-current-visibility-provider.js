@@ -1,23 +1,13 @@
-import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
 import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibility.js';
 import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } from
   './g4-natural-perception-reader.js';
 import { serverError } from '../../errors.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
-import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 import { loadApprovedConnectionLabels } from '../../../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/approved-labels.mjs';
-
-const labelPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url);
-const approvalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/approval-attestation.json', import.meta.url);
-const labelBytes = readFileSync(labelPath);
-const labelCatalog = JSON.parse(labelBytes);
-const labelApproval = JSON.parse(readFileSync(approvalPath));
-const approvedLabels = labelApproval.decision === 'APPROVE_DATA_ONLY'
-  && labelApproval.candidate_ref === `${labelCatalog.candidate_id}@${labelCatalog.version}`
-  && labelApproval.candidate_sha256 === createHash('sha256').update(labelBytes).digest('hex');
+import { loadApprovedExitLineLabels, resolveSpatialV3ExitLabels,
+  loadApprovedLegacyExitLabels } from './spatial-v3-exit-label-policy.js';
 const localLabels = loadApprovedLocalEdgeLabels();
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
@@ -31,10 +21,14 @@ const visibility = new Set(['clear', 'partial', 'none']);
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
   worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
   readEntityExterior, readPlayerKnowledge, readLocalMovementAdmission = null,
+  readExitLabels = loadApprovedExitLineLabels,
+  readLegacyExitLabels = loadApprovedLegacyExitLabels,
   readConnectionLabels = loadApprovedConnectionLabels,
   readScene = readCurrentEntityVisibilityScene,
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
+  const exitLabels = readExitLabels();
+  const legacyExitLabels = readLegacyExitLabels();
   async function withCurrent(partyId, actorId, project, suppliedTransaction,
     observedPositionId = null) {
     const transaction = suppliedTransaction ?? await pool.connect();
@@ -201,7 +195,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
     },
     async readExitDisclosure(context = {}) {
       return withCurrent(context.partyId, context.actorId, async (current) => {
-        if (!approvedLabels || !Array.isArray(context.directional_exits)
+        if (!legacyExitLabels || !Array.isArray(context.directional_exits)
           || context.position?.id !== current.scene.location.scene_position_id
           || context.site?.parent_g4_id !== naturalG4(current.natural)) {
           gap('approved_exit_disclosure_required');
@@ -212,23 +206,17 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const revealed = new Set(admitted.map((row) => row.target_id));
         const disclosed = exits.flatMap((exit) => {
           if (!revealed.has(exit.id)) return [];
-          const labels = labelCatalog.labels.filter((row) =>
-            row.world_revision_id === current.scene.world_revision_id
-            && row.g4_ref.id === current.scene.site.parent_g4_id
-            && row.directional_exit_ref.id === exit.id
-            && row.directional_exit_ref.version === exit.version
-            && row.directional_exit_ref.canonical_digest === exit.canonical_digest
-            && row.direction_context_ref.id === exit.direction_context_id);
-          if (labels.length !== 1) gap('approved_exit_label_required');
           // Any revealed exit shows its approved pass-target description; an exit the
           // observer cannot see at all is not in `revealed` and is not disclosed.
           return [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
-            direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
-            display_label: labels[0].display_label,
-            editorial_choice_ordinal: labels[0].editorial_choice_ordinal,
+            direction_context_id: exit.direction_context_id,
+            _exit_canonical_digest: exit.canonical_digest, knowledge_state: 'visible',
             ...passTargetDisclosureForExit(context.slotByExit, exit.id) }];
         });
-        return withPassTargetDisambiguation(disclosed);
+        return resolveSpatialV3ExitLabels(disclosed, { lineLabels: exitLabels,
+          legacyLabels: legacyExitLabels,
+          placeId: current.scene.site.canonical_g5_ref?.entity_id ?? current.scene.site.id,
+          worldRevisionId: current.scene.world_revision_id, g4Id: current.scene.site.parent_g4_id });
       }, context.transaction, context.observedPositionId);
     },
     /** Canonical connections of the observer's own position, revealed by the same visibility rule

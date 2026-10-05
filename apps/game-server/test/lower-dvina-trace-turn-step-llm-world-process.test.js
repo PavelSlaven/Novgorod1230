@@ -6,6 +6,22 @@ import { assembleWorldProcessStepPlan,
   '../src/runtime/lower-dvina-trace-world-process-llm.js';
 import { worldProcessRequest } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
+async function captureProjection(input) {
+  let user;
+  const model = createLowerDvinaTraceWorldProcessStepModel({
+    roleRunner: { async run(call) {
+      user = call.messages.at(-1).content;
+      const projection = JSON.parse(user);
+      return { output: { interpretation: {
+        grounded_transition: 'Проверка проекции.' },
+      outcome_choice: 'outcome_1',
+      affected_ref_choices: projection.affected_ref_choices.map(({ choice_id }) => choice_id) } };
+    } }
+  });
+  await model(input);
+  return JSON.parse(user);
+}
+
 test('world process model assembles exact envelope from qualitative choice', async () => {
   let prompt, user;
   const input = worldProcessRequest();
@@ -30,6 +46,7 @@ test('world process model assembles exact envelope from qualitative choice', asy
   assert.deepEqual(plan.fact_changes, []);
   const projected = JSON.parse(user);
   assert.deepEqual(projected, {
+    process_facts: ['Огонь горит.'],
     fuel_facts: ['обычное твёрдое топливо'],
     subject_facts: ['цельная порция воды',
       'Действие персонажа: воздействовать водой на огонь.',
@@ -53,12 +70,31 @@ test('world process model assembles exact envelope from qualitative choice', asy
   assert.doesNotMatch(user, /request_id|party_state_version|process_ref|scope_ref|causal_basis_ref|started_at|next_boundary_at|current_timestamp|mass_grams|quantities|source_refs|water:1|fire:1/u);
   assert.doesNotMatch(prompt, /"source":/u);
   assert.doesNotMatch(user, /ordinary_solid_fuel_unit|water_portion|actor_affected|process_kind|process_status|environment_facts":\[\]/u);
-  assert.match(prompt, /Ground every semantic claim in supplied facts/u);
-  assert.match(prompt, /Choose one outcome from outcomes and, if needed, refs from affected_ref_choices/u);
+  assert.match(prompt, /Каждое смысловое утверждение опирай на переданные факты/u);
+  assert.match(prompt, /Выбери один исход из outcomes и, если нужно, ссылки из affected_ref_choices/u);
   assert.doesNotMatch(prompt, /outcome_1|ref_1|"meaning"|"role"/u);
   assert.doesNotMatch(prompt, /server binds choices/u);
   assert.match(prompt, /"outcome_choice":"<choice_id>"/u);
-  assert.match(prompt, /every affected_ref_choices element is one string ID/u);
+  assert.match(prompt, /каждый элемент affected_ref_choices — один строковый идентификатор из переданного списка ссылок/u);
+});
+
+test('world-process projection removes only normalized exact duplicate facts', async (t) => {
+  const cases = [
+    { name: 'negative fact', fact: 'Огонь не горит.', keepsProcessFact: true },
+    { name: 'conditional action',
+      fact: 'Пока огонь не догорит, поддерживать его.', keepsProcessFact: true },
+    { name: 'exact positive duplicate', fact: 'Огонь горит.', keepsProcessFact: false },
+    { name: 'case and whitespace normalized duplicate',
+      fact: '  ОГОНЬ   ГОРИТ.  ', keepsProcessFact: false }
+  ];
+  for (const { name, fact, keepsProcessFact } of cases) await t.test(name, async () => {
+    const input = worldProcessRequest();
+    input.subject_state.facts.push(fact);
+    const projected = await captureProjection(input);
+    assert.ok(projected.subject_facts.includes(fact));
+    assert.equal(projected.process_facts?.includes('Огонь горит.') ?? false,
+      keepsProcessFact);
+  });
 });
 
 test('world-process outcome meanings distinguish unchanged from changed process', async () => {

@@ -14,11 +14,11 @@ export function createLowerDvinaTraceWorldProcessStepModel({ roleRunner } = {}) 
     const response = await roleRunner.run({ scope: 'turn_runtime',
       role_id: 'world_process_step', overrides: { temperature: 0,
         maxTokens: 20_000 }, messages: [{ role: 'system', content: [
-        'Return this exact JSON shape: {"interpretation":{"grounded_transition":"<переход>"},"outcome_choice":"<choice_id>","affected_ref_choices":[]}.',
-        'outcome_choice is one string ID from the supplied outcomes; every affected_ref_choices element is one string ID from the supplied refs. The affected_ref_choices array may be empty.',
-        'Set interpretation.grounded_transition to a concise account grounded in the supplied facts.',
-        'Choose one outcome from outcomes and, if needed, refs from affected_ref_choices.',
-        'Ground every semantic claim in supplied facts; treat missing facts as unknown and preserve unresolved conflicts.'
+        'Верни JSON точно этой формы: {"interpretation":{"grounded_transition":"<переход>"},"outcome_choice":"<choice_id>","affected_ref_choices":[]}.',
+        'Значение outcome_choice — один строковый идентификатор из переданного списка исходов; каждый элемент affected_ref_choices — один строковый идентификатор из переданного списка ссылок. Массив affected_ref_choices может быть пустым.',
+        'Заполни interpretation.grounded_transition кратким описанием перехода, опирающимся на переданные факты.',
+        'Выбери один исход из outcomes и, если нужно, ссылки из affected_ref_choices.',
+        'Каждое смысловое утверждение опирай на переданные факты; отсутствующие факты считай неизвестными, неразрешённые противоречия сохраняй.'
       ].join(' ') }, { role: 'user', content: JSON.stringify(projection) }] });
     if (!response?.output || typeof response.output !== 'object'
         || Array.isArray(response.output)) throw serverError(
@@ -61,11 +61,9 @@ function worldProcessRefChoices(request) {
 function worldProcessProjection(request, outcomeChoices, refChoices) {
   const environmentFacts = qualitativeFacts(request.environment_state);
   const subjectFacts = qualitativeFacts(request.subject_state);
+  const normalizedSubjectFacts = new Set(subjectFacts.map(normalizeFact));
   const processFactsForModel = processFacts(request).filter((fact) =>
-    !(fact === 'Огонь горит.' && subjectFacts.some((subjectFact) =>
-      subjectFact.toLocaleLowerCase('ru').includes('огонь')
-      && (subjectFact.toLocaleLowerCase('ru').includes('горит')
-        || subjectFact.toLocaleLowerCase('ru').includes('продолжает гореть')))));
+    !normalizedSubjectFacts.has(normalizeFact(fact)));
   const quantityFacts = waterQuantityFacts(request.subject_state, subjectFacts);
   const fuelFacts = [...new Set((request.process?.fuel_bindings ?? [])
     .map(({ fuel_class }) => fuelFact(fuel_class))
@@ -101,6 +99,10 @@ function qualitativeFacts(value) {
     ...(Array.isArray(value.qualitative_facts) ? value.qualitative_facts : [])];
   return [...new Set(facts.filter((fact) => typeof fact === 'string'
     && fact.trim().length > 0 && !/^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/u.test(fact)))];
+}
+
+function normalizeFact(fact) {
+  return fact.trim().replace(/\s+/gu, ' ').toLocaleLowerCase('ru');
 }
 
 function waterQuantityFacts(subject, facts) {

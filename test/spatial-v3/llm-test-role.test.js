@@ -28,10 +28,21 @@ test('recognizes turn-step planner from structured request identity fields', () 
   ] }), 'turn_step_planner');
 });
 
-test('recognizes router from its structured player-text input', () => {
+test('recognizes router from production semantic-resolution request schema', () => {
   assert.equal(identifyLlmTestRole({ body: { messages: [
     { role: 'user', content: JSON.stringify({
-      request_id: 'fixture-router-1', player_text: 'look', current_state: {}
+      version: 1,
+      schema: 'turn_semantic_resolution_request',
+      raw_text: 'Осматриваюсь вокруг.',
+      action_set: [{
+        option_id: 'look', label: 'Осмотреться', actor_id: 'actor-1',
+        target_id: null, preconditions: [], expected_cost: {}, known_risks: [],
+        reason_visible_to_actor: null, state_version: 1, metadata: {}
+      }],
+      action_set_digest: 'sha256:fixture',
+      state_version: 1,
+      policy_id: 'fixture-policy',
+      policy_version: 1
     }) }
   ] } }), 'intent_router');
 });
@@ -39,4 +50,10 @@ test('recognizes router from its structured player-text input', () => {
 test('fails closed for shared JSON response format and unrelated payloads', () => {
   assert.equal(identifyLlmTestRole({ response_format: { type: 'json_object' },
     messages: [{ role: 'user', content: '{"mode":"narration"}' }] }), null);
+});
+
+test('does not guess the router from an unschematized player-text shape', () => {
+  assert.equal(identifyLlmTestRole({ body: { messages: [
+    { role: 'user', content: JSON.stringify({ player_text: 'look', current_state: {} }) }
+  ] } }), null);
 });

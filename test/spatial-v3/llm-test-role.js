@@ -31,13 +31,12 @@ export function identifyLlmTestRole(callOrBody = {}) {
   if (request?.schema === 'world_knowledge_query_planner_request_v1') {
     return 'world_knowledge_query_planner';
   }
+  if (request?.schema === 'turn_semantic_resolution_request') {
+    return 'intent_router';
+  }
   if (Object.hasOwn(request ?? {}, 'root_player_action')
       && Number.isInteger(request?.step_index)) {
     return 'turn_step_planner';
-  }
-  if (typeof request?.player_text === 'string'
-      && Object.hasOwn(request, 'current_state')) {
-    return 'intent_router';
   }
   return null;
 }

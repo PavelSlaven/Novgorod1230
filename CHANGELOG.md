@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)
 
 - fix(turn): current scene rebuilt from committed state each turn (departed items/NPCs dropped, speech never becomes the place title); movement narration from owner facts - site arrival from the destination package, route visible change, Spatial-signed local label (#98)
 - feat(opening): opening narrator gets a compact Russian projection without ids or service fields and Russian instructions (measured arm P, D80); every Temporal day/light phase translated, held items keep «при вас» and condition, unknown values fail closed (#98)

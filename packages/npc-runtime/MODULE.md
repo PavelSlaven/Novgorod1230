@@ -37,12 +37,16 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
   marker для semantic handoff. Current routine adapter активирует только approved
   deterministic phases; общий consumer новых решений вне Phase 7 ещё не подключён.
   Calendar dependency: `@rus/time-events-history/calendar`, без I/O.
-- `selectNpcRoutineSchedule({ schedule_context, scheduled_at })` — pure D-1
-  selector over the frozen approved rule rows, exact home scope, subject and
-  day type in routine state. It projects season/month through the supplied
-  calendar profile and returns exactly one matching rule plus its selected
-  ref; zero or multiple matches return `npc_schedule_gap`, without fallback
-  or RNG. Routine phases may carry `presence_state` (`on_site` or `away`) and
+- `selectNpcRoutineSchedule({ schedule_context, scheduled_at,
+  calendar_day_type, assigned_work_variant })` — pure D-1 selector over the
+  frozen approved rule rows, exact home scope and subject. An explicitly
+  assigned NPC/place work variant wins; otherwise it uses an explicit
+  calendar day type, then `normal`. It projects season/month through the
+  supplied calendar profile and returns exactly one matching rule plus its
+  selected ref; zero or multiple matches return `npc_schedule_gap`, without
+  fallback or RNG. The selected type is stored in the returned schedule
+  context; a prior stored type is not itself an assignment. Routine phases may
+  carry `presence_state` (`on_site` or `away`) and
   `location_ref`; older profiles may omit both. A routine state may persist a
   cloned/frozen `schedule_context` separately from NPC identity.
 - `resolveNpcRoutinePresence({ intent, schedule_context, scheduled_at,

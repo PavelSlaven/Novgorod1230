@@ -245,6 +245,45 @@ test('D-1 selector uses exact calendar season, month, scope, subject and day typ
     scheduled_at: at(0) }), (error) => error?.code === 'npc_schedule_gap');
 });
 
+test('D-1 selector defaults to normal and uses only explicit calendar or work signals', () => {
+  const normal = scheduleRow();
+  const market = scheduleRow({ schedule_id: 'market-day', day_type: 'market_day' });
+  const assigned = scheduleRow({ schedule_id: 'unseen-shift', day_type: 'unseen_shift' });
+  const context = scheduleContext([normal, market, assigned]);
+
+  assert.equal(selectNpcRoutineSchedule({ schedule_context: context, scheduled_at: at(42180) })
+    .rule.schedule_id, 'winter-home');
+  assert.equal(selectNpcRoutineSchedule({ schedule_context: { ...context, day_type: 'market_day' },
+    scheduled_at: at(42180) }).rule.schedule_id, 'winter-home');
+  assert.equal(selectNpcRoutineSchedule({ schedule_context: context, scheduled_at: at(42180),
+    calendar_day_type: 'market_day' }).rule.schedule_id, 'market-day');
+  const chosen = selectNpcRoutineSchedule({ schedule_context: context, scheduled_at: at(42180),
+    calendar_day_type: 'market_day', assigned_work_variant: 'unseen_shift' });
+  assert.equal(chosen.rule.schedule_id, 'unseen-shift');
+  assert.equal(chosen.schedule_context.day_type, 'unseen_shift');
+  assert.throws(() => selectNpcRoutineSchedule({ schedule_context: context, scheduled_at: at(42180),
+    assigned_work_variant: 'night_watch' }), (error) => error?.code === 'npc_schedule_gap');
+});
+
+test('unassigned watch schedules use normal and a missing normal row remains a typed gap', () => {
+  for (const subject of ['nov_occ_church_guard', 'nov_occ_market_guard']) {
+    const normal = scheduleRow({ schedule_id: `${subject}-normal`, subject_ref: subject });
+    const watch = scheduleRow({ schedule_id: `${subject}-night-watch`, subject_ref: subject,
+      day_type: 'night_watch' });
+    const context = scheduleContext([normal, watch]);
+    context.subject_ref = subject;
+    context.selected_rule_ref = { schedule_id: normal.schedule_id,
+      schedule_version: normal.schedule_version, world_revision_id: normal.world_revision_id };
+    assert.equal(selectNpcRoutineSchedule({ schedule_context: context, scheduled_at: at(42180) })
+      .rule.schedule_id, normal.schedule_id);
+    const onlyWatch = { ...context, approved_rule_rows: [watch], selected_rule_ref: {
+      schedule_id: watch.schedule_id, schedule_version: watch.schedule_version,
+      world_revision_id: watch.world_revision_id } };
+    assert.throws(() => selectNpcRoutineSchedule({ schedule_context: onlyWatch,
+      scheduled_at: at(42180) }), (error) => error?.code === 'npc_schedule_gap');
+  }
+});
+
 test('D-1 selector chooses and pins the initial applicable rule without a preselected ref', () => {
   const { selected_rule_ref, ...context } = scheduleContext();
   const selected = selectNpcRoutineSchedule({ schedule_context: context,

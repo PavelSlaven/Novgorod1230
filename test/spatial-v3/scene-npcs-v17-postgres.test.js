@@ -76,7 +76,7 @@ function installStub({ onNarration = null } = {}) {
       && [...input.required_current_beat.changes, ...input.required_current_beat.uncertainties]
         .length === 0) {
       return json({ prose: 'Вы оказываетесь на новом месте.' });
-    } else if (system.startsWith('Return only one plain JSON object with the semantic conversation contribution. Do not return request_id')) {
+    } else if (system.startsWith('Возвращай только один обычный JSON-объект с семантическим вкладом в разговор.')) {
       const target = input.player_safe_context.target_npc_ref;
       return json({ input_mode: 'intent_paraphrase', contribution_kind: 'speech',
         primary_addressee_ref: target, intended_addressee_refs: [target], affected_actor_refs: [],
@@ -97,7 +97,7 @@ function installStub({ onNarration = null } = {}) {
         interpretation: { intent: 'ответить', grounded_contribution: 'ответ', adaptation: 'literal' },
         resolution: 'automatic', activity: { duration_class: 'domain_owned', effort: 'none' },
         supporting_operations: [], check: null, handoff: null, reason: 'Ответ.' });
-    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       return json({ pass: true, concerns: [] });
     }
     return base(url, init);

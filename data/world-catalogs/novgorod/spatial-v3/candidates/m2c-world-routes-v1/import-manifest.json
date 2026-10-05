@@ -29,7 +29,7 @@
     {
       "table": "spatial_v3_authoring_versions",
       "file": "datasets/spatial_v3_authoring_versions.json",
-      "sha256": "32ea00ab7aaf8d840e12e6ad6abc9b117108ebd101d228b0f5be990fa1a99fed",
+      "sha256": "1f0ae72e585e925541c25ea6fa53a48ec0a1e93c666885c569006606702bebe0",
       "status": "draft",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
       "delete_policy": "forbid",
@@ -221,7 +221,7 @@
     {
       "table": "spatial_v3_world_route_segments",
       "file": "datasets/spatial_v3_world_route_segments.json",
-      "sha256": "12b8179544dbdd6f64112c4b753c3759352864c7ff5c1172004d138736a98157",
+      "sha256": "65214c89950f772ad00983f41c89a5b0de6b0a5695cc3508774076fdb9d26c8a",
       "status": "draft",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/generator-report.json",
       "delete_policy": "forbid",

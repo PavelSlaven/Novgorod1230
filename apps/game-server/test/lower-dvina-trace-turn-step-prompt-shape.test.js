@@ -14,13 +14,12 @@ test('planner mapping labels live outside flat JSON examples and retain availabi
     return { output: output() };
   } } })(input);
   const expected = Object.entries(JSON.parse(turnStepPlanMappings(input)));
-  const examples = [...prompt.matchAll(/^Mapping: ([^\n]+)\n([^\n]+)/gmu)]
+  const examples = [...prompt.matchAll(/^Сопоставление: ([^\n]+)\n([^\n]+)/gmu)]
     .map(([, name, json]) => [name, JSON.parse(json)]);
   assert.deepEqual(examples, expected);
   for (const [name, semantic] of examples) assert.equal(Object.hasOwn(semantic, name), false);
-  assert.match(prompt, /never output keys/u);
-  assert.match(prompt, /goal_result and continuation from the whole request/u);
-  assert.doesNotMatch(prompt, /Copy only the operation DTO/u);
+  assert.match(prompt, /неизвестные поля[\s\S]*определяй goal_result и continuation по всему оставшемуся намерению/u);
+  assert.doesNotMatch(prompt, /Копируй только DTO операции/u);
   assert.ok(prompt.includes(TURN_STEP_COMPOUND_EXAMPLE));
 });
 
@@ -54,7 +53,7 @@ test('planner wire keeps immutable history beside the executable suffix', async 
 });
 
 test('flat compound speech example and unseen conceptual equivalent validate without planner repair', async () => {
-  const example = JSON.parse(TURN_STEP_COMPOUND_EXAMPLE.split('Output:\n')[1]);
+  const example = JSON.parse(TURN_STEP_COMPOUND_EXAMPLE.split('Вывод:\n')[1]);
   for (const [intent, words, suffix] of [
     ['Прошу подождать, затем сажусь.', 'Подождите.', 'затем сажусь.'],
     ['Благодарю за помощь, после этого оглядываю потолок.', 'Спасибо за помощь.', 'после этого оглядываю потолок.']

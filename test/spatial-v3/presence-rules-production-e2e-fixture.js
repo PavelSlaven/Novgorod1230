@@ -18,6 +18,7 @@ import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 export const POSTGRES_IMAGE = 'postgres:16.14-alpine';
 export const WORLD_DB = 'novgorod_world_v17';
@@ -272,16 +273,17 @@ export function installPresenceProductionE2eFetch({
     const call = JSON.parse(init.body);
     const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+    const role = identifyLlmTestRole(call);
     requestLog?.push({ system, user: modelInput });
     let output;
-    if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+    if (role === 'world_knowledge_query_planner') {
       output = {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: [], focus_refs: [], requested_predicates: [], search_hints: [],
       };
-    } else if (system.startsWith('Resolve the raw Russian player text')) {
+    } else if (role === 'intent_router') {
       output = { status: 'unknown', reason_code: 'unknown_intent' };
-    } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+    } else if (role === 'turn_step_planner') {
       const request = modelInput.request ?? modelInput;
       if (request.root_player_action === observeText) {
         output = {

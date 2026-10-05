@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(prompts): перевести промпты планировщика хода и маршрутизатора на русский (prompt-rev-turn)
 - fix(wk): remove context_text, max_context_chars and omitWorldKnowledgeContextText from the World Knowledge wire (#98)
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series
 - fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed

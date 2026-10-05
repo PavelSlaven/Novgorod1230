@@ -77,10 +77,11 @@ export async function repairedOrdinaryPrerequisite(entry, { capturedWrongVerdict
     if (call.role_id === 'turn_step_planner_repair') {
       const tail = turnStepRepairSpecificInstructions(payload, input).at(-1);
       assert.ok(call.messages[0].content.endsWith(tail));
-      assert.match(tail, /Required literal denial repair:[\s\S]*MUST use ordinary_material_prerequisite/u);
-      assert.match(tail, /replace the original operations, activity, goal_result and continuation together/u);
-      assert.doesNotMatch(call.messages[0].content, /Re-plan only fields named|Otherwise use direct without operations/u);
-      const shape = JSON.parse(tail.split("For a missing referent only, return this semantic mapping with its nominal query and current refs filled from the request: ").at(-1));
+      assert.match(tail, /Обязательное исправление literal denial:[\s\S]*ОБЯЗАТЕЛЬНО используй ordinary_material_prerequisite/u);
+      assert.match(tail, /замени исходные operations, activity, goal_result и continuation вместе/u);
+      assert.doesNotMatch(call.messages[0].content, /Перепланируй только поля|Иначе используй direct без operations/u);
+      const marker = 'текущие refs из request: ';
+      const shape = JSON.parse(tail.slice(tail.lastIndexOf(marker) + marker.length));
       assert.equal(shape.resolution, "domain_request");
       assert.equal(shape.operations[0].discovery_kind, "inspect");
       assert.equal(shape.continuation.remaining_intent, entry.intent);
@@ -97,7 +98,10 @@ export async function repairedOrdinaryPrerequisite(entry, { capturedWrongVerdict
     assert.ok(payload.operation, 'initial generic auditor is forbidden');
     assert.deepEqual(payload.operation, operation);
     assert.deepEqual(payload.continuation, { remaining_intent: entry.intent, depends_on_refs: [] });
-    assert.match(call.messages[0].content, /continuation.remaining_intent точно равен полному remaining_intent[\s\S]*обязательно выбери mode="material_prerequisite" и consumed_intent=null/u);
+    assert.ok(call.messages[0].content.includes(
+      'correction_candidate="proposed_material_prerequisite"'));
+    assert.ok(call.messages[0].content.includes(
+      '"mode":"material_prerequisite","consumed_intent":null'));
     if (capturedWrongVerdict) return { output: { mode: 'focused_discovery', consumed_intent: entry.query } };
     // Captured auditor treated a nominal prerequisite as an executed discovery prefix.
     return { output: payload.correction_candidate === 'proposed_material_prerequisite'
@@ -177,7 +181,8 @@ test('domain owner unavailable repairs to lawful reality-limited direct attempt'
   const roleRunner = { async run(call) {
     roles.push(call.role_id);
     if (call.role_id === 'turn_step_planner_repair') {
-      assert.match(call.messages[0].content, /For domain_owner_unavailable,.*direct reality_limited/u);
+      assert.match(call.messages[0].content,
+        /При domain_owner_unavailable удали недоступную domain operation и выполни правомерную прямую попытку reality_limited/u);
       return { output: { ...output(), interpretation: {
         player_goal: input.remaining_intent, grounded_attempt: input.remaining_intent,
         adaptation: 'reality_limited' } } };
@@ -205,7 +210,7 @@ test('domain owner repair uses already visible NPC activities directly', () => {
     path: '$.operations.0', code: 'domain_owner_unavailable'
   }] }, inputFor(ordinaryCases[0]));
   assert.match(lines.join(' '),
-    /visible_npc visible_status values already answer[\s\S]*direct player_safe_observation[\s\S]*no assessment/u);
+    /значения visible_status у visible_npc уже отвечают на запрос[\s\S]*direct player_safe_observation[\s\S]*без assessment/u);
 });
 
 test('repaired prerequisites reach O1 with catalog support, zero query evidence and materialized projections', async () => {
@@ -302,13 +307,13 @@ test('literal denial repair tail binds only the exact single error and keeps an 
   await repairedOrdinaryPrerequisite(entry);
   const error = { path: '$.resolution', code: 'operation_semantic_grounding' };
   const tail = turnStepRepairSpecificInstructions({ structural_errors: [error] }, inputFor(entry)).at(-1);
-  assert.match(tail, /query must be only a nominal description/u);
-  assert.match(tail, /query must not equal or copy request.remaining_intent/u);
+  assert.match(tail, /query должен содержать только именное описание отсутствующего обычного объекта/u);
+  assert.match(tail, /query не должен равняться request\.remaining_intent или копировать его/u);
   assert.ok(tail.includes(JSON.stringify({ remaining_intent: entry.intent, depends_on_refs: [] })));
   for (const errors of [[{ ...error, path: '$.operations.0' }],
     [{ ...error, code: 'domain_owner_unavailable' }], [error, { path: '$.check', code: 'type' }]]) {
     assert.equal(turnStepRepairSpecificInstructions({ structural_errors: errors }, inputFor(entry))
-      .some((line) => line.startsWith('Required literal denial repair:')), false);
+      .some((line) => line.startsWith('Обязательное исправление literal denial:')), false);
   }
 });
 

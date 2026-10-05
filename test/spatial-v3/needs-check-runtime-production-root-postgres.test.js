@@ -10,8 +10,7 @@ import {
   installPresenceProductionE2eFetch,
   publicStartScenario,
 } from './presence-rules-production-e2e-fixture.js';
-
-const PLANNER = 'Return only one JSON object containing the semantic choice for one turn step.';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 function respond(output) {
   return new Response(JSON.stringify({
@@ -111,7 +110,8 @@ function installDeterministicFetch(seen) {
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const user = JSON.parse(call.messages.find(({ role }) => role === 'user').content);
     const request = user.request ?? user;
-    if (system.startsWith(PLANNER)) {
+    const role = identifyLlmTestRole(call);
+    if (role === 'turn_step_planner') {
       const action = request.root_player_action;
       seen.plannerCalls += 1;
       if (action === 'Найду павлина.') {

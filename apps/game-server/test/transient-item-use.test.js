@@ -38,7 +38,7 @@ for (const [name, intent, denial = false] of [
     if (denial && call.role_id === 'turn_step_planner') return { output: plan(input, {
       goal_result: 'not_achieved', reason_code: 'no_matching_operation',
       reason: 'No specific code-owned operation for this non-transforming physical use.' }) };
-    if (denial) assert.match(call.messages[0].content, /Never repeat discovery for that same known item/u);
+    if (denial) assert.match(call.messages[0].content, /Никогда не заменяй уже найденный подходящий предмет другим ordinary discovery/u);
     return { output: plan(input, { resolution: 'domain_request', goal_result: 'pending',
       activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
       operations: [operation] }) };

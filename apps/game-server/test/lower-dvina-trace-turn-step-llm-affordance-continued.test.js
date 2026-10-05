@@ -120,7 +120,8 @@ test('active conversation precedes later discovery', async () => {
     player_safe_state: { active_interlocutor: interlocutor }, available_domain_operations: [speech, discovery] });
   const model = modelFor(input, 'domain_operation_1_emit_interaction_speech', {
     groundedAttempt: 'Ask active interlocutor.', continuation, reasonCode: 'active_conversation',
-    onPrompt: (prompt) => assert.match(prompt, /before focused discovery[\s\S]*independent later clause[\s\S]*continuation/u)
+    onPrompt: (prompt) => assert.match(prompt,
+      /Если player_safe_state\.active_interlocutor указывает активного собеседника[\s\S]*самым ранним независимо исполнимым действием[\s\S]*ОБЯЗАТЕЛЬНО выбери его точный переданный choice_id раньше focused discovery[\s\S]*последующая речь сохраняется в continuation[\s\S]*Если независимая последующая часть намерения просит новую подробность, сохрани её в continuation/u)
   });
   const plan = await model(input);
   assert.deepEqual(plan.operations, [speech]);
@@ -141,7 +142,7 @@ test('interlocutor question remains interaction, not discovery', async () => {
     assert.deepEqual((await model(input, repair)).operations, [speech]);
   }
   for (const prompt of prompts) assert.match(prompt,
-    /A question remains conversation[\s\S]*does not make it request_discovery[\s\S]*matching supplied request_discovery/u);
+    /Вопрос остаётся разговором[\s\S]*тема ответа не превращает его в request_discovery[\s\S]*независимого намерения игрока лично осмотреть/u);
 });
 
 test('generic request skips instrumented offer', async () => {
@@ -155,8 +156,9 @@ test('generic request skips instrumented offer', async () => {
     reasonCode: 'active_conversation', onPrompt: (value) => { prompt = value; }
   });
   assert.deepEqual((await model(input)).operations, [requestInteraction]);
-  const contrast = prompt.match(/Active conversation contrast: ([\s\S]*?)\s+Mapping:/u)[1];
-  assert.match(contrast, /desired answer or reaction is its owner result, never continuation[\s\S]*goal_result achieved and continuation null/u);
+  const contrast = prompt.match(/Сопоставление для активного разговора: ([\s\S]*?)\s+Сопоставление:/u)[1];
+  assert.match(contrast,
+    /желаемый ответ или реакция — результат, за который отвечает владелец взаимодействия, а не continuation[\s\S]*goal_result achieved и continuation null/u);
   assert.match(contrast, /"operation_choice":"domain_operation_2_emit_interaction_request"/u);
   assert.doesNotMatch(contrast, /domain_operation_1_emit_interaction_offer/u);
 });
@@ -177,17 +179,17 @@ test('active interlocutor owns permission response for unsupported aid',
     });
     assert.deepEqual((await model(input)).operations, [requestInteraction]);
     assert.match(prompt,
-      /asking that person to permit, oppose, or help with a physical intervention[\s\S]*does not confirm the intervention/u);
+      /просьба к этому человеку разрешить, воспрепятствовать или помочь с физическим вмешательством[\s\S]*владелец взаимодействия определяет ответ, но не подтверждает само вмешательство/u);
     assert.match(prompt,
-      /attempted physical intervention has no supplied physical owner[\s\S]*matching request interaction is the owned boundary[\s\S]*never confirms the physical intervention/u);
+      /Обращённая речь или просьба сама завершается этим взаимодействием/u);
     assert.match(prompt,
-      /proposal to perform that intervention followed by a direct address[\s\S]*one interaction boundary[\s\S]*Never reason that the addressed request is not a separate action/u);
+      /Если дальше нет независимого действия игрока, используй goal_result achieved и continuation null/u);
   assert.match(prompt,
-    /role description grounded by the current visible projection or committed conversation history overrides a different active_interlocutor/u);
+    /Любое явно обоснованное видимым контекстом обращение к персонажу имеет приоритет над другим active_interlocutor/u);
   assert.match(prompt,
-    /an ordinary referent merely sought in the current visible physical scope/u);
+    /ordinary_material_prerequisite[\s\S]*request_discovery/u);
   assert.match(prompt,
-    /only asks the ordinary owner to resolve presence/u);
+    /Вопрос остаётся разговором[\s\S]*где или как найти место, предмет или сведения[\s\S]*request_discovery/u);
   });
 
 test('visible NPC speech does not outrank an earlier feasible action',
@@ -215,11 +217,11 @@ test('visible NPC speech does not outrank an earlier feasible action',
     });
     assert.deepEqual((await model(input)).operations, [offer]);
     assert.match(prompt,
-      /Visible conversation routing for "стоящий мужчина"[\s\S]*capability label, not the utterance[\s\S]*raw player text remains the utterance[\s\S]*MUST select this conversation before visible_general_look[\s\S]*genuine earlier search/u);
+      /Маршрут разговора с видимым персонажем "стоящий мужчина"[\s\S]*обозначает доступную возможность, а не произнесённые слова[\s\S]*исходный текст игрока остаётся репликой[\s\S]*ОБЯЗАТЕЛЬНО выбери этот разговор до visible_general_look[\s\S]*настоящее более раннее действие — поиск/u);
     assert.match(prompt,
       /player_safe_grounding[\s\S]*age_category":"young"[\s\S]*main_visible_color":"dark_blue"/u);
     assert.match(prompt,
-      /visible_scene introduces one unnamed person by position or relation/u);
+      /Если visible_scene вводит одного безымянного человека через положение или родственную связь[\s\S]*сопоставь его с соответствующей общей меткой видимого персонажа/u);
     assert.match(prompt,
-      /visible_general_look mapping is exact[\s\S]*moment\/none[\s\S]*same root turn[\s\S]*never merely because the player directs attention/u);
+      /сопоставление visible_general_look точное: используй semantic moment\/none без запрошенной длительности[\s\S]*чтобы его можно было выполнить в том же корневом ходу[\s\S]*не просто потому, что игрок направил внимание/u);
   });

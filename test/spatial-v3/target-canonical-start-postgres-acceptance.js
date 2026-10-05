@@ -21,6 +21,7 @@ import { readCurrentNaturalPerceptionFacts } from '../../apps/game-server/src/in
 import { readInitialCanonicalNaturalSourceState } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-initial-state.js';
 import { prepareG4NaturalScenePerceptionInput, projectG4NaturalPerception } from '../../apps/game-server/src/runtime/g4-natural-perception.js';
 import { createTargetCurrentFactualContext } from '../../apps/game-server/src/infrastructure/postgres/target-current-factual-context.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 import { serveTargetHttpBrowserSmoke, TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 import { createLlmSettingsFileStore } from '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
 import { createLlmSettingsOwner } from '../../apps/game-server/src/runtime/llm-settings.js';
@@ -177,14 +178,15 @@ export async function assertTargetCanonicalStartPostgres({
       const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
       const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
       let output;
-      if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+      const role = identifyLlmTestRole(call);
+      if (role === 'world_knowledge_query_planner') {
         modelCalls.push({ role: 'world_knowledge_query_planner' });
         output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
           domains: [], focus_refs: [], requested_predicates: [], search_hints: [] };
-      } else if (system.startsWith('Resolve the raw Russian player text')) {
+      } else if (role === 'intent_router') {
         modelCalls.push({ role: 'intent_router' });
         output = { status: 'unknown', reason_code: 'unknown_intent' };
-      } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+      } else if (role === 'turn_step_planner') {
         modelCalls.push({ role: 'turn_step_planner' });
         assert.equal((modelInput.request ?? modelInput).root_player_action, TARGET_SMOKE_INPUT);
         output = { operation_choice: null, interpretation: { adaptation: 'literal' },

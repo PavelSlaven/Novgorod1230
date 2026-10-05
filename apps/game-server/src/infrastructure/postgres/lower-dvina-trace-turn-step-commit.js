@@ -142,8 +142,19 @@ export async function commitLowerDvinaTraceTurnStep({
   }
   const destinationVisibleContext = preparedMovementState?.current_visible_context
     ?? envelope.consequence?.visible_seed?.destination_visible_context ?? null;
-  const sourceVisibleContext = destinationVisibleContext
-    ?? envelope.visible_context;
+  const sourceVisibleContext = destinationVisibleContext == null
+    ? envelope.visible_context
+    : {
+      ...destinationVisibleContext,
+      visible_changes: [...new Set([
+        ...(destinationVisibleContext.visible_changes ?? []),
+        ...(envelope.visible_context.visible_changes ?? [])
+      ])],
+      uncertainties: [...new Set([
+        ...(destinationVisibleContext.uncertainties ?? []),
+        ...(envelope.visible_context.uncertainties ?? [])
+      ])]
+    };
   const ordinaryVisibleContext = ordinaryPlan == null ? sourceVisibleContext
     : applyOrdinaryMaterializationProjection({
       next: structuredClone(state), visibleContext: sourceVisibleContext, ordinaryPlan

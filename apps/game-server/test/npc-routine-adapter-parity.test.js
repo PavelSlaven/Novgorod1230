@@ -184,7 +184,9 @@ async function runPair({ ordinal, season, routineLocation }) {
   const candidate = npcRoutineCandidate(row);
   const result = npcRoutineTemporalRegistration().resolve(candidate, {
     projection: { npcs: [{ instance_id: npcRow.record.npc_id, machine_state: npcRow.record.machine_state }],
-      npc_schedule_runtime: [row] }, request: { idempotency_context: { change_set_id: `temporal-${ordinal}` } } });
+      npc_schedule_runtime: structuredClone([row]),
+      temporal_source_proof: proof },
+    request: { idempotency_context: { change_set_id: `temporal-${ordinal}` } } });
   const transition = result.proposals[0].npc_routine_transition;
   const location = result.proposals[0].write_set.appends[0].record.trace.location;
   const placementWrites = result.proposals[0].write_set;

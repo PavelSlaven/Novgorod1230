@@ -139,7 +139,6 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
     const env = await bootstrapV17PresenceE2e(t);
     let observingPartyId = null;
     let arrivalPendingScreen = null;
-    const sceneProjectionDiagnostics = [];
     const restore = installStub({ onNarration: async () => {
       if (observingPartyId == null) return;
       const { rows } = await env.partyPool.query(
@@ -150,10 +149,7 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       }
     } });
     t.after(() => restore());
-    const { runtime } = await createPresenceProductionRoot({ ...env,
-      extraConfig: { onNpcSceneProjection: (event) =>
-        sceneProjectionDiagnostics.push(event) }
-    });
+    let { runtime, readCurrentVisibleContext } = await createPresenceProductionRoot({ ...env });
     try {
       let partyId = null;
       let arrivalResponse = null;
@@ -225,25 +221,28 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       const pendingPeople = arrivalPendingScreen?.panels?.people;
       const responsePeople = arrivalResponse?.screen?.panels?.people;
       const readbackPeople = readback.screen?.panels?.people;
-      const visibleNpcIds = (arrivalPendingScreen?.visible_context?.visible_npc ?? [])
-        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean);
-      const arrivalProjection = sceneProjectionDiagnostics.find(({ after }) =>
-        visibleNpcIds.some((id) => after?.current_visible_npc_ids?.includes(id)))?.after;
-      const projectionEvents = sceneProjectionDiagnostics.map(({ request_id: id, after }) => ({
-        request_id: id, player: after?.player,
-        candidates: after?.candidates,
-        projection_npc_ids: after?.projection_npc_ids,
-        current_visible_npc_ids: after?.current_visible_npc_ids
-      }));
       assert.equal(readbackPeople?.visible, true,
         'the final screen readback must show its People panel');
       assert.equal(readbackPeople?.data?.visible_npcs?.length > 0, true,
         'the final screen readback must include the scene NPC');
       assert.equal(pendingPeople?.visible, true,
-        `the pending arrival screen must show its People panel; visible NPC ids: ${
-          JSON.stringify(visibleNpcIds)}; prepared projection: ${
-          JSON.stringify(arrivalProjection ?? null)}; projection events: ${
-          JSON.stringify(projectionEvents)}`);
+        'the pending arrival screen must show its People panel');
+      const readPackageNpcIds = async (screen) => {
+        const packageId = screen?.current_projection_anchor?.package_id;
+        const row = packageId == null ? null : (await env.partyPool.query(
+          `SELECT visible_payload FROM party_runtime.party_visible_packages
+            WHERE party_id=$1 AND package_id=$2`, [partyId, packageId])).rows[0];
+        assert.ok(row?.visible_payload, 'the visible package is persisted');
+        return row.visible_payload.visible_npcs
+          .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort();
+      };
+      const packageNpcIds = await readPackageNpcIds(arrivalPendingScreen);
+      const visibleNpcIds = (arrivalPendingScreen?.visible_context?.visible_npc ?? [])
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort();
+      assert.ok(packageNpcIds.length > 0,
+        'the persisted destination package contains a visible NPC');
+      assert.deepEqual(visibleNpcIds, packageNpcIds,
+        'the pending visible context matches its persisted package');
       assert.equal(pendingPeople?.data?.visible_npcs?.length > 0, true,
         'the pending arrival screen must include the scene NPC');
       assert.deepEqual(responsePeople, readbackPeople,
@@ -255,8 +254,36 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
         'the generated-site case must exercise the top-level position_transition path');
 
       const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: env.partyPool,
+        readCurrentVisibleContext,
         committer: { async commit() { throw new Error('read-only'); } } });
+      const stateBeforeRestart = await repository.loadPhase2State(partyId);
+      const readbackNpcIds = (state) => (state.current_visible_context?.visible_npc ?? [])
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort();
+      assert.deepEqual(readbackNpcIds(stateBeforeRestart), packageNpcIds,
+        'production phase-2 readback matches the persisted visible package before restart');
+      const loadedBeforeRestart = stateBeforeRestart.npcs.filter((npc) =>
+        npc.runtime_source === SCENE_NPC_SOURCE);
+      const inSceneBeforeRestart = loadedBeforeRestart.filter((npc) =>
+        npcSharesPlayerScene(stateBeforeRestart, npc));
+      assert.ok(inSceneBeforeRestart.length > 0,
+        'production phase-2 readback loads an NPC in the destination scene before restart');
+      const admittedPlacedIds = inSceneBeforeRestart
+        .map(({ instance_id: id }) => id).filter((id) => packageNpcIds.includes(id)).sort();
+      assert.ok(admittedPlacedIds.length > 0,
+        'the visible destination package includes a SQL-loaded NPC before restart');
+
+      await runtime.close();
+      ({ runtime, readCurrentVisibleContext } = await createPresenceProductionRoot({ ...env }));
+      const restartReadback = (await runtime.getPartyScreen(partyId)).screen;
+      assert.deepEqual(await readPackageNpcIds(restartReadback), packageNpcIds,
+        'restart readback keeps exactly the admitted destination NPC IDs');
+      assert.deepEqual((restartReadback.visible_context?.visible_npc ?? [])
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort(), packageNpcIds,
+      'restart visible context matches the persisted admitted NPC package');
+
       const state = await repository.loadPhase2State(partyId);
+      assert.deepEqual(readbackNpcIds(state), packageNpcIds,
+        'production phase-2 readback matches the persisted visible package after restart');
       const loaded = state.npcs.filter((npc) => npc.runtime_source === SCENE_NPC_SOURCE);
       assert.equal(loaded.length > 0, true, 'NPCs of the generated site must be loaded');
       for (const npc of loaded) {
@@ -266,6 +293,10 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       }
       const inScene = loaded.filter((npc) => npcSharesPlayerScene(state, npc));
       assert.equal(inScene.length > 0, true, 'a generated-site NPC shares the arrival G6');
+      const restartAdmittedPlacedIds = inScene.map(({ instance_id: id }) => id)
+        .filter((id) => packageNpcIds.includes(id)).sort();
+      assert.deepEqual(restartAdmittedPlacedIds, admittedPlacedIds,
+        'restart package keeps the same SQL-loaded destination NPC IDs');
       const start = state.npcs.filter((npc) => npc.runtime_source !== SCENE_NPC_SOURCE);
       assert.equal(start.some((npc) => npcSharesPlayerScene(state, npc)), false,
         'the start NPC of the other site is not co-present');

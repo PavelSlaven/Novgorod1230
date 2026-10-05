@@ -170,6 +170,17 @@ export function npcRoutineTemporalRegistration() {
       };
     }
     const placementWrites = routinePlacementWrites(row, currentPositionNodeId, changeSetId);
+    const persistedRows = worlds(context.projection).map((projection) =>
+      projection?.temporal_source_proof?.npc_schedule_runtime)
+      .find(Array.isArray);
+    const persistedRow = Array.isArray(persistedRows)
+      ? persistedRows.find((entry) => entry.id === row.id && entry.npc_id === row.npc_id)
+      : null;
+    if (persistedRow == null) fail('temporal_candidate_stale');
+    const persistedStateVersion = Number(persistedRow.state_version);
+    if (!Number.isSafeInteger(persistedStateVersion) || persistedStateVersion < 0) {
+      fail('temporal_candidate_stale');
+    }
     after.npc_placement = placementWrites.deletes.length ? null
       : placementWrites.updates.length ? { ...row.npc_placement,
         position_node_id: currentPositionNodeId,
@@ -189,7 +200,7 @@ export function npcRoutineTemporalRegistration() {
       next_transition_at_whole_minutes: after.next_transition_at_whole_minutes,
       next_transition_at_subminute_numerator: after.next_transition_at_subminute_numerator,
       next_transition_at_subminute_denominator: after.next_transition_at_subminute_denominator,
-      state_version: Number(row.state_version) + 1, updated_change_set_id: changeSetId };
+      state_version: persistedStateVersion + 1, updated_change_set_id: changeSetId };
     const decisionRequired = proposed?.factual_transition.decision_required === true;
     return { disposition: replacement == null ? 'execute' : 'replace',
       ...(replacement == null ? {} : { replacement }), follow_up_candidates: [],
@@ -213,7 +224,7 @@ export function npcRoutineTemporalRegistration() {
             evidence: proposed?.transition_evidence ?? null,
             movement, location } })] },
         expected_state_versions: [{ target_table: 'party_npc_spatial_schedules', id: row.id,
-          state_version: Number(row.state_version) }, ...placementWrites.expected],
+          state_version: persistedStateVersion }, ...placementWrites.expected],
         physical_keys: [`party_runtime.party_npc_spatial_schedules:${row.id}`,
           `party_runtime.party_npcs:${row.npc_id}`,
           ...placementWrites.physical_keys,

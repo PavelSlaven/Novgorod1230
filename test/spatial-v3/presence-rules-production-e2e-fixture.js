@@ -10,6 +10,8 @@ import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs'
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { createSpatialV3ProductionCompositionRoot } from
   '../../apps/game-server/src/composition/production-spatial-v3.js';
+import { loadSpatialV3RuntimeBindings } from
+  '../../apps/game-server/src/runtime/load-spatial-v3-bindings.js';
 import { readV17PartyProductionCatalogLedger } from
   '../../scripts/v17-party-production-catalog-ledger.mjs';
 import { WAVE_ATTESTATION_SCHEMA } from '../../scripts/v17-m2c-npc-wave-stage.mjs';
@@ -381,6 +383,7 @@ export async function createPresenceProductionRoot({
   worldPool, partyPool, approvals, rootDir, llmSettings = null, extraConfig = {},
   env = FIXTURE_ROOT_ENV, worldKnowledgeEncoderFactory = zeroVectorEncoderFactory,
 }) {
+  let readCurrentVisibleContext = null;
   const pinDigest = approvals.itemApproval.request.compatible_world_pin_manifest_digest;
   const rootOptions = {
     env,
@@ -410,10 +413,14 @@ export async function createPresenceProductionRoot({
       partyPool,
       async close() {},
     },
+    bindingsFactory: async (context) => {
+      readCurrentVisibleContext = context.readCurrentVisibleContext ?? null;
+      return loadSpatialV3RuntimeBindings(context.config.spatialV3BindingsModule, context);
+    },
     ...(worldKnowledgeEncoderFactory == null ? {} : { worldKnowledgeEncoderFactory }),
   };
   const runtime = await createSpatialV3ProductionCompositionRoot(rootOptions);
-  return { runtime, rootOptions };
+  return { runtime, rootOptions, readCurrentVisibleContext };
 }
 
 export function routeMovementLabels(screen) {

@@ -4,7 +4,9 @@ import test from 'node:test';
 import { createNpcRoutineState, npcRoutineActivity,
   resolveNpcRoutinePresence, selectNpcRoutineSchedule } from '@rus/npc-runtime';
 import { projectCalendar } from '@rus/time-events-history/calendar';
-import { npcRoutineCandidate, npcRoutineTemporalRegistration } from
+import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { integrateSpatialV3TemporalWriteFragments } from '@rus/turn/spatial-v3-temporal-write-integration';
+import { applyNpcRoutineTemporalResults, npcRoutineCandidate, npcRoutineTemporalRegistration } from
   '../src/runtime/npc-routine-temporal.js';
 import { buildCalendarProjectionProfile } from
   '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
@@ -567,7 +569,7 @@ test('D-1 away intent preserves known placement until departure is completed', (
   assert.equal(returned.proposals[0].write_set.deletes.length, 0);
 });
 
-test('approved winter ferryman D-1 schedule produces the 1006830 candidate from 1231-12-01', async () => {
+test('approved winter ferryman D-1 context preserves the 1006830 and 1007068 candidates', async () => {
   const [calendarRecord] = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json',
     import.meta.url), 'utf8'));
@@ -580,20 +582,105 @@ test('approved winter ferryman D-1 schedule produces the 1006830 candidate from 
   const schedules = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/npc_schedule_routine_rules.json',
     import.meta.url), 'utf8'));
-  const d1 = schedules.find((row) => row.schedule_id
-    === 'sch_nov_occ_ferryman_pf_ferry_landing_normal_winter' && row.schedule_version === 2);
-  assert.ok(d1);
-  assert.equal(d1.routine_profile.local_start_minute, 0);
+  const compositions = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/game-base-v1/places-binding/presence/people_composition_authoring.json',
+    import.meta.url), 'utf8'));
+  const composition = compositions.compositions.find((row) => row.pf_id === 'pf_ferry_landing');
+  assert.ok(composition);
+  const approvedRuleRows = schedules.filter((row) => row.scope_ref === 'pf_ferry_landing'
+    && row.subject_kind === 'occupation' && row.subject_ref === 'nov_occ_ferryman'
+    && row.status === 'approved');
+  const scheduleContext = { home_scope_ref: 'pf_ferry_landing', subject_kind: 'occupation',
+    subject_ref: 'nov_occ_ferryman', day_type: 'normal', approved_rule_rows: approvedRuleRows,
+    calendar_profile: calendarProfile,
+    scheduled_absences: composition.scheduled_absences.filter((row) =>
+      row.subject_kind === 'occupation' && row.subject_ref === 'nov_occ_ferryman') };
+  const selected = selectNpcRoutineSchedule({ schedule_context: scheduleContext, scheduled_at: now });
+  assert.equal(selected.season, 'winter');
+  assert.equal(selected.rule.routine_profile.local_start_minute, 0);
   const routine = createNpcRoutineState({
-    profile: d1.routine_profile,
+    profile: selected.rule.routine_profile,
     started_at: now,
-    calendar_profile: calendarProfile
+    calendar_profile: calendarProfile,
+    schedule_context: selected.schedule_context
   });
-  const candidate = npcRoutineCandidate({
-    npc_id: 'ferryman', party_id: 'party', state_version: 1,
-    causal_state_ref: { routine_state: routine }
-  });
+  const npc = { instance_id: 'ferryman', machine_state: { status: 'idle',
+    current_activity: npcRoutineActivity(routine),
+    current_activity_ref: npcRoutineActivity(routine).activity_ref } };
+  const row = { ...world().npc_schedule_runtime[0], id: 'schedule-ferryman',
+    party_id: 'party', npc_id: 'ferryman', state_version: 1,
+    current_position_node_id: null, npc_placement: null,
+    causal_state_ref: { routine_state: routine }, npc_snapshot: structuredClone(npc) };
+  const projection = { npcs: [npc], npc_schedule_runtime: [row] };
+  const candidate = npcRoutineCandidate(row);
   assert.deepEqual(candidate.scheduled_at, at(1006830));
+  const first = npcRoutineTemporalRegistration().resolve(candidate,
+    contextFor(projection, 'ferryman-dawn'));
+  const firstRow = first.state_projection.npc_schedule_runtime[0];
+  const nextCandidate = npcRoutineCandidate(firstRow);
+  assert.deepEqual(nextCandidate.scheduled_at, at(1007068));
+  const second = npcRoutineTemporalRegistration().resolve(nextCandidate,
+    contextFor(first.state_projection, 'ferryman-preparation', projection));
+  assert.equal(second.proposals[0].write_set.updates.find((write) =>
+    write.target_table === 'party_npc_spatial_schedules').record.state_version, 2);
+  assert.equal(second.proposals[0].expected_state_versions.find((version) =>
+    version.target_table === 'party_npc_spatial_schedules').state_version, 1);
+  assert.equal(second.proposals[0].write_set.appends.length, 1);
+  assert.deepEqual(second.state_projection.npc_schedule_runtime[0].state_version, 3);
+});
+
+test('prepared slices keep schedule CAS anchored to the phase-2 source snapshot', () => {
+  const state = world();
+  state.temporal_source_proof = {
+    npc_schedule_runtime: structuredClone(state.npc_schedule_runtime)
+  };
+  const registration = npcRoutineTemporalRegistration();
+  const first = registration.resolve(npcRoutineCandidate(state.npc_schedule_runtime[0]),
+    contextFor(state, 'prepared-slice-1'));
+  applyNpcRoutineTemporalResults(state, [{ combined_change_set: {
+    proposals: first.proposals
+  } }]);
+  assert.equal(state.npc_schedule_runtime[0].state_version, 2);
+
+  const second = registration.resolve(npcRoutineCandidate(state.npc_schedule_runtime[0]),
+    contextFor(state, 'prepared-slice-2'));
+  const proposals = [...first.proposals, ...second.proposals];
+  const temporalResult = { combined_change_set: { proposals } };
+  temporalResult.canonical_digest = computeSpatialV3CanonicalDigest(temporalResult);
+  const integrated = integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: { party_id: 'party',
+      canonical_input_digest: computeSpatialV3CanonicalDigest({ root: true }),
+      approved_write_sets: [{ appends: [], inserts: [], updates: [], deletes: [] }],
+      expected_state_versions: [], lock_context: { physical_keys: [] } },
+    temporal_result: temporalResult
+  });
+
+  assert.equal(integrated.ok, true, JSON.stringify(integrated));
+  const scheduleVersions = integrated.input.expected_state_versions.filter((entry) =>
+    entry.target_table === 'party_npc_spatial_schedules' && entry.id === 'schedule-worker');
+  assert.deepEqual(scheduleVersions.map(({ state_version }) => state_version), [1]);
+  const scheduleUpdates = integrated.input.approved_write_sets.flatMap(({ updates }) => updates)
+    .filter((entry) => entry.target_table === 'party_npc_spatial_schedules'
+      && entry.id === 'schedule-worker');
+  assert.equal(scheduleUpdates.length, 1);
+  assert.equal(scheduleUpdates[0].record.state_version, 2);
+  const transitions = integrated.input.approved_write_sets.flatMap(({ appends }) => appends)
+    .filter((entry) => entry.target_table === 'party_npc_runtime_transitions');
+  assert.equal(transitions.length, 2);
+});
+
+test('nested temporal projections without a source schedule snapshot fail closed', () => {
+  const state = world();
+  const candidate = npcRoutineCandidate(state.npc_schedule_runtime[0]);
+  for (const projection of [
+    { phase6_state: state },
+    { conversation_state: { world_state: state } }
+  ]) {
+    assert.throws(() => npcRoutineTemporalRegistration().resolve(candidate, {
+      projection,
+      request: { idempotency_context: { change_set_id: 'change-nested' } }
+    }), { code: 'temporal_candidate_stale' });
+  }
 });
 
 function context(projection, id) {
@@ -635,9 +722,13 @@ function seasonalRouteStarted({ seamOffset, adjacentMovement = false }) {
     .causal_state_ref.routine_state.movement_execution.started_at, at(42110));
   return { started, registration };
 }
-function contextFor(projection, id) {
-  return { projection, request: { idempotency_context: {
-    change_set_id: `change-${id}` } } };
+function contextFor(projection, id, persistedProjection = projection) {
+  const withSourceProof = projection.temporal_source_proof
+    ? projection : { ...projection, temporal_source_proof: {
+      npc_schedule_runtime: structuredClone(persistedProjection.npc_schedule_runtime ?? [])
+    } };
+  return { projection: withSourceProof, request: { relevant_state_projection: persistedProjection,
+    idempotency_context: { change_set_id: `change-${id}` } } };
 }
 function ref(entity_kind, entity_id) { return { entity_kind, entity_id }; }
 function bindingAt(location_ref) {

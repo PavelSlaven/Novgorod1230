@@ -113,7 +113,8 @@
 | 121 | `data/novgorod-region/novgorod_occupations_v1_enriched.tsv`, `data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupations/occupation_term_status.csv`, `game-base-v1/items-weapons-armour/military/security.csv` | недоказанный термин «сторож брода» и его занятие/снаряжение остаются; term-status помечен not_attested | — |
 | 122 | `packages/items-property` A1 admission; `apps/game-server` A1 planner/wiring | A1 не сверяет вид материала и работоспособность результата | — |
 | 125 | `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js`, `packages/npc-runtime`, `apps/game-server/src/runtime/npc-routine-temporal.js` | typed gap при first-entry может потерять D-1 schedule context и не получить следующую календарную переоценку | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
-| 126 | `packages/time-events-history/src/calendar.js`, `packages/npc-runtime/src/routine-schedule.js` | month-boundary D-1 applicability может дать `time_calendar_profile_gap` в високосный год из-за пропуска leap day в `dayOfYear` | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
+| 126 | `packages/time-events-history/src/calendar.js`, `packages/npc-runtime/src/routine-schedule.js` | month-boundary D-1 applicability остаётся отложенной; leap-day учёт в календаре исправлен | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
+| 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -674,8 +675,14 @@
 - **Как жить.** Не подставлять generic routine или выдуманное место. Если появится утверждённый случай с таким gap, владелец `@rus/npc-runtime` решает сохранение/переоценку контекста, а game-server только интегрирует; сначала покрыть first-entry и календарную границу тестом.
 - **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)
 
-### LW-126 — month-boundary D-1 applicability зависит от исправления leap-year календаря (npc-season)
+### LW-126 — month-boundary D-1 applicability остаётся отложенной (npc-season)
 - **Где.** `packages/time-events-history/src/calendar.js` (`dayOfYear`), вызывается month-boundary applicability в `packages/npc-runtime/src/routine-schedule.js`.
-- **Что.** `dayOfYear` не учитывает дополнительный день юлианского високосного года. При переоценке D-1 на границе февраля и марта високосного года (начиная с 1232) кандидат расписания может завершиться `time_calendar_profile_gap`, хотя следующая обычная фаза наступает раньше.
-- **Как жить.** Не активировать month-boundary переоценку D-1 до исправления календарного owner `@rus/time-events-history`; вернуть её отдельной задачей после исправления и покрыть високосную границу тестом. Для текущих данных применимость задана на сезон.
+- **Что.** Календарный owner `@rus/time-events-history` исправил учёт дополнительного дня юлианского високосного года в `dayOfYear` (c01dc6fe). При этом month-boundary applicability D-1 в `@rus/npc-runtime` остаётся отдельной отложенной работой и текущими данными не включена: применимость расписаний задана по сезонам.
+- **Как жить.** Не включать month-boundary переоценку D-1 без отдельной задачи владельца `@rus/npc-runtime`; перед включением покрыть границу месяца и повторный выбор правила тестом. Календарная leap-day зависимость исправлена владельцем календаря.
+- **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)
+
+### LW-127 — несколько D-1 перемещений могут конфликтовать по placement CAS (npc-season)
+- **Где.** `apps/game-server/src/runtime/npc-routine-temporal.js` (`routinePlacementWrites` и `npcRoutineTemporalRegistration.resolve`), утверждённые D-1 `movement_handoff` profiles.
+- **Что.** Если когда-либо утверждённый набор расписаний даст одному NPC два завершённых `movement_handoff` в одном temporal window, адаптер берёт placement CAS из evolving `row.npc_placement.state_version`: фрагменты ожидают версии `[1, 2]`, хотя в БД до коммита есть только версия `1`. Общая temporal integration отвергнет такой план. В проверенных 161 утверждённых D-1 правилах `movement_handoff` нет; это отложенный риск, не текущий путь данных.
+- **Как жить.** Не включать такой набор расписаний без регрессии двух смен позиции в одном окне. Перед включением привязать все placement CAS фрагменты к исходному persisted `entity_placements` snapshot того же temporal window и сохранить одну итоговую запись версии.
 - **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)

@@ -33,33 +33,47 @@ import { testContainerLabel } from '../helpers/test-containers.js';
 test('new game persists canonical offscene routines atomically and replays', async (t) => {
   let adminUrl = process.env.RUS_TEST_POSTGRES_ADMIN_URL;
   let ownedContainer = null;
+  let admin = null, pool = null, database = null;
   const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
+  t.after(async () => {
+    if (pool) await pool.end();
+    if (admin && database) await admin.query(`DROP DATABASE ${database}`);
+    if (admin) await admin.end();
+    if (ownedContainer) docker(['rm', '-fv', ownedContainer]);
+  });
   if (!adminUrl) {
-    if (docker(['version']).status !== 0) return t.skip('PostgreSQL test container is unavailable');
+    const version = docker(['version']);
+    if (version.error?.code === 'ENOENT') return t.skip('Docker executable is unavailable');
+    assert.equal(version.status, 0,
+      `Docker is installed but unavailable: ${version.stderr || version.error?.message}`);
     const name = `npc-routine-test-${process.pid}`;
     const started = docker(['run', ...testContainerLabel(), '-d', '--name', name,
       '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=npc', '-e', 'POSTGRES_USER=npc',
       '-e', 'POSTGRES_DB=npc', 'postgres:16-alpine']);
-    if (started.status !== 0) return t.skip(`PostgreSQL test container did not start: ${started.stderr}`);
+    assert.equal(started.status, 0,
+      `PostgreSQL test container did not start: ${started.stderr || started.error?.message}`);
     ownedContainer = name;
+    let ready = false;
     for (let attempt = 0; attempt < 60; attempt += 1) {
-      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'npc']).status === 0) break;
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'npc']).status === 0) {
+        ready = true;
+        break;
+      }
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
-    const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)/)?.[1]);
-    if (!Number.isInteger(port) || port < 1) {
-      docker(['rm', '-fv', name]);
-      return t.skip('PostgreSQL test container did not expose a port');
-    }
+    assert.equal(ready, true, 'PostgreSQL container did not become ready');
+    const exposedPort = docker(['port', name, '5432']);
+    assert.equal(exposedPort.status, 0,
+      `PostgreSQL test container port query failed: ${exposedPort.stderr || exposedPort.error?.message}`);
+    const port = Number(exposedPort.stdout.match(/:(\d+)/)?.[1]);
+    assert.ok(Number.isInteger(port) && port > 0, 'PostgreSQL test container did not expose a port');
     adminUrl = `postgresql://npc:npc@127.0.0.1:${port}/npc`;
   }
-  const admin = new pg.Pool({ connectionString: adminUrl });
-  const database = `npc_routine_test_${process.pid}_${Date.now()}`;
+  admin = new pg.Pool({ connectionString: adminUrl });
+  database = `npc_routine_test_${process.pid}_${Date.now()}`;
   await admin.query(`CREATE DATABASE ${database}`);
   const url = new URL(adminUrl); url.pathname = `/${database}`;
-  const pool = new pg.Pool({ connectionString: url.href });
-  t.after(async () => { await pool.end(); await admin.query(`DROP DATABASE ${database}`);
-    await admin.end(); if (ownedContainer) docker(['rm', '-fv', ownedContainer]); });
+  pool = new pg.Pool({ connectionString: url.href });
   for (const file of (await readdir('schemas/party-db')).filter((name) => /^\d+.*\.sql$/u.test(name)).sort()) {
     if (file.startsWith('012_')) await runPartyRuntimeCatalogMigration(pool);
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
@@ -105,29 +119,60 @@ test('new game persists canonical offscene routines atomically and replays', asy
   const advance = createTracePhase2TemporalAdvance({ temporalAdvanceOwner,
     contracts: { activity: { nearest_temporal_boundary_rule: 'split_before_earliest_boundary' } } });
   const state = { party_id: request.party_id, party_state: { state_version: 0, turn_number: 0 },
-    clock: committed.instance.timestamp, npcs: [], npc_schedule_runtime: proof.npc_schedule_runtime,
+    clock: committed.instance.timestamp, npcs: [],
+    npc_schedule_runtime: structuredClone(proof.npc_schedule_runtime),
     temporal_boundary_candidates: proof.candidates, temporal_source_proof: proof };
   const before = await advance({ clock_before: state.clock, relevant_state: state,
     exact_elapsed: { exact_minutes: { numerator: '119', denominator: '1' } } });
   assert.equal(before.temporal_results[0].trace.processed_boundary_ids.length, 0);
   const crossed = await advance({ clock_before: state.clock, relevant_state: state,
     change_set_id: 'npc-routine-turn1',
-    exact_elapsed: { exact_minutes: { numerator: '125', denominator: '1' } } });
-  assert.equal(crossed.temporal_results[0].trace.processed_boundary_ids.length, 5);
+    exact_elapsed: { exact_minutes: { numerator: '135', denominator: '1' } } });
+  assert.equal(crossed.temporal_results[0].trace.processed_boundary_ids.length, 10);
+  const staleCrossed = await advance({ clock_before: state.clock, relevant_state: state,
+    change_set_id: 'npc-routine-turn1-stale',
+    exact_elapsed: { exact_minutes: { numerator: '135', denominator: '1' } } });
+  const stalePlan = await routineCommitPlan(state, staleCrossed, null, '-stale');
   const plan = await routineCommitPlan(state, crossed);
+  const scheduledWrites = plan.updates
+    .filter((write) => write.target_table === 'party_npc_spatial_schedules');
+  const scheduleCas = plan.expected_state_versions.filter((entry) =>
+    entry.target_table === 'party_npc_spatial_schedules');
+  assert.equal(scheduledWrites.length, 5);
+  assert.ok(scheduledWrites.every((write) => write.record.state_version === 2));
+  assert.equal(scheduleCas.length, 5);
+  assert.ok(scheduleCas.every((entry) => entry.state_version === 1));
+  assert.equal(plan.appends
+    .filter((write) => write.target_table === 'party_npc_runtime_transitions').length, 10);
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck: async () => ({ ok: true }) });
   const applied = await committer.commit({ plan, created_at_turn: 1 });
   assert.equal(applied.ok, true, JSON.stringify(applied.error));
   const reloaded = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
   const running = reloaded.npc_schedule_runtime.filter((row) => row.status === 'active');
   assert.ok(running.every((row) => Number(row.state_version) === 2));
-  assert.ok(running.every((row) => row.causal_state_ref.routine_state.phase_index === 1));
-  assert.ok(running.every((row) => row.next_transition_at_whole_minutes === '333195'));
+  assert.ok(running.every((row) => row.next_transition_at_whole_minutes
+    === row.causal_state_ref.routine_state.next_transition_at.whole_minutes));
+  assert.ok(running.every((row) => row.causal_state_ref.routine_state.phase_started_at.whole_minutes
+    === '333195'), 'the 135-minute readback applies the transition at minute 333195');
   assert.ok(running.every((row) => row.npc_snapshot.machine_state.current_activity.activity_ref
-    === row.causal_state_ref.routine_state.profile.phases[
-      row.causal_state_ref.routine_state.phase_index].activity_ref));
-  assert.equal((await committer.commit({ plan, created_at_turn: 1 })).ok, true);
-  assert.equal((await pool.query('SELECT count(*)::int AS n FROM party_runtime.party_npc_runtime_transitions WHERE party_id=$1', [request.party_id])).rows[0].n, 5);
+    === npcRoutineActivity(row.causal_state_ref.routine_state).activity_ref));
+  const replayCommitter = createSpatialV3PostgresCombinedAtomicCommitter({ pool,
+    recheck: async () => ({ ok: true }) });
+  assert.equal((await replayCommitter.commit({ plan, created_at_turn: 1 })).ok, true);
+  const staleApplied = await committer.commit({ plan: stalePlan, created_at_turn: 1 });
+  assert.equal(staleApplied.ok, false);
+  assert.equal(staleApplied.error?.code, 'state_version_conflict');
+  const firstTransitions = await pool.query(`SELECT npc_id,occurred_at_whole_minutes
+    FROM party_runtime.party_npc_runtime_transitions
+    WHERE party_id=$1 AND change_set_id='npc-routine-turn1'
+    ORDER BY npc_id,occurred_at_whole_minutes`, [request.party_id]);
+  assert.equal(firstTransitions.rows.length, 10);
+  const firstCounts = new Map();
+  for (const row of firstTransitions.rows) firstCounts.set(row.npc_id,
+    (firstCounts.get(row.npc_id) ?? 0) + 1);
+  assert.equal(firstCounts.size, 5);
+  assert.ok([...firstCounts.values()].every((count) => count === 2));
+  assert.equal((await pool.query('SELECT count(*)::int AS n FROM party_runtime.party_npc_runtime_transitions WHERE party_id=$1', [request.party_id])).rows[0].n, 10);
   assert.deepEqual(await loadTracePhase2TemporalSourceProof(pool, request.party_id), reloaded);
   const deferred = running.find(row => row.causal_state_ref.deferred_placement?.kind === 'prepared_scene');
   assert.ok(deferred, 'one on-site routine retains its exact prepared-scene binding');
@@ -187,8 +232,10 @@ test('new game persists canonical offscene routines atomically and replays', asy
   assert.equal((await committer.commit({ plan: nightPlan, created_at_turn: 3 })).ok, true);
   const atNight = await loadTracePhase2TemporalSourceProof(pool, request.party_id);
   assert.ok(atNight.npc_schedule_runtime.filter(row => row.status === 'active')
-    .every(row => row.npc_snapshot.machine_state.runtime_status === 'available'
-      && row.next_transition_at_whole_minutes === '333900'));
+    .every(row => row.npc_snapshot.machine_state.runtime_status
+        === row.causal_state_ref.routine_state.runtime_status
+      && row.next_transition_at_whole_minutes
+        === row.causal_state_ref.routine_state.next_transition_at.whole_minutes));
   const atNightDeferred = atNight.npc_schedule_runtime.find(row => row.id === targetDeferred.id);
   assert.equal(atNightDeferred.current_position_node_id, null);
   assert.equal(atNightDeferred.causal_state_ref.routine_state.presence_state, 'location_gap');
@@ -196,7 +243,7 @@ test('new game persists canonical offscene routines atomically and replays', asy
     'the first-entry gap had no physical position fact to preserve');
   assert.equal((await committer.commit({ plan: nightPlan, created_at_turn: 3 })).ok, true);
   assert.equal((await pool.query('SELECT count(*)::int AS n FROM party_runtime.party_npc_runtime_transitions WHERE party_id=$1',
-    [request.party_id])).rows[0].n, 10);
+    [request.party_id])).rows[0].n, 15);
 
   // Re-seed one persisted routine with a test-only pinned D-1 bundle, then
   // exercise the exact season-boundary candidate and a fresh DB readback.
@@ -400,9 +447,10 @@ function routineProfilePins(profileRef) {
   return { ...value, canonical_digest: digest(value) };
 }
 
-async function routineCommitPlan(state, advance, extension = null) {
+async function routineCommitPlan(state, advance, extension = null, suffix = '') {
   const number = state.party_state.turn_number + 1;
-  const partyId = state.party_id, changeSetId = `npc-routine-turn${number}`, idemId = `npc-routine-commit${number}`;
+  const partyId = state.party_id, changeSetId = `npc-routine-turn${number}${suffix}`,
+    idemId = `npc-routine-commit${number}${suffix}`;
   const visible = { schema: 'temporal_visible_package.v1', perceived_scene: 'Берег.',
     perceived_changes: [], sensory_details: [], visible_npcs: [], visible_objects: [], known_context: [],
     uncertainties: [], hypotheses: [], player_safe_interruption: null, allowed_action_affordances: [] };
@@ -413,7 +461,7 @@ async function routineCommitPlan(state, advance, extension = null) {
     { target_table: 'party_clocks', id: partyId, record: { party_id: partyId,
       whole_minutes: clock.whole_minutes, subminute_numerator: clock.subminute_numerator,
       subminute_denominator: clock.subminute_denominator, updated_change_set_id: changeSetId } }];
-  const base = { plan_id: `npc-routine-plan${number}`, party_id: partyId, write_plan_kind: 'semantic_commit',
+  const base = { plan_id: `npc-routine-plan${number}${suffix}`, party_id: partyId, write_plan_kind: 'semantic_commit',
     operation_kind: 'trace_turn_step', canonical_input_digest: digest({ id: 'routine-turn1' }),
     expected_state_versions: [{ target_table: 'parties', id: partyId, state_version: number - 1 },
       { target_table: 'party_clocks', id: partyId, state_version: number }],

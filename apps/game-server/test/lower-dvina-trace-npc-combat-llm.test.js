@@ -319,6 +319,18 @@ test('scoped body profile loader fails closed on changed bytes or approval prove
     });
 
     for (const mutate of [
+      (approval) => { approval.schema = 'other-schema'; },
+      (approval) => { approval.repository = 'other/repository'; },
+      (approval) => { approval.branch = 'other-branch'; },
+      (approval) => { approval.path = 'other/bundle.json'; },
+      (approval) => { approval.json_pointer = '/npc_decision/other'; },
+      (approval) => { approval.verdict = 'REJECT'; },
+      (approval) => { approval.approval_granted = false; },
+      (approval) => { approval.import_authorized = true; },
+      (approval) => { approval.activation_authorized = true; },
+      (approval) => { approval.bundle_production_authorized = true; },
+      (approval) => { approval.profile_id = 'other-profile'; },
+      (approval) => { approval.version = 2; },
       (approval) => { approval.commit = '0'.repeat(40); },
       (approval) => { approval.approved_use.actor = 'player'; },
       (approval) => { approval.approved_use.metrics.push('body_condition'); },

@@ -75,7 +75,8 @@ export async function commitLowerDvinaTraceTurnStep({
   const preparedMovementState = preparedRoute != null
       && typeof turnStepApprovedOwners?.loadPreparedMovementScene === 'function'
       ? await turnStepApprovedOwners.loadPreparedMovementScene(
-        { partyId, state: projectPreparedDomainState(state, preparedRoute) })
+        { partyId, state: projectPreparedDomainState(state, preparedRoute),
+          clock: envelope.time_update.clock_after })
     : null;
   const nextVersion = state.party_state.state_version + 1;
   const turnNumber = state.party_state.turn_number + 1;
@@ -229,7 +230,8 @@ export async function commitLowerDvinaTraceTurnStep({
     ? await turnStepApprovedOwners.loadPreparedMovementScene({
       partyId, state: { ...persistedSnapshot, position: pendingScenePosition,
         ...(destinationVisibleContext == null ? {}
-          : { prepared_destination_visible_context: visibleContext }) }
+          : { prepared_destination_visible_context: visibleContext }) },
+      clock: envelope.time_update.clock_after
     })
     : preparedMovementState ?? state;
   const pendingProjectionState = withSceneNpcProjectionState({

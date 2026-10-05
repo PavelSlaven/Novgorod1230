@@ -11,7 +11,7 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
   const inputs = runtime?.materialization_inputs;
   const calendarProfile = inputs?.calendar_profile;
   const records = inputs?.approved_actor_temporal_bundle?.temporal_records;
-  async function read({ transaction, partyId }) {
+  async function read({ transaction, partyId, clock = null }) {
     if (typeof transaction?.query !== 'function' || !calendarProfile || !Array.isArray(records)) gap();
     const repository = createLowerDvinaTracePhase2PostgresRepository({
       partyPool: { query: transaction.query.bind(transaction), connect: partyPool.connect.bind(partyPool) },
@@ -19,7 +19,7 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
     const state = await repository.loadPhase2State(partyId, { includeCurrentVisibleContext: false });
     if (state.world_identity?.world_revision_id !== runtime.itemPin.compatible_world_revision_id
       || state.world_identity?.world_catalog_digest !== runtime.itemPin.compatible_world_catalog_digest) gap();
-    return { state, environment: projectEnvironment(state) };
+    return { state, environment: projectEnvironment(state, clock ?? state.clock) };
   }
   function projectEnvironment(state, clock = state.clock) {
     const environment = state.environment_snapshot;

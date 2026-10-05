@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
+- docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
 - fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)
 
 - fix(turn-step): committed S1 resolutions stay visible at the formal destination after the move (visibility-only projection; no planner capability marker) (#98)

@@ -860,6 +860,10 @@ projection; changes retain their before/after meaning. Narration may translate
 supplied semantic condition states, but cannot add symptoms, diagnoses or
 intensity. Opening time and initial bodily prose are not timeless knowledge.
 
+Prepared destination visibility after movement receives the prepared effect's
+exact `time_update.clock_after`; standalone phase-2 readback uses the persisted
+party clock.
+
 Committed authored conversations expose only their player-facing `journal_text`
 and actual speaker through the existing safe interaction projection. Private NPC
 `memory_text` remains private. Recalled testimony is historical attributed

@@ -208,16 +208,16 @@ export async function createSpatialV3ProductionCompositionRoot({
           readLocalMovementEligibility })
       });
     const readCurrentVisibleContext = currentVisibility == null ? null
-      : async ({ partyId, actorId, positionId, turnBudget } = {}) => {
+      : async ({ partyId, actorId, positionId, turnBudget, clock = null } = {}) => {
         const read = async (transaction) => {
           const state = { party_id: partyId, actor_id: actorId,
             journey_location: { scene_position_id: positionId } };
           const sources = await currentVisibility.readCurrentSources({
             transaction, partyId, actorId, positionId, state,
-            directionalExits: [], observedPositionId: positionId
+            directionalExits: [], observedPositionId: positionId, clock
           });
           const directionalExits = await currentVisibility.readCurrentExitDisclosure({
-            transaction, partyId, actorId, observedPositionId: positionId
+            transaction, partyId, actorId, observedPositionId: positionId, clock
           });
           return projectSpatialV3CurrentVisibleContext({ ...sources,
             directionalExits, partyId, actorId, positionId });

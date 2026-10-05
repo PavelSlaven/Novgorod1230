@@ -183,10 +183,10 @@ test('position transition without prepared route loads destination NPCs for pend
           g5_anchor_id: 'anchor-site' },
         npcs: [sourceNpc]
       },
-      turnStepApprovedOwners: { async loadPreparedMovementScene({ partyId, state }) {
+      turnStepApprovedOwners: { async loadPreparedMovementScene({ partyId, state, clock }) {
         loadedPositions.push({ partyId, position: state.position.position_id,
           sourceNpcPersisted: state.npcs.some(({ instance_id }) =>
-            instance_id === sourceNpc.instance_id) });
+            instance_id === sourceNpc.instance_id), clock });
         return { ...state, scene_position_g6: {
           'position:source': 'g6:site', 'position:destination': 'g6:site'
         }, npcs: [...state.npcs, destinationNpc] };
@@ -204,7 +204,8 @@ test('position transition without prepared route loads destination NPCs for pend
       'Из избы не видно, кто там.', 'Пока неясно, кто находится во дворе.'
     ]);
     assert.deepEqual(loadedPositions, [{ partyId: 'p',
-      position: 'position:destination', sourceNpcPersisted: false }]);
+      position: 'position:destination', sourceNpcPersisted: false,
+      clock: envelope.time_update.clock_after }]);
     const screen = f.plans[0].updates.find(({ target_table: table }) =>
       table === 'party_server_sessions').record.screen;
     assert.deepEqual(screen.panels.people.data.visible_npcs.map(

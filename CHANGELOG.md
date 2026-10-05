@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix(npc): preserve model speech claims through required conversation assembly so the grounding audit receives them (#230)
+- fix(npc): clarify that claims describe factual assertions, not NPC uncertainty or personal stance (#230)
 - docs(tech-debt): record rejected NPC conversation projection; LW-129 added (#230)
 - fix(wk): remove context_text, max_context_chars and omitWorldKnowledgeContextText from the World Knowledge wire (#98)
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series

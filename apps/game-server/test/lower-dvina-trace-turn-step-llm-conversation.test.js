@@ -43,7 +43,7 @@ test('conversation prompts supply complete shapes and request-bound mappings',
       /Для подходящих случаев используй эти соответствия:\n(\{[^\n]+\})/u
     )[1]);
     assert.equal('schema' in playerShape, false);
-    assert.equal(playerShape.input_mode, '<verbatim or intent_paraphrase>');
+    assert.equal(playerShape.input_mode, '<verbatim или intent_paraphrase>');
     assert.deepEqual(Object.keys(playerShape), [
       'input_mode', 'contribution_kind', 'primary_addressee_ref',
       'intended_addressee_refs', 'affected_actor_refs', 'speech',

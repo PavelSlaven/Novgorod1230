@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- feat(combat): persist participating NPC body through P16 from approved versioned profile; keep numeric state internal; scoped body bands approved, v17 remains fail-closed pending actor scope and versioned cutover; LW-099 updated (#224)
+- feat(combat): persist participating NPC body through P16 from approved versioned profile; live-world request_combat stays unregistered before approved body initialization/profile, scene_readback_present is only a candidate fact, missing-body and profile-gap codes remain private diagnostics; keep numeric state internal, v17 fail-closed pending actor scope and versioned cutover; LW-099 updated (#224)
 - docs(tech-debt): record D65 body-effect scoring limit and retreat-menu gap; LW-128 added (#224)
 
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series

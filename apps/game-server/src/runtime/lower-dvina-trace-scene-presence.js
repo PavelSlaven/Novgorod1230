@@ -6,7 +6,8 @@ export const SCENE_NPC_SOURCE = 'party_db_scene_read';
 /** The schedule row keeps the slim snapshot the loader gives it, never a full scene-read record. */
 export const routineNpcSnapshot = (npc) => npc?.runtime_source === SCENE_NPC_SOURCE
   ? { instance_id: npc.instance_id, anchor_id: npc.anchor_id ?? null,
-    machine_state: npc.machine_state } : npc;
+    machine_state: npc.machine_state }
+  : npc?.scene_readback_present === true ? strip(npc) : npc;
 
 /**
  * Temporary proxy for Spatial v3 co-presence: two actors share a scene when
@@ -110,11 +111,33 @@ function strip(value, dropMap = false) {
   }
   let changed = false;
   const out = {};
+  const sceneReadback = value.scene_readback_present === true;
+  const priorLocus = value.scene_readback_prior_locus;
   for (const [key, child] of Object.entries(value)) {
     if (dropMap && key === 'scene_position_g6') { changed = true; continue; }
+    if (key === 'scene_readback_present'
+        || key === 'scene_readback_prior_locus') {
+      changed = true; continue;
+    }
+    if (sceneReadback && priorLocus != null
+        && ['position_id', 'g6_instance_id'].includes(key)) {
+      const previous = priorLocus[key];
+      if (previous?.present === true) out[key] = previous.value;
+      changed = true;
+      continue;
+    }
     const next = strip(child, dropMap);
     if (next !== child) changed = true;
     out[key] = next;
+  }
+  if (sceneReadback && priorLocus != null) {
+    for (const key of ['position_id', 'g6_instance_id']) {
+      const previous = priorLocus[key];
+      if (previous?.present === true && !Object.hasOwn(out, key)) {
+        out[key] = previous.value;
+        changed = true;
+      }
+    }
   }
   return changed ? out : value;
 }

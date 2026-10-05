@@ -268,7 +268,8 @@ export function createLowerDvinaTracePhase2Runtime({
           phase8Contracts,
         });
         const registry = authored ? await liveWorldTurnRegistry({ state,
-          requestId, spatialExpansionRuntime, spatialLocalSceneRuntime,
+          repository, partyId, requestId, idempotencyKey, turnBudget,
+          spatialExpansionRuntime, spatialLocalSceneRuntime,
           inputDigest, authoredTurnProfile, playerConversationModel,
           npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
           : buildTracePhase2Registry({
@@ -415,7 +416,7 @@ function liveWorldTurnContracts(authoredTurnProfile) {
   });
 }
 
-async function liveWorldTurnRegistry(context) {
+export async function liveWorldTurnRegistry(context) {
   const blocked = () => ({ status: 'blocked', can_attempt: false,
     check_requests: [] });
   return createTurnCommandRegistry([{
@@ -431,7 +432,8 @@ async function liveWorldTurnRegistry(context) {
     availability: blocked,
     consequence: blocked,
     writeTargets: () => []
-  }, ...liveWorldConversationCommands(context),
+  },
+  ...liveWorldConversationCommands(context),
   ...await createTraceLocalSceneCommands(context),
   ...await createTraceExpansionCommands(context)]);
 }

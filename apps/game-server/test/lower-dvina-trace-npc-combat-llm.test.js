@@ -14,6 +14,10 @@ import { dirname, resolve } from 'node:path';
 import { createCombatMinD65ProbeData, loadCombatMinDataPackage,
   loadCombatMinScopedBodyProfile } from
   '../src/runtime/combat-min-data.js';
+import { resolveLlmExecutionConfig } from
+  '../../../packages/llm-runtime/src/provider-config.js';
+import { buildProviderRequestPayload } from
+  '../../../packages/llm-runtime/src/provider-request.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -155,6 +159,91 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
       assert.doesNotMatch(userMessage,
         /ref_1|operation_1|force_1|risk_1/u);
     }
+  }
+});
+
+test('ordinary and authored combat actors produce identical provider payloads', async () => {
+  const fixtures = [
+    { visible: 'Противник без оружия приближается.', goal: 'Защитить себя.' },
+    { visible: 'У противника в руке нож.', goal: 'Не дать себя ранить.',
+      equipment: [{ kind: 'weapon', condition: 'повреждён' }] },
+    { visible: 'Противник поднял копьё.', goal: 'Остаться в живых.',
+      currentIntent: true },
+    { visible: 'Противник отступил к двери.', goal: 'Не потерять выход.',
+      reachable: true },
+    { visible: 'Противник опустил оружие.', goal: 'Прекратить угрозу.',
+      surrender: true },
+    { visible: 'Противник заслоняет проход.', goal: 'Выйти из опасности.',
+      exit: true }
+  ];
+  const payloads = [];
+  const roleRunner = { run: async (call) => {
+    const resolved = resolveLlmExecutionConfig({ scope: call.scope,
+      roleId: call.role_id, env: { DEEPSEEK_API_KEY: 'offline-parity-test' },
+      overrides: call.overrides });
+    assert.equal(resolved.enabled, true);
+    payloads.push({ role: call.role_id,
+      body: JSON.stringify(buildProviderRequestPayload(resolved.config,
+        call.messages)) });
+    return { output: { decision: { intent_summary: 'Продолжить решение.',
+      grounded_goal: 'Справиться с угрозой.', adaptation: 'literal' },
+    operation_choice: 'operation_1', force_choice: 'force_1',
+    risk_choice: 'risk_1', combat_statement: null,
+    reason: 'Угроза требует решения.' } };
+  } };
+  const model = createLowerDvinaTraceNpcCombatModel({ roleRunner });
+  const repair = { repair: { original_output: {},
+    validation_errors: ['operation_choice: invalid_structure'] } };
+
+  for (const [index, fixture] of fixtures.entries()) {
+    const pair = [];
+    for (const source of ['ordinary', 'authored']) {
+      const request = combatRequest();
+      request.request_id = `combat-${source}-${index}`;
+      request.boundary_id = `boundary-${source}-${index}`;
+      request.npc_ref = ref('npc', `${source}-actor-${index}`);
+      request.actor_source_class = source;
+      request.decision_reasons.perceived_changes = [fixture.visible];
+      request.npc_subjective_state = {
+        identity: { name_or_label: 'Воин' },
+        goals: [fixture.goal],
+        equipment: fixture.equipment ?? []
+      };
+      request.perceived_combat_state = {
+        visible_opponents: [ref('player_character', 'opponent-1')],
+        visible_allies: [], visible_neutral_actors: [],
+        known_positions: [], known_exits: [], visible_context: fixture.visible
+      };
+      if (fixture.currentIntent) request.current_intent = {
+        intent_kind: 'engage',
+        target_refs: [ref('player_character', 'opponent-1')], status: 'active'
+      };
+      if (fixture.reachable) {
+        request.operation_contract.allowed_intent_kinds.push('reach');
+        request.operation_contract.reachable_destination_refs = [
+          ref('location', 'nearby-exit')];
+      }
+      if (fixture.surrender) {
+        request.operation_contract.allowed_intent_kinds.push('surrender');
+        request.operation_contract.surrender_available = true;
+      }
+      if (fixture.exit) {
+        request.operation_contract.allowed_intent_kinds.push('break_contact');
+        request.operation_contract.break_contact_destination_refs = [
+          ref('location', 'known-exit')];
+      }
+
+      const before = payloads.length;
+      await model(request);
+      await model(request, repair);
+      pair.push(payloads.slice(before));
+    }
+    assert.deepEqual(pair[0].map(({ role }) => role), [
+      'npc_combat_decider', 'npc_combat_decider_format_repair'
+    ]);
+    assert.deepEqual(pair[0].map(({ body }) => body),
+      pair[1].map(({ body }) => body),
+      `provider payload differs by ordinary/authored source for fixture ${index + 1}`);
   }
 });
 

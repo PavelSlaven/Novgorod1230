@@ -53,6 +53,15 @@ export async function withSceneNpcs(pool, partyId, state) {
     if (current.has(row.npc_id)) {
       const prior = current.get(row.npc_id);
       current.set(row.npc_id, { ...current.get(row.npc_id),
+        scene_readback_prior_locus: {
+          position_id: { present: Object.hasOwn(prior, 'position_id'),
+            value: prior.position_id },
+          g6_instance_id: { present: Object.hasOwn(prior, 'g6_instance_id'),
+            value: prior.g6_instance_id }
+        },
+        position_id: row.position_id,
+        g6_instance_id: row.g6_instance_id,
+        scene_readback_present: true,
         ...sceneNpcBodyState(row),
         body_state_profile: row.semantic_state?.body_state_profile
           ?? prior.body_state_profile ?? null });
@@ -143,6 +152,7 @@ function sceneNpcSnapshot(row) {
     profile_candidate_set_digest: row.profile_candidate_set_digest,
     position_id: row.position_id,
     g6_instance_id: row.g6_instance_id,
+    scene_readback_present: true,
     runtime_source: SCENE_NPC_SOURCE
   };
 }

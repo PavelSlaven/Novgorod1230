@@ -69,6 +69,9 @@ test('scene body readback refreshes existing NPC instead of duplicating it', asy
     { health: 73, energy: 61, satiety: 49 });
   assert.equal(state.npcs[0].body_profile_ref.id, 'body:npc');
   assert.equal(state.npcs[0].body_state_version, 4);
+  assert.equal(state.npcs[0].scene_readback_present, true);
+  assert.equal(state.npcs[0].position_id, 'pos:npc_start');
+  assert.equal(state.npcs[0].g6_instance_id, 'g6:main');
 });
 
 test('prepared destination readback exposes scene NPCs on arrival and next-turn reload', async () => {
@@ -212,12 +215,35 @@ test('scene-loaded NPCs are stripped before a snapshot and nothing else is touch
   assert.equal(Object.hasOwn(stripped, 'scene_position_g6'), false);
   assert.equal(stripped.other, 1);
   assert.equal(state.npcs.length, 2);
+  const refreshed = withoutSceneNpcs({ npcs: [{ instance_id: 'npc_start',
+    position_id: 'pos:current', g6_instance_id: 'g6:current',
+    scene_readback_present: true }] });
+  assert.deepEqual(refreshed.npcs, [{ instance_id: 'npc_start',
+    position_id: 'pos:current', g6_instance_id: 'g6:current' }]);
   const nested = withoutSceneNpcs({ last_turn: { exchange: { world_state: { npcs: [
     keep, { instance_id: 'npc_gen', runtime_source: SCENE_NPC_SOURCE }] } } } });
   assert.deepEqual(nested.last_turn.exchange.world_state.npcs, [keep]);
   const untouched = { other: 1 };
   assert.equal(withoutSceneNpcs(untouched), untouched);
 });
+
+test('refreshing an existing scene NPC does not replace its saved locus in snapshots',
+  async () => {
+    const npc = { instance_id: 'npc_start', anchor_id: 'a',
+      position_id: 'pos:saved', g6_instance_id: 'g6:saved' };
+    const state = base({ npcs: [npc] });
+    const refreshed = await withSceneNpcs(pool([row('npc_start', {
+      position_id: 'pos:readback', g6_instance_id: 'g6:readback'
+    })]), 'party', state);
+    assert.equal(refreshed.npcs[0].position_id, 'pos:readback');
+    assert.equal(refreshed.npcs[0].g6_instance_id, 'g6:readback');
+    const snapshotNpc = withoutSceneNpcs(refreshed).npcs[0];
+    assert.equal(snapshotNpc.position_id, 'pos:saved');
+    assert.equal(snapshotNpc.g6_instance_id, 'g6:saved');
+    assert.equal(Object.hasOwn(snapshotNpc, 'scene_readback_present'), false);
+    assert.equal(Object.hasOwn(snapshotNpc, 'scene_readback_prior_locus'), false);
+    assert.equal(snapshotNpc.body_state_version, 4);
+  });
 
 test('the routine schedule keeps a slim snapshot of a scene-read NPC', () => {
   const full = { instance_id: 'npc_gen', anchor_id: null, machine_state: { status: 'active' },
@@ -227,6 +253,10 @@ test('the routine schedule keeps a slim snapshot of a scene-read NPC', () => {
     machine_state: { status: 'active' } });
   const sealed = { instance_id: 'npc_start', semantic_state: {} };
   assert.equal(routineNpcSnapshot(sealed), sealed);
+  assert.deepEqual(routineNpcSnapshot({ instance_id: 'npc_start',
+    position_id: 'pos:current', g6_instance_id: 'g6:current',
+    scene_readback_present: true }), { instance_id: 'npc_start',
+    position_id: 'pos:current', g6_instance_id: 'g6:current' });
 });
 
 test('every snapshot writer of the trace runtime drops scene-read NPCs', async () => {

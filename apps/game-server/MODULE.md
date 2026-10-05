@@ -728,6 +728,22 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 Combat #224/D65 keeps mechanics in the shared `@rus/body-state` and `@rus/npc-runtime` owners; scenario code does not own combat rules. `combat-min-data.js` validates the scoped qualitative-profile approval and source pin, while the active v17 bindings intentionally omit `combatBodyBandContext`. Combat body bands therefore remain typed gaps in production until authoritative actor scope and a separate versioned v17 cutover are approved; the scoped profile approval alone does not activate them.
 
+The generic live-world `request_combat` command implementation derives
+candidate presence only from `scene_readback_present`, which records the scene
+owner readback and is not combat approval. It is not registered in the live
+world turn registry until the separate common body initialization CR and
+approved execution profile are ready. Before that, an attempted request follows
+the ordinary owner-preflight and repair path, so the turn can still complete
+with normal narration. The codes `combat_actor_body_state_required`,
+`combat_actor_unavailable`, and
+`combat_actor_execution_profile_required` remain private diagnostics and are
+not whole-turn HTTP 409 responses. When registered, its mode uses only blocks
+already allowed by `@rus/turn` (`party_state`, `current_position`,
+`relevant_npcs`). Scene positions loaded for the current
+turn are transient; snapshot stripping restores an existing NPC's prior
+`position_id` and `g6_instance_id`, while persisted placement records remain
+the source for refreshed scene presence.
+
 The separately callable v17 target release factory remains outside the default
 selector. It requires the exact issued item and actor successor approvals,
 committed activation events, approved Spatial revision, and verified catalog

@@ -161,7 +161,7 @@ test('intent paraphrase keeps literal adaptation', async () => {
   assert.equal(plan.input_mode, 'intent_paraphrase');
   assert.equal(plan.interpretation.adaptation, 'literal');
   assert.match(fixture.calls[0].messages[0].content,
-    /utterance_text contains only the words the character would naturally say/u);
+    /в speech\.utterance_text помести только слова, которые персонаж естественно произнёс бы/u);
 });
 
 test('verbatim player request emits required check and operation once', async () => {

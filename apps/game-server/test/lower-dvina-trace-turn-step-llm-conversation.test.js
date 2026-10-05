@@ -34,16 +34,16 @@ test('conversation prompts supply complete shapes and request-bound mappings',
 
     const [player, npc] = calls.map(({ messages }) => messages[0].content);
     const playerShape = JSON.parse(player.match(
-      /Use this complete semantic JSON shape;[^\n]*:\n(\{[^\n]+\})/u
+      /Используй эту полную семантическую форму JSON;[^\n]*:\n(\{[^\n]+\})/u
     )[1]);
     const npcShape = JSON.parse(npc.match(
       /Use this complete semantic JSON shape;[^\n]*:\n(\{[^\n]+\})/u
     )[1]);
     const mappings = JSON.parse(player.match(
-      /Use these mappings for matching cases:\n(\{[^\n]+\})/u
+      /Для подходящих случаев используй эти соответствия:\n(\{[^\n]+\})/u
     )[1]);
     assert.equal('schema' in playerShape, false);
-    assert.equal(playerShape.input_mode, '<verbatim or intent_paraphrase>');
+    assert.equal(playerShape.input_mode, '<verbatim или intent_paraphrase>');
     assert.deepEqual(Object.keys(playerShape), [
       'input_mode', 'contribution_kind', 'primary_addressee_ref',
       'intended_addressee_refs', 'affected_actor_refs', 'speech',
@@ -84,17 +84,17 @@ test('conversation prompts supply complete shapes and request-bound mappings',
       assert.match(prompt, /emit_interaction/u);
       assert.match(prompt, /operation_contract/u);
       assert.match(prompt, /check_required/u);
-      assert.match(prompt, /do not invent or substitute refs/u);
+      assert.match(prompt, /do not invent or substitute refs|не выдумывай и не подменяй refs/u);
     }
     assert.match(player, /input_mode verbatim/u);
     assert.match(npc, /decision_scope allowed check refs/u);
     for (const prompt of [player, npc]) {
       assert.match(prompt, /speech: null/u);
-      assert.match(prompt, /refs\/handoff only from request contract/u);
+      assert.match(prompt, /refs\/handoff only from request contract|refs\/handoff — только из контракта запроса/u);
       assert.match(prompt, /greet, farewell, question, answer, inform/u);
-      assert.match(prompt, /topic_refs contain only string ids/u);
-      assert.match(prompt, /never entity-ref objects/u);
-      assert.match(prompt, /supporting_operations must be \[required_supporting_operation\]/u);
+      assert.match(prompt, /topic_refs contain only string ids|speech\.interaction_tags и speech\.topic_refs помещай только строковые id/u);
+      assert.match(prompt, /never entity-ref objects|никогда не объекты entity-ref/u);
+      assert.match(prompt, /supporting_operations must be \[required_supporting_operation\]|supporting_operations должен быть \[required_supporting_operation\]/u);
     }
     assert.match(npc, /required_check\.attribute_ref, skill_ref, and difficulty_band/u);
   });

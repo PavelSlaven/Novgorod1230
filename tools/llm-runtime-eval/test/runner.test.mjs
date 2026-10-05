@@ -5,6 +5,9 @@ import { readFile } from 'node:fs/promises';
 import { classifyPlannerEvalFailure, runFrozenRoleEval } from '../src/runner.mjs';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-world-process-llm.js';
+import { assembleTurnStepPlan } from
+  '../../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { validateTurnStepPlan } from '@rus/turn';
 
 const corpus = JSON.parse(await readFile(new URL('../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url), 'utf8'));
 
@@ -25,7 +28,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 68);
+  assert.equal(corpus.corpus_version, 70);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -665,12 +668,6 @@ test('conversation eval assembles against the exact provider-facing request', as
   const fixture = structuredClone(corpus.fixtures.find(({ id }) =>
     id === 'npc-conversation-check-required'));
   const output = structuredClone(fixture.expected_output);
-  const player = { entity_kind: 'player_character', entity_id: 'player' };
-  output.primary_addressee_ref = player;
-  output.intended_addressee_refs = [player];
-  output.resolution = 'automatic';
-  output.supporting_operations = [];
-  output.check = { purpose: output.check.purpose };
   const server = createServer(async (request, response) => {
     for await (const _ of request) {}
     response.setHeader('Content-Type', 'application/json');
@@ -688,6 +685,83 @@ test('conversation eval assembles against the exact provider-facing request', as
     assert.equal(report.results[0].pass, true,
       JSON.stringify(report.results[0].errors));
   } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('conversation expected refs and required choices come from provider input', () => {
+  const fixtures = corpus.fixtures.filter(({ role_id, expected }) =>
+    ['player_conversation_interpreter',
+      'player_conversation_interpreter_format_repair',
+      'npc_conversation_responder',
+      'npc_conversation_responder_format_repair'].includes(role_id)
+      && Object.keys(expected?.required_values ?? {}).length > 0);
+  assert.equal(fixtures.length, 5);
+  for (const fixture of fixtures) {
+    const payload = JSON.parse(fixture.messages.at(-1).content);
+    const request = payload.request ?? payload;
+    assert.deepEqual(request, fixture.request, `${fixture.id}: request/message mismatch`);
+    const playerRole = fixture.role_id.startsWith('player_conversation');
+    const allowedReferences = playerRole
+      ? request.player_safe_context.allowed_references
+      : request.allowed_references;
+    const allowedIds = new Set(Object.values(allowedReferences)
+      .flatMap((references) => references.map(({ entity_id }) => entity_id)));
+    for (const ref of fixture.expected.required_refs ?? []) {
+      assert.ok(allowedIds.has(ref), `${fixture.id}: expected ref ${ref} is not allowed`);
+      assert.ok(fixture.messages.at(-1).content.includes(ref),
+        `${fixture.id}: provider input omits ${ref}`);
+    }
+
+    const expected = fixture.expected.required_values;
+    const context = playerRole ? request.player_safe_context : request.decision_scope;
+    if (expected.resolution !== undefined) {
+      assert.equal(context.required_resolution ?? 'automatic', expected.resolution,
+        `${fixture.id}: resolution`);
+    }
+    if (expected.input_mode !== undefined) {
+      assert.equal(context.verbatim_utterance_text == null
+        ? 'intent_paraphrase' : 'verbatim', expected.input_mode,
+      `${fixture.id}: input_mode`);
+    }
+    const requiredCheck = context.required_check;
+    for (const field of ['attribute_ref', 'skill_ref', 'difficulty_band']) {
+      if (expected[`check.${field}`] !== undefined) {
+        assert.equal(requiredCheck?.[field], expected[`check.${field}`],
+          `${fixture.id}: check.${field}`);
+      }
+    }
+    if (expected['supporting_operations.0.op'] !== undefined) {
+      const requiredOperation = context.required_supporting_operation;
+      assert.equal(requiredOperation?.op,
+        expected['supporting_operations.0.op'], `${fixture.id}: required operation`);
+      assert.deepEqual(fixture.expected_output.supporting_operations?.[0],
+        requiredOperation, `${fixture.id}: expected operation differs from required input`);
+      const operationContract = playerRole
+        ? request.operation_contract?.[requiredOperation.op]
+        : context.operation_contract?.[requiredOperation.op];
+      const requiredOperationFields = structuredClone(requiredOperation);
+      delete requiredOperationFields.op;
+      assert.deepEqual(operationContract, requiredOperationFields,
+        `${fixture.id}: operation contract differs from required input`);
+    }
+  }
+});
+
+test('planner repair fixture request reaches assembly with its turn identity', () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'planner-domain-owner-unavailable-repair');
+  const payload = JSON.parse(fixture.messages.at(-1).content);
+  assert.equal(Object.hasOwn(payload.request, 'request'), false);
+  assert.equal(payload.request.request_id,
+    fixture.request.request.request_id);
+  assert.equal(payload.request.committed_state_version,
+    fixture.request.request.committed_state_version);
+  const plan = assembleTurnStepPlan(fixture.expected_output, payload.request);
+  assert.equal(plan.request_id, payload.request.request_id);
+  assert.equal(plan.committed_state_version,
+    payload.request.committed_state_version);
+  assert.equal(plan.working_revision, payload.request.working_revision);
+  assert.equal(plan.step_index, payload.request.step_index);
+  assert.equal(validateTurnStepPlan(plan, { request: payload.request }).ok, true);
 });
 
 test('planner, ordinary and NPC conversation semantic mismatches fail after owner validation', async () => {

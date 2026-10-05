@@ -28,6 +28,11 @@ const REPAIR_SEVERITY_LABELS = Object.freeze({
   upstream_block: 'нужна правка исходной проекции'
 });
 
+const OPENING_ITEM_CONDITIONS = Object.freeze({
+  serviceable: 'пригодное к использованию',
+  damaged: 'повреждённое'
+});
+
 const NPC_TRANSLATIONS = Object.freeze({
   sex: { male: 'мужчина', female: 'женщина' },
   age: { young: 'молодой', young_adult: 'молодой', adult: 'взрослый',
@@ -188,14 +193,15 @@ function projectOpeningRoleInput(input, roleId) {
   const projectedFactKeyMap = buildOpeningFactKeyMap(source, projectedFacts);
   const modelFacts = projectedFacts.map((fact, index) => {
     const key = `f${index + 1}`;
+    const npcIndex = Number.isInteger(fact.npc_index) ? fact.npc_index : null;
     if (factKeyed) {
       factKeyMap[key] = projectedFactKeyMap[key];
       for (const ref of fact.source_refs) {
         if (!sourceRefToFactKey.has(ref)) sourceRefToFactKey.set(ref, key);
       }
-      return { ключ: key, текст: fact.text, npc_index: fact.npc_index };
+      return { ключ: key, текст: fact.text, npc_index: npcIndex };
     }
-    return { текст: fact.text, npc_index: fact.npc_index };
+    return { текст: fact.text, npc_index: npcIndex };
   });
   const renderFact = (fact) => factKeyed ? {
     ключ: fact.ключ, текст: fact.текст } : fact.текст;
@@ -280,8 +286,17 @@ function projectOpeningFacts(source) {
     add(fact.text, fact.fact_id, fact.source_refs ?? [],
       npcIndexes.length === 1 ? npcIndexes[0] : null);
   }
-  for (const entry of source?.known_context ?? []) add(entry?.text, null,
-    entry?.basis_refs ?? []);
+  const heldItemLabels = new Set((source?.visible_items ?? [])
+    .filter((item) => item?.placement === 'held_by_player')
+    .map((item) => typeof item?.label === 'string' ? item.label.trim() : '')
+    .filter(Boolean).map((label) => label.normalize('NFC').toLocaleLowerCase('ru')));
+  for (const entry of source?.known_context ?? []) {
+    const normalized = typeof entry?.text === 'string'
+      ? entry.text.normalize('NFC').trim().toLocaleLowerCase('ru') : '';
+    const repeatsHeldItem = [...heldItemLabels].some((label) =>
+      normalized === `при вас: ${label}.`);
+    if (!repeatsHeldItem) add(entry?.text, null, entry?.basis_refs ?? []);
+  }
   for (const entry of source?.touch_body_context ?? []) add(entry?.text);
   const containsFact = (text, npcIndex = null) => typeof text === 'string' && text.trim().length > 2
     && facts.some((fact) => fact.npc_index === npcIndex
@@ -296,8 +311,28 @@ function projectOpeningFacts(source) {
     }
   }
   for (const item of source?.visible_items ?? []) {
-    if (!containsFact(item?.label)) add(item?.label, null, [item?.item_instance_id]);
-    add(item?.visible_status, null, [item?.item_instance_id]);
+    const label = typeof item?.label === 'string' ? item.label.trim() : '';
+    if (!label) continue;
+    const conditionKey = item.condition ?? item.condition_state;
+    if (conditionKey != null && !Object.hasOwn(OPENING_ITEM_CONDITIONS, conditionKey)) {
+      throw serverError('OPENING_ITEM_CONDITION_UNSUPPORTED',
+        'Не удалось подготовить состояние предмета для вступления.',
+        { status: 500, details: { field: 'condition' } });
+    }
+    const condition = Object.hasOwn(OPENING_ITEM_CONDITIONS, conditionKey)
+      ? OPENING_ITEM_CONDITIONS[conditionKey] : null;
+    if (item.placement === 'held_by_player') {
+      add(`${label} при вас${condition ? `; состояние — ${condition}` : ''}.`,
+        null, [item.item_instance_id]);
+      continue;
+    }
+    if (!containsFact(label)) add(label, null, [item.item_instance_id]);
+    if (condition) add(`${label}; состояние — ${condition}.`, null,
+      [item.item_instance_id]);
+    else if (typeof item.visible_status === 'string'
+      && /\p{Script=Cyrillic}/u.test(item.visible_status)) {
+      add(item.visible_status, null, [item.item_instance_id]);
+    }
   }
   for (const anchor of source?.visible_anchors ?? []) {
     if (!containsFact(anchor?.label)) add(anchor?.label);
@@ -443,14 +478,28 @@ function russianSeason(value) {
 }
 
 function russianDayPart(value) {
-  return ({ dawn: 'Рассвет.', sunrise: 'Восход.', morning: 'Утро.', daylight: 'День.',
+  return temporalTranslation(value, { civil_dawn: 'Рассвет.',
+    civil_dusk: 'Сумерки.', dawn: 'Рассвет.', sunrise: 'Восход.',
+    morning: 'Утро.', daylight: 'День.',
     noon: 'Полдень.', afternoon: 'После полудня.', sunset: 'Закат.', evening: 'Вечер.',
-    twilight: 'Сумерки.', night: 'Ночь.', late_night: 'Поздняя ночь.' })[value] ?? null;
+    twilight: 'Сумерки.', night: 'Ночь.', late_night: 'Поздняя ночь.' }, 'day_part');
 }
 
 function russianLight(value) {
-  return ({ daylight: 'Стоит светлое время дня.', clear: 'Светло.', dim: 'Сумеречно.',
-    twilight: 'Сумерки.', dark: 'Темно.', civil_dusk: 'Сгущаются сумерки.' })[value] ?? null;
+  return temporalTranslation(value, { night: 'Ночь.', civil_dawn: 'Светает.',
+    daylight: 'Стоит светлое время дня.', civil_dusk: 'Сгущаются сумерки.',
+    clear: 'Светло.', dim: 'Сумеречно.', twilight: 'Сумерки.', dark: 'Темно.' },
+  'light_state');
+}
+
+function temporalTranslation(value, translations, field) {
+  if (value == null) return null;
+  if (typeof value !== 'string' || !Object.hasOwn(translations, value)) {
+    throw serverError('OPENING_TEMPORAL_TRANSLATION_UNSUPPORTED',
+      'Не удалось подготовить время суток и освещение для вступления.',
+      { status: 500, details: { field } });
+  }
+  return translations[value];
 }
 
 function projectWeatherFacts(state) {

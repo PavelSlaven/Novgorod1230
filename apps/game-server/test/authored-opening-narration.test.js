@@ -17,6 +17,7 @@ import { errorEnvelope } from '../src/http/contracts.js';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 import { buildCanonicalOpeningVisibleContext } from '../src/runtime/canonical-opening-context.js';
 import { projectG4NaturalPerception } from '../src/runtime/g4-natural-perception.js';
+import { deriveApprovedInitialEnvironment } from '@rus/materialization';
 
 test('authored opening package answers all reader controls from persisted refs', () => {
   const pkg = openingPackage();
@@ -250,7 +251,8 @@ test('opening sends one readable Russian fact projection to writer and auditor',
     ...(auditorInput.сцена.персонажи ?? []).flatMap(({ факты }) => факты)
   ];
   assert.ok(writerFacts.some((fact) => fact.includes('Любава')));
-  assert.ok(writerFacts.some((fact) => fact.includes('верёвка')));
+  assert.ok(writerFacts.includes('верёвка при вас; состояние — пригодное к использованию.'));
+  assert.equal(writerFacts.some((fact) => /serviceable|held_by_player/u.test(fact)), false);
   assert.ok(writerFacts.some((fact) => fact.includes('Виден молодой мужчина.')));
   assert.ok(writerFacts.some((fact) => fact.includes('Глаза: голубые.')));
   assert.ok(writerFacts.some((fact) => fact.includes('низкие кожаные башмаки')));
@@ -263,11 +265,99 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   }
   assert.ok(auditorFacts.every(({ ключ, текст }) => /^f\d+$/u.test(ключ)
     && typeof текст === 'string'));
+  assert.ok(auditorFacts.some(({ текст }) =>
+    текст === 'верёвка при вас; состояние — пригодное к использованию.'));
+  assert.equal(auditorFacts.some(({ текст }) =>
+    /serviceable|held_by_player/u.test(текст)), false);
   assert.equal(new Set(auditorFacts.map(({ ключ }) => ключ)).size,
     auditorFacts.length);
   assert.deepEqual(new Set(auditorInput.сцена.обязательные_ключи),
     new Set(auditorFacts.map(({ ключ }) => ключ)));
   assert.match(result.original_stage23_audit.evidence[0], /opening:/u);
+});
+
+test('opening fails closed on an unknown authored item condition', async () => {
+  const pkg = structuredClone(openingPackage());
+  pkg.visible_items[0].condition = 'unrecognized-condition';
+  const service = createAuthoredOpeningNarrationService({ roleRunner: {
+    async run() { assert.fail('role must not receive an unknown item condition'); }
+  } });
+  await assert.rejects(service.run({ requestId: 'opening:1',
+    visibleContextPackage: pkg, visibleContextApproval: openingApproval(pkg) }),
+  { code: 'OPENING_ITEM_CONDITION_UNSUPPORTED' });
+});
+
+test('opening translates all approved initial Temporal phases and rejects unknowns', async () => {
+  const boundaries = { civil_dawn_minute_of_day: '250',
+    sunrise_minute_of_day: '300', sunset_minute_of_day: '1100',
+    civil_dusk_minute_of_day: '1150' };
+  const calendarRecord = { family_id: 'calendar_daylight_light_profiles',
+    status: 'approved', payload: { calendar_profile_id: 'calendar',
+      daylight_profile_id: 'daylight', daylight_boundary_rules: {
+        year_daily_boundaries: { '1230': { '08-20': boundaries } } },
+      season_rule: { winter_months: ['12','1','2'], spring_months: ['3','4','5'],
+        summer_months: ['6','7','8'], autumn_months: ['9','10','11'] } } };
+  const weatherRecord = { family_id: 'weather_transition_profiles_processes',
+    status: 'approved', payload: { weather_profile_id: 'weather',
+      region_season_applicability: { calendar_seasons: { summer: ['6','7','8'] } },
+      transition_rules: { seasonal_candidates: { summer: [{ weather_state_id: 'clear',
+        weight: '1', weather_state_ref: { entity_ref: { entity_kind: 'weather_state',
+          entity_id: 'clear' }, authoring_version: '1' } }] } },
+      weather_states: [{ weather_state_id: 'clear', sky: 'clear' }] } };
+  const phases = [...new Set([0, 250, 300, 1100, 1150, 1439].map((minute) =>
+    deriveApprovedInitialEnvironment({ calendar_record: calendarRecord,
+      weather_record: weatherRecord, calendar_date: { year: 1230, month: 8, day: 20 },
+      local_minute_of_day: minute, random: { nextUint32: () => 0 } }).day_part))]
+    .map((source) => ({ source, day: ({ night: 'Ночь.', civil_dawn: 'Рассвет.',
+      daylight: 'День.', civil_dusk: 'Сумерки.' })[source], light: ({ night: 'Ночь.',
+      civil_dawn: 'Светает.', daylight: 'Стоит светлое время дня.',
+      civil_dusk: 'Сгущаются сумерки.' })[source] }));
+  assert.equal(phases.length, 4);
+  for (const phase of phases) {
+    for (const [field, expected] of [['day_part', phase.day],
+      ['light_state', phase.light]]) {
+      let captured = null;
+      const pkg = structuredClone(openingPackage());
+      pkg.frame = { ...pkg.frame, season: 'summer',
+        day_part: field === 'day_part' ? phase.source : null,
+        light_profile: field === 'light_state' ? phase.source : null };
+      pkg.weather_light_context = [{ season: 'summer',
+        day_part: field === 'day_part' ? phase.source : null,
+        light_state: field === 'light_state' ? phase.source : null }];
+      const service = createAuthoredOpeningNarrationService({ roleRunner: {
+        async run(call) {
+          captured = JSON.parse(call.messages[1].content);
+          throw new Error('payload captured');
+        }
+      } });
+      try {
+        await service.run({ requestId: 'opening:1', visibleContextPackage: pkg,
+          visibleContextApproval: openingApproval(pkg) });
+      } catch {}
+      assert.ok(captured, `${phase.source} ${field} did not reach the writer`);
+      assert.ok(captured.сцена.факты.includes(expected),
+        `${phase.source} ${field} missing from ${JSON.stringify(captured)}`);
+      assert.doesNotMatch(JSON.stringify(captured),
+        /civil_dawn|civil_dusk|daylight|light_profile|day_part/u);
+    }
+  }
+
+  for (const [field, frameField] of [['day_part', 'day_part'],
+    ['light_state', 'light_profile']]) {
+    const pkg = structuredClone(openingPackage());
+    pkg.frame = { ...pkg.frame, [frameField]: 'unknown_temporal_phase' };
+    if (field === 'day_part') pkg.frame.day_part = 'unknown_temporal_phase';
+    else pkg.weather_light_context = [{ light_state: 'unknown_temporal_phase' }];
+    let calls = 0;
+    const service = createAuthoredOpeningNarrationService({ roleRunner: {
+      async run() { calls += 1; return { output: { prose: 'Вступление.' } }; }
+    } });
+    await assert.rejects(service.run({ requestId: 'opening:1',
+      visibleContextPackage: pkg, visibleContextApproval: openingApproval(pkg) }),
+    (error) => error.code === 'OPENING_TEMPORAL_TRANSLATION_UNSUPPORTED'
+      && error.details.field === field);
+    assert.equal(calls, 0);
+  }
 });
 
 test('opening groups NPC facts by visible person without cross-person deduplication', async () => {
@@ -282,7 +372,9 @@ test('opening groups NPC facts by visible person without cross-person deduplicat
     { fact_id: 'opening:npc:first', text: 'Человек',
       source_refs: [first.npc_instance_id] },
     { fact_id: 'opening:npc:second', text: 'Человек',
-      source_refs: [second.npc_instance_id] }
+      source_refs: [second.npc_instance_id] },
+    { fact_id: 'opening:npc:shared', text: 'Оба лица различимы.',
+      source_refs: [first.npc_instance_id, second.npc_instance_id] }
   ];
   const calls = [];
   const prose = pkg.visible_scene_dossier.must_include.map(({ text }) => text).join(' ');
@@ -303,6 +395,9 @@ test('opening groups NPC facts by visible person without cross-person deduplicat
   const auditor = JSON.parse(calls[1].messages[1].content).сцена;
   assert.equal(writer.персонажи.length, 2);
   assert.deepEqual(writer.персонажи.map(({ имя }) => имя), ['Человек', 'Человек']);
+  assert.ok(writer.факты.includes('Оба лица различимы.'));
+  assert.ok(writer.персонажи.every(({ факты }) =>
+    !факты.includes('Оба лица различимы.')));
   assert.ok(writer.персонажи.every(({ факты }) => !факты.includes('Человек')));
   assert.equal(writer.персонажи[0].факты.filter((fact) => fact === 'Глаза: голубые.').length, 1);
   assert.equal(writer.персонажи[1].факты.filter((fact) => fact === 'Глаза: зелёные.').length, 1);
@@ -311,6 +406,7 @@ test('opening groups NPC facts by visible person without cross-person deduplicat
   assert.ok(writer.персонажи[1].факты.includes('Видна женщина средних лет.'));
   assert.doesNotMatch(JSON.stringify(writer), /npc:first|npc:second|npc_instance_id/u);
   const keyedFacts = auditor.персонажи.flatMap(({ факты }) => факты);
+  assert.ok(auditor.факты.some(({ текст }) => текст === 'Оба лица различимы.'));
   assert.equal(keyedFacts.filter(({ текст }) => текст === 'Человек').length, 2);
   assert.equal(new Set(keyedFacts.map(({ ключ }) => ключ)).size, keyedFacts.length);
   assert.equal(keyedFacts.filter(({ текст }) => текст === 'Глаза: голубые.').length, 1);
@@ -898,7 +994,8 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
   delete input.internal.player.dossier.opening_context;
   input.internal.position = { ...input.visible.position, position_id: 'position:shore', g6_instance_id: 'g6:inside' };
   input.internal.environment_snapshot = { schema: 'rus.approved_initial_environment.v1',
-    calendar_date: initialRule.initial_environment_inputs.calendar_date, season: 'summer', light_state: 'daylight',
+    calendar_date: initialRule.initial_environment_inputs.calendar_date, season: 'summer',
+    day_part: 'civil_dawn', light_state: 'civil_dawn',
     weather_state: { weather_state_id: 'dense_fog', movement_factor: 'private-movement-factor',
       sky: 'obscured',
       precipitation: 'none', visibility: 'poor', wind: 'calm_or_light' } };
@@ -947,15 +1044,18 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
       const modelInput = JSON.parse(call.messages[1].content);
       assert.ok(modelInput.сцена.факты.some((fact) => /лето/iu.test(fact)),
         JSON.stringify(modelInput.сцена.факты));
-      assert.ok(modelInput.сцена.факты.some((fact) => /светлое время дня/u.test(fact)));
+      assert.ok(modelInput.сцена.факты.includes('Рассвет.'));
+      assert.ok(modelInput.сцена.факты.includes('Светает.'));
       assert.ok(modelInput.сцена.факты.includes('Небо не видно.'));
       assert.ok(modelInput.сцена.факты.includes('Осадков нет.'));
       assert.ok(modelInput.сцена.факты.includes('Видимость плохая.'));
       assert.doesNotMatch(JSON.stringify(modelInput),
-        /player:1|source_refs|weather_state_id|dense_fog|movement_factor|private-movement-factor|obscured|summer|daylight|whole_minutes/u);
+        /player:1|source_refs|weather_state_id|dense_fog|movement_factor|private-movement-factor|obscured|summer|civil_dawn|whole_minutes/u);
       return { output: { prose: 'Вы — Любава, рыбачка. Тело готово к работе.\n\nПри вас верёвка.' } };
     }
     const auditInput = JSON.parse(call.messages[1].content);
+    assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'Рассвет.'));
+    assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'Светает.'));
     weatherEvidenceKey = auditInput.сцена.факты.find(({ текст }) =>
       текст === 'Небо не видно.').ключ;
     return { output: { pass: true, failed_checks: [], concerns: [],

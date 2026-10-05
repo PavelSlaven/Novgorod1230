@@ -170,7 +170,9 @@ async function productionMessages(fixture) {
     ? fixture.request : JSON.parse(fixture.messages.at(-1).content);
   if (!fixture.repair) await model(payload);
   else if (fixture.role_id === 'turn_step_planner_repair') await model(
-    payload.request, { structural_errors: payload.structural_errors });
+    payload.request?.request ?? payload.request, {
+      structural_errors: payload.request?.structural_errors
+        ?? payload.structural_errors });
   else await model(payload.request, { repair: {
     original_output: payload.original_output,
     validation_errors: payload.validation_errors

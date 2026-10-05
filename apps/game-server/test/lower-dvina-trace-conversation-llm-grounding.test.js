@@ -470,17 +470,17 @@ test('speech audit rejects invented past work from a current schedule',
     assert.deepEqual(result.errors[0].concern_kinds,
       ['unsupported_past_activity']);
     assert.match(fixture.calls[0].messages[0].content,
-      /current_activity describes only requested_at/u);
+      /описывает только requested_at/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Past first-person activity or observation needs an exact memory record/u);
+      /прошлой деятельности или наблюдения от первого лица нужна\s+точная запись памяти/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /empty or missing memory never proves a negative past observation/u);
+      /Пустая или отсутствующая память никогда не доказывает отрицательное\s+прошлое наблюдение/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /plausible for the place or social situation/u);
+      /даже если это правдоподобно для\s+места или социальной ситуации/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /memory\.current_observations grounds only its exact present fact_text/u);
+      /memory\.current_observations подтверждает только свой точный настоящий fact_text/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Mandatory failure: when memory\.records has no exact supporting record/u);
+      /Обязательный отказ: если в memory\.records нет точной подтверждающей записи/u);
     assert.equal(fixture.calls[0].overrides.maxTokens, 256);
   });
 
@@ -683,7 +683,7 @@ test('semantic fallback keeps the original responder World Knowledge for its aud
     assert.equal(Object.hasOwn(auditorRequest.world_knowledge, 'context_text'),
       false);
     assert.match(calls[1].messages[0].content,
-      /not knowing what the player heard for a claim/u);
+      /Не принимай высказывание о незнании того, что услышал игрок/u);
   });
 
 test('route contract candidate reaches initial and repair prompts', async () => {
@@ -767,12 +767,12 @@ test('conversation production model receives planner-selected role, material, an
   assert.match(instructions, /do not recite or apply a conditional historical rule whose stated trigger is not established/u);
   assert.match(instructions, /preserve the limit without inferring a procedure or prohibition/u);
   assert.match(instructions,
-    /Missing or empty memory is not evidence/u);
+    /Missing or empty memory is not evidence|Отсутствующая или пустая память не доказывает/u);
   assert.match(instructions,
-      /Never infer a current object, condition, resource, amenity/u);
-  assert.match(instructions, /A missing personal field means unknown/u);
+      /Never infer a current object, condition, resource, amenity|Никогда не выводи наличие текущего предмета, состояния, ресурса, удобства/u);
+  assert.match(instructions, /A missing personal field means unknown|Отсутствующее личное поле означает/u);
   assert.match(instructions,
-    /A knowingly_false posture describes the NPC assertion/u);
+    /A knowingly_false posture describes the NPC assertion|knowingly_false описывает утверждение NPC/u);
   const auditorCalls = calls.filter((call) =>
     call.role_id === 'npc_conversation_grounding_auditor');
   const groundedResponderRequests = calls.filter((call) =>
@@ -795,11 +795,11 @@ test('conversation production model receives planner-selected role, material, an
   }
   const auditorCall = auditorCalls[0];
   assert.match(auditorCall.messages[0].content,
-    /knowledge_scope ref only permits a source citation/u);
+    /ref типа knowledge_scope только разрешает сослаться на источник/u);
   assert.match(auditorCall.messages[0].content,
-    /Missing personal fields mean unknown/u);
+    /Отсутствующие личные поля означают «неизвестно»/u);
   assert.match(auditorCall.messages[0].content,
-    /A claim with knowingly_false posture remains the speaker’s intentional false assertion/u);
+    /Если у claim posture равно knowingly_false, это остаётся намеренно ложным утверждением говорящего/u);
 });
 
 function conversationCalendarProfile() {

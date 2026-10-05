@@ -161,7 +161,7 @@ test('intent paraphrase keeps literal adaptation', async () => {
   assert.equal(plan.input_mode, 'intent_paraphrase');
   assert.equal(plan.interpretation.adaptation, 'literal');
   assert.match(fixture.calls[0].messages[0].content,
-    /utterance_text contains only the words the character would naturally say/u);
+    /в speech\.utterance_text помести только слова, которые персонаж естественно произнёс бы/u);
 });
 
 test('verbatim player request emits required check and operation once', async () => {
@@ -330,11 +330,11 @@ test('NPC route prompt treats refs as opaque and excludes route context from ope
   const prompt = npcConversationInstructions(null, request);
   const routeCandidate = npcConversationCandidates(request).find((candidate) =>
     candidate.supporting_operations[0]?.op === 'disclose_known_route');
-  assert.match(prompt, /Treat every ref and id as opaque/u);
+  assert.match(prompt, /Treat every ref and id as opaque|Считай каждый ref и id непрозрачным/u);
   assert.match(prompt,
-    /utterance_text may identify only the exact[\s\S]*destination_label/u);
+    /utterance_text may identify only the exact[\s\S]*destination_label|единственное допустимое содержание о маршруте[\s\S]*старая сушильня/u);
   assert.match(prompt,
-    /Final route constraint:[\s\S]*старая сушильня/u);
+    /Final route constraint:[\s\S]*старая сушильня|Итоговое ограничение маршрута:[\s\S]*старая сушильня/u);
   assert.deepEqual(routeCandidate.supporting_operations, [{
     op: 'disclose_known_route', route_ref: 'route-1',
     source_knowledge_scope_ref: 'knowledge-1'
@@ -356,16 +356,20 @@ test('NPC prompt shows complete grounded claim shape and personal-fact limits',
       'uncertain', 'withheld']) {
       assert.match(prompt, new RegExp(posture, 'u'));
     }
+    const claimsRule = 'claims — только утверждения о мире, людях, событиях или предметах, которые NPC высказывает в своей реплике. Незнание, сомнение, отказ, собственные чувства и мотивы говорящего — не claims, они выражаются в тексте реплики. Если утверждать нечего — claims: [].';
+    assert.equal(prompt.includes(claimsRule), true);
+    assert.equal(npcConversationInstructions({ validation_errors: [] }, request)
+      .includes(claimsRule), true);
     assert.match(prompt,
-      /source_knowledge_refs contains only entity_id strings/u);
-    assert.match(prompt, /never emit entity_kind/u);
+    /source_knowledge_refs contains only entity_id strings|source_knowledge_refs содержит только строки entity_id/u);
+    assert.match(prompt, /never emit entity_kind|никогда не выдавай entity_kind/u);
     assert.match(prompt,
-      /server resolves a unique exact ID to its allowed type/u);
-    assert.match(prompt, /scope permits citing but does not prove a fact/u);
+      /server resolves a unique exact ID to its allowed type|сервер разрешит уникальный точный ID в допустимый тип/u);
+    assert.match(prompt, /scope permits citing but does not prove a fact|область разрешает ссылаться на источник, но не подтверждает факт/u);
     assert.match(prompt,
-      /Do not infer motive, values, fear, family or dependants/u);
-    assert.match(prompt, /A missing personal field means unknown/u);
-    assert.match(prompt, /does not change objective truth/u);
+      /Do not infer motive, values, fear, family or dependants|Не выводи мотив, ценности, страх, семью или иждивенцев/u);
+    assert.match(prompt, /A missing personal field means unknown|Отсутствующее личное поле означает «неизвестно»/u);
+    assert.match(prompt, /does not change objective truth|не меняет объективную истину/u);
   });
 
 test('NPC participation request states acceptance binding choice', async () => {
@@ -378,11 +382,11 @@ test('NPC participation request states acceptance binding choice', async () => {
   await createLowerDvinaTraceNpcSemanticModel(fixture)(request);
 
   assert.match(fixture.calls[0].messages[0].content,
-    /accepting, promising, or agreeing means choose exactly one allowed binding/u);
+    /accepting, promising, or agreeing means choose exactly one allowed binding|принятие, обещание или согласие означает выбрать ровно одну разрешённую привязку/u);
   assert.match(fixture.calls[0].messages[0].content,
-    /never evade it by relabeling agreement/u);
+    /never evade it by relabeling agreement|не обходи его, переименовывая согласие/u);
   assert.match(fixture.calls[0].messages[0].content,
-    /The NPC chooses the binding/u);
+    /The NPC chooses the binding|Привязку выбирает NPC/u);
 });
 
 test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', () => {
@@ -417,10 +421,11 @@ test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', (
         state_version, speaker_ref, ...semantic } = candidate;
       assert.equal(prompt.includes(JSON.stringify(semantic)), true);
     }
-    assert.match(prompt, /not an exhaustive choice set/u);
+    assert.match(prompt, /not an exhaustive choice set|не исчерпывающий набор вариантов/u);
     assert.match(prompt,
-      /except offer, accept, or promise when no exact supporting operation permits/u);
-    assert.match(prompt, /silence and leave_conversation mappings available/u);
+      /except offer, accept, or promise when no exact supporting operation permits|кроме offer, accept или promise, если точная supporting operation не разрешает/u);
+    assert.match(prompt,
+      /silence and leave_conversation mappings available|Сохраняй доступность явно разрешённых соответствий silence и leave_conversation/u);
     assert.doesNotMatch(prompt, /Choose exactly one/u);
   }
 });

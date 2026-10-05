@@ -116,6 +116,7 @@
 | 126 | `packages/time-events-history/src/calendar.js`, `packages/npc-runtime/src/routine-schedule.js` | month-boundary D-1 applicability остаётся отложенной; leap-day учёт в календаре исправлен | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 128 | `packages/turn/src/turn-step-admission.js:57–67`, `test/spatial-v3/prepared-destination-light-seam-postgres.test.js` | approved route operation отсутствует в проверенном continuation после ожидания; точный menu regression ждёт exit-one-action | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
+| 129 | `lower-dvina-trace-conversation-llm.js`, conversation prompt builders | разговорные роли получают канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 | — |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -695,3 +696,10 @@
 - **Что.** В проверенном PG continuation после ожидания имел правильную позицию `forest_path/departure` и видимый approved connection ref, но `available_domain_operations` и `local_world_process.allowed` были пусты. Список исходных domain operations переиспользуется на continuation. Это наблюдение относится к проверенному переходу, не доказывает потерю операций во всех continuation; пересчёт передан владельцу exit-one-action.
 - **Как жить.** Не синтезировать маршрут, не обходить меню и не ослаблять exact `target_ref`/`route_ref` assertion. PG seam regression остаётся явно pending до обновления continuation menu владельцем; затем снять skip и повторить проверку clock, destination package и restart.
 - **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)
+
+### LW-129 — разговорные роли передают модели канонический DTO (npc-conversation)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-conversation-llm.js` и builders разговора с NPC.
+- **Что.** Вход разговорных ролей — канонический DTO, нарушение D72/D78; проекция P отвергнута судьями 2026-10-05 (опора 1,58 → 1,28); условие закрытия — проекция, прошедшая стенд.
+- **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
+- **Issue.** —
+

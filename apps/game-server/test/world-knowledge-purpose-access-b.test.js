@@ -104,7 +104,7 @@ test('player conversation model grounds with semantic_resolution', async () => {
       if (call.messages[0].content.includes('world_knowledge is the only factual')) {
         sawClosure = true;
       }
-      assert.match(call.messages[0].content, /Never add an unstated claim/u);
+      assert.match(call.messages[0].content, /неуказанное утверждение/u);
       return { output: { invalid: true } };
     }
   };

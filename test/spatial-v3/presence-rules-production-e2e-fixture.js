@@ -20,6 +20,7 @@ import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 export const POSTGRES_IMAGE = 'postgres:16.14-alpine';
 export const WORLD_DB = 'novgorod_world_v17';
@@ -262,6 +263,7 @@ export function installPresenceProductionE2eFetch({
   narrationLog = null,
   requestLog = null,
   movementLog = null,
+  turnStepPlanner = null,
 } = {}) {
   const MATERIALIZATION_ROLES = Object.freeze([
     'ordinary_materialization', 'spatial_semantic_descriptor',
@@ -274,6 +276,7 @@ export function installPresenceProductionE2eFetch({
     const call = JSON.parse(init.body);
     const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+    const requestRole = identifyLlmTestRole(call);
     requestLog?.push({ system, user: modelInput });
     let output;
     if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
@@ -283,9 +286,12 @@ export function installPresenceProductionE2eFetch({
       };
     } else if (system.startsWith('Resolve the raw Russian player text')) {
       output = { status: 'unknown', reason_code: 'unknown_intent' };
-    } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+    } else if (requestRole === 'turn_step_planner') {
       const request = modelInput.request ?? modelInput;
-      if (request.root_player_action === observeText) {
+      const planned = await turnStepPlanner?.({ request, modelInput });
+      if (planned != null) {
+        output = planned;
+      } else if (request.root_player_action === observeText) {
         output = {
           operation_choice: null, interpretation: { adaptation: 'literal' },
           resolution: 'direct', goal_result: 'achieved',
@@ -351,6 +357,10 @@ export function installPresenceProductionE2eFetch({
         prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
           .filter(Boolean).join('\n\n'),
       };
+    } else if (system.startsWith('Return only JSON with exactly mode.')) {
+      output = { mode: 'independent_action' };
+    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+      output = { pass: true, concerns: [] };
     } else if (system.startsWith('Return only {"pass"')) {
       output = {
         pass: true, failed_checks: [], concerns: [],

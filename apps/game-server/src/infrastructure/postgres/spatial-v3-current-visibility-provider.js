@@ -36,13 +36,13 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
   async function withCurrent(partyId, actorId, project, suppliedTransaction,
-    observedPositionId = null) {
+    observedPositionId = null, clock = null) {
     const transaction = suppliedTransaction ?? await pool.connect();
     const owned = suppliedTransaction == null;
     try {
       if (owned) await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
       const args = { transaction, partyId, actorId, verifiedCatalog, pin,
-        worldBaseReader, readCurrentSourceState, readCurrentEnvironment,
+        worldBaseReader, readCurrentSourceState, readCurrentEnvironment, clock,
         observedPositionId };
       const scene = await readScene(args);
       const natural = await readNatural(args);
@@ -81,7 +81,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       portals: natural.scene.portals, targets: resolved, modifier_set: scene.modifier_set });
   }
   async function localDisclosure({ partyId, actorId, state, transaction,
-    observedPositionId } = {}) {
+    observedPositionId, clock = null } = {}) {
     return withCurrent(partyId, actorId, async (current) => {
       if (state?.party_id !== partyId || state.actor_id !== actorId
         || state.journey_location?.scene_position_id !== current.scene.location.scene_position_id) {
@@ -139,7 +139,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         return [{ edge_id: edge.id, display_label: labels[0].display_label,
           ...(destinationStatus !== undefined ? { destination_status: destinationStatus } : {}) }];
       });
-    }, transaction, observedPositionId);
+    }, transaction, observedPositionId, clock);
   }
   let connectionLabels = null;
   const labelsOfConnections = () => {
@@ -176,7 +176,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       return (await localDisclosure(input)).map((row) => row.edge_id);
     },
     readLocalEdgeDisclosure: localDisclosure,
-    async readCurrentExitDisclosure({ partyId, actorId, transaction, observedPositionId } = {}) {
+    async readCurrentExitDisclosure({ partyId, actorId, transaction, observedPositionId,
+      clock = null } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const binding = await worldBaseReader?.readG4ExpansionBinding?.({
           g4_id: current.scene.site.parent_g4_id,
@@ -196,8 +197,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const slotByExit = closure == null ? null : slotByExitOf(closure.value.slots);
         return provider.readExitDisclosure({ transaction: current.transaction, partyId,
           actorId, position: { id: current.scene.location.scene_position_id },
-          site: current.scene.site, directional_exits: exits, slotByExit, observedPositionId });
-      }, transaction, observedPositionId);
+          site: current.scene.site, directional_exits: exits, slotByExit, observedPositionId,
+          clock });
+      }, transaction, observedPositionId, clock);
     },
     async readExitDisclosure(context = {}) {
       return withCurrent(context.partyId, context.actorId, async (current) => {
@@ -229,7 +231,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             ...passTargetDisclosureForExit(context.slotByExit, exit.id) }];
         });
         return withPassTargetDisambiguation(disclosed);
-      }, context.transaction, context.observedPositionId);
+      }, context.transaction, context.observedPositionId, context.clock ?? null);
     },
     /** Canonical connections of the observer's own position, revealed by the same visibility rule
      * as exits; the approved label comes from the connection label catalog, never from code. */
@@ -244,7 +246,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
     },
     /** Every connection of the current canonical place that the observer can see from here - the
      * connection counterpart of readCurrentExitDisclosure, for the visible context. */
-    async readCurrentConnectionDisclosure({ partyId, actorId, transaction, observedPositionId } = {}) {
+    async readCurrentConnectionDisclosure({ partyId, actorId, transaction,
+      observedPositionId, clock = null } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const site = current.scene.site;
         if (site?.origin !== 'canonical') return [];
@@ -256,10 +259,10 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             version: Number(site.canonical_g5_ref.authoring_version) } });
         if (!connections?.ok) gap('approved_canonical_connections_required');
         return discloseConnections(current, connections.value);
-      }, transaction, observedPositionId);
+      }, transaction, observedPositionId, clock);
     },
     async readEntityObservations({ partyId, actorId, transaction,
-      observedPositionId } = {}) {
+      observedPositionId, clock = null } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const placements = current.scene.placements.filter((row) =>
           row.entity_kind === 'npc' || row.entity_kind === 'item');
@@ -289,29 +292,30 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
               ? { display_name: known.display_name } : {}) });
         }
         return result;
-      }, transaction, observedPositionId);
+      }, transaction, observedPositionId, clock);
     },
     async readCurrentSources({ transaction, partyId, actorId, positionId,
-      state, directionalExits, observedPositionId = null, siteId = null } = {}) {
+      state, directionalExits, observedPositionId = null, siteId = null,
+      clock = null } = {}) {
       if (typeof transaction?.query !== 'function' || !Array.isArray(directionalExits)) {
         gap('current_visible_transaction_and_exits_required');
       }
       if (typeof readCurrentEnvironment !== 'function') gap('current_temporal_owner_required');
       const current = await withCurrent(partyId, actorId, async (value) => value,
-        transaction, observedPositionId);
+        transaction, observedPositionId, clock);
       if (positionId !== current.scene.location.scene_position_id
         || siteId != null && siteId !== current.scene.site.id) gap('current_position_required');
       const naturalInput = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin,
         currentFacts: current.natural });
       const entityObservations = await provider.readEntityObservations({ transaction, partyId,
-        actorId, observedPositionId });
+        actorId, observedPositionId, clock });
       const localEdges = await provider.readLocalEdgeDisclosure({ transaction, partyId,
-        actorId, state, observedPositionId });
+        actorId, state, observedPositionId, clock });
       const exits = await provider.readExitDisclosure({ transaction, partyId, actorId,
         position: { id: positionId }, site: current.scene.site,
-        directional_exits: directionalExits, observedPositionId });
+        directional_exits: directionalExits, observedPositionId, clock });
       const siteConnections = await provider.readCurrentConnectionDisclosure({ transaction,
-        partyId, actorId, observedPositionId });
+        partyId, actorId, observedPositionId, clock });
       return { naturalInput, entityObservations, localEdges,
         directionalExits: exits, siteConnections };
     }

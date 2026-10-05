@@ -230,24 +230,25 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       loadState: (id, options) => loadPhase2State(id, { ...options, turnBudget })
     });
   }
-  async function loadPreparedMovementScene({ partyId, state, turnBudget = null }) {
+  async function loadPreparedMovementScene({ partyId, state, clock = null,
+    turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
     const { prepared_destination_visible_context: preparedDestinationVisibleContext,
       ...sceneInput } = state;
     const scene = await withSceneNpcs(readPool, partyId,
       withoutSceneNpcs(sceneInput));
     return refreshCurrentSpatialNpcs(scene, turnBudget,
-      preparedDestinationVisibleContext);
+      preparedDestinationVisibleContext, clock);
   }
   async function refreshCurrentSpatialNpcs(state, turnBudget,
-    preparedDestinationVisibleContext = null) {
+    preparedDestinationVisibleContext = null, clock = null) {
     if (typeof state?.position?.position_id !== 'string'
         || typeof state?.actor_id !== 'string') return state;
     const visibleContext = preparedDestinationVisibleContext
       ?? (typeof readCurrentVisibleContext === 'function'
         ? await readCurrentVisibleContext({ partyId: state.party_id,
           actorId: state.actor_id, positionId: state.position.position_id,
-          state, turnBudget }) : null);
+          state, turnBudget, clock }) : null);
     return visibleContext == null ? state
       : withPhase2CurrentVisibleContext(state, visibleContext);
   }

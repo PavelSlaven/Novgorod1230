@@ -67,6 +67,41 @@ test('S1 local turn updates journey position without rewriting G4/G5', () => {
     table === 'party_journey_locations').record.scene_position_id, 'inside');
 });
 
+test('commit keeps open-one-space S1 resolution visible at formal destination',
+  async () => {
+    const envelope = commitEnvelope({ clarification: false, check: false });
+    envelope.consequence.position_transition = {
+      owner: '@rus/movement-routes', actor_id: 'actor-1',
+      from_position_ref: 'position:outside',
+      to_position_ref: 'position:inside'
+    };
+    const f = fixture({ direct: true, envelopeOverride: envelope,
+      stateOverride: {
+        position: { location_ref: 'shore', position_id: 'position:outside' },
+        journey_location: { id: 'journey',
+          scene_position_id: 'position:outside', state_version: 3 },
+        spatial_semantic: [{ resolutions: [{
+          local_ref: 'local:bank', position_ref: 'position:outside',
+          formal_spatial_refs: { structural_variant: 'open_one_space',
+            position_ref: 'position:inside' },
+          semantics: { kind: 'shelter', name: 'Навес',
+            description: 'У берега стоит навес.' }
+        }] }]
+      } });
+
+    await f.commit();
+
+    const visible = f.plans[0].appends.find(({ target_table: table }) =>
+      table === 'party_visible_packages').record.visible_payload.visible_objects;
+    assert.deepEqual(visible.find(({ entity_ref }) =>
+      entity_ref.entity_id === 'local:bank'), {
+      entity_ref: { entity_kind: 'spatial_local_reference',
+        entity_id: 'local:bank' },
+      display_label: 'Навес', recognition: 'recognized',
+      visible_status: 'внутри'
+    });
+  });
+
 test('position transition without prepared route loads destination NPCs for pending screen',
   async () => {
     const destinationNpc = {
@@ -109,10 +144,10 @@ test('position transition without prepared route loads destination NPCs for pend
           g5_anchor_id: 'anchor-site' },
         npcs: [sourceNpc]
       },
-      turnStepApprovedOwners: { async loadPreparedMovementScene({ partyId, state }) {
+      turnStepApprovedOwners: { async loadPreparedMovementScene({ partyId, state, clock }) {
         loadedPositions.push({ partyId, position: state.position.position_id,
           sourceNpcPersisted: state.npcs.some(({ instance_id }) =>
-            instance_id === sourceNpc.instance_id) });
+            instance_id === sourceNpc.instance_id), clock });
         return { ...state, scene_position_g6: {
           'position:source': 'g6:site', 'position:destination': 'g6:site'
         }, npcs: [...state.npcs, destinationNpc] };
@@ -130,7 +165,8 @@ test('position transition without prepared route loads destination NPCs for pend
       'Из избы не видно, кто там.', 'Пока неясно, кто находится во дворе.'
     ]);
     assert.deepEqual(loadedPositions, [{ partyId: 'p',
-      position: 'position:destination', sourceNpcPersisted: false }]);
+      position: 'position:destination', sourceNpcPersisted: false,
+      clock: envelope.time_update.clock_after }]);
     const screen = f.plans[0].updates.find(({ target_table: table }) =>
       table === 'party_server_sessions').record.screen;
     assert.deepEqual(screen.panels.people.data.visible_npcs.map(

@@ -36,6 +36,7 @@ test('canonical exit reader requires approved authoring at exact G4 revision and
   assert.match(calls[0].sql, /e\.status='approved'/);
 });
 function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
+  readNatural: suppliedReadNatural = null,
   readLocalMovementAdmission, readTargetConditions = readCurrentTargetConditions } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
@@ -57,7 +58,7 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   const pool = { async connect() { return { async query(sql) { queries.push(sql); }, release() {} }; } };
   const provider = createSpatialV3CurrentVisibilityProvider({ pool,
     worldBaseReader,
-    readScene: async () => scene, readNatural: async () => natural,
+    readScene: async () => scene, readNatural: suppliedReadNatural ?? (async () => natural),
     readTargetConditions,
     readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id }),
     readPlayerKnowledge: async ({ placement }) => placement.entity_id === 'one'
@@ -65,6 +66,22 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
     ...(readLocalMovementAdmission ? { readLocalMovementAdmission } : {}) });
   return { scene, natural, provider, queries };
 }
+
+test('prepared destination visibility carries the root post-turn clock into entity admission', async () => {
+  const clock = { whole_minutes: '720', subminute_numerator: '0',
+    subminute_denominator: '1' };
+  let observedClock;
+  const { provider } = fixture({ readNatural: async ({ clock: received }) => {
+    observedClock = received;
+    return { observer: { position_id: 'a', visual_capability: 'clear' },
+      scene: { baseline_id: 'baseline', g4_ref: { id: g4 }, portals: {} },
+      ambient_visibility: { g6_instance_id: 'g6', lighting: 'clear', weather: 'clear',
+        stable_cover: 'clear' } };
+  } });
+  await provider.readEntityObservations({ partyId: 'party', actorId: 'actor',
+    observedPositionId: 'a', clock });
+  assert.equal(observedClock, clock);
+});
 
 test('current snapshot admits committed identities, edges and approved exit label only', async () => {
   const { provider, queries } = fixture();

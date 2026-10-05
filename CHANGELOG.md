@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
+- docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
 
 - feat(npc): select pinned D-1 routines on first entry; preserve identity through typed offstage/location gaps without invented placement; LW-125 added (first-entry context gap), LW-126 added (month-boundary applicability remains deferred after calendar-leap fix), LW-127 added (multi-movement placement CAS latent) (#227)
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series

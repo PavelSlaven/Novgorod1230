@@ -115,6 +115,7 @@
 | 125 | `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js`, `packages/npc-runtime`, `apps/game-server/src/runtime/npc-routine-temporal.js` | typed gap при first-entry может потерять D-1 schedule context и не получить следующую календарную переоценку | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 126 | `packages/time-events-history/src/calendar.js`, `packages/npc-runtime/src/routine-schedule.js` | month-boundary D-1 applicability остаётся отложенной; leap-day учёт в календаре исправлен | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
+| 128 | `packages/turn/src/turn-step-admission.js:57–67`, `test/spatial-v3/prepared-destination-light-seam-postgres.test.js` | approved route operation отсутствует в проверенном continuation после ожидания; точный menu regression ждёт exit-one-action | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -685,4 +686,10 @@
 - **Где.** `apps/game-server/src/runtime/npc-routine-temporal.js` (`routinePlacementWrites` и `npcRoutineTemporalRegistration.resolve`), утверждённые D-1 `movement_handoff` profiles.
 - **Что.** Если когда-либо утверждённый набор расписаний даст одному NPC два завершённых `movement_handoff` в одном temporal window, адаптер берёт placement CAS из evolving `row.npc_placement.state_version`: фрагменты ожидают версии `[1, 2]`, хотя в БД до коммита есть только версия `1`. Общая temporal integration отвергнет такой план. В проверенных 161 утверждённых D-1 правилах `movement_handoff` нет; это отложенный риск, не текущий путь данных.
 - **Как жить.** Не включать такой набор расписаний без регрессии двух смен позиции в одном окне. Перед включением привязать все placement CAS фрагменты к исходному persisted `entity_placements` snapshot того же temporal window и сохранить одну итоговую запись версии.
+- **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)
+
+### LW-128 — маршрутное меню continuation ждёт владельца exit-one-action (npc-season)
+- **Где.** `packages/turn/src/turn-step-admission.js:57–67`; production PG regression `test/spatial-v3/prepared-destination-light-seam-postgres.test.js`.
+- **Что.** В проверенном PG continuation после ожидания имел правильную позицию `forest_path/departure` и видимый approved connection ref, но `available_domain_operations` и `local_world_process.allowed` были пусты. Список исходных domain operations переиспользуется на continuation. Это наблюдение относится к проверенному переходу, не доказывает потерю операций во всех continuation; пересчёт передан владельцу exit-one-action.
+- **Как жить.** Не синтезировать маршрут, не обходить меню и не ослаблять exact `target_ref`/`route_ref` assertion. PG seam regression остаётся явно pending до обновления continuation menu владельцем; затем снять skip и повторить проверку clock, destination package и restart.
 - **Issue.** [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227)

@@ -545,6 +545,14 @@ items, environment and spatial topology. Existing Stage 22 writes 2–4 natural
 paragraphs and Stage 23 audits factual/agency/unknown boundaries before the
 screen is saved. Whole opening runs in the existing six-minute LLM diagnostics
 deadline: writer, audit, optional one semantic repair and final audit only.
+Before each role call the server projects NPC appearance facts under that NPC's
+visible label, deduplicates only within the same NPC, translates the admitted
+appearance vocabularies to Russian, and fails closed on unknown enum values.
+The writer receives each NPC label once as the group name; the auditor retains
+the source-backed label fact with its opaque fact key. Unsupported appearance
+values fail with a field-specific server error without echoing the supplied value.
+Weather evidence uses stable field references; weather instance ids and movement
+factors stay out of the player-safe role payload.
 Session identity persists the complete approved opening narration flow and the
 original Stage 23 audit. Static profile prose is hint-only; the eight-question reader
 control and exact entity/topology refs fail closed before any model call.

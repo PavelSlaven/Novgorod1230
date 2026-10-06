@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "4fe359b18be1e8a0644ed709c6d9f03839f214e86ab695b27c196da145fba07e",
-      "bytes": 33027,
+      "sha256": "908e975774ce836423a29eceecfd8f63b6da434cdf5d8946ab09137079811612",
+      "bytes": 33813,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -308,6 +308,15 @@
       "source_legacy_sha256": "4d0f6e4cdc2ecbb2b1ccd1bd5f84d903fd0aa62999a27bfc57848782aa79d68f",
       "source_legacy_bytes": 44986,
       "priority_tier": "reference"
+    },
+    {
+      "document_id": "player-character-start-contract",
+      "canonical_path": "corpus/DOCUMENTS/player_character_start_contract.md",
+      "file_name": "player_character_start_contract.md",
+      "sha256": "2297b70b9a280daafe0e4160f315a54c6d6c3adfd31426d2ca7ce184b3dfb0b5",
+      "bytes": 3479,
+      "status": "active",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "read-only-database-and-graph-architecture",

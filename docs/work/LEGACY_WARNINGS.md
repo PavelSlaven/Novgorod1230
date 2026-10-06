@@ -117,6 +117,7 @@
 | 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 128 | `packages/turn/src/turn-step-admission.js:57–67`, `test/spatial-v3/prepared-destination-light-seam-postgres.test.js` | approved route operation отсутствует в проверенном continuation после ожидания; точный menu regression ждёт exit-one-action | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 129 | `lower-dvina-trace-conversation-llm.js`, conversation prompt builders | разговорные роли получают канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 | — |
+| 135 | `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json` | семь `player_inputs` задают роль, занятие и имя «Микула», вопреки D111; долг реализации #109 | [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -702,3 +703,9 @@
 - **Что.** Вход разговорных ролей — канонический DTO, нарушение D72/D78; проекция P отвергнута судьями 2026-10-05 (опора 1,58 → 1,28); условие закрытия — проекция, прошедшая стенд.
 - **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
 - **Issue.** —
+
+### LW-135 — старт v17 задаёт героя вместо места (player-start-norm)
+- **Где.** Семь файлов `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json`, поле `player_inputs`.
+- **Что.** Их стартовые заявки фиксируют игроку роль, занятие и имя «Микула». Это расходится с ACTIVE-нормой «Персонаж игрока и место старта» (D108, D110, D111): место и сезон задают обстоятельства, а героя — заявка игрока. Текущий runtime остаётся долгом отдельной задачи #109.
+- **Как жить.** Не использовать эти поля как норму и не переносить их ограничения в новую генерацию. Закрыть после реализации #109 и проверки свободной заявки на стартах.
+- **Issue.** [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109)

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(presentation): preserve current committed NPC speech on first delivery, pending screens and replay (#98)
 - fix(docs-tools): сохранять полные пункты MODULE.md в индексе и убрать повтор World Knowledge (#354, #355)
 - fix(test): compare route panel labels with planner operations in the D72 player-safe space (#98)
 - docs(process): HOW_WE_WORK §11.2 — the lead reads the full bench wire (data, form, path, destination) before every BENCH-OK; wire-review file and its SHA-256 in the approval (D132) (#98)

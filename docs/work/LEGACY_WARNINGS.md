@@ -120,6 +120,7 @@
 | 130 | `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, Lower Dvina phase-5 placed item templates | шесть видимых шаблонов не имеют утверждённой player-safe подписи; runtime обязан сохранять typed gap | — |
 | 131 | `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` | item/inventory rows с typed label gap временно скрыты от planner вопреки §7.2 | [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236) |
 | 132 | `apps/game-server` turn-step planner input projection | P-проекция группы 3 для intent_router и turn_step_planner не сделана; D72 service ids/version/counts остаются во входе | отдельная задача со своим стендом |
+| 135 | `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json` | семь `player_inputs` задают роль, занятие и имя «Микула», вопреки D111; долг реализации #109 | [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -723,3 +724,8 @@
 - **Что.** На финальном проходе `ca-final-prompt-rev-turn` (2026-10-06, finding 10) подтверждено, что user payload маршрутизатора и планировщика сохраняет служебные id, версии и счётчики, вопреки D72. Переход на P не оценивался стендом и в этой задаче не выполняется.
 - **Как жить.** Не менять эти проекции без отдельного BENCH-PLAN/BENCH-OK на пары L против L+P, с одинаковыми model-visible входами у модели и судей и явным перечнем допустимых смысловых полей. Закрыть запись после принятой P-проекции.
 - **Issue.** Отдельную задачу создаёт ведущий; основание — финальный проход `ca-final-prompt-rev-turn` finding 10.
+### LW-135 — старт v17 задаёт героя вместо места (player-start-norm)
+- **Где.** Семь файлов `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json`, поле `player_inputs`.
+- **Что.** Их стартовые заявки фиксируют игроку роль, занятие и имя «Микула». Это расходится с ACTIVE-нормой «Персонаж игрока и место старта» (D108, D110, D111): место и сезон задают обстоятельства, а героя — заявка игрока. Текущий runtime остаётся долгом отдельной задачи #109.
+- **Как жить.** Не использовать эти поля как норму и не переносить их ограничения в новую генерацию. Закрыть после реализации #109 и проверки свободной заявки на стартах.
+- **Issue.** [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109)

@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "4fe359b18be1e8a0644ed709c6d9f03839f214e86ab695b27c196da145fba07e",
-      "bytes": 33027,
+      "sha256": "daf7bcb00c3536f0939162380ffba44231e94d43d01fd6ac43b0aac9576850df",
+      "bytes": 33199,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -244,8 +244,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "7c7ff8bb68e588b23f71148955fa111534ec17fa979667a3363ef17f028c0f9b",
-      "bytes": 91283,
+      "sha256": "27da7a90b6adb4946155be99f6b3409533255ffe8611ab0f67c32567b16a2db6",
+      "bytes": 96256,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

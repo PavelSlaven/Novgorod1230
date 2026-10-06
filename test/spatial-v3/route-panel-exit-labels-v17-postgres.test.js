@@ -6,6 +6,7 @@ import { loadApprovedExitLineLabels } from
 
 import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
+import { playerSafeOrdinalLabel } from '../../apps/game-server/src/public-boundary.js';
 import { identifyLlmTestRole } from './llm-test-role.js';
 import {
   bootstrapV17PresenceE2e,
@@ -38,7 +39,9 @@ test('v17 production submitTurn uses approved, non-ordinal G4 exit labels',
         const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
         offered = turnStepOperationChoices(modelInput.request ?? modelInput)
           .filter(({ operation }) => operation.op === 'request_movement')
-          .map(({ operation }) => ({ label: operation.description, kind: operation.movement_kind, target: operation.target_ref }));
+          .map(({ operation }) => ({ label: operation.description,
+            kind: operation.movement_kind, target: operation.target_ref,
+            route: operation.route_ref }));
       }
       return base(url, init);
     };
@@ -49,7 +52,18 @@ test('v17 production submitTurn uses approved, non-ordinal G4 exit labels',
     let step = 0;
     const turn = (raw_text) => runtime.submitTurn(partyId, { raw_text, request_id: `panel-${partyId}-${step++}` });
     // A shown connection may be bound by its approach operation ("<label> — подход").
-    const bound = (label) => (offered ?? []).some((op) => op.label === label || op.label === `${label} — подход`);
+    const bound = (label, visibleObjects) => (offered ?? []).some((op) => {
+      const approachSuffix = ' — подход';
+      const hasApproachSuffix = op.label.endsWith(approachSuffix);
+      const base = hasApproachSuffix
+        ? op.label.slice(0, -approachSuffix.length) : op.label;
+      const entityId = op.route ?? op.target;
+      const entityKind = visibleObjects.find(({ entity_ref: ref }) =>
+        ref?.entity_id === entityId)?.entity_ref?.entity_kind;
+      const projectedLabel = `${playerSafeOrdinalLabel(base, entityKind)}`
+        + (hasApproachSuffix ? approachSuffix : '');
+      return projectedLabel === label || projectedLabel === `${label} — подход`;
+    });
     const probe = async (context) => {
       offered = null;
       const { screen } = await turn('нет такого прохода'); // refreshes the production menu without traversing an exit
@@ -78,7 +92,9 @@ test('v17 production submitTurn uses approved, non-ordinal G4 exit labels',
       // Ordinal labels repeat between positions ("Проход 1"), so local edges are also compared by id.
       const foreign = shownEdges.filter((id) => !offered.some((op) => op.kind === 'local' && op.target === id));
       assert.deepEqual(foreign, [], `${context}: the screen shows local edges of another position`);
-      const dead = shown.filter((label) => !bound(label) && !visibleExitLabels.includes(label));
+      const dead = shown.filter((label) => !bound(label,
+        screen.visible_context?.visible_objects ?? [])
+        && !visibleExitLabels.includes(label));
       assert.deepEqual(dead, [], `${context}: shown ${shown.join(' | ')}; offered ${(offered ?? []).map((op) => op.label).join(' | ')}`);
       return offered.find((op) => op.kind === 'local')?.label;
     };

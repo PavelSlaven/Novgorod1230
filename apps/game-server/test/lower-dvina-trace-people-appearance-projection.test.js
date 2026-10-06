@@ -56,13 +56,11 @@ test('people panel preserves player-safe first-contact appearance', () => {
   }).panels.people.data.visible_npcs;
 
   assert.deepEqual(people.map(({ display_label: label }) => label), [
-    'человек (1)', 'человек (2)', 'человек (3)'
+    'человек, русые волнистые волосы средней длины, короткая борода, охряная одежда',
+    'человек, лысина, густая борода, коричневая одежда',
+    'человек, русые волнистые волосы средней длины, короткая борода, угольно-серая одежда'
   ]);
-  assert.deepEqual(people.map(({ appearance }) => appearance), [
-    'русые волнистые волосы средней длины, короткая борода, охряная одежда, верхняя одежда из шерсти',
-    'лысина, густая борода, коричневая одежда, верхняя одежда из шерсти',
-    'русые волнистые волосы средней длины, короткая борода, угольно-серая одежда, верхняя одежда из шерсти'
-  ]);
+  assert.ok(people.every((person) => !Object.hasOwn(person, 'appearance')));
   assert.doesNotMatch(JSON.stringify(people),
     /Еремей|canonical_name|participant_slot_ref|portrait_asset_id/u);
 });

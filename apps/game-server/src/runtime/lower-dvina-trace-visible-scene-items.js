@@ -1,5 +1,7 @@
 import { resolvePhysicalItemCondition } from '@rus/items-property';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
+import { playerSafeAppearanceSummary } from
+  './lower-dvina-trace-player-safe-appearance.js';
 import { resolveVisibleItemLabel } from './lower-dvina-trace-visible-item-label.js';
 const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках', other: 'при вас' });
 const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
@@ -46,21 +48,19 @@ export function lowerDvinaTraceObservedSceneChanges(scene) {
 }
 
 export function distinctNpcLabels(npcs) {
-  const normalized = npcs.map((npc) => npc?.recognition === 'unrecognized'
-      && / \(\d+\)$/u.test(npc.display_label)
+  const normalized = npcs.map((npc) => / \(\d+\)$/u.test(npc?.display_label)
     ? { ...npc, display_label: npc.display_label.replace(/ \(\d+\)$/u, '') }
     : npc);
   const totals = new Map();
   for (const { display_label: label } of normalized) {
     if (text(label)) totals.set(label, (totals.get(label) ?? 0) + 1);
   }
-  const seen = new Map();
   return normalized.map((npc) => {
     const label = npc?.display_label;
     if (!text(label) || totals.get(label) < 2) return npc;
-    const ordinal = (seen.get(label) ?? 0) + 1;
-    seen.set(label, ordinal);
-    return { ...npc, display_label: `${label} (${ordinal})` };
+    const appearance = playerSafeAppearanceSummary(npc);
+    return appearance == null ? npc
+      : { ...npc, display_label: `${label}, ${appearance}` };
   });
 }
 

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { loadLowerDvinaTraceMaterializationBundle } from
@@ -8,6 +9,7 @@ import { loadLowerDvinaTracePinnedItemLabels } from
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 import { createSpatialV3ProposedVisibleSources } from
   '../src/infrastructure/postgres/spatial-v3-proposed-visible-sources.js';
+import { findUnsafePlayerText } from '../src/public-boundary.js';
 import { readCurrentTargetConditions } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
 import { overlaySpatialV3VisibleRows, projectSpatialV3ProposedVisiblePackage } from
@@ -60,7 +62,18 @@ test('proposed destination matches committed package using one transaction for m
       container_id: null, holder_npc_id: null, holder_character_id: null }] };
     return { rows: [] };
   } };
-  const expansionClosure = { directional_exits: [] };
+  const exitRows = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url)))
+    .labels.filter((row) => row.g4_ref.id === currentFacts.scene.g4_ref.id);
+  assert.equal(exitRows.length, 2, 'fixture G4 has two approved directional exits');
+  const expansionClosure = { directional_exits: exitRows.map((row) => ({
+    id: row.directional_exit_ref.id, version: row.directional_exit_ref.version,
+    canonical_digest: row.directional_exit_ref.canonical_digest,
+    direction_context_id: row.direction_context_ref.id
+  })), slots: exitRows.map(({ directional_exit_ref: exit }) => ({
+    directional_exit_id: exit.id,
+    id: `m2c_slot_${exit.id}`, version: 1
+  })) };
   const readSources = createSpatialV3ProposedVisibleSources({
     verifiedCatalog: fixture.input.verifiedCatalog, pin: fixture.input.pin,
     worldBaseReader: { async readPinnedSceneTemplateClosure() {
@@ -87,10 +100,24 @@ test('proposed destination matches committed package using one transaction for m
     firstEntry: { approved_write_sets: [] }, readSources, envelopeInput });
   assert.equal(proposed.envelope.package_digest, afterCommit.envelope.package_digest);
   assert.equal(proposed.envelope.visible_payload.visible_objects[0].entity_ref.entity_id, 'item:1');
+  const proposedExits = proposed.visible_context.visible_objects
+    .filter(({ entity_ref }) => entity_ref.entity_kind === 'g4_directional_exit');
+  const expectedExitIds = exitRows.map(({ directional_exit_ref }) =>
+    directional_exit_ref.id).sort();
+  assert.deepEqual(proposedExits.map(({ entity_ref }) => entity_ref.entity_id).sort(),
+    expectedExitIds);
+  assert.ok(proposedExits.every(({ display_label }) =>
+    findUnsafePlayerText(display_label, { label: true }) == null));
+  assert.notEqual(proposedExits[0].display_label, proposedExits[1].display_label);
+  assert.ok(proposedExits.every(({ display_label }) =>
+    !/—\s*выход\s+\d+/iu.test(display_label)));
   assert.equal(proposed.visible_context.visible_objects[0].display_label,
     itemLabels[itemTemplateId]);
   assert.deepEqual(proposed.envelope.visible_payload.visible_objects.map(({ entity_ref }) =>
-    entity_ref.entity_id), ['item:1']);
+    entity_ref.entity_id), ['item:1', 'g4exitv3__g4dirv3f__cross_g4_20',
+    'g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1']);
+  assert.ok(!proposed.envelope.visible_payload.visible_objects.some(({ entity_ref }) =>
+    entity_ref.entity_id === 'item:gap'));
   assert.ok(proposed.visible_context.visible_objects.some((item) =>
     item.entity_ref.entity_id === 'item:gap'
     && item.label_gap?.code === 'player_safe_item_label_required'));

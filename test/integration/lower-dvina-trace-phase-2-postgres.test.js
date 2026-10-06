@@ -32,6 +32,8 @@ import {
 import {
   createLowerDvinaTracePhase2DurableNarrator
 } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
+import { createLowerDvinaTraceNarrationService } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-narration-llm.js';
 import {
   createSpatialV3PostgresCombinedAtomicCommitter
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
@@ -46,6 +48,8 @@ import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
+import { buildApprovedTemporalImportSql } from
+  '../../tools/temporal-v4/import-approved-data.mjs';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world,
   installLowerDvinaTraceV6World, lowerDvinaTraceV6World } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
@@ -88,6 +92,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   });
   await installSchemas(pool);
   const { runtimeCatalogPin } = await installLowerDvinaTraceV5World(pool);
+  await pool.query(await buildApprovedTemporalImportSql());
   const release = Object.freeze({
     release_id: 'phase-2-postgres-release',
     world_revision_id: world.revision,
@@ -564,23 +569,54 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   });
   await t.test('restrained movement returns HTTP 200 with committed blocked consequence',
     () => assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }));
-  await t.test('exhausted same-request presentation stays pending then restart recovers',
-    () => assertPresentationExhaustedThenRestartRecovers({ pool, release, runtimeCatalogPin }));
+  await t.test('marked narration rejection stays pending until explicit PostgreSQL replay',
+    () => assertMarkerRejectedThenExplicitRecovery({ pool, release, runtimeCatalogPin }));
 });
 
-async function assertPresentationExhaustedThenRestartRecovers({ pool, release,
+async function assertMarkerRejectedThenExplicitRecovery({ pool, release,
   runtimeCatalogPin }) {
-  let narrationCalls = 0;
-  let narrationFails = true;
-  const narrationService = {
-    async run(request) {
-      narrationCalls += 1;
-      if (narrationFails) {
-        const error = new Error('Narration did not produce an approved presentation.');
-        error.code = 'TURN_NARRATION_REJECTED';
-        throw error;
+  const narrationRoleCalls = [];
+  const observedFlows = [];
+  let markerEnabled = true;
+  const productionNarrationService = createLowerDvinaTraceNarrationService({
+    roleRunner: {
+      async run(call) {
+        narrationRoleCalls.push(call.role_id);
+        const input = JSON.parse(call.messages[1].content);
+        if (call.role_id === 'gameplay_narrator') {
+          return { output: { prose: markerEnabled
+            ? 'INFERENCE: Вы осматриваете лодку и следы на берегу.'
+            : 'Вы осматриваете лодку и следы на берегу.' } };
+        }
+        if (call.role_id === 'gameplay_narrator_semantic_repair') {
+          return { output: { replacements: [{ prose: markerEnabled
+            ? 'INFERENCE: Вы осматриваете лодку и следы на берегу.'
+            : 'Вы осматриваете лодку и следы на берегу.' }] } };
+        }
+        if (call.role_id === 'gameplay_narrator_auditor') {
+          const segments = input.segments ?? [];
+          const choices = segments.length ? [segments[0].segment_id] : [];
+          const sources = [
+            ...(input.required_current_beat?.changes ?? []),
+            ...(input.required_current_beat?.uncertainties ?? [])
+          ];
+          return { output: {
+            reviewed_segments: segments.map(({ segment_id }) => segment_id),
+            source_reviews: sources.map(({ ref }) => ({ ref,
+              segment_choices: choices })),
+            unsupported: [], literary_failures: [],
+            evidence: ['Deterministic integration-test auditor PASS.']
+          } };
+        }
+        throw new Error(`Unexpected narration role ${call.role_id}`);
       }
-      return approvedNarration(request);
+    }
+  });
+  const narrationService = {
+    async run(...args) {
+      const flow = await productionNarrationService.run(...args);
+      observedFlows.push(flow);
+      return flow;
     }
   };
   let semanticCalls = 0;
@@ -600,21 +636,126 @@ async function assertPresentationExhaustedThenRestartRecovers({ pool, release,
   };
   const pending = await setupRuntime.submitTurn(opened.party_id, input);
   assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
-  const afterExhaust = narrationCalls;
-  assert.equal(afterExhaust, 2, 'workflow pass + one replay');
+  assert.equal(JSON.stringify(pending.screen).includes('INFERENCE:'), false);
+  assert.ok(observedFlows.some((flow) => flow?.status === 'blocked'
+    && flow.diagnostics?.phase === 'generated_prose_admission_failed'),
+  'the production narrator blocks the marker after its auditor pass');
+  assert.ok(observedFlows.some((flow) => flow?.audit_history?.some(({ value }) =>
+    value?.pass === true)), 'the marker rejection is independent of auditor PASS');
+  assert.ok(narrationRoleCalls.includes('gameplay_narrator_auditor'));
+  const pendingCalls = narrationRoleCalls.length;
+  const turnId = pending.screen.turn_id;
+  const commitBefore = await readPersistedPresentationCommit(pool,
+    opened.party_id, turnId);
+  assert.equal(commitBefore.command_idempotency_key, input.idempotency_key);
+  assert.equal(commitBefore.command_request_id, input.request_id);
+  assert.equal(commitBefore.command_status, 'committed');
+  assert.equal(commitBefore.command_result_change_set_id,
+    commitBefore.change_set_id);
+  const jobBefore = await pool.query(`SELECT status,
+      (SELECT count(*)::integer FROM party_runtime.party_narration_attempts attempts
+        WHERE attempts.job_id=jobs.job_id) AS attempts
+    FROM party_runtime.party_narration_jobs jobs
+    WHERE jobs.party_id=$1 AND jobs.package_id=$2`,
+  [opened.party_id, pending.screen.current_projection_anchor.package_id]);
+  assert.deepEqual(jobBefore.rows, [{ status: 'failed_retryable', attempts: 2 }]);
+  const checkCountBefore = await count(pool,
+    'party_runtime.party_check_resolutions', opened.party_id);
   const semanticBeforeRestart = semanticCalls;
   assert.equal(rolls, 1);
-  assert.equal(await count(pool, 'party_runtime.party_check_resolutions', opened.party_id), 1);
-  narrationFails = false;
+  assert.equal(checkCountBefore, 1);
+
+  // Production GET is read-only: recovery must be requested through its separate API.
+  const pendingGet = await setupRuntime.getPartyScreen(opened.party_id);
+  assert.equal(pendingGet.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(narrationRoleCalls.length, pendingCalls);
+  assert.deepEqual(await readPersistedPresentationCommit(pool, opened.party_id,
+    turnId), commitBefore);
+
+  markerEnabled = false;
   const restart = buildRuntime({ pool, release, runtimeCatalogPin, narrationService,
     ...observers });
-  const recovered = await restart.submitTurn(opened.party_id, input);
+  const recovered = await restart.recoverPendingPresentation(opened.party_id,
+    { request_id: input.request_id });
   assert.equal(recovered.screen.screen_status, 'ready');
-  assert.equal(narrationCalls, afterExhaust + 1, 'recovery makes one successful pass');
-  // The restart replays the committed turn: no second planner call, roll or check row.
+  assert.ok(observedFlows.slice(-2).some((flow) => flow?.status === 'approved'),
+    'the explicit recovery replay obtains clean approved narration');
+  const recoveryCallCount = narrationRoleCalls.length;
+  assert.ok(recoveryCallCount > pendingCalls);
+  assert.deepEqual(await readPersistedPresentationCommit(pool, opened.party_id,
+    turnId), commitBefore);
+  assert.equal(recovered.turn_number, pending.turn_number);
+  assert.equal(recovered.screen.current_projection_anchor.package_id,
+    pending.screen.current_projection_anchor.package_id);
+  assert.equal(recovered.screen.current_projection_anchor.package_digest,
+    pending.screen.current_projection_anchor.package_digest);
+  assert.equal(recovered.screen.current_projection_anchor.committed_state_version,
+    pending.screen.current_projection_anchor.committed_state_version);
+  assert.equal(recovered.screen.turn_id, pending.screen.turn_id);
   assert.equal(semanticCalls, semanticBeforeRestart);
   assert.equal(rolls, 1);
-  assert.equal(await count(pool, 'party_runtime.party_check_resolutions', opened.party_id), 1);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
+    opened.party_id), checkCountBefore);
+
+  const readyGet = await restart.getPartyScreen(opened.party_id);
+  assert.deepEqual(readyGet.screen, recovered.screen);
+  const repeatedRecovery = await restart.recoverPendingPresentation(
+    opened.party_id, { request_id: input.request_id });
+  assert.deepEqual(repeatedRecovery.screen, recovered.screen);
+  const replayed = await restart.submitTurn(opened.party_id, input);
+  assert.deepEqual(replayed.screen, recovered.screen);
+  assert.equal(replayed.party_id, recovered.party_id);
+  assert.equal(replayed.turn_number, recovered.turn_number);
+  assert.equal(narrationRoleCalls.length, recoveryCallCount,
+    'ready GET, repeated recovery and idempotent replay perform no narration');
+  assert.deepEqual(await readPersistedPresentationCommit(pool, opened.party_id,
+    turnId), commitBefore);
+  const persisted = await pool.query(`SELECT jobs.status,
+      jobs.narration_output IS NOT NULL AS has_output,
+      jobs.output_digest IS NOT NULL AS has_output_digest,
+      (SELECT count(*)::integer FROM party_runtime.party_narration_attempts attempts
+        WHERE attempts.job_id=jobs.job_id) AS attempts,
+      (SELECT count(*)::integer FROM party_runtime.party_narration_attempts attempts
+        WHERE attempts.job_id=jobs.job_id AND attempts.outcome='delivered') AS delivered,
+      (SELECT count(*)::integer FROM party_runtime.party_narration_attempts attempts
+        WHERE attempts.job_id=jobs.job_id AND attempts.outcome='failed_retryable') AS failed
+    FROM party_runtime.party_narration_jobs jobs
+    WHERE jobs.party_id=$1 AND jobs.package_id=$2`,
+  [opened.party_id, pending.screen.current_projection_anchor.package_id]);
+  assert.deepEqual(persisted.rows, [{ status: 'delivered', has_output: true,
+    has_output_digest: true, attempts: 3, delivered: 1, failed: 2 }]);
+  const readySession = await pool.query(`SELECT turn_number,last_turn_id,
+      screen->>'screen_status' AS screen_status,
+      screen->'current_projection_anchor'->>'narration_output_digest'
+        AS narration_output_digest
+    FROM party_runtime.party_server_sessions WHERE party_id=$1`,
+  [opened.party_id]);
+  assert.deepEqual(readySession.rows, [{ turn_number: 1, last_turn_id: turnId,
+    screen_status: 'ready',
+    narration_output_digest: recovered.screen.current_projection_anchor
+      .narration_output_digest }]);
+  assert.equal(await count(pool, 'party_runtime.party_visible_packages',
+    opened.party_id), 1);
+}
+
+async function readPersistedPresentationCommit(pool, partyId, turnId) {
+  return (await pool.query(`SELECT package.package_id,package.turn_id,
+      package.committed_state_version,package.change_set_id,
+      package.package_digest,package.idempotency_record_id,
+      idem.idempotency_key AS command_idempotency_key,
+      idem.request_id AS command_request_id,
+      idem.status AS command_status,
+      idem.result_change_set_id AS command_result_change_set_id,
+      snapshot.state_digest,snapshot.state_payload
+    FROM party_runtime.party_visible_packages package
+    JOIN party_runtime.party_command_idempotency idem
+      ON idem.id=package.idempotency_record_id
+      AND idem.party_id=package.party_id
+    JOIN party_runtime.party_state_snapshots snapshot
+      ON snapshot.party_id=package.party_id
+      AND snapshot.state_version=package.committed_state_version
+    WHERE package.party_id=$1 AND package.turn_id=$2`,
+  [partyId, turnId])).rows[0];
 }
 
 async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }) {
@@ -730,6 +871,7 @@ test('active A1 partial authored result survives reload, retry and reuse',
       password: 'local_only', database: 'pr17_a1', max: 8 });
     await installSchemas(pool);
     const { runtimeCatalogPin } = await installLowerDvinaTraceV6World(pool);
+    await pool.query(await buildApprovedTemporalImportSql());
     const release = Object.freeze({ release_id: 'a1-postgres-release',
       world_revision_id: lowerDvinaTraceV6World.revision,
       world_catalog_digest: lowerDvinaTraceV6World.digest,

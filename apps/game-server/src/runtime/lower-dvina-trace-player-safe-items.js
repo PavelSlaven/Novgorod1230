@@ -1,5 +1,5 @@
 import { assertAllowedKeys, compact, finite, physicalFactRecords, plain,
-  projectionError, scalarRecord, text, textArray } from
+  projectionError, scalarRecord, text, textArray, optionalVisibleText } from
   './lower-dvina-trace-player-safe-json.js';
 import {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
@@ -96,10 +96,18 @@ function projectInventoryItem(value, strict) {
   }
   return compact({
     item_id: text(value.item_id ?? value.instance_id),
-    name: text(value.name), owner: text(value.owner), holder: text(value.holder),
-    access: text(value.access), carry_location: text(value.carry_location),
-    weight: projectWeight(value.weight, strict), condition: text(value.condition),
-    risk: textArray(value.risk), use: text(value.use)
+    name: optionalVisibleText(value.name, { path: 'inventory.items[].name', code: invalidCode() }),
+    owner: text(value.owner), holder: text(value.holder),
+    access: text(value.access), carry_location: optionalVisibleText(value.carry_location, {
+      path: 'inventory.items[].carry_location', code: invalidCode()
+    }),
+    weight: projectWeight(value.weight, strict),
+    condition: optionalVisibleText(value.condition, {
+      path: 'inventory.items[].condition', code: invalidCode()
+    }),
+    risk: textArray(value.risk, { visible: true, path: 'inventory.items[].risk',
+      code: invalidCode() }),
+    use: optionalVisibleText(value.use, { path: 'inventory.items[].use', code: invalidCode() })
   });
 }
 function inventoryItemRef(value) {
@@ -170,7 +178,9 @@ function projectItem(item, strict) {
     item_id: text(item.item_id ?? item.instance_id),
     instance_id: text(item.instance_id), template_id: text(item.template_id),
     profile_id: text(item.profile_id), category_id: text(item.category_id),
-    name: visibleItemName(item),
+    name: optionalVisibleText(visibleItemName(item), {
+      path: 'items[].name', code: invalidCode()
+    }),
     visual_profile_snapshot: safeVisualProfile(item.state?.visual_profile_snapshot
       ?? item.visual_profile_snapshot) ?? undefined,
     semantic_type: text(item.semantic_type),
@@ -205,7 +215,8 @@ function projectPhysicalFacts(item, strict) {
   const values = item.state?.ordinary_metadata?.semantic_facts;
   const facts = item.physical_facts ?? values?.map?.((fact) =>
     typeof fact === 'string' ? fact : fact?.text);
-  const projected = textArray(facts, { strict, path: 'items[].physical_facts', code: invalidCode() });
+  const projected = textArray(facts, { strict, path: 'items[].physical_facts',
+    code: invalidCode(), visible: true });
   return projected?.length ? projected : undefined;
 }
 function projectPlacement(value, strict) {
@@ -243,7 +254,9 @@ function projectContents(value, strict) {
     if (strict) assertAllowedKeys(item, allowed, 'contents[]', invalidCode());
     return compact({
       item_id: text(item.item_id ?? item.instance_id),
-      template_id: text(item.template_id), name: text(item.name),
+      template_id: text(item.template_id), name: optionalVisibleText(item.name, {
+        path: 'contents[].name', code: invalidCode()
+      }),
       quantity: finite(item.quantity)
     });
   }).filter(Boolean);
@@ -261,11 +274,13 @@ function projectItemState(value, strict) {
     path: 'item.state.property_state', allowedKeys: PROPERTY_STATE_KEYS });
   return compact({
     semantic_category: text(value.semantic_category),
-    display_name: text(value.display_name),
+    display_name: optionalVisibleText(value.display_name, {
+      path: 'item.state.display_name', code: invalidCode()
+    }),
     evidence_ref: text(value.evidence_ref),
-    condition: typeof value.condition === 'string' ? value.condition
-      : scalarRecord(value.condition, { strict, path: 'item.state.condition',
-          allowedKeys: ITEM_CONDITION_KEYS }),
+    condition: typeof value.condition === 'string' ? optionalVisibleText(value.condition, {
+      path: 'item.state.condition', code: invalidCode()
+    }) : projectItemCondition(value.condition, strict),
     condition_state: text(value.condition_state),
     property_state: propertyState != null && Object.keys(propertyState).length
       ? propertyState : undefined,
@@ -276,6 +291,20 @@ function projectItemState(value, strict) {
       'item.state.visibility_state'),
     use_state: scalarRecord(value.use_state, { strict,
       path: 'item.state.use_state', allowedKeys: USE_STATE_KEYS })
+  });
+}
+function projectItemCondition(value, strict) {
+  if (!plain(value)) return undefined;
+  if (strict) assertAllowedKeys(value, ITEM_CONDITION_KEYS,
+    'item.state.condition', invalidCode());
+  return compact({
+    id: text(value.id), state: text(value.state), status: text(value.status),
+    label: optionalVisibleText(value.label, {
+      path: 'item.state.condition.label', code: invalidCode()
+    }), severity: finite(value.severity),
+    effect: optionalVisibleText(value.effect, {
+      path: 'item.state.condition.effect', code: invalidCode()
+    })
   });
 }
 function assertNoPlacementCycles(records, byId) {

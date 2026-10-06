@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { passTargetRowForSlot } from
+  '../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { passTargetDisclosureForExit } from '../src/runtime/spatial-v3-pass-target-disclosure.js';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
 import { approvedSpatialItemLabels } from

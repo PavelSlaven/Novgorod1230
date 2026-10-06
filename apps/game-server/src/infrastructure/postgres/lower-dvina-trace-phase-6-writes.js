@@ -85,6 +85,10 @@ export function phase6PendingScreen({ state, factual, visibleEnvelope,
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    ...(state.last_turn?.exact_npc_utterances?.length ? {
+      exact_npc_utterances: structuredClone(
+        state.last_turn.exact_npc_utterances)
+    } : {}),
     main_prose:
       'Факты хода сохранены; повествование ожидает повторной доставки.'
   };

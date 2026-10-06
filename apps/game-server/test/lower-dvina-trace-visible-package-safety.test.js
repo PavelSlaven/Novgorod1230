@@ -51,7 +51,11 @@ test('player package omits only typed item gaps and leaves model request unchang
     known_context: playerContext.known_context,
     uncertainties: playerContext.uncertainties
   });
-  assert.deepEqual(screenContext.visible_objects, playerContext.visible_objects);
+  // Screen boundary strips an item-gap code from a non-item entity.
+  assert.deepEqual(screenContext.visible_objects, [named,
+    { entity_ref: { entity_kind: 'place', entity_id: 'place' } }]);
+  assert.ok(screenContext.visible_objects.every((entry) =>
+    entry.entity_ref.entity_kind === 'item' || !Object.hasOwn(entry, 'label_gap')));
   assert.equal(beforeModelSnapshot, afterModelSnapshot);
   assert.equal(createHash('sha256').update(beforeModelSnapshot).digest('hex'),
     createHash('sha256').update(afterModelSnapshot).digest('hex'));

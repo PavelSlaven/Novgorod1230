@@ -3,13 +3,13 @@ import { projectCalendar } from '@rus/time-events-history/calendar';
 import { projectTraceInventoryPanel } from './lower-dvina-trace-screen-inventory.js';
 import { distinctNpcLabels } from
   '../../runtime/lower-dvina-trace-visible-scene-items.js';
-import { playerSafeAppearanceSummary } from
-  '../../runtime/player-safe-appearance-summary.js';
-
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
+import { playerSafeAppearanceSummary } from
+  '../../runtime/lower-dvina-trace-player-safe-appearance.js';
 import { LOCAL_EDGE_OCCUPIED_STATUS, localEdgeOccupiedLabel } from
   '../../runtime/local-edge-occupancy.js';
+import { playerSafeOrdinalLabel } from '../../public-boundary.js';
 
 export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null }) {
   const { actor, player_safe_state: projection } = projectLowerDvinaTracePlayerSafeState({
@@ -34,7 +34,8 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
       const appearance = playerSafeAppearanceSummary(npc);
       return {
         display_label: npc.display_label,
-        ...(appearance == null ? {} : { appearance }),
+        ...(appearance == null || npc.display_label?.endsWith(appearance)
+          ? {} : { appearance }),
         ...(typeof npc.visible_status === 'string'
           ? { status: npc.visible_status } : {})
       };
@@ -104,10 +105,15 @@ export function projectLowerDvinaTraceRoutePanel({ currentPlace, projection = {}
   return createRoutePanel({ current_place: currentPlace, movement: {
     options: [...routes.map(route => ({ label: route.label,
       knowledge_state: route.known === true ? 'known' : 'uncertain' })),
-    ...visibleExits.map(({ display_label: label, visible_status: status }) => ({
-      label: status === LOCAL_EDGE_OCCUPIED_STATUS ? localEdgeOccupiedLabel(label) : label,
-      knowledge_state: 'known',
-      ...(status === LOCAL_EDGE_OCCUPIED_STATUS ? { status: 'occupied' } : {}) }))]
+    ...visibleExits.map(({ entity_ref: ref, display_label: sourceLabel,
+      visible_status: status }) => {
+      const label = playerSafeOrdinalLabel(sourceLabel, ref?.entity_kind);
+      return {
+        label: status === LOCAL_EDGE_OCCUPIED_STATUS ? localEdgeOccupiedLabel(label) : label,
+        knowledge_state: 'known',
+        ...(status === LOCAL_EDGE_OCCUPIED_STATUS ? { status: 'occupied' } : {})
+      };
+    })]
   } });
 }
 

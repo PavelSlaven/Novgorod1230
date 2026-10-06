@@ -2,6 +2,8 @@ import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest,
   validateSpatialV3Contract } from '@rus/contracts/spatial-v3/registry';
 import { validateLowerDvinaFactualTurnDeliveryScreen } from '@rus/presentation';
+import { projectPhase2VisibleContext } from
+  './lower-dvina-trace-player-safe-visible-context.js';
 
 export function validFactualPostTurnSession({ partyId, session, screen,
   allowedSnapshotSchemas, expectedScreen }) {
@@ -42,6 +44,8 @@ export function validFactualPostTurnSession({ partyId, session, screen,
       === canonicalDigest(expectedContext?.visible_changes)
     && canonicalDigest(screen.uncertainties)
       === canonicalDigest(expectedContext?.uncertainties)
+    && canonicalDigest(screen.exact_npc_utterances ?? [])
+      === canonicalDigest(snapshot?.last_turn?.exact_npc_utterances ?? [])
     && session.current_narration_status === 'delivered'
     && session.current_narration_delivery_mode === 'factual'
     && session.current_narration_output == null
@@ -74,13 +78,5 @@ export function visiblePayloadErrors({
 }
 
 export function visibleContextFromPayload(payload) {
-  return { version: 1, schema: 'visible_context_package',
-    visible_scene: payload.perceived_scene,
-    visible_changes: payload.perceived_changes,
-    sensory_details: payload.sensory_details,
-    visible_npc: payload.visible_npcs,
-    visible_objects: payload.visible_objects,
-    known_context: payload.known_context,
-    uncertainties: payload.uncertainties,
-    allowed_tensions: [], do_not_imply: [] };
+  return projectPhase2VisibleContext(payload);
 }

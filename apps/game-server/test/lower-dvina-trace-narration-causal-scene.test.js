@@ -162,8 +162,7 @@ test('observation preserves separately visible NPCs with the same label', async 
 
   assert.deepEqual(visible.visible_changes, [
     'Вы внимательно изучили обстановку.',
-    'В поле зрения — рыбак (1): чинит снасти.',
-    'В поле зрения — рыбак (2): чинит снасти.'
+    'В поле зрения — рыбак: чинит снасти.'
   ]);
 });
 

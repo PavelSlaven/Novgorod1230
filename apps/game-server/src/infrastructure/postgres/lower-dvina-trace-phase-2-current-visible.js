@@ -145,7 +145,7 @@ function visibleNpcEquipment(state, npcId) {
     item.placement?.holder_npc_id === npcId
       && item.placement?.container_id == null).map((item) => ({
     item_ref: item.item_id,
-    display_label: item.state?.display_name ?? item.template_id,
+    display_label: item.state?.display_name ?? 'предмет',
     physical_position: item.placement?.physical_position,
     ...(item.placement?.equipment_slot_category_id == null ? {} : {
       equipment_slot_category_id: item.placement.equipment_slot_category_id

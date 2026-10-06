@@ -75,8 +75,7 @@ export function phase3ConversationProjection(input, contracts,
           recognition: 'recognized' }
       : projected;
   });
-  const visibleNpcs = perceivedGroup == null
-    ? projectedNpcs : distinctNpcLabels(projectedNpcs);
+  const visibleNpcs = distinctNpcLabels(projectedNpcs);
   const labelByActor = new Map(visibleNpcs.map((npc) => [
     npc.entity_ref.entity_id, npc.display_label
   ]));

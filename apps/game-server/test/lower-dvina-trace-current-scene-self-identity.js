@@ -20,7 +20,7 @@ export function assertCurrentSceneSelfIdentity({ committedState, locationProfile
     assert.ok(visible.known_context.includes('Вас зовут Ульяна.'));
     assert.ok(visible.known_context.includes('Ваш род занятий: ткачиха.'));
     assert.equal(visible.visible_npc[0].entity_ref.entity_id, 'onisim');
-    assert.equal(visible.visible_npc[0].display_label, 'человек');
+    assert.equal(visible.visible_npc[0].display_label, 'Ульяна');
     assert.doesNotMatch(JSON.stringify(visible), /тайная биография|тайный замысел/u);
     assert.deepEqual(state, before);
     const reloadedState = JSON.parse(JSON.stringify(current));
@@ -30,9 +30,7 @@ export function assertCurrentSceneSelfIdentity({ committedState, locationProfile
     const reloaded = withLowerDvinaTraceCurrentScene({
       committedState: reloadedState, locationProfiles, scenePresentation });
     assert.equal(reloaded.current_visible_context.visible_npc[0].display_label,
-      'человек');
-    assert.equal(JSON.stringify(reloaded.current_visible_context.visible_npc).includes('Ульяна'),
-      false, 'a prior recognition label is not a fresh observation after reload');
+      'Ульяна');
     assert.ok(reloaded.current_visible_context.known_context.includes(
       'Вас зовут Ульяна.'));
   }

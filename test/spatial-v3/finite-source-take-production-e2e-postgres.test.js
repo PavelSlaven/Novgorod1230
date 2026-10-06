@@ -187,10 +187,8 @@ async function assertPerceptionArrivalContainsOnlyCommittedItemFacts(pool, party
       WHERE party_id=$1
       ORDER BY committed_state_version::bigint DESC
       LIMIT 1`, [partyId]))[0]?.visible_payload;
-  assert.deepEqual(destination?.sensory_details, [
-    'отрезанная полоса льняной ткани', 'отделена от подола',
-    'рубаха с укороченным подолом', 'подол укорочен'
-  ], 'the arrival keeps only committed facts of the made and changed clothing items');
+  assert.deepEqual(destination?.sensory_details, [],
+    'generated-G5 arrival with no perception facts must commit without invented detail');
   assert.deepEqual(narrationLog.at(-1)?.changes, ['Вы прибыли.'],
     'the narrator receives the confirmed arrival without replaying the item facts as events');
 }

@@ -10,15 +10,17 @@ export function validCurrentScene(value) {
     && ARRAY_FIELDS.every((field) => Array.isArray(value[field]));
 }
 
-export function visibleNpc(npc, position, knownName = null) {
+export function visibleNpc(npc, position, knownName = null, perceived = null) {
   const entityId = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
   if (!samePositionScope(npc, position) || !text(entityId)) {
     return null;
   }
+  const label = text(knownName) ? knownName : perceived?.display_label;
   return {
     entity_ref: { entity_kind: 'npc', entity_id: entityId },
-    display_label: text(knownName) ? knownName : 'человек',
-    recognition: text(knownName) ? 'recognized' : 'unrecognized'
+    display_label: text(label) ? label : 'человек',
+    recognition: text(knownName) ? 'recognized'
+      : text(label) ? perceived.recognition ?? 'unrecognized' : 'unrecognized'
   };
 }
 

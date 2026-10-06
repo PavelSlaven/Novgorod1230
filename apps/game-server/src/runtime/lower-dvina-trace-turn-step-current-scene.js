@@ -50,6 +50,12 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     ? { display_name: currentSpatial.visible_scene,
       player_visible_physical_facts: currentSpatial.sensory_details ?? [] }
     : presented ?? { display_name: null, player_visible_physical_facts: [] };
+  // Presence comes from the current owner below; an NPC who is still here keeps
+  // the label of the last committed perception of the same entity.
+  const perceivedNpcs = new Map((committedState.current_visible_context?.visible_npc ?? [])
+    .filter((npc) => npc?.entity_ref?.entity_kind === 'npc'
+      && text(npc.entity_ref.entity_id))
+    .map((npc) => [npc.entity_ref.entity_id, npc]));
   const sceneNpcs = committedState.current_spatial_context_filters_entities === true
     ? (currentSpatial?.visible_npc ?? []).map((npc) => {
       const id = npc?.entity_ref?.entity_id;
@@ -72,7 +78,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
         playerId: committedState.actor_id,
         npcId: id
       });
-      return visibleNpc(npc, playerSafe.position, knownName);
+      return visibleNpc(npc, playerSafe.position, knownName, perceivedNpcs.get(id));
     }).filter(Boolean);
   const placeFacts = currentSpatial?.sensory_details
     ?? presented?.player_visible_physical_facts

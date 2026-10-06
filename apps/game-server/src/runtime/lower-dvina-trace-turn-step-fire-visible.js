@@ -100,8 +100,6 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             if (!plain(projectedDestination)) {
               ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
             }
-            destination.sensory_details = structuredClone(
-              projectedDestination.sensory_details ?? destination.sensory_details);
             const carriedItemIds = lowerDvinaTraceCarriedItemIds(
               targetState.items, targetState.actor_id);
             destination.visible_objects = (projectedDestination.visible_objects ?? [])

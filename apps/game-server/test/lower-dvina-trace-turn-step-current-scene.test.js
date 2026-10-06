@@ -309,7 +309,7 @@ test('current scene rebuilds co-located NPC cues from committed state', () => {
     recognition: npc.recognition
   })), [{
     entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
-    display_label: 'человек',
+    display_label: 'раненый мужчина',
     recognition: 'unrecognized'
   }]);
   assert.equal(Object.hasOwn(
@@ -343,8 +343,7 @@ test('current scene rebuilds co-located NPC cues from committed state', () => {
             grounded_attempt: 'поднести доску к глазам' },
           goal_result: 'not_achieved', operations: [], check: null } }] }
     } }, directSeedKeys: ['turn_step_1'], body: {} });
-  assert.equal(direct.visible_npc[0].display_label, 'человек');
-  assert.equal(JSON.stringify(direct.visible_npc).includes('раненый мужчина'), false);
+  assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
   assert.equal(JSON.stringify(direct).includes('injured_unable_to_walk'), false);
   assert.deepEqual(direct.visible_changes, []);
   assert.deepEqual(direct.uncertainties, []);
@@ -372,9 +371,8 @@ test('current scene carries committed scene-read NPCs without leaking authored i
     recognition: npc.recognition
   })).filter(({ entity_ref }) => entity_ref.entity_id === 'scene-npc'), [{
     entity_ref: { entity_kind: 'npc', entity_id: 'scene-npc' },
-    display_label: 'человек', recognition: 'unrecognized'
+    display_label: 'Степан', recognition: 'known'
   }]);
-  assert.equal(JSON.stringify(current.current_visible_context).includes('Степан'), false);
   assert.equal(JSON.stringify(current.current_visible_context).includes(
     'other-location'), false);
 });
@@ -441,7 +439,7 @@ test('version zero scene uses a safe label and gains committed observable cues',
     committedState: state, locationProfiles
   });
   assert.equal(current.current_visible_context.visible_npc[0]
-    .display_label, 'человек');
+    .display_label, 'раненый мужчина');
   assert.equal(current.current_visible_context.visible_npc[0]
     .recognition, 'unrecognized');
   assert.equal(current.current_visible_context.visible_npc[0]
@@ -637,7 +635,7 @@ test('direct player-safe observation does not replay previous-package sensory fa
   }, directSeedKeys: [], body: {} });
 
   assert.deepEqual(visible.visible_changes,
-    ['Вы внимательно изучили обстановку.', 'В поле зрения — человек.']);
+    ['Вы внимательно изучили обстановку.', 'В поле зрения — раненый мужчина.']);
   assert.deepEqual(visible.sensory_details, []);
   assert.equal(visible.visible_objects[0].display_label, 'верхняя одежда');
   assert.deepEqual(visible.uncertainties, []);

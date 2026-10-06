@@ -4,7 +4,7 @@ import { readServerConfig, assertModularStartupConfig } from './config.js';
 import { createStaticAssetResolver } from './http/static-assets.js';
 import { createGameHttpServer, listen } from './http/server.js';
 import { loadConfiguredComposition } from './runtime/load-composition.js';
-import { createProductionLlmRoleRunner } from './infrastructure/provider/deepseek.js';
+import { createProductionLlmRoleRunner } from './infrastructure/provider/openai-compatible.js';
 import { createPortraitSpecNormalizer } from './portrait-lab/normalizer.js';
 import { applyInitialLlmSettings, createLlmSettingsOwner, createProductionLlmQualifier } from './runtime/llm-settings.js';
 import { createLlmDiagnostics } from './runtime/llm-diagnostics.js';

@@ -188,8 +188,8 @@
 - **Issue.** [#121](https://github.com/PavelSlaven/Novgorod1230/issues/121)
 
 ### LW-020 — LLM по умолчанию
-- **Что.** Три разных «default»: role defaults уровня окружения в `packages/llm-runtime/src/provider-config.js` (`deepseek-v4-flash`); gameplay-default `play:local` на main — managed Gemma (`tools/local-play/*`); на ветке PR #98 gameplay идёт через qwen (`apps/game-server/src/runtime/llm-settings.js`, vLLM endpoint пользователя), а `provider-config.js` не менялся. На ветке PR #98 промпты и бюджеты надо рассчитывать на qwen ~27B, а не на DeepSeek.
-- **Как жить.** В документах ссылаться на владельца, не на значение.
+- **Что.** Deployment role defaults и local-play settings используют exact `qwen3.8-27b-uncensored-w4a16-tp2`. Gameplay требует настроенный OpenAI-compatible endpoint; пустая конфигурация остаётся `unconfigured` и завершается fail-closed, без provider/model fallback. Environment keys — `LLM_BASE_URL`, optional `LLM_API_KEY`, optional `LLM_MODEL` и `LLM_REQUEST_TIMEOUT_MS`.
+- **Как жить.** Менять deployment provider config у `@rus/llm-runtime`, пользовательские settings и readiness — у game-server/game-web/local-play owners; не добавлять implicit fallback.
 
 ### LW-024 — статус Runtime в описании PR
 - **Что.** Runtime_Plan M0–M8 живёт только в Draft PR #98; сводный статус — в описании PR (Runtime_Plan §7.2). Текущий этап — M2c, перезапущенный 2026-09-25 с проектирования; решения владельца — в [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133).

@@ -12,7 +12,7 @@ test('turnBudget.clamp() flows through as a requestTimeoutMs ceiling, not overwr
     turnBudget: { clamp: () => 30_000, claimRepair() {} },
     execute: async ({ overrides }) => {
       capturedOverrides = overrides;
-      return { status: 'ok', raw_text: '{}', provider: 'deepseek', model: 'test-model',
+      return { status: 'ok', raw_text: '{}', provider: 'openai_compatible', model: 'test-model',
         scope: 'turn_runtime', role_id: roleId, tier_id: null, durationMs: 1, config_hash: 'x' };
     }
   });
@@ -23,7 +23,7 @@ test('turnBudget.clamp() flows through as a requestTimeoutMs ceiling, not overwr
 
   const resolution = resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId, overrides: capturedOverrides,
-    env: { DEEPSEEK_API_KEY: 'test-key' }
+    env: { LLM_API_KEY: 'test-key', LLM_BASE_URL: 'http://example.test/v1' }
   });
   assert.equal(resolution.config.requestTimeoutMs, 30_000);
 });

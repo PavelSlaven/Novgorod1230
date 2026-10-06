@@ -7,7 +7,7 @@ import { CombatTurnRuntimeRoles, combatTurnRoleDefaults } from
 import { applyProviderOverrides, normalizeBaseUrl, normalizeExecutionLimits, normalizeRequestUrl, resolveRuntimeProviderOverride } from
   './provider-request.js';
 
-const DEFAULT_DEEPSEEK_MODEL = 'deepseek-chat';
+const DEFAULT_QWEN_MODEL = 'qwen3.8-27b-uncensored-w4a16-tp2';
 
 export const LLM_SCOPES = Object.freeze({
   TURN_RUNTIME: 'turn_runtime',
@@ -57,7 +57,7 @@ export const PortraitLabRoles = Object.freeze({
 
 const PORTRAIT_ROLE_DEFAULTS = Object.freeze({
   [PortraitLabRoles.SPEC_NORMALIZER]: {
-    envPrefix: 'PORTRAIT_SPEC_NORMALIZER', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    envPrefix: 'PORTRAIT_SPEC_NORMALIZER', model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema: 'portrait_spec_v1', parseJson: true, targetInputTokens: 4000, comfortableInputTokens: 8000,
     hardInputLimitTokens: 16000, reserveOutputTokens: 1600, reserveRepairTokens: 0
@@ -66,13 +66,13 @@ const PORTRAIT_ROLE_DEFAULTS = Object.freeze({
 
 const TURN_ROLE_DEFAULTS = Object.freeze({
   [TurnRuntimeRoles.INTENT_ROUTER]: {
-    envPrefix: 'TURN_INTENT_ROUTER', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    envPrefix: 'TURN_INTENT_ROUTER', model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_intent_route', parseJson: true,
     targetInputTokens: 20000, comfortableInputTokens: 20000, hardInputLimitTokens: 80000, reserveOutputTokens: 2500, reserveRepairTokens: 10000
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER]: {
     envPrefix: 'TURN_STEP_PLANNER',
-    model: 'deepseek-v4-flash',
+    model: DEFAULT_QWEN_MODEL,
     thinking: 'disabled',
     reasoningEffort: null,
     responseFormat: 'json_object',
@@ -87,13 +87,13 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     reserveRepairTokens: 30000
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER_REPAIR]: {
-    envPrefix: 'TURN_STEP_PLANNER_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    envPrefix: 'TURN_STEP_PLANNER_REPAIR', model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
     expectedSchema: null, parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000,
     hardInputLimitTokens: 100000, reserveOutputTokens: 4000, reserveRepairTokens: 4000
   },
   [TurnRuntimeRoles.TURN_STEP_GROUNDING_AUDITOR]: {
-    envPrefix: 'TURN_STEP_GROUNDING_AUDITOR', model: 'deepseek-v4-flash',
+    envPrefix: 'TURN_STEP_GROUNDING_AUDITOR', model: DEFAULT_QWEN_MODEL,
     thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
     outputContractMode: OutputContractModes.JSON_OBJECT,
@@ -103,7 +103,7 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
   },
   [TurnRuntimeRoles.WORLD_KNOWLEDGE_QUERY_PLANNER]: {
     envPrefix: 'TURN_WORLD_KNOWLEDGE_QUERY_PLANNER',
-    model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
     outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema: 'world_knowledge_query_plan_v1', parseJson: true,
@@ -111,44 +111,44 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     hardInputLimitTokens: 30000, reserveOutputTokens: 1000, reserveRepairTokens: 1000
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR]: {
-    envPrefix: 'TURN_GAMEPLAY_NARRATOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    envPrefix: 'TURN_GAMEPLAY_NARRATOR', model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
     expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_REPAIR]: {
-    envPrefix: 'TURN_GAMEPLAY_NARRATOR_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    envPrefix: 'TURN_GAMEPLAY_NARRATOR_REPAIR', model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
     expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_AUDITOR]: {
-    envPrefix: 'TURN_GAMEPLAY_NARRATOR_AUDITOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    envPrefix: 'TURN_GAMEPLAY_NARRATOR_AUDITOR', model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
     expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 800, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_SEMANTIC_REPAIR]: {
-    envPrefix: 'TURN_GAMEPLAY_NARRATOR_SEMANTIC_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    envPrefix: 'TURN_GAMEPLAY_NARRATOR_SEMANTIC_REPAIR', model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
     expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1200, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.ORDINARY_MATERIALIZATION]: {
-    envPrefix: 'TURN_ORDINARY_MATERIALIZATION', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    envPrefix: 'TURN_ORDINARY_MATERIALIZATION', model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema: 'ordinary_materialization_plan_v1', parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000,
     hardInputLimitTokens: 100000, reserveOutputTokens: 6000, reserveRepairTokens: 6000
   },
   [TurnRuntimeRoles.SPATIAL_SEMANTIC_DESCRIPTOR]: {
-    envPrefix: 'TURN_SPATIAL_SEMANTIC_DESCRIPTOR',model:'deepseek-v4-flash',thinking:'disabled',reasoningEffort:null,
+    envPrefix: 'TURN_SPATIAL_SEMANTIC_DESCRIPTOR',model:DEFAULT_QWEN_MODEL,thinking:'disabled',reasoningEffort:null,
     responseFormat:'json_object',maxTokens:20_000,temperature:0,topP:1,outputContractMode:OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema:'rus.s1_spatial_semantic_proposal.v1',parseJson:true,targetInputTokens:4000,comfortableInputTokens:8000,
     hardInputLimitTokens: 30000, reserveOutputTokens: 400, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.NPC_ORDINARY_SEMANTIC_REMAINDER]: {
     envPrefix: 'TURN_NPC_ORDINARY_SEMANTIC_REMAINDER',
-    model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
     outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema: 'npc_ordinary_semantic_remainder_proposal_v1',
@@ -158,7 +158,7 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
   },
   [TurnRuntimeRoles.NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR]: {
     envPrefix: 'TURN_NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR',
-    model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    model: DEFAULT_QWEN_MODEL, thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
     outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema: 'npc_ordinary_semantic_remainder_audit_v1',
@@ -167,7 +167,7 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.WORLD_PROCESS_STEP]: {
-    envPrefix: 'TURN_WORLD_PROCESS_STEP', model: 'deepseek-v4-flash',
+    envPrefix: 'TURN_WORLD_PROCESS_STEP', model: DEFAULT_QWEN_MODEL,
     thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
     outputContractMode: OutputContractModes.JSON_OBJECT,
@@ -187,10 +187,12 @@ const SCOPE_DEFAULTS = Object.freeze({
 });
 
 export function getProviderConfig(env = process.env) {
-  const apiKey = env.DEEPSEEK_API_KEY?.trim() ?? '';
-  if (!apiKey) {
+  const baseUrl = normalizeBaseUrl(env.LLM_BASE_URL);
+  const requestUrl = normalizeRequestUrl(baseUrl);
+  if (!baseUrl || !requestUrl) {
     return {
       enabled: false,
+      reason: baseUrl ? 'invalid_provider_config' : 'missing_base_url',
       provider: 'not_configured',
       model: null,
       baseUrl: null
@@ -199,10 +201,13 @@ export function getProviderConfig(env = process.env) {
 
   return {
     enabled: true,
-    provider: 'deepseek',
-    apiKey,
-    baseUrl: normalizeBaseUrl(env.DEEPSEEK_BASE_URL),
-    model: env.DEEPSEEK_MODEL?.trim() || DEFAULT_DEEPSEEK_MODEL
+    provider: 'openai_compatible',
+    compatibility: 'openai_compatible',
+    apiKey: readText(env.LLM_API_KEY) || null,
+    baseUrl,
+    requestUrl,
+    requestTimeoutMs: readPositiveInt(env.LLM_REQUEST_TIMEOUT_MS),
+    model: readText(env.LLM_MODEL) || DEFAULT_QWEN_MODEL
   };
 }
 
@@ -235,14 +240,14 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
     scope: scopeKey,
     role_id: roleId ?? null,
     tier_id: tierId ?? null,
-    provider: provider?.provider ?? (shared.enabled ? shared.provider : 'deepseek'),
-    compatibility: provider?.compatibility ?? 'deepseek',
+    provider: provider?.provider ?? shared.provider,
+    compatibility: provider?.compatibility ?? shared.compatibility,
     apiKey: provider ? provider.apiKey : (shared.enabled ? shared.apiKey : null),
-    baseUrl: provider?.baseUrl ?? (shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
-    requestUrl: provider?.requestUrl ?? normalizeRequestUrl(shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
+    baseUrl: provider?.baseUrl ?? shared.baseUrl,
+    requestUrl: provider?.requestUrl ?? shared.requestUrl,
     requestTimeoutMs: provider?.requestTimeoutMs
       ?? readPositiveInt(env[`${defaults.envPrefix}_REQUEST_TIMEOUT_MS`])
-      ?? readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) ?? 120_000,
+      ?? shared.requestTimeoutMs ?? 120_000,
     api: scopeDefaults.api,
     model: provider?.model ?? readRoleModel(defaults, env, shared.model),
     thinking: scopeKey === LLM_SCOPES.TURN_RUNTIME
@@ -277,7 +282,7 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
   if (!config.enabled) {
     return {
       enabled: false,
-      reason: 'missing_api_key',
+      reason: shared.reason ?? 'missing_base_url',
       scope: scopeKey,
       role_id: roleId ?? null,
       tier_id: tierId ?? null
@@ -300,8 +305,8 @@ function disabledResolution(reason, scope, roleId, tierId) {
 function readRoleModel(defaults, env, sharedModel) {
   const roleModel = readText(env[`${defaults.envPrefix}_MODEL`]);
   if (roleModel) return roleModel;
-  if (defaults.model && defaults.model !== DEFAULT_DEEPSEEK_MODEL) return defaults.model;
-  return sharedModel ?? defaults.model ?? DEFAULT_DEEPSEEK_MODEL;
+  if (defaults.model && defaults.model !== DEFAULT_QWEN_MODEL) return defaults.model;
+  return sharedModel ?? defaults.model ?? DEFAULT_QWEN_MODEL;
 }
 
 function applyRuntimeSafetyNormalization(config) {

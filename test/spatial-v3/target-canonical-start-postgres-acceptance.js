@@ -276,7 +276,7 @@ export async function assertTargetCanonicalStartPostgres({
   const rootStarted = performance.now();
   try {
   const rootOptions = {
-    env: { DEEPSEEK_API_KEY: 'isolated-fixture-key', DEEPSEEK_BASE_URL: 'https://target-acceptance.invalid' },
+    env: { LLM_API_KEY: 'isolated-fixture-key', LLM_BASE_URL: 'https://target-acceptance.invalid' },
     config: { spatialV3BindingsModule: 'builtin:spatial-v3-production-v17', rootDir,
       runtimeCatalogPinManifestDigest: itemPin.compatible_world_pin_manifest_digest,
       targetCatalogActivationApprovals: { itemApproval: releaseInputs.itemApproval, actorApproval: releaseInputs.actorApproval },

@@ -19,7 +19,7 @@
 
 Gameplay не зависит от engine API: единый `@rus/llm-runtime` видит только
 OpenAI-compatible `chat/completions` настроенного vLLM endpoint.
-Никакого fallback на DeepSeek нет. Подробности:
+Ошибки endpoint/provider завершают вызов без fallback. Подробности:
 [`docs/setup/LLM_PROVIDERS.md`](../../docs/setup/LLM_PROVIDERS.md).
 
 `RUS_RUNTIME_SETUP=spatial-v3-m3-development-v14` включает только явный

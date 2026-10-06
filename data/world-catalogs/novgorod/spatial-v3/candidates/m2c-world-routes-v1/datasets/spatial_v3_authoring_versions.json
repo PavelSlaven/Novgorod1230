@@ -1579,7 +1579,7 @@
     "entity_id": "wrsegv3__g4dirv3f__cross_g4_14__00",
     "version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_digest": "a768ceabd114270f5bba27b86ab22520599b11a9be818d29197fdc598fbce3a5",
+    "canonical_digest": "c5923da8e2473ba2d526b2f71b8efd84e9dbecd8bc19b4b9bfbf9b0839b9a9f6",
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
@@ -1633,7 +1633,7 @@
     "entity_id": "wrsegv3__g4dirv3r__cross_g4_14__00",
     "version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_digest": "58f2649ae1328256792a8ecf4db84d42d5a19e87abfeae2ae50cb9dadb3440a9",
+    "canonical_digest": "625c8c255ea118f6b4f64dfa5f0077355d6f54309900e1adb909a87999a78bf4",
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
@@ -1795,7 +1795,7 @@
     "entity_id": "wrsegv3__g4dirv3f__cross_g4_16__00",
     "version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_digest": "9fb4387564a6a2a47b6308425c72e8e4f32cc986eb5429d527d2e20f3ea66bd8",
+    "canonical_digest": "3977a3a31a8845217d4f502bf09df19f264e304d9214308b6ea44534d8ec4ef5",
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },
@@ -1849,7 +1849,7 @@
     "entity_id": "wrsegv3__g4dirv3r__cross_g4_16__00",
     "version": 2,
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "canonical_digest": "ed1e509da7367f6a538b422463d3287c947ed2816ddb0216357ed299e03704f7",
+    "canonical_digest": "b5914ed6a103baf29a7e96efec8a1ac662a386200a1b692ebcd87ef8ae875a9d",
     "status": "approved",
     "provenance_ref": "m2c_world_routes_v1_candidate"
   },

@@ -9,7 +9,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { chromium } from 'playwright-core';
 import pg from 'pg';
 import { createProductionLlmRoleRunner } from
-  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+  '../../apps/game-server/src/infrastructure/provider/openai-compatible.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { createFirstPlayablePartyRepository } from

@@ -428,8 +428,8 @@ function presenceOpeningProse(input) {
 }
 
 const FIXTURE_ROOT_ENV = Object.freeze({
-  DEEPSEEK_API_KEY: 'isolated-fixture-key',
-  DEEPSEEK_BASE_URL: 'https://target-acceptance.invalid',
+  LLM_API_KEY: 'isolated-fixture-key',
+  LLM_BASE_URL: 'https://target-acceptance.invalid',
 });
 const zeroVectorEncoderFactory = () => ({
   async ready() {},

@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "ba1821b1ba645f6ffcc2d33ece0900e4a2af42403a4bdcb6fca0b7a2b7fb4e61",
-      "bytes": 32974,
+      "sha256": "4fe359b18be1e8a0644ed709c6d9f03839f214e86ab695b27c196da145fba07e",
+      "bytes": 33027,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -416,8 +416,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "c9039d12ec5d98a73dd18036f320c60963dd00fb465d6c0301b15223498d0b5b",
-      "bytes": 117640,
+      "sha256": "ae037f1aaa6d1223cdfea120e42afaff61dd572e7144999efa8d55d77de9431f",
+      "bytes": 117909,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -480,8 +480,8 @@
       "document_id": "world-knowledge-platform-implementation-contract",
       "canonical_path": "corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md",
       "file_name": "world_knowledge_platform_implementation_contract.md",
-      "sha256": "60dbdf784f7739ecb96725e1c510a9fd7875c7a13cbf584f27c3482005adacf5",
-      "bytes": 162309,
+      "sha256": "bfc16156204f76c65a17d22281ae2aa45a90eebe777b215527e790cf83d9ea6f",
+      "bytes": 162299,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

@@ -36,7 +36,7 @@ import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../../infrastructure/postgres/ordinary-materialization-enablement.js';
 import { createProductionLlmRoleRunner } from
-  '../../infrastructure/provider/deepseek.js';
+  '../../infrastructure/provider/openai-compatible.js';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from

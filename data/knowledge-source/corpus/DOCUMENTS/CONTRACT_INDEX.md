@@ -168,7 +168,7 @@ An undeclared guide may still be relevant, but it must not silently override an 
 | Scope | Mandatory contract set |
 |---|---|
 | Player semantic action / LLM | `turn_step_llm_contract.md`, relevant operation schemas, `@rus/turn` MODULE, affected domain contract |
-| Production LLM provider/configuration | `turn_step_llm_contract.md`, `@rus/llm-runtime` MODULE, game-server settings/transport owner, game-web and local-play MODULEs; selected provider must reach every registered gameplay role without fallback |
+| Production LLM provider/configuration | `turn_step_llm_contract.md`, `@rus/llm-runtime` MODULE, game-server settings/transport owner, game-web and local-play MODULEs; exact default Qwen uses an explicitly configured OpenAI-compatible endpoint across all registered gameplay roles without fallback |
 | Authored materialization | `code_driven_world_materialization_architecture.md` (в т.ч. раздел о наличии), `universal_category_classification_policy.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |
 | Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, `code_driven_world_materialization_architecture.md` (наличие при первом прибытии/открытии), `universal_category_classification_policy.md`, `world_base_materialization_table_requirements.md` (presence-правила), active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |
 | Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |

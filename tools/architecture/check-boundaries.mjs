@@ -749,11 +749,25 @@ const productionRequired = [
   'apps/game-server/src/infrastructure/postgres/pools.js',
   'apps/game-server/src/infrastructure/postgres/session-store.js',
   'apps/game-server/src/infrastructure/postgres/stage25.js',
-  'apps/game-server/src/infrastructure/provider/deepseek.js',
+  'apps/game-server/src/infrastructure/provider/openai-compatible.js',
   'test/integration/production-infrastructure.test.js',
   'test/e2e/browser-game-flow.test.js',
   'schemas/party-db/010_party_runtime_pr8_reaction_options.sql'
 ];
+for (const sourceRoot of ['apps', 'packages', 'tools/local-play']) {
+  for (const file of await walk(join(root, sourceRoot))) {
+    if (!['.js', '.mjs'].includes(extname(file))) continue;
+    const rel = relative(root, file).replaceAll('\\', '/');
+    if ((sourceRoot === 'apps' || sourceRoot === 'packages')
+        && !rel.includes('/src/')) continue;
+    if (sourceRoot === 'tools/local-play'
+        && !rel.startsWith('tools/local-play/')) continue;
+    const source = await readFile(file, 'utf8');
+    if (/deepseek/iu.test(rel) || /deepseek/iu.test(source)) {
+      violations.push(`${rel}: retired provider name remains in active production sources`);
+    }
+  }
+}
 for (const requiredPath of productionRequired) {
   try { await readFile(join(root, requiredPath), 'utf8'); }
   catch { violations.push(`${requiredPath}: required production integration artifact is missing`); }

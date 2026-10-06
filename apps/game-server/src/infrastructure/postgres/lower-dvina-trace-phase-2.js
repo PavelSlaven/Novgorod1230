@@ -49,9 +49,11 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   async function loadPhase2State(
     partyId,
     { presentationIdempotencyKey = null, turnBudget = null,
-      includeCurrentVisibleContext = true } = {}
+      includeCurrentVisibleContext = true, transaction = null } = {}
   ) {
-    const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
+    // A supplied P16 client is the transaction's only party-table read path.
+    // Its local statement timeout is owned by the transaction boundary.
+    const readPool = transaction ?? withTurnDeadlineQueryPool(partyPool, turnBudget);
     const phase1A = createLowerDvinaTracePhase1ARepository({
       query: readPool.query.bind(readPool)
     });
@@ -195,7 +197,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
     const loadedWithCurrentVisible = !includeCurrentVisibleContext ? loadedPayload : withPhase2CurrentVisibleContext(
-      loadedPayload, await loadPhase2VisibleContext(partyPool, {
+      loadedPayload, await loadPhase2VisibleContext(transaction ?? partyPool, {
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));
     const current = await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
@@ -222,23 +224,41 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       loadState: (id, options) => loadPhase2State(id, { ...options, turnBudget })
     });
   }
-  async function loadPreparedMovementScene({ partyId, state, turnBudget = null }) {
-    const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
-    return withSceneNpcs(readPool, partyId, withoutSceneNpcs(state));
+  async function loadPreparedMovementScene({ partyId, state, turnBudget = null,
+    transaction = null }) {
+    const readPool = transaction ?? withTurnDeadlineQueryPool(partyPool, turnBudget);
+    return withSceneNpcs(readPool, partyId, withoutSceneNpcs(state), readPool);
   }
   async function replayPhase2Turn({ partyId, replay, narrator, turnBudget = null }) {
     return replayLowerDvinaTracePhase2Presentation({ partyPool, partyId, replay,
       narrator, turnBudget, persistPhase2Screen });
   }
   async function commitPhase2Turn(input) {
-    return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget),
-      projectEnvironmentAtClock });
+    const committed = await commitLowerDvinaTracePhase2({ ...input,
+      ...commitPorts(input.turnBudget), projectEnvironmentAtClock });
+    if (input.transaction != null && committed?.ok !== true) {
+      throw serverError(
+        committed?.error?.code === 'idempotency_conflict'
+          ? 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT'
+          : 'TRACE_TURN_STEP_COMMIT_FAILED',
+        'P16 commit failed inside the caller-owned transaction.',
+        { status: 409, public_exposure: 'internal',
+          details: committed?.error ?? null }
+      );
+    }
+    return committed;
   }
   function commitPorts(turnBudget = null) {
     const loadState = turnBudget == null ? loadCommittablePhase2State :
       (partyId, options = {}) => loadCommittablePhase2State(
         partyId, { ...options, turnBudget });
     return { loadState, committer: {
+      withTransaction(work) {
+        if (typeof committer.withTransaction !== 'function') {
+          throw new TypeError('P16 committer does not expose withTransaction.');
+        }
+        return committer.withTransaction(work, turnBudget);
+      },
       async commit(input) {
         turnBudget?.assertCanCommit();
         return committer.commit({ ...input, turnBudget });
@@ -249,6 +269,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     includeCurrentVisibleContextForValidation = false,
     ...options
   } = {}) {
+    if (options.transaction != null) options.includeCurrentVisibleContext = false;
     const state = await loadPhase2State(partyId, options);
     return includeCurrentVisibleContextForValidation
       ? state
@@ -340,6 +361,12 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   return Object.freeze({
     loadPhase2State,
     loadPreparedMovementScene,
+    withSpatialP16Transaction: (work, { turnBudget = null } = {}) => {
+      if (typeof committer.withTransaction !== 'function') {
+        throw new TypeError('P16 committer does not expose withTransaction.');
+      }
+      return committer.withTransaction(work, turnBudget);
+    },
     projectEnvironmentAtClock,
     loadPhase2StateVersion: (partyId, options) =>
       loadPhase2StateVersion(partyPool, partyId, options),

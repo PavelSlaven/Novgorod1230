@@ -107,6 +107,12 @@ async function prepareCanonicalTarget({ worldBaseReader, snapshot, party_id, g4,
 export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, committer,
   writePlanBuilder, admitGeneration, projectVisible,
   prepareFirstEntry, now = () => Date.now() } = {}) {
+  async function lockExpansionReplay(request) {
+    if (typeof committer?.lockExpansionReplay !== 'function') {
+      throw new TypeError('P16 replay-lock owner is required');
+    }
+    return committer.lockExpansionReplay(request);
+  }
   /** Everything after the rows of one topology are proposed: first entry of a created place, trace,
    * visible package, sealed write plan. Frontier resolution and canonical connections both end here. */
   async function planProposal({ transaction, request, closure, snapshot, selection, proposal,
@@ -155,7 +161,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
     const expected_state_versions = [...proposal.expected_state_versions,
       ...(firstEntry.expected_state_versions ?? [])];
     const envelopeInput = { party_id, turn_id: change_set_id,
-      committed_state_version: String(current.state_version),
+      committed_state_version: String(BigInt(current.state_version) + 1n),
       change_set_id, package_id: `visible:${change_set_id}`,
       idempotency_record_id: `idem:${change_set_id}`, dependency_pins,
       projection_policy_ref: projectionPolicyRef };
@@ -166,7 +172,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       projection_policy_ref: projectionPolicyRef,
       package_id: envelopeInput.package_id, idempotency_key, change_set_id,
       idempotency_record_id: envelopeInput.idempotency_record_id });
-    if (!visible?.ok) return visible?.error ? visible : reject('visible_projection_required');
+    if (!visible?.ok) return visible?.error ? visible : reject(
+      `visible_projection_required:${visible?.error_code ?? 'unknown'}:${visible?.errors?.[0] ?? 'no validation detail'}`);
     if (!visible.envelope?.projection_policy_ref
       || canonicalDigest(visible.envelope?.projection_policy_ref) !== canonicalDigest(projectionPolicyRef)) {
       return reject('approved_projection_policy_ref_required', 'visible_package_persistence_gap');
@@ -217,7 +224,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         ON state.party_id=party.party_id AND state.state_version=party.state_version
       LEFT JOIN party_runtime.party_server_sessions session ON session.party_id=party.party_id
       WHERE party.party_id=$1`, [party_id]);
-    return current.rows.length === 1 && /^[1-9][0-9]*$/u.test(String(current.rows[0].state_version))
+    return current.rows.length === 1 && /^(0|[1-9][0-9]*)$/u.test(String(current.rows[0].state_version))
       ? current.rows[0] : null;
   }
 
@@ -268,7 +275,9 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
     const suffix = digest({ party_id, profile: ref(profile.id, profile.version),
       slot: ref(slot_ref.id, slot_ref.version) }).slice(7);
     const outcome = await committer.prepareExpansion({ party_id, g4_id: g4.id, idempotency_key,
-      canonical_input_digest, prepare: async ({ transaction }) => {
+      canonical_input_digest,
+      ...(request.transaction == null ? {} : { transaction: request.transaction }),
+      prepare: async ({ transaction }) => {
         const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({ party_id, g4_id: g4.id });
         if (!loaded.ok) return loaded;
         const snapshot = loaded.snapshot;
@@ -383,7 +392,9 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       source_position_id, materializer_version });
     const change_set_id = `${connection_id}:change`;
     const outcome = await committer.prepareExpansion({ party_id, g4_id: g4.id, idempotency_key,
-      canonical_input_digest, prepare: async ({ transaction }) => {
+      canonical_input_digest,
+      ...(request.transaction == null ? {} : { transaction: request.transaction }),
+      prepare: async ({ transaction }) => {
         const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({ party_id, g4_id: g4.id });
         if (!loaded.ok) return loaded;
         const snapshot = loaded.snapshot;
@@ -435,5 +446,6 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
     return outcome.ok ? Object.freeze({ ...outcome, topology_status: 'committed', connection_id,
       source_position_id, moves_traveller: false, advances_time: false }) : outcome;
   }
-  return Object.freeze({ prepareExpansion, prepareCanonicalConnection });
+  return Object.freeze({ lockExpansionReplay, prepareExpansion,
+    prepareCanonicalConnection });
 }

@@ -41,6 +41,17 @@ test('scene NPCs are read from the database for the current site with the G6', a
   assert.equal(state.npcs.length, 2);
 });
 
+test('scene NPC readback uses the supplied transaction queryable', async () => {
+  const p = pool([]);
+  const tx = pool([row('npc_gen')]);
+  const state = await withSceneNpcs(p, 'party', base(), tx);
+  assert.equal(p.calls.length, 0);
+  assert.deepEqual(tx.calls.map(({ values }) => values), [
+    ['party', 'site:1'], ['party', 'site:1']
+  ]);
+  assert.equal(state.npcs.some(({ instance_id }) => instance_id === 'npc_gen'), true);
+});
+
 test('prepared destination readback exposes scene NPCs on arrival and next-turn reload', async () => {
   const transition = { destination_site_id: 'site:destination',
     destination_g6_instance_id: 'g6:destination',

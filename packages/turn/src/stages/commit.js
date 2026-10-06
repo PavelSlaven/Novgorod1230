@@ -2,7 +2,8 @@ import { sha256 } from '@rus/kernel';
 import { freezeOutput } from './shared.js';
 import { enterG4WithMaterialization } from '../first-entry-materialization.js';
 
-export async function commitTurnStage({ writePlan, partyStore, materializer = null }) {
+export async function commitTurnStage({ writePlan, partyStore, materializer = null,
+  transaction }) {
   const idempotencyKey = `turn:${writePlan.party_id}:${writePlan.turn_id}:${sha256(writePlan)}`;
   if (writePlan.first_entry_materialization) {
     if (!materializer || typeof materializer.materialize !== 'function') throw new TypeError('First G4 entry requires materializer.materialize.');
@@ -19,7 +20,10 @@ export async function commitTurnStage({ writePlan, partyStore, materializer = nu
     });
     return freezeOutput({ version: 1, schema: 'turn_commit_result', idempotency_key: idempotencyKey, ...result });
   }
-  const result = await partyStore.commit(writePlan, { idempotencyKey });
+  const result = await partyStore.commit(writePlan, {
+    idempotencyKey,
+    ...(transaction === undefined ? {} : { transaction })
+  });
   if (!result || typeof result !== 'object' || Array.isArray(result)) throw new TypeError('partyStore.commit must return an object');
   return freezeOutput({ version: 1, schema: 'turn_commit_result', idempotency_key: idempotencyKey, ...result });
 }

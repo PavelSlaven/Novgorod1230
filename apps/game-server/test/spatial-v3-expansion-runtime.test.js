@@ -33,15 +33,24 @@ function context() {
 const identity = { partyId: 'party', actorId: 'actor', directionalExitId: 'exit', requestId: 'request' };
 const disclosure = async () => [{ directional_exit_id: 'exit', directional_exit_version: 2,
   direction_context_id: 'direction', knowledge_state: 'visible', display_label: 'Продолжить путь' }];
-test('arrival with no local path to departure offers no expansion and neither mutates nor asks disclosure owner', async () => {
-  const current = context(); current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
-  current.scene = { ...current.scene, positions: [current.position], movement_edges: [] };
-  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current });
-  assert.deepEqual(await runtime.listExpansionOptions(identity), []);
-  assert.deepEqual(await runtime.listApproachOptions(identity), []);
-  await assert.rejects(runtime.prepareExpansion(identity), (e) => e.details.reason === 'selected_exit_unavailable');
+test('blocked internal path keeps disclosed exit selectable and refuses with a player-safe reason', async () => {
+  const current = context();
+  const departure = current.position;
+  const arrival = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  current.position = arrival;
+  current.scene = { ...current.scene, positions: [arrival, departure], movement_edges: [] };
+  const state = { party_id: 'party', actor_id: 'actor', position: { position_id: arrival.id },
+    journey_location: { id: 'journey', scene_position_id: arrival.id, state_version: 1 },
+    party_state: { state_version: 1 } };
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current,
+    readExitDisclosure: disclosure, localSceneMovementRuntime: { async listAdmittedEdgesAt() { return []; } } });
+  assert.deepEqual(await runtime.listExpansionOptions({ ...identity, state }), [{ kind: 'crossing',
+    directional_exit_id: 'exit', display_label: 'Продолжить путь' }]);
+  await assert.rejects(runtime.prepareExpansion({ ...identity, state }), (error) =>
+    error.code === 'LIVE_WORLD_INTERNAL_PATH_UNAVAILABLE'
+      && /нельзя пройти по доступным проходам/u.test(error.message));
 });
-test('an arrival position from which departure is reachable by a local edge offers the approach, not the crossing (A-B1-06)', async () => {
+test('an arrival position exposes the selected exit itself instead of an approach command', async () => {
   const current = context();
   const departurePosition = current.position;
   current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
@@ -50,55 +59,91 @@ test('an arrival position from which departure is reachable by a local edge offe
       to_position_id: departurePosition.id, status: 'active' }] };
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
     materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
-  // No executable crossing from here - it would fail prepareTraversal's committed-position check.
-  assert.deepEqual(await runtime.listExpansionOptions(identity), []);
-  // Instead, the first local hop toward departure, labelled with the exit's own stable text -
-  // the same local-scene edge the local-scene movement owner would offer and execute.
-  assert.deepEqual(await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['local-edge-1'] }),
-    [{ kind: 'approach', directional_exit_id: 'exit', edge_id: 'local-edge-1', display_label: 'Продолжить путь' }]);
+  assert.deepEqual(await runtime.listExpansionOptions(identity), [{ kind: 'crossing',
+    directional_exit_id: 'exit', display_label: 'Продолжить путь' }]);
+  assert.equal(runtime.listApproachOptions, undefined);
 });
-test('the first approach step is taken only from the edges the local-scene owner offered (F3)', async () => {
+
+test('a disclosed exit from arrival resolves a complete owner-admitted path inside one route option', async () => {
   const current = context();
-  const departurePosition = current.position;
-  current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
-  const middle = { id: 'middle-position', template_slot_key: 'middle', template_instance_ordinal: 0 };
-  // The one-hop edge exists in raw topology but is not offered (not visible / not eligible).
-  current.scene = { ...current.scene, positions: [current.position, middle, departurePosition],
-    movement_edges: [
-      { id: 'a-direct', from_position_id: 'arrival-position', to_position_id: departurePosition.id, status: 'active' },
-      { id: 'b-via', from_position_id: 'arrival-position', to_position_id: 'middle-position', status: 'active' },
-      { id: 'c-onward', from_position_id: 'middle-position', to_position_id: departurePosition.id, status: 'active' }] };
-  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
-    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
-  assert.deepEqual(await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: [] }), []);
-  assert.deepEqual(await runtime.listApproachOptions(identity), []);
-  const viaOffered = await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['b-via'] });
-  assert.deepEqual(viaOffered.map((row) => row.edge_id), ['b-via']);
-  const both = await runtime.listApproachOptions({ ...identity, firstStepEdgeIds: ['b-via', 'a-direct'] });
-  assert.deepEqual(both.map((row) => row.edge_id), ['a-direct'], 'shortest path among offered first steps');
+  const departure = current.position;
+  const arrival = { id: 'arrival-position', template_slot_key: 'arrival',
+    template_instance_ordinal: 0, g6_instance_id: 'g6', state_version: 1 };
+  const focus = { id: 'focus-position', template_slot_key: 'focus',
+    template_instance_ordinal: 0, g6_instance_id: 'g6', state_version: 1 };
+  current.position = arrival;
+  current.scene = { ...current.scene, positions: [arrival, focus, departure],
+    movement_edges: [] };
+  const state = { party_id: 'party', actor_id: 'actor', position: { position_id: arrival.id },
+    journey_location: { id: 'journey', scene_position_id: arrival.id, state_version: 4 },
+    party_state: { state_version: 8 } };
+  const path = {
+    [arrival.id]: [{ edge_id: 'edge:arrival-focus', from_position_ref: arrival.id,
+      to_position_ref: focus.id }],
+    [focus.id]: [{ edge_id: 'edge:focus-departure', from_position_ref: focus.id,
+      to_position_ref: departure.id }]
+  };
+  const preparedChains = [];
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current,
+    readExitDisclosure: disclosure, materializerVersion: 'version',
+    localSceneMovementRuntime: {
+      async listAdmittedEdgesAt({ positionId }) {
+        return (path[positionId] ?? []).map((edge) => ({ movement_admission: {
+          ...edge, destination_status: 'open' } }));
+      },
+      async prepareLocalApproachChain(input) {
+        preparedChains.push(input);
+        return { origin_position_ref: arrival.id, expected_journey_state_version: 4,
+          edges: path[arrival.id].concat(path[focus.id]).map((edge) => ({ ...edge,
+            movement_admission: { ...edge, cost_kind: 'action', action_units: 1,
+              base_minutes: null } })), terminal_position_ref: departure.id };
+      }
+    },
+    generatedExpansionAdapter: { async prepareExpansion(input) {
+      assert.equal(input.source_position_id, departure.id);
+      return { ok: true, connection_id: 'connection:generated' };
+    } }
+  });
+  const options = await runtime.listExpansionOptions({ partyId: 'party', actorId: 'actor',
+    state, firstStepEdgeIds: ['edge:arrival-focus'] });
+  assert.deepEqual(options, [{ kind: 'crossing', directional_exit_id: 'exit',
+    display_label: 'Продолжить путь' }]);
+  const expansion = await runtime.prepareExpansion({ partyId: 'party', actorId: 'actor',
+    state, firstStepEdgeIds: ['edge:arrival-focus'], directionalExitId: 'exit' });
+  assert.equal(expansion.source_position_id, departure.id);
+  assert.deepEqual(expansion.local_approach_chain.edges.map(({ edge_id: id }) => id),
+    ['edge:arrival-focus', 'edge:focus-departure']);
+  assert.equal(preparedChains.length, 1);
 });
-test('the disclosure owner receives the exit-to-slot mapping so pass-target text reaches both the crossing and the approach (live gap)', async () => {
+
+test('selected expansion threads transaction separately through context, route, and adapter', async () => {
+  const current = context();
+  const transaction = { query() {} };
+  const seen = [];
+  const runtime = createSpatialV3ExpansionRuntime({
+    readContext: async (input) => { seen.push(['context', input.transaction]); return current; },
+    readExitDisclosure: async (input) => {
+      seen.push(['disclosure', input.transaction]);
+      return disclosure();
+    },
+    materializerVersion: 'version',
+    generatedExpansionAdapter: { async prepareExpansion(input) {
+      seen.push(['adapter', input.transaction]); return { ok: true };
+    } }
+  });
+  await runtime.prepareExpansion({ ...identity, transaction });
+  assert.deepEqual(seen, [['context', transaction], ['disclosure', transaction],
+    ['adapter', transaction]]);
+});
+test('the disclosure owner receives the exit-to-slot mapping for the route choice', async () => {
   const seen = [];
   const spy = async (input) => { seen.push(input.slotByExit); return disclosure(); };
   const atDeparture = context();
   const crossing = createSpatialV3ExpansionRuntime({ readContext: async () => atDeparture, readExitDisclosure: spy,
     materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
   await crossing.listExpansionOptions(identity);
-  const away = context(); const departurePosition = away.position;
-  away.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
-  away.scene = { ...away.scene, positions: [away.position, departurePosition],
-    movement_edges: [{ id: 'local-edge-1', from_position_id: 'arrival-position', to_position_id: departurePosition.id, status: 'active' }] };
-  const approach = createSpatialV3ExpansionRuntime({ readContext: async () => away, readExitDisclosure: spy,
-    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
-  await approach.listApproachOptions({ ...identity, firstStepEdgeIds: ['local-edge-1'] });
-  assert.equal(seen.length, 2);
+  assert.equal(seen.length, 1);
   for (const slotByExit of seen) assert.deepEqual([...slotByExit], [['exit', { id: 'slot', version: 3 }]]);
-});
-test('at departure, no approach is offered (already there)', async () => {
-  const current = context();
-  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
-    materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
-  assert.deepEqual(await runtime.listApproachOptions({ partyId: 'party', actorId: 'actor' }), []);
 });
 test('exact approved entry and current disclosure select server-owned request only', async () => {
   const current = context(); const before = structuredClone(current); let request;
@@ -134,7 +179,7 @@ test('wrong exact entry version, hidden exit and changed disclosure version are 
   }
 });
 test('consumed frontier reload reuses committed connection without generation', async () => {
-  const current = context(); let generated = false;
+  const current = context(); let generated = false; const replayLocks = [];
   current.snapshot.frontiers = [{ id: 'frontier', source_g5_site_id: 'source-site', slot_ref: { entity_id: 'slot', authoring_version: '3' },
     continuation_ordinal: 0, continuation_chain_id: 'chain', status: 'consumed', resolved_site_connection_id: 'connection' }];
   current.snapshot.chains = [{ id: 'chain', terminal_ordinal: 0 }];
@@ -142,9 +187,12 @@ test('consumed frontier reload reuses committed connection without generation', 
   current.snapshot.site_connections = [{ id: 'connection', from_site_id: 'source-site', status: 'active' }];
   current.snapshot.endpoint_bindings = [{ site_connection_id: 'connection', endpoint_role: 'from', status: 'active', position_id: 'departure-position' }];
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,
-    generatedExpansionAdapter: { prepareExpansion: async () => { generated = true; } } });
-  const result = await runtime.prepareExpansion(identity);
+    generatedExpansionAdapter: { prepareExpansion: async () => { generated = true; },
+      async lockExpansionReplay(request) { replayLocks.push(request); return { ok: true }; } } });
+  const transaction = { query() {} };
+  const result = await runtime.prepareExpansion({ ...identity, transaction });
   assert.equal(result.replay, true); assert.equal(result.connection_id, 'connection'); assert.equal(generated, false);
+  assert.deepEqual(replayLocks, [{ party_id: 'party', g4_id: 'g4', transaction }]);
   await assert.rejects(runtime.prepareTraversal({ ...identity, expansion: result }),
     (e) => e.details.reason === 'site_connection_traversal_owner_required');
 });
@@ -219,13 +267,13 @@ test('terminal admission pins the committed canonical destination scene', async 
     } } });
   const result = await admit({ transaction: { query: async () => ({ rows: [{ turn_number: 4 }] }) },
     request: { party_id: 'party', actor_id: 'actor', source_position_id: 'departure',
-      source_site_id: 'source-site', g4 },
+      origin_position_id: 'arrival', source_site_id: 'source-site', g4 },
     snapshot: { sites: [{ id: 'target-site', origin: 'canonical', status: 'active',
       canonical_g5_ref: { entity_id: canonical.id, authoring_version: '1' } }],
     scene_baselines: [{ host_kind: 'g5_site', host_id: 'target-site', status: 'active',
       scene_template_ref: { entity_id: scene.id, authoring_version: String(scene.version) } }],
     journey_locations: [{ id: 'location', party_id: 'party', owner_kind: 'actor',
-      owner_id: 'actor', location_kind: 'scene', scene_position_id: 'departure' }] },
+      owner_id: 'actor', location_kind: 'scene', scene_position_id: 'arrival' }] },
     selection: { status: 'terminal', directional_exit: { exit_canonical_g5_id: canonical.id,
       exit_canonical_g5_version: canonical.version } }, dependency_pins: { pins: [] } });
   assert.equal(result.ok, true);
@@ -255,13 +303,13 @@ test('canonical connection admission pins the committed canonical destination sc
     } } });
   const result = await admit({ transaction: { query: async () => ({ rows: [{ turn_number: 4 }] }) },
     request: { party_id: 'party', actor_id: 'actor', source_position_id: 'departure',
-      source_site_id: 'source-site', g4 },
+      origin_position_id: 'arrival', source_site_id: 'source-site', g4 },
     snapshot: { sites: [{ id: 'target-site', origin: 'canonical', status: 'active',
       canonical_g5_ref: { entity_id: canonical.id, authoring_version: '1' } }],
     scene_baselines: [{ host_kind: 'g5_site', host_id: 'target-site', status: 'active',
       scene_template_ref: { entity_id: scene.id, authoring_version: String(scene.version) } }],
     journey_locations: [{ id: 'location', party_id: 'party', owner_kind: 'actor',
-      owner_id: 'actor', location_kind: 'scene', scene_position_id: 'departure' }] },
+      owner_id: 'actor', location_kind: 'scene', scene_position_id: 'arrival' }] },
     selection: { status: 'canonical_connection', target_canonical_g5: { id: canonical.id,
       version: canonical.version } }, dependency_pins: { pins: [] } });
   assert.equal(result.ok, true);

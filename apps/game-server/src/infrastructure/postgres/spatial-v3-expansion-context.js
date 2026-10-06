@@ -1,6 +1,5 @@
 import { createSpatialV3Repository } from '@rus/party-store/spatial-v3';
 import { serverError } from '../../errors.js';
-import { findReachableDeparturePosition } from '../../runtime/spatial-v3-expansion-runtime.js';
 
 /** The public command supplies actor/party identities only. Authoring pins come
  * from the active revision and its unique approved G4 dependency edge. */
@@ -27,8 +26,7 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     version: Number(current.baseline.scene_template_ref.authoring_version), world_revision_id: current.world_revision_id });
   if (!scene?.ok) gap('approved_source_scene_required', scene?.error);
   const local = await transaction.query(`SELECT
-      (SELECT jsonb_agg(jsonb_build_object('id',p.id,'template_slot_key',p.template_slot_key,
-          'template_instance_ordinal',p.template_instance_ordinal))
+      (SELECT jsonb_agg(to_jsonb(p) ORDER BY p.id)
         FROM party_runtime.scene_position_nodes p
         WHERE p.party_id=$1 AND p.g6_instance_id=$2 AND p.status='active') AS positions,
       (SELECT jsonb_agg(jsonb_build_object('id',e.id,'from_position_id',e.from_position_id,
@@ -38,9 +36,6 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     [partyId, current.position.g6_instance_id, current.baseline.id]);
   const sceneWithLocalTopology = { ...scene.value,
     positions: local.rows[0]?.positions ?? [], movement_edges: local.rows[0]?.movement_edges ?? [] };
-  if (findReachableDeparturePosition({ position: current.position, scene: sceneWithLocalTopology }) == null) {
-    return { ...current, scene: sceneWithLocalTopology, partyId, actorId };
-  }
   const binding = await worldBaseReader.readG4ExpansionBinding({ g4_id: current.site.parent_g4_id,
     world_revision_id: current.world_revision_id });
   if (!binding?.ok) gap('approved_g4_expansion_binding_required', binding?.error);
@@ -64,7 +59,11 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
 }
 
 export function createSpatialV3ExpansionContextReader({ partyPool, worldBaseReader, release } = {}) {
-  return async ({ partyId, actorId }) => {
+  return async ({ partyId, actorId, transaction: suppliedTransaction = null }) => {
+    if (suppliedTransaction != null) {
+      return readSpatialV3ExpansionContext({ transaction: suppliedTransaction,
+        worldBaseReader, release, partyId, actorId });
+    }
     const transaction = await partyPool.connect();
     try {
       await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');

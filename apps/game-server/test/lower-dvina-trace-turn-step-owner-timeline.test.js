@@ -9,11 +9,98 @@ import { appendTurnStepSemanticActivityWrites } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-activity-writes.js';
 import { createSpatialV3CombinedAtomicCommitter } from
   '../src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { lockOrder } from
+  '../src/infrastructure/postgres/spatial-v3-write-plan-validation.js';
 import { prepareLowerDvinaTraceTurnStepPersistence } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-persistence.js';
 
 const DIRECT_SCHEMA =
   'rus.lower_dvina_trace_turn_step_direct_operation.v1';
+
+test('P16 expansion reuses caller transaction and preserves typed refusal',
+  async () => {
+    let transactionOwnerCalls = 0;
+    const advisoryLocks = [];
+    const transaction = { async query(statement, params) {
+      if (statement.includes('pg_advisory_xact_lock')) advisoryLocks.push(params[0]);
+      if (statement.includes('SELECT canonical_input_digest,status')) {
+        return { rows: [], rowCount: 0 };
+      }
+      return { rows: [], rowCount: 0 };
+    }};
+    const refusal = Object.freeze({ ok: false, error: { code: 'typed_refusal' } });
+    const committer = createSpatialV3CombinedAtomicCommitter({
+      withTransaction: async () => { transactionOwnerCalls += 1;
+        throw new Error('caller transaction must be reused'); },
+      recheck: async () => ({ ok: true })
+    });
+    const result = await committer.prepareExpansion({
+      party_id: 'party:1', g4_id: 'g4:1', idempotency_key: 'idem:1',
+      canonical_input_digest: `sha256:${'a'.repeat(64)}`, transaction,
+      prepare: async ({ transaction: actual }) => {
+        assert.equal(actual, transaction);
+        return refusal;
+      }
+    });
+    assert.equal(result, refusal);
+    assert.equal(transactionOwnerCalls, 0);
+    assert.deepEqual(advisoryLocks, [[
+      '00:g4:party:1:g4:1', '01:clock:party:1'
+    ]]);
+  });
+
+test('P16 plan lock order takes every G4 lock before party turn locks', () => {
+  assert.deepEqual(lockOrder({ party_id: 'party:1', owner_keys: ['owner:1'],
+    execution_keys: ['execution:1'], g4_keys: ['party:1:g4:1'],
+    physical_keys: [], change_set_id: 'change:1', operation_kind: 'move',
+    idempotency_key: 'idem:1' }).slice(0, 4), [
+    '00:g4:party:1:g4:1', '01:clock:party:1',
+    '02:owner:owner:1', '03:execution:execution:1'
+  ]);
+});
+
+test('P16 transaction wrapper commits graph result without exposing its marker',
+  async () => {
+    const transaction = { query() {} };
+    const turnBudget = { remaining: () => ({ deadline_ms: 1000 }) };
+    const outcomes = [];
+    let commits = 0;
+    let rollbacks = 0;
+    const committer = createSpatialV3CombinedAtomicCommitter({
+      async withTransaction(work, actualBudget) {
+        assert.equal(actualBudget, turnBudget);
+        try {
+          const outcome = await work(transaction);
+          outcomes.push(outcome);
+          if (outcome?.ok !== true) {
+            rollbacks += 1;
+            return Object.freeze({ ...outcome,
+              transaction_rollback_confirmed: true });
+          }
+          commits += 1;
+          return outcome;
+        } catch (error) {
+          rollbacks += 1;
+          throw error;
+        }
+      }
+    });
+    const graphResult = { status: 'approved', artifact: { id: 'turn:1' } };
+    const actualGraphResult = await committer.withTransaction(async (tx) => {
+      assert.equal(tx, transaction);
+      return graphResult;
+    }, turnBudget);
+    assert.equal(actualGraphResult, graphResult);
+    assert.deepEqual(outcomes[0], { ok: true, value: graphResult });
+    assert.equal(commits, 1);
+
+    const refusal = { ok: false, error: { code: 'typed_refusal' } };
+    const actualRefusal = await committer.withSpatialTurnTransaction(
+      async () => refusal, turnBudget);
+    assert.equal(actualRefusal.error.code, 'typed_refusal');
+    assert.equal(actualRefusal.transaction_rollback_confirmed, true);
+    assert.equal(rollbacks, 1);
+  });
 
 test('M1 semantic activity persists only the exact owner output', () => {
   const activity = semanticActivity();
@@ -317,6 +404,7 @@ test('M1 owner timeline commits through the existing P16 transaction',
     });
     assert.equal(built.ok, true, JSON.stringify(built.error));
     const sql = [];
+    let transactionOwnerCalls = 0;
     const tx = { async query(statement) {
       sql.push(statement);
       if (statement.includes('SELECT party_id,operation_kind')) {
@@ -328,12 +416,15 @@ test('M1 owner timeline commits through the existing P16 transaction',
       return { rows: [], rowCount: 1 };
     }};
     const committer = createSpatialV3CombinedAtomicCommitter({
-      withTransaction: (work) => work(tx),
+      withTransaction: (work) => { transactionOwnerCalls += 1; return work(tx); },
       recheck: async () => ({ ok: true })
     });
     const committed = await committer.commit({ plan: built.plan,
-      created_at_turn: 1 });
+      created_at_turn: 1, transaction: tx });
     assert.equal(committed.ok, true, JSON.stringify(committed.error));
+    assert.equal(transactionOwnerCalls, 0);
+    assert.equal(sql.some((statement) => /^(BEGIN|COMMIT|ROLLBACK)\b/i
+      .test(statement.trim())), false);
     for (const table of [
       'party_items', 'party_item_placements',
       'party_timed_activity_executions', 'party_timed_activity_attempts'

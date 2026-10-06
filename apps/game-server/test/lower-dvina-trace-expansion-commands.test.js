@@ -54,7 +54,8 @@ test('approved exit is a selectable exact server operation; topology input is ID
       duration: 1, kind: 'movement' });
     const runtime = {
       async listExpansionOptions(input) {
-        assert.deepEqual(input, { partyId: state.party_id, actorId: state.actor_id });
+        assert.deepEqual(input, { partyId: state.party_id, actorId: state.actor_id,
+          state, firstStepEdgeIds: [] });
         return [candidate, { directional_exit_id: 'exit:meadow',
           display_label: 'Пройти к открытому лугу.' }];
       },
@@ -78,6 +79,7 @@ test('approved exit is a selectable exact server operation; topology input is ID
       operation_choice: choices[0].choice_id, operation_family: 'request_movement'
     }, choices);
     const command = definitions[0];
+    const transaction = { query() {} };
     assert.deepEqual(command.writeTargets(), []);
     assert.equal(command.semantic_binding.matches(selected), true);
     assert.equal(command.semantic_binding.matches({ operation: {
@@ -85,19 +87,53 @@ test('approved exit is a selectable exact server operation; topology input is ID
     assert.equal(command.matches({ raw_text: candidate.display_label }), false);
     const playerInput = { request_id: 'request:walk',
       topology_payload: { forged: true }, directional_exit_id: 'exit:forged' };
-    assert.equal(await command.consequence({ retrievedState: state, playerInput }),
+    assert.equal(await command.consequence({ retrievedState: state, playerInput },
+      { transaction }),
       consequence);
     assert.deepEqual(calls[0], ['expansion', { partyId: state.party_id,
       actorId: state.actor_id, directionalExitId: candidate.directional_exit_id,
-      requestId: 'request:walk' }]);
+      requestId: 'request:walk', state, firstStepEdgeIds: [], transaction }]);
     assert.equal(calls[1][0], 'traversal');
     assert.equal(calls[1][1].expansion.site_connection_id, 'connection:generated');
     assert.equal(calls[1][1].inputDigest, 'input:digest');
+    assert.deepEqual(calls[1][1].firstStepEdgeIds, [],
+      'preparation and traversal resolve the same owner-offered first hop');
+    assert.equal(calls[1][1].transaction, transaction,
+      'the P16 queryable is shared by topology preparation and traversal');
     for (const changed of [
       { target_ref: 'exit:forged' }, { route_ref: 'exit:forged' },
       { actor_ref: 'actor:other' }, { topology_payload: {} }
     ]) assert.equal(command.semantic_binding.matches({ operation: {
       ...selected.operation, ...changed } }), false);
+  });
+
+test('traversal refusal inside caller transaction is typed as an uncommitted path failure',
+  async () => {
+    const transaction = { query() {} };
+    const cause = Object.assign(new Error('private stale route evidence'), {
+      code: 'SPATIAL_V3_LOCAL_MOVEMENT_DENIED'
+    });
+    const [command] = await commands({
+      listExpansionOptions: async () => [candidate],
+      async prepareExpansion(input) {
+        assert.equal(input.transaction, transaction);
+        return { ok: true, site_connection_id: 'connection:staged' };
+      },
+      async prepareTraversal(input) {
+        assert.equal(input.transaction, transaction);
+        throw cause;
+      }
+    });
+    await assert.rejects(command.consequence({ retrievedState: state,
+      playerInput: {} }, { transaction }), (error) => {
+      assert.equal(error.code, 'LIVE_WORLD_TRAVERSAL_DENIED');
+      assert.equal(error.cause, cause);
+      assert.equal(error.details.reason_code, cause.code);
+      assert.equal(error.details.actor_moved, false);
+      assert.equal(error.details.time_advanced, false);
+      assert.equal(JSON.stringify(error.details).includes('private stale'), false);
+      return true;
+    });
   });
 
 test('missing traversal owner rejects before topology mutation', async () => {
@@ -237,7 +273,7 @@ test('restrained free-text movement commits a blocked zero-minute turn', async (
   assert.deepEqual(f.state.position, beforePosition);
 });
 
-test('official exit action reports known movement denial without moving or advancing time',
+test('official exit action reports typed traversal denial without moving or advancing time',
   async () => {
     const bundle = await loadScenarioBundle(13);
     const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
@@ -277,22 +313,20 @@ test('official exit action reports known movement denial without moving or advan
     await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: {
       request_id: 'expansion:denied', raw_text: 'Иду дальше по лесной тропе.'
     } }), (error) => {
-      assert.equal(error.code, 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED');
+      assert.equal(error.code, 'LIVE_WORLD_TRAVERSAL_DENIED');
       assert.equal(error.cause.code, 'SPATIAL_V3_MOVEMENT_DENIED');
       const publicError = errorEnvelope(error);
       assert.equal(publicError.status, 409);
-      assert.equal(publicError.body.error.movement_status, 'movement_denied');
-      assert.equal(publicError.body.error.turn_commit_status, 'topology_committed');
-      assert.equal(publicError.body.error.actor_moved, false);
-      assert.equal(publicError.body.error.time_advanced, false);
+      assert.equal(error.details.actor_moved, false);
+      assert.equal(error.details.time_advanced, false);
       return true;
     });
     assert.deepEqual(f.state.position, beforePosition);
     assert.deepEqual(f.state.clock, beforeClock);
   });
 
-for (const topologyCommitted of [false, true]) test(topologyCommitted
-  ? 'public traversal refusal preserves committed topology without moving actor or advancing time'
+for (const traversalAvailable of [false, true]) test(traversalAvailable
+  ? 'public traversal refusal rolls back the staged topology and leaves actor and time unchanged'
   : 'public authored turn exposes the approved exit and rejects an unwired traversal without commit',
   async () => {
     const bundle = await loadScenarioBundle(13);
@@ -310,7 +344,7 @@ for (const topologyCommitted of [false, true]) test(topologyCommitted
         listApproachOptions: async () => [],
         listExpansionOptions: async () => [candidate],
         prepareExpansion: async () => { prepared += 1; return { ok: true }; },
-        ...(topologyCommitted ? { prepareTraversal: async () => {
+        ...(traversalAvailable ? { prepareTraversal: async () => {
           throw Object.assign(new Error('Private route admission evidence.'),
             { code: 'ROUTE_CAPACITY_UNAVAILABLE' });
         } } : {})
@@ -336,29 +370,19 @@ for (const topologyCommitted of [false, true]) test(topologyCommitted
     await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: {
       request_id: 'expansion:public', raw_text: 'Иду дальше по лесной тропе.'
     } }), (error) => {
-      assert.equal(error.code, topologyCommitted
-        ? 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED'
-        : 'LIVE_WORLD_TRAVERSAL_OWNER_MISSING');
-      const response = errorEnvelope(error).body.error;
-      assert.equal(error.turn_commit_status,
-        topologyCommitted ? 'topology_committed' : 'not_started');
-      assert.equal(response.turn_commit_status,
-        topologyCommitted ? 'topology_committed' : 'not_started');
-      assert.equal(response.topology_status,
-        topologyCommitted ? 'topology_committed' : undefined);
-      assert.equal(response.movement_status,
-        topologyCommitted ? 'movement_denied' : undefined);
-      if (topologyCommitted) {
-        assert.equal(response.actor_moved, false);
-        assert.equal(response.time_advanced, false);
+      assert.equal(error.code, traversalAvailable
+        ? 'LIVE_WORLD_TRAVERSAL_DENIED' : 'LIVE_WORLD_TRAVERSAL_OWNER_MISSING');
+      if (traversalAvailable) {
         assert.equal(error.cause.code, 'ROUTE_CAPACITY_UNAVAILABLE');
         assert.equal(error.details.reason_code, 'ROUTE_CAPACITY_UNAVAILABLE');
-        assert.equal(JSON.stringify(response).includes('Private route'), false);
+        assert.equal(error.details.actor_moved, false);
+        assert.equal(error.details.time_advanced, false);
+        assert.equal(JSON.stringify(errorEnvelope(error)).includes('Private route'), false);
       }
       return true;
     });
     assert.equal(f.turnStepCount(), 1);
-    assert.equal(prepared, topologyCommitted ? 1 : 0);
+    assert.equal(prepared, traversalAvailable ? 1 : 0);
     assert.equal(f.commitCount(), 0);
     assert.deepEqual(f.state.position, beforePosition);
     assert.deepEqual(f.state.clock, beforeClock);

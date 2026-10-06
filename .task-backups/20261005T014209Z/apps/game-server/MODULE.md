@@ -1,0 +1,1094 @@
+# @rus/game-server
+
+Состав безопасного входа для художественной сцены сверяется с
+[ситуационными требованиями к прозе](../../data/knowledge-source/corpus/DOCUMENTS/situational_prose_requirements.md).
+Server передаёт актуальные восприятие, память, тело, время, причины и остаток
+действия от существующих owners; литературную композицию выполняет narration.
+
+Development-only gameplay gap tracing использует существующий private party
+log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
+контекст, WK planner/query/consumer slice и owner commit/rejection. Эти поля
+не входят в публичный diagnostic report, player/NPC prompt или authoritative
+state. При выключенном developer mode capture callback отсутствует. Ошибка
+snapshot помечает trace неполной (`capture_failed`), не изменяя игровой исход.
+Gap Auditor работает отдельно в authoring workflow; в runtime не вызывается.
+
+## Назначение
+
+Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3
+bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`,
+runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade и post-commit
+presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
+`src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
+
+Runtime `needs_check` filter is limited to O1, O2b and S1. Server gets
+`rus.needs_check_blockers.v2` only from verified immutable catalog snapshot for
+same turn pin; lookup is lazy. Guard uses year from committed clock and region
+from runtime-catalog G0 reader for current G4 version. O1 checks normalized query
+after replay/preflight and before model call: a match returns ordinary `no_change`
+and follows normal turn timing/commit without being reported as `absent`.
+Proposed O1 descriptors are filtered per new entity before admission/write;
+matching entities are removed and remaining candidates continue. If none remain,
+the result is ordinary `no_change`, without a negative presence resolution.
+O2b/S1 filter only matching candidates; remaining candidates continue. O2a is
+authored-only and does not run this filter.
+
+For NPCs, matching O1 inspect/search queries, A1 and direct `create_entity`
+proposals are replaced by normal wait before actor-step. A matching descriptor
+proposed inside O1 is filtered per candidate, like O2b/S1; remaining candidates
+continue. NPC A1 checks only a newly forbidden name in `source_fact_delta`.
+Player A1 and direct `create_entity` are
+not blocked by this list. Place filling, NPC first-entry, inventory, equipment
+and trade use approved catalogs checked by
+`node data/world-catalogs/novgorod/game-base-v1/scripts/check-needs-check.mjs --check`;
+snapshot does not replace those checks. Queue IDs and check paths appear only in
+developer trace when diagnostics are enabled. Snapshot does not replace approved
+catalogs or world knowledge. O2b/S1 profiles activate only through existing
+exact gates.
+
+`prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16
+equipment and Stage 24 body/routine projections for an exact generated scene.
+It returns one P16 write set, validation and deterministic choice traces;
+it neither commits nor reads catalogs. The caller supplies verified actor,
+Temporal, equipment and routine inputs. NPC schedules bind the generated
+position directly and retain the existing `@rus/npc-runtime` transition state.
+Every generated NPC requires exact regional and clothing profile bindings;
+clothing belonging to another NPC cannot satisfy its requirements.
+
+The optional target-release natural baseline boundary
+`prepareG4NaturalBaseline` validates exact catalog/G4/scene/Temporal
+inputs and returns a machine baseline separate from visible context. Baseline
+readiness grants no perception: the visibility owner must admit an actor/G6
+subset before any natural fact reaches narration or `sensory_details`. Static
+ecology remains in immutable compiled world-base records.
+Historical authored screens are unchanged. Production adoption requires the
+target release to call this boundary with its approved catalog and current
+Temporal state and route perceived facts through the visibility owner before
+publishing the first screen.
+
+It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
+
+The generated expansion adapter reads exact G4/profile/scene/acoustic closures
+and the normalized party snapshot inside the existing P16 expansion lock.
+It delegates selection and row proposals to `@rus/materialization`, then uses
+the existing combined write-plan builder and committer. Generation admission,
+candidate applicability, visible projection and commit rechecks remain required
+owner ports; missing ports or authoring return a typed gap. It does not activate
+a release. The same structural operation key replays before materialization;
+topology preparation changes neither traveller placement nor the party clock.
+An unvisited canonical terminal is prepared in that same transaction from its
+exact scene binding and acoustic closure. Generated first-entry domain owners
+may contribute admitted write sets and rechecks through `prepareFirstEntry`;
+P16 persists those rows with topology and the selection trace.
+
+Canonical connections (passages between canonical places of one G4, Vikhtuy first)
+are a second topology kind of the same owner. The world-base reader returns the
+approved bindings that leave a place (per binding id its highest approved version;
+the profile is read by the binding's own reference, because the expansion profile pins
+only one of them).
+`eligibleCanonicalConnections` offers them at the departure position the binding
+names; away from it the first local hop toward that position is the approach
+(same rule as exits: only an edge the local-scene owner offers). Disclosure is the
+exit visibility rule (no sight, no passage) with the label from the attested
+`m2c-canonical-connection-labels` catalog by binding id; a revealed connection
+without an approved label is a typed data gap. `prepareCanonicalConnection` of the
+generated expansion adapter shares the terminal preparation and the plan tail
+with frontier resolution (first entry of a created place goes through the same
+`prepareFirstEntry`, i.e. the R-2a presence resolver) and commits
+`resolve_frontier` under `resolve_frontier:canconn:<party>:<binding_id>`. The
+traversal itself is the shared `prepareSiteTraversal`. Arrival gives the narrator
+the destination's own scene text as `visible_changes` (turn-step visible projector,
+for every site connection). Entering a never-visited place needs its approved G6
+ambient baseline (the walk-acoustics data covers every connection target).
+
+Availability of a traversed connection is evaluated by `assessAvailability` of the current
+movement capability (traversal admission and its commit recheck share it and both require
+`status: 'open'`). Other gates still treat a non-empty condition-set ref as unusable without
+asking it (`spatial-v3-world-base-reader.js` connection reader, `spatial-v3-generated-scene.js`,
+`spatial-v3-local-scene-movement.js`, `spatial-v3-local-movement-eligibility.js`); they are
+unreachable today because the refs are NULL in the used data (LW-096). A null condition
+set is open as before. The five condition sets the approved data names carry no predicate and
+the party holds no snow, flood or ice state, so the approved policy
+`live-world-runtime-v17/movement-availability-policy.v1.json` evaluates each as `open` with
+reason `availability_state_not_evaluable`; light and visibility never close a passage. A set
+absent from the policy is a typed data gap (`availability_condition_set_owner_missing`), and a
+profile whose set differs from its connection's is refused. `open_with_requirement` and
+`closed` are not produced until state exists to evaluate. `lower-dvina-boundary-policy.js` of
+`@rus/turn` is only re-exported and has no caller in the v17 runtime.
+
+Notes on the shared vocabulary. `operation_kind=resolve_frontier`, `run_kind=expansion` and
+`trigger=frontier_resolution` also serve a canonical connection (there is no frontier; the
+committer accepts only that kind for topology commits). In `visible_objects` the
+`g5_site_connection` entity carries the approved binding id, not the party row id
+`canconn:<party>:<binding>`, which does not exist before the first passage; the kind is shown
+in the visible context, the turn-step scene and the route panel. A bare canonical scene-binding
+read (no scene or profile pin) uses the release scene-profile generation (its own pin
+`releaseSceneProfileVersion`: 2 in v17, default 1) - the open-capacity successor made a bare read ambiguous. Only the highest approved version of a binding is a candidate (no fallback to an older one);
+if its profile is not a non-conditional `site_connection` the reader lists that binding in `gaps`
+(kept in the context as `canonical_connection_gaps`) and the place's other connections, exits and
+visible context are unaffected.
+
+Presence at first arrival (O1, §3A) has one resolver,
+`createTargetPresenceRulesFirstArrivalResolver`, for the start place and every
+later first arrival. Bindings come from the site node: canonical G5 reads its
+own node, generated G5 reads its parent G4; the region is the G0 ancestor of
+that node. The calendar comes from `readTargetPartyPresenceCalendar` after the
+bindings are found: `readInitialEnvironment` at `state_version 0` (start),
+`readCurrentEnvironment` inside the arrival transaction later. A node without
+bindings or rules is a legal empty presence: the resolver returns a typed
+`presence_gap` for diagnostics only, nothing is stored and nothing reaches the
+player or LLM. Wrong inputs (missing site, G4 pin, node version, region,
+calendar, resolver port or finite profile) fail closed with typed errors.
+The public start provisions start presence for `runtime_binding == null`, for
+every start of the v17 catalog (`TARGET_START_CATALOG_ID`, any
+`binding_revision`) and for v1 bindings from revision 5.
+
+Spatial semantic materialization hands the server one validated formal proposal.
+Exact physical topology comes from the exact Spatial catalog closure through
+`@rus/materialization/spatial-v3`; Spatial owner supplies exact source and
+destination base rows from those closures. The fixed fishing-camp G5 uses its
+canonical authored identity, never a generated/frontier claim; scenario bindings
+carry only profile refs and slot keys. Server owns only P16/SQL: it revalidates committed profile pins,
+scope and capacity in existing transaction, then persists accepted refs and
+semantic detail. It does not create proposal, topology or resource mechanics,
+and adds no second transaction owner.
+
+## Владеет
+
+- M2a public start catalog подключает approved authored starts из одного
+  versioned `live-world-runtime-v1` binding. Демо и другие authored starts
+  проходят тот же Phase 1A → Stage 24/25 → PostgreSQL → persisted screen path;
+  party сохраняет exact runtime binding, а старые trace sessions продолжают
+  проверяться по своим historical pins. Neutral catalog владеет собственными
+  execution/world/binding inputs; Lower Dvina publication загружается только
+  для своей external entry и не блокирует другой authored start. Read/reload
+  разрешает только persisted current approved binding, без latest fallback;
+  development saves старых authored revisions не поддерживаются. Authored profile получает
+  bounded role/occupation closure из digest-pinned regional catalogs; server
+  не назначает actor approval самостоятельно.
+  Для новой development-party composition загружает exact active
+  `actor_base_attributes_v1` binding из runtime-catalog ledger; отсутствие или
+  несовместимость binding остаётся typed DATA GAP/INVALID до materialization.
+
+- M2b проводит demo и authored-start партии через один существующий
+  `runTurnWorkflow` → P16 commit → durable narration/recovery path. Для
+  authored-start catalog поставляет нейтральный versioned turn-owner profile;
+  runtime не загружает demo bundle, revision contracts или scenario prose.
+  Профиль допускает общие semantic activity, body/check, item и temporal
+  owners, а отсутствующая capability остаётся честным direct/gap результатом.
+  Exact elapsed time остаётся code-owned UI metadata; narration получает
+  подтверждённый performed-action beat без копирования длительности.
+  Current authored binding revision 6 pins materializer/result/snapshot v3 and
+  the persisted rich-opening source contract.
+  Deprecated development revisions 3 and 4 удалены. Phase 2 resolves only the persisted exact current binding,
+  without latest lookup, reroll or rematerialization. The first factual turn
+  commits the normal turn snapshot; reload and later turns use committed state.
+
+- Planner examples остаются flat semantic objects; mapping labels находятся
+  вне JSON. Goal/result и exact continuation относятся ко всей заявке.
+  Stable system rules предшествуют request-specific choices/mappings и audit
+  shape/segment choices. Audit evidence краток, но сохраняет все разные findings.
+  Planner private wire передаёт структурированный WK slice через общий helper
+  `@rus/turn` `worldKnowledgePromptData`;
+  facts/qualifiers/constraints/coverage/gaps/disputes, canonical grounding и
+  telemetry сохраняются.
+  Narration prompts проверяют также temporal/aspectual связи и конкретный
+  pending choice; whole-prose repair повторно применяет все grounding rules.
+
+- Production WK query planner может вернуть canonical empty six-field plan,
+  когда raw semantic step не требует factual premise. Для `semantic_resolution`
+  grounder всё равно строит deterministic default-запрос (все purpose-allowed
+  domains, `search_hints` = `semantic_input`) и вызывает embedding/vector/Core;
+  `NO_KNOWLEDGE_REQUIRED` пишется только если Core не допустил facts, hard
+  constraints и disputes. Default-query slice никогда не получает
+  `SUFFICIENT_KNOWLEDGE` (макс. `PARTIAL`; LW-047). Encoder/vector отказ —
+  fail-closed `WORLD_KNOWLEDGE_UNAVAILABLE` без lexical fallback.
+  Непустая factual need сохраняет прежний validated retrieval path.
+  Slice несёт `sufficiency` рядом с `verdict`; diagnostic — `cache_hit`/`cache_miss`.
+  Все восемь consumers (turn step/O1/S1/N1/autonomous/conversation/narration/
+  player conversation interpreter) получают структурированный WK slice.
+
+- Narration adapter даёт auditor request-local sources
+  visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
+  (changes/uncertainties с ref/text), optional_support
+  и constraints (do_not_imply/allowed_tensions/style_policy), без копии visible_context.
+  При любом current change/uncertainty optional_support содержит только
+  `visible_scene`: остальные static arrays/metadata и неизменный sensory panorama
+  не поступают writer/auditor/repair. Newly relevant sensory details уже входят
+  в required visible changes; полный пересказ окружения запрещён.
+  Newly relevant facts приходят через visible_changes: applied observation
+  продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
+  включая safe entity label/status и уже human N1 ordinary cues; portrait enums
+  не становятся prose и не требуют нового словаря,
+  ordinary scene seed — только факты текущего результата. Общая projection
+  выполняет arrival promotion после NPC enrichment, но берёт route knowledge
+  из исходного arrival result. Snapshot self-knowledge и carried objects
+  не продвигаются общим осмотром; ими владеет explicit item observation. Без current beat
+  descriptive support сохраняется для scene-only perception. Outcome/intent
+  передаются только своим ролям; used_references остаётся [].
+  Initial current-scene projection reads persisted player/local items plus
+  player-safe NPC appearance, activity and equipped-item refs; state version 0
+  does not replace existing rows with an empty `visible_objects` list.
+  Private auditor возвращает только полный ordered reviewed_segments,
+  ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
+  `literary_failures` и evidence. Adapter строго проверяет exact own-key set,
+  refs/order, canonical segment choices, allowed failure kinds/checks и reasons,
+  затем детерминированно собирает public source_index coverage, concerns,
+  artistic/technical verdict и delivery pass. Литературный finding сохраняется,
+  но не блокирует доставку; factual/hidden/technical finding блокирует. LLM не
+  назначает verdict или индексы, а server не синтезирует reviewed segments/evidence.
+  Пустой review частично либо полностью потерянного source становится
+  missing_visible_change; malformed private output fail-closed и не получает
+  синтезированного repair concern. Непокрытый source получает null segment,
+  а не alias на первый model segment. Final audit всегда strict.
+  Private writer/format-repair возвращает только prose; Adapter всегда собирает
+  публичные action_options=[], used_references=[] и нейтральный self_check={},
+  которые не служат model approval.
+  Полноту coverage и согласованность художественного/технического verdict
+  проверяет `@rus/narration` на initial/final audit. Narrator и цельный repair
+  строят текущий beat вокруг изменений и неопределённостей; статический
+  контекст поддерживает его, не вытесняя незавершённое действие или exact speech.
+
+- Phase 2 объединяет одновременные retries одной party/idempotency identity
+  в одну runtime promise до чтения replay. Другой input digest получает conflict.
+  Promise удаляется после завершения; durable replay и commit остаются у P16.
+  Это координация одного server process, не межпроцессная блокировка.
+  Workflow failure до входа commit owner и явный repository/P16 отказ после
+  подтверждённого rollback выдают публичный
+  `error.turn_commit_status: not_started`; replay, потеря транспорта во время
+  `COMMIT` и другой неопределённый commit не получают этот признак.
+- Публикует player-safe progress только для exact active request через
+  `GET /api/v1/parties/:partyId/turns/:requestId/progress`. Ответ — nullable
+  `turn_progress_v1` со status `running`, request ID, monotonic sequence,
+  started/phase-start timestamps, factual `elapsed_seconds`, всегда
+  `remaining_seconds: null` и одной закрытой phase: `accepted`,
+  `understanding_action`, `resolving_world`, `saving_result`, `preparing_screen`
+  либо `recovering_saved_result`. `commit_state` остаётся `unconfirmed` до
+  одобрения commit stage и затем только `committed`; replay/presentation recovery
+  использует committed recovery phase. DTO не содержит ETA, percent, LLM role,
+  prompt, provider trace или hidden mechanics. Ordered workflow stage events
+  только обновляют этот request-scoped in-memory read model; ход и commit остаются
+  authoritative, завершённый либо неизвестный request возвращает null.
+- Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
+- Запускается как обычный production server entry. `tools/local-play` снаружи
+  подготавливает owned embedded PostgreSQL и Giga runtime, актуальные env/pin
+  и readiness; gameplay Qwen vLLM endpoint приходит из user settings, server
+  не создаёт второй launcher или inference transport.
+- После чтения committed screen/state владеет server-side adapter, который
+  фильтрует active interlocutor identity/equipment и добавляет неперсистентные
+  presentation-only selectors: `portrait_spec_v1`, optional
+  `active_interlocutor.portrait_asset_id` и optional top-level
+  `scene_asset_id` к public response.
+- Общий screen projector строит Character/Inventory/Route из текущего committed
+  actor/body, player-safe вещей и code-owned inventory calculations. Opening,
+  pending, ready и historical replay используют тот же owner. Точные catalog
+  labels читаются по scenario pins; неизвестные/скрытые вещи не раскрываются.
+  Header получает готовые `presentation_context` place/date/time; этот DTO
+  не изменяет сохранённый `visible_context` и не является новой world truth.
+- Тот же projector строит ordered `screen.checks` из committed check results:
+  generic, player-conversation, negotiation и treatment checks, а в combat
+  только шаги player actor.
+  Он добавляет safe actor/action и modifier labels, удаляет check identity,
+  audit/seed/policy refs и не публикует NPC checks без perception binding.
+  Pending semantic/combat screen, ready screen и historical replay используют
+  ту же persisted арифметику; presentation recovery не reroll-ит её.
+- Terminal factual delivery после `final_audit_failed` — только availability
+  recovery уже committed хода. Она сохраняет весь применимый player-safe public
+  screen (включая checks, panels и actions/affordances) и заменяет только
+  отсутствующую approved prose. Такой экран никогда не является narration-
+  quality PASS: blind-play, demo и TURN FORENSIC фиксируют его как blocking
+  narration finding.
+- Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side
+  provider-selected LLM-вызовом, который преобразует свободный текст только в
+  валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые
+  конструктивные категории neckline/sleeve/outer/fabric/trim.
+- Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `unconfigured`/`custom`, OpenAI-compatible base URL/exact default Qwen model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. Старый `local` settings record мигрирует в `unconfigured`; API key не входит в public read model, party save/replay, logs или telemetry; managed provider и silent fallback отсутствуют.
+- Authored live-world parties проецируют каждого присутствующего persisted NPC
+  через approved neutral conversation profile в тот же общий player/NPC
+  conversation owner. Binding зависит от stable actor/location state, а не от
+  scenario ID, имени или текста реплики; speech/refusal/silence, time,
+  persistence, replay и player-safe projection остаются у общих owners. Applied
+  player `leave_conversation` carries an explicit player contribution kind and
+  zero statement refs; forged refs or an untyped zero-statement speech remain
+  rejected at the shared public projection boundary.
+- В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
+- Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state.
+- Владеет одним logical context для `submitTurn`, который объединяет диагностику, одноразовые repair-claims и шестиминутный safety deadline всего хода. Это защита от зависания, не SLO: поздний LLM-вызов ограничивается оставшимся временем, до factual commit сохраняется пятисекундный резерв, а после commit используется pending-presentation recovery без повторения effects или RNG. В том же запросе после сбоя рассказчика делается один повтор (итого два прохода рассказчика; повтор делит с первым проходом единственный semantic repair запроса, не начинается при остатке дедлайна не больше одного LLM-вызова, а неожиданная ошибка повтора оставляет закоммиченный ход pending, не 500); первый экран — не более двух попыток с одним repair на запрос под тем же дедлайном. Каждый runtime LLM-вызов следует каноническому production-limits invariant из `@rus/llm-runtime`. Diagnostics показывает deadline, union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call.
+- Lower Dvina turn-step model adapter до core validator выполняет только однозначную canonicalization закрытых provider-shape ошибок: choice wrappers, exact misplaced/duplicated continuation, отсутствующие diagnostic reason fields и single-target `request_discovery`. Остальные targets и исходный later-continuation передаются core как typed code-owned pending queue; prompt её не строит и не ремонтирует. LLM repair остаётся только для semantic mismatch; неисправимая структура даёт typed technical failure без commit/narration.
+- Focused speech auditor после faithful verdict может вернуть bounded metadata projection полного direct speech envelope по §8.2.1: только независимо проверенный input mode, exact unexecuted suffix, равный прежнему continuation или восстанавливающий его префикс, и pending goal; speaker/text неизменны, dependencies пусты, prepared/discovery carriers отсутствуют. Plan после допустимого trial валиден либо имеет только isolated verbatim exact-copy/goal-continuation ошибки. Existing preflight передаёт corrected plan в core для полной strict revalidation/freeze без нового planner или re-audit; остальные ошибки сохраняют one-repair/fail-closed path.
+- Existing grounding validator детерминированно отклоняет literal direct/not_achieved
+  только при operations=[], check/continuation/clarification/direct_result_kind=null
+  и player-safe discovery_available=true: `operation_semantic_grounding` по
+  `$.resolution` запускает тот же single repair без initial LLM audit. Ошибка
+  resolution включает зависимые operations/activity/goal/continuation: repair
+  заменяет весь rejected causal shape по существующему prerequisite mapping. Repair
+  сохраняет literal и полный physical intent через ordinary_material_prerequisite;
+  nominal query только о недостающем referent/material, без физического действия
+  и цели использования; complete intent остаётся exact continuation. Это закреплено
+  stable planner и final repair-specific tail для единственной ошибки
+  `$.resolution/operation_semantic_grounding`. Focused auditor получает operation,
+  полный continuation и remaining_intent, различает prerequisite и выполненный
+  discovery prefix; код не подменяет его mode и не добавляет retry. Повторный literal denial
+  terminal. Reality-limited, make-believe и disabled discovery не затронуты.
+  Domain-owner-unavailable repair использует lawful reality_limited без выдуманного
+  успеха или физической невозможности; слова игрока остаются evidence weight 0.
+- Для этого audit core может подготовить effort→none trial по §8.2.1; существующий auditor не меняет effort/owner/duration и не получает нового LLM role. Trial должен пройти core admission полного speech envelope без requested duration; ошибки за пределами copy/goal не разрешают metadata projection.
+- Та же bounded metadata projection разрешена после faithful re-audit structurally valid единственного repair: strict validation/freeze сохраняются, дополнительного planner/audit нет. Effort trial и structural recovery на repair не распространяются; оставшаяся ошибка terminal.
+- Ordinary presence и semantic activity накладывают подтверждённые изменения
+  на текущую committed player-safe сцену. Наличие activity seed не заменяет
+  место, наблюдаемые вещи и sensory details синтетическим сообщением об успехе.
+  Domain-native projection сохраняет приоритет; невыполненный intent остаётся
+  отдельной неопределённостью и не доказывает частичное достижение цели.
+  Успешно применённый физический `search` или standalone focused `inspect` с
+  `continuation:null` связывает собственный no_change или authority_required с
+  activity seed: подтверждённой находки в этой попытке нет. Эти ответы
+  ограничивают находку, а не уже выполненную activity, и не доказывают отсутствия
+  вещи в мире. Existing-item inspection, `look`, preflight и material-prerequisite
+  inspect с полным неизменённым later intent остаются free; другая activity не
+  получает этот вывод по соседнему query.
+- Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают confirmed player-safe visible context/outcome плюс optional actor-visible World Knowledge slice (`purpose: narration`, D16/D20: `playerActorFacetsFromState` / `playerWorldKnowledgeAuthoritativeFromState`), а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success и тот же WK slice как evidence. WK грунтуется один раз на writer и переиспользуется; сбой WK не отклоняет post-commit narration. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
+- После P16 server ведёт existing presentation job для exact committed package.
+  Approved narration сохраняет existing narrated `TurnScreen`. Только typed
+  `final_audit_failed` после bounded repair/final audit может через один
+  job/attempt CAS сохранить `delivery_mode: factual` и
+  `FactualTurnDeliveryScreen`; `narration_output` и `output_digest` тогда null.
+  Provider/deadline/store/lease/CAS/package/projection failures остаются pending
+  recovery, не factual delivery. Factual replay возвращает тот же validated
+  screen без narrator или gameplay execution; terminal mode не upgrade-ится в prose.
+
+Каждый applied direct `not_achieved`, в том числе после achieved speech, передаёт через общий turn-step result overlay недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и failed results выводятся в порядке step traces; unapplied plans не проецируются как результаты.
+
+Revision 33 production temporal registration читает canonical NPC schedules,
+применяет approved routine transitions в текущем рабочем состоянии и сохраняет
+их через существующий P16. Несколько границ одного окна дают последовательные
+causal transitions и один CAS итогового состояния. Deferred prepared scope
+допустим до первого входа; first-entry связывает точную позицию без сброса
+занятия или времени. Сон меняет доступность NPC для разговора. Этот cutover
+не расширяет историческую Phase-7 activation свободных решений NPC.
+Routine movement проходит существующий route owner с проверкой committed source
+и exact endpoints; adapter переносит NPC только при completed handoff, а blocked
+handoff сохраняет исходную позицию и следующий причинный schedule state.
+
+Semantic continuation без изменения тела использует existing prepared-effect
+chain уже с первого timed шага. Runtime передаёт advanced committed projection
+следующему planner/ordinary owner; изменённые temporal NPC views перестраиваются
+из authoritative state. Generic commit replays approved semantic activity/body
+bindings каждой prepared slice, сверяет общий time/body и сохраняет существующую
+activity/body history в том же P16. Раннее temporal прерывание no-body semantic
+slice сохраняет original/planned duration отдельно от actual elapsed и оставшегося
+времени; paused execution и paused attempt используют существующие activity rows,
+а terminal completion operations не входят в прерванный commit.
+Domain-command ledger contracts сохраняются.
+
+## Не владеет
+
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
+
+## Public API и контракты
+
+The P16 committer's internal `prepareExpansion` holds the existing party-clock
+and G4 transaction locks while server code reads normalized state and prepares
+one sealed `resolve_frontier` write plan. It checks durable replay before
+preparation and commits through the same P16 writer. The plan has no owner or
+execution locks and exactly the previously locked G4; physical/change-set locks
+retain their established order. Expansion ledgers, continuation chains,
+frontiers, reservations, site connections and endpoint bindings use the existing
+DDL, physical-key locks, CAS, idempotency and atomic rollback. This internal
+method does not accept client topology and does not activate a production profile.
+Existing `party_materialization_runs` and `party_materialization_choices` are
+append-only members of that same sealed plan. Choice rows require their run in
+the plan; scene baselines are ordered after their materialization run. Trace,
+topology and command idempotency roll back together, and committed replay
+does not append another run or repeat a choice.
+
+- `.` exports the activated Spatial-v3 composition root, adapters, HTTP server/handler/static resolver and startup config validation.
+- `./production-spatial-v3` exports the sole production composition.
+- `createPortraitSpecNormalizer` выполняет единственный text-to-JSON вызов, повторно валидирует provider output до HTTP response и не поддерживает fallback на прежние named-garment enums.
+- Scene selector выбирается только из committed player position: zone имеет
+  приоритет над location, отсутствие exact server mapping опускает поле.
+  Portrait selector выбирается только для единственного committed NPC,
+  прошедшего player-safe active-interlocutor projection; server mapping не
+  публикует participant slot или другую internal identity.
+- Selectors вычисляются после committed read, не пишутся в `party_runtime`,
+  visibility/knowledge или world-base и не участвуют в admission, narration,
+  mechanics либо truth. Их exact web asset allowlist/fallback принадлежат
+  `@rus/game-web`, не server.
+- Target infrastructure factories `createSpatialV3CombinedAtomicCommitter` and
+  `createTemporalPresentationPostgresStore` remain server-owned adapters; they
+  accept only validated sealed plans/explicit pool transactions and are not
+  domain decision APIs.
+- An admitted player `move_entity` for an existing actor-held item or container
+  is rebound
+  to that same common proposal before commit. The server derives source and
+  destination from committed state, persists the normalized holder/controller
+  placement through the existing turn-step P16 commit, rechecks the exact
+  source item/container placement and ownership under the transaction, and
+  reloads portraits from the resulting equipment state; no scenario-local
+  take/equip command or parallel transition committer owns this mechanic.
+- First-playable landing activation is persisted only through the active P16
+  write plan. For catalog v2 it writes the resolved canonical NPC identity,
+  every approved NPC item/container allocation, normalized actor placement and
+  ownership/controller rows, and immutable garment visual snapshots. The
+  historical v1 resolver and its pre-appearance item identifiers remain
+  available for already pinned parties.
+
+For target `first_entry`, the combined committer accepts the already-defined
+Spatial-v3 core G5/baseline/G6/position rows and the root journey-location
+update only through one approved combined plan. The plan binds a stable
+scene-baseline materialization-scope key; its transaction-scoped advisory
+lock precedes the idempotency lease, baseline absence/reuse recheck and every
+domain write.
+
+On normal first entry, Spatial-v3 owner supplies any approved broad
+`open_one_space` slot as part of that baseline plan; server only composes,
+P16-revalidates and persists it. Late S1 keeps the baseline topology immutable:
+it commits the owner-validated `local_ref` binding and semantic detail, not a
+new G6, position, edge, route or mechanics.
+
+Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
+
+Active O1 Phase 6 composition accepts only the closed
+`ordinary_materialization_atomic_write_plan_v1` DTO after the sanitized model
+call outside a physical transaction and Phase 4 admission. The existing
+`request_discovery` route reaches it only after meaningful-engagement and
+code-first known-result gates; Stage A is candidate-free and Stage B has
+`evidence_weight = 0`, with identity/classification/policy fields built by
+code. Stage A concrete entities are forbidden; its density band is converted
+to numeric budget by a versioned code-owned policy. A normalized discovery
+query equal to the normalized remaining intent, with one visible target owned
+by ordinary discovery and no continuation or check, is structurally grounded
+without an LLM audit; altered or compound discovery still crosses the semantic
+auditor. One exact finite-source case is also code-grounded
+(`exactFiniteSourceDiscoveryGrounding`, same precedent as
+`exactBackgroundNpcDiscoveryGrounding`): an `inspect` discovery whose single
+target is the code-owned ref of a visible `known` `ordinary_resource_source`,
+with the complete take intent kept in `continuation` (or query equal to the
+whole remaining intent) and no check; moving the portion into the hands is a
+separate `move_entity` step. The planner still chooses semantically, code only
+checks the form. Residual risk: code does not verify that the intent is about
+that very source; the worst outcome is an unrequested portion at the same
+position, and mass conservation still holds. Canonical G5 finite sources at
+first entry follow an approved list of commons (`canonical-finite-applicability.json`);
+`m2c_natural_gathering_access_v1` extends to them only through that approval,
+and a parcel right ranks above it. The normalized query, exact target and canonical requested quantity
+(exact `{value,unit}` or `null`) derive the code-owned candidate identity; the query reaches
+the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
+classification/mechanics authority. Exact normalized retry reuses the
+persisted resolution, while a different query or quantity has a different
+identity. Unspecified quantity and explicit quantity 1 are distinct.
+The O1 plan keeps that exact semantic target in `semantic_target_ref`, separate
+from the G6 simulation `scope_ref`; P16 binds owner output to the selected
+`request_discovery` target before commit.
+One discovery has a shared two-call semantic budget; structural repair consumes
+the remaining call, and a repaired Stage A can finish as a seed-only commit.
+The exact revision-34 Phase M22 profile and versioned adversarial Stage B approval receipt are
+mandatory cutover pins. The probes run before profile activation; gameplay
+only verifies the receipt against the profile digest and exact
+provider/model/config identity, without additional eval calls.
+Its pinned mechanics policy `trace_ld_v1_o1_mechanics_policy_v2` owns the
+bounded ordinary-stack limit `max_quantity = 16`; runtime does not widen that
+bound. For common mundane reconstruction, positive World Knowledge facts are
+optional, but every supplied hard constraint must cross a separate exact-ref
+`clear|blocked` verdict channel. Missing or malformed verdicts fail closed,
+`blocked` becomes `no_change`, and a hard constraint can never count as
+positive support.
+Its server-owned
+PostgreSQL committer locks the party, aggregate and trusted context pins, then
+atomically writes migrations 021–025 state: O1/O2a enablement/objective, aggregate,
+prepared/committed scoped supporting-basis catalog, positive or negative exact
+resolution/idempotency, optional private-v2 item with immutable
+mechanics/property/placement and normalized basis links, aggregate CAS, catalog
+pin and party version. Stale proposals are rejected rather than silently
+rebased; reload/retry cannot reroll a committed code-owned identity. The player-safe
+response exposes only the O1 discovery capability marker and approved visible
+result, and narration runs only after factual commit. O1 has no new HTTP/public
+operation. Active O2a includes the authored wreck-shore abundant sand and one
+first-entry context-bound finite prepared-clay stock. Player-safe state exposes
+approved ambient capability bounds for schema-valid direct extraction, while
+concealed capabilities remain server-only. The
+discovery marker is boolean and exposes no unresolved result, permission or
+capacity. Stage B may choose an
+unlisted ordinary semantic type and independently classifies the full
+candidate, including its qualifiers and relations, for admission;
+the descriptor's `semantic_type` remains the specific model-classified material
+or object type. Player-facing name and facts are code-owned neutral values, so
+unsupported model wording cannot become a committed premise. Its prompt uses an
+explicit non-null type placeholder and accepts no name/facts; null or omitted
+types retain the existing strict validation and single repair.
+the owner accepts it only when that class matches the code-owned candidate, then
+rechecks mechanics, property, permission and source. Before item admission, the
+same full candidate must be `standalone_item` rather than `non_item_detail`;
+ordinary non-item details bind to persisted `no_change` and cannot reach item mechanics, ownership or placement,
+but mandatory unavailable evidentiary, significant or hidden authority takes
+precedence over physical form and requires `authority_required` when every viable
+alternative needs it. Independent mundane alternatives remain separately eligible for admission.
+The `ambient_ordinary`
+enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
+their legacy admission. Migration 025 conservation and bounded initialization/decrement
+are active for every admitted `finite_source`; each selected source reloads its
+own committed row, while constrained policy adds resource
+permissions but does not own conservation. Unprovisioned precious/remnant profiles
+remain fail-closed. Currency identity,
+significant/hidden facts, template-less containers and O2b/A1/F1/N1 remain
+disabled. Negative resolutions contain no item and
+every failure rolls back.
+Current live-world authored binding revision 6 resolves
+`code_materializer_v3`, result/snapshot schema v3 and persists its approved
+initial Spatial-v3 G6/position/journey rows plus profile-owned local topology.
+It then provisions the same generic O1 and neutral S1 authority from those
+committed rows. Neutral N1 applies only to a persisted approved background NPC
+profile and materialized routine. O1, A1, S1 and N1 use existing turn/P16
+owners; старые development bindings не читаются и не rematerialize-ятся.
+After new-game commit and first-entry provisioning, authored opening builds one
+player-safe package from persisted actor dossier, relations, NPC activities,
+items, environment and spatial topology. Existing Stage 22 writes 2–4 natural
+paragraphs and Stage 23 audits factual/agency/unknown boundaries before the
+screen is saved. Whole opening runs in the existing six-minute LLM diagnostics
+deadline: writer, audit, optional one semantic repair and final audit only.
+Session identity persists the complete approved opening narration flow and the
+original Stage 23 audit. Static profile prose is hint-only; the eight-question reader
+control and exact entity/topology refs fail closed before any model call.
+Current replay derives scenario/schema/screen kind from the
+persisted party payload instead of the Lower Dvina default.
+A new admitted ordinary `search`, or standalone focused `inspect` with
+`continuation:null`, applies the existing `short/light` activity profile through
+the same activity, body, time and P16 owners. The approved domain discovery binds this activity to its
+exact step; a fresh ordinary request requires it, and a known answer permits
+it without a new ordinary write. Preflight refusal and `inspect` material
+prerequisites with the unchanged later intent do not execute that discovery.
+A model `no_change` or `authority_required` limits the answer, not the executed
+discovery. A presence preflight with no decision may retain a first scene seed,
+but creates no presence resolution and incurs no discovery activity.
+The admitted activity projects a performed discovery with its exact duration;
+its separate candidate query remains a question, never ownership or success.
+An admitted O1 item adds a strict `ordinary_presence_seed` with resolution
+`materialized`, exact query and admitted `display_name`. The current beat reports
+that discovery once. Applied step traces and prepared ledger slice seed keys group
+each step into one required change: exact speech then its elapsed time; discovery time
+then discovery; physical result after its activity. The ordinary material prerequisite
+mapping binds `inspect` for an exact full-intent continuation in ordinary scope;
+focused audit still checks its semantics and real focused searches retain activity/body boundaries. Query alone implies
+neither ownership nor execution. An already resolved A1 owner can continue a
+prepared semantic chain when no authored command was selected; its existing
+scope, preflight, revalidation, conservation and atomic P16 owners remain required.
+A new physical search or standalone focused inspect can reuse an existing positive or negative presence answer
+without a model call or materialization write, while applying a new activity/body
+cost. Positive replay resolves the exact committed visible item and never degrades
+to `no_change`. The applied domain discovery authorizes that activity.
+Existing-item inspection, recall, `look`, and material-prerequisite inspect remain free.
+The item or negative resolution and the discovery cost commit together; transport retry
+replays the committed result without another activity or model call.
+
+People of a canonical place (D49): the canonical branch of the target first entry
+(`target-generated-first-entry.js`) asks the presence resolver for the place-family
+compositions (D-2) and stores the outcomes of every presence rule, people rules included,
+in the presence aggregate (§3A.1); `prepareCanonicalPlacePeople`
+(`target-place-people-first-entry.js`) reads those outcomes and the compositions, reads light
+`npc_binding` candidates (`readPlacePeopleCandidates`) and the closure of the chosen profiles
+only (`readPlacePeopleClosure`), and writes the people through the generated-NPC first-entry
+writer in the same change set as the aggregate. Plain absence of approved data (no profile,
+regional applicability, capacity, G4 placement policy) creates nobody, does not fail the
+arrival and is recorded in `materialization_trace.people.gaps` (persisted as
+`party_materialization_runs.trace.first_entry.people`). Anything else fails the arrival with
+a typed error: an ambiguous approved reference, a broken closure, wiring or invariant errors.
+Generated places keep the G4 composition; the D-2 composition is not applied to them.
+
+Active O2b keeps the same public `request_container_access`. Production startup
+loads and SHA-validates revision 20 M8 / Phase 1A v16 / Phase 1B v15 plus one
+exact existing-container profile; revision 19 publication/loading remains an
+immutable historical recovery path. First-entry P16 provisions the approved
+template-backed player pouch, ownership and its container-scoped ordinary
+aggregate/context/basis/enablement inside the existing transaction without an
+extra party bump. Only an exact persisted container/profile/property/owner/
+placement/mechanics match installs the resolver; drift, missing profile,
+template-less container or non-bound container fails closed before model.
+Authoritative contents bypass resolver/model. Candidate-free model execution is
+outside SQL, and the server validates the complete ordinary batch, individual
+mass/mechanics, exact parent placement and packing/capacity before constructing
+one `ordinary_container_contents_atomic_write_plan_v2`. The existing combined
+P16 transaction atomically persists ledger transition, children through
+`party_items` plus mechanics/property/placement and the container transition.
+Mechanics-sensitive moves resolve unresolved contents concealed before exact
+mass/packing calculation without opening the container; later access reveals
+the committed safe name/type without reroll. Precommit/failed children remain
+concealed and no partial batch leaks; reload/reopen uses committed coverage with zero model
+calls. Narration consumes only the persisted post-reveal package and cannot add
+items. No new HTTP operation, contents store or transaction owner is added.
+
+Active revision 21 A1 accepts one or more committed or validated same-root
+revealed non-container material sources and zero or more accessible actor-controlled
+non-container tools through explicit disjoint source/tool refs; current-anchor
+placement, current scene position placement (the party has no g5 anchor after
+walking; Spatial standard 8.1) or an already revealed open actor-accessible container is sufficient,
+and legal ownership need not belong to the actor. Qualitative outcome is part of
+the sole `turn_step_plan_v1`; no A1 model or scenario planner exists. The
+validated result is projected into the same root turn before pending continuation.
+An independent output lies at the current scene position (`party_item_placements.scene_position_id`
+plus the scene placement row); the g5 anchor is used only at the legacy start place (LW-100, LW-118).
+profile admits preserve, up to four mass-conserving independent outputs and
+no-result, with output/source mechanics derived exactly from consumed
+allocations; finite sources decrement, while a fully partitioned whole item
+retires and leaves active placement/capacity without a synthetic resource row.
+For multi-source preserve the first source keeps identity and later sources are consumed by grounded extent. Independent multi-source outputs require the same owner/claim basis; their property source is the canonical minimum source ref, while mixed basis fails closed independent of ref order.
+Partial independent output carries only grounded qualitative
+`minor|half|major` extent for one non-finite source; the item owner maps it to an exact gram decrement,
+keeps the changed source active, updates its current physical facts and derives
+its remaining mechanics. Odd mass
+is distributed deterministically; output
+hand/packing/carry is code-derived. Safe named result descriptors persist with neutral `ordinary_mundane` identity in ordinary item metadata and survive reload, including
+partial/nonworking/waste, physical writing, non-authoritative token-like and
+closed qualitative weapon-capable outcomes. Visible non-authoritative current
+physical facts and separately typed physical inscriptions survive unrelated transforms, same-root continuation and reload; explicit visible fact refs allow physical
+removal/replacement. Multiple causal A1 steps run in order over the shared
+working projection and commit in one combined P16. Item mechanics, conservation,
+identity and placement remain code-owned. Qualitative physical form is mapped
+with exact mass to hands/carry/packing by the item owner. Weapon combat class is
+ephemeral and belongs only to the combat boundary; every held A1 item without
+exact weapon mechanics is classified from current facts/form, including a
+closed not-weapon result, regardless of the last A1 output class. A1 state
+stores no combat class or damage. Valid zero-positive classification keeps the
+ordinary unarmed/default profile applicable; one positive selects its
+code-owned danger, while ambiguity or invalid classification fails closed.
+Positive weapon/token/writing outcomes require an admitted accessible tool;
+ordinary/no-result keeps the zero-tool path. Partial survivor text facts may be
+empty when its required form alone changes code-owned inventory geometry.
+Uncertain actions perform a read-only authority preflight before RNG, then reuse one generic check and semantic activity/time resolution from turn owners; deterministic actions use `domain_request` without
+RNG but still apply one ordinary semantic activity/time cost after a real
+physical attempt. The same combined P16 write set contains the full turn snapshot,
+append-only check resolution, clock/activity writes and the ordered A1 plans.
+The existing transaction, state-version checks and idempotency owner bind the
+physical transitions to the same root commit without a second RNG, clock, A1
+execution ledger or A1-specific plan hashes.
+
+A1 v1 limits are explicit: single-source preserve has no small subtractive mass-loss/waste model; one action produces homogeneous outputs; tools are unchanged pins without wear or consumption; finite partial partition and partial additional finite consumption are unsupported. Unspecified requested output count is `null` and resolves to one owner-chosen entity; impossible explicit count is a time-spending physical no-result without item writes.
+
+Public new-game replay uses an exact persisted creation identity. The
+diagnostic-only `diagnostics.start_parameter_extraction` records its
+candidate-vocabulary catalog id and revision outside that identity; it does not
+affect creation identity equality, Phase 1A recovery, start selection or
+compatibility. Trace
+publications pin materializer and RNG versions as historical execution
+identity. Current build support is checked only before a new materialization;
+persisted trace reads use the immutable publication/session/party pins.
+Runtime release `spatial-v3-production-v10` сохраняет revision 19 appearance,
+equipment-driven portrait path и revision 20 O2b content; active publication
+revision 21 добавляет SHA-pinned open physical A1 M9/v17/v16 profile. Revision 20/v9 и
+revision 19 остаются immutable historical compatibility paths, v9 — rollback
+source.
+
+Runtime release `spatial-v3-production-v11` сохраняет все inherited paths и
+делает revision 22 / M10 / Phase 1A v18 / Phase 1B v17 sole current
+publication. Он materialize-ит exact authored ignition basis и два concrete
+whole fuel units, композирует production resolver и регистрирует due boundary у
+существующего temporal owner. Любой другой item-owned whole fuel допускается
+тем же generic правилом без ID whitelist; A1 output получает fuel class только
+от causally consumed classified fuel source. Player capability берётся из
+player-safe projection; Phase 7 строит NPC capability из NPC-safe доступных
+ресурсов и публикует exact operation contract. Process ref появляется только
+при source-backed NPC-safe evidence самого process; знание bound fuel не
+раскрывает objective binding или process ref. Causal ignition basis model не
+публикуется. Оба пути проходят один
+DB/item-owner admission. Start/add/due и qualitative
+whole-water affect, включая `no_effect`, входят в тот же combined P16; bound
+fuel mutation, nested A1 source mutation, stale pins, duplicate transition и
+late failure откатываются атомарно. Несколько ordered due, включая same-time
+разные fires, фиксируются одной transaction и отражаются в canonical snapshot. Due
+actor-neutral и продолжает процесс после ухода/смерти инициатора. Player-safe
+marker содержит только visible refs. Player resolver применяет F1 plan к
+текущему working projection, а item owner переносит bound fuel в process scope
+и сразу убирает его mass/hands из carried inventory без смены ownership.
+Для следующего actor step PostgreSQL loader принимает ordered prior F1 chain
+только как code-owned input, проверяет party/actor/root/change set/base version,
+step-specific request и process/item pins, затем последовательно проецирует
+process state, placement, binding и retirement без промежуточной записи в БД.
+Prepared time adapter получает весь accumulated same-root F1 chain, заменяет
+committed runtime и temporal candidate текущим состоянием каждого process, а
+due output применяет через существующий local-fire item projection owner до
+следующего model request. Loader отдельно проверяет строгий actor-step и
+system temporal-boundary provenance; completed process удаляет candidate.
+Production Phase 7 использует тот же PostgreSQL-backed resolver; same-root
+start и попавшая в remaining window due сохраняются ordered в одном P16.
+Production player F1 resolver дополнительно возвращает только safe factual
+seed `turn_step_world_process_<step_index>`: fire action/outcome/status без
+process/item refs, pins, bindings, timestamps или causal evidence. Generic
+visible projector строго принимает только согласованные start/started,
+add_fuel/fuel_added и affect/no_effect|continue|complete combinations, сохраняет
+их step order и строит approved Russian factual sentence/change token. Эти
+facts накладываются на обычную phase projection того же root turn либо на
+validated current-scene package pure F1, не удаляя видимых NPC, objects и
+scene context; clarification остаётся после уже совершённых facts. NPC и
+off-screen due seed не получают. Existing turn-step visible envelope сохраняет
+combined package в `party_visible_packages`; narrator и screen читают тот же
+persisted package, не механику F1 и не temporal state.
+Отдельных F1 authority/commit tables,
+evidence, digest или sealing нет; model выбирает только bounded qualitative
+outcome воды вне SQL transaction.
+
+## Ошибки, зависимости и effects
+
+Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Публичные категории отказа хода (HTTP 409, `src/http/contracts.js`): `TURN_NOT_SAVED` (`TURN_STEP_PLAN_INVALID`) и `WORLD_ACTION_UNAVAILABLE` (`M2C_TARGET_A1_APPLICABILITY_DATA_GAP`) — только при `turn_commit_status: not_started`, с безопасным текстом «Ход не сохранён…»; остальные 5xx маскируются `TEMPORARY_ACTION_UNAVAILABLE`, внутренняя причина — в server log. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
+
+## Production activation и тесты
+
+The separately callable v17 target release factory remains outside the default
+selector. It requires the exact issued item and actor successor approvals,
+committed activation events, approved Spatial revision, and verified catalog
+membership through the existing production readiness owner. Missing evidence
+fails with `SPATIAL_V3_TARGET_ACTIVATION_APPROVAL_REQUIRED`. This catalog gate
+does not establish complete M2c gameplay readiness or deploy a release.
+After successful catalog checks, the factory still rejects composition with
+`SPATIAL_V3_TARGET_START_BINDING_REQUIRED` until an independently approved
+target start/scenario bundle exists. It inherits no Lower Dvina scenario pins.
+The actor profile loader can resolve an exact persisted pin after a successor
+activation, checking its predecessor and immutable import membership.
+
+The current versioned production activation cutover is `spatial-v3-production-v16`.
+The server and config expose only
+`builtin:production-spatial-v3`; v2 has no runtime selector or public
+composition export. Startup requires the complete Spatial-v3 bindings module
+and the completed cutover stage `13`, and fails closed while any persisted
+party remains on schema v2. Release metadata pins the exact approved
+`novgorod_spatial_v3_production_v6_candidate_001` world tuple and manifest,
+`temporal-world-v1.1`, exact dependency-pin mode and the
+existing `rus.runtime_catalog_pin.v2` policy (active event only for a new
+party; persisted historical pin thereafter).
+Release v13 is the direct non-selectable child of v12 and pins Lower Dvina
+Trace revision 25 / M13 / Phase 1A v21 / Phase 1B v20. It activates the
+approved NPC actor-step Phase-7 profile: the existing Жданко boundary is the
+first current activation participant/probe. Runtime NPC actor-step is the general current
+actor-step owner-capability path: it admits registered, state-applicable
+operations and NPC-safe current refs, with no action/ref/owner whitelist or
+special Жданко action logic. S1 remains gated by its separate prepared
+revision-24 profile. No runtime-catalog activation is added.
+Release v14 is the direct non-selectable child of v13. It pins Lower Dvina
+Trace revision 32 / M20 / Phase 1A v23 / Phase 1B v27 and the approved
+`lower_dvina_trace_n1_background_npc_v1@1` profile for the existing visible
+background fisher. This is a profile-specific N1 activation only: look/inspect
+may persist and replay an audited semantic descriptor plus the exact activity
+already created by the code-owned materialized schedule; schedule state is
+never exposed to or authored by the N1 model. The N1 owner publishes the
+accepted player-safe observation as a required current-beat visible change;
+the unchanged scene and other NPC context remain optional narration support.
+Broader N1 capability remains
+unactivated.
+Release v15 is the direct non-selectable child of v14. It pins
+`wk-pack:novgorod-1230@revision:production-v1` and
+`wk-embedding:giga-480m-0826:v1`. The server loads the compiled bilingual
+pack and flat vector index and starts the exact offline embedding worker at
+startup, then grounds player semantic resolution, S1/N1 ordinary
+materialization, conversation, and autonomous NPC decisions before their
+semantic LLM calls. Ordinary WK planning receives the same admitted scene
+context as the materializer. Its information need retains the complete candidate
+query and code-owned admission/coverage/entity bounds; opaque IDs and policy refs
+are not natural-language retrieval vocabulary. Candidate focus recall uses the
+query and approved scene text. The full ordinary request still reaches its own
+semantic and code admission owners unchanged.
+O1 prompts contain common rules and only the current seed/presence mode rules.
+Only the semantic response shape is shown; authoritative plan fields stay server-assembled.
+A grounded positive presence requires an exact supporting in-slice claim ref;
+empty or unsupported refs still fail admission.
+The private O1 wire carries the structured `world_knowledge` factual slice.
+Facts, qualifiers, constraints, coverage, disputes and gaps remain; claim
+binding and telemetry use the full request.
+The private WK planner wire sends each ranked focus ref once as a key in
+`available_knowledge_refs`, with its allowed claim domains as the value (including
+empty arrays). Native planner requests retain the complete ordered ref array for
+validation and diagnostics; candidate and retrieval budgets are unchanged.
+Retrieved claims are bounded context only: domain owners
+still control current state, mechanics, persistence, access, and outcomes.
+The Giga/vector path is mandatory whenever v16 needs a WK slice. Missing local
+weights, startup/encode timeout, malformed vector or scan failure returns typed
+`WORLD_KNOWLEDGE_UNAVAILABLE` before the semantic consumer and P16 commit; no
+lexical gameplay fallback, mutation or failure ledger is created. HTTP hides
+the internal cause in its normal temporary-unavailable envelope, and a retry
+after encoder recovery follows the existing idempotency owner.
+Release v16 is the direct non-selectable child of v15. It pins Lower Dvina
+Trace revision 35 / M23 / Phase 1A v25 / Phase 1B v30; blue-wool evidence
+uses its corrected one-hand authored inventory profile.
+Один WK need объединяет approved search hints в один query text и выполняет
+ровно один Giga encode и один vector lookup перед одним Core resolution.
+`test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
+`runtime-catalog-boundary.test.js`,
+`test/spatial-v3/p16-committer-postgres.test.js`,
+`temporal-world-postgres.test.js` and `presentation-store.test.js` cover
+composition, atomic transaction/lock/idempotency, exact persistence and the
+leased post-commit presentation lifecycle.
+
+Current unpublished publication v28 introduces the player's family, trade work,
+received assignment and remembered river journey from the current authored
+dossier, before the wreck/body/shore facts. These premises persist in existing
+origin, memory, knowledge and relation fields. They establish no cargo contents,
+destination, cause of the wreck or present fate of remembered people/property.
+Historical publication prose and dossier content remain unchanged.
+
+Current-scene and final visible composition retain the safe projector's own
+identity, biography, memories and available player-safe knowledge text as
+`known_context`, including
+authored actions. This enriches the resulting scene without restoring old scene
+objects or people after movement. The Character panel receives the same safe
+self-history; hidden records and raw dossier metadata remain private. Prior
+relations do not automatically recognize an unidentified visible person.
+
+Final safe composition uses the actual body owner's `state_after` and time
+owner's `clock_after` for the resulting turn, across authored and general
+actions. Current qualitative conditions come from the existing safe body
+projection; changes retain their before/after meaning. Narration may translate
+supplied semantic condition states, but cannot add symptoms, diagnoses or
+intensity. Opening time and initial bodily prose are not timeless knowledge.
+
+Committed authored conversations expose only their player-facing `journal_text`
+and actual speaker through the existing safe interaction projection. Private NPC
+`memory_text` remains private. Recalled testimony is historical attributed
+knowledge, not objective truth or evidence of current presence. Safe summaries
+remain available to planner, narration and Character after reload. Textless
+acquired fact references require their own approved presentation; this path does
+not reconstruct hidden facts or claim complete Phase 9 knowledge delivery.
+
+Current scene presentation supplies perceived exits from the existing pinned
+movement bindings and source location. A visible path does not disclose its
+destination name, exact duration, safety or unseen occupants. The same safe
+route projection feeds planner context, movement labels and the Route panel;
+remembered routes use existing route knowledge/history after traversal. It is a
+read projection, not a second route store. Inspection and reload retain the
+visible path; movement recomposes routes for the actual destination.
+
+Local passage occupancy. The status shown before an attempt (the ` (проход занят)`
+label, the edge's `visible_status` in the visible context, the Route panel) counts
+only occupants the actor perceives: `spatial-v3-current-visibility-provider.js`
+`localDisclosure` admits the destination's occupants through the same visibility
+owner as any other entity. The movement owner's full occupancy
+(`spatial-v3-local-scene-movement.js`) alone decides the attempt: `turnStepBlockPlan`
+asks the chosen command's server-only `attemptRefusal` (never projected to the
+planner) and, when the owner finds the destination full, refuses the step as a
+zero-duration narrated refusal without a reason code (the occupants may be unseen by the actor; only occupancy the actor perceives, in the grounding, yields `destination_occupied`); the typed `SPATIAL_V3_LOCAL_EDGE_OCCUPIED` stays the
+last safety net. The model's `reason_code` never decides the outcome. The refusal is only
+made at step 1 of a turn; at step 2+ an occupied edge still ends in the typed 409 (LW-080).
+
+A movement-restrained actor (`restrained`/`incapacitated` combat status): `turnStepBlockPlan`
+refuses any step-1 `direct` plan with `goal_result: not_achieved` and no operations. With
+`reason_code` off the table the plan carries no structural marker of "this was about
+movement" (`operation_family` is a planner mapping field, dropped when the plan is
+assembled), so a non-movement `not_achieved` intent (for example `reality_limited`) of a
+restrained actor is refused the same way and its continuation is dropped. This is accepted
+while restraint blocks the actor's actions in practice; the test
+`a restrained actor's non-movement not_achieved plan is refused too` pins it.
+
+Approach to an exit. When the actor is not yet at a departure position, the exit is
+offered as a plain local `request_movement` to the first step of a path to it. The
+first step is only an edge that `listLocalOptions` lists now (visible, eligible,
+admitted) and carries that edge's own status; the local-scene owner applies the hop.
+`route_ref` (the exit id) on this local operation is not read by the movement owner:
+it only keeps the approach structurally distinct from the plain local operation for
+the same edge, because binding `matches()` compares structure and ignores
+`description` (without it two commands claim one operation,
+`TURN_STEP_DOMAIN_BINDING_AMBIGUOUS`). The way-of-going wording is approved data
+(`m2c-pass-target-labels` `passage_phrases`), not text composed in code.
+Limit: after that first step the path search (`findReachableDeparturePosition`, raw SQL
+of `spatial-v3-expansion-context.js`) walks raw active scene edges without visibility or
+eligibility (admission exists only for the current position). Safe while every scene
+template is `default_clear`; once edges get explicit visibility the search must use only
+admitted edges (LW-080).
+
+Initial current-scene projection also exposes only persisted procedural NPC
+appearance, worn/held item refs, observable activity and the structured
+approved Temporal environment state. Private knowledge, goals and fears remain
+outside the player-safe package; reload reuses the persisted weather selection
+and never rerolls it.
+
+Current publication adds an authored shore path, its limit of sight and nearby
+water sound. These are approved current sensory premises, not deductions made
+by narration from the mere presence of water. Historical presentations remain
+pinned. Dynamic weather/light and complete acquired-fact presentation remain
+separate delivery gaps; this change does not activate weather simulation.
+
+`request_item_use` с `use_kind: other` и semantic `description`, без
+`action_production`, разрешает transient non-transforming физическую попытку.
+Existing item runtime owner перепроверяет current actor, item ref, доступ
+в текущем placement и player-safe target refs. Current-visible item доступен
+на месте при точном совпадении всех его scope refs с текущей position;
+`scene_position_id` сравнивается с player-safe `position_id`. Held actor item
+тоже доступен. Pickup не требуется; `move_entity` обслуживает только явно
+заявленное перемещение. Semantic activity owner сохраняет
+время/body. Результат фиксирует только попытку: без durable item/world facts,
+расхода, трансформации, скрытых сведений и подтверждённого результата наблюдения.
+Existing handler supports оставляет authored/legacy use и A1 их владельцам.
+Known material ref не отправляется повторно в ordinary discovery при repair.
+
+Focused ordinary location audit допускает strict `prerequisite_query` correction:
+LLM выделяет только отсутствующий ordinary referent; code сохраняет exact полный
+remaining intent, связывает inspect/current scope и повторяет owner admission без
+нового LLM вызова. Hidden/significant/authored evidence не является prerequisite.
+Empty target_refs одной unselected discovery связывается только с доступным
+current location при ordinary capability; explicit refs не заменяются.
+
+Unsupported direct_result_kind у literal direct/not_achieved no-op denial может
+быть обнулён только в audit-only trial, если весь plan после этого strict valid.
+Trial не принимается как результат. Existing focused classifier может выделить
+ordinary prerequisite тем же протоколом; code соберёт corrected plan и перепроверит
+owner/schema без full planner repair. Disabled/authority-limited случаи не получают
+ordinary bypass; прежний lawful repair/fail-closed сохраняется.
+
+Single transient use с отсутствующим item_ref допускает audit-only material trial
+только при unknown_ref (и optional source_placement_grounding того же ref), literal,
+пустом continuation и доступном ordinary current location. Known недоступный item
+не дублируется. Existing focused classifier выделяет nominal prerequisite; code
+сохраняет полный exact intent. Для strict-valid single literal accessible transient
+use без continuation/check/clarification code подставляет exact remaining_intent в
+description ДО первого semantic audit. Transformation/discovery/independent actions
+не становятся transient от копирования текста. Только pass возвращает corrected_plan
+для strict owner/schema revalidation; stable ref/placement и visible seed сохраняют
+точный intent, дополнительный auditor/full planner repair не нужен.
+
+Denial/missing-ref trials помечают focused input `correction_candidate:
+missing_ordinary_referent`: pseudo query передаёт полный physical intent, а не
+выбранный поиск. В этом режиме аудитор проверяет missing ordinary prerequisite;
+успех требует nominal prerequisite_query. Normal discovery input marker не имеет;
+negative different_action остаётся reject, отсутствие/authority guards сохраняются.
+
+Narration distinguishes committed transient handling from an unexecuted continuation:
+applied physical motion happened for the grouped duration; only observation/discovery
+result remains open. Pending goal does not undo an applied operation. Narrator renders
+the motion concretely, without status metadata or an invented future action choice.
+
+Narration auditor использует exact `request.segments[].segment_id` во всех
+reviewed_segments, source_reviews, unsupported и literary_failures. Positional
+aliases и нормализация не допускаются; Adapter детерминированно собирает
+coverage/verdict, а final audit строго проверяется по IDs
+повторно сегментированной approved prose. Длительность хода не входит в private
+prose wire: её вычисляет temporal owner и показывает server-owned UI projection.
+Любая придуманная narrator временная величина является unsupported fact, а
+служебная формулировка дополнительно проваливает elapsed_as_service_report.
+При current beat `optional_support` private wire допускает только `visible_scene`;
+неизменный sensory panorama не передаётся. Новые относящиеся к эпизоду sensory facts
+обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
+dump остаётся static_context_dump. При отсутствии current beat scene-only wire
+сохраняет `visible_scene` и grounded descriptive sensory support.
+Полный grounded пересказ required sources по одному в исходном порядке является
+weak_literary_composition, если действие или воспринятый результат не организует
+поддержанные пространственные детали в сцену; выдуманная связка недопустима.
+
+Temporal/aspect grounding не позволяет выводить длительность из действия или
+sensory sky/weather/sound. Sensory support связывает сцену. Source review требует все propositions каждого atomic
+required source; неизвестный результат нельзя опустить или заменить
+failure/success. Речь передаётся естественно с дословным
+содержанием и speaker, discovery — через подтверждённое восприятие без status report.
+Грамматически подчинённое раннее действие допустимо при однозначном
+completed-before смысле; reversal и simultaneous/ongoing embedding запрещены.
+
+Applied-step causal projection оставляет semantic_activity duration temporal owner;
+single transient_item_use получает два соседних atomic current-beat source:
+выполненную попытку с exact description, затем отдельно неизвестный observation result.
+Каждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step
+удаляется перед финальной сборкой; search передаёт только выполненное действие и результат.
+Narrator переводит evidence wording в естественную речь и конкретное движение,
+не копирует служебные слова step/attempt и не добавляет минуты.
+
+Первый экран (opening) показывает в панели route только канонические связи текущего места: loader
+`loadNaturalScenePerceptionInput` обязан вернуть `site_connections` (disclosure владельца видимости,
+`readCurrentConnectionDisclosure`), иначе внутренняя ошибка `SPATIAL_V3_CURRENT_CONNECTION_DISCLOSURE_REQUIRED`
+(`public_exposure: internal`, игроку `TEMPORARY_ACTION_UNAVAILABLE`). Локальные рёбра и направленные выходы, которые
+даёт ход (`phase-2-current-visible.js`), на первом экране не раскрываются: LW-097. Видимость не входит в доступность
+(Spatial 4.7.0 §7.1.1): при плохой видимости линии (`local_edge`, `site_connection`, `directional_exit`) остаются в disclosure,
+их скрывает только concealment (`visibleCurrentTargets`). Экран локального хода показывает проходы места прибытия:
+`prepareLocalMovement` кладёт их в `visible_seed.destination_movement_objects`, проектор подменяет ими проходы прежней позиции.
+Проходы — выбор панели route, не объекты сцены: в прозу их метки не идут (источник «В поле зрения — Проход N» —
+`lowerDvinaTraceObservedSceneChanges`, плюс `narrationWire`; оба пропускают `scene_movement_edge`, `g4_directional_exit`,
+`g5_site_connection`). Линия при плохой видимости приходит из `visibleCurrentTargets` с `visibility: 'none'`.
+
+Opening и arrival могут передать exact natural perception input действующему
+`@rus/presentation/spatial-v3-projection.projectSpatialV3NaturalScene` через
+`projectG4NaturalPerception`. Opening загружает его через optional
+`traceStartAdapter.loadNaturalScenePerceptionInput` только после committed
+rehydrate и до narrator. Turn projection принимает transient
+`natural_scene_perception_input` и сверяет его с итоговой actor position.
+Оба пути раскрывают только approved descriptor text, допущенный P22
+visibility/acoustic resolver; raw natural baseline, stock, rights и class codes
+не передаются narrator. Неполный descriptor catalog, source position либо
+perception context дают `NATURAL_SCENE_PERCEPTION_DATA_GAP`.
+Input loader обязан поставить фактические current sensory sources и условия,
+включая causal basis текущего звука; размещение descriptor на template само по
+себе не доказывает звучание. Эти hooks не активируют data pack и не создают
+второй persistence owner; production readiness требует отдельного approved
+catalog и реального runtime wiring.
+
+`prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, currentFacts })`
+joins exact compiled natural/presentation membership with the current owner
+snapshot. `readCurrentNaturalPerceptionFacts` supplies that snapshot through
+a read-only PostgreSQL query for the actor's committed scene position, G6,
+baseline, acoustic baseline, links and portal states. It resolves the source
+from an approved arrival endpoint and the committed template-position binding,
+then requires matching active `party_site_connection_endpoint_bindings` rows;
+it never uses the actor position as a fallback source. Call it in the caller's
+consistent read transaction. The required `readCurrentSourceState` port owns
+current Temporal state, actor senses, visual source presence/cover/occlusion and
+causal sound state. `resolveG4NaturalPerceptionConditions` applies the verified
+placement pack, exact scene physical pins and approved light/weather mappings
+to those current facts. Missing input fails closed; an explicitly absent source contributes
+no fact. The adapter does not infer moving water from a static descriptor or
+clear visibility from an outdoor G6. Actor-carrier and in-transit positions
+require their existing position owner; they produce a typed gap here.
+
+An approved canonical initial rule may bind its source through the exact
+canonical G5/scene/arrival position instead of a site connection. The reader
+checks verified compiled rule membership, `readPinnedCanonicalG5SceneBinding`,
+the committed world/site/baseline/G6/position and the initial owner proof from
+`readCurrentSourceState`. That proof binds the actual persisted request identity
+and initial snapshot to the actor and position; its owner must reject applied
+gameplay, time, body or scene changes. The reader creates no connection and no
+persisted endpoint binding for this case. Generated arrival continues to require
+the real committed site connection endpoint binding.
+
+Initial perception may run before the first server session is attached. The
+initial-state owner accepts an absent session only when a LEFT JOIN confirms
+its absence and every committed snapshot/body/clock/history/scene guard still
+passes. An existing session must match the scenario, have no turn and retain
+its valid version; missing session data is not replaced with default values.
+
+Canonical opening carries the verified initial source binding privately through
+`prepareG4NaturalScenePerceptionInput`. `startLowerDvinaTrace` selects
+`buildCanonicalOpeningVisibleContext` from this proof after rehydrate and P22
+projection. This opening requires identity/body and supplies only admitted
+natural facts, known carried items through the existing item projector, and
+explicit safe perceptual entity facts. Raw NPC rows and ground items are not
+perception evidence. Empty history, goals and local structures stay empty;
+missing observations do not mean that the place is empty or silent. The same
+Stage 22/23 narration service covers the supplied `must_include` entries and
+does not add fictional reader-control facts. The independent code-owned reader
+assesses all eight opening questions before Stage 21 approval. Unsupported
+questions remain `unknown` with no fact refs and `answered: false`; reader pass
+means source-boundary and question-coverage validation, not an invented answer.
+Missing assessments or unsupported fact references block the writer. The initial
+source-binding proof never reaches narration.
+
+Opening source validation accepts the historical environment profile/facts or
+the committed `rus.approved_initial_environment.v1` with versioned calendar and
+weather refs and its actual date/time/light/weather state. The latter needs no
+invented aggregate environment profile. Screen environment facts contain only
+supplied values from the existing screen vocabulary; an absent list remains
+empty and does not assert weather or silence. P22 supplies sensory prose.
+
+The initial Phase 2 read identifies the canonical v3 snapshot and requires its
+matching runtime binding plus `loadInitialNaturalScenePerceptionInput({ partyId,
+actorId, initialState })`. That callback returns the same prepared current P22
+input used by opening. `phase2InitialCurrentVisibleContext` verifies the exact
+canonical party/actor/position proof and uses only its safe projection. Starts
+with an initial natural-perception rule also require the scenario-bound initial
+source proof; starts without that rule accept the verified current canonical
+scene source, whose site, baseline and source slot were checked by the P22
+reader and preparation boundary. The Phase 2 projection does not load historical
+scene presentation or disclose raw colocated NPCs,
+items or weather metadata. Missing target binding/input is a typed perception
+gap. The historical initial read retains its existing projection path.
+
+`loadTargetAuthoredStartProfile` загружает отдельный canonical start только при
+совпадении трёх immutable authoring SHA с independent data approval и exact
+verified target item/world tuple. Manifest digest связывает все policy pins;
+он не равен raw SHA initial-perception candidate. Loader не выдаёт operational
+approval, не меняет default release и сохраняет historical authored catalog.
+
+## World Knowledge grounding (D18 / #153 part A + B)
+
+- Party calendar clock wins over `request.historical_context.year`.
+- `partyHistoricalEventsOf(committedState)` + `withPartyHistoricalEvents(model, stateOf)` — server port: adapters pass `historical_events` explicitly in grounder `authoritative` / model-call context from committed party state (F1/F2). No `request_id` Map and no request-body injection. Turn step: `buildLowerDvinaTracePhase2Services` wraps `turnStepModel` per request as `(req, repair) => model(req, repair, { historical_events })` (3rd arg; no mutable function property). Conversation exchange wraps `npcSemanticModel` with exchange `context.state` (party state at exchange start; working overlay does not own `historical_events`). `partyWorldKnowledgeAuthoritative` always rebuilds `started_historical_events` from those events + party clock via `@rus/time-events-history` (never accepts a ready id list).
+- Part B (D16/D20): `createLowerDvinaTraceNarrationService` grounds `purpose: narration` once per flow; `withPlayerWorldKnowledgeAuthoritative` / `playerActorFacetsFromState` bind player dossier `social_role_id` → `role_ref` for conversation/narration. Committed state always wins over callContext (F9). Narration authoritative comes from post-commit state via options port, shared with presentation replay (F7).
+- Focus refs are filtered by claim `conditions` / access before the planner wire.

@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
 import { serverError } from '../errors.js';
 import { slotByExitOf } from './spatial-v3-pass-target-disclosure.js';
@@ -14,59 +15,87 @@ function atDepartureSlot(scene, position) {
     && row.required_position_instance_ordinal === position.template_instance_ordinal);
 }
 
-/** Deterministic BFS over the scene's own local edges to the nearest position that
- * satisfies a departure/both endpoint slot - shortest path, ties broken by edge id.
- * `eligibleExpansions` keeps deciding purely by slot rule; the walk itself is a
- * separate, ordinary local movement, owned and applied by the local-scene movement
- * runtime, never duplicated here (A-B1-06: the crossing command only ever executes
- * from `departure`; a not-yet-there actor is offered the first local hop toward it,
- * labelled with the reachable exit's own stable identity, not a second owner).
- * `firstStepEdgeIds` (F3) restricts the first hop to the edges the local-scene owner
- * itself offers from the current position - visible, eligible, admitted; the walk past
- * the first hop is only path-finding over raw topology and never executes anything. */
-export function findReachableDeparturePosition(context, firstStepEdgeIds = null) {
-  const { position, scene } = context;
-  if (atDepartureSlot(scene, position)) return { position, path: [] };
-  const positions = new Map((scene.positions ?? []).map((row) => [row.id, row]));
-  const edges = [...(scene.movement_edges ?? [])].filter((row) => row.status === 'active')
-    .sort((left, right) => left.id.localeCompare(right.id));
+/** Departure positions reachable through edges admitted by the local movement owner. */
+async function reachableDepartureContexts(context, state, localMovementRuntime,
+  firstStepEdgeIds = null, transaction = null) {
+  if (atDepartureSlot(context.scene, context.position)) return [{ context, path: [] }];
+  if (typeof localMovementRuntime?.listAdmittedEdgesAt !== 'function'
+      || state?.position?.position_id !== context.position.id) return [];
+  const positions = new Map((context.scene.positions ?? []).map((row) => [row.id, row]));
+  const departureKeys = new Set(context.scene.endpoint_slots
+    .filter((row) => ['departure', 'both'].includes(row.endpoint_role))
+    .map((row) => `${row.required_position_slot_key}\0${row.required_position_instance_ordinal}`));
   const offered = firstStepEdgeIds == null ? null : new Set(firstStepEdgeIds);
-  const visited = new Set([position.id]);
-  let frontier = [{ positionId: position.id, path: [] }];
+  const visited = new Set([context.position.id]);
+  const found = [];
+  let frontier = [{ positionId: context.position.id, path: [] }];
   while (frontier.length) {
     const next = [];
     for (const { positionId, path } of frontier) {
-      for (const edge of edges) {
-        if (edge.from_position_id !== positionId || visited.has(edge.to_position_id)) continue;
-        if (path.length === 0 && offered != null && !offered.has(edge.id)) continue;
-        visited.add(edge.to_position_id);
-        const toPosition = positions.get(edge.to_position_id);
-        const nextPath = [...path, edge.id];
-        if (toPosition && atDepartureSlot(scene, toPosition)) return { position: toPosition, path: nextPath };
-        if (toPosition) next.push({ positionId: edge.to_position_id, path: nextPath });
+      const admitted = await localMovementRuntime.listAdmittedEdgesAt({
+        partyId: context.partyId, actorId: context.actorId, state, positionId,
+        ...(transaction == null ? {} : { transaction }) });
+      for (const edge of admitted.sort((left, right) =>
+        left.movement_admission.edge_id.localeCompare(right.movement_admission.edge_id))) {
+        const movement = edge.movement_admission;
+        if (movement.from_position_ref !== positionId || visited.has(movement.to_position_ref)
+          || path.length === 0 && offered != null && !offered.has(movement.edge_id)
+          || movement.destination_status === 'occupied') continue;
+        visited.add(movement.to_position_ref);
+        const target = positions.get(movement.to_position_ref);
+        if (!target) continue;
+        const targetPath = [...path, movement.edge_id];
+        if (departureKeys.has(`${target.template_slot_key}\0${target.template_instance_ordinal}`)) {
+          found.push({ context: { ...context, position: target,
+            location: { ...context.location, scene_position_id: target.id } },
+          path: targetPath });
+        } else next.push({ positionId: target.id, path: targetPath });
       }
     }
     frontier = next;
   }
-  return null;
+  return found;
+}
+
+/** Keep disclosed route choices visible even when internal admission currently has no path;
+ * selection then returns the typed, player-safe path refusal before topology preparation. */
+function allDepartureContexts(context) {
+  const keys = new Set((context.scene.endpoint_slots ?? [])
+    .filter((row) => ['departure', 'both'].includes(row.endpoint_role))
+    .map((row) => `${row.required_position_slot_key}\0${row.required_position_instance_ordinal}`));
+  return [...new Map((context.scene.positions ?? [])
+    .filter((position) => keys.has(`${position.template_slot_key}\0${position.template_instance_ordinal}`))
+    .map((position) => [position.id, { context: { ...context, position,
+      location: { ...context.location, scene_position_id: position.id } }, path: null }])).values()];
 }
 
 /** Server command bridge. Read-only menus never seed frontiers. Selection is
  * repeated by the generated adapter under the existing party/G4 P16 lock. */
 export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansionAdapter,
   readExitDisclosure, readConnectionDisclosure, prepareSiteTraversal, materializerVersion,
-  now = () => Date.now() } = {}) {
-  async function selectedContext({ partyId, actorId, directionalExitId }) {
+  localSceneMovementRuntime = null, now = () => Date.now() } = {}) {
+  async function selectedContext({ partyId, actorId, directionalExitId, state,
+    firstStepEdgeIds = null, transaction = null }) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
-    const context = await readContext({ partyId, actorId });
-    const options = eligibleExpansions(context, now());
+    const context = await readContext({ partyId, actorId,
+      ...(transaction == null ? {} : { transaction }) });
+    const reachable = await reachableDepartureContexts(context, state,
+      localSceneMovementRuntime, firstStepEdgeIds, transaction);
+    const reachableIds = new Set(reachable.map(({ context: departure }) => departure.position.id));
+    const departureContexts = [...reachable, ...allDepartureContexts(context)
+      .filter(({ context: departure }) => !reachableIds.has(departure.position.id))];
+    const options = departureContexts.flatMap(({ context: departureContext, path }) =>
+      eligibleExpansions(departureContext, now()).map((row) => ({ ...row,
+        departure_context: departureContext, local_path: path })));
     if (!options.length) {
       if (directionalExitId != null) gap('selected_exit_unavailable');
       return { context, options: [], selected: null };
     }
     if (typeof readExitDisclosure !== 'function') gap('current_exit_disclosure_owner_required');
+    const exits = [...new Map(options.map((row) => [row.exit.id, row.exit])).values()];
     const disclosed = await readExitDisclosure({ ...context,
-      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context.closure?.slots) });
+      directional_exits: exits, slotByExit: slotByExitOf(context.closure?.slots),
+      ...(transaction == null ? {} : { transaction }) });
     if (!Array.isArray(disclosed)) gap('current_exit_disclosure_required');
     const visible = options.flatMap((option) => {
       const matches = disclosed.filter((row) => row.directional_exit_id === option.exit.id
@@ -78,41 +107,19 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) gap('approved_exit_disclosure_required');
       return [{ ...option, display_label: disclosure.display_label }];
     });
-    return { context, options: visible, selected: directionalExitId == null ? null
-      : one(visible.filter((row) => row.exit.id === directionalExitId), 'selected_exit_unavailable') };
-  }
-  /** A not-yet-at-departure actor never gets an executable crossing command (it would
-   * fail `prepareTraversal`'s committed-position check); instead, expose the first local
-   * hop of the deterministic path toward whichever departure position would make the
-   * crossing eligible, labelled with the reachable exit's own stable display text. The
-   * hop is executed by the local-scene movement owner, not duplicated here (A-B1-06). */
-  async function approachOptions({ partyId, actorId, firstStepEdgeIds }) {
-    if (typeof readContext !== 'function') gap('current_expansion_reader_required');
-    // No offered first step, no approach: the hop is the local-scene owner's, never a guess.
-    if (!Array.isArray(firstStepEdgeIds) || !firstStepEdgeIds.length) return [];
-    const context = await readContext({ partyId, actorId });
-    const reachable = findReachableDeparturePosition(context, firstStepEdgeIds);
-    if (reachable == null || reachable.path.length === 0) return [];
-    const options = eligibleExpansions({ ...context, position: reachable.position }, now());
-    if (!options.length || typeof readExitDisclosure !== 'function') return [];
-    const disclosed = await readExitDisclosure({ ...context,
-      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context.closure?.slots) });
-    if (!Array.isArray(disclosed)) return [];
-    return options.flatMap((option) => {
-      const disclosure = disclosed.find((row) => row.directional_exit_id === option.exit.id
-        && row.directional_exit_version === option.exit.version
-        && row.direction_context_id === option.exit.direction_context_id);
-      if (!disclosure || !['visible', 'known'].includes(disclosure.knowledge_state)
-        || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) return [];
-      return [{ directional_exit_id: option.exit.id, edge_id: reachable.path[0],
-        display_label: disclosure.display_label }];
-    });
+    const unique = [...new Map(visible.sort((left, right) => (left.local_path?.length ?? Infinity)
+      - (right.local_path?.length ?? Infinity)
+      || left.departure_context.position.id.localeCompare(right.departure_context.position.id))
+      .map((row) => [row.exit.id, row])).values()];
+    return { context, options: unique, selected: directionalExitId == null ? null
+      : one(unique.filter((row) => row.exit.id === directionalExitId), 'selected_exit_unavailable') };
   }
   /** Canonical connections revealed from the actor's current position (same disclosure rule as exits). */
-  async function revealedConnections(context, eligible) {
+  async function revealedConnections(context, eligible, transaction = null) {
     if (!eligible.length) return [];
     if (typeof readConnectionDisclosure !== 'function') gap('current_connection_disclosure_owner_required');
-    const disclosed = await readConnectionDisclosure({ ...context, connections: eligible });
+    const disclosed = await readConnectionDisclosure({ ...context, connections: eligible,
+      ...(transaction == null ? {} : { transaction }) });
     if (!Array.isArray(disclosed)) gap('current_connection_disclosure_required');
     return eligible.flatMap((option) => {
       const matches = disclosed.filter((row) => row.connection_binding_id === option.binding.id);
@@ -123,84 +130,178 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       return [{ ...option, display_label: disclosure.display_label }];
     });
   }
-  async function selectedConnection({ partyId, actorId, connectionBindingId }) {
+  async function connectionChoices(input) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
-    const context = await readContext({ partyId, actorId });
-    const visible = await revealedConnections(context, eligibleCanonicalConnections(context));
-    return { context, selected: one(visible.filter((row) => row.binding.id === connectionBindingId),
-      'selected_connection_unavailable') };
+    const context = await readContext({ partyId: input.partyId, actorId: input.actorId,
+      ...(input.transaction == null ? {} : { transaction: input.transaction }) });
+    const reachable = await reachableDepartureContexts(context, input.state,
+      localSceneMovementRuntime, input.firstStepEdgeIds, input.transaction);
+    const reachableIds = new Set(reachable.map(({ context: departure }) => departure.position.id));
+    const departureContexts = [...reachable, ...allDepartureContexts(context)
+      .filter(({ context: departure }) => !reachableIds.has(departure.position.id))];
+    const eligible = departureContexts.flatMap(({ context: departureContext, path }) =>
+      eligibleCanonicalConnections(departureContext).map((row) => ({ ...row,
+        departure_context: departureContext, local_path: path })));
+    const visible = await revealedConnections(context, eligible, input.transaction);
+    const unique = [...new Map(visible.sort((left, right) => (left.local_path?.length ?? Infinity)
+      - (right.local_path?.length ?? Infinity)
+      || left.departure_context.position.id.localeCompare(right.departure_context.position.id))
+      .map((row) => [row.binding.id, row])).values()];
+    return { context, visible: unique,
+      selected: input.connectionBindingId == null ? null : one(unique.filter((row) =>
+        row.binding.id === input.connectionBindingId), 'selected_connection_unavailable') };
+  }
+  async function lockExpansionReplay(input, context) {
+    if (!input.transaction) gap('p16_replay_lock_transaction_required');
+    if (typeof generatedExpansionAdapter?.lockExpansionReplay !== 'function') {
+      gap('p16_expansion_owner_required');
+    }
+    const locked = await generatedExpansionAdapter.lockExpansionReplay({
+      party_id: input.partyId, g4_id: context.g4.id,
+      transaction: input.transaction
+    });
+    if (locked?.ok !== true) gap('p16_replay_lock_required');
   }
   return Object.freeze({
     async listConnectionOptions(input) {
-      if (typeof readContext !== 'function') gap('current_expansion_reader_required');
-      const context = await readContext({ partyId: input.partyId, actorId: input.actorId });
-      return (await revealedConnections(context, eligibleCanonicalConnections(context)))
-        .map(({ binding, display_label }) => ({ kind: 'connection',
-          connection_binding_id: binding.id, display_label }));
-    },
-    /** Same first-hop rule as the exit approach: only an edge the local-scene owner offered. */
-    async listConnectionApproachOptions(input) {
-      if (typeof readContext !== 'function') gap('current_expansion_reader_required');
-      if (!Array.isArray(input.firstStepEdgeIds) || !input.firstStepEdgeIds.length) return [];
-      const context = await readContext({ partyId: input.partyId, actorId: input.actorId });
-      const reachable = findReachableDeparturePosition(context, input.firstStepEdgeIds);
-      if (reachable == null || reachable.path.length === 0) return [];
-      const eligible = eligibleCanonicalConnections({ ...context, position: reachable.position });
-      return (await revealedConnections(context, eligible)).map(({ binding, display_label }) => ({
-        kind: 'approach', connection_binding_id: binding.id, edge_id: reachable.path[0], display_label }));
+      const { visible } = await connectionChoices(input);
+      return visible.map(({ binding, display_label }) => ({ kind: 'connection',
+        connection_binding_id: binding.id, display_label }));
     },
     async prepareConnection(input) {
-      const { context, selected } = await selectedConnection(input);
-      if (selected.connection) return Object.freeze({ ok: true, replay: true,
-        topology_status: 'committed', connection_id: selected.connection.id,
-        source_position_id: context.position.id, moves_traveller: false, advances_time: false });
+      const { context, selected } = await connectionChoices(input);
+      const departureContext = selected.departure_context;
+      const localApproachChain = await prepareLocalApproachChain({
+        partyId: input.partyId, actorId: input.actorId, state: input.state,
+        edgeIds: selected.local_path, transaction: input.transaction });
+      if (selected.local_path.length > 0 && localApproachChain?.terminal_position_ref
+          !== departureContext.position.id) gap('local_approach_chain_invalid');
+      if (selected.connection) {
+        await lockExpansionReplay(input, context);
+        return Object.freeze({ ok: true, replay: true,
+          topology_status: 'committed', connection_id: selected.connection.id,
+          source_position_id: departureContext.position.id,
+          ...(localApproachChain == null ? {} : { local_approach_chain: localApproachChain }),
+          moves_traveller: false, advances_time: false });
+      }
       if (typeof generatedExpansionAdapter?.prepareCanonicalConnection !== 'function') gap('p16_expansion_owner_required');
-      return generatedExpansionAdapter.prepareCanonicalConnection({ party_id: input.partyId,
+      const prepared = await generatedExpansionAdapter.prepareCanonicalConnection({ party_id: input.partyId,
         actor_id: input.actorId, g4: context.g4, profile: context.profile, binding_id: selected.binding.id,
-        source_site_id: context.site.id, source_position_id: context.position.id,
-        materializer_version: materializerVersion });
+        source_site_id: context.site.id, source_position_id: departureContext.position.id,
+        origin_position_id: context.position.id, materializer_version: materializerVersion,
+        ...(input.transaction == null ? {} : { transaction: input.transaction }) });
+      return localApproachChain == null ? prepared : { ...prepared,
+        source_position_id: departureContext.position.id, local_approach_chain: localApproachChain };
     },
     async prepareConnectionTraversal(input) {
       if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
-      const { context, selected } = await selectedConnection(input);
+      const { context, selected } = await connectionChoices(input);
       if (!selected.connection || selected.connection.id !== input.expansion?.connection_id
-        || context.position.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
+        || selected.departure_context.position.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
+      const localApproachChain = await prepareLocalApproachChain({
+        partyId: input.partyId, actorId: input.actorId, state: input.state,
+        edgeIds: selected.local_path, transaction: input.transaction });
+      if (!isDeepStrictEqual(localApproachChain,
+        input.expansion.local_approach_chain ?? null)) gap('local_approach_chain_changed');
+      const departureContext = selected.departure_context;
+      const state = localApproachChain == null ? input.state : {
+        ...input.state,
+        position: { ...input.state.position, position_id: departureContext.position.id,
+          g6_instance_id: departureContext.position.g6_instance_id, site_id: context.site.id },
+        journey_location: { ...input.state.journey_location,
+          scene_position_id: departureContext.position.id }
+      };
       // The binding names its own profile; the expansion profile pins only one of them.
-      return prepareSiteTraversal({ ...input, connection: selected.connection,
-        context: { ...context, closure: { ...context.closure, connection_profiles: [selected.profile] } } });
+      return prepareSiteTraversal({ ...input, state, origin_state: input.state,
+        local_approach_chain: localApproachChain, connection: selected.connection,
+        context: { ...departureContext,
+          closure: { ...departureContext.closure, connection_profiles: [selected.profile] } } });
     },
     async listExpansionOptions(input) {
-      const { options } = await selectedContext({ partyId: input.partyId, actorId: input.actorId });
+      const { options } = await selectedContext({ partyId: input.partyId,
+        actorId: input.actorId, state: input.state,
+        firstStepEdgeIds: input.firstStepEdgeIds });
       return options.map(({ exit, display_label }) => ({ kind: 'crossing',
         directional_exit_id: exit.id, display_label }));
     },
-    async listApproachOptions(input) {
-      const approaches = await approachOptions({ partyId: input.partyId, actorId: input.actorId,
-        firstStepEdgeIds: input.firstStepEdgeIds });
-      return approaches.map((row) => ({ kind: 'approach', ...row }));
-    },
     async prepareExpansion(input) {
       const { context, selected } = await selectedContext(input);
-      if (selected.connection) return Object.freeze({ ok: true, replay: true,
-        topology_status: 'committed', connection_id: selected.connection.id,
-        source_position_id: context.position.id, directional_exit: pin(selected.exit),
-        moves_traveller: false, advances_time: false });
+      const departureContext = selected.departure_context;
+      const localApproachChain = await prepareLocalApproachChain({
+          partyId: input.partyId, actorId: input.actorId, state: input.state,
+          edgeIds: selected.local_path, transaction: input.transaction });
+      if (selected.local_path.length > 0 && localApproachChain?.terminal_position_ref
+          !== departureContext.position.id) gap('local_approach_chain_invalid');
+      if (selected.connection) {
+        await lockExpansionReplay(input, context);
+        return Object.freeze({ ok: true, replay: true,
+          topology_status: 'committed', connection_id: selected.connection.id,
+          source_position_id: departureContext.position.id, directional_exit: pin(selected.exit),
+          ...(localApproachChain == null ? {} : { local_approach_chain: localApproachChain }),
+          moves_traveller: false, advances_time: false });
+      }
       if (typeof generatedExpansionAdapter?.prepareExpansion !== 'function') gap('p16_expansion_owner_required');
-      return generatedExpansionAdapter.prepareExpansion({ party_id: input.partyId, actor_id: input.actorId,
+      const prepared = await generatedExpansionAdapter.prepareExpansion({ party_id: input.partyId, actor_id: input.actorId,
         g4: context.g4, profile: context.profile, slot_ref: pin(selected.slot),
         directional_exit: pin(selected.exit), candidate_ordinal: selected.ordinal,
-        source_site_id: context.site.id, source_position_id: context.position.id,
+        source_site_id: context.site.id, source_position_id: departureContext.position.id,
+        origin_position_id: context.position.id,
         ...(selected.entry ? { entry_binding: pin(selected.entry) } : {}),
-        materializer_version: materializerVersion });
+        materializer_version: materializerVersion,
+        ...(input.transaction == null ? {} : { transaction: input.transaction }) });
+      return localApproachChain == null ? prepared : { ...prepared,
+        source_position_id: departureContext.position.id,
+        local_approach_chain: localApproachChain };
     },
     async prepareTraversal(input) {
       if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
       const { context, selected } = await selectedContext(input);
       if (!selected.connection || selected.connection.id !== input.expansion?.connection_id
-        || context.position.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
-      return prepareSiteTraversal({ ...input, context, connection: selected.connection });
+        || selected.departure_context.position.id !== input.expansion.source_position_id) gap('committed_site_connection_required');
+      const localApproachChain = await prepareLocalApproachChain({
+          partyId: input.partyId, actorId: input.actorId, state: input.state,
+          edgeIds: selected.local_path, transaction: input.transaction });
+      if (!isDeepStrictEqual(localApproachChain,
+        input.expansion.local_approach_chain ?? null)) gap('local_approach_chain_changed');
+      const departureContext = selected.departure_context;
+      const state = localApproachChain == null ? input.state : {
+        ...input.state,
+        position: { ...input.state.position, position_id: departureContext.position.id,
+          g6_instance_id: departureContext.position.g6_instance_id,
+          site_id: context.site.id },
+        journey_location: { ...input.state.journey_location,
+          scene_position_id: departureContext.position.id }
+      };
+      return prepareSiteTraversal({ ...input, state, context: departureContext,
+        origin_state: input.state, local_approach_chain: localApproachChain,
+        connection: selected.connection });
     }
   });
+
+  async function prepareLocalApproachChain({ partyId, actorId, state, edgeIds,
+    transaction = null }) {
+    if (edgeIds == null) {
+      throw serverError('LIVE_WORLD_INTERNAL_PATH_UNAVAILABLE',
+        'К выбранному выходу сейчас нельзя пройти по доступным проходам внутри места.',
+        { status: 409 });
+    }
+    if (edgeIds.length === 0) return null;
+    try {
+      const chain = await localSceneMovementRuntime?.prepareLocalApproachChain?.({
+        partyId, actorId, state, edgeIds,
+        ...(transaction == null ? {} : { transaction }) });
+      if (chain == null) gap('local_approach_chain_owner_required');
+      return chain;
+    } catch (error) {
+      if (['SPATIAL_V3_LOCAL_EDGE_OCCUPIED', 'SPATIAL_V3_LOCAL_EDGE_UNAVAILABLE',
+        'SPATIAL_V3_LOCAL_MOVEMENT_DENIED'].includes(error?.code)) {
+        throw serverError('LIVE_WORLD_INTERNAL_PATH_UNAVAILABLE',
+          'К выбранному выходу сейчас нельзя пройти по доступным проходам внутри места.',
+          { status: 409 });
+      }
+      throw error;
+    }
+  }
 }
 
 export function eligibleExpansions(context, now) {
@@ -208,7 +309,7 @@ export function eligibleExpansions(context, now) {
   const departures = scene.endpoint_slots.filter((row) => ['departure', 'both'].includes(row.endpoint_role)
     && row.required_position_slot_key === position.template_slot_key
     && row.required_position_instance_ordinal === position.template_instance_ordinal);
-  // Arrival/focus navigation is a separate ordinary local movement command.
+  // Endpoint eligibility stays slot-based; selectedContext resolves hidden internal hops.
   if (!departures.length) return [];
   const departure = one(departures, 'ambiguous_departure_endpoint');
   const options = [];

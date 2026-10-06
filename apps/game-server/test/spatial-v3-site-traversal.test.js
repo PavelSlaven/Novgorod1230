@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
+import { canonicalDigest } from '@rus/materialization';
 import { createSpatialV3SiteTraversalRuntime } from
   '../src/runtime/spatial-v3-site-traversal-runtime.js';
 import { applySiteTraversalTransition, siteTraversalWrites } from
@@ -85,17 +86,32 @@ for (const conditionRef of [connection.availability_condition_set_ref, null]) te
     current[`${prefix}_status`] = 'active';
     current[`${prefix}_version`] = 1;
   }
-  const prepare = createSpatialV3SiteTraversalRuntime({ pool: { query: async (sql) =>
-    ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c') ? current : { units: 0 }] }) },
+  let poolCalls = 0; let transactionCalls = 0;
+  const transaction = { query: async (sql) => {
+    transactionCalls += 1;
+    return { rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c') ? current : { units: 0 }] };
+  } };
+  const prepare = createSpatialV3SiteTraversalRuntime({ pool: { async query() {
+    poolCalls += 1; throw new Error('pool must not be used inside caller transaction');
+  } },
   // the real evaluator: a conditional profile @1 is admitted by the approved policy, not by a stub
   assessAvailability: createSpatialV3CurrentMovementCapability({ pool: { query() {} } }).assessAvailability,
-  assessMovementCapability: async () => ({ ok: true, actor_id: 'actor',
-    capability_context: capability }),
-  projectDestination: async () => ({ ok: true, position_id: 'position:target',
-    site_id: 'site:target', visible_context: visible }) });
+  assessMovementCapability: async ({ transaction: used }) => {
+    assert.equal(used, transaction);
+    return { ok: true, actor_id: 'actor',
+      capability_context: capability };
+  },
+  projectDestination: async ({ transaction: used }) => {
+    assert.equal(used, transaction);
+    return { ok: true, position_id: 'position:target',
+      site_id: 'site:target', visible_context: visible };
+  } });
   const consequence = await prepare({ partyId: party_id, actorId: 'actor',
     requestId: 'request', state, playerInput: { idempotency_key: 'idem' },
-    inputDigest: 'input', context: localContext, connection: localConnection });
+    inputDigest: 'input', context: localContext, connection: localConnection,
+    transaction });
+  assert.equal(poolCalls, 0);
+  assert.ok(transactionCalls >= 3);
   assert.equal(consequence.duration_minutes, 0);
   assert.equal(consequence.spatial_v3_traversal.result.result_kind, 'completed');
   assert.equal(consequence.position_transition.to_position_ref, 'position:target');
@@ -144,6 +160,81 @@ test('availability and destination projection owner are required before movement
   assert.equal(commitCheck.ok, false);
 });
 
+test('site traversal P16 rechecks a complete ordered local approach from the committed origin', async () => {
+  const chainEdges = [
+    { edge_id: 'edge:arrival-focus', from_position_ref: 'position:arrival',
+      to_position_ref: 'position:focus' },
+    { edge_id: 'edge:focus-departure', from_position_ref: 'position:focus',
+      to_position_ref: 'position:departure' }
+  ].map((edge) => ({ ...edge, movement_admission: localAdmission(edge) }));
+  const chain = { origin_position_ref: 'position:arrival',
+    terminal_position_ref: 'position:departure', expected_journey_state_version: 1,
+    edges: chainEdges };
+  const check = { party_id, actor_id: 'actor', journey_location_id: 'journey',
+    connection_id: connection.id, origin_position_ref: 'position:arrival',
+    from_position_ref: 'position:departure', to_position_ref: 'position:target',
+    local_approach_chain: chain, source_site_id: 'site:source',
+    destination_site_id: 'site:target', destination_g4_id: 'g4',
+    destination_g6_instance_id: 'g6:target',
+    destination_scene_baseline_id: 'baseline:target',
+    capability_context_digest: capability.canonical_digest,
+    destination_visible_digest: canonicalDigest(visible),
+    expected_journey_state_version: 1, connection_state_version: 1,
+    source_endpoint_state_version: 1, destination_endpoint_state_version: 1,
+    source_position_state_version: 1, destination_position_state_version: 1,
+    source_g6_state_version: 1, destination_g6_state_version: 1,
+    source_baseline_state_version: 1, destination_baseline_state_version: 1,
+    source_site_state_version: 1, destination_site_state_version: 1,
+    destination_capacity: 4, action_units: 1,
+    availability_condition_set_ref: connection.availability_condition_set_ref };
+  const checkedEdgeIds = [];
+  let occupiedPosition = null;
+  const transaction = { async query(sql, params = []) {
+    if (sql.includes('FOR UPDATE OF l,c,bf')) return { rowCount: 1, rows: [{
+      scene_position_id: 'position:arrival', location_kind: 'scene', journey_version: 1,
+      from_site_id: 'site:source', to_site_id: 'site:target',
+      connection_status: 'active', connection_version: 1, cost_kind: 'action',
+      action_units: 1, base_minutes: null, connection_capacity: null,
+      portal_entity_id: null, availability_condition_set_ref: connection.availability_condition_set_ref,
+      from_position: 'position:departure', from_site: 'site:source',
+      from_binding_status: 'active', from_binding_version: 1,
+      to_position: 'position:target', to_site: 'site:target',
+      to_binding_status: 'active', to_binding_version: 1,
+      destination_g4_id: 'g4', destination_g6_id: 'g6:target',
+      destination_baseline_id: 'baseline:target', destination_capacity: 4,
+      ...Object.fromEntries(['source_position', 'destination_position', 'source_g6',
+        'destination_g6', 'source_baseline', 'destination_baseline', 'source_site',
+        'destination_site'].flatMap((prefix) => [[`${prefix}_status`, 'active'],
+        [`${prefix}_version`, 1]]))
+    }] };
+    if (sql.includes('JOIN party_runtime.scene_movement_edges reverse')) {
+      const edgeId = params[3];
+      checkedEdgeIds.push(edgeId);
+      const edge = chainEdges.find(({ edge_id }) => edge_id === edgeId);
+      return { rowCount: edge ? 1 : 0, rows: edge ? [localRow(edge)] : [] };
+    }
+    if (sql.includes('AS destination_occupancy')) return { rowCount: 1,
+      rows: [{ destination_occupancy: params[1] === occupiedPosition ? 2 : 0 }] };
+    if (sql.includes('AS units')) return { rowCount: 1, rows: [{ units: 0 }] };
+    throw new Error(`Unexpected recheck query: ${sql}`);
+  } };
+  const recheck = () => recheckSiteConnectionTraversal({ transaction, partyId: party_id,
+    check, assessAvailability: async () => ({ ok: true, status: 'open',
+      connection_id: connection.id,
+      condition_set_ref: `${connection.availability_condition_set_ref.entity_id}@1` }),
+    assessMovementCapability: async () => ({ ok: true, actor_id: 'actor',
+      capability_context: capability }),
+    projectDestination: async () => ({ ok: true, position_id: 'position:target',
+      site_id: 'site:target', visible_context: visible }) });
+  const result = await recheck();
+  assert.equal(result.ok, true);
+  assert.deepEqual(checkedEdgeIds, ['edge:arrival-focus', 'edge:focus-departure']);
+  occupiedPosition = 'position:focus';
+  checkedEdgeIds.length = 0;
+  assert.equal((await recheck()).ok, false, 'an occupied intermediate destination denies the whole chain');
+  assert.deepEqual(checkedEdgeIds, ['edge:arrival-focus']);
+});
+
 test('known movement denial is a player-safe refusal without traversal', async () => {
   const prepare = createSpatialV3SiteTraversalRuntime({
     pool: { query: async () => ({ rowCount: 1, rows: [{ units: 0 }] }) },
@@ -160,3 +251,33 @@ test('known movement denial is a player-safe refusal without traversal', async (
     error.code === 'SPATIAL_V3_MOVEMENT_DENIED' && error.status === 409
       && /не может двигаться/u.test(error.message));
 });
+
+function localAdmission(edge) {
+  return { edge_id: edge.edge_id, reverse_edge_id: `${edge.edge_id}:reverse`,
+    from_position_ref: edge.from_position_ref, to_position_ref: edge.to_position_ref,
+    cost_kind: 'action', action_units: 1, base_minutes: null, edge_capacity: 1,
+    destination_capacity: 2, transition_footprint_units: 1, destination_occupancy: 0,
+    edge_state_version: 1, reverse_edge_state_version: 1,
+    source_node_state_version: 1, destination_node_state_version: 1,
+    transition_environment_profile_ref: null, movement_orientation_profile_ref: null,
+    baseline_movement_method_id: null, movement_method_cost_profile_ref: null,
+    dynamic_recheck_policy_ref: null };
+}
+
+function localRow(edge) {
+  const admission = edge.movement_admission;
+  return { journey_state_version: 1, journey_position_id: 'position:arrival',
+    from_position_id: edge.from_position_ref, to_position_id: edge.to_position_ref,
+    edge_status: 'active', edge_state_version: admission.edge_state_version,
+    cost_kind: 'action', action_units: 1, base_minutes: null, edge_capacity: 1,
+    reverse_edge_id: admission.reverse_edge_id, reverse_edge_status: 'active',
+    reverse_edge_state_version: 1,
+    reverse_from_position_id: edge.to_position_ref,
+    reverse_to_position_id: edge.from_position_ref,
+    reverse_reverse_edge_id: edge.edge_id,
+    source_status: 'active', source_node_state_version: 1,
+    destination_status: 'active', destination_node_state_version: 1,
+    destination_capacity: 2, transition_environment_profile_ref: null,
+    movement_orientation_profile_ref: null, baseline_movement_method_id: null,
+    movement_method_cost_profile_ref: null, dynamic_recheck_policy_ref: null };
+}

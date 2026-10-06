@@ -26,10 +26,10 @@ import { validSpatialSemanticExtension } from
 import { completeS1Topology } from './spatial-v3-s1-topology-validation.js';
 
 export const lockOrder = (plan) => [
+  ...[...new Set(plan.g4_keys ?? [])].sort().map((key) => `00:g4:${key}`),
   `01:clock:${plan.party_id}`,
   ...[...new Set(plan.owner_keys ?? [])].sort().map((key) => `02:owner:${key}`),
   ...[...new Set(plan.execution_keys ?? [])].sort().map((key) => `03:execution:${key}`),
-  ...[...new Set(plan.g4_keys ?? [])].sort().map((key) => `04:g4:${key}`),
   ...[...new Set(plan.physical_keys)].sort().map((key) => `05:physical:${key}`),
   ...(plan.ordinary_materialization_atomic_write_plan?.finite_resource_transition == null
     ? [] : [`05:resource:${plan.party_id}:${plan.ordinary_materialization_atomic_write_plan.finite_resource_transition.source_resource_node_id}`]),

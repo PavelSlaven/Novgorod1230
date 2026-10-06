@@ -33,7 +33,8 @@ import {
   turnStepDraftPreparedEffectLedger
 } from './turn-step-workflow-draft.js';
 
-export function createTurnStageDefinitions({ context, services, rawInput, now }) {
+export function createTurnStageDefinitions({ context, services, rawInput, now,
+  getTransaction = () => undefined }) {
   const definitions = [
     stage(1, 'normalize_intent', async (state) => next(state, 'playerInput', normalizeTurnIntent(rawInput, now), context)),
     stage(2, 'load_context', async (state) => next(state, 'retrievedState', await loadTurnContextStage({
@@ -90,7 +91,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
         retrievedState: state.revalidatedState,
         availability: state.availability,
         checks: state.checks,
-        commandRegistry: services.commandRegistry
+        commandRegistry: services.commandRegistry,
+        transaction: getTransaction()
       });
       if (consequence.status === 'repair_required'
           || (consequence.status === 'blocked'
@@ -134,7 +136,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       consequence: state.consequence,
       timeUpdate: state.timeUpdate,
       bodyUpdate: state.bodyUpdate,
-      visibleProjector: services.visibleProjector
+      visibleProjector: services.visibleProjector,
+      transaction: getTransaction()
     }), context)),
     stage(13, 'persistence_plan', async (state) => next(state, 'writePlan', await buildPersistencePlanStage({
       playerInput: state.playerInput,
@@ -177,13 +180,15 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
           commandRegistry: services.commandRegistry,
           stateReader: services.stateReader,
           retrievedState: state.retrievedState,
-          finalCommit: true
+          finalCommit: true,
+          transaction: getTransaction()
         });
       }
       return next(state, 'commit', await commitTurnStage({
         writePlan: state.writePlan,
         partyStore: services.partyStore,
-        materializer: services.materializer
+        materializer: services.materializer,
+        transaction: getTransaction()
       }), context);
     }),
     stage(15, 'persisted_visible_projection', async (state) => next(state, 'persistedVisibleContext', await loadPersistedVisibleProjectionStage({

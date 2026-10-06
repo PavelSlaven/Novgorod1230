@@ -9,10 +9,10 @@ export { SCENE_NPC_SOURCE, withoutSceneNpcs };
  * scene placement, so the NPCs of the player's current site are read here, with the
  * G6 of their position (same-G6 is the conversation co-presence rule).
  */
-export async function withSceneNpcs(pool, partyId, state) {
+export async function withSceneNpcs(pool, partyId, state, tx = pool) {
   const siteId = state?.position?.site_id;
   if (typeof siteId !== 'string' || siteId === '') return state;
-  const { rows } = await pool.query(
+  const { rows } = await tx.query(
     `SELECT n.npc_id,n.profile_set_id,n.profile_level,n.anchor_id,
             n.identity_state,n.machine_state,n.semantic_state,
             apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
@@ -32,7 +32,7 @@ export async function withSceneNpcs(pool, partyId, state) {
       WHERE n.party_id=$1 AND g6.host_id=$2 AND g6.host_kind='g5_site' AND pos.status='active' AND g6.status='active'
       ORDER BY n.npc_id`,
     [partyId, siteId]);
-  const positions = await pool.query(
+  const positions = await tx.query(
     `SELECT pos.id,pos.g6_instance_id
        FROM party_runtime.scene_position_nodes pos
        JOIN party_runtime.party_g6_instances g6

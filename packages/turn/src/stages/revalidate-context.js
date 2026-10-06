@@ -10,7 +10,8 @@ export async function revalidateTurnContextStage({
   commandRegistry,
   stateReader,
   retrievedState,
-  finalCommit = false
+  finalCommit = false,
+  transaction
 }) {
   const request = {
     party_id: playerInput.party_id,
@@ -21,8 +22,10 @@ export async function revalidateTurnContextStage({
     ...(finalCommit ? { final_commit: true } : {})
   };
   const revalidated = typeof stateReader.revalidate === 'function'
-    ? await stateReader.revalidate(request)
-    : await stateReader.read(request);
+    ? await stateReader.revalidate(request,
+      transaction === undefined ? undefined : { transaction })
+    : await stateReader.read(request,
+      transaction === undefined ? undefined : { transaction });
   if (Number.isSafeInteger(revalidated)
       && revalidated !== actionSet.state_version) {
     throw staleError();

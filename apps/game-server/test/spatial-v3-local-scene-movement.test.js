@@ -96,6 +96,42 @@ test('local movement follows only committed directed edges; P16 changes exact po
     state: committed })).map(({ edge_id: id }) => id), ['departure:focus']);
 });
 
+test('one exit approach is prepared as an owner-admitted ordered local edge chain', async () => {
+  const pool = { async query(_sql, [partyId, actorId, positionId, originPositionId]) {
+    assert.deepEqual([partyId, actorId, originPositionId], ['party', 'actor', 'arrival']);
+    return { rows: edges.filter(({ from_position_ref: from }) => from === positionId) };
+  } };
+  const runtime = createSpatialV3LocalSceneRuntime({ pool });
+  const chain = await runtime.prepareLocalApproachChain({ partyId: 'party', actorId: 'actor',
+    state: state('arrival'), edgeIds: ['arrival:focus', 'focus:departure'] });
+  assert.equal(chain.origin_position_ref, 'arrival');
+  assert.equal(chain.terminal_position_ref, 'departure');
+  assert.deepEqual(chain.edges.map(({ edge_id: id }) => id),
+    ['arrival:focus', 'focus:departure']);
+  assert.deepEqual(chain.edges.map(({ movement_admission: admission }) =>
+    admission.from_position_ref), ['arrival', 'focus']);
+});
+
+test('local route admission and chain use the supplied queryable', async () => {
+  let poolCalls = 0; let transactionCalls = 0;
+  const pool = { async query() { poolCalls += 1; throw new Error('pool must not be used'); } };
+  const transaction = { async query(_sql, [partyId, actorId, positionId]) {
+    transactionCalls += 1;
+    assert.deepEqual([partyId, actorId], ['party', 'actor']);
+    return { rows: edges.filter(({ from_position_ref: from }) => from === positionId) };
+  } };
+  const runtime = createSpatialV3LocalSceneRuntime({ pool });
+  const admitted = await runtime.listAdmittedEdgesAt({ partyId: 'party', actorId: 'actor',
+    state: state('arrival'), positionId: 'arrival', transaction });
+  assert.deepEqual(admitted.map(({ movement_admission }) => movement_admission.edge_id),
+    ['arrival:focus']);
+  const chain = await runtime.prepareLocalApproachChain({ partyId: 'party', actorId: 'actor',
+    state: state('arrival'), edgeIds: ['arrival:focus', 'focus:departure'], transaction });
+  assert.equal(chain.terminal_position_ref, 'departure');
+  assert.equal(poolCalls, 0);
+  assert.equal(transactionCalls, 3);
+});
+
 test('S1 projection still rejects a stale committed position', () => {
   const committed = state('departure');
   assert.throws(() => applyS1LocalPositionTransition({
@@ -357,7 +393,7 @@ test('topology alone grants no player-facing local movement', async () => {
 test('the disclosure owner and the local-scene runtime read admission through the same eligibility reader (F7)', async () => {
   const seenFlags = [];
   const pool = { async query(_sql, params) {
-    seenFlags.push(params[3]);
+    seenFlags.push(params[4]);
     return { rows: edges.filter(({ from_position_ref: from }) => from === 'arrival')
       .map((row) => ({ ...row, destination_placements: [{ entity_kind: 'npc', entity_id: 'n', units: '1' }] })) };
   } };
@@ -372,6 +408,6 @@ test('the disclosure owner and the local-scene runtime read admission through th
     destination_placements: [{ entity_kind: 'npc', entity_id: 'n', units: 1 }] }]);
   const without = [];
   await createLocalMovementDisclosureReader()({ transaction: { async query(_sql, params) {
-    without.push(params[3]); return { rows: [] }; } }, partyId: 'party', actorId: 'actor', positionId: 'arrival' });
+    without.push(params[4]); return { rows: [] }; } }, partyId: 'party', actorId: 'actor', positionId: 'arrival' });
   assert.deepEqual(without, [false]);
 });

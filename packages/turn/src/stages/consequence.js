@@ -11,7 +11,8 @@ import {
   bindTurnStepPreparedConsequence
 } from '../turn-step-prepared-effects.js';
 
-export async function resolveConsequenceStage({ playerInput, modeResolution, retrievedState, availability, checks, commandRegistry }) {
+export async function resolveConsequenceStage({ playerInput, modeResolution,
+  retrievedState, availability, checks, commandRegistry, transaction }) {
   const draft = getTurnStepWorkflowDraft(modeResolution);
   if (draft && draft.selected_command_id == null) {
     let output = buildTurnStepDraftConsequence(draft);
@@ -25,7 +26,9 @@ export async function resolveConsequenceStage({ playerInput, modeResolution, ret
   const command = commandRegistry.get(modeResolution.command_id);
   const preparedDomain = buildTurnStepPreparedDomainConsequence(draft);
   const commandOutput = preparedDomain
-    ?? await command.consequence(Object.freeze(structuredClone({ playerInput, modeResolution, retrievedState, availability, checks })));
+    ?? await command.consequence(Object.freeze(structuredClone({ playerInput,
+      modeResolution, retrievedState, availability, checks })),
+    transaction === undefined ? undefined : { transaction });
   assertValid(
     'turn_consequence_package',
     validateConsequencePackage(commandOutput)

@@ -51,13 +51,27 @@ import { projectPreparedDomainState } from
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer,
   turnStepAmbientPortionProfileRef = null, turnStepApprovedOwners = null,
-  projectEnvironmentAtClock = null
+  projectEnvironmentAtClock = null, transaction = null,
+  preloadedScreenPresentation
 }) {
   const envelope = requireEnvelope(writePlan);
   assertRootInput({ partyId, inputDigest, envelope });
+  if (transaction != null && preloadedScreenPresentation === undefined) {
+    throw serverError(
+      'TRACE_TURN_STEP_PRESENTATION_PRELOAD_REQUIRED',
+      'Caller-owned spatial P16 commits require presentation loaded before BEGIN.',
+      { status: 409, public_exposure: 'internal' }
+    );
+  }
   const state = await loadState(partyId, {
-    presentationIdempotencyKey: envelope.player_input.idempotency_key
+    presentationIdempotencyKey: envelope.player_input.idempotency_key,
+    ...(transaction == null ? {} : { transaction })
   });
+  const screenPresentation = transaction == null
+    ? preloadedScreenPresentation === undefined
+      ? await loadLowerDvinaTraceScreenPresentation(state)
+      : preloadedScreenPresentation.presentation
+    : requirePreloadedScreenPresentation(preloadedScreenPresentation, state);
   if (state.party_state.state_version !== envelope.base_state_version
       || writePlan.base_state_version !== envelope.base_state_version
       || state.party_state.turn_number + 1
@@ -74,7 +88,8 @@ export async function commitLowerDvinaTraceTurnStep({
   const preparedMovementState = preparedRoute != null
       && typeof turnStepApprovedOwners?.loadPreparedMovementScene === 'function'
       ? await turnStepApprovedOwners.loadPreparedMovementScene(
-        { partyId, state: projectPreparedDomainState(state, preparedRoute) })
+        { partyId, state: projectPreparedDomainState(state, preparedRoute),
+          ...(transaction == null ? {} : { transaction }) })
     : null;
   const nextVersion = state.party_state.state_version + 1;
   const turnNumber = state.party_state.turn_number + 1;
@@ -208,16 +223,19 @@ export async function commitLowerDvinaTraceTurnStep({
       || pendingPositionChanged)
       && typeof turnStepApprovedOwners?.loadPreparedMovementScene === 'function'
     ? await turnStepApprovedOwners.loadPreparedMovementScene({
-      partyId, state: { ...persistedSnapshot, position: pendingScenePosition }
+      partyId, state: { ...persistedSnapshot, position: pendingScenePosition },
+      ...(transaction == null ? {} : { transaction })
     })
     : preparedMovementState ?? state;
   const pendingProjectionState = withSceneNpcProjectionState({
     persistedSnapshot, sourceState: pendingSceneState,
     preparedPosition: pendingScenePosition
   });
+  if (transaction != null) requireMatchingScreenPresentationPin(
+    preloadedScreenPresentation, pendingProjectionState);
   const pendingScreen = buildLowerDvinaTracePendingScreen({
     state: pendingProjectionState,
-    presentation: await loadLowerDvinaTraceScreenPresentation(pendingProjectionState),
+    presentation: screenPresentation,
     turnId: envelope.root_turn_id,
     nextVersion,
     turnNumber,
@@ -259,7 +277,8 @@ export async function commitLowerDvinaTraceTurnStep({
     });
   const committed = await committer.commit({
     plan: built.plan,
-    created_at_turn: turnNumber
+    created_at_turn: turnNumber,
+    ...(transaction == null ? {} : { transaction })
   });
   if (!committed.ok) {
     throw serverError(
@@ -277,6 +296,46 @@ export async function commitLowerDvinaTraceTurnStep({
     package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest,
     committed_public_result: committedPublicResult
+  };
+}
+
+function requirePreloadedScreenPresentation(preloaded, state) {
+  const expected = screenPresentationPin(state);
+  if (!preloaded || typeof preloaded !== 'object'
+      || !Object.hasOwn(preloaded, 'presentation')
+      || preloaded.base_state_version !== expected.base_state_version
+      || preloaded.scenario_id !== expected.scenario_id
+      || preloaded.scenario_definition_revision
+        !== expected.scenario_definition_revision) {
+    throw serverError(
+      'TRACE_TURN_STEP_PRESENTATION_PRELOAD_STALE',
+      'Preloaded presentation does not match the committed turn base.',
+      { status: 409, public_exposure: 'internal' }
+    );
+  }
+  return preloaded.presentation;
+}
+
+function requireMatchingScreenPresentationPin(preloaded, state) {
+  const expected = screenPresentationPin(state);
+  if (preloaded.scenario_id !== expected.scenario_id
+      || preloaded.scenario_definition_revision
+        !== expected.scenario_definition_revision) {
+    throw serverError(
+      'TRACE_TURN_STEP_PRESENTATION_PRELOAD_STALE',
+      'Pending screen presentation pin changed during the spatial turn.',
+      { status: 409, public_exposure: 'internal' }
+    );
+  }
+}
+
+function screenPresentationPin(state) {
+  const revision = state?.materialization_trace?.seed_context
+    ?.scenario_definition_revision;
+  return {
+    base_state_version: state?.party_state?.state_version ?? null,
+    scenario_id: state?.scenario_id ?? null,
+    scenario_definition_revision: Number.isInteger(revision) ? revision : null
   };
 }
 

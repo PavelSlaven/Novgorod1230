@@ -15,14 +15,16 @@ export function createLowerDvinaTracePhase2StateReader({
         : state;
       return projectCurrentScene(committedState);
     },
-    async revalidate() {
+    async revalidate(_request, { transaction } = {}) {
       if (typeof repository.loadPhase2StateVersion === 'function') {
         return repository.loadPhase2StateVersion(partyId, {
-          presentationIdempotencyKey: idempotencyKey, turnBudget
+          presentationIdempotencyKey: idempotencyKey, turnBudget,
+          ...(transaction == null ? {} : { transaction })
         });
       }
       const committedState = await repository.loadPhase2State(partyId, {
-        presentationIdempotencyKey: idempotencyKey, turnBudget
+        presentationIdempotencyKey: idempotencyKey, turnBudget,
+        ...(transaction == null ? {} : { transaction })
       });
       return committedState.party_state?.state_version;
     }

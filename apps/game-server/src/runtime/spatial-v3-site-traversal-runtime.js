@@ -15,10 +15,12 @@ const refMatches = (row, field, profile, name) => row[field]?.entity_id === prof
 
 /** Prepared consequence only. The official turn P16 transaction owns movement. */
 export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
-  assessMovementCapability, projectDestination } = {}) {
+  assessMovementCapability, projectDestination,
+  readLocalMovementEligibility = null, recheckLocalMovementVisibility = null } = {}) {
   if (!pool?.query) throw new TypeError('Site traversal requires a PostgreSQL pool.');
   return async function prepareSiteTraversal({ partyId, actorId, requestId, state,
-    playerInput, inputDigest, context, connection } = {}) {
+    origin_state = state, local_approach_chain = null,
+    playerInput, inputDigest, context, connection, transaction = pool } = {}) {
     if (typeof assessAvailability !== 'function') gap('availability_condition_set_owner_missing');
     if (typeof assessMovementCapability !== 'function') gap('movement_capability_owner_missing');
     if (typeof projectDestination !== 'function') gap('destination_visible_projection_owner_missing');
@@ -58,17 +60,17 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       || destinationG6.host_id !== destinationSite.id || destinationSite.parent_g4_id !== context.site.parent_g4_id
       || [to, destinationPosition, destinationG6, destinationBaseline, destinationSite]
         .some((row) => row.status !== 'active')) gap('committed_arrival_endpoint_required');
-    const occupancy = await readSiteTraversalDestinationOccupancy({ pool,
+    const occupancy = await readSiteTraversalDestinationOccupancy({ pool, transaction,
       partyId, positionId: destinationPosition.id });
     if (!Number.isSafeInteger(occupancy) || !Number.isSafeInteger(destinationPosition.capacity)
       || occupancy + 1 > destinationPosition.capacity
       || connection.capacity != null && connection.capacity < 1) gap('site_traversal_capacity_denied');
-    const admission = await assessAvailability({ partyId, actorId, context,
+    const admission = await assessAvailability({ transaction, partyId, actorId, context,
       connection, profile, from, to, destinationPosition, destinationG6,
       destinationBaseline, destinationSite });
     if (admission?.ok !== true || admission.status !== 'open' || admission.condition_set_ref !== profile.availability_condition_set_ref
       || admission.connection_id !== connection.id) gap('site_traversal_availability_denied');
-    const projected = await projectDestination({ partyId, actorId, context,
+    const projected = await projectDestination({ transaction, partyId, actorId, context,
       connection, profile, destinationPosition, destinationG6,
       destinationBaseline, destinationSite });
     if (projected?.ok !== true || projected.position_id !== destinationPosition.id
@@ -79,7 +81,7 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
     const changeSetId = `change:${partyId}:turn-step:${turnNumber}`;
     const idemId = `idem:${partyId}:${canonicalDigest(playerInput.idempotency_key).slice(0, 20)}`;
     const identity = canonicalDigest({ partyId, inputDigest, connection_id: connection.id });
-    const capabilityAssessment = await assessMovementCapability({ partyId, actorId,
+    const capabilityAssessment = await assessMovementCapability({ transaction, partyId, actorId,
       context, connection });
     if (capabilityAssessment?.ok === false
       && capabilityAssessment.actor_id === actorId
@@ -94,13 +96,17 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
     if (!text(footprintId) || !text(footprintVersion)) gap('movement_footprint_rule_missing');
     const transition = { owner: '@rus/turn/spatial-v3-site-connection-traversal',
       party_id: partyId, actor_id: actorId, journey_location_id: location.id,
+      origin_position_ref: local_approach_chain?.origin_position_ref
+        ?? origin_state?.journey_location?.scene_position_id,
+      ...(local_approach_chain == null ? {} : { local_approach_chain }),
       from_position_ref: from.position_id, to_position_ref: to.position_id,
       connection_id: connection.id, source_site_id: context.site.id,
       destination_site_id: destinationSite.id,
       destination_g4_id: destinationSite.parent_g4_id,
       destination_g6_instance_id: destinationG6.id,
       destination_scene_baseline_id: destinationBaseline.id,
-      expected_journey_state_version: Number(location.state_version),
+      expected_journey_state_version: Number(origin_state.journey_location?.state_version
+        ?? location.state_version),
       connection_state_version: Number(connection.state_version),
       source_endpoint_state_version: Number(from.state_version),
       source_position_state_version: Number(context.position.state_version),
@@ -118,9 +124,10 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       destination_visible_digest: canonicalDigest(projected.visible_context),
       action_units: connection.action_units };
     const readCurrentState = async ({ option }) => {
-      const checked = await recheckSiteConnectionTraversal({ transaction: pool,
+      const checked = await recheckSiteConnectionTraversal({ transaction,
         partyId, check: transition, assessAvailability,
-        assessMovementCapability, projectDestination });
+        assessMovementCapability, projectDestination, readLocalMovementEligibility,
+        recheckLocalMovementVisibility });
       return checked.ok ? { ok: true,
         expected_state_versions: option.expected_state_versions } : checked;
     };
@@ -140,15 +147,16 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       execution_context_snapshot: seal({ context_kind: 'site_connection_traversal', connection_id: connection.id,
         source_position_id: from.position_id, destination_position_id: to.position_id })
     }, { validateCapability: async () => {
-      const current = await assessMovementCapability({ partyId, actorId,
+      const current = await assessMovementCapability({ transaction, partyId, actorId,
         context, connection });
       return { ok: current?.ok === true && current.actor_id === actorId
         && current.capability_context?.canonical_digest === capability.canonical_digest };
     },
       loadCurrentState: readCurrentState,
       recheckActivation: async () => recheckSiteConnectionTraversal({
-        transaction: pool, partyId, check: transition, assessAvailability,
-        assessMovementCapability, projectDestination }) });
+        transaction, partyId, check: transition, assessAvailability,
+        assessMovementCapability, projectDestination, readLocalMovementEligibility,
+        recheckLocalMovementVisibility }) });
     if (!prepared.ok || prepared.result.result_kind !== 'completed') {
       gap(prepared.error?.diagnostics?.reason ?? prepared.error?.code ?? 'site_traversal_preparation_failed');
     }

@@ -28,13 +28,53 @@ export async function runTurnWorkflow(input = {}, services = {}, options = {}) {
   };
   let graphResult;
   try {
-    graphResult = await runStageGraph({
-      stages,
-      input: deepFreeze({ version: 1, schema: 'turn_workflow_state' }),
-      services,
-      transient: true,
-      onEvent: recordEvent
-    });
+    const initial = deepFreeze({ version: 1, schema: 'turn_workflow_state' });
+    const prefix = await runStages(stages.slice(0, 7), initial, services, recordEvent);
+    if (prefix.status !== 'approved') {
+      graphResult = prefix;
+    } else if (isSpatialRouteCommand(prefix.artifact)) {
+      const transact = services.partyStore.withSpatialP16Transaction;
+      if (typeof transact !== 'function') {
+        throw turnFailure('TURN_SPATIAL_P16_TRANSACTION_REQUIRED',
+          'Spatial route commands require a P16 transaction.');
+      }
+      const preloadPresentation = services.partyStore.preloadSpatialRoutePresentation;
+      if (typeof preloadPresentation !== 'function') {
+        throw turnFailure('TURN_SPATIAL_PRESENTATION_PRELOAD_REQUIRED',
+          'Spatial route commits require presentation loaded before BEGIN.');
+      }
+      await preloadPresentation.call(services.partyStore,
+        prefix.artifact.revalidatedState);
+      let activeTransaction = null;
+      const routeStages = createTurnStageDefinitions({
+        context, services, rawInput: input, now,
+        getTransaction: () => activeTransaction
+      });
+      let stopped;
+      try {
+        const middle = await transact.call(services.partyStore, async (transaction) => {
+          activeTransaction = transaction;
+          try {
+            const result = await runStages(routeStages.slice(7, 14), prefix.artifact,
+              services, recordEvent);
+            if (result.status !== 'approved') {
+              stopped = result;
+              throw new RouteGraphStopped();
+            }
+            return result;
+          } finally {
+            activeTransaction = null;
+          }
+        });
+        graphResult = await runStages(routeStages.slice(14), middle.artifact,
+          services, recordEvent);
+      } catch (error) {
+        if (error instanceof RouteGraphStopped) graphResult = stopped;
+        else throw error;
+      }
+    } else {
+      graphResult = await runStages(stages.slice(7), prefix.artifact, services, recordEvent);
+    }
   } catch (error) {
     observeFailure(options.onFailure, error, events, context);
     throw error;
@@ -76,6 +116,17 @@ export async function runTurnWorkflow(input = {}, services = {}, options = {}) {
   assertValid('turn_result', validateTurnResult(result));
   return deepFreeze(result);
 }
+
+async function runStages(stages, input, services, onEvent) {
+  return runStageGraph({ stages, input, services, transient: true, onEvent });
+}
+
+function isSpatialRouteCommand(state) {
+  return typeof state?.modeResolution?.command_id === 'string'
+    && state.modeResolution.command_id.startsWith('live_world.follow_');
+}
+
+class RouteGraphStopped extends Error {}
 
 function observeFailure(observer, error, events, context) {
   if (typeof observer !== 'function') return;

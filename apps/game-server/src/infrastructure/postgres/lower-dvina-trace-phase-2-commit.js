@@ -1,7 +1,6 @@
 import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
-import { serverError } from '../../errors.js';
 import {
   buildPhase2VisibleEnvelope,
   buildPhase2Writes
@@ -35,6 +34,7 @@ import { commitLowerDvinaTracePhase10 } from
 import { mergePhase2Items } from './lower-dvina-trace-phase-2-commit-items.js';
 import { isExpectedPostCommitPresentationFailure } from
   '../../runtime/lower-dvina-trace-post-commit-failure.js';
+import { serverError } from '../../errors.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
@@ -53,15 +53,24 @@ export async function commitLowerDvinaTracePhase2({
   turnStepApprovedOwners,
   projectEnvironmentAtClock = null,
   turnStepAmbientPortionProfileRef = null,
+  transaction = null,
+  preloadedScreenPresentation,
   loadState,
   committer
 }) {
   const routed = await routeLowerDvinaTraceTurnStepCommit({
     partyId, writePlan, inputDigest, contracts, loadState, committer,
     turnStepAmbientPortionProfileRef, turnStepApprovedOwners,
-    projectEnvironmentAtClock
+    projectEnvironmentAtClock, transaction, preloadedScreenPresentation
   });
   if (routed.handled) return routed.result;
+  if (transaction != null) {
+    throw serverError(
+      'TRACE_SPATIAL_P16_TRANSACTION_UNSUPPORTED',
+      'Caller-owned P16 transactions support only sealed turn-step commits.',
+      { status: 409, public_exposure: 'internal' }
+    );
+  }
   const factual = routed.factual;
   if (factual?.consequence?.phase9_kind) {
     const committed = await commitLowerDvinaTracePhase9({

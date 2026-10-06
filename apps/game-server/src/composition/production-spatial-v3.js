@@ -237,6 +237,12 @@ export async function createSpatialV3ProductionCompositionRoot({
         throw error;
       } finally { if (!transaction) client.release(); }
     };
+    const spatialLocalSceneRuntime = targetContext == null ? null
+      : createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
+        readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
+        readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
+        readCurrentConnectionDisclosure: currentVisibility.readCurrentConnectionDisclosure,
+        readLocalMovementEligibility });
     const spatialExpansionRuntime = targetContext == null ? null
       : createSpatialV3ExpansionRuntime({
         readContext: createSpatialV3ExpansionContextReader({
@@ -244,12 +250,18 @@ export async function createSpatialV3ProductionCompositionRoot({
           release }),
         readExitDisclosure: currentVisibility.readExitDisclosure,
         readConnectionDisclosure: currentVisibility.readConnectionDisclosure,
+        localSceneMovementRuntime: spatialLocalSceneRuntime,
         prepareSiteTraversal: createSpatialV3SiteTraversalRuntime({
-          pool: pools.partyPool, ...siteTraversalCapability, projectDestination }),
+          pool: pools.partyPool, ...siteTraversalCapability, projectDestination,
+          readLocalMovementEligibility,
+          recheckLocalMovementVisibility: currentVisibility.recheckLocalMovementVisibility }),
         materializerVersion: targetStartPublication.binding.execution_identity.materializer_version,
         generatedExpansionAdapter: createSpatialV3GeneratedExpansionAdapter({
           worldBaseReader: targetContext.runtime.worldBaseReader,
-          committer: { prepareExpansion: (...args) => committer.prepareExpansion(...args) },
+          committer: {
+            lockExpansionReplay: (...args) => committer.lockExpansionReplay(...args),
+            prepareExpansion: (...args) => committer.prepareExpansion(...args)
+          },
           admitGeneration: createSpatialV3GenerationAdmission({
             worldBaseReader: targetContext.runtime.worldBaseReader,
             verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
@@ -284,11 +296,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       worldKnowledge,
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
         spatialExpansionRuntime,
-        spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
-          readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
-          readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
-          readCurrentConnectionDisclosure: currentVisibility.readCurrentConnectionDisclosure,
-          readLocalMovementEligibility }),
+        spatialLocalSceneRuntime,
         readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
         readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
         readCurrentConnectionDisclosure: currentVisibility.readCurrentConnectionDisclosure,
@@ -511,7 +519,7 @@ export async function readDestinationDirectionalExits({ context, current, worldB
 export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transaction, request,
   closure, envelopeInput, readCurrentSources } = {}) {
   const partyId = request.party_id; const actorId = request.actor_id;
-  const positionId = request.source_position_id;
+  const positionId = request.origin_position_id ?? request.source_position_id;
   const sources = await readCurrentSources({ transaction, partyId, actorId, positionId,
     state: { party_id: partyId, actor_id: actorId,
       journey_location: { scene_position_id: positionId } },

@@ -168,6 +168,39 @@ test('direct-only semantic turn commits one P16 root with snapshot and pending p
       'committed_presentation_pending');
   });
 
+test('caller-owned spatial P16 requires presentation preload before reading state',
+  async () => {
+    const f = fixture({ direct: true });
+    await assert.rejects(f.commit({ transaction: { query() {} } }), {
+      code: 'TRACE_TURN_STEP_PRESENTATION_PRELOAD_REQUIRED'
+    });
+    assert.equal(f.stateReadCount(), 0);
+    assert.equal(f.plans.length, 0);
+  });
+
+test('caller-owned spatial P16 uses the presentation preloaded from its base state',
+  async () => {
+    const f = fixture({ direct: true });
+    const preloadedScreenPresentation = Object.freeze({
+      base_state_version: 3,
+      scenario_id: null,
+      scenario_definition_revision: null,
+      presentation: Object.freeze({
+        calendarProfile: null,
+        scenePresentation: Object.freeze({ locations: Object.freeze([
+          Object.freeze({ location_ref: 'shore', display_name: 'preloaded shore' })
+        ]) }),
+        itemLabels: Object.freeze({})
+      })
+    });
+
+    await f.commit({ transaction: { query() {} }, preloadedScreenPresentation });
+
+    const screen = f.plans[0].updates.find(({ target_table: table }) =>
+      table === 'party_server_sessions').record.screen;
+    assert.equal(screen.presentation_context.location_label, 'preloaded shore');
+  });
+
 test('Phase2 direct root forwards trusted ambient profile and leaves legacy strict', async () => {
   for (const profileRef of [null, 'other-profile', 'portion-profile']) {
     const f = fixture({ direct: true });

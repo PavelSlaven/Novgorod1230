@@ -4,9 +4,10 @@ import { withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
 export async function loadPhase2StateVersion(
   partyPool,
   partyId,
-  { presentationIdempotencyKey = null, turnBudget = null } = {}
+  { presentationIdempotencyKey = null, turnBudget = null, transaction = null } = {}
 ) {
-  const result = await withTurnDeadlineQueryPool(partyPool, turnBudget).query(
+  const readPool = transaction ?? withTurnDeadlineQueryPool(partyPool, turnBudget);
+  const result = await readPool.query(
     `SELECT p.state_version AS party_state_version,s.delivery_ack_result
        FROM party_runtime.parties p
        JOIN party_runtime.party_server_sessions s

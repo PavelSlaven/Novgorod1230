@@ -59,19 +59,25 @@ export function fixture({ direct = false, speech = false,
   const inputDigest = canonicalDigest({ party_id: 'p', request_id: 'request-1',
     idempotency_key: 'idem-key', raw_text: 'беру песок' });
   const plans = [];
+  let stateReadCount = 0;
   return { state, envelope, batch, plans,
     commit: ({ turnStepAmbientPortionProfileRef = null,
-      projectEnvironmentAtClock = null } = {}) =>
+      projectEnvironmentAtClock = null, transaction = null,
+      preloadedScreenPresentation } = {}) =>
       commitLowerDvinaTracePhase2({ partyId: 'p', writePlan,
       turnStepAmbientPortionProfileRef, projectEnvironmentAtClock,
+      ...(transaction == null ? {} : { transaction }),
+      ...(preloadedScreenPresentation === undefined ? {}
+        : { preloadedScreenPresentation }),
       inputDigest, contracts: {}, phase3Contracts: null, phase4Contracts: null,
       phase5Contracts: null, phase6Contracts: null,
       turnStepApprovedOwners,
-      loadState: async () => structuredClone(state),
+      loadState: async () => { stateReadCount += 1; return structuredClone(state); },
       committer: { async commit({ plan }) {
         plans.push(plan);
         return { ok: true, replay: false, change_set_id: plan.change_set_id };
-      } } }) };
+      } } }),
+    stateReadCount: () => stateReadCount };
 }
 
 function operationBatch() {

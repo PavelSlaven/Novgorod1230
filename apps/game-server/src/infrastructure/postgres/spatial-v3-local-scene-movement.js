@@ -4,9 +4,10 @@ import { serverError } from '../../errors.js';
 export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovementEligibility = null } = {}) {
   if (!pool?.query) throw new TypeError('Spatial v3 local movement requires a PostgreSQL pool.');
   return Object.freeze({
-    async list({ partyId, actorId, positionId }) {
-      if (![partyId, actorId, positionId].every(text)) gap('SPATIAL_V3_LOCAL_SOURCE_INVALID');
-      const result = await pool.query(`SELECT l.id AS journey_location_id,
+    async list({ partyId, actorId, positionId, originPositionId = positionId,
+      transaction = pool }) {
+      if (![partyId, actorId, positionId, originPositionId].every(text)) gap('SPATIAL_V3_LOCAL_SOURCE_INVALID');
+      const result = await transaction.query(`SELECT l.id AS journey_location_id,
           l.state_version AS journey_state_version,
           e.id AS edge_id,e.reverse_edge_id,e.passage_type_id,
           party.world_revision_id,party.world_catalog_digest,
@@ -51,8 +52,15 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
               AND occupant.occupies_capacity_units>0) AS destination_placements
         FROM party_runtime.party_journey_locations l
         JOIN party_runtime.parties party ON party.party_id=l.party_id
+        JOIN party_runtime.scene_position_nodes committed_source
+          ON committed_source.party_id=l.party_id AND committed_source.id=l.scene_position_id
+            AND committed_source.status='active'
+        JOIN party_runtime.party_g6_instances committed_g6
+          ON committed_g6.party_id=l.party_id AND committed_g6.id=committed_source.g6_instance_id
+            AND committed_g6.status='active'
         JOIN party_runtime.scene_position_nodes source
-          ON source.party_id=l.party_id AND source.id=l.scene_position_id AND source.status='active'
+          ON source.party_id=l.party_id AND source.id=$3 AND source.status='active'
+            AND source.g6_instance_id=committed_g6.id
         JOIN party_runtime.party_g6_instances g6
           ON g6.party_id=l.party_id AND g6.id=source.g6_instance_id AND g6.status='active'
         JOIN party_runtime.party_scene_baselines baseline
@@ -71,7 +79,7 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
             AND reverse.to_position_id=e.from_position_id
             AND reverse.status='active'
             AND ((reverse.id=e.reverse_edge_id AND reverse.reverse_edge_id=e.id)
-              OR ($4::boolean AND e.reverse_edge_id IS NULL AND reverse.reverse_edge_id IS NULL
+              OR ($5::boolean AND e.reverse_edge_id IS NULL AND reverse.reverse_edge_id IS NULL
                 AND reverse.cost_kind='action' AND reverse.base_minutes IS NULL
                 AND reverse.portal_entity_id IS NULL AND reverse.availability_condition_set_ref IS NULL))
         JOIN party_runtime.scene_position_nodes destination
@@ -81,10 +89,11 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
           ON destination_g6.party_id=e.party_id AND destination_g6.id=destination.g6_instance_id
             AND destination_g6.scene_baseline_id=baseline.id AND destination_g6.status='active'
         WHERE l.party_id=$1 AND l.owner_kind='actor' AND l.owner_id=$2
-          AND l.location_kind='scene' AND l.scene_position_id=$3
+          AND l.location_kind='scene' AND l.scene_position_id=$4
           AND e.cost_kind='action' AND e.action_units > 0 AND e.base_minutes IS NULL
           AND e.portal_entity_id IS NULL AND e.availability_condition_set_ref IS NULL
-        ORDER BY e.id`, [partyId, actorId, positionId, readLocalMovementEligibility != null]);
+        ORDER BY e.id`, [partyId, actorId, positionId, originPositionId,
+          readLocalMovementEligibility != null]);
       const rows = [];
       for (const row of result.rows) {
         if (row.reverse_edge_id === null && readLocalMovementEligibility) {
@@ -135,10 +144,11 @@ export function createSpatialV3LocalSceneMovementReader({ pool, readLocalMovemen
 /** The disclosure owner's view of the same admission rows the local-scene runtime lists:
  * built from the same reader with the same eligibility reader (F7), so both see the same
  * admitted edges. Answers per edge with the destination's places and its occupants. */
-export function createLocalMovementDisclosureReader({ readLocalMovementEligibility = null } = {}) {
-  return async ({ transaction, partyId, actorId, positionId }) => {
+export function createLocalMovementDisclosureReader({ pool = null,
+  readLocalMovementEligibility = null } = {}) {
+  return async ({ transaction = pool, partyId, actorId, positionId }) => {
     const rows = await createSpatialV3LocalSceneMovementReader({ pool: transaction,
-      readLocalMovementEligibility }).list({ partyId, actorId, positionId });
+      readLocalMovementEligibility }).list({ partyId, actorId, positionId, transaction });
     return rows.map(({ movement_admission: admission, destination_placements }) => ({
       edge_id: admission.edge_id, destination_capacity: admission.destination_capacity,
       destination_placements }));

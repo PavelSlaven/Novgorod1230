@@ -16,6 +16,8 @@ import { createLowerDvinaTracePhase2StateReader } from './lower-dvina-trace-phas
 import { actorMovementBlocked } from './lower-dvina-trace-phase-3-command-shared.js';
 import { partyHistoricalEventsOf, playerWorldKnowledgeAuthoritativeFromState } from
   './world-knowledge-request-context.js';
+import { loadLowerDvinaTraceScreenPresentation } from
+  '../internal/lower-dvina-trace-screen-presentation.js';
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt, scenarioId,
@@ -54,6 +56,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
   let committedPublicResult = null, turnCommitStatus = 'not_started';
+  let preloadedSpatialRoutePresentation;
   // F7: narration WK uses post-commit party state when available (same as replay).
   let narrationAuthState = state;
   const trace = (record) => { try { context.llmDiagnostics?.recordGameplayTrace?.(record); }
@@ -86,9 +89,11 @@ export function buildLowerDvinaTracePhase2Services(context) {
   }
   const workingProjectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
   const loadPreparedMovementScene = typeof repository.loadPreparedMovementScene
-    === 'function' ? ({ partyId: preparedPartyId, state: preparedState }) =>
+    === 'function' ? ({ partyId: preparedPartyId, state: preparedState,
+      transaction = null }) =>
       repository.loadPreparedMovementScene({
-        partyId: preparedPartyId, state: preparedState, turnBudget
+        partyId: preparedPartyId, state: preparedState, turnBudget,
+        ...(transaction == null ? {} : { transaction })
       }) : null;
   const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
     committedState, locationProfiles, scenePresentation
@@ -253,7 +258,28 @@ export function buildLowerDvinaTracePhase2Services(context) {
     bodyEffect,
     visibleProjector: createVisibleProjector(),
     partyStore: {
-      async commit(writePlan) {
+      async preloadSpatialRoutePresentation(committedState) {
+        const materializationRevision = committedState?.materialization_trace
+          ?.seed_context?.scenario_definition_revision;
+        const presentation = await loadLowerDvinaTraceScreenPresentation(
+          committedState);
+        preloadedSpatialRoutePresentation = Object.freeze({
+          base_state_version: committedState?.party_state?.state_version ?? null,
+          scenario_id: committedState?.scenario_id ?? null,
+          scenario_definition_revision: Number.isInteger(materializationRevision)
+            ? materializationRevision : null,
+          presentation: structuredClone(presentation)
+        });
+        return preloadedSpatialRoutePresentation;
+      },
+      withSpatialP16Transaction(work) {
+        if (typeof repository.withSpatialP16Transaction !== 'function') {
+          throw new TypeError('Spatial P16 transaction boundary is unavailable.');
+        }
+        return repository.withSpatialP16Transaction(work, { turnBudget });
+      },
+      async commit(writePlan, options = {}) {
+        const transaction = options?.transaction ?? null;
         turnBudget?.assertCanCommit();
         turnCommitStatus = 'ambiguous';
         trace({ event: 'owner_commit_requested',
@@ -267,7 +293,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
             ...turnStepApprovedOwners, scenePresentation,
             loadPreparedMovementScene
           }, turnBudget,
-          turnStepAmbientPortionProfileRef
+          turnStepAmbientPortionProfileRef,
+          ...(transaction == null ? {} : { transaction,
+            preloadedScreenPresentation: preloadedSpatialRoutePresentation })
         }); } catch (error) {
           if (authoritativeNotStarted(error)) {
             turnCommitStatus = 'not_started';
@@ -283,7 +311,11 @@ export function buildLowerDvinaTracePhase2Services(context) {
         if (turnCommitStatus === 'committed'
             && typeof repository.loadPhase2State === 'function') {
           try {
-            const loaded = await repository.loadPhase2State(partyId, { turnBudget });
+            const loaded = await repository.loadPhase2State(partyId, {
+              turnBudget, ...(transaction == null ? {} : {
+                transaction, includeCurrentVisibleContext: false
+              })
+            });
             if (loaded != null) narrationAuthState = loaded;
           } catch { /* keep pre-commit state; narration still degrades without WK */ }
         }

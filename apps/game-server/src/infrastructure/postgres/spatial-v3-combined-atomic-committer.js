@@ -92,17 +92,46 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
   await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
 export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, readNaturalSourceProperty = null, now = () => new Date() } = {}) {
+  const withSpatialTurnTransaction = async (work, turnBudget = null) => {
+    if (typeof work !== 'function' || typeof withTransaction !== 'function') {
+      throw new TypeError('P16 transaction owner and callback are required');
+    }
+    const outcome = await withTransaction(async (transaction) => {
+      const result = await work(transaction);
+      if (result === transaction) {
+        throw new TypeError('P16 transaction queryable cannot escape its callback');
+      }
+      return result?.ok === false ? result : Object.freeze({ ok: true, value: result });
+    }, turnBudget);
+    if (outcome?.ok === false) return outcome;
+    return outcome?.ok === true
+      && Object.prototype.hasOwnProperty.call(outcome, 'value')
+      ? outcome.value : outcome;
+  };
   return Object.freeze({
+    withTransaction: withSpatialTurnTransaction,
+    withSpatialTurnTransaction,
+    async lockExpansionReplay({ party_id, g4_id, transaction } = {}) {
+      if (![party_id, g4_id].every((value) =>
+        typeof value === 'string' && value.trim())
+        || typeof transaction?.query !== 'function') {
+        throw new TypeError('P16 replay lock requires party, G4, and caller transaction');
+      }
+      await lockSpatialV3WritePlan(transaction, [
+        `00:g4:${party_id}:${g4_id}`, `01:clock:${party_id}`
+      ]);
+      return Object.freeze({ ok: true });
+    },
     async prepareExpansion({ party_id, g4_id, idempotency_key,
-      canonical_input_digest, prepare } = {}) {
+      canonical_input_digest, prepare, transaction: callerTransaction = null } = {}) {
       if (![party_id, g4_id, idempotency_key, canonical_input_digest].every((value) =>
         typeof value === 'string' && value.trim()) || typeof prepare !== 'function') {
         return rejectedBeforeCommit('generated_schema_mismatch', party_id,
           { reason: 'server-owned expansion identity and preparation are required' });
       }
-      try { return await withTransaction(async (transaction) => {
+      const prepareInTransaction = async (transaction) => {
         await lockSpatialV3WritePlan(transaction, [
-          `01:clock:${party_id}`, `04:g4:${party_id}:${g4_id}`
+          `00:g4:${party_id}:${g4_id}`, `01:clock:${party_id}`
         ]);
         const prior = await transaction.query(`SELECT canonical_input_digest,status,result_change_set_id,terminal_failure_code,lease_expires_at
           FROM party_runtime.party_command_idempotency
@@ -142,8 +171,15 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
           ordinaryFirstEntryProvisioner, readNaturalSourceProperty
         });
         return scoped.commit({ plan, recheck: prepared.recheck ?? recheck,
-          created_at_turn: prepared.created_at_turn ?? 0 });
-      }); } catch (cause) {
+          created_at_turn: prepared.created_at_turn ?? 0,
+          transaction });
+      };
+      try {
+        // Caller owns BEGIN/COMMIT/ROLLBACK when it supplies this queryable.
+        return callerTransaction
+          ? await prepareInTransaction(callerTransaction)
+          : await withTransaction(prepareInTransaction);
+      } catch (cause) {
         return Object.freeze({ ok: false, error: error(
           cause.spatialCode ?? 'generated_schema_mismatch', party_id, {
             reason: cause.message,
@@ -152,11 +188,12 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
           }) });
       }
     },
-    async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck, turnBudget = null } = {}) {
+    async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck,
+      turnBudget = null, transaction: callerTransaction = null } = {}) {
     if (!validateSpatialV3CombinedWritePlan(plan)) return rejectedBeforeCommit('generated_schema_mismatch', plan?.party_id, { reason: 'untrusted or non-whitelisted combined write plan' });
     if (!Number.isSafeInteger(created_at_turn) || created_at_turn < 0) return rejectedBeforeCommit('generated_schema_mismatch', plan.party_id, { reason: 'commit turn must be one non-negative safe integer' });
-    if (typeof withTransaction !== 'function' || typeof commitRecheck !== 'function') return rejectedBeforeCommit('generated_schema_mismatch', plan.party_id, { reason: 'transaction owner and full recheck port required' });
-    try { const result = await withTransaction(async (tx) => {
+    if ((!callerTransaction && typeof withTransaction !== 'function') || typeof commitRecheck !== 'function') return rejectedBeforeCommit('generated_schema_mismatch', plan.party_id, { reason: 'transaction owner and full recheck port required' });
+    try { const commitInTransaction = async (tx) => {
       const locks = lockOrder(plan);
       await lockSpatialV3WritePlan(tx, locks);
       const existingChangeSet = await tx.query('SELECT party_id,operation_kind,expected_state_version_set_digest,write_plan_digest FROM party_runtime.party_v3_change_sets WHERE id=$1 FOR UPDATE', [plan.change_set_id]);
@@ -331,7 +368,12 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
       }
       const settled = await tx.query(`UPDATE party_runtime.party_command_idempotency SET status='committed',result_change_set_id=$1,lease_token=NULL,lease_expires_at=NULL,finalized_at_turn=$2,state_version=state_version+1 WHERE party_id=$3 AND operation_kind=$4 AND idempotency_key=$5 AND status='leased'`, [plan.change_set_id, created_at_turn, plan.party_id, plan.operation_kind, plan.idempotency_key]); if (settled.rowCount !== 1) throw Object.assign(new Error('idempotency settle failed'), { spatialCode: 'idempotency_conflict' });
       return Object.freeze({ ok: true, replay: false, change_set_id: plan.change_set_id, lock_keys: Object.freeze(locks) });
-    }, turnBudget); if (result?.ok !== false) return result; const { transaction_rollback_confirmed: rollbackConfirmed, ...publicResult } = result; return rollbackConfirmed === true && result.in_progress !== true ? markNotStarted(publicResult) : Object.freeze(publicResult);
+    };
+      // Caller owns transaction control; typed failures stay failures for its rollback.
+      const result = callerTransaction
+        ? await commitInTransaction(callerTransaction)
+        : await withTransaction(commitInTransaction, turnBudget);
+      if (result?.ok !== false) return result; const { transaction_rollback_confirmed: rollbackConfirmed, ...publicResult } = result; return rollbackConfirmed === true && result.in_progress !== true ? markNotStarted(publicResult) : Object.freeze(publicResult);
     } catch (cause) {
       if (cause?.code === 'LLM_TURN_BUDGET_EXHAUSTED') throw cause;
       const diagnostics = { reason: cause.message, ...(cause?.transaction_rollback_confirmed === true ? { turn_commit_status: 'not_started' } : {}) };

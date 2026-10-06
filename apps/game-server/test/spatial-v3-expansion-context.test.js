@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readSpatialV3ExpansionContext } from
   '../src/infrastructure/postgres/spatial-v3-expansion-context.js';
+import { createSpatialV3ExpansionContextReader } from
+  '../src/infrastructure/postgres/spatial-v3-expansion-context.js';
 import { createSpatialV3ExpansionRuntime } from '../src/runtime/spatial-v3-expansion-runtime.js';
 import { readDestinationDirectionalExits } from '../src/composition/production-spatial-v3.js';
 
@@ -11,8 +13,37 @@ const current = { world_revision_id: 'revision', world_catalog_digest: 'catalog'
   baseline: { scene_template_ref: { entity_id: 'scene', authoring_version: '1' } } };
 const release = { world_revision_id: 'revision', world_catalog_digest: 'catalog' };
 
-for (const [role, readsClosure] of [['arrival', false], ['departure', true], ['both', true]]) {
-  test(`${role} endpoint ${readsClosure ? 'requires' : 'skips'} expansion closure`, async () => {
+test('expansion context reader uses a supplied transaction without opening another', async () => {
+  const queries = [];
+  let poolConnects = 0; let releases = 0;
+  const emptyState = { ledgers: [], sites: [], chains: [], frontiers: [], reservations: [], bindings: [],
+    scene_baselines: [], g6_instances: [], scene_positions: [], site_connections: [], endpoint_bindings: [] };
+  const transaction = { async query(sql) {
+    queries.push(sql);
+    return { rows: sql.includes('WITH sites AS') ? [emptyState] : [{ ...current,
+      positions: [], movement_edges: [] }] };
+  }, release() { releases += 1; } };
+  const reader = createSpatialV3ExpansionContextReader({
+    partyPool: { async connect() { poolConnects += 1; throw new Error('must reuse caller transaction'); } },
+    release,
+    worldBaseReader: {
+      async readPinnedSceneTemplateClosure() { return { ok: true, value: { endpoint_slots: [] } }; },
+      async readG4ExpansionBinding() { return { ok: true, value: {
+        g4: { id: 'g4', version: 1 }, profile: { id: 'profile', version: 1 } } }; },
+      async readPinnedG4ExpansionClosure() { return { ok: true, value: { slots: [],
+        directional_exits: [], entry_endpoint_bindings: [] } }; }
+    }
+  });
+  const result = await reader({ partyId: 'party', actorId: 'actor', transaction });
+  assert.equal(result.partyId, 'party');
+  assert.ok(queries.length >= 3, 'all mutable context reads use the supplied client');
+  assert.equal(queries.some((sql) => /^BEGIN\b|^COMMIT\b|^ROLLBACK\b/u.test(sql)), false);
+  assert.equal(poolConnects, 0);
+  assert.equal(releases, 0);
+});
+
+for (const role of ['arrival', 'departure', 'both']) {
+  test(`${role} endpoint requires expansion closure for disclosed exits`, async () => {
     let bindingReads = 0;
     const worldBaseReader = {
       readPinnedSceneTemplateClosure: async () => ({ ok: true, value: { endpoint_slots: [{
@@ -24,16 +55,12 @@ for (const [role, readsClosure] of [['arrival', false], ['departure', true], ['b
     const readContext = () => readSpatialV3ExpansionContext({
       transaction: { query: async () => ({ rows: [current] }) }, worldBaseReader, release,
       partyId: 'party', actorId: 'actor' });
-    if (readsClosure) {
-      await assert.rejects(readContext(), (error) =>
-        error.code === 'LIVE_WORLD_EXPANSION_CONTEXT_GAP'
-          && error.details.reason === 'approved_g4_expansion_closure_required');
-      assert.equal(bindingReads, 1);
-    } else {
-      const runtime = createSpatialV3ExpansionRuntime({ readContext });
-      assert.deepEqual(await runtime.listExpansionOptions({ partyId: 'party', actorId: 'actor' }), []);
-      assert.equal(bindingReads, 0);
-    }
+    const runtime = createSpatialV3ExpansionRuntime({ readContext });
+    await assert.rejects(runtime.listExpansionOptions({ partyId: 'party', actorId: 'actor',
+      state: { position: { position_id: 'position' } } }), (error) =>
+      error.code === 'LIVE_WORLD_EXPANSION_CONTEXT_GAP'
+        && error.details.reason === 'approved_g4_expansion_closure_required');
+    assert.equal(bindingReads, 1);
   });
 }
 

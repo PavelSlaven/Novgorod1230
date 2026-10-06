@@ -471,3 +471,101 @@ test('repair_required stops before time, narration and persistence', async () =>
   assert.equal(log.includes('narration'), false);
   assert.equal(log.includes('persistence_plan'), false);
 });
+
+test('spatial route stages 8–14 share the P16 transaction, then narration runs after it', async () => {
+  const tx = { query: () => {} };
+  const order = [];
+  const { services } = createServices(order, {
+    command: {
+      command_id: 'live_world.follow_directional_exit:exit-1',
+      consequence(_request, options) {
+        order.push(['consequence', options?.transaction]);
+        return {
+          version: 1, schema: 'turn_consequence_package', status: 'resolved',
+          duration_minutes: 0, visible_seed: {}, hidden_update: {},
+          state_changes: [], suggested_actions: []
+        };
+      }
+    },
+    visibleProjector: {
+      async project(_request, options) {
+        order.push(['projection', options?.transaction]);
+        return validVisibleContext();
+      }
+    },
+    partyStore: {
+      async preloadSpatialRoutePresentation(state) {
+        order.push('preload-presentation');
+        assert.ok(state?.party_state);
+      },
+      async withSpatialP16Transaction(work) {
+        order.push('begin');
+        const result = await work(tx);
+        order.push('end');
+        return result;
+      },
+      async commit(_plan, options) {
+        order.push(['commit', options.transaction]);
+        return { committed: true };
+      }
+    }
+  });
+  const result = await runTurnWorkflow(input(), services, {
+    onEvent(event) {
+      if (event.type === 'stage_started') order.push(`stage:${event.stageId}`);
+    }
+  });
+
+  assert.equal(result.status, 'resolved');
+  assert.equal(order.indexOf('preload-presentation') < order.indexOf('begin'), true);
+  assert.equal(order.indexOf('begin') < order.indexOf('stage:8'), true);
+  assert.equal(order.indexOf('end') > order.indexOf('stage:14'), true);
+  assert.deepEqual(order.find((entry) => Array.isArray(entry)
+    && entry[0] === 'consequence'), ['consequence', tx]);
+  assert.deepEqual(order.find((entry) => Array.isArray(entry)
+    && entry[0] === 'projection'), ['projection', tx]);
+  assert.deepEqual(order.find((entry) => Array.isArray(entry)
+    && entry[0] === 'commit'), ['commit', tx]);
+  assert.equal(order.indexOf('stage:16') > order.indexOf('end'), true);
+});
+
+test('stopped spatial route graph rolls back before reporting existing workflow error', async () => {
+  const order = [];
+  const { services } = createServices(order, {
+    command: {
+      command_id: 'live_world.follow_canonical_connection:connection-1',
+      consequence() {
+        return {
+          version: 1, schema: 'turn_consequence_package',
+          status: 'repair_required', duration_minutes: 0,
+          visible_seed: {}, hidden_update: {}, state_changes: [],
+          suggested_actions: []
+        };
+      }
+    },
+    partyStore: {
+      async preloadSpatialRoutePresentation() { order.push('preload-presentation'); },
+      async withSpatialP16Transaction(work) {
+        order.push('begin');
+        try {
+          await work({ query: () => {} });
+          order.push('commit');
+        } catch (error) {
+          order.push('rollback');
+          throw error;
+        }
+      },
+      async commit() { order.push('turn-commit'); return { committed: true }; }
+    }
+  });
+  const failures = [];
+  await assert.rejects(() => runTurnWorkflow(input(), services, {
+    onFailure(record) { failures.push(record); }
+  }), { code: 'TURN_REPAIR_REQUIRED' });
+  assert.equal(order[0], 'load_context');
+  assert.equal(order.indexOf('begin') < order.indexOf('consequence'), true);
+  assert.equal(order.at(-1), 'rollback');
+  assert.equal(order.includes('turn-commit'), false);
+  assert.equal(failures.length, 1);
+  assert.equal(failures[0].events.at(-1).type, 'stage_stopped');
+});

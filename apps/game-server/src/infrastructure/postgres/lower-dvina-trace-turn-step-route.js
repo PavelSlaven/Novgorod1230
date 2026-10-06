@@ -8,7 +8,7 @@ import {
 } from './lower-dvina-trace-turn-step-commit.js';
 
 export async function routeLowerDvinaTraceTurnStepCommit(input) {
-  const { writePlan } = input;
+  const { writePlan, transaction = null } = input;
   const batches = writePlan.write_targets.filter(({ target }) =>
     target === 'party_turn_step_operations');
   if (batches.length > 1) fail('Exactly one turn-step batch is allowed.');
@@ -41,7 +41,7 @@ export async function routeLowerDvinaTraceTurnStepCommit(input) {
   if (writePlan.turn_step_commit != null && factual == null) {
     return {
       handled: true,
-      result: await commitLowerDvinaTraceTurnStep(input)
+      result: await commitLowerDvinaTraceTurnStep({ ...input, transaction })
     };
   }
   if (batches.length > 0 && writePlan.turn_step_commit == null) {

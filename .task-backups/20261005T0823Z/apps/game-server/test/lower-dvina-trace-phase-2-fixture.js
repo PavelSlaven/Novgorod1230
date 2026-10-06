@@ -1,0 +1,659 @@
+import {
+  approvedNarration,
+  fixtureContainerState,
+  currentWorldBaseReferenceSnapshot,
+  phase1AInstance,
+  replaceState,
+  unexpectedNpcAutonomousModel,
+  unexpectedNpcCombatModel,
+  unexpectedNpcSemanticModel,
+  unexpectedPlayerConversationModel,
+} from './lower-dvina-trace-phase-2-fixture-support.js';
+import { canonicalDigest } from '@rus/materialization'; import { spatialResult } from '@rus/turn';
+import { createSeededRandomSource } from '@rus/checks-rng';
+import { createLowerDvinaTracePhase2Runtime } from '../src/runtime/lower-dvina-trace-phase-2.js';
+import { commitGeneric } from './lower-dvina-trace-phase-2-fixture-turn-step-commit.js';
+import { loadLowerDvinaTraceMaterializationBundle } from '../src/internal/lower-dvina-trace-phase-1a.js';
+import { nextState as nextPhase3State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-3-state.js';
+import { nextPhase4State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js';
+import { nextPhase5State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-5-state.js';
+import { nextPhase6State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-6-state.js';
+import { nextPhase7State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-7-state.js';
+import { nextPhase8AccusationState } from '../src/infrastructure/postgres/lower-dvina-trace-phase-8-state.js';
+import { nextCombatState } from '../src/infrastructure/postgres/lower-dvina-trace-combat-state.js';
+import { nextPhase9State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-9-state.js';
+import { buildTracePhase10Completion } from '../src/runtime/lower-dvina-trace-phase-10-completion.js';
+import { nextPhase10State, phase10VisibleEnvelope } from '../src/infrastructure/postgres/lower-dvina-trace-phase-10-writes.js';
+import { phase2VisibleContextFromPayload } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
+import { fixturePhase2VisibleState } from './lower-dvina-trace-phase-2-fixture-current-visible.js';
+const bundle = await loadLowerDvinaTraceMaterializationBundle();
+const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 9,
+});
+const loadScenarioBundle = (scenarioDefinitionRevision) => loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision });
+function fixture({
+  semantic = 'resolved',
+  narrationFails = false,
+  scenarioBundle = bundle,
+  materializationBundle = scenarioBundle,
+  rollValue = null,
+  turnStepModel = null,
+  committedState = null,
+  npcOption = 'surrender_and_confess',
+  playerConversationModel = unexpectedPlayerConversationModel,
+  npcSemanticModel = unexpectedNpcSemanticModel,
+  npcAutonomousModel = unexpectedNpcAutonomousModel,
+  npcCombatModel = unexpectedNpcCombatModel,
+  playerSafeStateProjector = null,
+  temporalAdvanceOwner = null,
+  createTurnStepOrdinaryDiscoveryResolver = null,
+  ordinaryDiscoveryEnablementMarker = null,
+  ordinaryDiscoveryScopeBinding = null,
+  actionProductionProfile = null,
+  createTurnStepActionProductionOwner = null,
+  localFireProfile = null,
+  createTurnStepWorldProcessResolver = null,
+  worldBaseReferenceSnapshot = undefined,
+  llmDiagnostics = null,
+  authoredTurnProfile = null,
+  postActionPerceptionProfile = null,
+  spatialExpansionRuntime = null,
+  beforeSemanticResolve = null,
+  beforeRandomSource = null,
+  afterCommittedVisibleRead = null,
+  afterNarration = null,
+  loadTurnRuntimeCatalogContext = null,
+  turnStepNeedsCheckGuard = null,
+} = {}) {
+  const partyId = 'party:trace-phase-2';
+  const instance = phase1AInstance(partyId, materializationBundle,
+    worldBaseReferenceSnapshot);
+  const state =
+    committedState == null
+      ? {
+          party_id: partyId,
+          actor_id: instance.immediate.player.instance_id,
+          party_state: {
+            state_version: 1,
+            turn_number: 0,
+            session_state_version: 1,
+            clock_state_version: 1,
+            body_state_version: 1,
+          },
+          player_profile: instance.immediate.player.dossier,
+          body_state: {
+            ...instance.immediate.body.values,
+            active_conditions: instance.immediate.body.condition_bindings.map((condition, ordinal) => ({
+              id: condition.state,
+              storage_condition_id: `condition-phase2-${ordinal}`,
+              condition_profile_ref: structuredClone(condition),
+              status: 'active',
+              state_version: 1,
+            })),
+          },
+          body_effect_history: [],
+          position: {
+            ...instance.immediate.spatial.position,
+            location_ref: 'trace_ld_v1_loc_wreck_shore',
+          },
+          ...fixturePhase2VisibleState(instance, materializationBundle),
+          materialization_trace: structuredClone(instance.trace),
+          first_entry_preparation: structuredClone(
+            instance.first_entry_preparation ?? null),
+          prepared_scenes: structuredClone(instance.immediate.prepared_scenes ?? []),
+          npcs: structuredClone(instance.immediate.npcs ?? []),
+          promise_instances: structuredClone(instance.immediate.promise_instances ?? []),
+          interactions: [],
+          route_history: [],
+          route_knowledge: [],
+          sealed_selections: instance.sealed_selections,
+          policy_pins: structuredClone(instance.policy_profile_pins),
+          relevant_events: [],
+          historical_events: [],
+          temporal_boundary_candidates: [],
+          items: instance.immediate.items.map((item) => ({
+            item_id: item.instance_id,
+            template_id: item.template_id,
+            profile_id: item.profile_id,
+            quantity: item.quantity,
+            condition_state: item.condition_state,
+            legal_status: item.legal_status,
+            claim_state: item.claim_state,
+            placement: {
+              anchor_id: item.anchor_id ?? null,
+              container_id: item.container_id ?? null,
+              holder_character_id: item.holder_character_id ?? null,
+              holder_npc_id: item.holder_npc_id ?? null,
+              physical_position: item.physical_position ?? null,
+              equipment_slot_category_id: item.equipment_slot_category_id ?? null,
+            },
+            ownership: {
+              owner_character_id: item.owner_character_id ?? null,
+              owner_external_ref: item.owner_external_ref ?? null,
+              controller_character_id: item.controller_character_id ?? null,
+              owner_npc_id: item.owner_npc_id ?? null,
+              controller_npc_id: item.controller_npc_id ?? null,
+              claim_state: item.claim_state,
+            },
+            state: structuredClone(item.state),
+          })),
+          ...fixtureContainerState(instance.immediate.containers, partyId),
+          knowledge: [],
+          opening_identity: { opening_screen_digest: 'a'.repeat(64) },
+          relevant_hidden_state: {
+            culprit: 'must-not-reach-llm',
+            motive: 'must-not-reach-llm',
+          },
+          temporal_source_proof: {
+            version: 1,
+            schema: 'lower_dvina_trace_phase_2_temporal_source_proof',
+            owner: '@rus/time-events-history/temporal-boundaries',
+            same_time_cascade_owner: '@rus/time-events-history/temporal-boundaries:resolveSameTimeCascade',
+            admission_policy: 'fail_closed_before_activity_when_unbound_candidate_exists',
+            pending_event_count: 0,
+            active_schedule_count: 0,
+            candidate_count: 0,
+          },
+        }
+      : structuredClone(committedState);
+  const replays = new Map();
+  const events = [];
+  let committedVisible = null;
+  let lastWritePlan = null;
+  let lastCommitInput = null;
+  let semanticInput = null;
+  let turnStepInput = null;
+  let turnStepCount = 0;
+  let rollCount = 0;
+  let commitCount = 0;
+  let timeUpdateCount = 0;
+  let bodyUpdateCount = 0;
+  let itemCreationCount = 0;
+  let narratorInput = null;
+  let playerConversationInput = null;
+  let npcSemanticInput = null;
+  let playerConversationCount = 0;
+  let npcSemanticCount = 0;
+  let npcCombatCount = 0;
+  let shouldFailNarration = narrationFails;
+  const npcCombatInputs = [];
+  const bundleRequests = [];
+  const repository = {
+    async loadPhase2State() {
+      events.push('load_state');
+      return structuredClone(state);
+    },
+    async loadPhase2Replay({ idempotencyKey }) {
+      return structuredClone(replays.get(idempotencyKey) ?? null);
+    },
+    async replayPhase2Turn({ replay, narrator }) {
+      if (replay.public_result != null) return structuredClone(replay.public_result);
+      const visibleContext = committedVisible?.visible_payload ? phase2VisibleContextFromPayload(committedVisible.visible_payload) : structuredClone(committedVisible);
+      const narration = await narrator.run({
+        version: 1,
+        schema: 'narration_request',
+        request_id: replay.factual.mode_resolution.turn_id,
+        surface: 'turn',
+        visible_context: visibleContext,
+        context: {
+          attempt: { text: replay.factual.player_input.raw_text },
+          outcome: spatialResult({ consequence: replay.factual.consequence })
+        },
+        style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
+        max_repairs: 1,
+      });
+      if (narration?.status !== 'approved' || narration.pass !== true) {
+        const error = new Error('Narration did not produce an approved presentation.');
+        error.code = 'TURN_NARRATION_REJECTED';
+        throw error;
+      }
+      const screen = {
+        version: 1,
+        schema: 'lower_dvina_trace_turn_screen',
+        party_id: partyId,
+        turn_id: replay.screen?.turn_id ?? replay.factual?.mode_resolution?.turn_id,
+        turn_number: state.party_state.turn_number,
+        screen_status: 'ready',
+        main_prose: narration.approved_output?.prose ?? 'Готово.'
+      };
+      const publicResult = {
+        party_id: partyId,
+        turn_number: state.party_state.turn_number,
+        state_version: state.party_state.state_version,
+        completion: structuredClone(state.completion ?? null),
+        narration,
+        screen,
+      };
+      const stored = replays.get(replay.factual.player_input.idempotency_key);
+      if (stored) stored.public_result = structuredClone(publicResult);
+      return publicResult;
+    },
+    async commitPhase2Turn(commitInput) {
+      const { writePlan, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts, phase8Contracts, phase9Contracts, phase10Contracts, turn10Contracts } = commitInput;
+      events.push('commit');
+      commitCount += 1;
+      lastCommitInput = commitInput;
+      lastWritePlan = structuredClone(writePlan);
+      const factual = writePlan.write_targets.find(({ target }) => target === 'party_state')?.value;
+      if (factual == null) {
+        const generic = await commitGeneric({ commitInput, state });
+        committedVisible = generic.visible;
+        replaceState(state, generic.snapshot);
+        replays.set(generic.idempotencyKey, {
+          input_digest: inputDigest,
+          factual: generic.factual,
+          state: structuredClone(state),
+          public_result: null,
+        });
+        return generic.committed;
+      }
+      committedVisible = writePlan.write_targets.find(({ target }) => target === 'party_visible_context_package').value;
+      const clue = factual.consequence.clue_materialization;
+      const nextVersion = state.party_state.state_version + 1;
+      const turnNumber = state.party_state.turn_number + 1;
+      const changeSetId = `change:${partyId}:${turnNumber}`;
+      if (factual.consequence.phase9_kind != null) {
+        replaceState(
+          state,
+          nextPhase9State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+            contracts: phase9Contracts,
+          }),
+        );
+      } else if (factual.consequence.combat_kind === 'exchange') {
+        replaceState(
+          state,
+          nextCombatState({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+          }),
+        );
+      } else if (['accusation', 'combat_start'].includes(
+        factual.consequence.phase8_kind)) {
+        replaceState(
+          state,
+          nextPhase8AccusationState({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+          }),
+        );
+      } else if (factual.consequence.phase8_kind === 'movement') {
+        replaceState(
+          state,
+          nextPhase3State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            inputDigest,
+            changeSetId,
+            contracts: phase8Contracts,
+            rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+            workingRevision: writePlan.turn_step_commit?.loop_trace?.working_revision,
+          }),
+        );
+      } else if (factual.consequence.phase7_kind != null) {
+        replaceState(
+          state,
+          nextPhase7State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+            turn10Contracts,
+          }),
+        );
+      } else if (factual.consequence.phase6_kind != null) {
+        replaceState(
+          state,
+          nextPhase6State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+          }),
+        );
+      } else if (factual.consequence.phase5_kind != null) {
+        replaceState(
+          state,
+          nextPhase5State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            inputDigest,
+            changeSetId,
+            contracts: phase5Contracts,
+          }),
+        );
+      } else if (factual.consequence.phase4_kind != null) {
+        replaceState(
+          state,
+          nextPhase4State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            inputDigest,
+            changeSetId,
+            contracts: phase4Contracts,
+            rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+            workingRevision: writePlan.turn_step_commit?.loop_trace?.working_revision,
+          }),
+        );
+      } else if (factual.consequence.phase3_kind != null) {
+        replaceState(
+          state,
+          nextPhase3State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            inputDigest,
+            changeSetId,
+            contracts: phase3Contracts,
+            rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+            workingRevision: writePlan.turn_step_commit?.loop_trace?.working_revision,
+          }),
+        );
+      } else {
+        if (clue && !state.items.some((item) => item.template_id === clue.template_id)) {
+          itemCreationCount += 1;
+          state.items.push({
+            item_id: clue.instance_id,
+            template_id: clue.template_id,
+            profile_id: clue.profile_id,
+            category_id: clue.semantic_category,
+            quantity: clue.quantity,
+            condition_state: clue.condition_state,
+            legal_status: clue.legal_status,
+            ownership: structuredClone(clue.ownership),
+            placement: structuredClone(clue.placement),
+            state: {
+              semantic_category: clue.semantic_category,
+              display_name: 'клочок синей шерсти',
+              evidence_ref: 'trace_ld_v1_evidence_blue_wool',
+              property_state: structuredClone(clue.property_state),
+              inventory_profile_snapshot: structuredClone(clue.inventory_profile),
+              inventory_effect: structuredClone(clue.inventory_effect),
+              pickup_transition: structuredClone(clue.pickup_transition),
+            },
+          });
+        }
+        timeUpdateCount += 1;
+        state.clock = factual.time_update.clock_after;
+        state.clock_weather_light.clock = state.clock;
+        bodyUpdateCount += 1;
+        state.body_state = factual.body_update.state_after;
+        state.body_effect_history.push({
+          history_id: `body-history:${partyId}:trace-phase2:${state.party_state.turn_number + 1}`,
+          effect_ref: factual.consequence.body_effect_ref,
+          activity_attempt_id: factual.consequence.activity_attempt_id,
+          execution_variant_id: factual.body_update.proposal.execution_variant_id,
+          occurred_at: structuredClone(factual.time_update.clock_after),
+        });
+        state.knowledge.push(...factual.consequence.knowledge_records.map((entry) => structuredClone(entry)));
+        state.party_state.state_version += 1;
+        state.party_state.turn_number += 1;
+        state.party_state.session_state_version += 1;
+        state.party_state.clock_state_version += 1;
+        state.party_state.body_state_version += 1;
+      }
+      let completionCommit = null;
+      if (factual.consequence.phase9_kind === 'temporary_disposition' && phase10Contracts != null) {
+        completionCommit = applyPhase10(phase10Contracts);
+      }
+      const commit = completionCommit ?? {
+        committed: true,
+        state_version: state.party_state.state_version,
+        package_id: committedVisible.package_id ?? null,
+        package_digest: committedVisible.package_digest ?? committedVisible.canonical_digest ?? null,
+        visible_package_digest: committedVisible.canonical_digest ?? null,
+      };
+      commit.committed_public_result = {
+        party_id: partyId,
+        turn_number: state.party_state.turn_number,
+        state_version: state.party_state.state_version,
+        option_id: factual.mode_resolution.option_id,
+        screen: {
+          schema: 'lower_dvina_trace_turn_screen',
+          screen_status: 'committed_presentation_pending',
+          turn_id: factual.mode_resolution.turn_id
+        }
+      };
+      replays.set(factual.player_input.idempotency_key, {
+        input_digest: inputDigest,
+        factual,
+        state: structuredClone(state),
+        public_result: null,
+      });
+      return commit;
+    },
+    async commitPhase10FollowUp({ phase10Contracts }) {
+      return applyPhase10(phase10Contracts, true);
+    },
+    async loadPhase2VisibleContext() {
+      events.push('read_committed_visible');
+      const visible = committedVisible?.visible_payload ? phase2VisibleContextFromPayload(committedVisible.visible_payload) : structuredClone(committedVisible);
+      afterCommittedVisibleRead?.();
+      return visible;
+    },
+    async persistPhase2Screen({ inputDigest, result }) {
+      events.push('persist_screen');
+      const publicResult = {
+        party_id: partyId,
+        turn_number: state.party_state.turn_number,
+        state_version: state.party_state.state_version,
+        option_id: result.checkpoint.stages.resolve_mode.option_id,
+        screen: result.screen,
+        check: result.checkpoint.stages.checks.results[0],
+        time_update: result.checkpoint.stages.time_update,
+        body_update: result.checkpoint.stages.body_update,
+        observations: result.checkpoint.stages.consequence.observations,
+        evidence: result.checkpoint.stages.consequence.evidence_relations,
+        clue: result.checkpoint.stages.consequence.clue_materialization,
+        movement: result.checkpoint.stages.consequence.movement ?? null,
+        conversation: result.checkpoint.stages.consequence.conversation ?? null,
+        negotiation: result.checkpoint.stages.consequence.negotiation ?? null,
+        treatment: result.checkpoint.stages.consequence.treatment ?? null,
+        carry: result.checkpoint.stages.consequence.carry ?? null,
+        completion: structuredClone(state.completion ?? null),
+      };
+      const replay = [...replays.values()].find((entry) => entry.input_digest === inputDigest);
+      replay.public_result = structuredClone(publicResult);
+      return publicResult;
+    },
+  };
+  function applyPhase10(phase10Contracts, replayed = false) {
+    if (state.completion?.status === 'committed')
+      return {
+        ok: true,
+        replayed: true,
+        state_version: state.party_state.state_version,
+        turn_number: state.party_state.turn_number,
+        package_id: state.last_turn.visible_package.package_id,
+        package_digest: state.last_turn.visible_package.package_digest,
+        completion: structuredClone(state.completion),
+      };
+    const sourceVersion = state.party_state.state_version;
+    const nextVersion = sourceVersion + 1;
+    const changeSetId = `change:${partyId}:trace-phase10:${sourceVersion}`;
+    const idemId = `idem:${partyId}:trace-phase10:${sourceVersion}`;
+    const { outcome, terminalProjection } = buildTracePhase10Completion({
+      state,
+      contracts: phase10Contracts,
+    });
+    const envelope = phase10VisibleEnvelope({
+      partyId,
+      state,
+      nextVersion,
+      changeSetId,
+      idemId,
+      contracts: phase10Contracts,
+      terminalProjection,
+    });
+    replaceState(state, nextPhase10State({ state, outcome, envelope, changeSetId }));
+    committedVisible = structuredClone(envelope);
+    commitCount += 1;
+    events.push('commit_phase10');
+    for (const replay of replays.values()) replay.state = structuredClone(state);
+    return {
+      ok: true,
+      replayed,
+      state_version: nextVersion,
+      turn_number: state.party_state.turn_number,
+      package_id: envelope.package_id,
+      package_digest: envelope.package_digest,
+      completion: structuredClone(state.completion),
+    };
+  }
+  const runtime = createLowerDvinaTracePhase2Runtime({
+    repository,
+    bundleLoader: async (request) => {
+      bundleRequests.push(structuredClone(request));
+      return scenarioBundle;
+    },
+    decisionSecret: 'phase-2-decision-secret',
+    now: () => '2026-07-30T08:00:00.000Z',
+    semanticResolver: async (input) => {
+      semanticInput = structuredClone(input);
+      beforeSemanticResolve?.(input);
+      if (semantic === 'unknown' || semantic === 'ambiguous') {
+        return {
+          status: 'unknown',
+          reason_code: semantic === 'ambiguous' ? 'ambiguous_intent' : 'unknown_intent',
+        };
+      }
+      return { option_id: input.action_set[0].option_id };
+    },
+    ...(turnStepModel
+      ? {
+          // Forward 3rd arg (services historical_events wrap); do not swallow.
+          turnStepModel: async (input, repairContext, modelCallContext) => {
+            turnStepCount += 1;
+            turnStepInput = structuredClone(input);
+            return turnStepModel(input, repairContext, modelCallContext);
+          },
+        }
+      : {}),
+    playerConversationModel: async (input, repairContext) => {
+      playerConversationCount += 1;
+      playerConversationInput = structuredClone(input);
+      return playerConversationModel(input, repairContext);
+    },
+    npcSemanticModel: async (input) => {
+      npcSemanticCount += 1;
+      npcSemanticInput = structuredClone(input);
+      return npcSemanticModel(input);
+    },
+    npcAutonomousModel,
+    npcCombatModel: async (input, repairContext) => {
+      npcCombatCount += 1;
+      npcCombatInputs.push(structuredClone(input));
+      return npcCombatModel(input, repairContext);
+    },
+    ...(playerSafeStateProjector ? { playerSafeStateProjector } : {}),
+    ...(temporalAdvanceOwner ? { temporalAdvanceOwner } : {}),
+    createTurnStepOrdinaryDiscoveryResolver,
+    ordinaryDiscoveryEnablementMarker,
+    ordinaryDiscoveryScopeBinding,
+    loadTurnRuntimeCatalogContext,
+    turnStepNeedsCheckGuard,
+    actionProductionProfile,
+    createTurnStepActionProductionOwner,
+    localFireProfile,
+    createTurnStepWorldProcessResolver,
+    npcDecisionSelector: async (request) => {
+      const selected = request.options.find(({ option_id: optionId }) => optionId === npcOption) ?? request.options[0];
+      return {
+        request_id: request.request_id,
+        state_version: request.state_version,
+        option_id: selected.option_id,
+        command_token: selected.command_token,
+      };
+    },
+    randomSourceFactory: () => {
+      beforeRandomSource?.();
+      const source = createSeededRandomSource('lower-dvina-trace-phase-2-acceptance');
+      return {
+        next() {
+          rollCount += 1;
+          return rollValue == null ? source.next() : rollValue;
+        },
+        snapshot: () => source.snapshot(),
+      };
+    },
+    narrator: {
+      async run(input) {
+        const { turnBudget: _turnBudget, ...cloneableInput } = input;
+        narratorInput = structuredClone(cloneableInput);
+        if (shouldFailNarration) {
+          return {
+            version: 1,
+            schema: 'narration_flow_result',
+            request_id: input.request_id,
+            surface: 'turn',
+            status: 'blocked',
+            pass: false,
+            approved_output: null,
+            final_audit: null,
+          };
+        }
+        const narration = approvedNarration(input.request_id);
+        afterNarration?.();
+        return narration;
+      },
+    },
+    ...(llmDiagnostics ? { llmDiagnostics } : {}),
+    ...(authoredTurnProfile ? { authoredTurnProfile } : {}),
+    postActionPerceptionProfile,
+    ...(spatialExpansionRuntime ? { spatialExpansionRuntime } : {}),
+  });
+  return {
+    bodyUpdateCount: () => bodyUpdateCount,
+    bundleRequests,
+    commitCount: () => commitCount,
+    events,
+    narratorInput: () => narratorInput,
+    playerConversationCount: () => playerConversationCount,
+    playerConversationInput: () => playerConversationInput,
+    npcSemanticCount: () => npcSemanticCount,
+    npcSemanticInput: () => npcSemanticInput,
+    npcCombatCount: () => npcCombatCount,
+    npcCombatInputs: () => structuredClone(npcCombatInputs),
+    lastCommitInput: () => lastCommitInput,
+    lastWritePlan: () => lastWritePlan,
+    itemCreationCount: () => itemCreationCount,
+    partyId,
+    repository,
+    rollCount: () => rollCount,
+    runtime,
+    semanticInput: () => semanticInput,
+    setNarrationFails(value) {
+      shouldFailNarration = value === true;
+    },
+    timeUpdateCount: () => timeUpdateCount,
+    turnStepCount: () => turnStepCount,
+    turnStepInput: () => turnStepInput,
+    state,
+  };
+}
+export { bundle, bundle9, fixture, loadScenarioBundle };
+export { currentWorldBaseReferenceSnapshot };

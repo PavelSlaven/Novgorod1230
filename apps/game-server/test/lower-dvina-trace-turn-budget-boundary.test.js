@@ -360,6 +360,19 @@ test('Phase 2 state-version read uses a deadline-bound read-only pool', async ()
   assert.equal(queries.includes('BEGIN'), false);
   assert.equal(queries.some((query) => String(query)
     .includes("set_config('statement_timeout'")), false);
+  const transactionQueries = [];
+  const transaction = { async query(query, values) {
+    transactionQueries.push({ query, values });
+    return { rowCount: 1,
+      rows: [{ party_state_version: '18', delivery_ack_result: { pass: true } }] };
+  } };
+  assert.equal(await repository.loadPhase2StateVersion('party', {
+    turnBudget, transaction
+  }), 18);
+  assert.equal(transactionQueries.length, 1);
+  assert.match(transactionQueries[0].query, /SELECT p\.state_version/u);
+  assert.equal(queries.length, 3,
+    'a supplied transaction bypasses the deadline-bound pool wrapper');
 });
 
 test('Phase 2 state revalidators forward deadline to version reader', async () => {
@@ -371,16 +384,17 @@ test('Phase 2 state revalidators forward deadline to version reader', async () =
       return 17;
     }
   };
+  const transaction = { query() {} };
   const stateReader = createLowerDvinaTracePhase2StateReader({ repository,
     partyId: 'party', idempotencyKey: 'key', state: {}, turnBudget,
     projectCurrentScene: (state) => state });
   const revalidate = createStateVersionRevalidator({ repository,
     partyId: 'party', idempotencyKey: 'key', turnBudget });
-  assert.equal(await stateReader.revalidate(), 17);
+  assert.equal(await stateReader.revalidate({}, { transaction }), 17);
   assert.equal(await revalidate(), 17);
   assert.deepEqual(calls, [
     { partyId: 'party', options: {
-      presentationIdempotencyKey: 'key', turnBudget } },
+      presentationIdempotencyKey: 'key', turnBudget, transaction } },
     { partyId: 'party', options: {
       presentationIdempotencyKey: 'key', turnBudget } }
   ]);

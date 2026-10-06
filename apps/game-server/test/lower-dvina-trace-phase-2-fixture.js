@@ -179,6 +179,9 @@ function fixture({
   const npcCombatInputs = [];
   const bundleRequests = [];
   const repository = {
+    async withSpatialP16Transaction(work) {
+      return work({ query: async () => ({ rows: [], rowCount: 0 }) });
+    },
     async loadPhase2State() {
       events.push('load_state');
       return structuredClone(state);

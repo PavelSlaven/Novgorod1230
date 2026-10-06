@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(presentation): preserve current committed NPC speech on first delivery, pending screens and replay (#98)
 - docs(player-start): add D111 player character and start contract; LW-135 added (#109)
 - docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
 - fix(npc): replay committed conversation claims from the verified prepared request snapshot (#98)

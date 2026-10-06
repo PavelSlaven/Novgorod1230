@@ -341,6 +341,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       presentation: await loadLowerDvinaTraceScreenPresentation(screenPayload),
       screen: {
         ...structuredClone(result.screen),
+        ...(Array.isArray(payload.last_turn?.exact_npc_utterances)
+            && payload.last_turn.exact_npc_utterances.length
+          ? { exact_npc_utterances: structuredClone(
+              payload.last_turn.exact_npc_utterances) } : {}),
         schema: payload.scenario_id === 'lower_dvina_trace_v1'
           ? 'lower_dvina_trace_turn_screen' : 'turn_screen',
         screen_status: 'ready',

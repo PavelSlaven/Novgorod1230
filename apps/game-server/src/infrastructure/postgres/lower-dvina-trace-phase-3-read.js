@@ -170,9 +170,10 @@ export function hydrateSemanticDecisionReplay(
   if (decisionTraces.length > 0) {
     payload.npc_semantic_decision_traces = structuredClone(decisionTraces);
   }
-  const autonomous = decisionInputs.filter(({ request_snapshot: request }) =>
-    request?.schema === 'npc_action_decision_request_v1');
-  if (autonomous.length > 0) {
-    payload.npc_semantic_decision_inputs = structuredClone(autonomous);
+  const replayable = decisionInputs.filter(({ request_snapshot: request }) =>
+    ['npc_action_decision_request_v1',
+      'npc_conversation_response_request_v1'].includes(request?.schema));
+  if (replayable.length > 0) {
+    payload.npc_semantic_decision_inputs = structuredClone(replayable);
   }
 }

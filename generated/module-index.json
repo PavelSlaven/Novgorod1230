@@ -291,7 +291,8 @@
         "проекцией G5 из approved profile/layout/slot rules и NPC/items из нормализованных eligible candidates",
         "code-only item placement primitive, который Stage 16 использует для equipment candidate → NPC/player instance resolution",
         "pure ordinary foundation helpers: density metadata, supporting-basis and prepared-group validation, stable refs and minimal aggregate transitions",
-        "signed command tokens и проверкой bounded decisions"
+        "signed command tokens и проверкой bounded decisions",
+        "pure `materializeNpcRelationshipRules` resolves named NPC pairs only from an approved rule, exact D-2 composition lineage, explicit slot relationship fact, role match and same-household binding; persistence remains with the party writer"
       ],
       "path": "packages/materialization",
       "public_entry": "./src/index.js",

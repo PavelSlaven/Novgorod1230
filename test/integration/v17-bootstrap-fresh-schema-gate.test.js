@@ -48,13 +48,21 @@ test('fresh-schema attestation gate selects the approval matching the current re
     join(REPO_V17, 'fresh-schema-approval-attestation-v7.json'),
     join(legacyOnlyDir, 'fresh-schema-approval-attestation-v7.json')
   );
+  await copyFile(
+    join(REPO_V17, 'fresh-schema-approval-attestation-v8.json'),
+    join(legacyOnlyDir, 'fresh-schema-approval-attestation-v8.json')
+  );
+  await copyFile(
+    join(REPO_V17, 'fresh-schema-approval-attestation-v9.json'),
+    join(legacyOnlyDir, 'fresh-schema-approval-attestation-v9.json')
+  );
   await assert.rejects(
     () => loadFreshSchemaAttestationFromRepo({
       requestDigest,
       catalogDir: legacyOnlyDir
     }),
     /V17_FRESH_SCHEMA_ATTESTATION_REQUIRED/u,
-    'historical v1–v7 must not authorize the current request digest'
+    'historical v1–v9 must not authorize the current request digest'
   );
   await rm(legacyOnlyDir, { recursive: true, force: true });
 

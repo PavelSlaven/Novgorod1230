@@ -2,7 +2,7 @@
   "schema": "rus.live_world_runtime_v17_fresh_schema_request.v1",
   "request_id": "novgorod_live_world_runtime_v17_fresh_schema_001",
   "status": "pending_independent_high_review",
-  "source_commit": "77ce16ed90c6d00a372271d49da6cfbbd965c478",
+  "source_commit": "9ffee5eda34404578a3e2107b6a90782523ba367",
   "operation": "create_fresh_databases_and_apply_exact_schema",
   "target": {
     "cluster": "existing_managed_local_play_postgresql_16_14_0",
@@ -175,8 +175,8 @@
   "party_schema": {
     "owner_migration_module": {
       "path": "apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js",
-      "bytes": 5455,
-      "sha256": "8807b53ec8dc0b0f13d9dadf47491c2d695296adf652ee20c2fd9ee15b588454"
+      "bytes": 5492,
+      "sha256": "23452151976724d2a55b2bd9f14f505d7986db4bb1b1d547806acd5039818146"
     },
     "ordered_migrations": [
       {
@@ -368,9 +368,14 @@
         "path": "schemas/party-db/038_party_runtime_npc_seasonal_presence.sql",
         "bytes": 10875,
         "sha256": "bd90769eb40e0735a294a672c308c0694d32947d347c28197c754f8b1043ff73"
+      },
+      {
+        "path": "schemas/party-db/039_party_runtime_local_lines.sql",
+        "bytes": 12763,
+        "sha256": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007"
       }
     ],
-    "chain_digest": "39913e1bc00ccb70ef8330734d6ef75ce1245e2e2eb3d00333789486e1fc7993"
+    "chain_digest": "9995faff3fe4fafcf43d572e4d79b862a4195c46a48d2318bde77a233946b51a"
   },
   "preconditions": [
     "Independent Sol high approval binds this exact request and source hashes before any production write.",
@@ -383,13 +388,13 @@
     "Create novgorod_world_v17 with owner world_operator and novgorod_party_v17 with owner party_operator; CREATE DATABASE is outside a transaction.",
     "Verify both new databases are empty and owned by their requested roles.",
     "Execute the complete world schema through psql -X -v ON_ERROR_STOP=1 -1 -f infra/world-base/schema.sql against novgorod_world_v17 only. The entrypoint includes part 01 DROP SCHEMA IF EXISTS world_base CASCADE; fresh-empty target proof is mandatory.",
-    "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-037 inside one transaction."
+    "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-039 inside one transaction."
   ],
   "expected_readback": {
     "world_base_table_count": 224,
     "world_schema": "world_base",
     "party_schema": "party_runtime",
-    "party_migrations_applied": 38,
+    "party_migrations_applied": 39,
     "old_database_row_counts_unchanged": true,
     "world_data_rows": 0,
     "party_parties": 0

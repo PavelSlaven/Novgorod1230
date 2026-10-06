@@ -14,9 +14,9 @@ const { scenario_binding_id, scenario_profile_exact_pins,
 
 export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   ...sharedReleaseContract,
-  // Block activation until the combined NPC-presence + local-lines chain is measured.
+  // Measured after 001–039, catalog pins, and actor-base pins in isolated PG 16.14.
   party_runtime_catalog_target_fingerprint:
-    null,
+    '5102437c6175f17e900e144a75f3be02998823c26b14d1e7729587b6915bba81',
   release_id: 'spatial-v3-production-v17',
   activation_scope: 'new_production_parties_only',
   world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001',

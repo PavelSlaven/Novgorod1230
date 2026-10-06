@@ -10,7 +10,7 @@ const docker = (args, input = null) => spawnSync(
   'docker', args, { input, encoding: 'utf8', timeout: 60_000 }
 );
 
-test('038 local-line party schema preflights legacy history and reapplies through the production chain', async (t) => {
+test('039 local-line party schema preflights legacy history and reapplies through the production chain', async (t) => {
   const migrationPath = new URL(
     '../../schemas/party-db/039_party_runtime_local_lines.sql', import.meta.url
   );
@@ -74,18 +74,18 @@ test('038 local-line party schema preflights legacy history and reapplies throug
   const firstApply = await runSpatialV3TargetMigrations(pool, {
     exactAppliedMigration: appliedMigration
   });
-  assert.equal(firstApply.newly_applied, 27,
-    'production runner must apply chain 012–038 for an existing catalog schema');
+  assert.equal(firstApply.newly_applied, 28,
+    'production runner must apply chain 012–039 for an existing catalog schema');
   const secondApply = await runSpatialV3TargetMigrations(pool, {
     exactAppliedMigration: appliedMigration
   });
-  assert.equal(secondApply.newly_applied, 27,
-    'production runner must safely reapply chain 012–038');
+  assert.equal(secondApply.newly_applied, 28,
+    'production runner must safely reapply chain 012–039');
   assert.deepEqual((await pool.query(`
     SELECT (SELECT count(*)::integer FROM party_runtime.traveller_travel_states) AS states,
       (SELECT count(*)::integer FROM party_runtime.party_traversal_interval_results) AS intervals
   `)).rows[0], { states: 0, intervals: 0 },
-  '038 must apply twice to an empty 001–037 database');
+  '039 must apply twice to an empty 001–037 database');
 
   await pool.query(`
     INSERT INTO party_runtime.parties(
@@ -536,8 +536,8 @@ test('038 local-line party schema preflights legacy history and reapplies throug
   const postDataRerun = await runSpatialV3TargetMigrations(pool, {
     exactAppliedMigration: appliedMigration
   });
-  assert.equal(postDataRerun.newly_applied, 27,
-    'production chain must reapply 012–038 after game data exists');
+  assert.equal(postDataRerun.newly_applied, 28,
+    'production chain must reapply 012–039 after game data exists');
   assert.deepEqual((await pool.query(`
     SELECT
       (SELECT count(*)::integer FROM party_runtime.g5_site_connections) AS connections,

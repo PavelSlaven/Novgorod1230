@@ -130,7 +130,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
     assert.equal(result.schema.world_tables, 224);
-    // TODO(sync): confirm the count after the target migration chain merge.
+    assert.equal(SPATIAL_V3_TARGET_MIGRATION_FILES.length, 39);
     assert.equal(result.schema.party_migrations, SPATIAL_V3_TARGET_MIGRATION_FILES.length);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     // Distinct across five bundles; independent of the request field the bootstrap returns.

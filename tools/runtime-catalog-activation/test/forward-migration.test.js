@@ -172,12 +172,11 @@ test('v17 bootstrap forward migrations pin world and party schema checkpoints', 
   );
   assert.equal(
     PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
-    // TODO(sync): update expected party fingerprints with the merged migration chain.
-    'ae229b76cb5bcee5b4e5c06adb46f3d6de42a89858580f69bb308f337bb08278'
+    '6db6a1cd190c7a406df65b9f382ee8c4f6fce0a661ecc94905a8581cf97a517a'
   );
   assert.equal(
     PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.target_schema_fingerprint,
-    '59d603d657edde5a2f7f624d8de7e2019aa7bd52d56d1129e3783cd6749c8146'
+    'e9776dc3c4574e9fb28845bcc12c47c2926481b6adb12233b008dffc27208043'
   );
   assert.equal(
     ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
@@ -185,11 +184,11 @@ test('v17 bootstrap forward migrations pin world and party schema checkpoints', 
   );
   assert.equal(
     ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
-    '59d603d657edde5a2f7f624d8de7e2019aa7bd52d56d1129e3783cd6749c8146'
+    'e9776dc3c4574e9fb28845bcc12c47c2926481b6adb12233b008dffc27208043'
   );
   assert.equal(
     ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP.target_schema_fingerprint,
-    '4d0b23d070c532f3dcb53b65c67147f0079f644018b66423f743e8dcea2baf05'
+    '5102437c6175f17e900e144a75f3be02998823c26b14d1e7729587b6915bba81'
   );
   for (const entry of [
     WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,

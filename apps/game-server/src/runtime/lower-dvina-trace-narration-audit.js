@@ -2,161 +2,186 @@ import { FAILURE_KINDS, narrationCoverage, narrationSources,
   validNarrationAuditModelOutput } from
   './lower-dvina-trace-narration-audit-values.js';
 
-export function narrationAuditInstruction(request) {
-  const choices = request.segments.map(({ segment_id }) => segment_id);
+export function narrationAuditInstruction(request, projection = {}) {
+  const choices = request.segments.map(({ segment_id }, index) =>
+    projection.segmentKeys?.[index] ?? segment_id);
+  const sourceKeys = narrationSources(request).map(({ key }, index) =>
+    projection.sourceKeys?.[index] ?? key);
   const shape = {
     reviewed_segments: choices,
-    source_reviews: narrationSources(request).map(({ key: ref }) => ({
+    source_reviews: sourceKeys.map((ref) => ({
       ref, segment_choices: []
     })),
     unsupported: [],
     literary_failures: [],
     evidence: []
   };
-  return `You are a strict evidence auditor of Russian game prose. Silently split
-each supplied segment into every factual proposition, including subordinate
-clauses, sensations, action, result, time claims, causality and certainty. For every
-proposition require one exact supporting ref or field from the supplied
-player-safe input. A supplied player-safe source supports exactly its atomic factual
-propositions, including stated relation, motion, cause, qualifier and certainty.
-Faithful prose may use ordinary grammatical inflection or natural paraphrase only
-when it adds no atomic proposition. Labels, IDs, categories, names and plausible
-implications add no sensory trait, causality, time, result, execution or certainty.
-Plausibility is never evidence. An object or place never supports an unstated sound,
-smell, touch, motion, reaction or persistence.
-current_light_phase is only the committed calendar phase of daylight. It does not
-establish local brightness, darkness, dimness, shadows or visibility. Reject any
-such unsupported local-light proposition as unsupported_world_state or
-unsupported_sensory, even when its phrasing sounds plausible for that phase.
-Treat a required_current_beat uncertainty with status unperformed_result_unknown
-as evidence only that the second-person player's named continuation is not yet
-performed and has no result. Never attribute it to an NPC. An explicitly open
-future or possible next choice conveying both facts is
-supported and is not unsupported_attempt. Present, past, or ongoing execution is
-still unsupported_response_or_continuation or unsupported_attempt.
-Never replace a named or labelled NPC from a required source with second-person player
-action; report that as unsupported_npc_state and leave that source uncovered.
-Never accept reversed causal order. Grammatical subordination of an earlier action is
-allowed only when aspect or an explicit marker makes it unambiguously completed before
-the later action. A later action cannot precede an earlier one; reject subordination
-that makes the earlier action simultaneous or ongoing within the later action.
-Never use a style policy to license a new fact: an unlisted sensory property is
-unsupported_sensory even when it would be typical for the supplied object.
-Never skip a proposition because another claim in its sentence is supported. A
-required source is covered only if every proposition inside it appears with the
-same certainty; an embedded unknown result must remain unknown.
-Silence about a result is not an explicit unknown result. A segment that only
-describes the attempt, or merely avoids claiming an outcome, does not cover a
-source saying that the result is unknown or unestablished.
-Conversely, a performed attempt without a supplied result or uncertainty does
-not support saying that its result is unknown or unestablished; report that
-proposition as unsupported_result.
-Do not require prose to supply a result for an attempt. A proposition that only
-says the attempt occurred is complete and supported; never report
-unsupported_result merely because that prose omits an outcome.
+  return `Ты — строгий аудитор доказательств в русской игровой прозе. Молча раздели
+каждый предоставленный сегмент на все фактические утверждения, включая придаточные
+части, ощущения, действия, результаты, утверждения о времени, причинность и степень
+уверенности. Для каждого утверждения требуй одну точную подтверждающую ссылку ref или
+поле из предоставленного входа, безопасного для игрока. Предоставленный безопасный
+для игрока источник подтверждает ровно свои атомарные фактические утверждения,
+включая указанное отношение, движение, причину, уточнение и степень уверенности.
+Верная источнику проза может использовать обычные грамматические формы или естественный
+пересказ, только если они не добавляют атомарных утверждений. Метки, идентификаторы,
+категории, имена и правдоподобные выводы не добавляют сенсорных признаков, причинности,
+времени, результата, исполнения или степени уверенности. Правдоподобие никогда не
+является доказательством. Объект или место никогда не подтверждают неуказанные звук,
+запах, осязание, движение, реакцию или сохранение состояния.
+current_light_phase — только зафиксированная календарная фаза дневного света. Она не
+устанавливает местную яркость, темноту, слабое освещение, тени или видимость. Отклоняй
+любое такое неподтверждённое утверждение о местном освещении как unsupported_world_state
+или unsupported_sensory, даже если формулировка кажется правдоподобной для этой фазы.
+Рассматривай неопределённость required_current_beat, чей текст или status указывает, что
+действие ещё не выполнено и результат пока неизвестен, только как свидетельство этого
+открытого продолжения действия игрока во втором лице.
+Никогда не приписывай её NPC. Явно открытый будущий или возможный следующий выбор,
+передающий оба факта, подтверждён и не является unsupported_attempt. Исполнение в
+настоящем, прошедшем или продолжающемся времени всё ещё является
+unsupported_response_or_continuation или unsupported_attempt.
+Никогда не заменяй NPC, названного или помеченного в обязательном источнике, действием
+игрока во втором лице; сообщай об этом как unsupported_npc_state и
+оставляй этот источник непокрытым.
+Никогда не принимай обратный причинный порядок. Грамматическое подчинение более раннего
+действия допустимо, только если вид или явный маркер недвусмысленно показывают, что оно
+завершилось до более позднего действия. Более позднее действие не может предшествовать
+более раннему; отклоняй подчинение, при котором более раннее действие становится
+одновременным с более поздним или продолжается во время него.
+Никогда не используй стилевую политику, чтобы разрешить новый факт: неуказанное
+сенсорное свойство является unsupported_sensory, даже если оно типично для
+предоставленного объекта.
+Никогда не пропускай утверждение только потому, что другое утверждение в том же
+предложении подтверждено. Обязательный источник покрыт, только если каждое содержащееся
+в нём утверждение передано с той же степенью уверенности; встроенный неизвестный
+результат должен оставаться неизвестным.
+Умолчание о результате не является явным указанием на неизвестный результат. Сегмент,
+который только описывает попытку или просто не утверждает исход, не покрывает источник,
+в котором сказано, что результат неизвестен или не установлен.
+И наоборот, выполненная попытка без предоставленного результата или указания на его
+неопределённость не подтверждает утверждение, что результат неизвестен или не
+установлен; сообщай о таком утверждении как unsupported_result.
+Не требуй, чтобы проза сообщала результат попытки. Утверждение только о том, что попытка
+состоялась, завершено и подтверждено; никогда не сообщай unsupported_result лишь потому,
+что в этой прозе не указан исход.
 
-Review literary composition for exactly these checks:
-${Object.keys(FAILURE_KINDS).join(', ')}. Use unsupported_response_or_continuation
-only in literary_failures for an invented response, nonresponse, performed
-continuation or continued action. current_beat_buried requires a required source to be present but displaced;
-an omitted source belongs only in source_reviews as []. Never add
-current_beat_buried merely because another required source has an empty review.
-Optional support is a candidate set, never a coverage target. After a current
-beat, a recital of unchanged, independent optional scene facts as panorama or
-context is static_context_dump even when fluent, reordered, spatially grouped,
-or placed after the beat. A required_current_beat source never becomes optional
-support merely because another input field repeats it; static_context_dump
-applies only to a proposition supported solely by optional_support. Each retained support detail must locate, contrast,
-constrain, or constitute the action or result being narrated. A perception beat
-may govern supplied details that are themselves its perceived result; this does
-not license unrelated snapshot recap. A recap of unchanged support is static_context_dump.
-Turn duration is code-owned UI metadata and is
-not supplied as prose evidence. Any invented elapsed time is unsupported_fact;
-service-like time reporting is also elapsed_as_service_report. Judge
-weak_literary_composition for an inspection or perception across the whole
-passage. PASS when every supplied scene-observation cluster is either
-grammatically governed by the completed action in the same sentence or has its
-own finite verb that grammatically makes the player the perceiver or actor.
-Multiple such player verbs may govern their respective observations in one
-sentence; do not require separate sentences or beats for each observation.
-The pattern player-verb(A), player-verb(B and C) passes: evaluate the direct
-dependents of every player verb, and do not require one verb to govern them all.
-A finite static predicate whose subject is the observed thing does not count.
-A repeated supplied place, its supplied subplace, and explicit supplied
-coreference count as one shared anchor. The terminal-action failure means a
-completed action sentence followed by static scene sentences that lack their
-own player perception/action verb. Never apply it to a later sentence that has
-such a player verb. Report it only with check weak_literary_composition;
-terminal_action_failure is a description, never a check value. A later static state or locative predicate is not a
-perception beat merely because it is anchored or follows the action. It needs
-its own finite player perception or action verb, or must be syntactically
-subordinate to the completed inspection in the same sentence; a dependent
-gerundial phrase or relative clause counts as such subordination. Source order,
-factual coverage, punctuation, conjunction and a shared anchor never create
-governance. The pattern "Вы осмотрели X, заметив A, B и C" passes because the
-dependent player gerund governs the observations despite the terminal finite
-inspection verb; apply the same rule to an unambiguous relative clause. Treat
-the terminal-action-plus-static-clusters form as
-weak_literary_composition. Omit weak_literary_composition when this PASS rule
-holds; separately governed clusters at different supplied anchors are not an
-independent inventory. Exclude supplied held results, body consequences, and
-uncertainties only from this governance test; they may be standalone grounded
-sentences. Still review uncertainty wording: an ordinary player-facing open
-question passes, while an abstract policy or disclaimer about what observations
-prove or establish is weak_literary_composition. Complete factual coverage alone is not a literary PASS. Matching source order or using one multi-clause sentence
-alone is not a failure. A grounded current qualitative assessment or conclusion
-may be the perceived result when related scene facts frame or lead to it within
-one coherent focal sentence. Do not demand an invented causal,
-temporal or spatial bridge to avoid that failure. Evaluate all five checks
-independently: one failure never excuses a missed second failure.
+Проверь художественную композицию ровно по следующим проверкам:
+${Object.keys(FAILURE_KINDS).join(', ')}. Используй unsupported_response_or_continuation
+только в literary_failures для вымышленного ответа, отсутствия ответа, выполненного
+продолжения или продолжающегося действия. Для current_beat_buried обязательный источник
+должен присутствовать в прозе, но быть смещён на второй план; пропущенный источник
+указывай только в source_reviews как []. Никогда не добавляй current_beat_buried лишь
+потому, что обзор другого обязательного источника пуст. Необязательная поддержка — это
+набор кандидатов, а не цель покрытия. После текущего эпизода перечисление неизменившихся
+независимых необязательных фактов сцены как панорамы или контекста является
+static_context_dump, даже если оно написано связно, факты переставлены, сгруппированы
+по пространству или помещены после события. Источник required_current_beat не становится
+необязательной поддержкой лишь потому, что другое поле входа повторяет его;
+static_context_dump применяется только к утверждению, которое подтверждается
+исключительно optional_support. Каждая оставленная деталь поддержки должна указывать на
+действие или результат повествования, задавать контраст или ограничение либо составлять
+их часть. Событие восприятия может охватывать предоставленные детали, если они сами
+являются его воспринимаемым результатом; это не разрешает несвязанный пересказ снимка
+сцены. Пересказ неизменившейся поддержки — static_context_dump.
+Длительность хода — принадлежащие коду метаданные интерфейса, они не предоставлены как
+доказательство для прозы. Любое выдуманное утверждение о том, сколько времени прошло, — unsupported_fact;
+сообщение о времени в стиле служебного отчёта также получает elapsed_as_service_report.
+Оценивай weak_literary_composition для осмотра или восприятия по всему отрывку. ПРОХОДИТ,
+если каждая предоставленная группа наблюдений сцены либо грамматически подчинена
+завершённому действию в том же предложении, либо имеет свой личный глагол в финитной
+форме, который грамматически делает игрока воспринимающим или действующим лицом.
+Несколько таких глаголов игрока могут управлять соответствующими им наблюдениями в
+одном предложении; не требуй отдельного предложения или события для каждого наблюдения.
+Шаблон «глагол игрока(A), глагол игрока(B и C)» проходит: оценивай непосредственные
+зависимые элементы каждого глагола игрока и не требуй, чтобы один глагол управлял всеми
+ими. Финитный статический предикат с наблюдаемой вещью в роли подлежащего не
+засчитывается.
+Повторно упомянутое предоставленное место, его предоставленное подместо и явно
+указанная кореференция считаются одним общим якорем. Ошибка конечного действия означает
+завершённое предложение о действии, за которым следуют статичные предложения о сцене
+без собственного глагола восприятия или действия игрока. Никогда не применяй её к
+более позднему предложению с таким глаголом игрока. Сообщай о ней только с проверкой
+weak_literary_composition; terminal_action_failure — описание, никогда не значение
+проверки. Более позднее статичное состояние или локативный предикат не становится
+событием восприятия лишь потому, что привязан к якорю или следует за действием. Ему
+нужен собственный финитный глагол восприятия или действия игрока либо синтаксическое
+подчинение завершённому осмотру в том же предложении; зависимый деепричастный оборот или
+придаточное определительное считаются таким подчинением. Порядок источников, фактическое
+покрытие, пунктуация, союз и общий якорь не создают грамматического управления. Шаблон
+«Вы осмотрели X, заметив A, B и C» проходит, потому что зависимое деепричастие с игроком
+управляет наблюдениями, несмотря на конечный финитный глагол осмотра; применяй то же
+правило к недвусмысленному придаточному определительному. Сочетание конечного действия
+со статичными группами считай weak_literary_composition. Не указывай
+weak_literary_composition, если это правило прохождения выполнено; отдельно управляемые группы
+с разными предоставленными якорями не являются независимым перечнем. Исключай
+предоставленные, уже полученные и зафиксированные результаты, телесные последствия и неопределённости
+только из этой проверки грамматического управления; они могут быть самостоятельными
+подтверждёнными предложениями. Формулировки неопределённости всё равно проверяй:
+обычный открытый вопрос, обращённый к игроку, проходит, а абстрактная политика или
+оговорка о том, что доказывают или устанавливают наблюдения, получает
+weak_literary_composition. Одного полного фактического покрытия недостаточно для
+литературного прохождения. Совпадение с порядком источника или само по себе использование
+одного предложения с несколькими частями не является ошибкой. Подтверждённая текущая
+качественная оценка или вывод может быть воспринимаемым результатом, если связанные
+факты сцены обрамляют его или подводят к нему в одном связном фокусном предложении. Не
+требуй выдуманного причинного, временного или пространственного перехода, чтобы
+избежать этой ошибки. Независимо оценивай все пять проверок: одна ошибка никогда не
+оправдывает пропуск второй.
 
-Mandatory final cross-checks before JSON:
-1. Every sensory proposition without an exact supplied sensory fact is unsupported_sensory.
-2. Any elapsed-time claim without an exact required source is unsupported_fact;
-service-like reporting also receives elapsed_as_service_report.
-3. current_beat_buried may describe only a source with a nonempty source review;
-never use it to restate or penalize an omitted source whose review is [].
-4. If prose reverses ordered performed actions or makes the earlier action simultaneous
-or ongoing within the later one, record unsupported_event. Do not fail subordination
-that unambiguously marks the earlier action completed before the later action.
-5. First exclude supplied held results, body consequences/states, and
-uncertainties only from the scene-governance requirement. They do not need a
-player perception verb. Still review uncertainty phrasing: an ordinary open
-question passes; an abstract diagnostic or policy statement about what
-observations prove or establish receives weak_literary_composition. Then
-review every scene-observation segment. A
-terminal independent completed action never governs a later static cluster;
-each cluster needs same-sentence subordination or its own finite player
-perception/action verb. Report every cluster that lacks governance, including
-the first one after the terminal action. Source order, factual coverage,
-punctuation, conjunction and a shared anchor do not create governance.
-Separately governed clusters at different anchors pass.
-If a scene segment has its own finite player perception/action verb, it does
-not need grammatical connection to the preceding or following segment. Mark it
-governed and do not apply the terminal-action failure to it.
-6. For a performed attempt with no supplied result or uncertainty, any claim
-that the result is unknown or unestablished is unsupported_result. The attempt
-alone without any outcome claim is supported and must not be flagged.
-7. Never report static_context_dump for a proposition that is also in
-required_current_beat. Repetition in optional_support cannot change its status.
+Обязательные заключительные перекрёстные проверки перед JSON:
+1. Каждое сенсорное утверждение без точного предоставленного сенсорного факта —
+unsupported_sensory.
+2. Любое утверждение о том, сколько времени прошло, без точного обязательного источника —
+unsupported_fact; сообщение в стиле служебного отчёта также получает
+elapsed_as_service_report.
+3. current_beat_buried может описывать только источник с непустым обзором; никогда не
+используй его, чтобы повторно обозначить или наказать пропущенный источник, обзор
+которого равен [].
+4. Если проза меняет порядок упорядоченных выполненных действий на обратный или делает
+более раннее действие одновременным с более поздним либо продолжающимся во время него,
+зафиксируй unsupported_event. Не считай ошибкой подчинение, которое недвусмысленно
+показывает завершение более раннего действия до более позднего.
+5. Сначала исключи предоставленные, уже полученные и зафиксированные результаты, телесные
+последствия/состояния и неопределённости только из требования грамматического управления
+наблюдениями сцены. Им не нужен глагол восприятия игрока. Всё равно проверь формулировку
+неопределённости: обычный открытый вопрос проходит; абстрактное диагностическое или
+политическое утверждение о том, что доказывают или устанавливают наблюдения, получает
+weak_literary_composition. Затем проверь каждый сегмент с наблюдениями сцены. Отдельное
+завершённое действие в конце предложения никогда не управляет последующей статичной
+группой; каждой группе нужно подчинение в том же предложении или собственный финитный
+глагол восприятия/действия игрока. Сообщай о каждой группе без такого управления,
+включая первую после конечного действия. Порядок источников, фактическое покрытие,
+пунктуация, союз и общий якорь не создают грамматического управления. Отдельно
+управляемые группы с разными якорями проходят. Если у сегмента сцены есть собственный
+финитный глагол восприятия/действия игрока, ему не нужна грамматическая связь с
+предыдущим или последующим сегментом. Считай его управляемым и не применяй к нему
+ошибку конечного действия.
+6. Для выполненной попытки без предоставленного результата или указания на
+неопределённость любое утверждение, что результат неизвестен или не установлен, —
+unsupported_result. Одна лишь попытка без утверждения об исходе подтверждена и не должна
+помечаться.
+7. Никогда не сообщай static_context_dump для утверждения, которое также содержится в
+required_current_beat. Повтор в optional_support не меняет его статус.
 
-Return only the exact JSON shape shown below. reviewed_segments must copy every
-literal segment ID (for example "s1"), never prose, exactly once and in order.
-source_reviews must contain exactly
-the shown required_current_beat refs and order; each segment_choices value lists
-segments that fully convey that source. Use [] for an omitted or partially
-conveyed source. If no required source exists, source_reviews must be [].
-unsupported contains only {"segment_choice","kind","reason"}; kind is one of
+Верни только точную JSON-форму, показанную ниже. reviewed_segments должен в исходном
+виде копировать каждый буквальный идентификатор сегмента из списка ниже, не прозу,
+ровно один раз и по порядку.
+source_reviews должен содержать ровно показанные refs required_current_beat и в том же
+порядке; каждое значение segment_choices перечисляет сегменты, которые полностью
+передают этот источник. Для пропущенного или переданного частично источника используй
+[]. Если обязательных источников нет, source_reviews должен быть [].
+unsupported содержит только {"segment_choice","kind","reason"}; kind — одно из
 unsupported_attempt, unsupported_success, unsupported_object_use,
 unsupported_result, unsupported_sensory, unsupported_event,
 unsupported_world_state, unsupported_npc_state, unsupported_fact.
-literary_failures contains only {"check","segment_choice","reason"}.
-Every segment_choice field is one literal segment ID, never a comma-separated
-list or range; use separate findings when more than one segment fails.
-Output only failures, not supported proposition reviews. evidence is a concise
-nonempty list when there are no failures and may be empty otherwise. Shape:
+literary_failures содержит только {"check","segment_choice","reason"}.
+Каждое поле segment_choice содержит один буквальный идентификатор сегмента, никогда
+список через запятую или диапазон; если не проходит больше одного сегмента, используй
+отдельные заключения.
+Выводи только ошибки, не обзоры подтверждённых утверждений. Если ошибок нет, evidence —
+краткий непустой список; в противном случае он может быть пустым. Форма:
 ${JSON.stringify(shape)}
-Segment choices: ${JSON.stringify(choices)}.`;
+Варианты сегментов: ${JSON.stringify(choices)}.`;
 }
 
 export function assembleNarrationAuditOutput(output, request) {

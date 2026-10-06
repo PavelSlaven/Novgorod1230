@@ -27,7 +27,11 @@ test('S1 turn boundary owns prompt and accepts only its exact proposal DTO', asy
   } });
   assert.equal(modelRequest.semantic_context.region, 'Lower Dvina');
   assert.deepEqual(modelRequest, request());
-  assert.match(prompt, /exactly these keys: schema, request_id, name, description, semantic_requirements/u);
+  assert.match(prompt, /ровно с такими ключами: schema, request_id, name, description, semantic_requirements/u);
+  assert.match(prompt, /включи каждое значение из approved_envelope\.required_semantic_requirements/u);
+  assert.match(prompt, /hazard/u);
+  assert.match(prompt, /Не создавай .* опасности/u);
+  assert.doesNotMatch(prompt, /Return one ordinary local concretization/u);
   assert.deepEqual(result.semantic_requirements, ['interior_space']);
   assert.equal(Object.isFrozen(result), true);
 });
@@ -70,7 +74,9 @@ test('S1 receives factual compatibility without turning it into presence', async
     } } });
   assert.equal(input.world_knowledge.pack_revision, 'revision:test');
   assert.equal(Object.hasOwn(input.world_knowledge, 'context_text'), false);
-  assert.match(prompt, /Compatibility does not prove current presence/u);
+  assert.match(prompt, /Совместимость не доказывает текущее наличие/u);
+  assert.match(prompt, /world_knowledge — единственный фактический источник/u);
+  assert.doesNotMatch(prompt, /Compatibility does not prove current presence/u);
 });
 
 function knowledge() {

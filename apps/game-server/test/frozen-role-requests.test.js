@@ -1,51 +1,23 @@
-import { reviewedNarration } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
-import {
-  createLowerDvinaTraceNpcSemanticModel,
-  createLowerDvinaTraceNarrationService,
-  createLowerDvinaTracePlayerConversationModel,
-  createLowerDvinaTraceTurnStepModel
-} from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceTurnStepModel } from
+  '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { requestTurnStepPlan } from '@rus/turn';
-import { createLowerDvinaTraceNpcAutonomousModel } from
-  '../src/runtime/lower-dvina-trace-autonomous-llm.js';
-import { createLowerDvinaTraceNpcCombatModel } from
-  '../src/runtime/lower-dvina-trace-combat-llm.js';
-import { createLowerDvinaTraceWorldProcessStepModel } from
-  '../src/runtime/lower-dvina-trace-world-process-llm.js';
-import { buildOrdinaryMaterializationMessages } from
-  '../src/runtime/ordinary-materialization-llm.js';
 import { assembleNarrationAuditOutput } from
   '../src/runtime/lower-dvina-trace-narration-audit.js';
+import { buildFrozenRoleMessages } from
+  '../../../tools/llm-runtime-eval/src/frozen-role-messages.mjs';
 
 const frozenRoleRequestsUrl = new URL('../../../data/model-evals/llm-runtime/'
   + 'frozen-role-requests-v1.json', import.meta.url);
 
-const models = {
-  world_process_step: createLowerDvinaTraceWorldProcessStepModel,
-  turn_step_planner: createLowerDvinaTraceTurnStepModel,
-  turn_step_planner_repair: createLowerDvinaTraceTurnStepModel,
-  npc_combat_decider: createLowerDvinaTraceNpcCombatModel,
-  npc_combat_decider_format_repair: createLowerDvinaTraceNpcCombatModel,
-  npc_autonomous_decider: createLowerDvinaTraceNpcAutonomousModel,
-  npc_autonomous_decider_format_repair: createLowerDvinaTraceNpcAutonomousModel,
-  player_conversation_interpreter: createLowerDvinaTracePlayerConversationModel,
-  player_conversation_interpreter_format_repair:
-    createLowerDvinaTracePlayerConversationModel,
-  npc_conversation_responder: createLowerDvinaTraceNpcSemanticModel,
-  npc_conversation_responder_format_repair: createLowerDvinaTraceNpcSemanticModel
-};
-
 test('frozen role fixtures ship exact production-built messages', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
   const mismatches = [];
-  for (const fixture of corpus.fixtures.filter(({ role_id }) =>
-    role_id in models || role_id === 'ordinary_materialization'
-      || role_id.startsWith('gameplay_narrator'))) {
+  for (const fixture of corpus.fixtures) {
     try {
-      assert.deepEqual(await productionMessages(fixture), fixture.messages);
+      assert.deepEqual(await buildFrozenRoleMessages(fixture), fixture.messages);
     } catch (error) {
       mismatches.push(`${fixture.id}: ${error.message}`);
     }
@@ -58,8 +30,17 @@ test('frozen narration writer fixtures expose only model-owned prose', async () 
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
     role_id === 'gameplay_narrator' || role_id === 'gameplay_narrator_format_repair')) {
     assert.deepEqual(Object.keys(fixture.expected_output), ['prose'], fixture.id);
-    assert.match(fixture.messages[0].content,
-      /^Return only \{"prose":"<complete Russian prose>"\}\./u, fixture.id);
+    if (fixture.role_id === 'gameplay_narrator') {
+      assert.match(fixture.messages[0].content,
+        /^Возвращай только объект JSON вида \{"prose":"<полный русский текст прозы>"\}\./u,
+        fixture.id);
+      assert.match(fixture.messages[0].content, /Сначала передай текущий эпизод/u,
+        fixture.id);
+    } else {
+      assert.match(fixture.messages[0].content,
+        /^Возвращай только объект JSON вида \{"prose":"<полный русский текст прозы>"\}\./u,
+        fixture.id);
+    }
   }
 });
 
@@ -68,11 +49,12 @@ test('frozen narration auditor prompts require the raw source-review shape', asy
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
     role_id === 'gameplay_narrator_auditor')) {
     const prompt = fixture.messages[0].content;
-    assert.match(prompt, /source_reviews must contain exactly/u);
-    assert.match(prompt, /Use \[\] for an omitted or partially\s+conveyed source/u);
-    assert.match(prompt, /an embedded unknown result must remain unknown/u);
-    assert.match(prompt, /unsupported contains only/u);
-    assert.match(prompt, /literary_failures contains only/u);
+    assert.match(prompt, /source_reviews должен содержать ровно показанные refs/u);
+    assert.match(prompt, /Для пропущенного или переданного частично источника используй\s+\[\]/u);
+    assert.match(prompt,
+      /встроенный\s+неизвестный\s+результат должен оставаться неизвестным/u);
+    assert.match(prompt, /unsupported содержит только/u);
+    assert.match(prompt, /literary_failures содержит только/u);
     assert.doesNotMatch(prompt, /failure_checks/u);
     assert.doesNotMatch(prompt, /artistic_verdict|technical_verdict|concerns/u);
     assert.doesNotMatch(prompt, /"pass":/u);
@@ -92,7 +74,7 @@ test('frozen dense controls distinguish terminal static clusters from governed p
   assert.equal(fixtures.length, controls.size);
   for (const fixture of fixtures) {
     const assembled = assembleNarrationAuditOutput(fixture.expected_output, {
-      ...JSON.parse(fixture.messages[1].content),
+      ...fixture.request,
       visible_context: fixture.request.visible_context
     });
     const governed = fixture.id.endsWith('governed-action')
@@ -148,78 +130,3 @@ test('unowned domain intent uses one direct planner step', async () => {
   assert.deepEqual(plan.operations, []);
   assert.equal(calls, 1);
 });
-
-async function productionMessages(fixture) {
-  if (fixture.role_id.startsWith('gameplay_narrator')) return narrationMessages(fixture);
-  if (fixture.role_id === 'ordinary_materialization') {
-    const request = fixture.repair
-      ? fixture.request.request
-      : JSON.parse(fixture.messages.at(-1).content);
-    return buildOrdinaryMaterializationMessages(request, { repair: fixture.repair
-      ? { schema: 'ordinary_materialization_repair_context_v1',
-        original_output: fixture.request.original_output,
-        validation_errors: fixture.request.validation_errors }
-      : null });
-  }
-  let call;
-  const model = models[fixture.role_id]({ roleRunner: { async run(next) {
-    call = next;
-    return { output: {} };
-  } } });
-  const payload = JSON.parse(fixture.messages.at(-1).content);
-  if (!fixture.repair) await model(payload);
-  else if (fixture.role_id === 'turn_step_planner_repair') await model(
-    payload.request, { structural_errors: payload.structural_errors });
-  else await model(payload.request, { repair: {
-    original_output: payload.original_output,
-    validation_errors: payload.validation_errors
-  } });
-  return call.messages;
-}
-
-async function narrationMessages(fixture) {
-  const target = fixture.role_id;
-  const payload = fixture.request;
-  const request = target === 'gameplay_narrator_format_repair' ? payload.request : {
-    version: 1, schema: 'narration_request', request_id: payload.output?.output_id ?? 'narration-eval-1',
-    surface: 'turn', visible_context: payload.visible_context ?? payload.request?.visible_context,
-    style_policy: payload.style_policy ?? payload.request?.style_policy ?? {},
-    ...(payload.context == null ? {} : { context: payload.context })
-  };
-  const draft = target === 'gameplay_narrator_auditor' ? payload.output : {
-    version: 1, schema: 'narration_output', output_id: request.request_id,
-    prose: 'Сначала видны ворота. Телега скрипит у ворот. Потом всё тихо.',
-    action_options: [], used_references: [], self_check: {}
-  };
-  let call, auditCalls = 0;
-  const narration = createLowerDvinaTraceNarrationService({ roleRunner: { async run(next) {
-    if (next.role_id === target) call = next;
-    if (next.role_id === 'gameplay_narrator') {
-      return { output: target === 'gameplay_narrator_format_repair' ? {}
-        : target === 'gameplay_narrator_auditor' || target === 'gameplay_narrator_semantic_repair'
-          ? draft : fixture.expected_output };
-    }
-    if (next.role_id === 'gameplay_narrator_format_repair') return { output: fixture.expected_output };
-    if (next.role_id === 'gameplay_narrator_semantic_repair') return { output: fixture.expected_output };
-    auditCalls += 1;
-    if (target === 'gameplay_narrator_auditor') {
-      return { output: fixture.expected_output };
-    }
-    const wire = JSON.parse(next.messages[1].content);
-    const first = wire.segments[0]?.segment_id;
-    const coverage = Object.fromEntries([
-      ...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties
-    ].map(({ ref }) => [ref, first == null ? [] : [first]]));
-    const audit = reviewedNarration(wire.segments, coverage);
-    if (target === 'gameplay_narrator_semantic_repair' && auditCalls === 1) {
-      audit.unsupported = [{ segment_choice: `s${wire.segments.findIndex(({ segment_id }) =>
-        segment_id === payload.concerns[0].segment_id) + 1}`,
-      kind: payload.concerns[0].kind, reason: payload.concerns[0].reason }];
-      audit.evidence = [];
-    }
-    return { output: audit };
-  } } });
-  await narration.run(request);
-  if (!call) throw new Error(`narration role was not called: ${target}`);
-  return call.messages;
-}

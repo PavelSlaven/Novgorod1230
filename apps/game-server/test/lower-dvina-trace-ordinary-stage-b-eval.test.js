@@ -91,18 +91,18 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   const request = presenceRequest('ложка');
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.doesNotMatch(prompt, /seed_scope|density_band_proposal|background_groups/u);
-  assert.match(prompt, /resolve_presence permits materialize, absent, no_change, or authority_required/u);
-  assert.match(prompt, /Decide only whether and how the supplied ordinary candidate is semantically realized/u);
-  assert.match(prompt, /Lack of a pre-supplied descriptor alone is not a reason for absent/u);
-  assert.match(prompt, /candidate_query\.candidate_hint identifies what is sought, not evidence/u);
-  assert.match(prompt, /never promote an unsupported presupposition from the query into a fact/u);
-  assert.match(prompt, /general question about people, current activity, or the situation is not an ordinary item candidate/u);
-  assert.match(prompt, /never turn a person, event, place, or question into an item name or item fact/u);
+  assert.match(prompt, /Для resolve_presence допустимы materialize, absent, no_change и authority_required/u);
+  assert.match(prompt, /Решай только, реализован ли переданный обычный кандидат семантически и каким образом/u);
+  assert.match(prompt, /Отсутствие заранее подготовленного описания само по себе не является основанием для absent/u);
+  assert.match(prompt, /candidate_query\.candidate_hint указывает, что ищут, но не служит доказательством/u);
+  assert.match(prompt, /не превращай неподтверждённую предпосылку из запроса в факт/u);
+  assert.match(prompt, /Общий вопрос о людях, текущих занятиях или ситуации не является кандидатом обычного предмета/u);
+  assert.match(prompt, /не превращай человека, событие, место или вопрос в имя предмета либо факт о предмете/u);
   assert.match(prompt, /semantic_materialization_kind/u);
-  assert.match(prompt, /sought referent in complete candidate_hint/u);
-  assert.match(prompt, /environmental accumulation or condition/u);
-  assert.match(prompt, /server assembles/u);
-  assert.match(prompt, /availability_class is common or context_bound/u);
+  assert.match(prompt, /искомого референта во всём candidate_hint/u);
+  assert.match(prompt, /Скопление в окружающей среде или состояние/u);
+  assert.match(prompt, /их добавит сервер/u);
+  assert.match(prompt, /для availability_class допустимы common и context_bound/u);
   assert.match(prompt, /authority_envelope/u);
   assert.doesNotMatch(prompt, /простая верёвка|cordage/u);
   assert.doesNotMatch(prompt, /Schema-valid fallback skeleton/u);
@@ -120,11 +120,11 @@ test('Stage B keeps alternatives and shared qualifiers in one unchanged semantic
     const messages = buildOrdinaryMaterializationMessages(request);
     assert.deepEqual(JSON.parse(messages[1].content), request);
     assert.equal(request.candidate_query.candidate_hint, query);
-    assert.match(messages[0].content, /Explicit alternatives are existential/);
-    assert.match(messages[0].content, /every qualifier shared across alternatives/);
-    assert.match(messages[0].content, /Never drop a conjunct, shared ownership/);
-    assert.match(messages[0].content, /An absent verdict must be supported for the whole query/);
-    assert.match(messages[0].content, /when coverage is insufficient, return no_change/);
+    assert.match(messages[0].content, /Явные альтернативы имеют экзистенциальный смысл/u);
+    assert.match(messages[0].content, /каждое уточнение, общее для альтернатив/u);
+    assert.match(messages[0].content, /Не отбрасывай ни один конъюнкт, общее владение/u);
+    assert.match(messages[0].content, /Вердикт absent должен быть обоснован для всего запроса/u);
+    assert.match(messages[0].content, /при недостаточном покрытии верни no_change/u);
   }
 });
 
@@ -136,14 +136,14 @@ test('ordinary materialization prompt exposes exact code-owned mechanics bounds'
       max_packing_slot_cost: 16, max_quantity: 16 },
     requiredQuantity: { value: 5, unit: 'item' }
   })[0].content;
-  assert.match(prompt, /mass_grams is an integer from 1 to 20000/u);
-  assert.match(prompt, /external_hand_cost is exactly one of \[0,1,2\]/u);
+  assert.match(prompt, /mass_grams — целое число от 1 до 20000/u);
+  assert.match(prompt, /external_hand_cost должен в точности совпадать с одним из \[0,1,2\]/u);
   assert.match(prompt,
-    /carry_form is exactly one of \["compact","regular","long","bulky"\]/u);
-  assert.match(prompt, /packing_slot_cost is an integer from 0 to 16/u);
-  assert.match(prompt, /quantity\.value is an integer from 1 to 16/u);
-  assert.match(prompt, /requested finite group quantity is exactly 5 item/u);
-  assert.match(prompt, /Never invent another carry_form/u);
+    /carry_form должен в точности совпадать с одним из \["compact","regular","long","bulky"\]/u);
+  assert.match(prompt, /packing_slot_cost — целое число от 0 до 16/u);
+  assert.match(prompt, /quantity\.value — целое число от 1 до 16/u);
+  assert.match(prompt, /количество конечной группы в точности равно 5 item/u);
+  assert.match(prompt, /Не выдумывай другие значения carry_form/u);
 });
 
 test('ordinary materialization absent prompt permits only its exact absent plan', () => {
@@ -154,9 +154,9 @@ test('ordinary materialization absent prompt permits only its exact absent plan'
     schema: 'ordinary_materialization_repair_context_v1', original_output: null,
     validation_errors: [{ path: 'resolution', keyword: 'enum' }]
   } })[0].content;
-  assert.match(prompt, /Return exactly/u);
+  assert.match(prompt, /Верни в точности/u);
   assert.match(prompt, /"resolution":"absent"/u);
-  assert.match(prompt, /Validation errors: \[\{"path":"resolution","keyword":"enum"\}\]/u);
+  assert.match(prompt, /Ошибки проверки: \[\{"path":"resolution","keyword":"enum"\}\]/u);
   assert.doesNotMatch(prompt, /seed_scope|materialize|descriptor|mechanics|authority_required|no_change/u);
 });
 
@@ -193,11 +193,11 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
         basis_state: 'committed', functional_buckets: ['other_ordinary'],
         allowed_admission_classes: ['common_mundane'], permission_refs: [] }] } };
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
-  assert.match(prompt, /seed_scope permits only seeded or no_change/u);
+  assert.match(prompt, /Для seed_scope допустимы только seeded и no_change/u);
   assert.match(prompt, /"resolution":"seeded"/u);
   assert.match(prompt, /"descriptor":null/u);
-  assert.match(prompt, /Never copy angle-bracket placeholders/u);
-  assert.match(prompt, /natural Russian suitable for later player-facing prose/u);
+  assert.match(prompt, /Не копируй заполнители в угловых скобках/u);
+  assert.match(prompt, /естественным русским языком, пригодным для последующего текста игроку/u);
   assert.doesNotMatch(prompt, /resolve_presence|candidate_hint|mechanics_proposal|"basis_refs"/u);
   assert.doesNotMatch(prompt, /request-derived authoritative envelope/u);
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
@@ -219,13 +219,13 @@ test('ordinary seed prompt receives a player-safe scene basis without reading re
       sensory_details: ['У воды лежат обломки досок.'],
       visible_objects: [] }
   })[0].content;
-  assert.match(prompt, /All refs and IDs are opaque/u);
+  assert.match(prompt, /Все ссылки и идентификаторы непрозрачны/u);
   assert.match(prompt, /У воды лежат обломки досок/u);
-  assert.match(prompt, /one to three concrete co-present mundane physical groups/u);
-  assert.match(prompt, /Never answer with an abstract category/u);
-  assert.match(prompt, /never invent a visit, owner, action, purpose, origin, or past event/u);
-  assert.match(prompt, /propose one distinct new ordinary group/u);
-  assert.match(prompt, /do not restate, paraphrase, combine, or summarize/u);
+  assert.match(prompt, /от одной до трёх конкретных совместно присутствующих обычных физических групп/u);
+  assert.match(prompt, /Не отвечай абстрактной категорией/u);
+  assert.match(prompt, /не выдумывай приход, владельца, действие, цель, происхождение или прошлое событие/u);
+  assert.match(prompt, /предложи одну отдельную новую обычную группу/u);
+  assert.match(prompt, /не повторяй, не пересказывай и не объединяй детали/u);
 });
 
 test('ordinary materialization prompt ends with only its semantic Stage B shape', () => {
@@ -246,15 +246,15 @@ test('ordinary materialization prompt ends with only its semantic Stage B shape'
   assert.match(admitted, /semantic_materialization_kind/u);
   assert.match(admitted, /"semantic_type":"<specific ordinary semantic type>"/u);
   assert.match(admitted, /"name":"<concise natural Russian player-facing name>"/u);
-  assert.match(admitted, /not null or a copied placeholder/u);
+  assert.match(admitted, /а не null или скопированным заполнителем/u);
   assert.doesNotMatch(admitted, /"semantic_descriptor"|"facts"/u);
   assert.match(admitted, /"mass_grams":"<integer>"/u);
   assert.match(admitted, /"external_hand_cost":"<integer>"/u);
   assert.match(admitted, /"packing_slot_cost":"<integer>"/u);
   assert.match(admitted,
-    /never copy the player's intended use, action, goal, or hoped-for result/u);
+    /не переноси предполагаемое игроком применение, действие, цель или желаемый результат/u);
   assert.doesNotMatch(admitted, /"mass_grams":1|"property_basis_ref"|"position_ref"|"supporting_basis_ref"|request-derived authoritative envelope/u);
-  const shape = JSON.parse(admitted.split("Return only this semantic shape: ").at(-1));
+  const shape = JSON.parse(admitted.split("Верни только эту семантическую форму: ").at(-1));
   assert.deepEqual(Object.keys(shape).sort(), ["entities", "reason_code", "resolution", "semantic_admission_class", "semantic_materialization_kind"]);
 });
 
@@ -345,8 +345,8 @@ test('grounded common Stage B does not treat WK facts as a positive whitelist',
       facts: [{ claim_ref: claimRef }], hard_constraints: []
     } };
     const prompt = buildOrdinaryMaterializationMessages(grounded)[0].content;
-    assert.match(prompt, /not an inventory of every ordinary thing/u);
-    assert.match(prompt, /Exact positive evidence for every mundane object is not required/u);
+    assert.match(prompt, /это не опись всех обычных вещей/u);
+    assert.match(prompt, /Точное положительное доказательство для каждого обычного предмета не требуется/u);
     assert.doesNotMatch(prompt, /Do not add a historical, scientific, social, craft, material-property, or other factual premise from model memory/u);
     const semantic = { resolution: 'materialize',
       semantic_materialization_kind: 'standalone_item',

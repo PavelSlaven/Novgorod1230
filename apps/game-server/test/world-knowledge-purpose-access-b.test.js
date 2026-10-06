@@ -204,22 +204,31 @@ test('F1/F2 narration grounds once and keeps WK on writer wire', async () => {
   const roleRunner = {
     async run(call) {
       roleCalls.push(call.role_id);
-      const body = JSON.parse(call.messages[1].content);
-      assert.equal(Object.hasOwn(body, 'world_knowledge_authoritative'), false);
-      assert.equal(Object.hasOwn(body, 'party_id'), false);
       if (call.role_id === 'gameplay_narrator') {
+        const body = call.messages[1].content;
         writerBodies.push(body);
-        assert.equal(body.world_knowledge?.facts?.[0]?.claim_ref, 'claim:allowed');
+        assert.match(body, /Сеть мокрая\./u);
+        assert.doesNotMatch(body,
+          /claim:allowed|claim_ref|pack_ref|pack_revision|request_id|party_id|segment_id|source_ref|trace/u);
         assert.match(call.messages[0].content, /world_knowledge is the only factual/u);
         return { output: { prose: 'Ты поднял сеть.' } };
       }
       if (call.role_id === 'gameplay_narrator_auditor') {
-        assert.equal(body.world_knowledge?.facts?.[0]?.claim_ref, 'claim:allowed');
-        const refs = [...body.required_current_beat.changes,
-          ...body.required_current_beat.uncertainties];
+        const body = JSON.parse(call.messages[1].content);
+        assert.equal(typeof body.world_knowledge, 'string');
+        assert.ok(body.world_knowledge.includes('Сеть мокрая.'));
+        assert.equal(Object.hasOwn(body, 'request_id'), false);
+        assert.equal(Object.hasOwn(body, 'party_id'), false);
+        assert.doesNotMatch(body.world_knowledge,
+          /claim_ref|pack_ref|pack_revision|purpose|verdict|search_hint/u);
+        assert.match(body.segments[0].segment_id, /^p\d+$/u);
+        const refs = [...(body.required_current_beat.changes ?? []),
+          ...(body.required_current_beat.uncertainties ?? [])];
+        assert.ok(refs.every(({ ref }) => /^[cu]\d+$/u.test(ref)));
         return {
           output: reviewedNarration(body.segments,
-            Object.fromEntries(refs.map(({ ref }) => [ref, ['s1']])))
+            Object.fromEntries(refs.map(({ ref }) => [ref,
+              [body.segments[0].segment_id]])))
         };
       }
       return { output: {} };
@@ -289,35 +298,58 @@ test('F1 format-repair and semantic-repair reuse writer WK pack', async () => {
   let auditorPasses = 0;
   const roleRunner = {
     async run(call) {
-      const body = JSON.parse(call.messages[1].content);
-      roleWk.push({ role: call.role_id, claim: body.world_knowledge?.facts?.[0]?.claim_ref });
       if (call.role_id === 'gameplay_narrator') {
+        const body = call.messages[1].content;
+        roleWk.push({ role: call.role_id, body });
+        assert.match(body, /Сеть мокрая\./u);
+        assert.doesNotMatch(body,
+          /claim:allowed|claim_ref|pack_ref|pack_revision|request_id|party_id|segment_id|source_ref|trace/u);
         writerCalls += 1;
         return { output: { not_prose: true } };
       }
       if (call.role_id === 'gameplay_narrator_format_repair') {
+        const body = call.messages[1].content;
+        roleWk.push({ role: call.role_id, body });
+        assert.match(body, /Проверка формата/u);
+        assert.doesNotMatch(body,
+          /claim:allowed|claim_ref|pack_ref|pack_revision|request_id|party_id|segment_id|source_ref|trace/u);
         return { output: { prose: 'Ты поднял сеть.' } };
       }
       if (call.role_id === 'gameplay_narrator_auditor') {
+        const body = JSON.parse(call.messages[1].content);
+        roleWk.push({ role: call.role_id, facts: body.world_knowledge });
+        assert.equal(typeof body.world_knowledge, 'string');
+        assert.ok(body.world_knowledge.includes('Сеть мокрая.'));
+        assert.doesNotMatch(body.world_knowledge,
+          /claim_ref|pack_ref|pack_revision|purpose|verdict|search_hint/u);
+        assert.match(body.segments[0].segment_id, /^p\d+$/u);
         auditorPasses += 1;
-        const refs = [...body.required_current_beat.changes,
-          ...body.required_current_beat.uncertainties];
+        const refs = [...(body.required_current_beat.changes ?? []),
+          ...(body.required_current_beat.uncertainties ?? [])];
         if (auditorPasses === 1) {
           return {
             output: {
               ...reviewedNarration(body.segments,
-                Object.fromEntries(refs.map(({ ref }) => [ref, ['s1']]))),
-              unsupported: [{ segment_choice: 's1', kind: 'unsupported_fact',
+                Object.fromEntries(refs.map(({ ref }) => [ref,
+                  [body.segments[0].segment_id]]))),
+              unsupported: [{ segment_choice: body.segments[0].segment_id,
+                kind: 'unsupported_fact',
                 reason: 'лишнее' }]
             }
           };
         }
         return {
           output: reviewedNarration(body.segments,
-            Object.fromEntries(refs.map(({ ref }) => [ref, ['s1']])))
+            Object.fromEntries(refs.map(({ ref }) => [ref,
+              [body.segments[0].segment_id]])))
         };
       }
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
+        const body = call.messages[1].content;
+        roleWk.push({ role: call.role_id, body });
+        assert.match(body, /Сеть мокрая\./u);
+        assert.doesNotMatch(body,
+          /claim:allowed|claim_ref|pack_ref|pack_revision|request_id|party_id|segment_id|source_ref|trace/u);
         return { output: { replacements: [{ prose: 'Ты поднял сеть.' }] } };
       }
       return { output: {} };
@@ -353,9 +385,11 @@ test('F1 format-repair and semantic-repair reuse writer WK pack', async () => {
   assert.equal(grounds.length, 1);
   assert.equal(writerCalls, 1);
   assert.ok(roleWk.some((x) => x.role === 'gameplay_narrator_format_repair'
-    && x.claim === 'claim:allowed'));
+    && !x.body.startsWith('{')));
   assert.ok(roleWk.some((x) => x.role === 'gameplay_narrator_semantic_repair'
-    && x.claim === 'claim:allowed'));
+    && !x.body.startsWith('{')));
+  assert.ok(roleWk.find((x) => x.role === 'gameplay_narrator_auditor')
+    ?.facts?.includes('Сеть мокрая.'));
   assert.equal(result.status, 'approved');
 });
 
@@ -373,8 +407,8 @@ test('A4 WK degradation emits telemetry trace with code/purpose/request_id', asy
         return {
           output: {
             reviewed_segments: body.segments.map((s) => s.segment_id),
-            source_reviews: [...body.required_current_beat.changes,
-              ...body.required_current_beat.uncertainties]
+            source_reviews: [...(body.required_current_beat.changes ?? []),
+              ...(body.required_current_beat.uncertainties ?? [])]
               .map(({ ref }) => ({ ref, segment_choices: [body.segments[0].segment_id] })),
             unsupported: [],
             literary_failures: [],
@@ -439,8 +473,8 @@ test('B2 llm_provider_failure degrades; budget and TypeError rethrow', async () 
         return {
           output: {
             reviewed_segments: body.segments.map((s) => s.segment_id),
-            source_reviews: [...body.required_current_beat.changes,
-              ...body.required_current_beat.uncertainties]
+            source_reviews: [...(body.required_current_beat.changes ?? []),
+              ...(body.required_current_beat.uncertainties ?? [])]
               .map(({ ref }) => ({
                 ref, segment_choices: [body.segments[0].segment_id]
               })),
@@ -509,8 +543,8 @@ test('B5 createLlmDiagnostics surfaces narration degradation', async () => {
               return {
                 output: {
                   reviewed_segments: body.segments.map((s) => s.segment_id),
-                  source_reviews: [...body.required_current_beat.changes,
-                    ...body.required_current_beat.uncertainties]
+                  source_reviews: [...(body.required_current_beat.changes ?? []),
+                    ...(body.required_current_beat.uncertainties ?? [])]
                     .map(({ ref }) => ({
                       ref, segment_choices: [body.segments[0].segment_id]
                     })),
@@ -557,8 +591,8 @@ test('B6 request.world_knowledge_authoritative is ignored (options only)', async
           return {
             output: {
               reviewed_segments: body.segments.map((s) => s.segment_id),
-              source_reviews: [...body.required_current_beat.changes,
-                ...body.required_current_beat.uncertainties]
+              source_reviews: [...(body.required_current_beat.changes ?? []),
+                ...(body.required_current_beat.uncertainties ?? [])]
                 .map(({ ref }) => ({
                   ref, segment_choices: [body.segments[0].segment_id]
                 })),
@@ -618,8 +652,8 @@ test('M16 body-only world_knowledge_authoritative yields empty facets/events', a
           return {
             output: {
               reviewed_segments: body.segments.map((s) => s.segment_id),
-              source_reviews: [...body.required_current_beat.changes,
-                ...body.required_current_beat.uncertainties]
+              source_reviews: [...(body.required_current_beat.changes ?? []),
+                ...(body.required_current_beat.uncertainties ?? [])]
                 .map(({ ref }) => ({
                   ref, segment_choices: [body.segments[0].segment_id]
                 })),

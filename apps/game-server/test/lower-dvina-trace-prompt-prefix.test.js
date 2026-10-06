@@ -34,6 +34,7 @@ test('planner shares stable rules before filtered request choices on initial and
 
 test('narration audit keeps stable rules before dynamic shape and choices', async (t) => {
   const prompts = [], calls = [];
+  let auditPass = 0;
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
     if (call.role_id === 'gameplay_narrator') return { output: {
@@ -41,12 +42,14 @@ test('narration audit keeps stable rules before dynamic shape and choices', asyn
     if (call.role_id === 'gameplay_narrator_semantic_repair') return { output: {
       replacements: [{ prose: 'Впереди видны ворота. У них стоит телега.' }] } };
     const wire = JSON.parse(call.messages[1].content);
+    auditPass += 1;
     prompts.push(call.messages[0].content);
     const audit = { ...reviewedNarration(wire.segments),
       evidence: ['Both scene facts retain their supplied certainty.'] };
-    if (wire.phase === 'initial') {
+    if (auditPass === 1) {
       audit.literary_failures = [{ check: 'weak_literary_composition',
-        segment_choice: 's1', reason: 'The scene needs its supplied spatial anchor.' }];
+        segment_choice: wire.segments[0]?.segment_id,
+        reason: 'The scene needs its supplied spatial anchor.' }];
       audit.evidence = [];
     }
     return { output: audit };
@@ -59,10 +62,10 @@ test('narration audit keeps stable rules before dynamic shape and choices', asyn
     }, context: {} });
   assert.equal(result.status, 'approved');
   assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
-  const marker = 'Shape:';
+  const marker = 'Форма:';
   const prefix = prompts[0].slice(0, prompts[0].indexOf(marker));
-  assert.match(prefix, /strict evidence auditor/u);
-  assert.match(prefix, /Output only failures/u);
+  assert.match(prefix, /строгий аудитор доказательств/u);
+  assert.match(prefix, /Выводи только ошибки/u);
   t.diagnostic(`Stable narration audit prefix: ${prefix.length} chars.`);
 });
 

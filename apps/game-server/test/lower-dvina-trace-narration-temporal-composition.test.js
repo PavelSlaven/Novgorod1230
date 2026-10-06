@@ -10,12 +10,21 @@ function reviewed(wire, { unsupported = [], literaryFailures = [], evidence = ['
   return {
     reviewed_segments: ids,
     source_reviews: wire.required_current_beat.changes
-      .concat(wire.required_current_beat.uncertainties)
+      .concat(wire.required_current_beat.uncertainties ?? [])
       .map(({ ref }) => ({ ref, segment_choices: ids })),
     unsupported,
     literary_failures: literaryFailures,
     evidence
   };
+}
+
+function roleInput(call) {
+  if (call.role_id !== 'gameplay_narrator_auditor') return call.messages[1].content;
+  const input = JSON.parse(call.messages[1].content);
+  assert.ok(input.segments.every(({ segment_id }) => /^p\d+$/u.test(segment_id)));
+  assert.ok(input.required_current_beat.changes.every(({ ref }) => /^c\d+$/u.test(ref)));
+  assert.ok((input.required_current_beat.uncertainties ?? []).every(({ ref }) => /^u\d+$/u.test(ref)));
+  return input;
 }
 
 test('code-owned durations never enter narrator sources', async () => {
@@ -57,26 +66,28 @@ test('invented elapsed-time report is removed by whole-prose repair', async () =
     'У воды лежат разбитые доски и обрывки снастей.'
   ] };
   const calls = [];
+  let auditCalls = 0;
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = roleInput(call);
     if (call.role_id === 'gameplay_narrator') {
-      assert.match(call.messages[0].content, /Turn duration is code-owned UI metadata/u);
-      assert.match(call.messages[0].content, /spatially coherent image/u);
+      assert.match(call.messages[0].content, /Длительность хода — UI-метаданные/u);
+      assert.match(call.messages[0].content, /Используй только переданные факты/u);
       return { output: { prose: 'За минуту вы произнесли: «Онисим!», завершив наблюдение. У воды лежат разбитые доски и обрывки снастей.' } };
     }
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
-      assert.match(call.messages[0].content, /turn duration belongs only to the UI/u);
-      assert.ok(wire.concerns.some(({ kind }) => kind === 'unsupported_fact'));
+      assert.match(call.messages[0].content, /длительность хода относится только к UI/u);
+      assert.match(wire, /Обязательные положения текущего эпизода/u);
+      assert.match(wire, /У воды лежат разбитые доски/u);
       return { output: { replacements: [{
         prose: 'Вы оглядели берег и позвали: «Онисим!» У самой воды среди обломков лежат разбитые доски и обрывки снастей.'
       }] } };
     }
-    const initial = wire.phase === 'initial';
+    const initial = auditCalls++ === 0;
     return { output: reviewed(wire, {
-      unsupported: initial ? [{ segment_choice: 's1', kind: 'unsupported_fact',
+      unsupported: initial ? [{ segment_choice: wire.segments[0].segment_id, kind: 'unsupported_fact',
         reason: 'Elapsed minute is not supplied as prose evidence.' }] : [],
-      literaryFailures: initial ? [{ check: 'elapsed_as_service_report', segment_choice: 's1',
+      literaryFailures: initial ? [{ check: 'elapsed_as_service_report', segment_choice: wire.segments[0].segment_id,
         reason: 'Turn duration is presented as a service datum.' }] : [],
       evidence: initial ? [] : ['Actions and scene facts are grounded; no duration is narrated.']
     }) };
@@ -114,24 +125,28 @@ for (const sample of [
   const visible = { ...scene(), visible_scene: 'Невиденная тестовая сцена',
     visible_changes: sample.changes };
   const calls = [];
+  let auditCalls = 0;
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = roleInput(call);
     if (call.role_id === 'gameplay_narrator') {
-      assert.match(call.messages[0].content, /relevant action or result beat/u);
-      assert.match(call.messages[0].content, /source-order checklist/u);
+      assert.match(call.messages[0].content,
+        /Передай каждый источник required_current_beat ровно один раз/u);
+      assert.match(call.messages[0].content,
+        /Оставляй опорную подробность только тогда/u);
       return { output: { prose: sample.checklist } };
     }
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
-      assert.match(call.messages[0].content, /Rebuild the whole passage/u);
-      assert.ok(wire.concerns.some(({ kind }) => kind === 'literary_quality'));
+      assert.match(call.messages[0].content, /Перестрой весь отрывок/u);
+      assert.match(wire, /Замечания аудитора/u);
       return { output: { replacements: [{ prose: sample.repaired }] } };
     }
-    const initial = wire.phase === 'initial';
-    assert.match(call.messages[0].content, /Matching source order[\s\S]*not a failure/u);
+    const initial = auditCalls++ === 0;
+    assert.match(call.messages[0].content,
+      /не создают грамматического управления/u);
     return { output: reviewed(wire, {
       literaryFailures: initial ? [{ check: 'weak_literary_composition',
-        segment_choice: 's1',
+        segment_choice: wire.segments[0].segment_id,
         reason: 'Supported facts are restated in source order instead of composing the performed action and supplied spatial relations into a scene.' }] : [],
       evidence: initial ? [] : ['The performed action organizes the supplied spatial facts.']
     }) };
@@ -186,50 +201,47 @@ test('completed-before literary findings remain non-blocking delivery metadata',
     }
   ];
   for (const sample of samples) await t.test(sample.name, async () => {
-    const repairs = [...sample.rejected.map((repair) => ({ ...repair, accepted: false })),
-      { prose: sample.accepted, accepted: true }];
-    for (const repair of repairs) {
-      const calls = [];
+      const repairs = [...sample.rejected.map((repair) => ({ ...repair, accepted: false })),
+        { prose: sample.accepted, accepted: true }];
+      for (const repair of repairs) {
+        const calls = [];
+        let auditCalls = 0;
       const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
         calls.push(call.role_id);
-        const wire = JSON.parse(call.messages[1].content);
+        const wire = roleInput(call);
         if (call.role_id === 'gameplay_narrator') {
           assert.match(call.messages[0].content,
-            /A supplied player-safe source supports exactly its atomic factual\s+propositions/u);
+            /Передай каждый источник required_current_beat ровно один раз/u);
           assert.match(call.messages[0].content,
-            /Labels, IDs, categories, names and plausible implications add no sensory trait, causality, time, result, execution or certainty/u);
-          assert.match(call.messages[0].content, /Only performed-action sources constrain action order/u);
-          assert.match(call.messages[0].content, /shared supplied subjects or spatial anchors/u);
-          assert.match(call.messages[0].content, /one coherent focal sweep/u);
-          assert.match(call.messages[0].content, /perception action.*grammatically govern/u);
-          assert.match(call.messages[0].content, /Do not invent perception or causality for other action classes/u);
-          assert.match(call.messages[0].content, /grammatically subordinate.*completed before/u);
+            /Передавай подтверждённую речь дословно/u);
+          assert.match(call.messages[0].content,
+            /Выборочно используй дополнительные опорные сведения, чтобы построить эпизод/u);
           return { output: { prose: sample.changes.join(' ') } };
         }
         if (call.role_id === 'gameplay_narrator_semantic_repair') {
-          assert.match(call.messages[0].content, /source_segments are evidence/u);
-          assert.match(call.messages[0].content, /completed-before subordination/u);
-          assert.match(call.messages[0].content, /visible_scene.*action target/u);
+          assert.match(wire, /Обязательные положения текущего эпизода/u);
+          assert.match(call.messages[0].content, /подчинение с отношением «раньше» допустимо/u);
+          assert.match(call.messages[0].content, /visible_scene может указывать место[\s\S]*цель действия/u);
           assert.match(call.messages[0].content,
-            /inspection or perception current beat[\s\S]*grammatically governs/u);
+            /Если в текущем эпизоде осмотра или восприятия переданы наблюдения[\s\S]*грамматически связывающей/u);
           return { output: { replacements: [{ prose: repair.prose }] } };
         }
         assert.match(call.messages[0].content,
-          /A supplied player-safe source supports exactly its atomic factual\s+propositions/u);
+          /Предоставленный безопасный\s+для игрока источник подтверждает ровно свои атомарные фактические утверждения/u);
         assert.match(call.messages[0].content,
-          /Labels, IDs, categories, names and plausible\s+implications add no sensory trait, causality, time, result, execution or certainty/u);
-        assert.match(call.messages[0].content, /Never accept reversed causal order/u);
-        assert.match(call.messages[0].content, /Grammatical subordination[\s\S]*completed before/u);
-        assert.match(call.messages[0].content, /simultaneous or ongoing/u);
-        const initial = wire.phase === 'initial';
+          /Метки, идентификаторы,\s+категории, имена и правдоподобные выводы не добавляют сенсорных признаков/u);
+        assert.match(call.messages[0].content, /Никогда не принимай обратный причинный порядок/u);
+        assert.match(call.messages[0].content, /Грамматическое подчинение более раннего\s+действия допустимо[\s\S]*завершилось до более позднего действия/u);
+        assert.match(call.messages[0].content, /одновременным с более поздним или продолжается во время него/u);
+        const initial = auditCalls++ === 0;
         const audit = reviewed(wire, {
           literaryFailures: initial || !repair.accepted ? [{ check: 'weak_literary_composition',
-            segment_choice: 's1', reason: 'Performed actions overlap or descriptive facts follow source order.' }] : [],
+            segment_choice: wire.segments[0].segment_id, reason: 'Performed actions overlap or descriptive facts follow source order.' }] : [],
           evidence: initial || !repair.accepted ? [] : ['Completed-before action order and grounding are preserved.']
         });
         if (!initial && repair.overlap) {
           audit.source_reviews[0].segment_choices = [];
-          audit.unsupported = [{ segment_choice: 's1', kind: 'unsupported_event',
+          audit.unsupported = [{ segment_choice: wire.segments[0].segment_id, kind: 'unsupported_event',
             reason: 'Earlier completed action became simultaneous with the later action.' }];
         }
         return { output: audit };
@@ -273,28 +285,29 @@ test('dense literary variants remain deliverable with recorded artistic failure'
   ];
   for (const repair of repairs) await t.test(repair.name, async () => {
     const calls = [];
+    let auditCalls = 0;
     const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
       calls.push(call.role_id);
-      const wire = JSON.parse(call.messages[1].content);
+      const wire = roleInput(call);
       if (call.role_id === 'gameplay_narrator') {
-        assert.match(call.messages[0].content, /For a dense inspection or perception/u);
-        assert.match(call.messages[0].content, /shared object, spatial anchor, or\s+before\/after relation/u);
+        assert.match(call.messages[0].content, /Сначала передай текущий эпизод/u);
+        assert.match(call.messages[0].content, /Оставляй опорную подробность только тогда/u);
         return { output: { prose: flat } };
       }
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
-        assert.equal(wire.required_current_beat.changes.length, changes.length);
-        assert.equal(wire.required_current_beat.uncertainties.length, 1);
-        assert.equal(wire.segments[0].prose, flat);
-        assert.match(call.messages[0].content, /For a dense inspection or perception/u);
-        assert.match(call.messages[0].content, /add no bridge, cause, sensation or result/u);
-        assert.match(call.messages[0].content, /source_segments are evidence/u);
-        assert.match(call.messages[0].content, /replacement must differ/u);
+        assert.match(wire, /Обязательные положения текущего эпизода/u);
+        assert.ok(wire.includes(flat));
+        assert.ok(wire.includes(uncertainty));
+        assert.match(call.messages[0].content, /При плотном эпизоде осмотра или восприятия/u);
+        assert.match(call.messages[0].content, /не добавляй связующих фактов, причин, ощущений или результатов/u);
+        assert.ok(wire.includes(flat));
+        assert.match(call.messages[0].content, /Замена должна отличаться от отклонённой прозы/u);
         return { output: { replacements: [{ prose: repair.prose }] } };
       }
-      const initial = wire.phase === 'initial';
+      const initial = auditCalls++ === 0;
       const audit = reviewed(wire, {
         literaryFailures: initial || !repair.accepted ? [{ check: 'weak_literary_composition',
-          segment_choice: 's1', reason: repair.name.includes('independent catalogue')
+          segment_choice: wire.segments[0].segment_id, reason: repair.name.includes('independent catalogue')
             ? 'Focal wording introduces independent observations without an anchored factual cluster.'
             : 'Dense required facts remain a source-order checklist.' }] : [],
         evidence: initial || !repair.accepted ? [] : ['Supplied anchors organize the dense current beat.']
@@ -317,9 +330,8 @@ test('dense literary variants remain deliverable with recorded artistic failure'
 test('sparse current beat remains concise without an invented bridge or layout', async () => {
   const prose = 'На пороге лежит ключ.';
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = roleInput(call);
     if (call.role_id === 'gameplay_narrator') {
-      assert.match(call.messages[0].content, /Sparse evidence calls for concise prose/u);
       return { output: { prose } };
     }
     return { output: reviewed(wire, { evidence: ['The sparse grounded result is concise.'] }) };

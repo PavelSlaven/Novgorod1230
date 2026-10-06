@@ -59,23 +59,31 @@ test('narration repairs unsupported local dimness under daylight using persisted
   const calls = [];
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
     async run(call) {
-      const request = JSON.parse(call.messages[1].content);
-      calls.push([call.role_id, request.current_light_phase]);
-      assert.equal(request.current_light_phase, 'daylight');
-      assert.equal(request.optional_support?.current_light_phase, undefined);
+      const content = call.messages[1].content;
+      const request = call.role_id === 'gameplay_narrator_auditor'
+        ? JSON.parse(content) : null;
+      calls.push(call.role_id);
+      assert.equal(typeof content, 'string');
+      if (request) {
+        assert.equal(request.current_light_phase, 'daylight');
+        assert.equal(request.optional_support?.current_light_phase, undefined);
+      } else {
+        assert.match(content, /daylight/u);
+      }
       if (call.role_id === 'gameplay_narrator') return { output: {
         prose: 'В полумраке вы различаете очертания деревьев.' } };
       if (call.role_id === 'gameplay_narrator_auditor') {
         const segment = request.segments[0].segment_id;
-        const bad = request.output.prose.includes('полумраке');
+        const bad = request.segments.map(({ prose }) => prose).join('').includes('полумраке');
         return { output: { reviewed_segments: [segment],
-          source_reviews: [{ ref: 'visible_change_1', segment_choices: bad ? [] : [segment] }],
+          source_reviews: [{ ref: 'c1', segment_choices: bad ? [] : [segment] }],
           unsupported: bad ? [{ segment_choice: segment,
             kind: 'unsupported_sensory', reason: 'No supplied local dimness.' }] : [],
           literary_failures: [], evidence: bad ? [] : ['Grounded prose.'] } };
       }
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
-        assert.match(call.messages[0].content, /current_light_phase.*calendar daylight phase/u);
+        assert.match(call.messages[0].content,
+          /current_light_phase — календарная фаза дневного света/u);
         return { output: { replacements: [{ prose: 'Вы рассмотрели деревья и различили их очертания.' }] } };
       }
       throw new Error(`Unexpected role ${call.role_id}`);
@@ -86,7 +94,7 @@ test('narration repairs unsupported local dimness under daylight using persisted
     context: {} });
   assert.equal(result.status, 'approved');
   assert.equal(result.approved_output.prose, 'Вы рассмотрели деревья и различили их очертания.');
-  assert.deepEqual(calls.map(([role]) => role), ['gameplay_narrator',
+  assert.deepEqual(calls, ['gameplay_narrator',
     'gameplay_narrator_auditor', 'gameplay_narrator_semantic_repair',
     'gameplay_narrator_auditor']);
 });

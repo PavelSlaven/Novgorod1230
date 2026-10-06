@@ -155,17 +155,28 @@ for (const sample of [
     const calls = [];
     const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
       calls.push(call.role_id);
-      const wire = JSON.parse(call.messages[1].content);
-      assert.deepEqual(wire.optional_support,
-        { visible_scene: visibleContext.visible_scene });
-      assert.match(call.messages[0].content, /candidate set, never a coverage target/u);
-      if (call.role_id === 'gameplay_narrator') return { output: { prose: panorama } };
+      if (call.role_id === 'gameplay_narrator') {
+        assert.equal(typeof call.messages[1].content, 'string');
+        assert.ok(call.messages[1].content.includes(sample.change));
+        assert.ok(call.messages[1].content.includes(visibleContext.visible_scene));
+        assert.doesNotMatch(call.messages[1].content, /request_id|output_id|\[\s*\]/u);
+        assert.match(call.messages[0].content,
+          /Выборочно используй дополнительные опорные сведения, чтобы построить эпизод/u);
+        return { output: { prose: panorama } };
+      }
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
         assert.fail('literary-only finding must not trigger semantic repair');
       }
+      const wire = JSON.parse(call.messages[1].content);
+      assert.deepEqual(wire.optional_support,
+        { visible_scene: visibleContext.visible_scene });
+      assert.deepEqual(wire.required_current_beat.changes,
+        [{ ref: 'c1', text: sample.change }]);
+      assert.equal(wire.segments[0].segment_id, 'p1');
+      assert.doesNotMatch(JSON.stringify(wire), /request_id|output_id|visible_change_1|segment_id.:.s1/u);
       const ids = wire.segments.map(({ segment_id }) => segment_id);
       const audit = { ...reviewedNarration(wire.segments,
-        { visible_change_1: ids }),
+        { c1: ids }),
       literary_failures: [{
         check: 'static_context_dump', segment_choice: ids.at(-1),
         reason: 'Independent unchanged support is recited as panorama.'
@@ -186,19 +197,63 @@ test('perception result may retain its compact action-governed sensory cluster',
   const visibleContext = { ...visible, visible_changes: ['Вы осмотрели мастерскую.'],
     sensory_details: sensory };
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+    if (call.role_id === 'gameplay_narrator') {
+      assert.ok(call.messages[1].content.includes('Вы осмотрели мастерскую.'));
+      assert.doesNotMatch(call.messages[1].content, /request_id|output_id|\[\s*\]/u);
+      assert.match(call.messages[0].content,
+        /Сначала передай текущий эпизод/u);
+      return { output: {
+        prose: 'Осматривая мастерскую, вы видите резец на верстаке и стружки под окном.' } };
+    }
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support,
-      { visible_scene: visibleContext.visible_scene });
-    assert.match(call.messages[0].content, /perception beat[\s\S]*may govern supplied details/u);
-    if (call.role_id === 'gameplay_narrator') return { output: {
-      prose: 'Осматривая мастерскую, вы видите резец на верстаке и стружки под окном.' } };
+    assert.deepEqual(wire.required_current_beat.changes,
+      [{ ref: 'c1', text: 'Вы осмотрели мастерскую.' }]);
+    assert.equal(wire.segments[0].segment_id, 'p1');
     return { output: { ...reviewedNarration(wire.segments, {
-      visible_change_1: wire.segments.map(({ segment_id }) => segment_id)
+      c1: wire.segments.map(({ segment_id }) => segment_id)
     }), evidence: ['The perception action governs its supplied details.'] } };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request',
     request_id: 'perception-cluster', surface: 'turn', visible_context: visibleContext, context: {} });
   assert.equal(result.status, 'approved');
+});
+
+test('format repair receives prepared Russian facts and the rejected text without wire metadata', async () => {
+  const change = 'Вы осмотрели край чаши.';
+  const prose = 'Осматривая край чаши, вы замечаете шероховатость.';
+  const visibleContext = { ...visible, visible_changes: [change], uncertainties: [],
+    sensory_details: ['Край глиняной чаши шероховатый.'] };
+  const calls = [];
+  const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+    calls.push(call.role_id);
+    const content = call.messages[1].content;
+    if (call.role_id === 'gameplay_narrator') {
+      assert.equal(typeof content, 'string');
+      assert.ok(content.includes(change));
+      assert.doesNotMatch(content, /request_id|output_id|\[\s*\]/u);
+      return { output: { prose: 17 } };
+    }
+    if (call.role_id === 'gameplay_narrator_format_repair') {
+      assert.equal(typeof content, 'string');
+      assert.ok(content.includes(change));
+      assert.match(content, /Проверка формата: поле прозы должно быть текстом/u);
+      assert.match(content, /Отклонённый текст:/u);
+      assert.match(content, /Поле текста прозы имеет неверный тип/u);
+      assert.doesNotMatch(content, /request_id|output_id|segment_id|\[\s*\]/u);
+      return { output: { prose } };
+    }
+    const wire = JSON.parse(content);
+    assert.equal(wire.required_current_beat.changes[0].ref, 'c1');
+    assert.equal(wire.segments[0].segment_id, 'p1');
+    return { output: { ...reviewedNarration(wire.segments, { c1: ['p1'] }),
+      evidence: ['The required fact is conveyed.'] } };
+  } } });
+  const result = await service.run({ version: 1, schema: 'narration_request',
+    request_id: 'format-projection', surface: 'turn', visible_context: visibleContext, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, prose);
+  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_format_repair',
+    'gameplay_narrator_auditor']);
 });
 
 test('omitted atomic unresolved result becomes deterministic missing-visible-change failure', () => {
@@ -241,23 +296,26 @@ test('published omission forces one whole-prose repair and strict final audit', 
   const bad = 'Одну минуту вы прощупываете воду ветвью.';
   const good = 'Одну минуту вы прощупываете воду ветвью; что удалось заметить, пока неизвестно.';
   const calls = [];
+  let auditCalls = 0;
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
-    const wire = JSON.parse(call.messages[1].content);
-    if (call.role_id === 'gameplay_narrator') return { output: {
-      prose: bad, action_options: [], used_references: [] } };
+    if (call.role_id === 'gameplay_narrator') {
+      assert.ok(call.messages[1].content.includes(visible.visible_changes[0]));
+      assert.ok(call.messages[1].content.includes(visible.visible_changes[1]));
+      return { output: { prose: bad } };
+    }
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
-      const missing = wire.concerns.find(({ kind }) => kind === 'missing_visible_change');
-      assert.deepEqual({ segment_id: missing.segment_id,
-        source_segment_ids: missing.source_segment_ids }, {
-        segment_id: 's1', source_segment_ids: []
-      });
+      assert.ok(call.messages[1].content.includes('Замечания аудитора'));
+      assert.ok(call.messages[1].content.includes('Не полностью передано обязательное положение.'));
+      assert.doesNotMatch(call.messages[1].content, /request_id|output_id|segment_id|\[\s*\]/u);
       return { output: { replacements: [{ prose: good }] } };
     }
+    const wire = JSON.parse(call.messages[1].content);
+    const initialAudit = auditCalls++ === 0;
     const raw = reviewedNarration(wire.segments, Object.fromEntries(
       wire.required_current_beat.changes.map(({ ref }, index) =>
-        [ref, wire.phase === 'initial' && index === 1 ? [] : ['s1']])));
-    raw.evidence = wire.phase === 'initial' ? [] : ['Action and unresolved result are explicit.'];
+        [ref, initialAudit && index === 1 ? [] : ['p1']])));
+    raw.evidence = initialAudit ? [] : ['Action and unresolved result are explicit.'];
     return { output: raw };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request',
@@ -270,16 +328,18 @@ test('published omission forces one whole-prose repair and strict final audit', 
 
 test('malformed final audit blocks after the single allowed repair', async () => {
   const calls = [];
+  let auditCalls = 0;
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
-    const wire = JSON.parse(call.messages[1].content);
     if (call.role_id === 'gameplay_narrator') return { output: {
-      prose: 'Служебный отчёт.', action_options: [], used_references: [] } };
+      prose: 'Служебный отчёт.' } };
     if (call.role_id === 'gameplay_narrator_semantic_repair') return { output: {
       replacements: [{ prose: 'Одну минуту вы прощупываете воду ветвью; результат пока неизвестен.' }] } };
-    const raw = reviewedNarration(wire.segments, { visible_change_1: [], visible_change_2: [] });
+    const wire = JSON.parse(call.messages[1].content);
+    const finalAudit = auditCalls++ > 0;
+    const raw = reviewedNarration(wire.segments, { c1: [], c2: [] });
     raw.evidence = [];
-    if (wire.phase === 'final') raw.source_reviews[0].segment_choices = ['s99'];
+    if (finalAudit) raw.source_reviews[0].segment_choices = ['p99'];
     return { output: raw };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request',
@@ -292,15 +352,17 @@ test('malformed final audit blocks after the single allowed repair', async () =>
 
 test('presentation recovery repairs prose without a second gameplay commit', async () => {
   let commits = 0;
+  let auditCalls = 0;
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
-    const wire = JSON.parse(call.messages[1].content);
     if (call.role_id === 'gameplay_narrator') return { output: {
-      prose: 'Одну минуту вы прощупываете воду ветвью.', action_options: [], used_references: [] } };
+      prose: 'Одну минуту вы прощупываете воду ветвью.' } };
     if (call.role_id === 'gameplay_narrator_semantic_repair') return { output: {
       replacements: [{ prose: 'Одну минуту вы прощупываете воду ветвью; результат пока неизвестен.' }] } };
-    const raw = reviewedNarration(wire.segments, { visible_change_1: ['s1'],
-      visible_change_2: wire.phase === 'initial' ? [] : ['s1'] });
-    raw.evidence = wire.phase === 'initial' ? [] : ['Both atomic sources are present.'];
+    const wire = JSON.parse(call.messages[1].content);
+    const initialAudit = auditCalls++ === 0;
+    const raw = reviewedNarration(wire.segments, { c1: ['p1'],
+      c2: initialAudit ? [] : ['p1'] });
+    raw.evidence = initialAudit ? [] : ['Both atomic sources are present.'];
     return { output: raw };
   } } });
   const repository = {

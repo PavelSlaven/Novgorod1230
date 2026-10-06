@@ -28,7 +28,8 @@ function harness({ goodWriterFromCall }) {
   let writerCalls = 0;
   const execute = async ({ roleId, messages }) => {
     calls.push(roleId);
-    const request = JSON.parse(messages[1].content);
+    const request = roleId === 'gameplay_narrator_auditor'
+      ? JSON.parse(messages[1].content) : null;
     let parsed;
     if (roleId === 'gameplay_narrator') {
       writerCalls += 1;
@@ -37,9 +38,9 @@ function harness({ goodWriterFromCall }) {
         : 'В полумраке вы различаете очертания деревьев.' };
     } else if (roleId === 'gameplay_narrator_auditor') {
       const segment = request.segments[0].segment_id;
-      const bad = request.output.prose.includes('полумраке');
+      const bad = request.segments.map(({ prose }) => prose).join('').includes('полумраке');
       parsed = { reviewed_segments: [segment],
-        source_reviews: [{ ref: 'visible_change_1', segment_choices: bad ? [] : [segment] }],
+        source_reviews: [{ ref: 'c1', segment_choices: bad ? [] : [segment] }],
         unsupported: bad ? [{ segment_choice: segment,
           kind: 'unsupported_sensory', reason: 'No supplied local dimness.' }] : [],
         literary_failures: [], evidence: bad ? [] : ['Grounded prose.'] };

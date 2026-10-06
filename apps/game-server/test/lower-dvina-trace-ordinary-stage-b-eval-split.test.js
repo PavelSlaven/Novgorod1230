@@ -45,12 +45,12 @@ test('authority classification precedes non-item shape without relaxing the qual
     'физический след, доказывающий участие неизвестного человека',
     'скрытая отметина, позволяющая установить подлинное происхождение вещи']) {
     const prompt = buildOrdinaryMaterializationMessages(presenceRequest(query))[0].content;
-    assert.ok(prompt.indexOf('First classify mandatory authority requirements')
-      < prompt.indexOf('semantic_materialization_kind is your independent classification'));
-    assert.match(prompt, /authority_required with its non-common semantic_admission_class and no entities, even when semantic_materialization_kind is non_item_detail/u);
-    assert.match(prompt, /ordinary non_item_detail without a mandatory unavailable authority requirement, return no_change/u);
-    assert.match(prompt, /finite group of separable things[\s\S]*Plural wording or several separable pieces remains standalone_item/u);
-    assert.match(prompt, /separable thing remains standalone_item[\s\S]*Classify the requested referent itself, not its surroundings/u);
+    assert.ok(prompt.indexOf('Сначала определи обязательные требования authority')
+      < prompt.indexOf('Самостоятельно определи semantic_materialization_kind'));
+    assert.match(prompt, /authority_required, соответствующий ему нек-common semantic_admission_class и пустой entities, даже если semantic_materialization_kind равен non_item_detail/u);
+    assert.match(prompt, /Для обычного non_item_detail без обязательного недоступного требования authority верни no_change/u);
+    assert.match(prompt, /конечная группа отделимых вещей[\s\S]*Множественная формулировка или несколько отделимых частей по-прежнему обозначают standalone_item/u);
+    assert.match(prompt, /Отделимая вещь остаётся standalone_item[\s\S]*Классифицируй сам искомый референт, а не его окружение/u);
     assert.doesNotMatch(prompt, /For non_item_detail return no_change/u);
   }
   const contract = await evalContract();
@@ -181,7 +181,7 @@ test('production O1 model verifies the activation receipt without live probes',
       'ordinary_materialization_repair_context_v1', original_output: null,
     validation_errors: [{ path: 'resolution', keyword: 'enum' }] } });
     assert.equal(calls.length, 2, 'one normal call and one structural repair');
-    assert.match(calls[1].messages[0].content, /single structural repair/u);
+    assert.match(calls[1].messages[0].content, /единственная попытка структурного исправления/u);
     await assert.rejects(model(request, { repair: { schema:
       'ordinary_materialization_repair_context_v1', original_output: null,
     validation_errors: [{ path: 'resolution', keyword: 'enum' }] } }), {

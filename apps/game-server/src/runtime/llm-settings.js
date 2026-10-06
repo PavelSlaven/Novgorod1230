@@ -103,7 +103,7 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
           const response = await roleRunner.run({ ...call, provider_snapshot: candidate });
           if (!sameIdentity(expected, response?.provider_record)) throw narrationQualificationError();
           if (call.role_id === 'gameplay_narrator_auditor'
-              && auditPhase(call) === 'initial') {
+              && call.request_phase === 'initial') {
             initialRaw = response.output;
             initialProvider = response.provider_record;
           }
@@ -151,10 +151,6 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
       .test(String(error?.code ?? ''))) throw error;
     throw narrationQualificationError();
   }
-}
-function auditPhase(call) {
-  try { return JSON.parse(call.messages?.at(-1)?.content).phase; }
-  catch { return null; }
 }
 export const runNarrationAuditorQualification = runNarrationWorkflowQualification;
 function narrationRequest(fixture) {

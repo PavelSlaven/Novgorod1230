@@ -39,12 +39,19 @@ async function assertCurrentWire(visible, required, omitted = []) {
   let calls = 0;
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
-    const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support,
-      { visible_scene: visible.visible_scene });
-    const facts = wire.required_current_beat.changes.map(({ text }) => text);
-    for (const fact of required) assert.ok(facts.includes(fact), fact);
-    for (const fact of omitted) assert.equal(call.messages[1].content.includes(fact), false, fact);
+    const userContent = call.messages[1].content;
+    if (call.role_id === 'gameplay_narrator') {
+      assert.equal(typeof userContent, 'string');
+      assert.match(userContent, /Обязательные положения текущего эпизода/u);
+      assert.match(userContent, /Переданные сведения об обстановке/u);
+      for (const fact of required) assert.ok(userContent.includes(fact), fact);
+      for (const fact of omitted) assert.equal(userContent.includes(fact), false, fact);
+      assert.equal(userContent.includes('causal-scene'), false);
+    } else {
+      const audit = JSON.parse(userContent);
+      assert.deepEqual(audit.required_current_beat.changes.map(({ text }) => text),
+        visible.visible_changes);
+    }
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: 'Вы смотрите на берег.', action_options: [], used_references: [] } };
     return { output: {} };

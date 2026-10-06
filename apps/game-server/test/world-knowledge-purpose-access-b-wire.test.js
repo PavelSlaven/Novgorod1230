@@ -571,8 +571,8 @@ test('B1 createTraceTurnRuntime wires grounder+telemetry into narration', async 
               return {
                 output: {
                   reviewed_segments: body.segments.map((s) => s.segment_id),
-                  source_reviews: [...body.required_current_beat.changes,
-                    ...body.required_current_beat.uncertainties]
+                  source_reviews: [...(body.required_current_beat.changes ?? []),
+                    ...(body.required_current_beat.uncertainties ?? [])]
                     .map(({ ref }) => ({
                       ref, segment_choices: [body.segments[0].segment_id]
                     })),

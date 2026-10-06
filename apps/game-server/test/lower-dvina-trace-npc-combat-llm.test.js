@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { copyFile, mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { validateNpcCombatIntentPlan } from '@rus/npc-runtime';
+import { buildNpcDecisionBoundary, validateNpcCombatIntentPlan } from
+  '@rus/npc-runtime';
+import { requestNpcSemanticDecision } from '@rus/turn';
 import { createLowerDvinaTraceNpcCombatModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { assembleNpcCombatPlan } from
@@ -162,6 +164,162 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
         /ref_1|operation_1|force_1|risk_1/u);
     }
   }
+});
+
+test('combat format repair retains accepted choices from assembled primary plan',
+  async () => {
+    const calls = [];
+    const choice = { decision: { intent_summary: 'Сдержать противника.',
+      grounded_goal: 'Не дать ему приблизиться.', adaptation: 'literal' },
+    operation_choice: 'operation_1', force_choice: 'force_1',
+    risk_choice: 'risk_1', combat_statement: { speech_act: 'warning',
+      addressed_ref_choices: ['ref_1'], utterance_text: 'Отступи.' } };
+    const model = createLowerDvinaTraceNpcCombatModel({ roleRunner: {
+      run: async (call) => {
+        calls.push(call);
+        return { output: { ...choice,
+          ...(call.role_id === 'npc_combat_decider_format_repair'
+            ? { reason: 'Он представляет угрозу.' } : {}) } };
+      }
+    } });
+    const request = combatRequest();
+    request.operation_contract.combat_statement_available = true;
+    const boundary = buildNpcDecisionBoundary({ decision_mode: 'combat',
+      decision_context_id: request.combat_id,
+      scheduled_at: request.decided_at, npc_ref: request.npc_ref,
+      same_time_batch_ref: ref('temporal_batch', 'batch-full-path'),
+      significance: request.decision_reasons.significance,
+      categories: request.decision_reasons.categories,
+      signal_refs: request.decision_reasons.signal_refs,
+      state_version: request.state_version });
+    request.boundary_id = boundary.boundary_id;
+
+    const result = await requestNpcSemanticDecision({ boundary, request,
+      semanticModel: (safeRequest, context) => model(safeRequest, context),
+      revalidateStateVersion: async () => Number(request.state_version) });
+
+    assert.equal(result.status, 'planned');
+    assert.equal(result.plan.reason, 'Он представляет угрозу.');
+    assert.deepEqual(result.plan.operation.target_refs,
+      [ref('player_character', 'player-1')]);
+    assert.equal(result.plan.operation.force_limit, 'ordinary');
+    assert.equal(result.plan.operation.risk_posture, 'ordinary');
+    assert.deepEqual(result.plan.combat_statement.addressed_refs,
+      [ref('player_character', 'player-1')]);
+    assert.deepEqual(calls.map(({ role_id }) => role_id), [
+      'npc_combat_decider', 'npc_combat_decider_format_repair'
+    ]);
+    const repairUser = JSON.parse(calls[1].messages.find(({ role }) =>
+      role === 'user').content);
+    assert.deepEqual(repairUser.original_output.operation_choice,
+      'operation_1');
+    assert.equal(repairUser.original_output.force_choice, 'force_1');
+    assert.equal(repairUser.original_output.risk_choice, 'risk_1');
+    assert.deepEqual(repairUser.original_output.combat_statement
+      .addressed_ref_choices, ['ref_1']);
+    assert.deepEqual(repairUser.structural_errors, [{ field: 'reason',
+      issue: 'invalid_structure' }]);
+    assert.doesNotMatch(JSON.stringify(repairUser),
+      /player-1|combat-request-1|batch-full-path/u);
+  });
+
+test('combat repair handles non-array primary addressed_ref_choices', async () => {
+  const calls = [];
+  const validChoice = { decision: { intent_summary: 'Сдержать противника.',
+    grounded_goal: 'Не дать ему приблизиться.', adaptation: 'literal' },
+  operation_choice: 'operation_1', force_choice: 'force_1',
+  risk_choice: 'risk_1', combat_statement: { speech_act: 'warning',
+    addressed_ref_choices: ['ref_1'], utterance_text: 'Отступи.' },
+  reason: 'Он представляет угрозу.' };
+  const model = createLowerDvinaTraceNpcCombatModel({ roleRunner: {
+    run: async (call) => {
+      calls.push(call);
+      return { output: call.role_id === 'npc_combat_decider'
+        ? { ...validChoice, combat_statement: {
+          ...validChoice.combat_statement, addressed_ref_choices: 'ref_1'
+        } } : validChoice };
+    }
+  } });
+  const request = combatRequest();
+  request.operation_contract.combat_statement_available = true;
+  const boundary = buildNpcDecisionBoundary({ decision_mode: 'combat',
+    decision_context_id: request.combat_id, scheduled_at: request.decided_at,
+    npc_ref: request.npc_ref,
+    same_time_batch_ref: ref('temporal_batch', 'batch-addressed-type'),
+    significance: request.decision_reasons.significance,
+    categories: request.decision_reasons.categories,
+    signal_refs: request.decision_reasons.signal_refs,
+    state_version: request.state_version });
+  request.boundary_id = boundary.boundary_id;
+
+  const result = await requestNpcSemanticDecision({ boundary, request,
+    semanticModel: (safeRequest, context) => model(safeRequest, context),
+    revalidateStateVersion: async () => Number(request.state_version) });
+
+  assert.equal(result.status, 'planned');
+  assert.deepEqual(result.plan.operation.target_refs,
+    [ref('player_character', 'player-1')]);
+  assert.equal(result.plan.operation.force_limit, 'ordinary');
+  assert.equal(result.plan.operation.risk_posture, 'ordinary');
+  assert.deepEqual(result.plan.combat_statement.addressed_refs,
+    [ref('player_character', 'player-1')]);
+  assert.deepEqual(calls.map(({ role_id }) => role_id), [
+    'npc_combat_decider', 'npc_combat_decider_format_repair'
+  ]);
+  const repairUser = JSON.parse(calls[1].messages.find(({ role }) =>
+    role === 'user').content);
+  assert.equal(repairUser.original_output.operation_choice, 'operation_1');
+  assert.equal(repairUser.original_output.force_choice, 'force_1');
+  assert.equal(repairUser.original_output.risk_choice, 'risk_1');
+  assert.deepEqual(repairUser.structural_errors, [{ field: 'combat_statement',
+    issue: 'invalid_structure' }]);
+});
+
+test('combat repair omits unknown and ambiguous assembled choices', async () => {
+  const requests = [];
+  const model = createLowerDvinaTraceNpcCombatModel({ roleRunner: {
+    run: async (request) => {
+      requests.push(request);
+      return { output: { decision: { intent_summary: 'Оценить угрозу.',
+        grounded_goal: 'Защитить себя.', adaptation: 'literal' },
+      operation_choice: 'operation_1', force_choice: 'force_1',
+      risk_choice: 'risk_1', combat_statement: null,
+      reason: 'Угроза требует решения.' } };
+    }
+  } });
+  const unknownRequest = combatRequest();
+  await model(unknownRequest, { repair: { original_output: {
+    operation: { op: 'set_combat_intent', intent_kind: 'engage',
+      target_refs: [ref('npc', 'unlisted-target')], protected_refs: [],
+      scope_ref: null, destination_ref: null, force_limit: 'unlisted-force',
+      risk_posture: 'ordinary' },
+    combat_statement: { speech_act: 'warning',
+      addressed_refs: [ref('npc', 'unlisted-target')],
+      utterance_text: 'Отступи.' }
+  }, validation_errors: [] } });
+  const unknown = JSON.parse(requests.at(-1).messages.at(-1).content)
+    .original_output;
+  assert.equal(Object.hasOwn(unknown, 'operation_choice'), false);
+  assert.equal(Object.hasOwn(unknown, 'force_choice'), false);
+  assert.equal(unknown.risk_choice, 'risk_1');
+  assert.equal(Object.hasOwn(unknown.combat_statement,
+    'addressed_ref_choices'), false);
+
+  const ambiguousRequest = combatRequest();
+  ambiguousRequest.operation_contract.engageable_actor_refs.push(
+    ref('player_character', 'player-1'));
+  ambiguousRequest.operation_contract.allowed_force_limits.push('ordinary');
+  await model(ambiguousRequest, { repair: { original_output: {
+    operation: { op: 'set_combat_intent', intent_kind: 'engage',
+      target_refs: [ref('player_character', 'player-1')], protected_refs: [],
+      scope_ref: null, destination_ref: null, force_limit: 'ordinary',
+      risk_posture: 'ordinary' }, combat_statement: null
+  }, validation_errors: [] } });
+  const ambiguous = JSON.parse(requests.at(-1).messages.at(-1).content)
+    .original_output;
+  assert.equal(Object.hasOwn(ambiguous, 'operation_choice'), false);
+  assert.equal(Object.hasOwn(ambiguous, 'force_choice'), false);
+  assert.equal(ambiguous.risk_choice, 'risk_1');
 });
 
 test('ordinary and authored combat actors produce identical provider payloads', async () => {

@@ -7,7 +7,9 @@ import { fileURLToPath } from 'node:url';
 import pg from 'pg';
 import { initializeBodyState, projectCombatBodyStateDescriptions } from
   '@rus/body-state';
-import { prepareCombatExchange } from '@rus/turn';
+import { activateCombatSessionForPlayerIntent, combatIntentFromOperation,
+  createCombatSession, initializeCombatSession, prepareCombatExchange } from
+  '@rus/turn';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from
@@ -26,6 +28,10 @@ import { combatWrites } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-combat-writes.js';
 import { expectedVersions } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-combat-commit.js';
+import { loadApprovedMaterializedNpcBodyInitializationProfile } from
+  '../../apps/game-server/src/runtime/combat-min-data.js';
+import { appendPhase4CombatInitialization } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-4-combat-writes.js';
 
 const docker = (args) => spawnSync('docker', args, {
   encoding: 'utf8', timeout: 45_000
@@ -84,12 +90,65 @@ async function runOwnerExchange({ session, npcId, bodyState, idempotencyKey }) {
   });
 }
 
+async function runCommonOwnerRequest({ request, sceneState,
+  bodyInitializationProfile, initializedSession = null }) {
+  const player = ref('player_character', sceneState.actor_id);
+  const npc = ref('npc', request.target_npc_id);
+  const ownerInitializedSession = initializedSession
+    ?? await createCommonOwnerSession(request, sceneState.actor_id);
+  const operation = request.operation;
+  const intent = combatIntentFromOperation(operation, {
+    combat_id: ownerInitializedSession.combat_id,
+    intent_id: `intent:${request.request_id}`,
+    created_from_boundary_ref: { entity_kind: 'player_combat_response_boundary',
+      entity_id: `boundary:${request.request_id}` },
+    state_version: ownerInitializedSession.state_version });
+  const active = activateCombatSessionForPlayerIntent(ownerInitializedSession,
+    intent);
+  const participantState = { ...sceneState,
+    npcs: sceneState.npcs.map((actor) => actor.instance_id === npc.entity_id
+      ? { ...actor, body_state_initialization_profile:
+        bodyInitializationProfile } : actor) };
+  const workingState = projectTraceCombatWorkingState(participantState, active);
+  assert.equal(workingState.actor_states[`npc:${npc.entity_id}`]
+    .body_state.health, bodyInitializationProfile.initial_state.health);
+  const exchange = await prepareCombatExchange({ session: active,
+    working_state: workingState,
+    occurred_at: at, idempotency_key: request.idempotency_key,
+    random_source: { next: () => 0.5 }, body_threshold_profile: null,
+    ports: {
+      resolveCombatTiming: () => ({ occurred_at: at,
+        exact_duration: { exact_minutes: { numerator: '1', denominator: '1' } } }),
+      resolveExecutionProfile: () => ({ preconditions_digest: 'test-only-approved',
+        check_request: { target_defense: 1, attribute_value: 20,
+          skill_bonus: 0, weapon_danger: 4, target_protection: 0,
+          target_vulnerability: 0 } }),
+      orderTechnicalSteps: ({ proposals }) => proposals,
+      applyItemTransitions: ({ working_state }) => ({ working_state }),
+      applyPositionTransitions: ({ working_state }) => ({ working_state }),
+      resolvePerceptionAndDecisionContexts: async ({ session: current,
+        working_state: currentWorkingState }) => ({ session_after: current,
+        working_state: currentWorkingState, signal_records: [] })
+    } });
+  return { session: active, exchange };
+}
+
+async function createCommonOwnerSession(request, actorId) {
+  const session = createCombatSession({ combat_id: request.combat_id,
+    started_at: at, scope_ref: ref('location', 'combat-site'),
+    participant_refs: [ref('player_character', actorId),
+      ref('npc', request.target_npc_id)] });
+  return (await initializeCombatSession({ session,
+    decision_contexts: [] })).session;
+}
+
 function productionBodyWrite({ partyId, npcId, ordinal, changeSetId,
-  idempotencyKey, priorSession, priorNpc, prepared }) {
+  idempotencyKey, requestId = `request-${ordinal}`, priorSession, priorNpc,
+  prepared }) {
   const runtimeNpc = { ...priorNpc,
     machine_state: priorNpc.machine_state ?? {} };
   const factual = { player_input: { idempotency_key: idempotencyKey,
-    request_id: `request-${ordinal}` },
+    request_id: requestId },
   mode_resolution: { turn_id: `turn-${ordinal}`, decision_trace: {} },
   time_update: { clock_after: at },
   consequence: { combat_kind: 'exchange', combat: prepared } };
@@ -114,8 +173,13 @@ function productionBodyWrite({ partyId, npcId, ordinal, changeSetId,
   const expectedBodyVersions = expectedVersions({ partyId, state, factual })
     .filter(({ target_table }) =>
       target_table === 'party_actor_body_states');
+  const expectedSessionVersions = expectedVersions({ partyId, state, factual })
+    .filter(({ target_table }) =>
+      target_table === 'party_combat_sessions');
+  const sessionWrite = writes.updates.find(({ target_table }) =>
+    target_table === 'party_combat_sessions');
   return { mode: inserted.length === 1 ? 'insert' : 'update', bodyWrite,
-    expectedBodyVersions };
+    expectedBodyVersions, expectedSessionVersions, sessionWrite };
 }
 
 test('combat NPC body P16 insert/update rolls back atomically and replays idempotently', async (t) => {
@@ -217,10 +281,14 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool,
     recheck: async () => ({ ok: true }) });
 
-  const makePlan = async ({ ordinal, idempotencyKey, ownerWrite }) => {
-    const changeSetId = `combat-body-change-${suffix}-${ordinal}`;
-    const idempotencyId = `combat-body-idem-${suffix}-${ordinal}`;
-    const packageId = `combat-body-visible-${suffix}-${ordinal}`;
+  const makePlan = async ({ ordinal, idempotencyKey, ownerWrite,
+    targetNpcId = npcId, planLabelOverride = null,
+    operationKind = 'combat_exchange' }) => {
+    const planLabel = planLabelOverride
+      ?? (targetNpcId === npcId ? suffix : `${suffix}-${targetNpcId}`);
+    const changeSetId = `combat-body-change-${planLabel}-${ordinal}`;
+    const idempotencyId = `combat-body-idem-${planLabel}-${ordinal}`;
+    const packageId = `combat-body-visible-${planLabel}-${ordinal}`;
     const visiblePayload = {
       schema: 'temporal_visible_package.v1',
       perceived_scene: 'Состояние сохранено.', perceived_changes: [],
@@ -233,7 +301,8 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
       version_pin: { pin_kind: 'authoring_version',
         authoring_version: '4.3.0-target.1', state_version: null } }];
     const envelope = {
-      package_id: packageId, party_id: partyId, turn_id: `turn-${ordinal}`,
+      package_id: packageId, party_id: partyId,
+      turn_id: `turn-${planLabel}-${ordinal}`,
       committed_state_version: String(ordinal), change_set_id: changeSetId,
       package_digest: computeSpatialV3CanonicalDigest(visiblePayload),
       visible_payload: visiblePayload, presentation_status: 'pending',
@@ -245,32 +314,41 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
       idempotency_record_id: idempotencyId
     };
     const record = { id: changeSetId, party_id: partyId,
-      operation_kind: 'combat_exchange', idempotency_record_id: idempotencyId,
+      operation_kind: operationKind, idempotency_record_id: idempotencyId,
       expected_state_version_set_digest: 'expected',
       expected_state_version_set: [], committed_state_version_set_digest: 'committed',
       write_plan_digest: `${changeSetId}-digest`, created_at_turn: 0,
       committed_at_turn: 0 };
     const built = await buildCombinedWritePlan({
-      plan_id: `combat-body-plan-${suffix}-${ordinal}`,
+      plan_id: `combat-body-plan-${planLabel}-${ordinal}`,
       party_id: partyId, write_plan_kind: 'semantic_commit',
-      operation_kind: 'combat_exchange',
+      operation_kind: operationKind,
       canonical_input_digest: computeSpatialV3CanonicalDigest({
-        partyId, npcId, ordinal, idempotencyKey }),
-      expected_state_versions: ownerWrite.expectedBodyVersions,
+        partyId, npcId: targetNpcId, ordinal, idempotencyKey }),
+      expected_state_versions: ownerWrite.expectedStateVersions
+        ?? ownerWrite.expectedBodyVersions,
       validation_report: { status: 'pass', digest:
         computeSpatialV3CanonicalDigest({ ordinal,
-          bodyWrite: ownerWrite.bodyWrite }) },
+          write: ownerWrite.bodyWrite ?? ownerWrite.sessionInsert }) },
       idempotency: { id: idempotencyId, key: idempotencyKey },
       change_set: { id: changeSetId }, visible_package_envelope: envelope,
-      approved_write_sets: [{
+      approved_write_sets: [ownerWrite.approvedWriteSet ?? {
         inserts: ownerWrite.mode === 'insert' ? [ownerWrite.bodyWrite] : [],
         updates: ownerWrite.mode === 'update' ? [ownerWrite.bodyWrite] : [],
-        appends: [{
+        appends: []
+      }, {
+        inserts: [], updates: [], appends: [{
           target_table: 'party_v3_change_sets', id: changeSetId, record
-        }] }],
-      lock_context: { owner_keys: [`actor:${npcId}`], execution_keys: [],
+        }]
+      }],
+      lock_context: { owner_keys: ownerWrite.ownerKeys
+        ?? [`actor:${targetNpcId}`], execution_keys: [],
         g4_keys: [], physical_keys: [
-          `party_runtime.party_actor_body_states:npc:${npcId}`,
+          ...(ownerWrite.bodyWrite == null ? [] : [
+            `party_runtime.party_actor_body_states:npc:${targetNpcId}`]),
+          ...((ownerWrite.sessionWrite ?? ownerWrite.sessionInsert) == null
+            ? [] : [`party_runtime.party_combat_sessions:${
+              (ownerWrite.sessionWrite ?? ownerWrite.sessionInsert).id}`]),
           `party_runtime.party_v3_change_sets:${changeSetId}`
         ] },
       commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route',
@@ -343,6 +421,203 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
      created_change_set_id,updated_change_set_id)
     VALUES ($1,'npc',$2,'{}','{}','{}','{}','{}','{}','fixture-digest',$3,$3)`,
   [partyId, npcId, `combat-body-change-${suffix}-1`]);
+
+  const ownerNpcId = `combat-body-owner-npc-${suffix}`;
+  const sceneSiteId = `combat-body-owner-site-${suffix}`;
+  const sceneBaselineId = `combat-body-owner-baseline-${suffix}`;
+  const g6Id = `combat-body-owner-g6-${suffix}`;
+  const scenePositionId = `combat-body-owner-position-${suffix}`;
+  const sceneChangeSetId = `combat-body-change-${suffix}-1`;
+  await client.query(`INSERT INTO party_runtime.party_g5_sites
+    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,'canonical','fixture-g4',$3::jsonb,'active',1,$4,$4)`,
+  [sceneSiteId, partyId,
+    JSON.stringify({ entity_kind: 'g5_site', entity_id: sceneSiteId }),
+    sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.party_scene_baselines
+    (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
+     materialization_trace_id,materializer_version,catalog_digest,status,
+     state_version,created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,'g5_site',$3,'canonical_template','{}','fixture-trace',
+      'fixture','fixture','active',1,$4,$4)`,
+  [sceneBaselineId, partyId, sceneSiteId, sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.party_g6_instances
+    (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
+     host_kind,host_id,physical_class_id,primary_scene_role_id,
+     vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,
+     default_visibility_distance_band,acoustic_uniformity,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,$3,'{}','fixture-slot','g5_site',$4,'open','role','surface',
+      'none','default_clear','near','uniform','active',1,$5,$5)`,
+  [g6Id, partyId, sceneBaselineId, sceneSiteId, sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.scene_position_nodes
+    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
+     template_instance_ordinal,capacity,access_class_id,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,$3,'standing','fixture-slot',0,4,'public','active',1,$4,$4)`,
+  [scenePositionId, partyId, g6Id, sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.party_npcs
+    (party_id,npc_id,run_id,profile_set_id,profile_level,machine_state)
+    VALUES ($1,$2,'run:1','npc-profile','scene',$3::jsonb)`,
+  [partyId, ownerNpcId, JSON.stringify({ runtime_status: 'available' })]);
+  await client.query(`INSERT INTO party_runtime.party_actor_profile_bindings
+    (party_id,actor_kind,actor_id,role_ref,occupation_ref,
+     skill_profile_snapshot,name_profile_snapshot,language_profile_snapshot,
+     knowledge_profile_snapshot,profile_candidate_set_digest,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,'npc',$2,'{}','{}','{}','{}','{}','{}','fixture-digest',$3,$3)`,
+  [partyId, ownerNpcId, sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.entity_placements
+    (party_id,entity_kind,entity_id,placement_kind,position_node_id,
+     occupies_capacity_units,state_version,updated_change_set_id)
+    VALUES ($1,'npc',$2,'scene_position',$3,1,1,$4)`,
+  [partyId, ownerNpcId, scenePositionId, sceneChangeSetId]);
+
+  const ownerSceneSeed = { party_id: partyId, actor_id: 'player-1',
+    body_state: { health: 100, energy: 100, satiety: 100 },
+    position: { site_id: sceneSiteId }, combat_sessions: [], npcs: [] };
+  const ownerSceneBefore = await withSceneNpcs(pool, partyId,
+    structuredClone(ownerSceneSeed));
+  const ownerNpcBefore = ownerSceneBefore.npcs.find(({ instance_id: id }) =>
+    id === ownerNpcId);
+  assert.ok(ownerNpcBefore?.scene_readback_present);
+  assert.equal(ownerNpcBefore.body_state, null);
+  assert.equal(ownerNpcBefore.body_state_persisted, false);
+  assert.deepEqual(ownerSceneBefore.combat_sessions, []);
+  assert.equal((await client.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_combat_sessions
+    WHERE party_id=$1 AND combat_id=$2`,
+  [partyId, `combat-owner-${suffix}`])).rows[0].count, 0);
+  assert.equal((await client.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_actor_body_states
+    WHERE party_id=$1 AND actor_kind='npc' AND actor_id=$2`,
+  [partyId, ownerNpcId])).rows[0].count, 0);
+  const ownerBodyInitializationProfile =
+    await loadApprovedMaterializedNpcBodyInitializationProfile();
+  const ownerRequest = Object.freeze({ request_id: `combat-owner-request-${suffix}`,
+    combat_id: `combat-owner-${suffix}`, target_npc_id: ownerNpcId,
+    idempotency_key: `combat-owner-idem-${suffix}`,
+    operation: Object.freeze({ op: 'request_combat',
+      actor_ref: ref('player_character', 'player-1'), intent_kind: 'engage',
+      target_refs: Object.freeze([ref('npc', ownerNpcId)]),
+      protected_refs: Object.freeze([]),
+      scope_ref: null, destination_ref: null,
+      force_limit: 'ordinary', risk_posture: 'ordinary' }) });
+  const executeOwnerRequest = async () => {
+    const initializedSession = await createCommonOwnerSession(ownerRequest,
+      ownerSceneBefore.actor_id);
+    const initLabel = `${suffix}-${ownerNpcId}-init`;
+    const initChangeSetId = `combat-body-change-${initLabel}-1`;
+    const initWrites = { inserts: [], updates: [], appends: [] };
+    appendPhase4CombatInitialization({ ...initWrites, partyId,
+      changeSetId: initChangeSetId,
+      rootTurnId: ownerRequest.request_id, workingRevision: 2,
+      initialization: { session: initializedSession, decision_records: [] } });
+    const sessionInsert = initWrites.inserts.find(({ target_table }) =>
+      target_table === 'party_combat_sessions');
+    assert.ok(sessionInsert);
+    const initCommit = await committer.commit({ plan: await makePlan({
+      ordinal: 1, idempotencyKey: `${ownerRequest.idempotency_key}:session-init`,
+      targetNpcId: ownerNpcId, planLabelOverride: initLabel,
+      operationKind: 'combat_session_initialization',
+      ownerWrite: { sessionInsert, ownerKeys: [
+        `actor:${ownerSceneBefore.actor_id}`, `actor:${ownerNpcId}` ],
+        expectedStateVersions: [],
+        approvedWriteSet: { inserts: initWrites.inserts,
+          updates: initWrites.updates, appends: initWrites.appends } }
+    }) });
+    assert.equal(initCommit.ok, true, JSON.stringify(initCommit));
+    const { session: ownerSession, exchange } = await runCommonOwnerRequest({
+      request: ownerRequest, sceneState: ownerSceneBefore,
+      bodyInitializationProfile: ownerBodyInitializationProfile,
+      initializedSession });
+    assert.equal(exchange.status, 'prepared');
+    assert.equal(exchange.prepared.body_transitions.some(({ actor_ref: actor }) =>
+      actor.entity_kind === 'npc' && actor.entity_id === ownerNpcId), true);
+    const ownerWrite = productionBodyWrite({ partyId, npcId: ownerNpcId,
+      ordinal: 1,
+      changeSetId: `combat-body-change-${suffix}-${ownerNpcId}-1`,
+      idempotencyKey: ownerRequest.idempotency_key,
+      requestId: ownerRequest.request_id,
+      priorSession: ownerSession, priorNpc: ownerNpcBefore,
+      prepared: exchange.prepared });
+    assert.equal(ownerWrite.mode, 'insert');
+    assert.deepEqual(ownerWrite.expectedBodyVersions, []);
+    assert.ok(ownerWrite.sessionWrite);
+    assert.deepEqual(ownerWrite.expectedSessionVersions, [{
+      target_table: 'party_combat_sessions', id: ownerRequest.combat_id,
+      state_version: 1
+    }]);
+    const exchangeCommit = await committer.commit({ plan: await makePlan({ ordinal: 1,
+      idempotencyKey: ownerRequest.idempotency_key,
+      targetNpcId: ownerNpcId,
+      operationKind: 'combat_exchange',
+      ownerWrite: { ...ownerWrite,
+        ownerKeys: [`actor:${ownerSceneBefore.actor_id}`,
+          `actor:${ownerNpcId}`],
+        expectedStateVersions: ownerWrite.expectedSessionVersions,
+        approvedWriteSet: { inserts: [ownerWrite.bodyWrite],
+          updates: [ownerWrite.sessionWrite], appends: [] } } }) });
+    return { initCommit, exchangeCommit, exchange };
+  };
+  const ownerCommit = await executeOwnerRequest();
+  assert.equal(ownerCommit.initCommit.ok, true,
+    JSON.stringify(ownerCommit.initCommit));
+  assert.equal(ownerCommit.exchangeCommit.ok, true,
+    JSON.stringify(ownerCommit.exchangeCommit));
+  assert.equal(ownerCommit.exchange.prepared.session_after.state_version, '2');
+  const ownerSceneAfter = await withSceneNpcs(pool, partyId,
+    structuredClone(ownerSceneSeed));
+  const ownerNpcAfter = ownerSceneAfter.npcs.find(({ instance_id: id }) =>
+    id === ownerNpcId);
+  assert.ok(ownerNpcAfter.body_state.health < 100);
+  assert.equal(ownerNpcAfter.body_state_persisted, true);
+  assert.equal(ownerNpcAfter.body_state_version, 1);
+  const replayedOwnerCommit = await executeOwnerRequest();
+  assert.equal(replayedOwnerCommit.initCommit.ok, true,
+    JSON.stringify(replayedOwnerCommit.initCommit));
+  assert.equal(replayedOwnerCommit.initCommit.replay, true);
+  assert.equal(replayedOwnerCommit.exchangeCommit.ok, true,
+    JSON.stringify(replayedOwnerCommit.exchangeCommit));
+  assert.equal(replayedOwnerCommit.exchangeCommit.replay, true);
+  assert.deepEqual((await client.query(`SELECT health,energy,satiety,state_version
+    FROM party_runtime.party_actor_body_states
+    WHERE party_id=$1 AND actor_kind='npc' AND actor_id=$2`,
+  [partyId, ownerNpcId])).rows[0], {
+    health: String(ownerNpcAfter.body_state.health),
+    energy: String(ownerNpcAfter.body_state.energy),
+    satiety: String(ownerNpcAfter.body_state.satiety), state_version: '1'
+  });
+  assert.equal((await client.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_actor_body_states
+    WHERE party_id=$1 AND actor_kind='npc' AND actor_id=$2`,
+  [partyId, ownerNpcId])).rows[0].count, 1);
+  assert.equal((await client.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_v3_change_sets WHERE id=$1`,
+  [`combat-body-change-${suffix}-${ownerNpcId}-1`])).rows[0].count, 1);
+  assert.equal((await client.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_v3_change_sets WHERE id=$1`,
+  [`combat-body-change-${suffix}-${ownerNpcId}-init-1`])).rows[0].count, 1);
+  assert.equal((await client.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_command_idempotency
+    WHERE party_id=$1 AND idempotency_key=$2`,
+  [partyId, ownerRequest.idempotency_key])).rows[0].count, 1);
+  assert.deepEqual((await client.query(`SELECT state_version,status
+    FROM party_runtime.party_combat_sessions WHERE party_id=$1 AND combat_id=$2`,
+  [partyId, ownerRequest.combat_id])).rows[0], {
+    state_version: '2', status: ownerCommit.exchange.prepared.session_after.status
+  });
+  assert.equal((await client.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_combat_sessions
+    WHERE party_id=$1 AND combat_id=$2`,
+  [partyId, ownerRequest.combat_id])).rows[0].count, 1);
+  assert.equal((await client.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_command_idempotency
+    WHERE party_id=$1 AND idempotency_key=ANY($2::text[])`,
+  [partyId, [ownerRequest.idempotency_key,
+    `${ownerRequest.idempotency_key}:session-init`]])).rows[0].count, 2);
+
   const activeSession = { status: 'paused_for_player',
     participant_refs: [participantRef], participant_states: [{
       actor_ref: participantRef, combat_status: 'active', current_intent: null,

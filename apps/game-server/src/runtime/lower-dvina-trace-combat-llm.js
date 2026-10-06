@@ -1,4 +1,5 @@
 import { serverError } from '../errors.js';
+import { isDeepStrictEqual } from 'node:util';
 
 const NPC_COMBAT_CHOICE_SKELETON = JSON.stringify({
   decision: { intent_summary: '<short current intent>',
@@ -250,6 +251,21 @@ function projectRepairOutput(output, choices) {
   const text = (value) => typeof value === 'string' ? value : undefined;
   const selection = (key, category) => choices[category].some(({ choice_id }) =>
     choice_id === output[key]) ? output[key] : undefined;
+  const exactChoice = (list, value) => {
+    const matches = list.filter(({ value: candidate }) =>
+      isDeepStrictEqual(candidate, value));
+    return matches.length === 1 ? matches[0].choice_id : undefined;
+  };
+  const operation = output.operation && typeof output.operation === 'object'
+      && !Array.isArray(output.operation)
+    ? Object.fromEntries(Object.entries(output.operation).filter(([key]) =>
+      !['force_limit', 'risk_posture'].includes(key))) : undefined;
+  const operationChoice = selection('operation_choice', 'operation')
+    ?? (operation ? exactChoice(choices.operation, operation) : undefined);
+  const forceChoice = selection('force_choice', 'force')
+    ?? exactChoice(choices.force, output.operation?.force_limit);
+  const riskChoice = selection('risk_choice', 'risk')
+    ?? exactChoice(choices.risk, output.operation?.risk_posture);
   const decision = output.decision && typeof output.decision === 'object'
     ? {
       intent_summary: text(output.decision.intent_summary),
@@ -264,17 +280,17 @@ function projectRepairOutput(output, choices) {
       speech_act: text(statement.speech_act),
       addressed_ref_choices: Array.isArray(statement.addressed_ref_choices)
         ? statement.addressed_ref_choices.filter((choice) =>
-          choices.refs.some(({ choice_id }) => choice_id === choice)) : [],
+          choices.refs.some(({ choice_id }) => choice_id === choice))
+        : (Array.isArray(statement.addressed_refs)
+          ? statement.addressed_refs : []).map((reference) =>
+          exactChoice(choices.refs, reference)).filter(Boolean),
       utterance_text: text(statement.utterance_text)
     } : undefined;
   return {
     ...(decision ? { decision } : {}),
-    ...(selection('operation_choice', 'operation')
-      ? { operation_choice: selection('operation_choice', 'operation') } : {}),
-    ...(selection('force_choice', 'force')
-      ? { force_choice: selection('force_choice', 'force') } : {}),
-    ...(selection('risk_choice', 'risk')
-      ? { risk_choice: selection('risk_choice', 'risk') } : {}),
+    ...(operationChoice ? { operation_choice: operationChoice } : {}),
+    ...(forceChoice ? { force_choice: forceChoice } : {}),
+    ...(riskChoice ? { risk_choice: riskChoice } : {}),
     ...(projectedStatement !== undefined
       ? { combat_statement: projectedStatement } : {}),
     ...(text(output.reason) ? { reason: text(output.reason) } : {})

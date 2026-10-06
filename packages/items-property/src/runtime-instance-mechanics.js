@@ -28,6 +28,9 @@ const SOURCE_KINDS = new Set([
 ]);
 const CARRY_FORMS = new Set(['compact', 'regular', 'long', 'bulky']);
 const PHYSICAL_CONDITIONS = new Set(['serviceable', 'damaged']);
+const PLAYER_SAFE_ITEM_CONDITION_LABELS = Object.freeze({
+  serviceable: 'исправное состояние', damaged: 'повреждённое состояние'
+});
 const ACTIVE_RUNTIME_MECHANICS_SOURCES = new Set([
   'runtime_instance_snapshot', 'ordinary_world_materialization_snapshot'
 ]);
@@ -52,6 +55,11 @@ export function resolvePhysicalItemCondition(item) {
   });
   return resolved.pass && ACTIVE_RUNTIME_MECHANICS_SOURCES.has(resolved.source)
     ? 'serviceable' : null;
+}
+
+export function playerSafeItemConditionLabel(value) {
+  return typeof value === 'string'
+    ? PLAYER_SAFE_ITEM_CONDITION_LABELS[value] ?? null : null;
 }
 
 export function createRuntimeInstanceMechanicsSnapshot(value) {

@@ -14,7 +14,14 @@ export async function loadLowerDvinaTraceScreenPresentation(payload, rootDir = p
     loadLowerDvinaTraceMaterializationBundle({ rootDir, scenarioDefinitionRevision }),
     loadLowerDvinaTraceScenePresentation({ rootDir, scenarioDefinitionRevision })
   ]);
-  const set = bundle.item_container_set;
+  const labels = await loadLowerDvinaTracePinnedItemLabels(bundle, rootDir);
+  return { calendarProfile: bundle.calendar_profile, scenePresentation, itemLabels: labels };
+}
+
+/** Resolve labels only through the exact catalog datasets pinned by this bundle. */
+export async function loadLowerDvinaTracePinnedItemLabels(bundle, rootDir = process.cwd()) {
+  const set = bundle?.item_container_set;
+  if (set == null) return {};
   const labels = {};
   for (const [key, idField] of [['item_templates', 'item_template_id'],
     ['container_templates', 'container_template_id']]) {
@@ -30,5 +37,5 @@ export async function loadLowerDvinaTraceScreenPresentation(payload, rootDir = p
       if (typeof title === 'string' && title.length > 0) labels[template[idField]] = title;
     }
   }
-  return { calendarProfile: bundle.calendar_profile, scenePresentation, itemLabels: labels };
+  return labels;
 }

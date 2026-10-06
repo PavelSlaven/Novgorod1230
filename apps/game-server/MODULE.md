@@ -572,6 +572,14 @@ appearance vocabularies to Russian, and fails closed on unknown enum values.
 The writer receives each NPC label once as the group name; the auditor retains
 the source-backed label fact with its opaque fact key. Unsupported appearance
 values fail with a field-specific server error without echoing the supplied value.
+Unknown day-part/light values (`OPENING_TEMPORAL_TRANSLATION_UNSUPPORTED`) and item
+conditions (`OPENING_ITEM_CONDITION_UNSUPPORTED`) fail opening projection with a
+field-specific server error and do not echo the supplied value. Scene-label
+deduplication uses only visible scene facts and whole token sequences; knowledge,
+held-item, and uncertain or negative facts do not suppress entities. An item with
+its own `item_instance_id` is suppressed only when the matching scene fact cites
+that same reference; NPC, anchor, and exit labels likewise require their own
+source reference in the matching fact.
 Weather evidence uses stable field references; weather instance ids and movement
 factors stay out of the player-safe role payload.
 Session identity persists the complete approved opening narration flow and the
@@ -821,10 +829,15 @@ empty or unsupported refs still fail admission.
 The private O1 wire carries the structured `world_knowledge` factual slice.
 Facts, qualifiers, constraints, coverage, disputes and gaps remain; claim
 binding and telemetry use the full request.
-The private WK planner wire sends each ranked focus ref once as a key in
-`available_knowledge_refs`, with its allowed claim domains as the value (including
-empty arrays). Native planner requests retain the complete ordered ref array for
-validation and diagnostics; candidate and retrieval budgets are unchanged.
+The private WK planner wire projects the ordered candidate refs to an object
+keyed by stable `wk:<domain>:<concept>` refs for canonical concepts and short
+opaque base-36 handles (`f0`, `f1`, …) for non-concept refs; each value is
+`{ domains, label, description }`. Domains include only allowed, applicable and
+accessible claim domains; label and description are localized selection
+metadata, not evidence. Native planner requests retain the complete ordered ref
+array. Main and repair responses use these menu keys on the wire; the server
+maps only keys from that request back to canonical refs before validation and
+retrieval. Candidate and retrieval budgets are unchanged.
 Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
 The Giga/vector path is mandatory whenever v16 needs a WK slice. Missing local

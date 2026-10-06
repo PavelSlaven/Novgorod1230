@@ -22,6 +22,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     state, contracts, registry, repository, semanticResolver,
     turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
     locationProfiles, scenePresentation,
+    itemLabels = {},
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
@@ -98,6 +99,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       locationProfiles: locationProfiles ?? committedState.location_profiles ?? null,
       scenePresentation: scenePresentation
         ?? committedState.scene_presentation ?? null,
+      itemLabels,
       currentSpatialContext: committedState.current_spatial_context,
       currentSpatialContextIsFresh: isFresh,
       currentSpatialContextFiltersEntities:
@@ -124,6 +126,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
       ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
+        itemLabels,
         assertNeedsCheckAllowed: needsCheckGuard,
         recordNeedsCheckFilter }),
     ordinaryContainerContentsResolver:
@@ -282,7 +285,10 @@ export function buildLowerDvinaTracePhase2Services(context) {
           turn10Contracts, phase8Contracts, phase9Contracts,
           phase10Contracts, turnStepApprovedOwners: {
             ...turnStepApprovedOwners, scenePresentation,
-            loadPreparedMovementScene
+            loadPreparedMovementScene, projectCurrentScene,
+            recordVisiblePackageDiagnostic: (count) => trace({
+              event: 'visible_item_label_gap_omitted', omitted_count: count
+            })
           }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {

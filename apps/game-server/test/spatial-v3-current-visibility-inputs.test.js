@@ -76,8 +76,9 @@ test('NPC exterior exposes committed appearance and visible Stage 16 gear withou
     (error) => error.details?.reason === 'committed_entity_exterior_required');
 });
 
-test('ground item exterior requires its committed ground placement and excludes contents', async () => {
-  let row = { state: { contents: ['hidden'] }, condition_state: 'serviceable', anchor_id: null,
+test('ground item exterior uses the validated committed item name', async () => {
+  let row = { state: { contents: ['hidden'], ordinary_metadata: { name: 'Речная лодка' } }, condition_state: 'serviceable', anchor_id: null,
+  template_id: 'approved-template',
   scene_position_id: 'position', container_id: null, holder_npc_id: null,
   holder_character_id: null };
   const transaction = { async query(sql, params) {
@@ -87,7 +88,14 @@ test('ground item exterior requires its committed ground placement and excludes 
   } };
   const input = { transaction, partyId: 'party', placement: { entity_kind: 'item',
     entity_id: 'item', placement_kind: 'scene_position', position_node_id: 'position' } };
-  assert.deepEqual(await readCommittedEntityExterior(input), { condition_state: 'serviceable' });
+  assert.deepEqual(await readCommittedEntityExterior(input), {
+    condition_state: 'serviceable', template_id: 'approved-template',
+    display_name: 'Речная лодка' });
+  row = { ...row, state: { display_name: 'Речная лодка',
+    ordinary_metadata: { name: 'Непроверенное имя' } } };
+  assert.deepEqual(await readCommittedEntityExterior(input), {
+    condition_state: 'serviceable', template_id: 'approved-template',
+    display_name: 'Речная лодка' });
   row = { ...row, holder_npc_id: 'npc', scene_position_id: null };
   await assert.rejects(readCommittedEntityExterior(input),
     (error) => error.details?.reason === 'committed_entity_exterior_required');

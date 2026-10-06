@@ -10,6 +10,7 @@ import { createLowerDvinaTracePhase2PostgresRepository } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { withLowerDvinaTraceCurrentScene } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-current-scene.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 import {
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
@@ -37,7 +38,7 @@ test('v17 production submitTurn uses approved, non-ordinal G4 exit labels',
     let offered = null;
     globalThis.fetch = async (url, init) => {
       const call = JSON.parse(init.body);
-      if (call.messages[0].content.includes('semantic choice for one turn step')) {
+      if (identifyLlmTestRole(call) === 'turn_step_planner') {
         const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
         offered = turnStepOperationChoices(modelInput.request ?? modelInput)
           .filter(({ operation }) => operation.op === 'request_movement')

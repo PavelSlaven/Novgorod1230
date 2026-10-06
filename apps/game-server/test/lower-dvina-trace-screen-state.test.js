@@ -62,6 +62,16 @@ test('catalog labels resolve exact template and never expose uncarried or hidden
   assert.deepEqual(project(state).panels.inventory.data.zones.hands.map(x => x.label), ['хозяйственный нож']);
 });
 
+test('inventory omits an item whose pinned presentation has no safe label', () => {
+  const state = payload();
+  delete state.items[0].state.display_name;
+  state.items[0].template_id = 'unapproved-template';
+  const screen = project(state);
+  assert.deepEqual(screen.panels.inventory.data.zones.hands, []);
+  assert.doesNotMatch(JSON.stringify(screen.panels.inventory),
+    /unapproved-template|item_template|предмет/u);
+});
+
 test('route panel includes only disclosed scene edges, directional exits and canonical connections', () => {
   const context = structuredClone(visible);
   context.visible_objects = [

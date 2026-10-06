@@ -22,6 +22,15 @@ import { createProductionWorldKnowledgeGrounder } from
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '../../..');
 
+function focusKeyFor(call, pattern) {
+  const payload = JSON.parse(call.messages[1].content);
+  const request = payload.request ?? payload;
+  const key = Object.entries(request.available_knowledge_refs ?? {})
+    .find(([, metadata]) => pattern.test(JSON.stringify(metadata)))?.[0];
+  assert.ok(key, 'expected matching opaque focus key in planner request');
+  return key;
+}
+
 function enabledProfile(base) {
   return Object.freeze({
     ...base,
@@ -285,13 +294,14 @@ test('grounding applies sufficiency_profile threshold, not DEFAULT fallback', as
     year: 1230,
     placeRefs: ['region_novgorod_land'],
     roleRunner: {
-      async run() {
+      async run(call) {
+        const focusKey = focusKeyFor(call, /рыбных ресурсов/iu);
         return {
           output: {
             schema: 'world_knowledge_query_plan_v1',
             query_locale: 'ru',
             domains: ['environment'],
-            focus_refs: ['wk:environment:regional-fish-exploitation'],
+            focus_refs: [focusKey],
             requested_predicates: [],
             search_hints: ['рыбные ресурсы']
           },
@@ -358,13 +368,14 @@ test('grounding with sufficient_enabled false never emits SUFFICIENT', async () 
     year: 1230,
     placeRefs: ['region_novgorod_land'],
     roleRunner: {
-      async run() {
+      async run(call) {
+        const focusKey = focusKeyFor(call, /рыбных ресурсов/iu);
         return {
           output: {
             schema: 'world_knowledge_query_plan_v1',
             query_locale: 'ru',
             domains: ['environment'],
-            focus_refs: ['wk:environment:regional-fish-exploitation'],
+            focus_refs: [focusKey],
             requested_predicates: [],
             search_hints: ['рыбные ресурсы']
           },
@@ -431,13 +442,14 @@ test('grounding passes rerankScores into Core when D21 gate open', async () => {
     placeRefs: ['region_novgorod_land'],
     telemetry: { onDetail: (detail) => diagnostics.push(detail) },
     roleRunner: {
-      async run() {
+      async run(call) {
+        const focusKey = focusKeyFor(call, /рыбных ресурсов/iu);
         return {
           output: {
             schema: 'world_knowledge_query_plan_v1',
             query_locale: 'ru',
             domains: ['environment'],
-            focus_refs: ['wk:environment:regional-fish-exploitation'],
+            focus_refs: [focusKey],
             requested_predicates: ['supported_fact'],
             search_hints: ['рыбные ресурсы']
           },
@@ -634,13 +646,14 @@ test('S2: grounding falls back when min_hint_relevance is non-finite', async () 
     year: 1230,
     placeRefs: ['region_novgorod_land'],
     roleRunner: {
-      async run() {
+      async run(call) {
+        const focusKey = focusKeyFor(call, /рыбных ресурсов/iu);
         return {
           output: {
             schema: 'world_knowledge_query_plan_v1',
             query_locale: 'ru',
             domains: ['environment'],
-            focus_refs: ['wk:environment:regional-fish-exploitation'],
+            focus_refs: [focusKey],
             requested_predicates: [],
             search_hints: ['рыба']
           },

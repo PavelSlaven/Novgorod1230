@@ -123,6 +123,57 @@ test('a young_adult NPC is disclosed with the player-safe age word `young`', asy
   assert.equal(result.visible_npc[0].observable_cues.identity.age_category, 'young');
 });
 
+test('an item without a safe label remains visible by ref with a typed label gap', async () => {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const naturalInput = prepareG4NaturalScenePerceptionInput(input);
+  const baseline = projectSpatialV3CurrentVisibleContext({
+    naturalInput, partyId: 'party:1', actorId: 'player:1',
+    positionId: 'position:inside', entityObservations: [], localEdges: [],
+    directionalExits: [] });
+  const result = projectSpatialV3CurrentVisibleContext({
+    naturalInput,
+    partyId: 'party:1', actorId: 'player:1', positionId: 'position:inside',
+    localEdges: [], directionalExits: [], entityObservations: [{
+      entity_kind: 'item', entity_id: 'item:unlabeled', visibility: 'clear',
+      exterior: { condition_state: 'serviceable' },
+      label_gap: { code: 'player_safe_item_label_required' }
+    }] });
+  assert.deepEqual(result.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'item:unlabeled' },
+    label_gap: { code: 'player_safe_item_label_required' },
+    visible_status: 'serviceable'
+  }]);
+  assert.deepEqual(result.uncertainties, baseline.uncertainties);
+  assert.throws(() => projectSpatialV3CurrentVisibleContext({
+    naturalInput, partyId: 'party:1', actorId: 'player:1',
+    positionId: 'position:inside', localEdges: [], directionalExits: [],
+    entityObservations: [{ entity_kind: 'item', entity_id: 'item:bad-gap',
+      visibility: 'clear', exterior: { condition_state: 'serviceable' },
+      label_gap: { code: 'unknown_gap' } }]
+  }), (error) => error.details?.reason
+    === 'complete_current_entity_observation_required');
+});
+
+test('an invalid item label becomes a typed gap while invalid NPC labels still fail closed', async () => {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const args = { naturalInput: prepareG4NaturalScenePerceptionInput(input),
+    partyId: 'party:1', actorId: 'player:1', positionId: 'position:inside',
+    localEdges: [], directionalExits: [], entityObservations: [{
+      entity_kind: 'item', entity_id: 'item:unlabeled', visibility: 'clear',
+      display_label: 'item_template_secret',
+      exterior: { condition_state: 'serviceable' }
+    }] };
+  assert.deepEqual(projectSpatialV3CurrentVisibleContext(args).visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'item:unlabeled' },
+    label_gap: { code: 'player_safe_item_label_required' },
+    visible_status: 'serviceable'
+  }]);
+  assert.throws(() => projectSpatialV3CurrentVisibleContext({ ...args,
+    entityObservations: [{ entity_kind: 'npc', entity_id: 'npc:bad-label',
+      visibility: 'clear', exterior: { appearance: {}, visible_equipment: [] } }] }),
+  (error) => error.details?.reason === 'complete_current_entity_observation_required');
+});
+
 test('occupied local edge status passes through; directional exits carry none', async () => {
   const { input } = await approvedNaturalPerceptionFixture();
   const args = { naturalInput: prepareG4NaturalScenePerceptionInput(input),

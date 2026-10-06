@@ -1,5 +1,6 @@
 import { resolvePhysicalItemCondition } from '@rus/items-property';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
+import { resolveVisibleItemLabel } from './lower-dvina-trace-visible-item-label.js';
 const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках', other: 'при вас' });
 const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
 
@@ -84,19 +85,26 @@ function bodyObservationChanges(body) {
   ];
 }
 
-export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {
+export function lowerDvinaTraceVisibleSceneItems(items, position, actorId,
+  itemLabels = {}) {
   return (items ?? []).flatMap((item) => {
     const placement = item?.placement ?? {};
-    const coLocated = placement.location_ref === position?.location_ref
-      || [position?.g5_anchor_id, position?.anchor_id]
-        .includes(placement.g5_anchor_id ?? placement.anchor_id);
+    const location = placement.location_ref;
+    const anchor = placement.g5_anchor_id ?? placement.anchor_id;
+    const coLocated = text(location)
+        && location === position?.location_ref
+      || text(anchor) && [position?.g5_anchor_id, position?.anchor_id]
+        .filter(text).includes(anchor);
     const held = isLowerDvinaTraceItemHeldBy(item, actorId);
     const itemId = item?.item_id ?? item?.instance_id;
     if ((!coLocated && !held) || !text(itemId)) return [];
+    const label = resolveVisibleItemLabel(item, itemLabels);
     return [{ physicalFacts: item.physical_facts ?? [], held,
       condition: resolvePhysicalItemCondition(item), visibleObject: {
       entity_ref: { entity_kind: 'item', entity_id: itemId },
-      display_label: visibleItemLabel(item), recognition: 'recognized',
+      ...(label.kind === 'labeled'
+        ? { display_label: label.label, recognition: 'recognized' }
+        : { label_gap: { code: label.code } }),
       visible_status: held
         ? placement.physical_position === 'hands'
           ? CARRIED_VISIBLE_STATUSES.hands : CARRIED_VISIBLE_STATUSES.other
@@ -132,7 +140,8 @@ export function lowerDvinaTraceCarriedItemObservations(items, visibleObjects) {
 }
 
 function carriedItemObservationChanges(sceneItems) {
-  const carried = sceneItems.filter(({ held }) => held);
+  const carried = sceneItems.filter(({ held, visibleObject }) =>
+    held && text(visibleObject?.display_label));
   if (carried.length === 0) {
     return ['Осмотр не дал подтверждённых сведений о состоянии вещей при вас.'];
   }
@@ -156,8 +165,10 @@ function carriedItemObservationChanges(sceneItems) {
   return changes;
 }
 
-export function existingItemObservationChanges(item, actorId) {
-  const label = visibleItemLabel(item);
+export function existingItemObservationChanges(item, actorId, itemLabels = {}) {
+  const resolved = resolveVisibleItemLabel(item, itemLabels);
+  if (resolved.kind === 'gap') return [];
+  const label = resolved.label;
   const placement = item.placement ?? {};
   const carried = placement.holder_character_id === actorId;
   const position = carried ? {
@@ -191,13 +202,8 @@ export function uniqueLowerDvinaTraceVisibleObjects(values) {
 }
 
 export function visibleItemLabel(item) {
-  if (text(item?.name)) return item.name;
-  const slot = item?.visual_profile_snapshot?.equipment_slot
-    ?? item?.placement?.equipment_slot_category_id;
-  if (['base_garment', 'base'].includes(slot)) return 'нижняя одежда';
-  if (['outer_garment', 'outer'].includes(slot)) return 'верхняя одежда';
-  if (slot === 'headwear') return 'головной убор';
-  return 'предмет снаряжения';
+  const resolved = resolveVisibleItemLabel(item);
+  return resolved.kind === 'labeled' ? resolved.label : null;
 }
 
 function text(value) {

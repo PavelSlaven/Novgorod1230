@@ -31,6 +31,7 @@ export function validatePreparedRouteTraceLineage({
   phase3Contracts,
   routeOnly,
   scenePresentation = null,
+  projectCurrentScene = null,
   preparedMovementState = null,
   intermediateTraces = []
 }) {
@@ -82,7 +83,9 @@ export function validatePreparedRouteTraceLineage({
     }
     routeWorkingAfter = refreshPreparedMovementScene({
       projection: routeWorkingAfter, committedState: stateAfterRoute,
-      locationProfiles: phase3Contracts?.locationProfiles, scenePresentation
+      locationProfiles: phase3Contracts?.locationProfiles, scenePresentation,
+      ...(typeof projectCurrentScene === 'function'
+        ? { projectCurrentScene } : {})
     });
     const authority =
       createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();

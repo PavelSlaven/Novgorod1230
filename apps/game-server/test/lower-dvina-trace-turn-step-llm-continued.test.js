@@ -1,4 +1,3 @@
-import { promptMappings } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
@@ -10,6 +9,20 @@ import { assembleTurnStepPlan, createLowerDvinaTraceTurnStepModel } from
 import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
+
+function promptMappings(prompt) {
+  return Object.fromEntries([...prompt.matchAll(/^Сопоставление: ([^\n]+)\n([^\n]+)/gmu)]
+    .map(([, name, json]) => [name, JSON.parse(json)]));
+}
+
+function normalizePromptPlaceholders(value) {
+  if (typeof value === 'string') return /^<.*>$/su.test(value) ? '<placeholder>' : value;
+  if (Array.isArray(value)) return value.map(normalizePromptPlaceholders);
+  if (value && typeof value === 'object') return Object.fromEntries(
+    Object.entries(value).map(([key, child]) => [key,
+      normalizePromptPlaceholders(child)]));
+  return value;
+}
 
 test('later generic ordinary discovery drops only an exact stale root query',
   async () => {
@@ -127,7 +140,11 @@ test('turn step planner routes an exposed ambient portion through its capability
   assert.equal(plan.goal_result, 'pending');
   assert.deepEqual(plan.continuation,
     { remaining_intent: 'Сжать взятую порцию.', depends_on_refs: ['taken-silt'] });
-  assert.match(prompt, /ambient_ordinary_capability[\s\S]*exact code-owned permission and source[\s\S]*not an existing item alias or a discovery target[\s\S]*ambient_ordinary_portion_take before ordinary_material_prerequisite or action_production[\s\S]*sole origin\.source_refs[\s\S]*quantity\.unit from its ambient_portion_bounds[\s\S]*quantity\.value and mass_grams only within those exact min\/max bounds[\s\S]*effective type, name, mechanics, source, and profile values at commit[\s\S]*Never substitute any nearby, worn, held, or listed item ref[\s\S]*making that compound plan pending/u);
+  assert.match(prompt, /Видимая ambient_ordinary_capability — это точное разрешение и источник, определённые кодом[\s\S]*а не псевдоним существующего предмета и не цель discovery/u);
+  assert.match(prompt, /Для взятия используй ambient_ordinary_portion_take раньше ordinary_material_prerequisite или action_production[\s\S]*entity_id capability — единственный origin\.source_refs/u);
+  assert.match(prompt, /Скопируй quantity\.unit из ambient_portion_bounds[\s\S]*выбирай quantity\.value и mass_grams только в точных заданных пределах min\/max/u);
+  assert.match(prompt, /При commit владелец повторно проверит фактический тип, имя, механику, источник и значения профиля[\s\S]*Никогда не подменяй ref близкого, надетого, переносимого или перечисленного предмета/u);
+  assert.match(prompt, /Если действие только берёт предмет, goal_result achieved[\s\S]*составной план pending/u);
 });
 
 test('turn step planner and repair prompts map available container access exactly', async () => {
@@ -153,12 +170,12 @@ test('turn step planner and repair prompts map available container access exactl
     structural_errors: [] });
   for (const prompt of prompts) {
     const mappings = promptMappings(prompt);
-    assert.deepEqual(mappings.available_container_access, {
+    assert.deepEqual(normalizePromptPlaceholders(mappings.available_container_access), {
       interpretation: { adaptation: 'literal' },
       resolution: 'domain_request',
-      operation_choice: '<select matching supplied choice_id>', check: null
+      operation_choice: '<placeholder>', check: null
     });
-    assert.match(prompt, /available_domain_operations[\s\S]*request_container_access[\s\S]*open, close, or other container-access intent[\s\S]*available_container_access[\s\S]*before action_production or direct[\s\S]*exactly one matching supplied choice_id[\s\S]*do not reproduce or alter its operation DTO/u);
+    assert.match(prompt, /Если available_domain_operations содержит request_container_access[\s\S]*открыть, закрыть или иначе взаимодействовать с контейнером[\s\S]*available_container_access раньше action_production или direct[\s\S]*выбрав ровно один подходящий переданный choice_id[\s\S]*не воспроизводи и не меняй его operation DTO/u);
   }
 });
 
@@ -182,10 +199,10 @@ test('turn step planner maps local fire only through its visible capability', as
       items: [{ item_id: 'item:water' }] }
   }));
   assert.match(prompt, /local_world_process\.semantic_grounding_available/u);
-  assert.match(prompt, /matching candidate[\s\S]*MUST return a[\s\S]*domain_request semantic choice[\s\S]*supplied choice_id[\s\S]*never return a direct plan/u);
+  assert.match(prompt, /есть подходящий кандидат, ОБЯЗАТЕЛЬНО верни[\s\S]*семантический выбор domain_request с его переданным choice_id[\s\S]*никогда не возвращай для этого случая прямой план/u);
   assert.match(prompt, /local_world_process_affect/u);
-  assert.match(prompt, /one visible whole water ref/u);
-  assert.match(prompt, /Do not emit request_world_process otherwise/u);
+  assert.match(prompt, /одним видимым целым ref воды/u);
+  assert.match(prompt, /Не возвращай request_world_process в ином случае/u);
 });
 
 test('turn step planner prompt preserves only compound intent outside capability coverage', async () => {
@@ -198,18 +215,20 @@ test('turn step planner prompt preserves only compound intent outside capability
   });
   await model(request({ remaining_intent: 'сначала отдохнуть, потом поговорить' }));
   const mappings = promptMappings(prompt);
-  assert.deepEqual(mappings.direct_item_relocation.operations, [{
-    op: 'move_entity', entity_ref: '<copy the grounded source item ref>',
+  assert.deepEqual(normalizePromptPlaceholders(mappings.direct_item_relocation.operations), [{
+    op: 'move_entity', entity_ref: '<placeholder>',
     placement: {
-      relation: '<held_by, worn_by, inside, located_at, or attached_to>',
-      target_ref: '<copy the player-safe actor, container, position, or attachment target ref>'
+      relation: '<placeholder>',
+      target_ref: '<placeholder>'
     }
   }]);
   assert.match(prompt,
-    /direct preparation and action_production cannot share one plan[\s\S]*explicit requested destination or spatial relation[\s\S]*no exact player-safe target ref[\s\S]*source's committed placement[\s\S]*preserve it as unexecuted continuation[\s\S]*item-local[\s\S]*never placement, attachment, holder, wearer, destination, or relocation[\s\S]*ordered explicit relocation, transformation, and placement[\s\S]*first move_entity now[\s\S]*each later placement again needs move_entity/u);
+    /Прямая подготовка и action_production не могут находиться в одном плане[\s\S]*явно запрошенное место назначения или пространственное отношение[\s\S]*точный player-safe target ref не подтверждает такое размещение[\s\S]*зафиксированном размещении источника[\s\S]*сохрани его невыполненным в continuation[\s\S]*Описание action_production относится только к предмету[\s\S]*но не размещение, крепление, владельца, носителя, адрес назначения или перемещение[\s\S]*При явно заданных действиях в порядке перемещения, преобразования и размещения сначала сейчас выдай move_entity[\s\S]*для каждого следующего размещения снова нужен move_entity/u);
   assert.match(prompt,
-    /Direct empty achieved or partially_achieved[\s\S]*player_safe_item_observation[\s\S]*supplied sensory facts[\s\S]*new physical detail/u);
-  assert.match(prompt, /operation choice covers the intent[\s\S]*choice_id[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);
+    /Для прямого ответа achieved или partially_achieved без операций нужны[\s\S]*player_safe_item_observation[\s\S]*переданных чувственных фактов[\s\S]*новую физическую подробность/u);
+  assert.match(prompt, /Выполняй независимые действия в указанном порядке[\s\S]*Если выбор операции покрывает самое раннее текущее действие из намерения, выбери его choice_id/u);
+  assert.match(prompt, /Итоговое правило continuation для direct reality_limited или make_believe[\s\S]*часть того же предложения, действие, цель, способ, результат или уточнение[\s\S]*не переносится в continuation/u);
+  assert.match(prompt, /Сохрани только части, исполнимые независимо от этой предпосылки, и все последующие предложения[\s\S]*если их нет, установи continuation в null/u);
 });
 
 test('turn step planner prompt requests semantic choice without deterministic envelope', async () => {
@@ -222,7 +241,7 @@ test('turn step planner prompt requests semantic choice without deterministic en
   });
   await model(request());
   const example = JSON.parse(prompt.match(
-    /A direct semantic example is:\n(\{[^\n]+\})/u
+    /Пример прямого семантического результата:\n(\{[^\n]+\})/u
   )[1]);
   for (const deterministic of ['schema', 'request_id',
     'committed_state_version', 'working_revision', 'step_index']) {
@@ -234,15 +253,15 @@ test('turn step planner prompt requests semantic choice without deterministic en
     'activity_moment', 'activity_goal', 'activity_context', 'next_step',
     'domain_request'
   ]) assert.equal(obsoleteKey in example, false, obsoleteKey);
-  assert.match(prompt, /continuation\.next_step[\s\S]*remaining_intent[\s\S]*depends_on_refs as \[\][\s\S]*copied player-safe refs[\s\S]*prepared_followup_ref[\s\S]*request prepared_followup_candidate[\s\S]*no other fields/u);
+  assert.match(prompt, /Не используй устаревшие ключи[\s\S]*continuation\.next_step[\s\S]*remaining_intent[\s\S]*depends_on_refs равен \[\][\s\S]*player-safe refs[\s\S]*prepared_followup_ref[\s\S]*request prepared_followup_candidate[\s\S]*других полей не добавляй/u);
   assert.match(prompt,
-    /Process independent actions in their stated order[\s\S]*later action never outranks an earlier feasible action/u);
+    /Выполняй независимые действия в указанном порядке[\s\S]*Выбор переданной операции для более позднего действия никогда не имеет приоритета над более ранним выполнимым действием/u);
   assert.match(prompt,
-    /travel is the current earliest independently executable action[\s\S]*later travel clause never outranks an earlier manipulation/u);
+    /только если перемещение — самое раннее независимо исполнимое действие[\s\S]*Более позднее перемещение не имеет приоритета над более ранней манипуляцией/u);
   assert.match(prompt,
-    /Never invent a preliminary relocation[\s\S]*without explicitly relocating it, plan the manipulation itself/u);
+    /Никогда не выдумывай предварительное перемещение[\s\S]*явно не просит переместить его, спланируй саму манипуляцию/u);
   assert.match(prompt,
-    /Never represent cutting, tearing, partitioning, reshaping, wrapping, binding[\s\S]*action_production independent_outputs[\s\S]*complete later use[\s\S]*continuation/u);
+    /Никогда не представляй разрезание, разрывание, разделение, изменение формы, обёртывание, связывание[\s\S]*action_production independent_outputs[\s\S]*всё последующее использование[\s\S]*continuation/u);
 });
 
 test('turn step planner assembles exact domain operation and preserves independent continuation', async () => {

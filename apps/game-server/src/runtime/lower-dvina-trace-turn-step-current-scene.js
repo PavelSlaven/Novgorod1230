@@ -15,10 +15,12 @@ import { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-st
 import { failCurrentScene, validCurrentScene, visibleNpc } from
   './lower-dvina-trace-turn-step-current-scene-validation.js';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
+import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
 export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 export function withLowerDvinaTraceCurrentScene({ committedState,
   locationProfiles = committedState?.location_profiles ?? null,
   scenePresentation = committedState?.scene_presentation ?? null,
+  itemLabels = {},
   currentSpatialContext = committedState?.current_spatial_context ?? null,
   currentSpatialContextIsFresh = committedState?.current_spatial_context_is_fresh
     ?? currentSpatialContext != null }) {
@@ -34,7 +36,29 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const selfKnowledge = [...projectKnownContext(actor, playerSafe.knowledge, playerSafe.interactions),
     ...(playerSafe.available_routes ?? []).map(route => route.label).filter(Boolean)];
   const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
-    playerSafe.position, playerSafe.actor_id);
+    playerSafe.position, playerSafe.actor_id, itemLabels);
+  const initial = committedState.current_visible_context;
+  if (Number(committedState?.party_state?.state_version) === 0
+      && validCurrentScene(initial)) {
+    const current = enrichLowerDvinaTraceVisibleNpcCues({
+      visibleContext: {
+        ...initial,
+        known_context: unique([...initial.known_context, ...selfKnowledge]),
+        sensory_details: unique([...initial.sensory_details,
+          ...sceneItems.filter(({ visibleObject }) =>
+            text(visibleObject?.display_label))
+            .flatMap(({ physicalFacts }) => physicalFacts),
+          ...currentEnvironmentChanges(committedState)]),
+        visible_objects: uniqueLowerDvinaTraceVisibleObjects([
+          ...initial.visible_objects,
+          ...sceneItems.map(({ visibleObject }) => visibleObject)])
+      },
+      committedState: projectionSource
+    });
+    if (!validCurrentScene(current)) failCurrentScene();
+    return { ...withoutCurrentSpatialContext(committedState),
+      current_visible_context: deepFreeze(current) };
+  }
   const locationRef = playerSafe.position?.location_ref;
   const presentationMatches = scenePresentation?.locations?.filter((row) =>
     row?.location_ref === locationRef) ?? [];
@@ -49,7 +73,8 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const profile = currentSpatial != null && text(currentSpatial.visible_scene)
     ? { display_name: currentSpatial.visible_scene,
       player_visible_physical_facts: currentSpatial.sensory_details ?? [] }
-    : presented ?? { display_name: null, player_visible_physical_facts: [] };
+    : presented
+      ?? { display_name: null, player_visible_physical_facts: [] };
   // Presence comes from the current owner below; an NPC who is still here keeps
   // the label of the last committed perception of the same entity.
   const perceivedNpcs = new Map((committedState.current_visible_context?.visible_npc ?? [])
@@ -80,17 +105,27 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       });
       return visibleNpc(npc, playerSafe.position, knownName, perceivedNpcs.get(id));
     }).filter(Boolean);
-  const placeFacts = currentSpatial?.sensory_details
-    ?? presented?.player_visible_physical_facts
-    ?? profile.player_visible_physical_facts;
   const currentItemRows = visibleSceneItems.map(({ visibleObject }) => visibleObject);
+  const placeFacts = currentSpatial?.sensory_details
+    ?? presented?.player_visible_physical_facts ?? [];
+  const spatiallyObservedItemIds = new Set((currentSpatial?.visible_objects ?? [])
+    .filter(({ entity_ref: ref }) => ref?.entity_kind === 'item')
+    .map(({ entity_ref: ref }) => ref.entity_id));
+  const itemFacts = visibleSceneItems.filter(({ visibleObject }) =>
+    text(visibleObject?.display_label)
+      && (!currentSpatialContextIsFresh
+        || spatiallyObservedItemIds.has(visibleObject.entity_ref?.entity_id)))
+    .flatMap(({ physicalFacts }) => physicalFacts);
   const sensoryDetails = unique([...(placeFacts ?? []),
-    ...visibleSceneItems.flatMap(({ physicalFacts }) => physicalFacts)]);
+    ...itemFacts]);
+  const currentUncertainties = currentSpatial?.uncertainties
+    ?? committedState.current_visible_context?.uncertainties
+    ?? playerSafe.current_visible_context?.uncertainties ?? [];
   const current = projectCampFireState(enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
     version: 1,
     schema: 'visible_context_package',
     visible_scene: profile.display_name,
-    visible_changes: [],
+    visible_changes: currentEnvironmentChanges(committedState),
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
     visible_objects: uniqueLowerDvinaTraceVisibleObjects([
@@ -101,7 +136,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       ? [profile.display_name] : []),
       ...(currentSpatial?.known_context ?? []),
       ...selfKnowledge]),
-    uncertainties: [],
+    uncertainties: unique(currentUncertainties).filter(text),
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
   }, committedState: projectionSource }), projectionSource, playerSafe.position);
@@ -114,7 +149,8 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
 }
 export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys, body,
   locationProfiles = input?.retrieved_state?.location_profiles ?? null,
-  scenePresentation = input?.retrieved_state?.scene_presentation ?? null }) {
+  scenePresentation = input?.retrieved_state?.scene_presentation ?? null,
+  itemLabels = {} }) {
   if (input?.consequence?.visible_seed?.clarification != null) return null;
   const traces = input?.mode_resolution?.decision_trace?.step_traces;
   if (!Array.isArray(traces) || traces.length === 0
@@ -128,18 +164,20 @@ export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys,
   return projectCurrentSceneForVisibleOverlay({
     input, directSeedKeys, body,
     currentSpatialContext: input?.retrieved_state?.current_spatial_context,
-    locationProfiles, scenePresentation
+    locationProfiles, scenePresentation, itemLabels
   });
 }
 export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, body,
   currentSpatialContext = input?.retrieved_state?.current_spatial_context,
   locationProfiles = input?.retrieved_state?.location_profiles ?? null,
-  scenePresentation = input?.retrieved_state?.scene_presentation ?? null }) {
+  scenePresentation = input?.retrieved_state?.scene_presentation ?? null,
+  itemLabels = {} }) {
   const state = input?.retrieved_state;
   const isFresh = state?.current_spatial_context_is_fresh === true
     && currentSpatialContext != null;
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles, scenePresentation,
+    itemLabels,
     currentSpatialContext, currentSpatialContextIsFresh: isFresh
   }).current_visible_context;
   if (!validCurrentScene(current)) failCurrentScene();
@@ -171,6 +209,22 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
 function playerSafeSceneItems(state) {
   return lowerDvinaTraceVisibleSceneItems(state?.items, state?.position,
     state?.actor_id);
+}
+
+function currentEnvironmentChanges(state) {
+  const environment = state?.environment_snapshot;
+  if (environment?.schema !== 'rus.approved_initial_environment.v1') return [];
+  return playerSafeWeatherLightFacts({ season: environment.season,
+    day_part: environment.day_part, light_state: environment.light_state,
+    weather_state: environment.weather_state }).map(({ text }) => text);
+}
+
+function withoutCurrentSpatialContext(state) {
+  const { current_spatial_context: _currentSpatialContext,
+    current_spatial_context_is_fresh: _currentSpatialContextIsFresh,
+    current_spatial_context_filters_entities: _currentSpatialContextFiltersEntities,
+    ...projectedState } = state;
+  return projectedState;
 }
 export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null }) {
   const seed = input?.consequence?.visible_seed ?? {};

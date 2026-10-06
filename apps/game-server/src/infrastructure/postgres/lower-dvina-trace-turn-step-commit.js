@@ -197,7 +197,9 @@ export async function commitLowerDvinaTraceTurnStep({
   const visibleEnvelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
     partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts,
     currentLightPhase: projectEnvironmentAtClock?.({ state,
-      clock: envelope.time_update.clock_after }).light_state ?? null
+      clock: envelope.time_update.clock_after }).light_state ?? null,
+    onLabelGapsOmitted:
+      turnStepApprovedOwners?.recordVisiblePackageDiagnostic
   });
   const base = buildLowerDvinaTraceTurnStepSnapshot({
     state, envelope, inputDigest, nextVersion, turnNumber, changeSetId,

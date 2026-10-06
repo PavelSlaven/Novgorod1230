@@ -34,7 +34,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 226
+        "line_end": 228
       }
     },
     {
@@ -83,6 +83,18 @@
         "file": "npc_conversation_mode_contract.md",
         "line_start": 1,
         "line_end": 2802
+      }
+    },
+    {
+      "id": "canonical-document:player-character-start-contract",
+      "type": "canonical_document",
+      "label": "player_character_start_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/player_character_start_contract.md",
+      "source_location": {
+        "file": "player_character_start_contract.md",
+        "line_start": 1,
+        "line_end": 15
       }
     },
     {

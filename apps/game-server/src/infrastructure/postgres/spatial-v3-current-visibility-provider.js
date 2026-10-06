@@ -2,6 +2,7 @@ import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibili
 import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } from
   './g4-natural-perception-reader.js';
 import { serverError } from '../../errors.js';
+import { resolveVisibleItemLabel } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
@@ -12,6 +13,17 @@ const localLabels = loadApprovedLocalEdgeLabels();
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
 
+/** Titles come from the already pin-verified item catalog, never category labels. */
+export function approvedSpatialItemLabels(verifiedCatalog) {
+  const rows = verifiedCatalog?.records_by_table?.item_templates;
+  if (!Array.isArray(rows)) return {};
+  return Object.fromEntries(rows.flatMap((row) => {
+    if (row?.status !== 'approved' || typeof row.id !== 'string' || !row.id.trim()) return [];
+    const label = resolveVisibleItemLabel({ name: row.title });
+    return label.kind === 'labeled' ? [[row.id, label.label]] : [];
+  }));
+}
+
 /** Caller supplies current target conditions, committed exterior, and knowledge owners.
  * All reads use one repeatable-read snapshot. No label grants visibility or movement.
  * readVisibleLocalEdgeRefs({partyId,actorId,state}) -> edge IDs.
@@ -19,6 +31,7 @@ const visibility = new Set(['clear', 'partial', 'none']);
  * readExitDisclosure(context with partyId,actorId,directional_exits) -> safe labels.
  * readEntityObservations({partyId,actorId}) -> admitted exterior and known names. */
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
+  itemLabels = {},
   worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
   readEntityExterior, readPlayerKnowledge, readLocalMovementAdmission = null,
   readExitLabels = loadApprovedExitLineLabels,
@@ -272,12 +285,18 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           }
           const known = typeof readPlayerKnowledge === 'function'
             ? await readPlayerKnowledge({ transaction: current.transaction, partyId, actorId, placement }) : null;
+          const displayName = known?.display_name ?? exterior.display_name ?? null;
+          const itemLabel = placement.entity_kind === 'item'
+            ? resolveVisibleItemLabel({ name: displayName,
+              template_id: exterior.template_id }, itemLabels) : null;
           result.push({ entity_kind: placement.entity_kind, entity_id: placement.entity_id,
             visibility: entry.visibility, exterior,
-            display_label: typeof known?.display_name === 'string' && known.display_name.trim()
-              ? known.display_name : placement.entity_kind === 'npc' ? 'человек' : 'предмет',
-            ...(typeof known?.display_name === 'string' && known.display_name.trim()
-              ? { display_name: known.display_name } : {}) });
+            ...(placement.entity_kind === 'npc'
+              ? { display_label: displayName ?? 'человек' }
+              : itemLabel.kind === 'gap'
+                ? { label_gap: { code: itemLabel.code } }
+                : { display_label: itemLabel.label }),
+            ...(displayName == null ? {} : { display_name: displayName }) });
         }
         return result;
       }, transaction, observedPositionId, clock);

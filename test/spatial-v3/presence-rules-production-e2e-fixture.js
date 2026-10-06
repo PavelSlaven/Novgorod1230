@@ -276,7 +276,7 @@ export function installPresenceProductionE2eFetch({
     const call = JSON.parse(init.body);
     const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
-    const requestRole = identifyLlmTestRole(call);
+    const role = identifyLlmTestRole(call);
     requestLog?.push({ system, user: modelInput });
     let output;
     const openingRole = presenceOpeningRole(modelInput);
@@ -289,14 +289,15 @@ export function installPresenceProductionE2eFetch({
       };
     } else if (openingRole === 'gameplay_narrator_semantic_repair') {
       output = { prose: presenceOpeningProse(modelInput) };
-    } else if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+    } else if (role === 'world_knowledge_query_planner'
+        || system.includes('schema must equal world_knowledge_query_plan_v1.')) {
       output = {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: [], focus_refs: [], requested_predicates: [], search_hints: [],
       };
-    } else if (system.startsWith('Resolve the raw Russian player text')) {
+    } else if (role === 'intent_router') {
       output = { status: 'unknown', reason_code: 'unknown_intent' };
-    } else if (requestRole === 'turn_step_planner') {
+    } else if (role === 'turn_step_planner') {
       const request = modelInput.request ?? modelInput;
       const planned = await turnStepPlanner?.({ request, modelInput });
       if (planned != null) {

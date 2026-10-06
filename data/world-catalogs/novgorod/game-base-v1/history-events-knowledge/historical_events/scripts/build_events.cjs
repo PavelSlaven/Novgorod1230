@@ -74,7 +74,7 @@ const eventMap = new Map(); // ev_id -> first-seen metadata
 const phaseRows = [];
 let bookVerifiedCount = 0;
 const correctedEvents = {
-  nov_hist_1230_004: { title: 'Расправа в Новгороде, бегство в Торжок и возвращение Ярослава', chronicle: '8 декабря Водовик и Ростислав уехали в Торжок; 9 декабря Семён Борисович убит в Новгороде; 30 декабря вернулся Ярослав' },
+  nov_hist_1230_004: { title: 'Расправа в Новгороде, отъезд в Торжок и возвращение Ярослава', chronicle: 'По одному летописному свидетельству, Водовик и Ростислав уехали в Торжок 8 декабря; другое датирует их отъезд 9 декабря. Разночтение дат отъезда не разрешено. 9 декабря в Новгороде убит Семён Борисович; 30 декабря вернулся Ярослав' },
   nov_hist_1243_001: { title: 'Смерть Варлаама (Вячеслава Прокшинича) и погребение на Хутыни', chronicle: '4 мая 1243 умер Варлаам, в миру Вячеслав Прокшинич, погребён на Хутыни', source: 'book:667380 §Приложение 2 ¶499' },
   nov_hist_1242_002: { title: 'Поездка Ярослава к Батыю в 1243 году', chronicle: 'В 1243 году Батый вручил Ярославу ярлык на старшинство', source: 'book:220871 §Новгород во времена Александра Невского ¶393' },
   nov_hist_1245_001: { title: 'Казнь Михаила Черниговского в 1246 году', chronicle: 'В 1246 году казнён Михаил Черниговский', source: 'book:378072 §Домонгольская Русь > Русские князья и междоусобные войны > Черниговские, новгород-северские, полоцкие князья ¶274' },
@@ -184,7 +184,7 @@ for (const p of d.timeline) {
     forbidden_knowledge: (p.forbidden_player_knowledge || []).join('|'),
     node_refs_v6: nodeRefsV6,
     node_refs_v17: '', // GAP: v6->v17 G2/G3/G4 id mapping not built in this pass (~11k v6 nodes; needs place_names/spatial owner)
-    chronicle_ref: corrected ? `уточнение по книжному свидетельству: ${corrected.chronicle}${p.event_id === 'nov_hist_1230_004' && p.phase === 'omens' ? '; расхождение дат отъезда: book:301539 §ПРОДОЛЖЕНИЕ МЕЖДОУСОБИЙ ¶4366 даёт 8 декабря, book:667380 §Приложение 2 ¶486 — 9 декабря' : ''}${p.event_id === 'nov_hist_1245_001' && p.phase === 'impact' ? '; no_source: точный день 20.09 не подтверждён этим свидетельством' : ''}` : chronicleRef,
+    chronicle_ref: corrected ? `уточнение по книжному свидетельству: ${corrected.chronicle}${p.event_id === 'nov_hist_1230_004' ? '; book:301539 §ПРОДОЛЖЕНИЕ МЕЖДОУСОБИЙ ¶4366 датирует отъезд 8 декабря, book:667380 §Приложение 2 ¶486 — 9 декабря; разночтение не разрешено' : ''}${p.event_id === 'nov_hist_1245_001' && p.phase === 'impact' ? '; no_source: точный день 20.09 не подтверждён этим свидетельством' : ''}` : chronicleRef,
     source_refs: sourceRefs + (bookRefNote ? ('|' + bookRefNote) : '') + (corrected && corrected.source ? ('|' + corrected.source) : '') + (p.event_id === 'nov_hist_1245_001' && p.phase === 'impact' ? '|no_source: точный день 20.09' : ''),
     confidence: phaseConfidence,
     status: 'candidate',

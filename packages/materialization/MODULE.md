@@ -19,6 +19,7 @@
 - pure ordinary foundation helpers: density metadata, supporting-basis and
   prepared-group validation, stable refs and minimal aggregate transitions;
 - signed command tokens и проверкой bounded decisions.
+- pure `materializeNpcRelationshipRules` resolves named NPC pairs only from an approved rule, exact D-2 composition lineage, explicit slot relationship fact, role match and same-household binding; persistence remains with the party writer.
 
 ## Не делает
 

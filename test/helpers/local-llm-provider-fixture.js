@@ -35,8 +35,8 @@ const ROLE_MODELS = Object.freeze({
 
 export function localLlmProductionEnv(baseUrl) {
   return Object.freeze({
-    DEEPSEEK_API_KEY: 'test',
-    DEEPSEEK_BASE_URL: baseUrl,
+    LLM_API_KEY: 'test',
+    LLM_BASE_URL: baseUrl,
     ...ROLE_MODELS
   });
 }

@@ -511,7 +511,7 @@ test('portrait endpoint normalizes text and never exposes provider metadata or A
     roleRunner: {
       run: async () => ({
         output: portraitSpec(),
-        provider_record: { provider: 'deepseek', api_key: secret }
+        provider_record: { provider: 'openai_compatible', api_key: secret }
       })
     }
   });
@@ -566,7 +566,7 @@ test('portrait endpoint preserves Russian UTF-8 text end to end', async (t) => {
   assert.equal(response.headers.get('content-type'), 'application/json; charset=utf-8');
 });
 
-test('portrait normalizer validates DeepSeek output and fails closed', async () => {
+test('portrait normalizer validates model output and fails closed', async () => {
   const calls = [];
   const valid = createPortraitSpecNormalizer({
     roleRunner: {
@@ -596,7 +596,25 @@ test('portrait normalizer validates DeepSeek output and fails closed', async () 
   });
   await assert.rejects(
     () => invalid.normalize('Портрет'),
-    { code: 'PORTRAIT_SPEC_PROVIDER_INVALID', status: 502 }
+    (error) => {
+      assert.equal(error.code, 'PORTRAIT_SPEC_PROVIDER_INVALID');
+      assert.equal(error.status, 502);
+      assert.match(error.message, /^Получены неподдерживаемые данные портрета:/u);
+      return true;
+    }
+  );
+
+  const unavailable = createPortraitSpecNormalizer({
+    roleRunner: { run: async () => { throw new Error('private provider detail'); } }
+  });
+  await assert.rejects(
+    () => unavailable.normalize('Портрет'),
+    (error) => {
+      assert.equal(error.code, 'PORTRAIT_SPEC_PROVIDER_FAILED');
+      assert.equal(error.status, 502);
+      assert.equal(error.message, 'Не удалось преобразовать описание портрета.');
+      return true;
+    }
   );
 
   const legacyOutput = portraitSpec();
@@ -610,7 +628,7 @@ test('portrait normalizer validates DeepSeek output and fails closed', async () 
   );
 });
 
-test('portrait endpoint rejects unknown request fields before calling DeepSeek', async (t) => {
+test('portrait endpoint rejects unknown request fields before normalization', async (t) => {
   let calls = 0;
   const server = createGameHttpServer({
     root: createRoot(),

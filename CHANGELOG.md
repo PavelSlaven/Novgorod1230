@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
 - fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)

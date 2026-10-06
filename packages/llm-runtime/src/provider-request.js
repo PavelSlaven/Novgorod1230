@@ -12,7 +12,7 @@ export function resolveRuntimeProviderOverride(override) {
   if (override == null) return { ok: true, config: null };
   if (!override || typeof override !== 'object') return { ok: false };
   const compatibility = readText(override.compatibility ?? override.provider);
-  if (compatibility !== 'openai_compatible' && compatibility !== 'deepseek') return { ok: false };
+  if (compatibility !== 'openai_compatible') return { ok: false };
   const baseUrl = readText(override.requestUrl ?? override.baseUrl);
   const model = readText(override.model);
   const requestUrl = normalizeRequestUrl(baseUrl);
@@ -47,7 +47,7 @@ export function normalizeRequestUrl(value) {
 }
 
 export function normalizeBaseUrl(value) {
-  return value?.trim().replace(/\/+$/, '') || 'https://api.deepseek.com';
+  return readText(value).replace(/\/+$/, '') || null;
 }
 
 export function applyProviderOverrides(config, overrides) {
@@ -110,8 +110,6 @@ export function buildProviderRequestPayload(config, messages) {
       ? { chat_template_kwargs: { enable_thinking: false } } : {}),
     ...(config.compatibility === 'openai_compatible' && config.reasoningEffort
       ? { reasoning_effort: config.reasoningEffort } : {}),
-    ...(config.compatibility === 'deepseek' && config.thinking ? { thinking: config.thinking } : {}),
-    ...(config.compatibility === 'deepseek' && config.reasoningEffort ? { reasoning_effort: config.reasoningEffort } : {}),
     ...(config.temperature != null ? { temperature: config.temperature } : {}),
     ...(config.topP != null ? { top_p: config.topP } : {})
   };

@@ -281,7 +281,7 @@ export async function createDefaultDeps({ options, env = process.env, repoRoot }
   const { createGameHttpServer, listen } = await import('../../apps/game-server/src/http/server.js');
   const { createLlmSettingsFileStore } = await import('../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js');
   const settingsModule = await import('../../apps/game-server/src/runtime/llm-settings.js');
-  const { createProductionLlmRoleRunner } = await import('../../apps/game-server/src/infrastructure/provider/deepseek.js');
+  const { createProductionLlmRoleRunner } = await import('../../apps/game-server/src/infrastructure/provider/openai-compatible.js');
   const { createOrdinaryMaterializationStageBQualifier } = await import('../../apps/game-server/src/runtime/ordinary-materialization-stage-b-qualification.js');
   const { loadLowerDvinaTraceOrdinaryMaterializationProfile } = await import('../../apps/game-server/src/internal/lower-dvina-trace-ordinary-materialization-profile.js');
   return {

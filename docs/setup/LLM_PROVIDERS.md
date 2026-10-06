@@ -13,11 +13,14 @@ gameplay model. Он отдельно подготавливает обязат�
 Настройка сохраняется в `%LOCALAPPDATA%\Novgorod1230\llm-settings.json`.
 API key остаётся только в локальном файле и не попадает в browser read model,
 логи или telemetry. Сброс удаляет активный provider и возвращает
-`unconfigured` с exact Qwen model prefill.
+`unconfigured` с exact Qwen model prefill. Gameplay calls require a configured
+OpenAI-compatible endpoint; when `baseUrl` is absent, calls fail closed.
 
 Выбранный provider проходит через единый `@rus/llm-runtime` во все production
-planner, NPC, narrator, auditor и repair calls. Каждый вызов получает
+planner, NPC, narrator, auditor и repair calls. Deployment env config использует
+`LLM_BASE_URL`, optional `LLM_API_KEY`, optional `LLM_MODEL` (default
+`qwen3.8-27b-uncensored-w4a16-tp2`) и `LLM_REQUEST_TIMEOUT_MS`. Каждый вызов получает
 `maxTokens = 20_000` и transport timeout не более 120 с; поздний вызов
 ограничивается остатком шестиминутного safety deadline всего хода. Fallback на
-managed model, DeepSeek или другой provider отсутствует: connection/auth/model/timeout/response
+другой provider отсутствует: connection/auth/model/timeout/response
 ошибка типизирована, незавершённый ход не фиксируется.

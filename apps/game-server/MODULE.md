@@ -302,7 +302,7 @@ and adds no second transaction owner.
   provider-selected LLM-вызовом, который преобразует свободный текст только в
   валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые
   конструктивные категории neckline/sleeve/outer/fabric/trim.
-- Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `unconfigured`/`custom`, OpenAI-compatible base URL/exact default Qwen model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. Старый `local` settings record мигрирует в `unconfigured`; API key не входит в public read model, party save/replay, logs или telemetry; managed provider и silent fallback отсутствуют.
+- Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `unconfigured`/`custom`, OpenAI-compatible base URL/exact default Qwen model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. Endpoint обязателен для вызовов; без него runtime fail-closed. Старый `local` settings record мигрирует в `unconfigured`; API key не входит в public read model, party save/replay, logs или telemetry; managed provider и silent fallback отсутствуют.
 - Authored live-world parties проецируют каждого присутствующего persisted NPC
   через approved neutral conversation profile в тот же общий player/NPC
   conversation owner. Binding зависит от stable actor/location state, а не от

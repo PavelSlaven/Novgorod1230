@@ -578,7 +578,7 @@ OpenAI-compatible vLLM. Endpoint и optional key задаёт пользоват
 не provisions, не скачивает и не запускает gameplay model. До настройки UI
 остаётся честно unconfigured. Custom endpoint обязан реализовать
 `chat/completions`; readiness проверяется при Apply. Режим не допускает
-fallback на DeepSeek, managed model или другой provider:
+fallback на managed model или другой provider:
 connection/auth/model/timeout/invalid response возвращают typed failure,
 незавершённый ход не фиксируется.
 

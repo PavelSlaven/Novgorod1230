@@ -18,14 +18,14 @@ const KIND_RULES = [
   [/повитуха|роды в бане|бан(я|ник)/i, 'birth_and_bathhouse'],
   [/волхв|знахар|заговор|науз|чародей/i, 'folk_healing_practice'],
   [/монастыр/i, 'institutional_care'],
-  [/мор\b|эпидеми/i, 'epidemic'],
+  [/конский мор/i, 'animal_disease'],
+  [/(?<![\p{L}])мор(?![\p{L}])|эпидеми/iu, 'epidemic'],
   [/голод|худоба/i, 'famine_and_hunger'],
   [/травм|рана|побои|трепанац|хирург/i, 'injury'],
   [/лихорадк|огневиц|огненная|проказ|эрготизм|утин/i, 'disease'],
   [/детство|взрослени|постриг|посажение на коня|кормил/i, 'lifecycle_childhood'],
   [/продолжительность жизни|палеопатолог/i, 'lifecycle_demography'],
   [/уход за|посещение больного|милостыня/i, 'care_practice'],
-  [/конский мор/i, 'animal_disease'],
 ];
 function classify(name) {
   for (const [re, kind] of KIND_RULES) if (re.test(name)) return kind;
@@ -48,7 +48,10 @@ for (const [entity, facts] of byEntity) {
     name_ru: entity,
     facts_summary: factsSummary,
     period_care_practice_note: isHistoricalPracticeOnly
-      ? 'historical practice only, not medical advice' : '',
+      ? 'historical practice only, not medical advice'
+      : entity === 'мор 1230 г.'
+        ? 'Смоленск; источник не относит это событие к Новгороду. course_stages — пробел источника; visible_signs — пробел источника; season_risk — пробел источника.'
+        : '',
     period: periods.join(';'),
     fact_count: facts.length,
     source_refs: sourceRefs.join(';'),

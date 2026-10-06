@@ -2,7 +2,7 @@ ev_id,year,event_type,event_title,first_phase_id,source_titles,status,confidence
 nov_hist_1230_001,1230,church,"Знамения, приход владыки Спиридона и церковная тревога",nov_hist_1230_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
 nov_hist_1230_002,1230,political,Вечевая смута у Ярославова дворища и убийство Иванка,nov_hist_1230_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
 nov_hist_1230_003,1230,famine,"Голод, мороз и распад запасов 1230–1231 годов",nov_hist_1230_003_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
-nov_hist_1230_004,1230,political,Торжокская расправа и возвращение Ярослава,nov_hist_1230_004_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
+nov_hist_1230_004,1230,political,"Расправа в Новгороде, бегство в Торжок и возвращение Ярослава",nov_hist_1230_004_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
 nov_hist_1231_001,1231,fire,Славенский пожар и гибель людей у Волхова,nov_hist_1231_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
 nov_hist_1231_002,1231,military,Поход Ярослава к Черниговской волости и смерть Водовика,nov_hist_1231_002_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C
 nov_hist_1232_001,1232,trade,"Псковский конфликт, остановка купцов и соляное давление",nov_hist_1232_001_background,"The Chronicle of Novgorod 1016-1471, Michell and Forbes translation, 1914",candidate,C

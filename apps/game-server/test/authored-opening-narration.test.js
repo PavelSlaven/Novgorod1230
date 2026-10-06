@@ -380,8 +380,9 @@ test('first screen receives natural perception after committed rehydrate without
     assert.ok(order.indexOf('perception') < order.indexOf('narrate'));
     assert.equal(result.screen.main_prose.includes(surfaceText), lighting === 'clear');
     assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), !canonical);
+    // D72 keeps the observed connection without the service ordinal.
     assert.deepEqual(result.screen.panels.route.data.movement?.options ?? [], canonical
-      ? [{ label: 'Проход 3', knowledge_state: 'known' }] : []);
+      ? [{ label: 'переход', knowledge_state: 'known' }] : []);
     if (canonical) {
       assert.equal(narratorInput.visible_npcs.length, lighting === 'clear' ? 1 : 0);
       if (lighting === 'clear') {

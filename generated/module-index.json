@@ -64,12 +64,14 @@
       "name": "@rus/game-web",
       "owns": [
         "HTTP API client `/api/v1`",
+        "отображением безопасного error message; структурный error code не добавляется",
         "валидацией публичных API envelopes и screen contracts",
         "UI-only store",
         "persisted pending new-game request identity reused after timeout/reload until",
         "постоянным указанием управляемого персонажа в header из уже публичных",
         "отображением готового `presentation_context` в header; календарь, место и",
         "маршрутизацией FirstGameScreen/TurnScreen/FactualTurnDeliveryScreen",
+        "проверкой optional `exact_npc_utterances` на ready/pending TurnScreen и `FactualTurnDeliveryScreen v1`; принимает только публичный leaf `{ speaker_ref: { entity_kind: 'npc', entity_id }, utterance_text }` без server provenance и отображает точные NPC слова с атрибуцией, не повторяя их в prose slot",
         "проверкой и rendering `FactualTurnDeliveryScreen v1`: degraded recovery",
         "feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics",
         "кнопками подписей ходов из `panels.route.data.movement.options`: клик подставляет точную подпись в черновик и поле ввода (`app/movement-draft.js`), ничего не отправляет и контракт сервера не меняет",
@@ -476,7 +478,8 @@
       "name": "@rus/time-events-history",
       "owns": [
         "Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, двусторонней календарной проекцией `projectCalendar` / `resolveGameTimestampFromCalendarDate`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade)",
-        "Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`). Принимаемая форма события: `{ id|event_id, phases[] }` (F7). Плоские v3-записи с одним `event_ref`/`start_at` без `phases[]` молча дают пустой результат. Фазы: v3 `start_at` (GameTimestamp через `compareGameTimestamp`) или legacy `start_at_minutes` (только finite number). Невалидные часы — `StartedHistoricalError`, не TypeError"
+        "Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`). Принимаемая форма события: `{ id|event_id, phases[] }` (F7). Плоские v3-записи с одним `event_ref`/`start_at` без `phases[]` молча дают пустой результат. Фазы: v3 `start_at` (GameTimestamp через `compareGameTimestamp`) или legacy `start_at_minutes` (только finite number). Невалидные часы — `StartedHistoricalError`, не TypeError",
+        "Владеет узкими approved date-gate DTO для десяти консервативных вестей в Нижнюю Двину и pure projection в party `historical_events`. Голода 1230 в DTO нет: projection получает его event id/start/digest из переданной approved temporal record"
       ],
       "path": "packages/time-events-history",
       "public_entry": "./src/index.js",

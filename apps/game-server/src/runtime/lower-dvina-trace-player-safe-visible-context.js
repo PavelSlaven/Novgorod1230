@@ -5,8 +5,10 @@ import {
   plain,
   projectionError,
   text,
-  textArray
+  textArray,
+  optionalVisibleText
 } from './lower-dvina-trace-player-safe-json.js';
+import { playerSafeOrdinalLabel } from '../public-boundary.js';
 
 const VISIBLE_CONTEXT_KEYS = new Set([
   'version', 'schema', 'visible_scene', 'visible_changes', 'sensory_details',
@@ -18,29 +20,64 @@ const AMBIENT_PORTION_BOUND_KEYS = new Set([
   'max_mass_grams'
 ]);
 
+export function projectPhase2VisibleContext(payload) {
+  const visibleContext = projectVisibleContext({
+    version: 1,
+    schema: 'visible_context_package',
+    visible_scene: payload.perceived_scene,
+    visible_changes: [],
+    sensory_details: structuredClone(payload.sensory_details),
+    visible_npc: structuredClone(payload.visible_npcs),
+    visible_objects: structuredClone(payload.visible_objects),
+    known_context: structuredClone(payload.known_context),
+    uncertainties: structuredClone(payload.uncertainties)
+  }, { path: 'visible_context' });
+  return {
+    ...visibleContext,
+    visible_changes: Array.isArray(payload.perceived_changes)
+      ? payload.perceived_changes.map((entry, index) => typeof entry === 'string'
+        ? optionalVisibleText(entry, { path: `visible_context.visible_changes[${index}]`,
+          code: invalidCode() })
+        : structuredClone(entry)).filter((entry) => entry != null) : [],
+    allowed_tensions: [],
+    do_not_imply: [],
+    ...(payload.current_light_phase == null ? {} : {
+      current_light_phase: payload.current_light_phase })
+  };
+}
+
 export function projectVisibleContext(value, {
   strict = false, path = 'visible_context'
 } = {}) {
   if (!plain(value)) return undefined;
   if (strict) assertAllowedKeys(value, VISIBLE_CONTEXT_KEYS, path, invalidCode());
+  const visibleScene = optionalVisibleText(value.visible_scene, {
+    path: `${path}.visible_scene`, code: invalidCode()
+  });
+  const safeVisibleScene = visibleScene ?? (typeof value.visible_scene === 'string'
+      && value.visible_scene.trim() ? 'Обстановка не описана.' : undefined);
   return compact({
     version: finite(value.version), schema: text(value.schema),
-    visible_scene: text(value.visible_scene),
+    visible_scene: safeVisibleScene,
     visible_changes: textArray(value.visible_changes, {
-      strict, path: `${path}.visible_changes`
+      strict, path: `${path}.visible_changes`, visible: true,
+      code: invalidCode()
     }),
     sensory_details: textArray(value.sensory_details, {
-      strict, path: `${path}.sensory_details`
+      strict, path: `${path}.sensory_details`, visible: true,
+      code: invalidCode()
     }),
     visible_npc: projectVisibleRefs(value.visible_npc, strict,
       `${path}.visible_npc`),
     visible_objects: projectVisibleRefs(value.visible_objects, strict,
       `${path}.visible_objects`),
     known_context: textArray(value.known_context, {
-      strict, path: `${path}.known_context`
+      strict, path: `${path}.known_context`, visible: true,
+      code: invalidCode()
     }),
     uncertainties: textArray(value.uncertainties, {
-      strict, path: `${path}.uncertainties`
+      strict, path: `${path}.uncertainties`, visible: true,
+      code: invalidCode()
     })
   });
 }
@@ -63,9 +100,15 @@ function projectVisibleRefs(records, strict, path) {
     if (strict) assertAllowedKeys(record, allowed, `${path}[]`, invalidCode());
     return compact({
       entity_ref: entityRef,
-      display_label: text(record.display_label),
+      display_label: optionalVisibleText(playerSafeOrdinalLabel(record.display_label,
+        entityRef?.entity_kind), {
+        path: `${path}[].display_label`, label: true, code: invalidCode()
+      }) ?? safeGenericLabel(entityRef?.entity_kind),
       recognition: text(record.recognition),
-      visible_status: text(record.visible_status),
+      visible_status: optionalVisibleText(record.visible_status, {
+        path: `${path}[].visible_status`, statusField: true,
+        code: invalidCode()
+      }),
       observable_cues: projectObservableCues(record.observable_cues, strict,
         `${path}[].observable_cues`),
       ambient_portion_bounds: isAmbientCapability
@@ -122,7 +165,7 @@ function projectObservableCues(value, strict, path) {
       strict, `${path}.outward_presentation`),
     ordinary_remainder: projectTextRecord(value.ordinary_remainder,
       ['ordinary_descriptor', 'ordinary_activity'], strict,
-      `${path}.ordinary_remainder`)
+      `${path}.ordinary_remainder`, true)
   });
 }
 
@@ -134,7 +177,9 @@ function projectObservableIdentity(value, strict, path) {
   if (strict) assertAllowedKeys(value, allowed, path, invalidCode());
   const appearance = value.appearance;
   return compact({
-    display_name: text(value.display_name),
+    display_name: optionalVisibleText(value.display_name, {
+      path: `${path}.display_name`, code: invalidCode()
+    }),
     sex_category: text(value.sex_category),
     age_category: text(value.age_category),
     appearance: !plain(appearance) ? undefined : compact({
@@ -173,23 +218,36 @@ function projectObservableEquipment(value, strict, path) {
 function projectVisualProfile(value, strict, path) {
   if (!plain(value)) return undefined;
   const textKeys = [
-    'schema', 'garment_kind', 'equipment_slot', 'neckline', 'sleeve_form', 'outer_form',
+    'garment_kind', 'equipment_slot', 'neckline', 'sleeve_form', 'outer_form',
     'visible_fabric', 'trim', 'main_visible_color',
     'secondary_visible_color', 'headwear_kind'
   ];
-  const allowed = new Set([...textKeys, 'version']);
+  const allowed = new Set([...textKeys, 'schema', 'version']);
   if (strict) assertAllowedKeys(value, allowed, path, invalidCode());
   return compact({
+    schema: text(value.schema),
     ...Object.fromEntries(textKeys.map((key) => [key, text(value[key])])),
     version: finite(value.version)
   });
 }
 
-function projectTextRecord(value, keys, strict, path) {
+function projectTextRecord(value, keys, strict, path, visible = false) {
   if (!plain(value)) return undefined;
   const allowed = new Set(keys);
   if (strict) assertAllowedKeys(value, allowed, path, invalidCode());
-  return compact(Object.fromEntries(keys.map((key) => [key, text(value[key])])));
+  const projected = compact(Object.fromEntries(keys.map((key) => [key, visible
+    ? optionalVisibleText(value[key], { path: `${path}.${key}`,
+      code: invalidCode() })
+    : text(value[key])])));
+  return Object.keys(projected).length ? projected : undefined;
+}
+
+function safeGenericLabel(entityKind) {
+  if (entityKind === 'npc') return 'человек';
+  if (entityKind === 'item') return 'предмет';
+  if (entityKind === 'scene_movement_edge'
+      || entityKind === 'g5_site_connection') return 'переход';
+  return undefined;
 }
 
 function projectEntityRef(value, strict, path) {

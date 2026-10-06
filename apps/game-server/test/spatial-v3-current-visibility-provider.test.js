@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { passTargetRowForSlot, withPassTargetDescriptions } from
+  '../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { passTargetDisclosureForExit } from '../src/runtime/spatial-v3-pass-target-disclosure.js';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
 import { createSpatialV3WorldBaseReader } from
@@ -112,7 +115,7 @@ function label2AtSameG4() {
     && row.directional_exit_ref.id !== label.directional_exit_ref.id);
 }
 
-test('two visible exits with the same pass-target description disambiguate by the approved ordinal',
+test('two visible exits with the same pass-target description keep the same label',
   async () => {
     const { provider } = fixture();
     const exitOne = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
@@ -127,8 +130,8 @@ test('two visible exits with the same pass-target description disambiguate by th
       position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exitOne, exitTwo],
       slotByExit: new Map([[exitOne.id, passTargetSlot], [exitTwo.id, passTargetSlot]]) });
     assert.equal(disclosed.length, 2);
-    assert.notEqual(disclosed[0].display_label, disclosed[1].display_label);
-    for (const row of disclosed) assert.match(row.display_label, /^к руслу \(\d+\)$/u);
+    assert.deepEqual(disclosed.map(({ display_label }) => display_label),
+      ['к руслу', 'к руслу']);
   });
 
 test('an exit discloses its slot pass-target text; a slot the catalog only records as a gap keeps the exit label; an unknown slot is a typed gap (F4/F11)',
@@ -435,4 +438,22 @@ test('the canonical connections of the current place reach the visible context, 
   const hidden = fixture({ worldBaseReader, readTargetConditions: concealed });
   hidden.scene.site = scene.site;
   assert.deepEqual(await hidden.provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
+});
+
+test('all three approved central_current_split slots keep identical observed labels and distinct refs', () => {
+  const exitIds = ['g4exitv3__g4dirv3f__cross_g4_02', 'g4exitv3__g4dirv3f__cross_g4_06',
+    'g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1'];
+  const rows = exitIds.map((exitId, index) => {
+    const slot = { id: `m2c_slot_${exitId}`, version: 1 };
+    const catalogRow = passTargetRowForSlot(slot);
+    assert.equal(catalogRow.display_label, 'к руслу');
+    assert.equal(catalogRow.target_place_family_id, 'pf_river_channel');
+    const disclosed = passTargetDisclosureForExit(new Map([[exitId, slot]]), exitId);
+    assert.equal(disclosed.pass_target_description, catalogRow.display_label);
+    return { directional_exit_id: exitId, ...disclosed, editorial_choice_ordinal: index + 1 };
+  });
+  const projected = withPassTargetDescriptions(rows);
+  assert.deepEqual(projected.map(row => row.display_label), ['к руслу', 'к руслу', 'к руслу']);
+  assert.deepEqual(projected.map(row => row.directional_exit_id), exitIds);
+  assert.ok(projected.every(row => !Object.hasOwn(row, 'editorial_choice_ordinal')));
 });

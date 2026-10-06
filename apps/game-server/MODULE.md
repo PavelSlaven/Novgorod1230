@@ -5,6 +5,32 @@
 Server передаёт актуальные восприятие, память, тело, время, причины и остаток
 действия от существующих owners; литературную композицию выполняет narration.
 
+Чистотой видимого текста (D72) владеет `public-boundary`: один детерминированный
+detector применяется к отображаемым полям, player-safe проекциям и generated
+prose. Структурные refs, selectors и исходный ввод игрока не являются прозой.
+Narration adapter передаёт обязательный code-owned output admission в существующий
+bounded workflow: marker rejection использует единственный semantic repair,
+проверяется повторно до `approved`/ready persistence и при повторном нарушении
+остаётся retryable pending. Committed мир и identity хода сохраняются; admission
+failure не даёт factual terminal delivery и не становится поздним HTTP 500.
+
+Narration-specific WK projection опускает известные leading calibration prefixes
+из reviewed `runtime_text`, сохраняя adjacent qualifiers, evidence и claim refs;
+общий helper `@rus/turn` по-прежнему опускает дублирующий `context_text`.
+Writer, repair и auditor получают явное требование передать неопределённость,
+directness, confidence и предел typicality обычной речью возле соответствующего
+факта. Canonical WK bundle и wire других consumers не переписываются.
+Format repair разговора получает исходный request, полный original output и
+конкретные validation errors; marker-specific semantic retry остаётся отдельным.
+Marker-specific retry сохраняет исходный contribution и speech act; повторная
+грязная реплика или изменение акта завершаются штатным typed fail-closed до
+NPC proposal, без синтеза слов или применения вклада.
+Error envelope проверяет динамический message независимо от allowlist code:
+грязный validation message заменяется общим текстом с сохранением HTTP 400
+и структурного кода; поле и служебная диагностика игроку не отражаются.
+Pass-target projection сохраняет одинаковые наблюдаемые подписи без номеров;
+разные action refs сохраняются. Различимые описания — пробел данных, не UI fallback.
+
 Development-only gameplay gap tracing использует существующий private party
 log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
 контекст, WK planner/query/consumer slice и owner commit/rejection. Эти поля

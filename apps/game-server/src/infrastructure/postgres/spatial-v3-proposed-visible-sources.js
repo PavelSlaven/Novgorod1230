@@ -10,7 +10,7 @@ import { currentSceneVisibilityModifiers, readCommittedEntityExterior, readPlaye
   './spatial-v3-current-visibility-inputs.js';
 import { serverError } from '../../errors.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
-import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { withPassTargetDescriptions } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 
 const labels = loadLabels('m2c-exit-labels');
@@ -191,6 +191,6 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
     }
     return { naturalInput, partyId, actorId, positionId: position.id,
       entityObservations, localEdges,
-      directionalExits: withPassTargetDisambiguation(visibleExits) };
+      directionalExits: withPassTargetDescriptions(visibleExits) };
   };
 }

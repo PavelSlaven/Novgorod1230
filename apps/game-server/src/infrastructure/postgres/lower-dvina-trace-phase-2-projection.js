@@ -3,6 +3,11 @@ import { publicCheckProjection, publicTimeProjection, stripPublicInternals } fro
 import { createTurnScreenReadModel } from '@rus/presentation';
 import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
 import { projectPlayerSafeChecks } from './lower-dvina-trace-check-projection.js';
+import { projectPhase2VisibleContext } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
+import { findUnsafePlayerText } from '../../public-boundary.js';
+import { optionalVisibleText } from
+  '../../runtime/lower-dvina-trace-player-safe-json.js';
 export { projectPlayerSafeChecks } from './lower-dvina-trace-check-projection.js';
 
 const SPEECH_RESPONSE_KINDS = new Set(['route_disclosure', 'withhold', 'surrender', 'lie', 'bargain', 'speech']);
@@ -147,7 +152,12 @@ function publicConversationProjection({ conversation, payload }) {
     if (referencedStatements.length !== 1 || playerMessages.length !== 1) {
       throw new TypeError('Semantic conversation has no single player-visible NPC utterance.');
     }
-    npcUtterance = playerMessages[0].utterance_text;
+    const utterance = playerMessages[0].utterance_text;
+    const unsafe = findUnsafePlayerText(utterance, { label: true });
+    if (unsafe == null) npcUtterance = utterance;
+    else console.error('[game-server] suppressed unsafe NPC conversation text', {
+      category: unsafe.category
+    });
   }
   const { semantic_exchange_projection: _semanticProjection,
     ...publicConversation } = playerSafeConversation;
@@ -248,6 +258,10 @@ export function buildPhase2PreProseCarrier({
       turn_id: turnId,
       turn_number: payload.party_state.turn_number,
       visible_context: structuredClone(visibleContext),
+      ...(Array.isArray(payload.last_turn?.exact_npc_utterances)
+          && payload.last_turn.exact_npc_utterances.length
+        ? { exact_npc_utterances: structuredClone(
+            payload.last_turn.exact_npc_utterances) } : {}),
       action_panel: { suggested_actions: structuredClone(
         visiblePayload?.allowed_action_affordances ?? []) },
       actions: structuredClone(visiblePayload?.allowed_action_affordances ?? []),
@@ -288,21 +302,7 @@ export function publicCombatStateFromConsequence(consequence) {
 }
 
 export function phase2VisibleContextFromPayload(payload) {
-  return {
-    version: 1,
-    schema: 'visible_context_package',
-    visible_scene: payload.perceived_scene,
-    visible_changes: structuredClone(payload.perceived_changes),
-    sensory_details: structuredClone(payload.sensory_details),
-    visible_npc: structuredClone(payload.visible_npcs),
-    visible_objects: structuredClone(payload.visible_objects),
-    known_context: structuredClone(payload.known_context),
-    uncertainties: structuredClone(payload.uncertainties),
-    ...(payload.current_light_phase == null ? {} : {
-      current_light_phase: payload.current_light_phase }),
-    allowed_tensions: [],
-    do_not_imply: []
-  };
+  return projectPhase2VisibleContext(payload);
 }
 
 export function phase2ScreenDigest(screen) {

@@ -6,7 +6,7 @@ import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } f
 import { serverError } from '../../errors.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
-import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { withPassTargetDescriptions } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 import { loadApprovedConnectionLabels } from '../../../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/approved-labels.mjs';
 
@@ -228,7 +228,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             editorial_choice_ordinal: labels[0].editorial_choice_ordinal,
             ...passTargetDisclosureForExit(context.slotByExit, exit.id) }];
         });
-        return withPassTargetDisambiguation(disclosed);
+        return withPassTargetDescriptions(disclosed);
       }, context.transaction, context.observedPositionId);
     },
     /** Canonical connections of the observer's own position, revealed by the same visibility rule

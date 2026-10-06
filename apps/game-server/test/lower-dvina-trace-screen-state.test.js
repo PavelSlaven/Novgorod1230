@@ -77,7 +77,8 @@ test('route panel includes only disclosed scene edges, directional exits and can
   assert.deepEqual(screen.panels.route.data.movement.options.slice(-3), [
     { label: 'К просеке', knowledge_state: 'known' },
     { label: 'К лесу', knowledge_state: 'known' },
-    { label: 'Проход 3', knowledge_state: 'known' }
+    // D72: canonical connection remains visible without a synthetic ordinal.
+    { label: 'переход', knowledge_state: 'known' }
   ]);
   assert.doesNotMatch(JSON.stringify(screen.panels.route), /local-edge|world-exit|world-connection|Топор/u);
 });

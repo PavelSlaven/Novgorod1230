@@ -14,6 +14,7 @@ import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
 import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { findUnsafePlayerText } from '../public-boundary.js';
 
 export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
   worldKnowledgeGrounder = null } = {}) {
@@ -46,8 +47,8 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
         role: 'user',
         content: JSON.stringify(repair ? {
           request: modelRequest,
-          original_output: repair.original_output,
-          validation_errors: repair.validation_errors
+          original_output: repair.original_output ?? null,
+          validation_errors: repair.validation_errors ?? []
         } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
@@ -62,12 +63,16 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
   worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
+  const semanticRepairDecisions = new WeakMap();
   const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
     const semanticRepair = repair?.validation_errors?.some(
       ({ category }) => category === 'semantic_grounding'
     ) === true;
-    if (semanticRepair && npcConversationCandidates(request).some(
+    const repairServiceText = repair?.validation_errors?.some(
+      ({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT') === true;
+    if (semanticRepair && !repairServiceText
+        && npcConversationCandidates(request).some(
       (candidate) => candidate.contribution_kind === 'speech'
         && candidate.supporting_operations.length === 0
     )) return semanticGroundingFallback(repair.original_output, request);
@@ -98,20 +103,65 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         content: JSON.stringify(repair ? {
           request: modelRequest,
           ...(semanticRepair ? {} : {
-            original_output: repair.original_output
+            original_output: repair.original_output ?? null
           }),
-          validation_errors: repair.validation_errors
+          validation_errors: semanticRepair
+            ? npcRepairErrorsForModel(repair.validation_errors)
+            : repair.validation_errors ?? []
         } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
-    return assembleNpcConversationPlan(response.output, request);
+    const assembled = assembleNpcConversationPlan(response.output, request);
+    const retryingServiceText = semanticRepair && repair.validation_errors
+      .some(({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT');
+    if (retryingServiceText && repair.original_output != null) {
+      semanticRepairDecisions.set(assembled, {
+        contribution_kind: repair.original_output.contribution_kind,
+        dominant_act: repair.original_output.speech?.dominant_act
+      });
+    }
+    return assembled;
   };
   model.validateFreshPlan = async (plan, request) => {
+    const marker = plan?.contribution_kind === 'speech'
+      ? findUnsafePlayerText(plan.speech?.utterance_text, { label: true, generatedProse: true })
+      : null;
+    if (marker != null) return {
+      pass: false,
+      errors: [{
+        code: 'TRACE_NPC_SPEECH_SERVICE_TEXT',
+        category: 'semantic_grounding', retryable: true,
+        concern_kinds: ['service_text_marker'],
+        message: 'Rewrite the reply without service labels or technical markers.'
+      }]
+    };
+    const originalDecision = plan != null && typeof plan === 'object'
+      ? semanticRepairDecisions.get(plan) : null;
+    if (originalDecision != null
+        && (plan.contribution_kind !== originalDecision.contribution_kind
+          || plan.speech?.dominant_act !== originalDecision.dominant_act)) {
+      return {
+        pass: false,
+        errors: [{
+          code: 'TURN_NPC_PLAN_NOT_APPLICABLE', category: 'applicability',
+          retryable: false,
+          message: 'Semantic repair must preserve the original contribution and speech act.'
+        }]
+      };
+    }
     const presentation = validateRequiredNpcPresentation(plan, request);
     return presentation ?? auditFreshNpcSpeech({ roleRunner, plan, request });
   };
   return model;
+}
+
+function npcRepairErrorsForModel(errors) {
+  return (errors ?? []).map((error) => error?.category === 'semantic_grounding'
+    ? { category: 'semantic_grounding',
+      message: 'Rewrite the response using only supported meaning and natural in-world speech.' }
+    : { category: 'format',
+      message: 'Return the required response shape using only values from the request.' });
 }
 
 function semanticGroundingFallback(original, request) {
@@ -122,12 +172,22 @@ function semanticGroundingFallback(original, request) {
     for (const reference of claim?.source_knowledge_refs ?? []) {
       const observation = reference?.entity_kind === 'perception_result'
         ? observations.get(reference.entity_id) : null;
-      if (observation) retained.set(reference.entity_id, observation);
+      if (observation
+          && findUnsafePlayerText(observation.fact_text, { label: true, generatedProse: true }) == null) {
+        retained.set(reference.entity_id, observation);
+      }
     }
   }
   const facts = [...retained.values()];
-  const introducedName = requiredFirstContactName(request)
-    ?? playerSafeSelfIntroductionName(original?.speech?.utterance_text);
+  const originalUtterance = original?.speech?.utterance_text;
+  const originalUtteranceIsSafe = findUnsafePlayerText(originalUtterance, {
+    label: true, generatedProse: true
+  }) == null;
+  const requiredName = requiredFirstContactName(request);
+  const introducedName = requiredName
+      && findUnsafePlayerText(requiredName, { label: true }) == null
+    ? requiredName : originalUtteranceIsSafe
+      ? playerSafeSelfIntroductionName(originalUtterance) : null;
   const introduction = introducedName ? `Я ${introducedName}.` : null;
   const requiredTag = request.social_context?.npc_behavior
     ?.required_interaction_tag;

@@ -12,7 +12,7 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
     if (!response.ok || payload?.ok !== true) {
       const error = webError(
         payload?.error?.code ?? 'HTTP_REQUEST_FAILED',
-        payload?.error?.message ?? `HTTP ${response.status}`
+        payload?.error?.message ?? 'Запрос временно недоступен. Попробуйте ещё раз.'
       );
       error.httpStatus = response.status;
       if (payload?.error?.turn_commit_status === 'not_started') {

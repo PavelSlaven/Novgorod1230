@@ -1,11 +1,22 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { createNarrationService } from '@rus/narration';
-import { omitWorldKnowledgeContextText } from '@rus/turn';
+import { omitWorldKnowledgeContextText, worldKnowledgePromptData } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { assembleNarrationAuditOutput, narrationAuditInstruction } from
   './lower-dvina-trace-narration-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
+import { findUnsafePlayerText, findUnsafePublishedText, playerSafeCalibrationText } from
+  '../public-boundary.js';
+
+export const NARRATION_WK_QUALIFIER_RULE = 'Each world_knowledge fact retains its structured qualifiers beside runtime_text. '
+  + 'Those qualifiers constrain the prose even when runtime_text has no calibration prefix. '
+  + 'directness=inferred is an inference, analogical is an analogy with limited applicability, '
+  + 'editorial is a reconstruction, and unknown has no established directness; never narrate these as directly established facts. '
+  + 'Express the relevant uncertainty or limitation in ordinary Russian beside the factual proposition. '
+  + 'Preserve confidence: medium, low or unknown cannot become certainty. '
+  + 'typicality=unknown or variable cannot become a universal rule. '
+  + 'Never reproduce qualifier names, values, calibration prefixes or claim/evidence refs in prose.';
 
 const PROSE_RULES = 'Write connected, restrained literary Russian in second person. '
   + 'Put the current beat first. Convey every required_current_beat source once '
@@ -111,12 +122,69 @@ export function createLowerDvinaTraceNarrationService({ roleRunner,
         ...cleanRequest
       } = request ?? {};
       return narrationWkStore.run({ authoritative, pack: null }, () =>
-        service.run(cleanRequest, options));
+        service.run(cleanRequest, { ...options,
+          outputAdmission: prose => findUnsafePlayerText(prose, { generatedProse: true }) }));
     }
   });
 }
 
+function safeNarrationText(value, path) {
+  if (typeof value !== 'string') return value;
+  const finding = findUnsafePlayerText(value, { label: true, generatedProse: true });
+  if (finding == null) return value;
+  console.error('[game-server] suppressed unsafe narration input', {
+    field_path: path, category: finding.category
+  });
+  return undefined;
+}
+
+function safeNarrationTextList(value, path, field = '') {
+  if (!Array.isArray(value)) return [];
+  return value.map((entry, index) => {
+    const itemPath = `${path}[${index}]`;
+    if (typeof entry === 'string') return safeNarrationText(entry, itemPath);
+    if (entry == null || typeof entry !== 'object') return undefined;
+    const finding = findUnsafePublishedText(entry, field);
+    if (finding != null) {
+      console.error('[game-server] suppressed unsafe narration input', {
+        field_path: finding.path, category: finding.category
+      });
+      return undefined;
+    }
+    return structuredClone(entry);
+  }).filter((entry) => typeof entry === 'string' && entry.trim()
+    || entry != null && typeof entry === 'object');
+}
+
 /** Strip service-only fields from nested writer clone (F3). Keep WK prompt-data (F2). */
+export function narrationWorldKnowledgePromptData(value) {
+  if (value == null) return value;
+  // Shared WK owner strips only the duplicate compact context; this adapter owns
+  // the narrower projection of reviewed factual prose for narration (D72).
+  const slice = worldKnowledgePromptData(value);
+  function project(entry, path) {
+    if (Array.isArray(entry)) return entry.map((row, index) =>
+      project(row, `${path}[${index}]`)).filter(row => row !== undefined);
+    if (entry == null || typeof entry !== 'object') return entry;
+    if (typeof entry.runtime_text === 'string') {
+      entry.runtime_text = playerSafeCalibrationText(entry.runtime_text);
+      const finding = findUnsafePlayerText(entry.runtime_text, { generatedProse: true });
+      if (finding != null) {
+        console.error('[game-server] suppressed unsafe narration input', {
+          field_path: `${path}.runtime_text`, category: finding.category
+        });
+        // Do not discard machine-owned constraints, qualifiers or source refs.
+        delete entry.runtime_text;
+      }
+    }
+    for (const [key, nested] of Object.entries(entry)) {
+      if (nested != null && typeof nested === 'object') entry[key] = project(nested, `${path}.${key}`);
+    }
+    return entry;
+  }
+  return project(slice, 'world_knowledge');
+}
+
 export function narrationWire(request) {
   const { request: original, world_knowledge_authoritative: _wkAuth,
     party_id: _partyId, world_knowledge: outerWk, ...outer } = request ?? {};
@@ -132,29 +200,44 @@ export function narrationWire(request) {
   if (Array.isArray(support.visible_objects)) {
     support.visible_objects = support.visible_objects.filter((row) => !isMovementVisibleObject(row));
   }
+  const visibleChanges = safeNarrationTextList(visible_changes,
+    'visible_context.visible_changes', 'visible_changes');
+  const safeUncertainties = safeNarrationTextList(uncertainties,
+    'visible_context.uncertainties');
+  const safeVisibleScene = safeNarrationText(
+    support.visible_scene, 'visible_context.visible_scene');
+  if (Object.hasOwn(support, 'visible_scene')) {
+    if (safeVisibleScene == null) delete support.visible_scene;
+    else support.visible_scene = safeVisibleScene;
+  }
+  const safeDoNotImply = safeNarrationTextList(do_not_imply,
+    'visible_context.do_not_imply');
+  const safeAllowedTensions = safeNarrationTextList(allowed_tensions,
+    'visible_context.allowed_tensions');
   const { outcome: contextOutcome, ...otherContext } = context ?? {};
   const outcome = contextOutcome ?? confirmedOutcome;
   const assessmentOnly = outcome?.qualitative_assessment === true;
   return {
     ...rest,
     required_current_beat: {
-      changes: visible_changes.map((text, index) => ({ ref: `visible_change_${index + 1}`, text })),
-      uncertainties: uncertainties.map((text, index) => ({
+      changes: visibleChanges.map((text, index) => ({ ref: `visible_change_${index + 1}`, text })),
+      uncertainties: safeUncertainties.map((text, index) => ({
         ref: `uncertainty_${index + 1}`, text, status: 'unperformed_result_unknown'
       }))
     },
     ...(current_light_phase == null ? {} : { current_light_phase }),
-    optional_support: visible_changes.length || uncertainties.length
+    optional_support: visibleChanges.length || safeUncertainties.length
       ? Object.fromEntries((assessmentOnly ? [] : ['visible_scene'])
         .filter(key => Object.hasOwn(support, key))
         .map(key => [key, support[key]]))
       : support,
-    constraints: { do_not_imply, allowed_tensions, style_policy },
+    constraints: { do_not_imply: safeDoNotImply,
+      allowed_tensions: safeAllowedTensions, style_policy },
     ...(outcome === undefined ? {} : { confirmed_outcome: outcome }),
     ...(action_intent_context === undefined ? {} : { action_intent: action_intent_context }),
     ...(Object.keys(otherContext).length ? { context: otherContext } : {}),
     // §73: party facts above; optional WK prompt-data after them (F2).
-    ...(worldKnowledge == null ? {} : { world_knowledge: worldKnowledge })
+    ...(worldKnowledge == null ? {} : { world_knowledge: narrationWorldKnowledgePromptData(worldKnowledge) })
   };
 }
 
@@ -171,8 +254,10 @@ async function runNarrationRole(roleRunner, roleId, instruction, request,
     worldKnowledgeGrounder, telemetry);
   const systemInstruction = roleId === 'gameplay_narrator_auditor'
     ? [narrationAuditInstruction(request),
-      ...worldKnowledgeFactualClosure(grounded)].join(' ')
-    : [instruction, ...worldKnowledgeFactualClosure(grounded)].join(' ');
+      ...worldKnowledgeFactualClosure(grounded),
+      ...(grounded?.world_knowledge == null ? [] : [NARRATION_WK_QUALIFIER_RULE])].join(' ')
+    : [instruction, ...worldKnowledgeFactualClosure(grounded),
+      ...(grounded?.world_knowledge == null ? [] : [NARRATION_WK_QUALIFIER_RULE])].join(' ');
   const modelRequest = omitWorldKnowledgeContextText(grounded);
   const response = await roleRunner.run({ scope: 'turn_runtime', role_id: roleId,
     request_identity: request.request_id ?? request.request?.request_id,

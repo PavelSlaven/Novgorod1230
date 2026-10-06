@@ -14,15 +14,11 @@ export function passTargetRowForSlot(slotRef) {
   return rows.length === 1 ? rows[0] : null;
 }
 
-/** Same description text at one disclosed position is ambiguous; disambiguate with the
- * already-approved editorial_choice_ordinal from m2c-exit-labels, never a new number. */
-export function withPassTargetDisambiguation(rows) {
-  const counts = new Map();
-  for (const row of rows) if (row.pass_target_description) {
-    counts.set(row.pass_target_description, (counts.get(row.pass_target_description) ?? 0) + 1);
-  }
-  return rows.map(({ pass_target_description: description, editorial_choice_ordinal: ordinal,
-    ...row }) => ({ ...row, display_label: description
-      ? counts.get(description) > 1 ? `${description} (${ordinal})` : description
-      : row.display_label }));
+/** Keep approved descriptions as authored, including when visible exits share one label. */
+export function withPassTargetDescriptions(rows) {
+  return rows.map((candidate) => {
+    const { pass_target_description: description, ...row } = candidate;
+    delete row.editorial_choice_ordinal;
+    return { ...row, display_label: description || row.display_label };
+  });
 }

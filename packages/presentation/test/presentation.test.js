@@ -102,7 +102,18 @@ test('creates versioned TurnScreen from approved narration only', () => {
 });
 
 test('creates factual delivery screen from exact committed public fields without prose', () => {
-  const screen = createFactualTurnDeliveryScreenReadModel(factualScreenInput());
+  const exactNpcUtterances = [{ speaker_ref: { entity_kind: 'npc',
+    entity_id: 'npc-1' }, utterance_text: 'Сеть я отложил.', provenance: {
+    source: 'phase3_statement_receipt', player_receipt: 'full',
+    precommit_service_marker_check: true,
+    statement_ref: { entity_kind: 'conversation_statement',
+      entity_id: 'statement-1' },
+    listener_ref: { entity_kind: 'player_character', entity_id: 'player-1' },
+    receipt_utterance_text: 'Сеть я отложил.'
+  } }];
+  const screen = createFactualTurnDeliveryScreenReadModel(factualScreenInput({
+    exactNpcUtterances
+  }));
   assert.equal(screen.schema, 'factual_turn_delivery_screen');
   assert.equal(screen.main_prose, undefined);
   assert.equal(screen.presentation_quality, 'degraded');
@@ -111,6 +122,7 @@ test('creates factual delivery screen from exact committed public fields without
   assert.equal(screen.input_panel.input_contract, 'intent_not_fact');
   assert.equal(validateFactualTurnDeliveryScreen(screen).ok, true);
   assert.equal(validateLowerDvinaFactualTurnDeliveryScreen(screen).ok, true);
+  assert.deepEqual(screen.exact_npc_utterances, exactNpcUtterances);
 });
 
 test('creates the same factual recovery carrier for a live-world authored turn', () => {

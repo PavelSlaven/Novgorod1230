@@ -14,6 +14,8 @@ import { groundingState } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-rules.js';
 import { projectTurnStepModelRequest } from
   '../src/runtime/lower-dvina-trace-turn-step-model-projection.js';
+import { GAP_ITEM_REFERENCE_FIELDS } from
+  '../src/runtime/lower-dvina-trace-turn-step-model-projection.js';
 import { activeConversationChoiceExample } from
   '../src/runtime/lower-dvina-trace-turn-step-planner-prompt.js';
 import { visibleConversationChoiceExamples } from
@@ -119,8 +121,6 @@ test('gap projection recognizes every exact item reference shape in operations',
         description: 'GAP_INSTRUMENT_OPERATION' },
       { op: 'use', action_production: { source_refs: ['gap-item'],
         tool_refs: ['gap-instance'] }, description: 'GAP_SOURCE_OPERATION' },
-      { op: 'use', future_ref: 'gap-instance',
-        description: 'GAP_FUTURE_REF_OPERATION' },
       { op: 'use', entity_id: 'gap-item', description: 'GAP_ENTITY_ID_OPERATION' },
       { op: 'use', item_id: 'gap-item', description: 'GAP_ITEM_ID_OPERATION' },
       { op: 'use', instance_id: 'gap-instance',
@@ -142,6 +142,75 @@ test('gap projection recognizes every exact item reference shape in operations',
 
   assert.deepEqual(projected.available_domain_operations, [{ op: 'use',
     item_ref: 'item-10', description: 'NAMED_NEIGHBOR_OPERATION' }]);
+});
+
+test('gap placement references are removed without dropping named child items in main and repair', async () => {
+  const calls = [];
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) { calls.push(call); return { output: output() }; } }
+  });
+  const input = request({ player_safe_state: {
+    items: [
+      { item_id: 'gap-bag', instance_id: 'gap-bag-instance', name: 'SECRET_BAG' },
+      { item_id: 'named-spoon', name: 'деревянная ложка',
+        physical_facts: ['Ложка деревянная.'], placement: { container_id: 'gap-bag' } },
+      { item_id: 'named-knife', name: 'хозяйственный нож',
+        physical_facts: ['Нож с деревянной рукоятью.'],
+        placement: { attached_item_id: 'gap-bag-instance' } }
+    ],
+    inventory: { items: ['gap-bag', 'named-spoon', 'named-knife'] },
+    current_visible_context: { visible_objects: [{ entity_ref: {
+      entity_kind: 'item', entity_id: 'gap-bag-instance' },
+    label_gap: { code: 'player_safe_item_label_required' } }] }
+  } });
+
+  await model(input);
+  await model(input, { original_output: output(),
+    structural_errors: [{ path: '$.reason', code: 'invalid_reason' }] });
+
+  assert.equal(calls.length, 2);
+  for (const call of calls) {
+    const wire = JSON.stringify(call.messages);
+    assert.doesNotMatch(wire, /gap-bag(?:-instance)?|SECRET_BAG/u);
+    assert.match(wire, /named-spoon|деревянная ложка|Ложка деревянная/u);
+    assert.match(wire, /named-knife|хозяйственный нож|Нож с деревянной рукоятью/u);
+    assert.doesNotMatch(wire, /"container_id":"gap-bag"|"attached_item_id":"gap-bag-instance"/u);
+  }
+});
+
+test('every item-reference field is scrubbed from main and repair requests', async () => {
+  const cases = [
+    ...GAP_ITEM_REFERENCE_FIELDS.scalar.map((field) => [field, 'scalar']),
+    ...GAP_ITEM_REFERENCE_FIELDS.arrays.map((field) => [field, 'array'])
+  ];
+  for (const [field, kind] of cases) {
+    const calls = [];
+    const model = createLowerDvinaTraceTurnStepModel({
+      roleRunner: { async run(call) { calls.push(call); return { output: output() }; } }
+    });
+    const gapRef = 'gap-item';
+    const reference = kind === 'array' ? [gapRef] : gapRef;
+    const input = request({ available_domain_operations: [{ op: 'use',
+      [field]: reference }], player_safe_state: {
+      items: [{ item_id: 'named-neighbor', name: 'деревянная ложка',
+        physical_facts: ['Ложка деревянная.'] }],
+      current_visible_context: { visible_objects: [{ entity_ref: {
+        entity_kind: 'item', entity_id: 'gap-item' },
+      label_gap: { code: 'player_safe_item_label_required' } }] }
+    } });
+
+    await model(input);
+    await model(input, { original_output: output(),
+      structural_errors: [{ path: '$.reason', code: 'invalid_reason' }] });
+
+    assert.equal(calls.length, 2, `${field}: main and repair called`);
+    for (const call of calls) {
+      const wire = JSON.stringify(call.messages);
+      assert.doesNotMatch(wire, new RegExp(gapRef, 'u'), field);
+      assert.match(wire, /named-neighbor|деревянная ложка|Ложка деревянная/u,
+        `${field}: named neighbor preserved`);
+    }
+  }
 });
 
 test('planner main and repair omit hidden array refs from choices and repair context', async () => {
@@ -189,8 +258,9 @@ test('planner rejects a direct answer that references a gap item in *_refs', asy
   const model = createLowerDvinaTraceTurnStepModel({
     roleRunner: { async run() { return { output: { ...output(),
       resolution: 'domain_request', goal_result: 'pending', operations: [
-        { op: 'use', action_production: { source_refs: ['gap-item'],
-          tool_refs: ['gap-instance'] } }
+        { op: 'use', item_ref: 'gap-item',
+          action_production: { source_refs: ['gap-item'],
+            tool_refs: ['gap-instance'] } }
       ] } }; } }
   });
 

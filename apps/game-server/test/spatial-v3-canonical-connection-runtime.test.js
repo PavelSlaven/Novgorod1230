@@ -66,15 +66,19 @@ test('away from departure the first local hop toward it is the approach, and onl
 test('preparing a connection asks the adapter once with the exact source; a committed connection replays without it', async () => {
   const current = context();
   const seen = [];
+  const onLabelGapsOmitted = () => {};
   const runtime = runtimeFor(current, { generatedExpansionAdapter: {
-    prepareCanonicalConnection: async (request) => { seen.push(request); return { ok: true, topology_status: 'committed',
+    prepareCanonicalConnection: async (request, diagnostics) => { seen.push({ request, diagnostics }); return { ok: true, topology_status: 'committed',
       connection_id: 'canconn:party:b-water' }; } } });
-  const prepared = await runtime.prepareConnection({ ...identity, connectionBindingId: 'b-water', requestId: 'r' });
+  const prepared = await runtime.prepareConnection({ ...identity, connectionBindingId: 'b-water', requestId: 'r' },
+    { onLabelGapsOmitted });
   assert.equal(prepared.ok, true);
-  assert.deepEqual(seen.map(({ party_id, actor_id, binding_id, source_site_id, source_position_id, materializer_version }) =>
+  assert.deepEqual(seen.map(({ request: { party_id, actor_id, binding_id, source_site_id, source_position_id, materializer_version } }) =>
     [party_id, actor_id, binding_id, source_site_id, source_position_id, materializer_version]),
   [['party', 'actor', 'b-water', 'site-a', 'departure-position', 'version']]);
-  assert.deepEqual(seen[0].g4, current.g4);
+  assert.deepEqual(seen[0].request.g4, current.g4);
+  assert.equal(seen[0].diagnostics.onLabelGapsOmitted, onLabelGapsOmitted);
+  assert.equal(Object.hasOwn(seen[0].request, 'onLabelGapsOmitted'), false);
   await assert.rejects(runtime.prepareConnection({ ...identity, connectionBindingId: 'nope' }),
     (e) => e.details.reason === 'selected_connection_unavailable');
 

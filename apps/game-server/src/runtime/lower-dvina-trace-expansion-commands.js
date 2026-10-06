@@ -192,6 +192,7 @@ export async function createTraceExpansionCommands({ state, requestId,
     ...connections.map(({ connection_binding_id: bindingId, display_label: label }) => crossingCommand({
       routeId: bindingId, label, commandKey: 'follow_canonical_connection', optionKey: 'canonical_connection',
       selectedKey: 'connectionBindingId', ownerMissing: 'LIVE_WORLD_EXPANSION_OWNER_MISSING',
+      diagnosticCallback: onLabelGapsOmitted,
       prepare: runtime.prepareConnection?.bind(runtime), traverse: runtime.prepareConnectionTraversal?.bind(runtime) }))];
 }
 

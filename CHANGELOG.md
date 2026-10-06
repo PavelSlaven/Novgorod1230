@@ -2,6 +2,7 @@
 
 ## Unreleased
 - docs(player-start): add D111 player character and start contract; LW-135 added (#109)
+- docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
 - fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
 - fix(runtime): filter typed item gaps from model facts, operations and visible envelopes; resolve approved labels in inspection; ignore ordinal exits in WK and require schema-only router recognition
 - fix(prompts/docs): align planner wording with reviewed Stage L text, correct addressed-request meaning, and record deferred group-3 P projection as LW-132

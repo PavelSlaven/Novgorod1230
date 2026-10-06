@@ -50,6 +50,6 @@
     "checks/applicability-coverage.py",
     "checks/calculate-rerun.json"
   ],
-  "commit": null,
-  "commit_note": "коммит впишет ведущий"
+  "commit": "b19d42b964024fe680d36ae17c2025b5c530d503",
+  "commit_note": "вписан ведущим: коммит, которым утверждённый профиль вошёл в fleet/combat-min"
 }

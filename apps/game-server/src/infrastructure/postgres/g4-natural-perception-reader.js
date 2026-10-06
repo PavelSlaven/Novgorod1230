@@ -104,7 +104,7 @@ export async function readCurrentEntityVisibilityScene(args = {}) {
  * conditions remain with their current owner; this reader supplies no defaults. */
 export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
   verifiedCatalog, pin, worldBaseReader, readCurrentSourceState, readCurrentEnvironment,
-  observedPositionId } = {}) {
+  observedPositionId, clock = null } = {}) {
   if (typeof worldBaseReader?.readPinnedSceneTemplateClosure !== 'function'
     || typeof readCurrentSourceState !== 'function') gap('current_perception_owner_required');
   const snapshot = await readCurrentSceneSnapshot({ transaction, partyId, actorId, pin,
@@ -120,12 +120,13 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
   if (!closure?.ok) gap('approved_scene_template_closure_required');
   const source = await readCurrentSourceState({ transaction, partyId, actorId,
     snapshot: structuredClone(snapshot), sceneClosure: closure.value,
-    naturalProfile: profiles[0], verifiedCatalog, pin });
+    naturalProfile: profiles[0], verifiedCatalog, pin, clock });
   if (readCurrentEnvironment != null && typeof readCurrentEnvironment !== 'function') {
     gap('current_temporal_owner_required');
   }
   const current = { ...source, ...(readCurrentEnvironment == null ? {} : {
-    current_environment: await readCurrentEnvironment({ transaction, partyId, actorId }) }) };
+    current_environment: await readCurrentEnvironment({ transaction, partyId, actorId,
+      clock }) }) };
   const stableCover = approvedNaturalStableCover(profiles[0].payload);
   if (!Array.isArray(current?.source_observations)
     || current.source_observations.some((row) => row.stable_cover != null

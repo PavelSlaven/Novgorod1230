@@ -18,6 +18,7 @@ import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
 export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 export function withLowerDvinaTraceCurrentScene({ committedState,
   locationProfiles, scenePresentation = null, itemLabels = {} }) {
+  const initial = committedState?.current_visible_context;
   const projectionSource = structuredClone(committedState);
   const { actor, player_safe_state: playerSafe } = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
@@ -27,20 +28,29 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const selfKnowledge = [...projectKnownContext(actor, playerSafe.knowledge, playerSafe.interactions),
     ...(playerSafe.available_routes ?? []).map(route => route.label).filter(Boolean)];
   const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
-    playerSafe.position,
-    playerSafe.actor_id,
-    itemLabels);
+    playerSafe.position, playerSafe.actor_id, itemLabels);
+  if (Number(committedState?.party_state?.state_version) === 0
+      && validCurrentScene(initial)) {
+    const current = enrichLowerDvinaTraceVisibleNpcCues({
+      visibleContext: {
+        ...initial,
+        known_context: unique([...initial.known_context, ...selfKnowledge]),
+        sensory_details: unique([...initial.sensory_details,
+          ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts),
+          ...currentEnvironmentChanges(committedState)]),
+        visible_objects: uniqueLowerDvinaTraceVisibleObjects([
+          ...initial.visible_objects,
+          ...sceneItems.map(({ visibleObject }) => visibleObject)])
+      },
+      committedState: projectionSource
+    });
+    if (!validCurrentScene(current)) failCurrentScene();
+    return { ...committedState, current_visible_context: deepFreeze(current) };
+  }
   const locationRef = playerSafe.position?.location_ref;
   const presented = scenePresentation == null ? null
     : scenePresentationForLocation({ scenePresentation, locationRef });
-  const prior = validCurrentScene(committedState.current_visible_context)
-    ? committedState.current_visible_context : null;
-  const priorSceneIsNotSpeech = prior != null
-    && !(committedState.conversation_statements ?? []).some(({ utterance_text: speech }) =>
-      text(speech) && sceneContainsSpeech(prior.visible_scene, speech));
-  const profile = presented ?? (priorSceneIsNotSpeech
-    ? { display_name: prior.visible_scene, player_visible_physical_facts: [] }
-    : historicalLocationProfile(locationProfiles, locationRef));
+  const profile = presented ?? historicalLocationProfile(locationProfiles, locationRef);
   const currentVisibleNpcs = playerSafe.current_visible_context?.visible_npc ?? [];
   const visibleLabels = new Map(currentVisibleNpcs.map((npc) => [
     npc?.entity_ref?.entity_id, npc
@@ -57,9 +67,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       recognition: npc.recognition ?? 'unrecognized' });
     sceneNpcIds.add(id);
   }
-  const placeFacts = presented?.player_visible_physical_facts
-    ?? (priorSceneIsNotSpeech
-      ? currentSpatialFacts(prior, sceneItems, sceneNpcs) : profile.player_visible_physical_facts);
+  const placeFacts = profile.player_visible_physical_facts;
   const sensoryDetails = unique([...(placeFacts ?? []),
     ...sceneItems.filter(({ visibleObject }) => text(visibleObject?.display_label))
       .flatMap(({ physicalFacts }) => physicalFacts)]);
@@ -100,26 +108,6 @@ function historicalLocationProfile(locationProfiles, locationRef) {
   if (matches.length !== 1 || !text(matches[0].display_name)) failCurrentScene();
   return { display_name: matches[0].display_name,
     player_visible_physical_facts: [] };
-}
-function currentSpatialFacts(prior, sceneItems, sceneNpcs) {
-  const currentItemIds = new Set(sceneItems.map(({ visibleObject }) =>
-    visibleObject.entity_ref.entity_id));
-  const currentNpcIds = new Set(sceneNpcs.map(({ entity_ref: ref }) => ref.entity_id));
-  const staleLabels = [
-    ...(prior.visible_objects ?? []).filter(({ entity_ref: ref }) =>
-      ref?.entity_kind === 'item' && !currentItemIds.has(ref.entity_id)),
-    ...(prior.visible_npc ?? []).filter(({ entity_ref: ref }) =>
-      ref?.entity_kind === 'npc' && !currentNpcIds.has(ref.entity_id))
-  ].map(({ display_label: label }) => label).filter(text);
-  return prior.sensory_details.filter((fact) => !staleLabels.some((label) =>
-    fact.toLocaleLowerCase('ru-RU').includes(label.toLocaleLowerCase('ru-RU'))));
-}
-function sceneContainsSpeech(scene, speech) {
-  const normalize = (value) => value.toLocaleLowerCase('ru-RU')
-    .replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
-  const normalizedSpeech = normalize(speech);
-  return normalizedSpeech.length >= 8
-    && normalize(scene).includes(normalizedSpeech);
 }
 export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys, body }) {
   if (input?.consequence?.visible_seed?.clarification != null) return null;
@@ -213,14 +201,9 @@ export function materializedOrdinaryPresenceChange(value) {
       || typeof value.display_name !== 'string' || !value.display_name.trim()) {
     ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
   }
-  return `Вы нашли предмет — ${value.display_name}.`;
+  return `Обнаружено: «${value.display_name}».`;
 }
 function directSeedChange(value) {
-  if (value?.kind === 'local_movement_signature') {
-    if (!plain(value) || Object.keys(value).length !== 2
-        || !text(value.display_label)) failCurrentScene();
-    return `Вы прошли через ${value.display_label.toLocaleLowerCase('ru-RU')}.`;
-  }
   if (value?.kind === 'background_npc_observation') {
     if (!plain(value) || Object.keys(value).length !== 4
         || !text(value.npc_ref) || !text(value.display_label)

@@ -144,7 +144,7 @@ export function createTracePhase3VisibleProjector({
             version: 1,
             schema: 'visible_context_package',
             visible_scene: route.visible_scene,
-            visible_changes: [route.visible_change],
+            visible_changes: [`Перед вами — ${route.visible_scene}.`],
             sensory_details: scene.player_visible_physical_facts,
             visible_npc: contracts.actors.filter(({ anchor_id: anchorId }) =>
               anchorId === destination.g5_anchor_id).map((actor) =>

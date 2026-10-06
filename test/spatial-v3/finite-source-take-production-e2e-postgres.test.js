@@ -76,7 +76,7 @@ function installTakeFetch(seen) {
             packing_slot_cost: 0, quantity: { value: quantity, unit: 'item' },
             container: null } }] });
     }
-    if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+    if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       seen.auditorCalls += 1;
       return respond({ pass: true, concerns: [] });
     }

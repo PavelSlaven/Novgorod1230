@@ -147,10 +147,12 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
   npcSite = null, resourceSites = ['B'], routeThroughC = false,
   walkLocalLabels = [], walkExits = null, walkLocalNoProgress = false,
   walkSlotSteps = null,
-  presentationPendingOnce = false, presentationStaysPending = false } = {}) {
+  presentationPendingOnce = false, presentationStaysPending = false,
+  factualRecovery = false, emptyReadyRecovery = false, factualAfterTurn = false } = {}) {
   const w = { looks: 0, sv: 1, site: 'A', slot: 'arrival', slotChain: 0,
     pendingTurnOnce: presentationPendingOnce,
-    presentationStaysPending, statements: priorNpcReply ? [{
+    presentationStaysPending, factualRecovery, emptyReadyRecovery, factualAfterTurn, factualVisible: false,
+    statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
   }] : [], nodeQuantities: Object.fromEntries(resourceSites.map((site) => [site, 60])), held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
@@ -177,7 +179,10 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     if (w.site === 'B' && routeThroughC) return ['Дальше'];
     return hideReturnPassage ? [] : ['Назад'];
   };
-  const screen = () => ({ main_prose: w.prose, labels: labelsAt(),
+  const screen = () => w.factualVisible ? ({ schema: 'factual_turn_delivery_screen',
+    screen_status: 'ready', visible_context: { visible_scene: 'У берега стоит человек.' },
+    visible_changes: [], uncertainties: [], panels: { people: { visible: true,
+      data: { visible_npcs: npcHere() ? [{ display_label: 'человек (1)' }] : [] } } } }) : ({ main_prose: w.prose, labels: labelsAt(),
     visible_context: { schema: 'visible_context_package', visible_npc: npcHere()
       ? [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc1' }, display_label: 'человек' }] : [] },
     panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
@@ -203,6 +208,15 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
       w.recovered += 1;
       if (w.presentationStaysPending) {
         return env({ screen: { screen_status: 'committed_presentation_pending', main_prose: '' } });
+      }
+      if (w.factualRecovery) {
+        w.factualVisible = true;
+        w.prose = '';
+        return env({ screen: screen() });
+      }
+      if (w.emptyReadyRecovery) {
+        w.prose = '';
+        return env({ screen: { screen_status: 'ready', main_prose: '' } });
       }
       w.prose = 'Восстановлено.';
       return env({ screen: screen() });
@@ -250,6 +264,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
         w.sv += 1; w.made = [{ item_id: 'a1-result:1', action_production: true }];
       } else w.sv += 1;
       if (emptyProse) w.prose = '';
+      if (factualAfterTurn) { w.factualVisible = true; w.prose = ''; }
       if (/^Здоров|^Здравств/u.test(text) && !talkCommitted)
         return { status: 422, ok: false, data: null, error: { code: 'TURN_NOT_SAVED' } };
       return env({ screen: screen() });
@@ -537,6 +552,57 @@ test('legs: a committed turn without text triggers one presentation-recovery', a
   assert.equal(result.turns[0].prose, 'Восстановлено.');
 });
 
+test('legs: recovered factual screen with an NPC is reported as player-visible facts', async () => {
+  const world = fakeWorld({ emptyProse: true, factualRecovery: true,
+    npcAtStart: true, npcAtDestination: false,
+    walkSlotSteps: { 'Тропа': ['local_bend', 'arrival'] } });
+  const result = await runFake(world, { maxTurns: 4 });
+  const turn = result.turns[0];
+  assert.equal(turn.delivery_kind, 'factual');
+  assert.equal(turn.factual_screen.visible_scene, 'У берега стоит человек.');
+  assert.deepEqual(turn.factual_screen.visible_people, ['человек (1)'],
+    JSON.stringify(turn.current_visible_context));
+  assert.equal(turn.prose, '');
+  const md = renderPlaytestMarkdown({ ...sampleReport(), turns: [turn] },
+    createRedactor());
+  assert.match(md, /подача: factual/u);
+  assert.match(md, /Игроку показан фактический экран после хода/u);
+  assert.match(md, /У берега стоит человек\./u);
+  assert.match(md, /Рядом: человек \(1\)\./u);
+  assert.doesNotMatch(md, /текст получен через presentation-recovery/u);
+});
+
+test('legs: committed factual screen skips presentation-recovery and is not counted as recovered', async () => {
+  const world = fakeWorld({ factualAfterTurn: true, npcAtStart: true, npcAtDestination: false,
+    walkSlotSteps: { 'Тропа': ['local_bend', 'arrival'] } });
+  const result = await runFake(world, { maxTurns: 4 });
+  const turn = result.turns[0];
+  assert.equal(turn.delivery_kind, 'factual');
+  assert.equal(turn.recovered, false);
+  assert.equal(turn.presentation_recovery_attempts, 0);
+  assert.equal(result.presentation_recovery.attempts, 0);
+  const md = renderPlaytestMarkdown({ ...sampleReport(), turns: [turn] }, createRedactor());
+  assert.match(md, /Проза: 0; фактический экран: 1; ожидание: 0; пусто: 0/u);
+  assert.doesNotMatch(md, /успешно:|восстановлено прозы: 1/u);
+  assert.equal(world.w.recovered, 0);
+});
+
+test('legs: factual result from pending recovery is not counted as recovered prose', async () => {
+  const world = fakeWorld({ presentationPendingOnce: true, factualRecovery: true,
+    npcAtStart: true, npcAtDestination: false });
+  const result = await runFake(world, { maxTurns: 4 });
+  const turn = result.turns[0];
+  assert.equal(turn.delivery_kind, 'factual');
+  assert.equal(turn.recovered, false);
+  assert.equal(turn.presentation_recovery_outcome, 'factual');
+  assert.equal(result.presentation_recovery.attempts, 1);
+  assert.equal(result.presentation_recovery.recovered, 0);
+  const md = renderPlaytestMarkdown({ ...sampleReport(), turns: [turn],
+    presentation_recovery: result.presentation_recovery }, createRedactor());
+  assert.match(md, /Проза: 0; фактический экран: 1; ожидание: 0; пусто: 0/u);
+  assert.match(md, /восстановлено прозы: 0/u);
+});
+
 test('legs: committed_presentation_pending triggers presentation-recovery like the web client', async () => {
   const world = fakeWorld({ presentationPendingOnce: true });
   const result = await runFake(world, { maxTurns: 6 });
@@ -555,7 +621,26 @@ test('legs: still pending after presentation-recovery stops the leg with deliver
   assert.equal(result.turns.length, 1);
   assert.equal(result.turns[0].delivery_failed, true);
   assert.equal(result.turns[0].request_id, 'slice-r-1');
+  assert.equal(result.turns[0].delivery_kind, 'pending');
+  const md = renderPlaytestMarkdown({ ...sampleReport(), turns: result.turns },
+    createRedactor());
+  assert.match(md, /подача: pending/u);
   assert.equal(world.w.turns.length, 1, 'no further POST turns after delivery failure');
+});
+
+test('legs: ready recovery with empty prose fails delivery and sends no next POST', async () => {
+  const world = fakeWorld({ presentationPendingOnce: true, emptyReadyRecovery: true,
+    npcAtStart: true, npcAtDestination: false });
+  const result = await runFake(world, { maxTurns: 6 });
+  assert.equal(result.turns.length, 1);
+  assert.equal(result.turns[0].presentation_recovery_outcome, 'empty');
+  assert.equal(result.turns[0].delivery_kind, 'empty');
+  assert.equal(result.turns[0].delivery_failed, true);
+  assert.equal(result.turns[0].error.code, 'PRESENTATION_EMPTY_AFTER_RECOVERY');
+  assert.equal(world.w.turns.length, 1, 'no later POST, including reserved make turns');
+  assert.notEqual(statusOf(result).talk, 'pass');
+  assert.match(result.legs.find(({ id }) => id === 'walk').reason, /пустой экран после presentation-recovery/u);
+  assert.equal(statusOf(result).make, 'blocked');
 });
 
 test('meter: counts LLM calls by role without content and turns the masked server error log into a summary', async () => {

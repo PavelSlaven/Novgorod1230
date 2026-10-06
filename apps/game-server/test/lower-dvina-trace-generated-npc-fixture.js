@@ -1,5 +1,4 @@
-import { fixture, fixtureOpeningCurrentVisibleContext, loadScenarioBundle } from
-  './lower-dvina-trace-phase-2-fixture.js';
+import { fixture, loadScenarioBundle } from './lower-dvina-trace-phase-2-fixture.js';
 import LIVE_WORLD_TURN_PROFILE from
   '../../../data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json'
   with { type: 'json' };
@@ -19,7 +18,7 @@ export const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
   revision: LIVE_WORLD_TURN_PROFILE.revision,
   digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
 } };
-const LOCATION = 'trace_ld_v1_loc_fishing_camp';
+const LOCATION = 'trace_ld_v1_smp_fishing_camp';
 
 // Real v17 shape (probed on a party at a generated site): the player position has
 // no anchor, only site/position/G6; NPCs of the site are read from the database
@@ -39,8 +38,6 @@ export function generatedState(mutate = () => {}) {
     position_id: 'position:start:focus', location_profile_ref: 'start_place' });
   state.position = { g4_id: state.position.g4_id, site_id: 'site:generated',
     position_id: HERE, g6_instance_id: 'g6:a', location_ref: LOCATION };
-  state.current_visible_context = fixtureOpeningCurrentVisibleContext({ state,
-    materializationBundle: bundle13 });
   state.scene_position_g6 = { [HERE]: 'g6:a', [NEAR]: 'g6:a', [FAR]: 'g6:b' };
   mutate(state);
   return state;

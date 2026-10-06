@@ -87,9 +87,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
   }
   const workingProjectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
   const loadPreparedMovementScene = typeof repository.loadPreparedMovementScene
-    === 'function' ? ({ partyId: preparedPartyId, state: preparedState }) =>
+    === 'function' ? ({ partyId: preparedPartyId, state: preparedState, clock }) =>
       repository.loadPreparedMovementScene({
-        partyId: preparedPartyId, state: preparedState, turnBudget
+        partyId: preparedPartyId, state: preparedState, clock, turnBudget
       }) : null;
   const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
     committedState, locationProfiles, scenePresentation, itemLabels

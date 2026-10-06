@@ -217,21 +217,18 @@ and adds no second transaction owner.
   не поступают writer/auditor/repair. Newly relevant sensory details уже входят
   в required visible changes; полный пересказ окружения запрещён.
   Newly relevant facts приходят через visible_changes: applied observation
-  продвигает воспринимаемые scene facts, а подтверждённое прибытие — одно событие
-  из player-safe факта места назначения,
+  продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums
   не становятся prose и не требуют нового словаря,
   ordinary scene seed — только факты текущего результата. Общая projection
-  использует arrival result и факты destination-пакета; неизменные route knowledge
-  и self-knowledge остаются контекстом. Snapshot carried objects
+  выполняет arrival promotion после NPC enrichment, но берёт route knowledge
+  из исходного arrival result. Snapshot self-knowledge и carried objects
   не продвигаются общим осмотром; ими владеет explicit item observation. Без current beat
   descriptive support сохраняется для scene-only perception. Outcome/intent
   передаются только своим ролям; used_references остаётся [].
-  Current-scene projection resolves place title and environmental facts from
-  the current scene presentation (or the Spatial owner's current package), then
-  rebuilds item placement/status/facts and visible NPCs from committed state.
-  It retains only movement disclosures from the prior package; a stale object
-  or NPC row cannot override the current position or placement.
+  Initial current-scene projection reads persisted player/local items plus
+  player-safe NPC appearance, activity and equipped-item refs; state version 0
+  does not replace existing rows with an empty `visible_objects` list.
   Private auditor возвращает только полный ordered reviewed_segments,
   ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,
@@ -589,10 +586,8 @@ but creates no presence resolution and incurs no discovery activity.
 The admitted activity projects a performed discovery with its exact duration;
 its separate candidate query remains a question, never ownership or success.
 An admitted O1 item adds a strict `ordinary_presence_seed` with resolution
-`materialized`, exact query and admitted `display_name`. Its current-scene placement
-supports one natural discovery fact using that name; the beat never emits a bare
-name or claims a surface or position beyond the committed placement. Applied step
-traces and prepared ledger slice seed keys group
+`materialized`, exact query and admitted `display_name`. The current beat reports
+that discovery once. Applied step traces and prepared ledger slice seed keys group
 each step into one required change: exact speech then its elapsed time; discovery time
 then discovery; physical result after its activity. The ordinary material prerequisite
 mapping binds `inspect` for an exact full-intent continuation in ordinary scope;
@@ -870,6 +865,10 @@ projection; changes retain their before/after meaning. Narration may translate
 supplied semantic condition states, but cannot add symptoms, diagnoses or
 intensity. Opening time and initial bodily prose are not timeless knowledge.
 
+Prepared destination visibility after movement receives the prepared effect's
+exact `time_update.clock_after`; standalone phase-2 readback uses the persisted
+party clock.
+
 Committed authored conversations expose only their player-facing `journal_text`
 and actual speaker through the existing safe interaction projection. Private NPC
 `memory_text` remains private. Recalled testimony is historical attributed
@@ -917,6 +916,15 @@ the same edge, because binding `matches()` compares structure and ignores
 `description` (without it two commands claim one operation,
 `TURN_STEP_DOMAIN_BINDING_AMBIGUOUS`). The way-of-going wording is approved data
 (`m2c-pass-target-labels` `passage_phrases`), not text composed in code.
+Exit labels are selected by `spatial-v3-exit-label-policy.js`: a unique approved
+pass-target description at the current place, then the exact exit row in the
+Opus `approved_rows` attestation for `m2c-exit-line-labels`. If that line label
+contains only `выход N` while the existing approved `m2c-exit-labels` row names
+the destination, keep the more useful old label temporarily; otherwise use the
+old approved row as fallback, then a typed data gap with place and exit
+diagnostics. The legacy fallback still contains ordinal wording. Current
+coverage uses that fallback for 12 exits: 8 without an approved target or line
+label, and 4 whose target descriptions collide. These are recorded in LW-075.
 Limit: after that first step the path search (`findReachableDeparturePosition`, raw SQL
 of `spatial-v3-expansion-context.js`) walks raw active scene edges without visibility or
 eligibility (admission exists only for the current position). Safe while every scene
@@ -997,8 +1005,6 @@ prose wire: её вычисляет temporal owner и показывает serve
 обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
 dump остаётся static_context_dump. При отсутствии current beat scene-only wire
 сохраняет `visible_scene` и grounded descriptive sensory support.
-Материализованная обычная вещь передаётся как одно естественное сообщение о находке,
-подтверждённое её размещением в текущей сцене, без неподтверждённой детали о поверхности.
 Полный grounded пересказ required sources по одному в исходном порядке является
 weak_literary_composition, если действие или воспринятый результат не организует
 поддержанные пространственные детали в сцену; выдуманная связка недопустима.

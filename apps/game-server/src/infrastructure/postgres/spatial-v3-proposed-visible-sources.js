@@ -1,5 +1,3 @@
-import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
 import { loadApprovedG4NaturalCatalog, loadApprovedG4NaturalPlacementCatalog } from '@rus/runtime-catalog';
 import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibility.js';
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
@@ -10,29 +8,23 @@ import { currentSceneVisibilityModifiers, readCommittedEntityExterior, readPlaye
   './spatial-v3-current-visibility-inputs.js';
 import { serverError } from '../../errors.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
-import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
+import { loadApprovedExitLineLabels, loadApprovedLegacyExitLabels,
+  resolveSpatialV3ExitLabels } from './spatial-v3-exit-label-policy.js';
 
-const labels = loadLabels('m2c-exit-labels');
 const localLabels = loadApprovedLocalEdgeLabels();
 const gap = () => { throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
   'Complete proposed player-visible facts are required.',
   { status: 409, details: { reason: 'place_visible_context_source_required' } }); };
-function loadLabels(name) {
-  const bytes = readFileSync(new URL(`../../../../../data/world-catalogs/novgorod/${name}/candidate.json`, import.meta.url));
-  const candidate = JSON.parse(bytes);
-  const approval = JSON.parse(readFileSync(new URL(
-    `../../../../../data/world-catalogs/novgorod/${name}/approval-attestation.json`, import.meta.url)));
-  return approval.decision === 'APPROVE_DATA_ONLY'
-    && approval.candidate_ref === `${candidate.candidate_id}@${candidate.version}`
-    && approval.candidate_sha256 === createHash('sha256').update(bytes).digest('hex')
-    ? candidate.labels : null;
-}
-
 /** Read committed mutable facts on the caller's transaction; scene geometry comes only from P16 overlay. */
 export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, worldBaseReader,
   actorId, sourceLocation, expansionClosure, readCurrentEnvironment, readTargetConditions,
-  readEntityExterior = readCommittedEntityExterior, readKnowledge = readPlayerKnowledge } = {}) {
+  itemLabels = {},
+  readEntityExterior = readCommittedEntityExterior, readKnowledge = readPlayerKnowledge,
+  readExitLabels = loadApprovedExitLineLabels,
+  readLegacyExitLabels = loadApprovedLegacyExitLabels } = {}) {
+  const exitLabels = readExitLabels();
+  const legacyExitLabels = readLegacyExitLabels();
   const slotByExit = slotByExitOf(expansionClosure?.slots);
   return async function readSources({ transaction, overlay } = {}) {
     const { site, baseline, position } = overlay ?? {};
@@ -41,7 +33,7 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
     if (typeof transaction?.query !== 'function' || !partyId || !actorId
       || sourceLocation?.party_id !== partyId || sourceLocation.owner_id !== actorId
       || !position || !baseline || !Array.isArray(directionalExits)
-      || !labels || !localLabels || typeof readCurrentEnvironment !== 'function'
+      || !legacyExitLabels || !localLabels || typeof readCurrentEnvironment !== 'function'
       || typeof readTargetConditions !== 'function'
       || typeof worldBaseReader?.readPinnedSceneTemplateClosure !== 'function') gap();
     const inScene = (rows) => rows.filter((row) => row.party_id === partyId
@@ -161,11 +153,15 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
         if (!exterior || typeof exterior !== 'object' || Array.isArray(exterior)) gap();
         const known = await readKnowledge({ transaction, partyId, actorId,
           placement: target.placement });
+        const displayName = known?.display_name?.trim()
+          || exterior.display_name?.trim()
+          || (target.placement.entity_kind === 'item'
+            ? itemLabels[exterior.template_id]?.trim() : null) || null;
         entityObservations.push({ entity_kind: target.placement.entity_kind,
           entity_id: target.placement.entity_id, visibility: row.visibility, exterior,
-          display_label: known?.display_name?.trim()
+          display_label: displayName
             || (target.placement.entity_kind === 'npc' ? 'человек' : 'предмет'),
-          ...(known?.display_name?.trim() ? { display_name: known.display_name } : {}) });
+          ...(displayName ? { display_name: displayName } : {}) });
       } else if (target.edge) {
         const matches = localLabels.filter((label) => label.scene_template_ref.id
           === target.edge.source_scene_template_ref?.entity_id
@@ -175,22 +171,19 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
         localEdges.push({ edge_id: target.edge.id, display_label: matches[0].display_label });
       } else {
         const exit = target.exit;
-        const matches = labels.filter((label) => label.world_revision_id === pin.compatible_world_revision_id
-          && label.g4_ref.id === site.parent_g4_id && label.directional_exit_ref.id === exit.id
-          && label.directional_exit_ref.version === exit.version
-          && label.directional_exit_ref.canonical_digest === exit.canonical_digest
-          && label.direction_context_ref.id === exit.direction_context_id);
-        if (matches.length !== 1) gap();
         visibleExits.push({ directional_exit_id: exit.id,
           directional_exit_version: exit.version, direction_context_id: exit.direction_context_id,
-          knowledge_state: 'visible', display_label: matches[0].display_label,
-          editorial_choice_ordinal: matches[0].editorial_choice_ordinal,
+          knowledge_state: 'visible', _exit_canonical_digest: exit.canonical_digest,
           // `admitted` holds only revealed targets: any revealed exit shows its description.
           ...passTargetDisclosureForExit(slotByExit, exit.id) });
       }
     }
+    const disclosedExits = resolveSpatialV3ExitLabels(visibleExits, { lineLabels: exitLabels,
+      legacyLabels: legacyExitLabels,
+      placeId: site.canonical_g5_ref?.entity_id ?? site.id,
+      worldRevisionId: pin.compatible_world_revision_id, g4Id: site.parent_g4_id });
     return { naturalInput, partyId, actorId, positionId: position.id,
       entityObservations, localEdges,
-      directionalExits: withPassTargetDisambiguation(visibleExits) };
+      directionalExits: disclosedExits };
   };
 }

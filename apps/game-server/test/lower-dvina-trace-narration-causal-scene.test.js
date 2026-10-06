@@ -40,8 +40,8 @@ async function assertCurrentWire(visible, required, omitted = []) {
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.equal(wire.optional_support.visible_scene,
-      visible.visible_scene);
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visible.visible_scene });
     const facts = wire.required_current_beat.changes.map(({ text }) => text);
     for (const fact of required) assert.ok(facts.includes(fact), fact);
     for (const fact of omitted) assert.equal(call.messages[1].content.includes(fact), false, fact);
@@ -67,11 +67,10 @@ for (const generic of [false, true]) {
         npc_ref: 'fisher', ordinary_descriptor: 'На рукавах налипли стружки.',
         ordinary_activity: 'Перебирает обрезки досок.', causal_basis_refs: ['scene', 'npc']
       } } }] } });
-    assert.deepEqual(visible.visible_changes,
-      ['Вы вышли к пристани за излучиной.']);
-    assert.equal(visible.visible_scene, destination.display_name);
-    assert.deepEqual(visible.known_context,
-      ['Обратный путь идёт вдоль берега.']);
+    assert.deepEqual(visible.visible_changes, [generic
+      ? `Перед вами — ${destination.display_name}.`
+      : 'Вы вышли к пристани за излучиной.',
+    'Обратный путь идёт вдоль берега.']);
     for (const fact of [...scenePresentation.locations[0].player_visible_physical_facts,
       'В поле зрения — человек.',
       'человек: На рукавах налипли стружки.',
@@ -88,9 +87,8 @@ test('real historical phase3 arrival keeps destination, NPC and discovered retur
     phase2Projector: fallback, contracts
   }) }).project({ consequence: { phase3_kind: 'movement' } });
   assert.deepEqual(visible.visible_changes,
-    ['Вы добрались от места крушения до рыбацкого стана.']);
-  assert.deepEqual(visible.known_context,
-    ['Обратная тропа к месту крушения теперь известна.']);
+    ['Вы добрались от места крушения до рыбацкого стана.',
+      'Обратная тропа к месту крушения теперь известна.']);
   assert.ok(visible.sensory_details.includes(
     'Рабочий стан стоит у берега Нижней Двины.'));
   assert.ok(visible.sensory_details.includes('В поле зрения — человек.'));
@@ -120,7 +118,8 @@ test('real terminal carrying arrival exposes destination facts without source sn
       terminal_group_ids: ['fisher'] } } },
     retrieved_state: { current_visible_context: currentScene() } });
   assert.deepEqual(visible.visible_changes,
-    ['Вы дошли до рыбацкого стана вместе с носильщиками и Онисимом.']);
+    ['Вы дошли до рыбацкого стана вместе с носильщиками и Онисимом.',
+      destination.display_name]);
   for (const fact of scenePresentation.locations[0].player_visible_physical_facts) {
     assert.ok(visible.sensory_details.includes(fact), fact);
   }

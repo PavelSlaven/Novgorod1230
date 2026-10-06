@@ -1,0 +1,629 @@
+{
+  "schema": "rus.m2c_exit_line_labels_authoring_approval.v1",
+  "decision": "APPROVE_WITH_LIMITS",
+  "candidate_ref": "novgorod_m2c_exit_line_labels_v1@1",
+  "approved_commit": "TO_BE_FILLED_BY_LEAD_AT_COMMIT (the commit that adds m2c-exit-line-labels); content pinned by candidate_sha256",
+  "approved_by": "claude-opus-5-5 (Opus, independent approver, task ap-exit-line-labels; author: task slice-r4b-bugs)",
+  "approved_on": "2026-10-05",
+  "source_issue": "PavelSlaven/Novgorod1230#133, #160 (D49, D72)",
+  "scope": "70 of 86 directional world_route_exit rows (35 physical route pairs) of the v17 start cell: display_label = name_ru of the APPROVE_WITH_LIMITS m2c-line-names world-route pair reached by the exact join world_route -> its single approved \"from\" endpoint binding -> directional exit; line_discriminator null and line_direction_id null approved as data-correct for these rows. 16 rows (8 pairs) are withheld, see withheld_rows. Structured fields other than display_label/provenance and the added refs are byte-equal to m2c-exit-labels (APPROVE_DATA_ONLY); editorial_choice_ordinal stays metadata only.",
+  "approved_rows": [
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_01",
+      "route_pair_id": "cross_g4_01",
+      "from_place": "sheltered_inner_reach_downstream_approach",
+      "display_label": "по спокойной воде меж берегов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_02",
+      "route_pair_id": "cross_g4_02",
+      "from_place": "central_current_split_rejoin_reach",
+      "display_label": "между низкими берегами по струе"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_03",
+      "route_pair_id": "cross_g4_03",
+      "from_place": "north_exposed_turn_downstream_approach",
+      "display_label": "по речной воде меж берегов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_04",
+      "route_pair_id": "cross_g4_04",
+      "from_place": "sheltered_inner_reach_downstream_approach",
+      "display_label": "вдоль заросшего берега"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_05",
+      "route_pair_id": "cross_g4_05",
+      "from_place": "sheltered_inner_reach_downstream_approach",
+      "display_label": "по широкой речной воде у травяного берега"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_06",
+      "route_pair_id": "cross_g4_06",
+      "from_place": "central_current_split_rejoin_reach",
+      "display_label": "по широкой воде между берегами"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_07",
+      "route_pair_id": "cross_g4_07",
+      "from_place": "west_hidden_backwater_hidden_outlet",
+      "display_label": "по широкой воде у низкой земли"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_08",
+      "route_pair_id": "cross_g4_08",
+      "from_place": "east_flood_bypass_exit",
+      "display_label": "среди отмелей в речной воде"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_09",
+      "route_pair_id": "cross_g4_09",
+      "from_place": "channel_split_islet_downstream_tail",
+      "display_label": "береговым сходом по травяной земле"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_10",
+      "route_pair_id": "cross_g4_10",
+      "from_place": "flooded_interior_basin_bog_edge",
+      "display_label": "тропой по мягкому мху и осоке"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_11",
+      "route_pair_id": "cross_g4_11",
+      "from_place": "flooded_interior_basin_bog_edge",
+      "display_label": "напрямик по вязкой земле"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_12",
+      "route_pair_id": "cross_g4_12",
+      "from_place": "driftwood_bar_downstream_cut",
+      "display_label": "между берегами у речных наносов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_13",
+      "route_pair_id": "cross_g4_13",
+      "from_place": "driftwood_bar_downstream_cut",
+      "display_label": "по воде, несущей песок"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_15",
+      "route_pair_id": "cross_g4_15",
+      "from_place": "sheltered_landing_terrace_flood_edge",
+      "display_label": "через травянистый склон"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_17",
+      "route_pair_id": "cross_g4_17",
+      "from_place": "vikhtuy_resource_edge_deep_forest",
+      "display_label": "под редкими кронами"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_18",
+      "route_pair_id": "cross_g4_18",
+      "from_place": "vikhtuy_resource_edge_deep_forest",
+      "display_label": "сквозь чащу под густыми кронами"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_19",
+      "route_pair_id": "cross_g4_19",
+      "from_place": "zaostrovye_landing_flood_limit",
+      "display_label": "сырым ходом по хвое"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_20",
+      "route_pair_id": "cross_g4_20",
+      "from_place": "dry_pine_ridge_north_descent",
+      "display_label": "по сухой хвойной земле"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_21",
+      "route_pair_id": "cross_g4_21",
+      "from_place": "outer_exposed_approach_sea_exit",
+      "display_label": "на широкой устьевой воде"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_22",
+      "route_pair_id": "cross_g4_22",
+      "from_place": "west_hidden_backwater_hidden_outlet",
+      "display_label": "по узкому водному ответвлению"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_23",
+      "route_pair_id": "cross_g4_23",
+      "from_place": "east_flood_bypass_exit",
+      "display_label": "по мелкому боковому ходу"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_24",
+      "route_pair_id": "cross_g4_24",
+      "from_place": "north_exposed_turn_downstream_approach",
+      "display_label": "по воде вдоль песчаных мелей"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+      "from_place": "reed_backwater_entrance",
+      "display_label": "по влажной осоке"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+      "from_place": "floodplain_ridge_route_south_approach",
+      "display_label": "тропой по плотной земле среди трав"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+      "from_place": "east_side_channel_entrance",
+      "display_label": "среди прибрежных кустов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+      "from_place": "wet_conifer_tract_river_edge",
+      "display_label": "под хвойными кронами"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+      "from_place": "dry_island_ridge_landing",
+      "display_label": "по пойменному разнотравью"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+      "from_place": "large_island_head_upstream_tip",
+      "display_label": "через твёрдую травянистую землю"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+      "from_place": "north_outflow_reach_upstream_approach",
+      "display_label": "вдоль широкой травяной полосы"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+      "from_place": "mixing_reach_inner_approach",
+      "display_label": "прибрежной тропой меж низких берегов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+      "from_place": "shifting_shoal_field_warning_reach",
+      "display_label": "по песчаной осыпи"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+      "from_place": "vikhtuy_resource_edge_river_edge",
+      "display_label": "тропой через травянистую землю у воды"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+      "from_place": "west_side_channel_entrance",
+      "display_label": "по влажному прибрежью"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+      "from_place": "zaostrovye_settlement_center_river_approach",
+      "display_label": "по ровной траве"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+      "from_place": "zaostrovye_burial_area_approach",
+      "display_label": "берегом по сухой земле"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_01",
+      "route_pair_id": "cross_g4_01",
+      "from_place": "central_navigation_reach_upstream_approach",
+      "display_label": "по спокойной воде меж берегов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_02",
+      "route_pair_id": "cross_g4_02",
+      "from_place": "north_outflow_reach_upstream_approach",
+      "display_label": "между низкими берегами по струе"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_03",
+      "route_pair_id": "cross_g4_03",
+      "from_place": "mixing_reach_inner_approach",
+      "display_label": "по речной воде меж берегов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_04",
+      "route_pair_id": "cross_g4_04",
+      "from_place": "west_side_channel_entrance",
+      "display_label": "вдоль заросшего берега"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_05",
+      "route_pair_id": "cross_g4_05",
+      "from_place": "east_side_channel_entrance",
+      "display_label": "по широкой речной воде у травяного берега"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_06",
+      "route_pair_id": "cross_g4_06",
+      "from_place": "large_island_head_upstream_tip",
+      "display_label": "по широкой воде между берегами"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_07",
+      "route_pair_id": "cross_g4_07",
+      "from_place": "large_island_head_upstream_tip",
+      "display_label": "по широкой воде у низкой земли"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_08",
+      "route_pair_id": "cross_g4_08",
+      "from_place": "large_island_head_upstream_tip",
+      "display_label": "среди отмелей в речной воде"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_09",
+      "route_pair_id": "cross_g4_09",
+      "from_place": "dry_island_ridge_landing",
+      "display_label": "береговым сходом по травяной земле"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_10",
+      "route_pair_id": "cross_g4_10",
+      "from_place": "reed_backwater_entrance",
+      "display_label": "тропой по мягкому мху и осоке"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_11",
+      "route_pair_id": "cross_g4_11",
+      "from_place": "floodplain_ridge_route_south_approach",
+      "display_label": "напрямик по вязкой земле"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_12",
+      "route_pair_id": "cross_g4_12",
+      "from_place": "central_navigation_reach_upstream_approach",
+      "display_label": "между берегами у речных наносов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_13",
+      "route_pair_id": "cross_g4_13",
+      "from_place": "north_outflow_reach_upstream_approach",
+      "display_label": "по воде, несущей песок"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_15",
+      "route_pair_id": "cross_g4_15",
+      "from_place": "vikhtuy_locality_river_approach",
+      "display_label": "через травянистый склон"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_17",
+      "route_pair_id": "cross_g4_17",
+      "from_place": "zaostrovye_settlement_center_river_approach",
+      "display_label": "под редкими кронами"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_18",
+      "route_pair_id": "cross_g4_18",
+      "from_place": "tributary_mouth_main_river_approach",
+      "display_label": "сквозь чащу под густыми кронами"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_19",
+      "route_pair_id": "cross_g4_19",
+      "from_place": "wet_conifer_tract_river_edge",
+      "display_label": "сырым ходом по хвое"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_20",
+      "route_pair_id": "cross_g4_20",
+      "from_place": "tributary_mouth_main_river_approach",
+      "display_label": "по сухой хвойной земле"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_21",
+      "route_pair_id": "cross_g4_21",
+      "from_place": "shifting_shoal_field_warning_reach",
+      "display_label": "на широкой устьевой воде"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_22",
+      "route_pair_id": "cross_g4_22",
+      "from_place": "reed_backwater_entrance",
+      "display_label": "по узкому водному ответвлению"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_23",
+      "route_pair_id": "cross_g4_23",
+      "from_place": "dry_island_ridge_landing",
+      "display_label": "по мелкому боковому ходу"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_24",
+      "route_pair_id": "cross_g4_24",
+      "from_place": "shifting_shoal_field_warning_reach",
+      "display_label": "по воде вдоль песчаных мелей"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+      "from_place": "old_channel_pool_old_mouth",
+      "display_label": "по влажной осоке"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+      "from_place": "sheltered_landing_terrace_water_approach",
+      "display_label": "тропой по плотной земле среди трав"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+      "from_place": "east_flood_bypass_entrance",
+      "display_label": "среди прибрежных кустов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+      "from_place": "dry_pine_ridge_south_approach",
+      "display_label": "под хвойными кронами"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+      "from_place": "flooded_interior_basin_inlet",
+      "display_label": "по пойменному разнотравью"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+      "from_place": "channel_split_islet_upstream_tip",
+      "display_label": "через твёрдую травянистую землю"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+      "from_place": "north_exposed_turn_upstream_approach",
+      "display_label": "вдоль широкой травяной полосы"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+      "from_place": "outer_exposed_approach_river_side",
+      "display_label": "прибрежной тропой меж низких берегов"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+      "from_place": "driftwood_bar_upstream_edge",
+      "display_label": "по песчаной осыпи"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+      "from_place": "vikhtuy_locality_river_approach",
+      "display_label": "тропой через травянистую землю у воды"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+      "from_place": "west_hidden_backwater_entrance",
+      "display_label": "по влажному прибрежью"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+      "from_place": "zaostrovye_burial_area_approach",
+      "display_label": "по ровной траве"
+    },
+    {
+      "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+      "from_place": "zaostrovye_landing_river_approach",
+      "display_label": "берегом по сухой земле"
+    }
+  ],
+  "withheld_rows": {
+    "verdict": "CHANGES_REQUIRED",
+    "rows": [
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_14",
+        "route_pair_id": "cross_g4_14",
+        "from_place": "old_channel_pool_hidden_link",
+        "display_label": "береговым переходом по мокрому прибрежью"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3f__cross_g4_16",
+        "route_pair_id": "cross_g4_16",
+        "from_place": "sheltered_landing_terrace_flood_edge",
+        "display_label": "тропой по мягкой пойменной траве"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+        "from_place": "central_navigation_reach_upstream_approach",
+        "display_label": "тропой по травянистому краю"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+        "from_place": "tributary_mouth_main_river_approach",
+        "display_label": "тропой по влажной траве у воды"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+        "from_place": "south_entry_reach_upstream_approach",
+        "display_label": "берегом по плотному прибрежному лугу"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+        "from_place": "vikhtuy_locality_river_approach",
+        "display_label": "по береговой земле"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+        "from_place": "vikhtuy_river_approach_water_approach",
+        "display_label": "у воды, по мягкой земле"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+        "from_place": "zaostrovye_landing_river_approach",
+        "display_label": "через пойменную траву"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_14",
+        "route_pair_id": "cross_g4_14",
+        "from_place": "tributary_mouth_main_river_approach",
+        "display_label": "береговым переходом по мокрому прибрежью"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3r__cross_g4_16",
+        "route_pair_id": "cross_g4_16",
+        "from_place": "zaostrovye_settlement_center_river_approach",
+        "display_label": "тропой по мягкой пойменной траве"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+        "from_place": "central_current_split_upstream_nose",
+        "display_label": "тропой по травянистому краю"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+        "from_place": "forest_stream_route_lower_reach",
+        "display_label": "тропой по влажной траве у воды"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+        "from_place": "sheltered_inner_reach_upstream_approach",
+        "display_label": "берегом по плотному прибрежному лугу"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+        "from_place": "vikhtuy_river_approach_water_approach",
+        "display_label": "по береговой земле"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+        "from_place": "vikhtuy_resource_edge_river_edge",
+        "display_label": "у воды, по мягкой земле"
+      },
+      {
+        "directional_exit_id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+        "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+        "from_place": "zaostrovye_settlement_center_river_approach",
+        "display_label": "через пойменную траву"
+      }
+    ],
+    "gaps": [
+      {
+        "place": "zaostrovye_settlement_center_river_approach",
+        "pairs": [
+          "cross_g4_16",
+          "g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle"
+        ],
+        "reason": "Two exits read \"по мягкой пойменной траве\" and \"через пойменную траву\": same floodplain grass, only \"мягкой\" and the preposition differ."
+      },
+      {
+        "place": "vikhtuy_river_approach_water_approach",
+        "pairs": [
+          "g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+          "g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2"
+        ],
+        "reason": "Both exits of this place read \"по береговой земле\" and \"у воды, по мягкой земле\": \"береговой\" = \"у воды\", only \"мягкой\" is added (the local line \"берегом по суше\" at the same place is a third near-synonym)."
+      },
+      {
+        "place": "tributary_mouth_main_river_approach",
+        "pairs": [
+          "g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+          "cross_g4_14"
+        ],
+        "reason": "Two exits read \"по влажной траве у воды\" and \"берегом по мокрому прибрежью\": wet strip at the water in both, synonyms only."
+      },
+      {
+        "place": "south_entry_reach_upstream_approach",
+        "pairs": [
+          "g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1"
+        ],
+        "reason": "Exit \"берегом по плотному прибрежному лугу\" next to the approved, already shown connection \"Уйти береговой травой вдоль воды\" (south_entry_reach_cycle): bank + grass/meadow in both, only \"плотному\" is added."
+      },
+      {
+        "place": "central_navigation_reach_upstream_approach",
+        "pairs": [
+          "g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1"
+        ],
+        "reason": "Exit \"берегом по травянистому краю\" next to the local line \"берегом по траве вдоль воды\" (central_navigation_reach_cycle, at present shown as \"Проход N\"): same bank-and-grass description, synonyms only; it becomes a visible duplicate once local lines show names."
+      }
+    ],
+    "places_with_all_exits_withheld": [
+      "central_current_split_upstream_nose",
+      "forest_stream_route_lower_reach",
+      "old_channel_pool_hidden_link",
+      "sheltered_inner_reach_upstream_approach",
+      "south_entry_reach_upstream_approach",
+      "vikhtuy_river_approach_water_approach"
+    ],
+    "places_with_some_exits_withheld": [
+      "central_navigation_reach_upstream_approach",
+      "sheltered_landing_terrace_flood_edge",
+      "tributary_mouth_main_river_approach",
+      "vikhtuy_locality_river_approach",
+      "vikhtuy_resource_edge_river_edge",
+      "zaostrovye_landing_river_approach",
+      "zaostrovye_settlement_center_river_approach"
+    ],
+    "fix": "Preferred: give one line of each gap a perceivable distinguishing feature, either by renaming that m2c-line-names world-route record or by a side-specific line_discriminator (§4.7.2 allows it per side), approved as a line-names change, then re-derive mechanically and re-approve only the changed rows. Do not fall back to ordinals (\"— выход N\", D72/§4.7.2). Dropping withheld rows makes those exits invisible in runtime (onExitLabelGap), see limits."
+  },
+  "checks": [
+    "Author tests in worktrees/slice-r4b-bugs (HEAD a32c0c6e, catalog untracked): node --test candidate.test.mjs approved-labels.test.mjs -> 10/10 pass. Author files unchanged (sha256 before/after).",
+    "Approver out/check.mjs (own join from primary JSON): candidate sha e4ed12f9…3018; line-names candidate sha = attestation sha, APPROVE_WITH_LIMITS; 5 dataset pins equal file hashes; 86 rows, 86 distinct exits = exit set of m2c-exit-labels; for every row the route is approved, has exactly one \"from\" binding, that binding names exactly this exit (and no other from-binding names it), the exit is approved world_route_exit with the same G4, G5 and digest; route_pair_id = the line-names pair containing the route; line_name = its name_ru; discriminator = qualifier of the side (all null); line_direction_id = first segment value (field absent in all 86 segments -> null); display_label = composition; no digits/latin/underscore; template fields unchanged; both sides of each of 43 pairs equal. Author derive.mjs reproduces candidate byte-for-byte. Result PASS (check-result.json).",
+    "Uniqueness: 0 exact (NFC, casefold, punctuation-free) duplicate labels among exits of any of 46 exit G5 places and of any of 32 G4; 0 exits equal to a local line name or a shown canonical-connection label (without \"Уйти \") at the same G5.",
+    "Semantic review over all 46 menus (exits + local lines of the same G5): 85 pairs share a content stem; each read by the approver; 5 places with no distinguishing feature -> withheld (see gaps).",
+    "m2c-line-names check.mjs OK (227/43/18, includes target-title stem leak and ordinal checks); check.test.mjs 5/5.",
+    "Mechanical continuation after line-name v4 composition: verified all 70 approved display_label values and route_pair_id values unchanged against the prior candidate.",
+    "Rebuilt with data/world-catalogs/novgorod/m2c-exit-line-labels/derive.mjs --write; exactly 8 changed labels are held rows, and all 86 rows remain partitioned 70 approved / 16 withheld."
+  ],
+  "limits": [
+    "name_ru are authored game names, not attested 1230 toponyms; all limits of the m2c-line-names approval apply.",
+    "Null discriminator and direction: line-names approved all qualifiers null, and no world_route_segment has line_direction_id; §4.7.2 allows null on both sides and forbids deriving direction from coordinates. Distinctness therefore rests on name_ru alone; any new line at these places requires the uniqueness and near-duplicate check again.",
+    "Borderline but accepted (contrasting feature present): large_island_head_upstream_tip \"по широкой воде между берегами\" / \"по широкой воде у низкой земли\"; zaostrovye_settlement_center_river_approach \"по ровной траве\" next to the withheld grass lines (recheck after the rename); vikhtuy_resource_edge_river_edge and vikhtuy_locality_river_approach shore/grass options (path vs no path); floodplain_ridge_route_south_approach \"тропой по плотной земле среди трав\" / local \"по плотному травяному покрову\"; flooded_interior_basin_bog_edge \"напрямик по вязкой земле\" / local \"по вязкой земле среди осоки\"; wet_conifer_tract_river_edge \"под хвойными кронами\" / \"сырым ходом по хвое\".",
+    "Menu form: exit rows show a bare way phrase (\"по спокойной воде меж берегов\") while approved canonical connections show \"Уйти …\" and the rest \"Проход N\"; acceptable as an interim mixed menu, a single action form is a presentation decision. Base names with a method word or the alternative-method word of §14.4 are not composed here.",
+    "Historical note (superseded 2026-10-05): the initial reader only accepted APPROVE_DATA_ONLY and returned null for this APPROVE_WITH_LIMITS attestation. Current approved-labels.mjs verifies the exact candidate hash and exposes the 70 approved_rows; the runtime policy then selects a unique pass-target, an approved line label, or the previous approved label. The 16 withheld rows are not exposed as line labels. This current composition preserves all 86 disclosed exits.",
+    "Menu scope was checked per exit G5 and per G4 (both clean for exact duplicates); runtime menu grouping by current position not checked in a live run.",
+    "Not checked: database import, live playtest, LLM narration of these labels, visibility admission of hidden exits (owned by Spatial visibility)."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "candidate_path": "data/world-catalogs/novgorod/m2c-exit-line-labels/candidate.json",
+  "candidate_sha256": "a34ae3171b09db3115c881a187bbad37965f2e5e7d722ce1ad61fc786f37d4e3",
+  "previous_candidate_sha256": "e4ed12f90ddb97cefe60eea99ef2afac32712d48eec714dee13ddb66b3dd3018",
+  "composed_from": [
+    {
+      "approval": "/srv/novgorod-work/fleet/tasks/slice-r4b-bugs/out/backup/line-names-v4-compose-20261005T131745Z/exit-line-labels-approval-attestation.json",
+      "candidate_sha256": "e4ed12f90ddb97cefe60eea99ef2afac32712d48eec714dee13ddb66b3dd3018",
+      "decision": "APPROVE_WITH_LIMITS",
+      "scope": "Preserved exact approved_rows partition; existing 16 held outputs remain withheld."
+    },
+    {
+      "approval": "data/world-catalogs/novgorod/m2c-line-names/approval-attestation.json",
+      "candidate_sha256": "0965443b441cfde2155040737b6b051c20bad2fd060dd4c22cad4bdd41c308b2",
+      "decision": "APPROVE_WITH_LIMITS",
+      "scope": "Composed v2 plus the independently approved cross_g4_16 row."
+    }
+  ],
+  "composition_check": "Derived candidate regenerated by derive.mjs. All 70 previously approved row labels are byte-identical and remain approved; 8 changed labels are all within the existing 16-row withheld partition. No withheld row becomes approved."
+}

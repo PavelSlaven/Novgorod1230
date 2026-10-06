@@ -28,7 +28,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     const call = JSON.parse(init.body);
     const system = (call.messages?.[0]?.content ?? '').replace(/^Return a valid json object\.\s*/u, '');
     const role = identifyLlmTestRole(call);
-    if (system.startsWith('Return only {"pass"')) {
+    if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
       const response = await provider(url, init);
       report.model_calls.push({ role: 'gameplay_narrator_auditor',
         output: await readStage23AuditOutput(response) });
@@ -58,7 +58,36 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     const captured = { model: call.model, system: call.messages[0].content, input };
     report.model_calls.push(captured);
     let output;
-    if (role === 'world_knowledge_query_planner') {
+    const hasScene = typeof input?.сцена?.граница === 'string';
+    const hasRejectedProse = Object.hasOwn(input ?? {}, 'отклонённая_проза');
+    const hasCheckedProse = Object.hasOwn(input ?? {}, 'проверяемая_проза');
+    const isOpeningWriter = hasScene && Object.keys(input).length === 1;
+    const openingFacts = () => {
+      const scene = input.сцена ?? {};
+      return [
+        ...(Array.isArray(scene.факты) ? scene.факты : []),
+        ...(Array.isArray(scene.персонажи) ? scene.персонажи.flatMap(({ имя, факты: personFacts }) =>
+          [имя, ...(Array.isArray(personFacts) ? personFacts : [])]) : [])
+      ].map((fact) => typeof fact === 'string' ? fact : fact?.текст)
+        .filter((fact) => typeof fact === 'string' && fact.length > 0);
+    };
+    if (hasScene && hasRejectedProse) {
+      captured.role = 'gameplay_narrator_semantic_repair';
+      const facts = openingFacts();
+      const split = Math.ceil(facts.length / 2);
+      output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+        .filter(Boolean).join('\n\n') };
+    } else if (hasScene && hasCheckedProse) {
+      captured.role = 'gameplay_narrator_auditor';
+      output = { pass: true, failed_checks: [], concerns: [], evidence: openingFacts() };
+    } else if (isOpeningWriter) {
+      captured.role = 'gameplay_narrator';
+      const facts = openingFacts();
+      const split = Math.ceil(facts.length / 2);
+      output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+        .filter(Boolean).join('\n\n') };
+    } else if (role === 'world_knowledge_query_planner'
+        || system.includes('schema must equal world_knowledge_query_plan_v1.')) {
       captured.role = 'world_knowledge_query_planner';
       assert.equal(typeof (input.request ?? input).semantic_input, 'string');
       output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
@@ -103,14 +132,16 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
       const sources = [...input.required_current_beat.changes, ...input.required_current_beat.uncertainties];
       output = { reviewed_segments: ids, source_reviews: sources.map(({ ref }) => ({ ref, segment_choices: ids })),
         unsupported: [], literary_failures: [], evidence: ['Deterministic test source-copy; no production prose-quality claim.'] };
-    } else if (system.startsWith('Return only {"prose"') || system.startsWith('Return only {"pass"')) {
+    } else if (system.startsWith('Return only {"prose"') || system.startsWith('Return only {"pass"')
+        || system.startsWith('Возвращай только {"pass"')) {
       captured.role = system.startsWith('Return only {"prose"') ? 'gameplay_narrator' : 'gameplay_narrator_auditor';
       const response = await provider(url, init);
       captured.output = await response.clone().json(); captured.duration_ms = performance.now() - started;
       await save(); return response;
     } else {
-      captured.role = 'unconfigured_observed_role';
-      await save(); throw new Error('TARGET_SMOKE_UNCONFIGURED_PROVIDER_ROLE');
+      captured.role = 'unknown';
+      await save();
+      throw new Error(`TARGET_SMOKE_UNCONFIGURED_PROVIDER_ROLE: role=unknown, schema=<absent>; system=${system.slice(0, 120)}`);
     }
     captured.output = output; captured.duration_ms = performance.now() - started;
     await save();

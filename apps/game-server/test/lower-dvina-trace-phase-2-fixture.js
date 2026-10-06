@@ -158,11 +158,6 @@ function fixture({
           },
         }
       : structuredClone(committedState);
-  if (committedState == null) {
-    state.current_visible_context = fixtureOpeningCurrentVisibleContext({
-      state, materializationBundle
-    });
-  }
   const replays = new Map();
   const events = [];
   let committedVisible = null;
@@ -188,12 +183,7 @@ function fixture({
   const repository = {
     async loadPhase2State() {
       events.push('load_state');
-      const current = structuredClone(state);
-      if (committedVisible?.visible_payload != null) {
-        current.current_visible_context = phase2VisibleContextFromPayload(
-          committedVisible.visible_payload);
-      }
-      return current;
+      return structuredClone(state);
     },
     async loadPhase2Replay({ idempotencyKey }) {
       return structuredClone(replays.get(idempotencyKey) ?? null);
@@ -667,7 +657,6 @@ function fixture({
     state,
   };
 }
-
 export function fixtureOpeningCurrentVisibleContext({ state, materializationBundle }) {
   const profiles = materializationBundle?.location_topology_set?.location_profiles;
   const matches = Array.isArray(profiles)

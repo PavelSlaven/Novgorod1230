@@ -135,7 +135,8 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
               && typeof input.prepared_effect.consequence?.position_transition
                 ?.destination_site_id === 'string') {
             committedState = await loadPreparedMovementScene({
-              partyId, state: committedState
+              partyId, state: committedState,
+              clock: input.prepared_effect.time_update.clock_after
             });
             preparedDomainEffect.replaceCurrentState(committedState);
           }

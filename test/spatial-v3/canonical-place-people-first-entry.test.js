@@ -19,6 +19,7 @@ const g4 = { ...canonical.g4_ref, world_revision_id: fixture.world_revision_id }
 const compositions = await load('spatial_v3_g4_npc_composition_bindings');
 const placementPolicy = compositions.find((row) => row.g4_id === g4.id).payload.placement_policy;
 const runtimeProfiles = await load('spatial_v3_npc_runtime_profiles');
+const routineRules = await json('data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/npc_schedule_routine_rules.json');
 const regionalProfiles = await load('spatial_v3_npc_regional_context_profiles');
 const itemPin = fixture.domain_catalog_pin;
 const actorProfile = fixture.actor_base_attributes_runtime_profile;
@@ -40,6 +41,7 @@ const servantGroup = { group_id: 'pf_outbuildings.household_servant', min_count:
 const fisherGroup = { group_id: 'pf_outbuildings.fisher', min_count: 1, max_count: 1, count_weights: [1],
   weighted_subjects: [{ subject_kind: 'occupation', subject_ref: 'nov_occ_fisher',
     profile_ref: 'm2c_npc_fisher_v1', weight: 1 }] };
+const riverbankFisherGroup = { ...fisherGroup, group_id: 'pf_riverbank.shore_worker' };
 /** The regional contexts of the imported data, plus (when asked) the G4-wide applicability the people data will add. */
 const regionalFor = (g4Wide) => regionalProfiles.map((row) => ({ ...row, payload: { ...row.payload,
   applicability: g4Wide ? [...row.payload.applicability, { g4_ref: { id: g4.id, version: g4.version, world_revision_id: g4.world_revision_id } }]
@@ -49,8 +51,9 @@ const fisherRule = { rule_id: 'pr_fisher', rule_version: 1, status: 'approved', 
   region_id: null, subject_kind: 'occupation', subject_ref: 'nov_occ_fisher', presence_probability_ppm: 1_000_000, count_limit: 1,
   allowed_seasons: ['all'], refresh_class: 'none', entry_exposed_weight: 1, search_concealed_weight: 0 };
 
-function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], rules = [], physicalClass = null, readCandidates = null,
-  readClosure = null, scheduleRules = [], scheduledAbsences = [], compositionRefId = 'pf_outbuildings', startedAt = { whole_minutes: '0',
+function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], placeFamilyId = 'pf_outbuildings',
+  rules = [], physicalClass = null, readCandidates = null,
+  readClosure = null, scheduleRules = [], scheduledAbsences = [], compositionRefId = placeFamilyId, startedAt = { whole_minutes: '0',
     subminute_numerator: '0', subminute_denominator: '1' } } = {}) {
   const partyId = `canonical-people-${ordinal}`;
   const prepared = materializeSpatialV3GeneratedScene({ party_id: partyId, site_id: 'site', baseline_id: 'base',
@@ -73,11 +76,11 @@ function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], rules = []
           authoring_version: String(canonical.canonical_g5_ref.version) } } }, ...rows] } };
   const presence = { partyId, scopeInstanceRef: 'g5:site', rules, parentById: new Map(), periodNumber: 4920,
     requestIdentityPrefix: 'presence-first-arrival:site',
-    people: { compositions: groups.length ? [{ place_family_id: 'pf_outbuildings',
+    people: { compositions: groups.length ? [{ place_family_id: placeFamilyId,
       composition_ref: { id: compositionRefId, version: 1, world_revision_id: g4.world_revision_id },
       population_groups: groups, scheduled_absences: scheduledAbsences }] : [],
       schedule_routine_rules_by_place_family: scheduleRules.length
-        ? [{ place_family_id: 'pf_outbuildings', rules: scheduleRules }] : [] } };
+        ? [{ place_family_id: placeFamilyId, rules: scheduleRules }] : [] } };
   const asked = [];
   const options = { verifiedItemCatalog: fixture.domain_catalog,
     actorBaseAttributesBinding: { schema: 'rus.actor_base_attributes_runtime_binding.v1', pin: actorPin, runtime_profile: actorProfile },
@@ -103,17 +106,44 @@ function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], rules = []
   return { options, context, calls, asked };
 }
 const npcRows = (result) => result.approved_write_sets.flatMap((set) => set.inserts).filter((row) => row.target_table === 'party_npcs');
-function timestampForSeason(season) {
+function timestampForSeason(season, localMinuteOfDay = '500') {
   for (let month = 1; month <= 12; month += 1) {
     const timestamp = resolveGameTimestampFromCalendarDate({
       calendar_system: fixture.calendar_profile.calendar_system,
-      year: '1230', month: String(month), day: '15', local_minute_of_day: '500',
+      year: '1230', month: String(month), day: '15', local_minute_of_day: localMinuteOfDay,
       subminute_numerator: '0', subminute_denominator: '1'
     }, fixture.calendar_profile);
     if (projectCalendar(timestamp, fixture.calendar_profile).season_id === season) return timestamp;
   }
   throw new Error(`test calendar does not cover ${season}`);
 }
+
+test('summer riverbank fisher with no day-type signals uses approved normal schedule at 08:00', async () => {
+  const selectedRows = routineRules.filter((row) => row.scope_ref === 'pf_riverbank'
+    && row.subject_kind === 'occupation' && row.subject_ref === 'nov_occ_fisher'
+    && row.season === 'summer' && ['normal', 'night_fishing'].includes(row.day_type));
+  assert.deepEqual(selectedRows.map((row) => row.day_type).sort(), ['night_fishing', 'normal']);
+  const input = setup({ ordinal: 73, groups: [riverbankFisherGroup], placeFamilyId: 'pf_riverbank',
+    compositionRefId: 'pf_riverbank', scheduleRules: selectedRows,
+    startedAt: timestampForSeason('summer', '480') });
+  const result = await createTargetGeneratedFirstEntry(input.options)(input.context);
+  assert.equal(result.ok, true, JSON.stringify(result.error));
+  assert.deepEqual(result.materialization_trace.people.gaps, []);
+  const [fisher] = npcRows(result);
+  assert.equal(fisher.record.profile_set_id, 'm2c_npc_fisher_v1');
+  const schedule = result.approved_write_sets.flatMap((set) => set.inserts)
+    .find((row) => row.target_table === 'party_npc_spatial_schedules').record;
+  const routine = schedule.causal_state_ref.routine_state;
+  assert.equal(schedule.current_position_node_id != null, true);
+  assert.equal(routine.presence_state, 'on_site');
+  assert.equal(routine.schedule_context.home_scope_ref, 'pf_riverbank');
+  assert.equal(routine.schedule_context.day_type, 'normal');
+  assert.equal(routine.schedule_context.selected_rule_ref.schedule_id,
+    'sch_nov_occ_fisher_pf_riverbank_normal_summer');
+  assert.equal(routine.profile.phases[routine.phase_index].state_id, 'morning_work');
+  assert.equal(routine.profile.phases[routine.phase_index].location_ref, 'pf_riverbank');
+  assert.equal(routine.schedule_gap_reason, undefined);
+});
 function seasonalRoutine(presence, locationRef = 'pf_outbuildings') {
   return { schema: 'npc_routine_profile_v1', profile_id: `servant-${presence}`, revision: 1,
     status: 'approved', phases: [

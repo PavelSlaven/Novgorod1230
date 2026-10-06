@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { loadLowerDvinaTraceMaterializationBundle } from
+  '../src/internal/lower-dvina-trace-phase-1a.js';
+import { loadLowerDvinaTracePinnedItemLabels } from
+  '../src/internal/lower-dvina-trace-screen-presentation.js';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 import { createSpatialV3ProposedVisibleSources } from
   '../src/infrastructure/postgres/spatial-v3-proposed-visible-sources.js';
@@ -11,6 +15,11 @@ import { overlaySpatialV3VisibleRows, projectSpatialV3ProposedVisiblePackage } f
 
 test('proposed destination matches committed package using one transaction for mutable facts', async () => {
   const fixture = await approvedNaturalPerceptionFixture({ canonical: true });
+  const materializationBundle = await loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision: 35 });
+  const itemLabels = await loadLowerDvinaTracePinnedItemLabels(materializationBundle);
+  const itemTemplateId = 'trace_ld_v1_item_wet_cloak';
+  assert.ok(itemLabels[itemTemplateId], 'template needs an approved player-safe label');
   const { currentFacts } = fixture.input;
   const rows = { sites: [], scene_baselines: [], g6_instances: [], scene_positions: [],
     acoustic_profiles: [], visibility_links: [], portals: [], movement_edges: [],
@@ -34,16 +43,19 @@ test('proposed destination matches committed package using one transaction for m
         source_slot_key: currentFacts.source_endpoint.slot_key })], updates: [] };
   const firstEntry = { approved_write_sets: [{ inserts: [write('entity_placements', 'item:item:1', {
     entity_kind: 'item', entity_id: 'item:1', position_node_id: 'position:shore',
+    placement_kind: 'scene_position' }), write('entity_placements', 'item:item:gap', {
+    entity_kind: 'item', entity_id: 'item:gap', position_node_id: 'position:shore',
     placement_kind: 'scene_position' })], updates: [], appends: [] }] };
   const seen = [];
   let modifiers = [];
-  const transaction = { async query(sql) {
+  const transaction = { async query(sql, params = []) {
     seen.push(sql);
     assert.doesNotMatch(sql, /party_g5_sites|party_scene_baselines|scene_position_nodes/);
     if (sql.includes('visibility_modifiers')) return { rows: modifiers };
     if (sql.includes('party_actor_body_states')) return { rowCount: 1,
       rows: [{ state_version: 3 }] };
     if (sql.includes('party_item_placements')) return { rows: [{ state: { contents: [] },
+      template_id: params[1] === 'item:1' ? itemTemplateId : null,
       condition_state: 'intact', anchor_id: null, scene_position_id: 'position:shore',
       container_id: null, holder_npc_id: null, holder_character_id: null }] };
     return { rows: [] };
@@ -55,6 +67,7 @@ test('proposed destination matches committed package using one transaction for m
       return { ok: true, value: fixture.sceneClosure }; } },
     actorId: 'player:1', sourceLocation: { party_id: 'party:1', owner_id: 'player:1',
       scene_position_id: 'position:source' }, expansionClosure,
+    itemLabels,
     readCurrentEnvironment: async ({ transaction: used }) => {
       assert.equal(used, transaction); return currentFacts.current_environment;
     },
@@ -74,6 +87,13 @@ test('proposed destination matches committed package using one transaction for m
     firstEntry: { approved_write_sets: [] }, readSources, envelopeInput });
   assert.equal(proposed.envelope.package_digest, afterCommit.envelope.package_digest);
   assert.equal(proposed.envelope.visible_payload.visible_objects[0].entity_ref.entity_id, 'item:1');
+  assert.equal(proposed.visible_context.visible_objects[0].display_label,
+    itemLabels[itemTemplateId]);
+  assert.deepEqual(proposed.envelope.visible_payload.visible_objects.map(({ entity_ref }) =>
+    entity_ref.entity_id), ['item:1']);
+  assert.ok(proposed.visible_context.visible_objects.some((item) =>
+    item.entity_ref.entity_id === 'item:gap'
+    && item.label_gap?.code === 'player_safe_item_label_required'));
   assert.ok(seen.some((sql) => sql.includes('party_actor_body_states')));
   assert.ok(seen.some((sql) => sql.includes('visibility_modifiers')));
   assert.ok(seen.some((sql) => sql.includes('party_item_placements')));

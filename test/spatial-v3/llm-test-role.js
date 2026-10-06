@@ -28,15 +28,18 @@ export function identifyLlmTestRole(callOrBody = {}) {
   const messages = callOrBody.messages ?? callOrBody.body?.messages;
   const input = providerUserInput(messages);
   const request = input?.request ?? input;
-  if (isProjectedWorldKnowledgeRequest(request)) {
+  if (request?.schema === 'world_knowledge_query_planner_request_v1'
+      || isProjectedWorldKnowledgeRequest(request)) {
     return 'world_knowledge_query_planner';
-  }
-  if (request?.schema === 'turn_semantic_resolution_request') {
-    return 'intent_router';
   }
   if (Object.hasOwn(request ?? {}, 'root_player_action')
       && Number.isInteger(request?.step_index)) {
     return 'turn_step_planner';
+  }
+  if (request?.schema === 'turn_semantic_resolution_request'
+      || (typeof request?.player_text === 'string'
+        && Object.hasOwn(request, 'current_state'))) {
+    return 'intent_router';
   }
   return null;
 }

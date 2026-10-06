@@ -7,7 +7,8 @@ import { serverError } from '../../errors.js';
 
 /** Current source facts for canonical or generated G5 scenes, read in the caller's snapshot. */
 export async function readCurrentNaturalSourceState({ transaction, partyId, actorId, snapshot,
-  sceneClosure, naturalProfile, verifiedCatalog, pin, readCurrentEnvironment } = {}) {
+  sceneClosure, naturalProfile, verifiedCatalog, pin, readCurrentEnvironment,
+  clock = null } = {}) {
   if (typeof transaction?.query !== 'function' || typeof readCurrentEnvironment !== 'function') {
     gap('current_temporal_owner_required');
   }
@@ -39,7 +40,8 @@ export async function readCurrentNaturalSourceState({ transaction, partyId, acto
     gap('visibility_modifier_effect_policy_required');
   }
   if (snapshot.portals.length) gap('p22_relation_conditions_required');
-  const current_environment = await readCurrentEnvironment({ transaction, partyId, actorId });
+  const current_environment = await readCurrentEnvironment({ transaction, partyId, actorId,
+    clock });
   const body = await readCurrentActorBodyCapability({ transaction, partyId, actorId,
     purpose: 'perception' });
   const baseline = prepareG4NaturalBaseline({ verifiedCatalog, pin,

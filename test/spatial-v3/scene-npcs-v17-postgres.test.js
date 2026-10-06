@@ -100,8 +100,7 @@ function installStub({ onNarration = null } = {}) {
         interpretation: { intent: 'ответить', grounded_contribution: 'ответ', adaptation: 'literal' },
         resolution: 'automatic', activity: { duration_class: 'domain_owned', effort: 'none' },
         supporting_operations: [], check: null, handoff: null, reason: 'Ответ.' });
-    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}')
-      || system.startsWith('Возвращай только {"pass"')) {
+    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       return json({ pass: true, concerns: [] });
     }
     return base(url, init);

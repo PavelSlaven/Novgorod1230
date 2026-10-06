@@ -4,7 +4,7 @@
 
 ## Как читать карту
 
-- **status** — только метки CONTRACT_INDEX §2: `GOVERNING`, `ACTIVE`, `ACTIVE SPECIALIZATION`, `PROPOSED / UMBRELLA TARGET`, `MIGRATION / ROLLBACK`, `REFERENCE / DOMAIN GUIDE`, `SUPERSEDED / REDIRECT`, `UNDECLARED`. Второй шкалы нет. Папка без записи в CONTRACT_INDEX — `UNDECLARED`: её нормативную роль устанавливает владелец или Contract Auditor.
+- **status** — нормативные категории, их значения и precedence определяет [CONTRACT_INDEX §2](../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md#2-статусы); эта карта шкалу не дублирует. [Индекс ADR](adr/README.md) перечисляет записи решений и даёт шаблон, но не устанавливает нормативный статус решений.
 - **kind** — природа файлов: context / procedure / plan / work-digest / evidence / generated / archive / legacy / template.
 - Статусы документов нормативного корпуса здесь не дублируются — смотри CONTRACT_INDEX.
 - Размеры файлов не указываются: они устаревают с каждой правкой.
@@ -20,6 +20,7 @@
 | `docs/process/` | `REFERENCE / DOMAIN GUIDE` | procedure | обзор системы и её принципов: [HOW_WE_WORK](process/HOW_WE_WORK.md); рабочий цикл и процедуры: [WORKFLOW](process/WORKFLOW.md), [CHANGE_REQUEST](process/CHANGE_REQUEST.md), [CONTEXT_DUMP](process/CONTEXT_DUMP.md), [CORPUS_EDIT](process/CORPUS_EDIT.md) |
 | `docs/work/CURRENT_SPRINT.md` | `REFERENCE / DOMAIN GUIDE` | work-digest | выбор следующей задачи: [CURRENT_SPRINT](work/CURRENT_SPRINT.md) |
 | `docs/work/LEGACY_WARNINGS.md` | `REFERENCE / DOMAIN GUIDE` | work-digest | до правки — `rg` по затрагиваемым путям: [LEGACY_WARNINGS](work/LEGACY_WARNINGS.md) |
+| `docs/work/audits/` | `UNDECLARED` | evidence | снимки аудитов процесса, входные данные для исправлений; норм не создают: [аудит 2026-10-05](work/audits/process-audit-2026-10-05.md) |
 | `docs/work/temporal-world-v4/` | `UNDECLARED` | evidence | только задачи temporal v4; файлы читают tools (LW-010) — не переносить |
 | `docs/playtests/` | `UNDECLARED` | evidence | отчёты реальных gameplay runs по WR §24.1: [README](playtests/README.md); текущее поведение не описывают, читать только нужный run |
 | `docs/architecture/` | `UNDECLARED` | правила модулей и knowledge-source | код в apps/packages, границы зависимостей, правка корпуса |
@@ -27,7 +28,7 @@
 | `docs/pipelines/` | `UNDECLARED` | context | turn / new-game / temporal-advance flow |
 | `docs/modules/` | `UNDECLARED` | context | knowledge-source и инвентарь tools |
 | `docs/setup/` | `UNDECLARED` (CONTRACT_INDEX §3 называет CBM-настройку технической инструкцией) | procedure | локальная настройка CBM, LLM-провайдеров, embeddings |
-| `docs/adr/` | `UNDECLARED` (строки «Status» в шапках ADR — отдельная шкала, LW-008) | decision record | задача меняет решение, записанное в ADR |
+| `docs/adr/` | см. [CONTRACT_INDEX §2](../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md#2-статусы); перечень и шаблон — в [индексе ADR](adr/README.md) | decision record | задача меняет решение, записанное в ADR |
 | `docs/plans/` | `UNDECLARED` | plan | только задачи соответствующего плана |
 | `docs/implementation/` | `UNDECLARED` | plan / evidence | только задачи соответствующей реализации; часть читают tools (LW-010) |
 | `docs/migration/` | `UNDECLARED` | archive / evidence | исторический архив прошлой миграции; `CANONICAL_PATHS.json` — реестр canonical-путей для `docs:generate` |

@@ -6681,7 +6681,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
       "line_kind": "shore",
-      "name_ru": "берегом по мокрому прибрежью",
+      "name_ru": "береговым переходом по мокрому прибрежью",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -6747,7 +6747,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
       "line_kind": "path",
-      "name_ru": "по мягкой пойменной траве",
+      "name_ru": "тропой по мягкой пойменной траве",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7081,7 +7081,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
       "line_kind": "path",
-      "name_ru": "берегом по травянистому краю",
+      "name_ru": "тропой по травянистому краю",
       "qualifier": {
         "from_to": null,
         "to_from": null
@@ -7378,7 +7378,7 @@
       "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
       "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach",
       "line_kind": "path",
-      "name_ru": "по влажной траве у воды",
+      "name_ru": "тропой по влажной траве у воды",
       "qualifier": {
         "from_to": null,
         "to_from": null

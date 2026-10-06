@@ -65,7 +65,7 @@ test('historical pre-v17 party ledger rejects v17 release readiness without touc
       '-e', 'POSTGRES_PASSWORD=test', '-e', 'POSTGRES_USER=postgres',
       '-e', 'POSTGRES_DB=pr17_target_successor_test', 'postgres:16-alpine']).status, 0);
     for (let attempt = 0; attempt < 60; attempt += 1) {
-      if (docker(['exec', name, 'pg_isready', '-U', 'postgres']).status === 0) break;
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'postgres']).status === 0) break;
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
     await new Promise((resolve) => setTimeout(resolve, 600));

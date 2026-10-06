@@ -10,12 +10,17 @@ import { npcSafeSnapshotHasEntityEvidence } from '@rus/npc-runtime';
 
 export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
   roleRunner, worldKnowledgeGrounder = null,
+  assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null,
   resolveSpatialSemanticDescriptor = resolveTurnSpatialSemanticDescriptor } = {}) {
   if (!pool?.query || typeof resolveSpatialSemanticDescriptor !== 'function') {
     throw new TypeError('S1 PostgreSQL pool and turn semantic resolver are required.');
   }
   const authority = createSpatialSemanticAuthorityRepository({ pool });
-  return ({ partyId }) => async function resolveSpatialSemantic(input) {
+  return ({ partyId,
+    assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed,
+    recordNeedsCheckFilter: turnRecord = recordNeedsCheckFilter }) =>
+    async function resolveSpatialSemantic(input) {
     const value = strictSnapshot(input);
     const operation = value.operation;
     const request = value.request;
@@ -57,8 +62,7 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
       causal_request_ref: actionRef, party_id: partyId, need: 'perception',
       envelope: preModel.envelope
     });
-    const resolution = admitSpatialSemanticRemainder({ prepared,
-      proposal: await resolveSpatialSemanticDescriptor({
+    const proposal = await resolveSpatialSemanticDescriptor({
         request: prepared.model_request, roleRunner,
         worldKnowledge: worldKnowledgeGrounder == null ? null
           : (await worldKnowledgeGrounder.ground(prepared.model_request,
@@ -72,7 +76,25 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
                   value.committed_state?.historical_events)
                   ? value.committed_state.historical_events : []
               })).world_knowledge
-      }) });
+      });
+    if (typeof turnGuard === 'function') {
+      const matches = await turnGuard({ matchOnly: true,
+        committedState: value.committed_state,
+        partyId,
+        candidate: { name: proposal?.name,
+          context: proposal?.description, path: 'S1.proposed_description' } });
+      if (Array.isArray(matches) && matches.length > 0) {
+        if (typeof turnRecord === 'function') {
+          await turnRecord({ path: 'S1.proposed_description',
+            queue_ids: matches.map(({ queue_id: queueId }) => queueId) });
+        }
+        return Object.freeze({ working_projection:
+          structuredClone(value.working_projection),
+        summary: 'spatial semantic detail filtered', write_fragments: [],
+        duration_minutes: 0, player_response_boundary: true });
+      }
+    }
+    const resolution = admitSpatialSemanticRemainder({ prepared, proposal });
     const atomic = createSpatialSemanticAtomicWritePlan({
       schema: 'spatial_semantic_atomic_write_plan_v1', party_id: partyId,
       base_party_state_version: Number(request.committed_state_version),
@@ -145,6 +167,26 @@ async function resolveLocalMovement({ value, authority, partyId, target }) {
 }
 export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   committedState, resolverAvailable }) {
+  const next = projectLowerDvinaTraceS1Visible({ playerSafeState,
+    committedState, resolverAvailable });
+  let committed;
+  try { strictSnapshot(playerSafeState); committed = strictSnapshot(committedState); }
+  catch { return next; }
+  if (!resolverAvailable || !Array.isArray(committed.spatial_semantic)) return next;
+  const position = committed.position?.position_id ?? committed.position?.position_ref;
+  if (!text(position)) return next;
+  const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
+    capacity_total: total, consumed_count: used }) => status === 'committed'
+      && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
+      && Number.isSafeInteger(used) && used < total);
+  return available == null ? next : { ...next, spatial_semantic: {
+    semantic_grounding_available: true,
+    position_ref: position } };
+}
+// Player-visible S1 projection only; the planner marker stays in
+// projectLowerDvinaTraceS1Capability.
+export function projectLowerDvinaTraceS1Visible({ playerSafeState,
+  committedState, resolverAvailable }) {
   let player; let committed;
   try { player = strictSnapshot(playerSafeState); committed = strictSnapshot(committedState); }
   catch { return player ?? {}; }
@@ -153,16 +195,9 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   if (!text(position)) return player;
   const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
     resolutions.filter((resolution) => visibleAtPosition(resolution, position)));
-  const next = projectLocalPositionStatus(
+  return projectLocalPositionStatus(
     projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
       resolutions }), resolutions, position);
-  const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
-    capacity_total: total, consumed_count: used }) => status === 'committed'
-      && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
-      && Number.isSafeInteger(used) && used < total);
-  return available == null ? next : { ...next, spatial_semantic: {
-    semantic_grounding_available: true,
-    position_ref: position } };
 }
 function projectLocalPositionStatus(state, resolutions, position) {
   const inside = new Set(resolutions.filter((resolution) =>

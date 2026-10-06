@@ -65,7 +65,7 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
   for (let attempt = 0; attempt < 80; attempt += 1) {
     const logs = docker(['logs', container]);
     if (`${logs.stdout}${logs.stderr}`.includes('PostgreSQL init process complete')
-        && docker(['exec', container, 'pg_isready', '-U', 'm2c', '-d', 'm2c']).status === 0) { ready = true; break; }
+        && docker(['exec', container, 'pg_isready', '-h', '127.0.0.1', '-U', 'm2c', '-d', 'm2c']).status === 0) { ready = true; break; }
     await new Promise((resolvePromise) => setTimeout(resolvePromise, 250));
   }
   assert.equal(ready, true, 'isolated PostgreSQL starts');

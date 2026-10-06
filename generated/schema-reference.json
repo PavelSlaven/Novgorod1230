@@ -1110,9 +1110,15 @@
       "type": "sql"
     },
     {
-      "bytes": 12632,
-      "path": "schemas/party-db/038_party_runtime_local_lines.sql",
-      "sha256": "3cae28e5c1d1fc49f3dc34b45ae3cafa64571c8fe8ca7a1dcf2a9e59984e17c1",
+      "bytes": 10875,
+      "path": "schemas/party-db/038_party_runtime_npc_seasonal_presence.sql",
+      "sha256": "bd90769eb40e0735a294a672c308c0694d32947d347c28197c754f8b1043ff73",
+      "type": "sql"
+    },
+    {
+      "bytes": 12763,
+      "path": "schemas/party-db/039_party_runtime_local_lines.sql",
+      "sha256": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007",
       "type": "sql"
     },
     {

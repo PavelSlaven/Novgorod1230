@@ -1,5 +1,4 @@
 import { canonicalDigest } from '@rus/materialization';
-import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { normalizeGameTimestamp } from '@rus/time-events-history';
 import { serverError } from '../errors.js';
 import {
@@ -91,7 +90,7 @@ export function buildOrdinaryMaterializationMessages(request, { repair = null,
   );
   return [{
     role: 'system', content: instructions.join(' ') },
-  { role: 'user', content: JSON.stringify(ordinaryRequestWire(request)) }];
+  { role: 'user', content: JSON.stringify(request) }];
 }
 
 function ordinaryKnowledgeClosure(request) {
@@ -103,10 +102,6 @@ function ordinaryKnowledgeClosure(request) {
     'For common_mundane reconstruction, use the supplied causal scene basis and ordinary physical and historical plausibility when no hard constraint contradicts the proposal. Exact positive evidence for every mundane object is not required.',
     'Do not add protected identity, authenticity, official status, specialized function, hidden history, exact mechanics, or numeric outcomes from model memory. Non-common materialization remains authority-bound.'
   ];
-}
-
-function ordinaryRequestWire(request) {
-  return omitWorldKnowledgeContextText(request);
 }
 
 function ordinarySemanticShape(request) {

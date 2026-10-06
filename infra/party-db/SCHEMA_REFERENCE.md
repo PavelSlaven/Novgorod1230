@@ -1,7 +1,7 @@
-<!-- GENERATED FILE. Sources: schemas/party-db/001–038, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->
+<!-- GENERATED FILE. Sources: schemas/party-db/001–039, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->
 # Справочник схемы `party_runtime`
 
-- Исполняемый источник: 38 упорядоченных SQL-миграций в `schemas/party-db/`.
+- Исполняемый источник: 39 упорядоченных SQL-миграций в `schemas/party-db/`.
 - Таблиц: 133.
 - Для каждой таблицы приведены SQL-определения `CREATE TABLE`, `ALTER TABLE` и `CREATE INDEX` в порядке миграций. Полный SQL всех миграций, включая `DROP`, триггеры и условные блоки, приведён ниже. Исполняемые файлы остаются источником истины.
 
@@ -44,7 +44,8 @@
 - [`035_party_runtime_nonportal_availability.sql`](../../schemas/party-db/035_party_runtime_nonportal_availability.sql)
 - [`036_party_runtime_visibility_modifiers.sql`](../../schemas/party-db/036_party_runtime_visibility_modifiers.sql)
 - [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
-- [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+- [`038_party_runtime_npc_seasonal_presence.sql`](../../schemas/party-db/038_party_runtime_npc_seasonal_presence.sql)
+- [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ## `party_runtime.acoustic_edges`
 
@@ -165,7 +166,14 @@ CREATE UNIQUE INDEX IF NOT EXISTS expansion_frontiers_open_chain_uq ON party_run
 CREATE TABLE IF NOT EXISTS party_runtime.g5_site_connections (id text PRIMARY KEY,party_id text NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,from_site_id text NOT NULL REFERENCES party_runtime.party_g5_sites(id) ON DELETE RESTRICT,to_site_id text NOT NULL REFERENCES party_runtime.party_g5_sites(id) ON DELETE RESTRICT,passage_type_id text NOT NULL,transition_environment_profile_ref jsonb NOT NULL,movement_orientation_profile_ref jsonb NOT NULL,cost_kind text NOT NULL CHECK(cost_kind IN ('action','time')),action_units integer,baseline_movement_method_id text,movement_method_cost_profile_ref jsonb,base_minutes numeric,dynamic_recheck_policy_ref jsonb,capacity integer,risk_profile_ref jsonb,portal_entity_id text REFERENCES party_runtime.portal_entities(id) ON DELETE RESTRICT,availability_condition_set_ref jsonb,reverse_connection_id text,status text NOT NULL CHECK(status IN ('active','superseded','destroyed')),state_version bigint NOT NULL CHECK(state_version>=0),created_change_set_id text NOT NULL,updated_change_set_id text NOT NULL,terminal_change_set_id text,CHECK(base_minutes IS NULL OR party_runtime.integral_numeric(base_minutes)),CHECK((cost_kind='action')=(action_units IS NOT NULL AND baseline_movement_method_id IS NULL AND movement_method_cost_profile_ref IS NULL AND base_minutes IS NULL AND dynamic_recheck_policy_ref IS NULL)),CHECK((portal_entity_id IS NOT NULL)=(availability_condition_set_ref IS NOT NULL)),CHECK(party_runtime.spatial_v3_lifecycle_valid(status,terminal_change_set_id)));
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
+
+```sql
+ALTER TABLE party_runtime.g5_site_connections
+  ALTER COLUMN passage_type_id DROP NOT NULL;
+```
+
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 ALTER TABLE party_runtime.g5_site_connections
@@ -178,13 +186,14 @@ ALTER TABLE party_runtime.g5_site_connections
   ADD COLUMN IF NOT EXISTS source_canonical_connection_ref jsonb;
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 ALTER TABLE party_runtime.g5_site_connections
   DROP CONSTRAINT IF EXISTS g5_site_connections_line_binding_ck,
   ADD CONSTRAINT g5_site_connections_line_binding_ck CHECK (
-    (line_kind_id IS NULL AND line_kind_profile_ref IS NULL AND line_name IS NULL
+    (line_kind_id IS NULL AND passage_type_id IS NOT NULL
+      AND line_kind_profile_ref IS NULL AND line_name IS NULL
       AND line_discriminator IS NULL AND line_direction_id IS NULL AND line_toponym IS NULL)
     OR
     (line_kind_id IS NOT NULL AND line_kind_profile_ref IS NOT NULL
@@ -4747,7 +4756,7 @@ ALTER TABLE party_runtime.party_traversal_interval_results
   );
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 ALTER TABLE party_runtime.party_traversal_interval_results
@@ -4755,7 +4764,7 @@ ALTER TABLE party_runtime.party_traversal_interval_results
   ADD COLUMN IF NOT EXISTS turn_back boolean NOT NULL DEFAULT false;
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 ALTER TABLE party_runtime.party_traversal_interval_results
@@ -4770,7 +4779,7 @@ ALTER TABLE party_runtime.party_traversal_interval_results
   DROP CONSTRAINT IF EXISTS party_traversal_interval_results_terminal_result_ck;
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 ALTER TABLE party_runtime.party_traversal_interval_results
@@ -4790,7 +4799,7 @@ ALTER TABLE party_runtime.party_traversal_interval_results
   );
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 CREATE UNIQUE INDEX IF NOT EXISTS party_traversal_interval_results_state_identity_uq
@@ -5112,21 +5121,21 @@ CREATE TABLE IF NOT EXISTS party_runtime.traveller_travel_states (
 );
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 ALTER TABLE party_runtime.traveller_travel_states
   ADD COLUMN IF NOT EXISTS mirrored boolean NOT NULL DEFAULT false;
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 ALTER TABLE party_runtime.traveller_travel_states
   DROP CONSTRAINT IF EXISTS traveller_travel_states_closed_result_check;
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 ALTER TABLE party_runtime.traveller_travel_states
@@ -5146,7 +5155,7 @@ ALTER TABLE party_runtime.traveller_travel_states
   );
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 CREATE UNIQUE INDEX IF NOT EXISTS traveller_travel_states_one_open_step_uq
@@ -5154,7 +5163,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS traveller_travel_states_one_open_step_uq
   WHERE status IN ('active','paused_in_transit','stranded_in_transit');
 ```
 
-Источник: [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+Источник: [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 CREATE UNIQUE INDEX IF NOT EXISTS traveller_travel_states_scope_identity_uq
@@ -10525,7 +10534,206 @@ CREATE TRIGGER temporal_append_only
   FOR EACH ROW EXECUTE FUNCTION party_runtime.temporal_append_only();
 ```
 
-### [`038_party_runtime_local_lines.sql`](../../schemas/party-db/038_party_runtime_local_lines.sql)
+### [`038_party_runtime_npc_seasonal_presence.sql`](../../schemas/party-db/038_party_runtime_npc_seasonal_presence.sql)
+
+```sql
+-- Seasonal presence may leave an NPC's semantic PF unresolved while its physical
+-- scene position remains known. Keep the two facts independently validated.
+CREATE OR REPLACE FUNCTION party_runtime.party_npc_schedule_party_reference_valid()
+RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE
+  placement jsonb := NEW.causal_state_ref->'deferred_placement';
+  presence_state text := NEW.causal_state_ref #>> '{routine_state,presence_state}';
+BEGIN
+  IF presence_state = 'offstage_away' THEN
+    IF NEW.current_position_node_id IS NOT NULL
+      OR (placement IS NOT NULL AND placement <> 'null'::jsonb) THEN
+      RAISE EXCEPTION 'NPC away cannot carry a position or deferred placement (npc %, position %, deferred %)',
+        NEW.npc_id, NEW.current_position_node_id, placement;
+    END IF;
+  ELSIF presence_state = 'location_gap' THEN
+    IF placement IS NOT NULL AND placement <> 'null'::jsonb THEN
+      RAISE EXCEPTION 'NPC location gap cannot carry deferred placement (npc %, deferred %)',
+        NEW.npc_id, placement;
+    END IF;
+    IF NEW.current_position_node_id IS NOT NULL AND NOT EXISTS (
+      SELECT 1 FROM party_runtime.scene_position_nodes position
+      WHERE position.id=NEW.current_position_node_id AND position.party_id=NEW.party_id)
+    THEN RAISE EXCEPTION 'npc schedule position belongs to another party'; END IF;
+  ELSIF NEW.current_position_node_id IS NOT NULL THEN
+    IF NOT EXISTS (SELECT 1 FROM party_runtime.scene_position_nodes position
+      WHERE position.id=NEW.current_position_node_id AND position.party_id=NEW.party_id)
+    THEN RAISE EXCEPTION 'npc schedule position belongs to another party'; END IF;
+  ELSIF placement->>'kind'='prepared_scene' THEN
+    IF NOT EXISTS (SELECT 1 FROM party_runtime.preparation_snapshot_members member
+      JOIN party_runtime.preparation_snapshots snapshot ON snapshot.id=member.preparation_snapshot_id
+      WHERE snapshot.party_id=NEW.party_id
+        AND member.preparation_snapshot_id=placement->>'snapshot_id'
+        AND member.ordinal=(placement->>'member_ordinal')::integer)
+    THEN RAISE EXCEPTION 'npc schedule prepared scope is absent or belongs to another party'; END IF;
+  ELSIF placement->>'kind'='legacy_anchor' THEN
+    IF NOT EXISTS (SELECT 1 FROM party_runtime.party_g5_anchors anchor
+      WHERE anchor.party_id=NEW.party_id AND anchor.anchor_id=placement->>'anchor_id')
+    THEN RAISE EXCEPTION 'npc schedule anchor is absent or belongs to another party'; END IF;
+  ELSE
+    RAISE EXCEPTION 'npc schedule requires an exact, approved deferred, or explicit seasonal placement';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM party_runtime.party_npcs npc
+    WHERE npc.party_id=NEW.party_id AND npc.npc_id=NEW.npc_id)
+  THEN RAISE EXCEPTION 'npc schedule actor belongs to another party'; END IF;
+  IF NEW.current_activity_execution_id IS NOT NULL AND NOT EXISTS (
+    SELECT 1 FROM party_runtime.party_timed_activity_executions activity
+    JOIN party_runtime.party_route_plan_executions execution ON execution.id=activity.route_plan_execution_id
+    WHERE activity.id=NEW.current_activity_execution_id AND execution.party_id=NEW.party_id)
+  THEN RAISE EXCEPTION 'npc schedule activity belongs to another party'; END IF;
+  RETURN NEW;
+END $$;
+
+-- Schedule position and entity placement are one physical fact. Check their
+-- final transaction state because the P16 writer may update either table first.
+CREATE OR REPLACE FUNCTION party_runtime.party_npc_schedule_placement_integrity()
+RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE
+  check_party_id text;
+  check_npc_id text;
+  schedule_id text;
+  schedule_status text;
+  schedule_position text;
+  presence_state text;
+  deferred_placement jsonb;
+  schedule_found boolean := false;
+  placement_position text;
+  placement_found boolean := false;
+BEGIN
+  IF TG_TABLE_NAME = 'party_npc_spatial_schedules' THEN
+    IF TG_OP = 'DELETE' THEN RETURN NULL; END IF;
+    schedule_id := NEW.id;
+    SELECT s.party_id, s.npc_id, s.status, s.current_position_node_id,
+        s.causal_state_ref #>> '{routine_state,presence_state}',
+        s.causal_state_ref->'deferred_placement'
+      INTO check_party_id, check_npc_id, schedule_status, schedule_position,
+        presence_state, deferred_placement
+      FROM party_runtime.party_npc_spatial_schedules s
+      WHERE s.id=schedule_id;
+    schedule_found := FOUND;
+    IF NOT schedule_found OR schedule_status <> 'active' THEN RETURN NULL; END IF;
+  ELSE
+    IF TG_OP = 'DELETE' THEN
+      IF OLD.entity_kind <> 'npc' THEN RETURN NULL; END IF;
+      check_party_id := OLD.party_id;
+      check_npc_id := OLD.entity_id;
+    ELSE
+      IF NEW.entity_kind <> 'npc' THEN RETURN NULL; END IF;
+      check_party_id := NEW.party_id;
+      check_npc_id := NEW.entity_id;
+    END IF;
+    SELECT s.id, s.status, s.current_position_node_id,
+        s.causal_state_ref #>> '{routine_state,presence_state}',
+        s.causal_state_ref->'deferred_placement'
+      INTO schedule_id, schedule_status, schedule_position,
+        presence_state, deferred_placement
+      FROM party_runtime.party_npc_spatial_schedules s
+      WHERE s.party_id=check_party_id AND s.npc_id=check_npc_id
+        AND s.status='active';
+    schedule_found := FOUND;
+    IF NOT schedule_found THEN RETURN NULL; END IF;
+  END IF;
+
+  SELECT p.position_node_id INTO placement_position
+    FROM party_runtime.entity_placements p
+    WHERE p.party_id=check_party_id AND p.entity_kind='npc' AND p.entity_id=check_npc_id;
+  placement_found := FOUND;
+  IF presence_state = 'offstage_away' THEN
+    IF schedule_position IS NOT NULL OR placement_found
+      OR (deferred_placement IS NOT NULL AND deferred_placement <> 'null'::jsonb) THEN
+      RAISE EXCEPTION 'offstage NPC schedule requires no physical or deferred placement (npc %)', check_npc_id;
+    END IF;
+  ELSIF presence_state = 'location_gap' THEN
+    IF deferred_placement IS NOT NULL AND deferred_placement <> 'null'::jsonb THEN
+      RAISE EXCEPTION 'NPC location gap cannot carry deferred placement (npc %)', check_npc_id;
+    END IF;
+    IF schedule_position IS NULL AND placement_found THEN
+      RAISE EXCEPTION 'positionless NPC location gap cannot retain entity placement (npc %)', check_npc_id;
+    END IF;
+    IF schedule_position IS NOT NULL
+      AND (NOT placement_found OR placement_position IS DISTINCT FROM schedule_position) THEN
+      RAISE EXCEPTION 'NPC location gap position must match existing entity placement (npc %, position %, placement %)',
+        check_npc_id, schedule_position, placement_position;
+    END IF;
+  END IF;
+  RETURN NULL;
+END $$;
+
+DROP TRIGGER IF EXISTS party_npc_schedule_placement_integrity_on_schedule ON party_runtime.party_npc_spatial_schedules;
+CREATE CONSTRAINT TRIGGER party_npc_schedule_placement_integrity_on_schedule
+AFTER INSERT OR UPDATE ON party_runtime.party_npc_spatial_schedules
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW EXECUTE FUNCTION party_runtime.party_npc_schedule_placement_integrity();
+
+DROP TRIGGER IF EXISTS party_npc_schedule_placement_integrity_on_placement ON party_runtime.entity_placements;
+CREATE CONSTRAINT TRIGGER party_npc_schedule_placement_integrity_on_placement
+AFTER INSERT OR UPDATE OR DELETE ON party_runtime.entity_placements
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW EXECUTE FUNCTION party_runtime.party_npc_schedule_placement_integrity();
+
+-- A seasonal D-1 selection may replace the pinned routine profile. Keep all
+-- schedule identity and candidate bindings immutable, and bind the new pin to
+-- the profile and selected rule persisted in routine_state.
+CREATE OR REPLACE FUNCTION party_runtime.party_npc_schedule_lifecycle_valid()
+RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE
+  before_rule jsonb := OLD.causal_state_ref #> '{routine_state,schedule_context,selected_rule_ref}';
+  after_rule jsonb := NEW.causal_state_ref #> '{routine_state,schedule_context,selected_rule_ref}';
+  before_profile jsonb := OLD.causal_state_ref #> '{routine_state,profile}';
+  after_profile jsonb := NEW.causal_state_ref #> '{routine_state,profile}';
+  seasonal_selection_changed boolean := before_rule IS DISTINCT FROM after_rule
+    OR before_profile IS DISTINCT FROM after_profile;
+BEGIN
+  IF TG_OP='INSERT' THEN
+    IF NEW.state_version<1 THEN RAISE EXCEPTION 'npc schedule state version is invalid'; END IF;
+    RETURN NEW;
+  END IF;
+  IF NEW.state_version<>OLD.state_version+1
+    OR NEW.id<>OLD.id OR NEW.party_id<>OLD.party_id OR NEW.npc_id<>OLD.npc_id
+    OR NEW.candidate_profile_refs<>OLD.candidate_profile_refs THEN
+    RAISE EXCEPTION 'npc schedule identity or state version changed';
+  END IF;
+  IF NEW.schedule_profile_ref IS DISTINCT FROM OLD.schedule_profile_ref
+    OR NEW.dependency_pins IS DISTINCT FROM OLD.dependency_pins
+    OR seasonal_selection_changed THEN
+    IF NOT seasonal_selection_changed
+      OR after_profile->>'profile_id' IS NULL
+      OR NEW.schedule_profile_ref->'entity_ref'->>'entity_kind' IS DISTINCT FROM 'activity_profile'
+      OR NEW.schedule_profile_ref->'entity_ref'->>'entity_id' IS DISTINCT FROM after_profile->>'profile_id'
+      OR NEW.schedule_profile_ref->>'authoring_version' IS DISTINCT FROM after_profile->>'revision'
+      OR NEW.dependency_pins #>> '{pins,0,dependency_role}' IS DISTINCT FROM 'profile'
+      OR NEW.dependency_pins #>> '{pins,0,entity_ref,entity_kind}' IS DISTINCT FROM 'activity_profile'
+      OR NEW.dependency_pins #>> '{pins,0,entity_ref,entity_id}' IS DISTINCT FROM after_profile->>'profile_id'
+      OR NEW.dependency_pins #>> '{pins,0,version_pin,authoring_version}' IS DISTINCT FROM after_profile->>'revision'
+      OR after_rule->>'schedule_id' IS NULL
+      OR NOT EXISTS (SELECT 1 FROM jsonb_array_elements(
+        NEW.causal_state_ref #> '{routine_state,schedule_context,approved_rule_rows}') rule
+        WHERE rule->>'schedule_id'=after_rule->>'schedule_id'
+          AND rule->>'schedule_version'=(after_rule->>'schedule_version')
+          AND rule->>'world_revision_id'=after_rule->>'world_revision_id'
+          AND rule #>> '{routine_profile,profile_id}'=after_profile->>'profile_id'
+          AND rule #>> '{routine_profile,revision}'=after_profile->>'revision'
+          AND rule->>'season' IS NOT NULL) THEN
+      RAISE EXCEPTION 'npc schedule profile may change only with a pinned seasonal rule selection';
+    END IF;
+  END IF;
+  IF OLD.next_transition_at_whole_minutes IS NOT NULL AND NEW.next_transition_at_whole_minutes IS NOT NULL
+    AND (
+      NEW.next_transition_at_whole_minutes<OLD.next_transition_at_whole_minutes
+      OR (NEW.next_transition_at_whole_minutes=OLD.next_transition_at_whole_minutes
+        AND NEW.next_transition_at_subminute_numerator*OLD.next_transition_at_subminute_denominator
+          < OLD.next_transition_at_subminute_numerator*NEW.next_transition_at_subminute_denominator)
+    ) THEN RAISE EXCEPTION 'npc schedule transition time must be monotonic'; END IF;
+  RETURN NEW;
+END $$;
+```
+
+### [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
 
 ```sql
 -- Additive party-side schema for approved local line connections and F.1.1 traversal.
@@ -10554,6 +10762,9 @@ END
 $$;
 
 ALTER TABLE party_runtime.g5_site_connections
+  ALTER COLUMN passage_type_id DROP NOT NULL;
+
+ALTER TABLE party_runtime.g5_site_connections
   ADD COLUMN IF NOT EXISTS line_kind_id text,
   ADD COLUMN IF NOT EXISTS line_kind_profile_ref jsonb,
   ADD COLUMN IF NOT EXISTS line_name text,
@@ -10565,7 +10776,8 @@ ALTER TABLE party_runtime.g5_site_connections
 ALTER TABLE party_runtime.g5_site_connections
   DROP CONSTRAINT IF EXISTS g5_site_connections_line_binding_ck,
   ADD CONSTRAINT g5_site_connections_line_binding_ck CHECK (
-    (line_kind_id IS NULL AND line_kind_profile_ref IS NULL AND line_name IS NULL
+    (line_kind_id IS NULL AND passage_type_id IS NOT NULL
+      AND line_kind_profile_ref IS NULL AND line_name IS NULL
       AND line_discriminator IS NULL AND line_direction_id IS NULL AND line_toponym IS NULL)
     OR
     (line_kind_id IS NOT NULL AND line_kind_profile_ref IS NOT NULL

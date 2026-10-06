@@ -1,12 +1,41 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import ELK from "elkjs/lib/elk.bundled.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(here, "..");
-const defaultSource = path.resolve(packageRoot, "..", "DOCUMENTS", "documents-kg", "corpus", "DOCUMENTS", "novgorod_graphify_g1_g4_full", "source_tsv");
-const sourceDir = path.resolve(process.argv.find((arg) => arg.startsWith("--source="))?.slice(9) ?? defaultSource);
+const corpusRoot = path.resolve(packageRoot, "..", "DOCUMENTS", "documents-kg", "corpus", "DOCUMENTS");
+const sourceArg = process.argv.find((arg) => arg.startsWith("--source="));
+const nodeFile = "novgorod_graph_nodes_g1_g4_full_v6.tsv";
+const edgeFile = "novgorod_graph_edges_g1_g4_full_v6.tsv";
+
+async function discoverDefaultSource() {
+  const datasets = await readdir(corpusRoot, { withFileTypes: true });
+  const matches = [];
+  for (const dataset of datasets) {
+    if (!dataset.isDirectory()) continue;
+    const candidate = path.join(corpusRoot, dataset.name, "source_tsv");
+    try {
+      const sourceInfo = await stat(candidate);
+      if (!sourceInfo.isDirectory()) continue;
+      const [nodesInfo, edgesInfo] = await Promise.all([
+        stat(path.join(candidate, nodeFile)),
+        stat(path.join(candidate, edgeFile))
+      ]);
+      if (nodesInfo.isFile() && edgesInfo.isFile()) matches.push(candidate);
+    } catch (error) {
+      if (error.code === "ENOENT" || error.code === "ENOTDIR") continue;
+      throw error;
+    }
+  }
+  if (matches.length !== 1) {
+    throw new Error(`Expected exactly one default TSV dataset under ${corpusRoot}; found ${matches.length}`);
+  }
+  return matches[0];
+}
+
+const sourceDir = path.resolve(sourceArg === undefined ? await discoverDefaultSource() : sourceArg.slice(9));
 const outputDir = path.resolve(process.argv.find((arg) => arg.startsWith("--output="))?.slice(9) ?? path.join(packageRoot, "generated", "server"));
 const useElk = !process.argv.includes("--fast");
 const elk = new ELK();
@@ -66,8 +95,8 @@ async function elkLayout(nodes, edges) {
   return { positions, edgeGeometry };
 }
 
-const nodesPath = path.join(sourceDir, "novgorod_graph_nodes_g1_g4_full_v6.tsv");
-const edgesPath = path.join(sourceDir, "novgorod_graph_edges_g1_g4_full_v6.tsv");
+const nodesPath = path.join(sourceDir, nodeFile);
+const edgesPath = path.join(sourceDir, edgeFile);
 const [nodes, allEdges] = await Promise.all([readFile(nodesPath, "utf8").then(parseTsv), readFile(edgesPath, "utf8").then(parseTsv)]);
 const edges = allEdges.filter((edge) => edge.edge_type !== "contains");
 const nodeById = new Map(nodes.map((node) => [node.id, node]));

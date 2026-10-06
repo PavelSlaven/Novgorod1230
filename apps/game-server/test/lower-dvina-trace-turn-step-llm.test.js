@@ -11,6 +11,12 @@ import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
+function worldKnowledgeSlice(facts) {
+  return { schema: 'world_knowledge_slice_v1', pack_ref: 'wk-pack:test',
+    pack_revision: 'revision:test', coverage: [], hard_constraints: [], facts,
+    disputes: [], gaps: [] };
+}
+
 test('optional null utterance is absent while actual speech still requires its typed payload', () => {
   const input = request();
   for (const utterance of [null, undefined]) {
@@ -28,9 +34,9 @@ test('optional null utterance is absent while actual speech still requires its t
 
 test('planner assembly admits only a World Knowledge-supported assessment', () => {
   const input = request();
-  const grounded = { ...input, world_knowledge: {
-    hard_constraints: [], facts: [{ claim_ref: 'wk:cordage' }]
-  } };
+  const grounded = { ...input, world_knowledge: worldKnowledgeSlice([
+    { claim_ref: 'wk:cordage' }
+  ]) };
   const semantic = { ...output(), resolution: 'direct', goal_result: 'achieved',
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
     direct_result_kind: 'player_safe_observation', assessment: {
@@ -49,14 +55,14 @@ test('planner assembly admits only a World Knowledge-supported assessment', () =
     goal_result: 'not_achieved',
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
     assessment: undefined
-  }, { ...input, world_knowledge: { hard_constraints: [], facts: [
+  }, { ...input, world_knowledge: worldKnowledgeSlice([
     { claim_ref: 'wk:cordage', domain: 'physics_material_science',
       runtime_text: 'Состояние снастей определяет их пригодность.' },
     { claim_ref: 'wk:cordage-2', domain: 'physics_material_science',
       runtime_text: 'Повтор того же домена не нужен.' },
     { claim_ref: 'wk:wood', domain: 'craft_technology',
       runtime_text: 'Влажность влияет на работу с древесиной.' }
-  ] } });
+  ]) });
   assert.deepEqual(fallback.assessment, {
     text: 'Состояние снастей определяет их пригодность. Влажность влияет на работу с древесиной.',
     support_refs: ['wk:cordage', 'wk:wood']
@@ -100,10 +106,10 @@ test('factual assessment disambiguator corrects a false discovery owner', async 
   });
   const model = createLowerDvinaTraceTurnStepModel({
     worldKnowledgeGrounder: { async ground(value) { return { ...value,
-      world_knowledge: { hard_constraints: [], facts: [{
+      world_knowledge: worldKnowledgeSlice([{
         claim_ref: 'claim:wet-wood', domain: 'physics_material_science',
         runtime_text: 'Влажность влияет на работу древесины.'
-      }] } }; } },
+      }]) }; } },
     roleRunner: { async run(call) {
       calls.push(call);
       if (call.role_id === 'turn_step_grounding_auditor') return { output: {

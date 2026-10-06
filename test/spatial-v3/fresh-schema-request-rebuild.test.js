@@ -2,7 +2,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
-import { SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST } from
+import {
+  SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
+  SPATIAL_V3_TARGET_MIGRATION_FILES
+} from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import {
   buildFreshSchemaRequest,
@@ -29,7 +32,7 @@ test('fresh-schema-request rebuild equals committed file and pins chain_digest',
     rebuilt.party_schema.chain_digest,
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST
   );
-  assert.equal(rebuilt.party_schema.ordered_migrations.length, 38);
+  assert.equal(rebuilt.party_schema.ordered_migrations.length, 39);
   assert.equal(rebuilt.world_schema.ordered_parts.length, 30);
   assert.equal(rebuilt.world_schema.expected_world_base_tables, 224);
   assert.equal(rebuilt.source_commit, parsed.source_commit);

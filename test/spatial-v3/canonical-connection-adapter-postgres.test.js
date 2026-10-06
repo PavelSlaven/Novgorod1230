@@ -109,7 +109,7 @@ test('canonical connection creates the unvisited place atomically, replays, and 
   assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name, '-e', 'POSTGRES_PASSWORD=test',
     '-e', 'POSTGRES_USER=test', '-e', 'POSTGRES_DB=test', 'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 60; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'test']).status === 0) break;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'test']).status === 0) break;
     await new Promise((resolve) => setTimeout(resolve, 300));
   }
   await new Promise((resolve) => setTimeout(resolve, 600));

@@ -46,6 +46,8 @@ import { createSpatialV3CurrentMovementCapability } from
   '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { hasActiveTurnDeadline, withTurnDeadlineTransaction } from
+  '../infrastructure/postgres/query-with-turn-deadline.js';
 import { createSpatialV3ExpansionContextReader } from
   '../infrastructure/postgres/spatial-v3-expansion-context.js';
 import { createSpatialV3ExpansionRuntime } from
@@ -58,7 +60,8 @@ import { createSpatialV3GenerationAdmission } from
   '../infrastructure/postgres/spatial-v3-generation-admission.js';
 import { createTargetGeneratedFirstEntry } from
   '../infrastructure/postgres/target-generated-first-entry.js';
-import { createTargetPresenceRulesFirstArrivalResolver, delegateToPresenceResolverPort } from
+import { createApprovedO1TemplateBackedItemRefs,
+  createTargetPresenceRulesFirstArrivalResolver, delegateToPresenceResolverPort } from
   '../infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
 import { readTargetPartyPresenceCalendar as resolveTargetPartyPresenceCalendar } from
   '../infrastructure/postgres/target-party-presence-calendar.js';
@@ -130,6 +133,7 @@ export async function createSpatialV3ProductionCompositionRoot({
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
     const targetProfiles = targetContext == null ? null : await loadTargetRuntimeProfiles({
       rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id,
+      o1ArtifactPins: release.target_o1_profile_artifact_pins,
       verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
       ...(config.a1ApplicabilityClassPath == null ? {}
         : { a1ApplicabilityClassPath: config.a1ApplicabilityClassPath }) });
@@ -208,6 +212,35 @@ export async function createSpatialV3ProductionCompositionRoot({
         readLocalMovementAdmission: createLocalMovementDisclosureReader({
           readLocalMovementEligibility })
       });
+    const readCurrentVisibleContext = currentVisibility == null ? null
+      : async ({ partyId, actorId, positionId, turnBudget, clock = null } = {}) => {
+        const read = async (transaction) => {
+          const state = { party_id: partyId, actor_id: actorId,
+            journey_location: { scene_position_id: positionId } };
+          const sources = await currentVisibility.readCurrentSources({
+            transaction, partyId, actorId, positionId, state,
+            directionalExits: [], observedPositionId: positionId, clock
+          });
+          const directionalExits = await currentVisibility.readCurrentExitDisclosure({
+            transaction, partyId, actorId, observedPositionId: positionId, clock
+          });
+          return projectSpatialV3CurrentVisibleContext({ ...sources,
+            directionalExits, partyId, actorId, positionId });
+        };
+        if (hasActiveTurnDeadline(turnBudget)) return withTurnDeadlineTransaction(
+          pools.partyPool, turnBudget, read,
+          { beginMode: 'repeatable_read_read_only' });
+        const transaction = await pools.partyPool.connect();
+        try {
+          await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          const visibleContext = await read(transaction);
+          await transaction.query('COMMIT');
+          return visibleContext;
+        } catch (error) {
+          await transaction.query('ROLLBACK').catch(() => {});
+          throw error;
+        } finally { transaction.release(); }
+      };
     const siteTraversalCapability = targetContext == null ? null
       : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
     const projectDestination = targetContext == null ? null : async ({ transaction,
@@ -289,6 +322,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       worldKnowledge,
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
         spatialExpansionRuntime,
+        readCurrentVisibleContext,
         spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
           readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
           readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
@@ -325,6 +359,9 @@ export async function createSpatialV3ProductionCompositionRoot({
         worldPin,
         runtimeCatalogPin: bindings.runtimeCatalogPin,
         readPartyPresenceCalendar: readTargetPartyPresenceCalendar,
+        o1Selector: targetProfiles.materialization_profiles.ordinaryMaterializationProfile.o1_presence.selector,
+        templateBackedItemRefs: createApprovedO1TemplateBackedItemRefs(
+          targetContext.runtime.materialization_inputs.domain_catalog),
       });
       targetFiniteFirstEntry = createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry, {
         resolvePresenceRulesFirstArrival: targetPresenceResolverPort.resolve,
@@ -348,19 +385,7 @@ export async function createSpatialV3ProductionCompositionRoot({
         profile: targetPartyStartProfile,
         includeContextBoundCapabilities: false,
         partyStartPresenceOnly: true,
-        resolvePresenceRulesFirstArrival: createTargetPresenceRulesFirstArrivalResolver({
-          worldBaseReader: runtimeCatalogWorldBaseReader,
-          spatialWorldPin: {
-            world_revision_id: release.world_revision_id,
-            catalog_digest: release.world_catalog_digest,
-          },
-          worldPin: {
-            world_revision_id: release.world_revision_id,
-            world_catalog_digest: release.world_catalog_digest,
-          },
-          runtimeCatalogPin: bindings.runtimeCatalogPin,
-          readPartyPresenceCalendar: readTargetPartyPresenceCalendar,
-        }),
+        resolvePresenceRulesFirstArrival: targetPresenceResolverPort.resolve,
       }));
     const spatialSemanticFirstEntryProvisioner = targetContext == null
       ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;

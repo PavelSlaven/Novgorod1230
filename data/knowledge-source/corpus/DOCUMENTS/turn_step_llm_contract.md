@@ -21,7 +21,7 @@
 - формулировку, объявляющую желаемый результат уже совершившимся;
 - попытку навязать миру новые факты.
 
-Игра не отклоняет такую заявку как недопустимую. LLM переводит её в ближайшую реальную попытку персонажа, а код исполняет эту попытку через существующих владельцев механики.
+Игра не отклоняет такую заявку как недопустимую. LLM переводит её в ближайшую реальную попытку персонажа, а код исполняет эту попытку через существующих владельцев механики. Snapshot `needs_check` из D-018 `code_driven_world_materialization_architecture.md` фильтрует только новые кандидаты O1/O2b/S1; совпавший O1 запрос или descriptor получает обычный `no_change`. O2a остаётся authored-only. Совпавшие кандидаты NPC O2b/S1 фильтруются по одному, остальные продолжают обычный путь. Предложение модели NPC с совпавшей операцией заменяется штатным ожиданием до старта шага; queue ID — в диагностике. Это правило применяется к A1, direct `create_entity` и поиску O1. При включённой диагностике trace получает queue ID и путь; игроку список не виден. Список не применяется к действию игрока или его A1/direct `create_entity`; их исход определяют существующие владельцы действия, причинности и физики.
 
 Главный результат LLM — **план следующего исполнимого шага**, а не готовое новое состояние мира и не весь ход целиком.
 
@@ -611,8 +611,8 @@ Exact query остаётся вопросом, не
 доказательством собственности или исполнения. Prepared semantic chain допускает
 уже разрешённого A1 owner при отсутствии selected authored command; проверки
 source scope, preflight, revalidation, conservation и atomic commit сохраняются.
-Private O1 wire опускает только дублирующий `world_knowledge.context_text`, если
-передан полный structured slice; claim binding и telemetry используют полный request.
+Private O1 wire передаёт структурированный `world_knowledge` slice; claim binding
+и telemetry используют полный request.
 При законной player-response boundary скрытого продолжения нет; общий visible
 projector сохраняет уже полученные domain facts и отдельно показывает exact
 неисполненный остаток как попытку с неустановленным результатом, без выдуманных
@@ -1360,13 +1360,35 @@ LLM не возвращает:
 `query`/`continuation`. Exact misplaced/duplicated continuation удаляется из
 `interpretation` только при совпадении с top-level continuation; отсутствующие
 пустые diagnostic `reason_code`/`reason` заполняются нейтральными code-owned
-значениями. Исходный later-continuation сохраняется за очередью без изменений.
-Неоднозначные случаи не угадываются.
+значениями. Для A1 `request_item_use` с `action_production` до общей строгой и
+семантической проверки удаляется лишнее поле `operations[].description`;
+остальные ошибки проходят общий путь проверки и repair. Исходный
+later-continuation сохраняется за очередью без изменений. Неоднозначные случаи
+не угадываются.
 
 LLM repair допускается один раз только для ошибки, требующей нового
 семантического выбора. Чисто структурная ошибка, которую deterministic
 canonicalizer не смог исправить однозначно, сразу возвращает typed technical
 failure. Prompt не является владельцем закрытых cardinality/schema invariants.
+Сочетание `resolution: direct`, пустых `operations`,
+`interpretation.adaptation: reality_limited` и `goal_result: achieved` требует
+этот один semantic repair независимо от `direct_result_kind`; код распознаёт
+сочетание после строгой проверки и до семантического аудита. Недопустимый
+`direct_result_kind` при этой же комбинации также направляется в этот repair;
+прочие структурные ошибки остаются fail-closed. Repair выбирает `not_achieved`
+или `partially_achieved` по смыслу попытки. Если ответ repair повторяет то же
+сочетание, code-owned слой меняет `goal_result` на `not_achieved`, очищает
+несовместимые `direct_result_kind`, `assessment` и `utterance`, затем повторно
+строго проверяет план без семантического аудита. Если repair уже выбрал
+`not_achieved`, но сохранил запрещённые поля, код очищает только эти поля
+после repair и повторно проверяет план без семантического аудита.
+Подсказка repair требует для `not_achieved` `direct_result_kind: null` и
+удаления `assessment` и `utterance`. Trace `canonicalizations` содержит только
+канонизации принятой попытки, без повторяющихся путей и с номером попытки:
+`{attempt, path, old_value, new_value}` для изменённых значений и
+`{attempt, path, removed_fields}` для удалённых полей. Другие значения не
+выводятся эвристикой. `old_value` — сырое значение модели и может быть
+невалидным для схемы.
 
 Если repair снова невалиден:
 
@@ -1375,11 +1397,13 @@ failure. Prompt не является владельцем закрытых card
 - возвращается техническая ошибка обработки хода.
 
 Все production primary/audit/repair calls используют единый provider owner с
-`maxTokens = 20_000` и transport timeout 120 секунд. При явно выбранном
-local/custom OpenAI-compatible provider один `runtimeProviderOverride`
-применяется ко всем ролям. Transport не делает fallback на DeepSeek или другую
-model/provider; connection, auth, model, timeout, malformed response и invalid
-JSON завершают ход typed technical failure до commit.
+`maxTokens = 20_000` и transport timeout 120 секунд. Default gameplay model —
+exact `qwen3.8-27b-uncensored-w4a16-tp2`; все роли используют один явно
+настроенный OpenAI-compatible endpoint. Явно выбранная локальная конфигурация
+передаётся всем ролям через `runtimeProviderOverride`. Без настроенного endpoint
+вызов fail-closed и не обращается к внешнему API. Transport не делает fallback
+на другую model/provider; connection, auth, model, timeout, malformed response
+и invalid JSON завершают ход typed technical failure до commit.
 По умолчанию локальный игровой запрос передаёт
 `chat_template_kwargs.enable_thinking=false`. Role caller может явно выбрать
 `off`, `minimal`, `low`, `medium`, `high` или `xhigh` в пределах возможностей

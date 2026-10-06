@@ -171,6 +171,12 @@ export function allowedNpcContributionReferences(context, {
   knowledgeRefs = []
 } = {}) {
   const policy = context.npcContributionReferencePolicy ?? {};
+  const knowledgeScopeId = context.targetActor?.knowledge_profile_snapshot
+    ?.profile_id;
+  const ownKnowledgeScope = typeof knowledgeScopeId === 'string'
+      && knowledgeScopeId.trim() === knowledgeScopeId
+      && knowledgeScopeId.length > 0
+    ? [ref('knowledge_scope', knowledgeScopeId)] : [];
   const canonical = (references) => [...new Map(references.map((reference) => [
     refKey(reference), structuredClone(reference)
   ])).values()].sort(compareRefs);
@@ -186,6 +192,7 @@ export function allowedNpcContributionReferences(context, {
     ]),
     knowledge_refs: canonical([
       ...(policy.knowledge_refs ?? []),
+      ...ownKnowledgeScope,
       ...knowledgeRefs
     ]),
     combat_target_refs: canonical(policy.combat_target_refs ?? [])

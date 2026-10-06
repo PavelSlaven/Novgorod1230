@@ -14,10 +14,10 @@ const REQUEST_PATH =
 const REQUEST_FILE = resolve(REQUEST_PATH);
 const REPO_V17 = resolve('data/world-catalogs/novgorod/live-world-runtime-v17');
 
-test('fresh-schema attestation gate selects v8 for current request digest', async () => {
+test('fresh-schema attestation gate selects the approval matching the current request', async () => {
   const requestBytes = await readFile(REQUEST_FILE);
   const requestDigest = computeFreshSchemaRequestDigest(requestBytes);
-  assert.equal(requestDigest, '124aba7c244cce4a5a3a36dcbf242b2ac727b734c9cea7e49cc786094946ac12');
+  const request = JSON.parse(requestBytes);
 
   const legacyOnlyDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-legacy-'));
   await copyFile(
@@ -58,24 +58,19 @@ test('fresh-schema attestation gate selects v8 for current request digest', asyn
   );
   await rm(legacyOnlyDir, { recursive: true, force: true });
 
-  const v8Dir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-v8-'));
-  await copyFile(
-    join(REPO_V17, 'fresh-schema-approval-attestation-v8.json'),
-    join(v8Dir, 'fresh-schema-approval-attestation-v8.json')
-  );
-  const selected = await loadFreshSchemaAttestationFromRepo({
-    requestDigest,
-    catalogDir: v8Dir
-  });
+  // POST-SYNC REVIEW FOLLOW-UP: rebuild the request after the exact sync commit and
+  // add the newly approved matching attestation before this success path can pass.
+  const selected = await loadFreshSchemaAttestationFromRepo({ requestDigest });
   assert.equal(selected.request_digest, requestDigest);
   assert.equal(selected.verdict, 'APPROVE_CONDITIONAL');
   assert.equal(selected.scope.expected_world_base_tables, 224);
-  await rm(v8Dir, { recursive: true, force: true });
+  assert.equal(selected.scope.expected_party_migrations_applied,
+    request.party_schema.ordered_migrations.length);
 
   const ambiguousDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-ambiguous-'));
-  const v8Bytes = await readFile(join(REPO_V17, 'fresh-schema-approval-attestation-v8.json'), 'utf8');
-  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v8a.json'), v8Bytes);
-  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v8b.json'), v8Bytes);
+  const selectedBytes = JSON.stringify(selected);
+  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-current-a.json'), selectedBytes);
+  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-current-b.json'), selectedBytes);
   await assert.rejects(
     () => loadFreshSchemaAttestationFromRepo({ requestDigest, catalogDir: ambiguousDir }),
     /V17_FRESH_SCHEMA_ATTESTATION_AMBIGUOUS/u

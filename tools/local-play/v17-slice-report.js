@@ -1,6 +1,8 @@
 // Report side of the v17 slice driver (v17-slice-run.mjs): secret redaction, verdict, Markdown playtest skeleton.
 // Deterministic text only: facts from the run, no diagnosis (WR §24.1; docs/playtests/README.md).
 
+import { renderOpeningAttemptsTable } from './v17-slice-opening-trace.js';
+
 export const LEG_IDS = Object.freeze(['start', 'walk', 'meet', 'talk', 'take', 'make']);
 export const LEG_TITLES = Object.freeze({
   start: 'start', walk: 'walk out', meet: 'meet', talk: 'talk', take: 'take', make: 'make'
@@ -38,6 +40,19 @@ export function exitCodeOf(legs) {
   return legs.every(({ status }) => status === 'pass') ? 0 : 1;
 }
 
+/** D49's minimum slice uses either material path while strict acceptance still requires all six legs. */
+export function d49MinimumOf(legs, turns = []) {
+  const byId = new Map(legs.map(({ id, status }) => [id, status]));
+  const core = ['start', 'walk', 'meet', 'talk'];
+  const passTurn = (id) => turns.find((turn) => turn.leg === id && turn.pass === true)?.n ?? null;
+  const talkPassTurn = passTurn('talk');
+  const itemLeg = ['take', 'make'].find((id) => byId.get(id) === 'pass'
+    && talkPassTurn != null && passTurn(id) != null && passTurn(id) > talkPassTurn) ?? null;
+  const requiredPass = core.every((id) => byId.get(id) === 'pass') && talkPassTurn != null;
+  const anyProgress = [...core, 'take', 'make'].some((id) => byId.get(id) === 'pass');
+  return { status: requiredPass && itemLeg ? 'PASS' : (anyProgress ? 'PARTIAL' : 'FAIL'), item_leg: itemLeg };
+}
+
 const fence = (value) => `\`\`\`\n${value}\n\`\`\``;
 const quote = (value) => String(value ?? '').split('\n').map((line) => `> ${line}`).join('\n');
 const json = (value) => JSON.stringify(value);
@@ -67,23 +82,34 @@ export function describeDelta(before, after) {
 }
 
 function turnSection(turn) {
+  const delivery = turn.delivery_kind === 'factual'
+    ? ['Игроку показан фактический экран после хода:', '',
+      quote([turn.factual_screen?.visible_scene,
+        ...(turn.factual_screen?.visible_changes ?? []),
+        ...(turn.factual_screen?.uncertainties ?? []),
+        ...(turn.factual_screen?.visible_people ?? [])
+          .map((person) => `Рядом: ${person}.`)]
+        .filter((value) => typeof value === 'string' && value.trim()).join('\n'))]
+    : turn.delivery_kind === 'empty'
+      ? ['Экран игрока не содержит прозы или фактов.']
+      : ['Что увидел игрок (дословно):', '', quote(turn.prose)];
   const lines = [`### Ход ${turn.n} · нога ${LEG_TITLES[turn.leg] ?? turn.leg}`, '',
     `- Ввод игрока: «${turn.input}»`,
     `- HTTP: ${turn.http_status}${turn.error ? `, ошибка ${turn.error.code}${turn.error.turn_commit_status ? ` (turn_commit_status ${turn.error.turn_commit_status})` : ''}` : ''}`,
-    `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}${turn.recovered ? '; текст получен через presentation-recovery' : ''}`,
+    `- Commit-state: ${turn.committed ? 'committed' : 'не committed'}; подача: ${turn.delivery_kind ?? (turn.prose ? 'narrated' : 'empty')}${turn.recovered && turn.delivery_kind !== 'factual' ? '; подача получена через presentation-recovery' : ''}${turn.presentation_recovery_attempts > 0 ? `; presentation-recovery: ${turn.presentation_recovery_attempts}× (${turn.presentation_recovery_outcome ?? '—'})` : ''}${turn.delivery_failed ? '; доставка не завершена после presentation-recovery' : ''}`,
     `- Domain outcome (SQL): ${describeDelta(turn.before, turn.after)}`,
     ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (внутренняя, только в логе; в HTTP — публичная категория или маскировка): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',
-    'Что увидел игрок (дословно):', '',
-    // A refused turn shows the error text of the response, not the screen left over from the previous turn.
-    turn.error ? quote(turn.error.message ?? turn.error.code ?? 'ошибка без текста') : turn.prose ? quote(turn.prose) : '> (текста нет)'];
+    ...(turn.people_panel ? [`- Снимок панели людей: \`${json(turn.people_panel)}\``] : []),
+    ...(turn.error ? ['Что увидел игрок:', '', quote(turn.error.message ?? turn.error.code ?? 'ошибка без текста')] : delivery)];
   if (turn.route_labels?.length > 0) lines.push('', `Проходы на экране: ${turn.route_labels.map((label) => `«${label}»`).join(', ')}`);
   if (turn.people_labels?.length > 0) lines.push('', `Люди на экране: ${turn.people_labels.map((label) => `«${label}»`).join(', ')}`);
   return lines.join('\n');
 }
 
 export function renderPlaytestMarkdown(report, redact = (text) => text) {
-  const { identity, preconditions, legs, turns, opening, readback, infra_error: infraError } = report;
+  const { identity, preconditions, legs, turns, opening, readback,
+    transport_errors: transportErrors = [], infra_error: infraError } = report;
   const verdict = verdictOf(legs);
   const out = [];
   out.push(`# rt-harness: живой прогон среза D49 на v17 (${identity.scenario_id})`, '');
@@ -99,16 +125,51 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     `- Бюджет: ${preconditions.max_turns} ходов (из них ${preconditions.reserve_make} зарезервированы под make), дедлайн ${preconditions.deadline_min} мин.`,
     `- Квалификация модели при старте: ${preconditions.qualification}.`, '');
   out.push('## Gameplay transcript', '');
+  const deliveryCounts = turns.reduce((counts, turn) => {
+    const kind = turn.delivery_kind ?? (turn.prose ? 'narrated' : 'empty');
+    if (Object.hasOwn(counts, kind)) counts[kind] += 1;
+    return counts;
+  }, { narrated: 0, factual: 0, pending: 0, empty: 0 });
+  out.push('### Подача ходов', '',
+    `- Проза: ${deliveryCounts.narrated}; фактический экран: ${deliveryCounts.factual}; ожидание: ${deliveryCounts.pending}; пусто: ${deliveryCounts.empty}.`, '');
+  if (report.presentation_recovery?.attempts > 0) {
+    out.push('### Presentation recovery', '',
+      `- Вызовов POST presentation-recovery: ${report.presentation_recovery.attempts}; восстановлено прозы: ${report.presentation_recovery.recovered}; остались pending: ${report.presentation_recovery.still_pending}.`, '');
+  }
   if (opening) {
     out.push('### Открытие партии', '',
-      `- Партия \`${opening.party_id ?? '—'}\`; попыток new-game: ${opening.attempts}; отказов открытия (AUTHORED_OPENING_AUDIT_REJECTED): ${opening.rejections}.`, '',
-      'Что увидел игрок (дословно):', '', opening.prose ? quote(opening.prose) : '> (текста нет)', '');
+      `- Партия \`${opening.party_id ?? '—'}\`; попыток new-game: ${opening.attempts}; отказов открытия (AUTHORED_OPENING_AUDIT_REJECTED): ${opening.rejections}.`, '');
+    const attemptsTable = renderOpeningAttemptsTable(opening.opening_attempts);
+    if (attemptsTable) out.push('Попытки вступления (new-game):', '', attemptsTable, '');
+    out.push('Что увидел игрок (дословно):', '', opening.prose ? quote(opening.prose) : '> (текста нет)', '');
     out.push(`Проходы на первом экране: ${opening.route_labels?.length > 0 ? opening.route_labels.map((label) => `«${label}»`).join(', ') : '(нет)'}`, '');
   }
   for (const turn of turns) out.push(turnSection(turn), '');
+  if (transportErrors.length > 0) {
+    out.push('## HTTP transport errors', '',
+      '| method | path | phase | leg | turn | cause |',
+      '|---|---|---|---|---:|---|');
+    for (const error of transportErrors) {
+      const cause = [error.cause?.name, error.cause?.code, error.cause?.message,
+        error.cause?.cause_code, error.cause?.cause_message].filter(Boolean).join(': ')
+        .replaceAll('|', '/');
+      out.push(`| ${error.method} | ${error.path} | ${error.phase} | ${error.leg ?? '—'} | ${error.turn ?? '—'} | ${cause} |`);
+    }
+    out.push('');
+  }
   out.push('## Persistence/readback', '',
     `LLM-вызовы за прогон: ${report.llm.total} (ошибок транспорта/статуса: ${report.llm.failed}); по ролям:`, '',
     fence(Object.entries(report.llm.by_role).map(([role, count]) => `${count}× ${role}`).join('\n') || '(нет)'), '');
+  if (report.llm.by_role_timing) {
+    out.push('### Время вызовов по каноническим ролям', '',
+      '| role_id | вызовы | сумма, мс | p50, мс | p95, мс | доля времени ходов |',
+      '|---|---:|---:|---:|---:|---:|');
+    for (const [role, timing] of Object.entries(report.llm.by_role_timing)) {
+      out.push(`| ${role} | ${timing.count} | ${timing.sum_ms} | ${timing.p50_ms} | ${timing.p95_ms} | ${(timing.turn_time_share * 100).toFixed(1)}% |`);
+    }
+    if (Object.keys(report.llm.by_role_timing).length === 0) out.push('| (нет данных) | 0 | 0 | 0 | 0 | 0% |');
+    out.push('');
+  }
   if (readback) out.push('Финальный SQL-снимок партии (позиция, размещения в G6 игрока, предметы, запасы):', '', fence(JSON.stringify(readback, null, 1)), '');
   out.push('## Findings', '', '| нога | итог | причина |', '|---|---|---|');
   for (const leg of legs) out.push(`| ${LEG_TITLES[leg.id]} | ${leg.status} | ${String(leg.reason ?? '').replaceAll('|', '/')} |`);
@@ -117,7 +178,9 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     if (leg.detail) out.push(`- **${LEG_TITLES[leg.id]}**: ${leg.detail}`);
   }
   if (infraError) out.push('', `- Сбой стенда: ${infraError}`);
-  out.push('', '## Result', '', `**${verdict}**: ${legs.map((leg) => `${LEG_TITLES[leg.id]} — ${leg.status}`).join('; ')}.`, '');
+  const d49 = d49MinimumOf(legs, turns);
+  out.push('', '## Result', '', `D49 minimum (start, walk, meet, talk и take или make): **${d49.status}**${d49.item_leg ? `; путь предмета — ${LEG_TITLES[d49.item_leg]}` : '; путь предмета не пройден'}.`,
+    '', `Строгий результат: **${verdict}**: ${legs.map((leg) => `${LEG_TITLES[leg.id]} — ${leg.status}`).join('; ')}.`, '');
   return redact(out.join('\n'));
 }
 

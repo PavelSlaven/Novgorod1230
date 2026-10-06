@@ -185,8 +185,19 @@ export async function assertIdentityInputs({ root = ROOT, request }) {
   if (request?.schema !== 'rus.npc_identity_v17_import_request.v1') throw new Error('V17_NPC_IDENTITY_REQUEST_SCHEMA_MISMATCH');
   if (request.request_digest !== computeIdentityRequestDigest(request)) throw new Error('V17_NPC_IDENTITY_REQUEST_DIGEST_MISMATCH');
   const pinned = request.approved_data.sources;
+  if (!Array.isArray(pinned) || pinned.length !== IDENTITY_SOURCES.length) {
+    throw new Error('V17_NPC_IDENTITY_PIN_SOURCE_SET_MISMATCH');
+  }
+  const pinnedByPath = new Map();
+  for (const row of pinned) {
+    if (!row || !IDENTITY_SOURCES.includes(row.path) || pinnedByPath.has(row.path)
+      || !/^[0-9a-f]{64}$/.test(row.sha256 ?? '')) {
+      throw new Error('V17_NPC_IDENTITY_PIN_SOURCE_SET_MISMATCH');
+    }
+    pinnedByPath.set(row.path, row.sha256);
+  }
   for (const actual of await sourcePins(root)) {
-    if (pinned.find((row) => row.path === actual.path)?.sha256 !== actual.sha256) {
+    if (pinnedByPath.get(actual.path) !== actual.sha256) {
       throw new Error(`V17_NPC_IDENTITY_PIN_MISMATCH:${actual.path}`);
     }
   }

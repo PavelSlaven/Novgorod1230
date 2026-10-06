@@ -172,6 +172,7 @@ test('v17 bootstrap forward migrations pin world and party schema checkpoints', 
   );
   assert.equal(
     PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
+    // TODO(sync): update expected party fingerprints with the merged migration chain.
     'ae229b76cb5bcee5b4e5c06adb46f3d6de42a89858580f69bb308f337bb08278'
   );
   assert.equal(

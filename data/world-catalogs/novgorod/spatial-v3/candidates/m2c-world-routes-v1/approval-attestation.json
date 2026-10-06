@@ -1,0 +1,68 @@
+{
+  "schema": "rus.m2c_world_routes_v1_authoring_approval.v1",
+  "decision": "APPROVE_WITH_LIMITS",
+  "candidate_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1",
+  "import_manifest_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-world-routes-v1/import-manifest.json",
+  "branch": "fleet/routes-b2",
+  "reviewed_commit": "a1d58ee963d026ce5d1ebc70af1e72bdfe8e1d82",
+  "import_manifest_sha256": "c30b28ae0b10e893d9ff49c561746df76e296a98e62d30a5ef1db7e4932ff068",
+  "route_spec_sha256": "920c5b9a185d6d07fd311fefe5630e2ad4bf4c4acdd1c87116f27b0cda862dbf",
+  "generator_report_sha256": "2de399827223c5dc57ca98836913f798eeb887bec90c37d7251a4b6853a4e642",
+  "approved_by": "claude-opus-5-5 (Opus, independent approver; author: Codex gpt-6-luna)",
+  "approved_on": "2026-10-01",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "World routes cross_g4_01..24 of start cell gn_nov_g1_xp017_yp026: 24 reciprocal pairs, 48 directed routes @2, 60 segments (6 physical waterbody boundaries in pairs 04/05/07/08/23), 108 points, 96 endpoint bindings @2 equal to @1, 60 contexts equal to @1; minutes = place-geo proposed_minutes (D56) split by largest remainder; kinds by waterbody/class rule (central_head_branch = side_channel per A-routes-b2-01 / wave-1 limit 7); 6 wave-1 profiles by reference plus new lkp__offroad@1 / cost.line_offroad@1; D5 movement_method ids; names = approved line-names; 8-sector directions from authored geometry.",
+  "checks": [
+    "Approver check.py (independent of the generator): 51 PASS, 2 FAIL (N6 method edges target movement.* while column is movement_method.*; N7 no world_route route_kind edges). Recount of segments from place-geo legs = 60; per-segment minutes = independent largest remainder; directions, mirror, profiles, D5, risk/availability, endpoints, chain, contexts, names, recheck <= 30, closure byte-equality and manifest sha256 all match.",
+    "build-world-route-wave --check exit 0; build-world-route-wave.test 2/2; build-line-wave --check ok; build-line-wave.test 22/22; P12 validator ok, errors [], data_gaps [].",
+    "Approver PG run (pg-slot, throwaway labelled container): schema + base + wave-1 committed; candidate staged + readback + second staged import (idempotent) + SET CONSTRAINTS ALL IMMEDIATE + assert_spatial_v3_route on 48 @2 routes: no error; 48/60/108 rows; rollback left 48 cross routes @1.",
+    "D41 bench reviewed: 0 wrong selections in 144 samples; round-2 60/60 and 12/12 no-token; expectations unchanged between rounds; A/B labels identical and destinations distinct, so the bench does not isolate label-only disambiguation."
+  ],
+  "mechanical_continuation": {
+    "required": "M1: add 48 world_route@2 -> route_kind -> external route.*@1 edges; M2: drop the 60 segment baseline_movement_method -> movement.* edges, plus a generator check that a method-edge target equals the column; M3: source_record m2c_world_routes_v1_candidate checked_by/limitations. Recommended: M4 route-level risk of 04r, 05r, 06f/r, 07f/r, 08f/r = first-segment risk; M5 PG test SET CONSTRAINTS ALL IMMEDIATE, README 06-08 -> 04-08.",
+    "acceptance": "Deterministic script: edges +48/-60; one source_record row changed; with M4 only 8 route rows and their 8 authoring_versions rows changed; all other datasets byte-identical; --check, P12 and approver check.py (N6, N7) pass. No new Opus pass.",
+    "applied_commit": "39e2a87ce3ed4ac8b8825b101d2b611c0e687f31",
+    "accepted_by": "lead reviewer (claude-opus-5-5), deterministic acceptance per this clause; no new Opus pass",
+    "accepted_on": "2026-10-01",
+    "post_continuation_sha256": {
+      "import_manifest": "f35b01e36fb1d3dd8e76456d716e2690380350c248944113584941d5a9c5a069",
+      "generator_report": "e05b935621cfee40688ed448b288b717f7d9ed492c3f90b0792d41926d45be9f",
+      "route_spec": "920c5b9a185d6d07fd311fefe5630e2ad4bf4c4acdd1c87116f27b0cda862dbf"
+    },
+    "acceptance_results": [
+      "Dataset diff against the reviewed commit: 24 datasets, 20 byte-identical; changed only source_records (1 row: m2c_world_routes_v1_candidate), spatial_v3_authoring_dependency_edges (+48 route_kind, -60 baseline_movement_method), spatial_v3_world_routes (8 rows: 04r, 05r, 06f/r, 07f/r, 08f/r; only risk_profile_id and canonical_digest) and spatial_v3_authoring_versions (the 8 matching rows).",
+      "M1: 48 world_route@2 route_kind edges, one per route, each target equals the route's route_kind_id at version 1.",
+      "M4: route risk_profile_id equals the first segment's risk_profile_id for all 48 routes.",
+      "build-world-route-wave --check: pass (24 manifest datasets); build-world-route-wave.test + build-line-wave.test: 29/29.",
+      "P12 validateAuthoringBundle on the candidate manifest: ok, errors 0, data_gaps 0.",
+      "Approver check.py: 52 PASS; N6 PASS (method edge target equals column), N7 PASS (48 route_kind edges like @1); the single FAIL A6 lists exactly the 8 M4 routes (expected change).",
+      "PG build-world-route-wave-postgres via pg-request: 1/1 (requests 20261001T123301.575177Z-1 and 20261001T123811.136081Z-1): commit/readback, idempotent re-import, preserved rows, P12_EXISTING_ROW_MISMATCH, deferred route_cycle_or_branch."
+    ]
+  },
+  "limits": [
+    "1. Минуты 48 направлений — place-geo proposed_minutes (D56), редакционная игровая калибровка, не измерения 1230; лимиты 1–3, 6–12 place-geo и 1 волны 1 действуют. Смена — новой версией и проходом Opus.",
+    "2. Минуты многосегментных маршрутов делятся по наибольшему остатку от неокруглённых длительностей ног; у стоячего рукава возможна асимметрия ±1 мин (cross_g4_23: 16/17).",
+    "3. cross_g4_10: 741 мин в обе стороны (16,85 км болота, 1,5 км/ч ×1,10) — один сегмент без внутренней точки, 50 срезов wetland_15m; ночь и усталость в пути решает рантайм б2 через recheck (D56).",
+    "4. central_head_branch (06–08, 23) = side_channel — редакционная гипотеза по лимиту 7 волны 1 и A-routes-b2-01; несовпадение с line-names (river_channel у 04–08) исправляет владелец line-names.",
+    "5. Все не-main водоёмы (west, east, central_head_branch, backwater_mouth, dry_island_landing_cove) отнесены к side_channel — редакционное отображение схематичной карты.",
+    "6. 6 внутренних точек — смены waterbody_ref на вершинах trace place-geo, без топонимов; 5 из них в 0 м от canonical G5 central_current_split_islet_margin.",
+    "7. Трассы 04, 05, 07, 08, 12, 21, 23 проходят в 0 м через canonical G5 чужих G4; ни остановки, ни развилки там нет. По §4.5.1 это узел для canonical G5 junction; перемоделирование — отдельное решение Spatial; унаследовано от @1.",
+    "8. Хорда вместо трассы у 11, 15, 18, 19, 20: направление по хорде, минуты по sinuosity place-geo.",
+    "9. Направления — 8 румбов авторской геометрии; 10 сегментов (пары 02, 03, 04, 07, 14) в пределах 2° от границы сектора.",
+    "10. hazard.swim_* и risk.* без записей (лимит 3 волны 1, LW-097): интервал вплавь даёт data gap (strand/pause), а не отсутствие опасности.",
+    "11. Зимы нет (лимит 4 волны 1): у водных сегментов только availability.water_ice_conditional, без ледового варианта.",
+    "12. Коэффициент плавания 4/1 редакционный и не учитывает течение (лимит 2 волны 1).",
+    "13. Вид shore у 09 (108 мин) и 14 (121 мин) даёт env.shore_transition, route.water_land_transition и recheck.shore_15m на многокилометровом береговом ходе — по утверждённому line-names.",
+    "14. Колонки на movement_method.* (D5), внешних пинов movement_method.* нет; после M2 способ сегмента закреплён только версией line_kind_profile; LW-095 и лимит 8 волны 1 закрыты наполовину.",
+    "15. Без M4 route-level риск 04r, 05r, 06f/r, 07f/r, 08f/r остаётся risk.river_variable при route.side_channel; рантайм берёт риск с сегмента (§4.6).",
+    "16. У 04/05 route_kind сторон пары различается (f river_channel, r side_channel) — по норме: вид первого сегмента.",
+    "17. Дайджесты строк считаются только по строке, рёбра не входят (как волна 1); правило дайджеста базы другое.",
+    "18. Ребра ориентации у line_kind_profile нет (лимит 14 волны 1); роли route_kind нет в реестре v5 (лимит 9).",
+    "19. Технический status=approved в строках и source_record требуют DDL/P12; это не утверждение; manifest — draft.",
+    "20. Тесты генератора: 2 unit без мутаций; PG-тест не проверяет отложенные ограничения — проверено прогоном утверждающего; рекомендованы мутации и SET CONSTRAINTS ALL IMMEDIATE.",
+    "21. Стенд D41 подтверждает, что метки не сбивают планировщик и нет выдуманных мест; что метка сама различает маршруты и что проза нарратора верна — не проверено.",
+    "22. Утверждение не разрешает импорт и активацию; импорт — только вместе с runtime reader б2 (читатель берёт наивысшую версию, @2 сломает live v17), без стадии bootstrap; обязательные M1–M3 — до импорта."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false
+}

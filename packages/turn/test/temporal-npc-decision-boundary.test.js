@@ -6,6 +6,8 @@ import {
 } from '@rus/npc-runtime';
 import { advanceTemporalNpcDecisionBoundary } from
   '../src/temporal-advance.js';
+import { prepareNpcDecisionForActorStep } from
+  '../src/temporal-npc-decision-plan.js';
 import { aggregateTemporalNpcDecisionSignals } from
   '../src/temporal-npc-decision-signals.js';
 
@@ -16,6 +18,191 @@ const at = (wholeMinutes) => ({
 });
 
 const npcRef = { entity_kind: 'npc', entity_id: 'npc-a' };
+
+test('blocked NPC operation replaces the whole validated plan with wait',
+  async () => {
+    const queueId = 'needs_check.csv#TEST001';
+    const plan = { schema: 'npc_step_plan_v1', npc_ref: 'npc-a',
+      resolution: 'domain_request', operations: [
+        { op: 'create_entity', semantic_type: 'tool', name: 'запрещённый предмет',
+          facts: [{ text: 'стальной' }] },
+        { op: 'request_discovery', discovery_kind: 'search',
+          query: 'другая вещь', target_refs: ['storehouse'], actor_ref: 'npc-a' }
+      ] };
+    const proposal = { status: 'planned', plan, signal_ids_to_consume: ['signal-1'] };
+    const autonomous = { proposal, request: { npc_ref: 'npc-a' },
+      decision_records: [{ proposal }] };
+    const diagnostics = [];
+    const prepared = await prepareNpcDecisionForActorStep({ autonomous,
+      committedState: { party_id: 'party-1' },
+      async assertNeedsCheckAllowed({ candidate }) {
+        assert.deepEqual(candidate, { semantic_type: 'tool',
+          name: 'запрещённый предмет', facts: ['стальной'],
+          path: 'NPC.create_entity' });
+        throw Object.assign(new Error('blocked'), { code:
+          'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', details: {
+            queue_id: queueId, queue_ids: [queueId]
+          } });
+      },
+      recordNeedsCheckFilter: (record) => diagnostics.push(record)
+    });
+
+    assert.equal(prepared.proposal.plan.operations.length, 1);
+    assert.deepEqual(prepared.proposal.plan.operations[0], {
+      op: 'request_activity', actor_ref: 'npc-a', activity_kind: 'wait',
+      target_refs: [], description: 'Ждать до следующей точки решения.'
+    });
+    assert.deepEqual(prepared.decision_records[0].proposal.plan,
+      prepared.proposal.plan);
+    assert.deepEqual(diagnostics, [{ path: 'NPC.create_entity',
+      queue_ids: [queueId] }]);
+    assert.equal(JSON.stringify(prepared).includes(queueId), false);
+  });
+
+test('blocked O1 query and independent A1 output select ordinary NPC wait',
+  async () => {
+    for (const [operation, path, candidateName] of [
+      [{ op: 'request_discovery', actor_ref: 'npc-a',
+        discovery_kind: 'search', target_refs: ['storehouse'],
+        query: 'самопрялка' }, 'O1.request.query', 'самопрялка'],
+      [{ op: 'request_discovery', actor_ref: 'npc-a',
+        discovery_kind: 'inspect', target_refs: ['storehouse'],
+        query: 'Колёсная прялка' }, 'O1.request.query', 'Колёсная прялка'],
+      [{ op: 'request_item_use', actor_ref: 'npc-a', item_ref: 'bag',
+        use_kind: 'other', target_refs: ['fire'], action_production: {
+          identity_mode: 'independent_outputs', result_descriptor: {
+            display_name: 'самопрялка', physical_description: 'деревянная',
+            qualitative_facts: ['с ножным приводом'], inscription_text: null,
+            source_fact_delta: null
+          }
+        } }, 'A1.preflight.result_descriptor', 'самопрялка']
+    ]) {
+      const autonomous = { request: { npc_ref: 'npc-a' }, proposal: {
+        status: 'planned', signal_ids_to_consume: [], plan: {
+          schema: 'npc_step_plan_v1', npc_ref: 'npc-a',
+          resolution: 'domain_request', operations: [operation]
+        }
+      } };
+      const diagnostics = [];
+      const prepared = await prepareNpcDecisionForActorStep({ autonomous,
+        committedState: {},
+        async assertNeedsCheckAllowed({ candidate }) {
+          assert.equal(candidate.name, candidateName);
+          assert.equal(candidate.path, path);
+          throw Object.assign(new Error('blocked'), { code:
+            'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', details: {
+              queue_ids: ['needs_check.csv#TEST002']
+            } });
+        },
+        recordNeedsCheckFilter: (record) => diagnostics.push(record)
+      });
+      assert.equal(prepared.proposal.plan.operations[0].activity_kind, 'wait');
+      assert.deepEqual(diagnostics, [{ path,
+        queue_ids: ['needs_check.csv#TEST002'] }]);
+    }
+  });
+
+test('NPC inspect trusts a known ref; name lookup requires a unique visible item',
+  async () => {
+    const scenarios = [
+      { name: 'free-form question to a known ref', targetRefs: ['wheel-1'],
+        query: 'Как устроена эта колёсная прялка?', items: ['wheel-1'],
+        available: ['wheel-1'], blocked: false },
+      { name: 'chosen ref disambiguates duplicate names',
+        targetRefs: ['wheel-1'], query: 'Колёсная прялка: как устроена?',
+        items: ['wheel-1', 'wheel-2'], available: ['wheel-1', 'wheel-2'],
+        blocked: false },
+      { name: 'name lookup reuses one unique visible item', targetRefs: [],
+        query: 'Колёсная прялка', items: ['wheel-1'], available: ['wheel-1'],
+        blocked: false },
+      { name: 'name lookup remains ambiguous for duplicate names', targetRefs: [],
+        query: 'Колёсная прялка', items: ['wheel-1', 'wheel-2'],
+        available: ['wheel-1', 'wheel-2'], blocked: true },
+      { name: 'unknown ref does not fall back to a matching name',
+        targetRefs: ['wheel-missing'], query: 'Колёсная прялка',
+        items: ['wheel-1'], available: ['wheel-missing', 'wheel-1'],
+        blocked: true }
+    ];
+
+    for (const scenario of scenarios) {
+      const autonomous = { request: { npc_ref: 'npc-a', npc: {
+        available_resources: scenario.available.map((resource_ref) =>
+          ({ resource_ref }))
+      } }, proposal: { status: 'planned', plan: { schema: 'npc_step_plan_v1',
+        npc_ref: 'npc-a', resolution: 'domain_request', operations: [{
+          op: 'request_discovery', actor_ref: 'npc-a',
+          discovery_kind: 'inspect', target_refs: scenario.targetRefs,
+          query: scenario.query
+        }] } } };
+      const committedState = { items: scenario.items.map((item_id) => ({
+        item_id, name: 'Колёсная прялка', semantic_type: 'household_tool'
+      })) };
+      let guardCalled = false;
+      const prepared = await prepareNpcDecisionForActorStep({ autonomous,
+        committedState, async assertNeedsCheckAllowed({ candidate }) {
+          guardCalled = true;
+          assert.equal(candidate.path, 'O1.request.query');
+          throw Object.assign(new Error('blocked'), { code:
+            'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', details: {
+              queue_ids: ['needs_check.csv#TEST003']
+            } });
+        }
+      });
+
+      assert.equal(guardCalled, scenario.blocked, scenario.name);
+      if (scenario.blocked) {
+        assert.equal(prepared.proposal.plan.operations[0].activity_kind,
+          'wait', scenario.name);
+      } else {
+        assert.equal(prepared, autonomous, scenario.name);
+      }
+    }
+  });
+
+test('A1 inherited source facts reach the needs-check candidate baseline',
+  async () => {
+    const inherited = 'самопрялка';
+    const autonomous = { request: { npc_ref: 'npc-a',
+      resource_snapshots: [{ item_id: 'item:source', category_id: 'wood',
+        name: 'доска', state: { ordinary_metadata: {
+          name: 'доска', semantic_type: 'wood',
+          physical_description: 'обычная сосновая доска',
+          semantic_facts: [{ text: inherited }],
+          physical_inscriptions: [{ text: inherited }]
+        } } }] }, proposal: { status: 'planned', plan: {
+      schema: 'npc_step_plan_v1', npc_ref: 'npc-a', resolution: 'domain_request',
+      operations: [{ op: 'request_item_use', actor_ref: 'npc-a',
+        item_ref: 'item:source', use_kind: 'other', target_refs: [],
+        action_production: { source_refs: ['item:source'],
+          identity_mode: 'independent_outputs', result_descriptor: {
+            display_name: 'обработанная доска',
+            physical_description: 'свежий срез',
+            qualitative_facts: ['свежий срез'], inscription_text: null,
+            source_fact_delta: { physical_description: null,
+              qualitative_facts: [inherited], removed_physical_fact_refs: [],
+              physical_form: null }
+          } }
+      }]
+    } } };
+    let checkedCandidate;
+    const prepared = await prepareNpcDecisionForActorStep({ autonomous,
+      committedState: {},
+      async assertNeedsCheckAllowed({ candidate }) {
+        checkedCandidate = candidate;
+        const baseline = candidate.source_fact_delta_baseline;
+        assert.equal(candidate.path, 'A1.preflight.result_descriptor');
+        assert.equal(candidate.source_fact_delta.qualitative_facts
+          .includes(inherited), true);
+        assert.equal(baseline.qualitative_facts.includes(inherited), true);
+        assert.equal(baseline.inscription_text, inherited);
+        assert.equal(baseline.name, 'доска');
+        assert.equal(baseline.semantic_type, 'wood');
+      }
+    });
+    assert.equal(prepared, autonomous,
+      'an inherited delta fact already present on the source is not a new blocker hit');
+    assert.ok(checkedCandidate);
+  });
 
 function signalDescriptor(entityId, parents = [], summary = `change:${entityId}`) {
   return {

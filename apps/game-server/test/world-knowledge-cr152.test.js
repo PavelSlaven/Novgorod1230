@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { WorldKnowledgeError } from '@rus/world-knowledge';
-import { omitWorldKnowledgeContextText } from '@rus/turn';
+import { worldKnowledgePromptData } from '@rus/turn';
 import { semanticInputOf } from '../src/runtime/world-knowledge-request-context.js';
 import { groundingSufficiencyOf } from '../src/runtime/world-knowledge-sufficiency.js';
 
@@ -242,31 +242,24 @@ test('disputes alone count as admitted content for sufficiency', () => {
   }, { fromDefaultQuery: true }), 'PARTIAL_KNOWLEDGE');
 });
 
-test('wire helper always strips context_text for model consumers', () => {
-  const stripped = omitWorldKnowledgeContextText({
-    request_id: 'r1',
-    world_knowledge: {
-      schema: 'world_knowledge_slice_v1',
-      pack_ref: 'wk-pack:test', pack_revision: 'revision:test',
-      coverage: [], facts: [{ claim_ref: 'c1' }], hard_constraints: [],
-      disputes: [], gaps: [], context_text: 'duplicate'
-    }
-  });
-  assert.equal(Object.hasOwn(stripped.world_knowledge, 'context_text'), false);
-  assert.equal(stripped.world_knowledge.facts.length, 1);
-  const emptyFacts = omitWorldKnowledgeContextText({
-    request_id: 'r2',
-    world_knowledge: {
-      schema: 'world_knowledge_slice_v1',
-      pack_ref: 'wk-pack:test', pack_revision: 'revision:test',
-      coverage: [], facts: [], hard_constraints: [], disputes: [], gaps: [],
-      context_text: 'only prose'
-    }
-  });
-  assert.equal(Object.hasOwn(emptyFacts.world_knowledge, 'context_text'), false);
+test('prompt helper validates and clones structured World Knowledge', () => {
+  const slice = {
+    schema: 'world_knowledge_slice_v1',
+    pack_ref: 'wk-pack:test', pack_revision: 'revision:test',
+    coverage: [], facts: [{ claim_ref: 'c1' }], hard_constraints: [],
+    disputes: [], gaps: [], context_text: 'Legacy prose projection.'
+  };
+  const copied = worldKnowledgePromptData(slice);
+  const { context_text, ...structured } = slice;
+  assert.deepEqual(copied, structured);
+  assert.notEqual(copied, slice);
+  assert.equal(Object.hasOwn(slice, 'context_text'), true);
+  assert.equal(Object.hasOwn(copied, 'context_text'), false);
+  assert.throws(() => worldKnowledgePromptData({ context_text: 'Text only.' }),
+    /World Knowledge prompt slice is invalid/u);
 });
 
-test('NPC autonomous user wire omits context_text via shared helper', async () => {
+test('NPC autonomous user wire passes structured knowledge unchanged', async () => {
   const { createLowerDvinaTraceNpcAutonomousModel } = await import(
     '../src/runtime/lower-dvina-trace-phase-2-llm.js');
   const slice = {
@@ -274,7 +267,7 @@ test('NPC autonomous user wire omits context_text via shared helper', async () =
     pack_ref: 'wk-pack:test', pack_revision: 'revision:test',
     purpose: 'npc_decision', coverage: [], hard_constraints: [],
     facts: [{ claim_ref: 'claim:w', runtime_text: 'факт' }],
-    disputes: [], gaps: [], context_text: 'FACT claim:w: факт',
+    disputes: [], gaps: [],
     sufficiency: 'PARTIAL_KNOWLEDGE'
   };
   let autonomousUser;
@@ -297,4 +290,5 @@ test('NPC autonomous user wire omits context_text via shared helper', async () =
   assert.equal(Object.hasOwn(autonomousUser.world_knowledge, 'context_text'),
     false);
   assert.equal(autonomousUser.world_knowledge.facts[0].claim_ref, 'claim:w');
+  assert.deepEqual(autonomousUser.world_knowledge.facts, slice.facts);
 });

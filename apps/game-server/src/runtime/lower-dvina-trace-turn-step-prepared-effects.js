@@ -57,6 +57,10 @@ export function createLowerDvinaTracePreparedDomainEffect({
     currentState() {
       return structuredClone(currentState);
     },
+    replaceCurrentState(nextState) {
+      currentState = structuredClone(nextState);
+      return structuredClone(currentState);
+    },
     assertContinuation({ plan, prepared_chain_context: context } = {}) {
       const conversationPrefix = context?.prior_effect_count
           === preparedEffects.length

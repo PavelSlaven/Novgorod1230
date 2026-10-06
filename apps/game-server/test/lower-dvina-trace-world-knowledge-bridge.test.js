@@ -131,13 +131,23 @@ test('Phase 1A checks WK before a materialization commit and skips it for an exa
   assert.equal(queryCount, 0);
   assert.equal(commitCount, 0);
 
-  const replay = { request_identity: structuredClone(request) };
+  const replayEvents = [{ id: 'novgorod_famine_1230',
+    phases: [{ id: 'documented_famine_source_year', start_at_minutes: 368_640 }],
+    source_ref: { record_id: 'temporal-record', catalog_digest: 'c'.repeat(64) } }];
+  const replay = { request_identity: structuredClone(request), historical_events: replayEvents };
+  let historyLoadCount = 0;
   const result = await materializeLowerDvinaTraceParty({
     request,
     repository: { async loadInternal() { return replay; } },
-    stage25Ports: {}, worldKnowledge: unavailable
+    stage25Ports: {}, worldKnowledge: unavailable,
+    initialHistoricalEventsLoader: async () => {
+      historyLoadCount += 1;
+      throw new Error('must not refresh historical events during replay');
+    }
   });
   assert.equal(result.status, 'replayed');
+  assert.deepEqual(result.instance.historical_events, replayEvents);
+  assert.equal(historyLoadCount, 0);
   assert.equal(queryCount, 0);
 });
 
@@ -212,7 +222,7 @@ function substrateProbe({ bundle, core, scenarioBundle, probe }) {
     pack_revision: bundle.manifest.revision_id, purpose: 'materialization_support',
     query_locale: 'en', domains: probe.domains, focus_refs: [],
     requested_predicates: [], search_hints: probe.hints, context,
-    budget: { max_facts: 12, max_candidates: 12, max_context_chars: 5000 }
+    budget: { max_facts: 12, max_candidates: 12 }
   });
   const returned_claim_refs = slice.facts.map(({ claim_ref }) => claim_ref);
   return { family: probe.family, expected_claim_refs: probe.expected_claim_refs,

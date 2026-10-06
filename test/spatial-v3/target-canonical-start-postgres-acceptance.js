@@ -171,13 +171,59 @@ export async function assertTargetCanonicalStartPostgres({
   if (realProvider) assert.equal(llmSettings.providerSnapshot().mode, 'custom',
     'real browser smoke requires configured local LLM settings');
   if (!realProvider) globalThis.fetch = async (url, init) => {
+      const diagnostic = { role: 'unknown', schema: '<absent>', system: '<absent>' };
+      try {
       const providerStarted = performance.now();
       assert.equal(String(url), 'https://target-acceptance.invalid/chat/completions');
       const call = JSON.parse(init.body);
       const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
       const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+      diagnostic.schema = call.response_format?.json_schema?.name ?? '<absent>';
+      diagnostic.system = system.slice(0, 120);
       let output;
-      if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+      const hasScene = typeof modelInput?.сцена?.граница === 'string';
+      const hasRejectedProse = Object.hasOwn(modelInput ?? {}, 'отклонённая_проза');
+      const hasCheckedProse = Object.hasOwn(modelInput ?? {}, 'проверяемая_проза');
+      const isOpeningWriter = hasScene && Object.keys(modelInput ?? {}).length === 1;
+      diagnostic.role = hasScene && hasRejectedProse ? 'gameplay_narrator_semantic_repair'
+        : hasScene && hasCheckedProse ? 'gameplay_narrator_auditor'
+          : isOpeningWriter ? 'gameplay_narrator' : 'unknown';
+      const openingFacts = () => {
+        const scene = modelInput.сцена ?? {};
+        return [
+          ...(Array.isArray(scene.факты) ? scene.факты : []),
+          ...(Array.isArray(scene.персонажи) ? scene.персонажи.flatMap(({ имя, факты: personFacts }) =>
+            [имя, ...(Array.isArray(personFacts) ? personFacts : [])]) : [])
+        ].map((fact) => typeof fact === 'string' ? fact : fact?.текст)
+          .filter((fact) => typeof fact === 'string' && fact.length > 0);
+      };
+      if (hasScene && hasRejectedProse) {
+        narrationRoles.push('gameplay_narrator_semantic_repair');
+        modelCalls.push({ role: 'gameplay_narrator_semantic_repair' });
+        const facts = openingFacts();
+        const split = Math.ceil(facts.length / 2);
+        output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+          .filter(Boolean).join('\n\n') };
+      } else if (hasScene && hasCheckedProse) {
+        narrationRoles.push('gameplay_narrator_auditor');
+        modelCalls.push({ role: 'gameplay_narrator_auditor' });
+        output = { pass: true, failed_checks: [], concerns: [], evidence: openingFacts() };
+      } else if (isOpeningWriter) {
+        narrationRoles.push('gameplay_narrator');
+        modelCalls.push({ role: 'gameplay_narrator' });
+        if (narrationRoles.length === 1) {
+          const privateKnownFact = openingFacts().find((fact) => /лодоч|рыбацкий стан/u.test(fact));
+          assert.equal(privateKnownFact, undefined,
+            `private known context must not enter the opening writer projection: ${privateKnownFact}`);
+          const projectedCharacters = modelInput.сцена.персонажи ?? [];
+          assert.equal(projectedCharacters.length, 0,
+            `unproven NPC perception is not co-location disclosure: ${projectedCharacters.map(({ имя }) => имя).join(', ')}`);
+        }
+        const facts = openingFacts();
+        const split = Math.ceil(facts.length / 2);
+        output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+          .filter(Boolean).join('\n\n') };
+      } else if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
         modelCalls.push({ role: 'world_knowledge_query_planner' });
         output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
           domains: [], focus_refs: [], requested_predicates: [], search_hints: [] };
@@ -206,35 +252,31 @@ export async function assertTargetCanonicalStartPostgres({
           source_reviews: [...modelInput.required_current_beat.changes,
             ...modelInput.required_current_beat.uncertainties].map(({ ref }) => ({ ref, segment_choices: ids })),
           unsupported: [], literary_failures: [], evidence: ['Deterministic source-copy.'] };
-      } else if (system.startsWith('Return only {"prose"')) {
-        narrationRoles.push('gameplay_narrator');
-        modelCalls.push({ role: 'gameplay_narrator' });
-        const context = modelInput.visible_context_package;
-        if (narrationRoles.length === 1) {
-          assert.equal(context.known_context.some((entry) => /лодоч|рыбацкий стан/u.test(entry.text)), false);
-          assert.equal(context.visible_npcs.length, 0, 'unproven NPC perception is not co-location disclosure');
-        }
-        const facts = context.visible_scene_dossier.must_include.map((entry) => entry.text);
-        const split = Math.ceil(facts.length / 2);
-        output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
-          .filter(Boolean).join('\n\n') };
-      } else if (system.startsWith('Return only {"pass"')) {
+      } else if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
         narrationRoles.push('gameplay_narrator_auditor');
         modelCalls.push({ role: 'gameplay_narrator_auditor' });
         output = { pass: true, failed_checks: [], concerns: [], evidence: ['Test response uses the supplied committed visible facts.'] };
       } else {
-        throw new Error('M2c 0-LLM baseline: catalogued target start invoked a model role '
-          + 'this fixture does not recognize as narrator/audit/turn-processing — verify it is '
-          + `not a materialization role before adding a response branch. System prompt: ${system}`);
+        throw new Error('M2c 0-LLM baseline: unknown role=unknown, schema=<absent>; '
+          + `system=${system.slice(0, 120)}`);
       }
       providerTimings.push({ duration_ms: performance.now() - providerStarted });
       return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(output) } }] }), { status: 200 });
+      } catch (error) {
+        if (error?.name === 'AssertionError') {
+          process.stderr.write(`[target-canonical-start fixture assertion] ${JSON.stringify({
+            name: error.name, message: error.message, role: diagnostic.role,
+            schema: diagnostic.schema, system: diagnostic.system, stack: error.stack
+          })}\n`);
+        }
+        throw error;
+      }
   };
   let publicRuntime;
   const rootStarted = performance.now();
   try {
   const rootOptions = {
-    env: { DEEPSEEK_API_KEY: 'isolated-fixture-key', DEEPSEEK_BASE_URL: 'https://target-acceptance.invalid' },
+    env: { LLM_API_KEY: 'isolated-fixture-key', LLM_BASE_URL: 'https://target-acceptance.invalid' },
     config: { spatialV3BindingsModule: 'builtin:spatial-v3-production-v17', rootDir,
       runtimeCatalogPinManifestDigest: itemPin.compatible_world_pin_manifest_digest,
       targetCatalogActivationApprovals: { itemApproval: releaseInputs.itemApproval, actorApproval: releaseInputs.actorApproval },

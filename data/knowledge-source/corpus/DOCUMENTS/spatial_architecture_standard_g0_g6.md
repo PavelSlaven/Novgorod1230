@@ -114,7 +114,7 @@ Read-only копия Google Drive в этом документном прохо�
 
 Настоящий документ определяет архитектуру, но сам по себе не доказывает
 выполнение DDL, migrations, tests, PostgreSQL integration, generated
-reproducibility, Graphify или independent critic checks. Такие доказательства
+reproducibility или independent critic checks. Такие доказательства
 привязаны к exact release HEAD и его evidence manifest. Для active production
 boundary применяется release `spatial-v3-production-v1`.
 
@@ -129,7 +129,7 @@ boundary применяется release `spatial-v3-production-v1`.
   возвращают materialization v2 как fallback после атомарной активации;
 - все выявленные замечания либо исправлены, либо явно вынесены в release-gate limitation без утверждения функциональной готовности.
 
-Ноль замечаний в этом смысле относится только к статической непротиворечивости текста и contracts. Он не означает прохождение DDL, migration, compiler, runtime, PostgreSQL, Graphify или independent critic checks.
+Ноль замечаний в этом смысле относится только к статической непротиворечивости текста и contracts. Он не означает прохождение DDL, migration, compiler, runtime, PostgreSQL или independent critic checks.
 
 ### 0.8. Temporal World v4 amendment
 
@@ -2460,7 +2460,6 @@ One PR updates at least:
 
 ```text
 AGENTS.md
-.github/AGENTS.md
 
 code_driven_world_materialization_architecture.md
 world_base_materialization_table_requirements.md
@@ -2546,7 +2545,7 @@ The task uses one `README.md` recording:
 
 - objective and baseline commit;
 - mandatory files read;
-- RAG/Graphify queries actually executed;
+- RAG queries actually executed;
 - changed files/contracts/modules;
 - design decisions and conflicts;
 - migration/integration order;
@@ -6891,10 +6890,9 @@ Multiple valid routes or exits are normal option multiplicity and do not produce
 ```text
 [ ] GitHub main commit fixed in README and ADR.
 [ ] Root AGENTS.md read completely.
-[ ] .github/AGENTS.md read completely.
-[ ] All conditional documents from both AGENTS files read.
+[ ] All conditional documents required by root AGENTS.md read.
 [ ] Documentation navigation and regional semantic catalog read.
-[ ] RAG and Graphify queries actually executed and recorded, or unavailable dependency explicitly blocks release.
+[ ] RAG queries actually executed and recorded, or unavailable dependency explicitly blocks release.
 [ ] Norm conflict register is empty.
 ```
 

@@ -2,7 +2,7 @@
   "schema": "rus.live_world_runtime_v17_fresh_schema_request.v1",
   "request_id": "novgorod_live_world_runtime_v17_fresh_schema_001",
   "status": "pending_independent_high_review",
-  "source_commit": "6d28d386b6acafc414c68db25bbfae4aec6647aa",
+  "source_commit": "77ce16ed90c6d00a372271d49da6cfbbd965c478",
   "operation": "create_fresh_databases_and_apply_exact_schema",
   "target": {
     "cluster": "existing_managed_local_play_postgresql_16_14_0",
@@ -175,8 +175,8 @@
   "party_schema": {
     "owner_migration_module": {
       "path": "apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js",
-      "bytes": 5445,
-      "sha256": "2beeea35c0a959e0b490eb3bd54d78e80fec60ecce4802d53bd2ef2c293d7e18"
+      "bytes": 5455,
+      "sha256": "8807b53ec8dc0b0f13d9dadf47491c2d695296adf652ee20c2fd9ee15b588454"
     },
     "ordered_migrations": [
       {
@@ -365,12 +365,12 @@
         "sha256": "7f06036423e135e0a8daedabe4548eb35f3ca49544d28e2f25eae10330c07da8"
       },
       {
-        "path": "schemas/party-db/038_party_runtime_local_lines.sql",
-        "bytes": 12763,
-        "sha256": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007"
+        "path": "schemas/party-db/038_party_runtime_npc_seasonal_presence.sql",
+        "bytes": 10875,
+        "sha256": "bd90769eb40e0735a294a672c308c0694d32947d347c28197c754f8b1043ff73"
       }
     ],
-    "chain_digest": "91f177ac5899f49400c8b4bf8d381aeff30ae20c155d4c196021f0311be52e0b"
+    "chain_digest": "39913e1bc00ccb70ef8330734d6ef75ce1245e2e2eb3d00333789486e1fc7993"
   },
   "preconditions": [
     "Independent Sol high approval binds this exact request and source hashes before any production write.",

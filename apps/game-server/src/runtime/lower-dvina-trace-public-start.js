@@ -25,6 +25,7 @@ export async function startLowerDvinaTrace({
   requestId,
   partyId,
   creationIdentity,
+  diagnostics = null,
   release,
   repository,
   traceStartAdapter,
@@ -111,6 +112,7 @@ export async function startLowerDvinaTrace({
   }
   let internal = committedBeforeStart
     ?? await traceStartAdapter.loadInternal(partyId);
+  let initialMaterializationGaps = [];
   const runtimeBinding = binding.runtime_binding;
   // v17 reuses revisions 1..7 for distinct starts; only the v1 catalog gates provisioning by revision.
   const useLegacyOrdinaryProvisioning = runtimeBinding == null;
@@ -119,7 +121,12 @@ export async function startLowerDvinaTrace({
       || Number(runtimeBinding.revision) >= 5);
   if ((useLegacyOrdinaryProvisioning || useTargetOrdinaryProvisioning)
       && typeof traceStartAdapter.provisionInitialOrdinary === 'function') {
-    await traceStartAdapter.provisionInitialOrdinary(partyId);
+    const provisioning = await traceStartAdapter.provisionInitialOrdinary(partyId);
+    const ordinary = provisioning?.ordinary ?? provisioning;
+    initialMaterializationGaps = [
+      ...(Array.isArray(ordinary?.presence_gaps) ? ordinary.presence_gaps : []),
+      ...(ordinary?.presence_gap == null ? [] : [ordinary.presence_gap])
+    ];
     if (binding.runtime_binding != null) {
       internal = await traceStartAdapter.loadInternal(partyId);
     }
@@ -193,7 +200,9 @@ export async function startLowerDvinaTrace({
     });
     openingNarrationResult = await authoredOpeningNarration.run({ partyId, requestId,
       visibleContextPackage: openingPackage,
-      visibleContextApproval: approval });
+      visibleContextApproval: approval,
+      ...(initialMaterializationGaps.length
+        ? { initialMaterializationGaps } : {}) });
     openingProse = openingNarrationResult.prose;
   }
   const initialScreen = await traceOpeningProjector({
@@ -227,6 +236,9 @@ export async function startLowerDvinaTrace({
       : 'rus.live_world_runtime.authored_start_session_identity.v1',
     scenario_id: binding.scenario_id,
     creation_identity: structuredClone(creationIdentity),
+    ...(diagnostics == null ? {} : {
+      diagnostics: structuredClone(diagnostics)
+    }),
     request_id: requestId,
     party_id: partyId,
     publication_manifest_digest: publication.manifest_digest,

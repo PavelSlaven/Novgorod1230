@@ -7,15 +7,16 @@ import { loadTargetAuthoredStartRuntimes } from '../infrastructure/postgres/targ
 import { createSpatialV3WorldBaseReader } from '../infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { TARGET_O1_PROFILE_ARTIFACT_PINS } from '../internal/target-o1-profile-pins.js';
 
 const { scenario_binding_id, scenario_profile_exact_pins,
   parent_release_exact_pins, ...sharedReleaseContract } = historicalRelease;
 
 export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   ...sharedReleaseContract,
-  // v17 bootstrap applies catalog + actor party owner DDL before first production root.
+  // Block activation until the combined NPC-presence + local-lines chain is measured.
   party_runtime_catalog_target_fingerprint:
-    '4d0b23d070c532f3dcb53b65c67147f0079f644018b66423f743e8dcea2baf05',
+    null,
   release_id: 'spatial-v3-production-v17',
   activation_scope: 'new_production_parties_only',
   world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001',
@@ -23,6 +24,7 @@ export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   world_catalog_manifest_sha256: '4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e',
   // CR #153 step 7: v17 pins production-v2; v16 keeps revision:production-v1.
   world_knowledge_pack_revision: 'revision:production-v2',
+  target_o1_profile_artifact_pins: TARGET_O1_PROFILE_ARTIFACT_PINS,
   runtime_catalog_revision_id: 'item_container_spatial_v3_target_001',
   actor_base_attributes_catalog_revision_id: 'actor_base_attributes_spatial_v3_target_001'
 });

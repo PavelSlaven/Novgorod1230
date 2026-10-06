@@ -12,7 +12,7 @@ const docker = (args, input = null) => spawnSync(
 
 test('038 local-line party schema preflights legacy history and reapplies through the production chain', async (t) => {
   const migrationPath = new URL(
-    '../../schemas/party-db/038_party_runtime_local_lines.sql', import.meta.url
+    '../../schemas/party-db/039_party_runtime_local_lines.sql', import.meta.url
   );
   const migration = await readFile(migrationPath, 'utf8');
   if (docker(['version']).status !== 0) {

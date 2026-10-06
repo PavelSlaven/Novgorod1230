@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { loadTargetRuntimeProfiles, readApprovedA1ApplicabilityClass } from
@@ -66,8 +66,9 @@ test('per-place applicability never matches a capacity-v2 generated template, th
     otherRevision), { code: 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP' });
 });
 
-test('the loader takes the class rule from an approved file path', async () => {
+test('the loader takes the class rule from an approved file path', async (t) => {
   const dir = await mkdtemp(join(tmpdir(), 'a1-class-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
   const path = join(dir, 'a1.json');
   await writeFile(path, JSON.stringify(approved()));
   const loaded = await loadTargetRuntimeProfiles({ worldRevisionId, a1ApplicabilityClassPath: path });

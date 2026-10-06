@@ -62,6 +62,21 @@ test('create_entity returns a deterministic self-contained ordinary item draft',
     assert.equal(JSON.stringify(first).includes('must-not-reach-model'), false);
   });
 
+test('player create_entity does not consult the needs-check beingness filter',
+  async () => {
+    let checked = false;
+    const ports = createPorts({ assertNeedsCheckAllowed: async () => {
+      checked = true;
+      throw Object.assign(new Error('beingness filter must not block player action'),
+        { code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED' });
+    } });
+    const operation = createSand();
+    const result = await ports.executionRegistry.direct(operation)(
+      execution(operation));
+    assert.equal(result.write_fragments[0].target, 'party_items');
+    assert.equal(checked, false);
+  });
+
 test('legacy ambient direct action remains available without an O2a admission port', async () => {
   const ports = createLowerDvinaTraceTurnStepRuntimePorts({
     ordinaryResultPolicy: testOrdinaryPolicy(),
@@ -89,6 +104,114 @@ test('revision 32 leaves active Phase9 container access to its authored owner', 
   assert.equal(typeof inactive.executionRegistry.domain({
     op: 'request_container_access'
   }), 'function');
+});
+
+test('prepared movement hydrates the destination scene and captures IDs without mutating the projection', async () => {
+  const destinationNpc = { instance_id: 'npc:destination',
+    anchor_id: 'anchor:destination', position_id: 'position:destination',
+    g6_instance_id: 'g6:destination', runtime_source: 'party_db_scene_read' };
+  const diagnostics = [];
+  const admissionCountsAtDiagnostic = [];
+  let admissionCount = 0;
+  let admittedProjection = null;
+  const projectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  let loaderSite = null;
+  let loaderPartyId = null;
+  let loaderClock = null;
+  const beforeClock = { whole_minutes: '500', subminute_numerator: '0',
+    subminute_denominator: '1' };
+  const afterClock = { whole_minutes: '1300', subminute_numerator: '0',
+    subminute_denominator: '1' };
+  const state = {
+    actor_id: 'player', position: { location_ref: 'source', site_id: 'site:source',
+      g5_anchor_id: 'anchor:source', g5_node_id: 'node:source',
+      position_id: 'position:source', g6_id: 'g6:source' },
+    prepared_scenes: [{ location_profile_ref: 'destination',
+      node: { instance_id: 'node:destination' },
+      anchor: { instance_id: 'anchor:destination', state: { zone_ref: 'zone' } } }],
+    npcs: [], clock: beforeClock, clock_weather_light: { clock: beforeClock },
+    body_state: {}
+  };
+  const ports = createLowerDvinaTraceTurnStepRuntimePorts({
+    committedState: state,
+    partyId: 'party:movement',
+    temporalAdvance: async () => ({}),
+    bodyEffect: { apply: async () => ({ state_after: {} }) },
+    projectCurrentScene: (committedState) => ({
+      current_visible_context: { schema: 'visible_context_package',
+        visible_npc: committedState.npcs.map((npc) => ({
+          entity_ref: { entity_kind: 'npc', entity_id: npc.instance_id },
+          ...(committedState.clock.whole_minutes === '1300'
+            ? { visible_status: 'partial' }
+            : { observable_cues: { identity: { sex_category: 'male' } } })
+        })) }
+    }),
+    loadPreparedMovementScene: async ({ partyId, state: preparedState, clock }) => {
+      loaderPartyId = partyId;
+      loaderSite = preparedState.position.site_id;
+      loaderClock = clock;
+      return { ...preparedState, npcs: [destinationNpc],
+        scene_position_g6: { 'position:destination': 'g6:destination' } };
+    },
+    onNpcSceneProjection: (event) => {
+      admissionCountsAtDiagnostic.push(admissionCount);
+      diagnostics.push(event);
+    },
+    requestId: 'request:move',
+    workingProjectionAuthority: {
+      admit(projection) {
+        admittedProjection = projectionAuthority.admit(projection);
+        admissionCount += 1;
+        return admittedProjection;
+      }
+    }
+  });
+  const projection = { position: { location_ref: 'source',
+    g5_anchor_id: 'anchor:source', g5_node_id: 'node:source' } };
+  const result = await ports.preparedEffectProjectionOwner({
+    working_projection: projection,
+    prepared_effect: { consequence: {
+      movement: { route_ref: 'route', source: { location_ref: 'source' },
+        destination: { location_ref: 'destination', g5_anchor_id: 'anchor:destination',
+          scene_position_id: 'position:destination' } },
+      position_transition: { destination_site_id: 'site:destination',
+        destination_g6_instance_id: 'g6:destination',
+        to_position_ref: 'position:destination' }
+    }, time_update: { clock_after: afterClock, temporal_results: [] },
+    body_update: { state_after: {} } }
+  });
+  assert.equal(loaderSite, 'site:destination');
+  assert.equal(loaderPartyId, 'party:movement');
+  assert.deepEqual(loaderClock, afterClock,
+    'destination visibility reads the exact prepared after-clock');
+  assert.deepEqual(projection, { position: { location_ref: 'source',
+    g5_anchor_id: 'anchor:source', g5_node_id: 'node:source' } });
+  assert.deepEqual(ports.preparedDomainEffect.currentState().npcs,
+    [destinationNpc]);
+  assert.deepEqual(result.current_visible_context.visible_npc[0].entity_ref,
+    { entity_kind: 'npc', entity_id: 'npc:destination' });
+  assert.equal(result.current_visible_context.visible_npc[0].visible_status,
+    'partial', 'the next projection uses the after-sunset destination readback');
+  assert.equal(result.current_visible_context.visible_npc[0].observable_cues,
+    undefined, 'civil dusk removes clear-visibility cues from the projection');
+  assert.equal(diagnostics[0].request_id, 'request:move');
+  assert.equal(admissionCount, 1,
+    'the opt-in diagnostic runs after working projection admission');
+  assert.deepEqual(admissionCountsAtDiagnostic, [1],
+    'the admission has completed when the diagnostic callback runs');
+  assert.deepEqual(diagnostics[0].after.current_visible_npc_ids,
+    admittedProjection.current_visible_context.visible_npc
+      .map(({ entity_ref: ref }) => ref.entity_id),
+    'the diagnostic reads the exact projection returned by admission');
+  assert.deepEqual(diagnostics[0].after.projection_npc_ids,
+    ['npc:destination']);
+  assert.deepEqual(diagnostics[0].after.current_visible_npc_ids,
+    ['npc:destination']);
+  assert.deepEqual(diagnostics[0].after.candidates[0], {
+    npc_id: 'npc:destination', source: 'party_db_scene_read',
+    position_id: 'position:destination', g6_instance_id: 'g6:destination',
+    same_scene_locus: true
+  });
 });
 
 test('an active O2a profile fails closed when its binding has drifted', () => {

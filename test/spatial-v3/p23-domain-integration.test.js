@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { createSpatialV3DomainMutationService, createSpatialV3DomainPlacementIntegrator } from '@rus/party-store/spatial-v3-domain-integration';
+import { createSpatialV3P23DomainRepository } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-p23-domain-repository.js';
 
 const api = createSpatialV3DomainPlacementIntegrator();
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
@@ -30,6 +31,16 @@ test('P23 validates causal NPC schedule pins and rejects anchor-only/remateriali
   assert.equal(api.validateNpcSchedule({ npc_ref: npc, placement, schedule_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'p1' }, schedule_profile_ref: { entity_ref: ref('schedule_profile', 'day'), authoring_version: 'r1' }, dependency_pins: pins }).ok, true);
   assert.equal(api.validateNpcSchedule({ npc_ref: npc, placement: { ...placement, g5_anchor_id: 'legacy' }, schedule_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'p1' }, schedule_profile_ref: { entity_ref: ref('schedule_profile', 'day'), authoring_version: 'r1' }, dependency_pins: pins }).ok, false, 'legacy anchor-only placement is never inferred');
   assert.equal(api.validateNpcSchedule({ npc_ref: npc, placement, schedule_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'p1' }, schedule_profile_ref: { entity_ref: ref('schedule_profile', 'day') }, dependency_pins: pins }).ok, false);
+  assert.equal(api.validateNpcSchedule({ npc_ref: npc, placement: null, schedule_endpoint_ref: null,
+    presence_state: 'location_gap', schedule_profile_ref: { entity_ref: ref('schedule_profile', 'day'), authoring_version: 'r1' }, dependency_pins: pins }).ok, true);
+  assert.equal(api.validateNpcSchedule({ npc_ref: npc, placement, schedule_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'p1' },
+    presence_state: 'offstage_away', schedule_profile_ref: { entity_ref: ref('schedule_profile', 'day'), authoring_version: 'r1' }, dependency_pins: pins }).ok, false);
+  assert.equal(api.validateNpcSchedule({ npc_ref: npc, placement, schedule_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'p1' },
+    presence_state: 'location_gap', schedule_profile_ref: { entity_ref: ref('schedule_profile', 'day'), authoring_version: 'r1' }, dependency_pins: pins }).ok, true);
+  assert.equal(api.validateNpcSchedule({ npc_ref: npc, placement, schedule_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'p2' },
+    presence_state: 'location_gap', schedule_profile_ref: { entity_ref: ref('schedule_profile', 'day'), authoring_version: 'r1' }, dependency_pins: pins }).ok, false);
+  assert.equal(api.validateNpcSchedule({ npc_ref: npc, placement: null, schedule_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'p1' },
+    presence_state: 'location_gap', schedule_profile_ref: { entity_ref: ref('schedule_profile', 'day'), authoring_version: 'r1' }, dependency_pins: pins }).ok, false);
 });
 
 test('P23 keeps movable cover as a revalidated relative relation, never a second placement', () => {
@@ -53,6 +64,21 @@ test('P23 allows interior action only at persisted carrier position and requires
   assert.equal(api.validateCarrierLocalAction(action).ok, true);
   assert.equal(api.validateCarrierLocalAction({ ...action, action_endpoint_ref: { endpoint_kind: 'scene_position', endpoint_id: 'deck' } }).error.code, 'movement_endpoint_kind_invalid');
   assert.equal(api.validateCarrierLocalAction({ ...action, synchronized_slice: null }).error.code, 'time_accumulator_invalid');
+});
+
+test('P23 readback keeps a typed no-location schedule endpoint null', async () => {
+  const pool = { connect() {}, async query(sql) {
+    if (sql.includes('party_npc_spatial_schedules')) return { rows: [{ npc_id: 'away-worker',
+      current_position_node_id: null, schedule_profile_ref: { entity_ref: ref('activity_profile', 'worker'),
+        authoring_version: '2' }, dependency_pins: pins,
+      causal_state_ref: { entity_ref: ref('npc_causal_state', 'worker'),
+        routine_state: { presence_state: 'location_gap' } } }] };
+    return { rows: [] };
+  } };
+  const snapshot = await createSpatialV3P23DomainRepository({ pool }).loadSnapshot({ party_id: 'party',
+    expected_state_versions: [] });
+  assert.equal(snapshot.npc_schedules[0].current_endpoint_ref, null);
+  assert.equal(snapshot.npc_schedules[0].presence_state, 'location_gap');
 });
 
 function domainSnapshot() {
@@ -120,11 +146,120 @@ test('P23 adversarial persisted snapshot checks schedule, ownership capacity, ca
   const repo = (snapshot) => ({ loadSnapshot: async () => snapshot, recheck: async () => ({ ok: true, snapshot }) });
   const badSchedule = domainSnapshot(); badSchedule.npc_schedules[0].current_endpoint_ref.endpoint_id = 'wrong';
   assert.equal((await commit(createSpatialV3DomainMutationService({ repository: repo(badSchedule), committer, verifyApproval: async () => ({ ok: true }) }), mutation())).ok, false);
+  const withOffstage = domainSnapshot();
+  withOffstage.npc_schedules.push({ npc_ref: ref('npc', 'away-worker'), active: true,
+    current_endpoint_ref: null, presence_state: 'offstage_away',
+    schedule_profile_ref: { entity_ref: ref('activity_profile', 'worker'), authoring_version: '2' },
+    dependency_pins: pins, causal_state_ref: { entity_ref: ref('npc_causal_state', 'worker'),
+      routine_state: { presence_state: 'offstage_away' } } });
+  assert.equal((await commit(createSpatialV3DomainMutationService({ repository: repo(withOffstage), committer,
+    verifyApproval: async () => ({ ok: true }) }), mutation())).ok, true);
+  const matchingGap = domainSnapshot();
+  matchingGap.npc_schedules[0].presence_state = 'location_gap';
+  matchingGap.npc_schedules[0].causal_state_ref.routine_state = { presence_state: 'location_gap' };
+  assert.equal((await commit(createSpatialV3DomainMutationService({ repository: repo(matchingGap), committer,
+    verifyApproval: async () => ({ ok: true }) }), mutation())).ok, true);
   const badCarrier = domainSnapshot(); badCarrier.carrier.bound_attached_g6.template_ref.authoring_version = 'other';
   assert.equal((await commit(createSpatialV3DomainMutationService({ repository: repo(badCarrier), committer, verifyApproval: async () => ({ ok: true }) }), mutation())).error.code, 'journey_location_ownership_mismatch');
   const badSlice = domainSnapshot(); badSlice.synchronized_slice = { root_execution_id: 'root', root_travel_state_id: 'travel', root_execution_state_version: 1, root_travel_state_version: 1, canonical_digest: 'slice' };
   const request = mutation({ carrier_local: { root_execution_id: 'root', root_travel_state_id: 'travel', root_execution_state_version: 1, root_travel_state_version: 1, slice_digest: 'forged' } });
   assert.equal((await commit(createSpatialV3DomainMutationService({ repository: repo(badSlice), committer, verifyApproval: async () => ({ ok: true }) }), request)).ok, false);
+});
+
+function p23Pool(snapshot) {
+  return { connect() {}, snapshot, async query(sql) {
+    if (sql.includes('party_runtime.entity_placements')) return { rows: this.snapshot.placements.map((row) => ({
+      party_id: row.party_id, entity_kind: row.entity_ref.entity_kind, entity_id: row.entity_ref.entity_id,
+      placement_kind: row.placement_kind, position_node_id: row.position_node_id,
+      host_entity_ref: row.host_entity_ref, occupies_capacity_units: row.occupies_capacity_units,
+      state_version: row.state_version ?? 1, updated_change_set_id: row.updated_change_set_id
+    })) };
+    if (sql.includes('party_runtime.party_entity_controls')) return { rows: this.snapshot.controls.map((row) => ({
+      party_id: 'party', entity_kind: row.entity_ref.entity_kind, entity_id: row.entity_ref.entity_id,
+      owner_ref: row.owner_ref, holder_ref: row.holder_ref, controller_ref: row.controller_ref,
+      access_profile_ref: row.access_profile_ref, capacity_units: row.capacity_units
+    })) };
+    if (sql.includes('party_runtime.party_npc_spatial_schedules')) return { rows: this.snapshot.npc_schedules.map((row) => ({
+      npc_id: row.npc_ref.entity_id, current_position_node_id: row.current_endpoint_ref?.endpoint_id ?? null,
+      schedule_profile_ref: row.schedule_profile_ref, dependency_pins: row.dependency_pins,
+      causal_state_ref: row.causal_state_ref
+    })) };
+    if (sql.includes('party_runtime.scene_position_nodes')) return { rows: this.snapshot.active_route_endpoint_ids.map((id) => ({ id })) };
+    return { rows: [] };
+  } };
+}
+
+async function attemptWithP23Repository(initialSnapshot, recheckSnapshot = initialSnapshot) {
+  const pool = p23Pool(initialSnapshot);
+  const repository = createSpatialV3P23DomainRepository({ pool });
+  const committer = { async commit({ plan, recheck }) {
+    pool.snapshot = recheckSnapshot;
+    for (const check of plan.commit_rechecks) {
+      const result = await recheck({ transaction: pool, check, plan });
+      if (!result.ok) return result;
+    }
+    return { ok: true };
+  } };
+  return commit(createSpatialV3DomainMutationService({ repository, committer,
+    verifyApproval: async () => ({ ok: true }) }), mutation());
+}
+
+test('P23 production repository/service recheck preserves A-02 gap and offstage pairing semantics', async () => {
+  const matchingGap = domainSnapshot();
+  matchingGap.npc_schedules[0].presence_state = 'location_gap';
+  matchingGap.npc_schedules[0].causal_state_ref.routine_state = { presence_state: 'location_gap' };
+  const readback = await createSpatialV3P23DomainRepository({ pool: p23Pool(matchingGap) })
+    .loadSnapshot({ party_id: 'party', expected_state_versions: [{ resource: 'entity_placements', id: 'npc:guard', state_version: 1 }] });
+  assert.deepEqual(readback.npc_schedules[0].current_endpoint_ref,
+    { endpoint_kind: 'scene_position', endpoint_id: 'p1' }, 'gap readback preserves exact matching endpoint');
+  assert.equal((await attemptWithP23Repository(matchingGap)).ok, true, 'matching gap placement admitted at initial validation and recheck');
+
+  const noLocationGap = domainSnapshot();
+  noLocationGap.npc_schedules.push({ npc_ref: ref('npc', 'away-worker'), active: true,
+    current_endpoint_ref: null, presence_state: 'location_gap',
+    schedule_profile_ref: { entity_ref: ref('activity_profile', 'worker'), authoring_version: '2' },
+    dependency_pins: pins, causal_state_ref: { entity_ref: ref('npc_causal_state', 'worker'),
+      routine_state: { presence_state: 'location_gap' } } });
+  assert.equal((await attemptWithP23Repository(noLocationGap)).ok, true, 'unresolved gap admitted only with null position and no placement');
+
+  const mismatch = domainSnapshot();
+  mismatch.npc_schedules[0].presence_state = 'location_gap';
+  mismatch.npc_schedules[0].causal_state_ref.routine_state = { presence_state: 'location_gap' };
+  mismatch.npc_schedules[0].current_endpoint_ref.endpoint_id = 'p2';
+  mismatch.active_route_endpoint_ids.push('p2');
+  assert.equal((await attemptWithP23Repository(mismatch)).ok, false, 'gap endpoint mismatch rejected at initial validation');
+  assert.equal((await attemptWithP23Repository(matchingGap, mismatch)).ok, false, 'gap endpoint mismatch rejected at commit recheck');
+
+  const gapWithoutEndpoint = structuredClone(matchingGap);
+  gapWithoutEndpoint.npc_schedules[0].current_endpoint_ref = null;
+  assert.equal((await attemptWithP23Repository(gapWithoutEndpoint)).ok, false,
+    'gap with existing placement but null endpoint rejected at initial validation');
+  assert.equal((await attemptWithP23Repository(matchingGap, gapWithoutEndpoint)).ok, false,
+    'gap with existing placement but null endpoint rejected at commit recheck');
+
+  const gapWithoutPlacement = structuredClone(noLocationGap);
+  gapWithoutPlacement.npc_schedules[1].current_endpoint_ref = { endpoint_kind: 'scene_position', endpoint_id: 'p1' };
+  assert.equal((await attemptWithP23Repository(gapWithoutPlacement)).ok, false,
+    'gap with endpoint but no placement rejected at initial validation');
+  assert.equal((await attemptWithP23Repository(noLocationGap, gapWithoutPlacement)).ok, false,
+    'gap with endpoint but no placement rejected at commit recheck');
+
+  const offstage = domainSnapshot();
+  offstage.npc_schedules[0].current_endpoint_ref = null;
+  offstage.npc_schedules[0].presence_state = 'offstage_away';
+  offstage.npc_schedules[0].causal_state_ref.routine_state = { presence_state: 'offstage_away' };
+  assert.equal((await attemptWithP23Repository(offstage)).ok, false, 'offstage with a placement rejected at initial validation');
+  const offstageWorker = structuredClone(domainSnapshot());
+  offstageWorker.npc_schedules.push({ npc_ref: ref('npc', 'away-worker'), active: true,
+    current_endpoint_ref: null, presence_state: 'offstage_away',
+    schedule_profile_ref: { entity_ref: ref('activity_profile', 'worker'), authoring_version: '2' },
+    dependency_pins: pins, causal_state_ref: { entity_ref: ref('npc_causal_state', 'worker'),
+      routine_state: { presence_state: 'offstage_away' } } });
+  assert.equal((await attemptWithP23Repository(offstageWorker)).ok, true, 'offstage without placement admitted at initial validation and recheck');
+  const offstageBecamePlaced = structuredClone(offstageWorker);
+  offstageBecamePlaced.placements.push(root(ref('npc', 'away-worker')));
+  assert.equal((await attemptWithP23Repository(offstageWorker, offstageBecamePlaced)).ok, false,
+    'recheck rejects offstage state when its persisted endpoint/placement pairing changes');
 });
 
 test('P23 fails closed without an injected approval verifier', () => {

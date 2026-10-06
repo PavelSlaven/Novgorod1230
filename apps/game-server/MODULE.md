@@ -21,6 +21,31 @@ runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
+Runtime `needs_check` filter is limited to O1, O2b and S1. Server gets
+`rus.needs_check_blockers.v2` only from verified immutable catalog snapshot for
+same turn pin; lookup is lazy. Guard uses year from committed clock and region
+from runtime-catalog G0 reader for current G4 version. O1 checks normalized query
+after replay/preflight and before model call: a match returns ordinary `no_change`
+and follows normal turn timing/commit without being reported as `absent`.
+Proposed O1 descriptors are filtered per new entity before admission/write;
+matching entities are removed and remaining candidates continue. If none remain,
+the result is ordinary `no_change`, without a negative presence resolution.
+O2b/S1 filter only matching candidates; remaining candidates continue. O2a is
+authored-only and does not run this filter.
+
+For NPCs, matching O1 inspect/search queries, A1 and direct `create_entity`
+proposals are replaced by normal wait before actor-step. A matching descriptor
+proposed inside O1 is filtered per candidate, like O2b/S1; remaining candidates
+continue. NPC A1 checks only a newly forbidden name in `source_fact_delta`.
+Player A1 and direct `create_entity` are
+not blocked by this list. Place filling, NPC first-entry, inventory, equipment
+and trade use approved catalogs checked by
+`node data/world-catalogs/novgorod/game-base-v1/scripts/check-needs-check.mjs --check`;
+snapshot does not replace those checks. Queue IDs and check paths appear only in
+developer trace when diagnostics are enabled. Snapshot does not replace approved
+catalogs or world knowledge. O2b/S1 profiles activate only through existing
+exact gates.
+
 `prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16
 equipment and Stage 24 body/routine projections for an exact generated scene.
 It returns one P16 write set, validation and deterministic choice traces;
@@ -164,8 +189,8 @@ and adds no second transaction owner.
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.
   Stable system rules предшествуют request-specific choices/mappings и audit
   shape/segment choices. Audit evidence краток, но сохраняет все разные findings.
-  Planner private wire опускает `context_text` через общий helper
-  `@rus/turn` `omitWorldKnowledgeContextText` / `worldKnowledgePromptData`;
+  Planner private wire передаёт структурированный WK slice через общий helper
+  `@rus/turn` `worldKnowledgePromptData`;
   facts/qualifiers/constraints/coverage/gaps/disputes, canonical grounding и
   telemetry сохраняются.
   Narration prompts проверяют также temporal/aspectual связи и конкретный
@@ -182,7 +207,7 @@ and adds no second transaction owner.
   Непустая factual need сохраняет прежний validated retrieval path.
   Slice несёт `sufficiency` рядом с `verdict`; diagnostic — `cache_hit`/`cache_miss`.
   Все восемь consumers (turn step/O1/S1/N1/autonomous/conversation/narration/
-  player conversation interpreter) используют один strip `context_text`.
+  player conversation interpreter) получают структурированный WK slice.
 
 - Narration adapter даёт auditor request-local sources
   visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
@@ -278,7 +303,7 @@ and adds no second transaction owner.
   provider-selected LLM-вызовом, который преобразует свободный текст только в
   валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые
   конструктивные категории neckline/sleeve/outer/fabric/trim.
-- Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `unconfigured`/`custom`, OpenAI-compatible base URL/exact default Qwen model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. Старый `local` settings record мигрирует в `unconfigured`; API key не входит в public read model, party save/replay, logs или telemetry; managed provider и silent fallback отсутствуют.
+- Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `unconfigured`/`custom`, OpenAI-compatible base URL/exact default Qwen model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. Endpoint обязателен для вызовов; без него runtime fail-closed. Старый `local` settings record мигрирует в `unconfigured`; API key не входит в public read model, party save/replay, logs или telemetry; managed provider и silent fallback отсутствуют.
 - Authored live-world parties проецируют каждого присутствующего persisted NPC
   через approved neutral conversation profile в тот же общий player/NPC
   conversation owner. Binding зависит от stable actor/location state, а не от
@@ -341,9 +366,25 @@ causal transitions и один CAS итогового состояния. Deferr
 допустим до первого входа; first-entry связывает точную позицию без сброса
 занятия или времени. Сон меняет доступность NPC для разговора. Этот cutover
 не расширяет историческую Phase-7 activation свободных решений NPC.
-Routine movement проходит существующий route owner с проверкой committed source
-и exact endpoints; adapter переносит NPC только при completed handoff, а blocked
-handoff сохраняет исходную позицию и следующий причинный schedule state.
+Routine movement проходит текущий `npc-routine-movement` path: adapter сверяет
+committed source, exact endpoints и доступ, а handoff duration задаёт обычное
+completion; это не sealed traversal proof. Blocked handoff сохраняет исходную
+позицию и следующий причинный schedule state. При seasonal profile switch
+persisted `movement_execution` сохраняет исходный interval и `ends_at`; новый
+профиль не перезапускает движение и не переносит NPC.
+Temporal and first-entry adapters collect current-position, completed-movement,
+active-execution and exact approved-binding facts for `resolveNpcRoutinePresence`;
+phase location is intent only. Adapters apply its presence/location result and
+do not authorize a planned destination from the phase.
+Temporal readback accepts exact current-node/source/scene proof for an unchanged
+initial placement; home schedule scope alone does not authorize that mapping.
+Seasonal D-1 rules reselect from the party clock at the exact calendar boundary.
+`location_gap` preserves any already-known physical placement; it does not
+create an endpoint or authorize a planned destination. An explicit away phase
+with a known placement resolves to a gap until an approved departure is
+established. On first-entry, an away phase with no physical placement remains
+`offstage_away` and unplaced; neither state creates a deferred first-entry
+placement.
 
 Semantic continuation без изменения тела использует existing prepared-effect
 chain уже с первого timed шага. Runtime передаёт advanced committed projection
@@ -521,6 +562,14 @@ items, environment and spatial topology. Existing Stage 22 writes 2–4 natural
 paragraphs and Stage 23 audits factual/agency/unknown boundaries before the
 screen is saved. Whole opening runs in the existing six-minute LLM diagnostics
 deadline: writer, audit, optional one semantic repair and final audit only.
+Before each role call the server projects NPC appearance facts under that NPC's
+visible label, deduplicates only within the same NPC, translates the admitted
+appearance vocabularies to Russian, and fails closed on unknown enum values.
+The writer receives each NPC label once as the group name; the auditor retains
+the source-backed label fact with its opaque fact key. Unsupported appearance
+values fail with a field-specific server error without echoing the supplied value.
+Weather evidence uses stable field references; weather instance ids and movement
+factors stay out of the player-safe role payload.
 Session identity persists the complete approved opening narration flow and the
 original Stage 23 audit. Static profile prose is hint-only; the eight-question reader
 control and exact entity/topology refs fail closed before any model call.
@@ -638,7 +687,11 @@ execution ledger or A1-specific plan hashes.
 
 A1 v1 limits are explicit: single-source preserve has no small subtractive mass-loss/waste model; one action produces homogeneous outputs; tools are unchanged pins without wear or consumption; finite partial partition and partial additional finite consumption are unsupported. Unspecified requested output count is `null` and resolves to one owner-chosen entity; impossible explicit count is a time-spending physical no-result without item writes.
 
-Public new-game replay uses an exact persisted creation identity. Trace
+Public new-game replay uses an exact persisted creation identity. The
+diagnostic-only `diagnostics.start_parameter_extraction` records its
+candidate-vocabulary catalog id and revision outside that identity; it does not
+affect creation identity equality, Phase 1A recovery, start selection or
+compatibility. Trace
 publications pin materializer and RNG versions as historical execution
 identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.
@@ -759,9 +812,9 @@ O1 prompts contain common rules and only the current seed/presence mode rules.
 Only the semantic response shape is shown; authoritative plan fields stay server-assembled.
 A grounded positive presence requires an exact supporting in-slice claim ref;
 empty or unsupported refs still fail admission.
-The private O1 wire omits only duplicate `world_knowledge.context_text` when
-the full structured factual slice is present. Facts, qualifiers, constraints,
-coverage, disputes and gaps remain; claim binding and telemetry use the full request.
+The private O1 wire carries the structured `world_knowledge` factual slice.
+Facts, qualifiers, constraints, coverage, disputes and gaps remain; claim
+binding and telemetry use the full request.
 The private WK planner wire sends each ranked focus ref once as a key in
 `available_knowledge_refs`, with its allowed claim domains as the value (including
 empty arrays). Native planner requests retain the complete ordered ref array for
@@ -807,6 +860,10 @@ actions. Current qualitative conditions come from the existing safe body
 projection; changes retain their before/after meaning. Narration may translate
 supplied semantic condition states, but cannot add symptoms, diagnoses or
 intensity. Opening time and initial bodily prose are not timeless knowledge.
+
+Prepared destination visibility after movement receives the prepared effect's
+exact `time_update.clock_after`; standalone phase-2 readback uses the persisted
+party clock.
 
 Committed authored conversations expose only their player-facing `journal_text`
 and actual speaker through the existing safe interaction projection. Private NPC
@@ -855,6 +912,15 @@ the same edge, because binding `matches()` compares structure and ignores
 `description` (without it two commands claim one operation,
 `TURN_STEP_DOMAIN_BINDING_AMBIGUOUS`). The way-of-going wording is approved data
 (`m2c-pass-target-labels` `passage_phrases`), not text composed in code.
+Exit labels are selected by `spatial-v3-exit-label-policy.js`: a unique approved
+pass-target description at the current place, then the exact exit row in the
+Opus `approved_rows` attestation for `m2c-exit-line-labels`. If that line label
+contains only `выход N` while the existing approved `m2c-exit-labels` row names
+the destination, keep the more useful old label temporarily; otherwise use the
+old approved row as fallback, then a typed data gap with place and exit
+diagnostics. The legacy fallback still contains ordinal wording. Current
+coverage uses that fallback for 12 exits: 8 without an approved target or line
+label, and 4 whose target descriptions collide. These are recorded in LW-075.
 Limit: after that first step the path search (`findReachableDeparturePosition`, raw SQL
 of `spatial-v3-expansion-context.js`) walks raw active scene edges without visibility or
 eligibility (admission exists only for the current position). Safe while every scene
@@ -1062,5 +1128,5 @@ approval, не меняет default release и сохраняет historical aut
 
 - Party calendar clock wins over `request.historical_context.year`.
 - `partyHistoricalEventsOf(committedState)` + `withPartyHistoricalEvents(model, stateOf)` — server port: adapters pass `historical_events` explicitly in grounder `authoritative` / model-call context from committed party state (F1/F2). No `request_id` Map and no request-body injection. Turn step: `buildLowerDvinaTracePhase2Services` wraps `turnStepModel` per request as `(req, repair) => model(req, repair, { historical_events })` (3rd arg; no mutable function property). Conversation exchange wraps `npcSemanticModel` with exchange `context.state` (party state at exchange start; working overlay does not own `historical_events`). `partyWorldKnowledgeAuthoritative` always rebuilds `started_historical_events` from those events + party clock via `@rus/time-events-history` (never accepts a ready id list).
-- Part B (D16/D20): `createLowerDvinaTraceNarrationService` grounds `purpose: narration` once per flow; `withPlayerWorldKnowledgeAuthoritative` / `playerActorFacetsFromState` bind player dossier `social_role_id` → `role_ref` for conversation/narration. Committed state always wins over callContext (F9). Narration authoritative comes from post-commit state via options port, shared with presentation replay (F7).
+- Part B (D16/D20): `createLowerDvinaTraceNarrationService` grounds `purpose: narration` once per flow; `withPlayerWorldKnowledgeAuthoritative` / `playerActorFacetsFromState` bind player dossier `social_role_id` → `role_ref` for conversation/narration. Committed state always wins over callContext (F9). Narration authoritative comes from post-commit state via options port, shared with presentation replay (F7). Phase-2 readback and replay re-read current visibility through Spatial's `readCurrentVisibleContext` using the committed party, actor, and position.
 - Focus refs are filtered by claim `conditions` / access before the planner wire.

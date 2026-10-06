@@ -19,8 +19,16 @@ REGION_ID = 'region_novgorod_land'
 STATUS = 'candidate'
 
 SEASONS = ['summer', 'spring', 'spring_rasputitsa', 'autumn', 'winter']
-ADULT_AGES = ['young_adult', 'adult', 'middle_aged', 'old']   # ACTOR_BASE_APPEARANCE_VOCABULARY.age_category
+ACTOR_AGE_CATEGORIES_PATH = REPO / 'packages' / 'actors' / 'src' / 'actor-age-categories.json'
 BANDS = ['low', 'middle', 'high', 'elite']
+
+
+def load_actor_age_categories(path=None):
+    source = path or ACTOR_AGE_CATEGORIES_PATH
+    return json.loads(Path(source).read_text(encoding='utf-8'))
+
+
+ADULT_AGES = load_actor_age_categories()
 
 
 def read_csv(p, delim=','):

@@ -16,7 +16,7 @@ test('expansion rule-set schema applies, replays and binds all three profile rul
     '-e', 'POSTGRES_PASSWORD=m2c', '-e', 'POSTGRES_USER=m2c', '-e', 'POSTGRES_DB=m2c',
     'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 60; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'm2c']).status === 0) break;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'm2c']).status === 0) break;
     await new Promise((resolve) => setTimeout(resolve, 300));
   }
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)/)[1]);

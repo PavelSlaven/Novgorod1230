@@ -143,10 +143,10 @@ test('explicit deployment default uses role env while unconfigured and local nev
   const calls = [];
   const deployment = createLlmRoleRunnerAdapter({
     settings: { providerSnapshot: () => ({ mode: 'default' }) },
-    env: { DEEPSEEK_API_KEY: 'test' }, execute: async (input) => {
+    env: { LLM_API_KEY: 'test' }, execute: async (input) => {
       calls.push(input);
-      return { status: 'ok', parsed_json: {}, provider: 'deepseek',
-        model: 'deepseek-v4-flash', durationMs: 1 };
+      return { status: 'ok', parsed_json: {}, provider: 'openai_compatible',
+        model: 'qwen3.8-27b-uncensored-w4a16-tp2', durationMs: 1 };
     }
   });
   await deployment.run({ scope: 'turn_runtime', role_id: 'intent_router' });

@@ -21,7 +21,7 @@ export function validateTurnStepBatchPlanBindings({ batch, factual, state,
   ambientPortionProfileRef = null, ordinaryPlan = null }) {
   const blocked = blockedMoves(factual?.consequence?.visible_seed);
   const slots = expectedSlots(factual?.loop_trace?.step_traces ?? [], ordinaryPlan,
-    batch.operations, blocked);
+    batch.operations, blocked, factual?.consequence?.visible_seed);
   const aliases = new Map();
   const materializedItems = [
     ...structuredClone(state.items ?? []),
@@ -68,7 +68,7 @@ export function validateTurnStepBatchPlanBindings({ batch, factual, state,
   }
 }
 
-function expectedSlots(traces, ordinaryPlan, fragments, blocked) {
+function expectedSlots(traces, ordinaryPlan, fragments, blocked, visibleSeed) {
   const ordinaryTrace = traces.find(trace => trace.applied === true
     && ordinaryPlan?.request_identity === `${trace.plan_request?.root_turn_id}:ordinary:presence:step:${trace.step_index}`);
   return traces.flatMap((trace) => {
@@ -87,7 +87,7 @@ function expectedSlots(traces, ordinaryPlan, fragments, blocked) {
     const discoveryActivity = plan?.resolution !== 'domain_request'
       || operations.length !== 1 ? null : ordinaryDiscoveryActivity({
         operation: operations[0], request: trace.plan_request, plan,
-        ordinaryPlan })
+        ordinaryPlan, visibleSeed })
         ?? ((ordinaryPlan == null || ordinaryTrace != null && ordinaryTrace !== trace) && fragments.some(fragment => fragment.target === 'party_events'
           && fragment.value.step_index === trace.step_index)
           ? ordinarySearchActivity(operations[0], plan) : null);

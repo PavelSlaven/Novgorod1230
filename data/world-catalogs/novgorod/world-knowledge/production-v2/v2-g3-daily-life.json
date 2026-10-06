@@ -769,7 +769,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:v2-g3-no-firearms-gunpowder",
       "locale": "ru",
-      "runtime_text": "Огнестрельного оружия и пороха для боя в 1230 году нет и быть не может — такого на Торгу не продают и в дружине не носят. Воюют мечом, копьём, луком да самострелом.",
+      "runtime_text": "Около 1230 года в Новгородской земле огнестрельного оружия и пороха для боя не встречается: на Торгу их не продают, в дружине не носят.",
       "search_aliases": [
         "порох",
         "пищаль",
@@ -781,7 +781,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:v2-g3-no-firearms-gunpowder",
       "locale": "en",
-      "runtime_text": "Firearms and gunpowder for battle do not exist in 1230 and could not — nothing of the sort is sold at the market or carried by the retinue. War is fought with sword, spear, bow and crossbow.",
+      "runtime_text": "Around 1230 in the Novgorod Land, firearms and gunpowder for battle are not encountered: they are not sold at the market or carried by the retinue.",
       "search_aliases": [
         "gunpowder",
         "firearm",

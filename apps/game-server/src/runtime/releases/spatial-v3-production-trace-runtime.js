@@ -36,7 +36,7 @@ import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../../infrastructure/postgres/ordinary-materialization-enablement.js';
 import { createProductionLlmRoleRunner } from
-  '../../infrastructure/provider/deepseek.js';
+  '../../infrastructure/provider/openai-compatible.js';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
@@ -65,14 +65,22 @@ import { createAuthoredOpeningNarrationService } from
   '../authored-opening-narration.js';
 import { createTargetCurrentFactualContext } from
   '../../infrastructure/postgres/target-current-factual-context.js';
+import { createNeedsCheckMaterializationGuard } from
+  '../needs-check-materialization-guard.js';
+import { createNeedsCheckRegionResolver } from
+  '../../infrastructure/postgres/needs-check-region-resolver.js';
+import { createPostgresWorldBaseReader } from
+  '../../infrastructure/postgres/world-base.js';
+import { createRuntimeCatalogCoordinator } from '../runtime-catalog.js';
 
 export function createTraceTurnRuntime({
-  partyPool, committer, env, config, ordinaryMaterializationProfile,
+  partyPool, worldPool, committer, env, config, ordinaryMaterializationProfile,
   ordinaryContainerContentsProfile, ordinaryStageBApproval,
   actionProductionProfile, localFireProfile,
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
   authoredTurnProfile,
+  postActionPerceptionProfile = null,
   authoredSpatialSemanticProfile = null,
   authoredNpcSemanticRemainderProfile = null,
   authoredRuntimeBindingResolver,
@@ -82,6 +90,7 @@ export function createTraceTurnRuntime({
   readLocalEdgeDisclosure = null,
   readCurrentExitDisclosure = null,
   readCurrentConnectionDisclosure = null,
+  readCurrentVisibleContext = null,
   loadInitialNaturalScenePerceptionInput = null,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts,
@@ -123,6 +132,18 @@ export function createTraceTurnRuntime({
     qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity,
     worldKnowledgeGrounder
   });
+  const materializationInputs = targetStartRuntime?.materialization_inputs;
+  const runtimeCatalogWorldBaseReader = worldPool == null ? null
+    : createPostgresWorldBaseReader({ pool: worldPool });
+  const partyCatalogCoordinator = targetStartRuntime == null ? null
+    : createRuntimeCatalogCoordinator({ worldBaseReader: runtimeCatalogWorldBaseReader,
+        partyPool, itemPin: targetStartRuntime.itemPin });
+  const needsCheckGuard = targetStartRuntime == null ? null
+    : createNeedsCheckMaterializationGuard({
+        resolveRegion: createNeedsCheckRegionResolver({
+          worldBaseReader: runtimeCatalogWorldBaseReader }),
+        calendarProfile: materializationInputs?.calendar_profile
+      });
   const ordinaryDiscoveryScopeBinding =
     ordinaryMaterializationProfile?.o2a_ambient?.scope_binding ?? null;
   const ordinaryEnablements =
@@ -173,10 +194,12 @@ export function createTraceTurnRuntime({
           worldKnowledgeGrounder
         }) : null;
   const createNpcOwnerCapabilities = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
-    createOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+    createOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
+      assertNeedsCheckAllowed }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
-        loadEnablement: (input) => ordinaryEnablements.load(input),
-        ordinaryMaterializationModel }),
+      loadEnablement: (input) => ordinaryEnablements.load(input),
+        ordinaryMaterializationModel,
+        assertNeedsCheckAllowed }),
     createActionProductionOwner: actionProductionResolverFactory,
     createOrdinaryContainerContentsResolver: ordinaryContainerResolverFactory,
     loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input),
@@ -205,6 +228,7 @@ export function createTraceTurnRuntime({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
       readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,
+      readCurrentVisibleContext,
       projectEnvironmentAtClock: targetStartRuntime == null ? null
         : createTargetCurrentFactualContext({ partyPool, committer,
           runtime: targetStartRuntime, authoredRuntimeBindingResolver }).projectEnvironmentAtClock
@@ -216,10 +240,16 @@ export function createTraceTurnRuntime({
       createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner }),
     actionProducedWeaponClassifier:
       createLowerDvinaTraceActionProducedWeaponClassifier({ roleRunner }),
-    createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+    loadTurnRuntimeCatalogContext: partyCatalogCoordinator == null ? null
+      : ({ partyId }) => partyCatalogCoordinator.loadPartyContext({ partyId }),
+    createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
+      assertNeedsCheckAllowed, recordNeedsCheckFilter }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel,
+        assertNeedsCheckAllowed,
+        recordNeedsCheckFilter,
+        requestSubject: 'player',
         scopeBinding: ordinaryDiscoveryScopeBinding
       }),
     createTurnStepOrdinaryContainerContentsResolver:
@@ -240,6 +270,7 @@ export function createTraceTurnRuntime({
           disclosure_state:entry.disclosure_state }))) });
     },
     ordinaryDiscoveryScopeBinding,
+    turnStepNeedsCheckGuard: needsCheckGuard,
     createTurnStepActionProductionOwner: actionProductionResolverFactory,
     actionProductionProfile,
     createTurnStepWorldProcessResolver: localFireResolverFactory,
@@ -278,7 +309,9 @@ export function createTraceTurnRuntime({
     decisionSecret,
     llmTurnBudget: turnBudget,
     llmDiagnostics,
+    onNpcSceneProjection: config.onNpcSceneProjection ?? null,
     authoredTurnProfile,
+    postActionPerceptionProfile,
     spatialExpansionRuntime,
     spatialLocalSceneRuntime
   });

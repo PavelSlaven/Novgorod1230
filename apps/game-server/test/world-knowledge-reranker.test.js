@@ -272,7 +272,6 @@ test('grounding applies sufficiency_profile threshold, not DEFAULT fallback', as
             runtime_text: 'fish' }],
           disputes: [],
           gaps: [],
-          context_text: 'fish',
           search_hint_hits: [true],
           search_hint_relevance: [0.30],
           rerank_applied: false
@@ -346,7 +345,6 @@ test('grounding with sufficient_enabled false never emits SUFFICIENT', async () 
             runtime_text: 'fish' }],
           disputes: [],
           gaps: [],
-          context_text: 'fish',
           search_hint_hits: [true],
           search_hint_relevance: [0.99],
           rerank_applied: false
@@ -495,7 +493,7 @@ test('open gate with full admitted scores changes packed order', async () => {
       actor_facets: {},
       conditions: { started_historical_events: [] }
     },
-    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 5000 }
+    budget: { max_facts: 2, max_candidates: 2 }
   };
   const vectorScores = new Map([[alpha, 0.95], [beta, 0.90]]);
   const baseline = loaded.core.resolveWorldKnowledge(query, { vectorScores });
@@ -542,7 +540,6 @@ test('A1: scorePairs receives lexical-only admitted refs, not vector top-k alone
           facts: [{ claim_ref: lexicalOnly }],
           disputes: [],
           gaps: [],
-          context_text: '',
           search_hint_hits: [true],
           search_hint_relevance: [0.9],
           rerank_applied: true
@@ -626,7 +623,6 @@ test('S2: grounding falls back when min_hint_relevance is non-finite', async () 
           facts: [{ claim_ref: 'claim:regional-fish-exploitation' }],
           disputes: [],
           gaps: [],
-          context_text: '',
           search_hint_hits: [true],
           search_hint_relevance: [0.10]
         };

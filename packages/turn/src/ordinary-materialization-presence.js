@@ -9,7 +9,7 @@ import { applyOrdinaryAggregateToTurnWorkingProjection, assertAndNormalizeTurnOr
 const RESTRICTED = new Set(['specialized_or_valuable','weapon_or_armament',
   'currency_or_precious','document_like','other_restricted']);
 
-export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true, codeOwnedResolution = null, mechanicsPolicy = null, semanticContext = null, requiredQuantity = null, partyClock = null, historicalEvents = undefined } = {}) {
+export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, committedState = null, isEquivalentCandidate = null, filterCandidateAllowed = null, assertCandidateAllowed = null, repairAvailable = () => true, codeOwnedResolution = null, mechanicsPolicy = null, semanticContext = null, requiredQuantity = null, partyClock = null, historicalEvents = undefined } = {}) {
   const input = envelopeOf(envelope), projection = projectionOf(input.request, workingProjection);
   const codeResolution = codeOwnedResolution ?? forbiddenAdmission(input);
   const early = preflight(input, projection, basisCatalog, codeResolution); if (early) return early;
@@ -42,8 +42,58 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
       ? { historical_events: freeze(historicalEvents) } : {}) };
   const request = freeze(input.request); let raw = await invoke(ordinaryMaterializationModel, request, { ...modelContext, repair: null }, false);
   let errors = planErrors(raw, request, mechanics, requiredQuantity), repaired = false;
+  let filteredNeedsCheckMatches = [];
+  if (onlyEntityCountError(errors) && typeof filterCandidateAllowed === 'function') {
+    const eligible = [];
+    for (const entity of raw.entities) {
+      if (typeof isEquivalentCandidate === 'function'
+          && await isEquivalentCandidate(entity)) {
+        eligible.push(entity);
+        continue;
+      }
+      const matches = await filterCandidateAllowed({ committedState,
+        candidate: { ...entity.semantic_descriptor,
+          path: 'O1.proposed_entity.semantic_descriptor' } });
+      if (Array.isArray(matches) && matches.length > 0) {
+        filteredNeedsCheckMatches.push(...matches);
+      } else {
+        eligible.push(entity);
+      }
+    }
+    if (filteredNeedsCheckMatches.length > 0 && eligible.length === 0) {
+      return deepFreeze({ status: 'candidate_filtered', decision: null,
+        pending_items_property_admission: null,
+        needs_check_matches: structuredClone(filteredNeedsCheckMatches),
+        reason: 'needs_check_candidate_filtered', working_projection: projection });
+    }
+    if (filteredNeedsCheckMatches.length > 0 && eligible.length === 1) {
+      raw = { ...raw, entities: eligible };
+      errors = planErrors(raw, request, mechanics, requiredQuantity);
+    }
+  }
   if (errors.length) { if (typeof repairAvailable !== 'function' || !repairAvailable()) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response is invalid and no structural repair budget remains.', { repair_attempted: false, validation_errors: errors }); raw = await invoke(ordinaryMaterializationModel, request, { ...modelContext, repair: { schema: 'ordinary_materialization_repair_context_v1', original_output: null, validation_errors: errors } }, true); errors = planErrors(raw, request, mechanics, requiredQuantity); repaired = true; if (errors.length) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response and its repair are invalid.', { validation_errors: errors }); }
   const plan = freeze(raw);
+  for (const entity of plan.entities ?? []) {
+    if (typeof isEquivalentCandidate !== 'function'
+        || !await isEquivalentCandidate(entity)) {
+      const candidate = { ...entity.semantic_descriptor,
+        path: 'O1.proposed_entity.semantic_descriptor' };
+      if (typeof filterCandidateAllowed === 'function') {
+        const matches = await filterCandidateAllowed({ committedState,
+          candidate });
+        if (Array.isArray(matches) && matches.length > 0) {
+          return deepFreeze({ status: 'candidate_filtered', decision: null,
+            pending_items_property_admission: null,
+            needs_check_matches: structuredClone(matches),
+            reason: 'needs_check_candidate_filtered',
+            working_projection: projection });
+        }
+      } else if (typeof assertCandidateAllowed === 'function') {
+        await assertCandidateAllowed({ committedState,
+          candidate });
+      }
+    }
+  }
   if (plan.resolution !== 'materialize') return negative(input, plan, projection, repaired);
   if (input.identity.admission_class === 'common_mundane'
       && plan.entities.length === 1
@@ -51,7 +101,20 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
     return negative(input, { resolution: 'authority_required' }, projection, repaired);
   }
   const pending = positive(input, plan, projection, basisCatalog);
-  return deepFreeze({ status: 'pending_items_property_admission', decision: decision(request, plan, repaired), pending_items_property_admission: pending, working_projection: projection });
+  return deepFreeze({ status: 'pending_items_property_admission', decision: decision(request, plan, repaired), pending_items_property_admission: pending, ...(filteredNeedsCheckMatches.length === 0 ? {} : { filtered_needs_check_matches: structuredClone(filteredNeedsCheckMatches) }), working_projection: projection });
+}
+
+function onlyEntityCountError(errors) {
+  return errors.length === 1 && errors[0].path === 'entities'
+    && errors[0].code === 'items';
+}
+
+export function preflightOrdinaryMaterializationPresence({ envelope,
+  workingProjection, basisCatalog, codeOwnedResolution = null } = {}) {
+  const input = envelopeOf(envelope);
+  const projection = projectionOf(input.request, workingProjection);
+  return preflight(input, projection, basisCatalog,
+    codeOwnedResolution ?? forbiddenAdmission(input));
 }
 
 function preflight(input, projection, bases, codeOwnedResolution) {
@@ -221,7 +284,7 @@ function jsonData(value, seen = new Set()) { if (value === null || typeof value 
 function scope(a,b) { const x=record(a,['entity_kind','entity_id']), y=record(b,['entity_kind','entity_id']); return !!x && !!y && x.entity_kind===y.entity_kind && x.entity_id===y.entity_id; }
 function outcome(status, working_projection, reason) { return deepFreeze({ status, decision:null, pending_items_property_admission:null, reason, working_projection }); }
 async function invoke(model, request, context, repair) { try { return await model(request, freeze(context)); } catch (e) { throw turnFailure('TURN_ORDINARY_PRESENCE_MODEL_FAILED', repair ? 'Repair failed.' : 'Model failed.', { cause:message(e) }); } }
-async function invokeBeforeModel(beforeModel) { try { await beforeModel(); } catch (e) { throw turnFailure('TURN_ORDINARY_PRESENCE_CUTOVER_FAILED', 'Ordinary presence cutover failed.', { cause:message(e) }); } }
+async function invokeBeforeModel(beforeModel) { try { await beforeModel(); } catch (e) { if (['TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', 'NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED', 'NEEDS_CHECK_BLOCKER_CATALOG_INVALID'].includes(e?.code)) throw e; throw turnFailure('TURN_ORDINARY_PRESENCE_CUTOVER_FAILED', 'Ordinary presence cutover failed.', { cause:message(e) }); } }
 function decision(request, plan, repaired) { return deepFreeze({ schema:'ordinary_presence_resolution_decision_v1',request_id:request.request_id,scope_ref:freeze(request.scope_ref),resolution:plan.resolution,repaired }); }
 function freeze(v) { return deepFreeze(structuredClone(v)); } function fail(code) { throw turnFailure(code, 'Stage B requires an exact committed server envelope.'); } function reject(code, m=code) { throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_REJECTED',m,{code}); } function message(e) { return e instanceof Error ? e.message : String(e); }
 function withoutOrdinaryAggregate(value) { const { ordinary_materialization_aggregate: _aggregate, ...workingProjection } = value; return workingProjection; }

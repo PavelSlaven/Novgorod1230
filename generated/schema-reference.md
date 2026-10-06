@@ -217,7 +217,8 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/035_party_runtime_nonportal_availability.sql` | sql | 1235 | `010190170846e819f256e841fdd4a2f6c13bbd20940e44bc978d0aa821d6c975` |
 | `schemas/party-db/036_party_runtime_visibility_modifiers.sql` | sql | 1576 | `61a0324e9e2328a87997f98007373674fcfa2c2403ad7559be3c32de9ac8b223` |
 | `schemas/party-db/037_party_runtime_m2c_presence_routines.sql` | sql | 4578 | `7f06036423e135e0a8daedabe4548eb35f3ca49544d28e2f25eae10330c07da8` |
-| `schemas/party-db/038_party_runtime_local_lines.sql` | sql | 12632 | `3cae28e5c1d1fc49f3dc34b45ae3cafa64571c8fe8ca7a1dcf2a9e59984e17c1` |
+| `schemas/party-db/038_party_runtime_npc_seasonal_presence.sql` | sql | 10875 | `bd90769eb40e0735a294a672c308c0694d32947d347c28197c754f8b1043ff73` |
+| `schemas/party-db/039_party_runtime_local_lines.sql` | sql | 12763 | `6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

@@ -37,9 +37,9 @@ const VALID = {
 
 async function withApproval(overrides, fn) {
   const dir = await mkdtemp(join(tmpdir(), 'm2c-approval-'));
-  const path = join(dir, 'approval.json');
-  await writeFile(path, JSON.stringify({ ...VALID, ...overrides }));
   try {
+    const path = join(dir, 'approval.json');
+    await writeFile(path, JSON.stringify({ ...VALID, ...overrides }));
     return await fn(path);
   } finally {
     await rm(dir, { recursive: true, force: true });

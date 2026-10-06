@@ -23,6 +23,12 @@ function speechOutput(input, words, later = null) {
       : { remaining_intent: later, depends_on_refs: [] } };
 }
 
+function emptyWorldKnowledgeSlice() {
+  return { schema: 'world_knowledge_slice_v1', pack_ref: 'wk-pack:test',
+    pack_revision: 'revision:test', purpose: 'semantic_resolution',
+    coverage: [], hard_constraints: [], facts: [], disputes: [], gaps: [] };
+}
+
 
 test('focused speech audit rejects lost later actions and accepts exact suffix',
   async (t) => {
@@ -252,7 +258,8 @@ test('captured V4/V5 and unseen speech project audited metadata; missing tails r
       worldKnowledgeGrounder: { async ground(safeRequest) {
         if (!grounded.has(safeRequest)) {
           retrievals += 1;
-          grounded.set(safeRequest, { ...safeRequest, world_knowledge: { context_text: 'same grounding' } });
+          grounded.set(safeRequest, { ...safeRequest,
+            world_knowledge: emptyWorldKnowledgeSlice() });
         }
         return grounded.get(safeRequest);
       } } });
@@ -374,7 +381,7 @@ test('one speech repair reuses the immutable request for existing WK grounding',
         if (!groundedRequests.has(safeRequest)) {
           retrievals += 1;
           groundedRequests.set(safeRequest, { ...safeRequest,
-            world_knowledge: { context_text: 'unchanged grounding' } });
+            world_knowledge: emptyWorldKnowledgeSlice() });
         }
         return groundedRequests.get(safeRequest);
       } },
@@ -394,6 +401,38 @@ test('one speech repair reuses the immutable request for existing WK grounding',
     const repaired = JSON.parse(modelCalls[1].messages[1].content).request;
     assert.deepEqual(repaired, initial);
     assert.equal(Object.hasOwn(input, 'world_knowledge'), false);
+  });
+
+test('NO_KNOWLEDGE_REQUIRED reaches the planner on initial and repair calls',
+  async () => {
+    const input = request({ remaining_intent: 'I call, "Hello!"' });
+    const corrected = speechOutput(input, 'Hello!');
+    const requirement = { schema: 'world_knowledge_requirement_v1',
+      pack_ref: 'wk-pack:test', pack_revision: 'revision:test',
+      purpose: 'semantic_resolution', sufficiency: 'NO_KNOWLEDGE_REQUIRED',
+      coverage: [], hard_constraints: [], facts: [], disputes: [], gaps: [] };
+    const modelCalls = [];
+    const model = createLowerDvinaTraceTurnStepModel({
+      worldKnowledgeGrounder: { async ground(safeRequest) {
+        return { ...safeRequest, world_knowledge: requirement };
+      } },
+      roleRunner: { async run(call) {
+        modelCalls.push(call);
+        return { output: modelCalls.length === 1 ? { ...corrected,
+          activity: { ...corrected.activity, effort: 'light' } } : corrected };
+      } }
+    });
+
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model });
+
+    assert.equal(result.repaired, true);
+    assert.deepEqual(modelCalls.map(({ role_id }) => role_id),
+      ['turn_step_planner', 'turn_step_planner_repair']);
+    const initial = JSON.parse(modelCalls[0].messages[1].content);
+    const repaired = JSON.parse(modelCalls[1].messages[1].content).request;
+    assert.deepEqual(initial.world_knowledge, requirement);
+    assert.deepEqual(repaired.world_knowledge, requirement);
   });
 
 test('speech mapping and repair retain exact speech plus independent later action',

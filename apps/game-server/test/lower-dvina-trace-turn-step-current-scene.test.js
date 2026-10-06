@@ -141,6 +141,33 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
   assert.equal(direct.do_not_imply.includes('unconfirmed_attempt_success'), true);
 });
 
+test('current scene carries visible scene-read NPCs without legacy location scope', () => {
+  const state = committedState();
+  state.position.position_id = 'player-position';
+  state.position.g6_instance_id = 'g6-1';
+  state.scene_position_g6 = { 'player-position': 'g6-1', 'npc-position': 'g6-1' };
+  state.npcs.push({ instance_id: 'scene-npc', location_ref: 'other-location',
+    position_id: 'npc-position', g6_instance_id: 'g6-1',
+    runtime_source: 'party_db_scene_read',
+    identity_state: { canonical_name: 'Степан' } });
+  state.current_visible_context.visible_npc.push({
+    entity_ref: { entity_kind: 'npc', entity_id: 'scene-npc' },
+    display_label: 'Степан', recognition: 'known'
+  });
+
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.deepEqual(current.current_visible_context.visible_npc.map((npc) => ({
+    entity_ref: npc.entity_ref, display_label: npc.display_label,
+    recognition: npc.recognition
+  })).filter(({ entity_ref }) => entity_ref.entity_id === 'scene-npc'), [{
+    entity_ref: { entity_kind: 'npc', entity_id: 'scene-npc' },
+    display_label: 'Степан', recognition: 'known'
+  }]);
+  assert.equal(JSON.stringify(current.current_visible_context).includes(
+    'other-location'), false);
+});
+
 test('current scene binds safe self identity separately from a namesake NPC across reload', () => {
   assertCurrentSceneSelfIdentity({ committedState, locationProfiles });
 });

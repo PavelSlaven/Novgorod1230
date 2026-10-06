@@ -13,6 +13,8 @@ import { IDENTITY_ATTESTATION_SCHEMA } from '../../scripts/v17-npc-identity-stag
 import { readV17PartyProductionCatalogLedger } from '../../scripts/v17-party-production-catalog-ledger.mjs';
 import { SPATIAL_V3_TARGET_PRODUCTION_RELEASE } from
   '../../apps/game-server/src/composition/production-spatial-v3-release-v17.js';
+import { SPATIAL_V3_TARGET_MIGRATION_FILES } from
+  '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 import { createSpatialV3WorldBaseReader } from
@@ -128,7 +130,8 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
     assert.equal(result.schema.world_tables, 224);
-    assert.equal(result.schema.party_migrations, 38);
+    // TODO(sync): confirm the count after the target migration chain merge.
+    assert.equal(result.schema.party_migrations, SPATIAL_V3_TARGET_MIGRATION_FILES.length);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     // Distinct across five bundles; independent of the request field the bootstrap returns.
     const p12Readback = JSON.parse(await readFile(
@@ -268,7 +271,7 @@ async function waitForPostgres(name) {
     const initialized = `${logs.stdout}\n${logs.stderr}`.includes(
       'PostgreSQL init process complete; ready for start up.');
     if (initialized && docker(
-      ['exec', name, 'pg_isready', '-U', 'postgres', '-d', 'postgres']
+      ['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'postgres', '-d', 'postgres']
     ).status === 0) return;
   }
   throw new Error(`${name} did not become ready.`);

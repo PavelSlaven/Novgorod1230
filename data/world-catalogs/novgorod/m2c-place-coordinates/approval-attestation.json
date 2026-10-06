@@ -102,5 +102,21 @@
       "cross_g4_23 rerouted 6531 m -> 4136 m (shortest water path 4191 m on the approver raster); max water trace ratio now 1.102 (cross_g4_13)."
     ],
     "now_approved": "F1 labels and the cross_g4_23 trace with its minutes (draft for a Spatial CR, like all minutes). Limits 4 and 5 are closed by this continuation; limits 1-3 and 6-12 stay."
+  },
+  "mechanical_continuation_2": {
+    "change": "derived-report.json rebuilt with the line-names candidate as of 42c121d8 (line renames c2419868, 42c121d8); candidate.json unchanged.",
+    "accepted_by": "claude-opus-5-5 (lead reviewer; deterministic checks only: a rebuild with renamed lines, no new map data)",
+    "accepted_on": "2026-10-01",
+    "candidate_sha256": "f47aa3c42f5ea22fb41c00dfc20b89fc5de6e3cdad5b53022f6cc8c4499c3acd",
+    "derived_report_sha256": "6642e73ac7431183d6e187eeeeab314dfa4783fee5849b6a152ce9ddd3320f9f",
+    "derive_inputs": {
+      "line_names_candidate_commit": "42c121d8"
+    },
+    "checks": [
+      "derive.mjs with line-names 42c121d8 run by the executor and again by the reviewer: byte-identical, sha256 above.",
+      "Reviewer leaf diff of derived-report.json against 422e72ba: 24 leaf changes, all lines[].line_name (12 pairs, forward and reverse); every new value is a name_ru of the line-names candidate; no other field changes.",
+      "derive.test.mjs 27/27."
+    ],
+    "now_approved": "Nothing new. Minutes, geometry, river labels, topology and limits are unchanged; line names come from the line-names catalog."
   }
 }

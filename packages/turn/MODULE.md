@@ -50,13 +50,13 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `resolveWorldProcessStep`, `validateWorldProcessStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, `spatialResult`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
-- `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state и сохраняет ordered step traces. Model adapter до validator исправляет только однозначные closed формы (`"null"`, choice wrapper, unique exact operation choice, exact misplaced/duplicated continuation, отсутствующие diagnostic reason fields и single-target discovery); несколько discovery targets превращаются в typed code-owned очередь внутри существующего continuation и исполняются по одному без нового planner choice. Исходный later-continuation восстанавливается дословно после очереди; обычная player boundary останавливает root и оставляет остаток в approved continuation. Один LLM repair разрешён только для semantic mismatch. Неисправимая structural ошибка и любой повторно невалидный plan после semantic repair возвращают typed `TURN_STEP_PLAN_INVALID` до execution, commit и narration, без внутриигрового `not_achieved`. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
+- `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state и сохраняет ordered step traces. Model adapter до validator исправляет только однозначные closed формы (`"null"`, choice wrapper, unique exact operation choice, exact misplaced/duplicated continuation, отсутствующие diagnostic reason fields, single-target discovery и `description` у A1 `request_item_use` с `action_production`); несколько discovery targets превращаются в typed code-owned очередь внутри существующего continuation и исполняются по одному без нового planner choice. Исходный later-continuation восстанавливается дословно после очереди; обычная player boundary останавливает root и оставляет остаток в approved continuation. Один LLM repair разрешён только для semantic mismatch. Комбинация `direct` + пустые `operations` + `reality_limited` + `achieved` распознаётся после строгой проверки, но до semantic audit, и направляется в этот единственный repair независимо от `direct_result_kind`; недопустимый kind у этой комбинации также ремонтируется. При повторе code-owned слой переводит `goal_result` в `not_achieved` и очищает несовместимые `direct_result_kind`, `assessment` и `utterance`; repair-selected `not_achieved` с теми же запрещёнными полями получает только эту детерминированную очистку. Trace `canonicalizations` содержит только принятую попытку, без дублей и с `attempt`, формой `{path, old_value, new_value}` или `{path, removed_fields}`. Любой иной повторно невалидный план после semantic repair возвращает typed `TURN_STEP_PLAN_INVALID`, без внутриигрового `not_achieved`, до execution, commit и narration. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
 - После generic check соответствующий `completed_steps[]` несёт только
   code-owned `check_outcome` band; следующий semantic step видит степень уже
   выполненного исхода без roll/DC/audit. Narrator получает safe band/margin и
   action binding, но не RNG internals; механику он не пересчитывает.
 - `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; canonical empty plan self-terminates `RETRIEVE` as `NO_KNOWLEDGE_REQUIRED` without Core. Default-query owner — production grounder в game-server (не дублировать здесь; LW-047). `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner.
-- `worldKnowledgePromptData` / `omitWorldKnowledgeContextText` — один strip `context_text` на private wire всех WK consumers.
+- `worldKnowledgePromptData` validates and clones the structured World Knowledge slice for prompt builders.
 - Internal ordinary hook применяет уже вычисленный pure aggregate result к общей working projection без собственного schema/type; raw ordinary transition остаётся ответственностью `@rus/materialization` reducer. Hook не экспортируется как второй projection owner и не активирует O1.
 - Общий ordinary discovery owner передаёт одну player-safe scene projection
   в seed и presence, включая structural repair; candidate query имеет нулевой
@@ -67,6 +67,19 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   Presence preflight с `decision: null` не создаёт resolve_presence; сохраняется
   только уже принятый seed. Нормальные модельные отрицательные решения
   сохраняют собственную presence identity, отличную от seed и replay.
+- O1 accepts injected world-presence filter owned by game-server. A matching
+  normalized query before Stage A model call returns ordinary `no_change`.
+  NPC O1 inspect/search query hits become normal wait before the actor-step.
+  Proposed descriptors are filtered per new entity before admission/write;
+  remaining candidates continue, and none remaining returns ordinary `no_change`
+  without a negative presence resolution. Existing inspection and equivalent
+  visible items keep their owners. O2a remains authored-only; O2b and S1 filter
+  matching new candidates. Player A1 and direct `create_entity` actions do not
+  use this filter. For NPCs, matching O1 proposed descriptors and O2b/S1 entities
+  are filtered individually; matching A1/direct `create_entity` proposals become
+  normal wait before actor-step start. Queue IDs and check paths are exposed only through
+  developer trace when diagnostics are enabled. `@rus/turn` does not load catalogs
+  or interpret blocker policy.
 - Сводка уже player-safe carried/worn items и качественная оценка уже
   предъявленных sensory facts относятся к write-free direct observation, а не
   к ordinary materialization. Обязательный для успешного write-free direct
@@ -141,7 +154,8 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   определяет только качество подачи и не выбирает ответ NPC.
 - `./temporal-advance`: `createTemporalAdvanceEngine`,
   `advanceTemporalBoundaryBatch`, `advanceTemporalNpcDecisionBoundary`,
-  `createTemporalSourceResolver`, `createTemporalAdvanceOwner`, а также
+  `prepareNpcDecisionForActorStep`, `createTemporalSourceResolver`,
+  `createTemporalAdvanceOwner`, а также
   registration общего NPC schedule-terminal effect из `@rus/npc-runtime`;
   `startNpcActorStep` и `createNpcActorStepCompletionEffect` владеют общим
   lifecycle `started → completion candidate → completed` для автономного
@@ -160,8 +174,9 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   actor-step снова factual→signal protocol на том же timestamp до fixed point
   либо typed temporal safety error, затем `continueAdvance`; `domain_rejected`
   не consume-ит signals своей boundary: остальные same-time siblings получают
-  текущий working state, но `unresolved_domain_rejection` сохраняет rejected
-  result и unconsumed signal IDs, удерживая clock на timestamp;
+  текущий working state, а `unresolved_domain_rejection` сохраняет rejected
+  result и unconsumed signal IDs, удерживая clock на timestamp. Terminal callback
+  отсутствует: отказ не может перевести boundary в обработанное состояние;
   `./temporal-carriers`:
   `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`:
   `mergeTemporalProposals`, `TemporalProposalMergeError`.

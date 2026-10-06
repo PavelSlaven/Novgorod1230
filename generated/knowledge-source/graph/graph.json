@@ -10,7 +10,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 529
+        "line_end": 573
       }
     },
     {
@@ -46,7 +46,7 @@
       "source_location": {
         "file": "items_and_property.txt",
         "line_start": 1,
-        "line_end": 420
+        "line_end": 430
       }
     },
     {
@@ -94,7 +94,7 @@
       "source_location": {
         "file": "situational_prose_requirements.md",
         "line_start": 1,
-        "line_end": 472
+        "line_end": 491
       }
     },
     {
@@ -106,7 +106,7 @@
       "source_location": {
         "file": "spatial_architecture_standard_g0_g6.md",
         "line_start": 1,
-        "line_end": 7618
+        "line_end": 7616
       }
     },
     {
@@ -178,7 +178,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1732
+        "line_end": 1756
       }
     },
     {
@@ -214,7 +214,7 @@
       "source_location": {
         "file": "world_knowledge_platform_implementation_contract.md",
         "line_start": 1,
-        "line_end": 4035
+        "line_end": 4029
       }
     }
   ],

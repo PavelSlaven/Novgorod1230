@@ -4,7 +4,7 @@ import test from 'node:test';
 import * as llmRuntime from '../src/index.js';
 import { LLM_SCOPES, TurnRuntimeRoles, resolveLlmExecutionConfig } from '../src/provider-config.js';
 
-const env = { DEEPSEEK_API_KEY: 'test-key' };
+const env = { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' };
 const customProvider = {
   compatibility: 'openai_compatible',
   baseUrl: 'http://127.0.0.1:8000/v1',
@@ -14,7 +14,7 @@ const customProvider = {
 test('all production turn roles use Flash no-reasoning defaults and shared execution limits', () => {
   for (const roleId of Object.values(TurnRuntimeRoles)) {
     const { config } = resolveLlmExecutionConfig({ scope: 'turn_runtime', roleId, env });
-    assert.equal(config.model, 'deepseek-v4-flash', roleId);
+    assert.equal(config.model, 'qwen3.8-27b-uncensored-w4a16-tp2', roleId);
     assert.deepEqual(config.thinking, { type: 'disabled' }, roleId);
     assert.equal(config.reasoningEffort, null, roleId);
     assert.equal(config.maxTokens, 20_000, roleId);

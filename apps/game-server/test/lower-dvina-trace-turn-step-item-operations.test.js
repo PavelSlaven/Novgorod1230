@@ -60,6 +60,24 @@ test('ambient adapter preserves semantic intent for code-owned source selection'
   assert.equal(received.portion_profile_ref, 'committed');
 });
 
+test('actor-neutral direct entity handler reaches ordinary admission without a guard', async () => {
+  const state = initializeRuntimeState({ actor_id: 'mikula' });
+  const handlers = createItemOperationHandlers(state, {
+    ordinaryResultPolicy: { ...ordinaryResultPolicy, candidates: [
+      { ...ordinaryResultPolicy.candidates[0], name: 'механизм',
+        approved_fact_texts: ['павлина'] }
+    ] }
+  });
+  const result = await handlers.create_entity(execution(createSand({
+    name: 'механизм', facts: [{ temp_ref: 'blocked_fact', text: 'павлина' }]
+  })));
+  assert.equal(result.write_fragments[0].target, 'party_items');
+  assert.equal(state.entities.size, 1,
+    'the ordinary result is admitted to the runtime draft');
+  assert.equal(state.aliases.has('new_entity_1'), true);
+  assert.equal(state.aliases.has('blocked_fact'), true);
+});
+
 test('inside uses a visible open container and code-owned capacity', () => {
   const options = {
     ordinaryResultPolicy,

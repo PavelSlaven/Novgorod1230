@@ -1,11 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { validateConversationContributionPlan } from '@rus/npc-runtime';
+import { validateConversationContributionPlan,
+  validateNpcConversationResponseRequest, buildNpcDecisionBoundary,
+  buildNpcSemanticDecisionTrace } from '@rus/npc-runtime';
+import { requestNpcSemanticDecision } from '@rus/turn';
 import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { npcConversationCandidates } from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
-import { currentSceneObservationProjection, ownNpcProjection } from
+import { allowedNpcContributionReferences,
+  currentSceneObservationProjection, ownNpcProjection } from
   '../src/runtime/lower-dvina-trace-m2-conversation-projections.js';
 import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
@@ -44,6 +48,60 @@ function runner(reply) {
   return { calls, roleRunner: { async run(call) { calls.push(structuredClone(call)); return { output: await reply(call) }; } } };
 }
 
+async function runNpcConversationTurn({ batchId, responder, audit = () => ({
+  pass: true, concerns: []
+}), addAmbiguousRef = () => {}, addObservation = false }) {
+  const input = request();
+  input.state_version = 2;
+  addAmbiguousRef(input);
+  const observationRef = ref('perception_result', 'observation-current');
+  if (addObservation) {
+    input.allowed_references.knowledge_refs.push(observationRef);
+    input.memory.current_observations = [{ observation_ref: observationRef,
+      source_type: 'direct_perception', observed_at: input.requested_at,
+      fact_text: 'На очаговой площадке нет огня.' }];
+  }
+  const boundary = buildNpcDecisionBoundary({
+    decision_mode: 'conversation', scheduled_at: input.requested_at,
+    npc_ref: input.npc_ref, same_time_batch_ref: ref('temporal_batch', batchId),
+    significance: input.decision_reasons.significance,
+    categories: input.decision_reasons.categories,
+    signal_refs: input.decision_reasons.signal_refs,
+    state_version: String(input.state_version)
+  });
+  input.boundary_id = boundary.boundary_id;
+  const knowledgeRef = ref('knowledge_record', 'claim:fish-net');
+  const slice = { schema: 'world_knowledge_slice_v1', pack_ref: 'wk:test',
+    pack_revision: 'revision:test', purpose: 'conversation', coverage: [],
+    verdict: 'supported', sufficiency: 'PARTIAL_KNOWLEDGE',
+    hard_constraints: [], facts: [{ claim_ref: knowledgeRef.entity_id,
+      runtime_text: 'Рыбацкая работа связана с сетями.' }], disputes: [], gaps: [] };
+  const calls = [];
+  const roleRunner = { async run(call) {
+    calls.push(structuredClone(call));
+    if (call.role_id === 'npc_conversation_grounding_auditor') {
+      return { output: await audit(call) };
+    }
+    const payload = JSON.parse(call.messages[1].content);
+    return { output: await responder(call, payload.request ?? payload) };
+  } };
+  const semanticModel = createLowerDvinaTraceNpcSemanticModel({ roleRunner,
+    worldKnowledgeGrounder: { async ground(currentRequest) {
+      return { ...currentRequest, world_knowledge: slice };
+    } } });
+  let result;
+  let error;
+  try {
+    result = await requestNpcSemanticDecision({ boundary, request: input,
+      semanticModel, validateFreshPlan: semanticModel.validateFreshPlan,
+      revalidateStateVersion: async () => 2 });
+  } catch (caught) {
+    error = caught;
+  }
+  return { input, boundary, calls, result, error, knowledgeRef,
+    observationRef };
+}
+
 test('current scene details become cited present NPC observations', () => {
   const observedAt = { whole_minutes: '1', subminute_numerator: '0',
     subminute_denominator: '1' };
@@ -61,6 +119,332 @@ test('current scene details become cited present NPC observations', () => {
     fact_text: 'На очаговой площадке нет огня.'
   }]);
 });
+
+test('NPC claim source admission uses only the responding actor knowledge scope',
+  () => {
+    const scopeRef = ref('knowledge_scope', 'npc-profile-1');
+    const observationRef = ref('perception_result', 'observation-1');
+    const allowed = allowedNpcContributionReferences({
+      targetActor: { knowledge_profile_snapshot: {
+        profile_id: scopeRef.entity_id
+      } },
+      conversationActorRefs: [],
+      npcContributionReferencePolicy: { entity_refs: [],
+        knowledge_refs: [], combat_target_refs: [] }
+    }, { knowledgeRefs: [observationRef] });
+
+    assert.deepEqual(allowed.knowledge_refs, [scopeRef, observationRef]);
+    assert.deepEqual(allowed.entity_refs, []);
+    assert.deepEqual(allowedNpcContributionReferences({
+      targetActor: { knowledge_profile_snapshot: { profile_id: '' } },
+      conversationActorRefs: [], npcContributionReferencePolicy: {}
+    }).knowledge_refs, []);
+  });
+
+test('prepared NPC request admits only exact grounded WK claim refs', async () => {
+  const input = request();
+  const observationRef = ref('perception_result', 'observation-1');
+  input.allowed_references.knowledge_refs.push(observationRef);
+  let queryCount = 0;
+  const worldKnowledge = conversationWorldKnowledge(() => { queryCount += 1; });
+  worldKnowledge.calendar_profile = conversationCalendarProfile();
+  const fixture = runner((call) => call.role_id
+    === 'world_knowledge_query_planner' ? {
+      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+      domains: ['npc_daily_life', 'material_culture',
+        'architecture_settlement'],
+      focus_refs: ['wk:npc_daily_life:fisher',
+        'wk:material_culture:work-clothing',
+        'wk:architecture_settlement:fishing-workspace'],
+      requested_predicates: ['supports_function'],
+      search_hints: ['рыбак сети одежда стоянка']
+    } : (() => {
+      const response = plan(input);
+      response.speech.claims = [{ claim_id: 'claim:fish-net',
+        content_summary: 'Рыбацкая работа связана с сетями.',
+        form: 'assertion', speaker_posture: 'believed_true',
+        source_knowledge_refs: ['claim:0'], mentioned_entity_refs: [] }];
+      return response;
+    })());
+  const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
+    roleRunner: fixture.roleRunner, year: 1230,
+    placeRefs: ['region_novgorod_land'] });
+  const model = createLowerDvinaTraceNpcSemanticModel({
+    roleRunner: fixture.roleRunner, worldKnowledgeGrounder: grounder });
+
+  const prepared = await model.prepareRequest(input);
+  const wkRefs = ['claim:0', 'claim:1', 'claim:2'].map((claimRef) =>
+    ref('knowledge_record', claimRef));
+  assert.deepEqual(prepared.request.allowed_references.knowledge_refs,
+    [...wkRefs, observationRef]);
+  assert.equal(validateNpcConversationResponseRequest(prepared.request), true);
+  assert.equal(queryCount, 1);
+  const cached = await model.prepareRequest(input);
+  assert.strictEqual(cached.request, prepared.request);
+  assert.deepEqual(cached.request.allowed_references.knowledge_refs,
+    prepared.request.allowed_references.knowledge_refs);
+  assert.equal(queryCount, 1);
+  const cacheHitPlan = await model(cached.request);
+  assert.deepEqual(cacheHitPlan.speech.claims[0].source_knowledge_refs,
+    [wkRefs[0]]);
+  assert.equal(validateConversationContributionPlan(cacheHitPlan,
+    cached.request), true);
+
+  const supported = plan(prepared.request);
+  supported.speech.claims = [{ claim_id: 'claim:fish-net',
+    content_summary: 'Рыбацкая работа связана с сетями.', form: 'assertion',
+    speaker_posture: 'believed_true',
+    source_knowledge_refs: [wkRefs[0]], mentioned_entity_refs: [] }];
+  assert.equal(validateConversationContributionPlan(supported,
+    prepared.request), true);
+
+  const foreign = structuredClone(supported);
+  foreign.speech.claims[0].source_knowledge_refs = [
+    ref('knowledge_record', 'claim:not-in-slice')
+  ];
+  assert.equal(validateConversationContributionPlan(foreign,
+    prepared.request), false);
+});
+
+test('NPC claim ref type resolves only from a unique allowed ID', async () => {
+  const input = request();
+  const scopeRef = ref('knowledge_scope', 'scope-1');
+  const recordRef = ref('knowledge_record', 'claim-1');
+  const observationRef = ref('perception_result', 'observation-1');
+  const repeatedRef = ref('knowledge_scope', 'repeat-1');
+  const duplicateScopeRef = ref('knowledge_scope', 'duplicate-1');
+  const duplicateRecordRef = ref('knowledge_record', 'duplicate-1');
+  input.allowed_references.knowledge_refs.push(scopeRef, recordRef,
+    observationRef, repeatedRef, structuredClone(repeatedRef),
+    duplicateScopeRef, duplicateRecordRef);
+  const output = plan(input);
+  output.speech.claims = [
+    { claim_id: 'claim:scope', content_summary: 'Сведения о ремесле.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: ['scope-1'], mentioned_entity_refs: [] },
+    { claim_id: 'claim:record', content_summary: 'Сведения о ремесле.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: [ref('knowledge_scope', 'claim-1')],
+      mentioned_entity_refs: [] },
+    { claim_id: 'claim:observation', content_summary: 'Сведения о ремесле.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: ['observation-1'], mentioned_entity_refs: [] },
+    { claim_id: 'claim:repeated', content_summary: 'Сведения о ремесле.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: ['repeat-1'],
+      mentioned_entity_refs: [] },
+    { claim_id: 'claim:empty', content_summary: 'Сведения о ремесле.',
+      form: 'assertion', speaker_posture: 'uncertain',
+      source_knowledge_refs: [], mentioned_entity_refs: [] }
+  ];
+  const fixture = runner(() => output);
+  const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+  const { request: prepared } = await model.prepareRequest(input);
+  const resolved = await model(prepared);
+
+  assert.deepEqual(resolved.speech.claims.map((claim) =>
+    claim.source_knowledge_refs), [[scopeRef], [recordRef], [observationRef],
+      [repeatedRef], []]);
+  assert.equal(validateConversationContributionPlan(resolved, prepared), true);
+
+  for (const invalidId of ['outside-allowlist', 'duplicate-1']) {
+    const invalidOutput = plan(input);
+    invalidOutput.speech.claims = [{ claim_id: 'claim:invalid',
+      content_summary: 'Сведения о ремесле.', form: 'assertion',
+      speaker_posture: 'believed_true',
+      source_knowledge_refs: [invalidId], mentioned_entity_refs: [] }];
+    const invalidModel = createLowerDvinaTraceNpcSemanticModel(
+      runner(() => invalidOutput));
+    const { request: invalidRequest } = await invalidModel.prepareRequest(input);
+    const invalid = await invalidModel(invalidRequest);
+    assert.deepEqual(invalid.speech.claims[0].source_knowledge_refs,
+      [invalidId]);
+    assert.equal(validateConversationContributionPlan(invalid, invalidRequest),
+      false);
+  }
+
+  const malformedOutput = plan(input);
+  malformedOutput.speech.claims = [{ claim_id: 'claim:malformed',
+    content_summary: 'Сведения о ремесле.', form: 'assertion',
+    speaker_posture: 'believed_true',
+    source_knowledge_refs: ref('knowledge_scope', 'scope-1'),
+    mentioned_entity_refs: [] }];
+  const malformedModel = createLowerDvinaTraceNpcSemanticModel(
+    runner(() => malformedOutput));
+  const { request: malformedRequest } = await malformedModel.prepareRequest(input);
+  const malformed = await malformedModel(malformedRequest);
+  assert.deepEqual(malformed.speech.claims[0].source_knowledge_refs, [null]);
+  assert.equal(validateConversationContributionPlan(malformed,
+    malformedRequest), false);
+});
+
+test('NPC format repair resolves claim refs through the same allowlist',
+  async () => {
+    const input = request();
+    const allowedRef = ref('knowledge_record', 'claim:allowed');
+    input.allowed_references.knowledge_refs.push(allowedRef);
+    const invalidOutput = plan(input);
+    invalidOutput.speech.claims = [{ claim_id: 'claim:repair',
+      content_summary: 'Сведения о ремесле.', form: 'assertion',
+      speaker_posture: 'believed_true',
+      source_knowledge_refs: ['claim:outside'], mentioned_entity_refs: [] }];
+    const repairedOutput = structuredClone(invalidOutput);
+    repairedOutput.speech.claims[0].source_knowledge_refs = [
+      ref('knowledge_scope', 'claim:allowed')
+    ];
+    const fixture = runner((call) => call.role_id
+      === 'npc_conversation_responder_format_repair'
+      ? repairedOutput : invalidOutput);
+    const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+    const { request: prepared } = await model.prepareRequest(input);
+    const initial = await model(prepared);
+    assert.equal(initial.speech.claims[0].source_knowledge_refs[0],
+      'claim:outside');
+
+    const repaired = await model(prepared, { repair: {
+      original_output: initial,
+      validation_errors: [{ category: 'structural', path: '$.speech.claims' }]
+    } });
+
+    assert.deepEqual(repaired.speech.claims[0].source_knowledge_refs,
+      [allowedRef]);
+    assert.deepEqual(fixture.calls.map((call) => call.role_id), [
+      'npc_conversation_responder',
+      'npc_conversation_responder_format_repair'
+    ]);
+  });
+
+test('turn repair resolves a grounded claim, audits it, then replays typed refs',
+  async () => {
+    const scenario = await runNpcConversationTurn({
+      batchId: 'claims-repair',
+      responder(call, input) {
+        const output = plan(input);
+        output.speech.claims = [{ claim_id: 'claim:fish-net',
+          content_summary: 'Рыбацкая работа связана с сетями.',
+          form: 'assertion', speaker_posture: 'believed_true',
+          source_knowledge_refs: call.role_id
+            === 'npc_conversation_responder'
+            ? ['claim:outside']
+            : [{ entity_kind: 'knowledge_scope',
+              entity_id: 'claim:fish-net' }],
+          mentioned_entity_refs: [] }];
+        return output;
+      }
+    });
+
+    assert.equal(scenario.result.status, 'planned');
+    assert.deepEqual(scenario.result.plan.speech.claims[0]
+      .source_knowledge_refs, [scenario.knowledgeRef]);
+    assert.deepEqual(scenario.calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder',
+      'npc_conversation_responder_format_repair',
+      'npc_conversation_grounding_auditor'
+    ], JSON.stringify(scenario.error));
+    const responseEvidence = JSON.parse(scenario.calls[0].messages[1].content)
+      .world_knowledge;
+    const auditRequest = JSON.parse(scenario.calls[2].messages[1].content)
+      .request;
+    assert.deepEqual(auditRequest.world_knowledge, responseEvidence);
+
+    const trace = buildNpcSemanticDecisionTrace({
+      request: scenario.result.decision_context.request,
+      plan: scenario.result.plan,
+      root_turn_id: 'turn-claims', working_revision: 0,
+      applied_change_set_id: 'change-set-claims'
+    });
+    const replay = await requestNpcSemanticDecision({
+      boundary: scenario.boundary,
+      request: scenario.result.decision_context.request,
+      persistedTrace: trace,
+      semanticModel: async () => assert.fail('replay must not call the model'),
+      revalidateStateVersion: async () => assert.fail(
+        'replay must not revalidate state')
+    });
+    assert.equal(replay.status, 'replayed');
+    assert.deepEqual(replay.plan.speech.claims[0].source_knowledge_refs,
+      [scenario.knowledgeRef]);
+  });
+
+test('turn rejects unresolved, ambiguous, and malformed claim IDs after one repair',
+  async (t) => {
+    const cases = [
+      ['unknown', 'claim:outside', false],
+      ['ambiguous', 'claim:fish-net', true],
+      ['malformed', 'claim:fish-net', false, 'not-an-array']
+    ];
+    for (const [name, id, ambiguous, malformed] of cases) {
+      await t.test(name, async () => {
+        const scenario = await runNpcConversationTurn({
+          batchId: `claims-${name}`,
+          addAmbiguousRef(input) {
+            if (ambiguous) {
+              input.allowed_references.knowledge_refs.push(
+                ref('knowledge_scope', 'claim:fish-net'));
+            }
+          },
+          responder(_call, input) {
+            const output = plan(input);
+            output.speech.claims = [{ claim_id: 'claim:invalid',
+              content_summary: 'Ссылка неразрешима.', form: 'assertion',
+              speaker_posture: 'believed_true',
+              source_knowledge_refs: malformed ?? [id],
+              mentioned_entity_refs: [] }];
+            return output;
+          },
+          audit: () => assert.fail('invalid refs must fail before audit')
+        });
+        assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_INVALID');
+        assert.deepEqual(scenario.calls.map(({ role_id }) => role_id), [
+          'npc_conversation_responder',
+          'npc_conversation_responder_format_repair'
+        ]);
+      });
+    }
+  });
+
+test('turn audit rejection drops unsupported WK claim and keeps typed observation fallback',
+  async () => {
+    let auditCount = 0;
+    const scenario = await runNpcConversationTurn({
+      batchId: 'claims-audit-fallback',
+      addObservation: true,
+      responder(_call, input) {
+        const output = plan(input);
+        output.speech.utterance_text =
+          'Рыбацкие сети всегда рвутся до зимы; сейчас на площадке нет огня.';
+        output.speech.claims = [
+          { claim_id: 'claim:unsupported',
+            content_summary: 'Все сети рвутся до зимы.', form: 'assertion',
+            speaker_posture: 'believed_true',
+            source_knowledge_refs: ['claim:fish-net'],
+            mentioned_entity_refs: [] },
+          { claim_id: 'claim:observation',
+            content_summary: 'На очаговой площадке нет огня.',
+            form: 'assertion', speaker_posture: 'believed_true',
+            source_knowledge_refs: ['observation-current'],
+            mentioned_entity_refs: [] }
+        ];
+        return output;
+      },
+      audit() {
+        auditCount += 1;
+        return auditCount === 1
+          ? { pass: false, concerns: [{ kind: 'unsupported_qualifier' }] }
+          : { pass: true, concerns: [] };
+      }
+    });
+
+    assert.equal(scenario.result.status, 'planned');
+    assert.equal(auditCount, 2, JSON.stringify(scenario.error));
+    assert.equal(scenario.result.plan.speech.claims.length, 1);
+    assert.deepEqual(scenario.result.plan.speech.claims[0].source_knowledge_refs,
+      [ref('perception_result', 'observation-current')]);
+    assert.match(scenario.result.plan.speech.utterance_text,
+      /На очаговой площадке нет огня/u);
+    assert.doesNotMatch(scenario.result.plan.speech.utterance_text,
+      /до зимы/u);
+  });
 
 test('speech audit rejects invented past work from a current schedule',
   async () => {
@@ -86,17 +470,17 @@ test('speech audit rejects invented past work from a current schedule',
     assert.deepEqual(result.errors[0].concern_kinds,
       ['unsupported_past_activity']);
     assert.match(fixture.calls[0].messages[0].content,
-      /current_activity describes only requested_at/u);
+      /описывает только requested_at/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Past first-person activity or observation needs an exact memory record/u);
+      /прошлой деятельности или наблюдения от первого лица нужна\s+точная запись памяти/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /empty or missing memory never proves a negative past observation/u);
+      /Пустая или отсутствующая память никогда не доказывает отрицательное\s+прошлое наблюдение/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /plausible for the place or social situation/u);
+      /даже если это правдоподобно для\s+места или социальной ситуации/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /memory\.current_observations grounds only its exact present fact_text/u);
+      /memory\.current_observations подтверждает только свой точный настоящий fact_text/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Mandatory failure: when memory\.records has no exact supporting record/u);
+      /Обязательный отказ: если в memory\.records нет точной подтверждающей записи/u);
     assert.equal(fixture.calls[0].overrides.maxTokens, 256);
   });
 
@@ -262,6 +646,46 @@ test('semantic grounding fallback ignores a non-string NPC name', async () => {
     'Об этом я ничего подтвердить не могу.');
 });
 
+test('semantic fallback keeps the original responder World Knowledge for its auditor',
+  async () => {
+    const input = request();
+    const slice = { schema: 'world_knowledge_slice_v1', pack_ref: 'wk:test',
+      pack_revision: 'revision:test', purpose: 'conversation', coverage: [],
+      verdict: 'supported', sufficiency: 'PARTIAL_KNOWLEDGE',
+      hard_constraints: [], facts: [], disputes: [], gaps: [] };
+    let groundCalls = 0;
+    const grounder = { async ground(value) {
+      groundCalls += 1;
+      return { ...value, world_knowledge: slice };
+    } };
+    const calls = [];
+    const roleRunner = { async run(call) {
+      calls.push(structuredClone(call));
+      return { output: call.role_id === 'npc_conversation_grounding_auditor'
+        ? { pass: true, concerns: [] } : plan(input) };
+    } };
+    const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner,
+      worldKnowledgeGrounder: grounder });
+    const original = await model(input);
+    const fallback = await model(input, { repair: {
+      // requestNpcSemanticDecision clones this before handing it back as the
+      // semantic-repair context; the exact WK evidence must survive that clone.
+      original_output: structuredClone(original),
+      validation_errors: [{ category: 'semantic_grounding', retryable: true }]
+    } });
+
+    assert.equal(await model.validateFreshPlan(fallback, input), true);
+    assert.equal(groundCalls, 1);
+    const responderRequest = JSON.parse(calls[0].messages[1].content);
+    const auditorRequest = JSON.parse(calls[1].messages[1].content).request;
+    assert.deepEqual(auditorRequest.world_knowledge,
+      responderRequest.world_knowledge);
+    assert.equal(Object.hasOwn(auditorRequest.world_knowledge, 'context_text'),
+      false);
+    assert.match(calls[1].messages[0].content,
+      /Не принимай высказывание о незнании того, что услышал игрок/u);
+  });
+
 test('route contract candidate reaches initial and repair prompts', async () => {
   const input = request();
   input.allowed_references.entity_refs.push(ref('route', 'route-1'));
@@ -309,12 +733,22 @@ test('conversation production model receives planner-selected role, material, an
         'wk:architecture_settlement:fishing-workspace'],
       requested_predicates: ['supports_function'], search_hints: ['рыбак сеть одежда стоянка']
     } };
+    if (call.role_id === 'npc_conversation_grounding_auditor') return { output: {
+      pass: true, concerns: []
+    } };
     return { output: plan(input) };
   } };
   const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
     roleRunner, year: 1230, placeRefs: ['region_novgorod_land'] });
-  await createLowerDvinaTraceNpcSemanticModel({ roleRunner,
-    worldKnowledgeGrounder: grounder })(input);
+  const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner,
+    worldKnowledgeGrounder: grounder });
+  const responsePlan = await model(input);
+  assert.equal(await model.validateFreshPlan(responsePlan, input), true);
+  const repairedPlan = await model(input, { repair: {
+    original_output: responsePlan,
+    validation_errors: [{ category: 'structural', retryable: true }]
+  } });
+  assert.equal(await model.validateFreshPlan(repairedPlan, input), true);
   assert.deepEqual(query.context.actor_facets, { role_ref: 'nov_role_fisher' });
   assert.equal(query.context.time.year, 1231);
   const modelCall = calls.find((call) =>
@@ -331,11 +765,41 @@ test('conversation production model receives planner-selected role, material, an
   assert.match(instructions, /say that it is not established or unknown/u);
   assert.match(instructions, /Do not expand insufficient evidence into an inventory of hypothetical missing components/u);
   assert.match(instructions, /do not recite or apply a conditional historical rule whose stated trigger is not established/u);
-    assert.match(instructions, /preserve the limit without inferring a procedure or prohibition/u);
-    assert.match(instructions,
-      /Missing or empty memory is not evidence/u);
-    assert.match(instructions,
-      /Never infer a current object, condition, resource, amenity/u);
+  assert.match(instructions, /preserve the limit without inferring a procedure or prohibition/u);
+  assert.match(instructions,
+    /Missing or empty memory is not evidence|Отсутствующая или пустая память не доказывает/u);
+  assert.match(instructions,
+      /Never infer a current object, condition, resource, amenity|Никогда не выводи наличие текущего предмета, состояния, ресурса, удобства/u);
+  assert.match(instructions, /A missing personal field means unknown|Отсутствующее личное поле означает/u);
+  assert.match(instructions,
+    /A knowingly_false posture describes the NPC assertion|knowingly_false описывает утверждение NPC/u);
+  const auditorCalls = calls.filter((call) =>
+    call.role_id === 'npc_conversation_grounding_auditor');
+  const groundedResponderRequests = calls.filter((call) =>
+    call.role_id === 'npc_conversation_responder'
+      || call.role_id === 'npc_conversation_responder_format_repair')
+    .map((call) => {
+      const payload = JSON.parse(call.messages[1].content);
+      return payload.request?.world_knowledge ?? payload.world_knowledge;
+    });
+  assert.equal(auditorCalls.length, 2);
+  assert.equal(groundedResponderRequests.length, 2);
+  assert.equal(calls.filter((call) =>
+    call.role_id === 'world_knowledge_query_planner').length, 1);
+  for (const [index, auditorCall] of auditorCalls.entries()) {
+    const auditorInput = JSON.parse(auditorCall.messages[1].content).request;
+    assert.deepEqual(auditorInput.world_knowledge,
+      groundedResponderRequests[index]);
+    assert.equal(Object.hasOwn(auditorInput.world_knowledge, 'context_text'),
+      false);
+  }
+  const auditorCall = auditorCalls[0];
+  assert.match(auditorCall.messages[0].content,
+    /ref типа knowledge_scope только разрешает сослаться на источник/u);
+  assert.match(auditorCall.messages[0].content,
+    /Отсутствующие личные поля означают «неизвестно»/u);
+  assert.match(auditorCall.messages[0].content,
+    /Если у claim posture равно knowingly_false, это остаётся намеренно ложным утверждением говорящего/u);
 });
 
 function conversationCalendarProfile() {
@@ -376,11 +840,7 @@ function conversationWorldKnowledge(onQuery) {
       return { schema: 'world_knowledge_slice_v1', pack_ref: 'wk:test',
         pack_revision: 'revision:test', purpose: value.purpose, coverage: [],
         verdict: 'supported', hard_constraints: [], disputes: [], gaps: [],
-        candidates: [], evidence_fragments: [], context_text: [
-          'Рыбацкая работа связана с сетями.',
-          'Рабочая одежда защищает при хозяйственной работе.',
-          'Рыбацкая стоянка — рабочее место.'
-        ].join('\n'), facts: concepts.map(({ concept_ref, domain }, index) => ({
+        candidates: [], evidence_fragments: [], facts: concepts.map(({ concept_ref, domain }, index) => ({
           claim_ref: `claim:${index}`, domain, predicate: 'supports_function',
           polarity: 'support', object: { kind: 'literal', value: 'supported' },
           runtime_text: [

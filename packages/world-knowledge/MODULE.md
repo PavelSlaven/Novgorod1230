@@ -5,14 +5,16 @@
 Pure read-only gameplay factual owner. Загружает caller-provided immutable compiled Knowledge Pack и детерминированно разрешает `world_knowledge_query_v1` в bounded `world_knowledge_slice_v1`.
 
 Pack может включать независимо проверенные игровые реконструкции (§0.2 WK
-контракта). Existing qualifiers и runtime text сохраняют отличие реконструкции
-от установленного факта; отдельного retrieval interface или генератора нет.
-Compact context помечает direct/inferred/analogical/editorial/unknown как
-FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
+контракта). Structured slice сохраняет qualifiers, чтобы отличать
+реконструкцию от установленного факта; prose renderer нет.
 
 ## Владеет
 
-- query/bundle validation и slice construction;
+- query/bundle validation и structured slices без prose context;
+- применимость, доступ и ранжирование утверждений;
+- coverage, sufficiency, gaps и deterministic claim packing;
+- query/bundle validation и structured slice construction; query budget содержит
+  `max_facts` и `max_candidates`, slice не содержит prose `context_text`;
 - canonical empty six-field `semantic_resolution` query plan как
   `NO_KNOWLEDGE_REQUIRED`; при пустом
   `domains` refs/predicates/hints тоже обязаны быть пустыми;
@@ -30,7 +32,7 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 - `admittedCandidateRefs(query, { vectorScores? })` — pure list of admitted
   claim refs before ranking/packing; grounding scores exactly this set for
   D17 so all-or-nothing rerank can apply (not vector top-k alone);
-- pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing;
+- pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic claim packing;
 - lexicographic ranking: hard constraints, exact focus, requested predicates,
   query relevance (lexical+vector, or rerank when supplied), context specificity, qualifiers, stable claim reference;
 - relative lexical admission per independent search hint; aggregate lexical

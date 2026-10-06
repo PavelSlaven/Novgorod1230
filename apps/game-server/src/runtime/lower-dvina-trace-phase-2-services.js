@@ -26,6 +26,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
     createTurnStepOrdinaryContainerContentsResolver,
+    turnStepNeedsCheckGuard = null,
     ordinaryDiscoveryEnablementMarker,
     ordinaryDiscoveryScopeBinding,
     createTurnStepActionProductionOwner,
@@ -41,6 +42,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepAmbientPortionProfileRef,
     turnStepOrdinaryResultPolicy,
     postActionPerceptionProfile,
+    postActionPerceptionAdapter,
+    postActionEnvironmentPort = null,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
     turnBudget,
@@ -55,11 +58,23 @@ export function buildLowerDvinaTracePhase2Services(context) {
   let narrationAuthState = state;
   const trace = (record) => { try { context.llmDiagnostics?.recordGameplayTrace?.(record); }
     catch { /* Diagnostic capture must not affect gameplay. */ } };
+  const recordNeedsCheckFilter = ({ path, queue_ids = [] }) => trace({
+    event: 'needs_check_candidate_filtered', path,
+    queue_id: queue_ids[0] ?? null,
+    queue_ids: structuredClone(queue_ids)
+  });
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
     idempotency_key: idempotencyKey
   });
+  const needsCheckGuard = typeof turnStepNeedsCheckGuard === 'function'
+    ? turnStepNeedsCheckGuard : null;
+  const guardFactory = (factory) => typeof factory !== 'function'
+    ? null : (input) => factory({ ...input,
+      assertNeedsCheckAllowed: needsCheckGuard, recordNeedsCheckFilter });
+  const spatialSemanticResolverFactory =
+    guardFactory(createTurnStepSpatialSemanticResolver);
   const randomSnapshot = randomSource?.snapshot?.();
   if (!randomSnapshot?.algorithm
       || randomSnapshot.algorithm !== state.materialization_trace?.rng_version) {
@@ -70,6 +85,11 @@ export function buildLowerDvinaTracePhase2Services(context) {
     );
   }
   const workingProjectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  const loadPreparedMovementScene = typeof repository.loadPreparedMovementScene
+    === 'function' ? ({ partyId: preparedPartyId, state: preparedState, clock }) =>
+      repository.loadPreparedMovementScene({
+        partyId: preparedPartyId, state: preparedState, clock, turnBudget
+      }) : null;
   const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
     committedState, locationProfiles, scenePresentation
   });
@@ -83,11 +103,15 @@ export function buildLowerDvinaTracePhase2Services(context) {
     bodyEffect,
     bodyEventOwner: turnStepBodyEventOwner,
     committedState: state,
+    partyId,
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
-      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest }),
+      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
+        assertNeedsCheckAllowed: needsCheckGuard,
+        recordNeedsCheckFilter }),
     ordinaryContainerContentsResolver:
-      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest}),
+      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest,
+        assertNeedsCheckAllowed: needsCheckGuard, recordNeedsCheckFilter}),
     ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
@@ -97,7 +121,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     semanticActivityOwner: turnStepSemanticActivityOwner,
     idempotencyKey,
     postActionPerceptionProfile,
+    postActionPerceptionAdapter,
+    postActionEnvironmentPort,
     projectCurrentScene,
+    loadPreparedMovementScene,
+    onNpcSceneProjection: context.onNpcSceneProjection,
+    requestId,
     temporalAdvance,
     workingProjectionAuthority
   });
@@ -105,10 +134,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createLowerDvinaTraceTurnStepPlayerSafeProjector({
       admitAmbientOrdinaryPortion,
       actionProductionProfile,
-      createTurnStepActionProductionOwner,
+      createTurnStepActionProductionOwner:
+        createTurnStepActionProductionOwner,
       localFireProfile,
       createTurnStepWorldProcessResolver,
-      createTurnStepSpatialSemanticResolver,
+      createTurnStepSpatialSemanticResolver:
+        spatialSemanticResolverFactory,
       spatialSemanticProfile,
       createTurnStepBackgroundNpcResolver,
       npcSemanticRemainderProfile,
@@ -194,8 +225,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
         applyWorkingProjection: turnStepPorts.applyLocalFireProjection
       })
     } : {}),
-    ...(typeof createTurnStepSpatialSemanticResolver === 'function' ? {
-      turnStepSpatialSemanticResolver: createTurnStepSpatialSemanticResolver({ partyId })
+    ...(typeof spatialSemanticResolverFactory === 'function' ? {
+      turnStepSpatialSemanticResolver: spatialSemanticResolverFactory({ partyId })
     } : {}),
     ...(typeof createTurnStepBackgroundNpcResolver === 'function'
         && npcSemanticRemainderProfile?.profile?.status === 'approved' ? {
@@ -233,7 +264,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
           phase10Contracts, turnStepApprovedOwners: {
-            ...turnStepApprovedOwners, scenePresentation
+            ...turnStepApprovedOwners, scenePresentation,
+            loadPreparedMovementScene
           }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {

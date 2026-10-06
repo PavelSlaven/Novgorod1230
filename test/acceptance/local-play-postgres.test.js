@@ -14,7 +14,7 @@ import pg from 'pg';
 import { createCanonicalPhase11LlmResponder } from '../helpers/lower-dvina-phase-11-llm.js';
 import { startLocalLlmProviderFixture } from '../helpers/local-llm-provider-fixture.js';
 import { createProductionLlmRoleRunner } from
-  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+  '../../apps/game-server/src/infrastructure/provider/openai-compatible.js';
 import { LOCAL_POSTGRES, ensureLocalPostgres, localDataRoot } from
   '../../tools/local-play/local-postgres.js';
 import { MANAGED_RUNTIME_PINS } from '../../tools/local-play/managed-runtime.js';

@@ -26,7 +26,7 @@ export function conversationTurnRoleDefaults(contractModes) {
 function auditRole(envPrefix, outputContractMode) {
   return {
     envPrefix,
-    model: 'deepseek-v4-flash',
+    model: 'qwen3.8-27b-uncensored-w4a16-tp2',
     thinking: 'disabled',
     reasoningEffort: null,
     responseFormat: 'json_object',
@@ -47,7 +47,7 @@ function auditRole(envPrefix, outputContractMode) {
 function semanticRole(envPrefix, outputContractMode) {
   return {
     envPrefix,
-    model: 'deepseek-v4-flash',
+    model: 'qwen3.8-27b-uncensored-w4a16-tp2',
     thinking: 'disabled',
     reasoningEffort: null,
     responseFormat: 'json_object',
@@ -66,7 +66,7 @@ function semanticRole(envPrefix, outputContractMode) {
 function repairRole(envPrefix, outputContractMode) {
   return {
     envPrefix,
-    model: 'deepseek-v4-flash',
+    model: 'qwen3.8-27b-uncensored-w4a16-tp2',
     thinking: 'disabled',
     reasoningEffort: null,
     responseFormat: 'json_object',

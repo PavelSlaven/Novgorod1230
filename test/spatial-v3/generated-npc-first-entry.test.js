@@ -141,6 +141,27 @@ test('generated NPC first entry binds full actor, body, routine and tools before
   assert.throws(() => prepareGeneratedNpcFirstEntry(multiple), { code: 'NPC_FIRST_ENTRY_CLOTHING_GAP' });
 });
 
+test('offstage and unresolved NPCs persist identity and schedule without a fabricated placement', () => {
+  for (const presence of ['offstage_away', 'location_gap']) {
+    const value = input();
+    value.npc_inputs[0].position_id = null;
+    value.npc_inputs[0].binding.anchor_id = null;
+    value.npc_inputs[0].binding.zone_ref = null;
+    value.npc_inputs[0].binding.initial_presence_state = presence;
+    const proposal = prepareGeneratedNpcFirstEntry(value);
+    const schedule = proposal.write_set.inserts.find((row) =>
+      row.target_table === 'party_npc_spatial_schedules').record;
+    assert.equal(proposal.validation_report.created_count, 1);
+    assert.equal(schedule.current_position_node_id, null);
+    assert.equal(schedule.causal_state_ref.routine_state.presence_state, presence);
+    assert.equal(schedule.causal_state_ref.deferred_placement, undefined);
+    assert.equal(proposal.write_set.inserts.some((row) => row.target_table === 'entity_placements'
+      && row.record.entity_kind === 'npc'), false);
+    assert.equal(proposal.write_set.inserts.some((row) => row.target_table === 'party_npcs'), true);
+    assert.equal(proposal.write_set.inserts.some((row) => row.target_table === 'party_items'), true);
+  }
+});
+
 test('generated NPC gets a pool name and a seeded character, written to identity and the name snapshot', () => {
   const rows = prepareGeneratedNpcFirstEntry(input()).write_set.inserts;
   const npc = rows.find((value) => value.target_table === 'party_npcs').record;
@@ -179,7 +200,7 @@ test('generated NPC rows commit atomically and reload without reroll in PostgreS
     '-e', 'POSTGRES_PASSWORD=npc', '-e', 'POSTGRES_USER=npc', '-e', 'POSTGRES_DB=npc',
     'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 60; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready', '-U', 'npc']).status === 0) break;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'npc']).status === 0) break;
     await new Promise((resolve) => setTimeout(resolve, 300));
   }
   await new Promise((resolve) => setTimeout(resolve, 600));

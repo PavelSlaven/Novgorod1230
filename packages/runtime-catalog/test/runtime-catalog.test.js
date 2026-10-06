@@ -17,6 +17,9 @@ import {
   computeRecordRegistryDigest,
   projectCanonicalRecord
 } from '../src/canonical-records.js';
+import { RUNTIME_CATALOG_CONTRACT_DIGEST,
+  RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST } from
+  '../src/runtime-contract.js';
 import {
   computeDependencyAssertionAuditDigest,
   computeDependencyAssertionSemanticDigest,
@@ -38,6 +41,18 @@ test('common catalog lookup is validated and loaded once per root', async () => 
   assert.deepEqual(first.inventory_archetypes.map(
     ({ inventory_archetype_id: id }) => id),
     ['compact_zero_hand', 'long_bundle']);
+});
+
+test('first-playable pinned runtime contract digest remains loadable', async () => {
+  const { reader } = readerFor(activeRows({ pin: {
+    runtime_contract_digest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
+  } }));
+  const loader = createRuntimeCatalogLoader({ worldBaseReader: reader,
+    supportedRuntimeContractDigests: [RUNTIME_CATALOG_CONTRACT_DIGEST,
+      RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST] });
+  const pin = await loader.loadActivePin({ catalogScope: RUNTIME_CATALOG_SCOPE });
+  assert.equal(pin.runtime_contract_digest,
+    RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST);
 });
 
 function domainPin(overrides = {}) {

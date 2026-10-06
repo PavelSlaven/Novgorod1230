@@ -56,7 +56,7 @@ export function runPlanModeCase({ core, bundle, situation, plan }) {
     requested_predicates: [],
     search_hints: [...(plan.search_hints ?? [])],
     context,
-    budget: { max_facts: 12, max_candidates: 12, max_context_chars: 5000 }
+    budget: { max_facts: 12, max_candidates: 12 }
   };
   const slice = core.resolveWorldKnowledge(query);
   const claimByRef = new Map(bundle.claims.map((claim) => [claim.claim_ref, claim]));

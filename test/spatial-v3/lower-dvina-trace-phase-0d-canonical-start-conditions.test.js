@@ -72,8 +72,8 @@ const runChecker = ({ directory = null, historicalV3Directory = null } = {}) => 
 };
 const withFixture = (mutate, { refresh = true } = {}) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'trace-0d-v4-'));
-  cpSync(source, directory, { recursive: true });
   try {
+    cpSync(source, directory, { recursive: true });
     mutate(directory);
     if (refresh) refreshDigests(directory);
     return runChecker({ directory });
@@ -168,8 +168,8 @@ test('ambiguous condition profile and unproved fixed-effect source are rejected'
 
 test('historical revision 6 package hash remains immutable', () => {
   const directory = mkdtempSync(resolve(tmpdir(), 'trace-0d-v3-mutated-'));
-  cpSync(historicalV3Source, directory, { recursive: true });
   try {
+    cpSync(historicalV3Source, directory, { recursive: true });
     writeFileSync(
       resolve(directory, bodyFile),
       `${readFileSync(resolve(directory, bodyFile), 'utf8')}\n`

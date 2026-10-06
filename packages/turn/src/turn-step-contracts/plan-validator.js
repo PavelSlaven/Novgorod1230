@@ -8,6 +8,7 @@ import {
   OUTCOME_BANDS,
   RESOLUTIONS
 } from './constants.js';
+import { DIRECT_RESULT_KINDS } from './plan-schema.js';
 import { validateOperations } from './operations.js';
 import { validateTurnStepRequest } from './request-validator.js';
 import {
@@ -98,10 +99,8 @@ function validateAssessment(plan, errors) {
 }
 
 function validateDirectResultKind(plan, errors, request) {
-  enumValue(plan.direct_result_kind, [null, 'player_safe_observation',
-    'player_safe_item_observation', 'player_safe_body_observation',
-    'no_state_gesture', 'player_utterance'],
-  '$.direct_result_kind', errors);
+  enumValue(plan.direct_result_kind, [null, ...DIRECT_RESULT_KINDS],
+    '$.direct_result_kind', errors);
   const writeFreeDirect = plan.resolution === 'direct'
     && plan.activity?.owner === 'semantic'
     && plan.activity.duration_class === 'moment'

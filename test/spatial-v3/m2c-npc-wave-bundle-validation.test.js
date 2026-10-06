@@ -57,7 +57,12 @@ function minimalPresenceRule(overrides = {}) {
     region_id: null,
     subject_kind: 'category',
     subject_ref: 'cat_a',
+    item_ref: 'it_a',
     variants: [],
+    entry_visible_if: 'placed_exposed',
+    search_only_if: 'placed_concealed',
+    entry_exposed_weight: null,
+    search_concealed_weight: null,
     allowed_seasons: ['all'],
     allowed_times: [],
     provenance_ref: PROV,
@@ -115,6 +120,102 @@ test('M2C_WAVE_PEOPLE_ALLOWED_TIMES_FORBIDDEN', () => {
     })],
   }));
   assertSingleCode(errors, 'M2C_WAVE_PEOPLE_ALLOWED_TIMES_FORBIDDEN');
+});
+
+test('M2C_WAVE_PRESENCE_DISCOVERY_WEIGHTS_INVALID', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    presence_rules: [minimalPresenceRule({ entry_exposed_weight: 0, search_concealed_weight: 0 })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_PRESENCE_DISCOVERY_WEIGHTS_INVALID');
+});
+
+test('M2C_WAVE_SINGLE_MODE_ZERO_WEIGHTS_INVALID', () => {
+  for (const overrides of [
+    { entry_visible_if: 'placed_exposed', search_only_if: null },
+    { entry_visible_if: null, search_only_if: 'placed_concealed' },
+  ]) {
+    const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+      place_families: [minimalPlaceFamily()],
+      presence_rules: [minimalPresenceRule({ entry_exposed_weight: 0,
+        search_concealed_weight: 0, ...overrides })],
+    }));
+    assertSingleCode(errors, 'M2C_WAVE_PRESENCE_DISCOVERY_WEIGHTS_INVALID');
+  }
+});
+
+test('M2C_WAVE_SINGLE_MODE_WITH_NULL_WEIGHTS_IS_VALID', () => {
+  for (const overrides of [
+    { entry_visible_if: 'placed_exposed', search_only_if: null },
+    { entry_visible_if: null, search_only_if: 'placed_concealed' },
+  ]) {
+    const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+      place_families: [minimalPlaceFamily()],
+      presence_rules: [minimalPresenceRule({ entry_exposed_weight: null,
+        search_concealed_weight: null, ...overrides })],
+    }));
+    assert.deepEqual(errors, []);
+  }
+});
+
+test('M2C_WAVE_PRESENCE_DISCOVERY_MODE_INVALID', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    presence_rules: [minimalPresenceRule({ entry_visible_if: null, search_only_if: null })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_PRESENCE_DISCOVERY_MODE_INVALID');
+});
+
+test('M2C_WAVE_NON_ITEM_DISCOVERY_FIELDS_FORBIDDEN', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    presence_rules: [minimalPresenceRule({ item_ref: null, entry_visible_if: null,
+      search_only_if: null, entry_exposed_weight: 1, search_concealed_weight: null })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_NON_ITEM_DISCOVERY_FIELDS_FORBIDDEN');
+});
+
+test('M2C_WAVE_NON_ITEM_WITHOUT_DISCOVERY_FIELDS_IS_VALID', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    presence_rules: [minimalPresenceRule({ item_ref: null, entry_visible_if: null,
+      search_only_if: null, entry_exposed_weight: null, search_concealed_weight: null })],
+  }));
+  assert.deepEqual(errors, []);
+});
+
+test('M2C_WAVE_NONEMPTY_VARIANTS_REQUIRE_BASE_ITEM_REF', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    presence_rules: [minimalPresenceRule({ item_ref: null, variants: [{ item_ref: 'it_variant' }] })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_VARIANTS_REQUIRE_BASE_ITEM_REF');
+});
+
+test('M2C_WAVE_VARIANTS_REQUIRE_ITEM_REF_ON_EVERY_VARIANT', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    presence_rules: [minimalPresenceRule({ variants: [{ variant_ref: 'it_variant' }] })],
+  }));
+  assertSingleCode(errors, 'M2C_WAVE_VARIANT_ITEM_REF_INVALID');
+});
+
+test('M2C_WAVE_VARIANTS_MUST_BE_ARRAY', () => {
+  for (const variants of [{ item_ref: 'it_variant' }, 'it_variant', 1, null]) {
+    const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+      place_families: [minimalPlaceFamily()],
+      presence_rules: [minimalPresenceRule({ variants })],
+    }));
+    assertSingleCode(errors, 'M2C_WAVE_VARIANTS_NOT_ARRAY');
+  }
+});
+
+test('M2C_WAVE_VALID_ITEM_VARIANTS_ARE_ACCEPTED', () => {
+  const errors = collectErrors(baseManifest(), emptyWaveDatasets({
+    place_families: [minimalPlaceFamily()],
+    presence_rules: [minimalPresenceRule({ variants: [{ item_ref: 'it_variant' }] })],
+  }));
+  assert.deepEqual(errors, []);
 });
 
 test('M2C_WAVE_PRESENCE_C4_CONFLICT', () => {

@@ -386,8 +386,10 @@ function sumUsage(calls) {
 }
 
 function validateRoleOutput(fixture, output) {
-  const payload = fixture.role_id.startsWith('gameplay_narrator')
-    ? fixture.request : messagePayload(fixture.messages);
+  const authoritativeRequest = fixture.role_id.startsWith('gameplay_narrator')
+    || fixture.validator === 'world_process_step_plan';
+  const payload = authoritativeRequest ? fixture.request
+    : messagePayload(fixture.messages);
   const request = fixture.repair === true && payload?.request ? payload.request : payload;
   switch (fixture.validator) {
     case 'turn_step_plan': return validateTurnStepPlan(output, { request }).ok ? [] : ['validator:turn_step_plan'];
@@ -461,7 +463,7 @@ function assembleFixtureOutput(fixture, output) {
   const request = fixture.repair === true && payload?.request
     ? payload.request : payload;
   if (fixture.role_id === 'world_process_step') {
-    return assembleWorldProcessStepPlan(output, request);
+    return assembleWorldProcessStepPlan(output, fixture.request ?? request);
   }
   if (fixture.role_id.startsWith('turn_step_planner')) {
     return assembleTurnStepPlan(output, request);

@@ -10,6 +10,12 @@ import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js';
 import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
+import { validPostActionPerceptionProfile } from
+  '../internal/post-action-perception-profile.js';
+import { legacyPostActionPerceptionAdapter } from
+  '../internal/lower-dvina-trace-post-action-perception-legacy.js';
+import { perceptionContext } from
+  './lower-dvina-trace-post-action-perception-context.js';
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
@@ -44,6 +50,8 @@ export function createLowerDvinaTracePhase2Runtime({
   createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null,
   ordinaryDiscoveryEnablementMarker = null,
   ordinaryDiscoveryScopeBinding = null,
+  turnStepNeedsCheckGuard = null,
+  loadTurnRuntimeCatalogContext = null,
   createTurnStepAmbientOrdinaryPortionAdmission = null,
   requireTurnStepAmbientOrdinaryAdmission = false, turnStepAmbientPortionProfileRef = null,
   createTurnStepActionProductionOwner = null,
@@ -57,12 +65,14 @@ export function createLowerDvinaTracePhase2Runtime({
   createTurnStepAuthoredBackgroundNpcResolver = null,
   authoredNpcSemanticRemainderProfile = null,
   llmTurnBudget = null, llmDiagnostics = null,
+  onNpcSceneProjection = null,
   temporalAdvanceOwner = undefined, now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
     scenarioDefinitionRevision,
   }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
   authoredTurnProfile = null,
+  postActionPerceptionProfile = null,
   spatialExpansionRuntime = null,
   spatialLocalSceneRuntime = null,
 } = {}) {
@@ -93,6 +103,26 @@ export function createLowerDvinaTracePhase2Runtime({
           presentationIdempotencyKey: idempotencyKey,
           turnBudget,
         });
+        let runtimeCatalogContextPromise = null;
+        const getRuntimeCatalogContext = () => {
+          if (typeof loadTurnRuntimeCatalogContext !== 'function') return null;
+          runtimeCatalogContextPromise ??= runWithinTurnDeadline(turnBudget, () =>
+            loadTurnRuntimeCatalogContext({ partyId }));
+          return runtimeCatalogContextPromise;
+        };
+        const assertNeedsCheckAllowed =
+          typeof turnStepNeedsCheckGuard !== 'function' ? null
+            : async (input) => turnStepNeedsCheckGuard({ ...input,
+              catalogContext: await getRuntimeCatalogContext() });
+        const recordNeedsCheckFilter = ({ path, queue_ids = [] }) => {
+          try {
+            llmDiagnostics?.recordGameplayTrace?.({
+              event: 'needs_check_candidate_filtered', path,
+              queue_id: queue_ids[0] ?? null,
+              queue_ids: structuredClone(queue_ids)
+            });
+          } catch { /* Diagnostics must not affect the turn. */ }
+        };
         const authored = state.scenario_id != null
           && state.scenario_id !== TRACE_SCENARIO_ID;
         const scenarioDefinitionRevision = authored ? null
@@ -107,9 +137,17 @@ export function createLowerDvinaTracePhase2Runtime({
           npcAutonomousModel, npcOwnerCapabilities, npcCombatModel,
         });
         const bundle = authored
-          ? liveWorldTurnBundle({ state, authoredTurnProfile })
+          ? liveWorldTurnBundle({ state, authoredTurnProfile,
+            postActionPerceptionProfile })
           : await runWithinTurnDeadline(turnBudget, () =>
             bundleLoader({ scenarioDefinitionRevision }));
+        const selectedPostActionPerceptionProfile =
+          bundle.post_action_perception_profile ?? null;
+        const postActionPerceptionAdapter = selectedPostActionPerceptionProfile?.schema
+          === 'rus.lower_dvina_trace_post_action_perception_profile.v1'
+          ? legacyPostActionPerceptionAdapter
+          : { validProfile: validPostActionPerceptionProfile,
+            context: perceptionContext };
         const contracts = authored
           ? liveWorldTurnContracts(authoredTurnProfile)
           : resolveTracePhase2Contracts({ state, bundle, phase2Bundle });
@@ -153,6 +191,7 @@ export function createLowerDvinaTracePhase2Runtime({
         const createBoundaryNpcOwnerCapabilities =
           typeof createNpcOwnerCapabilities !== 'function' ? null : (boundary) =>
             createNpcOwnerCapabilities({ partyId, requestId, inputDigest, state,
+              assertNeedsCheckAllowed,
               bundle, phase7Contracts, npcCombatModel, revalidateStateVersion,
               ...boundary });
         const genericOwners = bundle.turn_step_owner_profiles
@@ -165,6 +204,7 @@ export function createLowerDvinaTracePhase2Runtime({
         const createBoundaryNpcDirectOperations = phase7Contracts == null ? null : (boundary) => createLowerDvinaTraceNpcActorStepDirectOperations({
               state, phase7Contracts, ...boundary,
               ordinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+              assertNeedsCheckAllowed,
               packingCalculator: turnStepPackingCalculator, bodyEventOwner: genericOwners?.bodyEventOwner,
               createAmbientOrdinaryPortionAdmission: createTurnStepAmbientOrdinaryPortionAdmission
             });
@@ -233,6 +273,8 @@ export function createLowerDvinaTracePhase2Runtime({
           npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
           : buildTracePhase2Registry({
           bundle,
+          turnStepNeedsCheckGuard: assertNeedsCheckAllowed,
+          recordNeedsCheckFilter,
           combatCommand,
           contracts,
           createTurnStepWorldProcessResolver,
@@ -286,6 +328,7 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
           createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
+          turnStepNeedsCheckGuard: assertNeedsCheckAllowed,
           ordinaryDiscoveryScopeBinding,
           createTurnStepActionProductionOwner: actionProductionEnabled
             ? createTurnStepActionProductionOwner : null,
@@ -305,11 +348,13 @@ export function createLowerDvinaTracePhase2Runtime({
           requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
           turnStepAmbientPortionProfileRef, turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
           postActionPerceptionProfile:
-            bundle.post_action_perception_profile ?? null,
+            selectedPostActionPerceptionProfile,
+          postActionPerceptionAdapter,
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
           decisionNow: now, turnBudget, llmDiagnostics,
+          onNpcSceneProjection,
         });
         return runAndPersistTracePhase2Turn({
           workflowInput: buildTraceTurnWorkflowInput({
@@ -327,7 +372,8 @@ export function createLowerDvinaTracePhase2Runtime({
   });
 }
 
-function liveWorldTurnBundle({ state, authoredTurnProfile }) {
+function liveWorldTurnBundle({ state, authoredTurnProfile,
+  postActionPerceptionProfile = null }) {
   if (authoredTurnProfile?.profile?.schema
       !== 'rus.live_world_runtime.turn_step_owner_profiles.v1'
     || authoredTurnProfile.profile.status !== 'approved'
@@ -350,7 +396,7 @@ function liveWorldTurnBundle({ state, authoredTurnProfile }) {
     }] },
     calendar_profile: null,
     scene_presentation: null,
-    post_action_perception_profile: null
+    post_action_perception_profile: postActionPerceptionProfile
   });
 }
 

@@ -15,7 +15,6 @@ const rule = {
   rule_id: 'pr_unit_fixture', rule_version: 1, status: 'approved', scope_kind: 'place_family',
   scope_ref: 'pf_unit', region_id: null, subject_kind: 'category', subject_ref: 'cat_fixture',
   presence_probability_ppm: 1_000_000, count_limit: 1, allowed_seasons: ['all'], refresh_class: 'none',
-  entry_exposed_weight: 1, search_concealed_weight: 0,
 };
 const rulesContext = { partyId: 'party-c', scopeInstanceRef: 'g5:site', rules: [rule], parentById: new Map(),
   periodNumber: 4, requestIdentityPrefix: 'presence-first-arrival:site' };

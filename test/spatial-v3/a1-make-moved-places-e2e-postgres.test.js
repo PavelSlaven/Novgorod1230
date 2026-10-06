@@ -63,7 +63,7 @@ function installMakeFetch(seen) {
       seen.makeSteps += 1;
       return respond(makePlan(user.request ?? user));
     }
-    if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+    if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       seen.auditorCalls += 1;
       return respond({ pass: true, concerns: [] });
     }

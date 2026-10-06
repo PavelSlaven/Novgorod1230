@@ -78,7 +78,7 @@ export function assertLowerDvinaTraceWorldKnowledgePreflight({
         requested_predicates: [],
         search_hints: [],
         context: mapping.context,
-        budget: { max_facts: 12, max_candidates: 12, max_context_chars: 5000 }
+        budget: { max_facts: 12, max_candidates: 12 }
       }));
     for (const slice of slices) {
       if (slice.verdict === 'supported' && slice.disputes.length === 0

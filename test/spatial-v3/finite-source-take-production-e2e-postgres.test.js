@@ -8,7 +8,7 @@ import {
   PRESENCE_E2E_MOVE_TEXT,
 } from './presence-rules-production-e2e-fixture.js';
 import { createProductionLlmRoleRunner } from
-  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+  '../../apps/game-server/src/infrastructure/provider/openai-compatible.js';
 import { DEFAULT_GAMEPLAY_MODEL, createLlmSettingsOwner } from
   '../../apps/game-server/src/runtime/llm-settings.js';
 import { turnStepOperationChoices } from
@@ -75,7 +75,7 @@ function installTakeFetch(seen) {
             packing_slot_cost: 0, quantity: { value: quantity, unit: 'item' },
             container: null } }] });
     }
-    if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+    if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       seen.auditorCalls += 1;
       return respond({ pass: true, concerns: [] });
     }

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(tools): reject stale signed approvals, discover in-repository MapMaker symlink datasets, and test supplied calendar profiles (#306, #328, #350)
 - docs(player-start): add D111 player character and start contract; LW-135 added (#109)
 - docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
 - fix(npc): replay committed conversation claims from the verified prepared request snapshot (#98)

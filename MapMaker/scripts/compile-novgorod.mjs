@@ -1,21 +1,35 @@
-import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, realpath, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import ELK from "elkjs/lib/elk.bundled.js";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(here, "..");
-const corpusRoot = path.resolve(packageRoot, "..", "DOCUMENTS", "documents-kg", "corpus", "DOCUMENTS");
-const sourceArg = process.argv.find((arg) => arg.startsWith("--source="));
 const nodeFile = "novgorod_graph_nodes_g1_g4_full_v6.tsv";
 const edgeFile = "novgorod_graph_edges_g1_g4_full_v6.tsv";
 
-async function discoverDefaultSource() {
+export async function discoverDefaultSource({ corpusRoot = path.resolve(packageRoot, "..", "DOCUMENTS", "documents-kg", "corpus", "DOCUMENTS"), repositoryRoot = path.resolve(packageRoot, "..") } = {}) {
+  const repositoryPath = await realpath(repositoryRoot);
   const datasets = await readdir(corpusRoot, { withFileTypes: true });
   const matches = [];
   for (const dataset of datasets) {
-    if (!dataset.isDirectory()) continue;
-    const candidate = path.join(corpusRoot, dataset.name, "source_tsv");
+    if (!dataset.isDirectory() && !dataset.isSymbolicLink()) continue;
+    const datasetPath = path.join(corpusRoot, dataset.name);
+    if (dataset.isSymbolicLink()) {
+      let target;
+      try {
+        target = await realpath(datasetPath);
+        const targetInfo = await stat(target);
+        if (!targetInfo.isDirectory()) continue;
+      } catch (error) {
+        if (error.code === "ENOENT" || error.code === "ENOTDIR") continue;
+        throw error;
+      }
+      const relativeTarget = path.relative(repositoryPath, target);
+      if (relativeTarget === ".." || relativeTarget.startsWith(`..${path.sep}`) || path.isAbsolute(relativeTarget)) {
+        throw new Error(`Default TSV dataset symlink ${dataset.name} points outside the repository`);
+      }
+    }
+    const candidate = path.join(datasetPath, "source_tsv");
     try {
       const sourceInfo = await stat(candidate);
       if (!sourceInfo.isDirectory()) continue;
@@ -34,11 +48,6 @@ async function discoverDefaultSource() {
   }
   return matches[0];
 }
-
-const sourceDir = path.resolve(sourceArg === undefined ? await discoverDefaultSource() : sourceArg.slice(9));
-const outputDir = path.resolve(process.argv.find((arg) => arg.startsWith("--output="))?.slice(9) ?? path.join(packageRoot, "generated", "server"));
-const useElk = !process.argv.includes("--fast");
-const elk = new ELK();
 
 function parseTsv(text) {
   const [headerLine, ...lines] = text.replace(/^\uFEFF/, "").trimEnd().split(/\r?\n/);
@@ -69,6 +78,8 @@ function fastLayout(nodes) {
 }
 
 async function elkLayout(nodes, edges) {
+  const { default: ELK } = await import("elkjs/lib/elk.bundled.js");
+  const elk = new ELK();
   const result = await elk.layout({ id: "root", layoutOptions: {
     "elk.algorithm": "layered", "elk.direction": "DOWN", "elk.edgeRouting": "ORTHOGONAL",
     "elk.aspectRatio": "1.0", "elk.spacing.nodeNode": "40", "elk.layered.spacing.nodeNodeBetweenLayers": "55",
@@ -95,53 +106,65 @@ async function elkLayout(nodes, edges) {
   return { positions, edgeGeometry };
 }
 
-const nodesPath = path.join(sourceDir, nodeFile);
-const edgesPath = path.join(sourceDir, edgeFile);
-const [nodes, allEdges] = await Promise.all([readFile(nodesPath, "utf8").then(parseTsv), readFile(edgesPath, "utf8").then(parseTsv)]);
-const edges = allEdges.filter((edge) => edge.edge_type !== "contains");
-const nodeById = new Map(nodes.map((node) => [node.id, node]));
-const groups = new Map();
-for (const node of nodes) {
-  const parent = node.scale_level === "G1" ? "novgorod-region" : node.parent_node_id;
-  if (!parent) continue;
-  const key = `${node.scale_level}:${parent}`;
-  if (!groups.has(key)) groups.set(key, { parent, level: node.scale_level, nodes: [] });
-  groups.get(key).nodes.push(node);
+async function main() {
+  const sourceArg = process.argv.find((arg) => arg.startsWith("--source="));
+  const sourceDir = path.resolve(sourceArg === undefined ? await discoverDefaultSource() : sourceArg.slice(9));
+  const outputDir = path.resolve(process.argv.find((arg) => arg.startsWith("--output="))?.slice(9) ?? path.join(packageRoot, "generated", "server"));
+  const useElk = !process.argv.includes("--fast");
+  const nodesPath = path.join(sourceDir, nodeFile);
+  const edgesPath = path.join(sourceDir, edgeFile);
+  const [nodes, allEdges] = await Promise.all([readFile(nodesPath, "utf8").then(parseTsv), readFile(edgesPath, "utf8").then(parseTsv)]);
+  const edges = allEdges.filter((edge) => edge.edge_type !== "contains");
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const groups = new Map();
+  for (const node of nodes) {
+    const parent = node.scale_level === "G1" ? "novgorod-region" : node.parent_node_id;
+    if (!parent) continue;
+    const key = `${node.scale_level}:${parent}`;
+    if (!groups.has(key)) groups.set(key, { parent, level: node.scale_level, nodes: [] });
+    groups.get(key).nodes.push(node);
+  }
+
+  await mkdir(outputDir, { recursive: true });
+  const manifest = { formatVersion: 1, source: path.basename(sourceDir), generatedAt: new Date().toISOString(), layouts: [] };
+  let completed = 0;
+  for (const group of [...groups.values()].sort((a, b) => `${a.level}:${a.parent}`.localeCompare(`${b.level}:${b.parent}`))) {
+    const ids = new Set(group.nodes.map((node) => node.id));
+    const localEdges = edges.filter((edge) => ids.has(edge.from_node_id) && ids.has(edge.to_node_id));
+    const layout = group.level === "G1"
+      ? { positions: g1Layout(group.nodes), edgeGeometry: {} }
+      : useElk ? await elkLayout(group.nodes, localEdges) : { positions: fastLayout(group.nodes), edgeGeometry: {} };
+    const payload = {
+      parentNodeId: group.parent, level: group.level,
+      nodes: group.nodes.map((node) => ({ id: node.id, parentNodeId: group.parent, level: node.scale_level, title: node.title, nodeType: node.node_type })),
+      edges: localEdges.map((edge) => ({ id: edge.id, reverseEdgeId: edge.reverse_edge_id || undefined, source: edge.from_node_id, target: edge.to_node_id, edgeType: edge.edge_type })),
+      layout: { id: `novgorod:${group.level}:${group.parent}:v1`, parentNodeId: group.parent, level: group.level,
+        version: 1,
+        status: localEdges.some((edge) => ["river", "bridge", "ford", "ferry"].includes(edge.edge_type))
+          ? "needs_semantic_review" : "auto_validated",
+        positions: layout.positions, edgeGeometry: layout.edgeGeometry }
+    };
+    const relative = path.join(group.level, `${safeName(group.parent)}.json`);
+    await mkdir(path.join(outputDir, group.level), { recursive: true });
+    await writeFile(path.join(outputDir, relative), JSON.stringify(payload));
+    manifest.layouts.push({
+      parentNodeId: group.parent,
+      parentTitle: group.parent === "novgorod-region" ? "Новгородская земля" : (nodeById.get(group.parent)?.title ?? group.parent),
+      level: group.level,
+      file: relative.replaceAll("\\", "/"),
+      nodeCount: group.nodes.length,
+      edgeCount: localEdges.length
+    });
+    completed += 1;
+    if (completed % 100 === 0) process.stdout.write(`Compiled ${completed}/${groups.size}\r`);
+  }
+  await writeFile(path.join(outputDir, "manifest.json"), JSON.stringify(manifest, null, 2));
+  console.log(`Compiled ${groups.size} local maps (${nodes.length} nodes, ${edges.length} physical edges) into ${outputDir}`);
+  console.log("Security: keep generated/server outside public web roots; expose only filtered MapViewDTO responses.");
 }
 
-await mkdir(outputDir, { recursive: true });
-const manifest = { formatVersion: 1, source: path.basename(sourceDir), generatedAt: new Date().toISOString(), layouts: [] };
-let completed = 0;
-for (const group of [...groups.values()].sort((a, b) => `${a.level}:${a.parent}`.localeCompare(`${b.level}:${b.parent}`))) {
-  const ids = new Set(group.nodes.map((node) => node.id));
-  const localEdges = edges.filter((edge) => ids.has(edge.from_node_id) && ids.has(edge.to_node_id));
-  const layout = group.level === "G1"
-    ? { positions: g1Layout(group.nodes), edgeGeometry: {} }
-    : useElk ? await elkLayout(group.nodes, localEdges) : { positions: fastLayout(group.nodes), edgeGeometry: {} };
-  const payload = {
-    parentNodeId: group.parent, level: group.level,
-    nodes: group.nodes.map((node) => ({ id: node.id, parentNodeId: group.parent, level: node.scale_level, title: node.title, nodeType: node.node_type })),
-    edges: localEdges.map((edge) => ({ id: edge.id, reverseEdgeId: edge.reverse_edge_id || undefined, source: edge.from_node_id, target: edge.to_node_id, edgeType: edge.edge_type })),
-    layout: { id: `novgorod:${group.level}:${group.parent}:v1`, parentNodeId: group.parent, level: group.level,
-      version: 1,
-      status: localEdges.some((edge) => ["river", "bridge", "ford", "ferry"].includes(edge.edge_type))
-        ? "needs_semantic_review" : "auto_validated",
-      positions: layout.positions, edgeGeometry: layout.edgeGeometry }
-  };
-  const relative = path.join(group.level, `${safeName(group.parent)}.json`);
-  await mkdir(path.join(outputDir, group.level), { recursive: true });
-  await writeFile(path.join(outputDir, relative), JSON.stringify(payload));
-  manifest.layouts.push({
-    parentNodeId: group.parent,
-    parentTitle: group.parent === "novgorod-region" ? "Новгородская земля" : (nodeById.get(group.parent)?.title ?? group.parent),
-    level: group.level,
-    file: relative.replaceAll("\\", "/"),
-    nodeCount: group.nodes.length,
-    edgeCount: localEdges.length
-  });
-  completed += 1;
-  if (completed % 100 === 0) process.stdout.write(`Compiled ${completed}/${groups.size}\r`);
+if (import.meta.main ?? (process.env.NODE_TEST_CONTEXT === undefined
+  && process.argv[1]
+  && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href)) {
+  await main();
 }
-await writeFile(path.join(outputDir, "manifest.json"), JSON.stringify(manifest, null, 2));
-console.log(`Compiled ${groups.size} local maps (${nodes.length} nodes, ${edges.length} physical edges) into ${outputDir}`);
-console.log("Security: keep generated/server outside public web roots; expose only filtered MapViewDTO responses.");

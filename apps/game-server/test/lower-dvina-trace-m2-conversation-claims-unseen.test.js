@@ -4,6 +4,8 @@ import {
   buildNpcSemanticDecisionTrace,
   validateNpcSemanticDecisionTrace
 } from '@rus/npc-runtime';
+import { buildNpcDecision } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-decision.js';
 import { createM2ConversationModels } from
   './lower-dvina-trace-m2-conversation-fixture.js';
 import { normalizeNpcDecision } from
@@ -202,9 +204,19 @@ test('nonmatching replay snapshots fall back to the rebuilt request', async (t) 
     }]
   ];
 
+  const rebuiltRequest = buildDirectDecision(fixture, []).request;
+  assert.notDeepEqual(rebuiltRequest, fixture.persistedInput.request_snapshot);
+  assert.equal(validateNpcSemanticDecisionTrace(fixture.trace,
+    rebuiltRequest), false);
+
   for (const [name, inputsFor] of cases) {
     await t.test(name, async () => {
       const inputs = inputsFor(fixture);
+      const directResult = buildDirectDecision(fixture, inputs);
+      assert.deepEqual(directResult.request, rebuiltRequest);
+      assert.notDeepEqual(directResult.request,
+        fixture.persistedInput.request_snapshot);
+
       const replayState = structuredClone(fixture.initialState);
       hydrateSemanticDecisionReplay(replayState, [fixture.trace], inputs);
       let modelCalls = 0;
@@ -230,7 +242,85 @@ test('nonmatching replay snapshots fall back to the rebuilt request', async (t) 
       assert.equal(prepareCalls, 0);
     });
   }
+
+  const matchingResult = buildDirectDecision(fixture, [
+    structuredClone(fixture.persistedInput)
+  ]);
+  assert.deepEqual(matchingResult.request,
+    fixture.persistedInput.request_snapshot);
 });
+
+function buildDirectDecision(fixture, inputs) {
+  const savedRequest = fixture.persistedInput.request_snapshot;
+  const targetRef = fixture.decision.boundary.npc_ref;
+  const targetContract = fixture.contracts.actors.find(
+    ({ instance_id: id }) => id === targetRef.entity_id
+  );
+  const targetStateActor = fixture.initialState.npcs.find(
+    ({ instance_id: id }) => id === targetRef.entity_id
+  );
+  assert.ok(targetContract && targetStateActor,
+    'fixture boundary NPC must be present in the active contract and state');
+  const targetActor = {
+    ...structuredClone(targetContract),
+    ...structuredClone(targetStateActor),
+    ref: targetContract.ref
+  };
+  const state = structuredClone(fixture.initialState);
+  state.npc_semantic_decision_traces = [structuredClone(fixture.trace)];
+  state.npc_semantic_decision_inputs = structuredClone(inputs);
+  const latestContribution = [...fixture.exchange.statements].reverse().find(
+    ({ speaker_ref: speaker }) =>
+      speaker?.entity_kind === 'player_character'
+  ) ?? null;
+  const context = {
+    phase: 'phase_3', state,
+    stateVersion: state.party_state.state_version,
+    targetRef, targetActor,
+    actualNpcActors: [targetActor],
+    conversationActorRefs: savedRequest.allowed_references.actor_refs,
+    batchKey: fixture.decision.boundary.same_time_batch_ref.entity_id,
+    conversationId: savedRequest.conversation_id,
+    exchangeId: savedRequest.exchange_id,
+    contracts: fixture.contracts,
+    npcDecisionScope: {
+      action_handoff_available:
+        savedRequest.decision_scope.action_handoff_available,
+      combat_handoff_available:
+        savedRequest.decision_scope.combat_handoff_available,
+      ...(savedRequest.decision_scope.allowed_contribution_kinds === undefined
+        ? {} : { allowed_contribution_kinds:
+          savedRequest.decision_scope.allowed_contribution_kinds }),
+      ...(savedRequest.decision_scope.required_resolution === undefined
+        ? {} : {
+          required_resolution:
+            savedRequest.decision_scope.required_resolution,
+          required_check: savedRequest.decision_scope.required_check
+        })
+    },
+    npcOperationContract: savedRequest.decision_scope.operation_contract,
+    npcContributionReferencePolicy: {
+      entity_refs: [ref('route',
+        fixture.contracts.disclosureMapping
+          .route_knowledge_disclosure.route_ref)],
+      knowledge_refs: [ref('knowledge_scope',
+        fixture.contracts.eremeyKnowledge.knowledge_scope_ref)],
+      combat_target_refs: []
+    },
+    npcSocialCheckProfile: null,
+    evidencePresentation: null,
+    evidencePresented: false,
+    offerStage: null
+  };
+  return buildNpcDecision(context, {
+    new_signal_records: fixture.exchange.new_signal_records,
+    consumed_signal_ids: fixture.exchange.consumed_signal_ids,
+    statements: fixture.exchange.statements,
+    audiences: fixture.exchange.audiences,
+    supporting_operation_perceptions:
+      fixture.exchange.supporting_operation_perceptions
+  }, fixture.decision.boundary, latestContribution);
+}
 
 async function committedClaimFixture() {
   const initialState = phase3State();
@@ -284,6 +374,6 @@ async function committedClaimFixture() {
   assert.equal(validateNpcSemanticDecisionTrace(trace, unpreparedRequest), false);
   return {
     initialState, contracts, decision, trace, persistedInput,
-    unpreparedRequest
+    unpreparedRequest, exchange: first.result
   };
 }

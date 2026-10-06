@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(game-base): correct 1230 historical event dates and sources (both chronicle dates of the departure to Torzhok kept, neutral title), figure office bounds, recreation and health notes; health kinds for three epidemics; regression tests (#339, #340, #341, #325)
 - data(combat): approved generic v17 execution profile landed; activation pending (#224)
 - fix(tools): reject stale signed approvals, discover in-repository MapMaker symlink datasets, and test supplied calendar profiles (#306, #328, #350)
 - fix(presentation): preserve current committed NPC speech on first delivery, pending screens and replay (#98)

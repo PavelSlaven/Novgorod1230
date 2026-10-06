@@ -567,6 +567,14 @@ appearance vocabularies to Russian, and fails closed on unknown enum values.
 The writer receives each NPC label once as the group name; the auditor retains
 the source-backed label fact with its opaque fact key. Unsupported appearance
 values fail with a field-specific server error without echoing the supplied value.
+Unknown day-part/light values (`OPENING_TEMPORAL_TRANSLATION_UNSUPPORTED`) and item
+conditions (`OPENING_ITEM_CONDITION_UNSUPPORTED`) fail opening projection with a
+field-specific server error and do not echo the supplied value. Scene-label
+deduplication uses only visible scene facts and whole token sequences; knowledge,
+held-item, and uncertain or negative facts do not suppress entities. An item with
+its own `item_instance_id` is suppressed only when the matching scene fact cites
+that same reference; NPC, anchor, and exit labels likewise require their own
+source reference in the matching fact.
 Weather evidence uses stable field references; weather instance ids and movement
 factors stay out of the player-safe role payload.
 Session identity persists the complete approved opening narration flow and the

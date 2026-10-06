@@ -535,6 +535,10 @@ function playerSituationText(visible, actorRole = null, visibleItems = []) {
   }
   for (const object of Array.isArray(visible.visible_objects)
     ? visible.visible_objects : []) {
+    if (typeof object === 'string'
+        && /^Продолжить путь\s*[—–-]\s*выход\s+\d+$/iu.test(object.trim())) {
+      continue;
+    }
     if (object?.entity_ref?.entity_kind === 'item') {
       const description = visibleItemSituationDescription(object);
       if (description) {

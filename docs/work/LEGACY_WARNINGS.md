@@ -119,6 +119,7 @@
 | 129 | `lower-dvina-trace-conversation-llm.js`, conversation prompt builders | разговорные роли получают канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 | — |
 | 130 | `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, Lower Dvina phase-5 placed item templates | шесть видимых шаблонов не имеют утверждённой player-safe подписи; runtime обязан сохранять typed gap | — |
 | 131 | `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` | item/inventory rows с typed label gap временно скрыты от planner вопреки §7.2 | [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236) |
+| 132 | `apps/game-server` turn-step planner input projection | P-проекция группы 3 для intent_router и turn_step_planner не сделана; D72 service ids/version/counts остаются во входе | отдельная задача со своим стендом |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -716,3 +717,9 @@
 - **Что.** До закрытия #236 typed `player_safe_item_label_required` строки не попадают в модельный инвентарь, вопреки полному текущему инвентарю в `turn_step_llm_contract.md` §7.2. Это временное исключение A-05-02; решение D92 требует утверждённое точное имя или русское название общей категории для каждой материализуемой вещи. По данным v17/Lower Dvina реальных gap в инвентаре нет.
 - **Как жить.** Исключать только item rows, связанные с точной typed label-gap строкой; сохранять named и остальные item rows, факты и World Knowledge. Не добавлять opaque inventory keys. Удалить исключение после закрытия #236 и снятия gap у вещей.
 - **Issue.** [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236); разрешено A-prompt-rev-turn-04, временное исключение A-05-02.
+
+### LW-132 — P-проекция групп 3 отложена до отдельного стенда (prompt-rev-turn)
+- **Где.** `intent_router` и `turn_step_planner` player-facing LLM inputs в `apps/game-server`.
+- **Что.** На финальном проходе `ca-final-prompt-rev-turn` (2026-10-06, finding 10) подтверждено, что user payload маршрутизатора и планировщика сохраняет служебные id, версии и счётчики, вопреки D72. Переход на P не оценивался стендом и в этой задаче не выполняется.
+- **Как жить.** Не менять эти проекции без отдельного BENCH-PLAN/BENCH-OK на пары L против L+P, с одинаковыми model-visible входами у модели и судей и явным перечнем допустимых смысловых полей. Закрыть запись после принятой P-проекции.
+- **Issue.** Отдельную задачу создаёт ведущий; основание — финальный проход `ca-final-prompt-rev-turn` finding 10.

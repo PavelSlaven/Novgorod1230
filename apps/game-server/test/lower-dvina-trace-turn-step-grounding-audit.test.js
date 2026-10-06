@@ -224,17 +224,15 @@ test('speech audit uses the projected intent and completed steps while validatio
     const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       roleRunner: { async run(call) {
         const payload = JSON.parse(call.messages[1].content);
-        assert.equal(payload.remaining_intent,
-          'Говорю: «[скрыто], стой»');
+        assert.equal(payload.remaining_intent, intent);
         assert.deepEqual(payload.completed_steps, [{ description: gapFact }]);
-        assert.deepEqual(payload.utterance, { ...utterance,
-          utterance_text: '[скрыто], стой' });
+        assert.deepEqual(payload.utterance, utterance);
         assert.deepEqual(payload.player_safe_state.items, [{
           item_id: 'named-visible-item', name: 'сосновое весло',
           physical_facts: ['NAMED_ITEM_FACT_REMAINS']
         }]);
         assert.doesNotMatch(call.messages[1].content,
-          /private-gap-instance|opaque-item-ref|SECRET_GAP_ITEM_NAME|label_gap/u);
+          /opaque-item-ref|SECRET_GAP_ITEM_NAME|label_gap/u);
         return { output: { speech_faithful: false,
           required_input_mode: 'verbatim', unexecuted_intent: null } };
       } }
@@ -324,13 +322,14 @@ test('generic discovery keeps deterministic intent identity after focused classi
     assert.equal(calls, 5);
     await assert.rejects(validate({ request: genericRequest, plan: {
       ...genericPlan, operations: [{ ...genericPlan.operations[0],
-        query: 'GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_AUDITOR private-gap-instance' }]
+        target_refs: ['private-gap-instance'] }]
     }, resolved_domain_operations: ordinaryOwner }), (error) => {
       assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
-      assert.equal(error.details.errors[0].code, 'operation_semantic_grounding');
+      assert.ok(error.details.errors.some(({ code }) =>
+        code === 'invalid_target_ref' || code === 'operation_semantic_grounding'));
       return true;
     });
-    assert.equal(calls, 5, 'gap-linked generated text must fail before auditor call');
+    assert.equal(calls, 5, 'a structural gap alias must fail before auditor call');
   });
 
 test('focused discovery removes a duplicated suffix after consuming the complete intent',

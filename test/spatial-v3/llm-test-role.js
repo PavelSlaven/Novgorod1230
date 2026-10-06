@@ -36,9 +36,7 @@ export function identifyLlmTestRole(callOrBody = {}) {
       && Number.isInteger(request?.step_index)) {
     return 'turn_step_planner';
   }
-  if (request?.schema === 'turn_semantic_resolution_request'
-      || (typeof request?.player_text === 'string'
-        && Object.hasOwn(request, 'current_state'))) {
+  if (request?.schema === 'turn_semantic_resolution_request') {
     return 'intent_router';
   }
   return null;

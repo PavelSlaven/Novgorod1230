@@ -424,6 +424,18 @@ test('WK projection includes safe actor role on main and repair; omits actor ID 
     /Действующее лицо:|player_character_abcdef1234567890/u);
 });
 
+test('WK filters legacy ordinal exit strings instead of treating them as entities', async () => {
+  const visibleContext = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'У берега.', visible_changes: [], sensory_details: [],
+    visible_npc: [], visible_objects: ['Продолжить путь — выход 1'],
+    known_context: [], uncertainties: [] };
+  const capture = await captureSituationSummary({ fabric: 'wool',
+    status: 'serviceable', repairPath: true, visibleContext });
+
+  assert.doesNotMatch(`${capture.main}\n${capture.repair}`,
+    /Продолжить путь|выход 1/u);
+});
+
 function fixture(prefix) {
   const refs = Array.from({ length: 257 }, (_, i) => `wk:${prefix}:${String(i).padStart(3, '0')}`);
   const claims = refs.map((_, i) => ({ claim_ref: `claim:${prefix}:${i}`,

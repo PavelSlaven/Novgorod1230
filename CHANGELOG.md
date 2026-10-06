@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix(runtime): filter typed item gaps from model facts, operations and visible envelopes; resolve approved labels in inspection; ignore ordinal exits in WK and require schema-only router recognition
+- fix(prompts/docs): align planner wording with reviewed Stage L text, correct addressed-request meaning, and record deferred group-3 P projection as LW-132
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
 - fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)

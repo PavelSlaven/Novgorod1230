@@ -178,8 +178,8 @@ test('active interlocutor owns permission response for unsupported aid',
       onPrompt: (value) => { prompt = value; }
     });
     assert.deepEqual((await model(input)).operations, [requestInteraction]);
-    assert.match(prompt,
-      /просьба к этому человеку разрешить, воспрепятствовать или помочь с физическим вмешательством[\s\S]*владелец взаимодействия определяет ответ, но не подтверждает само вмешательство/u);
+  assert.match(prompt,
+    /просьба к этому человеку разрешить, предотвратить или помочь с физическим вмешательством[\s\S]*владелец взаимодействия определяет ответ, но не подтверждает само вмешательство/u);
     assert.match(prompt,
       /Обращённая речь или просьба сама завершается этим взаимодействием/u);
     assert.match(prompt,

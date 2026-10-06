@@ -108,6 +108,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
       ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
+        itemLabels,
         assertNeedsCheckAllowed: needsCheckGuard,
         recordNeedsCheckFilter }),
     ordinaryContainerContentsResolver:

@@ -24,6 +24,18 @@ export function projectTurnStepModelRequest(request) {
 
   const projected = structuredClone(request);
   const safeState = projected.player_safe_state;
+  if (Array.isArray(projected.available_domain_operations)) {
+    projected.available_domain_operations = projected.available_domain_operations
+      .filter((operation) => !containsAny(operation, [...aliases]));
+  }
+  if (Array.isArray(safeState.available_domain_operations)) {
+    safeState.available_domain_operations = safeState.available_domain_operations
+      .filter((operation) => !containsAny(operation, [...aliases]));
+  }
+  if (Array.isArray(safeState.local_world_process?.allowed)) {
+    safeState.local_world_process.allowed = safeState.local_world_process.allowed
+      .filter((operation) => !containsAny(operation, [...aliases]));
+  }
   safeState.current_visible_context.visible_objects = visibleObjects.filter((row) =>
     !(row?.entity_ref?.entity_kind === 'item'
       && row.label_gap?.code === 'player_safe_item_label_required'));
@@ -48,11 +60,12 @@ export function projectTurnStepModelRequest(request) {
 export function redactGapItemData(value, aliases, parentKey = null) {
   if (Array.isArray(value)) {
     const entries = parentKey === 'target_refs'
-      ? value.filter((entry) => !aliases.includes(entry)) : value;
+      ? value.filter((entry) => !aliases.includes(entry))
+      : ['operations', 'available_domain_operations', 'allowed'].includes(parentKey)
+        ? value.filter((entry) => !containsAny(entry, aliases)) : value;
     return entries.map((entry) => redactGapItemData(entry, aliases));
   }
-  if (typeof value === 'string') return aliases.reduce((text, alias) =>
-    alias.length === 0 ? text : text.replaceAll(alias, '[скрыто]'), value);
+  if (typeof value === 'string') return value;
   if (value == null || typeof value !== 'object') return value;
   return Object.fromEntries(Object.entries(value)
     .filter(([key, entry]) => !isGapItemReference(key, entry, aliases)
@@ -65,9 +78,8 @@ export function redactGapItemData(value, aliases, parentKey = null) {
 export function containsAny(value, aliases, parentKey = null) {
   if (Array.isArray(value)) return value.some((entry) =>
     (parentKey === 'target_refs' && aliases.includes(entry))
-      || containsAny(entry, aliases));
-  if (typeof value === 'string') return aliases.some((alias) =>
-    alias.length > 0 && value.includes(alias));
+      || containsAny(entry, aliases, parentKey));
+  if (typeof value === 'string') return isGapItemReference(parentKey, value, aliases);
   if (value == null || typeof value !== 'object') return false;
   return Object.entries(value).some(([key, entry]) =>
     isGapItemReference(key, entry, aliases)
@@ -81,7 +93,7 @@ export function untransmittedGapItemSecrets(request) {
 function isGapItemReference(key, value, aliases) {
   return typeof value === 'string' && aliases.includes(value)
     && ['entity_id', 'item_id', 'instance_id', 'item_ref', 'entity_ref',
-      'target_ref', 'prepared_followup_ref'].includes(key);
+      'target_ref', 'source_ref', 'prepared_followup_ref'].includes(key);
 }
 
 function filterGapItemRecords(items, aliases) {

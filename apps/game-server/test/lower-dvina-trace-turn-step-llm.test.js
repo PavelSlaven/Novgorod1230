@@ -14,6 +14,10 @@ import { groundingState } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-rules.js';
 import { projectTurnStepModelRequest } from
   '../src/runtime/lower-dvina-trace-turn-step-model-projection.js';
+import { activeConversationChoiceExample } from
+  '../src/runtime/lower-dvina-trace-turn-step-planner-prompt.js';
+import { visibleConversationChoiceExamples } from
+  '../src/runtime/lower-dvina-trace-turn-step-planner-prompt.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
 function promptMappings(prompt) {
@@ -75,6 +79,73 @@ test('gap scrubbing is reference-typed, filters target refs, and preserves match
     .visible_objects.map(({ entity_ref: ref }) => ref.entity_id), ['named-item']);
   assert.deepEqual(projected.player_safe_state.current_visible_context
     .ordinary_resolution.target_refs, ['named-item']);
+});
+
+test('gap projection preserves a longer unrelated item ref and drops its exact operation', () => {
+  const projected = projectTurnStepModelRequest(request({
+    root_player_action: 'Осмотреть item-10.',
+    available_domain_operations: [
+      { op: 'request_item_use', item_ref: 'item-1',
+        description: 'Gap item operation.' },
+      { op: 'request_item_use', item_ref: 'item-10',
+        description: 'Use named item-10.' }
+    ],
+    player_safe_state: {
+      items: [{ item_id: 'item-1', name: 'SECRET_GAP' },
+        { item_id: 'item-10', name: 'сосновое весло' }],
+      current_visible_context: { visible_objects: [
+        { entity_ref: { entity_kind: 'item', entity_id: 'item-1' },
+          label_gap: { code: 'player_safe_item_label_required' } },
+        { entity_ref: { entity_kind: 'item', entity_id: 'item-10' },
+          display_label: 'сосновое весло' }
+      ] }
+    }
+  })).request;
+
+  assert.equal(projected.root_player_action, 'Осмотреть item-10.');
+  assert.deepEqual(projected.available_domain_operations, [{ op: 'request_item_use',
+    item_ref: 'item-10', description: 'Use named item-10.' }]);
+  assert.deepEqual(projected.player_safe_state.items,
+    [{ item_id: 'item-10', name: 'сосновое весло' }]);
+  assert.deepEqual(projected.player_safe_state.current_visible_context.visible_objects,
+    [{ entity_ref: { entity_kind: 'item', entity_id: 'item-10' },
+      display_label: 'сосновое весло' }]);
+});
+
+test('planner main and repair omit whole operations linked to a gap item', async () => {
+  const calls = [];
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      calls.push(call);
+      return { output: output() };
+    } }
+  });
+  const input = request({ available_domain_operations: [
+    { op: 'request_item_use', item_ref: 'gap-item',
+      description: 'GAP_OPERATION_MUST_NOT_REACH_MODEL' },
+    { op: 'request_item_use', item_ref: 'named-item',
+      description: 'Use the named item.' }
+  ], player_safe_state: { items: [
+    { item_id: 'gap-item', name: 'SECRET_GAP' },
+    { item_id: 'named-item', name: 'сосновое весло' }
+  ], current_visible_context: { visible_objects: [
+    { entity_ref: { entity_kind: 'item', entity_id: 'gap-item' },
+      label_gap: { code: 'player_safe_item_label_required' } },
+    { entity_ref: { entity_kind: 'item', entity_id: 'named-item' },
+      display_label: 'сосновое весло' }
+  ] } } });
+
+  await model(input);
+  await model(input, { original_output: output(),
+    structural_errors: [{ path: '$.reason', code: 'invalid_reason' }] });
+
+  assert.equal(calls.length, 2);
+  for (const call of calls) {
+    const wire = JSON.stringify(call.messages);
+    assert.doesNotMatch(wire,
+      /gap-item|SECRET_GAP|GAP_OPERATION_MUST_NOT_REACH_MODEL|\[скрыто\]/u);
+    assert.match(wire, /named-item|сосновое весло|Use the named item/u);
+  }
 });
 
 function worldKnowledgeSlice(facts) {
@@ -579,6 +650,29 @@ test('turn step model sends the validated request to the isolated planner role',
   assert.match(prompt, /никогда не обещай невозможный результат, не создавай отсутствующий объект и не перемещай актора ради make_believe/u);
   assert.match(prompt, /Классифицируй interpretation\.adaptation по заявленной цели/u);
   assert.match(prompt, /ПРИОРИТЕТ КАЧЕСТВЕННОЙ ОЦЕНКИ[\s\S]*Чувственная подробность остаётся переданным фактом/u);
+  assert.match(prompt, /разрешить, предотвратить или помочь с ним/u);
+  assert.match(prompt, /Считай обращённую просьбу отдельным действием общения/u);
+  assert.doesNotMatch(prompt, /Никогда не считай обращённую просьбу отдельным действием/u);
+});
+
+test('active conversation example treats the addressed request as its own interaction action', () => {
+  const choices = [{ choice_id: 'request_visible_npc', operation: {
+    op: 'emit_interaction', interaction_kind: 'request',
+    target_actor_refs: ['npc:visible'], instrument_refs: []
+  } }];
+  const prompt = activeConversationChoiceExample({ player_safe_state: {
+    active_interlocutor: { entity_ref: { entity_id: 'npc:visible' } }
+  } }, choices);
+  const visiblePrompt = visibleConversationChoiceExamples({ player_safe_state: {
+    current_visible_context: { visible_npc: [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc:visible' },
+      display_label: 'Видимый человек' }] }
+  } }, choices).join('\n');
+
+  assert.match(prompt, /разрешить, предотвратить или помочь/u);
+  assert.match(prompt, /сама завершается этим взаимодействием/u);
+  assert.match(visiblePrompt,
+    /Считай обращённую просьбу отдельным действием общения/u);
 });
 
 test('planner enables low reasoning only when no-reasoning returns no answer', async () => {

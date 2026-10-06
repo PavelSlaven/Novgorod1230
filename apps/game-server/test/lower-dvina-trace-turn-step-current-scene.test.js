@@ -326,6 +326,25 @@ test('version zero scene keeps unnamed carried equipment as a typed label gap', 
   }]);
 });
 
+test('version zero scene omits physical facts from unnamed items', () => {
+  const state = committedState();
+  state.party_state.state_version = 0;
+  state.current_visible_context.sensory_details = [];
+  state.items = [{ item_id: 'named-item', name: 'весло',
+    physical_facts: ['На весле видна зарубка.'],
+    placement: { location_ref: 'shed' } },
+  { item_id: 'gap-item', physical_facts: ['GAP_ITEM_FACT_MUST_NOT_REACH_MODEL.'],
+    placement: { location_ref: 'shed' } }];
+
+  const visible = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles }).current_visible_context;
+
+  assert.deepEqual(visible.sensory_details, ['На весле видна зарубка.']);
+  assert.ok(visible.visible_objects.some((item) =>
+    item.entity_ref?.entity_id === 'gap-item'
+      && item.label_gap?.code === 'player_safe_item_label_required'));
+});
+
 test('current scene resolves approved item template labels and keeps gaps without category fallback', () => {
   const state = committedState();
   state.current_visible_context.uncertainties = ['Сохраняемая неопределённость.'];

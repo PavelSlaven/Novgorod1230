@@ -3,7 +3,7 @@ import { existingItemObservationChanges } from './lower-dvina-trace-visible-scen
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 
 /** Read the current actor-safe projection before ordinary creation admission. */
-export function resolveExistingItemInspection(execution) {
+export function resolveExistingItemInspection(execution, itemLabels = {}) {
   const { operation, request, plan } = execution;
   if (operation?.op !== 'request_discovery'
       || operation.discovery_kind !== 'inspect'
@@ -13,7 +13,7 @@ export function resolveExistingItemInspection(execution) {
   const item = safe?.items?.find(value =>
     (value.item_id ?? value.instance_id) === targetRef);
   if (item == null) return null;
-  const changes = existingItemObservationChanges(item, safe.actor_id);
+  const changes = existingItemObservationChanges(item, safe.actor_id, itemLabels);
   return deepFreeze({
     working_projection: structuredClone(execution.working_projection),
     write_fragments: [], duration_minutes: 0,

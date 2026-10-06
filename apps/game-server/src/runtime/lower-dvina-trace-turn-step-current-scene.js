@@ -36,7 +36,9 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
         ...initial,
         known_context: unique([...initial.known_context, ...selfKnowledge]),
         sensory_details: unique([...initial.sensory_details,
-          ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts),
+          ...sceneItems.filter(({ visibleObject }) =>
+            text(visibleObject?.display_label))
+            .flatMap(({ physicalFacts }) => physicalFacts),
           ...currentEnvironmentChanges(committedState)]),
         visible_objects: uniqueLowerDvinaTraceVisibleObjects([
           ...initial.visible_objects,

@@ -23,11 +23,20 @@ test('generated topology commit projects the current source actor in its P16 tra
       assert.equal(args.state.journey_location.scene_position_id, request.source_position_id);
       assert.equal(args.directionalExits, exits);
       return { naturalInput: prepareG4NaturalScenePerceptionInput(input),
-        entityObservations: [], localEdges: [], directionalExits: [] };
-    } });
+        entityObservations: [{ entity_kind: 'item', entity_id: 'gap-item',
+          visibility: 'clear', label_gap: {
+            code: 'player_safe_item_label_required' },
+          exterior: { condition_state: 'intact' } },
+        { entity_kind: 'item', entity_id: 'named-item', visibility: 'clear',
+          display_label: 'плетёная корзина',
+          exterior: { condition_state: 'intact' } }],
+        localEdges: [], directionalExits: [] };
+      } });
   assert.equal(result.ok, true, JSON.stringify(result.errors));
   assert.equal(result.envelope.visible_payload.perceived_scene, 'Берег');
   assert.equal(result.envelope.presentation_status, 'pending');
   assert.equal(result.envelope.projection_policy_ref.entity_ref.entity_id,
     'spatial_v3_current_visible_context_v1');
+  assert.deepEqual(result.envelope.visible_payload.visible_objects.map((item) =>
+    item.entity_ref.entity_id), ['named-item']);
 });

@@ -69,6 +69,10 @@ test('revision 13 general look stays a generic player-safe turn',
         ).player_visible_physical_facts;
         assert.deepEqual(narratorInput.visible_context.sensory_details,
           approvedFacts);
+        for (const fact of before.environment_snapshot.facts) {
+          assert.equal(narratorInput.visible_context.sensory_details.includes(fact),
+            false);
+        }
         const playerSafe = JSON.stringify({ result,
           narrator: narratorInput });
         assert.equal(playerSafe.includes('visible:road_bag_missing'), false);

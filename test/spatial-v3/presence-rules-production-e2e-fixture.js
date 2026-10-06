@@ -443,6 +443,9 @@ export async function createPresenceProductionRoot({
   env = FIXTURE_ROOT_ENV, worldKnowledgeEncoderFactory = zeroVectorEncoderFactory,
 }) {
   let readCurrentVisibleContext = null;
+  let readLocalEdgeDisclosure = null;
+  let readCurrentExitDisclosure = null;
+  let readCurrentConnectionDisclosure = null;
   const pinDigest = approvals.itemApproval.request.compatible_world_pin_manifest_digest;
   const rootOptions = {
     env,
@@ -474,12 +477,17 @@ export async function createPresenceProductionRoot({
     },
     bindingsFactory: async (context) => {
       readCurrentVisibleContext = context.readCurrentVisibleContext ?? null;
+      readLocalEdgeDisclosure = context.readLocalEdgeDisclosure ?? null;
+      readCurrentExitDisclosure = context.readCurrentExitDisclosure ?? null;
+      readCurrentConnectionDisclosure = context.readCurrentConnectionDisclosure ?? null;
       return loadSpatialV3RuntimeBindings(context.config.spatialV3BindingsModule, context);
     },
     ...(worldKnowledgeEncoderFactory == null ? {} : { worldKnowledgeEncoderFactory }),
   };
   const runtime = await createSpatialV3ProductionCompositionRoot(rootOptions);
-  return { runtime, rootOptions, readCurrentVisibleContext };
+  return { runtime, rootOptions, readCurrentVisibleContext,
+    readLocalEdgeDisclosure, readCurrentExitDisclosure,
+    readCurrentConnectionDisclosure };
 }
 
 export function routeMovementLabels(screen) {

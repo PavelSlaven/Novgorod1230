@@ -14,6 +14,8 @@ import { liveWorldConversationCommands } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import { npcSharesPlayerScene } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-scene-presence.js';
+import { withLowerDvinaTraceCurrentScene } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import {
@@ -288,8 +290,8 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
         JSON.stringify(arrivalItems)}`);
       assert.deepEqual(responsePeople, readbackPeople,
         'the completed turn response and screen readback must agree on People');
-      assert.equal(responsePeople?.data?.visible_npcs?.length > 0, true,
-        'the completed turn response must include the committed scene NPC');
+      assert.deepEqual(pendingPeople, responsePeople,
+        'the pending screen and completed screen must agree on People');
       // No known routes here: route-conversation covers prepared movement; commit unit covers this transition.
       assert.equal(movementChannel(arrivalSnapshot?.payload), 'position_transition',
         'the generated-site case must exercise the top-level position_transition path');
@@ -429,6 +431,35 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       });
       assert.equal(postDialogueReload.current_visible_context.visible_npc.length > 0, true,
         'current observed NPCs remain in the post-dialogue scene');
+      const currentPositionId = postDialogueReload.journey_location.scene_position_id;
+      const currentG6Id = postDialogueReload.scene_position_g6[currentPositionId];
+      const observedNpcIds = new Set((postDialogueReload.current_spatial_context?.visible_npc ?? [])
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean));
+      const crossPositionNpcIds = postDialogueReload.npcs.filter((npc) =>
+        npc.runtime_source === SCENE_NPC_SOURCE
+        && npc.position_id !== currentPositionId
+        && npc.g6_instance_id === currentG6Id
+        && npc.location_ref == null
+        && npc.anchor_id == null
+        && observedNpcIds.has(npc.instance_id))
+        .map(({ instance_id: id }) => id);
+      const projectionRegressionFailures = [];
+      if (crossPositionNpcIds.length === 0) {
+        projectionRegressionFailures.push(
+          'fixture must include a currently observed NPC at another position in the same G6 without legacy aliases');
+      }
+      const rebuiltAfterDialogue = withLowerDvinaTraceCurrentScene({
+        committedState: postDialogueReload
+      }).current_visible_context;
+      for (const npcId of crossPositionNpcIds) {
+        if (!rebuiltAfterDialogue.visible_npc.some(({ entity_ref: ref }) =>
+            ref?.entity_id === npcId)) {
+          projectionRegressionFailures.push(
+            `same-G6 currently visible NPC ${npcId} was dropped by committed-scene rebuild`);
+        }
+      }
+      assert.deepEqual(projectionRegressionFailures, [],
+        'current scene preserves v17 same-G6 NPC visibility');
 
       const stateBeforeRace = await snapshotNpcs(env.partyPool, partyId);
       const attemptRequestId = 'scene-npcs-stale-prepared-read';

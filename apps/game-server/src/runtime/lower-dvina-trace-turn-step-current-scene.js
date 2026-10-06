@@ -50,24 +50,37 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     ? { display_name: currentSpatial.visible_scene,
       player_visible_physical_facts: currentSpatial.sensory_details ?? [] }
     : presented ?? { display_name: null, player_visible_physical_facts: [] };
-  const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => {
-    const id = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
-    const knownName = playerSafeHeardNpcIntroduction({
-      committedNpcs: committedState.npcs,
-      conversationStatements: committedState.conversation_statements,
-      receivedMessages: committedState.received_messages,
-      playerId: committedState.actor_id,
-      npcId: id
-    });
-    return visibleNpc(npc, playerSafe.position, knownName);
-  }).filter(Boolean);
+  const sceneNpcs = committedState.current_spatial_context_filters_entities === true
+    ? (currentSpatial?.visible_npc ?? []).map((npc) => {
+      const id = npc?.entity_ref?.entity_id;
+      const knownName = playerSafeHeardNpcIntroduction({
+        committedNpcs: committedState.npcs,
+        conversationStatements: committedState.conversation_statements,
+        receivedMessages: committedState.received_messages,
+        playerId: committedState.actor_id,
+        npcId: id
+      });
+      return text(knownName) ? { ...structuredClone(npc),
+        display_label: knownName, recognition: 'recognized' } : structuredClone(npc);
+    })
+    : (playerSafe.npcs ?? []).map((npc) => {
+      const id = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
+      const knownName = playerSafeHeardNpcIntroduction({
+        committedNpcs: committedState.npcs,
+        conversationStatements: committedState.conversation_statements,
+        receivedMessages: committedState.received_messages,
+        playerId: committedState.actor_id,
+        npcId: id
+      });
+      return visibleNpc(npc, playerSafe.position, knownName);
+    }).filter(Boolean);
   const placeFacts = currentSpatial?.sensory_details
     ?? presented?.player_visible_physical_facts
     ?? profile.player_visible_physical_facts;
   const currentItemRows = visibleSceneItems.map(({ visibleObject }) => visibleObject);
   const sensoryDetails = unique([...(placeFacts ?? []),
     ...visibleSceneItems.flatMap(({ physicalFacts }) => physicalFacts)]);
-  const current = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
+  const current = projectCampFireState(enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
     version: 1,
     schema: 'visible_context_package',
     visible_scene: profile.display_name,
@@ -85,7 +98,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
-  }, committedState: projectionSource });
+  }, committedState: projectionSource }), projectionSource, playerSafe.position);
   if (!validCurrentScene(current)) failCurrentScene();
   const { current_spatial_context: _currentSpatialContext,
     current_spatial_context_is_fresh: _currentSpatialContextIsFresh,

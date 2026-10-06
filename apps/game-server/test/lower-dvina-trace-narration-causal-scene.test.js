@@ -58,7 +58,8 @@ function currentSceneState(scene = currentScene(), items = []) {
     condition_state: 'serviceable', placement: { ...position }
   }));
   const spatialContext = { visible_scene: scene.visible_scene,
-    sensory_details: scene.sensory_details ?? [], visible_objects: [] };
+    sensory_details: scene.sensory_details ?? [], visible_objects: [],
+    visible_npc: structuredClone(scene.visible_npc ?? []) };
   return { actor_id: 'player', position: { location_ref: 'shore',
     g5_anchor_id: 'shore-anchor' }, items: [...items, ...nearbyItems], npcs,
     current_spatial_context: spatialContext,
@@ -191,7 +192,7 @@ test('applied player-safe observation exposes perceived facts and not static sel
       direct_result_kind: 'player_safe_observation' } }] } } };
   const visible = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
   await assertCurrentWire(visible, ['У воды виден надломленный колышек.',
-    'В поле зрения — человек.'], ['При вас есть хозяйственный нож.']);
+    'В поле зрения — рыбак.'], ['При вас есть хозяйственный нож.']);
   input.mode_resolution.decision_trace.step_traces[0].applied = false;
   const unapplied = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
   assert.deepEqual(unapplied.visible_changes, []);
@@ -217,8 +218,8 @@ test('observation preserves separately visible NPCs with the same label', async 
 
   assert.deepEqual(visible.visible_changes, [
     'Вы внимательно изучили обстановку.',
-    'В поле зрения — человек (1).',
-    'В поле зрения — человек (2).'
+    'В поле зрения — рыбак (1).',
+    'В поле зрения — рыбак (2).'
   ]);
 });
 
@@ -256,10 +257,18 @@ test('real observation promotes an object-only result and unseen safe sibling wi
     await assertCurrentWire(visible,
       [`В поле зрения — ${label}.`],
       ['НЕПОДТВЕРЖДЁННОЕ СОДЕРЖИМОЕ', 'unsupported_detail', 'unseen-object']);
-    scene.visible_objects[0].hidden_state = { contents: 'secret cargo' };
-    assert.deepEqual(projectCurrentSceneForNoOperationDirect({
+    const canonicalItem = input.retrieved_state.items.find((item) =>
+      item.item_id === 'unseen-object');
+    canonicalItem.hidden_state = { contents: 'SECRET_SENTINEL' };
+    assert.equal(JSON.stringify(input).includes('SECRET_SENTINEL'), true,
+      'hidden state must reach the actual committed-state projection input');
+    const rebuilt = projectCurrentSceneForNoOperationDirect({
       input, directSeedKeys: [], body: {}
-    }), visible);
+    });
+    assert.equal(JSON.stringify(rebuilt).includes('SECRET_SENTINEL'), false,
+      'the current-scene projection must remove unsupported hidden item state');
+    await assertCurrentWire(rebuilt, ['В поле зрения — ' + label + '.'],
+      ['SECRET_SENTINEL', 'hidden_state', 'unseen-object']);
   }
 });
 
@@ -311,8 +320,8 @@ test('real observation preserves entity-bound human N1 cues without translating 
       resolution: 'direct', goal_result: 'achieved', operations: [], check: null,
       direct_result_kind: 'player_safe_observation' } }] } }
   }, directSeedKeys: [], body: {} });
-  await assertCurrentWire(visible, ['В поле зрения — человек.',
-    'человек: На рукавах налипли стружки.', 'человек: Перебирает обрезки досок.'],
+  await assertCurrentWire(visible, ['В поле зрения — рыбак.',
+    'рыбак: На рукавах налипли стружки.', 'рыбак: Перебирает обрезки досок.'],
   ['three_quarter', 'stocky', 'НЕПОДТВЕРЖДЁННЫЙ МОТИВ']);
 });
 

@@ -176,7 +176,7 @@ test('direct overlay rebuilds current entities instead of forwarding stale packa
     ref?.entity_kind === 'scene_movement_edge'), false);
 });
 
-test('committed scene entities do not depend on current Spatial entity rows', () => {
+test('filtered current Spatial NPCs define the observed committed scene set', () => {
   const state = committedState();
   state.current_spatial_context = {
     ...structuredClone(state.current_spatial_context),
@@ -192,7 +192,9 @@ test('committed scene entities do not depend on current Spatial entity rows', ()
     locationProfiles }).current_visible_context;
 
   assert.deepEqual(current.visible_npc.map(({ entity_ref: ref }) => ref.entity_id),
-    ['onisim', 'not-observed']);
+    ['onisim']);
+  assert.equal(current.visible_npc.some(({ entity_ref: ref }) =>
+    ref.entity_id === 'not-observed'), false);
 });
 
 for (const speech of ['Длинная реплика: «Я пойду к лодкам».', 'Да.']) {

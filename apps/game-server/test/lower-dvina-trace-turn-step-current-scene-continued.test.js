@@ -194,11 +194,16 @@ test('unfinished domain prerequisite preserves the scene without inventing parti
   assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
 });
 
-test('visible turn projection includes the current authored camp-fire state', () => {
+test('authored current-scene rebuild includes camp-fire state without fresh Spatial context', () => {
   const state = committedState();
   state.position = { location_ref: 'trace_ld_v1_loc_fishing_camp',
     g5_anchor_id: 'camp-anchor' };
-  state.current_spatial_context.visible_scene = 'Рыбацкий стан';
+  state.scene_presentation = { locations: [{
+    location_ref: 'trace_ld_v1_loc_fishing_camp',
+    display_name: 'Рыбацкий стан', player_visible_physical_facts: []
+  }] };
+  state.current_spatial_context = null;
+  state.current_spatial_context_is_fresh = false;
   const before = projectCurrentSceneForVisibleOverlay({
     input: { retrieved_state: state, consequence: { visible_seed: {} } },
     directSeedKeys: [], body: {}

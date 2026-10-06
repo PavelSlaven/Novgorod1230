@@ -1209,7 +1209,6 @@ async function assertGeneralLookAfterInspection({
   assert.equal(campLooked.check, null);
   assert.notEqual(campLookContext.visible_scene,
     opened.screen.visible_context.place);
-  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
   assert.deepEqual(campLookContext.sensory_details, [
     'На сухом берегу стоят навес и очаговая площадка.',
     'Под навесом есть место укрыться от речной сырости.',
@@ -1218,8 +1217,10 @@ async function assertGeneralLookAfterInspection({
     'Сети развешены на кольях и между навесами.',
     'Лодки стоят у воды.',
     'Под навесом сложены свёрнутые снасти.',
-    'В воздухе держится речная сырость.'
+    'В воздухе держится речная сырость.',
+    'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.'
   ]);
+  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
   assert.equal(randomDraws, beforeCampLook.randomDraws);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), beforeCampLook.checks);

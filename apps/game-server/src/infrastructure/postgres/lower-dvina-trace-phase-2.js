@@ -246,8 +246,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       currentSpatialContext), current_spatial_context: currentSpatialContext,
       current_spatial_context_is_fresh: true,
       current_spatial_context_filters_entities: true };
-    return withPhase2CurrentLocalEdges(spatial, readLocalEdgeDisclosure,
+    const disclosed = await withPhase2CurrentLocalEdges(spatial, readLocalEdgeDisclosure,
       readCurrentExitDisclosure, readCurrentConnectionDisclosure);
+    return { ...disclosed,
+      current_spatial_context: structuredClone(disclosed.current_visible_context) };
   }
   async function loadPhase2Replay({ partyId, idempotencyKey, turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);

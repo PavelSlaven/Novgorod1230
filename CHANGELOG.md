@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(turn-scene): keep current scene projection grounded in committed changes and drop prior-turn NPC speech from narration input (D80)
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
 - fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)

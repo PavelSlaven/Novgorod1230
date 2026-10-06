@@ -6,8 +6,9 @@ import { join } from 'node:path';
 import { createGameplayGapExplorer, runGameplayGapCampaign } from '../gameplay-gap-campaign.mjs';
 import { playerDom } from '../local-provider-acceptance.mjs';
 
-async function qualityCampaign({ acceptance, degraded }) {
+async function qualityCampaign(t, { acceptance, degraded }) {
   const directory = await mkdtemp(join(tmpdir(), 'gameplay-gap-quality-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   const screen = degraded ? { schema: 'factual_turn_delivery_screen',
     presentation_quality: 'degraded', party_id: 'party:quality',
     turn_id: 'turn:quality', package_id: 'package:quality' }
@@ -49,30 +50,26 @@ test('development explorer makes a separate generative call from current safe co
   assert.equal((await next({ campaign_id: 'fresh', turn_index: 0, screen: { visible: 'rain' } })).probe_family, 'wet fibres');
 });
 
-test('degraded acceptance campaign is quality_failed', async () => {
-  const { directory, report } = await qualityCampaign({ acceptance: true, degraded: true });
-  try {
-    assert.equal(report.status, 'quality_failed');
-    assert.equal(report.narration_quality_pass, false);
-  } finally { await rm(directory, { recursive: true, force: true }); }
+test('degraded acceptance campaign is quality_failed', async (t) => {
+  const { report } = await qualityCampaign(t, { acceptance: true, degraded: true });
+  assert.equal(report.status, 'quality_failed');
+  assert.equal(report.narration_quality_pass, false);
 });
 
-test('degraded development campaign remains captured', async () => {
-  const { directory, report } = await qualityCampaign({ acceptance: false, degraded: true });
-  try { assert.equal(report.status, 'captured'); }
-  finally { await rm(directory, { recursive: true, force: true }); }
+test('degraded development campaign remains captured', async (t) => {
+  const { report } = await qualityCampaign(t, { acceptance: false, degraded: true });
+  assert.equal(report.status, 'captured');
 });
 
-test('narrated acceptance campaign remains captured', async () => {
-  const { directory, report } = await qualityCampaign({ acceptance: true, degraded: false });
-  try {
-    assert.equal(report.status, 'captured');
-    assert.equal(report.narration_quality_pass, true);
-  } finally { await rm(directory, { recursive: true, force: true }); }
+test('narrated acceptance campaign remains captured', async (t) => {
+  const { report } = await qualityCampaign(t, { acceptance: true, degraded: false });
+  assert.equal(report.status, 'captured');
+  assert.equal(report.narration_quality_pass, true);
 });
 
-test('campaign drives HTTP, separates explorer context, and retains actual private boundaries', async () => {
+test('campaign drives HTTP, separates explorer context, and retains actual private boundaries', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'gameplay-gap-test-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   const inputs = []; let stopped = false, turnRequests = 0;
   const report = await runGameplayGapCampaign({ outputDirectory: directory,
     campaignId: 'unseen-test', explorerRef: 'independent-explorer', turns: 1,
@@ -150,8 +147,9 @@ test('acceptance rejects dirty checkout before starting production', async () =>
     start: async () => assert.fail('must not start') }), /clean candidate/u);
 });
 
-test('startup failure is retained without claiming a captured campaign', async () => {
+test('startup failure is retained without claiming a captured campaign', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'gameplay-gap-test-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   await assert.rejects(runGameplayGapCampaign({ outputDirectory: directory,
     explorerRef: 'explorer', nextIntent: async () => {},
     snapshot: () => ({ head: 'a'.repeat(40), dirty: true }),
@@ -161,8 +159,9 @@ test('startup failure is retained without claiming a captured campaign', async (
   assert.equal(report.turns.length, 0);
 });
 
-test('campaign never overwrites existing trace evidence', async () => {
+test('campaign never overwrites existing trace evidence', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'gameplay-gap-test-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   await writeFile(join(directory, 'campaign.json'), 'prior evidence');
   await assert.rejects(runGameplayGapCampaign({ outputDirectory: directory,
     explorerRef: 'explorer', nextIntent: async () => {},
@@ -171,8 +170,9 @@ test('campaign never overwrites existing trace evidence', async () => {
   assert.equal(await readFile(join(directory, 'campaign.json'), 'utf8'), 'prior evidence');
 });
 
-test('typed owner rejection is retained as code evidence without an accepted commit', async () => {
+test('typed owner rejection is retained as code evidence without an accepted commit', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'gameplay-gap-test-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   const requestedUrls = [];
   const report = await runGameplayGapCampaign({ outputDirectory: directory,
     explorerRef: 'explorer', turns: 1,

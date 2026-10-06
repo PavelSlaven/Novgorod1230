@@ -61,7 +61,7 @@ export function assembleNpcConversationPlan(choice, request) {
   const requiredCandidate = requiredNpcConversationCandidate(request);
   const admittedCandidate = requiredCandidate
     ?? matchingNpcConversationCandidate(choice, request);
-  const assembled = assembleConversationPlan(choice, admittedCandidate, {
+  let assembled = assembleConversationPlan(choice, admittedCandidate, {
     schema: 'conversation_contribution_plan_v1',
     request_id: request.request_id,
     boundary_id: request.boundary_id,
@@ -73,6 +73,17 @@ export function assembleNpcConversationPlan(choice, request) {
   requiredCandidate?.resolution === 'automatic'
     && requiredCandidate.speech?.claims?.length === 0);
   const requiredOperation = requiredCandidate?.supporting_operations?.[0]?.op;
+  if (assembled.contribution_kind === 'speech'
+      && assembled.speech !== null
+      && requiredCandidate?.speech?.claims?.length === 0) {
+    assembled = {
+      ...assembled,
+      speech: {
+        ...assembled.speech,
+        claims: completeClaimReferenceLists(choice?.speech ?? {}).claims
+      }
+    };
+  }
   const allowedActs = request.decision_scope?.operation_contract
     ?.[requiredOperation]?.required_dominant_acts;
   return requiredCandidate?.resolution === 'automatic'

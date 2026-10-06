@@ -76,7 +76,9 @@ test('missing or malformed character adds no npc_behavior and no error', async (
 });
 
 test('prompt asks for the exact self-introduction form and carries no sample name', () => {
-  const text = npcConversationInstructions(null, null);
+  const text = npcConversationInstructions(null, {
+    social_context: { first_contact_introduction: true }
+  });
   assert.equal(text.includes('exactly "Я <canonical_name>."'), true);
   assert.equal(text.includes('temperament and values'), true);
   assert.equal(/Я [А-ЯЁ][а-яё]+/u.test(text), false);

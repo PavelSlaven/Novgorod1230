@@ -19,7 +19,7 @@
 
 Gameplay не зависит от engine API: единый `@rus/llm-runtime` видит только
 OpenAI-compatible `chat/completions` настроенного vLLM endpoint.
-Никакого fallback на DeepSeek нет. Подробности:
+Ошибки endpoint/provider завершают вызов без fallback. Подробности:
 [`docs/setup/LLM_PROVIDERS.md`](../../docs/setup/LLM_PROVIDERS.md).
 
 `RUS_RUNTIME_SETUP=spatial-v3-m3-development-v14` включает только явный
@@ -98,11 +98,17 @@ production roles. Authored new-game opening после scenario selection ждё
 `RUS_LLM_SETTINGS_PATH` (файл только читается), `createGameHttpServer` на
 127.0.0.1 и скриптовые ноги по публичному HTTP API: start → walk out → meet →
 talk → take → make. После каждого хода — SQL-снимок (позиция, размещения в G6
-игрока, предметы, `party_resource_nodes`, реплики NPC). Итог ноги — `pass`,
-`fail` или `blocked` с причиной; выходы: `report.json` и Markdown-заготовка
-отчёта `docs/playtests/` (WR §24.1, дословный экран по ходам, секреты
-вырезаются). World Knowledge энкодер по умолчанию — заглушка (нулевые векторы),
-это помечается в отчёте; `--wk-encoder giga` требует `RUS_WORLD_KNOWLEDGE_PYTHON`.
+игрока, предметы, `party_resource_nodes`, реплики NPC). Developer GET
+`llm-turn-reports` даёт снимок каждой попытки new-game (проза writer, Stage 23,
+repair, `pre_repair` после semantic repair) в `opening.opening_attempts` и
+таблице playtest; при `committed_presentation_pending` драйвер вызывает тот же
+`POST presentation-recovery`, что веб-клиент, агрегат `presentation_recovery` и
+исход по ходу попадают в `report.json`/Markdown; неудачная доставка сохраняет
+ход с `delivery_failed` до остановки ноги. Итог ноги — `pass`, `fail` или
+`blocked` с причиной; выходы: `report.json` и Markdown-заготовка отчёта
+`docs/playtests/` (WR §24.1, дословный экран по ходам, секреты вырезаются).
+World Knowledge энкодер по умолчанию — заглушка (нулевые векторы), это
+помечается в отчёте; `--wk-encoder giga` требует `RUS_WORLD_KNOWLEDGE_PYTHON`.
 На общей машине запускать под слотом: `pg-slot node tools/local-play/v17-slice-run.mjs`.
 Уборка (сервер, root, пулы, `docker rm -fv`) выполняется всегда, включая сигнал и
 дедлайн игрового окна (`--deadline-min`, по умолчанию 26 мин после bootstrap). Выход: 0 все ноги pass, 1 нога fail

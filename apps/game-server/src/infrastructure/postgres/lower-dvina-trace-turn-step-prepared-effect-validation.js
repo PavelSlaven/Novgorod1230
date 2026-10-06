@@ -145,6 +145,7 @@ export function validatePreparedEffectCommit({
     route, routeTrace, directTrace, loopTrace: envelope.loop_trace,
     envelope, state, phase3Contracts, routeOnly: !hasDirect,
     intermediateTraces, scenePresentation: turnStepApprovedOwners?.scenePresentation,
+    projectCurrentScene: turnStepApprovedOwners?.projectCurrentScene,
     preparedMovementState
   });
   if (hasDirect) validatePreparedDirectSlice({

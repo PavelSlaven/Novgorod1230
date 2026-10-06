@@ -377,8 +377,8 @@ test('production LLM role resolves A1 weapon classification at combat boundary',
     try {
       const classify = createLowerDvinaTraceActionProducedWeaponClassifier({
         roleRunner: createLlmRoleRunnerAdapter({ env: {
-          DEEPSEEK_API_KEY: 'fixture-key',
-          DEEPSEEK_BASE_URL: 'https://fixture.invalid'
+          LLM_API_KEY: 'fixture-key',
+          LLM_BASE_URL: 'https://fixture.invalid'
         } })
       });
       const item = actionProducedItem('a1-spear', ['конец заострён'], 'long');

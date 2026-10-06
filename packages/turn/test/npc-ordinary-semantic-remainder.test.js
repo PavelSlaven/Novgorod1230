@@ -60,8 +60,7 @@ test('N1 proposal and audit receive the same bounded factual slice', async () =>
     pack_ref: 'wk-pack:test', pack_revision: 'revision:test', coverage: [],
     hard_constraints: [],
     facts: [{ claim_ref: 'claim:n1', runtime_text: 'рыбацкая одежда' }],
-    disputes: [], gaps: [],
-    context_text: 'FACT claim:n1: рыбацкая одежда' };
+    disputes: [], gaps: [], context_text: 'Legacy prose projection.' };
   await resolveNpcOrdinarySemanticRemainder({ request, worldKnowledge,
     roleRunner: { async run({ role_id, messages }) {
       inputs.push(JSON.parse(messages[1].content));
@@ -76,7 +75,11 @@ test('N1 proposal and audit receive the same bounded factual slice', async () =>
       } };
     } } });
   assert.equal(inputs.length, 2);
-  assert.ok(inputs.every((input) =>
-    input.world_knowledge.pack_revision === 'revision:test'
-    && Object.hasOwn(input.world_knowledge, 'context_text') === false));
+  assert.ok(inputs.every((input) => {
+    assert.equal(input.world_knowledge.pack_revision, 'revision:test');
+    assert.deepEqual(input.world_knowledge.facts, [{ claim_ref: 'claim:n1',
+      runtime_text: 'рыбацкая одежда' }]);
+    assert.equal(Object.hasOwn(input.world_knowledge, 'context_text'), false);
+    return true;
+  }));
 });

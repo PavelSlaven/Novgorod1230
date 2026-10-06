@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "d7c959a631d368352711ca3e8c7893eee518a03200537d62d660013d6828cf30",
-      "bytes": 33777,
+      "sha256": "09a68fd0831e321d0749a9045aeedf4a9bd5693d2e22b28f936518f81505c5c2",
+      "bytes": 34403,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -244,8 +244,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "7c7ff8bb68e588b23f71148955fa111534ec17fa979667a3363ef17f028c0f9b",
-      "bytes": 91283,
+      "sha256": "27da7a90b6adb4946155be99f6b3409533255ffe8611ab0f67c32567b16a2db6",
+      "bytes": 96256,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -310,6 +310,15 @@
       "priority_tier": "reference"
     },
     {
+      "document_id": "player-character-start-contract",
+      "canonical_path": "corpus/DOCUMENTS/player_character_start_contract.md",
+      "file_name": "player_character_start_contract.md",
+      "sha256": "2297b70b9a280daafe0e4160f315a54c6d6c3adfd31426d2ca7ce184b3dfb0b5",
+      "bytes": 3479,
+      "status": "active",
+      "priority_tier": "technical_contract"
+    },
+    {
       "document_id": "read-only-database-and-graph-architecture",
       "canonical_path": "corpus/DOCUMENTS/read_only_database_and_graph_architecture.md",
       "file_name": "read_only_database_and_graph_architecture.md",
@@ -343,8 +352,8 @@
       "document_id": "spatial-architecture-standard-g0-g6",
       "canonical_path": "corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
       "file_name": "spatial_architecture_standard_g0_g6.md",
-      "sha256": "ed9ae9dc4b5618fc889af96ec0ccebc0bbf6b1232ae2dcd8009aca6b096090aa",
-      "bytes": 411304,
+      "sha256": "2b2888af6e4ef183d9846a4a889fcf223247d20b92b34d314f3e60de7babdb81",
+      "bytes": 411209,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -416,8 +425,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "cb2f0464891f47a4bf6d0bb8c2dfe0d7f35bc67d28f8b27b4e27a8e99a91e0fd",
-      "bytes": 117703,
+      "sha256": "ae037f1aaa6d1223cdfea120e42afaff61dd572e7144999efa8d55d77de9431f",
+      "bytes": 117909,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -480,8 +489,8 @@
       "document_id": "world-knowledge-platform-implementation-contract",
       "canonical_path": "corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md",
       "file_name": "world_knowledge_platform_implementation_contract.md",
-      "sha256": "b8abd9e8cd8362aecbea2450db8da8eac5f183e39d8237c3f84060bd7bd3920a",
-      "bytes": 162395,
+      "sha256": "bfc16156204f76c65a17d22281ae2aa45a90eebe777b215527e790cf83d9ea6f",
+      "bytes": 162299,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

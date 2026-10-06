@@ -1,19 +1,19 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/deepseek.js';
+import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/openai-compatible.js';
 import { resolveSpatialSemanticDescriptor } from '@rus/turn';
 import { runS1SpatialSemanticEval } from '../../../packages/materialization/src/lower-dvina-trace-spatial-semantic-eval.js';
 import { admitSpatialSemanticRemainder, prepareSpatialSemanticRemainder } from
   '../../../packages/materialization/src/lower-dvina-trace-spatial-semantic.js';
 
 const enabled = process.env.RUS_S1_LIVE_EVAL === '1'
-  && Boolean(process.env.DEEPSEEK_API_KEY?.trim());
+  && Boolean(process.env.LLM_BASE_URL?.trim());
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m12-content/spatial-semantic-profile.json', import.meta.url);
 
 test('S1 live eval uses configured spatial semantic descriptor and admission',
-  { skip: enabled ? false : 'set RUS_S1_LIVE_EVAL=1 and DEEPSEEK_API_KEY' }, async () => {
+  { skip: enabled ? false : 'set RUS_S1_LIVE_EVAL=1 and LLM_BASE_URL' }, async () => {
     const profile = JSON.parse(await readFile(profileUrl, 'utf8'));
     const envelope = activeCampEnvelope(profile);
     const roleRunner = createProductionLlmRoleRunner({ env: process.env });

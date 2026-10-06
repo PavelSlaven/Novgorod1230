@@ -132,7 +132,9 @@ function worldProcessRequest({envelope,loaded,operation,scopeRef,admission}){
       fuel_bindings:structuredClone(process.fuel_bindings)},
     current_timestamp:actorStepTimestamp(envelope),
     trigger:'actor_affected',subject_state:{source_refs:[...operation.source_refs],
-      facts:['existing water portion'],quantities:[{ref:operation.source_refs[0],
+      facts:['цельная порция воды',`Действие персонажа: ${operation.description}`,
+        ...localFireInputFacts(admission.item)],
+      quantities:[{ref:operation.source_refs[0],
         value:admission.snapshot.quantity,unit:'item',
         mass_grams:admission.snapshot.mass_grams}]},
     environment_state:{scope_ref:scopeRef,facts:[]},
@@ -143,6 +145,14 @@ function worldProcessRequest({envelope,loaded,operation,scopeRef,admission}){
         applicability:'affected input changes active process without ending it'},
       {process_outcome:'complete',reason_code:'affect_completes_process',
         applicability:'affected input ends active process'}]};
+}
+function localFireInputFacts(item){
+  const metadata=item?.state?.ordinary_metadata??{};
+  return[metadata.name??item?.name,metadata.physical_description,
+    ...(metadata.semantic_facts??[]).flatMap((fact)=>
+      typeof fact?.text==='string'?[fact.text]
+        :typeof fact?.summary==='string'?[fact.summary]:[])].filter(
+    (fact)=>typeof fact==='string'&&fact.trim().length>0);
 }
 function profilePinFrom(profile,scopeRef,ignitionBasisRef){return{
   profile_ref:profile.profile_id,profile_version:profile.revision,

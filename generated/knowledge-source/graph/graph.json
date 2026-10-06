@@ -34,7 +34,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 226
+        "line_end": 229
       }
     },
     {
@@ -58,7 +58,7 @@
       "source_location": {
         "file": "npc_autonomous_decision_contract.md",
         "line_start": 1,
-        "line_end": 2041
+        "line_end": 2061
       }
     },
     {
@@ -86,6 +86,18 @@
       }
     },
     {
+      "id": "canonical-document:player-character-start-contract",
+      "type": "canonical_document",
+      "label": "player_character_start_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/player_character_start_contract.md",
+      "source_location": {
+        "file": "player_character_start_contract.md",
+        "line_start": 1,
+        "line_end": 15
+      }
+    },
+    {
       "id": "canonical-document:situational-prose-requirements",
       "type": "canonical_document",
       "label": "situational_prose_requirements.md",
@@ -106,7 +118,7 @@
       "source_location": {
         "file": "spatial_architecture_standard_g0_g6.md",
         "line_start": 1,
-        "line_end": 7609
+        "line_end": 7607
       }
     },
     {
@@ -178,7 +190,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1754
+        "line_end": 1756
       }
     },
     {
@@ -214,7 +226,7 @@
       "source_location": {
         "file": "world_knowledge_platform_implementation_contract.md",
         "line_start": 1,
-        "line_end": 4035
+        "line_end": 4029
       }
     }
   ],

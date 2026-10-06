@@ -2,15 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PortraitLabRoles, resolveLlmExecutionConfig } from '../src/index.js';
 
-test('portrait lab role uses deterministic DeepSeek JSON output settings', () => {
+test('portrait lab role uses deterministic Qwen JSON output settings', () => {
   const resolution = resolveLlmExecutionConfig({
     scope: 'portrait_lab',
     roleId: PortraitLabRoles.SPEC_NORMALIZER,
-    env: { DEEPSEEK_API_KEY: 'test-key' }
+    env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' }
   });
 
   assert.equal(resolution.enabled, true);
-  assert.equal(resolution.config.model, 'deepseek-v4-flash');
+  assert.equal(resolution.config.model, 'qwen3.8-27b-uncensored-w4a16-tp2');
   assert.deepEqual(resolution.config.responseFormat, { type: 'json_object' });
   assert.equal(resolution.config.temperature, 0);
   assert.equal(resolution.config.parseJson, true);
@@ -22,9 +22,9 @@ test('portrait lab model remains configurable through its role environment', () 
     scope: 'portrait_lab',
     roleId: PortraitLabRoles.SPEC_NORMALIZER,
     env: {
-      DEEPSEEK_API_KEY: 'test-key',
-      PORTRAIT_SPEC_NORMALIZER_MODEL: 'deepseek-v4-pro'
+      LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key',
+      PORTRAIT_SPEC_NORMALIZER_MODEL: 'qwen-custom-model'
     }
   });
-  assert.equal(resolution.config.model, 'deepseek-v4-pro');
+  assert.equal(resolution.config.model, 'qwen-custom-model');
 });

@@ -201,6 +201,5 @@ function presenceRequest(probe, source = null) {
     verdict: 'supported', coverage: [], facts: [], disputes: [], gaps: [],
     hard_constraints: [{ claim_ref: claimRef,
       runtime_text: `The ${probe.risk_class} referent must not be materialized as common mundane.`,
-      qualifiers: { directness: 'direct' }, evidence_refs: ['stage-b'] }],
-    context_text: `HARD ${claimRef}: protected referent` } };
+      qualifiers: { directness: 'direct' }, evidence_refs: ['stage-b'] }] } };
 }

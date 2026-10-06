@@ -20,7 +20,7 @@ import { bindOrdinaryPlanToCombinedInput } from
   './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
-  inputDigest, loadState, committer }) {
+  inputDigest, loadState, committer, onLabelGapsOmitted = null }) {
   const factual = target(writePlan, 'party_state');
   const visibleContext = target(writePlan, 'party_visible_context_package');
   if (factual?.consequence?.combat_kind !== 'exchange'
@@ -37,7 +37,8 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
   let next = nextCombatState({ state, factual, nextVersion, turnNumber,
     changeSetId, inputDigest });
   const visibleEnvelope = combatVisibleEnvelope({ partyId, factual,
-    visibleContext, nextVersion, turnNumber, changeSetId, idemId });
+    visibleContext, nextVersion, turnNumber, changeSetId, idemId,
+    onLabelGapsOmitted });
   next.last_turn.visible_package = { package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest,
     change_set_id: changeSetId };

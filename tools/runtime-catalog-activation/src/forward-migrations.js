@@ -114,16 +114,16 @@ export const ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP = createForward
 export const PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
   migrationId: 'party_runtime_catalog_pins_v17_bootstrap',
   schemaName: 'party_runtime',
-  sourceSchemaFingerprint: '6db02f06bea2a5ce9eee3633131c16a772525287135910e4043f6f66c7fcc6d6',
-  targetSchemaFingerprint: 'e6fe5db3a5455ee1e8380288c1c86d6c45ad4ec22d326ab6dc84eceb86b65551',
+  sourceSchemaFingerprint: '936cef1082163f1a5ee518c917fb074ed81f8478e1c941a57130ed7aea91550a',
+  targetSchemaFingerprint: 'e3b05b6bc3468444bd7d35d499f8383b2f309727bbacfaa6687f7aeec1d205da',
   sql: PARTY_SQL
 });
 
 export const ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
   migrationId: 'party_actor_base_attributes_pins_v17_bootstrap',
   schemaName: 'party_runtime',
-  sourceSchemaFingerprint: 'e6fe5db3a5455ee1e8380288c1c86d6c45ad4ec22d326ab6dc84eceb86b65551',
-  targetSchemaFingerprint: '9f42590bbe590e0e8ae93098ae81bc3370cac1a9805110da59318722bce3e7e8',
+  sourceSchemaFingerprint: 'e3b05b6bc3468444bd7d35d499f8383b2f309727bbacfaa6687f7aeec1d205da',
+  targetSchemaFingerprint: 'fec399a9c195eb3aed2667b9095e0b16a183d75df19bc1ca287638473911ead2',
   sql: ACTOR_BASE_ATTRIBUTES_PARTY_SQL
 });
 

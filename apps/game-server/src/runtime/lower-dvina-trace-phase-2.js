@@ -1,5 +1,7 @@
 import { buildTracePhase2Registry, resolveTracePhase2InheritedContracts } from './lower-dvina-trace-phase-2-runtime-context.js'; import { serverError } from '../errors.js';
 import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
+import { loadLowerDvinaTracePinnedItemLabels } from
+  '../internal/lower-dvina-trace-screen-presentation.js';
 import { isExactLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
 import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js';
 import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contracts.js';
@@ -124,6 +126,13 @@ export function createLowerDvinaTracePhase2Runtime({
             });
           } catch { /* Diagnostics must not affect the turn. */ }
         };
+        const recordVisiblePackageDiagnostic = (count) => {
+          try {
+            llmDiagnostics?.recordGameplayTrace?.({
+              event: 'visible_item_label_gap_omitted', omitted_count: count
+            });
+          } catch { /* Diagnostics must not affect the turn. */ }
+        };
         const authored = state.scenario_id != null
           && state.scenario_id !== TRACE_SCENARIO_ID;
         const scenarioDefinitionRevision = authored ? null
@@ -142,6 +151,8 @@ export function createLowerDvinaTracePhase2Runtime({
             postActionPerceptionProfile })
           : await runWithinTurnDeadline(turnBudget, () =>
             bundleLoader({ scenarioDefinitionRevision }));
+        const itemLabels = bundle.item_container_set == null ? {}
+          : await loadLowerDvinaTracePinnedItemLabels(bundle);
         const selectedPostActionPerceptionProfile =
           bundle.post_action_perception_profile ?? null;
         const postActionPerceptionAdapter = selectedPostActionPerceptionProfile?.schema
@@ -272,7 +283,8 @@ export function createLowerDvinaTracePhase2Runtime({
           repository, partyId, requestId, idempotencyKey, turnBudget,
           spatialExpansionRuntime, spatialLocalSceneRuntime,
           inputDigest, authoredTurnProfile, playerConversationModel,
-          npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
+          npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion,
+          onLabelGapsOmitted: recordVisiblePackageDiagnostic })
           : buildTracePhase2Registry({
           bundle,
           turnStepNeedsCheckGuard: assertNeedsCheckAllowed,
@@ -326,6 +338,7 @@ export function createLowerDvinaTracePhase2Runtime({
           playerSafeStateProjector,
           locationProfiles: bundle.location_topology_set.location_profiles,
           scenePresentation: bundle.scene_presentation ?? null,
+          itemLabels,
           turnStepBodyEventOwner: turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner, turnStepSemanticActivityOwner: turnStepSemanticActivityOwner ?? genericOwners?.semanticActivityOwner,
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,

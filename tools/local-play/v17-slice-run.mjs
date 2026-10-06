@@ -192,9 +192,12 @@ export function createHttpApi(baseUrl, httpFetch) {
       error: envelope?.ok === true ? null : (envelope?.error ?? { code: `HTTP_${response.status}`, message: 'unreadable response' }) };
   };
   const party = (id) => `/api/v1/parties/${encodeURIComponent(id)}`;
+  const developer = (partyId, requestId) =>
+    `/api/v1/developer/llm-turn-reports/${encodeURIComponent(partyId)}/${encodeURIComponent(requestId)}`;
   return {
     health: () => call('GET', '/api/v1/health'),
     newGame: (input) => call('POST', '/api/v1/new-games', input, HTTP_TURN_TIMEOUT_MS),
+    llmTurnReport: (partyId, requestId) => call('GET', developer(partyId, requestId)),
     ack: (id, input) => call('POST', `${party(id)}/opening-ack`, input),
     screen: (id) => call('GET', `${party(id)}/screen`),
     turn: (id, input) => call('POST', `${party(id)}/turns`, input, HTTP_TURN_TIMEOUT_MS),
@@ -278,7 +281,7 @@ export async function createDefaultDeps({ options, env = process.env, repoRoot }
   const { createGameHttpServer, listen } = await import('../../apps/game-server/src/http/server.js');
   const { createLlmSettingsFileStore } = await import('../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js');
   const settingsModule = await import('../../apps/game-server/src/runtime/llm-settings.js');
-  const { createProductionLlmRoleRunner } = await import('../../apps/game-server/src/infrastructure/provider/deepseek.js');
+  const { createProductionLlmRoleRunner } = await import('../../apps/game-server/src/infrastructure/provider/openai-compatible.js');
   const { createOrdinaryMaterializationStageBQualifier } = await import('../../apps/game-server/src/runtime/ordinary-materialization-stage-b-qualification.js');
   const { loadLowerDvinaTraceOrdinaryMaterializationProfile } = await import('../../apps/game-server/src/internal/lower-dvina-trace-ordinary-materialization-profile.js');
   return {
@@ -307,7 +310,7 @@ export async function createDefaultDeps({ options, env = process.env, repoRoot }
     createRoot: ({ bootstrapEnv, llmSettings, telemetry,
       onNpcSceneProjection }) => fixture.createPresenceProductionRoot({
       ...bootstrapEnv, llmSettings,
-      extraConfig: { telemetry, onNpcSceneProjection },
+      extraConfig: { telemetry, onNpcSceneProjection, developerMode: true },
       env: options.wkEncoder === 'giga'
         ? { RUS_WORLD_KNOWLEDGE_PYTHON: env.RUS_WORLD_KNOWLEDGE_PYTHON,
             ...(env.RUS_WORLD_KNOWLEDGE_MODEL_PATH ? { RUS_WORLD_KNOWLEDGE_MODEL_PATH: env.RUS_WORLD_KNOWLEDGE_MODEL_PATH } : {}),
@@ -316,7 +319,7 @@ export async function createDefaultDeps({ options, env = process.env, repoRoot }
       ...(options.wkEncoder === 'giga' ? { worldKnowledgeEncoderFactory: null } : {})
     }),
     async startServer(root) {
-      const server = createGameHttpServer({ root, maxBodyBytes: 1024 * 1024 });
+      const server = createGameHttpServer({ root, maxBodyBytes: 1024 * 1024, developerMode: true });
       const address = await listen(server, { host: '127.0.0.1', port: 0 });
       return { server, url: `http://127.0.0.1:${address.port}`,
         close: () => new Promise((done) => { server.close(done); server.closeAllConnections?.(); }) };
@@ -332,7 +335,8 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
   const started = now();
   const startedAt = new Date(started).toISOString();
   const report = { schema: 'v17_slice_run_v1', identity: null, preconditions: null, opening: null, legs: [], turns: [],
-    transport_errors: [], llm: { total: 0, failed: 0, by_role: {} }, readback: null, infra_error: null, cleanup_errors: [] };
+    transport_errors: [], presentation_recovery: { attempts: 0, recovered: 0, still_pending: 0 },
+    llm: { total: 0, failed: 0, by_role: {} }, readback: null, infra_error: null, cleanup_errors: [] };
   const git = gitIdentity(deps.repoRoot ?? process.cwd());
   let redact = createRedactor([]);
   let meter = null;
@@ -384,10 +388,12 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
       maxTurns: options.maxTurns, deadlineAt: now() + options.deadlineMin * 60_000, now, // the play window starts after bootstrap and qualification
       sceneProjectionDiagnostics: () => sceneProjectionDiagnostics,
       persist: (state) => { Object.assign(report, { legs: state.legs, turns: state.turns,
-        opening: state.opening, transport_errors: state.transport_errors }); persist().catch(() => {}); }
+        opening: state.opening, transport_errors: state.transport_errors,
+        presentation_recovery: state.presentation_recovery }); persist().catch(() => {}); }
     });
     Object.assign(report, { legs: result.legs, turns: result.turns, opening: result.opening,
-      transport_errors: result.transport_errors, readback: result.final_snapshot });
+      transport_errors: result.transport_errors, presentation_recovery: result.presentation_recovery,
+      readback: result.final_snapshot });
     code = exitCodeOf(result.legs);
   } catch (error) {
     report.infra_error = error.message;

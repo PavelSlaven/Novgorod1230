@@ -181,7 +181,10 @@ test('ordinary and authored combat actors produce identical provider payloads', 
   const payloads = [];
   const roleRunner = { run: async (call) => {
     const resolved = resolveLlmExecutionConfig({ scope: call.scope,
-      roleId: call.role_id, env: { DEEPSEEK_API_KEY: 'offline-parity-test' },
+      roleId: call.role_id, env: {
+        LLM_API_KEY: 'offline-parity-test',
+        LLM_BASE_URL: 'https://fixture.invalid'
+      },
       overrides: call.overrides });
     assert.equal(resolved.enabled, true);
     payloads.push({ role: call.role_id,

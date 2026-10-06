@@ -33,6 +33,8 @@ import {
   validateSpatialV3RuntimeBindings, SPATIAL_V3_TARGET_BINDINGS_MODULE
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../runtime/lower-dvina-trace-player-safe-visible-context.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
 import { loadSpatialV3TargetProductionRelease, loadTargetCatalogActivationApprovals } from './production-spatial-v3-release-v17.js';
 import { loadTargetRuntimeProfiles } from '../internal/target-runtime-profiles.js';
@@ -44,8 +46,10 @@ import { createSpatialV3LocalMovementEligibilityReader,
   '../infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
 import { createSpatialV3CurrentMovementCapability } from
   '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
-import { createSpatialV3CurrentVisibilityProvider } from
+import { approvedSpatialItemLabels, createSpatialV3CurrentVisibilityProvider } from
   '../infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { hasActiveTurnDeadline, withTurnDeadlineTransaction } from
+  '../infrastructure/postgres/query-with-turn-deadline.js';
 import { createSpatialV3ExpansionContextReader } from
   '../infrastructure/postgres/spatial-v3-expansion-context.js';
 import { createSpatialV3ExpansionRuntime } from
@@ -195,6 +199,8 @@ export async function createSpatialV3ProductionCompositionRoot({
         pool: pools.partyPool,
         verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
         pin: targetContext.runtime.itemPin,
+        itemLabels: approvedSpatialItemLabels(
+          targetContext.runtime.materialization_inputs.domain_catalog),
         worldBaseReader: targetContext.runtime.worldBaseReader,
         readCurrentEnvironment: factualContext.readCurrentEnvironment,
         readCurrentSourceState: (args) => readCurrentNaturalSourceState({
@@ -205,6 +211,35 @@ export async function createSpatialV3ProductionCompositionRoot({
         readLocalMovementAdmission: createLocalMovementDisclosureReader({
           readLocalMovementEligibility })
       });
+    const readCurrentVisibleContext = currentVisibility == null ? null
+      : async ({ partyId, actorId, positionId, turnBudget, clock = null } = {}) => {
+        const read = async (transaction) => {
+          const state = { party_id: partyId, actor_id: actorId,
+            journey_location: { scene_position_id: positionId } };
+          const sources = await currentVisibility.readCurrentSources({
+            transaction, partyId, actorId, positionId, state,
+            directionalExits: [], observedPositionId: positionId, clock
+          });
+          const directionalExits = await currentVisibility.readCurrentExitDisclosure({
+            transaction, partyId, actorId, observedPositionId: positionId, clock
+          });
+          return projectSpatialV3CurrentVisibleContext({ ...sources,
+            directionalExits, partyId, actorId, positionId });
+        };
+        if (hasActiveTurnDeadline(turnBudget)) return withTurnDeadlineTransaction(
+          pools.partyPool, turnBudget, read,
+          { beginMode: 'repeatable_read_read_only' });
+        const transaction = await pools.partyPool.connect();
+        try {
+          await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          const visibleContext = await read(transaction);
+          await transaction.query('COMMIT');
+          return visibleContext;
+        } catch (error) {
+          await transaction.query('ROLLBACK').catch(() => {});
+          throw error;
+        } finally { transaction.release(); }
+      };
     const siteTraversalCapability = targetContext == null ? null
       : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
     const projectDestination = targetContext == null ? null : async ({ transaction,
@@ -284,6 +319,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       worldKnowledge,
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
         spatialExpansionRuntime,
+        readCurrentVisibleContext,
         spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
           readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
           readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
@@ -509,7 +545,7 @@ export async function readDestinationDirectionalExits({ context, current, worldB
 
 /** Expansion changes topology while the actor stays at the committed source position. */
 export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transaction, request,
-  closure, envelopeInput, readCurrentSources } = {}) {
+  closure, envelopeInput, readCurrentSources, onLabelGapsOmitted = null } = {}) {
   const partyId = request.party_id; const actorId = request.actor_id;
   const positionId = request.source_position_id;
   const sources = await readCurrentSources({ transaction, partyId, actorId, positionId,
@@ -518,14 +554,16 @@ export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transac
     directionalExits: closure.directional_exits });
   const visible = projectSpatialV3CurrentVisibleContext({ ...sources,
     partyId, actorId, positionId });
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visible, { onLabelGapsOmitted });
   const visible_payload = { schema: 'temporal_visible_package.v1',
-    perceived_scene: visible.visible_scene,
-    perceived_changes: visible.visible_changes ?? [],
-    sensory_details: visible.sensory_details ?? [],
-    visible_npcs: visible.visible_npc ?? [],
-    visible_objects: visible.visible_objects ?? [],
-    known_context: visible.known_context ?? [],
-    uncertainties: visible.uncertainties ?? [], hypotheses: [],
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes ?? [],
+    sensory_details: playerContext.sensory_details ?? [],
+    visible_npcs: playerContext.visible_npc ?? [],
+    visible_objects: playerContext.visible_objects ?? [],
+    known_context: playerContext.known_context ?? [],
+    uncertainties: playerContext.uncertainties ?? [], hypotheses: [],
     player_safe_interruption: null, allowed_action_affordances: [] };
   return buildPlayerSafeVisiblePackageEnvelope({ ...envelopeInput,
     projection_policy_ref: SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF,

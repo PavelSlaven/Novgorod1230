@@ -1,10 +1,43 @@
 # Changelog
 
 ## Unreleased
+- data(combat): approved generic v17 execution profile landed; activation pending (#224)
+- docs(player-start): add D111 player character and start contract; LW-135 added (#109)
+- docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
+- fix(npc): replay committed conversation claims from the verified prepared request snapshot (#98)
+- fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
+- fix(runtime): filter typed item gaps from model facts, operations and visible envelopes; resolve approved labels in inspection; ignore ordinal exits in WK and require schema-only router recognition
+- fix(prompts/docs): align planner wording with reviewed Stage L text, correct addressed-request meaning, and record deferred group-3 P projection as LW-132
+- fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
+- docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
+- fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)
+- fix(prompts): перевести промпты планировщика хода и маршрутизатора на русский (prompt-rev-turn)
+- fix(turn): reject prepared follow-up refs outside projected allowlist; LW-131 added (#236)
+- fix(items): keep unnamed visible items as typed label gaps; LW-130 added (prompt-rev-turn)
+- fix(turn): current scene rebuilt from committed state each turn (departed items/NPCs dropped, speech never becomes the place title); movement narration from owner facts - site arrival from the destination package, route visible change, Spatial-signed local label (#98)
+- fix(local-play): v17 slice acceptance requires a visible people panel for meet, a committed readable NPC answer for talk, and prior talk at the current place for take/make; D49 minimum is additive (#98)
+- data(spatial): world-routes b2 candidate and generator with 24 cross pairs @2, Opus APPROVE_WITH_LIMITS and M1–M5 mechanical continuation; draft for b2 runtime reader (#98)
+- fix(turn): repeated NPC waits pause the fire-rest schedule; first ordinary search after seed-only preflight costs 15 minutes under the shared plan-binding predicate; NPC inspects an available committed item by ref (#98)
+- fix(turn-step): committed S1 resolutions stay visible at the formal destination after the move (visibility-only projection; no planner capability marker) (#98)
+- feat(opening): opening narrator gets a compact Russian projection without ids or service fields and Russian instructions (measured arm P, D80); every Temporal day/light phase translated, held items keep «при вас» and condition, unknown values fail closed (#98)
+- fix(npc): seasonal routine compare-and-set anchored on the schedule proof of the turn; destination visible NPCs captured from the admitted projection; LW-127 added (#98)
+- fix(slice): v17 slice driver seeds the walk chain from the position before the turn and follows multi-step exit chains (#98)
+- data(v17): 34 connection labels of the v17 start territories name the route line («Уйти по глинистой тропе») instead of «Проход N»; Opus approval, 4 rows withheld (#160, D49)
+- fix(slice): v17 slice driver counts walk progress only on a site change, recovers pending presentation like the web client and keeps pre-repair opening prose in the trace (#98)
+- fix(turn): world_process_step drops only exact duplicate facts, so a negated or conditional fact no longer hides the code-owned process state (#230)
+- fix(npc): preserve model speech claims through required conversation assembly so the grounding audit receives them (#230)
+- fix(npc): clarify that claims describe factual assertions, not NPC uncertainty or personal stance (#230)
+- docs(tech-debt): record rejected NPC conversation projection; LW-129 added (#230)
+- fix(wk): remove context_text, max_context_chars and omitWorldKnowledgeContextText from the World Knowledge wire (#98)
+- fix(test): remove temporary fixture directories after tests, including setup failures (#231)
+- fix(test): copy only the Phase 2 bundle closure and surface rollback errors (#235)
+- fix(test): route Russian opening writer and audit fixtures by payload shape (#98)
 
 - feat(combat): scope approved missing-body initialization to combat participants and the existing P16 writer; admit request_combat from current scene readback without gating on unrelated NPC bodies; keep generic v17 execution fail-closed pending cutover; LW-099 updated (#224)
-- docs(tech-debt): record D65 body-effect scoring limit and retreat-menu gap; LW-128 added (#224)
+- docs(tech-debt): record D65 body-effect scoring limit and retreat-menu gap; LW-137 added (#224)
 
+- fix(game-base): sort builder file scans and pin sort locale; two-environment byte determinism check (#201)
+- fix(turn): project world_process_step input to qualitative facts and opaque choices; keep runtime refs, versions and quantities server-side (#230)
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series
 - fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
@@ -294,7 +327,6 @@
 
 ## 0.20.0-migration.20 — 2026-07-12
 
-### Added
 
 - Autonomous `@rus/shadow-run` tool package.
 - Versioned `rus.shadow_corpus.v1` manifest with 25 parity/isolation/rollback cases.
@@ -312,7 +344,6 @@
 - Recommendation: `go_to_staged_cutover`.
 - Full regression suite: 291/291 passed.
 
-### Preserved
 
 - Legacy entrypoint remains default.
 - No live provider call or production DB write is made by the shadow tool.
@@ -325,7 +356,6 @@
 
 ## 0.19.0-migration.19 — 2026-07-12
 
-### Added
 
 - Canonical architecture, contract and pipeline documentation.
 - Complete generated MODULE_INDEX for 20 production packages.
@@ -333,25 +363,21 @@
 - Canonical document path registry, seed source/import registries and dated artifact manifests.
 - Six documentation/generated-data tests.
 
-### Changed
 
 - Historical migration documents moved from repository root to canonical docs paths without duplicate copies.
 - @rus/docs-tools extended with generate/check CLI.
 - Architecture and release hygiene gates now enforce documentation, generated, seed and artifact policies.
 - Release test count increased from 274 to 280.
 
-### Preserved
 
 - Game rules, LLM semantic ownership, DB schemas and runtime behavior.
 - Legacy production entrypoint remains default.
 
-### Next
 
 - Production-corpus shadow run and structural comparison.
 
 ## 0.15.0-migration.15 — 2026-07-12
 
-### Added
 
 - `@rus/narration` with versioned request/output/audit/route/result contracts.
 - Bounded generation, audit, repair and senior-audit flow.
@@ -364,14 +390,12 @@
 - `NARRATION_PRESENTATION_PHASE_REPORT.md`.
 - `NARRATION_PRESENTATION_CONTRACT_MAP.md`.
 
-### Changed
 
 - `@rus/turn` now requires `narrator.run` and returns a versioned TurnScreen.
 - Custom turn screen projectors are validated against the same public contract.
 - Architecture checker now enforces narration/presentation dependencies, cycles, ports and security markers.
 - Root release version updated to `0.15.0-migration.15`.
 
-### Preserved
 
 - Stage 22/23/26 behavior and compatibility exports.
 - Legacy application entrypoints remain default.
@@ -399,7 +423,6 @@
 
 ## 0.12.0-migration.12 — 2026-07-12
 
-### Added
 
 - Common modular new-game orchestrator for Stages 2–26.
 - Immutable stage plan, orchestration context, checkpoints, resume and bounded repair routing.
@@ -407,33 +430,28 @@
 - Public entry `@rus/new-game/orchestrator`.
 - Orchestrator integration tests, migration plan and phase report.
 
-### Changed
 
 - Stage 2 and Stage 3 definitions now execute through the common stage contract.
 - The new-game definition registry now exposes all Stages 2–26.
 - Root and `@rus/new-game` versions advanced to 0.12.0.
 
-### Preserved
 
 - Legacy production entrypoint and compatibility facades.
 - Stage-local validators, auditors, repair contracts and semantic ownership.
 - The rule that code does not invent world facts or infer absent semantic input.
 
-### Next
 
 - Production-corpus shadow run against the legacy route.
 - DB-backed integration, browser E2E and staged cutover.
 
 ## 0.11.0-migration.11 — 2026-07-12
 
-### Added
 
 - Modular Stages 9–12 with explicit definitions and compatibility entries.
 - Recovery-baseline fixtures and parity tests for the missing middle new-game segment.
 - Architecture gates for source and dist/release facades, file limits, dependency isolation and cycles.
 - `STAGES9_12_MIGRATION_PLAN.md` and `STAGES9_12_PHASE_REPORT.md`.
 
-### Changed
 
 - Legacy Stage 9–12 implementations replaced with one-line compatibility facades.
 - Stage 9 split into contract, selection validation, source gate and orchestration modules.
@@ -441,34 +459,28 @@
 - Stage 11 split into contract, validation, shared traversal and executor orchestration modules.
 - Stage 12 split into code precheck, input/output validation and failed-audit modules.
 
-### Preserved
 
 - All named exports and representative behavior from the available recovery baseline.
 - Candidate-bound selection, read-only audit semantics and immutable dossier boundary.
 - Existing Stages 2–8 and 13–26 behavior.
 
-### Next
 
-- Common modular new-game orchestrator for Stages 2–26.
 - Shadow run, DB-backed integration and browser E2E.
 
 ## 0.10.1-migration.10-recovery — 2026-07-12
 
-### Added
 
 - Modular Stages 2–8 with explicit stage definitions and compatibility entries.
 - Golden baseline fixtures from the last available `0.9.0` archive.
 - Stage 2–8 API parity, port-isolation, materialization-boundary and facade tests.
 - Recovery migration plan and phase report.
 
-### Changed
 
 - Legacy Stage 2–8 files replaced with one-line compatibility facades.
 - Stage 4–8 read-only retrievers are injected through explicit ports.
 - Legacy data bindings are isolated in `packages/new-game/src/legacy-adapter.js`.
 - Architecture checker now enforces Stage 2–8 boundaries.
 
-### Preserved
 
 - All named exports from the `0.9.0` Stage 2–8 baseline.
 - Candidate-bound semantics and existing result shapes.
@@ -480,7 +492,6 @@
 
 ## 0.9.0-migration.9 — 2026-07-11
 
-### Added
 
 - Modular Stages 13–16 with bounded public APIs and compatibility entries.
 - Neutral G5 scene template/draft validation boundary.
@@ -490,7 +501,6 @@
 - Parity, security, repair, contracts/runtime and handoff integration tests.
 - Stage 13/14/15/16 parity reports and G5 placement pipeline report.
 
-### Changed
 
 - Legacy Stage 13–16 files replaced with one-line compatibility facades.
 - Stage 14 independent audit no longer imports Stage 13 implementation.
@@ -499,14 +509,12 @@
 - Architecture checker covers Stages 13–16 and the neutral G5 boundary.
 - All workspaces moved to version `0.9.0`.
 
-### Preserved
 
 - Legacy export surfaces and result shapes.
 - G5, NPC and item placement semantics.
 - Input, validation, audit, repair, permission and handoff behavior.
 - Existing legacy failure baseline: 256/261.
 
-### Not changed
 
 - World-generation semantics.
 - Database schemas.
@@ -516,7 +524,6 @@
 
 ## 0.8.0-migration.8 — 2026-07-11
 
-### Added
 
 - Modular Stages 17, 18 and 19 with bounded public APIs and compatibility entries.
 - Neutral time-light consistency boundary.
@@ -526,7 +533,6 @@
 - Parity, security, repair, handoff and Stage 17 → Stage 20 integration tests.
 - Stage 17/18/19 parity reports and hidden-state pipeline report.
 
-### Changed
 
 - Legacy Stage 17–19 files replaced with one-line compatibility facades.
 - Legacy weather retriever delegates validation to canonical contracts.
@@ -536,23 +542,15 @@
 - Architecture checker covers Stages 17–19 and the neutral time-light boundary.
 - All workspaces moved to version `0.8.0`.
 
-### Preserved
 
-- Legacy export surfaces and result shapes.
 - Input, validation, audit, repair and commit behavior.
 - Concern codes, severity and ordering.
-- Existing legacy failure baseline: 256/261.
 
-### Not changed
 
-- World-generation semantics.
-- Database schemas.
-- UI behavior.
 - Stages 2–16.
 
 ## 0.7.0-migration.7 — 2026-07-11
 
-### Added
 
 - `@rus/new-game/stages/stage-20` и compatibility API для 17 прежних экспортов.
 - `@rus/new-game/stages/stage-21` и compatibility API для 21 прежнего экспорта.
@@ -564,7 +562,6 @@
 - Parity, security, repair, integration, contracts/runtime и architecture tests.
 - `STAGE20_PARITY_REPORT.md`, `STAGE21_PARITY_REPORT.md`, `VISIBLE_CONTEXT_PIPELINE_REPORT.md`.
 
-### Changed
 
 - `stage20-visible-context.js` заменён compatibility-фасадом.
 - `stage21-visible-context-audit.js` заменён compatibility-фасадом.
@@ -575,7 +572,6 @@
 - Все workspace packages и apps переведены на версию `0.7.0`.
 - Architecture checker расширен правилами Stages 20–21 и neutral visible-context boundary.
 
-### Preserved
 
 - Stage 20 and Stage 21 legacy export surfaces.
 - Visible-context and audit policies.
@@ -586,17 +582,13 @@
 - Audit routing, histories, diagnostics and permissions.
 - Legacy pipeline compatibility.
 
-### Not changed
 
 - Player-visible prose semantics.
 - Stages 2–19 world-generation semantics.
 - Stage 22–26 behavior.
-- Database schemas.
-- UI behavior.
 
 ## 0.6.0-migration.6 — 2026-07-11
 
-### Added
 
 - `@rus/new-game/stages/stage-22` с ограниченным публичным API.
 - `@rus/new-game/stages/stage-22/compat` для прежних 22 экспортов.
@@ -611,7 +603,6 @@
 - `STAGE23_PARITY_REPORT.md`.
 - `NARRATOR_PIPELINE_REPORT.md`.
 
-### Changed
 
 - `stage22-narrator-prose.js` заменён compatibility-фасадом.
 - `stage23-narrator-prose-audit.js` заменён compatibility-фасадом.
@@ -621,7 +612,6 @@
 - Все workspace packages и apps переведены на версию `0.6.0`.
 - Architecture checker расширен правилами Stages 22–23.
 
-### Preserved
 
 - 22 legacy-экспорта Stage 22.
 - 23 legacy-экспорта Stage 23.
@@ -629,17 +619,232 @@
 - Visible-context и prose digest binding.
 - Action/reference validation.
 - Concern codes, severity и порядок concerns.
-- Format/semantic/senior repair behavior.
 - Audit routing и upstream repair contracts.
 - History и diagnostics shape.
 - Stage 23 commit handoff.
 
-### Not changed
 
-- Player-visible prose semantics.
 - Stage 20/21 visible-context generation and audit.
 - Stage 24 write-plan behavior.
 - Stage 25 transaction behavior.
 - Stage 26 first-screen behavior.
 - LLM provider transport.
 - UI и database schemas.
+- test(spatial): #199 — add v17 PG regression for first-action request_movement and commit/replay in two dense-fog starts; D41 prompt variants not integrated
+- feat(local-play): v17 slice walk driver treats slot or site as progress, chains multi-step exits, site walk budget 8 (slice-reject-trace)
+- feat(local-play): v17 slice report persists opening-attempt trace, presentation_recovery and failed delivery turns (slice-reject-trace)
+
+
+- feat(npc): select pinned D-1 routines on first entry; preserve identity through typed offstage/location gaps without invented placement; LW-125 added (first-entry context gap), LW-126 added (month-boundary applicability remains deferred after calendar-leap fix), LW-127 added (multi-movement placement CAS latent) (#227)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- docs(plans): owner's scenario spec «След на Нижней Двине» (frame + instance generator at party start) and an example playthrough, verbatim, as design input for the v17 quest start (D101, D105) (#238)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

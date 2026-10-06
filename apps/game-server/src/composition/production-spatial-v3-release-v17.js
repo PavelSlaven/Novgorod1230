@@ -16,7 +16,7 @@ export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   ...sharedReleaseContract,
   // v17 bootstrap applies catalog + actor party owner DDL before first production root.
   party_runtime_catalog_target_fingerprint:
-    '9f42590bbe590e0e8ae93098ae81bc3370cac1a9805110da59318722bce3e7e8',
+    'fec399a9c195eb3aed2667b9095e0b16a183d75df19bc1ca287638473911ead2',
   release_id: 'spatial-v3-production-v17',
   activation_scope: 'new_production_parties_only',
   world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001',

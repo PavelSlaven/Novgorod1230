@@ -25,6 +25,7 @@ export async function startLowerDvinaTrace({
   requestId,
   partyId,
   creationIdentity,
+  diagnostics = null,
   release,
   repository,
   traceStartAdapter,
@@ -235,6 +236,9 @@ export async function startLowerDvinaTrace({
       : 'rus.live_world_runtime.authored_start_session_identity.v1',
     scenario_id: binding.scenario_id,
     creation_identity: structuredClone(creationIdentity),
+    ...(diagnostics == null ? {} : {
+      diagnostics: structuredClone(diagnostics)
+    }),
     request_id: requestId,
     party_id: partyId,
     publication_manifest_digest: publication.manifest_digest,

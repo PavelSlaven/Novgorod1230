@@ -22,6 +22,9 @@ export function addPhase7RoutineBoundary(state, boundaryMinute) {
     knowledge_state_ref: { entity_kind: 'knowledge_fact', entity_id: 'knowledge' },
     relationship_state_ref: { entity_kind: 'condition_set', entity_id: 'relations' } };
   state.npc_schedule_runtime = [schedule];
+  state.temporal_source_proof = {
+    npc_schedule_runtime: structuredClone(state.npc_schedule_runtime)
+  };
   state.temporal_boundary_candidates.push(npcRoutineCandidate(schedule));
   return npc;
 }

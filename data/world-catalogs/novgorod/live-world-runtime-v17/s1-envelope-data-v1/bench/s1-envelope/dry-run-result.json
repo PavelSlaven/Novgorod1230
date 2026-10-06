@@ -1,0 +1,71 @@
+{
+  "schema": "fleet.b4_s1_data.bench_inventory.v1",
+  "execution_status": "not_run",
+  "model_calls": 0,
+  "gate_executions": 0,
+  "prose_evaluation": false,
+  "case_count": 12,
+  "cases": [
+    {
+      "id": "open-space-known",
+      "expected_gate": "gap_required_no_applicable_s1",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "interior-known",
+      "expected_gate": "deny_unbacked_structure",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "passage-exact-position",
+      "expected_gate": "canonical_position_reference_only",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "property-order-variant",
+      "expected_gate": "same_gap_no_semantic_expansion",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "structure-rephrase",
+      "expected_gate": "gap_required_no_applicable_s1",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "unspecified-structure",
+      "expected_gate": "no_s1_topology_claim",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "missing-g6-position",
+      "expected_gate": "deny_structural_entry",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "missing-visibility",
+      "expected_gate": "deny_structural_entry",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "one-way-movement",
+      "expected_gate": "deny_structural_entry",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "invented-material-ref",
+      "expected_gate": "reject_unresolved_ref",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "foreign-fishing-camp",
+      "expected_gate": "reject_foreign_scope",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "hidden-slot-id",
+      "expected_gate": "withhold_internal_ref",
+      "execution_status": "not_run"
+    }
+  ],
+  "interpretation": "This records a frozen future evaluation inventory only. No actual gate outcome, threshold result, or model behavior was measured."
+}

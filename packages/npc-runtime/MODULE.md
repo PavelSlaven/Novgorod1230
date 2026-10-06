@@ -27,13 +27,41 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
   Calendar owner определяет начальную фазу; состояние хранит конкретное занятие NPC.
   Завершение фазы меняет activity/availability и назначает конечную следующую границу.
   Routine phase может передать declarative `movement_handoff`; game-server
-  исполняет его только через существующий route owner и меняет committed position
-  лишь после terminal completion. Closed/invalid route оставляет NPC в исходной
-  позиции без teleport.
+  исполняет его текущим NPC routine movement path по handoff и duration. Этот
+  путь не является sealed traversal proof. Закрытый/невалидный маршрут оставляет
+  NPC в исходной позиции без teleport. Routine state retains the active
+  `movement_execution` interval across a seasonal profile switch; temporal
+  consumer keeps its exact original end boundary, then existing NPC movement
+  completion path runs before the new seasonal profile applies.
   Прерванная routine не возобновляется автоматически. `decision_required` —
   marker для semantic handoff. Current routine adapter активирует только approved
   deterministic phases; общий consumer новых решений вне Phase 7 ещё не подключён.
   Calendar dependency: `@rus/time-events-history/calendar`, без I/O.
+- `selectNpcRoutineSchedule({ schedule_context, scheduled_at,
+  calendar_day_type, assigned_work_variant })` — pure D-1 selector over the
+  frozen approved rule rows, exact home scope and subject. An explicitly
+  assigned NPC/place work variant wins; otherwise it uses an explicit
+  calendar day type, then `normal`. It projects season/month through the
+  supplied calendar profile and returns exactly one matching rule plus its
+  selected ref; zero or multiple matches return `npc_schedule_gap`, without
+  fallback or RNG. The selected type is stored in the returned schedule
+  context; a prior stored type is not itself an assignment. Routine phases may
+  carry `presence_state` (`on_site` or `away`) and
+  `location_ref`; older profiles may omit both. A routine state may persist a
+  cloned/frozen `schedule_context` separately from NPC identity.
+- `resolveNpcRoutinePresence({ intent, schedule_context, scheduled_at,
+  facts, allow_home_baseline, deferred_placement })` — pure
+  presence/location policy for first arrival and temporal routine transitions.
+  `intent` is the selected phase, not evidence of arrival. `facts` carries the
+  current position, matching completed movement, active execution, exact
+  approved location bindings, first-entry source binding and interruption
+  state. The function returns frozen `presence_state`, factual
+  `location_ref`, and optional `gap_reason`; it never chooses a spatial node
+  or route. Active movement destination does not count as arrival. Missing,
+  mismatched or ambiguous location facts return `location_gap`, preserving a
+  known physical placement. An explicit seasonal away phase with an existing
+  placement returns `location_gap`; with no first-entry placement it returns
+  `offstage_away` and remains unplaced.
 - `createNpcScheduleDecisionTerminalEffect(...)` /
   `resolveNpcScheduleDecisionTerminal(...)` — строят общий `npc_schedule`
   candidate и преобразуют применимый terminal schedule state в factual

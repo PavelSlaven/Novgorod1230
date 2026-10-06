@@ -33,9 +33,9 @@ test('gameplay capture is opt-in, snapshots private data, and cannot alter turn 
 
 test('buildLlmTurnReport makes deterministic waterfall and aggregates', () => {
   const report = buildLlmTurnReport({ party_id: 'party-1', request_id: 'turn-1', calls: [
-    { role: 'intent_router', provider: 'deepseek', model: 'm', durationMs: 10, status: 'ok', configHash: 'a', outputContractMode: 'json_object', tokenUsage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 } },
+    { role: 'intent_router', provider: 'openai_compatible', model: 'm', durationMs: 10, status: 'ok', configHash: 'a', outputContractMode: 'json_object', tokenUsage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 } },
     { role: 'turn_step_planner_repair', provider: 'openai_compatible', model: 'm2', durationMs: 30, status: 'parse_error', errorCategory: 'json_parse_failed', configHash: 'b', tokenUsage: { input_tokens: 5, output_tokens: 7, totalTokens: 13 } },
-    { role: 'narrator', provider: 'deepseek', model: 'm', durationMs: 20, status: 'ok', configHash: 'a' }
+    { role: 'narrator', provider: 'openai_compatible', model: 'm', durationMs: 20, status: 'ok', configHash: 'a' }
   ] });
   assert.deepEqual(report.waterfall.map(({ sequence, role, repair }) => [sequence, role, repair]), [[1, 'intent_router', false], [2, 'turn_step_planner_repair', true], [3, 'narrator', false]]);
   assert.deepEqual(report.waterfall[0].usage, { input_tokens: 3, output_tokens: 2, total_tokens: 5 });
@@ -119,11 +119,11 @@ test('a valid sixty-second turn reports the safety deadline without an incident'
 test('diagnostics keeps safe budget and provider failure incidents', async () => {
   const diagnostics = createLlmDiagnostics();
   await assert.rejects(diagnostics.runTurn({ party_id: 'party-safe', request_id: 'turn-safe' }, async () => {
-    diagnostics.telemetry.onCall({ roleId: 'intent_router', provider: 'deepseek', model: 'm',
+    diagnostics.telemetry.onCall({ roleId: 'intent_router', provider: 'openai_compatible', model: 'm',
       configHash: 'hash', status: 'transport_error', errorCategory: 'timeout', durationMs: 1 });
     const error = new Error('secret prompt');
     Object.assign(error, { code: 'LLM_TURN_BUDGET_EXHAUSTED', role_id: 'turn_step_planner',
-      provider: 'deepseek', model: 'm', config_hash: 'hash', budget_exhausted: true,
+      provider: 'openai_compatible', model: 'm', config_hash: 'hash', budget_exhausted: true,
       remaining_llm_budget_ms: 50, remaining_turn_deadline_ms: 5050 });
     throw error;
   }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
@@ -396,7 +396,7 @@ test('private party log omits provider reasoning and retains useful diagnostics'
   try {
     const diagnostics = createLlmDiagnostics();
     const runner = createLlmRoleRunnerAdapter({
-      env: { DEEPSEEK_API_KEY: 'test-key' },
+      env: { LLM_API_KEY: 'test-key', LLM_BASE_URL: 'http://example.test/v1' },
       telemetry: diagnostics.telemetry,
       turnBudget: diagnostics.turnBudget
     });
@@ -458,4 +458,50 @@ test('developer report route is unavailable outside developer mode', async (t) =
   const payload = await response.json();
   assert.equal(payload.data.aggregate.llm_total_ms, 0);
   assert.equal(JSON.stringify(payload).includes('Authorization'), false);
+});
+
+test('accepted opening attempt is stored on developer LLM turn report', async () => {
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const snapshot = {
+    writer_prose: 'Финал.',
+    stage23: { pass: true, concerns: [], evidence: [], codes: [] },
+    repair: { observed: true, attempted: true }
+  };
+  await diagnostics.runTurn({ party_id: 'party:open', request_id: 'slice-r-start' }, async () => {
+    diagnostics.recordOpeningAttempt(snapshot);
+    return { ok: true };
+  });
+  const report = diagnostics.report({ party_id: 'party:open', request_id: 'slice-r-start' });
+  assert.equal(report.opening_attempt.writer_prose, 'Финал.');
+  assert.equal(report.opening_attempt.stage23.pass, true);
+  assert.equal(report.failure, null);
+});
+
+test('authored opening rejection survives runTurn report sanitization', async () => {
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const prose = 'Вы у сруба.';
+  await assert.rejects(diagnostics.runTurn({ party_id: 'party:open', request_id: 'slice-r-start' },
+    async () => {
+      throw Object.assign(new Error('rejected'), {
+        code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+        status: 409,
+        details: {
+          codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'],
+          opening_rejection: {
+            writer_prose: prose,
+            stage23: {
+              pass: false,
+              concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
+                message: 'gap' }],
+              evidence: ['gap'],
+              codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']
+            },
+            repair: { observed: true, attempted: true, outcome: 'still_rejected' }
+          }
+        }
+      });
+    }), { code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
+  const report = diagnostics.report({ party_id: 'party:open', request_id: 'slice-r-start' });
+  assert.equal(report.failure.opening_rejection.writer_prose, prose);
+  assert.equal(report.failure.opening_rejection.repair.outcome, 'still_rejected');
 });

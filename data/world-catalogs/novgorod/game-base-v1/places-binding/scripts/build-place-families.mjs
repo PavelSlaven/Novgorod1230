@@ -138,7 +138,7 @@ export function build() {
     e.n++; e.pts.set(r.place_template_id, (e.pts.get(r.place_template_id) ?? 0) + 1); e.status.set(r.status, (e.status.get(r.status) ?? 0) + 1);
     g4t.set(r.g4_location_type, e);
   }
-  const g4cross = [...g4t.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([t, e]) => {
+  const g4cross = [...g4t.entries()].sort(([a], [b]) => a.localeCompare(b, 'en')).map(([t, e]) => {
     const m = cw.v6_g4_location_types.map[t];
     return {
       g4_location_type: t, title_ru_example: e.title, scale_role: e.scale_role, v6_row_count: e.n,
@@ -164,7 +164,7 @@ export function build() {
   const arch = new Map();
   for (const l of links) { const e = arch.get(l.location_archetype) ?? { name: l.location_name_ru, links: 0, spawn: [] }; e.links++; arch.set(l.location_archetype, e); }
   for (const s of spawn) for (const a of JSON.parse(s.location_archetypes)) { const e = arch.get(a) ?? { name: '', links: 0, spawn: [] }; e.spawn.push(`${s.profile_id}:${s.max_concrete_items}`); arch.set(a, e); }
-  const masterCross = [...arch.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([k, e]) => {
+  const masterCross = [...arch.entries()].sort(([a], [b]) => a.localeCompare(b, 'en')).map(([k, e]) => {
     const m = cw.master_location_archetypes.map[k];
     return {
       location_archetype: k, name_ru: e.name, item_location_link_count: e.links, spawn_profiles_max_items: e.spawn,

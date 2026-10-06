@@ -36,7 +36,7 @@ import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../../infrastructure/postgres/ordinary-materialization-enablement.js';
 import { createProductionLlmRoleRunner } from
-  '../../infrastructure/provider/deepseek.js';
+  '../../infrastructure/provider/openai-compatible.js';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
@@ -90,6 +90,7 @@ export function createTraceTurnRuntime({
   readLocalEdgeDisclosure = null,
   readCurrentExitDisclosure = null,
   readCurrentConnectionDisclosure = null,
+  readCurrentVisibleContext = null,
   loadInitialNaturalScenePerceptionInput = null,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts,
@@ -227,6 +228,7 @@ export function createTraceTurnRuntime({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
       readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,
+      readCurrentVisibleContext,
       projectEnvironmentAtClock: targetStartRuntime == null ? null
         : createTargetCurrentFactualContext({ partyPool, committer,
           runtime: targetStartRuntime, authoredRuntimeBindingResolver }).projectEnvironmentAtClock
@@ -241,10 +243,11 @@ export function createTraceTurnRuntime({
     loadTurnRuntimeCatalogContext: partyCatalogCoordinator == null ? null
       : ({ partyId }) => partyCatalogCoordinator.loadPartyContext({ partyId }),
     createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
-      assertNeedsCheckAllowed, recordNeedsCheckFilter }) =>
+      assertNeedsCheckAllowed, recordNeedsCheckFilter, itemLabels }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel,
+        itemLabels,
         assertNeedsCheckAllowed,
         recordNeedsCheckFilter,
         requestSubject: 'player',

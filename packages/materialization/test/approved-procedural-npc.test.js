@@ -47,6 +47,26 @@ test('draft/caution owners and missing required equipment fail closed', () => {
   { code: 'PROCEDURAL_NPC_PUBLIC_LABEL_DATA_GAP' });
 });
 
+test('null placement fields require an explicit offstage or location-gap marker', () => {
+  const materialize = (patch) => materializeApprovedProceduralNpc({ party_id: 'party',
+    run_id: 'run', binding: { ...binding, ...patch }, approved_bundle: bundle,
+    environment, random: createRandomSource({ seed: 42 }) });
+  const away = materialize({ anchor_id: null, zone_ref: null,
+    initial_presence_state: 'offstage_away' });
+  assert.equal(away.npc.anchor_id, null);
+  assert.equal(away.npc.zone_ref, null);
+  const gap = materialize({ anchor_id: null, zone_ref: null,
+    initial_presence_state: 'location_gap' });
+  assert.equal(gap.npc.anchor_id, null);
+  assert.equal(gap.npc.zone_ref, null);
+  assert.throws(() => materialize({ anchor_id: null, zone_ref: null }),
+    { code: 'PROCEDURAL_NPC_INPUT_INVALID' });
+  assert.throws(() => materialize({ anchor_id: null, zone_ref: null,
+    initial_presence_state: 'on_site' }), { code: 'PROCEDURAL_NPC_INPUT_INVALID' });
+  assert.throws(() => materialize({ anchor_id: 'position', zone_ref: 'focus',
+    initial_presence_state: 'location_gap' }), { code: 'PROCEDURAL_NPC_INPUT_INVALID' });
+});
+
 test('regional context requires exact approved scope and never infers language or appearance', () => {
   const g4 = { world_revision_id: 'world', id: 'g4', version: 1 };
   const template = { id: 'template', version: 1 };

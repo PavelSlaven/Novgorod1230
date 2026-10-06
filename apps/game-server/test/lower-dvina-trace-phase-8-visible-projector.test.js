@@ -64,6 +64,38 @@ test('visible item profile keeps approved item vocabulary and rejects extra publ
   { code: 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' });
 });
 
+test('player-safe visible projection preserves the current scene perception', () => {
+  const projected = projectVisibleContext({ version: 1,
+    schema: 'visible_context_package', visible_scene: 'Окрестности.',
+    visible_changes: [], sensory_details: ['Вода у берега.'], visible_npc: [],
+    visible_objects: [], known_context: [], uncertainties: [] }, { strict: true });
+  assert.equal(projected.visible_scene, 'Окрестности.');
+  assert.deepEqual(projected.sensory_details, ['Вода у берега.']);
+});
+
+test('player-safe projection preserves an item label gap without inventing a label', () => {
+  const item = { entity_ref: { entity_kind: 'item', entity_id: 'item-1' },
+    label_gap: { code: 'player_safe_item_label_required' },
+    recognition: 'known', visible_status: 'serviceable' };
+  const projected = projectVisibleContext({ schema: 'visible_context_package',
+    version: 1, visible_scene: 'У пристани.', visible_changes: [],
+    sensory_details: [], visible_npc: [], visible_objects: [item],
+    known_context: [], uncertainties: ['Имя одной из видимых вещей не установлено.']
+  }, { strict: true });
+  assert.deepEqual(projected.visible_objects, [item]);
+  assert.deepEqual(projected.uncertainties,
+    ['Имя одной из видимых вещей не установлено.']);
+  assert.throws(() => projectVisibleContext({ visible_objects: [{
+    ...item, label_gap: { code: 'unknown_gap' }
+  }] }, { strict: true }),
+  { code: 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' });
+  assert.throws(() => projectVisibleContext({ visible_objects: [{
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+    label_gap: { code: 'player_safe_item_label_required' }
+  }] }, { strict: true }),
+  { code: 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' });
+});
+
 test('Phase 8 projects NPCs through the player-safe entity contract',
   async () => {
     const projector = createTracePhase8VisibleProjector({

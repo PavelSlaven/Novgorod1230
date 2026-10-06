@@ -1,6 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { createNarrationService } from '@rus/narration';
-import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { assembleNarrationAuditOutput, narrationAuditInstruction } from
   './lower-dvina-trace-narration-audit.js';
@@ -130,7 +129,10 @@ export function narrationWire(request) {
     current_light_phase, ...support } = visible_context;
   // Passages are route-panel choices, not scene objects: their labels must not reach the prose.
   if (Array.isArray(support.visible_objects)) {
-    support.visible_objects = support.visible_objects.filter((row) => !isMovementVisibleObject(row));
+    support.visible_objects = support.visible_objects.filter((row) =>
+      !isMovementVisibleObject(row)
+        && !(row?.entity_ref?.entity_kind === 'item'
+          && row.label_gap?.code === 'player_safe_item_label_required'));
   }
   const { outcome: contextOutcome, ...otherContext } = context ?? {};
   const outcome = contextOutcome ?? confirmedOutcome;
@@ -173,7 +175,7 @@ async function runNarrationRole(roleRunner, roleId, instruction, request,
     ? [narrationAuditInstruction(request),
       ...worldKnowledgeFactualClosure(grounded)].join(' ')
     : [instruction, ...worldKnowledgeFactualClosure(grounded)].join(' ');
-  const modelRequest = omitWorldKnowledgeContextText(grounded);
+  const modelRequest = grounded;
   const response = await roleRunner.run({ scope: 'turn_runtime', role_id: roleId,
     request_identity: request.request_id ?? request.request?.request_id,
     messages: [{ role: 'system', content: systemInstruction },

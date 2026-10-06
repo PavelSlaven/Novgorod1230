@@ -3,16 +3,16 @@ export const PLAYER_CONVERSATION_PLAN_SHAPE = JSON.stringify({
   request_id: '<copy request_id>', conversation_id: '<copy conversation_id>',
   state_version: '<copy state_version>',
   speaker_ref: { entity_kind: '<copy entity_kind>', entity_id: '<copy entity_id>' },
-  input_mode: '<verbatim or intent_paraphrase>', contribution_kind: 'speech',
-  primary_addressee_ref: { entity_kind: '<copy entity_kind>', entity_id: '<copy entity_id>' },
-  intended_addressee_refs: [{ entity_kind: '<copy entity_kind>', entity_id: '<copy entity_id>' }],
+  input_mode: '<verbatim или intent_paraphrase>', contribution_kind: 'speech',
+  primary_addressee_ref: { entity_kind: '<скопируй entity_kind>', entity_id: '<скопируй entity_id>' },
+  intended_addressee_refs: [{ entity_kind: '<скопируй entity_kind>', entity_id: '<скопируй entity_id>' }],
   affected_actor_refs: [],
-  speech: { utterance_text: '<player speech>', dominant_act: '<one allowed act>',
+  speech: { utterance_text: '<реплика игрока>', dominant_act: '<одно допустимое значение dominant_act>',
     interaction_tags: [], topic_refs: [], claims: [],
     response_expectation: { kind: 'none', target_refs: [] } },
-  interpretation: { intent: '<intent>', grounded_contribution: '<grounded contribution>',
+  interpretation: { intent: '<смысл намерения>', grounded_contribution: '<обоснованный смысловой вклад>',
     adaptation: 'literal' }, resolution: 'automatic',
-  activity: { duration_class: '<copy allowed duration class>', effort: 'none' },
+  activity: { duration_class: '<скопируй допустимый класс длительности>', effort: 'none' },
   supporting_operations: [], check: null, handoff: null
 });
 export const NPC_CONVERSATION_PLAN_SHAPE = JSON.stringify({

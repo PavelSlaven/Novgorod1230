@@ -611,8 +611,8 @@ Exact query остаётся вопросом, не
 доказательством собственности или исполнения. Prepared semantic chain допускает
 уже разрешённого A1 owner при отсутствии selected authored command; проверки
 source scope, preflight, revalidation, conservation и atomic commit сохраняются.
-Private O1 wire опускает только дублирующий `world_knowledge.context_text`, если
-передан полный structured slice; claim binding и telemetry используют полный request.
+Private O1 wire передаёт структурированный `world_knowledge` slice; claim binding
+и telemetry используют полный request.
 При законной player-response boundary скрытого продолжения нет; общий visible
 projector сохраняет уже полученные domain facts и отдельно показывает exact
 неисполненный остаток как попытку с неустановленным результатом, без выдуманных
@@ -1397,11 +1397,13 @@ failure. Prompt не является владельцем закрытых card
 - возвращается техническая ошибка обработки хода.
 
 Все production primary/audit/repair calls используют единый provider owner с
-`maxTokens = 20_000` и transport timeout 120 секунд. При явно выбранном
-local/custom OpenAI-compatible provider один `runtimeProviderOverride`
-применяется ко всем ролям. Transport не делает fallback на DeepSeek или другую
-model/provider; connection, auth, model, timeout, malformed response и invalid
-JSON завершают ход typed technical failure до commit.
+`maxTokens = 20_000` и transport timeout 120 секунд. Default gameplay model —
+exact `qwen3.8-27b-uncensored-w4a16-tp2`; все роли используют один явно
+настроенный OpenAI-compatible endpoint. Явно выбранная локальная конфигурация
+передаётся всем ролям через `runtimeProviderOverride`. Без настроенного endpoint
+вызов fail-closed и не обращается к внешнему API. Transport не делает fallback
+на другую model/provider; connection, auth, model, timeout, malformed response
+и invalid JSON завершают ход typed technical failure до commit.
 По умолчанию локальный игровой запрос передаёт
 `chat_template_kwargs.enable_thinking=false`. Role caller может явно выбрать
 `off`, `minimal`, `low`, `medium`, `high` или `xhigh` в пределах возможностей

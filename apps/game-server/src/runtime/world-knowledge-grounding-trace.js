@@ -12,8 +12,7 @@ export function modelSlice(slice, {
     sufficiency: groundingSufficiencyOf(slice, {
       fromDefaultQuery, minHintRelevance, sufficientEnabled }),
     hard_constraints: slice.hard_constraints, facts: slice.facts,
-    disputes: slice.disputes, gaps: slice.gaps,
-    context_text: slice.context_text });
+    disputes: slice.disputes, gaps: slice.gaps });
 }
 
 // Development traces preserve the exact WK boundary, not the full actor-safe
@@ -127,8 +126,7 @@ function safeNeed(request, semanticInput) {
   return Object.freeze({ source: 'redacted', value: null });
 }
 function traceWorldKnowledgeSlice(slice) {
-  const { context_text, ...structured } = modelSlice(slice);
-  return Object.freeze(structured);
+  return modelSlice(slice);
 }
 function plannerIdentity(calls = []) {
   const call = calls.at(-1);

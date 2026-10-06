@@ -13,7 +13,8 @@ const BUNDLE = { roles: [{ role_id: 'nov_role_servant' }, { role_id: 'nov_role_f
 const group = (group_id, subjects, min_count = 1, max_count = min_count, count_weights = [1]) => ({ group_id, min_count,
   max_count, count_weights, weighted_subjects: subjects.map(([subject_kind, subject_ref, profile_ref = null]) =>
     ({ subject_kind, subject_ref, profile_ref, weight: 1 })) });
-const composition = (...groups) => [{ composition_ref: { id: 'pf_test', version: 1, world_revision_id: 'world' }, population_groups: groups }];
+const composition = (...groups) => [{ place_family_id: 'pf_test',
+  composition_ref: { id: 'pf_test', version: 1, world_revision_id: 'world' }, population_groups: groups }];
 // an outcome the R-2a engine stored in the presence aggregate: the rule was rolled there, not here
 const outcome = (subject_ref, count, subject_kind = 'occupation') => ({ rule_id: `pr_${subject_ref}`, rule_version: 1,
   scope_ref: 'pf_test', subject_kind, subject_ref, count });
@@ -37,6 +38,24 @@ test('count_weights pick the number of people; a subject without an exact profil
   assert.equal(result.people.length, 2);
   assert.ok(result.people.every((person) => person.profile_ref.id === 'm2c_npc_householder_v1'));
   assert.deepEqual(result.people.map((person) => person.ordinal), [0, 1]);
+});
+
+test('composition identity stays distinct from its place-family schedule key', () => {
+  const wanted = wantPlacePeople({ party_id: 'party', scope_instance_ref: 'g5:site', compositions: [{
+    place_family_id: 'pf_ferry_landing',
+    composition_ref: { id: 'composition-ferry', version: 3, world_revision_id: 'world' },
+    population_groups: [group('carriers', [['occupation', 'nov_occ_ferryman']])],
+  }] }).wanted;
+  assert.equal(wanted[0].place_family_id, 'pf_ferry_landing');
+  assert.deepEqual(wanted[0].place_population_composition_ref,
+    { id: 'composition-ferry', version: 3, world_revision_id: 'world' });
+});
+
+test('composition group without an approved place-family binding is rejected as a source gap', () => {
+  assert.throws(() => wantPlacePeople({ party_id: 'party', scope_instance_ref: 'g5:site', compositions: [{
+    composition_ref: { id: 'composition-ferry', version: 1, world_revision_id: 'world' },
+    population_groups: [group('carriers', [['occupation', 'nov_occ_ferryman']])],
+  }] }), { code: 'PROCEDURAL_NPC_SOURCE_BINDING_DATA_GAP' });
 });
 
 test('a subject with no approved profile, an ambiguous one or a role missing from the actor bundle creates nobody and reports a gap', () => {
@@ -111,7 +130,7 @@ function compileInput({ regionalApplicability } = {}) {
         allowed_physical_class_ids: ['spatial.g6.open'], empty_context_rules: [] },
       runtime_profiles: [worker, ...shared], regional_context_profiles: [regional] },
     people: [0, 1].map((ordinal) => ({ ordinal, group_id: 'pf_test.a', place_family_id: 'pf_test', profile_ref: ref('worker'),
-      place_population_composition_ref: { id: 'pf_test', version: 1, world_revision_id: 'world' } })),
+      place_population_composition_ref: { id: 'composition-test', version: 1, world_revision_id: 'world' } })),
     scene: { party_id: 'party', site_id: 'canonical-site', rows: [
       { target_table: 'party_g6_instances', id: 'g6', record: { party_id: 'party', status: 'active',
         physical_class_id: 'spatial.g6.open', host_kind: 'g5_site' } },
@@ -126,12 +145,44 @@ test('compilePlacePeopleBindings binds decided people to focus/departure of a ca
   assert.deepEqual(first.binding.canonical_g5_ref, ref('cg5'));
   assert.equal(first.binding.generation_template_ref, undefined);
   assert.equal(first.binding.location_profile_ref, 'pf_test');
-  assert.deepEqual(first.binding.source_binding.place_population_composition_ref, { id: 'pf_test', version: 1, world_revision_id: 'world' });
+  assert.deepEqual(first.binding.source_binding.place_population_composition_ref,
+    { id: 'composition-test', version: 1, world_revision_id: 'world' });
+  assert.equal(first.binding.source_binding.place_family_id, 'pf_test');
   assert.equal(first.binding.source_binding.group_id, 'pf_test.a');
   assert.equal(first.binding.source_binding.npc_composition_ref, undefined, 'no invented G4 composition ref');
   assert.equal(first.binding.actor_slot_ref, 'canonical-site:npc:0');
   assert.deepEqual(compilePlacePeopleBindings(compileInput()).npc_inputs.map((value) => value.binding.parent_seed_digest),
     result.npc_inputs.map((value) => value.binding.parent_seed_digest));
+});
+
+test('placement state stays outside identity seed and offstage identities do not consume scene slots', () => {
+  const plain = compilePlacePeopleBindings(compileInput());
+  const input = compileInput();
+  input.placement_state_by_identity = [
+    { state: 'offstage_away', location_ref: null },
+    { state: 'on_site', location_ref: 'pf_test' },
+  ];
+  const placed = compilePlacePeopleBindings(input);
+  assert.deepEqual(placed.selection_trace, plain.selection_trace);
+  assert.deepEqual(placed.npc_inputs.map(({ binding: value }) => value.parent_seed_digest),
+    plain.npc_inputs.map(({ binding: value }) => value.parent_seed_digest));
+  assert.deepEqual(placed.npc_inputs.map(({ binding: value }) => [
+    value.actor_slot_ref, value.ordinal,
+  ]), plain.npc_inputs.map(({ binding: value }) => [value.actor_slot_ref, value.ordinal]));
+  assert.deepEqual(placed.npc_inputs.map(({ position_id, binding: value }) => [
+    position_id, value.anchor_id, value.zone_ref, value.initial_presence_state,
+  ]), [
+    [null, null, null, 'offstage_away'],
+    ['focus', 'focus', 'focus', 'on_site'],
+  ]);
+  assert.equal(placed.npc_inputs[0].binding.location_profile_ref, 'pf_test');
+
+  input.placement_state_by_identity[0] = { state: 'location_gap', location_ref: 'pf_winter_ice_crossing' };
+  const gap = compilePlacePeopleBindings(input);
+  assert.equal(gap.npc_inputs[0].position_id, null);
+  assert.equal(gap.npc_inputs[0].binding.initial_presence_state, 'location_gap');
+  assert.equal(gap.npc_inputs[0].binding.location_profile_ref, 'pf_test');
+  assert.equal(gap.npc_inputs[1].position_id, 'focus');
 });
 
 test('the sex list of a profile actor_applicability reaches the binding as is; without it the binding carries none', () => {
@@ -154,7 +205,7 @@ test('compilePlacePeopleBindings takes a regional context only when its applicab
     (error) => error.code === 'NPC_COMPOSITION_REGIONAL_CONTEXT_GAP');
 });
 
-test('a binding source that names both origins, none, or a composition ref that is not the location is refused', () => {
+test('a composition source persists its composition and place family separately and validates the PF', () => {
   const build = () => {
     const input = compileInput();
     const [first] = compilePlacePeopleBindings(input).npc_inputs;
@@ -167,8 +218,15 @@ test('a binding source that names both origins, none, or a composition ref that 
   };
   refused((b) => { b.source_binding.presence_rule_ref = { rule_id: 'pr_x', rule_version: 1 }; });
   refused((b) => { delete b.source_binding.place_population_composition_ref; });
-  refused((b) => { b.source_binding.place_population_composition_ref.id = 'pf_other'; });
+  refused((b) => { delete b.source_binding.place_family_id; });
+  refused((b) => { b.source_binding.place_family_id = 'pf_other'; });
   refused((b) => { b.source_binding.npc_composition_ref = { id: 'pf_test', version: 1 }; });
-  // the untouched binding passes the source check and stops later, at the regional context of this thin fixture
-  assert.throws(() => materializeApprovedProceduralNpc(build()), { code: 'PROCEDURAL_NPC_REGIONAL_CONTEXT_DATA_GAP' });
+  const input = build();
+  input.binding.source_binding.place_population_composition_ref.id = 'composition-test';
+  assert.deepEqual(input.binding.source_binding.place_population_composition_ref,
+    { id: 'composition-test', version: 1, world_revision_id: 'world' });
+  assert.equal(input.binding.source_binding.place_family_id, 'pf_test');
+  assert.throws(() => materializeApprovedProceduralNpc(input),
+    { code: 'PROCEDURAL_NPC_REGIONAL_CONTEXT_DATA_GAP' },
+    'distinct composition and PF IDs pass source validation and stop at the fixture’s unrelated regional gap');
 });

@@ -14,7 +14,7 @@ const REQUEST_PATH =
   'data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json';
 const REQUEST_FILE = resolve(REQUEST_PATH);
 
-test('fresh-schema attestation gate refuses missing, ambiguous and mismatched digest', async () => {
+test('fresh-schema attestation gate refuses missing, ambiguous and mismatched digest', async (t) => {
   const requestBytes = await readFile(REQUEST_FILE);
   const requestDigest = computeFreshSchemaRequestDigest(requestBytes);
   const valid = {
@@ -51,6 +51,7 @@ test('fresh-schema attestation gate refuses missing, ambiguous and mismatched di
   assertV17FreshSchemaAttestation({ requestDigest, attestation: valid });
 
   const emptyDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-attest-empty-'));
+  t.after(() => rm(emptyDir, { recursive: true, force: true }));
   await assert.rejects(
     () => loadFreshSchemaAttestationFromRepo({
       requestDigest,
@@ -61,6 +62,7 @@ test('fresh-schema attestation gate refuses missing, ambiguous and mismatched di
   await rm(emptyDir, { recursive: true, force: true });
 
   const catalogDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-attest-'));
+  t.after(() => rm(catalogDir, { recursive: true, force: true }));
   const writeAttestation = async (name, digest) => writeFile(
     join(catalogDir, name),
     `${JSON.stringify({ ...valid, request_digest: digest }, null, 2)}\n`
@@ -85,10 +87,11 @@ test('fresh-schema attestation gate refuses missing, ambiguous and mismatched di
   );
 });
 
-test('fresh-schema attestation positive match in temp catalog dir', async () => {
+test('fresh-schema attestation positive match in temp catalog dir', async (t) => {
   const requestBytes = await readFile(REQUEST_FILE);
   const requestDigest = computeFreshSchemaRequestDigest(requestBytes);
   const catalogDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-attest-ok-'));
+  t.after(() => rm(catalogDir, { recursive: true, force: true }));
   await writeFile(join(catalogDir, 'fresh-schema-approval-attestation-test.json'),
     `${JSON.stringify({
       schema: 'rus.live_world_runtime_v17_fresh_schema_approval.v1',

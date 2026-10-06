@@ -29,7 +29,11 @@
 - не вызывает LLM.
 
 Revision 33 инициализирует calendar routine через `@rus/npc-runtime` из
-approved profile. Current successor item templates use exact approved catalog
+approved profile. NPC existence/identity remains materialization-owned; the
+seasonal routine policy resolves presence/location from phase intent and
+approved binding facts; materialization assigns physical placement only after
+that result. A seasonal gap never rerolls or defers that identity.
+Current successor item templates use exact approved catalog
 labels; materialization writes them once to existing `state.display_name` for
 initial items and Stage 16 equipment. Historical template content is unchanged.
 The current dossier binding also supplies player-known biography, memories,
@@ -68,8 +72,10 @@ family (`min_count`/`max_count`/`count_weights`, `weighted_subjects`) и **чи�
 задаёт `min_count` данных. `compilePlacePeopleBindings` привязывает решённых людей к позициям
 focus/departure (arrival зарезервирован) теми же per-NPC входами, что
 `compileGeneratedNpcBindings`; происхождение человека — `place_population_composition_ref
-{id, version, world_revision_id}` + `group_id` либо `presence_rule_ref {rule_id, rule_version}`
-в `source_binding`, `npc_composition_ref` остаётся только у G4-binding. Regional context
+{id, version, world_revision_id}` + отдельный `place_family_id` и `group_id` либо
+`presence_rule_ref {rule_id, rule_version}` в `source_binding`; composition ref
+идентифицирует состав и не заменяет `place_family_id`. `npc_composition_ref`
+остаётся только у G4-binding. Regional context
 применим к месту по `g4_ref`, если запись применимости не привязана ни к canonical G5, ни к
 generation template (`binding.regional_applicability = 'g4'`). `placePeopleCapacity` даёт число
 позиций места по placement policy. Профиль `npc_binding` с

@@ -17,7 +17,7 @@
 ## Public API
 
 - `.`: exact-time primitives `normalizeGameTimestamp`, `normalizeElapsedTime`, rational arithmetic, `addElapsedTime`, `subtractGameTimestamp`, `compareGameTimestamp`, `countCrossedWholeMinuteBoundaries`, `computeTemporalDigest`; historical-phase exports; `startedHistoricalEventsAndPhases`, `startedHistoricalEventIds`, `StartedHistoricalError`.
-- `./calendar`: `projectCalendar(timestamp, approvedProfile)`, `resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)`.
+- `./calendar`: `projectCalendar(timestamp, approvedProfile)`, `resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)`, `nextCalendarSeasonBoundary(timestamp, approvedProfile)`. The last returns the next actual change of `season_id` strictly after the timestamp, at the approved calendar's local day start, with its exact timestamp and calendar date; calendars without season changes return `null`.
 - `./temporal-boundaries`: `TEMPORAL_RESOLUTION_POLICY_VERSION`, order, `TemporalBoundaryError`, normalization, earliest-batch selection и `resolveSameTimeCascade`.
 - `.`: `APPROVED_EVENT_DATE_GATE_RECORDS`, `projectApprovedPartyHistoricalEvents` — события в форме `startedHistoricalEventIds` с `source_ref`.
 - `./legacy`: compatibility-only clock/timer helpers; не является target temporal execution API.

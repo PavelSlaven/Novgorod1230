@@ -9,6 +9,7 @@ import { adaptApprovedOpeningNarration } from '@rus/narration';
 import { serverError } from '../errors.js';
 import { GAMEPLAY_LLM_CALL_TIMEOUT_MS } from './llm-turn-budget.js';
 import { buildOpeningRejectionSnapshot } from './opening-rejection-snapshot.js';
+import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
 
 const WRITER = `Верните только {"prose":"<полное вступление>"}. Напишите 2–4 связанных
 абзаца сдержанной литературной прозы на русском языке во втором лице. Используйте только
@@ -466,10 +467,15 @@ function projectedFrameFacts(frame, weatherLightContext = []) {
   const context = weatherLightContext.find((entry) => entry && typeof entry === 'object') ?? {};
   const contextText = [context.text, ...(context.facts ?? [])]
     .filter((value) => typeof value === 'string').join(' ');
-  const season = russianSeason(context.season ?? frame.season);
-  const dayPart = russianDayPart(context.day_part ?? frame.day_part);
-  const light = russianLight(context.light_state ?? context.light_profile
-    ?? frame.light_profile);
+  const translated = openingWeatherLightFacts({
+    season: context.season ?? frame.season,
+    day_part: context.day_part ?? frame.day_part,
+    light_state: context.light_state ?? context.light_profile
+      ?? frame.light_profile
+  });
+  const season = translated.find(({ field }) => field === 'season')?.text;
+  const dayPart = translated.find(({ field }) => field === 'day_part')?.text;
+  const light = translated.find(({ field }) => field === 'light_state')?.text;
   const current = [];
   if (season && !/лет|зим|весн|осен/iu.test(contextText)) current.push(season);
   if (dayPart && !/рассвет|утр|днём|вечер|сумерк|ночью/iu.test(contextText)) current.push(dayPart);
@@ -478,37 +484,14 @@ function projectedFrameFacts(frame, weatherLightContext = []) {
   return current;
 }
 
-function russianSeason(value) {
-  return ({ spring: 'Весна.', early_spring: 'Ранняя весна.', late_spring: 'Поздняя весна.',
-    summer: 'Лето.', early_summer: 'Начало лета.', late_summer: 'Позднее лето.',
-    late_summer_open_water: 'Позднее лето.', autumn: 'Осень.', early_autumn: 'Ранняя осень.',
-    late_autumn: 'Поздняя осень.', winter: 'Зима.', early_winter: 'Начало зимы.',
-    late_winter: 'Конец зимы.' })[value] ?? null;
-}
-
-function russianDayPart(value) {
-  return temporalTranslation(value, { civil_dawn: 'Рассвет.',
-    civil_dusk: 'Сумерки.', dawn: 'Рассвет.', sunrise: 'Восход.',
-    morning: 'Утро.', daylight: 'День.',
-    noon: 'Полдень.', afternoon: 'После полудня.', sunset: 'Закат.', evening: 'Вечер.',
-    twilight: 'Сумерки.', night: 'Ночь.', late_night: 'Поздняя ночь.' }, 'day_part');
-}
-
-function russianLight(value) {
-  return temporalTranslation(value, { night: 'Ночь.', civil_dawn: 'Светает.',
-    daylight: 'Стоит светлое время дня.', civil_dusk: 'Сгущаются сумерки.',
-    clear: 'Светло.', dim: 'Сумеречно.', twilight: 'Сумерки.', dark: 'Темно.' },
-  'light_state');
-}
-
-function temporalTranslation(value, translations, field) {
-  if (value == null) return null;
-  if (typeof value !== 'string' || !Object.hasOwn(translations, value)) {
+function openingWeatherLightFacts(input) {
+  try {
+    return playerSafeWeatherLightFacts(input);
+  } catch (error) {
     throw serverError('OPENING_TEMPORAL_TRANSLATION_UNSUPPORTED',
       'Не удалось подготовить время суток и освещение для вступления.',
-      { status: 500, details: { field } });
+      { status: 500, details: { field: error?.field ?? null } });
   }
-  return translations[value];
 }
 
 function projectWeatherFacts(state) {
@@ -516,18 +499,9 @@ function projectWeatherFacts(state) {
   const facts = Array.isArray(state.facts)
     ? state.facts.filter((text) => typeof text === 'string')
       .map((text) => ({ text, fact_id: null, source_refs: [] })) : [];
-  const translated = {
-    sky: { clear: 'Небо ясное.', overcast: 'Небо затянуто облаками.',
-      obscured: 'Небо не видно.', variable: 'Состояние неба меняется.' },
-    precipitation: { none: 'Осадков нет.', rain: 'Идёт дождь.', snow: 'Идёт снег.' },
-    visibility: { normal: 'Видимость обычная.', reduced: 'Видимость снижена.',
-      poor: 'Видимость плохая.', normal_or_reduced: 'Видимость обычная или сниженная.' },
-    wind: { calm_or_light: 'Ветер отсутствует или слабый.',
-      light_or_moderate: 'Ветер слабый или умеренный.', strong: 'Сильный ветер.' }
-  };
-  for (const [field, values] of Object.entries(translated)) {
-    const text = values[state[field]];
-    if (text) facts.push({ text, fact_id: `opening:weather:${field}`,
+  for (const { field, text } of openingWeatherLightFacts({ weather_state: state })) {
+    const weatherField = field.slice('weather_state.'.length);
+    facts.push({ text, fact_id: `opening:weather:${weatherField}`,
       source_refs: [] });
   }
   return facts;

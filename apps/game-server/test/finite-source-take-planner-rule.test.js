@@ -9,12 +9,13 @@ import { TURN_STEP_PLANNER_INSTRUCTIONS } from
 // bench outside the repository (/srv/novgorod-work/benches/rt-items-take/, results-V4.json); this test pins
 // only the rule text, keep it in sync with the bench.
 test('planner is told how to take from an ordinary_resource_source', () => {
-  const text = TURN_STEP_PLANNER_INSTRUCTIONS.join(' ');
-  const rule = text.match(/A visible ordinary_resource_source[^]*?remaining_intent\)\./u)?.[0];
+  const rule = TURN_STEP_PLANNER_INSTRUCTIONS.find((instruction) =>
+    instruction.includes('ordinary_resource_source'));
   assert.ok(rule, 'ordinary_resource_source rule is missing');
-  for (const part of ['code_owned_committed_source', 'not an ambient_ordinary_capability',
-    'never create_entity', 'never a direct achieved result', 'request_discovery',
-    'discovery_kind inspect', 'target_refs exactly [that source entity_id]',
-    'query exactly its display_label', 'continuation.remaining_intent',
-    'equal to request.remaining_intent']) assert.ok(rule.includes(part), part);
+  for (const part of ['code_owned_committed_source', 'а не ambient_ordinary_capability',
+    'никогда не являются create_entity или прямым достигнутым результатом',
+    'request_discovery', 'discovery_kind inspect',
+    'target_refs в точности [entity_id этого источника]',
+    'query в точности его display_label', 'continuation.remaining_intent',
+    'равное request.remaining_intent']) assert.ok(rule.includes(part), part);
 });

@@ -40,7 +40,8 @@ test('canonical exit reader requires approved authoring at exact G4 revision and
 });
 function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   readNatural: suppliedReadNatural = null,
-  readLocalMovementAdmission, readTargetConditions = readCurrentTargetConditions } = {}) {
+  readLocalMovementAdmission, itemDisplayName = null,
+  readTargetConditions = readCurrentTargetConditions } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
     site: { parent_g4_id: g4 }, baseline: { id: 'baseline' },
@@ -63,12 +64,43 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
     worldBaseReader,
     readScene: async () => scene, readNatural: suppliedReadNatural ?? (async () => natural),
     readTargetConditions,
-    readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id }),
+    readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id,
+      ...(placement.entity_kind === 'item' && itemDisplayName != null
+        ? { display_name: itemDisplayName } : {}) }),
     readPlayerKnowledge: async ({ placement }) => placement.entity_id === 'one'
       ? { display_name: 'Known person' } : null,
     ...(readLocalMovementAdmission ? { readLocalMovementAdmission } : {}) });
   return { scene, natural, provider, queries };
 }
+
+test('visible items retain identity with a typed gap when no safe display name exists', async () => {
+  const named = fixture({ itemDisplayName: 'Речная лодка' });
+  named.scene.placements = [{ entity_kind: 'item', entity_id: 'boat',
+    position_node_id: 'b' }];
+  const observations = await named.provider.readEntityObservations({
+    partyId: 'party', actorId: 'actor' });
+  assert.equal(observations[0].display_label, 'Речная лодка');
+
+  const unnamed = fixture();
+  unnamed.scene.placements = [{ entity_kind: 'item', entity_id: 'unknown-item',
+    position_node_id: 'b' }];
+  const unnamedObservations = await unnamed.provider.readEntityObservations({
+    partyId: 'party', actorId: 'actor' });
+  assert.deepEqual(unnamedObservations[0], {
+    entity_kind: 'item', entity_id: 'unknown-item', visibility: 'clear',
+    exterior: { visible_clothing: 'unknown-item' },
+    label_gap: { code: 'player_safe_item_label_required' }
+  });
+
+  const invalid = fixture({ itemDisplayName: 'item_template_secret' });
+  invalid.scene.placements = [{ entity_kind: 'item', entity_id: 'invalid-item',
+    position_node_id: 'b' }];
+  const invalidObservation = await invalid.provider.readEntityObservations({
+    partyId: 'party', actorId: 'actor' });
+  assert.deepEqual(invalidObservation[0].label_gap,
+    { code: 'player_safe_item_label_required' });
+  assert.equal(Object.hasOwn(invalidObservation[0], 'display_label'), false);
+});
 
 test('prepared destination visibility carries the root post-turn clock into entity admission', async () => {
   const clock = { whole_minutes: '720', subminute_numerator: '0',

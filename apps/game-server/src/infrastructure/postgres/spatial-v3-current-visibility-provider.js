@@ -2,6 +2,7 @@ import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibili
 import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } from
   './g4-natural-perception-reader.js';
 import { serverError } from '../../errors.js';
+import { resolveVisibleItemLabel } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
@@ -272,12 +273,17 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           }
           const known = typeof readPlayerKnowledge === 'function'
             ? await readPlayerKnowledge({ transaction: current.transaction, partyId, actorId, placement }) : null;
+          const displayName = known?.display_name ?? exterior.display_name ?? null;
+          const itemLabel = placement.entity_kind === 'item'
+            ? resolveVisibleItemLabel({ name: displayName }) : null;
           result.push({ entity_kind: placement.entity_kind, entity_id: placement.entity_id,
             visibility: entry.visibility, exterior,
-            display_label: typeof known?.display_name === 'string' && known.display_name.trim()
-              ? known.display_name : placement.entity_kind === 'npc' ? 'человек' : 'предмет',
-            ...(typeof known?.display_name === 'string' && known.display_name.trim()
-              ? { display_name: known.display_name } : {}) });
+            ...(placement.entity_kind === 'npc'
+              ? { display_label: displayName ?? 'человек' }
+              : itemLabel.kind === 'gap'
+                ? { label_gap: { code: itemLabel.code } }
+                : { display_label: itemLabel.label }),
+            ...(displayName == null ? {} : { display_name: displayName }) });
         }
         return result;
       }, transaction, observedPositionId, clock);

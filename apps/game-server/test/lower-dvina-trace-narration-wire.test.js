@@ -1,8 +1,32 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
-import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvina-trace-narration-llm.js';
+import { buildProviderRequestPayload } from '../../../packages/llm-runtime/src/provider-request.js';
+import { createLowerDvinaTraceNarrationService, narrationWire } from '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { reviewedNarration } from './narration-audit-fixture.js';
+
+test('narration wire omits structural label-gap item and preserves unrelated uncertainty', () => {
+  const wire = narrationWire({ visible_context: {
+    visible_scene: 'У берега.', visible_changes: [],
+    uncertainties: ['Наблюдение ещё не дало результата.'],
+    do_not_imply: [], allowed_tensions: [], visible_objects: [{
+      entity_ref: { entity_kind: 'item', entity_id: 'opaque-item-ref' },
+      label_gap: { code: 'player_safe_item_label_required' },
+      visible_status: 'serviceable'
+    }]
+  } });
+  assert.deepEqual(wire.required_current_beat.uncertainties.map(({ text }) => text),
+    ['Наблюдение ещё не дало результата.']);
+  assert.deepEqual(wire.optional_support, { visible_scene: 'У берега.' });
+  const payload = buildProviderRequestPayload({ model: 'test-model', maxTokens: 20000,
+    responseFormat: { type: 'json_object' }, compatibility: 'openai_compatible',
+    thinking: { type: 'disabled' }, temperature: 0, topP: 1 }, [
+    { role: 'system', content: 'Narration system.' },
+    { role: 'user', content: JSON.stringify(wire) }
+  ]);
+  assert.doesNotMatch(payload.messages[1].content,
+    /opaque-item-ref|serviceable|label_gap|player_safe_item_label_required|Видны вещи, названия которых пока не удалось установить/u);
+});
 
 test('captured live snapshot candidates cannot displace the current speech and pending intent', async () => {
   const { visible_context, prose } = JSON.parse(await readFile(new URL(

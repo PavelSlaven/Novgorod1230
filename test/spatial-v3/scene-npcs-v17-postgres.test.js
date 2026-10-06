@@ -22,6 +22,7 @@ import {
   installPresenceProductionE2eFetch,
 } from './presence-rules-production-e2e-fixture.js';
 import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 const TALK_TEXT = 'Здороваюсь с человеком.';
 const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
@@ -39,17 +40,18 @@ function installStub({ onNarration = null } = {}) {
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    const role = identifyLlmTestRole(call);
     if (system.startsWith('Return only {"prose"') && input.required_current_beat) {
       await onNarration?.();
     }
-    if (system.includes('schema must equal world_knowledge_query_plan_v1.')
-      && input.purpose !== 'semantic_resolution') {
+    if (role === 'world_knowledge_query_planner'
+        && input.purpose !== 'semantic_resolution') {
       // only semantic_resolution may plan no domain
       return json({ schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: [input.allowed_domains[0]], focus_refs: [], requested_predicates: [],
         search_hints: [] });
     }
-    if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+    if (role === 'turn_step_planner') {
       const request = input.request ?? input;
       const choices = turnStepOperationChoices(request);
       const pickOp = (predicate) => choices.find(({ operation }) => predicate(operation));

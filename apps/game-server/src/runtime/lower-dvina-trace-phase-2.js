@@ -1,5 +1,7 @@
 import { buildTracePhase2Registry, resolveTracePhase2InheritedContracts } from './lower-dvina-trace-phase-2-runtime-context.js'; import { serverError } from '../errors.js';
 import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
+import { loadLowerDvinaTracePinnedItemLabels } from
+  '../internal/lower-dvina-trace-screen-presentation.js';
 import { isExactLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
 import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js';
 import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contracts.js';
@@ -141,6 +143,8 @@ export function createLowerDvinaTracePhase2Runtime({
             postActionPerceptionProfile })
           : await runWithinTurnDeadline(turnBudget, () =>
             bundleLoader({ scenarioDefinitionRevision }));
+        const itemLabels = bundle.item_container_set == null ? {}
+          : await loadLowerDvinaTracePinnedItemLabels(bundle);
         const selectedPostActionPerceptionProfile =
           bundle.post_action_perception_profile ?? null;
         const postActionPerceptionAdapter = selectedPostActionPerceptionProfile?.schema
@@ -324,6 +328,7 @@ export function createLowerDvinaTracePhase2Runtime({
           playerSafeStateProjector,
           locationProfiles: bundle.location_topology_set.location_profiles,
           scenePresentation: bundle.scene_presentation ?? null,
+          itemLabels,
           turnStepBodyEventOwner: turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner, turnStepSemanticActivityOwner: turnStepSemanticActivityOwner ?? genericOwners?.semanticActivityOwner,
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,

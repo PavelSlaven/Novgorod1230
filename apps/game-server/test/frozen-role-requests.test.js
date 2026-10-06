@@ -129,7 +129,7 @@ test('unowned domain intent uses one direct planner step', async () => {
     async run(call) {
       calls += 1;
       assert.match(call.messages[0].content,
-        /domain_request only when player_safe_state contains the exact/u);
+        /domain_request, только когда player_safe_state содержит точные capability/u);
       return { output: {
         schema: 'turn_step_plan_v1', request_id: request.request_id,
         committed_state_version: 1, working_revision: 0, step_index: 1,

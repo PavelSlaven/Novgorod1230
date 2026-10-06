@@ -150,7 +150,8 @@ export function buildPhase2VisibleEnvelope({
     perceived_changes: context.visible_changes,
     sensory_details: context.sensory_details,
     visible_npcs: context.visible_npc,
-    visible_objects: context.visible_objects,
+    visible_objects: context.visible_objects.filter((item) =>
+      item?.label_gap?.code !== 'player_safe_item_label_required'),
     known_context: context.known_context,
     uncertainties: context.uncertainties,
     hypotheses: [],

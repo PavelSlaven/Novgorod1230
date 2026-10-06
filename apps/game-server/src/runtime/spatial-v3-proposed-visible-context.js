@@ -70,7 +70,8 @@ export async function projectSpatialV3ProposedVisiblePackage({ transaction, snap
     perceived_changes: visible_context.visible_changes ?? [],
     sensory_details: visible_context.sensory_details ?? [],
     visible_npcs: visible_context.visible_npc ?? [],
-    visible_objects: visible_context.visible_objects ?? [],
+    visible_objects: (visible_context.visible_objects ?? []).filter((item) =>
+      item?.label_gap?.code !== 'player_safe_item_label_required'),
     known_context: visible_context.known_context ?? [],
     uncertainties: visible_context.uncertainties ?? [], hypotheses: [],
     player_safe_interruption: null, allowed_action_affordances: [] };

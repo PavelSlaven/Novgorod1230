@@ -117,6 +117,9 @@
 | 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 128 | `packages/turn/src/turn-step-admission.js:57–67`, `test/spatial-v3/prepared-destination-light-seam-postgres.test.js` | approved route operation отсутствует в проверенном continuation после ожидания; точный menu regression ждёт exit-one-action | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 129 | `lower-dvina-trace-conversation-llm.js`, conversation prompt builders | разговорные роли получают канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 | — |
+| 130 | `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, Lower Dvina phase-5 placed item templates | шесть видимых шаблонов не имеют утверждённой player-safe подписи; runtime обязан сохранять typed gap | — |
+| 131 | `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` | item/inventory rows с typed label gap временно скрыты от planner вопреки §7.2 | [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236) |
+| 132 | `apps/game-server` turn-step planner input projection | P-проекция группы 3 для intent_router и turn_step_planner не сделана; D72 service ids/version/counts остаются во входе | отдельная задача со своим стендом |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -699,6 +702,24 @@
 
 ### LW-129 — разговорные роли передают модели канонический DTO (npc-conversation)
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-conversation-llm.js` и builders разговора с NPC.
-- **Что.** Вход разговорных ролей — канонический DTO, нарушение D72/D78; проекция P отвергнута судьями 2026-10-05 (опора 1,58 → 1,28); условие закрытия — проекция, прошедшая стенд.
+- **Что.** Вход разговорных ролей — канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 (опора 1,58 → 1,28); условие закрытия — проекция, прошедшая стенд.
 - **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
 - **Issue.** —
+
+### LW-130 — шесть шаблонов вещей крушения ждут утверждённых подписей (prompt-rev-turn)
+- **Где.** `data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/item-container-set.json` (`placement_slot_ref`), resolver `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, current-visible/WK/narrator/screen projections.
+- **Что.** `trace_ld_v1_item_blue_wool_fragment`, `trace_ld_v1_item_cut_bag_fastening`, `trace_ld_v1_item_persistent_debris`, `trace_ld_v1_item_broken_oar`, `trace_ld_v1_item_side_collision_trace` и `trace_ld_v1_item_hidden_trunk_trace` стоят в сцене и могут быть осмотрены, но у них пока нет утверждённого имени. Сценовые наблюдения не являются стабильными подписями вещей.
+- **Как жить.** Не придумывать имя или категорию и не терять сам видимый объект: сохранять typed `player_safe_item_label_required` gap; исключать только его текстовую строку и продолжать показ остальных вещей. Тест данных перечисляет ровно эти шесть известных gaps и падает на новом. Закрыть запись после отдельного data-owner утверждения подписей и снятия соответствующих исключений.
+- **Issue.** [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236) (D92: у каждой вещи есть имя — утверждённое или название общей категории).
+
+### LW-131 — typed-gap вещи временно исключены из turn-step model inventory (prompt-rev-turn)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` проецирует `items` и `inventory.items` в planner/auditor payload.
+- **Что.** До закрытия #236 typed `player_safe_item_label_required` строки не попадают в модельный инвентарь, вопреки полному текущему инвентарю в `turn_step_llm_contract.md` §7.2. Это временное исключение A-05-02; решение D92 требует утверждённое точное имя или русское название общей категории для каждой материализуемой вещи. По данным v17/Lower Dvina реальных gap в инвентаре нет.
+- **Как жить.** Исключать только item rows, связанные с точной typed label-gap строкой; сохранять named и остальные item rows, факты и World Knowledge. Не добавлять opaque inventory keys. Удалить исключение после закрытия #236 и снятия gap у вещей.
+- **Issue.** [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236); разрешено A-prompt-rev-turn-04, временное исключение A-05-02.
+
+### LW-132 — P-проекция групп 3 отложена до отдельного стенда (prompt-rev-turn)
+- **Где.** `intent_router` и `turn_step_planner` player-facing LLM inputs в `apps/game-server`.
+- **Что.** На финальном проходе `ca-final-prompt-rev-turn` (2026-10-06, finding 10) подтверждено, что user payload маршрутизатора и планировщика сохраняет служебные id, версии и счётчики, вопреки D72. Переход на P не оценивался стендом и в этой задаче не выполняется.
+- **Как жить.** Не менять эти проекции без отдельного BENCH-PLAN/BENCH-OK на пары L против L+P, с одинаковыми model-visible входами у модели и судей и явным перечнем допустимых смысловых полей. Закрыть запись после принятой P-проекции.
+- **Issue.** Отдельную задачу создаёт ведущий; основание — финальный проход `ca-final-prompt-rev-turn` finding 10.

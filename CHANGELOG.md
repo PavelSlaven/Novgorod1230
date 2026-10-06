@@ -2,10 +2,15 @@
 
 ## Unreleased
 - fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
+- fix(runtime): filter typed item gaps from model facts, operations and visible envelopes; resolve approved labels in inspection; ignore ordinal exits in WK and require schema-only router recognition
+- fix(prompts/docs): align planner wording with reviewed Stage L text, correct addressed-request meaning, and record deferred group-3 P projection as LW-132
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
 - fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)
-
+- fix(prompts): перевести промпты планировщика хода и маршрутизатора на русский (prompt-rev-turn)
+- fix(turn): reject prepared follow-up refs outside projected allowlist; LW-131 added (#236)
+- fix(items): keep unnamed visible items as typed label gaps; LW-130 added (prompt-rev-turn)
+- fix(turn): current scene rebuilt from committed state each turn (departed items/NPCs dropped, speech never becomes the place title); movement narration from owner facts - site arrival from the destination package, route visible change, Spatial-signed local label (#98)
 - fix(local-play): v17 slice acceptance requires a visible people panel for meet, a committed readable NPC answer for talk, and prior talk at the current place for take/make; D49 minimum is additive (#98)
 - data(spatial): world-routes b2 candidate and generator with 24 cross pairs @2, Opus APPROVE_WITH_LIMITS and M1–M5 mechanical continuation; draft for b2 runtime reader (#98)
 - fix(turn): repeated NPC waits pause the fire-rest schedule; first ordinary search after seed-only preflight costs 15 minutes under the shared plan-binding predicate; NPC inspects an available committed item by ref (#98)

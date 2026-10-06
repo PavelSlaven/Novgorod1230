@@ -433,6 +433,10 @@ test('NO_KNOWLEDGE_REQUIRED reaches the planner on initial and repair calls',
     const repaired = JSON.parse(modelCalls[1].messages[1].content).request;
     assert.deepEqual(initial.world_knowledge, requirement);
     assert.deepEqual(repaired.world_knowledge, requirement);
+    for (const call of modelCalls) {
+      assert.match(call.messages[0].content,
+        /Потребность в World Knowledge для этого шага явно разрешена как NO_KNOWLEDGE_REQUIRED[\s\S]*Используй только переданное текущее состояние/u);
+    }
   });
 
 test('speech mapping and repair retain exact speech plus independent later action',
@@ -472,7 +476,7 @@ test('speech mapping and repair retain exact speech plus independent later actio
           activity: { ...plan.activity, effort: 'light' } },
         { request: input }).ok, false);
         assert.match(prompt,
-          /complete player_utterance envelope:[\s\S]*"effort":"none"[\s\S]*operations \[\][\s\S]*current actor[\s\S]*Speech creates no entity[\s\S]*exact uncovered later action text/u);
+          /Для исправления речи без адресата используй полную структуру player_utterance:[\s\S]*"effort":"none"[\s\S]*operations \[\][\s\S]*speaker_ref, равный текущему актору[\s\S]*Речь не создаёт сущность[\s\S]*<точный непокрытый текст последующего действия>/u);
       });
     }
   });

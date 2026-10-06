@@ -22,13 +22,27 @@ function safe(records = items) {
     ordinary_resolution: { discovery_available: true,
       container_resolution_available: false, scene_seed_available: true } };
 }
-function resolver() {
+function resolver(itemLabels = {}) {
   return createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'party', inputDigest: 'inspection', verifyStageBCutover: () => true,
+    itemLabels,
     loadEnablement: async () => null,
     ordinaryMaterializationModel: async () => assert.fail('No materialization call for known item state')
   });
 }
+
+test('existing inspection resolves a template-only item label from the pinned catalog', async () => {
+  const templateItem = { item_id: 'template-item', template_id: 'approved-shirt',
+    condition_state: 'damaged',
+    placement: { holder_character_id: 'actor-1', physical_position: 'worn' } };
+  const projection = safe([templateItem]);
+  const result = await resolver({ 'approved-shirt': 'шерстяная рубаха' })(
+    execution('template-item', projection));
+  const seed = result.consequence_fragment.visible_seed.turn_step_item_inspection_1;
+
+  assert.ok(seed.visible_changes.some(text => text.includes('шерстяная рубаха')));
+  assert.ok(seed.visible_changes.some(text => text.includes('повреждено')));
+});
 function execution(target = 'tool', projection = safe()) {
   return { request: { root_turn_id: 'turn-1', step_index: 1, player_safe_state: projection },
     operation: { op: 'request_discovery', discovery_kind: 'inspect', target_refs: [target], query },

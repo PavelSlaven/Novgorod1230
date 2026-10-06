@@ -555,7 +555,8 @@ export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transac
     perceived_changes: visible.visible_changes ?? [],
     sensory_details: visible.sensory_details ?? [],
     visible_npcs: visible.visible_npc ?? [],
-    visible_objects: visible.visible_objects ?? [],
+    visible_objects: (visible.visible_objects ?? []).filter((item) =>
+      item?.label_gap?.code !== 'player_safe_item_label_required'),
     known_context: visible.known_context ?? [],
     uncertainties: visible.uncertainties ?? [], hypotheses: [],
     player_safe_interruption: null, allowed_action_affordances: [] };

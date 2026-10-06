@@ -14,12 +14,79 @@ import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
   '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
-import { lowerDvinaTraceDirectResultChanges } from
+import { existingItemObservationChanges, lowerDvinaTraceDirectResultChanges,
+  lowerDvinaTraceVisibleSceneItems } from
   '../src/runtime/lower-dvina-trace-visible-scene-items.js';
 
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
   economic_basis: 'Пустая сушильня.' }];
+
+test('current committed scene replaces stale objects, NPCs, facts, and dialogue title', () => {
+  const state = committedState();
+  state.current_visible_context.visible_scene = 'Ратша сказала: «Иду к лодкам». ';
+  state.current_visible_context.sensory_details = [
+    'Старый предмет пахнет смолой.', 'Еремей: Перебирает верёвку.'
+  ];
+  state.conversation_statements = [{ utterance_text: 'Иду к лодкам.' }];
+  state.current_visible_context.visible_npc.push({
+    entity_ref: { entity_kind: 'npc', entity_id: 'moved' },
+    display_label: 'Еремей', recognition: 'recognized'
+  });
+  state.current_visible_context.visible_objects = [
+    { entity_ref: { entity_kind: 'item', entity_id: 'held' },
+      display_label: 'длинная жердь', recognition: 'recognized',
+      visible_status: 'available' },
+    { entity_ref: { entity_kind: 'item', entity_id: 'removed' },
+      display_label: 'старый предмет', recognition: 'recognized',
+      visible_status: 'available' }
+  ];
+  state.items = [{ item_id: 'held', name: 'длинная жердь',
+    placement: { holder_character_id: 'player', physical_position: 'hands' } }];
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles, scenePresentation: { locations: [{
+      location_ref: 'shed', display_name: 'Старая сушильня',
+      player_visible_physical_facts: ['Под настилом видна вода.']
+    }] } }).current_visible_context;
+
+  assert.equal(current.visible_scene, 'Старая сушильня');
+  assert.deepEqual(current.sensory_details, ['Под настилом видна вода.']);
+  assert.deepEqual(current.visible_changes, []);
+  assert.equal(current.visible_npc.some(({ entity_ref: ref }) =>
+    ref.entity_id === 'moved'), false);
+  assert.deepEqual(current.visible_objects.filter(({ entity_ref: ref }) =>
+    ref.entity_kind === 'item').map(({ entity_ref: ref, visible_status: status }) =>
+    [ref.entity_id, status]), [['held', 'у вас в руках']]);
+  assert.equal(JSON.stringify(current).includes('Ратша сказала'), false);
+  assert.equal(JSON.stringify(current).includes('старый предмет пахнет'), false);
+  const withoutPresentation = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles }).current_visible_context;
+  assert.equal(withoutPresentation.visible_scene, 'Старая сушильня');
+  assert.deepEqual(withoutPresentation.sensory_details, []);
+});
+
+test('current scene rebuilds environment facts from the synchronized approved snapshot', () => {
+  const state = committedState();
+  state.current_visible_context.visible_changes = [
+    'Лето.', 'Светло.', 'Небо ясное.', 'Осадков нет.'
+  ];
+  state.environment_snapshot = { schema: 'rus.approved_initial_environment.v1',
+    season: 'autumn', day_part: 'evening', light_state: 'dark',
+    weather_state: { sky: 'overcast', precipitation: 'rain',
+      visibility: 'reduced', wind: 'strong' } };
+  state.items = [{ item_id: 'boat', name: 'лодка', condition_state: 'damaged',
+    physical_facts: ['На борту заметны царапины.'],
+    placement: { location_ref: 'shed' } }];
+
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles }).current_visible_context;
+
+  assert.deepEqual(current.visible_changes, ['Осень.', 'Вечер.', 'Темно.',
+    'Небо затянуто облаками.', 'Идёт дождь.', 'Видимость снижена.',
+    'Сильный ветер.']);
+  assert.ok(current.sensory_details.includes('На борту заметны царапины.'));
+  assert.doesNotMatch(JSON.stringify(current), /Лето\.|Светло\.|Небо ясное|Осадков нет/u);
+});
 
 test('current scene carries disclosed local edge into turn visible package', () => {
   const state = committedState();
@@ -232,7 +299,7 @@ test('version zero scene retains safe labels and gains observable cues', () => {
     .observable_cues.identity.appearance.build, 'stocky');
 });
 
-test('version zero scene includes unnamed carried equipment with safe labels', () => {
+test('version zero scene keeps unnamed carried equipment as a typed label gap', () => {
   const state = committedState();
   state.party_state.state_version = 0;
   state.items.push({ item_id: 'unseen-equipped-layer',
@@ -250,13 +317,87 @@ test('version zero scene includes unnamed carried equipment with safe labels', (
 
   assert.deepEqual(current.current_visible_context.visible_objects, [{
     entity_ref: { entity_kind: 'item', entity_id: 'unseen-equipped-layer' },
-    display_label: 'верхняя одежда', recognition: 'recognized',
+    label_gap: { code: 'player_safe_item_label_required' },
     visible_status: 'при вас'
   }, {
     entity_ref: { entity_kind: 'item', entity_id: 'unseen-belt-tool' },
-    display_label: 'предмет снаряжения', recognition: 'recognized',
+    label_gap: { code: 'player_safe_item_label_required' },
     visible_status: 'при вас'
   }]);
+});
+
+test('version zero scene omits physical facts from unnamed items', () => {
+  const state = committedState();
+  state.party_state.state_version = 0;
+  state.current_visible_context.sensory_details = [];
+  state.items = [{ item_id: 'named-item', name: 'весло',
+    physical_facts: ['На весле видна зарубка.'],
+    placement: { location_ref: 'shed' } },
+  { item_id: 'gap-item', physical_facts: ['GAP_ITEM_FACT_MUST_NOT_REACH_MODEL.'],
+    placement: { location_ref: 'shed' } }];
+
+  const visible = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles }).current_visible_context;
+
+  assert.deepEqual(visible.sensory_details, ['На весле видна зарубка.']);
+  assert.ok(visible.visible_objects.some((item) =>
+    item.entity_ref?.entity_id === 'gap-item'
+      && item.label_gap?.code === 'player_safe_item_label_required'));
+});
+
+test('current scene resolves approved item template labels and keeps gaps without category fallback', () => {
+  const state = committedState();
+  state.current_visible_context.uncertainties = ['Сохраняемая неопределённость.'];
+  state.items.push({ item_id: 'approved-template-item', template_id: 'tpl-approved',
+    physical_facts: ['На ремне закреплён маленький нож.'],
+    placement: { location_ref: 'shed', anchor_id: 'shed-anchor' } }, {
+    item_id: 'unlabeled-template-item', template_id: 'tpl-gap',
+    physical_facts: ['GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_MODEL.'],
+    placement: { location_ref: 'shed', anchor_id: 'shed-anchor' }
+  });
+
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles, itemLabels: { 'tpl-approved': 'хозяйственный нож' } });
+
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'approved-template-item' },
+    display_label: 'хозяйственный нож', recognition: 'recognized',
+    visible_status: 'available'
+  }, {
+    entity_ref: { entity_kind: 'item', entity_id: 'unlabeled-template-item' },
+    label_gap: { code: 'player_safe_item_label_required' },
+    visible_status: 'available'
+  }]);
+  assert.deepEqual(current.current_visible_context.uncertainties,
+    ['Сохраняемая неопределённость.']);
+  assert.ok(current.current_visible_context.sensory_details.includes(
+    'На ремне закреплён маленький нож.'));
+  assert.equal(current.current_visible_context.sensory_details.includes(
+    'GAP_ITEM_PHYSICAL_FACT_MUST_NOT_REACH_MODEL.'), false);
+});
+
+test('item observations omit label gaps and continue with named carried items', () => {
+  const items = lowerDvinaTraceVisibleSceneItems([
+    { item_id: 'named', name: 'плетёный шнур', condition_state: 'serviceable',
+      placement: { holder_character_id: 'player', physical_position: 'hands' } },
+    { item_id: 'gap', template_id: 'missing-template', condition_state: 'damaged',
+      physical_facts: ['UNNAMED_ITEM_FACT'],
+      placement: { holder_character_id: 'player', physical_position: 'worn_quick' } }
+  ], { location_ref: 'shore' }, 'player');
+  const changes = lowerDvinaTraceDirectResultChanges({ mode_resolution: {
+    decision_trace: { step_traces: [{ applied: true, approved_plan: {
+      resolution: 'direct', goal_result: 'achieved', operations: [], check: null,
+      direct_result_kind: 'player_safe_item_observation'
+    } }] }
+  } }, items);
+
+  assert.deepEqual(changes, ['При вас находятся плетёный шнур.',
+    'Подтверждено пригодное к обычному использованию состояние: плетёный шнур.']);
+  assert.deepEqual(existingItemObservationChanges({ item_id: 'gap',
+    physical_facts: ['UNNAMED_ITEM_FACT'], placement: {
+      holder_character_id: 'player', physical_position: 'worn_quick'
+    } }, 'player'), []);
+  assert.equal(changes.some((entry) => entry.includes('UNNAMED_ITEM_FACT')), false);
 });
 
 test('current scene exposes only authored physical facts, never taxonomy IDs', () => {

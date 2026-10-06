@@ -149,16 +149,15 @@ test('prepared NPC request admits only exact grounded WK claim refs', async () =
   const worldKnowledge = conversationWorldKnowledge(() => { queryCount += 1; });
   worldKnowledge.calendar_profile = conversationCalendarProfile();
   const fixture = runner((call) => call.role_id
-    === 'world_knowledge_query_planner' ? {
-      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
-      domains: ['npc_daily_life', 'material_culture',
-        'architecture_settlement'],
-      focus_refs: ['wk:npc_daily_life:fisher',
-        'wk:material_culture:work-clothing',
-        'wk:architecture_settlement:fishing-workspace'],
-      requested_predicates: ['supports_function'],
-      search_hints: ['рыбак сети одежда стоянка']
-    } : (() => {
+    === 'world_knowledge_query_planner' ? (() => {
+      const request = JSON.parse(call.messages[1].content);
+      return { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+        domains: ['npc_daily_life', 'material_culture',
+          'architecture_settlement'],
+        focus_refs: Object.keys(request.available_knowledge_refs),
+        requested_predicates: ['supports_function'],
+        search_hints: ['рыбак сети одежда стоянка'] };
+    })() : (() => {
       const response = plan(input);
       response.speech.claims = [{ claim_id: 'claim:fish-net',
         content_summary: 'Рыбацкая работа связана с сетями.',
@@ -726,13 +725,16 @@ test('conversation production model receives planner-selected role, material, an
   const calls = [];
   const roleRunner = { async run(call) {
     calls.push(call);
-    if (call.role_id === 'world_knowledge_query_planner') return { output: {
-      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
-      domains: ['npc_daily_life', 'material_culture', 'architecture_settlement'],
-      focus_refs: ['wk:npc_daily_life:fisher', 'wk:material_culture:work-clothing',
-        'wk:architecture_settlement:fishing-workspace'],
-      requested_predicates: ['supports_function'], search_hints: ['рыбак сеть одежда стоянка']
-    } };
+    if (call.role_id === 'world_knowledge_query_planner') {
+      const request = JSON.parse(call.messages[1].content);
+      return { output: {
+        schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+        domains: ['npc_daily_life', 'material_culture', 'architecture_settlement'],
+        focus_refs: Object.keys(request.available_knowledge_refs),
+        requested_predicates: ['supports_function'],
+        search_hints: ['рыбак сеть одежда стоянка']
+      } };
+    }
     if (call.role_id === 'npc_conversation_grounding_auditor') return { output: {
       pass: true, concerns: []
     } };

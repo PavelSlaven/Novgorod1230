@@ -22,6 +22,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     state, contracts, registry, repository, semanticResolver,
     turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
     locationProfiles, scenePresentation,
+    itemLabels = {},
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
@@ -91,7 +92,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
         partyId: preparedPartyId, state: preparedState, clock, turnBudget
       }) : null;
   const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
-    committedState, locationProfiles, scenePresentation
+    committedState, locationProfiles, scenePresentation, itemLabels
   });
   const { temporalAdvance, bodyEffect, evaluatePrecondition, createVisibleProjector } =
     createLowerDvinaTracePhase2ServiceFlow({
@@ -107,6 +108,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
       ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
+        itemLabels,
         assertNeedsCheckAllowed: needsCheckGuard,
         recordNeedsCheckFilter }),
     ordinaryContainerContentsResolver:
@@ -265,7 +267,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
           turn10Contracts, phase8Contracts, phase9Contracts,
           phase10Contracts, turnStepApprovedOwners: {
             ...turnStepApprovedOwners, scenePresentation,
-            loadPreparedMovementScene
+            loadPreparedMovementScene, projectCurrentScene
           }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {

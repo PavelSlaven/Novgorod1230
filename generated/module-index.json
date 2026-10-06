@@ -107,7 +107,8 @@
         "canonical `actor_base_appearance_v1`: `identity.sex_category`, `identity.age_category` and physical `identity.appearance`",
         "biography fields",
         "social and skill references",
-        "actor state shape and invariants"
+        "actor state shape and invariants",
+        "canonical source records for household membership or another explicit form of life, and named family/social relations"
       ],
       "path": "packages/actors",
       "public_entry": "./src/index.js",

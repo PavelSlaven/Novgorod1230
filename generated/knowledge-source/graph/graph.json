@@ -34,7 +34,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 228
+        "line_end": 229
       }
     },
     {
@@ -83,6 +83,18 @@
         "file": "npc_conversation_mode_contract.md",
         "line_start": 1,
         "line_end": 2802
+      }
+    },
+    {
+      "id": "canonical-document:npc-family-household-contract",
+      "type": "canonical_document",
+      "label": "npc_family_household_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/npc_family_household_contract.md",
+      "source_location": {
+        "file": "npc_family_household_contract.md",
+        "line_start": 1,
+        "line_end": 31
       }
     },
     {

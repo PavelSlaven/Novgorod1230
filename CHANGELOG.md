@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- docs(npc): add approved ACTIVE family, household and named-relations norm (D122, D124–D128); record pending household data approval/import as LW-136 (#133, #259, #338)
 - docs(player-start): add D111 player character and start contract; LW-135 added (#109)
 - docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
 - fix(npc): replay committed conversation claims from the verified prepared request snapshot (#98)

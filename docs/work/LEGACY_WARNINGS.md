@@ -121,6 +121,7 @@
 | 131 | `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` | item/inventory rows с typed label gap временно скрыты от planner вопреки §7.2 | [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236) |
 | 132 | `apps/game-server` turn-step planner input projection | P-проекция группы 3 для intent_router и turn_step_planner не сделана; D72 service ids/version/counts остаются во входе | отдельная задача со своим стендом |
 | 135 | `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json` | семь `player_inputs` задают роль, занятие и имя «Микула», вопреки D111; долг реализации #109 | [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109) |
+| 136 | `npc_family_household_contract.md`, `packages/actors/MODULE.md`, household data/import | нет утверждённых и импортированных данных дворов, необходимых для полноты мира | [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -729,3 +730,9 @@
 - **Что.** Их стартовые заявки фиксируют игроку роль, занятие и имя «Микула». Это расходится с ACTIVE-нормой «Персонаж игрока и место старта» (D108, D110, D111): место и сезон задают обстоятельства, а героя — заявка игрока. Текущий runtime остаётся долгом отдельной задачи #109.
 - **Как жить.** Не использовать эти поля как норму и не переносить их ограничения в новую генерацию. Закрыть после реализации #109 и проверки свободной заявки на стартах.
 - **Issue.** [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109)
+
+### LW-136 — исходные данные дворов не утверждены и не импортированы (npc-family-norm-apply)
+- **Где.** `npc_family_household_contract.md`, `packages/actors/MODULE.md` и отдельные наборы исходных данных дворов и связей.
+- **Что.** ACTIVE-норма требует для каждого человека двор либо явно указанную иную форму жизни и полный состав каждого двора на выбранную дату начала игры. Данные дворов для этого состава ещё не утверждены и не импортированы (#259, #338).
+- **Как жить.** Считать полноту обязательным требованием нормы, а не подтверждённым свойством текущих данных или runtime. Не объявлять исходный мир полным до отдельного утверждения и импорта данных дворов с проверкой состава и связей.
+- **Issue.** [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338)

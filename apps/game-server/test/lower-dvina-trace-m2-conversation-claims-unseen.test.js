@@ -4,6 +4,8 @@ import {
   buildNpcSemanticDecisionTrace,
   validateNpcSemanticDecisionTrace
 } from '@rus/npc-runtime';
+import { createM2ConversationModels } from
+  './lower-dvina-trace-m2-conversation-fixture.js';
 import { normalizeNpcDecision } from
   '../../../packages/turn/src/conversation-exchange-npc-batch.js';
 import {
@@ -158,3 +160,130 @@ test('an unseen-equivalent WK claim replays from its persisted prepared request'
   assert.deepEqual(replay.result.exchange.npc_decisions[0].request,
     committedDecision.request);
 });
+
+test('nonmatching replay snapshots fall back to the rebuilt request', async (t) => {
+  const fixture = await committedClaimFixture();
+  // Synthetic in-memory inputs exercise the selector boundary; mismatched
+  // snapshots here are not claims about rows accepted by the PostgreSQL reader.
+  const cases = [
+    ['no saved input', () => []],
+    ['duplicate matching inputs', ({ persistedInput }) => [
+      structuredClone(persistedInput), structuredClone(persistedInput)
+    ]],
+    ['different exchange identity', ({ persistedInput }) => [{
+      ...structuredClone(persistedInput),
+      request_snapshot: {
+        ...persistedInput.request_snapshot,
+        exchange_id: `${persistedInput.request_snapshot.exchange_id}:other`
+      }
+    }]],
+    ['different state version', ({ persistedInput }) => [{
+      ...structuredClone(persistedInput),
+      request_snapshot: {
+        ...persistedInput.request_snapshot,
+        state_version: `${persistedInput.request_snapshot.state_version}:other`
+      }
+    }]],
+    ['different NPC', ({ persistedInput }) => [{
+      ...structuredClone(persistedInput),
+      request_snapshot: {
+        ...persistedInput.request_snapshot,
+        npc_ref: ref('npc', 'another-npc')
+      }
+    }]],
+    ['same request with a different trace digest', ({ persistedInput }) => {
+      const differentTrace = buildNpcSemanticDecisionTrace({
+        request: persistedInput.request_snapshot,
+        plan: fixture.decision.proposal.plan,
+        root_turn_id: 'turn-unrelated-replay-input', working_revision: 0,
+        applied_change_set_id: 'change-unrelated-replay-input'
+      });
+      return [{ ...structuredClone(persistedInput), trace: differentTrace }];
+    }]
+  ];
+
+  for (const [name, inputsFor] of cases) {
+    await t.test(name, async () => {
+      const inputs = inputsFor(fixture);
+      const replayState = structuredClone(fixture.initialState);
+      hydrateSemanticDecisionReplay(replayState, [fixture.trace], inputs);
+      let modelCalls = 0;
+      let prepareCalls = 0;
+      const replayModel = async () => {
+        modelCalls += 1;
+        throw new Error('committed decision must not call the model');
+      };
+      replayModel.prepareRequest = async () => {
+        prepareCalls += 1;
+        throw new Error('committed decision must not prepare again');
+      };
+
+      await assert.rejects(runPhase3({
+        state: replayState, contracts: fixture.contracts,
+        rawText: 'Как ловят рыбу?', inputDigest: digest('a'),
+        responseKind: 'speech', npcSemanticModel: replayModel
+      }), (error) => {
+        assert.equal(error.code, 'TURN_CONVERSATION_NPC_DECISION_INVALID');
+        return true;
+      });
+      assert.equal(modelCalls, 0);
+      assert.equal(prepareCalls, 0);
+    });
+  }
+});
+
+async function committedClaimFixture() {
+  const initialState = phase3State();
+  const contracts = resolveTracePhase3Contracts({
+    state: initialState, bundle: revision14Bundle
+  });
+  const knowledgeRef = ref('knowledge_record', 'claim:negative-cases');
+  const models = createM2ConversationModels();
+  let unpreparedRequest;
+  const semanticModel = async (request) => {
+    const plan = await models.npcSemanticModel(request);
+    plan.speech.utterance_text = 'Рыбацкая работа связана с сетями.';
+    plan.speech.claims = [{ claim_id: 'net-fishing',
+      content_summary: 'Рыбацкая работа связана с сетями.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: [knowledgeRef], mentioned_entity_refs: [] }];
+    return plan;
+  };
+  semanticModel.prepareRequest = async (request) => {
+    unpreparedRequest = structuredClone(request);
+    return { request: {
+      ...request,
+      allowed_references: {
+        ...request.allowed_references,
+        knowledge_refs: [...request.allowed_references.knowledge_refs,
+          knowledgeRef].sort((left, right) =>
+          `${left.entity_kind}\u0000${left.entity_id}`.localeCompare(
+            `${right.entity_kind}\u0000${right.entity_id}`))
+      }
+    } };
+  };
+  const first = await runPhase3({
+    state: structuredClone(initialState), contracts,
+    rawText: 'Как ловят рыбу?', inputDigest: digest('a'),
+    responseKind: 'speech', npcSemanticModel: semanticModel
+  });
+  const decision = first.result.exchange.npc_decisions[0];
+  const trace = buildNpcSemanticDecisionTrace({
+    request: decision.request, plan: decision.proposal.plan,
+    root_turn_id: 'turn-negative-replay-cases', working_revision: 0,
+    applied_change_set_id: 'change-negative-replay-cases'
+  });
+  const persistedInput = {
+    trace,
+    request_snapshot: structuredClone(decision.request),
+    boundary_snapshot: structuredClone(decision.boundary),
+    signal_records: []
+  };
+  assert.equal(validateNpcSemanticDecisionTrace(trace, decision.request), true);
+  assert.notDeepEqual(decision.request, unpreparedRequest);
+  assert.equal(validateNpcSemanticDecisionTrace(trace, unpreparedRequest), false);
+  return {
+    initialState, contracts, decision, trace, persistedInput,
+    unpreparedRequest
+  };
+}

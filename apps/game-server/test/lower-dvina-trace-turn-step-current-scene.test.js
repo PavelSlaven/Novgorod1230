@@ -10,6 +10,8 @@ import {
   '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { projectLowerDvinaTracePlayerSafeState } from
   '../src/runtime/lower-dvina-trace-player-safe-state.js';
+import { projectTurnStepModelRequest } from
+  '../src/runtime/lower-dvina-trace-turn-step-model-projection.js';
 import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
@@ -455,6 +457,28 @@ test('current scene retains a named item held by the player', () => {
     display_label: 'клочок шерсти', recognition: 'recognized',
     visible_status: 'у вас в руках'
   }]);
+});
+
+test('game-created item name from ordinary metadata reaches the planner', () => {
+  const state = committedState();
+  state.items = [{ item_id: 'runtime-item:wood-block', template_id: null,
+    state: { ordinary_metadata: { semantic_type: 'ordinary_wood_piece',
+      name: 'обычный деревянный брусок' } },
+    placement: { holder_character_id: state.actor_id, physical_position: 'hands' }
+  }];
+  const scene = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  const projected = projectLowerDvinaTracePlayerSafeState({
+    committed_state: scene, actor_id: state.actor_id
+  });
+  const planner = projectTurnStepModelRequest({ root_player_action: 'Разделить вещь.',
+    player_safe_state: projected.player_safe_state }).request;
+
+  assert.equal(planner.player_safe_state.items.find(({ item_id: id }) =>
+    id === 'runtime-item:wood-block')?.name, 'обычный деревянный брусок');
+  assert.equal(planner.player_safe_state.current_visible_context.visible_objects
+    .find(({ entity_ref: ref }) => ref?.entity_id === 'runtime-item:wood-block')
+    ?.display_label, 'обычный деревянный брусок');
 });
 
 test('current scene carries committed physical facts of visible items', () => {

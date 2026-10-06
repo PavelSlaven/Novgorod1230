@@ -54,7 +54,8 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan,
   const context = writePlan.write_targets.find((entry) => entry.target === 'party_visible_context_package')?.value;
   if (!context) throw fail('TRACE_PHASE_4_VISIBLE_CONTEXT_MISSING');
   const visibleEnvelope = phase4VisibleEnvelope({ partyId, nextVersion, turnNumber,
-    changeSetId, idemId, factual, visibleContext: context, contracts: phase4Contracts });
+    changeSetId, idemId, factual, visibleContext: context, contracts: phase4Contracts,
+    onLabelGapsOmitted: turnStepApprovedOwners?.recordVisiblePackageDiagnostic });
   next.last_turn.visible_package = { package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest, change_set_id: changeSetId };
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({ partyId,

@@ -112,6 +112,93 @@ test('gap projection preserves a longer unrelated item ref and drops its exact o
       display_label: 'сосновое весло' }]);
 });
 
+test('gap projection recognizes every exact item reference shape in operations', () => {
+  const projected = projectTurnStepModelRequest(request({
+    available_domain_operations: [
+      { op: 'use', instrument_refs: ['gap-instance'],
+        description: 'GAP_INSTRUMENT_OPERATION' },
+      { op: 'use', action_production: { source_refs: ['gap-item'],
+        tool_refs: ['gap-instance'] }, description: 'GAP_SOURCE_OPERATION' },
+      { op: 'use', future_ref: 'gap-instance',
+        description: 'GAP_FUTURE_REF_OPERATION' },
+      { op: 'use', entity_id: 'gap-item', description: 'GAP_ENTITY_ID_OPERATION' },
+      { op: 'use', item_id: 'gap-item', description: 'GAP_ITEM_ID_OPERATION' },
+      { op: 'use', instance_id: 'gap-instance',
+        description: 'GAP_INSTANCE_ID_OPERATION' },
+      { op: 'use', item_ref: 'item-10',
+        description: 'NAMED_NEIGHBOR_OPERATION' }
+    ],
+    player_safe_state: {
+      items: [{ item_id: 'gap-item', instance_id: 'gap-instance',
+        name: 'SECRET_GAP_NAME' }, { item_id: 'item-10', name: 'весло' }],
+      current_visible_context: { visible_objects: [
+        { entity_ref: { entity_kind: 'item', entity_id: 'gap-instance' },
+          label_gap: { code: 'player_safe_item_label_required' } },
+        { entity_ref: { entity_kind: 'item', entity_id: 'item-10' },
+          display_label: 'весло' }
+      ] }
+    }
+  })).request;
+
+  assert.deepEqual(projected.available_domain_operations, [{ op: 'use',
+    item_ref: 'item-10', description: 'NAMED_NEIGHBOR_OPERATION' }]);
+});
+
+test('planner main and repair omit hidden array refs from choices and repair context', async () => {
+  const calls = [];
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) { calls.push(call); return { output: output() }; } }
+  });
+  const input = request({ available_domain_operations: [
+    { op: 'use', tool_refs: ['gap-instance'], description: 'GAP_CHOICE' },
+    { op: 'use', item_ref: 'named-item', description: 'NAMED_CHOICE' }
+  ], player_safe_state: {
+    items: [{ item_id: 'gap-item', instance_id: 'gap-instance',
+      name: 'SECRET_GAP_NAME' }, { item_id: 'named-item', name: 'весло' }],
+    current_visible_context: { visible_objects: [
+      { entity_ref: { entity_kind: 'item', entity_id: 'gap-instance' },
+        label_gap: { code: 'player_safe_item_label_required' } },
+      { entity_ref: { entity_kind: 'item', entity_id: 'named-item' },
+        display_label: 'весло' }
+    ] }
+  } });
+
+  await model(input);
+  await model(input, { original_output: { ...output(), operations: [
+    { op: 'use', action_production: { source_refs: ['gap-item'],
+      tool_refs: ['gap-instance'] }, description: 'GAP_REJECTED_OPERATION' }
+  ] }, structural_errors: [{ path: '$.operations', code: 'operation_semantic_grounding',
+    rejected_operation: { op: 'use', action_production: {
+      source_refs: ['gap-item'], tool_refs: ['gap-instance'] },
+    description: 'GAP_REJECTED_OPERATION' } }] });
+
+  assert.equal(calls.length, 2);
+  for (const call of calls) {
+    const wire = JSON.stringify(call.messages);
+    assert.doesNotMatch(wire, /gap-instance|gap-item|SECRET_GAP_NAME|GAP_/u);
+    assert.match(wire, /named-item|NAMED_CHOICE/u);
+  }
+});
+
+test('planner rejects a direct answer that references a gap item in *_refs', async () => {
+  const input = request({ player_safe_state: { items: [
+    { item_id: 'gap-item', instance_id: 'gap-instance' }
+  ], current_visible_context: { visible_objects: [{ entity_ref: {
+    entity_kind: 'item', entity_id: 'gap-instance' },
+  label_gap: { code: 'player_safe_item_label_required' } }] } } });
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run() { return { output: { ...output(),
+      resolution: 'domain_request', goal_result: 'pending', operations: [
+        { op: 'use', action_production: { source_refs: ['gap-item'],
+          tool_refs: ['gap-instance'] } }
+      ] } }; } }
+  });
+
+  await assert.rejects(() => model(input), (error) =>
+    error.code === 'TURN_STEP_PLAN_INVALID'
+      && error.message === 'Turn-step plan references player-safe item data unavailable to the planner.');
+});
+
 test('planner main and repair omit whole operations linked to a gap item', async () => {
   const calls = [];
   const model = createLowerDvinaTraceTurnStepModel({

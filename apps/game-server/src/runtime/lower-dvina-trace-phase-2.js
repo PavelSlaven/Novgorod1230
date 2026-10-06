@@ -125,6 +125,13 @@ export function createLowerDvinaTracePhase2Runtime({
             });
           } catch { /* Diagnostics must not affect the turn. */ }
         };
+        const recordVisiblePackageDiagnostic = (count) => {
+          try {
+            llmDiagnostics?.recordGameplayTrace?.({
+              event: 'visible_item_label_gap_omitted', omitted_count: count
+            });
+          } catch { /* Diagnostics must not affect the turn. */ }
+        };
         const authored = state.scenario_id != null
           && state.scenario_id !== TRACE_SCENARIO_ID;
         const scenarioDefinitionRevision = authored ? null
@@ -274,7 +281,8 @@ export function createLowerDvinaTracePhase2Runtime({
         const registry = authored ? await liveWorldTurnRegistry({ state,
           requestId, spatialExpansionRuntime, spatialLocalSceneRuntime,
           inputDigest, authoredTurnProfile, playerConversationModel,
-          npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
+          npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion,
+          onLabelGapsOmitted: recordVisiblePackageDiagnostic })
           : buildTracePhase2Registry({
           bundle,
           turnStepNeedsCheckGuard: assertNeedsCheckAllowed,

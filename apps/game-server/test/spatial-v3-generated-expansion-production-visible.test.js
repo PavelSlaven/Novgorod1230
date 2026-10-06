@@ -11,8 +11,10 @@ test('generated topology commit projects the current source actor in its P16 tra
   const request = { party_id: 'party:1', actor_id: 'player:1',
     source_position_id: 'position:inside' };
   const exits = [{ id: 'exit:1' }];
+  const diagnostics = [];
   const result = await projectSpatialV3GeneratedExpansionVisiblePackage({ transaction,
     request, closure: { directional_exits: exits },
+    onLabelGapsOmitted: (count) => diagnostics.push(count),
     envelopeInput: { party_id: request.party_id, turn_id: 'expansion:1',
       committed_state_version: '2', change_set_id: 'expansion:1',
       package_id: 'visible:expansion:1', idempotency_record_id: 'idem:expansion:1',
@@ -39,4 +41,5 @@ test('generated topology commit projects the current source actor in its P16 tra
     'spatial_v3_current_visible_context_v1');
   assert.deepEqual(result.envelope.visible_payload.visible_objects.map((item) =>
     item.entity_ref.entity_id), ['named-item']);
+  assert.deepEqual(diagnostics, [1]);
 });

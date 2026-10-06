@@ -9,22 +9,25 @@ import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
 import { assertSharedSemanticSnapshotSafe } from
   './lower-dvina-trace-conversation-state.js';
 import { SITE_TRAVERSAL_OWNER } from './spatial-v3-site-traversal-commit.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
   partyId, turnNumber, nextVersion, changeSetId, idemId, envelope,
-  currentLightPhase = null
+  currentLightPhase = null, onLabelGapsOmitted = null
 }) {
   const context = envelope.visible_context;
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(context, { onLabelGapsOmitted });
   const visiblePayload = {
     schema: 'temporal_visible_package.v1',
-    perceived_scene: context.visible_scene,
-    perceived_changes: structuredClone(context.visible_changes),
-    sensory_details: structuredClone(context.sensory_details),
-    visible_npcs: structuredClone(context.visible_npc),
-    visible_objects: structuredClone(context.visible_objects.filter((item) =>
-      item?.label_gap?.code !== 'player_safe_item_label_required')),
-    known_context: structuredClone(context.known_context),
-    uncertainties: structuredClone(context.uncertainties),
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: structuredClone(playerContext.visible_changes),
+    sensory_details: structuredClone(playerContext.sensory_details),
+    visible_npcs: structuredClone(playerContext.visible_npc),
+    visible_objects: structuredClone(playerContext.visible_objects),
+    known_context: structuredClone(playerContext.known_context),
+    uncertainties: structuredClone(playerContext.uncertainties),
     hypotheses: [],
     player_safe_interruption: envelope.loop_trace.clarification?.question
       ?? null,

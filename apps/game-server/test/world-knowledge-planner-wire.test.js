@@ -16,7 +16,7 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
           return { schema: 'world_knowledge_slice_v1', pack_ref: 'pack:test',
             pack_revision: 'revision:test', purpose: query.purpose,
             coverage: [], verdict: 'insufficient', hard_constraints: [], facts: [],
-            disputes: [], gaps: [], context_text: 'Unchanged bounded slice.' };
+            disputes: [], gaps: [] };
         } } },
       telemetry: { onGameplayTrace: trace => traces.push(trace) },
       roleRunner: { async run(call) {
@@ -59,9 +59,9 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
       /keys of request\.available_knowledge_refs/u);
     assert.deepEqual(queries[0].focus_refs, [refs[256]]);
     assert.deepEqual(queries[0].domains, ['material']);
-    assert.deepEqual(queries[0].budget, { max_facts: 12, max_candidates: 12, max_context_chars: 5000 });
+    assert.deepEqual(queries[0].budget, { max_facts: 12, max_candidates: 12 });
     assert.equal(queries.length, 1);
-    assert.equal(result.world_knowledge.context_text, 'Unchanged bounded slice.');
+    assert.deepEqual(result.world_knowledge.facts, []);
     assert.deepEqual(input, before);
   });
 }

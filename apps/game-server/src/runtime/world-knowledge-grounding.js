@@ -53,7 +53,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
           query_locale: null, domains: Object.freeze([]),
           focus_refs: Object.freeze([]), predicates: Object.freeze([]),
           coverage: Object.freeze([]), claim_refs: Object.freeze([]),
-          slice_chars: 0, vector_status: 'cache_hit', vector_error_code: null,
+          vector_status: 'cache_hit', vector_error_code: null,
           query_embedding_ms: 0, vector_scan_ms: 0, retrieval_ms: 0,
           retrieval_observability: null,
           cache_hit: true, cache_miss: false,
@@ -128,8 +128,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         requested_predicates: [],
         search_hints: effectivePlan.search_hints,
         context,
-        budget: { max_facts: 12, max_candidates: 12,
-          max_context_chars: 5000 }
+        budget: { max_facts: 12, max_candidates: 12 }
       };
       const questionClasses = questionClassesOf(bundle, purpose,
         effectivePlan.domains);
@@ -229,7 +228,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
           focusRefs: [...effectivePlan.focus_refs],
           predicates: [...query.requested_predicates],
           coverage: (slice.coverage ?? []).map((entry) => ({ ...entry })),
-          claimRefs: [], sliceChars: 0,
+          claimRefs: [],
           vectorStatus: 'ok', embeddingMs, vectorMs,
           retrievalMs: coreResolutionMs, retrievalObservability,
           cacheHit: false });
@@ -261,7 +260,6 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         coverage: slice.coverage.map((entry) => ({ ...entry })),
         claimRefs: [...slice.hard_constraints, ...slice.facts]
           .map(({ claim_ref }) => claim_ref),
-        sliceChars: slice.context_text.length,
         vectorStatus: 'ok', embeddingMs, vectorMs,
         retrievalMs: coreResolutionMs, retrievalObservability,
         cacheHit: false });
@@ -311,7 +309,7 @@ function questionClassesOf(bundle, purpose, domains) {
 }
 function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
   plannerCalls, started, packRevision, domains, focusRefs, predicates,
-  coverage, claimRefs, sliceChars, vectorStatus, embeddingMs, vectorMs,
+  coverage, claimRefs, vectorStatus, embeddingMs, vectorMs,
   retrievalMs, retrievalObservability, cacheHit, defaultQuery = false,
   effectivePlan = null }) {
   telemetry?.onDetail?.(Object.freeze({
@@ -331,7 +329,6 @@ function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
     predicates: Object.freeze([...predicates]),
     coverage: Object.freeze(coverage.map((entry) => Object.freeze({ ...entry }))),
     claim_refs: Object.freeze([...claimRefs]),
-    slice_chars: sliceChars,
     vector_status: vectorStatus, vector_error_code: null,
     query_embedding_ms: embeddingMs, vector_scan_ms: vectorMs,
     retrieval_ms: retrievalMs,

@@ -23,6 +23,9 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
   const environment = internal.environment_snapshot;
   if (environment?.schema !== 'rus.approved_initial_environment.v1'
     || !environment.calendar_date || !environment.season || !environment.light_state) gap();
+  const weatherState = Object.fromEntries(['sky', 'precipitation', 'visibility', 'wind']
+    .flatMap((field) => typeof environment.weather_state?.[field] === 'string'
+      ? [[field, environment.weather_state[field]]] : []));
   const identity = `${visible.player.name} — ${visible.player.social_status.display_name}.`;
   const body = bodyStateSummary(visible.body);
   const naturalFacts = naturalScenePerception.perceived_facts;
@@ -68,11 +71,13 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
   const result = {
     version: 1, schema: 'visible_context_package', request_id: requestId, visible_context_status: 'formed',
     frame: { region_id: position.g4_id, year: environment.calendar_date.year, season: environment.season,
-      clock: structuredClone(visible.timestamp), weather_state: {}, light_profile: environment.light_state },
+      clock: structuredClone(visible.timestamp),
+      weather_state: weatherState,
+      light_profile: environment.light_state },
     position: { region_id: position.g4_id, place_id: position.g5_node_id, location_id: position.g5_node_id,
       minilocation_id: position.g6_instance_id, anchor_id: position.g5_anchor_id },
     narrator_scope: { allowed_surfaces: ['opening'], forbidden_surfaces: ['hidden_state'],
-      style_constraints: ['connected_literary_russian', 'second_person', 'two_to_four_paragraphs'],
+      style_constraints: ['connected_literary_russian', 'second_person'],
       knowledge_boundary: { player_safe_only: true } },
     visible_scene_dossier: { must_include: mustInclude,
       must_not_include: ['unprovided history or preceding journey', 'unprovided goal or obligation',
@@ -81,7 +86,11 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
     visible_items: observedItems, visible_containers: [], visible_risks: [],
     audible_context: naturalFacts.filter((fact) => fact.channel === 'acoustic').map((fact) => ({
       text: fact.text, source_ref: { position_id: fact.source_position_id } })),
-    smell_context: [], touch_body_context: [{ text: body }], weather_light_context: [],
+    smell_context: [], touch_body_context: [{ text: body }],
+    weather_light_context: [{ season: environment.season,
+      ...(environment.day_part ? { day_part: environment.day_part } : {}),
+      light_state: environment.light_state,
+      ...(Object.keys(weatherState).length ? { weather_state: weatherState } : {}) }],
     known_context: [...known.map((text) => ({ text, basis_refs: [actorId] })),
       ...ownItems.map((item) => ({ text: `При вас: ${item.name}.`, basis_refs: [actorId, item.item_id] }))],
     rumor_context: [], uncertain_context: [], available_actions_context: [], hidden_filtered_out: [],

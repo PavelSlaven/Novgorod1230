@@ -7,15 +7,16 @@ export function initialNpcRoutineRecords({ result, partyId, changeSetId, npcs })
     const profile = runtime.profile;
     const memberIndex = members.findIndex((member) =>
       member.binding.destination.location_profile_ref === npc.location_profile_ref);
+    const offstage = ['offstage_away', 'location_gap'].includes(runtime.presence_state);
     const deferred = memberIndex >= 0
       ? { kind: 'prepared_scene', snapshot_id: `preparation:${partyId}:${result.run_id}:first-entry`,
           member_ordinal: memberIndex }
       : { kind: 'legacy_anchor', anchor_id: npc.anchor_id };
-    if (memberIndex < 0 && !npc.anchor_id && !npc.position_id) throw new Error('NPC_ROUTINE_PLACEMENT_GAP');
+    if (memberIndex < 0 && !npc.anchor_id && !npc.position_id && !offstage) throw new Error('NPC_ROUTINE_PLACEMENT_GAP');
     const profileRef = versioned('activity_profile', profile.profile_id, profile.revision);
     const causal = { ...versioned('condition_set', 'npc-approved-routine', 1),
       routine_state: structuredClone(runtime),
-      ...(npc.position_id ? {} : { deferred_placement: deferred }) };
+      ...(!npc.position_id && !offstage ? { deferred_placement: deferred } : {}) };
     const next = runtime.next_transition_at;
     return { id: `npc-schedule:${partyId}:${npc.instance_id}`, party_id: partyId,
       npc_id: npc.instance_id, current_position_node_id: npc.position_id ?? null,

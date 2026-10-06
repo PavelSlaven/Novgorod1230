@@ -54,7 +54,7 @@ test('intent_router registry metadata matches @rus/turn semantic resolver caller
   const { config } = resolveLlmExecutionConfig({
     scope: 'turn_runtime',
     roleId: TurnRuntimeRoles.INTENT_ROUTER,
-    env: { DEEPSEEK_API_KEY: 'test-key' }
+    env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1' }
   });
   assert.equal(config.expectedSchema, null);
   assert.equal(config.outputContractMode, OutputContractModes.JSON_OBJECT);

@@ -106,7 +106,7 @@
       "source_location": {
         "file": "spatial_architecture_standard_g0_g6.md",
         "line_start": 1,
-        "line_end": 7609
+        "line_end": 7607
       }
     },
     {
@@ -178,7 +178,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1754
+        "line_end": 1756
       }
     },
     {
@@ -214,7 +214,7 @@
       "source_location": {
         "file": "world_knowledge_platform_implementation_contract.md",
         "line_start": 1,
-        "line_end": 4035
+        "line_end": 4029
       }
     }
   ],

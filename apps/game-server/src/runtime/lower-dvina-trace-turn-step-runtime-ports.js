@@ -128,26 +128,23 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         const beforeProjection = structuredClone(input.working_projection);
         preparedDomainEffect.advanceState(input);
         let projection = structuredClone(input.working_projection);
+        let movementCommittedState = null;
         if (isMovement) {
           let committedState = preparedDomainEffect.currentState();
           if (typeof loadPreparedMovementScene === 'function'
               && typeof input.prepared_effect.consequence?.position_transition
                 ?.destination_site_id === 'string') {
             committedState = await loadPreparedMovementScene({
-              partyId, state: committedState
+              partyId, state: committedState,
+              clock: input.prepared_effect.time_update.clock_after
             });
             preparedDomainEffect.replaceCurrentState(committedState);
           }
+          movementCommittedState = committedState;
           if (typeof projectCurrentScene === 'function') {
             projection = refreshPreparedMovementScene({ projection,
               committedState, projectCurrentScene });
           }
-          try {
-            onNpcSceneProjection?.({ request_id: requestId,
-              before: npcSceneProjectionDiagnostic(beforeState,
-                beforeProjection),
-              after: npcSceneProjectionDiagnostic(committedState, projection) });
-          } catch { /* Opt-in capture must never affect gameplay. */ }
         }
         if ((input.prepared_effect.time_update.temporal_results ?? []).some(
           (result) => result.combined_change_set?.proposals?.some(
@@ -162,7 +159,17 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
           projection = applyLocalFireRuntimeProjection({ projection,
             actor: input.actor, plan, state, resolveItemMechanics });
         }
-        return workingProjectionAuthority.admit(projection);
+        const admittedProjection = workingProjectionAuthority.admit(projection);
+        if (isMovement) {
+          try {
+            onNpcSceneProjection?.({ request_id: requestId,
+              before: npcSceneProjectionDiagnostic(beforeState,
+                beforeProjection),
+              after: npcSceneProjectionDiagnostic(movementCommittedState
+                ?? preparedDomainEffect.currentState(), admittedProjection) });
+          } catch { /* Opt-in capture must never affect gameplay. */ }
+        }
+        return admittedProjection;
       }
     }),
     resolveCheckContext: (input) =>
@@ -200,7 +207,8 @@ function npcSceneProjectionDiagnostic(state, projection) {
       ? position.g6_instance_id ?? position.g6_id ?? null : null);
   const ids = (record) => [record?.instance_id, record?.npc_id,
     record?.actor_id].find((id) => typeof id === 'string') ?? null;
-  const visibleIds = (state?.current_visible_context?.visible_npc ?? [])
+  const visibleIds = (projection?.current_visible_context?.visible_npc
+    ?? state?.current_visible_context?.visible_npc ?? [])
     .map((npc) => npc?.entity_ref?.entity_kind === 'npc'
       ? npc.entity_ref.entity_id : null).filter(Boolean);
   return {

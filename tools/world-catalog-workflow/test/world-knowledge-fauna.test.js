@@ -19,7 +19,7 @@ function query(focus_refs, overrides = {}) {
     domains: ['biology_physiology'], focus_refs,
     requested_predicates: [], search_hints: [],
     context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'], actor_facets: {} },
-    budget: { max_facts: 24, max_candidates: 24, max_context_chars: 7000 },
+    budget: { max_facts: 24, max_candidates: 24 },
     ...overrides
   });
 }

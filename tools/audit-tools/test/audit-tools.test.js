@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createAuditManifest, verifyAuditEntries } from '../src/index.js';
 
-test('audit manifest hashes a safe source tree', async () => {
+test('audit manifest hashes a safe source tree', async (t) => {
   const dir = await mkdtemp(join(tmpdir(), 'rus-audit-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
   await writeFile(join(dir, 'README.md'), 'ok');
   const manifest = await createAuditManifest(dir);
   assert.equal(manifest.file_count, 1);

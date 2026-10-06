@@ -138,7 +138,7 @@ function installDeterministicFetch(seen) {
       seen.assessmentCalls = (seen.assessmentCalls ?? 0) + 1;
       return respond({ mode: 'discovery', support_refs: [] });
     }
-    if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+    if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       seen.groundingAuditCalls = (seen.groundingAuditCalls ?? 0) + 1;
       return respond({ pass: true, concerns: [] });
     }

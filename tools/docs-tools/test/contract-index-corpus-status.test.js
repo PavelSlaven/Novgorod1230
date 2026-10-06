@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -47,8 +47,9 @@ test('parser rejects duplicate rows with different CONTRACT_INDEX labels', () =>
   assert.throws(() => parseContractIndexCorpusStatuses(markdown), /duplicate CONTRACT_INDEX rows with different labels/);
 });
 
-test('unseen-equivalent: CONTRACT_INDEX status change updates manifest status and priority_tier via repin', async () => {
+test('unseen-equivalent: CONTRACT_INDEX status change updates manifest status and priority_tier via repin', async (t) => {
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-index-status-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
   await mkdir(join(sourceRoot, 'corpus/DOCUMENTS'), { recursive: true });
   const indexName = 'CONTRACT_INDEX.md';
@@ -153,8 +154,9 @@ test('unseen-equivalent: CONTRACT_INDEX status change updates manifest status an
   assert.equal(items2.priority_tier, 'technical_contract');
 });
 
-test('knowledge:check rejects manual priority_tier in policy and wrong default_statuses', async () => {
+test('knowledge:check rejects manual priority_tier in policy and wrong default_statuses', async (t) => {
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-policy-drift-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
   await mkdir(join(sourceRoot, 'corpus/DOCUMENTS'), { recursive: true });
   const indexName = 'CONTRACT_INDEX.md';

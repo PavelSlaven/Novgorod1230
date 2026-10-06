@@ -1,6 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { createNarrationService } from '@rus/narration';
-import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { assembleNarrationAuditOutput, narrationAuditInstruction } from
   './lower-dvina-trace-narration-audit.js';
@@ -173,7 +172,7 @@ async function runNarrationRole(roleRunner, roleId, instruction, request,
     ? [narrationAuditInstruction(request),
       ...worldKnowledgeFactualClosure(grounded)].join(' ')
     : [instruction, ...worldKnowledgeFactualClosure(grounded)].join(' ');
-  const modelRequest = omitWorldKnowledgeContextText(grounded);
+  const modelRequest = grounded;
   const response = await roleRunner.run({ scope: 'turn_runtime', role_id: roleId,
     request_identity: request.request_id ?? request.request?.request_id,
     messages: [{ role: 'system', content: systemInstruction },

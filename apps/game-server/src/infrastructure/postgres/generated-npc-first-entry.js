@@ -17,10 +17,14 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
   const counts = new Map();
   const results = inputs.map((input) => {
     const { binding, position_id: positionId } = input;
-    const position = positions.get(positionId);
-    if (!position || position.party_id !== partyId || position.status !== 'active'
+    const presence = binding?.initial_presence_state;
+    const offstage = presence === 'offstage_away' || presence === 'location_gap';
+    const position = offstage ? null : positions.get(positionId);
+    if ((!offstage && (!position || position.party_id !== partyId || position.status !== 'active'))
       || binding?.world_revision_id !== worldRevisionId
-      || binding.g5_node_id !== scene.site_id || binding.anchor_id !== positionId
+      || binding.g5_node_id !== scene.site_id
+      || (!offstage && binding.anchor_id !== positionId)
+      || (offstage && (positionId != null || binding.anchor_id != null))
       || !same(binding.g4_ref, g4) || binding.g4_ref.world_revision_id !== worldRevisionId
       || Boolean(canonical) === Boolean(template)
       || (canonical ? binding.generation_template_ref != null || !same(binding.canonical_g5_ref, canonical)
@@ -29,14 +33,26 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
     if (!binding.regional_context_ref) gap('NPC_FIRST_ENTRY_REGIONAL_CONTEXT_GAP');
     if (!binding.clothing_profile_ref) gap('NPC_FIRST_ENTRY_CLOTHING_GAP');
     slots.add(binding.actor_slot_ref);
-    counts.set(positionId, (counts.get(positionId) ?? 0) + 1);
-    if (counts.get(positionId) > position.capacity) gap('NPC_FIRST_ENTRY_CAPACITY_GAP');
+    if (!offstage) {
+      counts.set(positionId, (counts.get(positionId) ?? 0) + 1);
+      if (counts.get(positionId) > position.capacity) gap('NPC_FIRST_ENTRY_CAPACITY_GAP');
+    }
     const result = materializeApprovedProceduralNpc({ ...input, party_id: partyId, run_id: runId });
     const npc = structuredClone(result.npc);
-    npc.position_id = positionId;
-    npc.routine_state = createNpcRoutineState({ profile: input.routine_profile,
+    npc.position_id = offstage ? null : positionId;
+    npc.routine_state = structuredClone(createNpcRoutineState({ profile: input.routine_profile,
       calendar_profile: calendarProfile, started_at: startedAt,
-      current_activity: npc.machine_state.current_activity });
+      current_activity: npc.machine_state.current_activity,
+      ...(input.schedule_context ? { schedule_context: input.schedule_context } : {}) }));
+    npc.routine_state.presence_state = presence ?? 'on_site';
+    if (input.schedule_gap_reason) npc.routine_state.schedule_gap_reason = input.schedule_gap_reason;
+    if (offstage) {
+      if (!input.schedule_context) {
+        npc.routine_state.status = 'inactive';
+        npc.routine_state.runtime_status = 'unavailable';
+        npc.routine_state.next_transition_at = null;
+      }
+    }
     npc.machine_state.current_activity = npcRoutineActivity(npc.routine_state);
     npc.machine_state.current_activity_ref = npc.machine_state.current_activity.activity_ref;
     npc.machine_state.runtime_status = npc.routine_state.runtime_status;
@@ -71,9 +87,10 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
       attribute_profile_snapshot: npc.base_attributes,
       profile_candidate_set_digest: npc.profile_candidate_set_digest,
       created_change_set_id: changeSetId, ...versioned }),
-    row('entity_placements', `npc:${npc.instance_id}`, {
+    ...(npc.position_id ? [row('entity_placements', `npc:${npc.instance_id}`, {
       entity_kind: 'npc', entity_id: npc.instance_id, placement_kind: 'scene_position',
       position_node_id: npc.position_id, occupies_capacity_units: 1, ...versioned })
+    ] : [])
   ]);
   for (const body of approvedNpcBodyRows(npcs, partyId, changeSetId)) {
     inserts.push(row('party_actor_body_states', `npc:${body.actor_id}`, body));

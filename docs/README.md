@@ -20,6 +20,7 @@
 | `docs/process/` | `REFERENCE / DOMAIN GUIDE` | procedure | обзор системы и её принципов: [HOW_WE_WORK](process/HOW_WE_WORK.md); рабочий цикл и процедуры: [WORKFLOW](process/WORKFLOW.md), [CHANGE_REQUEST](process/CHANGE_REQUEST.md), [CONTEXT_DUMP](process/CONTEXT_DUMP.md), [CORPUS_EDIT](process/CORPUS_EDIT.md) |
 | `docs/work/CURRENT_SPRINT.md` | `REFERENCE / DOMAIN GUIDE` | work-digest | выбор следующей задачи: [CURRENT_SPRINT](work/CURRENT_SPRINT.md) |
 | `docs/work/LEGACY_WARNINGS.md` | `REFERENCE / DOMAIN GUIDE` | work-digest | до правки — `rg` по затрагиваемым путям: [LEGACY_WARNINGS](work/LEGACY_WARNINGS.md) |
+| `docs/work/audits/` | `UNDECLARED` | evidence | снимки аудитов процесса, входные данные для исправлений; норм не создают: [аудит 2026-10-05](work/audits/process-audit-2026-10-05.md) |
 | `docs/work/temporal-world-v4/` | `UNDECLARED` | evidence | только задачи temporal v4; файлы читают tools (LW-010) — не переносить |
 | `docs/playtests/` | `UNDECLARED` | evidence | отчёты реальных gameplay runs по WR §24.1: [README](playtests/README.md); текущее поведение не описывают, читать только нужный run |
 | `docs/architecture/` | `UNDECLARED` | правила модулей и knowledge-source | код в apps/packages, границы зависимостей, правка корпуса |

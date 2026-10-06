@@ -275,7 +275,10 @@ export function buildCalendarProjectionProfile(record) {
     day_start_rule: { local_minute: '0' },
     local_offset_rule: { offset_minutes: '0' },
     daypart_rule: { ranges: [{ id: 'approved_date_projection', start_minute: '0', end_minute: '1440' }] },
-    season_rule: { ranges: [{ id: 'approved_date_projection', start_day: '1', end_day: '366' }] },
+    season_rule: { ranges: [{ id: 'approved_date_projection', start_day: '1', end_day: '366' }],
+      months_by_id: Object.fromEntries(['winter', 'spring', 'summer', 'autumn']
+        .map((season) => [season,
+          structuredClone(payload.season_rule?.[`${season}_months`] ?? [])])) },
     daylight_rule: { ranges: [{ id: 'approved_date_projection', start_day: '1', end_day: '366' }] }
   };
 }

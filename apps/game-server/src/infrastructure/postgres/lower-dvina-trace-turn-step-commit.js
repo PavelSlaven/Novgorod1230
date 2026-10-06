@@ -33,7 +33,8 @@ import { applyLocalFireProjection, createLocalFireAtomicWritePlan } from
 import { createSpatialSemanticAtomicWritePlan } from
   './spatial-semantic-atomic-write-plan.js';
 import { spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
-import { projectLowerDvinaTraceS1Resolutions } from
+import { projectLowerDvinaTraceS1Resolutions,
+  projectLowerDvinaTraceS1Visible } from
   '../../runtime/releases/lower-dvina-trace-s1-production.js';
 import { applyBackgroundNpcSemanticPlan,
   createBackgroundNpcSemanticAtomicWritePlan } from
@@ -74,7 +75,8 @@ export async function commitLowerDvinaTraceTurnStep({
   const preparedMovementState = preparedRoute != null
       && typeof turnStepApprovedOwners?.loadPreparedMovementScene === 'function'
       ? await turnStepApprovedOwners.loadPreparedMovementScene(
-        { partyId, state: projectPreparedDomainState(state, preparedRoute) })
+        { partyId, state: projectPreparedDomainState(state, preparedRoute),
+          clock: envelope.time_update.clock_after })
     : null;
   const nextVersion = state.party_state.state_version + 1;
   const turnNumber = state.party_state.turn_number + 1;
@@ -140,27 +142,45 @@ export async function commitLowerDvinaTraceTurnStep({
       'Background NPC semantic plan failed its sealed contract.',
       { status: 409 });
   }
-  const ordinaryVisibleContext = ordinaryPlan == null ? envelope.visible_context
+  const destinationVisibleContext = preparedMovementState?.current_visible_context
+    ?? envelope.consequence?.visible_seed?.destination_visible_context ?? null;
+  const sourceVisibleContext = destinationVisibleContext == null
+    ? envelope.visible_context
+    : {
+      ...destinationVisibleContext,
+      visible_changes: [...new Set([
+        ...(destinationVisibleContext.visible_changes ?? []),
+        ...(envelope.visible_context.visible_changes ?? [])
+      ])],
+      uncertainties: [...new Set([
+        ...(destinationVisibleContext.uncertainties ?? []),
+        ...(envelope.visible_context.uncertainties ?? [])
+      ])]
+    };
+  const ordinaryVisibleContext = ordinaryPlan == null ? sourceVisibleContext
     : applyOrdinaryMaterializationProjection({
-      next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
+      next: structuredClone(state), visibleContext: sourceVisibleContext, ordinaryPlan
     });
-  const currentPosition = state.position?.position_id
+  const currentPosition = envelope.consequence?.position_transition?.to_position_ref
+    ?? state.position?.position_id
     ?? state.position?.position_ref;
-  const committedSpatialResolutions = (state.spatial_semantic ?? [])
-    .flatMap(({ resolutions = [] }) => resolutions)
-    .filter(({ position_ref: positionRef }) => positionRef === currentPosition);
   const npcVisibleContext = projectBackgroundNpcRemainder({
     visibleContext: ordinaryVisibleContext,
     remainder: backgroundNpcSemanticPlan?.remainder
   });
-  const visibleContext = projectLowerDvinaTraceS1Resolutions({
+  const committedS1VisibleContext = projectLowerDvinaTraceS1Visible({
     playerSafeState: npcVisibleContext,
-    resolutions: [...committedSpatialResolutions,
-      ...(spatialSemanticPlan == null ? [] : [{
+    committedState: { ...state, position: { ...state.position,
+      position_id: currentPosition } },
+    resolverAvailable: true
+  });
+  const visibleContext = projectLowerDvinaTraceS1Resolutions({
+    playerSafeState: committedS1VisibleContext,
+    resolutions: spatialSemanticPlan == null ? [] : [{
         local_ref: spatialSemanticPlan.resolution.local_ref,
         position_ref: spatialSemanticPlan.resolution.position_ref,
         semantics: { kind: spatialSemanticPlan.formal_spatial_context.kind,
-          ...spatialSemanticPlan.resolution.outcome } }])]
+          ...spatialSemanticPlan.resolution.outcome } }]
   });
   const visibleEnvelopeInput = visibleContext === envelope.visible_context ? envelope
     : { ...envelope, visible_context: visibleContext };
@@ -208,7 +228,10 @@ export async function commitLowerDvinaTraceTurnStep({
       || pendingPositionChanged)
       && typeof turnStepApprovedOwners?.loadPreparedMovementScene === 'function'
     ? await turnStepApprovedOwners.loadPreparedMovementScene({
-      partyId, state: { ...persistedSnapshot, position: pendingScenePosition }
+      partyId, state: { ...persistedSnapshot, position: pendingScenePosition,
+        ...(destinationVisibleContext == null ? {}
+          : { prepared_destination_visible_context: visibleContext }) },
+      clock: envelope.time_update.clock_after
     })
     : preparedMovementState ?? state;
   const pendingProjectionState = withSceneNpcProjectionState({

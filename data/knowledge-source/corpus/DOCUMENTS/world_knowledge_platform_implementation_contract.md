@@ -83,10 +83,10 @@ materialization, persistence, body, combat, NPC, narration или spatial рад
 из-за правдоподобия. Варианты и качественные диапазоны предпочтительнее
 ложной точности.
 
-В compact model-facing context эти различия сохраняются метками `FACT`,
-`INFERENCE`, `ANALOGY`, `EDITORIAL`, `UNCERTAIN`, соответствующими
-directness. Structured slice сохраняет прежние qualifiers. Нельзя описать
-editorial claim как `FACT` только потому, что он прошёл plausibility review.
+Model-facing consumers получают structured slice и сохраняют его
+`qualifiers.directness`; отдельного compact prose renderer и отображения в
+текстовые метки этот контракт не задаёт. Нельзя описать editorial claim как
+`FACT` только потому, что он прошёл plausibility review.
 `EDITORIAL` означает редакторскую посылку, включая реконструкцию или
 обобщение источника; это не метка происхождения источника. Аналогия и вывод
 могут опираться как на внешний источник, так и на редакторскую реконструкцию.
@@ -578,7 +578,7 @@ OpenAI-compatible vLLM. Endpoint и optional key задаёт пользоват
 не provisions, не скачивает и не запускает gameplay model. До настройки UI
 остаётся честно unconfigured. Custom endpoint обязан реализовать
 `chat/completions`; readiness проверяется при Apply. Режим не допускает
-fallback на DeepSeek, managed model или другой provider:
+fallback на managed model или другой provider:
 connection/auth/model/timeout/invalid response возвращают typed failure,
 незавершённый ход не фиксируется.
 
@@ -2336,8 +2336,7 @@ Authoritative context merge включает `year` (календарь парт
   },
   "budget": {
     "max_facts": 24,
-    "max_candidates": 12,
-    "max_context_chars": 7000
+    "max_candidates": 12
   }
 }
 ```
@@ -2454,12 +2453,11 @@ Applicability и actor access остаются обязательными фил
   "candidates": [],
   "disputes": [],
   "gaps": [],
-  "evidence_fragments": [],
-  "context_text": "..."
+  "evidence_fragments": []
 }
 ```
 
-`context_text` — deterministic compact projection returned records, не LLM summary.
+Model-facing World Knowledge состоит только из структурированных полей среза.
 
 `search_hint_hits` — не model-facing поле среза: массив bool длиной
 `search_hints`, `true` если hint нашёл допущенный claim (`strongest > 0` по
@@ -2485,13 +2483,10 @@ hard constraints
 → disputes/gaps
 ```
 
-Slice не растёт пропорционально corpus.
-
-`context_text` — deterministic compact projection тех же structured records.
-Один helper `@rus/turn` `worldKnowledgePromptData` /
-`omitWorldKnowledgeContextText` всегда опускает `context_text` на private wire
-всех шести потребителей (turn step, O1, S1, N1, NPC autonomous, conversation);
-structured-поля несут то же содержание. (CR #152 / REVIEW-033)
+Число claims ограничивается `max_candidates` и `max_facts` в query budget.
+Каждый consumer передаёт модели сам структурированный slice; отдельная prose
+проекция и лимит её символов отсутствуют. Facts, qualifiers, constraints,
+coverage, disputes и gaps остаются в своих структурированных полях.
 
 ---
 
@@ -3140,7 +3135,6 @@ vector latency
 retrieval total latency
 facts returned
 hard constraints count
-slice size
 coverage/gaps
 cache hit/miss
 ```

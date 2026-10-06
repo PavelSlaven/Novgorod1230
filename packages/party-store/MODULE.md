@@ -41,6 +41,13 @@ read-only; all writes still pass through the game-server combined committer.
 
 Inputs are approved, idempotency-bound logical write plans plus explicit injected transaction/repository ports. A P23 semantic mutation additionally requires a caller-supplied, contract-valid `visible_package_persistence_envelope`; party-store never invents that projection. Outputs are committed-result semantics or typed failure; target ports fail closed when unavailable and never invoke v2 fallback. Unknown/v1 targets are rejected rather than mapped semantically.
 
+P23 NPC schedule readback keeps `current_endpoint_ref` null when the persisted
+position is null. `offstage_away` requires no endpoint and no placement.
+`location_gap` allows either no endpoint and no placement, or the exact endpoint
+matching the NPC's existing placement; both forms require the matching persisted
+routine marker. Snapshot checks revalidate these pairings and never infer a
+scene position from a missing endpoint.
+
 O1 uses the existing `./ordinary-materialization` closed aggregate only after
 `request_discovery` meaningful/code-first gates and model execution outside a
 physical transaction. Its logical plan carries candidate-free Stage A seed,

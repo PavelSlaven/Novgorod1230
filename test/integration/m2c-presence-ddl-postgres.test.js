@@ -5,7 +5,10 @@ import { randomUUID } from 'node:crypto';
 import test from 'node:test';
 import pg from 'pg';
 import { testContainerLabel } from '../helpers/test-containers.js';
-import { runSpatialV3TargetMigrations } from
+import {
+  runSpatialV3TargetMigrations,
+  SPATIAL_V3_TARGET_MIGRATION_FILES
+} from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 120_000 });
@@ -19,7 +22,7 @@ async function waitForPostgres(name) {
   throw new Error('postgres not ready');
 }
 
-test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', {
+test('world_base schema files + current party chain apply on fresh DBs; historical 037 upgrades 001-036; constraints hold', {
   timeout: 600_000
 }, async (t) => {
   if (docker(['version']).status !== 0) {
@@ -219,14 +222,14 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
     return true;
   });
 
-  // Party fresh: full 001-037 via runner.
+  // Party fresh: full current target migration chain via runner.
   const partyFresh = new pg.Pool({
     host: '127.0.0.1', port, user: 'postgres', password: 'local_only',
     database: 'party_m2c_fresh', max: 2
   });
   pools.push(partyFresh);
   const applied = await runSpatialV3TargetMigrations(partyFresh);
-  assert.equal(applied.applied, 37);
+  assert.equal(applied.applied, SPATIAL_V3_TARGET_MIGRATION_FILES.length);
 
   // Party v16-era: 001-036 then 037.
   const partyV16 = new pg.Pool({
@@ -278,10 +281,9 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
       return true;
     });
 
-    // schedule_profile_ref / candidate_profile_refs immutable via real UPDATE.
-    // The party reference trigger stays disabled for the whole block: with it
-    // enabled it rejects every UPDATE of this row on its own, so immutability
-    // would be proved by the wrong owner (REVIEW-069 N9).
+    // Candidate bindings stay immutable; 038 allows profile and pin changes
+    // only under a pinned seasonal selection. Historical 037 guards all three.
+    // Keep the party reference trigger disabled so lifecycle guards own rejects.
     await pool.query(`
       ALTER TABLE party_runtime.party_npc_spatial_schedules
         DISABLE TRIGGER party_npc_schedule_party_reference_valid
@@ -301,13 +303,27 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
         'active', 1, 'cs', 10, 0, 1
       )
     `);
-    for (const assignment of [`candidate_profile_refs='["x"]'::jsonb`,
-      `schedule_profile_ref='{}'::jsonb`, `dependency_pins='{}'::jsonb`]) {
+    const legacyLifecycleError = 'npc schedule identity, pins or state version changed';
+    const seasonalLifecycleError = 'npc schedule profile may change only with a pinned seasonal rule selection';
+    const identityLifecycleError = pool === partyFresh
+      ? 'npc schedule identity or state version changed'
+      : legacyLifecycleError;
+    const profilePinsLifecycleError = pool === partyFresh
+      ? seasonalLifecycleError
+      : legacyLifecycleError;
+    for (const [assignment, expectedError] of [
+      [`candidate_profile_refs='["x"]'::jsonb`, identityLifecycleError],
+      [`schedule_profile_ref='{}'::jsonb`, profilePinsLifecycleError],
+      [`dependency_pins='{}'::jsonb`, profilePinsLifecycleError]
+    ]) {
       await assert.rejects(() => pool.query(`
         UPDATE party_runtime.party_npc_spatial_schedules
         SET ${assignment}, state_version=state_version+1
         WHERE id='sched'
-      `), /npc schedule identity, pins or state version changed/u);
+      `), (error) => {
+        assert.equal(error.message, expectedError);
+        return true;
+      });
     }
     // Positive control: a permitted UPDATE with state_version+1 does pass.
     const bumped = await pool.query(`
@@ -323,7 +339,7 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
         ENABLE TRIGGER party_npc_schedule_party_reference_valid
     `);
 
-    // Server start re-runs 012-037 through the runner over an existing party DB
+    // Server start re-runs 012-038 through the runner over an existing party DB
     // that already holds rows (F13). Ledger row makes the runner reuse 001-011.
     await pool.query(await readFile(
       'tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql', 'utf8'));
@@ -340,7 +356,7 @@ test('world_base schema files + 037 apply on fresh DBs; 037 upgrades 001-036; co
       exactAppliedMigration: ledger
     });
     assert.equal(restart.execution_mode, 'extended_existing');
-    assert.equal(restart.newly_applied, 26);
+    assert.equal(restart.newly_applied, SPATIAL_V3_TARGET_MIGRATION_FILES.length - 11);
     assert.equal((await pool.query(
       `SELECT count(*)::int AS n FROM party_runtime.party_npc_spatial_schedules`
     )).rows[0].n, 1);

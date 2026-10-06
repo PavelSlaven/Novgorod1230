@@ -46,6 +46,26 @@ test('generated expansion diagnostic callback stays outside its request', async 
   assert.equal(Object.hasOwn(received.request, 'onLabelGapsOmitted'), false);
 });
 
+test('canonical connection diagnostic callback stays outside its request', async () => {
+  const callback = () => {};
+  let received;
+  const connection = { connection_binding_id: 'connection:canonical',
+    display_label: 'Проход между дворами' };
+  const [command] = await commands({ listExpansionOptions: async () => [],
+    listConnectionOptions: async () => [connection],
+    prepareConnection: async (request, diagnostics) => {
+      received = { request, diagnostics };
+      return { ok: true, connection_id: 'connection:canonical' };
+    },
+    prepareConnectionTraversal: async () => packageBase({ inputDigest: 'a'.repeat(64),
+      duration: 1, kind: 'movement' }) }, state, callback);
+
+  await command.consequence({ retrievedState: state });
+
+  assert.equal(received.diagnostics.onLabelGapsOmitted, callback);
+  assert.equal(Object.hasOwn(received.request, 'onLabelGapsOmitted'), false);
+});
+
 test('the free phrase "иду к руслу" resolves to the one exit disclosed with that pass-target text (step 3)',
   async () => {
     // spatial-v3-current-visibility-provider.js resolved and disclosed this text already;

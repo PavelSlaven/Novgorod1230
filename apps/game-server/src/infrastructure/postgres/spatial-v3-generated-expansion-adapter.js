@@ -362,7 +362,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
   /** Intra-G4 connection between two canonical places, by an approved connection binding. The same
    * P16 topology commit as a frontier resolution (`resolve_frontier`), under its own idempotency key
    * space `resolve_frontier:canconn:<party>:<binding>`; no frontier, chain or ledger row is involved. */
-  async function prepareCanonicalConnection(request) {
+  async function prepareCanonicalConnection(request,
+    { onLabelGapsOmitted = null } = {}) {
     const { party_id, g4, profile, binding_id, source_site_id, source_position_id,
       materializer_version } = request ?? {};
     const book = createPinBook(g4, profile);
@@ -432,7 +433,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         if (!prepared.ok) return prepared;
         return planProposal({ transaction, request, closure, snapshot, selection,
           proposal: prepared.proposal, admitted, book, authoring_refs, change_set_id, idempotency_key,
-          canonical_input_digest, materializer_version, occurrence: 0, current });
+          canonical_input_digest, materializer_version, occurrence: 0, current,
+          onLabelGapsOmitted });
       } });
     return outcome.ok ? Object.freeze({ ...outcome, topology_status: 'committed', connection_id,
       source_position_id, moves_traveller: false, advances_time: false }) : outcome;

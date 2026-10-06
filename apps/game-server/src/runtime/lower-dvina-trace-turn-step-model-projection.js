@@ -1,3 +1,10 @@
+export const GAP_ITEM_REFERENCE_FIELDS = Object.freeze({
+  scalar: Object.freeze(['entity_id', 'item_id', 'instance_id', 'container_id',
+    'attached_item_id', 'entity_ref', 'item_ref', 'container_ref', 'target_ref']),
+  arrays: Object.freeze(['target_refs', 'instrument_refs', 'source_refs',
+    'tool_refs', 'depends_on_refs', 'remaining_target_refs'])
+});
+
 export function projectTurnStepModelRequest(request) {
   const state = request?.player_safe_state;
   const visibleObjects = state?.current_visible_context?.visible_objects;
@@ -59,8 +66,7 @@ export function projectTurnStepModelRequest(request) {
 
 export function redactGapItemData(value, aliases, parentKey = null) {
   if (Array.isArray(value)) {
-    const entries = typeof parentKey === 'string'
-        && parentKey.endsWith('_refs')
+    const entries = GAP_ITEM_REFERENCE_FIELDS.arrays.includes(parentKey)
       ? value.filter((entry) => !aliases.includes(entry))
       : ['operations', 'available_domain_operations', 'allowed'].includes(parentKey)
         ? value.filter((entry) => !containsAny(entry, aliases)) : value;
@@ -78,7 +84,7 @@ export function redactGapItemData(value, aliases, parentKey = null) {
 
 export function containsAny(value, aliases, parentKey = null) {
   if (Array.isArray(value)) return value.some((entry) =>
-    (typeof parentKey === 'string' && parentKey.endsWith('_refs')
+    (GAP_ITEM_REFERENCE_FIELDS.arrays.includes(parentKey)
       && aliases.includes(entry))
       || containsAny(entry, aliases, parentKey));
   if (typeof value === 'string') return isGapItemReference(parentKey, value, aliases);
@@ -94,8 +100,7 @@ export function untransmittedGapItemSecrets(request) {
 
 function isGapItemReference(key, value, aliases) {
   return typeof value === 'string' && aliases.includes(value)
-    && (['entity_id', 'item_id', 'instance_id'].includes(key)
-      || typeof key === 'string' && key.endsWith('_ref'));
+    && GAP_ITEM_REFERENCE_FIELDS.scalar.includes(key);
 }
 
 function filterGapItemRecords(items, aliases) {

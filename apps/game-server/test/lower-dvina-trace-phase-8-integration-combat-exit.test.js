@@ -58,6 +58,7 @@ test('health zero persists one closed self signal without a combat LLM request',
   const ids = actorIds(state);
   const zhdanko = state.npcs.find(({ instance_id: id }) => id === ids.zhdanko);
   zhdanko.machine_state = { ...zhdanko.machine_state, body_condition: { ...zhdanko.machine_state.body_condition, health: 5 } };
+  zhdanko.body_state_profile.initial_state.health = 5;
   const conversation = createM2ConversationModels({ ratshaResponseKind: 'combat_handoff' });
   const runtime = fixture({ scenarioBundle: bundle, materializationBundle: bundle, committedState: state, rollValue: 0.99,
     temporalAdvanceOwner: temporalAdvanceOwner(), turnStepModel: (request) => phase8Plan(request, ids, 'engage'),

@@ -48,8 +48,14 @@ export async function buildFrozenRoleMessages(fixture) {
     return { output: {} };
   } } });
   const wire = JSON.parse(fixture.messages.at(-1).content);
-  const payload = fixture.request == null ? wire : { ...wire, request: fixture.request };
-  if (!fixture.repair) await model(fixture.request ?? wire);
+  const npcCombat = fixture.role_id.startsWith('npc_combat_decider');
+  const payload = npcCombat ? fixture.request ?? wire
+    : fixture.request == null ? wire : { ...wire, request: fixture.request };
+  if (!fixture.repair) await model(npcCombat ? payload : fixture.request ?? wire);
+  else if (npcCombat) await model(payload.request, { repair: {
+    original_output: payload.original_output,
+    validation_errors: payload.validation_errors
+  } });
   else if (fixture.role_id === 'turn_step_planner_repair') await model(
     payload.request?.request ?? payload.request, {
       structural_errors: payload.request?.structural_errors

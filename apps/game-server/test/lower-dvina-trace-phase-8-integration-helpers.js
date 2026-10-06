@@ -6,9 +6,20 @@ export const bundle = await loadScenarioBundle(16);
 export const ROUTE_TEXT =
   'Идти к Жданко всем вместе. Ратшу держать между нами. Не входить тайком.';
 
+function testBodyProfile(npcId) {
+  return { schema: 'rus.body_state.initialization_profile.v1',
+    status: 'approved', profile_ref: { entity_ref: {
+      entity_kind: 'body_state_profile', entity_id: `test:${npcId}` },
+    authoring_version: 'fixture-v1' },
+    initial_state: { health: 100, energy: 80, satiety: 70 } };
+}
+
 export function phase8CampState(scenarioBundle = bundle) {
   const seed = fixture({ scenarioBundle, materializationBundle: scenarioBundle });
   const state = structuredClone(seed.state);
+  for (const npc of state.npcs) {
+    npc.body_state_profile = testBodyProfile(npc.instance_id);
+  }
   const camp = state.prepared_scenes.find(
     ({ location_profile_ref }) =>
       location_profile_ref === 'trace_ld_v1_loc_fishing_camp');

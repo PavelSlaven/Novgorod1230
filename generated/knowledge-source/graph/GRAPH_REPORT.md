@@ -6,6 +6,6 @@
 - Nodes: 20
 - Links: 0
 - Hyperedges: 0
-- Graph SHA-256: `800e61b7d319ad1a305df6a1079e2cc87c07e5ba2cf2adeea9edfca8a9327dc4`
+- Graph SHA-256: `6fdd3877c07d1223f349156bf0f3702372083fcee08ab5ac31d5c946809414b6`
 
 Graph is structural document nodes only. The generator does not invent semantic relations or embeddings.

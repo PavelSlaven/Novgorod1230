@@ -118,7 +118,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   });
   next = turnStep.snapshot;
   const pendingScreen = phase7PendingScreen({
-    state,
+    state: next,
     factual,
     visibleEnvelope,
     turnNumber,

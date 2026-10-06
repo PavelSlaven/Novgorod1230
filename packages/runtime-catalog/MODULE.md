@@ -44,6 +44,7 @@ profile per G4 version. Authoring candidates are not runtime input.
 - `createRuntimeCatalogWorldBaseReader(query)` — thin `worldBaseReader` adapter для SQL gate readers в тестах и game-server;
 - `loadCategoryParentMap({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, categoryIds })` — `parent_category_id` для `object_type` (LW-071 ancestor skip в consumer);
 - `loadPlacePopulationComposition({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, compositionVersion? })` — D-2 состав населения из `world_base.place_population_composition_rules` с тем же gate;
+- `loadNpcRelationshipMaterializationRules({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin })` — approved NPC relationship rules from the exact world revision, after spatial and latest runtime-catalog activation gates; rejects multiple approved versions of one rule id.
 - `loadApprovedProceduralSceneRecordBundle(...)` verifies the exact world pin,
   latest matching activation event and approved regional applicability before
   exporting compiler inputs; candidate/manifests alone are rejected;

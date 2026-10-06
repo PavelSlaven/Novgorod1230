@@ -1,0 +1,101 @@
+{
+  "schema": "npc_body_qualitative_profile_scoped_approval_v1",
+  "who": "Codex — независимый утверждающий ap-combat-data; не автор профиля",
+  "when": "2026-10-04T20:42:55Z",
+  "reviewer_request": "REAPPROVE-ap-combat-data-7 | 2026-10-04T20:34:38Z; NOTE-ap-combat-data-7 | 2026-10-04T20:36:53Z",
+  "repository": "PavelSlaven/Novgorod1230",
+  "branch": "fleet/combat-data",
+  "path": "data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/minimal-combat-bundle.candidate.json",
+  "commit": "feed71c2647b38e3ba4ab7bc613aa1483beaa774",
+  "json_pointer": "/npc_decision/body_state_qualitative_context",
+  "profile_id": "candidate.npc-body-state-description.v1",
+  "version": 1,
+  "verdict": "APPROVE_WITH_LIMITS",
+  "approval_granted": true,
+  "approval_scope": "Только данные этого профиля: три непрерывные полосы и девять фраз для health/energy/satiety в субъективной проекции текущего собственного тела обычного боевого NPC. Разрешение production-использования данных не активирует существующий D65-only код, не утверждает остальные поля combat-min-data-v1 и не подтверждает влияние тела на выбор действий.",
+  "production_authorized": true,
+  "production_authorized_applies_only_to": "profile id/version + path/JSON pointer/commit этой записи и approved_use; это не флаг всего пакета или runtime activation",
+  "activation_authorized": false,
+  "import_authorized": false,
+  "bundle_production_authorized": false,
+  "approved_use": {
+    "actor": "ordinary combat NPC only",
+    "source": "Текущий authoritative @rus/body-state readback, привязанный к тому же NPC; только его собственные доступные ему метрики.",
+    "metrics": [
+      "health",
+      "energy",
+      "satiety"
+    ],
+    "numeric_domain": "finite JSON/JS number in [0,100], без округления и преобразования строки/bool",
+    "intervals": [
+      "[0,30)",
+      "[30,70)",
+      "[70,100]"
+    ],
+    "owner_projection_output": [
+      "metric",
+      "npc_description"
+    ],
+    "model_visible_body_values": "Только npc_description и понятный текст недоступности; технический metric остаётся на сервере.",
+    "missing_or_invalid": "Опустить только недоступную метрику и сохранить typed gap; остальные доступные метрики проецировать.",
+    "metadata": "Числа, границы, band/profile ids, version, D71, sources/status/calibration и trace остаются внутренними.",
+    "meaning": "Только именованное текущее состояние метрики; нет раны, симптома, причины, медицинского вывода, способности, события или обязательного действия.",
+    "calibration": "30/70 разрешены как грубая игровая калибровка описания, без доказательства оптимальности и без порогов attack/surrender/retreat."
+  },
+  "excluded": [
+    "Любое инициализирование/изменение тела и D71 initial health/energy/satiety",
+    "Длительности, attack/defense/harm/weapon danger и прочие игровые параметры пакета",
+    "Принудительный выбор намерения, реакции NPC или результата боя",
+    "Player-facing narration, игрок и NPC вне указанного боевого субъективного контекста",
+    "Подстановка zero/default/candidate initial state при отсутствии owner readback",
+    "Активация всего combat-min-data-v1, импорт остальных данных, persistence/replay/clock/movement cutover"
+  ],
+  "data_checks": {
+    "bench": "bench/body-bands-production-7/",
+    "script_exit": 0,
+    "case_groups": 15,
+    "integer_metric_projections": 303,
+    "next_representable_cut_checks": 6,
+    "exact_interval_sets": 3,
+    "state_only_phrases": 9,
+    "current_production_gate": "all metrics remain gaps; unchanged"
+  },
+  "d65_basis": {
+    "classification": "engineering_smoke_only per NOTE-ap-combat-data-7",
+    "A_pass_votes": 408,
+    "A_total_votes": 432,
+    "B_pass_votes": 207,
+    "B_total_votes": 216,
+    "fail_votes": 0,
+    "repairs": 0,
+    "independent_available_sample": "36/36 pass, matched to blind IDs; not a new full judgement",
+    "body_phrases_used": 5,
+    "total_profile_phrases": 9,
+    "quality_or_causal_effect_proven": false,
+    "decision_effect_followup": "D65 v4; не основание объявлять доказанную полезность/качество решений"
+  },
+  "payload_evidence": "Оба role owner-function captures проходят через настоящий buildProviderRequestPayload, без сети. В D65 journal нет provider messages; сетевые payloads каждого вызова не заявлены проверенными.",
+  "activation_conditions": [
+    "Отдельная scoped production binding/record для точного профиля без изменения общих candidate flags.",
+    "Минимальный production branch существующих body-state owner и NPC consumer с readback identity, approval scope и per-metric gaps; D65_PROBE не использовать как production fallback.",
+    "Focused owner/consumer tests на границы, дроби, missing/invalid, неутверждённый профиль, другого NPC и D72 leakage в primary/repair.",
+    "Contract Auditor и отдельный versioned cutover ведущим на точный implementation commit."
+  ],
+  "limits": [
+    "Это approval данных; production-код/активация/readback integration здесь не менялись и не проверены как live end-to-end.",
+    "D65 v3 не доказывает качество решения или калибровку полос: T=0, ограниченное меню, 5/9 фраз, без причинного сравнения тела.",
+    "Модельное поведение на остальных четырёх фразах и влияние тела на действия не подтверждены; это не запрет на утверждение простого state-only словаря по проверенным свойствам самих данных.",
+    "Остальная часть пакета остаётся candidate: production_usable=false, candidate_emission=null; owner/generic/persistence gaps остаются открыты.",
+    "Известный CONTRACT_INDEX drift/неуспешный полный validator прохода5 не снят и не превращён в PASS этого пакета.",
+    "Любое изменение утверждённых данных снимает это scoped approval до нового прохода."
+  ],
+  "evidence": [
+    "report-ap-combat-data-7.md",
+    "review-7/bands/report-7.md",
+    "bench/body-bands-production-7/results.json",
+    "review-7/d65/results.json",
+    "review-7/projection/results.json",
+    "review-7/scope/proposal.json"
+  ],
+  "record_placement": "Только own out для размещения ведущим рядом с данными; прежние записи не изменены."
+}

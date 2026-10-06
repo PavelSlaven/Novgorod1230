@@ -67,7 +67,7 @@ export function createTraceCombatCommand({ state, bundle, inputDigest, randomSou
         session: active, items: retrievedState.items, classify: actionProducedWeaponClassifier, requestId: playerInput.request_id });
       const prepared = await prepareCombatExchange({
         session: active,
-        working_state: projectTraceCombatWorkingState(retrievedState),
+        working_state: projectTraceCombatWorkingState(retrievedState, active),
         occurred_at: retrievedState.clock,
         random_source: randomSource,
         idempotency_key: playerInput.idempotency_key,

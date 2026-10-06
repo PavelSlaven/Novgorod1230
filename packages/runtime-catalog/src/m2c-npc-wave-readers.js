@@ -100,6 +100,34 @@ export async function loadPlacePopulationComposition({
   });
 }
 
+/** Read approved relationship rules from the exact spatial revision after both catalog gates. */
+export async function loadNpcRelationshipMaterializationRules({
+  worldBaseReader,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
+} = {}) {
+  await assertReadableContext({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin });
+  const rows = rowsFrom(await worldBaseReader.read(
+    `SELECT rule_id, rule_version, world_revision_id, scope_kind, scope_ref,
+      subject_role_ref, object_role_ref, relationship_kind, direction,
+      materialization_guard, status, confidence, provenance_ref, payload
+     FROM world_base.npc_relationship_materialization_rules
+     WHERE world_revision_id = $1 AND status = 'approved'
+     ORDER BY rule_id, rule_version`,
+    [spatialWorldPin.world_revision_id],
+  ));
+  const versions = new Set();
+  for (const row of rows) {
+    if (versions.has(row.rule_id)) {
+      fail('M2C_NPC_RELATIONSHIP_RULE_VERSION_AMBIGUOUS',
+        'At most one approved relationship rule version per id is allowed.');
+    }
+    versions.add(row.rule_id);
+  }
+  return rows.map((row) => deepFreeze({ ...row, payload: structuredClone(row.payload ?? {}) }));
+}
+
 /** G0 region node id for a pinned spatial node (walk parents to spatial_level = G0). */
 export async function loadG0RegionIdForSpatialNode({
   worldBaseReader,

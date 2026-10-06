@@ -403,6 +403,7 @@ test('A2 v17 ports factory grounds player semantic_resolution and NPC conversati
   assert.equal(typeof ports.playerConversationModel, 'function');
   assert.equal(typeof ports.npcSemanticModel, 'function');
   assert.equal(typeof ports.npcAutonomousModel, 'function');
+  assert.equal(ports.npcCombatModel.combatBodyBandContext, null);
   await ports.playerConversationModel({
     schema: 'player_conversation_input_v1',
     request_id: 'p1',
@@ -730,8 +731,12 @@ test('B5 createTraceTurnRuntime passes grounder into v17 npc ports', async () =>
   const bindingsSrc = readFileSync(join(ROOT,
     'apps/game-server/src/runtime/releases/spatial-v3-production-v17-bindings.js'),
   'utf8');
+  assert.doesNotMatch(bindingsSrc, /loadCombatMinScopedBodyProfile/u);
+  const runtimeBinding = bindingsSrc.slice(bindingsSrc.indexOf(
+    'export function createSpatialV3RuntimeBindings'));
+  assert.doesNotMatch(runtimeBinding, /combatBodyBandContext/u);
   assert.match(bindingsSrc,
-    /createNpcRuntimePorts:\s*createSpatialV3ProductionV17NpcRuntimePorts\b/u);
+    /createNpcRuntimePorts:\s*createSpatialV3ProductionV17NpcRuntimePorts/u);
 });
 
 test('B6 executeM2ConversationExchange injects facets/events/clock', async () => {

@@ -10,6 +10,7 @@ import { materializeSpatialV3GeneratedScene } from './spatial-v3-generated-scene
 import { compileGeneratedNpcBindings } from './generated-npc-bindings.js';
 import { materializeApprovedProceduralNpc } from './approved-procedural-npc.js';
 import { materializeApprovedActorEquipment } from './approved-actor-equipment.js';
+import { materializeNpcRelationshipRules } from './npc-relationship-materialization.js';
 
 /** Canonical branch of the existing authored-start owner; all outputs are proposals. */
 export function materializeCanonicalAuthoredStart({ input, profile, admission, identity }) {
@@ -101,6 +102,11 @@ export function materializeCanonicalAuthoredStart({ input, profile, admission, i
     npc.machine_state.schedule_state = npc.routine_state.profile.phases[npc.routine_state.phase_index].state_id;
     return { ...result, npc };
   });
+  const relationshipResult = materializeNpcRelationshipRules({
+    rules: actorBundle.npc_relationship_materialization_rules ?? [],
+    compositions: input.npc_relationship_compositions ?? [],
+    npcs: npcResults.map(({ npc }) => npc),
+  });
   const equipment = transfer.clothing_transfer;
   const playerEquipment = equipment.equipment_entries.map((entry) => ({ ...entry,
     equipment_candidate_id: `player:${entry.item_template_ref}`, status: 'approved',
@@ -142,7 +148,7 @@ export function materializeCanonicalAuthoredStart({ input, profile, admission, i
   position: { g4_id: placement.g4_ref.id, g5_node_id: nodeId, g5_anchor_id: anchorId } },
   body, items: materializedEquipment.item_instances, containers: [], prepared_scenes: [],
   timestamp: structuredClone(environmentInput.game_timestamp), environment_snapshot: environment,
-  npcs: npcResults.map((row) => row.npc) };
+  npcs: relationshipResult.npcs, npc_relationships: relationshipResult.relations };
   const resolved = admission.spatial_closures[0];
   const g6 = resolved.closure.g6_slots.find((row) => row.scene_slot_key === placement.g6_scene_slot_key);
   const initialSpatial = { canonical_g5_ref: { entity_kind: 'canonical_spatial_node',

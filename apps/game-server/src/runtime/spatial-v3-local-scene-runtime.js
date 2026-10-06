@@ -96,7 +96,8 @@ export function createSpatialV3LocalSceneRuntime({ pool,
           to_position_ref: admission.to_position_ref,
           movement_edge_ref: planned.proposal.movement_ref,
           movement_admission: planned.proposal.persisted_scene_movement_edge } }),
-      visible_seed: { destination_movement_objects } };
+      visible_seed: { destination_movement_objects,
+        movement_display_label: edge.display_label } };
     }
   });
 }

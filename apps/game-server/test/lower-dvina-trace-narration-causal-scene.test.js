@@ -5,6 +5,7 @@ import { createTracePhase6VisibleProjector } from '../src/runtime/lower-dvina-tr
 import { projectCurrentSceneForNoOperationDirect } from '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
 import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvina-trace-narration-llm.js';
+import { projectLowerDvinaTracePlayerSafeState } from '../src/runtime/lower-dvina-trace-player-safe-state.js';
 import { lowerDvinaTraceVisibleSceneItems } from '../src/runtime/lower-dvina-trace-visible-scene-items.js';
 
 const fallback = { project: async () => assert.fail('unexpected fallback') };
@@ -29,10 +30,41 @@ function currentScene() {
   return { version: 1, schema: 'visible_context_package', visible_scene: 'Берег',
     visible_changes: [], sensory_details: ['У воды виден надломленный колышек.'],
     visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'fisher' },
-      display_label: 'рыбак', recognition: 'unrecognized',
-      visible_status: 'сидит у навеса' }], visible_objects: [],
+      display_label: 'рыбак', recognition: 'unrecognized' }], visible_objects: [],
     known_context: ['При вас есть хозяйственный нож.'], uncertainties: [],
     allowed_tensions: [], do_not_imply: [] };
+}
+
+function currentSceneState(scene = currentScene(), items = []) {
+  const position = { location_ref: 'shore', g5_anchor_id: 'shore-anchor' };
+  const npcs = (scene.visible_npc ?? []).map((visibleNpc) => {
+    const id = visibleNpc.entity_ref.entity_id;
+    const cues = visibleNpc.observable_cues ?? {};
+    return { instance_id: id, ...position,
+      ...(cues.ordinary_remainder == null ? {} : { semantic_state: {
+        n1_remainder: { schema: 'rus.n1_npc_semantic_remainder.v1', version: 1,
+          profile_ref: 'n1-profile', npc_ref: id,
+          ...cues.ordinary_remainder, causal_basis_refs: ['scene', 'npc'] }
+      } }),
+      ...(cues.outward_presentation == null ? {} : {
+        player_safe_presentation: cues.outward_presentation
+      }) };
+  });
+  const committedItemIds = new Set(items.map((item) =>
+    item.item_id ?? item.instance_id));
+  const nearbyItems = (scene.visible_objects ?? []).filter((object) =>
+    !committedItemIds.has(object.entity_ref?.entity_id)).map((object) => ({
+    item_id: object.entity_ref.entity_id, name: object.display_label,
+    condition_state: 'serviceable', placement: { ...position }
+  }));
+  const spatialContext = { visible_scene: scene.visible_scene,
+    sensory_details: scene.sensory_details ?? [], visible_objects: [] };
+  return { actor_id: 'player', position: { location_ref: 'shore',
+    g5_anchor_id: 'shore-anchor' }, items: [...items, ...nearbyItems], npcs,
+    current_spatial_context: spatialContext,
+    current_spatial_context_is_fresh: true,
+    current_spatial_context_filters_entities: true,
+    location_profiles: [{ location_profile_id: 'shore', display_name: 'Берег' }] };
 }
 
 async function assertCurrentWire(visible, required, omitted = []) {
@@ -40,8 +72,8 @@ async function assertCurrentWire(visible, required, omitted = []) {
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support,
-      { visible_scene: visible.visible_scene });
+    assert.equal(wire.optional_support.visible_scene,
+      visible.visible_scene);
     const facts = wire.required_current_beat.changes.map(({ text }) => text);
     for (const fact of required) assert.ok(facts.includes(fact), fact);
     for (const fact of omitted) assert.equal(call.messages[1].content.includes(fact), false, fact);
@@ -67,10 +99,11 @@ for (const generic of [false, true]) {
         npc_ref: 'fisher', ordinary_descriptor: 'На рукавах налипли стружки.',
         ordinary_activity: 'Перебирает обрезки досок.', causal_basis_refs: ['scene', 'npc']
       } } }] } });
-    assert.deepEqual(visible.visible_changes, [generic
-      ? `Перед вами — ${destination.display_name}.`
-      : 'Вы вышли к пристани за излучиной.',
-    'Обратный путь идёт вдоль берега.']);
+    assert.deepEqual(visible.visible_changes,
+      ['Вы вышли к пристани за излучиной.']);
+    assert.equal(visible.visible_scene, destination.display_name);
+    assert.deepEqual(visible.known_context,
+      ['Обратный путь идёт вдоль берега.']);
     for (const fact of [...scenePresentation.locations[0].player_visible_physical_facts,
       'В поле зрения — человек.',
       'человек: На рукавах налипли стружки.',
@@ -87,23 +120,47 @@ test('real historical phase3 arrival keeps destination, NPC and discovered retur
     phase2Projector: fallback, contracts
   }) }).project({ consequence: { phase3_kind: 'movement' } });
   assert.deepEqual(visible.visible_changes,
-    ['Вы добрались от места крушения до рыбацкого стана.',
-      'Обратная тропа к месту крушения теперь известна.']);
+    ['Вы добрались от места крушения до рыбацкого стана.']);
+  assert.deepEqual(visible.known_context,
+    ['Обратная тропа к месту крушения теперь известна.']);
   assert.ok(visible.sensory_details.includes(
     'Рабочий стан стоит у берега Нижней Двины.'));
   assert.ok(visible.sensory_details.includes('В поле зрения — человек.'));
   await assertCurrentWire(visible, visible.visible_changes);
 });
 
-test('phase3 arrival keeps a name only when the player-safe scene already carries it', async () => {
+test('phase3 arrival keeps a name only when committed conversation proves it', async () => {
+  const committedState = {
+    actor_id: 'player',
+    position: { location_ref: 'shore', g5_anchor_id: 'shore-anchor' },
+    npcs: [{ instance_id: 'fisher', location_ref: 'shore',
+      anchor_id: 'shore-anchor' }],
+    current_visible_context: {
+      version: 1, schema: 'visible_context_package', visible_scene: 'Берег',
+      visible_changes: [], sensory_details: [], visible_npc: [{
+        entity_ref: { entity_kind: 'npc', entity_id: 'fisher' },
+        display_label: 'человек', recognition: 'unrecognized'
+      }], visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: []
+    },
+    conversation_statements: [{ statement_id: 'fisher-introduction',
+      speaker_ref: { entity_kind: 'npc', entity_id: 'fisher' },
+      utterance_text: 'Я Еремей.' }],
+    received_messages: [{
+      source_statement_ref: { entity_kind: 'conversation_statement',
+        entity_id: 'fisher-introduction' },
+      speaker_ref: { entity_kind: 'npc', entity_id: 'fisher' },
+      listener_ref: { entity_kind: 'player_character', entity_id: 'player' },
+      comprehension: 'full', utterance_text: 'Я Еремей.'
+    }]
+  };
+  const playerSafeState = projectLowerDvinaTracePlayerSafeState({
+    committed_state: committedState, actor_id: 'player'
+  }).player_safe_state;
   const visible = await createTracePhase3VisibleProjector({
     phase2Projector: fallback, contracts
   }).project({ consequence: { phase3_kind: 'movement' }, retrieved_state: {
-    current_visible_context: {
-      ...currentScene(), visible_npc: [{ entity_ref: {
-        entity_kind: 'npc', entity_id: 'fisher'
-      }, display_label: 'Еремей', recognition: 'recognized' }]
-    }
+    ...playerSafeState
   } });
   assert.deepEqual(visible.visible_npc, [{ entity_ref: {
     entity_kind: 'npc', entity_id: 'fisher'
@@ -116,10 +173,9 @@ test('real terminal carrying arrival exposes destination facts without source sn
     .project({ consequence: { phase6_kind: 'synchronized_carry', carry: { intent: {
       execution_after: { status: 'completed' }, terminal_group_position: destination,
       terminal_group_ids: ['fisher'] } } },
-    retrieved_state: { current_visible_context: currentScene() } });
+    retrieved_state: currentSceneState() });
   assert.deepEqual(visible.visible_changes,
-    ['Вы дошли до рыбацкого стана вместе с носильщиками и Онисимом.',
-      destination.display_name]);
+    ['Вы дошли до рыбацкого стана вместе с носильщиками и Онисимом.']);
   for (const fact of scenePresentation.locations[0].player_visible_physical_facts) {
     assert.ok(visible.sensory_details.includes(fact), fact);
   }
@@ -129,13 +185,13 @@ test('real terminal carrying arrival exposes destination facts without source sn
 
 test('applied player-safe observation exposes perceived facts and not static self knowledge', async () => {
   const input = { consequence: { visible_seed: {} },
-    retrieved_state: { current_visible_context: currentScene() },
+    retrieved_state: currentSceneState(),
     mode_resolution: { decision_trace: { step_traces: [{ applied: true, approved_plan: {
       resolution: 'direct', goal_result: 'achieved', operations: [], check: null,
       direct_result_kind: 'player_safe_observation' } }] } } };
   const visible = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
   await assertCurrentWire(visible, ['У воды виден надломленный колышек.',
-    'В поле зрения — рыбак: сидит у навеса.'], ['При вас есть хозяйственный нож.']);
+    'В поле зрения — человек.'], ['При вас есть хозяйственный нож.']);
   input.mode_resolution.decision_trace.step_traces[0].applied = false;
   const unapplied = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
   assert.deepEqual(unapplied.visible_changes, []);
@@ -146,11 +202,10 @@ test('observation preserves separately visible NPCs with the same label', async 
   scene.sensory_details = [];
   scene.visible_npc = ['first', 'second'].map((id) => ({
     entity_ref: { entity_kind: 'npc', entity_id: id },
-    display_label: 'рыбак', recognition: 'unrecognized',
-    visible_status: 'чинит снасти'
+    display_label: 'рыбак', recognition: 'unrecognized'
   }));
   const input = { consequence: { visible_seed: {} },
-    retrieved_state: { current_visible_context: scene },
+    retrieved_state: currentSceneState(scene),
     mode_resolution: { decision_trace: { step_traces: [{ applied: true,
       approved_plan: { resolution: 'direct', goal_result: 'achieved',
         operations: [], check: null,
@@ -162,8 +217,8 @@ test('observation preserves separately visible NPCs with the same label', async 
 
   assert.deepEqual(visible.visible_changes, [
     'Вы внимательно изучили обстановку.',
-    'В поле зрения — рыбак (1): чинит снасти.',
-    'В поле зрения — рыбак (2): чинит снасти.'
+    'В поле зрения — человек (1).',
+    'В поле зрения — человек (2).'
   ]);
 });
 
@@ -173,7 +228,7 @@ test('ordinary seed keeps new observation and drops elapsed prose and old snapsh
       turn_step_1: { kind: 'semantic_activity', duration_minutes: 2 },
       ordinary_scene_seed: { kind: 'ordinary_scene_seed',
         sensory_details: ['Под навесом видны свежие стружки.'] }
-    } }, retrieved_state: { current_visible_context: currentScene() },
+    } }, retrieved_state: currentSceneState(),
     body_update: { state_after: {} },
     mode_resolution: { decision_trace: { remaining_intent: null, step_traces: [{
       approved_plan: { resolution: 'domain_request', goal_result: 'pending',
@@ -184,25 +239,27 @@ test('ordinary seed keeps new observation and drops elapsed prose and old snapsh
 });
 
 test('real observation promotes an object-only result and unseen safe sibling without metadata', async () => {
-  for (const [label, status] of [['перевёрнутая лодка', 'у воды'],
-    ['плетёная корзина', 'на краю настила'], ['связка жердей', 'available']]) {
+  for (const label of ['перевёрнутая лодка', 'плетёная корзина',
+    'связка жердей']) {
     const scene = currentScene();
     scene.sensory_details = [];
     scene.visible_npc = [];
     scene.visible_objects = [{ entity_ref: { entity_kind: 'item', entity_id: 'unseen-object' },
-      display_label: label, recognition: 'recognized', visible_status: status,
+      display_label: label, recognition: 'recognized',
       unsupported_detail: { explanation: 'НЕПОДТВЕРЖДЁННОЕ СОДЕРЖИМОЕ' } }];
     const input = { consequence: { visible_seed: {} },
-      retrieved_state: { current_visible_context: scene },
+      retrieved_state: currentSceneState(scene),
       mode_resolution: { decision_trace: { step_traces: [{ applied: true, approved_plan: {
         resolution: 'direct', goal_result: 'achieved', operations: [], check: null,
         direct_result_kind: 'player_safe_observation' } }] } } };
     const visible = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
     await assertCurrentWire(visible,
-      [`В поле зрения — ${label}${status === 'available' ? '' : `: ${status}`}.`],
+      [`В поле зрения — ${label}.`],
       ['НЕПОДТВЕРЖДЁННОЕ СОДЕРЖИМОЕ', 'unsupported_detail', 'unseen-object']);
     scene.visible_objects[0].hidden_state = { contents: 'secret cargo' };
-    assert.equal(projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} }), null);
+    assert.deepEqual(projectCurrentSceneForNoOperationDirect({
+      input, directSeedKeys: [], body: {}
+    }), visible);
   }
 });
 
@@ -216,7 +273,7 @@ test('general scene observation excludes every native carried placement; explici
   assert.deepEqual([...new Set(carried.map(({ visibleObject }) => visibleObject.visible_status))],
     ['у вас в руках', 'при вас']);
   for (const nearby of [[], [{ entity_ref: { entity_kind: 'item', entity_id: 'boat' },
-    display_label: 'перевёрнутая лодка', recognition: 'recognized', visible_status: 'у воды' }]]) {
+    display_label: 'перевёрнутая лодка', recognition: 'recognized' }]]) {
     const scene = currentScene();
     scene.sensory_details = [];
     scene.visible_npc = [];
@@ -224,10 +281,11 @@ test('general scene observation excludes every native carried placement; explici
     const plan = { resolution: 'direct', goal_result: 'achieved', operations: [], check: null,
       direct_result_kind: 'player_safe_observation' };
     const input = { consequence: { visible_seed: {} },
-      retrieved_state: { current_visible_context: scene, items },
+      retrieved_state: currentSceneState(scene, items),
       mode_resolution: { decision_trace: { step_traces: [{ applied: true, approved_plan: plan }] } } };
     const visible = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
-    await assertCurrentWire(visible, nearby.length ? ['В поле зрения — перевёрнутая лодка: у воды.'] : [],
+    await assertCurrentWire(visible, nearby.length
+      ? ['В поле зрения — перевёрнутая лодка.'] : [],
       items.map(({ name }) => name));
     if (!nearby.length) assert.deepEqual(visible.visible_changes,
       ['Вы внимательно изучили обстановку.']);
@@ -248,13 +306,13 @@ test('real observation preserves entity-bound human N1 cues without translating 
     unsupported_detail: 'НЕПОДТВЕРЖДЁННЫЙ МОТИВ'
   };
   const visible = projectCurrentSceneForNoOperationDirect({ input: {
-    consequence: { visible_seed: {} }, retrieved_state: { current_visible_context: scene },
+    consequence: { visible_seed: {} }, retrieved_state: currentSceneState(scene),
     mode_resolution: { decision_trace: { step_traces: [{ applied: true, approved_plan: {
       resolution: 'direct', goal_result: 'achieved', operations: [], check: null,
       direct_result_kind: 'player_safe_observation' } }] } }
   }, directSeedKeys: [], body: {} });
-  await assertCurrentWire(visible, ['В поле зрения — рыбак: сидит у навеса.',
-    'рыбак: На рукавах налипли стружки.', 'рыбак: Перебирает обрезки досок.'],
+  await assertCurrentWire(visible, ['В поле зрения — человек.',
+    'человек: На рукавах налипли стружки.', 'человек: Перебирает обрезки досок.'],
   ['three_quarter', 'stocky', 'НЕПОДТВЕРЖДЁННЫЙ МОТИВ']);
 });
 
@@ -264,7 +322,7 @@ test('compound direct speech and failed later action preserve results without el
   const goal = 'длинной ветвью прощупать воду между обломками';
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
     fallback: { project() { throw new Error('Direct steps use the current scene owner.'); } }
-  }).project({ retrieved_state: { current_visible_context: currentScene() },
+  }).project({ retrieved_state: currentSceneState(),
     consequence: { status: 'resolved', visible_seed: {
       turn_step_1: { kind: 'semantic_activity', duration_minutes: 1 },
       turn_step_2: { kind: 'semantic_activity', duration_minutes: 1 }
@@ -285,7 +343,7 @@ test('unapplied direct failures never become visible results', async () => {
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
     fallback: { project: async () => currentScene() }
   }).project({
-    retrieved_state: { current_visible_context: currentScene() },
+    retrieved_state: currentSceneState(),
     consequence: { status: 'resolved', visible_seed: {} },
     mode_resolution: { decision_trace: { remaining_intent: null,
       step_traces: [{ applied: false, approved_plan: { resolution: 'direct',

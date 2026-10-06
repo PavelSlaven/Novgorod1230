@@ -19,10 +19,12 @@ test('a local move shows the passages of the place arrived at, not of the one le
   const visible = await projector.project({
     consequence: { status: 'resolved', phase3_kind: 'movement',
       position_transition: { owner: '@rus/movement-routes' },
-      visible_seed: { destination_movement_objects: arrived } },
+      visible_seed: { destination_movement_objects: arrived,
+        movement_display_label: 'Проход 1' } },
     retrieved_state: { actor_id: 'player', party_state: { state_version: 9 }, position: {},
       current_visible_context: left, route_history: [], npcs: [], items: [] },
     body_update: { state_after: {} },
     mode_resolution: { decision_trace: { remaining_intent: null, step_traces: [] } } });
   assert.deepEqual(visible.visible_objects.map((row) => row.display_label), ['штаны', 'тропа назад', 'ручей']);
+  assert.deepEqual(visible.visible_changes, []);
 });

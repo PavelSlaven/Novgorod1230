@@ -11,11 +11,19 @@ const CHARACTER = Object.freeze({ temperament_ref: 'wary',
   goals_ru: ['собрать припасы на зиму для детей'], fear_ru: 'остаться без хлеба в холода' });
 
 function named(name = 'Настасья', extra = {}) {
-  return generatedState((state) => {
+  const state = generatedState((state) => {
     const npc = state.npcs[0];
     npc.identity_state = { ...npc.identity_state, canonical_name: name };
     npc.semantic_state = { ...npc.semantic_state, ...extra };
   });
+  state.current_spatial_context = {
+    version: 1, schema: 'visible_context_package',
+    visible_scene: 'Рыбацкий стан у Вихтуя.', visible_changes: [],
+    sensory_details: [], visible_npc: [], visible_objects: [],
+    known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+  };
+  state.current_spatial_context_is_fresh = true;
+  return state;
 }
 
 test('greeting a named NPC in neutral conversation asks for a self-introduction',

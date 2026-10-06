@@ -4,7 +4,7 @@ const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках
 const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
 
 export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
-  body = {}) {
+  body = {}, currentScene = null) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
   const directPlans = plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
@@ -16,8 +16,7 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
     ...(directPlans.some((plan) => plan.direct_result_kind === 'player_safe_observation'
         && plan.assessment == null)
       ? ['Вы внимательно изучили обстановку.',
-        ...lowerDvinaTraceObservedSceneChanges(
-          input?.retrieved_state?.current_visible_context)] : []),
+        ...lowerDvinaTraceObservedSceneChanges(currentScene)] : []),
     ...(kinds.has('player_safe_item_observation')
       ? carriedItemObservationChanges(sceneItems) : []),
     ...(kinds.has('player_safe_body_observation')

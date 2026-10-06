@@ -4,6 +4,8 @@ import { containsSceneNpc } from '../../runtime/lower-dvina-trace-scene-presence
 import {
   deriveLowerDvinaTraceTurnStepVisibleDependencyPins
 } from './lower-dvina-trace-turn-step-state.js';
+import { withoutTransientDestinationOrigin } from
+  './lower-dvina-trace-turn-step-state.js';
 
 export function bindLowerDvinaTraceTurnStepIdempotency({
   envelope,
@@ -28,8 +30,9 @@ export function bindLowerDvinaTraceTurnStepIdempotency({
       semantic_dependency_pins: semanticDependencyPins
     };
   }
+  const persistedEnvelope = withoutTransientDestinationOrigin(envelope);
   const expectedVisiblePins = deriveVisiblePinsFromEnvelope
-    ? deriveLowerDvinaTraceTurnStepVisibleDependencyPins(envelope)
+    ? deriveLowerDvinaTraceTurnStepVisibleDependencyPins(persistedEnvelope)
     : visibleDependencyPins;
   if (deriveVisiblePinsFromEnvelope
       && canonicalDigest(visibleDependencyPins)
@@ -43,11 +46,11 @@ export function bindLowerDvinaTraceTurnStepIdempotency({
   return {
     semantic_command_snapshot: {
       ...semanticCommandSnapshot,
-      turn_step_commit_digest: canonicalDigest(envelope)
+      turn_step_commit_digest: canonicalDigest(persistedEnvelope)
     },
     semantic_command_digest: normalizeDigest(canonicalDigest({
       input_digest: inputDigest,
-      turn_step_commit: envelope
+      turn_step_commit: persistedEnvelope
     })),
     semantic_dependency_pins: turnStepDependencyPins({
       envelope, visibleDependencyPins: expectedVisiblePins

@@ -26,7 +26,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   if (realProvider) globalThis.fetch = async (url, init) => {
     const call = JSON.parse(init.body);
     const system = (call.messages?.[0]?.content ?? '').replace(/^Return a valid json object\.\s*/u, '');
-    if (system.startsWith('Return only {"pass"')) {
+    if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
       const response = await provider(url, init);
       report.model_calls.push({ role: 'gameplay_narrator_auditor',
         output: await readStage23AuditOutput(response) });
@@ -128,7 +128,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
       const sources = [...input.required_current_beat.changes, ...input.required_current_beat.uncertainties];
       output = { reviewed_segments: ids, source_reviews: sources.map(({ ref }) => ({ ref, segment_choices: ids })),
         unsupported: [], literary_failures: [], evidence: ['Deterministic test source-copy; no production prose-quality claim.'] };
-    } else if (system.startsWith('Return only {"prose"') || system.startsWith('Return only {"pass"')) {
+    } else if (system.startsWith('Return only {"prose"') || system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
       captured.role = system.startsWith('Return only {"prose"') ? 'gameplay_narrator' : 'gameplay_narrator_auditor';
       const response = await provider(url, init);
       captured.output = await response.clone().json(); captured.duration_ms = performance.now() - started;

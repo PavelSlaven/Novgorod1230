@@ -17,6 +17,12 @@ import {
 import {
   createLowerDvinaTracePhase2Runtime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTraceNarrationService } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-narration-llm.js';
+import { resolveLlmExecutionConfig } from
+  '../../packages/llm-runtime/src/provider-config.js';
+import { buildProviderRequestPayload } from
+  '../../packages/llm-runtime/src/provider-request.js';
 import {
   createM2ConversationModels
 } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
@@ -1120,6 +1126,10 @@ async function assertGeneralLookAfterInspection({
   runtimeCatalogPin
 }) {
   const narrationRequests = [];
+  const providerPayloads = [];
+  const captureEnabled = globalThis[Symbol.for('turn-scene.capture')] === true;
+  const productionNarration = captureEnabled
+    ? createCaptureNarrationService(providerPayloads) : null;
   let randomDraws = 0;
   const runtime = buildRuntime({
     pool,
@@ -1130,6 +1140,9 @@ async function assertGeneralLookAfterInspection({
     narrationService: {
       async run(request) {
         narrationRequests.push(structuredClone(request));
+        if (productionNarration != null) {
+          return productionNarration.run(request);
+        }
         return approvedNarration(request);
       }
     }
@@ -1141,6 +1154,27 @@ async function assertGeneralLookAfterInspection({
   await runtime.acknowledgeOpening(opened.party_id, {
     client_ack_id: 'phase-2-look-after-inspection-ack'
   });
+  if (captureEnabled) {
+    for (const [requestId, rawText] of [
+      ['phase-2-look-after-inspection-discovery',
+        'Осмотреть место крушения подробно.'],
+      ['phase-2-look-after-inspection', 'Осмотреться'],
+      ['phase-2-look-after-movement-move', 'Дойти до рыбацкого стана.'],
+      ['phase-2-look-after-movement', 'Осмотреться']
+    ]) {
+      await runtime.submitTurn(opened.party_id, {
+        request_id: requestId, idempotency_key: requestId, raw_text: rawText
+      });
+    }
+    assert.equal(narrationRequests.length, 4);
+    assert.equal(providerPayloads.filter(({ role_id }) =>
+      role_id === 'gameplay_narrator').length, 4);
+    console.log(`TURN_SCENE_NARRATOR_CAPTURE:${JSON.stringify({
+      schema: 'turn-scene-provider-capture/v1', response_stubbed: true,
+      requests: narrationRequests, provider_payloads: providerPayloads
+    })}`);
+    return;
+  }
   await runtime.submitTurn(opened.party_id, {
     request_id: 'phase-2-look-after-inspection-discovery',
     idempotency_key: 'phase-2-look-after-inspection-discovery',
@@ -1167,7 +1201,14 @@ async function assertGeneralLookAfterInspection({
     'берег крушения');
   assert.notEqual(lookContext.visible_scene,
     narrationRequests[0].visible_context.visible_scene);
-  assert.deepEqual(lookContext.sensory_details, []);
+  assert.deepEqual(lookContext.sensory_details, [
+    'Мокрый песок и ивняк тянутся вдоль берега реки.',
+    'У самой воды лежат разбитые доски и обрывки снастей.',
+    'У воды тянется полоса камыша и осоки; среди обломков лежат вынесенные течением ветви.',
+    'Над открытым берегом тянется низкое сырое небо.',
+    'Между мокрым песком и ивняком начинается приметная тропа; за кустами её продолжения не видно.',
+    'У самого берега слышен плеск воды.'
+  ]);
   assert.equal(JSON.stringify(lookContext).includes(
     'visible:road_bag_missing'), false);
   assert.equal(randomDraws, beforeLook.randomDraws);
@@ -1184,7 +1225,7 @@ async function assertGeneralLookAfterInspection({
     raw_text: 'Дойти до рыбацкого стана.'
   });
   assert.equal(narrationRequests[2].visible_context.visible_scene,
-    'Микула пришёл в рыбацкий стан.');
+    'рыбацкий стан');
   const beforeCampLook = {
     checks: await count(pool, 'party_runtime.party_check_resolutions',
       opened.party_id),
@@ -1200,13 +1241,18 @@ async function assertGeneralLookAfterInspection({
   });
   const campLookContext = narrationRequests[3].visible_context;
   assert.equal(campLooked.check, null);
-  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
   assert.notEqual(campLookContext.visible_scene,
     opened.screen.visible_context.place);
-  assert.notEqual(campLookContext.visible_scene,
-    narrationRequests[2].visible_context.visible_scene);
+  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
   assert.deepEqual(campLookContext.sensory_details, [
-    'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.'
+    'На сухом берегу стоят навес и очаговая площадка.',
+    'Под навесом есть место укрыться от речной сырости.',
+    'От стана видна вода Нижней Двины.',
+    'Сухой песчаный берег тянется вдоль воды.',
+    'Сети развешены на кольях и между навесами.',
+    'Лодки стоят у воды.',
+    'Под навесом сложены свёрнутые снасти.',
+    'В воздухе держится речная сырость.'
   ]);
   assert.equal(randomDraws, beforeCampLook.randomDraws);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
@@ -1215,6 +1261,37 @@ async function assertGeneralLookAfterInspection({
     opened.party_id), beforeCampLook.knowledge);
   assert.equal(await count(pool, 'party_runtime.party_items', opened.party_id),
     beforeCampLook.items);
+}
+
+function createCaptureNarrationService(providerPayloads) {
+  const env = { ...process.env, DEEPSEEK_API_KEY: 'turn-scene-capture-placeholder' };
+  return createLowerDvinaTraceNarrationService({ roleRunner: {
+    async run(call) {
+      const resolution = resolveLlmExecutionConfig({ scope: call.scope,
+        roleId: call.role_id, env, overrides: call.overrides });
+      if (!resolution.enabled) throw new Error('capture role configuration is disabled');
+      providerPayloads.push({ role_id: call.role_id,
+        payload: buildProviderRequestPayload(resolution.config, call.messages) });
+      const input = JSON.parse(call.messages.at(-1).content);
+      if (call.role_id === 'gameplay_narrator') {
+        const changes = input.required_current_beat?.changes ?? [];
+        return { output: { prose: changes.map(({ text }) => text).join(' ')
+          || 'Вы осматриваетесь вокруг.' } };
+      }
+      if (call.role_id === 'gameplay_narrator_auditor') {
+        const segmentIds = (input.segments ?? []).map(({ segment_id }) => segment_id);
+        const sources = [
+          ...(input.required_current_beat?.changes ?? []),
+          ...(input.required_current_beat?.uncertainties ?? [])
+        ];
+        return { output: { reviewed_segments: segmentIds,
+          source_reviews: sources.map(({ ref }) => ({ ref,
+            segment_choices: segmentIds })),
+          unsupported: [], literary_failures: [], evidence: ['offline capture stub'] } };
+      }
+      throw new Error(`unexpected capture role: ${call.role_id}`);
+    }
+  } });
 }
 
 async function assertGeneralLookUsesOpeningScene({

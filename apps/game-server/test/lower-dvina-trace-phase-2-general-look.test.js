@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   fixture,
-  loadScenarioBundle
+  loadScenarioBundle,
+  SCENE_PRESENTATION
 } from './lower-dvina-trace-phase-2-fixture.js';
 import { createLowerDvinaTraceTurnStepTestModel } from
   './lower-dvina-trace-turn-step-model-fixture.js';
@@ -63,11 +64,11 @@ test('revision 13 general look stays a generic player-safe turn',
           narratorInput.visible_context.visible_scene,
           'Заявленное действие завершено.'
         );
-        assert.deepEqual(narratorInput.visible_context.sensory_details, []);
-        for (const fact of before.environment_snapshot.facts) {
-          assert.equal(narratorInput.visible_context.sensory_details.includes(fact),
-            false);
-        }
+        const approvedFacts = SCENE_PRESENTATION.locations.find(
+          ({ location_ref: ref }) => ref === f.state.position.location_ref
+        ).player_visible_physical_facts;
+        assert.deepEqual(narratorInput.visible_context.sensory_details,
+          approvedFacts);
         const playerSafe = JSON.stringify({ result,
           narrator: narratorInput });
         assert.equal(playerSafe.includes('visible:road_bag_missing'), false);

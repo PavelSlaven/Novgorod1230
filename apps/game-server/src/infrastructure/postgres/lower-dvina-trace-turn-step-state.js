@@ -9,6 +9,8 @@ import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
 import { assertSharedSemanticSnapshotSafe } from
   './lower-dvina-trace-conversation-state.js';
 import { SITE_TRAVERSAL_OWNER } from './spatial-v3-site-traversal-commit.js';
+import { withoutPhase2CurrentVisibleContext } from
+  './lower-dvina-trace-phase-2-current-visible.js';
 
 export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
   partyId, turnNumber, nextVersion, changeSetId, idemId, envelope,
@@ -57,7 +59,9 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
   state, envelope, inputDigest, nextVersion, turnNumber, changeSetId,
   visibleEnvelope
 }) {
-  const next = structuredClone(state);
+  const savedEnvelope = withoutTransientDestinationOrigin(envelope);
+  const savedConsequence = savedEnvelope.consequence;
+  const next = withoutPhase2CurrentVisibleContext(structuredClone(state));
   applyNpcRoutineTemporalResults(next, envelope.time_update.temporal_results);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;
@@ -104,11 +108,11 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
       structuredClone(envelope.mode_resolution.decision_trace),
     check_request: structuredClone(envelope.checks.requests[0] ?? null),
     check_result: structuredClone(envelope.checks.results[0] ?? null),
-    consequence: structuredClone(envelope.consequence),
-    time_update: structuredClone(envelope.time_update),
+    consequence: savedConsequence,
+    time_update: structuredClone(savedEnvelope.time_update),
     body_update: structuredClone(envelope.body_update),
     hidden_update: structuredClone(envelope.hidden_update),
-    turn_step_commit: structuredClone(envelope),
+    turn_step_commit: savedEnvelope,
     turn_step_idempotency_record_id: visibleEnvelope.idempotency_record_id,
     player_visible_message: structuredClone(
       envelope.loop_trace.clarification
@@ -123,6 +127,15 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
     snapshot: assertSharedSemanticSnapshotSafe(next),
     clockChanged
   };
+}
+
+export function withoutTransientDestinationOrigin(value) {
+  if (Array.isArray(value)) return value.map(withoutTransientDestinationOrigin);
+  if (value == null || typeof value !== 'object') return value;
+  return Object.fromEntries(Object.entries(value)
+    .filter(([key]) => key !== 'destination_site_origin')
+    .map(([key, nested]) => [key,
+      withoutTransientDestinationOrigin(nested)]));
 }
 
 export function deriveLowerDvinaTraceTurnStepVisibleDependencyPins(envelope) {

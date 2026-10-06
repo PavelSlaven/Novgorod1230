@@ -9,7 +9,8 @@ import { projectLowerDvinaTracePlayerSafeState } from
 import { LOCAL_EDGE_OCCUPIED_STATUS, localEdgeOccupiedLabel } from
   '../../runtime/local-edge-occupancy.js';
 
-export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null }) {
+export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null,
+  currentVisibleContext = null }) {
   const { actor, player_safe_state: projection } = projectLowerDvinaTracePlayerSafeState({
     scene_presentation: presentation?.scenePresentation,
     committed_state: screen.visible_context == null ? payload : {
@@ -25,8 +26,8 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     ? structuredClone(previousPeople.data) : {};
   delete peopleData.active_interlocutor;
   delete peopleData.visible_npcs;
-  const visibleNpcs = distinctNpcLabels(
-    projection.current_visible_context?.visible_npc ?? []);
+  const peopleContext = currentVisibleContext ?? projection.current_visible_context;
+  const visibleNpcs = distinctNpcLabels(peopleContext?.visible_npc ?? []);
   if (visibleNpcs.length > 0) {
     peopleData.visible_npcs = visibleNpcs.map((npc) => {
       const appearance = playerSafeAppearanceSummary(npc);

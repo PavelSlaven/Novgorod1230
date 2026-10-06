@@ -35,7 +35,8 @@ test('evidence inspection retains the scene and exact unresolved question', asyn
 });
 
 function committedState() {
-  return { actor_id: 'player', party_state: { state_version: 9 },
+  return { party_id: 'party:observed-evidence', actor_id: 'player',
+    party_state: { state_version: 9 },
     position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor', zone_ref: 'yard' },
     current_visible_context: { version: 1, schema: 'visible_context_package',
       visible_scene: 'У сушильни лежит надрезанный канат.',
@@ -43,5 +44,16 @@ function committedState() {
       sensory_details: ['С каната капает вода.'], visible_npc: [],
       visible_objects: [], known_context: [], uncertainties: [],
       allowed_tensions: [], do_not_imply: [] },
-    route_history: [], npcs: [], items: [] };
+    scene_presentation: { locations: [{ location_ref: 'shed',
+      display_name: 'У сушильни лежит надрезанный канат.',
+      player_visible_physical_facts: ['С каната капает вода.'] }] },
+    current_spatial_context: { version: 1, schema: 'visible_context_package',
+      visible_scene: 'У сушильни лежит надрезанный канат.', visible_changes: [],
+      sensory_details: ['С каната капает вода.'], visible_npc: [],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: [] },
+    current_spatial_context_is_fresh: true,
+    route_history: [], npcs: [], items: [{ item_id: 'rope', name: 'надрезанный канат',
+      physical_facts: ['С каната капает вода.'],
+      placement: { location_ref: 'shed', anchor_id: 'shed-anchor' } }] };
 }

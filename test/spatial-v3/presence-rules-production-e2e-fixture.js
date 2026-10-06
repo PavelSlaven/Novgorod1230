@@ -378,9 +378,9 @@ export function installPresenceProductionE2eFetch({
       };
     } else if (system.startsWith('Return only JSON with exactly mode.')) {
       output = { mode: 'independent_action' };
-    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       output = { pass: true, concerns: [] };
-    } else if (system.startsWith('Return only {"pass"')) {
+    } else if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
       output = {
         pass: true, failed_checks: [], concerns: [],
         evidence: ['Test response uses the supplied committed visible facts.'],

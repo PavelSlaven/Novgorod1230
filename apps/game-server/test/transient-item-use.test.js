@@ -66,7 +66,8 @@ for (const [name, intent, denial = false] of [
     known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [] };
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
     project: async () => assert.fail('no fallback') } }).project({
-    retrieved_state: { current_visible_context: scene },
+    retrieved_state: { ...state, current_spatial_context: scene,
+      current_spatial_context_is_fresh: true },
     consequence: { visible_seed: Object.assign({}, ...result.consequenceFragments.map(c => c.visible_seed)) },
     mode_resolution: { decision_trace: { step_traces: [{ applied: true,
       step_index: input.step_index, approved_plan: approved }] } } });
@@ -198,9 +199,11 @@ for (const [name, intent, wrongDescription] of [
     assert.deepEqual(executed.working_projection, state);
     assert.equal(Object.values(executed.consequence_fragment.visible_seed)[0].description, intent);
     const visible = await createLowerDvinaTraceTurnStepVisibleProjector({ fallback: { project: async () => assert.fail() } })
-      .project({ retrieved_state: { current_visible_context: { version: 1, schema: 'visible_context_package',
+      .project({ retrieved_state: { ...state,
+        current_spatial_context: { version: 1, schema: 'visible_context_package',
         visible_scene: 'Берег', visible_changes: [], uncertainties: [], sensory_details: [], visible_objects: [],
-        visible_npc: [], known_context: [], allowed_tensions: [], do_not_imply: [] } },
+        visible_npc: [], known_context: [], allowed_tensions: [], do_not_imply: [] },
+        current_spatial_context_is_fresh: true },
       consequence: { visible_seed: { ...executed.consequence_fragment.visible_seed,
         turn_step_activity: { kind: 'semantic_activity', duration_minutes: 5 } } },
       mode_resolution: { decision_trace: { remaining_intent: null,

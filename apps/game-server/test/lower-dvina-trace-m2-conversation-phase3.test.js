@@ -27,8 +27,12 @@ import {
   runPhase3,
   withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+import { npcSpeechPlan } from
+  './lower-dvina-trace-m2-conversation-speech-fixture.js';
 import { createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { phase3ConversationProjection } from
+  '../src/runtime/lower-dvina-trace-phase-3-visible.js';
 import { projectM2ConversationExecutionResult } from
   '../src/runtime/lower-dvina-trace-m2-conversation-result.js';
 
@@ -200,6 +204,57 @@ test('NPC speech owner accepts exact route disclosure and ordinary reply', async
   });
 });
 
+test('Eremey preserves current uncertainty as speech without withhold or route disclosure', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({
+    state, bundle: revision14Bundle
+  });
+  const utterance = 'Не уверен, видел ли лодочника после крушения.';
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Ты видел лодочника после крушения?',
+    inputDigest: digest('a'),
+    npcSemanticModel: async (request) => npcSpeechPlan(request, {
+      utteranceText: utterance,
+      dominantAct: 'answer'
+    })
+  });
+
+  assert.equal(exchange.result.response_kind, 'speech');
+  assert.equal(exchange.result.route_disclosure, null);
+  assert.deepEqual(exchange.result.decision_plan.speech.interaction_tags, []);
+  assert.deepEqual(exchange.result.decision_plan.speech.topic_refs, []);
+  assert.deepEqual(exchange.result.decision_plan.speech.claims, []);
+  const npcStatement = exchange.result.statements.find(
+    ({ speaker_ref: speaker }) => speaker.entity_kind === 'npc'
+  );
+  assert.equal(npcStatement.utterance_text, utterance);
+  const sceneProjection = phase3ConversationProjection({
+    consequence: { conversation: { semantic_exchange: exchange.result } }
+  }, contracts, { visible_scene: 'Берег', visible_npc: [] });
+  assert.equal(sceneProjection.visible_scene, 'Берег');
+  assert.deepEqual(sceneProjection.visible_changes,
+    ['человек говорит: «Не уверен, видел ли лодочника после крушения.»']);
+  assert.deepEqual(sceneProjection.uncertainties, []);
+
+  const publicResult = phase2PublicResult({
+    payload: phase2ConversationPayload({
+      state,
+      optionId: contracts.ids.talkOption,
+      check: null,
+      activityRef: contracts.talk.profile_id,
+      result: exchange.result
+    }),
+    screen: { schema: 'test-screen' }
+  });
+  assert.deepEqual(publicResult.conversation.semantic_exchange, {
+    response_kind: 'speech',
+    npc_utterance: utterance,
+    disclosed_route_ref: null
+  });
+});
+
 test('action-set evaluation does not require player input or invoke the interpreter', async () => {
   const state = phase3State();
   const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
@@ -317,6 +372,14 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
   assert.equal(withheld.result.route_disclosure, null);
   assert.equal(withheld.playerCalls, 1);
   assert.equal(withheld.npcCalls, 1);
+  const withheldScene = phase3ConversationProjection({ consequence: {
+    conversation: { semantic_exchange: withheld.result }
+  } }, contracts, { visible_scene: 'Рыбацкий стан', visible_npc: [] });
+  assert.deepEqual(withheldScene.uncertainties, [],
+    'internal withholding does not establish a player-visible disclosure limit');
+  assert.equal(withheldScene.visible_changes.some((change) =>
+    change.includes('не раскрыл полный ответ')), false,
+  'internal withholding does not create an unsupported disclosure claim');
 
   const utterance = 'Вот синяя шерсть с берега. Покажи дорогу к старой сушильне.';
   const disclosed = await runPhase3({
@@ -435,6 +498,11 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
     npc_utterance: 'От лагеря иди к старой сушильне по тропе.',
     disclosed_route_ref: 'trace_ld_v1_route_camp_to_shed'
   });
+  const disclosedScene = phase3ConversationProjection({
+    consequence: { conversation: { semantic_exchange: disclosed.result } }
+  }, contracts, { visible_scene: 'Окрестности.', visible_npc: [] });
+  assert.ok(disclosedScene.visible_changes.some((change) =>
+    change.includes(publicResult.conversation.semantic_exchange.npc_utterance)));
   assert.deepEqual(
     Object.keys(publicResult.conversation.semantic_exchange).sort(),
     ['disclosed_route_ref', 'npc_utterance', 'response_kind']

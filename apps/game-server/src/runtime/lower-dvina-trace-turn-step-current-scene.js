@@ -3,21 +3,29 @@ import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existin
 import { projectCampFireState, projectLowerDvinaTracePlayerSafeState } from
   './lower-dvina-trace-player-safe-state.js';
 import { projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
+import { playerSafeHeardNpcIntroduction } from
+  './lower-dvina-trace-player-safe-npc-details.js';
 import { deepFreeze, plain } from './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
 import { lowerDvinaTraceDirectResultChanges,
-  lowerDvinaTraceCarriedItemObservations,
   lowerDvinaTraceVisibleSceneItems,
   uniqueLowerDvinaTraceVisibleObjects } from
   './lower-dvina-trace-visible-scene-items.js';
 import { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 import { failCurrentScene, validCurrentScene, visibleNpc } from
   './lower-dvina-trace-turn-step-current-scene-validation.js';
+import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 export function withLowerDvinaTraceCurrentScene({ committedState,
-  locationProfiles, scenePresentation = null }) {
-  const initial = committedState?.current_visible_context;
+  locationProfiles = committedState?.location_profiles ?? null,
+  scenePresentation = committedState?.scene_presentation ?? null,
+  currentSpatialContext = committedState?.current_spatial_context ?? null,
+  currentSpatialContextIsFresh = committedState?.current_spatial_context_is_fresh
+    ?? currentSpatialContext != null }) {
+  if (committedState == null || typeof committedState !== 'object'
+      || Array.isArray(committedState)) failCurrentScene();
   const projectionSource = structuredClone(committedState);
+  projectionSource.current_visible_context = null;
   const { actor, player_safe_state: playerSafe } = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
     scene_presentation: scenePresentation,
@@ -26,50 +34,39 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const selfKnowledge = [...projectKnownContext(actor, playerSafe.knowledge, playerSafe.interactions),
     ...(playerSafe.available_routes ?? []).map(route => route.label).filter(Boolean)];
   const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
-    playerSafe.position,
-    playerSafe.actor_id);
-  if (Number(committedState?.party_state?.state_version) === 0
-      && validCurrentScene(initial)) {
-    const current = {
-      ...initial,
-      known_context: unique([...initial.known_context, ...selfKnowledge]),
-      sensory_details: unique([...initial.sensory_details,
-        ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)]),
-      visible_objects: uniqueLowerDvinaTraceVisibleObjects([
-        ...initial.visible_objects,
-        ...sceneItems.map(({ visibleObject }) => visibleObject)])
-    };
-    return {
-      ...committedState,
-      current_visible_context: enrichLowerDvinaTraceVisibleNpcCues({
-        visibleContext: current,
-        committedState: projectionSource
-      })
-    };
-  }
+    playerSafe.position, playerSafe.actor_id);
   const locationRef = playerSafe.position?.location_ref;
-  const profile = scenePresentation == null
-    ? historicalLocationProfile(locationProfiles, locationRef)
+  const presentationMatches = scenePresentation?.locations?.filter((row) =>
+    row?.location_ref === locationRef) ?? [];
+  const presented = presentationMatches.length === 0 ? null
     : scenePresentationForLocation({ scenePresentation, locationRef });
-  const sensoryDetails = unique([...(profile.player_visible_physical_facts ?? []),
-    ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)
-  ]);
-  const currentVisibleNpcs = playerSafe.current_visible_context?.visible_npc ?? [];
-  const visibleLabels = new Map(currentVisibleNpcs.map((npc) => [
-    npc?.entity_ref?.entity_id, npc
-  ]));
-  const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => visibleNpc(npc,
-    playerSafe.position, visibleLabels)).filter(Boolean);
-  const sceneNpcIds = new Set(sceneNpcs.map((npc) => npc.entity_ref.entity_id));
-  for (const npc of currentVisibleNpcs) {
-    const id = npc?.entity_ref?.entity_id;
-    if (npc?.entity_ref?.entity_kind !== 'npc' || !text(id)
-        || sceneNpcIds.has(id) || !text(npc.display_label)) continue;
-    sceneNpcs.push({ entity_ref: structuredClone(npc.entity_ref),
-      display_label: npc.display_label,
-      recognition: npc.recognition ?? 'unrecognized' });
-    sceneNpcIds.add(id);
-  }
+  const currentSpatial = !currentSpatialContextIsFresh
+      || currentSpatialContext == null ? null
+    : projectCampFireState(currentSpatialContext, projectionSource,
+      playerSafe.position);
+  const movementObservedContext = currentSpatial;
+  const visibleSceneItems = sceneItems;
+  const profile = currentSpatial != null && text(currentSpatial.visible_scene)
+    ? { display_name: currentSpatial.visible_scene,
+      player_visible_physical_facts: currentSpatial.sensory_details ?? [] }
+    : presented ?? { display_name: null, player_visible_physical_facts: [] };
+  const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => {
+    const id = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
+    const knownName = playerSafeHeardNpcIntroduction({
+      committedNpcs: committedState.npcs,
+      conversationStatements: committedState.conversation_statements,
+      receivedMessages: committedState.received_messages,
+      playerId: committedState.actor_id,
+      npcId: id
+    });
+    return visibleNpc(npc, playerSafe.position, knownName);
+  }).filter(Boolean);
+  const placeFacts = currentSpatial?.sensory_details
+    ?? presented?.player_visible_physical_facts
+    ?? profile.player_visible_physical_facts;
+  const currentItemRows = visibleSceneItems.map(({ visibleObject }) => visibleObject);
+  const sensoryDetails = unique([...(placeFacts ?? []),
+    ...visibleSceneItems.flatMap(({ physicalFacts }) => physicalFacts)]);
   const current = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
     version: 1,
     schema: 'visible_context_package',
@@ -78,55 +75,58 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
     visible_objects: uniqueLowerDvinaTraceVisibleObjects([
-      ...(initial?.visible_objects ?? []).filter((row) =>
-        ['scene_movement_edge', 'g4_directional_exit', 'g5_site_connection'].includes(
-          row?.entity_ref?.entity_kind)),
-      ...sceneItems.map(({ visibleObject }) => visibleObject)]),
-    known_context: [profile.display_name, ...selfKnowledge],
+      ...currentItemRows,
+      ...(movementObservedContext?.visible_objects ?? [])
+        .filter((object) => isMovementVisibleObject(object))]),
+    known_context: unique([...(text(profile.display_name)
+      ? [profile.display_name] : []),
+      ...(currentSpatial?.known_context ?? []),
+      ...selfKnowledge]),
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
   }, committedState: projectionSource });
   if (!validCurrentScene(current)) failCurrentScene();
-  return {
-    ...committedState,
-    current_visible_context: deepFreeze(current)
-  };
+  const { current_spatial_context: _currentSpatialContext,
+    current_spatial_context_is_fresh: _currentSpatialContextIsFresh,
+    current_spatial_context_filters_entities: _currentSpatialContextFiltersEntities,
+    ...projectedState } = committedState;
+  return { ...projectedState, current_visible_context: deepFreeze(current) };
 }
-function historicalLocationProfile(locationProfiles, locationRef) {
-  const matches = Array.isArray(locationProfiles)
-    ? locationProfiles.filter(({ location_profile_id: id }) => id === locationRef)
-    : [];
-  if (matches.length !== 1 || !text(matches[0].display_name)) failCurrentScene();
-  return { display_name: matches[0].display_name,
-    player_visible_physical_facts: [] };
-}
-export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys, body }) {
+export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys, body,
+  locationProfiles = input?.retrieved_state?.location_profiles ?? null,
+  scenePresentation = input?.retrieved_state?.scene_presentation ?? null }) {
   if (input?.consequence?.visible_seed?.clarification != null) return null;
   const traces = input?.mode_resolution?.decision_trace?.step_traces;
-  const current = input?.retrieved_state?.current_visible_context;
   if (!Array.isArray(traces) || traces.length === 0
       || traces.some(({ approved_plan: plan }) =>
         plan?.resolution !== 'direct'
         || !Array.isArray(plan.operations)
         || plan.operations.length !== 0
-        || plan.check !== null)
-      || !validCurrentScene(current)) {
+        || plan.check !== null)) {
     return null;
   }
   return projectCurrentSceneForVisibleOverlay({
-    input, directSeedKeys, body
+    input, directSeedKeys, body,
+    currentSpatialContext: input?.retrieved_state?.current_spatial_context,
+    locationProfiles, scenePresentation
   });
 }
-export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, body }) {
-  const current = projectCampFireState(
-    input?.retrieved_state?.current_visible_context,
-    input?.retrieved_state,
-    input?.retrieved_state?.position);
+export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, body,
+  currentSpatialContext = input?.retrieved_state?.current_spatial_context,
+  locationProfiles = input?.retrieved_state?.location_profiles ?? null,
+  scenePresentation = input?.retrieved_state?.scene_presentation ?? null }) {
+  const state = input?.retrieved_state;
+  const isFresh = state?.current_spatial_context_is_fresh === true
+    && currentSpatialContext != null;
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles, scenePresentation,
+    currentSpatialContext, currentSpatialContextIsFresh: isFresh
+  }).current_visible_context;
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);
   const directResultChanges = lowerDvinaTraceDirectResultChanges(input,
-    playerSafeSceneItems(input?.retrieved_state), body);
+    playerSafeSceneItems(input?.retrieved_state), body, current);
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
@@ -150,8 +150,8 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   });
 }
 function playerSafeSceneItems(state) {
-  return lowerDvinaTraceCarriedItemObservations(state?.items,
-    state?.current_visible_context?.visible_objects);
+  return lowerDvinaTraceVisibleSceneItems(state?.items, state?.position,
+    state?.actor_id);
 }
 export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null }) {
   const seed = input?.consequence?.visible_seed ?? {};
@@ -193,9 +193,12 @@ export function materializedOrdinaryPresenceChange(value) {
       || typeof value.display_name !== 'string' || !value.display_name.trim()) {
     ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
   }
-  return `Обнаружено: «${value.display_name}».`;
+  return `Вы нашли предмет — ${value.display_name}.`;
 }
 function directSeedChange(value) {
+  if (value?.kind === 'local_movement_signature') {
+    failCurrentScene();
+  }
   if (value?.kind === 'background_npc_observation') {
     if (!plain(value) || Object.keys(value).length !== 4
         || !text(value.npc_ref) || !text(value.display_label)

@@ -252,7 +252,7 @@ export async function assertTargetCanonicalStartPostgres({
           source_reviews: [...modelInput.required_current_beat.changes,
             ...modelInput.required_current_beat.uncertainties].map(({ ref }) => ({ ref, segment_choices: ids })),
           unsupported: [], literary_failures: [], evidence: ['Deterministic source-copy.'] };
-      } else if (system.startsWith('Return only {"pass"')) {
+      } else if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
         narrationRoles.push('gameplay_narrator_auditor');
         modelCalls.push({ role: 'gameplay_narrator_auditor' });
         output = { pass: true, failed_checks: [], concerns: [], evidence: ['Test response uses the supplied committed visible facts.'] };

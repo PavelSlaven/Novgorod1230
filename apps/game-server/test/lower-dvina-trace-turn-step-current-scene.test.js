@@ -5,7 +5,7 @@ import {
   projectDirectSeedChanges,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
-  withLowerDvinaTraceCurrentScene
+  withLowerDvinaTraceCurrentScene as projectCommittedScene
 } from
   '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { projectLowerDvinaTracePlayerSafeState } from
@@ -20,12 +20,203 @@ import { lowerDvinaTraceDirectResultChanges } from
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
   economic_basis: 'Пустая сушильня.' }];
+const scenePresentation = { locations: [{ location_ref: 'shed',
+  display_name: 'Старая сушильня',
+  player_visible_physical_facts: [] }] };
+
+function withLowerDvinaTraceCurrentScene(input) {
+  return projectCommittedScene({ scenePresentation, ...input });
+}
+
+test('current committed scene replaces stale entities, cues, facts, and dialogue title', () => {
+  const state = committedState();
+  state.current_visible_context.visible_scene = 'Ратша сказала: «Иду к лодкам». ';
+  state.current_visible_context.sensory_details = [
+    'Старый предмет пахнет смолой.', 'Еремей: Перебирает верёвку.'
+  ];
+  state.conversation_statements = [{ utterance_text: 'Иду к лодкам.' }];
+  state.current_visible_context.visible_npc.push({
+    entity_ref: { entity_kind: 'npc', entity_id: 'moved' },
+    display_label: 'Еремей', recognition: 'recognized'
+  });
+  state.current_visible_context.visible_objects = [
+    { entity_ref: { entity_kind: 'item', entity_id: 'held' },
+      display_label: 'длинная жердь', recognition: 'recognized',
+      visible_status: 'available' },
+    { entity_ref: { entity_kind: 'item', entity_id: 'removed' },
+      display_label: 'старый предмет', recognition: 'recognized',
+      visible_status: 'available' }
+  ];
+  state.current_spatial_context = {
+    ...structuredClone(committedState().current_visible_context),
+    visible_scene: 'Старая сушильня',
+    sensory_details: ['На настиле видны свежие следы.'],
+    visible_objects: [{ entity_ref: { entity_kind: 'item', entity_id: 'held' },
+      display_label: 'устаревшая жердь', recognition: 'recognized',
+      visible_status: 'available' }],
+    visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
+      display_label: 'ошибочное имя', recognition: 'recognized',
+      observable_cues: { identity: { display_name: 'старый cue' } } }]
+  };
+  state.current_spatial_context_is_fresh = true;
+  state.items = [{ item_id: 'held', name: 'длинная жердь',
+    placement: { holder_character_id: 'player', physical_position: 'hands' } }];
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles, scenePresentation: { locations: [{
+      location_ref: 'shed', display_name: 'Старая сушильня',
+      player_visible_physical_facts: ['Под настилом видна вода.']
+    }] } }).current_visible_context;
+
+  assert.equal(current.visible_scene, 'Старая сушильня');
+  assert.deepEqual(current.sensory_details, ['На настиле видны свежие следы.']);
+  assert.deepEqual(current.visible_changes, []);
+  assert.equal(current.visible_npc.some(({ entity_ref: ref }) =>
+    ref.entity_id === 'moved'), false);
+  assert.deepEqual(current.visible_objects.filter(({ entity_ref: ref }) =>
+    ref.entity_kind === 'item').map(({ entity_ref: ref, visible_status: status }) =>
+    [ref.entity_id, status]), [['held', 'у вас в руках']]);
+  assert.equal(JSON.stringify(current).includes('устаревшая жердь'), false);
+  assert.equal(JSON.stringify(current).includes('старый cue'), false);
+  assert.equal(JSON.stringify(current).includes('Ратша сказала'), false);
+  assert.equal(JSON.stringify(current).includes('старый предмет пахнет'), false);
+  const withoutApprovedTitle = structuredClone(state);
+  delete withoutApprovedTitle.current_spatial_context;
+  delete withoutApprovedTitle.scene_presentation;
+  withoutApprovedTitle.current_spatial_context_is_fresh = false;
+  assert.throws(() => projectCommittedScene({ committedState: withoutApprovedTitle,
+    locationProfiles }), { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID' });
+});
+
+test('approved scene presentation supplies title when fresh Spatial context has no title', () => {
+  const state = committedState();
+  state.current_spatial_context = { visible_scene: null,
+    sensory_details: ['У настила видна вода.'], visible_objects: [],
+    known_context: [] };
+  state.current_spatial_context_is_fresh = true;
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, scenePresentation
+  }).current_visible_context;
+  assert.equal(current.visible_scene, 'Старая сушильня');
+  assert.deepEqual(current.sensory_details, ['У настила видна вода.']);
+});
+
+test('without fresh Spatial context, the previous package supplies no current facts', () => {
+  const state = committedState();
+  state.items.push({ item_id: 'board', name: 'обломок доски', state: {},
+    placement: { location_ref: 'shed', anchor_id: 'shed-anchor' } });
+  state.current_visible_context.visible_scene = 'Да.';
+  state.current_visible_context.visible_objects = [
+    { entity_ref: { entity_kind: 'item', entity_id: 'board' },
+      display_label: 'старая доска', recognition: 'recognized',
+      visible_status: 'у вас в руках' },
+    { entity_ref: { entity_kind: 'item', entity_id: 'gone' },
+      display_label: 'исчезнувшая вещь', recognition: 'recognized',
+      visible_status: 'available' },
+    { entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
+      display_label: 'К проходу во двор', recognition: 'known' }
+  ];
+  state.current_visible_context.visible_npc = [{
+    entity_ref: { entity_kind: 'npc', entity_id: 'moved' },
+    display_label: 'Еремей', recognition: 'recognized',
+    observable_cues: { identity: { display_name: 'old cue' } }
+  }, {
+    entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
+    display_label: 'человек', recognition: 'recognized',
+    observable_cues: { identity: { display_name: 'stale cue' } }
+  }];
+
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles, currentSpatialContextIsFresh: false,
+    currentSpatialContextFiltersEntities: false }).current_visible_context;
+
+  assert.equal(current.visible_scene, 'Старая сушильня');
+  assert.equal(current.known_context.includes('Да.'), false);
+  assert.deepEqual(current.visible_objects.filter(({ entity_ref: ref }) =>
+    ref.entity_kind === 'item').map(({ entity_ref: ref, display_label: label,
+      visible_status: status }) => [ref.entity_id, label, status]), [
+    ['board', 'обломок доски', 'available']
+  ]);
+  assert.deepEqual(current.visible_objects.filter(({ entity_ref: ref }) =>
+    ref.entity_kind === 'scene_movement_edge').map(({ entity_ref: ref }) =>
+    ref.entity_id), []);
+  assert.deepEqual(current.visible_npc.map(({ entity_ref: ref }) =>
+    ref.entity_id), ['onisim']);
+  assert.notEqual(JSON.stringify(current).includes('stale cue'), true);
+});
+
+test('direct overlay rebuilds current entities instead of forwarding stale package rows', () => {
+  const state = committedState();
+  delete state.current_spatial_context;
+  state.current_spatial_context_is_fresh = false;
+  state.current_visible_context.visible_scene = 'Да.';
+  state.current_visible_context.visible_objects = [{
+    entity_ref: { entity_kind: 'item', entity_id: 'board' },
+    display_label: 'старая доска', recognition: 'recognized',
+    visible_status: 'у вас в руках'
+  }];
+  state.current_visible_context.visible_npc[0].observable_cues = {
+    identity: { display_name: 'устаревшая внешность' }
+  };
+  state.items.push({ item_id: 'board', name: 'обломок доски', state: {},
+    placement: { location_ref: 'shed', anchor_id: 'shed-anchor' } });
+
+  const visible = projectCurrentSceneForVisibleOverlay({
+    input: { retrieved_state: state, consequence: { visible_seed: {} },
+      mode_resolution: { decision_trace: { remaining_intent: null,
+        step_traces: [] } } }, directSeedKeys: [], body: {}, locationProfiles,
+    scenePresentation
+  });
+
+  assert.equal(visible.visible_scene, 'Старая сушильня');
+  assert.deepEqual(visible.visible_objects.filter(({ entity_ref: ref }) =>
+    ref?.entity_kind === 'item').map(({ display_label: label,
+      visible_status: status }) => [label, status]), [['обломок доски', 'available']]);
+  assert.equal(JSON.stringify(visible).includes('устаревшая внешность'), false);
+  assert.equal(visible.visible_objects.some(({ entity_ref: ref }) =>
+    ref?.entity_kind === 'scene_movement_edge'), false);
+});
+
+test('committed scene entities do not depend on current Spatial entity rows', () => {
+  const state = committedState();
+  state.current_spatial_context = {
+    ...structuredClone(state.current_spatial_context),
+    visible_npc: [structuredClone(state.current_visible_context.visible_npc[0])]
+  };
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = true;
+  state.npcs.push({ instance_id: 'not-observed', location_ref: 'shed',
+    anchor_id: 'shed-anchor', zone_ref: 'yard',
+    identity_state: { canonical_name: 'Скрытый человек' } });
+
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles }).current_visible_context;
+
+  assert.deepEqual(current.visible_npc.map(({ entity_ref: ref }) => ref.entity_id),
+    ['onisim', 'not-observed']);
+});
+
+for (const speech of ['Длинная реплика: «Я пойду к лодкам».', 'Да.']) {
+  test(`prior ${speech.length < 8 ? 'short' : 'long'} speech is never a current scene title`, () => {
+    const state = committedState();
+    delete state.current_spatial_context;
+    state.current_visible_context.visible_scene = speech;
+    state.current_visible_context.known_context.push(speech);
+    state.conversation_statements = [{ utterance_text: speech }];
+    const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+      locationProfiles }).current_visible_context;
+
+    assert.equal(current.visible_scene, 'Старая сушильня');
+    assert.equal(current.visible_scene.includes(speech), false);
+    assert.equal(current.known_context.includes(speech), false);
+  });
+}
 
 test('current scene carries disclosed local edge into turn visible package', () => {
   const state = committedState();
-  state.current_visible_context.visible_objects.push({
+  state.current_spatial_context.visible_objects.push({
     entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
     display_label: 'Проход 1', recognition: 'known' });
+  state.current_spatial_context_is_fresh = true;
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles });
   assert.equal(current.current_visible_context.visible_objects.some((row) =>
@@ -35,11 +226,21 @@ test('current scene carries disclosed local edge into turn visible package', () 
 
 test('current scene carries approved directional exit after first turn', () => {
   const state = committedState();
-  state.current_visible_context.visible_objects.push({
+  state.current_spatial_context = {
+    ...structuredClone(state.current_visible_context), visible_objects: []
+  };
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = true;
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context.visible_objects.push({
     entity_ref: { entity_kind: 'g4_directional_exit', entity_id: 'pine-exit' },
     display_label: 'Продолжить путь — выход 2', recognition: 'known' });
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles });
+  const movement = current.current_visible_context.visible_objects.filter((row) =>
+    ['scene_movement_edge', 'g4_directional_exit', 'g5_site_connection']
+      .includes(row.entity_ref?.entity_kind));
+  assert.deepEqual(movement.map((row) => row.entity_ref.entity_id), ['pine-exit']);
   assert.equal(current.current_visible_context.visible_objects.some((row) =>
     row.entity_ref?.entity_kind === 'g4_directional_exit'
       && row.entity_ref.entity_id === 'pine-exit'), true);
@@ -47,9 +248,10 @@ test('current scene carries approved directional exit after first turn', () => {
 
 test('current scene carries a disclosed canonical connection after a local move', () => {
   const state = committedState();
-  state.current_visible_context.visible_objects.push({
+  state.current_spatial_context.visible_objects.push({
     entity_ref: { entity_kind: 'g5_site_connection', entity_id: 'binding-1' },
     display_label: 'Проход 3', recognition: 'known' });
+  state.current_spatial_context_is_fresh = true;
   const current = withLowerDvinaTraceCurrentScene({ committedState: state, locationProfiles });
   assert.equal(current.current_visible_context.visible_objects.some((row) =>
     row.entity_ref?.entity_kind === 'g5_site_connection'
@@ -88,10 +290,15 @@ test('N1 visible seed makes the committed observation a required current beat', 
   }), { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID' });
 });
 
-test('current scene keeps prior player-safe co-located NPC observations only', () => {
+test('current scene rebuilds co-located NPC cues from committed state', () => {
   const state = committedState();
   state.current_visible_context.visible_npc[0].visible_status =
     'говорит с вами';
+  state.current_spatial_context = {
+    ...structuredClone(state.current_visible_context),
+    visible_npc: []
+  };
+  state.current_spatial_context_is_fresh = true;
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles });
   assert.deepEqual(current.current_visible_context.visible_npc.map((npc) => ({
@@ -100,7 +307,7 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
     recognition: npc.recognition
   })), [{
     entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
-    display_label: 'раненый мужчина',
+    display_label: 'человек',
     recognition: 'unrecognized'
   }]);
   assert.equal(Object.hasOwn(
@@ -134,19 +341,20 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
             grounded_attempt: 'поднести доску к глазам' },
           goal_result: 'not_achieved', operations: [], check: null } }] }
     } }, directSeedKeys: ['turn_step_1'], body: {} });
-  assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
+  assert.equal(direct.visible_npc[0].display_label, 'человек');
+  assert.equal(JSON.stringify(direct.visible_npc).includes('раненый мужчина'), false);
   assert.equal(JSON.stringify(direct).includes('injured_unable_to_walk'), false);
   assert.deepEqual(direct.visible_changes, []);
   assert.deepEqual(direct.uncertainties, []);
   assert.equal(direct.do_not_imply.includes('unconfirmed_attempt_success'), true);
 });
 
-test('current scene carries visible scene-read NPCs without legacy location scope', () => {
+test('current scene carries committed scene-read NPCs without leaking authored identity', () => {
   const state = committedState();
   state.position.position_id = 'player-position';
   state.position.g6_instance_id = 'g6-1';
   state.scene_position_g6 = { 'player-position': 'g6-1', 'npc-position': 'g6-1' };
-  state.npcs.push({ instance_id: 'scene-npc', location_ref: 'other-location',
+  state.npcs.push({ instance_id: 'scene-npc', location_ref: 'shed',
     position_id: 'npc-position', g6_instance_id: 'g6-1',
     runtime_source: 'party_db_scene_read',
     identity_state: { canonical_name: 'Степан' } });
@@ -162,14 +370,16 @@ test('current scene carries visible scene-read NPCs without legacy location scop
     recognition: npc.recognition
   })).filter(({ entity_ref }) => entity_ref.entity_id === 'scene-npc'), [{
     entity_ref: { entity_kind: 'npc', entity_id: 'scene-npc' },
-    display_label: 'Степан', recognition: 'known'
+    display_label: 'человек', recognition: 'unrecognized'
   }]);
+  assert.equal(JSON.stringify(current.current_visible_context).includes('Степан'), false);
   assert.equal(JSON.stringify(current.current_visible_context).includes(
     'other-location'), false);
 });
 
 test('current scene binds safe self identity separately from a namesake NPC across reload', () => {
-  assertCurrentSceneSelfIdentity({ committedState, locationProfiles });
+  assertCurrentSceneSelfIdentity({ committedState, locationProfiles,
+    scenePresentation });
 });
 
 test('current scene never promotes an authored NPC name into player knowledge', () => {
@@ -178,6 +388,10 @@ test('current scene never promotes an authored NPC name into player knowledge', 
     instance_id: 'unknown', location_ref: 'shed', anchor_id: 'shed-anchor',
     zone_ref: 'yard', role_ref: 'fisher', occupation_ref: 'fisher',
     identity_state: { display_name: 'Незнакомое имя' }
+  });
+  state.current_spatial_context.visible_npc.push({
+    entity_ref: { entity_kind: 'npc', entity_id: 'unknown' },
+    display_label: 'человек', recognition: 'unrecognized'
   });
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
@@ -218,14 +432,14 @@ test('current scene keeps private NPC schedule summaries out of observations', (
     .includes('Private schedule instruction.'), false);
 });
 
-test('version zero scene retains safe labels and gains observable cues', () => {
+test('version zero scene uses a safe label and gains committed observable cues', () => {
   const state = committedState();
   state.party_state.state_version = 0;
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
   });
   assert.equal(current.current_visible_context.visible_npc[0]
-    .display_label, 'раненый мужчина');
+    .display_label, 'человек');
   assert.equal(current.current_visible_context.visible_npc[0]
     .recognition, 'unrecognized');
   assert.equal(current.current_visible_context.visible_npc[0]
@@ -261,6 +475,7 @@ test('version zero scene includes unnamed carried equipment with safe labels', (
 
 test('current scene exposes only authored physical facts, never taxonomy IDs', () => {
   const state = committedState();
+  delete state.current_spatial_context;
   state.environment_snapshot = { facts: ['sheltered_from_wind', 'lit_fire'] };
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles, scenePresentation: { locations: [{ location_ref: 'shed',
@@ -276,6 +491,7 @@ test('current scene exposes only authored physical facts, never taxonomy IDs', (
 
 test('current scene reads arbitrary authored location facts without code phrases', () => {
   const state = committedState();
+  delete state.current_spatial_context;
   state.position.location_ref = 'unseen-bank';
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles: [], scenePresentation: { locations: [{
@@ -286,8 +502,25 @@ test('current scene reads arbitrary authored location facts without code phrases
     ['Ольха растёт над тёмной водой.']);
 });
 
+test('current owner projection retains an authored fact regardless of the prior presentation', () => {
+  const state = committedState();
+  delete state.current_spatial_context;
+  const fact = 'На досках лежит мокрая трава.';
+  state.current_visible_context.sensory_details = [fact];
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    scenePresentation: { locations: [{ location_ref: 'shed',
+      display_name: 'Старая сушильня', player_visible_physical_facts: [fact] }] } });
+  assert.equal(current.current_visible_context.visible_scene, 'Старая сушильня');
+  assert.deepEqual(current.current_visible_context.sensory_details, [fact]);
+});
+
 test('current scene retains committed co-located physical objects', () => {
   const state = committedState();
+  state.current_spatial_context.visible_objects.push({
+    entity_ref: { entity_kind: 'item', entity_id: 'reed-bundle' },
+    display_label: 'пучок камыша', recognition: 'recognized',
+    visible_status: 'available'
+  });
   state.items.push({ item_id: 'reed-bundle', name: 'пучок камыша',
     placement: { location_ref: 'shed', anchor_id: 'shed-anchor' } });
   state.items.push({ item_id: 'remote-board', name: 'доска',
@@ -318,6 +551,11 @@ test('current scene retains a named item held by the player', () => {
 
 test('current scene carries committed physical facts of visible items', () => {
   const state = committedState();
+  state.current_spatial_context.visible_objects.push({
+    entity_ref: { entity_kind: 'item', entity_id: 'used-board' },
+    display_label: 'обломки досок', recognition: 'recognized',
+    visible_status: 'available'
+  });
   state.items.push({ item_id: 'used-board', name: 'обломки досок', state: {
     ordinary_metadata: { semantic_facts: [{ fact_id: 'platform:1',
       text: 'обломки уложены как простой настил' }] }
@@ -377,7 +615,7 @@ test('a full pair of hands is narrated as a physical limit', () => {
     ['Вы не смогли взять кусок верёвки: руки заняты.']);
 });
 
-test('direct player-safe observation reaches narration without new facts', () => {
+test('direct player-safe observation does not replay previous-package sensory facts', () => {
   const state = committedState();
   state.current_visible_context.sensory_details = ['Низкое сырое небо.'];
   state.current_visible_context.visible_objects = [{
@@ -385,6 +623,8 @@ test('direct player-safe observation reaches narration without new facts', () =>
     display_label: 'верхняя одежда', recognition: 'recognized',
     visible_status: 'при вас'
   }];
+  state.items.push({ item_id: 'unseen-cloak', name: 'верхняя одежда',
+    placement: { holder_character_id: state.actor_id, physical_position: 'worn' } });
   const visible = projectCurrentSceneForNoOperationDirect({ input: {
     consequence: { status: 'resolved', visible_seed: {} },
     retrieved_state: state, mode_resolution: { decision_trace: {
@@ -395,9 +635,8 @@ test('direct player-safe observation reaches narration without new facts', () =>
   }, directSeedKeys: [], body: {} });
 
   assert.deepEqual(visible.visible_changes,
-    ['Вы внимательно изучили обстановку.',
-      'Низкое сырое небо.', 'В поле зрения — раненый мужчина.']);
-  assert.deepEqual(visible.sensory_details, ['Низкое сырое небо.']);
+    ['Вы внимательно изучили обстановку.', 'В поле зрения — человек.']);
+  assert.deepEqual(visible.sensory_details, []);
   assert.equal(visible.visible_objects[0].display_label, 'верхняя одежда');
   assert.deepEqual(visible.uncertainties, []);
   assert.deepEqual(lowerDvinaTraceDirectResultChanges({
@@ -434,7 +673,7 @@ test('direct player-safe observation reaches narration without new facts', () =>
 });
 
 function committedState() {
-  return { actor_id: 'player', party_state: { state_version: 9 },
+  const state = { actor_id: 'player', party_state: { state_version: 9 },
     position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor', zone_ref: 'yard' },
     current_visible_context: { version: 1,
       schema: 'visible_context_package', visible_scene: 'Старая сушильня',
@@ -459,8 +698,10 @@ function committedState() {
     { instance_id: 'hidden', location_ref: 'shed', anchor_id: 'shed-anchor',
       zone_ref: 'yard', visibility_state: 'hidden',
       identity_state: { canonical_name: 'Ратша' } }],
-    items: [{ holder_npc_id: 'onisim', physical_position: 'worn',
-      equipment_slot_category_id: 'base_garment', state: {
+    items: [{ item_id: 'item:onisim-shirt', placement: {
+      holder_npc_id: 'onisim', physical_position: 'worn',
+      equipment_slot_category_id: 'base_garment'
+    }, state: {
         visual_profile_snapshot: { schema: 'item_visual_profile_snapshot_v1',
           version: 1, equipment_slot: 'base_garment', neckline: 'round',
           sleeve_form: 'narrow', outer_form: 'none',
@@ -468,4 +709,10 @@ function committedState() {
           main_visible_color: 'undyed_linen',
           secondary_visible_color: 'undyed_linen', headwear_kind: 'none' }
       } }] };
+  state.current_spatial_context = state.current_visible_context;
+  state.location_profiles = locationProfiles;
+  state.current_spatial_context_is_fresh = false;
+  state.current_spatial_context_filters_entities = false;
+  state.scene_presentation = scenePresentation;
+  return state;
 }

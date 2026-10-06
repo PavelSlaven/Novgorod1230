@@ -2,6 +2,8 @@
 // Pure of I/O: `api` (HTTP client) and `sql` (snapshot reader) are injected, so unit tests use fakes.
 // A turn that fails is data (fail with the API error code), not an exception.
 
+import { openingAttemptFromNewGame, partyIdFromNewGameRequestId } from './v17-slice-opening-trace.js';
+
 export const RESERVE_MAKE_TURNS = 3;
 const LOOK = 'Осматриваюсь вокруг.';
 const MAKE_PHRASES = Object.freeze([
@@ -15,6 +17,7 @@ const TAKE_PHRASES = Object.freeze([
   { match: /.*/u, texts: ['Беру то, что лежит рядом.'] }
 ]);
 const OPENING_REJECTED = 'AUTHORED_OPENING_AUDIT_REJECTED';
+const PRESENTATION_PENDING = 'committed_presentation_pending';
 
 class Blocked extends Error {}
 
@@ -40,7 +43,14 @@ const peopleOf = (screen) => {
   const data = panel.data ?? {};
   return (data.people ?? data.visible_npcs ?? data.npcs ?? []).map(labelOf).filter(Boolean);
 };
-const positionKey = (snap) => `${snap?.position?.site_id ?? '?'}|${snap?.position?.slot ?? '?'}`;
+const siteKey = (snap) => String(snap?.position?.site_id ?? '?');
+export const positionProgressed = (before, after) => {
+  const left = before?.position;
+  const right = after?.position;
+  if (!left?.site_id || !right?.site_id) return false;
+  return left.site_id !== right.site_id
+    || String(left.slot ?? '') !== String(right.slot ?? '');
+};
 const npcsHere = (snap) => (snap?.placements_here ?? []).filter((row) => row.entity_kind === 'npc');
 const liveNodes = (snap) => (snap?.resource_nodes ?? []).filter((row) => Number(row.quantity_numerator) > 0);
 const liveNodesHere = (snap) => liveNodes(snap).filter((row) => row.site_id === snap?.position?.site_id);
@@ -64,7 +74,8 @@ export async function runLegs({
   const legs = Object.fromEntries(['start', 'walk', 'meet', 'talk', 'take', 'make'].map((id) => [id,
     { id, status: 'blocked', reason: 'не достигнута', detail: null }]));
   const state = { legs, turns: [], opening: null, party_id: null, final_snapshot: null,
-    transport_errors: [] };
+    transport_errors: [],
+    presentation_recovery: { attempts: 0, recovered: 0, still_pending: 0 } };
   const set = (id, status, reason, detail = null) => { Object.assign(legs[id], { status, reason, detail }); };
   const blockRest = (from, reason) => {
     for (const leg of Object.values(legs)) if (leg.status === 'blocked' && leg.reason === 'не достигнута' && from.includes(leg.id)) leg.reason = reason;
@@ -73,6 +84,7 @@ export async function runLegs({
   let partyId = null;
   let last = null; // { screen, snap }
   let turnNo = 0;
+  let presentationDeliveryFailure = null;
   const apiCall = async (method, phase, leg, ...args) => {
     try { return await api[method](...args); }
     catch (error) {
@@ -93,8 +105,27 @@ export async function runLegs({
     return last;
   }
 
-  /** One player turn: budget/deadline guard, snapshots around it, presentation recovery when the text is missing. */
+  const recordPresentationRecovery = (attempts, outcome) => {
+    if (attempts > 0) state.presentation_recovery.attempts += attempts;
+    if (outcome === 'recovered') state.presentation_recovery.recovered += 1;
+    if (outcome === 'still_pending') state.presentation_recovery.still_pending += 1;
+  };
+  const recoveryOutcome = (screen, stillPending) => stillPending ? 'still_pending'
+    : screen?.schema === 'factual_turn_delivery_screen' ? 'factual'
+      : String(screen?.main_prose ?? '').trim() ? 'recovered' : 'empty';
+
+  async function recoverPendingPresentation(phase, leg, requestId) {
+    const recoverResponse = await apiCall('recover', 'presentation_recovery', leg, partyId,
+      { request_id: requestId });
+    const view = await refresh(phase, leg);
+    const screen = recoverResponse.data?.screen ?? view.screen;
+    const stillPending = screen?.screen_status === PRESENTATION_PENDING;
+    return { view: { screen, snap: view.snap }, stillPending };
+  }
+
+  /** One player turn: budget/deadline guard, snapshots around it, presentation recovery when pending or prose missing. */
   async function play(leg, text, { reserved = false } = {}) {
+    if (presentationDeliveryFailure) throw new Blocked(presentationDeliveryFailure);
     if (now() >= deadlineAt) throw new Blocked('дедлайн прогона');
     if (reserved ? total() >= maxTurns : exploreBudget() <= 0) throw new Blocked('бюджет ходов исчерпан');
     const n = ++turnNo;
@@ -106,37 +137,129 @@ export async function runLegs({
     const calls = llm.count();
     const roleCalls = llm.roleCalls?.length ?? 0;
     const errorsBefore = llm.serverErrorCount?.() ?? 0;
+    let presentationRecoveryAttempts = 0;
+    let presentationRecoveryOutcome = null;
+    if (last?.screen?.screen_status === PRESENTATION_PENDING) {
+      const priorRequestId = state.turns.at(-1)?.request_id;
+      if (!priorRequestId) throw new Blocked('доставка прозы не завершена: pending без request_id');
+      const { view: cleared, stillPending } = await recoverPendingPresentation(
+        'screen_before_turn', leg, priorRequestId);
+      last = { screen: cleared.screen, snap: cleared.snap };
+      presentationRecoveryAttempts += 1;
+      presentationRecoveryOutcome = recoveryOutcome(cleared.screen, stillPending);
+      if (stillPending) {
+        presentationDeliveryFailure = 'доставка прозы не завершена: committed_presentation_pending до хода';
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        throw new Blocked(presentationDeliveryFailure);
+      }
+      if (presentationRecoveryOutcome === 'empty') {
+        presentationDeliveryFailure = 'доставка прозы не завершена: пустой экран после presentation-recovery';
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        const priorTurn = state.turns.at(-1);
+        if (priorTurn) Object.assign(priorTurn, { recovered: false, delivery_kind: 'empty',
+          delivery_failed: true, prose: '', presentation_recovery_attempts:
+            priorTurn.presentation_recovery_attempts + presentationRecoveryAttempts,
+          presentation_recovery_outcome: 'empty', error: { code: 'PRESENTATION_EMPTY_AFTER_RECOVERY',
+            message: 'Ход сохранён, но экран после восстановления пуст.' } });
+        persist(result());
+        throw new Blocked(presentationDeliveryFailure);
+      }
+    }
     const response = await apiCall('turn', 'turn', leg, partyId,
       { raw_text: text, request_id: requestId });
-    let recovered = false;
+    let recovered = presentationRecoveryOutcome === 'recovered';
     let view = await refresh('screen_after_turn', leg);
     let prose = view.screen?.main_prose ?? response.data?.screen?.main_prose ?? '';
     const committed = Number(view.snap?.state_version) > Number(before?.state_version);
-    if (committed && !String(prose).trim()) {
-      await apiCall('recover', 'presentation_recovery', leg, partyId,
-        { request_id: requestId });
-      recovered = true;
-      view = await refresh('screen_after_recovery', leg);
+    const currentScreen = response.data?.screen ?? view.screen;
+    const factualDelivery = currentScreen?.schema === 'factual_turn_delivery_screen';
+    const responsePending = !factualDelivery && (response.data?.screen?.screen_status === PRESENTATION_PENDING
+      || view.screen?.screen_status === PRESENTATION_PENDING);
+    if (!factualDelivery && (responsePending || (committed && !String(prose).trim()))) {
+      const { view: recoveredView, stillPending } = await recoverPendingPresentation(
+        'screen_after_recovery', leg, requestId);
+      presentationRecoveryAttempts += 1;
+      view = recoveredView;
       prose = view.screen?.main_prose ?? '';
+      presentationRecoveryOutcome = recoveryOutcome(view.screen, stillPending);
+      recovered = presentationRecoveryOutcome === 'recovered';
+      if (stillPending) {
+        presentationDeliveryFailure = 'доставка прозы не завершена: committed_presentation_pending после presentation-recovery';
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        commitTurn({
+          recovered: false,
+          delivery_failed: true,
+          prose: '',
+          error: { code: 'PRESENTATION_PENDING',
+            message: 'Факты хода сохранены; экран ещё готовится.' }
+        });
+        throw new Blocked(presentationDeliveryFailure);
+      }
+      if (presentationRecoveryOutcome === 'empty') {
+        presentationDeliveryFailure = 'доставка прозы не завершена: пустой экран после presentation-recovery';
+        recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome);
+        commitTurn({ recovered: false, delivery_failed: true, prose: '',
+          error: { code: 'PRESENTATION_EMPTY_AFTER_RECOVERY',
+            message: 'Ход сохранён, но экран после восстановления пуст.' } });
+        throw new Blocked(presentationDeliveryFailure);
+      }
     }
-    const turn = {
-      n, leg, input: text, request_id: requestId, http_status: response.status, error: response.ok ? null : response.error,
-      committed, recovered, prose: String(prose ?? ''), before, after: view.snap, ms: now() - started,
-      llm_calls: llm.count() - calls,
-      llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
-      people_panel: capturePeoplePanel(view.screen, view.snap),
-      current_visible_context: {
-        before: visibleContextBefore,
-        response: structuredClone(response.data?.screen?.visible_context ?? null),
-        after: structuredClone(view.screen?.visible_context ?? null)
-      },
-      npc_scene_projection_diagnostics: sceneProjectionDiagnostics()
-        .filter((event) => event?.request_id === requestId),
-      server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [], route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
-    };
-    state.turns.push(turn);
-    persist(result());
-    return turn;
+    if (presentationRecoveryAttempts > 0) {
+      recordPresentationRecovery(presentationRecoveryAttempts, presentationRecoveryOutcome ?? 'recovered');
+    }
+    return commitTurn();
+
+    function commitTurn(overrides = {}) {
+      const screen = view.screen ?? response.data?.screen ?? null;
+      const factualScreen = screen?.schema === 'factual_turn_delivery_screen'
+        ? {
+            visible_scene: screen.visible_context?.visible_scene ?? '',
+            visible_changes: [...(screen.visible_changes ?? [])],
+            uncertainties: [...(screen.uncertainties ?? [])],
+            visible_people: (screen.panels?.people?.visible === false ? []
+              : screen.panels?.people?.data?.visible_npcs
+                ?? screen.panels?.people?.data?.people ?? [])
+              .map((person) => typeof person === 'string'
+                ? person : person?.display_label)
+              .filter((label) => typeof label === 'string' && label.trim())
+          } : null;
+      const factualText = factualScreen == null ? '' : [
+        factualScreen.visible_scene,
+        ...factualScreen.visible_changes,
+        ...factualScreen.uncertainties,
+        ...factualScreen.visible_people.map((person) => `Рядом: ${person}.`)
+      ].filter((value) => typeof value === 'string' && value.trim()).join('\n');
+      const deliveryKind = screen?.screen_status === PRESENTATION_PENDING ? 'pending'
+        : String(overrides.prose ?? prose ?? '').trim() ? 'narrated'
+          : factualText ? 'factual' : 'empty';
+      const turn = {
+        n, leg, input: text, request_id: requestId, http_status: response.status,
+        error: overrides.error ?? (response.ok ? null : response.error),
+        committed, recovered: overrides.recovered ?? recovered,
+        delivery_kind: deliveryKind,
+        factual_screen: factualScreen,
+        delivery_failed: overrides.delivery_failed === true,
+        presentation_recovery_attempts: presentationRecoveryAttempts,
+        presentation_recovery_outcome: presentationRecoveryOutcome,
+        prose: String(overrides.prose ?? prose ?? ''), before,
+        after: overrides.after ?? view.snap, ms: now() - started,
+        llm_calls: llm.count() - calls,
+        llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
+        people_panel: capturePeoplePanel(view.screen, view.snap),
+        current_visible_context: {
+          before: visibleContextBefore,
+          response: structuredClone(response.data?.screen?.visible_context ?? null),
+          after: structuredClone(view.screen?.visible_context ?? null)
+        },
+        npc_scene_projection_diagnostics: sceneProjectionDiagnostics()
+          .filter((event) => event?.request_id === requestId),
+        server_errors: llm.serverErrorsSince?.(errorsBefore) ?? [],
+        route_labels: routeLabels(view.screen), people_labels: peopleOf(view.screen)
+      };
+      state.turns.push(turn);
+      persist(result());
+      return turn;
+    }
   }
 
   // --- start ---
@@ -144,16 +267,30 @@ export async function runLegs({
     let attempts = 0;
     let rejections = 0;
     let opening = null;
+    const openingAttempts = [];
     const requestId = `slice-${runId}-start`;
     while (attempts < 3 && opening == null) {
       attempts += 1;
       const response = await apiCall('newGame', 'new_game', 'start',
         { scenario_id: scenarioId, request_id: requestId });
+      let devReport = null;
+      if (api.llmTurnReport) {
+        try {
+          const report = await api.llmTurnReport(
+            partyIdFromNewGameRequestId(requestId), requestId);
+          devReport = report.ok ? report.data ?? null : null;
+        } catch { /* diagnostic fetch must not change opening retry semantics */ }
+      }
+      const attemptRecord = openingAttemptFromNewGame({ n: attempts, ok: response.ok,
+        data: response.data, error: response.error, devReport });
+      if (attemptRecord) openingAttempts.push(attemptRecord);
       if (response.ok) opening = response.data;
       else if (response.error?.code === OPENING_REJECTED) rejections += 1;
-      else { state.opening = { attempts, rejections, party_id: null, prose: '' }; throw new Error(response.error?.code ?? `HTTP ${response.status}`); }
+      else { state.opening = { attempts, rejections, opening_attempts: openingAttempts,
+        party_id: null, prose: '' }; throw new Error(response.error?.code ?? `HTTP ${response.status}`); }
     }
-    state.opening = { attempts, rejections, party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '',
+    state.opening = { attempts, rejections, opening_attempts: openingAttempts,
+      party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '',
       route_labels: routeLabels(opening?.screen), people_panel_initial: capturePeoplePanel(opening?.screen) };
     if (opening == null) throw new Error(`${OPENING_REJECTED} ×${rejections}`);
     partyId = opening.party_id;
@@ -177,11 +314,15 @@ export async function runLegs({
 
   // --- explore: walk out, meeting, talk, take ---
   const visited = new Map(); // site_id -> place name
-  const tried = new Map(); // positionKey -> Map(label -> count)
-  const looked = new Map(); // positionKey -> looks done; a second look is cheap and shows whether the first was a fluke
+  const tried = new Map(); // site_id -> Map(label -> count)
+  const progressedLabels = new Map(); // site_id -> Set(label) that ever moved slot or site
+  const looked = new Map(); // site_id -> looks done; a second look is cheap and shows whether the first was a fluke
   const seen = { npc: null, hiddenNpc: null };
   const placesAfterTalk = new Map();
   let stuck = 0;
+  let walksAtSite = 0;
+  let continueWalkLabel = null;
+  let walkChainSlots = [];
   let startSiteId = null;
   let walkedOut = false;
   const exploreEnd = { reason: null };
@@ -279,19 +420,65 @@ export async function runLegs({
       }
       if (legs.talk.status === 'pass' && done('take')) break;
       // a step: the first least-tried passage label of this spot, or a look when the spot offers none yet
-      const key = positionKey(last.snap);
+      const key = siteKey(last.snap);
       const labels = routeLabels(last.screen);
       if (labels.length === 0 && (looked.get(key) ?? 0) < 2) { looked.set(key, (looked.get(key) ?? 0) + 1); await play('walk', LOOK); continue; }
       if (labels.length === 0) { exploreEnd.reason = `на месте ${placeName(last.snap)} экран не показывает проходов после ${looked.get(key)} осмотров`; break; }
       const counts = tried.get(key) ?? new Map();
       tried.set(key, counts);
-      const label = [...labels].sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0))[0];
+      const progressed = progressedLabels.get(key) ?? new Set();
+      progressedLabels.set(key, progressed);
+      const noProgressLimit = labels.length + 1;
+      const continuing = Boolean(continueWalkLabel && labels.includes(continueWalkLabel));
+      if (!continuing) walkChainSlots = [];
+      const label = continuing
+        ? continueWalkLabel
+        : [...labels].sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0))[0];
       counts.set(label, (counts.get(label) ?? 0) + 1);
-      const sitesBefore = visited.size;
       const turn = await play('walk', label);
       noteHere();
-      stuck = turn.committed || visited.size > sitesBefore ? 0 : stuck + 1;
-      if (stuck >= 3) { exploreEnd.reason = `3 хода подряд без сдвига (последняя ошибка: ${turn.error?.code ?? 'нет'})`; break; }
+      const moved = positionProgressed(turn.before, turn.after);
+      const siteChanged = turn.before?.position?.site_id != null
+        && turn.after?.position?.site_id != null
+        && turn.before.position.site_id !== turn.after.position.site_id;
+      if (siteChanged) walksAtSite = 0;
+      else walksAtSite += 1;
+      if (walksAtSite >= 8) {
+        exploreEnd.reason = `8 ходов движения на месте ${placeName(turn.after ?? last.snap)} без смены site`;
+        break;
+      }
+      if (moved) {
+        stuck = 0;
+        progressed.add(label);
+        const slotBefore = String(turn.before?.position?.slot ?? '');
+        const slotAfter = String(turn.after?.position?.slot ?? '');
+        if (continuing && walkChainSlots.includes(slotAfter)) {
+          continueWalkLabel = null;
+          walkChainSlots = [];
+        } else {
+          if (!continuing) {
+            walkChainSlots = [];
+            if (slotBefore) walkChainSlots.push(slotBefore);
+          }
+          if (slotAfter) walkChainSlots.push(slotAfter);
+          continueWalkLabel = label;
+        }
+      } else {
+        continueWalkLabel = null;
+        walkChainSlots = [];
+        stuck += 1;
+        if (stuck >= noProgressLimit) {
+          exploreEnd.reason = `${stuck} ходов подряд без смены позиции (порог ${noProgressLimit}; последняя ошибка: ${turn.error?.code ?? 'нет'})`;
+          break;
+        }
+        const triedAllOnce = labels.length > 1
+          && labels.every((entry) => (counts.get(entry) ?? 0) >= 1)
+          && progressed.size === 0;
+        if (triedAllOnce) {
+          exploreEnd.reason = `на месте ${placeName(turn.after ?? last.snap)} ни одна подпись (${labels.join(', ')}) не продвинула позицию`;
+          break;
+        }
+      }
     }
   } catch (error) {
     exploreEnd.reason = error instanceof Blocked ? error.message : `сбой: ${error.message}`;

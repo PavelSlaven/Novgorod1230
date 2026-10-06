@@ -121,8 +121,12 @@ def needs_check_records():
         return list(reader)
 
 
-def build_entity_rows(group, read_csv, matcult_dir=None):
-    master_root = os.path.abspath(os.path.join(group, "..", "..", "sources", "master-archive-v1", "data", "normalized_source_tables", "material_entities"))
+def default_master_dir(group):
+    return os.path.abspath(os.path.join(group, "..", "..", "sources", "master-archive-v1", "data"))
+
+
+def build_entity_rows(group, read_csv, matcult_dir=None, master_dir=None):
+    master_root = os.path.join(master_dir or default_master_dir(group), "normalized_source_tables", "material_entities")
     source_rows = {r.get("item_id"): r for r in read_csv(os.path.join(master_root, "material_entities.csv"), ",")}
     material_fields = list(next(iter(source_rows.values()), {}).keys())
     mil_path = os.path.abspath(os.path.join(group, "..", "items-weapons-armour", "authoring", "master_military_snapshot.csv"))
@@ -197,10 +201,10 @@ def build_entity_rows(group, read_csv, matcult_dir=None):
     return result
 
 
-def build_ledger(group, read_csv, matcult_dir=None):
+def build_ledger(group, read_csv, matcult_dir=None, existing_group=None, master_dir=None):
     rows = records()
     needs_check = {row["archive_id"]: row for row in needs_check_records()}
-    master_root = os.path.abspath(os.path.join(group, "..", "..", "sources", "master-archive-v1", "data", "normalized_source_tables", "material_entities"))
+    master_root = os.path.join(master_dir or default_master_dir(group), "normalized_source_tables", "material_entities")
     source_cache = {}
     for filename, id_field in (("material_entities.csv", "item_id"), ("state_variants.csv", "state_id")):
         try:
@@ -217,10 +221,11 @@ def build_ledger(group, read_csv, matcult_dir=None):
         and "/catalog_items.csv:" in item.get("archive_ref", "")
     }
     existing = set()
+    existing_group = existing_group or group
     for rel, col in (("buildings/building_types.csv", "name_ru"), ("buildings/building_parts.csv", "name_ru"),
                      ("containers/container_forms.csv", "name_ru"), ("interiors/furniture_fixtures_light.csv", "name_ru"),
                      ("interiors/matcult_item_refs.csv", "name_ru")):
-        path = os.path.join(group, rel)
+        path = os.path.join(existing_group, rel)
         if os.path.exists(path):
             existing.update(
                 normalize_name(r.get(col, ""))
@@ -299,7 +304,7 @@ def build_ledger(group, read_csv, matcult_dir=None):
     return result
 
 
-def validate_ledger(ledger, repo, matcult_dir, read_csv):
+def validate_ledger(ledger, repo, matcult_dir, read_csv, master_dir=None):
     errors = []
     terminal_decisions = {"distinct": "entity", "variant": "variant", "routed": "routed", "reference": "ref", "rejected": "reject", "duplicate_rejected": "rejected", "needs_check": "needs_check"}
     authored = records()
@@ -346,18 +351,18 @@ def validate_ledger(ledger, repo, matcult_dir, read_csv):
         if semantic == "rejected" and (item.get("match_type") != "rejected" or item.get("anachronism_result") != "rejected"):
             errors.append("BIC D38 rejection must use match_type=rejected and anachronism_result=rejected: %s" % item.get("archive_ref", "?"))
     required = set(FIELDS) - {"family_key", "owner_group", "generation_policy", "anachronism_risk", "target_group", "target_ref"}
-    master_root = os.path.join(repo, "data/world-catalogs/novgorod/sources/master-archive-v1")
+    master_dir = master_dir or os.path.join(repo, "data/world-catalogs/novgorod/sources/master-archive-v1/data")
     master_cache = {}
     matcult_cache = {}
     for rel, id_col in (("data/normalized_source_tables/material_entities/material_entities.csv", "item_id"),
                         ("data/normalized_source_tables/material_entities/state_variants.csv", "state_id")):
-        path = os.path.join(master_root, rel)
+        path = os.path.join(master_dir, rel[len("data/"):])
         try:
             master_cache[rel] = {r.get(id_col): r for r in read_csv(path)}
         except OSError:
             pass
     matcult_cache = {r.get("item_id"): r for r in read_csv(os.path.join(matcult_dir, "catalog_items.csv"))}
-    expected_ledger = build_ledger(GROUP, read_csv, matcult_dir)
+    expected_ledger = build_ledger(GROUP, read_csv, matcult_dir, master_dir=master_dir)
     if ledger != expected_ledger:
         errors.append("generated archive inclusion ledger differs from authored manifest/current guards/catalog")
     entity_rows = read_csv(os.path.join(GROUP, "interiors/material_entities.csv")) if os.path.exists(os.path.join(GROUP, "interiors/material_entities.csv")) else []
@@ -416,7 +421,7 @@ def validate_ledger(ledger, repo, matcult_dir, read_csv):
         if ref.startswith("data/normalized_source_tables/"):
             source_path = ref.split(":", 1)[0]
             canonical = master_cache.get(source_path, {}).get(ident)
-            if os.path.exists(os.path.join(master_root, source_path)):
+            if os.path.exists(os.path.join(master_dir, source_path[len("data/"):])):
                 expected_derivation = source_path + "#" + ident
             if source_path.endswith("state_variants.csv") and canonical:
                 base_id = canonical.get("base_item_id", "")

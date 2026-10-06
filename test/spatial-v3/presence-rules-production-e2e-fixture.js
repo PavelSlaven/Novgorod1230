@@ -10,6 +10,8 @@ import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs'
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { createSpatialV3ProductionCompositionRoot } from
   '../../apps/game-server/src/composition/production-spatial-v3.js';
+import { loadSpatialV3RuntimeBindings } from
+  '../../apps/game-server/src/runtime/load-spatial-v3-bindings.js';
 import { readV17PartyProductionCatalogLedger } from
   '../../scripts/v17-party-production-catalog-ledger.mjs';
 import { WAVE_ATTESTATION_SCHEMA } from '../../scripts/v17-m2c-npc-wave-stage.mjs';
@@ -18,6 +20,7 @@ import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 export const POSTGRES_IMAGE = 'postgres:16.14-alpine';
 export const WORLD_DB = 'novgorod_world_v17';
@@ -258,6 +261,9 @@ export function installPresenceProductionE2eFetch({
   observeText = TARGET_SMOKE_INPUT,
   movementPrefs = { exactMovement: false },
   narrationLog = null,
+  requestLog = null,
+  movementLog = null,
+  turnStepPlanner = null,
 } = {}) {
   const MATERIALIZATION_ROLES = Object.freeze([
     'ordinary_materialization', 'spatial_semantic_descriptor',
@@ -270,17 +276,33 @@ export function installPresenceProductionE2eFetch({
     const call = JSON.parse(init.body);
     const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+    const role = identifyLlmTestRole(call);
+    requestLog?.push({ system, user: modelInput });
     let output;
-    if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+    const openingRole = presenceOpeningRole(modelInput);
+    if (openingRole === 'gameplay_narrator') {
+      output = { prose: presenceOpeningProse(modelInput) };
+    } else if (openingRole === 'gameplay_narrator_auditor') {
+      output = {
+        pass: true, failed_checks: [], concerns: [],
+        evidence: ['Проверено по переданным фактам вступления.'],
+      };
+    } else if (openingRole === 'gameplay_narrator_semantic_repair') {
+      output = { prose: presenceOpeningProse(modelInput) };
+    } else if (role === 'world_knowledge_query_planner'
+        || system.includes('schema must equal world_knowledge_query_plan_v1.')) {
       output = {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: [], focus_refs: [], requested_predicates: [], search_hints: [],
       };
-    } else if (system.startsWith('Resolve the raw Russian player text')) {
+    } else if (role === 'intent_router') {
       output = { status: 'unknown', reason_code: 'unknown_intent' };
-    } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+    } else if (role === 'turn_step_planner') {
       const request = modelInput.request ?? modelInput;
-      if (request.root_player_action === observeText) {
+      const planned = await turnStepPlanner?.({ request, modelInput });
+      if (planned != null) {
+        output = planned;
+      } else if (request.root_player_action === observeText) {
         output = {
           operation_choice: null, interpretation: { adaptation: 'literal' },
           resolution: 'direct', goal_result: 'achieved',
@@ -301,6 +323,8 @@ export function installPresenceProductionE2eFetch({
             reason: 'Названного прохода нет.' }) } }] }), { status: 200 });
         }
         assert.ok(pick, `no movement operation in planner request: ${request.root_player_action}`);
+        movementLog?.push({ movement_kind: pick.operation.movement_kind,
+          route_ref: pick.operation.route_ref ?? null, target_ref: pick.operation.target_ref ?? null });
         output = {
           interpretation: {
             player_goal: request.root_player_action,
@@ -316,6 +340,15 @@ export function installPresenceProductionE2eFetch({
           reason: 'Следую выбранному видимому пути.',
         };
       }
+    } else if (system.startsWith('Верните только {"prose"')) {
+      const facts = modelInput.сцена?.факты ?? [];
+      output = { prose: facts.map((fact) => typeof fact === 'string' ? fact : fact.текст)
+        .filter(Boolean).join(' ') };
+    } else if (system.startsWith('Верните только {"pass"')) {
+      output = {
+        pass: true, failed_checks: [], concerns: [],
+        evidence: ['Тестовая проверка использует факты из переданной сцены.'],
+      };
     } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
       const sources = [...modelInput.required_current_beat.changes,
         ...modelInput.required_current_beat.uncertainties];
@@ -344,15 +377,22 @@ export function installPresenceProductionE2eFetch({
         prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
           .filter(Boolean).join('\n\n'),
       };
-    } else if (system.startsWith('Return only {"pass"')) {
+    } else if (system.startsWith('Return only JSON with exactly mode.')) {
+      output = { mode: 'independent_action' };
+    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
+      output = { pass: true, concerns: [] };
+    } else if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
       output = {
         pass: true, failed_checks: [], concerns: [],
         evidence: ['Test response uses the supplied committed visible facts.'],
       };
     } else if (MATERIALIZATION_ROLES.some((role) => system.includes(role))) {
-      throw new Error(`unexpected materialization LLM role in presence e2e: ${system.slice(0, 120)}`);
+      const role = MATERIALIZATION_ROLES.find((name) => system.includes(name));
+      throw new Error(`presence production e2e: unexpected role=${role}`
+        + ` schema=${modelInput.schema ?? '<absent>'} system=${system.slice(0, 120)}`);
     } else {
-      throw new Error(`presence production e2e: unconfigured LLM role: ${system.slice(0, 160)}`);
+      throw new Error(`presence production e2e: unconfigured role=unknown`
+        + ` schema=${modelInput.schema ?? '<absent>'} system=${system.slice(0, 120)}`);
     }
     return new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify(output) } }],
@@ -361,9 +401,36 @@ export function installPresenceProductionE2eFetch({
   return () => { globalThis.fetch = previousFetch; };
 }
 
+function presenceOpeningRole(input) {
+  const scene = input?.сцена;
+  if (!scene || typeof scene !== 'object' || typeof scene.граница !== 'string'
+      || (scene.факты != null && !Array.isArray(scene.факты))
+      || (scene.персонажи != null && !Array.isArray(scene.персонажи))) return null;
+  if (Object.hasOwn(input, 'отклонённая_проза')) return 'gameplay_narrator_semantic_repair';
+  if (Object.hasOwn(input, 'проверяемая_проза')) return 'gameplay_narrator_auditor';
+  return 'gameplay_narrator';
+}
+
+function presenceOpeningFacts(input) {
+  const scene = input.сцена;
+  const values = [...(scene.факты ?? []),
+    ...(scene.персонажи ?? []).flatMap(({ имя, факты = [] }) => [имя, ...факты])];
+  return values.flatMap((value) => {
+    if (typeof value === 'string') return value.trim() ? [value] : [];
+    return typeof value?.текст === 'string' && value.текст.trim() ? [value.текст] : [];
+  });
+}
+
+function presenceOpeningProse(input) {
+  const facts = presenceOpeningFacts(input);
+  const split = Math.ceil(facts.length / 2);
+  return [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+    .filter(Boolean).join('\n\n');
+}
+
 const FIXTURE_ROOT_ENV = Object.freeze({
-  DEEPSEEK_API_KEY: 'isolated-fixture-key',
-  DEEPSEEK_BASE_URL: 'https://target-acceptance.invalid',
+  LLM_API_KEY: 'isolated-fixture-key',
+  LLM_BASE_URL: 'https://target-acceptance.invalid',
 });
 const zeroVectorEncoderFactory = () => ({
   async ready() {},
@@ -376,6 +443,7 @@ export async function createPresenceProductionRoot({
   worldPool, partyPool, approvals, rootDir, llmSettings = null, extraConfig = {},
   env = FIXTURE_ROOT_ENV, worldKnowledgeEncoderFactory = zeroVectorEncoderFactory,
 }) {
+  let readCurrentVisibleContext = null;
   const pinDigest = approvals.itemApproval.request.compatible_world_pin_manifest_digest;
   const rootOptions = {
     env,
@@ -405,10 +473,14 @@ export async function createPresenceProductionRoot({
       partyPool,
       async close() {},
     },
+    bindingsFactory: async (context) => {
+      readCurrentVisibleContext = context.readCurrentVisibleContext ?? null;
+      return loadSpatialV3RuntimeBindings(context.config.spatialV3BindingsModule, context);
+    },
     ...(worldKnowledgeEncoderFactory == null ? {} : { worldKnowledgeEncoderFactory }),
   };
   const runtime = await createSpatialV3ProductionCompositionRoot(rootOptions);
-  return { runtime, rootOptions };
+  return { runtime, rootOptions, readCurrentVisibleContext };
 }
 
 export function routeMovementLabels(screen) {

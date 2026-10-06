@@ -39,6 +39,7 @@ profile per G4 version. Authoring candidates are not runtime input.
 - `loadScheduleRoutineRules({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, season, month? })` — D-1 routine rules из `world_base.npc_schedule_routine_rules` только после spatial pin и последнего runtime-catalog activation;
 - `loadPresenceRulesForPlaceFamilies({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyIds })` — M2c `world_base.presence_rules` для `place_family` после тех же gate;
 - `loadG0RegionIdForSpatialNode({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, nodeId, nodeVersion })` — G0 `region_id` для spatial node (presence regional merge, R-2a);
+- `loadG1NodeIdForSpatialNode({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, nodeId, nodeVersion })` — единственный ancestor с `spatial_level = 'G1'` по exact pinned ancestry; отсутствие или неоднозначность даёт `PRESENCE_G1_REGION_AMBIGUOUS`;
 - `createRuntimeCatalogWorldBaseReader(query)` — thin `worldBaseReader` adapter для SQL gate readers в тестах и game-server;
 - `loadCategoryParentMap({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, categoryIds })` — `parent_category_id` для `object_type` (LW-071 ancestor skip в consumer);
 - `loadPlacePopulationComposition({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, compositionVersion? })` — D-2 состав населения из `world_base.place_population_composition_rules` с тем же gate;

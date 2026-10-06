@@ -1,0 +1,41 @@
+{
+  "decision": "APPROVE_WITH_LIMITS",
+  "reviewer": "Codex /root, независимый утверждающий; автор данных — luna",
+  "approved_at": "2026-10-03T16:25:32Z",
+  "approved_path": "data/world-catalogs/novgorod/live-world-runtime-v17/start-parameter-extraction-candidate-v1/",
+  "approved_commit": "764bb148c5034e2707c91f314c3e94f1458ec8a8",
+  "approved_files": [
+    "README.md",
+    "bench-cases.json",
+    "candidate-vocabulary.json"
+  ],
+  "approved_file_sha256": {
+    "README.md": "4f8f3c635055afcfa904a79ce5245194c8236a798e8da8fa5f667e36d3b3ebd2",
+    "bench-cases.json": "f572c4511936777a3758ae8710a76c71c1d3ebb23d2997461f7cb559e619b511",
+    "candidate-vocabulary.json": "07415033f141ea4754d5c1c4433e943b1e639814a3ba56ed2caf1342bbb9d18f"
+  },
+  "scope": "Только конечный словарь 139 lexical candidate rows для четырёх параметров старта (регион, сезон, занятие, социальное/правовое положение) и явно заявленные origin rules. Десять обычных candidate labels; 88 непустых значений и 51 null/gap, включая 15 candidate-only форм Ладоги. README и 16 frozen bench cases входят как документация и проверенный набор регрессии. Закоммиченные vocabulary и cases побайтно равны проверенным в DONE-ap-m7-vocab-2. Matcher, production resolver и свободный parser этим перечнем файлов не утверждаются.",
+  "limits": [
+    "Значения — кандидаты пожеланий игрока, а не факты мира, выбранный старт или canonical world ID. Runtime, start compatibility и eligibility не утверждены; исходные pending_d67/non-runtime/eligibility_effect=false флаги не меняются этой записью.",
+    "Occupation aliases означают пожелание деятельности по D75, включая явно редакторские глаголы/work phrases; они не доказывают профессию, доход, навыки, роль, имущество, инструменты, запасы или права. Контекст, третье лицо, отрицание и цитата не подтверждают желание игрока автоматически.",
+    "Морфология, редакторские paraphrases и четыре английских translation aliases принимаются только в записанном lexical scope. Они не объявляются дословными историческими или каталоговыми цитатами; season aliases связаны с calendar month buckets и не выбирают дату, погоду или совместимый start profile.",
+    "Ладога → Новгородская земля не утверждена как user-text region/start mapping: 15 форм остаются unverified_candidate_chain, candidate_only и value=null. Places-binding evidence подтверждает candidate presence/subregion scope, а не разрешение старта; Торжок и общие места остаются gaps.",
+    "Positive free phrases сохраняют value_kind=legal_status и не выбирают social_position archetype/social band, не дают прав или eligibility. Alias «не зависимый»→Свободный и три голые формы промысловик удалены; это ограничение сохраняется.",
+    "D72 проверен для десяти присваиваемых lexical labels; backend source refs, origin IDs и SHA не являются player-facing/model payload. Player-safe проекция, UI, проза и downstream echo не проверены и не утверждены.",
+    "Фиксированный code-only стенд 16/16 и 10 boundary probes не квалифицируют произвольный intent/negation parser: «Я не рыбак» по-прежнему даёт кандидат рыбак, обычная цитата fenced. Набор injection patterns конечен. Модельный D41/WK и входы рассказчика/NPC в этом проходе не проверены.",
+    "Import, activation, runtime integration, PG/production readback и issue closure не разрешены. Противоречие manifest activation=true против APPROVE_DATA_ONLY/import=false/activation=false остаётся вопросом владельцу; данный каталог не часть target-starts-manifest.",
+    "Расхождение archived occupation-member pin и текущего D75 TSV pin не выровнено этим утверждением; источником occupation labels остаются проверенные ID/title/line/region/status текущего pinned TSV. Полный npm test, general parser и production suites не запускались."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "issue_closure_authorized": false,
+  "review_reference": {
+    "task_id": "ap-m7-vocab",
+    "submission": "DONE-ap-m7-vocab-2",
+    "report": "/srv/novgorod-work/fleet/tasks/ap-m7-vocab/out/reapproval-v2/VERDICT.md",
+    "verdict": "/srv/novgorod-work/fleet/tasks/ap-m7-vocab/out/reapproval-v2/row-review.json",
+    "verification": "/srv/novgorod-work/fleet/tasks/ap-m7-vocab/out/reapproval-v2/final-check.json",
+    "bench": "/srv/novgorod-work/fleet/tasks/ap-m7-vocab/out/bench/m7-vocab-repro-v2/reproduction.json"
+  },
+  "approval_validity": "Любая последующая правка утверждённого содержимого снимает утверждение до нового независимого прохода (WR §21.1). SHA файлов описывают проверенные git-show bytes по прямому поручению ревьюера; это не подпись, receipt или новая runtime gate."
+}

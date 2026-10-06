@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { validatePlayerSafeVisiblePayload } from
+  '@rus/contracts/spatial-v3/registry';
 import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from '@rus/turn/temporal-advance';
 import { npcRoutineTemporalRegistration } from '../src/runtime/npc-routine-temporal.js';
 import { lowerDvinaTracePhase7TemporalEffectRegistrations } from '../src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import { buildLowerDvinaTracePhase7Commit } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-commit.js';
+import { phase7VisibleEnvelope } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-7-writes.js';
 import { assertPhase7NormalizedRows } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-read.js';
 import { createTracePhase7BodyEffect } from
@@ -20,6 +24,31 @@ import { addPhase7RoutineBoundary, factualTurn, phase7ReadPool, rows, visibleCon
   './lower-dvina-trace-phase-7-persistence-fixture.js';
 
 const digest = 'a'.repeat(64);
+
+test('Phase 7 visible envelope omits typed item label gaps and preserves named items', () => {
+  const named = { entity_ref: { entity_kind: 'item', entity_id: 'named-item' },
+    display_label: 'Хозяйственный нож', recognition: 'known',
+    visible_status: 'serviceable' };
+  const diagnostics = [];
+  const envelope = phase7VisibleEnvelope({
+    partyId: 'party', nextVersion: 2, turnNumber: 1,
+    changeSetId: 'change-set', idemId: 'idem',
+    factual: { mode_resolution: { turn_id: 'turn:party:1' } },
+    visibleContext: { ...visibleContext(), visible_objects: [named, {
+      entity_ref: { entity_kind: 'item', entity_id: 'unnamed-item' },
+      label_gap: { code: 'player_safe_item_label_required' }
+    }] },
+    phase7Contracts: { restActivity: { profile_id: 'rest', version: 1 },
+      schedulePolicy: { schedule_policy_id: 'schedule', version: 1 } },
+    onLabelGapsOmitted: (count) => diagnostics.push(count)
+  });
+
+  assert.deepEqual(diagnostics, [1]);
+  assert.deepEqual(envelope.visible_payload.visible_objects, [named]);
+  assert.deepEqual(validatePlayerSafeVisiblePayload(envelope.visible_payload), []);
+  assert.doesNotMatch(JSON.stringify(envelope.visible_payload),
+    /unnamed-item|label_gap|player_safe_item_label_required/u);
+});
 
 test('Phase 7 commits prior routine changes before its NPC result and keeps later boundaries pending', async () => {
   for (const boundaryMinute of [120, 131]) {

@@ -111,8 +111,17 @@ test('prepared movement hydrates the destination scene and captures IDs without 
     anchor_id: 'anchor:destination', position_id: 'position:destination',
     g6_instance_id: 'g6:destination', runtime_source: 'party_db_scene_read' };
   const diagnostics = [];
+  const admissionCountsAtDiagnostic = [];
+  let admissionCount = 0;
+  let admittedProjection = null;
+  const projectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
   let loaderSite = null;
   let loaderPartyId = null;
+  let loaderClock = null;
+  const beforeClock = { whole_minutes: '500', subminute_numerator: '0',
+    subminute_denominator: '1' };
+  const afterClock = { whole_minutes: '1300', subminute_numerator: '0',
+    subminute_denominator: '1' };
   const state = {
     actor_id: 'player', position: { location_ref: 'source', site_id: 'site:source',
       g5_anchor_id: 'anchor:source', g5_node_id: 'node:source',
@@ -120,9 +129,7 @@ test('prepared movement hydrates the destination scene and captures IDs without 
     prepared_scenes: [{ location_profile_ref: 'destination',
       node: { instance_id: 'node:destination' },
       anchor: { instance_id: 'anchor:destination', state: { zone_ref: 'zone' } } }],
-    npcs: [], clock: { whole_minutes: '0', subminute_numerator: '0',
-      subminute_denominator: '1' }, clock_weather_light: { clock: {
-      whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' } },
+    npcs: [], clock: beforeClock, clock_weather_light: { clock: beforeClock },
     body_state: {}
   };
   const ports = createLowerDvinaTraceTurnStepRuntimePorts({
@@ -132,18 +139,32 @@ test('prepared movement hydrates the destination scene and captures IDs without 
     bodyEffect: { apply: async () => ({ state_after: {} }) },
     projectCurrentScene: (committedState) => ({
       current_visible_context: { schema: 'visible_context_package',
-        visible_npc: committedState.npcs.map((npc) => ({ entity_ref: {
-          entity_kind: 'npc', entity_id: npc.instance_id } })) }
+        visible_npc: committedState.npcs.map((npc) => ({
+          entity_ref: { entity_kind: 'npc', entity_id: npc.instance_id },
+          ...(committedState.clock.whole_minutes === '1300'
+            ? { visible_status: 'partial' }
+            : { observable_cues: { identity: { sex_category: 'male' } } })
+        })) }
     }),
-    loadPreparedMovementScene: async ({ partyId, state: preparedState }) => {
+    loadPreparedMovementScene: async ({ partyId, state: preparedState, clock }) => {
       loaderPartyId = partyId;
       loaderSite = preparedState.position.site_id;
+      loaderClock = clock;
       return { ...preparedState, npcs: [destinationNpc],
         scene_position_g6: { 'position:destination': 'g6:destination' } };
     },
-    onNpcSceneProjection: (event) => diagnostics.push(event),
+    onNpcSceneProjection: (event) => {
+      admissionCountsAtDiagnostic.push(admissionCount);
+      diagnostics.push(event);
+    },
     requestId: 'request:move',
-    workingProjectionAuthority: createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()
+    workingProjectionAuthority: {
+      admit(projection) {
+        admittedProjection = projectionAuthority.admit(projection);
+        admissionCount += 1;
+        return admittedProjection;
+      }
+    }
   });
   const projection = { position: { location_ref: 'source',
     g5_anchor_id: 'anchor:source', g5_node_id: 'node:source' } };
@@ -156,19 +177,35 @@ test('prepared movement hydrates the destination scene and captures IDs without 
       position_transition: { destination_site_id: 'site:destination',
         destination_g6_instance_id: 'g6:destination',
         to_position_ref: 'position:destination' }
-    }, time_update: { clock_after: state.clock, temporal_results: [] },
+    }, time_update: { clock_after: afterClock, temporal_results: [] },
     body_update: { state_after: {} } }
   });
   assert.equal(loaderSite, 'site:destination');
   assert.equal(loaderPartyId, 'party:movement');
+  assert.deepEqual(loaderClock, afterClock,
+    'destination visibility reads the exact prepared after-clock');
   assert.deepEqual(projection, { position: { location_ref: 'source',
     g5_anchor_id: 'anchor:source', g5_node_id: 'node:source' } });
   assert.deepEqual(ports.preparedDomainEffect.currentState().npcs,
     [destinationNpc]);
   assert.deepEqual(result.current_visible_context.visible_npc[0].entity_ref,
     { entity_kind: 'npc', entity_id: 'npc:destination' });
+  assert.equal(result.current_visible_context.visible_npc[0].visible_status,
+    'partial', 'the next projection uses the after-sunset destination readback');
+  assert.equal(result.current_visible_context.visible_npc[0].observable_cues,
+    undefined, 'civil dusk removes clear-visibility cues from the projection');
   assert.equal(diagnostics[0].request_id, 'request:move');
+  assert.equal(admissionCount, 1,
+    'the opt-in diagnostic runs after working projection admission');
+  assert.deepEqual(admissionCountsAtDiagnostic, [1],
+    'the admission has completed when the diagnostic callback runs');
+  assert.deepEqual(diagnostics[0].after.current_visible_npc_ids,
+    admittedProjection.current_visible_context.visible_npc
+      .map(({ entity_ref: ref }) => ref.entity_id),
+    'the diagnostic reads the exact projection returned by admission');
   assert.deepEqual(diagnostics[0].after.projection_npc_ids,
+    ['npc:destination']);
+  assert.deepEqual(diagnostics[0].after.current_visible_npc_ids,
     ['npc:destination']);
   assert.deepEqual(diagnostics[0].after.candidates[0], {
     npc_id: 'npc:destination', source: 'party_db_scene_read',

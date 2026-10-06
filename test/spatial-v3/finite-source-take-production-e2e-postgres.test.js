@@ -8,18 +8,18 @@ import {
   PRESENCE_E2E_MOVE_TEXT,
 } from './presence-rules-production-e2e-fixture.js';
 import { createProductionLlmRoleRunner } from
-  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+  '../../apps/game-server/src/infrastructure/provider/openai-compatible.js';
 import { DEFAULT_GAMEPLAY_MODEL, createLlmSettingsOwner } from
   '../../apps/game-server/src/runtime/llm-settings.js';
 import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 const TAKE = 'Беру валежник.';
 const MAKE = 'Оторву полосу от подола рубахи.';
 const TAKE_THREE = 'Возьму три палки из валежника.';
 const WALK = PRESENCE_E2E_MOVE_TEXT;
 const LOOK = 'Осматриваюсь вокруг.';
-const PLANNER = 'Return only one JSON object containing the semantic choice for one turn step.';
 
 const direct = (operations, extra = {}) => ({ interpretation: { adaptation: 'literal' },
   resolution: 'direct', goal_result: 'achieved',
@@ -40,6 +40,7 @@ function installTakeFetch(seen) {
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const user = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    const role = identifyLlmTestRole(call);
     const respond = (output) => new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify(output) } }] }), { status: 200 });
     const beat = user.required_current_beat;
@@ -52,7 +53,7 @@ function installTakeFetch(seen) {
         ...(scene.visible_npc ?? []).map(({ display_label: label }) => label)]
         .filter(Boolean).join('. ') });
     }
-    if (system.includes('schema must equal world_knowledge_query_plan_v1.')
+    if (role === 'world_knowledge_query_planner'
         && user.purpose === 'materialization_support') {
       return respond({ schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: ['environment', 'material_culture'],
@@ -75,11 +76,11 @@ function installTakeFetch(seen) {
             packing_slot_cost: 0, quantity: { value: quantity, unit: 'item' },
             container: null } }] });
     }
-    if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+    if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       seen.auditorCalls += 1;
       return respond({ pass: true, concerns: [] });
     }
-    if (system.startsWith(PLANNER)) {
+    if (role === 'turn_step_planner') {
       const request = user.request ?? user;
       const visible = request.player_safe_state?.current_visible_context?.visible_objects ?? [];
       const actor = request.actor.actor_id ?? request.actor.actor_ref;

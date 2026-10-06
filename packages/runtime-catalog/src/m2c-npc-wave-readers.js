@@ -86,6 +86,8 @@ export async function loadPlacePopulationComposition({
   if (!rows.length) return null;
   const row = rows[0];
   return deepFreeze({
+    place_family_id: row.place_family_id,
+    place_family_version: row.place_family_version,
     population_groups: structuredClone(row.population_groups ?? []),
     scheduled_absences: structuredClone(row.scheduled_absences ?? []),
     empty_reason: row.empty_reason ?? null,
@@ -143,6 +145,55 @@ export async function loadG0RegionIdForSpatialNode({
   if (rows.length !== 1) {
     fail('PRESENCE_G0_REGION_AMBIGUOUS',
       'Pinned spatial node must have exactly one G0 region ancestor.');
+  }
+  return rows[0].id;
+}
+
+/** G1 region node id for a pinned spatial node (walk parents to spatial_level = G1). */
+export async function loadG1NodeIdForSpatialNode({
+  worldBaseReader,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
+  nodeId,
+  nodeVersion,
+} = {}) {
+  await assertReadableContext({
+    worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+  });
+  if (typeof nodeId !== 'string' || !nodeId.trim()
+      || !Number.isInteger(nodeVersion) || nodeVersion < 1) {
+    throw new TypeError('nodeId and nodeVersion are required.');
+  }
+  const revisionId = spatialWorldPin.world_revision_id;
+  const result = await worldBaseReader.read(
+    `WITH RECURSIVE chain AS (
+       SELECT n.id, n.version, n.spatial_level, 0 AS depth
+         FROM world_base.spatial_v3_nodes n
+        WHERE n.id = $1 AND n.version = $2 AND n.world_revision_id = $3
+          AND n.status = 'approved'
+       UNION ALL
+       SELECT p.parent_id, p.parent_version, pn.spatial_level, chain.depth + 1
+         FROM chain
+         JOIN world_base.spatial_v3_node_parents p
+           ON p.child_id = chain.id AND p.child_version = chain.version
+          AND p.world_revision_id = $3
+         JOIN world_base.spatial_v3_nodes pn
+           ON pn.id = p.parent_id AND pn.version = p.parent_version
+          AND pn.world_revision_id = $3 AND pn.status = 'approved'
+        WHERE chain.depth < 24
+     )
+     SELECT id FROM (
+       SELECT DISTINCT id, MAX(depth) AS depth
+         FROM chain WHERE spatial_level = 'G1'
+        GROUP BY id
+     ) g1 ORDER BY depth DESC LIMIT 2`,
+    [nodeId, nodeVersion, revisionId],
+  );
+  const rows = rowsFrom(result);
+  if (rows.length !== 1 || typeof rows[0].id !== 'string' || !rows[0].id) {
+    fail('PRESENCE_G1_REGION_AMBIGUOUS',
+      'Pinned spatial node must have exactly one G1 region ancestor.');
   }
   return rows[0].id;
 }

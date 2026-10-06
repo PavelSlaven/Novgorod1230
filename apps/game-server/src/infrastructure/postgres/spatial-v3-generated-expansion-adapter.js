@@ -111,7 +111,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
    * visible package, sealed write plan. Frontier resolution and canonical connections both end here. */
   async function planProposal({ transaction, request, closure, snapshot, selection, proposal,
     admitted, book, authoring_refs, change_set_id, idempotency_key, canonical_input_digest,
-    materializer_version, occurrence, current }) {
+    materializer_version, occurrence, current, onLabelGapsOmitted = null }) {
     const { party_id, g4 } = request;
     const reject = book.reject;
     const dependency_pins = book.pins();
@@ -165,7 +165,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       current_turn_id: current.last_turn_id, envelopeInput,
       projection_policy_ref: projectionPolicyRef,
       package_id: envelopeInput.package_id, idempotency_key, change_set_id,
-      idempotency_record_id: envelopeInput.idempotency_record_id });
+      idempotency_record_id: envelopeInput.idempotency_record_id,
+      ...(typeof onLabelGapsOmitted === 'function' ? { onLabelGapsOmitted } : {}) });
     if (!visible?.ok) return visible?.error ? visible : reject('visible_projection_required');
     if (!visible.envelope?.projection_policy_ref
       || canonicalDigest(visible.envelope?.projection_policy_ref) !== canonicalDigest(projectionPolicyRef)) {
@@ -238,7 +239,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
     return departure.length === 1 ? { departure: departure[0] } : { failure: 'source_departure_endpoint_required' };
   }
 
-  async function prepareExpansion(request) {
+  async function prepareExpansion(request, { onLabelGapsOmitted = null } = {}) {
     const { party_id, g4, profile, slot_ref, directional_exit, candidate_ordinal,
       source_site_id, source_position_id, entry_binding, materializer_version } = request ?? {};
     const book = createPinBook(g4, profile);
@@ -350,7 +351,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         if (!prepared.ok) return prepared;
         return planProposal({ transaction, request, closure, snapshot, selection,
           proposal: prepared.proposal, admitted, book, authoring_refs, change_set_id, idempotency_key,
-          canonical_input_digest, materializer_version, occurrence: candidate_ordinal, current });
+          canonical_input_digest, materializer_version, occurrence: candidate_ordinal, current,
+          onLabelGapsOmitted });
       } });
     return outcome.ok ? Object.freeze({ ...outcome, topology_status: 'committed',
       connection_id: `expansion:${suffix}:connection:${candidate_ordinal}`,
@@ -360,7 +362,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
   /** Intra-G4 connection between two canonical places, by an approved connection binding. The same
    * P16 topology commit as a frontier resolution (`resolve_frontier`), under its own idempotency key
    * space `resolve_frontier:canconn:<party>:<binding>`; no frontier, chain or ledger row is involved. */
-  async function prepareCanonicalConnection(request) {
+  async function prepareCanonicalConnection(request,
+    { onLabelGapsOmitted = null } = {}) {
     const { party_id, g4, profile, binding_id, source_site_id, source_position_id,
       materializer_version } = request ?? {};
     const book = createPinBook(g4, profile);
@@ -430,7 +433,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         if (!prepared.ok) return prepared;
         return planProposal({ transaction, request, closure, snapshot, selection,
           proposal: prepared.proposal, admitted, book, authoring_refs, change_set_id, idempotency_key,
-          canonical_input_digest, materializer_version, occurrence: 0, current });
+          canonical_input_digest, materializer_version, occurrence: 0, current,
+          onLabelGapsOmitted });
       } });
     return outcome.ok ? Object.freeze({ ...outcome, topology_status: 'committed', connection_id,
       source_position_id, moves_traveller: false, advances_time: false }) : outcome;

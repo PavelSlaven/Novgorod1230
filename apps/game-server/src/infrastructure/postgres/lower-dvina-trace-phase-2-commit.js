@@ -61,6 +61,8 @@ export async function commitLowerDvinaTracePhase2({
     turnStepAmbientPortionProfileRef, turnStepApprovedOwners,
     projectEnvironmentAtClock
   });
+  const onLabelGapsOmitted = turnStepApprovedOwners
+    ?.recordVisiblePackageDiagnostic;
   if (routed.handled) return routed.result;
   const factual = routed.factual;
   if (factual?.consequence?.phase9_kind) {
@@ -81,7 +83,7 @@ export async function commitLowerDvinaTracePhase2({
     }
   }
   if (factual?.consequence?.combat_kind === 'exchange') return commitLowerDvinaTraceCombat({
-    partyId, writePlan, inputDigest, loadState, committer
+    partyId, writePlan, inputDigest, loadState, committer, onLabelGapsOmitted
   });
   const phase8 = await routeLowerDvinaTracePhase8Commit({ factual, partyId,
     writePlan, inputDigest, phase8Contracts, turnStepApprovedOwners,
@@ -89,12 +91,13 @@ export async function commitLowerDvinaTracePhase2({
   if (phase8.handled) return phase8.result;
   if (factual?.consequence?.phase7_kind) return commitLowerDvinaTracePhase7({
     partyId, writePlan, inputDigest, phase7Contracts, turn10Contracts,
-    loadState, committer
+    loadState, committer, onLabelGapsOmitted
   });
-  if (factual?.consequence?.phase6_kind) return commitLowerDvinaTracePhase6({ partyId, writePlan, inputDigest, phase6Contracts, loadState, committer });
+  if (factual?.consequence?.phase6_kind) return commitLowerDvinaTracePhase6({ partyId, writePlan, inputDigest, phase6Contracts, loadState, committer, onLabelGapsOmitted });
   if (factual?.consequence?.phase5_kind) {
     return commitLowerDvinaTracePhase5({
-      partyId, writePlan, inputDigest, phase5Contracts, loadState, committer
+      partyId, writePlan, inputDigest, phase5Contracts, loadState, committer,
+      onLabelGapsOmitted
     });
   }
   if (factual?.consequence?.phase3_kind) {
@@ -104,6 +107,7 @@ export async function commitLowerDvinaTracePhase2({
       inputDigest,
       phase3Contracts,
       turnStepApprovedOwners,
+      onLabelGapsOmitted,
       loadState,
       committer
     });
@@ -111,7 +115,7 @@ export async function commitLowerDvinaTracePhase2({
   if (factual?.consequence?.phase4_kind) {
     return commitLowerDvinaTracePhase4({
       partyId, writePlan, inputDigest, phase4Contracts,
-      turnStepApprovedOwners, loadState, committer
+      turnStepApprovedOwners, loadState, committer, onLabelGapsOmitted
     });
   }
   const visibleContext = writePlan.write_targets
@@ -148,7 +152,8 @@ export async function commitLowerDvinaTracePhase2({
   });
   const visibleEnvelope = buildPhase2VisibleEnvelope({
     partyId, turnNumber, nextVersion, changeSetId, idemId,
-    context: visibleContext, contracts
+    context: visibleContext, contracts,
+    onLabelGapsOmitted
   });
   const baseSnapshot = buildPhase2Snapshot({
     state, factual, nextVersion, turnNumber, nextItems,

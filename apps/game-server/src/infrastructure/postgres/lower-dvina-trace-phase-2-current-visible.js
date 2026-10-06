@@ -8,6 +8,8 @@ import { scenePresentationForLocation } from
 import { projectSpatialV3CurrentVisibleContext } from '../../runtime/spatial-v3-current-visible-context.js';
 import { serverError } from '../../errors.js';
 import { isMovementVisibleObject, movementVisibleObjects } from '../../runtime/spatial-v3-movement-objects.js';
+import { playerSafeWeatherLightFacts } from '../../runtime/player-safe-weather-light.js';
+import { resolveVisibleItemLabel } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 
 const ARRAY_FIELDS = [
   'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
@@ -19,6 +21,7 @@ export function phase2InitialCurrentVisibleContext({
   openingScreenDigest,
   initialState,
   scenePresentation = null,
+  itemLabels = {},
   canonicalInitialState = false,
   initialNaturalPerceptionRulePin = null,
   naturalScenePerceptionInput = null
@@ -78,7 +81,8 @@ export function phase2InitialCurrentVisibleContext({
         }, equipment: visibleNpcEquipment(initialState, npc.instance_id),
         outward_presentation: {} }
       })
-    }));
+  }));
+  const visibleObjects = visibleInitialItems(initialState, itemLabels);
   return requirePhase2CurrentVisibleContext({
     version: 1,
     schema: 'visible_context_package',
@@ -89,10 +93,12 @@ export function phase2InitialCurrentVisibleContext({
           typeof value === 'string' && value.length > 0)
       : [],
     visible_npc: visibleNpc,
-    visible_objects: visibleInitialItems(initialState),
+    visible_objects: visibleObjects,
     known_context: [presented?.display_name ?? visibleContext?.place]
       .filter((value) => typeof value === 'string' && value.length > 0),
-    uncertainties: [],
+    uncertainties: Array.isArray(visibleContext?.uncertainties)
+      ? visibleContext.uncertainties.filter((value) =>
+        typeof value === 'string' && value.trim().length > 0) : [],
     allowed_tensions: [],
     do_not_imply: []
   });
@@ -101,22 +107,37 @@ export function phase2InitialCurrentVisibleContext({
 function initialEnvironmentChange(state) {
   const value = state?.environment_snapshot;
   if (value?.schema !== 'rus.approved_initial_environment.v1') return [];
-  return [{ change_kind: 'environment_state', season: value.season,
-    day_part: value.day_part, light_state: value.light_state,
-    weather_state_id: value.weather_state?.weather_state_id }];
+  try {
+    return playerSafeWeatherLightFacts({ season: value.season,
+      day_part: value.day_part, light_state: value.light_state,
+      weather_state: value.weather_state }).map(({ text }) => text);
+  } catch (error) {
+    throw serverError('WORLD_KNOWLEDGE_ENVIRONMENT_TRANSLATION_UNSUPPORTED',
+      'Could not prepare player-safe initial environment facts.', {
+        status: 500, details: { field: error?.field ?? null }
+      });
+  }
 }
 
-function visibleInitialItems(state) {
+function visibleInitialItems(state, itemLabels = {}) {
   const actorId = state?.actor_id;
   const anchorId = state?.position?.g5_anchor_id;
   return (state?.items ?? []).filter((item) =>
     item.placement?.container_id == null
       && (item.placement?.holder_character_id === actorId
         || item.placement?.anchor_id === anchorId))
-    .map((item) => ({ entity_ref: { entity_kind: 'item',
-      entity_id: item.item_id },
-    display_label: item.state?.display_name ?? 'предмет',
-    recognition: 'known', visible_status: item.condition_state }));
+    .map((item) => {
+      const label = resolveVisibleItemLabel({
+        template_id: item.template_id,
+        name: item.state?.display_name
+      }, itemLabels);
+      return { entity_ref: { entity_kind: 'item', entity_id: item.item_id },
+        ...(label.kind === 'labeled' ? {
+          display_label: label.label, recognition: 'known'
+        } : { label_gap: { code: label.code } }),
+        ...(typeof item.condition_state === 'string'
+          ? { visible_status: item.condition_state } : {}) };
+    });
 }
 
 function visibleNpcEquipment(state, npcId) {

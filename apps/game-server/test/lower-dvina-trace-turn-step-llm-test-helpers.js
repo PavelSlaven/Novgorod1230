@@ -73,7 +73,11 @@ export function worldProcessRequest() {
       next_boundary_at: { whole_minutes: '1', subminute_numerator: '0', subminute_denominator: '1' },
       fuel_bindings: [{ fuel_ref: 'wood:1', fuel_class: 'ordinary_solid_fuel_unit' }] },
     current_timestamp: { whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' },
-    trigger: 'actor_affected', subject_state: { source_refs: ['water:1'] },
+    trigger: 'actor_affected', subject_state: { source_refs: ['water:1'],
+      facts: ['цельная порция воды',
+        'Действие персонажа: воздействовать водой на огонь.'], quantities: [{
+        ref: 'water:1', value: 1, unit: 'item', mass_grams: 750
+      }] },
     environment_state: { scope_ref: 'shore:1' },
     outcome_contract: [
       { process_outcome: 'no_effect', reason_code: 'affect_no_effect',

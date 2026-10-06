@@ -5,6 +5,16 @@ import { createWorldKnowledgeCore } from '@rus/world-knowledge';
 import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
 
+function focusKeyFor(call, { domain, label }) {
+  const input = JSON.parse(call.messages[1].content);
+  const request = input.request ?? input;
+  const match = Object.entries(request.available_knowledge_refs ?? {}).find(([, metadata]) =>
+    metadata.domains.includes(domain)
+      && `${metadata.label} ${metadata.description}`.toLowerCase().includes(label.toLowerCase()));
+  assert.ok(match, `missing projected focus for ${domain}: ${label}`);
+  return match[0];
+}
+
 test('semantic planner predicates cannot discard mixed typed and generic focus premises', async () => {
   const bundle = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
@@ -16,10 +26,11 @@ test('semantic planner predicates cannot discard mixed typed and generic focus p
       vector_index: { search: () => new Map() } },
     placeRefs: ['region_novgorod_land'],
     telemetry: { onDetail: entry => diagnostics.push(entry) },
-    roleRunner: { async run() { return { output: {
+    roleRunner: { async run(call) { return { output: {
       schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
       domains: ['craft_technology', 'material_culture'],
-      focus_refs: ['wk:craft_technology:hemp-stem-processing', 'wk:material_culture:hemp-fibre'],
+      focus_refs: [focusKeyFor(call, { domain: 'craft_technology', label: 'Hemp-stem processing' }),
+        focusKeyFor(call, { domain: 'material_culture', label: 'Hemp fibre' })],
       requested_predicates: ['produces_form'], search_hints: ['plant fibre processing']
     } }; } }
   });

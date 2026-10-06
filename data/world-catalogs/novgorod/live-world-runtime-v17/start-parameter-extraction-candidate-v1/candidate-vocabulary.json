@@ -1,0 +1,4325 @@
+{
+  "schema": "m7-d41.candidate-vocabulary.v3",
+  "status": "candidate_non_runtime",
+  "purpose": "Finite exact-surface fixtures for deterministic extraction regression only.",
+  "runtime_active": false,
+  "eligibility_effect": false,
+  "canonical_ids_from_player_text": false,
+  "alias_approval": "pending_d67",
+  "source_bundle": "iteration-code-first-v1",
+  "source_file_sha256": {
+    "region-aliases.json": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+    "season-aliases.json": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+    "occupation-aliases.json": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+    "social-position-aliases.json": "dc7e920bb3ccb45573129d6130c81589825fe48ee1f2e18a3f5017416b21dc9f",
+    "bench-cases.json": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb"
+  },
+  "primary_sources": {
+    "occupation_tsv": {
+      "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+      "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6"
+    }
+  },
+  "origin_rules": {
+    "declared_region_surface": "Explicit form in frozen region alias fixture; linked catalog sources give mapping context, not a claim that every inflection is a verbatim archival phrase.",
+    "declared_season_alias": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+    "declared_social_alias": "Explicit form in frozen social alias fixture mapped to the cited rus13 label; editorial paraphrases remain pending review.",
+    "occupation_title_exact": "Surface equals occupation_title in the pinned TSV row.",
+    "occupation_ru_inflection": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+    "occupation_editorial_verb": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+    "occupation_editorial_work_phrase": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+    "occupation_editorial_translation": "Hand-authored English equivalent of the cited Russian title; translation mapping requires separate alias review.",
+    "fixture_exact_phrase": "Surface occurs literally in the cited frozen case input.",
+    "fixture_morphology": "Surface is derived by the recorded Russian grammatical transformation from the exact cited case phrase.",
+    "candidate_place_chain": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+    "unresolved_fixture_surface": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned."
+  },
+  "normalization": {
+    "unicode": "NFC",
+    "case": "ru-RU lowercase",
+    "whitespace": "collapse",
+    "inflection": "listed forms only",
+    "stemming": false
+  },
+  "rows": [
+    {
+      "slot": "region",
+      "surface": "новгородская земля",
+      "value": "Новгородская земля",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/supported_region_aliases/0/normalized_surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_surface",
+        "rule_id": "declared_region_surface",
+        "rule": "Explicit form in frozen region alias fixture; linked catalog sources give mapping context, not a claim that every inflection is a verbatim archival phrase.",
+        "source_surface": "Новгородская земля"
+      },
+      "source_evidence": [
+        {
+          "path": "data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/region_category_options.json",
+          "sha256": "9e72cc011b4f78e2ce6964e45a21c60c4cacd892cffed0ab7c0a8af6bfad5606",
+          "json_pointer": "/0/region_id"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+          "json_pointer": "array item where id=region_novgorod_land"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_title and /metadata/region_id_aliases"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "новгородской земле",
+      "value": "Новгородская земля",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/supported_region_aliases/0/normalized_surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_surface",
+        "rule_id": "declared_region_surface",
+        "rule": "Explicit form in frozen region alias fixture; linked catalog sources give mapping context, not a claim that every inflection is a verbatim archival phrase.",
+        "source_surface": "Новгородская земля"
+      },
+      "source_evidence": [
+        {
+          "path": "data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/region_category_options.json",
+          "sha256": "9e72cc011b4f78e2ce6964e45a21c60c4cacd892cffed0ab7c0a8af6bfad5606",
+          "json_pointer": "/0/region_id"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+          "json_pointer": "array item where id=region_novgorod_land"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_title and /metadata/region_id_aliases"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "новгородской земли",
+      "value": "Новгородская земля",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/supported_region_aliases/0/normalized_surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_surface",
+        "rule_id": "declared_region_surface",
+        "rule": "Explicit form in frozen region alias fixture; linked catalog sources give mapping context, not a claim that every inflection is a verbatim archival phrase.",
+        "source_surface": "Новгородская земля"
+      },
+      "source_evidence": [
+        {
+          "path": "data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/region_category_options.json",
+          "sha256": "9e72cc011b4f78e2ce6964e45a21c60c4cacd892cffed0ab7c0a8af6bfad5606",
+          "json_pointer": "/0/region_id"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+          "json_pointer": "array item where id=region_novgorod_land"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_title and /metadata/region_id_aliases"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "новгородскую землю",
+      "value": "Новгородская земля",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/supported_region_aliases/0/normalized_surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_surface",
+        "rule_id": "declared_region_surface",
+        "rule": "Explicit form in frozen region alias fixture; linked catalog sources give mapping context, not a claim that every inflection is a verbatim archival phrase.",
+        "source_surface": "Новгородская земля"
+      },
+      "source_evidence": [
+        {
+          "path": "data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/region_category_options.json",
+          "sha256": "9e72cc011b4f78e2ce6964e45a21c60c4cacd892cffed0ab7c0a8af6bfad5606",
+          "json_pointer": "/0/region_id"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+          "json_pointer": "array item where id=region_novgorod_land"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_title and /metadata/region_id_aliases"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "новгородской землёй",
+      "value": "Новгородская земля",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/supported_region_aliases/0/normalized_surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_surface",
+        "rule_id": "declared_region_surface",
+        "rule": "Explicit form in frozen region alias fixture; linked catalog sources give mapping context, not a claim that every inflection is a verbatim archival phrase.",
+        "source_surface": "Новгородская земля"
+      },
+      "source_evidence": [
+        {
+          "path": "data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/region_category_options.json",
+          "sha256": "9e72cc011b4f78e2ce6964e45a21c60c4cacd892cffed0ab7c0a8af6bfad5606",
+          "json_pointer": "/0/region_id"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+          "json_pointer": "array item where id=region_novgorod_land"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_title and /metadata/region_id_aliases"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "в новгородской земле",
+      "value": "Новгородская земля",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/supported_region_aliases/0/normalized_surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_surface",
+        "rule_id": "declared_region_surface",
+        "rule": "Explicit form in frozen region alias fixture; linked catalog sources give mapping context, not a claim that every inflection is a verbatim archival phrase.",
+        "source_surface": "Новгородская земля"
+      },
+      "source_evidence": [
+        {
+          "path": "data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/region_category_options.json",
+          "sha256": "9e72cc011b4f78e2ce6964e45a21c60c4cacd892cffed0ab7c0a8af6bfad5606",
+          "json_pointer": "/0/region_id"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+          "json_pointer": "array item where id=region_novgorod_land"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_title and /metadata/region_id_aliases"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "на новгородской земле",
+      "value": "Новгородская земля",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/supported_region_aliases/0/normalized_surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_surface",
+        "rule_id": "declared_region_surface",
+        "rule": "Explicit form in frozen region alias fixture; linked catalog sources give mapping context, not a claim that every inflection is a verbatim archival phrase.",
+        "source_surface": "Новгородская земля"
+      },
+      "source_evidence": [
+        {
+          "path": "data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/region_category_options.json",
+          "sha256": "9e72cc011b4f78e2ce6964e45a21c60c4cacd892cffed0ab7c0a8af6bfad5606",
+          "json_pointer": "/0/region_id"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+          "json_pointer": "array item where id=region_novgorod_land"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_title and /metadata/region_id_aliases"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладога",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладога"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладоги",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладоги"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладоге",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладоге"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладогу",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладогу"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладогой",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладогой"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "у ладоги",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "у ладоги"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "в ладоге",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "в ладоге"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "из ладоги",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/7"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "из ладоги"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "под ладогой",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/8"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "под ладогой"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладожский берег",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/9"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладожский берег"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладожского берега",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/10"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладожского берега"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "на ладожском берегу",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/11"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "на ладожском берегу"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладожское озеро",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/12"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладожское озеро"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "ладожского озера",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/13"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "ладожского озера"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "на ладожском озере",
+      "value": null,
+      "class": "candidate_only",
+      "authority": "candidate_chain_only",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/bench_candidate_place_region_chains/0/place_surface_forms/14"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unverified_candidate_chain",
+        "rule_id": "candidate_place_chain",
+        "rule": "Place wording is retained only as an unverified candidate chain; it assigns no region value or eligibility.",
+        "source_surface": "на ладожском озере"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/VERIFICATION.md",
+          "sha256": "bc0e606f7adccbf2a571b95c9ff94ca84e4d7da079626caa7071489409f46058",
+          "lines": "1185-1192, 1200"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/README.md",
+          "sha256": "e866d0655607915c242d755593311c6dd224fcd420733bff171936c06fb6e20e",
+          "lines": "89-91"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+          "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json",
+          "sha256": "08319a3d2746b28bc37f56eebd525df3b15dff9f1e67746e5c75d72d24650046",
+          "json_pointer": "/metadata/region_id, /metadata/region_id_aliases, and repeated event summaries"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+          "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+          "json_pointer": "/initial_placement and /source_catalogs"
+        }
+      ]
+    },
+    {
+      "slot": "region",
+      "surface": "торжок",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "торжок"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "торжка",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "торжка"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "торжке",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "торжке"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "торжком",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "торжком"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "у торжка",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "у торжка"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "в торжке",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "в торжке"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "под торжком",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "под торжком"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "торжокское направление",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/7"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "торжокское направление"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "торжокского направления",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/recognized_but_unmapped_places/0/normalized_surface_forms/8"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "торжокского направления"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "река",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/0/normalized_surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "река"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "реки",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/0/normalized_surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "реки"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "реке",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/0/normalized_surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "реке"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "реку",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/0/normalized_surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "реку"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "рекой",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/0/normalized_surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "рекой"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "у реки",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/0/normalized_surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "у реки"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "на реке",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/0/normalized_surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "на реке"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "по реке",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/0/normalized_surface_forms/7"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "по реке"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "озеро",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/1/normalized_surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "озеро"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "озера",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/1/normalized_surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "озера"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "озере",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/1/normalized_surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "озере"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "озеру",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/1/normalized_surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "озеру"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "озером",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/1/normalized_surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "озером"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "у озера",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/1/normalized_surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "у озера"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "на озере",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/1/normalized_surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "на озере"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "к озеру",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "region-aliases.json",
+        "sha256": "fa33b2176b709c0986931bd0b983cc1c6050c38a24fe0f68544249a8862bf847",
+        "json_pointer": "/generic_location_terms_without_mapping/1/normalized_surface_forms/7"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "unresolved_fixture_surface",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "к озеру"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "под Новгородом",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/5/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "literal_case_phrase",
+        "rule_id": "fixture_exact_phrase",
+        "rule": "Surface occurs literally in the cited frozen case input.",
+        "source_surface": "под Новгородом",
+        "case_id": "C06"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "северном берегу",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/9/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "literal_case_phrase",
+        "rule_id": "fixture_exact_phrase",
+        "rule": "Surface occurs literally in the cited frozen case input.",
+        "source_surface": "северном берегу",
+        "case_id": "C10"
+      }
+    },
+    {
+      "slot": "region",
+      "surface": "северный берег",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_place_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/9/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "derived_case_phrase",
+        "rule_id": "fixture_morphology",
+        "rule": "Surface is derived by the recorded Russian grammatical transformation from the exact cited case phrase.",
+        "source_surface": "северном берегу",
+        "case_id": "C10"
+      }
+    },
+    {
+      "slot": "season",
+      "surface": "зимний",
+      "value": "зима",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "season-aliases.json",
+        "sha256": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+        "json_pointer": "/seasons/0/aliases/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_alias",
+        "rule_id": "declared_season_alias",
+        "rule": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+        "source_surface": "зима"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+          "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+          "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+        }
+      ]
+    },
+    {
+      "slot": "season",
+      "surface": "зимой",
+      "value": "зима",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "season-aliases.json",
+        "sha256": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+        "json_pointer": "/seasons/0/aliases/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_alias",
+        "rule_id": "declared_season_alias",
+        "rule": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+        "source_surface": "зима"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+          "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+          "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+        }
+      ]
+    },
+    {
+      "slot": "season",
+      "surface": "весной",
+      "value": "весна",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "season-aliases.json",
+        "sha256": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+        "json_pointer": "/seasons/1/aliases/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_alias",
+        "rule_id": "declared_season_alias",
+        "rule": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+        "source_surface": "весна"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+          "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+          "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+        }
+      ]
+    },
+    {
+      "slot": "season",
+      "surface": "весенняя пора",
+      "value": "весна",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "season-aliases.json",
+        "sha256": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+        "json_pointer": "/seasons/1/aliases/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_alias",
+        "rule_id": "declared_season_alias",
+        "rule": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+        "source_surface": "весна"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+          "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+          "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+        }
+      ]
+    },
+    {
+      "slot": "season",
+      "surface": "весенний",
+      "value": "весна",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "season-aliases.json",
+        "sha256": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+        "json_pointer": "/seasons/1/aliases/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_alias",
+        "rule_id": "declared_season_alias",
+        "rule": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+        "source_surface": "весна"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+          "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+          "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+        }
+      ]
+    },
+    {
+      "slot": "season",
+      "surface": "летом",
+      "value": "лето",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "season-aliases.json",
+        "sha256": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+        "json_pointer": "/seasons/2/aliases/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_alias",
+        "rule_id": "declared_season_alias",
+        "rule": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+        "source_surface": "лето"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+          "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+          "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+        }
+      ]
+    },
+    {
+      "slot": "season",
+      "surface": "летний",
+      "value": "лето",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "season-aliases.json",
+        "sha256": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+        "json_pointer": "/seasons/2/aliases/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_alias",
+        "rule_id": "declared_season_alias",
+        "rule": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+        "source_surface": "лето"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+          "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+          "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+        }
+      ]
+    },
+    {
+      "slot": "season",
+      "surface": "осенний",
+      "value": "осень",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "season-aliases.json",
+        "sha256": "c4dea3860998cc81621be87393d6581b0dbd74ff88d9f326a79e47e869e5ac46",
+        "json_pointer": "/seasons/3/aliases/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_fixture_alias",
+        "rule_id": "declared_season_alias",
+        "rule": "Explicit form in frozen season alias fixture mapped to its calendar bucket; this lexical rule is not a quotation from the calendar profile.",
+        "source_surface": "осень"
+      },
+      "source_evidence": [
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+          "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+        },
+        {
+          "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+          "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбак",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "exact_source_title",
+        "rule_id": "occupation_title_exact",
+        "rule": "Surface equals occupation_title in the pinned TSV row.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбака",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбаку",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбаком",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбаке",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбаки",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбаков",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбакам",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/7"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбаками",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/8"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбаках",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/9"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачить",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/10"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачу",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/11"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачишь",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/12"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачит",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/13"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачим",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/14"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачите",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/15"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачат",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/16"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачил",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/17"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачила",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/18"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбачили",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/19"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "промышлять рыбой",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/20"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "промышляю рыбой",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/21"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "промышлял рыбой",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/22"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_verb_or_activity",
+        "rule_id": "occupation_editorial_verb",
+        "rule": "Editorial verb form associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "промысел рыбы",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/23"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "рыбный промысел",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/24"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "ловить рыбу",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/25"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "ловлю рыбу",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/26"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "ловил рыбу",
+      "value": "рыбак",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/0/surface_forms/27"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "рыбак",
+        "source_id": "nov_occ_fisher"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 43,
+          "occupation_id": "nov_occ_fisher",
+          "occupation_title": "рыбак",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесной промысловик",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "exact_source_title",
+        "rule_id": "occupation_title_exact",
+        "rule": "Surface equals occupation_title in the pinned TSV row.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесного промысловика",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесному промысловику",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесным промысловиком",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесном промысловике",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесные промысловики",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесных промысловиков",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесным промысловикам",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/7"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесными промысловиками",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/8"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесных промысловиках",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/9"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесной промысел",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/10"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесного промысла",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/11"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесному промыслу",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/12"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесным промыслом",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/13"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лесном промысле",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/14"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "заниматься лесным промыслом",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/15"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "занимаюсь лесным промыслом",
+      "value": "лесной промысловик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/1/surface_forms/16"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_work_phrase",
+        "rule_id": "occupation_editorial_work_phrase",
+        "rule": "Editorial work/activity phrase associated with the cited occupation; not a literal TSV title form and requires separate alias review.",
+        "source_surface": "лесной промысловик",
+        "source_id": "nov_occ_forest_worker"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 47,
+          "occupation_id": "nov_occ_forest_worker",
+          "occupation_title": "лесной промысловик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочник",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "exact_source_title",
+        "rule_id": "occupation_title_exact",
+        "rule": "Surface equals occupation_title in the pinned TSV row.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочника",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочнику",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочником",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочнике",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочники",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочников",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочникам",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/7"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочниками",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/8"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "лодочниках",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/9"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "boatman",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/10"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_translation",
+        "rule_id": "occupation_editorial_translation",
+        "rule": "Hand-authored English equivalent of the cited Russian title; translation mapping requires separate alias review.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "boatmen",
+      "value": "лодочник",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/2/surface_forms/11"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_translation",
+        "rule_id": "occupation_editorial_translation",
+        "rule": "Hand-authored English equivalent of the cited Russian title; translation mapping requires separate alias review.",
+        "source_surface": "лодочник",
+        "source_id": "nov_occ_boatman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 34,
+          "occupation_id": "nov_occ_boatman",
+          "occupation_title": "лодочник",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчик",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/0"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "exact_source_title",
+        "rule_id": "occupation_title_exact",
+        "rule": "Surface equals occupation_title in the pinned TSV row.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчика",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/1"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчику",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/2"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчиком",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/3"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчике",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/4"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчики",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/5"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчиков",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/6"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчикам",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/7"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчиками",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/8"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "перевозчиках",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/9"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "russian_inflection",
+        "rule_id": "occupation_ru_inflection",
+        "rule": "Listed Russian grammatical form of the cited occupation_title; TSV supports the title, while this rule records the derived inflection.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "ferryman",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/10"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_translation",
+        "rule_id": "occupation_editorial_translation",
+        "rule": "Hand-authored English equivalent of the cited Russian title; translation mapping requires separate alias review.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "ferrymen",
+      "value": "перевозчик",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/aliases/3/surface_forms/11"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "editorial_translation",
+        "rule_id": "occupation_editorial_translation",
+        "rule": "Hand-authored English equivalent of the cited Russian title; translation mapping requires separate alias review.",
+        "source_surface": "перевозчик",
+        "source_id": "nov_occ_ferryman"
+      },
+      "source_evidence": [
+        {
+          "path": "/srv/novgorod-work/worktrees/ref-pr98/data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+          "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+          "line": 36,
+          "occupation_id": "nov_occ_ferryman",
+          "occupation_title": "перевозчик",
+          "region_id": "region_novgorod_land",
+          "status": "approved"
+        }
+      ]
+    },
+    {
+      "slot": "occupation",
+      "surface": "мастер паровых машин",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/explicitly_unsupported_examples/0/input_phrase"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "explicit_unresolved_fixture_phrase",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "мастер паровых машин"
+      }
+    },
+    {
+      "slot": "occupation",
+      "surface": "железнодорожный диспетчер",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "occupation-aliases.json",
+        "sha256": "9554e80747203e5d40d0e04c2b0f63891f12b7c9683f71bb0b21362708cc789b",
+        "json_pointer": "/explicitly_unsupported_examples/1/input_phrase"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "explicit_unresolved_fixture_phrase",
+        "rule_id": "unresolved_fixture_surface",
+        "rule": "Surface is explicitly listed as unresolved in a frozen fixture; no value is assigned.",
+        "source_surface": "железнодорожный диспетчер"
+      }
+    },
+    {
+      "slot": "occupation",
+      "surface": "мастером паровых машин",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/5/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "literal_case_phrase",
+        "rule_id": "fixture_exact_phrase",
+        "rule": "Surface occurs literally in the cited frozen case input.",
+        "source_surface": "мастером паровых машин",
+        "case_id": "C06"
+      }
+    },
+    {
+      "slot": "occupation",
+      "surface": "железнодорожным диспетчером",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/6/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "derived_case_phrase",
+        "rule_id": "fixture_morphology",
+        "rule": "Surface is derived by the recorded Russian grammatical transformation from the exact cited case phrase.",
+        "source_surface": "железнодорожный диспетчер",
+        "case_id": "C07"
+      }
+    },
+    {
+      "slot": "social_position",
+      "surface": "положение свободное",
+      "value": "Свободный",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "social-position-aliases.json",
+        "sha256": "dc7e920bb3ccb45573129d6130c81589825fe48ee1f2e18a3f5017416b21dc9f",
+        "json_pointer": "/archetypes/0/aliases/0"
+      },
+      "value_kind": "legal_status",
+      "case_ids": [
+        "C01",
+        "C03"
+      ],
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_editorial_alias",
+        "rule_id": "declared_social_alias",
+        "rule": "Explicit form in frozen social alias fixture mapped to the cited rus13 label; editorial paraphrases remain pending review.",
+        "source_surface": "Свободный"
+      },
+      "source_evidence": [
+        {
+          "archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+          "member": "world-base-seeds/legal_status_archetypes_v1.csv",
+          "member_sha256": "51a992a3a1ba0189a1b1a447159599e1d4d3bc73b1e44831f39cbdf8ccc9cb3e",
+          "values_count": 8
+        },
+        {
+          "archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+          "member": "world-base-seeds/social_position_archetypes_v1.csv",
+          "member_sha256": "c73a1d0b854378470f4e96119acbe7092ba4bee4f4949b654bd8d80c44c0857d",
+          "values_count": 30
+        }
+      ]
+    },
+    {
+      "slot": "social_position",
+      "surface": "свободный человек",
+      "value": "Свободный",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "social-position-aliases.json",
+        "sha256": "dc7e920bb3ccb45573129d6130c81589825fe48ee1f2e18a3f5017416b21dc9f",
+        "json_pointer": "/archetypes/0/aliases/1"
+      },
+      "value_kind": "legal_status",
+      "case_ids": [
+        "C02"
+      ],
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_editorial_alias",
+        "rule_id": "declared_social_alias",
+        "rule": "Explicit form in frozen social alias fixture mapped to the cited rus13 label; editorial paraphrases remain pending review.",
+        "source_surface": "Свободный"
+      },
+      "source_evidence": [
+        {
+          "archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+          "member": "world-base-seeds/legal_status_archetypes_v1.csv",
+          "member_sha256": "51a992a3a1ba0189a1b1a447159599e1d4d3bc73b1e44831f39cbdf8ccc9cb3e",
+          "values_count": 8
+        },
+        {
+          "archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+          "member": "world-base-seeds/social_position_archetypes_v1.csv",
+          "member_sha256": "c73a1d0b854378470f4e96119acbe7092ba4bee4f4949b654bd8d80c44c0857d",
+          "values_count": 30
+        }
+      ]
+    },
+    {
+      "slot": "social_position",
+      "surface": "свободен",
+      "value": "Свободный",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "social-position-aliases.json",
+        "sha256": "dc7e920bb3ccb45573129d6130c81589825fe48ee1f2e18a3f5017416b21dc9f",
+        "json_pointer": "/archetypes/0/aliases/2"
+      },
+      "value_kind": "legal_status",
+      "case_ids": [
+        "C09"
+      ],
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_editorial_alias",
+        "rule_id": "declared_social_alias",
+        "rule": "Explicit form in frozen social alias fixture mapped to the cited rus13 label; editorial paraphrases remain pending review.",
+        "source_surface": "Свободный"
+      },
+      "source_evidence": [
+        {
+          "archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+          "member": "world-base-seeds/legal_status_archetypes_v1.csv",
+          "member_sha256": "51a992a3a1ba0189a1b1a447159599e1d4d3bc73b1e44831f39cbdf8ccc9cb3e",
+          "values_count": 8
+        },
+        {
+          "archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+          "member": "world-base-seeds/social_position_archetypes_v1.csv",
+          "member_sha256": "c73a1d0b854378470f4e96119acbe7092ba4bee4f4949b654bd8d80c44c0857d",
+          "values_count": 30
+        }
+      ]
+    },
+    {
+      "slot": "social_position",
+      "surface": "свободным человеком",
+      "value": "Свободный",
+      "class": "candidate_alias",
+      "authority": "bench_vocabulary",
+      "source": {
+        "file": "social-position-aliases.json",
+        "sha256": "dc7e920bb3ccb45573129d6130c81589825fe48ee1f2e18a3f5017416b21dc9f",
+        "json_pointer": "/archetypes/0/aliases/3"
+      },
+      "value_kind": "legal_status",
+      "case_ids": [
+        "C11"
+      ],
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "declared_editorial_alias",
+        "rule_id": "declared_social_alias",
+        "rule": "Explicit form in frozen social alias fixture mapped to the cited rus13 label; editorial paraphrases remain pending review.",
+        "source_surface": "Свободный"
+      },
+      "source_evidence": [
+        {
+          "archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+          "member": "world-base-seeds/legal_status_archetypes_v1.csv",
+          "member_sha256": "51a992a3a1ba0189a1b1a447159599e1d4d3bc73b1e44831f39cbdf8ccc9cb3e",
+          "values_count": 8
+        },
+        {
+          "archive": "data/world-base-sources/rus13-base-v1.tar.gz",
+          "member": "world-base-seeds/social_position_archetypes_v1.csv",
+          "member_sha256": "c73a1d0b854378470f4e96119acbe7092ba4bee4f4949b654bd8d80c44c0857d",
+          "values_count": 30
+        }
+      ]
+    },
+    {
+      "slot": "social_position",
+      "surface": "человеком высокого положения",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_status_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/7/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "literal_case_phrase",
+        "rule_id": "fixture_exact_phrase",
+        "rule": "Surface occurs literally in the cited frozen case input.",
+        "source_surface": "человеком высокого положения",
+        "case_id": "C08"
+      }
+    },
+    {
+      "slot": "social_position",
+      "surface": "высокого положения",
+      "value": null,
+      "class": "ambiguous",
+      "authority": "generic_status_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/7/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "literal_case_phrase",
+        "rule_id": "fixture_exact_phrase",
+        "rule": "Surface occurs literally in the cited frozen case input.",
+        "source_surface": "высокого положения",
+        "case_id": "C08"
+      }
+    },
+    {
+      "slot": "social_position",
+      "surface": "странствующего княжеского посла",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/9/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "literal_case_phrase",
+        "rule_id": "fixture_exact_phrase",
+        "rule": "Surface occurs literally in the cited frozen case input.",
+        "source_surface": "странствующего княжеского посла",
+        "case_id": "C10"
+      }
+    },
+    {
+      "slot": "social_position",
+      "surface": "княжеского посла",
+      "value": null,
+      "class": "unsupported",
+      "authority": "typed_gap",
+      "source": {
+        "file": "bench-cases.json",
+        "sha256": "0e2c2d3781448ddd3aa7ebdb2d2cd24c51c5f9107ed75df36938495451b3aecb",
+        "json_pointer": "/cases/9/input"
+      },
+      "approval_state": "pending_d67",
+      "eligibility_effect": false,
+      "origin": {
+        "kind": "literal_case_phrase",
+        "rule_id": "fixture_exact_phrase",
+        "rule": "Surface occurs literally in the cited frozen case input.",
+        "source_surface": "княжеского посла",
+        "case_id": "C10"
+      }
+    }
+  ]
+}

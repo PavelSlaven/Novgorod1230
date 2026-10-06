@@ -12,8 +12,7 @@ const firstEntryBinding = { g6_instance_id: 'g6:start', position_id: 'position:s
 const rule = {
   rule_id: 'pr_test', rule_version: 1, status: 'approved', scope_kind: 'place_family', scope_ref: 'pf_test',
   region_id: null, subject_kind: 'category', subject_ref: 'cat_child', presence_probability_ppm: 1_000_000,
-  count_limit: 2, allowed_seasons: ['all'], refresh_class: 'none', entry_exposed_weight: 1,
-  search_concealed_weight: 0,
+  count_limit: 2, allowed_seasons: ['all'], refresh_class: 'none',
 };
 
 function recordingTransaction() {

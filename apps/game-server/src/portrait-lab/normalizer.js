@@ -80,7 +80,7 @@ export function createPortraitSpecNormalizer({ roleRunner } = {}) {
       } catch (error) {
         throw serverError(
           'PORTRAIT_SPEC_PROVIDER_FAILED',
-          'DeepSeek portrait conversion failed.',
+          'Не удалось преобразовать описание портрета.',
           { status: 502, details: { cause_code: error?.code ?? null } }
         );
       }
@@ -89,7 +89,7 @@ export function createPortraitSpecNormalizer({ roleRunner } = {}) {
       if (errors.length) {
         throw serverError(
           'PORTRAIT_SPEC_PROVIDER_INVALID',
-          `DeepSeek returned invalid portrait JSON: ${formatPortraitSpecV1Errors(errors)}`,
+          `Получены неподдерживаемые данные портрета: ${formatPortraitSpecV1Errors(errors)}`,
           { status: 502, details: { validation_errors: errors } }
         );
       }

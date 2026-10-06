@@ -12,18 +12,22 @@ import { appendPlayerBodyEffect, appendTerminal } from
   './lower-dvina-trace-phase-6-terminal-writes.js';
 import { assertSharedSemanticSnapshotSafe } from
   './lower-dvina-trace-conversation-state.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function phase6VisibleEnvelope({ partyId, nextVersion, turnNumber,
-  changeSetId, idemId, factual, visibleContext }) {
+  changeSetId, idemId, factual, visibleContext, onLabelGapsOmitted = null }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted });
   const payload = {
     schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details,
-    visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects,
-    known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties,
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details,
+    visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects,
+    known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties,
     hypotheses: [],
     player_safe_interruption:
       factual.consequence.carry.intent.execution_after.status === 'paused'

@@ -40,7 +40,7 @@
         "Тот же projector строит ordered `screen.checks` из committed check results:",
         "Terminal factual delivery после `final_audit_failed` — только availability",
         "Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side",
-        "Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `unconfigured`/`custom`, OpenAI-compatible base URL/exact default Qwen model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. Старый `local` settings record мигрирует в `unconfigured`; API key не входит в public read model, party save/replay, logs или telemetry; managed provider и silent fallback отсутствуют",
+        "Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `unconfigured`/`custom`, OpenAI-compatible base URL/exact default Qwen model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. Endpoint обязателен для вызовов; без него runtime fail-closed. Старый `local` settings record мигрирует в `unconfigured`; API key не входит в public read model, party save/replay, logs или telemetry; managed provider и silent fallback отсутствуют",
         "Authored live-world parties проецируют каждого присутствующего persisted NPC",
         "В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены",
         "Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state",
@@ -178,6 +178,19 @@
       "public_entry": "./src/index.js",
       "purpose": "Canonical machine-readable contract/typed-error registry shared by packages and applications. It defines names, validators, canonical digests, controlled vocabularies and public target-port primitives; it executes no game workflow.",
       "version": "0.9.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/economy",
+      "owns": [
+        "exact approved currency rate lookup by region, date, and unit",
+        "rational two-leg conversion through BUE with one final approved-quantum rounding",
+        "safe rendering of confirmed local amounts with approved unit labels"
+      ],
+      "path": "packages/economy",
+      "public_entry": "./src/index.js",
+      "purpose": "Performs exact conversion of an already approved local amount through the caller-supplied, verified economy projection, then renders a complete local amount for a player-safe handoff.",
+      "version": "0.1.0"
     },
     {
       "dependencies": [
@@ -548,14 +561,17 @@
       "dependencies": [],
       "name": "@rus/world-knowledge",
       "owns": [
-        "query/bundle validation и slice construction",
+        "query/bundle validation и structured slices без prose context",
+        "применимость, доступ и ранжирование утверждений",
+        "coverage, sufficiency, gaps и deterministic claim packing",
+        "query/bundle validation и structured slice construction; query budget содержит",
         "canonical empty six-field `semantic_resolution` query plan как",
         "bounded planner focus candidates из compiled lexical postings с теми же",
         "exact, structured и localized lexical retrieval",
         "caller-provided vector scores и pure flat-vector scan; Core остаётся",
         "optional caller-provided `rerankScores` (D17): reorder admitted candidates",
         "`admittedCandidateRefs(query, { vectorScores? })` — pure list of admitted",
-        "pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing",
+        "pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic claim packing",
         "lexicographic ranking: hard constraints, exact focus, requested predicates,",
         "relative lexical admission per independent search hint; aggregate lexical",
         "`search_hint_hits` / `search_hint_relevance` on the Core slice: one bool and",

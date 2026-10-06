@@ -8,6 +8,7 @@ import {
   installPresenceProductionE2eFetch,
   publicStartScenario,
 } from './presence-rules-production-e2e-fixture.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url)));
 const bindings = read('../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json');
@@ -18,7 +19,6 @@ const passage = (from, to) => {
   return labels.find((row) => row.binding_ref.id === binding.id).display_label;
 };
 
-const PLANNER = 'Return only one JSON object containing the semantic choice for one turn step.';
 const MAKE = 'Оторву полосу от подола рубахи.';
 
 /** The plan the live Qwen returns for "tear a strip from the hem" once its result_class is right. */
@@ -55,13 +55,15 @@ function installMakeFetch(seen) {
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const user = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    const role = identifyLlmTestRole(call);
     const respond = (output) => new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify(output) } }] }), { status: 200 });
-    if (system.startsWith(PLANNER) && (user.request ?? user).root_player_action === MAKE) {
+    if (role === 'turn_step_planner'
+        && (user.request ?? user).root_player_action === MAKE) {
       seen.makeSteps += 1;
       return respond(makePlan(user.request ?? user));
     }
-    if (system.startsWith('Return only {"pass":true,"concerns":[]}')) {
+    if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       seen.auditorCalls += 1;
       return respond({ pass: true, concerns: [] });
     }

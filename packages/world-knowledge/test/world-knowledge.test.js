@@ -21,7 +21,7 @@ function query(overrides = {}) {
     requested_predicates: [],
     search_hints: [],
     context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'], actor_facets: {} },
-    budget: { max_facts: 24, max_candidates: 12, max_context_chars: 7000 },
+    budget: { max_facts: 24, max_candidates: 12 },
     ...overrides
   };
 }
@@ -38,9 +38,8 @@ test('the normative query shape is valid and resolution is deterministic', () =>
   assert.deepEqual(core.resolveWorldKnowledge(input), core.resolveWorldKnowledge(input));
 });
 
-test('model-facing context distinguishes reconstruction from direct facts without changing retrieval', () => {
-  for (const [directness, label] of Object.entries({ direct: 'FACT', inferred: 'INFERENCE',
-    analogical: 'ANALOGY', editorial: 'EDITORIAL', unknown: 'UNCERTAIN' })) {
+test('structured facts preserve directness without a prose projection', () => {
+  for (const directness of ['direct', 'inferred', 'analogical', 'editorial', 'unknown']) {
     const bundle = structuredClone(baseBundle);
     const claim = bundle.claims[0];
     claim.qualifiers = { typicality: 'unknown', confidence: 'medium', directness };
@@ -48,8 +47,9 @@ test('model-facing context distinguishes reconstruction from direct facts withou
       domains: [claim.domain], focus_refs: [claim.claim_ref]
     }));
     assert.ok(slice.facts.some(fact => fact.claim_ref === claim.claim_ref));
-    assert.ok(slice.context_text.includes(`${label} ${claim.claim_ref}:`));
-    if (directness !== 'direct') assert.ok(!slice.context_text.includes(`FACT ${claim.claim_ref}:`));
+    assert.equal(slice.facts.find(fact => fact.claim_ref === claim.claim_ref)
+      .qualifiers.directness, directness);
+    assert.equal(Object.hasOwn(slice, 'context_text'), false);
     assert.deepEqual(slice.hard_constraints, []);
   }
 });
@@ -82,7 +82,7 @@ test('query relevance precedes specificity within a shared focus, with determini
   bundle.lexical_indexes.en.inscription = refs;
   const input = query({ domains: ['economy_trade'], query_locale: 'en',
     focus_refs: [historical.subject_ref], search_hints: ['inscription'],
-    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 7000 } });
+    budget: { max_facts: 2, max_candidates: 2 } });
   const core = createWorldKnowledgeCore(bundle);
   assert.deepEqual(core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref), refs);
   input.search_hints = [];
@@ -139,7 +139,7 @@ test('a conflict group is never truncated to one side', () => {
   bundle.structured_indexes.place_to_claim_refs.region_novgorod_land.push(...refs);
   const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
     domains: ['economy_trade'], focus_refs: [support.subject_ref],
-    budget: { max_facts: 1, max_candidates: 1, max_context_chars: 7000 }
+    budget: { max_facts: 1, max_candidates: 1 }
   }));
   assert.equal(slice.verdict, 'disputed');
   assert.deepEqual(slice.disputes, []);
@@ -179,7 +179,7 @@ test('independent search hints retain their matches when another hint is rarer',
   const core = createWorldKnowledgeCore(bundle);
   const input = query({ domains: [support.domain], query_locale: 'en',
     search_hints: ['coppersmith', 'grain storage'],
-    budget: { max_facts: 30, max_candidates: 30, max_context_chars: 10000 } });
+    budget: { max_facts: 30, max_candidates: 30 } });
   const slice = core.resolveWorldKnowledge(input);
   const refs = slice.facts.map(({ claim_ref }) => claim_ref);
   assert.ok(refs.includes(rareRef));
@@ -220,7 +220,7 @@ test('vector recall does not tighten lexical admission when candidate budget has
   bundle.lexical_indexes.en.gamma = [secondary];
   const input = query({ domains: [source.domain], query_locale: 'en',
     search_hints: ['alpha beta gamma'],
-    budget: { max_facts: 3, max_candidates: 3, max_context_chars: 7000 } });
+    budget: { max_facts: 3, max_candidates: 3 } });
   const core = createWorldKnowledgeCore(bundle);
   const lexical = core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref);
   assert.deepEqual(new Set(lexical), new Set([strong, secondary]));
@@ -244,7 +244,7 @@ test('optional rerankScores reorder admitted claims without expanding recall', (
   bundle.lexical_indexes.en.beta = [beta];
   const input = query({ domains: [source.domain], query_locale: 'en',
     search_hints: ['alpha beta'],
-    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 7000 } });
+    budget: { max_facts: 2, max_candidates: 2 } });
   const core = createWorldKnowledgeCore(bundle);
   const vectorScores = new Map([[alpha, 0.9], [beta, 0.1]]);
   const without = core.resolveWorldKnowledge(input, { vectorScores });
@@ -278,7 +278,7 @@ test('rerank map keys outside candidates do not expand recall', () => {
   }
   const input = query({ domains: [source.domain], query_locale: 'en',
     focus_refs: [alpha], search_hints: [],
-    budget: { max_facts: 4, max_candidates: 4, max_context_chars: 7000 } });
+    budget: { max_facts: 4, max_candidates: 4 } });
   const core = createWorldKnowledgeCore(bundle);
   const vectorScores = new Map([[alpha, 0.9]]);
   const slice = core.resolveWorldKnowledge(input, {
@@ -325,7 +325,7 @@ test('rerank all-or-nothing: partial map keeps hybrid order; negative logits min
   bundle.lexical_indexes.en.beta = [beta];
   const input = query({ domains: [source.domain], query_locale: 'en',
     search_hints: ['alpha beta'],
-    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 7000 } });
+    budget: { max_facts: 2, max_candidates: 2 } });
   const core = createWorldKnowledgeCore(bundle);
   const vectorScores = new Map([[alpha, 0.9], [beta, 0.1]]);
   // Partial coverage → hybrid (alpha stays first via vector).
@@ -453,13 +453,13 @@ test('structured applicability keeps universal and matching claims only', () => 
   assert.deepEqual(new Set(slice.facts.map((claim) => claim.claim_ref)), new Set([source.claim_ref, universal.claim_ref, matching.claim_ref]));
 });
 
-test('facts, candidates and context are bounded', () => {
+test('facts and candidates are bounded in the structured slice', () => {
   const slice = createWorldKnowledgeCore(baseBundle).resolveWorldKnowledge(query({
-    budget: { max_facts: 1, max_candidates: 1, max_context_chars: 40 }
+    budget: { max_facts: 1, max_candidates: 1 }
   }));
   assert.ok(slice.facts.length + slice.hard_constraints.length <= 1);
   assert.ok(slice.candidates.length <= 1);
-  assert.ok(slice.context_text.length <= 40);
+  assert.equal(Object.hasOwn(slice, 'context_text'), false);
 });
 
 test('inapplicable high-ranked noise cannot evict an applicable claim', () => {
@@ -477,7 +477,7 @@ test('inapplicable high-ranked noise cannot evict an applicable claim', () => {
   const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
     domains: ['economy_trade'],
     focus_refs: [support.subject_ref],
-    budget: { max_facts: 1, max_candidates: 1, max_context_chars: 7000 }
+    budget: { max_facts: 1, max_candidates: 1 }
   }));
   assert.equal(slice.verdict, 'supported');
   assert.equal(slice.facts[0].claim_ref, support.claim_ref);
@@ -487,6 +487,9 @@ test('query rejects unknown fields and revision mismatches', () => {
   assert.equal(validateWorldKnowledgeQuery({ ...query(), surprise: true }, baseBundle).ok, false);
   assert.equal(validateWorldKnowledgeQuery(query({ pack_revision: 'revision:other' }), baseBundle).ok, false);
   assert.equal(validateWorldKnowledgeQuery(query({ requested_predicates: ['invented'] }), baseBundle).ok, false);
+  assert.equal(validateWorldKnowledgeQuery(query({ budget: {
+    max_facts: 24, max_candidates: 12, max_context_chars: 7000
+  } }), baseBundle).ok, false);
   assert.equal(validateWorldKnowledgeQuery(query({ context: { time: { year: 1230 }, place_refs: [], actor_facets: {}, conditions: { invented: true } } }), baseBundle).ok, false);
   assert.equal(validateWorldKnowledgeQuery(query({ context: { time: { year: 1230, precision: 'exact' }, place_refs: [], actor_facets: {} } }), baseBundle).ok, false);
 });
@@ -505,7 +508,8 @@ test('production pack grounds historical and physical premises without asserting
   assert.equal(historical.verdict, 'supported');
   assert.ok(historical.facts.some(({ claim_ref }) =>
     claim_ref === 'claim:regional-fish-exploitation'));
-  assert.ok(historical.context_text.includes('не устанавливает'));
+  assert.ok(historical.facts.some(({ runtime_text }) =>
+    runtime_text.includes('не устанавливает')));
 
   const physical = core.resolveWorldKnowledge(query({
     pack_ref: productionBundle.manifest.pack_ref,

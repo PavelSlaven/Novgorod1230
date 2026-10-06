@@ -4,6 +4,8 @@ import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
 import { targetCanonicalStartFixture } from './target-canonical-start-fixture.js';
 import { approvedNpcIdentityCatalog } from '../helpers/npc-identity-catalog.js';
 import { loadTargetAuthoredStartProfile } from '../../apps/game-server/src/internal/live-world-authored-starts.js';
+import { lowerDvinaTraceVisibleSceneItems } from '../../apps/game-server/src/runtime/lower-dvina-trace-visible-scene-items.js';
+import { projectTurnStepModelRequest } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js';
 
 test('canonical target materializer uses approved player and NPC source shapes deterministically', async () => {
   const input = await targetCanonicalStartFixture();
@@ -28,6 +30,38 @@ test('canonical target materializer uses approved player and NPC source shapes d
     }
   }
   assert.ok(count > 0, 'approved nonzero composition must run through the actual NPC/Stage16 owners');
+});
+
+test('canonical target clothing labels survive visible-item and turn-step projection', async () => {
+  const fixture = await targetCanonicalStartFixture();
+  const start = materializeAuthoredStartPartyInstance(fixture).immediate;
+  const actorId = start.player.instance_id;
+  const clothing = start.items.filter((item) =>
+    item.owner_character_id === actorId);
+  const itemLabels = Object.fromEntries(fixture.domain_catalog.records_by_table
+    .item_templates.map((template) => [template.id, template.title]));
+  const committedItems = clothing.map((item) => ({ ...item,
+    item_id: item.instance_id,
+    name: item.state?.display_name,
+    placement: { holder_character_id: item.holder_character_id,
+      physical_position: item.physical_position }
+  }));
+  const visible = lowerDvinaTraceVisibleSceneItems(committedItems, {}, actorId,
+    itemLabels);
+  const projected = projectTurnStepModelRequest({ player_safe_state: {
+    items: committedItems,
+    current_visible_context: { visible_objects: visible.map((row) =>
+      row.visibleObject) }
+  } }).request.player_safe_state;
+
+  assert.equal(clothing.length, 3);
+  assert.deepEqual(projected.items.map((item) => item.name).sort(),
+    ['нижняя рубаха', 'низкая кожаная обувь', 'штаны'].sort());
+  assert.deepEqual(projected.current_visible_context.visible_objects
+    .map((item) => item.display_label).sort(),
+  ['нижняя рубаха', 'низкая кожаная обувь', 'штаны'].sort());
+  assert.equal(projected.current_visible_context.visible_objects.some((item) =>
+    item.label_gap?.code === 'player_safe_item_label_required'), false);
 });
 
 test('target canonical dependencies reject absent or stale exact pins before generating a party', async () => {

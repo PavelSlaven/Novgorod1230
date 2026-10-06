@@ -115,6 +115,17 @@ function npcRequest(required = {}) {
   };
 }
 
+function requiredNpcCheckRequest() {
+  return npcRequest({ required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('npc', 'npc-1'),
+      target_ref: ref('player_character', 'player-1'),
+      entity_ref: ref('item', 'item-1') }
+  });
+}
+
 function npcPlan(request) {
   const required = request.decision_scope;
   return {
@@ -200,6 +211,106 @@ test('NPC assembly restores admitted structure while preserving semantic speech'
   ];
   assert.equal(validateConversationContributionPlan(
     assembleNpcConversationPlan(semanticSpeech, request), request), false);
+});
+
+test('required NPC speech keeps model claims and rejects unknown references', () => {
+  const request = requiredNpcCheckRequest();
+  const observationRef = ref('perception_result', 'observation-1');
+  const memoryRef = ref('knowledge_record', 'memory-1');
+  request.allowed_references.knowledge_refs = [memoryRef, observationRef]
+    .sort((left, right) => {
+      const a = `${left.entity_kind}\u0000${left.entity_id}`;
+      const b = `${right.entity_kind}\u0000${right.entity_id}`;
+      return a < b ? -1 : a > b ? 1 : 0;
+    });
+  const candidate = requiredNpcConversationCandidate(request);
+  assert.deepEqual(candidate.speech.claims, []);
+
+  const semantic = npcPlan(request);
+  semantic.speech.claims = [
+    { claim_id: 'current-observation', content_summary: 'У берега лежит сеть.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: [observationRef], mentioned_entity_refs: [] },
+    { claim_id: 'remembered-fact', content_summary: 'Я помню эту сеть.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: [memoryRef], mentioned_entity_refs: [] }
+  ];
+  const assembled = assembleNpcConversationPlan(semantic, request);
+  assert.equal(validateConversationContributionPlan(assembled, request), true);
+  assert.deepEqual(assembled.speech.claims, semantic.speech.claims);
+  assert.deepEqual(assembled.supporting_operations,
+    candidate.supporting_operations);
+  assert.deepEqual({ attribute_ref: assembled.check.attribute_ref,
+    skill_ref: assembled.check.skill_ref,
+    difficulty_band: assembled.check.difficulty_band },
+  { attribute_ref: candidate.check.attribute_ref,
+    skill_ref: candidate.check.skill_ref,
+    difficulty_band: candidate.check.difficulty_band });
+
+  const unsupported = structuredClone(semantic);
+  unsupported.speech.claims[0].source_knowledge_refs = [
+    ref('knowledge_record', 'unknown-memory')
+  ];
+  const rejected = assembleNpcConversationPlan(unsupported, request);
+  assert.deepEqual(rejected.speech.claims[0].source_knowledge_refs,
+    [ref('knowledge_record', 'unknown-memory')]);
+  assert.equal(validateConversationContributionPlan(rejected, request), false);
+});
+
+test('required NPC claim with empty refs fails the production speech audit', async () => {
+  const request = requiredNpcCheckRequest();
+  const semantic = npcPlan(request);
+  semantic.speech.claims = [{ claim_id: 'unreferenced-claim',
+    content_summary: 'Я отвечу.', form: 'assertion',
+    speaker_posture: 'uncertain', source_knowledge_refs: [],
+    mentioned_entity_refs: [] }];
+
+  const assembled = assembleNpcConversationPlan(semantic, request);
+
+  assert.deepEqual(assembled.speech.claims, semantic.speech.claims);
+  assert.deepEqual(request.allowed_references.knowledge_refs, []);
+  assert.equal(validateConversationContributionPlan(assembled, request), true);
+
+  const fixture = runner(() => assert.fail(
+    'source-free claim must fail before the auditor model call'));
+  const audit = await createLowerDvinaTraceNpcSemanticModel(fixture)
+    .validateFreshPlan(assembled, request);
+  assert.deepEqual(audit.errors[0].concern_kinds,
+    ['claim_without_source_knowledge']);
+  assert.equal(fixture.calls.length, 0);
+});
+
+test('NPC grounding auditor receives claims preserved by required assembly', async () => {
+  const request = requiredNpcCheckRequest();
+  const observationRef = ref('perception_result', 'observation-1');
+  const memoryRef = ref('knowledge_record', 'memory-1');
+  request.allowed_references.knowledge_refs = [memoryRef, observationRef]
+    .sort((left, right) => {
+      const a = `${left.entity_kind}\u0000${left.entity_id}`;
+      const b = `${right.entity_kind}\u0000${right.entity_id}`;
+      return a < b ? -1 : a > b ? 1 : 0;
+    });
+  const output = npcPlan(request);
+  output.speech.claims = [
+    { claim_id: 'current-observation', content_summary: 'У берега лежит сеть.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: ['observation-1'], mentioned_entity_refs: [] },
+    { claim_id: 'remembered-fact', content_summary: 'Я помню эту сеть.',
+      form: 'assertion', speaker_posture: 'believed_true',
+      source_knowledge_refs: ['memory-1'], mentioned_entity_refs: [] }
+  ];
+  const fixture = runner((call) => call.role_id
+    === 'npc_conversation_grounding_auditor'
+    ? { pass: true, concerns: [] } : output);
+  const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+  const plan = await model(request);
+
+  assert.equal(await model.validateFreshPlan(plan, request), true);
+  assert.equal(fixture.calls.length, 2);
+  const auditPayload = JSON.parse(fixture.calls[1].messages[1].content);
+  assert.deepEqual(auditPayload.plan.speech.claims, plan.speech.claims);
+  assert.deepEqual(auditPayload.plan.speech.claims.map((claim) =>
+    claim.source_knowledge_refs), [[observationRef], [memoryRef]]);
 });
 
 test('player speech binds code-owned target and verbatim text', () => {
@@ -288,7 +399,7 @@ test('player promise candidate is validator-valid with target from safe context'
   assert.deepEqual(candidate.check.attribute_ref, required.required_check.attribute_ref);
   const prompt = playerConversationInstructions(null, request);
   assert.match(prompt,
-    /offer_conditional_protection[\s\S]*actually offers the target protection[\s\S]*different proposal, bargain, cooperation/u);
+    /operation_contract допускает offer_conditional_protection[\s\S]*игрок действительно предлагает защиту цели[\s\S]*Другое предложение, сделка, сотрудничество/u);
 });
 
 test('player assembly canonicalizes one exact operation-contract value', () => {
@@ -365,5 +476,5 @@ test('player repair receives and preserves required contract', async () => {
   assert.deepEqual(repairPayload.request.player_safe_context
     .required_supporting_operation, required.required_supporting_operation);
   assert.match(fixture.calls[1].messages[0].content,
-    /Required conversation candidate/u);
+    /Обязательный кандидат разговора/u);
 });

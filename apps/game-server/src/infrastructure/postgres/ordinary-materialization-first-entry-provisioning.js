@@ -215,7 +215,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         if (!sameExisting(existing.rows[0], rows)) throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_CONFLICT');
         await provisionInitialOrdinaryContainer({transaction,partyId,
           firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
-        return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
+        return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope),
+          ...(rows.presence_gaps?.length ? { presence_gaps: rows.presence_gaps } : {}) });
       }
       await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
         (party_id,scope_kind,scope_id,state_version,aggregate_payload)
@@ -248,7 +249,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
       }
       await provisionInitialOrdinaryContainer({transaction,partyId,
         firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
-      return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope) });
+      return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope),
+        ...(rows.presence_gaps?.length ? { presence_gaps: rows.presence_gaps } : {}) });
     }
   });
 }
@@ -307,10 +309,11 @@ function buildRows({ profile, partyId, scope, positionRef,
   } catch { throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID'); }
   const initial = createOrdinaryAggregate({ scope_ref: scope,
     resolution_record_cap: profile.technical_limits.max_resolution_records });
-  const aggregateWithPresence = applyResolvedPresenceRulesFirstArrival({
+  const presenceResult = applyResolvedPresenceRulesFirstArrival({
     aggregate: initial,
     context: presenceContext,
   });
+  const aggregateWithPresence = presenceResult.aggregate;
   const seeded = seedInitialScene({ profile, request: seedRequest,
     initial: aggregateWithPresence, committedBasis: basis, committedBases, initialSceneSeed });
   const seededWithPresence = seeded;
@@ -340,7 +343,7 @@ function buildRows({ profile, partyId, scope, positionRef,
     supporting_basis_ref: 'phase6_context_digest_only',
     causal_basis_refs: ['phase6_context_digest_only'],
     requested_position_ref: 'phase6_context_digest_only' }), objective,
-  objective_digest: canonicalDigest(objective) };
+  objective_digest: canonicalDigest(objective), presence_gaps: presenceResult.presence_gaps };
 }
 
 function sameExisting(row, expected) {
@@ -368,10 +371,11 @@ async function provisionPartyStartPresenceOnly({ transaction, partyId, scope, pr
     scope_ref: scope,
     resolution_record_cap: profile.technical_limits.max_resolution_records,
   });
-  const aggregate = applyResolvedPresenceRulesFirstArrival({
+  const presenceResult = applyResolvedPresenceRulesFirstArrival({
     aggregate: initial,
     context: presenceContext,
   });
+  const aggregate = presenceResult.aggregate;
   const existing = await transaction.query(
     `SELECT aggregate_payload, state_version
        FROM party_runtime.party_ordinary_materialization_aggregates
@@ -383,13 +387,15 @@ async function provisionPartyStartPresenceOnly({ transaction, partyId, scope, pr
     if (canonicalDigest(existing.rows[0].aggregate_payload) !== canonicalDigest(aggregate)) {
       throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_CONFLICT');
     }
-    return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
+    return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope),
+      ...(presenceResult.presence_gaps.length ? { presence_gaps: presenceResult.presence_gaps } : {}) });
   }
   await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
     (party_id,scope_kind,scope_id,state_version,aggregate_payload)
     VALUES ($1,$2,$3,$4,$5::jsonb)`, [partyId, scope.entity_kind, scope.entity_id,
     aggregate.state_version, JSON.stringify(aggregate)]);
-  return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope) });
+  return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope),
+    ...(presenceResult.presence_gaps.length ? { presence_gaps: presenceResult.presence_gaps } : {}) });
 }
 
 function seedInitialScene({ profile, request, initial, committedBasis,

@@ -1,26 +1,28 @@
-import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
 import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibility.js';
 import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } from
   './g4-natural-perception-reader.js';
 import { serverError } from '../../errors.js';
+import { resolveVisibleItemLabel } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
-import { withPassTargetDescriptions } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 import { loadApprovedConnectionLabels } from '../../../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/approved-labels.mjs';
-
-const labelPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url);
-const approvalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/approval-attestation.json', import.meta.url);
-const labelBytes = readFileSync(labelPath);
-const labelCatalog = JSON.parse(labelBytes);
-const labelApproval = JSON.parse(readFileSync(approvalPath));
-const approvedLabels = labelApproval.decision === 'APPROVE_DATA_ONLY'
-  && labelApproval.candidate_ref === `${labelCatalog.candidate_id}@${labelCatalog.version}`
-  && labelApproval.candidate_sha256 === createHash('sha256').update(labelBytes).digest('hex');
+import { loadApprovedExitLineLabels, resolveSpatialV3ExitLabels,
+  loadApprovedLegacyExitLabels } from './spatial-v3-exit-label-policy.js';
 const localLabels = loadApprovedLocalEdgeLabels();
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
+
+/** Titles come from the already pin-verified item catalog, never category labels. */
+export function approvedSpatialItemLabels(verifiedCatalog) {
+  const rows = verifiedCatalog?.records_by_table?.item_templates;
+  if (!Array.isArray(rows)) return {};
+  return Object.fromEntries(rows.flatMap((row) => {
+    if (row?.status !== 'approved' || typeof row.id !== 'string' || !row.id.trim()) return [];
+    const label = resolveVisibleItemLabel({ name: row.title });
+    return label.kind === 'labeled' ? [[row.id, label.label]] : [];
+  }));
+}
 
 /** Caller supplies current target conditions, committed exterior, and knowledge owners.
  * All reads use one repeatable-read snapshot. No label grants visibility or movement.
@@ -29,20 +31,25 @@ const visibility = new Set(['clear', 'partial', 'none']);
  * readExitDisclosure(context with partyId,actorId,directional_exits) -> safe labels.
  * readEntityObservations({partyId,actorId}) -> admitted exterior and known names. */
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
+  itemLabels = {},
   worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
   readEntityExterior, readPlayerKnowledge, readLocalMovementAdmission = null,
+  readExitLabels = loadApprovedExitLineLabels,
+  readLegacyExitLabels = loadApprovedLegacyExitLabels,
   readConnectionLabels = loadApprovedConnectionLabels,
   readScene = readCurrentEntityVisibilityScene,
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
+  const exitLabels = readExitLabels();
+  const legacyExitLabels = readLegacyExitLabels();
   async function withCurrent(partyId, actorId, project, suppliedTransaction,
-    observedPositionId = null) {
+    observedPositionId = null, clock = null) {
     const transaction = suppliedTransaction ?? await pool.connect();
     const owned = suppliedTransaction == null;
     try {
       if (owned) await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
       const args = { transaction, partyId, actorId, verifiedCatalog, pin,
-        worldBaseReader, readCurrentSourceState, readCurrentEnvironment,
+        worldBaseReader, readCurrentSourceState, readCurrentEnvironment, clock,
         observedPositionId };
       const scene = await readScene(args);
       const natural = await readNatural(args);
@@ -81,7 +88,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       portals: natural.scene.portals, targets: resolved, modifier_set: scene.modifier_set });
   }
   async function localDisclosure({ partyId, actorId, state, transaction,
-    observedPositionId } = {}) {
+    observedPositionId, clock = null } = {}) {
     return withCurrent(partyId, actorId, async (current) => {
       if (state?.party_id !== partyId || state.actor_id !== actorId
         || state.journey_location?.scene_position_id !== current.scene.location.scene_position_id) {
@@ -139,7 +146,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         return [{ edge_id: edge.id, display_label: labels[0].display_label,
           ...(destinationStatus !== undefined ? { destination_status: destinationStatus } : {}) }];
       });
-    }, transaction, observedPositionId);
+    }, transaction, observedPositionId, clock);
   }
   let connectionLabels = null;
   const labelsOfConnections = () => {
@@ -176,7 +183,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       return (await localDisclosure(input)).map((row) => row.edge_id);
     },
     readLocalEdgeDisclosure: localDisclosure,
-    async readCurrentExitDisclosure({ partyId, actorId, transaction, observedPositionId } = {}) {
+    async readCurrentExitDisclosure({ partyId, actorId, transaction, observedPositionId,
+      clock = null } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const binding = await worldBaseReader?.readG4ExpansionBinding?.({
           g4_id: current.scene.site.parent_g4_id,
@@ -196,12 +204,13 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const slotByExit = closure == null ? null : slotByExitOf(closure.value.slots);
         return provider.readExitDisclosure({ transaction: current.transaction, partyId,
           actorId, position: { id: current.scene.location.scene_position_id },
-          site: current.scene.site, directional_exits: exits, slotByExit, observedPositionId });
-      }, transaction, observedPositionId);
+          site: current.scene.site, directional_exits: exits, slotByExit, observedPositionId,
+          clock });
+      }, transaction, observedPositionId, clock);
     },
     async readExitDisclosure(context = {}) {
       return withCurrent(context.partyId, context.actorId, async (current) => {
-        if (!approvedLabels || !Array.isArray(context.directional_exits)
+        if (!legacyExitLabels || !Array.isArray(context.directional_exits)
           || context.position?.id !== current.scene.location.scene_position_id
           || context.site?.parent_g4_id !== naturalG4(current.natural)) {
           gap('approved_exit_disclosure_required');
@@ -212,24 +221,18 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const revealed = new Set(admitted.map((row) => row.target_id));
         const disclosed = exits.flatMap((exit) => {
           if (!revealed.has(exit.id)) return [];
-          const labels = labelCatalog.labels.filter((row) =>
-            row.world_revision_id === current.scene.world_revision_id
-            && row.g4_ref.id === current.scene.site.parent_g4_id
-            && row.directional_exit_ref.id === exit.id
-            && row.directional_exit_ref.version === exit.version
-            && row.directional_exit_ref.canonical_digest === exit.canonical_digest
-            && row.direction_context_ref.id === exit.direction_context_id);
-          if (labels.length !== 1) gap('approved_exit_label_required');
           // Any revealed exit shows its approved pass-target description; an exit the
           // observer cannot see at all is not in `revealed` and is not disclosed.
           return [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
-            direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
-            display_label: labels[0].display_label,
-            editorial_choice_ordinal: labels[0].editorial_choice_ordinal,
+            direction_context_id: exit.direction_context_id,
+            _exit_canonical_digest: exit.canonical_digest, knowledge_state: 'visible',
             ...passTargetDisclosureForExit(context.slotByExit, exit.id) }];
         });
-        return withPassTargetDescriptions(disclosed);
-      }, context.transaction, context.observedPositionId);
+        return resolveSpatialV3ExitLabels(disclosed, { lineLabels: exitLabels,
+          legacyLabels: legacyExitLabels,
+          placeId: current.scene.site.canonical_g5_ref?.entity_id ?? current.scene.site.id,
+          worldRevisionId: current.scene.world_revision_id, g4Id: current.scene.site.parent_g4_id });
+      }, context.transaction, context.observedPositionId, context.clock ?? null);
     },
     /** Canonical connections of the observer's own position, revealed by the same visibility rule
      * as exits; the approved label comes from the connection label catalog, never from code. */
@@ -244,7 +247,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
     },
     /** Every connection of the current canonical place that the observer can see from here - the
      * connection counterpart of readCurrentExitDisclosure, for the visible context. */
-    async readCurrentConnectionDisclosure({ partyId, actorId, transaction, observedPositionId } = {}) {
+    async readCurrentConnectionDisclosure({ partyId, actorId, transaction,
+      observedPositionId, clock = null } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const site = current.scene.site;
         if (site?.origin !== 'canonical') return [];
@@ -256,10 +260,10 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             version: Number(site.canonical_g5_ref.authoring_version) } });
         if (!connections?.ok) gap('approved_canonical_connections_required');
         return discloseConnections(current, connections.value);
-      }, transaction, observedPositionId);
+      }, transaction, observedPositionId, clock);
     },
     async readEntityObservations({ partyId, actorId, transaction,
-      observedPositionId } = {}) {
+      observedPositionId, clock = null } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const placements = current.scene.placements.filter((row) =>
           row.entity_kind === 'npc' || row.entity_kind === 'item');
@@ -281,37 +285,44 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           }
           const known = typeof readPlayerKnowledge === 'function'
             ? await readPlayerKnowledge({ transaction: current.transaction, partyId, actorId, placement }) : null;
+          const displayName = known?.display_name ?? exterior.display_name ?? null;
+          const itemLabel = placement.entity_kind === 'item'
+            ? resolveVisibleItemLabel({ name: displayName,
+              template_id: exterior.template_id }, itemLabels) : null;
           result.push({ entity_kind: placement.entity_kind, entity_id: placement.entity_id,
             visibility: entry.visibility, exterior,
-            display_label: typeof known?.display_name === 'string' && known.display_name.trim()
-              ? known.display_name : placement.entity_kind === 'npc' ? 'человек' : 'предмет',
-            ...(typeof known?.display_name === 'string' && known.display_name.trim()
-              ? { display_name: known.display_name } : {}) });
+            ...(placement.entity_kind === 'npc'
+              ? { display_label: displayName ?? 'человек' }
+              : itemLabel.kind === 'gap'
+                ? { label_gap: { code: itemLabel.code } }
+                : { display_label: itemLabel.label }),
+            ...(displayName == null ? {} : { display_name: displayName }) });
         }
         return result;
-      }, transaction, observedPositionId);
+      }, transaction, observedPositionId, clock);
     },
     async readCurrentSources({ transaction, partyId, actorId, positionId,
-      state, directionalExits, observedPositionId = null, siteId = null } = {}) {
+      state, directionalExits, observedPositionId = null, siteId = null,
+      clock = null } = {}) {
       if (typeof transaction?.query !== 'function' || !Array.isArray(directionalExits)) {
         gap('current_visible_transaction_and_exits_required');
       }
       if (typeof readCurrentEnvironment !== 'function') gap('current_temporal_owner_required');
       const current = await withCurrent(partyId, actorId, async (value) => value,
-        transaction, observedPositionId);
+        transaction, observedPositionId, clock);
       if (positionId !== current.scene.location.scene_position_id
         || siteId != null && siteId !== current.scene.site.id) gap('current_position_required');
       const naturalInput = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin,
         currentFacts: current.natural });
       const entityObservations = await provider.readEntityObservations({ transaction, partyId,
-        actorId, observedPositionId });
+        actorId, observedPositionId, clock });
       const localEdges = await provider.readLocalEdgeDisclosure({ transaction, partyId,
-        actorId, state, observedPositionId });
+        actorId, state, observedPositionId, clock });
       const exits = await provider.readExitDisclosure({ transaction, partyId, actorId,
         position: { id: positionId }, site: current.scene.site,
-        directional_exits: directionalExits, observedPositionId });
+        directional_exits: directionalExits, observedPositionId, clock });
       const siteConnections = await provider.readCurrentConnectionDisclosure({ transaction,
-        partyId, actorId, observedPositionId });
+        partyId, actorId, observedPositionId, clock });
       return { naturalInput, entityObservations, localEdges,
         directionalExits: exits, siteConnections };
     }

@@ -14,10 +14,11 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
       || !['background','scene','key'].includes(binding.profile_level)
       || ![binding.actor_slot_ref, binding.role_ref, binding.occupation_ref,
         binding.actor_profile_rule_ref, binding.demographic_profile_ref,
-        binding.appearance_profile_ref, binding.anchor_id, binding.g5_node_id,
-        binding.location_profile_ref, binding.zone_ref,
+        binding.appearance_profile_ref, binding.g5_node_id,
+        binding.location_profile_ref,
         binding.activity_record_ref, binding.world_revision_id,
         binding.world_catalog_digest, binding.parent_seed_digest].every(text)
+      || !validPlacement(binding)
       || !/^[a-f0-9]{64}$/.test(String(
         binding.profile_candidate_set_digest ?? ''))
       || !/^[a-f0-9]{64}$/.test(String(binding.profile_record_digest ?? ''))
@@ -190,6 +191,15 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
       required_clothing_slot_refs: clothing.required_clothing_slot_refs } } : {}) });
 }
 
+function validPlacement(binding) {
+  const marker = binding.initial_presence_state;
+  if (marker === 'offstage_away' || marker === 'location_gap') {
+    return binding.anchor_id === null && binding.zone_ref === null;
+  }
+  if (marker !== undefined && marker !== 'on_site') return false;
+  return text(binding.anchor_id) && text(binding.zone_ref);
+}
+
 function approvedClothing(bundle, binding, identity, season) {
   if (binding.clothing_profile_ref == null) return { candidates: [] };
   const ref = binding.clothing_profile_ref;
@@ -238,8 +248,9 @@ function validSourceOrigin(source, binding) {
   const rule = source.presence_rule_ref;
   if (Boolean(composition) === Boolean(rule)) return false;
   return composition
-    ? text(composition.id) && composition.id === binding.location_profile_ref && positive(composition.version)
+    ? text(composition.id) && positive(composition.version)
       && composition.world_revision_id === binding.world_revision_id && text(source.group_id)
+      && text(source.place_family_id) && source.place_family_id === binding.location_profile_ref
     : text(rule.rule_id) && positive(rule.rule_version) && text(binding.location_profile_ref) && source.group_id == null;
 }
 

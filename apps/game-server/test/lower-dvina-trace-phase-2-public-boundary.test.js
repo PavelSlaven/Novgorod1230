@@ -4,10 +4,18 @@ import test from 'node:test';
 import { canonicalDigest } from '@rus/materialization';
 import { TurnWorkflowError } from '@rus/turn';
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
+import { validatePlayerSafeVisiblePayload } from
+  '@rus/contracts/spatial-v3/registry';
 import { phase2PublicResult, projectPlayerSafeChecks } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
+import { buildPhase2VisibleEnvelope } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-writes.js';
 import { phase2InitialCurrentVisibleContext } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { playerSafeWeatherLightFacts } from
+  '../src/runtime/player-safe-weather-light.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../src/runtime/lower-dvina-trace-player-safe-visible-context.js';
 import { phase4PendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-write-projection.js';
 import { phase5PendingScreen } from
@@ -116,7 +124,8 @@ test('initial scene projects persisted items and NPC appearance/equipment', () =
       actor_id: 'player', position: { g5_anchor_id: 'anchor' },
       environment_snapshot: { schema: 'rus.approved_initial_environment.v1',
         season: 'summer', day_part: 'daylight', light_state: 'daylight',
-        weather_state: { weather_state_id: 'clear' } },
+        weather_state: { weather_state_id: 'clear', sky: 'clear',
+          precipitation: 'none', visibility: 'normal', wind: 'calm_or_light' } },
       npcs: [{ instance_id: 'npc', anchor_id: 'anchor', profile_level: 'background',
         identity_state: { public_role_label: 'рыбак', sex_category: 'male',
           age_category: 'adult', appearance }, machine_state: {
@@ -134,11 +143,102 @@ test('initial scene projects persisted items and NPC appearance/equipment', () =
     appearance);
   assert.equal(current.visible_npc[0].observable_cues.equipment[0].item_ref,
     'shirt');
-  assert.deepEqual(current.visible_changes[0], {
-    change_kind: 'environment_state', season: 'summer',
-    day_part: 'daylight', light_state: 'daylight',
-    weather_state_id: 'clear'
+  assert.deepEqual(current.visible_changes, ['Лето.', 'День.',
+    'Стоит светлое время дня.', 'Небо ясное.', 'Осадков нет.',
+    'Видимость обычная.', 'Ветер отсутствует или слабый.']);
+  assert.doesNotMatch(JSON.stringify(current.visible_changes),
+    /weather_state_id|clear|weather_state|sky|precipitation/u);
+});
+
+test('initial visible items use pinned labels and preserve unknown-label gaps', () => {
+  const screen = { version: 1, schema: 'first_game_screen',
+    screen_status: 'ready', party_id: 'party', main_prose: 'Старт.',
+    visible_context: { place: 'Новгород', calendar: 'лето, день',
+    environment: { facts: [] }, uncertainties: ['Неясно, что лежит у стены.'] } };
+  const current = phase2InitialCurrentVisibleContext({ screen,
+    openingScreenDigest: canonicalDigest(screen), initialState: {
+      actor_id: 'player', position: { g5_anchor_id: 'anchor' },
+      items: [{ item_id: 'item', template_id: 'approved_template',
+        state: {}, condition_state: 'serviceable',
+        placement: { holder_character_id: 'player', container_id: null } },
+      { item_id: 'unnamed', template_id: 'opaque_template',
+        state: { ordinary_metadata: { name: 'Неутверждённая метка' } },
+        placement: { holder_character_id: 'player', container_id: null } }]
+    }, itemLabels: { approved_template: 'Хозяйственный нож' } });
+  assert.deepEqual(current.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'item' },
+    display_label: 'Хозяйственный нож', recognition: 'known',
+    visible_status: 'serviceable'
+  }, {
+    entity_ref: { entity_kind: 'item', entity_id: 'unnamed' },
+    label_gap: { code: 'player_safe_item_label_required' }
+  }]);
+  assert.deepEqual(current.uncertainties, ['Неясно, что лежит у стены.']);
+  assert.doesNotMatch(JSON.stringify(current), /Неутверждённая метка|opaque_template/u);
+});
+
+test('phase 2 public envelope omits typed label gaps and preserves named items', () => {
+  const named = { entity_ref: { entity_kind: 'item', entity_id: 'named-item' },
+    display_label: 'Хозяйственный нож', recognition: 'known',
+    visible_status: 'serviceable' };
+  const diagnostics = [];
+  const envelope = buildPhase2VisibleEnvelope({
+    partyId: 'party', turnNumber: 1, nextVersion: 2,
+    changeSetId: 'change-set', idemId: 'idem',
+    context: {
+      visible_scene: 'У берега.', visible_changes: [], sensory_details: [],
+      visible_npc: [], visible_objects: [named, {
+        entity_ref: { entity_kind: 'item', entity_id: 'unnamed-item' },
+        label_gap: { code: 'player_safe_item_label_required' }
+      }],
+      known_context: [], uncertainties: []
+    },
+    contracts: { activityPin: { id: 'activity-profile', version: 1 } },
+    onLabelGapsOmitted: (count) => diagnostics.push(count)
   });
+
+  assert.deepEqual(diagnostics, [1]);
+  assert.deepEqual(envelope.visible_payload.visible_objects, [named]);
+  assert.deepEqual(validatePlayerSafeVisiblePayload(envelope.visible_payload), []);
+  assert.doesNotMatch(JSON.stringify(envelope.visible_payload),
+    /unnamed-item|label_gap|player_safe_item_label_required/u);
+});
+
+test('player package projection preserves absent visible_objects', () => {
+  const projected = projectVisibleContextForPlayerPackage({
+    schema: 'visible_context_package', visible_scene: 'У берега.'
+  });
+
+  assert.equal(Object.hasOwn(projected.visible_context, 'visible_objects'), false);
+});
+
+test('initial environment rejects unknown temporal and weather values', () => {
+  const screen = { version: 1, schema: 'first_game_screen',
+    screen_status: 'ready', party_id: 'party', main_prose: 'Старт.',
+    visible_context: { place: 'стан', environment: { facts: [] } } };
+  for (const patch of [
+    { light_state: 'unknown_light' },
+    { weather_state: { weather_state_id: 'private', sky: 'unknown_sky' } }
+  ]) {
+    const state = { schema: 'rus.approved_initial_environment.v1', season: 'summer',
+      day_part: 'daylight', light_state: 'daylight',
+      weather_state: { weather_state_id: 'clear', sky: 'clear',
+        precipitation: 'none', visibility: 'normal', wind: 'calm_or_light' },
+      ...patch };
+    assert.throws(() => phase2InitialCurrentVisibleContext({ screen,
+      openingScreenDigest: canonicalDigest(screen),
+      initialState: { actor_id: 'player', position: { g5_anchor_id: 'anchor' },
+        environment_snapshot: state } }),
+    { code: 'WORLD_KNOWLEDGE_ENVIRONMENT_TRANSLATION_UNSUPPORTED' });
+  }
+});
+
+test('shared opening and current-scene environment helper omits absent fields', () => {
+  const facts = playerSafeWeatherLightFacts({ season: undefined, day_part: null,
+    light_state: undefined, weather_state: { sky: null,
+      precipitation: undefined, visibility: 'poor' } });
+  assert.deepEqual(facts, [{ field: 'weather_state.visibility', text: 'Видимость плохая.' }]);
+  assert.doesNotMatch(JSON.stringify(facts), /undefined|null|NaN|;\s*;/u);
 });
 
 test('canonical initial turn uses current P22 without historical scene or raw entity disclosure', async () => {
@@ -252,6 +352,40 @@ test('canonical initial turn cannot fall back when its binding or perception cal
     await assert.rejects(repository.loadPhase2State('party:1'), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
     assert.equal(reads, 1);
   }
+});
+
+test('post-commit movement readback refreshes complete current context through Spatial admission', async () => {
+  const calls = [];
+  const initialVisibleContext = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'Лесная тропа', visible_changes: [], sensory_details: [],
+    visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: [] };
+  const destinationVisibleContext = { ...initialVisibleContext,
+    visible_scene: 'Место назначения', visible_objects: [{
+      entity_ref: { entity_kind: 'g5_site_connection', entity_id: 'connection:1' },
+      display_label: 'переход', recognition: 'known'
+    }], visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc:seasonal' },
+      display_label: 'человек', recognition: 'unrecognized', observable_cues: {
+        identity: { sex_category: 'male', age_category: 'adult',
+          appearance: { build: 'average' } }, equipment: []
+      } }] };
+  const repository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: { async query() { return { rows: [] }; }, async connect() {} },
+    committer: { async commit() {} },
+    readCurrentVisibleContext: async (input) => {
+      calls.push(input);
+      return destinationVisibleContext;
+    }
+  });
+  const state = await repository.loadPreparedMovementScene({ partyId: 'party:1',
+    state: { party_id: 'party:1', actor_id: 'player:1',
+      position: { site_id: 'site:1', position_id: 'position:1' },
+      npcs: [], current_visible_context: initialVisibleContext } });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].partyId, 'party:1');
+  assert.equal(calls[0].actorId, 'player:1');
+  assert.equal(calls[0].positionId, 'position:1');
+  assert.deepEqual(state.current_visible_context, destinationVisibleContext);
 });
 
 test('public Phase 2 check omits private RNG audit', () => {

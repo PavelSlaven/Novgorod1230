@@ -11,19 +11,24 @@ import { appendCombatTraversalWrites } from
 import { phase2ScreenDigest, phase2VisibleContextFromPayload,
   projectPlayerSafeChecks } from
   './lower-dvina-trace-phase-2-projection.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function combatVisibleEnvelope({ partyId, factual, visibleContext,
-  nextVersion, turnNumber, changeSetId, idemId }) {
+  nextVersion, turnNumber, changeSetId, idemId,
+  onLabelGapsOmitted = null }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted });
   const session = factual.consequence.combat.session_after;
   const combatEnded = session.status === 'ended';
   const payload = { schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details,
-    visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects,
-    known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties, hypotheses: [],
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details,
+    visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects,
+    known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties, hypotheses: [],
     player_safe_interruption: combatEnded ? null :
       'Требуется решение в бою.',
     allowed_action_affordances: combatEnded ? [] : [{

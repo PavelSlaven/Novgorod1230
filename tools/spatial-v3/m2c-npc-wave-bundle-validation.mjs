@@ -1,4 +1,5 @@
 import { findOverlappingPresenceRules } from '../../packages/materialization/src/presence-rule-conflicts.js';
+import { presenceDiscoveryModeConfiguration } from '../../packages/materialization/src/presence-rules-first-arrival.js';
 import { validateNpcRoutineProfile } from '@rus/npc-runtime';
 import { SCHEDULE_DAY_TYPES } from '../../scripts/generate-m2c-npc-wave-datasets.mjs';
 
@@ -48,6 +49,15 @@ export function validateM2cNpcWaveBundle(manifest, datasets, errors) {
     validateWaveRowRevision(manifest, 'presence_rules', rule, rule.rule_id, errors);
     validateWaveRowProvenance('presence_rules', rule, rule.rule_id, errors);
     validatePresenceRuleVariants(rule, errors);
+    const discoveryMode = presenceDiscoveryModeConfiguration(rule);
+    if (!discoveryMode.ok) {
+      const code = {
+        modes: 'M2C_WAVE_PRESENCE_DISCOVERY_MODE_INVALID',
+        weights: 'M2C_WAVE_PRESENCE_DISCOVERY_WEIGHTS_INVALID',
+        non_item_fields: 'M2C_WAVE_NON_ITEM_DISCOVERY_FIELDS_FORBIDDEN',
+      }[discoveryMode.reason] ?? 'M2C_WAVE_PRESENCE_DISCOVERY_MODE_INVALID';
+      errors.push(issue(code, rule.rule_id));
+    }
     if (rule.scope_kind === 'place_family' && !placeFamilyIds.has(rule.scope_ref)) {
       errors.push(issue('M2C_WAVE_PRESENCE_SCOPE_UNKNOWN', `${rule.rule_id}:${rule.scope_ref}`));
     }
@@ -123,12 +133,22 @@ function validateWaveRowProvenance(table, row, rowRef, errors) {
 }
 
 function validatePresenceRuleVariants(rule, errors) {
-  if (!Array.isArray(rule?.variants)) return;
+  if (!Array.isArray(rule?.variants)) {
+    errors.push(issue('M2C_WAVE_VARIANTS_NOT_ARRAY', rule?.rule_id ?? ''));
+    return;
+  }
+  if (rule.variants.length > 0
+      && (typeof rule.item_ref !== 'string' || !rule.item_ref.trim())) {
+    errors.push(issue('M2C_WAVE_VARIANTS_REQUIRE_BASE_ITEM_REF', rule.rule_id));
+  }
   for (const entry of rule.variants) {
     if (entry === null) {
       errors.push(issue('M2C_WAVE_VARIANTS_NULL_ELEMENT', rule.rule_id));
     } else if (typeof entry === 'string') {
       errors.push(issue('M2C_WAVE_VARIANTS_STRING_FORBIDDEN', rule.rule_id));
+    } else if (typeof entry !== 'object' || Array.isArray(entry)
+        || typeof entry.item_ref !== 'string' || !entry.item_ref.trim()) {
+      errors.push(issue('M2C_WAVE_VARIANT_ITEM_REF_INVALID', rule.rule_id));
     }
   }
 }

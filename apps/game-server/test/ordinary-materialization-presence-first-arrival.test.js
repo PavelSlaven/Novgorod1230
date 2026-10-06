@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { GameServerError } from '../src/errors.js';
 import {
+  createApprovedO1TemplateBackedItemRefs,
   createTargetPresenceRulesFirstArrivalResolver,
   resolvePresenceRulesFirstArrivalForSite,
 } from '../src/infrastructure/postgres/ordinary-materialization-presence-first-arrival.js';
@@ -18,7 +19,26 @@ const runtimeCatalogPin = {
   compatible_world_catalog_digest: DIGEST,
 };
 
-function buildGateAwareReader({ bindingRows, presenceRuleRows = [], g0RegionId = 'region_novgorod_land' }) {
+test('approved O1 template closure admits only the explicit refs backed by the pinned catalog', () => {
+  const mappings = [
+    'item_tpl_nov_awl_v1', 'item_tpl_nov_firesteel_v1', 'item_tpl_nov_striking_flint_v1',
+    'item_tpl_nov_wooden_bowl_v1', 'item_tpl_nov_kindling_bundle_v1', 'item_tpl_nov_utility_knife_v1',
+    'item_tpl_nov_pestle_v1', 'item_tpl_nov_rope_v1', 'item_tpl_nov_tinder_v1',
+    'item_tpl_nov_trough_v1', 'item_tpl_nov_wooden_spoon_v1', 'item_tpl_nov_birch_bark_sheet_v1',
+  ];
+  const catalog = { schema: 'rus.verified_item_catalog.v2', verified: true,
+    records_by_table: { item_templates: mappings.map((id) => ({ id })) } };
+  const refs = createApprovedO1TemplateBackedItemRefs(catalog);
+  assert.equal(refs.size, 12);
+  assert.ok(refs.has('it_hh_awl'));
+  assert.ok(refs.has('it_ps_bark_sheet_blank'));
+  assert.throws(() => createApprovedO1TemplateBackedItemRefs({ ...catalog,
+    records_by_table: { item_templates: catalog.records_by_table.item_templates.slice(1) } }),
+  { code: 'PRESENCE_RULE_ITEM_TEMPLATE_DATA_GAP' });
+});
+
+function buildGateAwareReader({ bindingRows, presenceRuleRows = [], compositionRows = [],
+  scheduleRuleRows = [], g0RegionId = 'region_novgorod_land' }) {
   return {
     read: async (sql, params) => {
       if (sql.includes('spatial_v3_world_revisions')) {
@@ -42,6 +62,12 @@ function buildGateAwareReader({ bindingRows, presenceRuleRows = [], g0RegionId =
       }
       if (sql.includes('FROM world_base.presence_rules')) {
         return { rows: presenceRuleRows };
+      }
+      if (sql.includes('FROM world_base.place_population_composition_rules')) {
+        return { rows: compositionRows };
+      }
+      if (sql.includes('FROM world_base.npc_schedule_routine_rules')) {
+        return { rows: scheduleRuleRows.filter((row) => row.season === params[2]) };
       }
       if (sql.includes('parent_category_id')) {
         return { rows: [] };
@@ -214,4 +240,133 @@ test('PRESENCE_FIRST_ARRIVAL_REGION_MISSING when G0 region id is absent', async 
     }),
     'PRESENCE_FIRST_ARRIVAL_REGION_MISSING',
   );
+});
+
+test('canonical first arrival returns all pinned D-1 seasons with month applicability and unchanged D-2 people', async () => {
+  const calls = [];
+  const reader = buildGateAwareReader({
+    bindingRows: [
+      { place_family_id: 'pf_ferry_landing', binding_role: 'primary' },
+      { place_family_id: 'pf_secondary', binding_role: 'secondary' },
+    ],
+    presenceRuleRows: presenceRuleFixture,
+    compositionRows: [{ composition_id: 'composition-ferry', composition_version: 1,
+      world_revision_id: REV, place_family_id: 'pf_ferry_landing',
+      population_groups: [{ group_id: 'carriers', count: 2 }], scheduled_absences: [
+        { group_id: 'carriers', season: 'winter', location_ref: 'pf_winter_ice_crossing' },
+      ] }],
+    scheduleRuleRows: [
+      { schedule_id: 'schedule-ferry-winter', schedule_version: 1,
+        world_revision_id: REV, scope_kind: 'place_family', scope_ref: 'pf_ferry_landing',
+        subject_kind: 'occupation', subject_ref: 'carrier', season: 'winter', months: [12, 1, 2],
+        routine_profile: { phase: 'crossing' }, status: 'approved' },
+      { schedule_id: 'schedule-ferry-summer', schedule_version: 1,
+        world_revision_id: REV, scope_kind: 'place_family', scope_ref: 'pf_ferry_landing',
+        subject_kind: 'occupation', subject_ref: 'carrier', season: 'summer', months: [6, 7, 8],
+        routine_profile: { phase: 'ferry' }, status: 'approved' },
+    ],
+  });
+  const worldBaseReader = { read: async (sql, params) => {
+    calls.push({ sql, params });
+    return reader.read(sql, params);
+  } };
+  const resolver = createTargetPresenceRulesFirstArrivalResolver({
+    worldBaseReader,
+    spatialWorldPin: { world_revision_id: REV, catalog_digest: DIGEST },
+    worldPin: { world_revision_id: REV, world_catalog_digest: DIGEST },
+    runtimeCatalogPin,
+    readPartyPresenceCalendar: async () => ({ season: 'winter', month: 1, periodNumber: 4920 }),
+  });
+  const result = await resolver({
+    transaction: { query: async () => ({ rows: [] }) },
+    partyId: 'p',
+    site: { id: 'g5:site', origin: 'canonical', parent_g4_id: 'g4-node',
+      canonical_g5_ref: { entity_id: 'cg5-ferry', authoring_version: 1 } },
+    request: { g4: { id: 'g4-node', version: 1 } },
+    withPlacePeople: true,
+  });
+  const scheduleQueries = calls.filter(({ sql }) => sql.includes('FROM world_base.npc_schedule_routine_rules'));
+  assert.deepEqual(scheduleQueries.map(({ params }) => params), [
+    [REV, 'pf_ferry_landing', 'spring'], [REV, 'pf_ferry_landing', 'summer'],
+    [REV, 'pf_ferry_landing', 'autumn'], [REV, 'pf_ferry_landing', 'winter'],
+  ]);
+  assert.deepEqual(result.people.compositions, [{ place_family_id: 'pf_ferry_landing', composition_ref: {
+    id: 'composition-ferry', version: 1, world_revision_id: REV,
+  }, population_groups: [{ group_id: 'carriers', count: 2 }], scheduled_absences: [
+    { group_id: 'carriers', season: 'winter', location_ref: 'pf_winter_ice_crossing' },
+  ] }]);
+  assert.equal(result.people.compositions[0].scheduled_absences[0].location_ref,
+    'pf_winter_ice_crossing');
+  assert.deepEqual(result.people.schedule_routine_rules_by_place_family.map((entry) => entry.place_family_id),
+    ['pf_ferry_landing']);
+  const scheduleRules = result.people.schedule_routine_rules_by_place_family[0].rules;
+  assert.deepEqual(scheduleRules.map((rule) => rule.season), ['summer', 'winter']);
+  assert.deepEqual(scheduleRules.find((rule) => rule.season === 'winter').months, [12, 1, 2]);
+  assert.deepEqual(scheduleRules.find((rule) => rule.season === 'summer').months, [6, 7, 8]);
+  assert.equal(result.people.absent_people, undefined);
+  assert.equal(result.people.identity_choices, undefined);
+  assert.equal(scheduleQueries.length, 4);
+});
+
+test('canonical D-1 bundle loads all seasons when committed calendar has no month', async () => {
+  const calls = [];
+  const reader = buildGateAwareReader({
+    bindingRows: [{ place_family_id: 'pf_ferry_landing', binding_role: 'primary' }],
+    presenceRuleRows: presenceRuleFixture,
+    scheduleRuleRows: [],
+  });
+  const resolver = createTargetPresenceRulesFirstArrivalResolver({
+    worldBaseReader: { read: async (sql, params) => {
+      calls.push({ sql, params });
+      return reader.read(sql, params);
+    } },
+    spatialWorldPin: { world_revision_id: REV, catalog_digest: DIGEST },
+    worldPin: { world_revision_id: REV, world_catalog_digest: DIGEST },
+    runtimeCatalogPin,
+    readPartyPresenceCalendar: async () => ({ season: 'summer', periodNumber: 4920 }),
+  });
+  const result = await resolver({
+    transaction: { query: async () => ({ rows: [] }) },
+    partyId: 'p',
+    site: { id: 'g5:site', origin: 'canonical', parent_g4_id: 'g4-node',
+      canonical_g5_ref: { entity_id: 'cg5-ferry', authoring_version: 1 } },
+    request: { g4: { id: 'g4-node', version: 1 } },
+    withPlacePeople: true,
+  });
+  const scheduleQueries = calls.filter(({ sql }) => sql.includes('FROM world_base.npc_schedule_routine_rules'));
+  assert.deepEqual(scheduleQueries.map(({ params }) => params.map((param) => param)), [
+    [REV, 'pf_ferry_landing', 'spring'], [REV, 'pf_ferry_landing', 'summer'],
+    [REV, 'pf_ferry_landing', 'autumn'], [REV, 'pf_ferry_landing', 'winter'],
+  ]);
+  assert.deepEqual(result.people.schedule_routine_rules_by_place_family, [
+    { place_family_id: 'pf_ferry_landing', rules: [] },
+  ]);
+});
+
+test('generated-site first arrival leaves canonical D-1 handoff unused', async () => {
+  const calls = [];
+  const reader = buildGateAwareReader({
+    bindingRows: [{ place_family_id: 'pf_ferry_landing', binding_role: 'primary' }],
+    presenceRuleRows: presenceRuleFixture,
+  });
+  const resolver = createTargetPresenceRulesFirstArrivalResolver({
+    worldBaseReader: { read: async (sql, params) => {
+      calls.push({ sql, params });
+      return reader.read(sql, params);
+    } },
+    spatialWorldPin: { world_revision_id: REV, catalog_digest: DIGEST },
+    worldPin: { world_revision_id: REV, world_catalog_digest: DIGEST },
+    runtimeCatalogPin,
+    readPartyPresenceCalendar: async () => ({ season: 'winter', month: 1, periodNumber: 4920 }),
+  });
+  const result = await resolver({
+    transaction: { query: async () => ({ rows: [] }) },
+    partyId: 'p',
+    site: { id: 'g5:generated', origin: 'generated', parent_g4_id: 'g4-node',
+      generated_template_ref: { entity_id: 'template', authoring_version: 1 } },
+    request: { g4: { id: 'g4-node', version: 1 } },
+    withPlacePeople: true,
+  });
+  assert.equal(calls.some(({ sql }) => sql.includes('npc_schedule_routine_rules')), false);
+  assert.equal(result.people, undefined);
 });

@@ -33,8 +33,8 @@ export function bootstrapPortraitLab({
       });
       showPortrait(canvas, json, result.spec);
       status.textContent = result.source === 'json'
-        ? 'Нарисовано напрямую из JSON — DeepSeek не вызывался.'
-        : 'Описание преобразовано DeepSeek и нарисовано из полученного JSON.';
+        ? 'Портрет построен напрямую из JSON.'
+        : 'Описание преобразовано в структуру портрета и нарисовано.';
       root.dataset.lastSource = result.source;
     } catch (error) {
       errorBox.textContent = friendlyMessage(error);
@@ -57,11 +57,11 @@ function showPortrait(canvas, json, spec) {
 
 function friendlyMessage(error) {
   if (error?.code === 'PORTRAIT_SPEC_PROVIDER_FAILED') {
-    return 'DeepSeek сейчас недоступен. Проверьте серверную конфигурацию и повторите запрос.';
+    return 'Не удалось преобразовать описание. Повторите запрос.';
   }
   if (error?.code === 'PORTRAIT_SPEC_PROVIDER_INVALID'
       || error?.code === 'PORTRAIT_SPEC_SERVER_INVALID') {
-    return 'DeepSeek вернул неподдерживаемые данные. Портрет не был нарисован.';
+    return 'Не удалось обработать описание портрета. Портрет не был нарисован.';
   }
   return String(error?.message ?? 'Не удалось построить портрет.');
 }

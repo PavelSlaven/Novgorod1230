@@ -3,14 +3,15 @@
 // Read-only sources; writes CSV into ../personal_names/personal_names.csv
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const RUNTIME = "C:/Users/Slaven/Documents/Novgorod-runtime/data/world-catalogs/novgorod/onomastics/candidates/novgorod-1230-1250-v1/candidate.json";
-const NPC_POOLS = "C:/Users/Slaven/Documents/Novgorod-game-base/tools/rus13-novgorod-regional-templates/novgorod_npc_name_pools_v1.json";
-const OUT_DIR = path.resolve(new URL(".", import.meta.url).pathname.replace(/^\/([A-Za-z]):/, "$1:"), "../personal_names");
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(SCRIPT_DIR, "../../../../../../");
+const RUNTIME = path.resolve(REPO_ROOT, "data/world-catalogs/novgorod/onomastics/candidates/novgorod-1230-1250-v1/candidate.json");
+const OUT_DIR = path.resolve(SCRIPT_DIR, "../personal_names");
+const CHECK_ONLY = process.argv.includes("--check");
 
 const candidate = JSON.parse(fs.readFileSync(RUNTIME, "utf8"));
-let npcPools = null;
-try { npcPools = JSON.parse(fs.readFileSync(NPC_POOLS, "utf8")); } catch { /* optional */ }
 
 function csvEsc(v) {
   if (v == null) return "";
@@ -25,13 +26,6 @@ const header = [
 
 const rows = [];
 const poolMembership = {};
-if (npcPools) {
-  for (const [poolName, list] of Object.entries(npcPools.pools_by_id || npcPools.pools || {})) {
-    for (const id of (Array.isArray(list) ? list : [])) {
-      poolMembership[id] = (poolMembership[id] || []).concat(poolName);
-    }
-  }
-}
 // candidate.json also carries a `pools` map with the same shape
 for (const [poolName, list] of Object.entries(candidate.pools || {})) {
   for (const id of list) poolMembership[id] = (poolMembership[id] || []).concat(poolName);
@@ -59,9 +53,17 @@ for (const n of candidate.names) {
   ]);
 }
 
-fs.mkdirSync(OUT_DIR, { recursive: true });
 const csv = [header.join(","), ...rows.map((r) => r.map(csvEsc).join(","))].join("\n") + "\n";
-fs.writeFileSync(path.join(OUT_DIR, "personal_names.csv"), csv, "utf8");
+const namesPath = path.join(OUT_DIR, "personal_names.csv");
+if (CHECK_ONLY) {
+  if (!fs.existsSync(namesPath) || fs.readFileSync(namesPath, "utf8") !== csv) {
+    console.error("personal_names.csv is stale; run without --check to rebuild");
+    process.exitCode = 1;
+  }
+} else {
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  fs.writeFileSync(namesPath, csv, "utf8");
+}
 
 // Gap report: peoples with <10 male/<10 female names in the candidate pool.
 const bySexPeople = {};
@@ -77,7 +79,16 @@ const gapsReport = {
   declared_gaps_in_candidate: candidate.unapproved_origin_gaps || [],
   excluded_pending_review: (candidate.excluded || []).map((e) => ({ name_id: e.name_id, canonical_tradition: e.canonical_tradition, status: e.status, reason: e.limits })),
 };
-fs.writeFileSync(path.join(OUT_DIR, "coverage-report.json"), JSON.stringify(gapsReport, null, 2), "utf8");
+const coveragePath = path.join(OUT_DIR, "coverage-report.json");
+const coverage = JSON.stringify(gapsReport, null, 2);
+if (CHECK_ONLY) {
+  if (!fs.existsSync(coveragePath) || fs.readFileSync(coveragePath, "utf8") !== coverage) {
+    console.error("coverage-report.json is stale; run without --check to rebuild");
+    process.exitCode = 1;
+  }
+} else {
+  fs.writeFileSync(coveragePath, coverage, "utf8");
+}
 
 console.log(`personal_names.csv rows: ${rows.length}`);
 console.log(`by origin|sex: ${JSON.stringify(bySexPeople)}`);

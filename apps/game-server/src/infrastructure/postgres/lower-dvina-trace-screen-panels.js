@@ -3,7 +3,6 @@ import { projectCalendar } from '@rus/time-events-history/calendar';
 import { projectTraceInventoryPanel } from './lower-dvina-trace-screen-inventory.js';
 import { distinctNpcLabels } from
   '../../runtime/lower-dvina-trace-visible-scene-items.js';
-
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
 import { playerSafeAppearanceSummary } from

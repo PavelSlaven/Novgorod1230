@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { canonicalDigest, createRandomSource, deriveApprovedInitialEnvironment } from '@rus/materialization';
 import { materializeSpatialV3GeneratedScene } from '@rus/materialization/spatial-v3-materialization';
+import { projectCalendar, resolveGameTimestampFromCalendarDate } from '@rus/time-events-history/calendar';
 import { targetCanonicalStartFixture } from './target-canonical-start-fixture.js';
 import { createTargetGeneratedFirstEntry } from '../../apps/game-server/src/infrastructure/postgres/target-generated-first-entry.js';
 
@@ -18,6 +19,7 @@ const g4 = { ...canonical.g4_ref, world_revision_id: fixture.world_revision_id }
 const compositions = await load('spatial_v3_g4_npc_composition_bindings');
 const placementPolicy = compositions.find((row) => row.g4_id === g4.id).payload.placement_policy;
 const runtimeProfiles = await load('spatial_v3_npc_runtime_profiles');
+const routineRules = await json('data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/npc_schedule_routine_rules.json');
 const regionalProfiles = await load('spatial_v3_npc_regional_context_profiles');
 const itemPin = fixture.domain_catalog_pin;
 const actorProfile = fixture.actor_base_attributes_runtime_profile;
@@ -36,6 +38,10 @@ const candidates = runtimeProfiles.filter((row) => row.profile_kind === 'npc_bin
 const servantGroup = { group_id: 'pf_outbuildings.household_servant', min_count: 1, max_count: 1, count_weights: [1],
   weighted_subjects: [{ subject_kind: 'occupation', subject_ref: 'nov_occ_household_servant',
     profile_ref: 'm2c_npc_household_servant_v1', weight: 1 }] };
+const fisherGroup = { group_id: 'pf_outbuildings.fisher', min_count: 1, max_count: 1, count_weights: [1],
+  weighted_subjects: [{ subject_kind: 'occupation', subject_ref: 'nov_occ_fisher',
+    profile_ref: 'm2c_npc_fisher_v1', weight: 1 }] };
+const riverbankFisherGroup = { ...fisherGroup, group_id: 'pf_riverbank.shore_worker' };
 /** The regional contexts of the imported data, plus (when asked) the G4-wide applicability the people data will add. */
 const regionalFor = (g4Wide) => regionalProfiles.map((row) => ({ ...row, payload: { ...row.payload,
   applicability: g4Wide ? [...row.payload.applicability, { g4_ref: { id: g4.id, version: g4.version, world_revision_id: g4.world_revision_id } }]
@@ -45,8 +51,10 @@ const fisherRule = { rule_id: 'pr_fisher', rule_version: 1, status: 'approved', 
   region_id: null, subject_kind: 'occupation', subject_ref: 'nov_occ_fisher', presence_probability_ppm: 1_000_000, count_limit: 1,
   allowed_seasons: ['all'], refresh_class: 'none', entry_exposed_weight: 1, search_concealed_weight: 0 };
 
-function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], rules = [], physicalClass = null, readCandidates = null,
-  readClosure = null } = {}) {
+function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], placeFamilyId = 'pf_outbuildings',
+  rules = [], physicalClass = null, readCandidates = null,
+  readClosure = null, scheduleRules = [], scheduledAbsences = [], compositionRefId = placeFamilyId, startedAt = { whole_minutes: '0',
+    subminute_numerator: '0', subminute_denominator: '1' } } = {}) {
   const partyId = `canonical-people-${ordinal}`;
   const prepared = materializeSpatialV3GeneratedScene({ party_id: partyId, site_id: 'site', baseline_id: 'base',
     change_set_id: 'change', materializer_version: 'm2c', materialization_trace_id: 'trace:change',
@@ -68,8 +76,11 @@ function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], rules = []
           authoring_version: String(canonical.canonical_g5_ref.version) } } }, ...rows] } };
   const presence = { partyId, scopeInstanceRef: 'g5:site', rules, parentById: new Map(), periodNumber: 4920,
     requestIdentityPrefix: 'presence-first-arrival:site',
-    people: { compositions: groups.length ? [{ composition_ref: { id: 'pf_outbuildings', version: 1, world_revision_id: g4.world_revision_id },
-      population_groups: groups }] : [] } };
+    people: { compositions: groups.length ? [{ place_family_id: placeFamilyId,
+      composition_ref: { id: compositionRefId, version: 1, world_revision_id: g4.world_revision_id },
+      population_groups: groups, scheduled_absences: scheduledAbsences }] : [],
+      schedule_routine_rules_by_place_family: scheduleRules.length
+        ? [{ place_family_id: placeFamilyId, rules: scheduleRules }] : [] } };
   const asked = [];
   const options = { verifiedItemCatalog: fixture.domain_catalog,
     actorBaseAttributesBinding: { schema: 'rus.actor_base_attributes_runtime_binding.v1', pin: actorPin, runtime_profile: actorProfile },
@@ -90,11 +101,62 @@ function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], rules = []
     finiteFirstEntryProfile: { technical_limits: { max_resolution_records: 8 } },
     prepareNaturalFirstEntry: async () => { throw new Error('canonical path only'); },
     readFactualContext: async () => ({ ok: true, party_id: partyId, world_revision_id: fixture.world_revision_id, environment,
-      calendar_profile: fixture.calendar_profile, started_at: { whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' },
+      calendar_profile: fixture.calendar_profile, started_at: startedAt,
       recheck: async () => { calls.push('factual-recheck'); return { ok: true }; } }) };
   return { options, context, calls, asked };
 }
 const npcRows = (result) => result.approved_write_sets.flatMap((set) => set.inserts).filter((row) => row.target_table === 'party_npcs');
+function timestampForSeason(season, localMinuteOfDay = '500') {
+  for (let month = 1; month <= 12; month += 1) {
+    const timestamp = resolveGameTimestampFromCalendarDate({
+      calendar_system: fixture.calendar_profile.calendar_system,
+      year: '1230', month: String(month), day: '15', local_minute_of_day: localMinuteOfDay,
+      subminute_numerator: '0', subminute_denominator: '1'
+    }, fixture.calendar_profile);
+    if (projectCalendar(timestamp, fixture.calendar_profile).season_id === season) return timestamp;
+  }
+  throw new Error(`test calendar does not cover ${season}`);
+}
+
+test('summer riverbank fisher with no day-type signals uses approved normal schedule at 08:00', async () => {
+  const selectedRows = routineRules.filter((row) => row.scope_ref === 'pf_riverbank'
+    && row.subject_kind === 'occupation' && row.subject_ref === 'nov_occ_fisher'
+    && row.season === 'summer' && ['normal', 'night_fishing'].includes(row.day_type));
+  assert.deepEqual(selectedRows.map((row) => row.day_type).sort(), ['night_fishing', 'normal']);
+  const input = setup({ ordinal: 73, groups: [riverbankFisherGroup], placeFamilyId: 'pf_riverbank',
+    compositionRefId: 'pf_riverbank', scheduleRules: selectedRows,
+    startedAt: timestampForSeason('summer', '480') });
+  const result = await createTargetGeneratedFirstEntry(input.options)(input.context);
+  assert.equal(result.ok, true, JSON.stringify(result.error));
+  assert.deepEqual(result.materialization_trace.people.gaps, []);
+  const [fisher] = npcRows(result);
+  assert.equal(fisher.record.profile_set_id, 'm2c_npc_fisher_v1');
+  const schedule = result.approved_write_sets.flatMap((set) => set.inserts)
+    .find((row) => row.target_table === 'party_npc_spatial_schedules').record;
+  const routine = schedule.causal_state_ref.routine_state;
+  assert.equal(schedule.current_position_node_id != null, true);
+  assert.equal(routine.presence_state, 'on_site');
+  assert.equal(routine.schedule_context.home_scope_ref, 'pf_riverbank');
+  assert.equal(routine.schedule_context.day_type, 'normal');
+  assert.equal(routine.schedule_context.selected_rule_ref.schedule_id,
+    'sch_nov_occ_fisher_pf_riverbank_normal_summer');
+  assert.equal(routine.profile.phases[routine.phase_index].state_id, 'morning_work');
+  assert.equal(routine.profile.phases[routine.phase_index].location_ref, 'pf_riverbank');
+  assert.equal(routine.schedule_gap_reason, undefined);
+});
+function seasonalRoutine(presence, locationRef = 'pf_outbuildings') {
+  return { schema: 'npc_routine_profile_v1', profile_id: `servant-${presence}`, revision: 1,
+    status: 'approved', phases: [
+      { state_id: 'day', duration_minutes: 720, activity_ref: 'work', summary: 'Работает.',
+        activity_status: 'active', runtime_status: 'available', can_continue_automatically: true,
+        decision_required: false, presence_state: presence,
+        location_ref: presence === 'away' ? null : locationRef },
+      { state_id: 'night', duration_minutes: 720, activity_ref: 'rest', summary: 'Отдыхает.',
+        activity_status: 'active', runtime_status: 'available', can_continue_automatically: true,
+        decision_required: false, presence_state: presence,
+        location_ref: presence === 'away' ? null : locationRef }
+    ] };
+}
 
 test('a canonical place with an approved composition group gets its people at focus/departure, deterministically', async () => {
   const { options, context, calls, asked } = setup();
@@ -115,12 +177,84 @@ test('a canonical place with an approved composition group gets its people at fo
     .record.template_slot_key), 'never the reserved arrival position');
   assert.equal(result.materialization_trace.validation_report.created_count, 1);
   assert.equal(result.materialization_trace.people.gaps.length, 0);
+  const initialSchedule = result.approved_write_sets.flatMap((set) => set.inserts)
+    .find((row) => row.target_table === 'party_npc_spatial_schedules').record;
+  assert.ok(initialSchedule.current_position_node_id, 'legacy composition without D-1 stays at home');
   assert.deepEqual(asked, [['nov_occ_household_servant'], ['m2c_npc_household_servant_v1']], 'the closure is read for the chosen profile only');
   assert.deepEqual(calls[0], ['resolver', true], 'the canonical branch asks the resolver for people');
   assert.deepEqual(await result.recheck({ transaction: context.transaction }), { ok: true });
   assert.deepEqual(calls, [['resolver', true], 'factual-recheck']);
   const again = await createTargetGeneratedFirstEntry(setup().options)(setup().context);
   assert.equal(canonicalDigest(again.materialization_trace), canonicalDigest(result.materialization_trace));
+});
+
+test('D-1 seasonal first arrival keeps identity and scheduled absence while selecting on-site or away state', async () => {
+  const scheduleRules = ['spring', 'summer', 'autumn', 'winter'].map((season) => ({
+    schedule_id: `servant-${season}`, schedule_version: 1,
+    world_revision_id: fixture.world_revision_id, scope_kind: 'place_family',
+    scope_ref: 'pf_outbuildings', subject_kind: 'occupation',
+    subject_ref: 'nov_occ_household_servant', season, months: null,
+    day_type: 'normal', status: 'approved',
+    routine_profile: seasonalRoutine('on_site', season === 'winter'
+      ? 'pf_winter_ice_crossing' : 'pf_outbuildings')
+  }));
+  const absent = [{ subject_kind: 'occupation', subject_ref: 'nov_occ_household_servant',
+    seasons: ['winter'], location_ref: 'pf_winter_ice_crossing' }];
+  const summer = setup({ ordinal: 71, scheduleRules, scheduledAbsences: absent,
+    compositionRefId: 'composition-outbuildings', startedAt: timestampForSeason('summer') });
+  const winter = setup({ ordinal: 71, scheduleRules, scheduledAbsences: absent,
+    compositionRefId: 'composition-outbuildings', startedAt: timestampForSeason('winter') });
+  const summerResult = await createTargetGeneratedFirstEntry(summer.options)(summer.context);
+  const winterResult = await createTargetGeneratedFirstEntry(winter.options)(winter.context);
+  assert.equal(summerResult.ok, true, JSON.stringify(summerResult.error));
+  assert.equal(winterResult.ok, true, JSON.stringify(winterResult.error));
+  assert.equal(npcRows(summerResult).length, 1);
+  assert.equal(npcRows(winterResult).length, 1, 'scheduled absence does not erase identity');
+  assert.deepEqual(npcRows(winterResult)[0].record.identity_state,
+    npcRows(summerResult)[0].record.identity_state);
+  const summerSchedule = summerResult.approved_write_sets.flatMap((set) => set.inserts)
+    .find((row) => row.target_table === 'party_npc_spatial_schedules').record;
+  const winterSchedule = winterResult.approved_write_sets.flatMap((set) => set.inserts)
+    .find((row) => row.target_table === 'party_npc_spatial_schedules').record;
+  assert.ok(summerSchedule.current_position_node_id);
+  assert.equal(summerSchedule.causal_state_ref.routine_state.schedule_context
+    .selected_rule_ref.schedule_id, 'servant-summer');
+  assert.equal(winterSchedule.current_position_node_id, null);
+  assert.equal(winterSchedule.causal_state_ref.routine_state.presence_state, 'location_gap');
+  assert.equal(winterSchedule.causal_state_ref.routine_state.schedule_context
+    .selected_rule_ref.schedule_id, 'servant-winter');
+  assert.equal(winterSchedule.causal_state_ref.routine_state.schedule_context
+    .scheduled_absences.length, 1);
+  assert.equal(winterResult.approved_write_sets.flatMap((set) => set.inserts)
+    .some((row) => row.target_table === 'entity_placements' && row.record.entity_kind === 'npc'), false);
+});
+
+test('missing winter D-1 with explicit absence keeps identity off-site and places neighbor', async () => {
+  const input = setup({ ordinal: 72, groups: [servantGroup, fisherGroup],
+    scheduledAbsences: [{ subject_kind: 'occupation', subject_ref: 'nov_occ_household_servant',
+      seasons: ['winter'], location_ref: 'pf_winter_ice_crossing' }],
+    startedAt: timestampForSeason('winter') });
+  const result = await createTargetGeneratedFirstEntry(input.options)(input.context);
+  assert.equal(result.ok, true, JSON.stringify(result.error));
+  assert.equal(npcRows(result).length, 2, 'both identities survive location resolution');
+
+  const writes = result.approved_write_sets.flatMap((set) => set.inserts);
+  const servant = npcRows(result).find((row) => row.record.profile_set_id === 'm2c_npc_household_servant_v1');
+  const fisher = npcRows(result).find((row) => row.record.profile_set_id === 'm2c_npc_fisher_v1');
+  const scheduleFor = (npc) => writes.find((row) => row.target_table === 'party_npc_spatial_schedules'
+    && row.record.npc_id === npc.record.npc_id).record;
+  const servantSchedule = scheduleFor(servant);
+  const fisherSchedule = scheduleFor(fisher);
+  assert.equal(servantSchedule.current_position_node_id, null);
+  assert.equal(servantSchedule.causal_state_ref.routine_state.presence_state, 'location_gap');
+  assert.equal(servantSchedule.causal_state_ref.routine_state.schedule_gap_reason, 'npc_location_gap');
+  assert.ok(fisherSchedule.current_position_node_id, 'unaffected neighbor remains on site');
+  const placements = writes.filter((row) => row.target_table === 'entity_placements'
+    && row.record.entity_kind === 'npc').map((row) => row.record.entity_id);
+  assert.equal(placements.includes(servant.record.npc_id), false);
+  assert.equal(placements.includes(fisher.record.npc_id), true);
+  assert.ok(result.materialization_trace.people.gaps.some((gap) => gap.code === 'npc_location_gap'
+    && gap.subject_ref === 'nov_occ_household_servant'));
 });
 
 test('an occupation rule outcome is stored in the presence aggregate and read back as a person; the people never roll it', async () => {
@@ -156,8 +290,11 @@ test('plain data gaps create nobody, are recorded and still let the player arriv
   assert.deepEqual(ferryResult.materialization_trace.people.gaps.map((gap) => gap.code), ['people_profile_missing']);
   const water = setup({ physicalClass: 'spatial.g6.water' });
   const waterResult = await createTargetGeneratedFirstEntry(water.options)(water.context);
-  assert.equal(npcRows(waterResult).length, 0);
-  assert.deepEqual(waterResult.materialization_trace.people.gaps.map((gap) => gap.code), ['people_position_capacity']);
+  assert.equal(npcRows(waterResult).length, 1, 'identity survives an unavailable physical slot');
+  const waterSchedule = waterResult.approved_write_sets.flatMap((set) => set.inserts)
+    .find((row) => row.target_table === 'party_npc_spatial_schedules').record;
+  assert.equal(waterSchedule.current_position_node_id, null);
+  assert.equal(waterSchedule.causal_state_ref.routine_state.presence_state, 'location_gap');
   const noPolicy = setup({ readCandidates: async () => ({ ok: false, soft: true, reason: 'g4_placement_policy_missing' }) });
   const noPolicyResult = await createTargetGeneratedFirstEntry(noPolicy.options)(noPolicy.context);
   assert.deepEqual(noPolicyResult.materialization_trace.people.gaps,

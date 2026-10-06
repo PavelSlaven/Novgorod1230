@@ -222,7 +222,7 @@ function substrateProbe({ bundle, core, scenarioBundle, probe }) {
     pack_revision: bundle.manifest.revision_id, purpose: 'materialization_support',
     query_locale: 'en', domains: probe.domains, focus_refs: [],
     requested_predicates: [], search_hints: probe.hints, context,
-    budget: { max_facts: 12, max_candidates: 12, max_context_chars: 5000 }
+    budget: { max_facts: 12, max_candidates: 12 }
   });
   const returned_claim_refs = slice.facts.map(({ claim_ref }) => claim_ref);
   return { family: probe.family, expected_claim_refs: probe.expected_claim_refs,

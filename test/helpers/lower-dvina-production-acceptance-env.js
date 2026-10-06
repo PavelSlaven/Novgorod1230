@@ -22,9 +22,11 @@ import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from
 import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
 import { createProductionLlmRoleRunner } from
-  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+  '../../apps/game-server/src/infrastructure/provider/openai-compatible.js';
 import { DEFAULT_GAMEPLAY_MODEL } from
   '../../apps/game-server/src/runtime/llm-settings.js';
+import { installApprovedTemporalDataForTest } from
+  './install-approved-temporal-data.js';
 
 const POSTGRES_IMAGE = 'postgres:16-alpine';
 
@@ -75,6 +77,10 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       worldUrl,
       repositoryRoot,
       authorizationRef: 'Phase 11 isolated production acceptance'
+    });
+    await installApprovedTemporalDataForTest({
+      worldPool: pools.worldPool,
+      repositoryRoot
     });
     assert.deepEqual(activation.runtimeCapabilities,
       LOCAL_PLAY_RUNTIME_CAPABILITIES_V1);

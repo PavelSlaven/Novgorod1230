@@ -2,6 +2,8 @@ import { buildPlayerSafeVisiblePackageEnvelope, detectHiddenLeaks,
   validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { projectSpatialV3CurrentVisibleContext } from './spatial-v3-current-visible-context.js';
 import { serverError } from '../errors.js';
+import { projectVisibleContextForPlayerPackage } from
+  './lower-dvina-trace-player-safe-visible-context.js';
 
 const tables = { party_g5_sites: 'sites', party_scene_baselines: 'scene_baselines',
   party_g6_instances: 'g6_instances', scene_position_nodes: 'scene_positions',
@@ -55,7 +57,8 @@ export function overlaySpatialV3VisibleRows({ snapshot, proposal, firstEntry } =
 
 /** Source owner reads committed environment, exterior and knowledge on this transaction. */
 export async function projectSpatialV3ProposedVisiblePackage({ transaction, snapshot,
-  proposal, firstEntry, readSources, envelopeInput } = {}) {
+  proposal, firstEntry, readSources, envelopeInput,
+  onLabelGapsOmitted = null } = {}) {
   if (typeof transaction?.query !== 'function' || typeof readSources !== 'function') fail();
   const overlay = overlaySpatialV3VisibleRows({ snapshot, proposal, firstEntry });
   const sources = await readSources({ transaction, overlay });
@@ -65,14 +68,16 @@ export async function projectSpatialV3ProposedVisiblePackage({ transaction, snap
     || sources.naturalInput.scene.baseline_id !== overlay.baseline.id) fail();
   const visible_context = projectSpatialV3CurrentVisibleContext(sources);
   if (!validateVisibleContext(visible_context).ok || detectHiddenLeaks(visible_context).length) fail();
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visible_context, { onLabelGapsOmitted });
   const visible_payload = { schema: 'temporal_visible_package.v1',
-    perceived_scene: visible_context.visible_scene,
-    perceived_changes: visible_context.visible_changes ?? [],
-    sensory_details: visible_context.sensory_details ?? [],
-    visible_npcs: visible_context.visible_npc ?? [],
-    visible_objects: visible_context.visible_objects ?? [],
-    known_context: visible_context.known_context ?? [],
-    uncertainties: visible_context.uncertainties ?? [], hypotheses: [],
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes ?? [],
+    sensory_details: playerContext.sensory_details ?? [],
+    visible_npcs: playerContext.visible_npc ?? [],
+    visible_objects: playerContext.visible_objects ?? [],
+    known_context: playerContext.known_context ?? [],
+    uncertainties: playerContext.uncertainties ?? [], hypotheses: [],
     player_safe_interruption: null, allowed_action_affordances: [] };
   const built = buildPlayerSafeVisiblePackageEnvelope({ ...envelopeInput,
     visible_payload });

@@ -33,7 +33,8 @@ import { assertLowerDvinaTracePhase6OwnerResult } from
   './lower-dvina-trace-phase-6-owner-result.js';
 
 export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
-  inputDigest, phase6Contracts, loadState, committer }) {
+  inputDigest, phase6Contracts, loadState, committer,
+  onLabelGapsOmitted = null }) {
   const factual = target(writePlan, 'party_state');
   const visibleContext = target(writePlan,
     'party_visible_context_package');
@@ -59,7 +60,7 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     changeSetId, inputDigest });
   const visibleEnvelope = phase6VisibleEnvelope({
     partyId, nextVersion, turnNumber, changeSetId, idemId, factual,
-    visibleContext
+    visibleContext, onLabelGapsOmitted
   });
   next.last_turn.visible_package = {
     package_id: visibleEnvelope.package_id,

@@ -72,11 +72,12 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
       // One engine rolls every presence rule (§3A.1); the people below read their outcomes from this aggregate.
       const maxResolutionRecords = finiteFirstEntryProfile?.technical_limits?.max_resolution_records;
       const profileUsable = Number.isSafeInteger(maxResolutionRecords) && maxResolutionRecords >= 1;
-      const presenceAggregate = presenceContext?.rules?.length && profileUsable
+      const presenceResult = presenceContext?.rules?.length && profileUsable
         ? applyResolvedPresenceRulesFirstArrival({
           aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: maxResolutionRecords }),
           context: presenceContext,
         }) : null;
+      const presenceAggregate = presenceResult?.aggregate ?? null;
       const people = await prepareCanonicalPlacePeople({ context, site, presenceContext, presenceAggregate, worldBaseReader,
         readFactualContext, approvedActorTemporalBundle, actorProfile, itemPin });
       if (people?.failure !== undefined) return people.failure ?? gap('target_first_entry_factual_context_required');
@@ -88,7 +89,9 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
       const trace = { catalog_pins: [itemPin, actorPin], selection: people?.selection ?? null,
         choices: people?.choices ?? [], attribute_traces: people?.attribute_traces ?? [],
         validation_report: people?.validation_report ?? { pass: true, domain: 'npc', created_count: 0, equipment_count: 0 },
-        ...(people ? { people: people.trace } : {}) };
+        ...(people ? { people: people.trace } : {}),
+        ...(presenceResult?.presence_gaps?.length
+          ? { presence_gaps: presenceResult.presence_gaps } : {}) };
       // Approved commons of this canonical G5 carry finite natural sources: the natural owner
       // writes them together with the presence aggregate (it resolves presence itself).
       if (canonicalFiniteProfilesFor(canonicalFiniteApplicability, site, request.g4.id).length > 0) {

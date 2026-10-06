@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "d9b5c65e4db7e9b202c10485f2bdec9c59e390774e3501fcabfbcddc7f45cb2d",
+  "baseline_manifest_sha256": "e190e2c0cfcd1d0c5c3aa48291a873329ca9e0d6c2c656cdf4ac2265800fceaa",
   "default_statuses": [
     "active",
     "reference"
@@ -627,6 +627,46 @@
         "персонаж игрока",
         "генерация персонажа",
         "биография"
+      ],
+      "conflicts_with_document_ids": []
+    },
+    {
+      "document_id": "player-character-start-contract",
+      "document_type": "canonical_normative",
+      "subsystems": [
+        "player-character",
+        "new-game"
+      ],
+      "related_document_ids": [
+        "contract-index",
+        "player-character-generation",
+        "new-game-start-pipeline",
+        "code-driven-world-materialization-architecture",
+        "situational-prose-requirements"
+      ],
+      "related_module_paths": [
+        "packages/new-game",
+        "packages/narration",
+        "apps/game-server"
+      ],
+      "related_contracts": [
+        "player character profile",
+        "start scene explanation",
+        "pre-first-turn acceptance and persistence"
+      ],
+      "search_terms": [
+        "персонаж игрока",
+        "создание персонажа",
+        "место старта",
+        "сезон старта",
+        "заявка игрока",
+        "профиль героя",
+        "объяснение старта",
+        "player character",
+        "new game start",
+        "starting location",
+        "player request",
+        "opening context"
       ],
       "conflicts_with_document_ids": []
     },

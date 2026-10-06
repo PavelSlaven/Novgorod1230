@@ -1,0 +1,290 @@
+{
+  "schema": "rus.v17_channels.ordinary_materialization_data_candidate.v1",
+  "candidate_id": "novgorod_v17_vikhtuy_start_ordinary_materialization_v1",
+  "status": "pending_independent_data_approval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_ref": {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "version": 1
+    },
+    "scope_limit": "Only exact canonical starting G5 selectors for play:v17-slice; not later generated or visited places."
+  },
+  "profile_candidate": {
+    "schema": "rus.live_world_runtime.ordinary_materialization_profile.v1",
+    "profile_id": "novgorod_v17_vikhtuy_start_ordinary_materialization",
+    "revision": 1,
+    "status": "candidate_blocked_by_data_gaps",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "applicability": [
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        },
+        "canonical_g5_ref": {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+          "version": 1
+        },
+        "place_family_ref": {
+          "id": "pf_outbuildings",
+          "version": 1
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        },
+        "canonical_g5_ref": {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+          "version": 1
+        },
+        "place_family_ref": {
+          "id": "pf_peasant_homestead",
+          "version": 1
+        }
+      }
+    ],
+    "o1": null,
+    "o2a_ambient": null,
+    "fallback_policy": "forbidden"
+  },
+  "profile_schema_status": "Proposed identifier from accepted PLAN-v17-channels-4; exact closed validator is a later code step and this sidecar is not runtime input.",
+  "gap_semantics": "The typed_gaps codes below are review labels for absent data, not existing runtime error codes.",
+  "scope_evidence": {
+    "target_start_manifest": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.capacity-v2.candidate.json",
+      "sha256": "e7f5610fec5347953ebcabf2c444e306fe607adba78ae3e0331817f21ef62d1a",
+      "status": "candidate",
+      "activation_authorized": false
+    },
+    "successor_data_approval": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
+      "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e",
+      "decision": "APPROVE_DATA_ONLY",
+      "import_authorized": false,
+      "activation_authorized": false
+    },
+    "place_family_bindings": {
+      "path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/spatial_node_place_family_bindings.json",
+      "sha256": "7d0c6c92b62964c2eb1c153c059432a9c013cab968e13a87155d04928f04367a",
+      "approval_path": "data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json",
+      "approval_sha256": "218d413005f801fc1e8a53253b4a37f46198a34e96c0da536cae7809006e5034",
+      "decision": "approve_with_limits",
+      "binding_confidence": "low",
+      "import_request_status": "pending_independent_review"
+    }
+  },
+  "field_review": [
+    {
+      "field": "profile_candidate.schema",
+      "value": "rus.live_world_runtime.ordinary_materialization_profile.v1",
+      "source_status": "proposed",
+      "source": "Accepted PLAN-v17-channels-4 shape; schema identifier and closed validator require review/4b."
+    },
+    {
+      "field": "profile_candidate.profile_id, revision, status",
+      "value": "novgorod_v17_vikhtuy_start_ordinary_materialization@1; candidate_blocked_by_data_gaps",
+      "source_status": "candidate metadata",
+      "source": "This sidecar only; no production identity or activation is asserted."
+    },
+    {
+      "field": "profile_candidate.world_revision_id",
+      "value": "novgorod_spatial_v3_target_contract_approval_001",
+      "source_status": "approved reference",
+      "source": "v17 target candidate and approved world-base wave import request."
+    },
+    {
+      "field": "profile_candidate.applicability[work_storage]",
+      "value": "G4 vikhtuy_locality@1 + canonical G5 vikhtuy_locality_work_storage@1 + pf_outbuildings@1",
+      "source_status": "candidate start selector + approve_with_limits PF binding",
+      "source": "Capacity-v2 successor data-only approval; m2c-npc-wave approved-with-limits binding, confidence low."
+    },
+    {
+      "field": "profile_candidate.applicability[household_cluster]",
+      "value": "G4 vikhtuy_locality@1 + canonical G5 vikhtuy_locality_household_cluster@1 + pf_peasant_homestead@1",
+      "source_status": "candidate start selector + approve_with_limits PF binding",
+      "source": "Capacity-v2 successor data-only approval; m2c-npc-wave approved-with-limits binding, confidence low."
+    },
+    {
+      "field": "profile_candidate.o1",
+      "value": null,
+      "source_status": "blocked",
+      "source": "No approved target-usable O1 ordinary presence, item/category, placement, and property/ownership package for either start PF."
+    },
+    {
+      "field": "profile_candidate.o2a_ambient",
+      "value": null,
+      "source_status": "blocked",
+      "source": "No exact approved ambient source, scope, property/access basis, portion mechanics, or destination admission for either start G5."
+    },
+    {
+      "field": "profile_candidate.fallback_policy",
+      "value": "forbidden",
+      "source_status": "accepted plan",
+      "source": "PLAN-v17-channels-4; no Lower Dvina fallback."
+    }
+  ],
+  "candidate_place_and_land_use_applicability": [
+    {
+      "g4_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality@1",
+      "status": "candidate_only",
+      "land_use_type_candidates": [
+        "lu_clay_extraction",
+        "lu_fallow_rotation",
+        "lu_fiber_crop_plot",
+        "lu_kitchen_garden",
+        "lu_rainfed_arable"
+      ],
+      "place_type_candidates": [
+        "pt_boat_landing",
+        "pt_clay_pit_pottery_site",
+        "pt_crossroads",
+        "pt_dispersed_settlement_cluster",
+        "pt_ferry_place",
+        "pt_hamlet",
+        "pt_isolated_farmstead",
+        "pt_nucleated_village",
+        "pt_river_landing",
+        "pt_village"
+      ],
+      "qualification": "Candidate G4 applicability only; no direct type binding or type-scoped presence rule. Not copied into runtime applicability."
+    },
+    {
+      "canonical_g5_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage@1",
+      "status": "candidate_only",
+      "place_type_candidates": [
+        "pt_clay_pit_pottery_site",
+        "pt_dispersed_settlement_cluster",
+        "pt_hamlet",
+        "pt_isolated_farmstead",
+        "pt_nucleated_village",
+        "pt_village"
+      ],
+      "land_use_type_candidates": [],
+      "qualification": "Candidate scope assessment only; no direct place-type binding or place-type presence rule exists for this G5."
+    },
+    {
+      "canonical_g5_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster@1",
+      "status": "candidate_only",
+      "place_type_candidates": [
+        "pt_dispersed_settlement_cluster",
+        "pt_hamlet",
+        "pt_isolated_farmstead",
+        "pt_nucleated_village",
+        "pt_village"
+      ],
+      "land_use_type_candidates": [
+        "lu_clay_extraction",
+        "lu_fallow_rotation",
+        "lu_fiber_crop_plot",
+        "lu_kitchen_garden",
+        "lu_rainfed_arable"
+      ],
+      "qualification": "Candidate scope assessment only; land-use/place rows have no direct type binding or type-scoped presence rules."
+    }
+  ],
+  "typed_gaps": [
+    {
+      "code": "O1_APPROVED_PRESENCE_POOL_MISSING",
+      "channel": "O1",
+      "blocking": true,
+      "owner": "items-household-personal presence data owner; world-base materialization owner",
+      "required_inputs": [
+        "independently approved item/category pool applicable to pf_outbuildings and pf_peasant_homestead",
+        "approved probability/count/season/source rules and exact item variants",
+        "approved runtime presence contract for item_ref/variants and saved code-owned roll"
+      ]
+    },
+    {
+      "code": "O1_PROPERTY_PLACEMENT_OWNERSHIP_MISSING",
+      "channel": "O1",
+      "blocking": true,
+      "owner": "items-household-personal property, placement, and ownership owners",
+      "required_inputs": [
+        "approved target item mechanics and property basis for selected refs",
+        "approved exposed/concealed placement basis and owner admission for the two exact start scopes",
+        "committed occurrence/readback rules that let O1 search only persisted items"
+      ]
+    },
+    {
+      "code": "O1_TARGET_PROFILE_DATA_APPROVAL_MISSING",
+      "channel": "O1",
+      "blocking": true,
+      "owner": "target profile data owner / independent Opus approver",
+      "required_inputs": [
+        "approval of the exact closed O1 subform and its world-revision/selectors",
+        "approved profile pin and authorization chain before import or activation"
+      ]
+    },
+    {
+      "code": "O2A_AMBIENT_SOURCE_BINDING_MISSING",
+      "channel": "O2a",
+      "blocking": true,
+      "owner": "items-property ambient source owner; target profile data owner",
+      "required_inputs": [
+        "exact target source and committed location/scope binding",
+        "approved ambient source class and destination admission for each supported start scope"
+      ]
+    },
+    {
+      "code": "O2A_PROPERTY_PORTION_MECHANICS_MISSING",
+      "channel": "O2a",
+      "blocking": true,
+      "owner": "items-household-personal property/item mechanics owners",
+      "required_inputs": [
+        "approved property/access basis",
+        "approved semantic type, quantity unit/bounds, mass, hand/carry/packing limits",
+        "owner-backed placement and admission fields"
+      ]
+    },
+    {
+      "code": "O2A_TARGET_PROFILE_DATA_APPROVAL_MISSING",
+      "channel": "O2a",
+      "blocking": true,
+      "owner": "target profile data owner / independent Opus approver",
+      "required_inputs": [
+        "approval of the exact closed O2a ambient subform and applicability",
+        "approved profile pin and authorization chain before import or activation"
+      ]
+    }
+  ],
+  "exclusions": [
+    "No Lower Dvina scenario IDs, refs, bounds, quantities, or source descriptions are copied.",
+    "The approved Vikhtuy finite deadwood/driftwood profiles do not become ordinary O1 presence or O2a ambient sources.",
+    "The start-territory-types package is cited only as candidate applicability; it does not establish runtime place-type bindings or item presence.",
+    "The approved-with-limits wave row status does not upgrade candidate source rows to independently approved O1 item data.",
+    "This sidecar is not referenced by any active profile manifest, importer, loader, or runtime."
+  ],
+  "source_pins": [
+    {
+      "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv",
+      "sha256": "bf659c1c8f395a5bba8a3d09a4b98a103fc487b90e614d1e7216e78f5f86a246",
+      "use": "Candidate PF-level item rules only; original csv_status remains candidate."
+    },
+    {
+      "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/candidates.csv",
+      "sha256": "29638fe988a76cd3afe7521a068e989ca693471f2bcb0cb2c29b872b45396cf9",
+      "use": "Candidate Vikhtuy G4/G5 land-use/place applicability only."
+    },
+    {
+      "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/typed-gaps.csv",
+      "sha256": "910e11c637f86c9a8ee5134f0b457cb9b5e982dfe004bc35eae9b6c1167d7d4b",
+      "use": "Candidate-only typed gaps; no runtime binding implied."
+    },
+    {
+      "path": "data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/matrix.csv",
+      "sha256": "41d1ed42f5c8fc5fc9a76131f8cb876a09e181f96a85d0a2cac20b7a7c39422d",
+      "use": "Candidate-only G4/G5 place and land-use applicability assessments."
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-items/canonical-finite-applicability.json",
+      "sha256": "0b2880d703d40adc15930677aa93208aa8fdd9ad010e27d28e41c4416345d147",
+      "use": "Approved finite-only Vikhtuy source applicability; confirms its distinct source semantics and excluded start PFs."
+    }
+  ]
+}

@@ -533,16 +533,94 @@ test('failed uncommitted NPC decision releases its in-flight claim for retry', a
   assert.equal(modelCalls, 2);
 });
 
-test('second invalid NPC response returns a typed contract failure', async () => {
+test('second invalid NPC claim ref returns a typed contract failure', async () => {
   let modelCalls = 0;
+  const decisionRequest = request();
   await assert.rejects(requestNpcSemanticDecision({
     boundary: boundary(),
-    request: request(),
+    request: decisionRequest,
     semanticModel: async () => {
       modelCalls += 1;
-      return { schema: 'broken' };
+      const invalid = plan(decisionRequest);
+      invalid.speech.claims = [{ claim_id: 'claim:outside',
+        content_summary: 'Ссылка вне запроса.', form: 'assertion',
+        speaker_posture: 'believed_true',
+        source_knowledge_refs: ['claim:not-allowed'],
+        mentioned_entity_refs: [] }];
+      return invalid;
     },
     revalidateStateVersion: async () => 2
   }), (error) => error?.code === 'TURN_NPC_PLAN_INVALID');
   assert.equal(modelCalls, 2);
 });
+
+test('prepared grounded refs validate, reach fresh audit, and stay closed',
+  async () => {
+    const knowledgeRef = ref('knowledge_record', 'claim:fish-net');
+    const source = request();
+    source.allowed_references.knowledge_refs.push(
+      ref('perception_result', 'observation-1'));
+    const preparedRequest = (input) => ({
+      ...input,
+      allowed_references: {
+        ...input.allowed_references,
+        knowledge_refs: [...input.allowed_references.knowledge_refs,
+          knowledgeRef].sort((left, right) =>
+          left.entity_kind.localeCompare(right.entity_kind)
+            || left.entity_id.localeCompare(right.entity_id))
+      }
+    });
+    const semanticModel = async (input, context) => {
+      assert.equal(input.allowed_references.knowledge_refs.some((entry) =>
+        entry.entity_id === knowledgeRef.entity_id), true);
+      assert.deepEqual(context.prepared_request_context.world_knowledge,
+        { facts: [{ claim_ref: knowledgeRef.entity_id }] });
+      const output = plan(input);
+      output.speech.claims = [{ claim_id: 'claim:fish-net',
+        content_summary: 'Рыбацкая работа связана с сетями.',
+        form: 'assertion', speaker_posture: 'believed_true',
+        source_knowledge_refs: [knowledgeRef], mentioned_entity_refs: [] }];
+      return output;
+    };
+    semanticModel.prepareRequest = async (input) => ({
+      request: preparedRequest(input),
+      context: { world_knowledge: { facts: [{ claim_ref:
+        knowledgeRef.entity_id }] } }
+    });
+    semanticModel.validateFreshPlan = async (output, input, context) => {
+      assert.deepEqual(input.allowed_references.knowledge_refs,
+        [knowledgeRef, ref('perception_result', 'observation-1')]);
+      assert.deepEqual(context.prepared_request_context.world_knowledge,
+        { facts: [{ claim_ref: knowledgeRef.entity_id }] });
+      assert.equal(output.speech.claims[0].source_knowledge_refs[0].entity_id,
+        knowledgeRef.entity_id);
+      return true;
+    };
+    const proposal = await requestNpcSemanticDecision({
+      boundary: boundary(), request: source, semanticModel,
+      revalidateStateVersion: async () => 2
+    });
+    assert.equal(proposal.plan.speech.claims.length, 1);
+    assert.equal(proposal.decision_context.request.allowed_references
+      .knowledge_refs.some((entry) => entry.entity_id === knowledgeRef.entity_id),
+    true);
+
+    const foreignRef = ref('knowledge_record', 'claim:foreign');
+    const invalidModel = async (input) => {
+      const output = plan(input);
+      output.speech.claims = [{ claim_id: 'claim:foreign',
+        content_summary: 'Не выданный факт.', form: 'assertion',
+        speaker_posture: 'believed_true',
+        source_knowledge_refs: [foreignRef], mentioned_entity_refs: [] }];
+      return output;
+    };
+    invalidModel.prepareRequest = async (input) => ({
+      request: preparedRequest(input),
+      context: { world_knowledge: { facts: [{ claim_ref:
+        knowledgeRef.entity_id }] } }
+    });
+    await assert.rejects(requestNpcSemanticDecision({
+      boundary: boundary(), request: source, semanticModel: invalidModel,
+      revalidateStateVersion: async () => 2
+    }), (error) => error?.code === 'TURN_NPC_PLAN_INVALID');
+  });

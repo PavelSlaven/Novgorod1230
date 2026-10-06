@@ -2,6 +2,8 @@ import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { projectG4NaturalPerception } from './g4-natural-perception.js';
 import { serverError } from '../errors.js';
 import { LOCAL_EDGE_OCCUPIED_STATUS } from './local-edge-occupancy.js';
+import { isVisibleItemLabelGap, resolveVisibleItemLabel } from
+  './lower-dvina-trace-visible-item-label.js';
 
 const text = (value) => typeof value === 'string' && value.trim() === value && value.length > 0;
 export const SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF = Object.freeze({
@@ -32,8 +34,18 @@ export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, a
   const visible_objects = [];
   for (const row of entityObservations) {
     const key = `${row?.entity_kind}:${row?.entity_id}`;
+    const itemLabel = row?.entity_kind === 'item'
+      ? resolveVisibleItemLabel({ name: row.display_label }) : null;
+    const suppliedItemGap = row?.entity_kind === 'item'
+      && row.label_gap != null
+      && isVisibleItemLabelGap({ ...row.label_gap, kind: 'gap' });
+    const itemLabelGap = row?.entity_kind === 'item'
+      && (suppliedItemGap || itemLabel.kind === 'gap');
     if (!['npc', 'item'].includes(row?.entity_kind) || !text(row.entity_id)
-      || !['clear', 'partial'].includes(row.visibility) || !text(row.display_label)
+      || !['clear', 'partial'].includes(row.visibility)
+      || !(itemLabelGap || text(row.display_label))
+      || row.label_gap != null && !suppliedItemGap
+      || suppliedItemGap && row.display_label != null
       || !row.exterior || typeof row.exterior !== 'object' || Array.isArray(row.exterior)
       || row.entity_kind === 'npc' && (!row.exterior.appearance
         || !Array.isArray(row.exterior.visible_equipment))
@@ -42,19 +54,18 @@ export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, a
       gap('complete_current_entity_observation_required');
     }
     seen.add(key);
+    if (row.entity_kind === 'npc') {
+      visible_npc.push(projectVisibleNpcObservation(row));
+      continue;
+    }
     const record = { entity_ref: { entity_kind: row.entity_kind, entity_id: row.entity_id },
-      display_label: row.display_label,
-      recognition: row.display_name === row.display_label ? 'recognized' : 'unrecognized',
-      ...(row.entity_kind === 'npc' && row.visibility === 'clear' ? { observable_cues: {
-        identity: { ...(row.display_name === row.display_label ? { display_name: row.display_name } : {}),
-          sex_category: row.exterior.sex_category,
-          // actor appearance says young_adult; the player-safe payload word is young
-          age_category: row.exterior.age_category === 'young_adult' ? 'young' : row.exterior.age_category,
-          appearance: structuredClone(row.exterior.appearance) },
-        equipment: structuredClone(row.exterior.visible_equipment) } }
-        : row.entity_kind === 'item' && row.visibility === 'clear'
-          ? { visible_status: row.exterior.condition_state } : {}) };
-    (row.entity_kind === 'npc' ? visible_npc : visible_objects).push(record);
+      ...(itemLabelGap ? { label_gap: {
+        code: 'player_safe_item_label_required' } } : {
+        display_label: row.entity_kind === 'item' ? itemLabel.label : row.display_label,
+        recognition: row.display_name === row.display_label ? 'recognized' : 'unrecognized'
+      }),
+      ...(row.visibility === 'clear' ? { visible_status: row.exterior.condition_state } : {}) };
+    visible_objects.push(record);
   }
   for (const [kind, rows, idKey] of [
     ['scene_movement_edge', localEdges, 'edge_id'],
@@ -78,6 +89,37 @@ export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, a
   const visible_context = { ...natural.visible_context, visible_npc, visible_objects };
   if (!validateVisibleContext(visible_context).ok) gap('player_safe_visible_context_required');
   return visible_context;
+}
+
+export function projectSpatialV3CurrentVisibleNpcs(entityObservations) {
+  if (!Array.isArray(entityObservations)) gap('complete_current_entity_observations_required');
+  const seen = new Set();
+  return entityObservations.flatMap((row) => {
+    if (row?.entity_kind !== 'npc') return [];
+    const key = row.entity_id;
+    if (!text(key) || !['clear', 'partial'].includes(row.visibility)
+        || !text(row.display_label) || !row.exterior
+        || typeof row.exterior !== 'object' || Array.isArray(row.exterior)
+        || !row.exterior.appearance || !Array.isArray(row.exterior.visible_equipment)
+        || seen.has(key)) gap('complete_current_entity_observation_required');
+    seen.add(key);
+    return [projectVisibleNpcObservation(row)];
+  });
+}
+
+function projectVisibleNpcObservation(row) {
+  return { entity_ref: { entity_kind: 'npc', entity_id: row.entity_id },
+    display_label: row.display_label,
+    recognition: row.display_name === row.display_label ? 'recognized' : 'unrecognized',
+    ...(row.visibility === 'clear' ? { observable_cues: {
+      identity: { ...(row.display_name === row.display_label
+        ? { display_name: row.display_name } : {}),
+        sex_category: row.exterior.sex_category,
+        // actor appearance says young_adult; the player-safe payload word is young
+        age_category: row.exterior.age_category === 'young_adult'
+          ? 'young' : row.exterior.age_category,
+        appearance: structuredClone(row.exterior.appearance) },
+      equipment: structuredClone(row.exterior.visible_equipment) } } : {}) };
 }
 
 function gap(reason) { throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',

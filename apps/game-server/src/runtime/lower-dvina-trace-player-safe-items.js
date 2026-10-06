@@ -8,6 +8,7 @@ import {
   runtimeItemStateValues as stateValues
 } from '@rus/items-property';
 import { safeVisualProfile } from './lower-dvina-trace-player-safe-npc-details.js';
+import { visibleItemName } from './lower-dvina-trace-visible-item-label.js';
 const INVENTORY_KEYS = new Set([
   'items', 'total_weight', 'load_category', 'occupied_hands'
 ]);
@@ -177,7 +178,7 @@ function projectItem(item, strict) {
     item_id: text(item.item_id ?? item.instance_id),
     instance_id: text(item.instance_id), template_id: text(item.template_id),
     profile_id: text(item.profile_id), category_id: text(item.category_id),
-    name: optionalVisibleText(item.name ?? item.state?.display_name, {
+    name: optionalVisibleText(visibleItemName(item), {
       path: 'items[].name', code: invalidCode()
     }),
     visual_profile_snapshot: safeVisualProfile(item.state?.visual_profile_snapshot

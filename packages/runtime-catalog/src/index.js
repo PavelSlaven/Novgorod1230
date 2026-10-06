@@ -25,6 +25,7 @@ import { loadApprovedActorProfileCatalog } from
 import {
   loadCategoryParentMap,
   loadG0RegionIdForSpatialNode,
+  loadG1NodeIdForSpatialNode,
   loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules
@@ -53,6 +54,7 @@ export { loadApprovedProceduralActorTemporalBundle,
 export {
   loadCategoryParentMap,
   loadG0RegionIdForSpatialNode,
+  loadG1NodeIdForSpatialNode,
   loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules,

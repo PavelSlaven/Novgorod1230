@@ -291,7 +291,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   const [outputDirectory, focus, count = '8'] = process.argv.slice(2);
   if (!outputDirectory || !focus) throw new Error('Usage: node gameplay-gap-campaign.mjs <output-directory> <exploration-focus> [turn-count]');
   const { createProductionLlmRoleRunner } = await import(
-    '../../apps/game-server/src/infrastructure/provider/deepseek.js');
+    '../../apps/game-server/src/infrastructure/provider/openai-compatible.js');
   const { DEFAULT_GAMEPLAY_MODEL } = await import(
     '../../apps/game-server/src/runtime/llm-settings.js');
   const baseUrl = text(process.env.RUS_ACCEPTANCE_LLM_BASE_URL);

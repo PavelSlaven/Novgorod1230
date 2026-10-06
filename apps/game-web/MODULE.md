@@ -52,7 +52,8 @@ Browser-клиент, который получает только versioned pub
   ошибка или null не прерывает authoritative turn/recovery, после их завершения
   polling останавливается; reload продолжает тот же сохранённый request ID.
 - компактным LLM settings overlay для unconfigured/default Qwen identity и
-  пользовательского OpenAI-compatible vLLM endpoint: browser вызывает только game-server
+  пользовательского OpenAI-compatible vLLM endpoint: без настроенного endpoint игра
+  остаётся unconfigured и новые вызовы недоступны; browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в
   browser storage, logs или telemetry. Server возвращает сохранённые non-secret
   поля после reload; gameplay provider и transport UI не выбирает сам.

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(tools): reject stale signed approvals, discover in-repository MapMaker symlink datasets, and test supplied calendar profiles (#306, #328, #350)
 - fix(presentation): preserve current committed NPC speech on first delivery, pending screens and replay (#98)
 - fix(docs-tools): сохранять полные пункты MODULE.md в индексе и убрать повтор World Knowledge (#354, #355)
 - fix(test): compare route panel labels with planner operations in the D72 player-safe space (#98)

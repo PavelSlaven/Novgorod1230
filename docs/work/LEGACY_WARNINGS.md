@@ -706,17 +706,17 @@
 - **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
 - **Issue.** —
 
-### LW-130 — шесть шаблонов вещей крушения ждут утверждённых подписей (prompt-rev-turn)
+### LW-130 — безымянные шаблоны Lower Dvina ждут утверждённых подписей (prompt-rev-turn)
 - **Где.** `data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/item-container-set.json` (`placement_slot_ref`), resolver `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, current-visible/WK/narrator/screen projections.
-- **Что.** `trace_ld_v1_item_blue_wool_fragment`, `trace_ld_v1_item_cut_bag_fastening`, `trace_ld_v1_item_persistent_debris`, `trace_ld_v1_item_broken_oar`, `trace_ld_v1_item_side_collision_trace` и `trace_ld_v1_item_hidden_trunk_trace` стоят в сцене и могут быть осмотрены, но у них пока нет утверждённого имени. Сценовые наблюдения не являются стабильными подписями вещей.
-- **Как жить.** Не придумывать имя или категорию и не терять сам видимый объект: сохранять typed `player_safe_item_label_required` gap; исключать только его текстовую строку и продолжать показ остальных вещей. Тест данных перечисляет ровно эти шесть известных gaps и падает на новом. Закрыть запись после отдельного data-owner утверждения подписей и снятия соответствующих исключений.
+- **Что.** `trace_ld_v1_item_blue_wool_fragment`, `trace_ld_v1_item_cut_bag_fastening`, `trace_ld_v1_item_persistent_debris`, `trace_ld_v1_item_broken_oar`, `trace_ld_v1_item_side_collision_trace`, `trace_ld_v1_item_hidden_trunk_trace`, `trace_ld_v1_item_carry_poles` и `trace_ld_v1_container_road_bag` пока не имеют утверждённой подписи для всех путей показа. Сценовые наблюдения не являются стабильными подписями вещей.
+- **Как жить.** Не придумывать имя или категорию: сохранять typed `player_safe_item_label_required` gap для проекции модели и убирать саму строку из публичного видимого пакета с записью счётчика диагностики. Закрыть запись после утверждения подписей владельцем данных и снятия соответствующих исключений. Два acceptance-теста старого прохождения Phase-11 пропущены с причиной D97; по D101 их нельзя удалять до переноса сюжета в старт v17 и полного прогона.
 - **Issue.** Отдельную задачу данных создаёт владелец проекта.
 
 ### LW-131 — typed-gap вещи временно исключены из turn-step model inventory (prompt-rev-turn)
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` проецирует `items` и `inventory.items` в planner/auditor payload.
-- **Что.** До закрытия #236 typed `player_safe_item_label_required` строки не попадают в модельный инвентарь, вопреки полному текущему инвентарю в `turn_step_llm_contract.md` §7.2. Это временное исключение A-05-02; решение D92 требует утверждённое точное имя или русское название общей категории для каждой материализуемой вещи. По данным v17/Lower Dvina реальных gap в инвентаре нет.
-- **Как жить.** Исключать только item rows, связанные с точной typed label-gap строкой; сохранять named и остальные item rows, факты и World Knowledge. Не добавлять opaque inventory keys. Удалить исключение после закрытия #236 и снятия gap у вещей.
-- **Issue.** [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236); разрешено A-prompt-rev-turn-04, временное исключение A-05-02.
+- **Что.** Item rows, связанные с точным typed `player_safe_item_label_required`, не доходят до планировщика, вопреки требованию полного player-safe набора в `turn_step_llm_contract.md` §7.2. Это временное отступление A-05-02, принятое из-за решений владельца D92 и D97: вещь без имени не должна существовать, а безымянная вещь должна получать закрытый отказ. В Lower Dvina остаются пробелы подписи у `trace_ld_v1_item_carry_poles` и `trace_ld_v1_container_road_bag`.
+- **Как жить.** Fail closed: не подставлять категорию или выдуманное имя; вещь с gap не передавать модели или игроку, связанный недоступный выбор отклонять, named и остальные item rows и факты сохранять. Снять исключение и эту запись после того, как item-generic-names (#236) даст каждой вещи проверенное имя по цепочке D92; затем повторно проверить полный inventory и удалить LW-131. Два Phase-11 acceptance-теста пропущены по D97 и остаются в файле до переноса сюжета в старт v17 и полного прогона по D101.
+- **Issue.** [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236), [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133); принято ведущим A-prompt-rev-turn-04 как временное исключение A-05-02.
 
 ### LW-132 — P-проекция групп 3 отложена до отдельного стенда (prompt-rev-turn)
 - **Где.** `intent_router` и `turn_step_planner` player-facing LLM inputs в `apps/game-server`.

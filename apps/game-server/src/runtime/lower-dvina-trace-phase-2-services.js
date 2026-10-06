@@ -267,7 +267,10 @@ export function buildLowerDvinaTracePhase2Services(context) {
           turn10Contracts, phase8Contracts, phase9Contracts,
           phase10Contracts, turnStepApprovedOwners: {
             ...turnStepApprovedOwners, scenePresentation,
-            loadPreparedMovementScene, projectCurrentScene
+            loadPreparedMovementScene, projectCurrentScene,
+            recordVisiblePackageDiagnostic: (count) => trace({
+              event: 'visible_item_label_gap_omitted', omitted_count: count
+            })
           }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {

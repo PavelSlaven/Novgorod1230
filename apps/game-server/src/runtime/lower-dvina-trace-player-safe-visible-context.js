@@ -18,6 +18,27 @@ const AMBIENT_PORTION_BOUND_KEYS = new Set([
   'max_mass_grams'
 ]);
 
+export function projectVisibleContextForPlayerPackage(value, {
+  onLabelGapsOmitted = null
+} = {}) {
+  const visibleObjects = Array.isArray(value?.visible_objects)
+    ? value.visible_objects : null;
+  const safeObjects = visibleObjects?.filter((item) =>
+    !(item?.entity_ref?.entity_kind === 'item'
+      && item?.label_gap?.code === 'player_safe_item_label_required'));
+  const omittedCount = visibleObjects == null
+    ? 0 : visibleObjects.length - safeObjects.length;
+  if (omittedCount > 0 && typeof onLabelGapsOmitted === 'function') {
+    try { onLabelGapsOmitted(omittedCount); }
+    catch { /* Diagnostics must not affect visible package construction. */ }
+  }
+  return {
+    visible_context: { ...value,
+      ...(safeObjects == null ? {} : { visible_objects: safeObjects }) },
+    omitted_label_gap_count: omittedCount
+  };
+}
+
 export function projectVisibleContext(value, {
   strict = false, path = 'visible_context'
 } = {}) {

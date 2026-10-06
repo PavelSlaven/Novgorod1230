@@ -90,9 +90,12 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId,
   itemLabels = {}) {
   return (items ?? []).flatMap((item) => {
     const placement = item?.placement ?? {};
-    const coLocated = placement.location_ref === position?.location_ref
-      || [position?.g5_anchor_id, position?.anchor_id]
-        .includes(placement.g5_anchor_id ?? placement.anchor_id);
+    const location = placement.location_ref;
+    const anchor = placement.g5_anchor_id ?? placement.anchor_id;
+    const coLocated = text(location)
+        && location === position?.location_ref
+      || text(anchor) && [position?.g5_anchor_id, position?.anchor_id]
+        .filter(text).includes(anchor);
     const held = placement.holder_character_id === actorId;
     const itemId = item?.item_id ?? item?.instance_id;
     if ((!coLocated && !held) || !text(itemId)) return [];

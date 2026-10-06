@@ -14,6 +14,8 @@ import { phase2InitialCurrentVisibleContext } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 import { playerSafeWeatherLightFacts } from
   '../src/runtime/player-safe-weather-light.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../src/runtime/lower-dvina-trace-player-safe-visible-context.js';
 import { phase4PendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-write-projection.js';
 import { phase5PendingScreen } from
@@ -179,6 +181,7 @@ test('phase 2 public envelope omits typed label gaps and preserves named items',
   const named = { entity_ref: { entity_kind: 'item', entity_id: 'named-item' },
     display_label: 'Хозяйственный нож', recognition: 'known',
     visible_status: 'serviceable' };
+  const diagnostics = [];
   const envelope = buildPhase2VisibleEnvelope({
     partyId: 'party', turnNumber: 1, nextVersion: 2,
     changeSetId: 'change-set', idemId: 'idem',
@@ -190,13 +193,23 @@ test('phase 2 public envelope omits typed label gaps and preserves named items',
       }],
       known_context: [], uncertainties: []
     },
-    contracts: { activityPin: { id: 'activity-profile', version: 1 } }
+    contracts: { activityPin: { id: 'activity-profile', version: 1 } },
+    onLabelGapsOmitted: (count) => diagnostics.push(count)
   });
 
+  assert.deepEqual(diagnostics, [1]);
   assert.deepEqual(envelope.visible_payload.visible_objects, [named]);
   assert.deepEqual(validatePlayerSafeVisiblePayload(envelope.visible_payload), []);
   assert.doesNotMatch(JSON.stringify(envelope.visible_payload),
     /unnamed-item|label_gap|player_safe_item_label_required/u);
+});
+
+test('player package projection preserves absent visible_objects', () => {
+  const projected = projectVisibleContextForPlayerPackage({
+    schema: 'visible_context_package', visible_scene: 'У берега.'
+  });
+
+  assert.equal(Object.hasOwn(projected.visible_context, 'visible_objects'), false);
 });
 
 test('initial environment rejects unknown temporal and weather values', () => {

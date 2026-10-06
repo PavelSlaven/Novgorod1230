@@ -179,7 +179,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         firstStepEdgeIds: input.firstStepEdgeIds });
       return approaches.map((row) => ({ kind: 'approach', ...row }));
     },
-    async prepareExpansion(input) {
+    async prepareExpansion(input, { onLabelGapsOmitted = null } = {}) {
       const { context, selected } = await selectedContext(input);
       if (selected.connection) return Object.freeze({ ok: true, replay: true,
         topology_status: 'committed', connection_id: selected.connection.id,
@@ -191,7 +191,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         directional_exit: pin(selected.exit), candidate_ordinal: selected.ordinal,
         source_site_id: context.site.id, source_position_id: context.position.id,
         ...(selected.entry ? { entry_binding: pin(selected.entry) } : {}),
-        materializer_version: materializerVersion });
+        materializer_version: materializerVersion }, { onLabelGapsOmitted });
     },
     async prepareTraversal(input) {
       if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');

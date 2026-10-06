@@ -59,7 +59,8 @@ export function projectTurnStepModelRequest(request) {
 
 export function redactGapItemData(value, aliases, parentKey = null) {
   if (Array.isArray(value)) {
-    const entries = parentKey === 'target_refs'
+    const entries = typeof parentKey === 'string'
+        && parentKey.endsWith('_refs')
       ? value.filter((entry) => !aliases.includes(entry))
       : ['operations', 'available_domain_operations', 'allowed'].includes(parentKey)
         ? value.filter((entry) => !containsAny(entry, aliases)) : value;
@@ -77,7 +78,8 @@ export function redactGapItemData(value, aliases, parentKey = null) {
 
 export function containsAny(value, aliases, parentKey = null) {
   if (Array.isArray(value)) return value.some((entry) =>
-    (parentKey === 'target_refs' && aliases.includes(entry))
+    (typeof parentKey === 'string' && parentKey.endsWith('_refs')
+      && aliases.includes(entry))
       || containsAny(entry, aliases, parentKey));
   if (typeof value === 'string') return isGapItemReference(parentKey, value, aliases);
   if (value == null || typeof value !== 'object') return false;
@@ -92,8 +94,8 @@ export function untransmittedGapItemSecrets(request) {
 
 function isGapItemReference(key, value, aliases) {
   return typeof value === 'string' && aliases.includes(value)
-    && ['entity_id', 'item_id', 'instance_id', 'item_ref', 'entity_ref',
-      'target_ref', 'source_ref', 'prepared_followup_ref'].includes(key);
+    && (['entity_id', 'item_id', 'instance_id'].includes(key)
+      || typeof key === 'string' && key.endsWith('_ref'));
 }
 
 function filterGapItemRecords(items, aliases) {

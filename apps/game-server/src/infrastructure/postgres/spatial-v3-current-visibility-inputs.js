@@ -3,6 +3,7 @@ import { validateActorBaseAppearance } from '@rus/actors';
 import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { playerSafeHeardNpcIntroduction, safeVisualProfile } from
   '../../runtime/lower-dvina-trace-player-safe-npc-details.js';
+import { visibleItemName } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 
 /** Exclude only scopes proven outside this exact scene; unknown wider scopes stay fail-closed. */
 export function currentSceneVisibilityModifiers(rows, scene) {
@@ -109,7 +110,7 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
     const snapshot = row.state?.visual_profile_snapshot;
     const visual_profile_snapshot = snapshot == null ? null : safeVisualProfile(snapshot);
     if (snapshot != null && !visual_profile_snapshot) gap('committed_entity_exterior_required');
-    const display_name = itemDisplayName(row.state);
+    const display_name = visibleItemName({ state: row.state });
     return { condition_state: row.condition_state,
       ...(typeof row.template_id === 'string' && row.template_id.length > 0
         ? { template_id: row.template_id } : {}),
@@ -117,13 +118,6 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
       ...(visual_profile_snapshot == null ? {} : { visual_profile_snapshot }) };
   }
   gap('committed_entity_exterior_required');
-}
-
-function itemDisplayName(state) {
-  const value = typeof state?.display_name === 'string' ? state.display_name : null;
-  if (typeof value !== 'string') return null;
-  const label = value.trim();
-  return label.length > 0 ? label : null;
 }
 
 /** A name is known only through a committed, fully heard self-introduction. */

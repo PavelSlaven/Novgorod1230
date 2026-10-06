@@ -13,6 +13,17 @@ const localLabels = loadApprovedLocalEdgeLabels();
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
 
+/** Titles come from the already pin-verified item catalog, never category labels. */
+export function approvedSpatialItemLabels(verifiedCatalog) {
+  const rows = verifiedCatalog?.records_by_table?.item_templates;
+  if (!Array.isArray(rows)) return {};
+  return Object.fromEntries(rows.flatMap((row) => {
+    if (row?.status !== 'approved' || typeof row.id !== 'string' || !row.id.trim()) return [];
+    const label = resolveVisibleItemLabel({ name: row.title });
+    return label.kind === 'labeled' ? [[row.id, label.label]] : [];
+  }));
+}
+
 /** Caller supplies current target conditions, committed exterior, and knowledge owners.
  * All reads use one repeatable-read snapshot. No label grants visibility or movement.
  * readVisibleLocalEdgeRefs({partyId,actorId,state}) -> edge IDs.
@@ -20,6 +31,7 @@ const visibility = new Set(['clear', 'partial', 'none']);
  * readExitDisclosure(context with partyId,actorId,directional_exits) -> safe labels.
  * readEntityObservations({partyId,actorId}) -> admitted exterior and known names. */
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
+  itemLabels = {},
   worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
   readEntityExterior, readPlayerKnowledge, readLocalMovementAdmission = null,
   readExitLabels = loadApprovedExitLineLabels,
@@ -275,7 +287,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             ? await readPlayerKnowledge({ transaction: current.transaction, partyId, actorId, placement }) : null;
           const displayName = known?.display_name ?? exterior.display_name ?? null;
           const itemLabel = placement.entity_kind === 'item'
-            ? resolveVisibleItemLabel({ name: displayName }) : null;
+            ? resolveVisibleItemLabel({ name: displayName,
+              template_id: exterior.template_id }, itemLabels) : null;
           result.push({ entity_kind: placement.entity_kind, entity_id: placement.entity_id,
             visibility: entry.visibility, exterior,
             ...(placement.entity_kind === 'npc'

@@ -3,15 +3,15 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "deterministic_lexical_coverage",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "774b99ae32976a6a90153f2405a5a72b0563a64ef45f63cb9b1f9373fe180e0a",
-  "corpus_hash": "88d8e368f9b438bf5efb1491561873b02a8702d943ddec06328ac3f43f88411f",
+  "corpus_manifest_sha256": "9dcc5ec48025715dda05ffa439441faded6baf2b1954dea6c51529b9997301dd",
+  "corpus_hash": "990aef1eb7b16f335e00fdfcc1a5fd4e4f0a3b9ebae140640b06ecd3439c2ce3",
   "lexical_index": "generated/knowledge-source/rag/lexical-index.json",
-  "lexical_index_sha256": "2e72548ad4937ad30e086334d12409ab35bc674f4c5060dd11d0d09f3a874d4a",
-  "registered_document_count": 45,
-  "source_document_count": 45,
-  "active_document_count": 19,
-  "lexical_document_count": 45,
-  "lexical_chunk_count": 2938,
+  "lexical_index_sha256": "05e1980b10fa4ba6772353e2ea636bd128ed751e52cf91baf1779ac51f6b8a57",
+  "registered_document_count": 46,
+  "source_document_count": 46,
+  "active_document_count": 20,
+  "lexical_document_count": 46,
+  "lexical_chunk_count": 2947,
   "coverage": [
     {
       "document_id": "base-turn-orchestration",
@@ -126,6 +126,11 @@
     {
       "document_id": "npc-conversation-mode-contract",
       "file_name": "npc_conversation_mode_contract.md",
+      "lexical_indexed": true
+    },
+    {
+      "document_id": "npc-family-household-contract",
+      "file_name": "npc_family_household_contract.md",
       "lexical_indexed": true
     },
     {

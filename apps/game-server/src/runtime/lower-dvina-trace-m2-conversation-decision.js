@@ -2,6 +2,7 @@ import {
   buildNpcConversationResponseRequest,
   evaluateNpcDecisionSignals
 } from '@rus/npc-runtime';
+import { canonicalDigest } from '@rus/materialization';
 import {
   allowedNpcContributionReferences,
   currentSceneObservationProjection,
@@ -168,9 +169,24 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
   const persistedTrace = (context.state.npc_semantic_decision_traces ?? [])
     .find(({ boundary_id: boundaryId }) =>
       boundaryId === boundary.boundary_id) ?? null;
+  const persistedInputs = persistedTrace === null ? []
+    : (context.state.npc_semantic_decision_inputs ?? []).filter((input) =>
+      input?.request_snapshot?.schema
+          === 'npc_conversation_response_request_v1'
+        && plainRecord(input.boundary_snapshot)
+        && plainRecord(input.trace)
+        && input.request_snapshot.request_id === request.request_id
+        && input.request_snapshot.boundary_id === request.boundary_id
+        && input.request_snapshot.conversation_id === request.conversation_id
+        && input.request_snapshot.exchange_id === request.exchange_id
+        && input.request_snapshot.state_version === request.state_version
+        && sameRef(input.request_snapshot.npc_ref, request.npc_ref)
+        && input.boundary_snapshot.boundary_id === boundary.boundary_id
+        && canonicalDigest(input.trace) === canonicalDigest(persistedTrace));
   return {
     boundary,
-    request,
+    request: persistedInputs.length === 1
+      ? persistedInputs[0].request_snapshot : request,
     persisted_trace: persistedTrace
   };
 }

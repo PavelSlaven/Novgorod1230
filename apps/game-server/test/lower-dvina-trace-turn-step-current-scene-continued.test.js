@@ -10,8 +10,50 @@ import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
   '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
-import { lowerDvinaTraceDirectResultChanges } from
+import { lowerDvinaTraceCarriedItemIds, lowerDvinaTraceDirectResultChanges } from
   '../src/runtime/lower-dvina-trace-visible-scene-items.js';
+
+test('carried item ownership comes from placement and holder, not display status', () => {
+  assert.deepEqual([...lowerDvinaTraceCarriedItemIds([
+    { item_id: 'held', placement: { holder_character_id: 'actor' } },
+    { item_id: 'nearby', placement: { location_ref: 'site' } }
+  ], 'actor')], ['held']);
+});
+
+test('generated arrival preserves carried items and current Spatial exits', async () => {
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { async project() { return {}; } },
+    projectCurrentScene: () => ({ current_visible_context: {
+      sensory_details: [], visible_objects: [
+        { entity_ref: { entity_kind: 'item', entity_id: 'held' },
+          display_label: 'мешок', visible_status: 'при вас' },
+        { entity_ref: { entity_kind: 'item', entity_id: 'nearby' },
+          display_label: 'корзина', visible_status: 'available' },
+        { entity_ref: { entity_kind: 'g5_site_connection', entity_id: 'exit' },
+          display_label: 'проход к броду' }
+      ]
+    } })
+  });
+  const result = await projector.project({
+    retrieved_state: { actor_id: 'actor', items: [
+      { item_id: 'held', placement: { holder_character_id: 'actor' } },
+      { item_id: 'nearby', placement: { location_ref: 'site' } }
+    ], position: { position_id: 'source' } },
+    consequence: { phase3_kind: 'movement', position_transition: {
+      owner: '@rus/turn/spatial-v3-site-connection-traversal',
+      destination_site_id: 'site:destination',
+      destination_g6_instance_id: 'g6:destination',
+      to_position_ref: 'position:destination'
+    }, visible_seed: { destination_site_origin: 'generated',
+      destination_visible_context: { visible_scene: 'берег', sensory_details: [],
+        visible_npc: [], visible_objects: [], visible_changes: [], uncertainties: [] } } }
+  });
+
+  assert.deepEqual(result.visible_objects.map(({ entity_ref: ref }) =>
+    [ref.entity_kind, ref.entity_id]), [
+    ['item', 'held'], ['g5_site_connection', 'exit']
+  ]);
+});
 
 test('carried item observation exposes concrete player-safe belongings', () => {
   const state = committedState();

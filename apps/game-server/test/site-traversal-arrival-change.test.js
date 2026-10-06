@@ -77,7 +77,8 @@ test('site arrival reports a grounded change with destination perception', async
     }), 'generated'), position_transition: { owner: '@rus/turn/spatial-v3-site-connection-traversal',
       destination_site_id: 'site:generated', to_position_ref: 'position:generated',
       destination_g6_instance_id: 'g6:generated' } },
-    retrieved_state: { actor_id: 'actor:test', first_entry_preparation: {
+    retrieved_state: { actor_id: 'actor:test', items: [{ item_id: 'item:held',
+      placement: { holder_character_id: 'actor:test' } }], first_entry_preparation: {
       spatial_v3: { target: { status: 'prepared',
         position_id: 'position:generated', g6_instance_id: 'g6:generated' } }
     } }

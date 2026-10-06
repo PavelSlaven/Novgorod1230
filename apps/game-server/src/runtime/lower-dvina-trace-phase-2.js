@@ -101,19 +101,13 @@ export function createLowerDvinaTracePhase2Runtime({
         if (replay) return completeTracePhase2Replay({ partyId, requestId, idempotencyKey,
           rawText, inputDigest, replay, repository, bundleLoader, narrator, turnBudget,
           llmDiagnostics });
-        let state = await repository.loadPhase2State(partyId, {
+        const state = await repository.loadPhase2State(partyId, {
           presentationIdempotencyKey: idempotencyKey,
+          includeCurrentVisibleContext: true,
           turnBudget,
         });
         const authored = state.scenario_id != null
           && state.scenario_id !== TRACE_SCENARIO_ID;
-        if (authored && state.current_spatial_context_is_fresh !== true) {
-          state = await repository.loadPhase2State(partyId, {
-            presentationIdempotencyKey: idempotencyKey,
-            includeCurrentVisibleContext: true,
-            turnBudget
-          });
-        }
         let runtimeCatalogContextPromise = null;
         const getRuntimeCatalogContext = () => {
           if (typeof loadTurnRuntimeCatalogContext !== 'function') return null;

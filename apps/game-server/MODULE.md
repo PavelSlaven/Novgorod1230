@@ -228,12 +228,12 @@ and adds no second transaction owner.
   descriptive support сохраняется для scene-only perception. Outcome/intent
   передаются только своим ролям; used_references остаётся [].
   Current-scene projection prefers a Spatial package freshly read for the
-  player's current position; otherwise it uses the matching scene presentation
-  or location profile. Spatial freshness and entity-filter flags are read-time
-  data and never enter the persisted turn snapshot. It rebuilds item
-  placement/status/facts and visible NPCs from committed state.
-  It retains only movement disclosures from the prior package; a stale object
-  or NPC row cannot override the current position or placement.
+  player's current position; otherwise it uses the matching approved scene
+  presentation. It has no location-profile fallback. Spatial freshness and
+  entity-filter flags are read-time data and never enter the persisted turn
+  snapshot. Item placement/status/facts and visible NPCs come from committed
+  state; movement objects come from the current Spatial projection. A prior
+  visible package is not a source for current item, NPC, or movement facts.
   Private auditor возвращает только полный ordered reviewed_segments,
   ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,

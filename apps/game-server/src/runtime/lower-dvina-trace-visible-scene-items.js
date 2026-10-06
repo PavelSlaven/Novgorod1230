@@ -90,7 +90,7 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {
     const coLocated = placement.location_ref === position?.location_ref
       || [position?.g5_anchor_id, position?.anchor_id]
         .includes(placement.g5_anchor_id ?? placement.anchor_id);
-    const held = placement.holder_character_id === actorId;
+    const held = isLowerDvinaTraceItemHeldBy(item, actorId);
     const itemId = item?.item_id ?? item?.instance_id;
     if ((!coLocated && !held) || !text(itemId)) return [];
     return [{ physicalFacts: item.physical_facts ?? [], held,
@@ -102,6 +102,19 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {
           ? CARRIED_VISIBLE_STATUSES.hands : CARRIED_VISIBLE_STATUSES.other
         : 'available' } }];
   });
+}
+
+export function lowerDvinaTraceCarriedItemIds(items, actorId) {
+  return new Set((items ?? []).flatMap((item) => {
+    if (!isLowerDvinaTraceItemHeldBy(item, actorId)) return [];
+    const itemId = item?.item_id ?? item?.instance_id;
+    return text(itemId) ? [itemId] : [];
+  }));
+}
+
+function isLowerDvinaTraceItemHeldBy(item, actorId) {
+  return typeof actorId === 'string' && actorId.length > 0
+    && item?.placement?.holder_character_id === actorId;
 }
 
 export function lowerDvinaTraceCarriedItemObservations(items, visibleObjects) {

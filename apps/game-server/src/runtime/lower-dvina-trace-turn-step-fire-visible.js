@@ -1,5 +1,6 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
-import { lowerDvinaTraceObservedSceneChanges } from './lower-dvina-trace-visible-scene-items.js';
+import { lowerDvinaTraceCarriedItemIds,
+  lowerDvinaTraceObservedSceneChanges } from './lower-dvina-trace-visible-scene-items.js';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
 import {
   enrichLowerDvinaTraceVisibleNpcCues,
@@ -101,10 +102,12 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             }
             destination.sensory_details = structuredClone(
               projectedDestination.sensory_details ?? destination.sensory_details);
+            const carriedItemIds = lowerDvinaTraceCarriedItemIds(
+              targetState.items, targetState.actor_id);
             destination.visible_objects = (projectedDestination.visible_objects ?? [])
-              .filter(({ entity_ref: ref, visible_status: status }) =>
-                ref?.entity_kind === 'item'
-                && ['при вас', 'у вас в руках'].includes(status));
+              .filter(({ entity_ref: ref }) => isMovementVisibleObject({ entity_ref: ref })
+                || (ref?.entity_kind === 'item'
+                && carriedItemIds.has(ref.entity_id)));
           } else {
             destination.visible_objects = [];
           }

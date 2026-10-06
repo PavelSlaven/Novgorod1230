@@ -703,3 +703,8 @@
 - **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
 - **Issue.** —
 
+### LW-130 — scene presentation привязана к revision 33 (turn-scene-fix)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`scenarioDefinitionRevision: 33` при загрузке сцены для `TRACE_SCENARIO_ID`).
+- **Что.** Когда turn bundle не содержит `scene_presentation`, fallback загрузчика сцены закреплён за revision 33. Если presentation сценария изменится, а эта ветка останется без своего pin в bundle, текущий scene title может разрешиться по устаревшей ревизии.
+- **Как жить.** Не менять revision 33 и не считать fallback актуальным для иных ревизий сценария без регрессии загрузки; переносить выбор revision в pinned bundle отдельной задачей.
+- **Issue.** —

@@ -48,7 +48,7 @@ import { applySiteTraversalTransition, siteTraversalWrites } from
   './spatial-v3-site-traversal-commit.js';
 import { projectPreparedDomainState } from
   '../../runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
-import { uniqueLowerDvinaTraceVisibleObjects } from
+import { lowerDvinaTraceCarriedItemIds, uniqueLowerDvinaTraceVisibleObjects } from
   '../../runtime/lower-dvina-trace-visible-scene-items.js';
 
 export async function commitLowerDvinaTraceTurnStep({
@@ -146,10 +146,10 @@ export async function commitLowerDvinaTraceTurnStep({
   }
   const destinationVisibleContext = preparedMovementState?.current_visible_context
     ?? envelope.consequence?.visible_seed?.destination_visible_context ?? null;
+  const carriedItemIds = lowerDvinaTraceCarriedItemIds(state.items, state.actor_id);
   const carriedVisibleObjects = (envelope.visible_context.visible_objects ?? [])
-    .filter(({ entity_ref: ref, visible_status: status }) =>
-      ref?.entity_kind === 'item'
-      && ['при вас', 'у вас в руках'].includes(status));
+    .filter(({ entity_ref: ref }) => ref?.entity_kind === 'item'
+      && carriedItemIds.has(ref.entity_id));
   const sourceVisibleContext = destinationVisibleContext == null
     ? envelope.visible_context
     : {

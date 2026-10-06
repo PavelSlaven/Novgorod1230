@@ -42,6 +42,8 @@ import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
   '@rus/turn/temporal-advance';
 import { calculatePackingSlots } from '@rus/items-property';
+import { hasActiveTurnDeadline, withTurnDeadlineTransaction } from
+  '../../infrastructure/postgres/query-with-turn-deadline.js';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-effect-owner.js';
 import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
@@ -333,7 +335,7 @@ export function createTraceTurnRuntime({
 export function createCurrentSpatialContextProjector({ partyPool,
   readCurrentSources, onProjected = null } = {}) {
   if (typeof readCurrentSources !== 'function') return null;
-  return async ({ partyId, actorId, state }) => {
+  return async ({ partyId, actorId, state, turnBudget = null }) => {
     const positionId = state?.position?.position_id
       ?? state?.journey_location?.scene_position_id;
     if (typeof positionId !== 'string' || positionId.length === 0) {
@@ -341,23 +343,30 @@ export function createCurrentSpatialContextProjector({ partyPool,
         'Current position is required for scene perception.', { status: 409,
           details: { reason: 'current_position_required' } });
     }
-    const transaction = await partyPool.connect();
-    try {
-      await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
-      const visible = await readAndProjectSpatialV3CurrentVisibleContext({
-        transaction, partyId, actorId, positionId, observedPositionId: positionId,
-        readCurrentSources, state, directionalExits: []
-      });
-      await transaction.query('COMMIT');
-      onProjected?.({ partyId, actorId, positionId,
-        visible: structuredClone(visible) });
-      return visible;
-    } catch (error) {
-      await transaction.query('ROLLBACK');
-      throw error;
-    } finally {
-      transaction.release();
+    const project = (transaction) => readAndProjectSpatialV3CurrentVisibleContext({
+      transaction, partyId, actorId, positionId, observedPositionId: positionId,
+      readCurrentSources, state, directionalExits: []
+    });
+    let visible;
+    if (hasActiveTurnDeadline(turnBudget)) {
+      visible = await withTurnDeadlineTransaction(partyPool, turnBudget,
+        project, { beginMode: 'repeatable_read_read_only' });
+    } else {
+      const transaction = await partyPool.connect();
+      try {
+        await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+        visible = await project(transaction);
+        await transaction.query('COMMIT');
+      } catch (error) {
+        await transaction.query('ROLLBACK');
+        throw error;
+      } finally {
+        transaction.release();
+      }
     }
+    onProjected?.({ partyId, actorId, positionId,
+      visible: structuredClone(visible) });
+    return visible;
   };
 }
 

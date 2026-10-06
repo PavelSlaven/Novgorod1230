@@ -49,6 +49,36 @@ test('production current-scene adapter reads and projects only current source ob
   assert.ok(projected.sensory_details.length > 0);
 });
 
+test('production current-scene adapter applies the active turn deadline to its read transaction',
+  async () => {
+    const { perception } = await approvedNaturalPerceptionFixture();
+    const commands = [];
+    let released = false;
+    let deadlineChecks = 0;
+    const connection = { async query(sql) { commands.push(sql); } };
+    const turnBudget = {
+      remaining: () => ({ deadline_ms: 30_000 }),
+      assertWithinDeadline() { deadlineChecks += 1; }
+    };
+    const project = createCurrentSpatialContextProjector({
+      partyPool: { connect(callback) { callback(null, connection,
+        () => { released = true; }); } },
+      readCurrentSources: async () => ({ partyId: 'party:1', actorId: 'player:1',
+        naturalInput: perception, entityObservations: [], localEdges: [],
+        directionalExits: [], siteConnections: [] })
+    });
+
+    await project({ partyId: 'party:1', actorId: 'player:1',
+      state: { position: { position_id: 'position:inside' } }, turnBudget });
+
+    assert.ok(commands.includes('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY'));
+    assert.ok(commands.some((sql) => String(sql).startsWith('SET statement_timeout = ')));
+    assert.ok(commands.some((sql) => String(sql).includes("set_config('statement_timeout'")));
+    assert.ok(commands.includes('RESET statement_timeout'));
+    assert.equal(released, true);
+    assert.ok(deadlineChecks > 0);
+  });
+
 test('canonical and generated current scenes compose admitted natural, entities and exits', async () => {
   const args = { partyId: 'party:1', actorId: 'player:1',
     entityObservations: [{ entity_kind: 'npc',

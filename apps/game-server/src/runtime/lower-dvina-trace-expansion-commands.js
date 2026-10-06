@@ -1,7 +1,7 @@
 import { isDeepStrictEqual } from 'node:util';
 import { validateConsequencePackage } from '@rus/turn';
 import { serverError } from '../errors.js';
-import { actorMovementBlocked, available, mode } from
+import { actorMovementBlocked, available, mode, phase3WriteTargets } from
   './lower-dvina-trace-phase-3-command-shared.js';
 
 export async function createTraceExpansionCommands({ state, requestId,
@@ -160,7 +160,7 @@ export async function createTraceExpansionCommands({ state, requestId,
             } }), { cause });
         }
       },
-      writeTargets: () => []
+      writeTargets: phase3WriteTargets
     };
   };
   const runtime = spatialExpansionRuntime;

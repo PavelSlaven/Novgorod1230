@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { addElapsedTime } from '@rus/time-events-history';
 import { createTracePhase3TemporalAdvance } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 
@@ -26,6 +27,8 @@ const inputFor = (after = clockAfter, duration = elapsed) => ({
   },
   consequence: {
     phase3_kind: 'movement',
+    duration_minutes: 1 / 3,
+    movement: { cost_kind: 'time' },
     position_transition: {
       owner: '@rus/turn/spatial-v3-site-connection-traversal'
     },
@@ -76,8 +79,72 @@ test('line clock rejects a Phase 2 result with a different exact clock', async (
     }
   });
 
-  await assert.rejects(advance(inputFor()),
-    { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' });
+  await assert.rejects(advance(inputFor()), (error) => {
+    assert.equal(error.code, 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID');
+    assert.match(error.message, /"duration_minutes":0\.3333333333333333/u);
+    assert.match(error.message, /"root_elapsed":\{"numerator":"1","denominator":"3"\}/u);
+    assert.match(error.message, /"root_clock_before":\{"whole_minutes":"10","subminute_numerator":"0","subminute_denominator":"1"\}/u);
+    assert.doesNotMatch(error.message, /actor|party|player|input|request/u);
+    return true;
+  });
+});
+
+test('legacy action traversal without a clock proof keeps the local clock unchanged', async () => {
+  const advance = createTracePhase3TemporalAdvance({
+    async phase2Advance() {
+      assert.fail('legacy action traversal must not advance the clock through Phase 2');
+    }
+  });
+  const input = inputFor(
+    clockBefore,
+    { numerator: '0', denominator: '1' }
+  );
+  input.consequence.duration_minutes = 0;
+  input.consequence.movement = { cost_kind: 'action' };
+  input.consequence.spatial_v3_traversal = {
+    plan: { classification: 'legacy_generated' },
+    result: { status: 'arrived' }
+  };
+
+  const result = await advance(input);
+
+  assert.deepEqual(result.clock_before, clockBefore);
+  assert.deepEqual(result.clock_after, clockBefore);
+  assert.deepEqual(result.exact_elapsed, input.exact_elapsed);
+});
+
+test('timed line rejects a traversal proof that differs from the root turn', async () => {
+  const advance = createTracePhase3TemporalAdvance({
+    async phase2Advance() {
+      assert.fail('mismatched traversal proof must be rejected before Phase 2');
+    }
+  });
+  const input = inputFor();
+  input.consequence.spatial_v3_traversal.clock_update.actual_elapsed = {
+    numerator: '2', denominator: '3'
+  };
+
+  await assert.rejects(advance(input), (error) => {
+    assert.equal(error.code, 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID');
+    assert.match(error.message, /Timed line clock proof does not match/u);
+    return true;
+  });
+});
+
+test('timed line without a clock update is rejected as invalid temporal state', async () => {
+  const advance = createTracePhase3TemporalAdvance({
+    async phase2Advance() {
+      assert.fail('missing timed proof must be rejected before Phase 2');
+    }
+  });
+  const input = inputFor();
+  delete input.consequence.spatial_v3_traversal.clock_update;
+
+  await assert.rejects(advance(input), (error) => {
+    assert.equal(error.code, 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID');
+    assert.match(error.message, /Timed line clock proof does not match/u);
+    return true;
+  });
 });
 
 test('line window resolves a real due NPC routine through Phase 2 temporal owner', async () => {
@@ -110,7 +177,7 @@ test('line window resolves a real due NPC routine through Phase 2 temporal owner
     candidate_count: state.temporal_boundary_candidates.length,
     candidates: structuredClone(state.temporal_boundary_candidates)
   };
-  const temporalOwner = createTemporalAdvanceOwner({
+  const temporalEngine = createTemporalAdvanceOwner({
     source_registrations: [npcRoutineTemporalRegistration()],
     effect_registrations: [
       ...npcTemporalEffectRegistrations(),
@@ -118,14 +185,23 @@ test('line window resolves a real due NPC routine through Phase 2 temporal owner
       ...lowerDvinaTracePhase7TemporalEffectRegistrations()
     ]
   });
+  let phase6Projection;
   const phase2Advance = createTracePhase2TemporalAdvance({
     contracts: { activity: {
       nearest_temporal_boundary_rule: 'split_before_earliest_boundary'
     } },
-    temporalAdvanceOwner: temporalOwner
+    temporalAdvanceOwner: {
+      advance(input) {
+        const result = temporalEngine.advance(input);
+        phase6Projection = result.state_projection;
+        return result;
+      }
+    }
   });
-  const clockAfter = { ...clockBefore, whole_minutes: '130' };
-  const lineElapsed = { numerator: '30', denominator: '1' };
+  const lineElapsed = { numerator: '91', denominator: '3' };
+  const clockAfter = addElapsedTime(state.clock, {
+    exact_minutes: lineElapsed
+  });
   const advance = createTracePhase3TemporalAdvance({ phase2Advance });
 
   const result = await advance({
@@ -134,6 +210,7 @@ test('line window resolves a real due NPC routine through Phase 2 temporal owner
     relevant_state: state,
     consequence: {
       phase3_kind: 'movement',
+      movement: { cost_kind: 'time' },
       position_transition: {
         owner: '@rus/turn/spatial-v3-site-connection-traversal'
       },
@@ -149,6 +226,8 @@ test('line window resolves a real due NPC routine through Phase 2 temporal owner
 
   assert.deepEqual(result.clock_after, clockAfter);
   assert.deepEqual(result.exact_elapsed.exact_minutes, lineElapsed);
+  assert.deepEqual(phase6Projection.cumulative_elapsed_minutes,
+    lineElapsed);
   const transitions = result.temporal_results[0].combined_change_set.proposals
     .map(({ npc_routine_transition: transition }) => transition)
     .filter(Boolean);

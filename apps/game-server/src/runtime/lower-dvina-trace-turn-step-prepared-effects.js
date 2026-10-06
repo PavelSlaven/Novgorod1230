@@ -212,16 +212,22 @@ async function applyPreparedPhase3Route({
 }) {
   const consequence = input?.consequence;
   const movement = consequence?.movement;
-  const duration = Number(consequence?.duration_minutes);
+  const duration = consequence?.duration_minutes;
+  const siteLine = consequence?.position_transition?.owner
+      === '@rus/turn/spatial-v3-site-connection-traversal'
+    && movement?.cost_kind === 'time';
   if (!['movement'].includes(consequence?.phase3_kind
         ?? consequence?.phase8_kind)
-      || !Number.isSafeInteger(duration) || duration <= 0
-      || movement?.destination?.location_ref == null
+      || !validPreparedMovementDuration(consequence, duration)
+      || (!siteLine && movement?.destination?.location_ref == null)
       || !validRoutePriorCount(input, semanticPrefix)) {
     fail('TRACE_TURN_STEP_PREPARED_ROUTE_INVALID');
   }
-  const projection = buildLowerDvinaTracePreparedRouteWorkingProjection({
-    projection: input.working_projection, movement, committedState });
+  const projection = siteLine
+    ? buildPreparedSiteLineProjection(input.working_projection,
+      consequence.position_transition)
+    : buildLowerDvinaTracePreparedRouteWorkingProjection({
+      projection: input.working_projection, movement, committedState });
   return deepFreeze({
     working_projection: projection,
     summary: `prepared:${input.command_id}`,
@@ -235,6 +241,54 @@ async function applyPreparedPhase3Route({
       consequence: structuredClone(consequence)
     }
   });
+}
+
+function buildPreparedSiteLineProjection(projection, transition) {
+  const next = structuredClone(projection);
+  next.position = {
+    ...structuredClone(next.position ?? {}),
+    position_id: transition.to_position_ref,
+    location_ref: transition.destination_site_id,
+    site_id: transition.destination_site_id,
+    g4_id: transition.destination_g4_id,
+    g6_id: transition.destination_g6_instance_id
+  };
+  if (next.journey_location != null) {
+    next.journey_location = {
+      ...next.journey_location,
+      location_kind: 'scene',
+      scene_position_id: transition.to_position_ref,
+      transit_anchor_id: null,
+      travel_state_id: null,
+      g6_instance_id: transition.destination_g6_instance_id,
+      state_version: Number(next.journey_location.state_version) + 1
+    };
+  }
+  next.route_history = [...(next.route_history ?? []), {
+    from_ref: transition.source_site_id,
+    to_ref: transition.destination_site_id,
+    status: 'completed'
+  }];
+  return next;
+}
+
+function validPreparedMovementDuration(consequence, duration) {
+  const elapsed = consequence?.position_transition?.owner
+      === '@rus/turn/spatial-v3-site-connection-traversal'
+    && consequence?.movement?.cost_kind === 'time'
+    ? consequence?.spatial_v3_traversal?.clock_update?.actual_elapsed
+    : null;
+  if (elapsed == null) return Number.isSafeInteger(duration) && duration > 0;
+  if (!/^\d+$/u.test(String(elapsed.numerator))
+      || !/^\d+$/u.test(String(elapsed.denominator))) return false;
+  const numerator = BigInt(elapsed.numerator);
+  const denominator = BigInt(elapsed.denominator);
+  if (numerator <= 0n || denominator <= 0n) return false;
+  let left = numerator;
+  let right = denominator;
+  while (right !== 0n) [left, right] = [right, left % right];
+  const projection = Number(numerator) / Number(denominator);
+  return left === 1n && Number.isFinite(projection) && duration === projection;
 }
 
 async function applyPreparedPhase4Route({ input, committedState,

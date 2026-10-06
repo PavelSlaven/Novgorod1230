@@ -85,6 +85,37 @@ test('an off-departure line remains one route request and carries hidden ordered
   assert.equal(calls[1][1].expansion.connection_id, 'connection:water');
 });
 
+test('same-label route dispatch follows selected refs to line or exit owner', async () => {
+  const calls = [];
+  const label = 'Путь к воде';
+  const [exit, line] = await commands({
+    listExpansionOptions: async () => [{ directional_exit_id: 'exit:water', display_label: label }],
+    listConnectionOptions: async () => [{ connection_binding_id: 'binding:water', display_label: label }],
+    async prepareExpansion(input) { calls.push(['prepare-exit', input]); return { ok: true,
+      connection_id: 'generated:water', source_position_id: 'p-exit' }; },
+    async prepareTraversal(input) { calls.push(['traverse-exit', input]);
+      return packageBase({ inputDigest: 'a'.repeat(64), duration: 5, kind: 'movement' }); },
+    async prepareConnection(input) { calls.push(['prepare-line', input]); return { ok: true,
+      connection_id: 'canconn:water', source_position_id: 'p-line' }; },
+    async prepareConnectionTraversal(input) { calls.push(['traverse-line', input]);
+      return packageBase({ inputDigest: 'a'.repeat(64), duration: 5, kind: 'movement' }); }
+  });
+
+  const exitOperation = exit.semantic_binding.operation_dto;
+  const lineOperation = line.semantic_binding.operation_dto;
+  assert.deepEqual([exitOperation.description, lineOperation.description], [label, label]);
+  assert.deepEqual([exit, line].filter((command) =>
+    command.semantic_binding.matches({ operation: lineOperation })), [line]);
+  assert.deepEqual([exit, line].filter((command) =>
+    command.semantic_binding.matches({ operation: exitOperation })), [exit]);
+
+  await line.consequence({ retrievedState: state, playerInput: {} });
+  await exit.consequence({ retrievedState: state, playerInput: {} });
+  assert.deepEqual(calls.map(([owner]) => owner), [
+    'prepare-line', 'traverse-line', 'prepare-exit', 'traverse-exit'
+  ]);
+});
+
 test('an off-departure generated exit is one named route request with local proof before P16', async () => {
   const path = [{ edge_id: 'edge:1', from_position_id: 'p0', to_position_id: 'p1' }];
   const calls = [];

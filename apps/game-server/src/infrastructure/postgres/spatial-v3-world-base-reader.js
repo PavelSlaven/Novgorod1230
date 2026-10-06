@@ -974,7 +974,6 @@ export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion
           base_minutes: row.binding_base_minutes,
           movement_method_id: detail.profile.baseline_movement_method_id,
           method_factor: baseline?.factor,
-          environment_factor: { numerator: '1', denominator: '1' },
           movement_method_options: detail.options,
           alternative_methods: lineAlternatives.get(`${row.line_kind_profile_id}@${row.line_kind_profile_version}`) ?? [],
           dynamic_recheck_policy: { id: row.dynamic_recheck_policy_id,

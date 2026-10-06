@@ -1,0 +1,202 @@
+[
+  {
+    "id": "env.forest_track",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": "forest_track_ground",
+    "permanent_cost_basis_id": "forest_track_normal_surface",
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.forest_track"
+      },
+      "authoring_version": "v1"
+    },
+    "status": "candidate",
+    "provenance_ref": "env_dynamic_candidate_2026_10_02",
+    "candidate_metadata": {
+      "candidate_state": "awaiting_independent_approval",
+      "supersedes": {
+        "id": "env.forest_track",
+        "version": 1,
+        "canonical_digest": "85f2fb93237a7fb9387684a6af55f70acee43ead2c742e9d6caafb6b17c2df63"
+      },
+      "permanent_cost_basis_note": "Normal geometry and surface effects remain in physical segment base_minutes; no permanent multiplier is added."
+    }
+  },
+  {
+    "id": "env.open_water",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": "open_water_surface",
+    "permanent_cost_basis_id": "open_water_normal_surface",
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.open_water"
+      },
+      "authoring_version": "v1"
+    },
+    "status": "candidate",
+    "provenance_ref": "env_dynamic_candidate_2026_10_02",
+    "candidate_metadata": {
+      "candidate_state": "awaiting_independent_approval",
+      "supersedes": {
+        "id": "env.open_water",
+        "version": 1,
+        "canonical_digest": "b45e64ebb19c433d180deb368361d519cbb63ee90b62f1b7c5690bf8a4ad0887"
+      },
+      "permanent_cost_basis_note": "Normal geometry and surface effects remain in physical segment base_minutes; no permanent multiplier is added."
+    }
+  },
+  {
+    "id": "env.land_path",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": "ordinary_land_path",
+    "permanent_cost_basis_id": "land_path_normal_surface",
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.land_path"
+      },
+      "authoring_version": "v1"
+    },
+    "status": "candidate",
+    "provenance_ref": "env_dynamic_candidate_2026_10_02",
+    "candidate_metadata": {
+      "candidate_state": "awaiting_independent_approval",
+      "supersedes": {
+        "id": "env.land_path",
+        "version": 1,
+        "canonical_digest": "ce579059e7cb26a731fa5f18c08f6b18d5073659ee43912dac09b527bcb8d5e1"
+      },
+      "permanent_cost_basis_note": "Normal geometry and surface effects remain in physical segment base_minutes; no permanent multiplier is added."
+    }
+  },
+  {
+    "id": "env.main_river_channel",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": "main_river_channel",
+    "permanent_cost_basis_id": "main_river_normal_surface",
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.main_river_channel"
+      },
+      "authoring_version": "v1"
+    },
+    "status": "candidate",
+    "provenance_ref": "env_dynamic_candidate_2026_10_02",
+    "candidate_metadata": {
+      "candidate_state": "awaiting_independent_approval",
+      "supersedes": {
+        "id": "env.main_river_channel",
+        "version": 1,
+        "canonical_digest": "a6088c258d45ae147d7f9196dd8ec1f3c6c70575545f1190bc4dea598e9e7a81"
+      },
+      "permanent_cost_basis_note": "Normal geometry and surface effects remain in physical segment base_minutes; no permanent multiplier is added."
+    }
+  },
+  {
+    "id": "env.shore_transition",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": "shore_water_land_interface",
+    "permanent_cost_basis_id": "shore_transition_normal_surface",
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.shore_transition"
+      },
+      "authoring_version": "v1"
+    },
+    "status": "candidate",
+    "provenance_ref": "env_dynamic_candidate_2026_10_02",
+    "candidate_metadata": {
+      "candidate_state": "awaiting_independent_approval",
+      "supersedes": {
+        "id": "env.shore_transition",
+        "version": 1,
+        "canonical_digest": "e83984a9ebb268d708ae9403557aa5d70a882deb64eb8c9dd556d0434e06ccb8"
+      },
+      "permanent_cost_basis_note": "Normal geometry and surface effects remain in physical segment base_minutes; no permanent multiplier is added."
+    }
+  },
+  {
+    "id": "env.side_channel",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": "side_channel_water",
+    "permanent_cost_basis_id": "side_channel_normal_surface",
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.side_channel"
+      },
+      "authoring_version": "v1"
+    },
+    "status": "candidate",
+    "provenance_ref": "env_dynamic_candidate_2026_10_02",
+    "candidate_metadata": {
+      "candidate_state": "awaiting_independent_approval",
+      "supersedes": {
+        "id": "env.side_channel",
+        "version": 1,
+        "canonical_digest": "66873490940b0eb444156114d82b815b9cdae5f4d36d98424a5f5409e79a45f4"
+      },
+      "permanent_cost_basis_note": "Normal geometry and surface effects remain in physical segment base_minutes; no permanent multiplier is added."
+    }
+  },
+  {
+    "id": "env.wetland",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": "wetland_path",
+    "permanent_cost_basis_id": "wetland_normal_surface",
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.wetland"
+      },
+      "authoring_version": "v1"
+    },
+    "status": "candidate",
+    "provenance_ref": "env_dynamic_candidate_2026_10_02",
+    "candidate_metadata": {
+      "candidate_state": "awaiting_independent_approval",
+      "supersedes": {
+        "id": "env.wetland",
+        "version": 1,
+        "canonical_digest": "23f670e8e16676a79038584cb4dc4d8197ea3d1433834b6797e77c8ac9452aed"
+      },
+      "permanent_cost_basis_note": "Normal geometry and surface effects remain in physical segment base_minutes; no permanent multiplier is added."
+    }
+  },
+  {
+    "id": "env.local_variable",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": "local_parcel_transition",
+    "permanent_cost_basis_id": "local_variable_normal_surface",
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.local_variable"
+      },
+      "authoring_version": "v1"
+    },
+    "status": "candidate",
+    "provenance_ref": "env_dynamic_candidate_2026_10_02",
+    "candidate_metadata": {
+      "candidate_state": "awaiting_independent_approval",
+      "supersedes": {
+        "id": "env.local_variable",
+        "version": 1,
+        "canonical_digest": "00fef82b9628fab79083470a9fe001d86b43747325038cd101bc77b031e7a173"
+      },
+      "permanent_cost_basis_note": "Normal geometry and surface effects remain in physical segment base_minutes; no permanent multiplier is added."
+    }
+  }
+]

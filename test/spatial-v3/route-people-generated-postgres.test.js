@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { PRESENCE_E2E_MOVE_TEXT, bootstrapV17PresenceE2e, createPresenceProductionRoot,
-  installPresenceProductionE2eFetch, publicStartScenario, submitObserveTurn } from './presence-rules-production-e2e-fixture.js';
+  installPresenceProductionE2eFetch, projectTestOnlyLineEnvironmentAtClock, publicStartScenario,
+  submitObserveTurn } from './presence-rules-production-e2e-fixture.js';
 import { createRouteWalker, peopleAt } from './route-people-helpers.js';
 import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
@@ -17,11 +18,12 @@ test('first generated place beyond Vikhtuy: people come from the G4 composition 
     const prefs = { exactMovement: true };
     const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs: prefs });
     t.after(() => restoreFetch());
-    let root = await createPresenceProductionRoot(env);
+    const testOnlyEnvironment = { testOnlyProjectEnvironmentAtClock: projectTestOnlyLineEnvironmentAtClock };
+    let root = await createPresenceProductionRoot(env, testOnlyEnvironment);
     t.after(() => root.runtime.close());
     const partyId = await publicStartScenario(root.runtime, 'novgorod_vikhtuy_work_storage_v1');
     await submitObserveTurn(root.runtime, partyId, TARGET_SMOKE_INPUT);
-    const walker = createRouteWalker({ env, runtimeRef: () => root, partyId });
+    const walker = createRouteWalker({ env, runtimeRef: () => root, partyId, movementPrefs: prefs });
     await withCauseDiagnostic('walkTo water_access', () => walker.walkTo('water_access'));
     await withCauseDiagnostic('walkTo forest_path', () => walker.walkTo('forest_path'));
     prefs.exactMovement = false;
@@ -57,7 +59,7 @@ test('first generated place beyond Vikhtuy: people come from the G4 composition 
     }
     assert.equal((await peopleAt(env, partyId, generated.id)).trace, null);
     await root.runtime.close();
-    root = await createPresenceProductionRoot(env);
+    root = await createPresenceProductionRoot(env, testOnlyEnvironment);
     await root.runtime.getPartyScreen(partyId);
     assert.deepEqual(await people(), first, 'a restart neither adds nor changes the people of the place');
   });

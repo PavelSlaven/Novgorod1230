@@ -14,10 +14,10 @@ const REQUEST_PATH =
 const REQUEST_FILE = resolve(REQUEST_PATH);
 const REPO_V17 = resolve('data/world-catalogs/novgorod/live-world-runtime-v17');
 
-test('fresh-schema attestation gate selects v7 for current request digest', async () => {
+test('fresh-schema attestation gate selects v8 for current request digest', async () => {
   const requestBytes = await readFile(REQUEST_FILE);
   const requestDigest = computeFreshSchemaRequestDigest(requestBytes);
-  assert.equal(requestDigest, 'cc76fa8b0e1a4c05faccf697cb58ee139e9ee9ba284f010653e541bad542f6db');
+  assert.equal(requestDigest, '124aba7c244cce4a5a3a36dcbf242b2ac727b734c9cea7e49cc786094946ac12');
 
   const legacyOnlyDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-legacy-'));
   await copyFile(
@@ -44,34 +44,38 @@ test('fresh-schema attestation gate selects v7 for current request digest', asyn
     join(REPO_V17, 'fresh-schema-approval-attestation-v6.json'),
     join(legacyOnlyDir, 'fresh-schema-approval-attestation-v6.json')
   );
+  await copyFile(
+    join(REPO_V17, 'fresh-schema-approval-attestation-v7.json'),
+    join(legacyOnlyDir, 'fresh-schema-approval-attestation-v7.json')
+  );
   await assert.rejects(
     () => loadFreshSchemaAttestationFromRepo({
       requestDigest,
       catalogDir: legacyOnlyDir
     }),
     /V17_FRESH_SCHEMA_ATTESTATION_REQUIRED/u,
-    'historical v1–v6 must not authorize the current request digest'
+    'historical v1–v7 must not authorize the current request digest'
   );
   await rm(legacyOnlyDir, { recursive: true, force: true });
 
-  const v7Dir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-v7-'));
+  const v8Dir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-v8-'));
   await copyFile(
-    join(REPO_V17, 'fresh-schema-approval-attestation-v7.json'),
-    join(v7Dir, 'fresh-schema-approval-attestation-v7.json')
+    join(REPO_V17, 'fresh-schema-approval-attestation-v8.json'),
+    join(v8Dir, 'fresh-schema-approval-attestation-v8.json')
   );
   const selected = await loadFreshSchemaAttestationFromRepo({
     requestDigest,
-    catalogDir: v7Dir
+    catalogDir: v8Dir
   });
   assert.equal(selected.request_digest, requestDigest);
   assert.equal(selected.verdict, 'APPROVE_CONDITIONAL');
   assert.equal(selected.scope.expected_world_base_tables, 224);
-  await rm(v7Dir, { recursive: true, force: true });
+  await rm(v8Dir, { recursive: true, force: true });
 
   const ambiguousDir = await mkdtemp(join(tmpdir(), 'novgorod-fresh-gate-ambiguous-'));
-  const v7Bytes = await readFile(join(REPO_V17, 'fresh-schema-approval-attestation-v7.json'), 'utf8');
-  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v7a.json'), v7Bytes);
-  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v7b.json'), v7Bytes);
+  const v8Bytes = await readFile(join(REPO_V17, 'fresh-schema-approval-attestation-v8.json'), 'utf8');
+  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v8a.json'), v8Bytes);
+  await writeFile(join(ambiguousDir, 'fresh-schema-approval-attestation-v8b.json'), v8Bytes);
   await assert.rejects(
     () => loadFreshSchemaAttestationFromRepo({ requestDigest, catalogDir: ambiguousDir }),
     /V17_FRESH_SCHEMA_ATTESTATION_AMBIGUOUS/u

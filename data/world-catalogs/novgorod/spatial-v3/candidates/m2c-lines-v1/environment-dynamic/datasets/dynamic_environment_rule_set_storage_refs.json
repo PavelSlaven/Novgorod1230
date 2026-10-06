@@ -1,0 +1,146 @@
+[
+  {
+    "transition_environment_profile": {
+      "id": "env.forest_track",
+      "version": 2
+    },
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.forest_track"
+      },
+      "authoring_version": "v1"
+    },
+    "storage_columns": {
+      "dynamic_environment_rule_set_id": "dynamic_environment_rule_set.forest_track",
+      "dynamic_environment_rule_set_version": 1
+    },
+    "api_compatibility_note": "environment-state MODULE currently expects composition policy_ref.entity_kind=transition_environment_profile; this candidate follows that exact bridge. It does not assert runtime import/activation support."
+  },
+  {
+    "transition_environment_profile": {
+      "id": "env.open_water",
+      "version": 2
+    },
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.open_water"
+      },
+      "authoring_version": "v1"
+    },
+    "storage_columns": {
+      "dynamic_environment_rule_set_id": "dynamic_environment_rule_set.open_water",
+      "dynamic_environment_rule_set_version": 1
+    },
+    "api_compatibility_note": "environment-state MODULE currently expects composition policy_ref.entity_kind=transition_environment_profile; this candidate follows that exact bridge. It does not assert runtime import/activation support."
+  },
+  {
+    "transition_environment_profile": {
+      "id": "env.land_path",
+      "version": 2
+    },
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.land_path"
+      },
+      "authoring_version": "v1"
+    },
+    "storage_columns": {
+      "dynamic_environment_rule_set_id": "dynamic_environment_rule_set.land_path",
+      "dynamic_environment_rule_set_version": 1
+    },
+    "api_compatibility_note": "environment-state MODULE currently expects composition policy_ref.entity_kind=transition_environment_profile; this candidate follows that exact bridge. It does not assert runtime import/activation support."
+  },
+  {
+    "transition_environment_profile": {
+      "id": "env.main_river_channel",
+      "version": 2
+    },
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.main_river_channel"
+      },
+      "authoring_version": "v1"
+    },
+    "storage_columns": {
+      "dynamic_environment_rule_set_id": "dynamic_environment_rule_set.main_river_channel",
+      "dynamic_environment_rule_set_version": 1
+    },
+    "api_compatibility_note": "environment-state MODULE currently expects composition policy_ref.entity_kind=transition_environment_profile; this candidate follows that exact bridge. It does not assert runtime import/activation support."
+  },
+  {
+    "transition_environment_profile": {
+      "id": "env.shore_transition",
+      "version": 2
+    },
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.shore_transition"
+      },
+      "authoring_version": "v1"
+    },
+    "storage_columns": {
+      "dynamic_environment_rule_set_id": "dynamic_environment_rule_set.shore_transition",
+      "dynamic_environment_rule_set_version": 1
+    },
+    "api_compatibility_note": "environment-state MODULE currently expects composition policy_ref.entity_kind=transition_environment_profile; this candidate follows that exact bridge. It does not assert runtime import/activation support."
+  },
+  {
+    "transition_environment_profile": {
+      "id": "env.side_channel",
+      "version": 2
+    },
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.side_channel"
+      },
+      "authoring_version": "v1"
+    },
+    "storage_columns": {
+      "dynamic_environment_rule_set_id": "dynamic_environment_rule_set.side_channel",
+      "dynamic_environment_rule_set_version": 1
+    },
+    "api_compatibility_note": "environment-state MODULE currently expects composition policy_ref.entity_kind=transition_environment_profile; this candidate follows that exact bridge. It does not assert runtime import/activation support."
+  },
+  {
+    "transition_environment_profile": {
+      "id": "env.wetland",
+      "version": 2
+    },
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.wetland"
+      },
+      "authoring_version": "v1"
+    },
+    "storage_columns": {
+      "dynamic_environment_rule_set_id": "dynamic_environment_rule_set.wetland",
+      "dynamic_environment_rule_set_version": 1
+    },
+    "api_compatibility_note": "environment-state MODULE currently expects composition policy_ref.entity_kind=transition_environment_profile; this candidate follows that exact bridge. It does not assert runtime import/activation support."
+  },
+  {
+    "transition_environment_profile": {
+      "id": "env.local_variable",
+      "version": 2
+    },
+    "dynamic_environment_rule_set_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.local_variable"
+      },
+      "authoring_version": "v1"
+    },
+    "storage_columns": {
+      "dynamic_environment_rule_set_id": "dynamic_environment_rule_set.local_variable",
+      "dynamic_environment_rule_set_version": 1
+    },
+    "api_compatibility_note": "environment-state MODULE currently expects composition policy_ref.entity_kind=transition_environment_profile; this candidate follows that exact bridge. It does not assert runtime import/activation support."
+  }
+]

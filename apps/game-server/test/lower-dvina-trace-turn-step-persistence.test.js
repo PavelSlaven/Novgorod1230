@@ -129,6 +129,44 @@ test('delegated domain no-batch accepts exact nonzero clock and body arithmetic'
       { inserts: [], updates: [], appends: [], deletes: [] });
   });
 
+test('delegated timed no-batch accepts the exact phase-3 helper factual target', () => {
+  const state = baseState();
+  const domainFactual = factual({ elapsed: 8 });
+  domainFactual.body_update.state_after = structuredClone(state.body_state);
+  const target = { ...structuredClone(domainFactual),
+    availability: { status: 'available' } };
+  const envelope = canonicalEnvelope(domainFactual);
+  const result = prepareLowerDvinaTraceTurnStepPersistence({
+    partyId: 'p', state, snapshot: structuredClone(state),
+    factual: domainFactual, changeSetId: 'change-1', idemId: 'idem-1',
+    writePlan: {
+      turn_id: 'turn:p:1', base_state_version: 3,
+      command_trace: structuredClone(envelope.mode_resolution.decision_trace),
+      write_targets: [{ target: 'party_state', value: target }],
+      turn_step_commit: envelope
+    }
+  });
+
+  assert.deepEqual(result.writes,
+    { inserts: [], updates: [], appends: [], deletes: [] });
+});
+
+test('delegated timed domain no-batch rejects when its factual target is absent', () => {
+  const state = baseState();
+  const domainFactual = factual({ elapsed: 8 });
+  const envelope = canonicalEnvelope(domainFactual);
+  assert.throws(() => prepareLowerDvinaTraceTurnStepPersistence({
+    partyId: 'p', state, snapshot: structuredClone(state),
+    factual: domainFactual, changeSetId: 'change-1', idemId: 'idem-1',
+    writePlan: {
+      turn_id: 'turn:p:1', base_state_version: 3,
+      command_trace: structuredClone(envelope.mode_resolution.decision_trace),
+      write_targets: [],
+      turn_step_commit: envelope
+    }
+  }), { code: 'TRACE_TURN_STEP_DIRECT_COMMIT_CONTRACT_GAP' });
+});
+
 test('delegated domain no-batch rejects factual envelope divergence', () => {
   const state = baseState();
   const domainFactual = factual({ elapsed: 0 });

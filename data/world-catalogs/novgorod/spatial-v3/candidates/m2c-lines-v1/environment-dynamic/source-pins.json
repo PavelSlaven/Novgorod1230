@@ -1,0 +1,53 @@
+{
+  "worktree_head": "7af2d5d47e106d543c2479d61cc848b929a02cee",
+  "source_files": {
+    "line_kind_profiles": {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_line_kind_profiles.json",
+      "sha256": "ee3be32db3d0529d1d86cb96507b4adf04673b3b8cf3a55eac3470f0c5984da9"
+    },
+    "spatial_environment_profiles": {
+      "path": "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_transition_environment_profiles.json",
+      "sha256": "70f4b9a8a3a92c41578f44cc506579f3bdc97bc25490886aabf67be6c8f65c5a"
+    },
+    "candidate_environment_profiles": {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_transition_environment_profiles.json",
+      "sha256": "62e785e6c423dbc0b819e1bc56eded8ae765143f71c8b9a062b12c6c2acfff58"
+    },
+    "weather_dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json",
+      "sha256": "b8a66008bf3830f5353b325ad913c2a2a95c085303ae5d8950f5a72265a38922"
+    },
+    "weather_approval": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json",
+      "sha256": "6a237ee1c2b4afa66541e0956bd01fc10fd92222d0d0095fd85ad44905d35c58"
+    },
+    "light_dataset": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json",
+      "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e"
+    },
+    "light_approval": {
+      "path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
+      "sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
+    },
+    "spatial_norm": {
+      "path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+      "sha256": "e19e6dc85f9b48d753349b91b8966f7e7528c74486e52dc5f79c78af50cf702a"
+    },
+    "temporal_norm": {
+      "path": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
+      "sha256": "b085c7c8f0bf7c07f8fa7241d92fe2b56d164bd960d5c0cbfa42d922c7a4ad6f"
+    },
+    "environment_state_module": {
+      "path": "packages/environment-state/MODULE.md",
+      "sha256": "5c3cb052e3415dacea4388e5ee7fba81f84203dfc43c3696dd059b6b8e7d99c4"
+    },
+    "environment_state_api": {
+      "path": "packages/environment-state/src/index.js",
+      "sha256": "8d02563adde36e7bce9d7e0e32c6688d699977ce616fe5024e820a8997b74e02"
+    },
+    "lines_attestation": {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/approval-attestation.json",
+      "sha256": "2339224ba7b912e12055b3122db2d31a0a237b86458435f3ca1443caa540e7a8"
+    }
+  }
+}

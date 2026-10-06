@@ -120,6 +120,26 @@ test('at departure, no approach is offered (already there)', async () => {
     materializerVersion: 'version', generatedExpansionAdapter: { prepareExpansion: async () => ({ ok: true }) } });
   assert.deepEqual(await runtime.listApproachOptions({ partyId: 'party', actorId: 'actor' }), []);
 });
+test('canonical line candidate preserves its approved line binding through traversal selection', async () => {
+  const current = context(); const binding = { id: 'canonical-binding',
+    from_scene_endpoint_slot_key: 'out', line_name: 'лесной тропой', line_discriminator: null };
+  const lineBinding = { site_connection_id: binding.id,
+    authoring_version: 3, line_kind_profile_ref: 'line.path@1', base_minutes: 12 };
+  const connection = { id: 'canconn:party:canonical-binding',
+    from_site_id: current.site.id, status: 'active' };
+  current.canonical_connections = [{ binding, profile: { id: 'profile', status: 'approved' },
+    line_binding: lineBinding }];
+  current.snapshot.site_connections = [connection];
+  let traversal;
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current,
+    readConnectionDisclosure: async () => [{ connection_binding_id: binding.id, knowledge_state: 'visible' }],
+    prepareSiteTraversal: async (input) => { traversal = input; return input; } });
+  await runtime.prepareConnectionTraversal({ partyId: 'party', actorId: 'actor',
+    connectionBindingId: binding.id,
+    expansion: { connection_id: connection.id, source_position_id: current.position.id } });
+  assert.deepEqual(traversal.context.snapshot.line_bindings,
+    [{ ...lineBinding, site_connection_id: connection.id }]);
+});
 test('exact approved entry and current disclosure select server-owned request only', async () => {
   const current = context(); const before = structuredClone(current); let request;
   const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current, readExitDisclosure: disclosure,

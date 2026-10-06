@@ -22,6 +22,35 @@ import { createTracePhase3VisibleProjector } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 import { validateAuthoritativePreparedRoute } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-prepared-effect-authority.js';
+import { routeLowerDvinaTraceTurnStepCommit } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-step-route.js';
+import { SITE_TRAVERSAL_OWNER } from
+  '../src/infrastructure/postgres/spatial-v3-site-traversal-commit.js';
+import { assertPublicCommitEnvelope, mutateCommittedConsequence } from
+  './lower-dvina-trace-turn-step-route-fixture.js';
+
+test('site traversal factual target dispatches through the P16 owner', async () => {
+  const scenario = await routeDirectScenario();
+  const writePlan = structuredClone(scenario.writePlan);
+  mutateCommittedConsequence(writePlan, (consequence) => {
+    delete consequence.movement;
+    consequence.position_transition = { owner: SITE_TRAVERSAL_OWNER };
+    consequence.movement = { cost_kind: 'time' };
+    consequence.spatial_v3_traversal = { plan: {}, result: {} };
+  });
+  assertPublicCommitEnvelope(writePlan);
+
+  const result = { ok: true, owner: 'p16' };
+  let p16Calls = 0;
+  const routed = await routeLowerDvinaTraceTurnStepCommit({
+    writePlan,
+    commitP16: async () => { p16Calls += 1; return result; }
+  });
+
+  assert.deepEqual(routed, { handled: true, result });
+  assert.equal(p16Calls, 1);
+});
+
 test('generic camp-to-shed prepared route binds its resolved destination zone', () => {
   const state = { clock: { whole_minutes: '10', subminute_numerator: '0',
     subminute_denominator: '1' }, position: { location_ref: 'camp',

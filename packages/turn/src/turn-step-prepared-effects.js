@@ -8,7 +8,8 @@ import { addRationalMinutes,
 import { LEDGER_KEYS, LEDGER_SCHEMA, SLICE_SCHEMA, advanceWorkingClock,
   assertExactWindow, digest, exactKeys, exactMinutes, invalid, plain,
   rationalAsNumber, requireObject, requirePreparedRequest, requireRawEffect,
-  same, text, validateSlice } from './turn-step-prepared-effect-validation.js';
+  exactElapsedForConsequence, same, text, validateSlice } from
+  './turn-step-prepared-effect-validation.js';
 export function buildTurnStepPreparedChainContext({
   priorEffectCount, currentClock, currentBodyState
 }) {
@@ -82,10 +83,7 @@ export async function orchestrateTurnStepPreparedEffect({
   const interrupted = candidate.effect_kind === 'semantic_activity'
     && compareRationalMinutes(
       normalizeElapsedTime(timeUpdate.exact_elapsed).exact_minutes,
-      normalizeElapsedTime({ exact_minutes: {
-        numerator: String(candidate.consequence.duration_minutes),
-        denominator: '1'
-      } }).exact_minutes
+      exactElapsedForConsequence(candidate.consequence)
     ) < 0;
   const workingProjection = projectionOwner == null
     ? advancedProjection

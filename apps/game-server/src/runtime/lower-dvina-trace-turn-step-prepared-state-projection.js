@@ -10,6 +10,36 @@ import { withLowerDvinaTraceCurrentScene } from
 
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
+  const siteLine = effect.consequence?.position_transition?.owner
+      === '@rus/turn/spatial-v3-site-connection-traversal'
+    && effect.consequence?.movement?.cost_kind === 'time';
+  if (siteLine) {
+    const transition = effect.consequence.position_transition;
+    next.position = {
+      ...structuredClone(next.position ?? {}),
+      position_id: transition.to_position_ref,
+      location_ref: transition.destination_site_id,
+      site_id: transition.destination_site_id,
+      g4_id: transition.destination_g4_id,
+      g6_id: transition.destination_g6_instance_id
+    };
+    if (next.journey_location != null) {
+      next.journey_location = {
+        ...next.journey_location,
+        location_kind: 'scene',
+        scene_position_id: transition.to_position_ref,
+        transit_anchor_id: null,
+        travel_state_id: null,
+        g6_instance_id: transition.destination_g6_instance_id,
+        state_version: Number(next.journey_location.state_version) + 1
+      };
+    }
+    next.route_history = [...(next.route_history ?? []), {
+      from_ref: transition.source_site_id,
+      to_ref: transition.destination_site_id,
+      status: 'completed'
+    }];
+  }
   if (effect.consequence?.movement?.destination?.location_ref != null) {
     const movement = effect.consequence.movement;
     projectFirstEntryArrivalState(next, movement);

@@ -78,7 +78,31 @@ test('approved exit is a selectable exact server operation; topology input is ID
       operation_choice: choices[0].choice_id, operation_family: 'request_movement'
     }, choices);
     const command = definitions[0];
-    assert.deepEqual(command.writeTargets(), []);
+    const writeInput = {
+      playerInput: { raw_text: 'Иду по лесной тропе.' },
+      modeResolution: { selected_primary_mode: 'movement_route' },
+      availability: { status: 'available' },
+      consequence,
+      timeUpdate: { clock_after: { minute: 12 } },
+      bodyUpdate: { applied: false },
+      hiddenUpdate: {},
+      visibleContext: { version: 1, schema: 'visible_context_package' }
+    };
+    const targets = command.writeTargets(writeInput);
+    assert.equal(targets.filter(({ target }) => target === 'party_state').length, 1);
+    assert.deepEqual(targets, [{
+      target: 'party_state', value: {
+        player_input: writeInput.playerInput,
+        mode_resolution: writeInput.modeResolution,
+        availability: writeInput.availability,
+        consequence: writeInput.consequence,
+        time_update: writeInput.timeUpdate,
+        body_update: writeInput.bodyUpdate,
+        hidden_update: writeInput.hiddenUpdate
+      }
+    }, {
+      target: 'party_visible_context_package', value: writeInput.visibleContext
+    }]);
     assert.equal(command.semantic_binding.matches(selected), true);
     assert.equal(command.semantic_binding.matches({ operation: {
       ...selected.operation, description: 'Иду по лесной тропе' } }), true);

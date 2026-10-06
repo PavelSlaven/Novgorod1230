@@ -72,7 +72,7 @@ export function validateSlice(slice, { ordinal, rootTurnId,
   validateEffectState(slice);
   if (previous != null && compareRationalMinutes(
     previous.time_update.exact_elapsed.exact_minutes,
-    exactMinutes(previous.consequence.duration_minutes).exact_minutes) !== 0) {
+    exactElapsedForConsequence(previous.consequence)) !== 0) {
     invalid('An interrupted prepared effect must end the chain.');
   }
   const expectedPrevious = previous?.slice_digest ?? sha256({
@@ -92,14 +92,14 @@ export function validateSlice(slice, { ordinal, rootTurnId,
   }
 }
 function validateEffectState(effect) {
-  const duration = requireIntegralDuration(effect.consequence.duration_minutes);
+  const expectedElapsed = exactElapsedForConsequence(effect.consequence);
   assertExactWindow({ clockBefore: effect.time_update.clock_before,
     clockAfter: effect.time_update.clock_after,
     exactElapsed: effect.time_update.exact_elapsed },
   `prepared effect ${effect.step_index}`);
   const exact = normalizeElapsedTime(effect.time_update.exact_elapsed);
-  const planned = exactMinutes(duration).exact_minutes;
-  const comparison = compareRationalMinutes(exact.exact_minutes, planned);
+  const comparison = compareRationalMinutes(exact.exact_minutes,
+    expectedElapsed);
   const interrupted = comparison < 0
     && effect.effect_kind === 'semantic_activity'
     && effect.time_update.temporal_results?.some((result) =>
@@ -120,6 +120,31 @@ function validateEffectState(effect) {
     invalid('A non-applied body effect changed body state.', {
       step_index: effect.step_index });
   }
+}
+export function exactElapsedForConsequence(consequence) {
+  const lineElapsed = consequence?.spatial_v3_traversal?.clock_update
+    ?.actual_elapsed;
+  if (consequence?.position_transition?.owner
+        === '@rus/turn/spatial-v3-site-connection-traversal'
+      && consequence?.movement?.cost_kind === 'time'
+      && lineElapsed != null) {
+    let exact;
+    try {
+      exact = normalizeElapsedTime({ exact_minutes: lineElapsed }).exact_minutes;
+    } catch (cause) {
+      invalid('Timed site traversal has an invalid exact elapsed value.', {
+        cause: cause?.message
+      });
+    }
+    const projection = Number(exact.numerator) / Number(exact.denominator);
+    if (!Number.isFinite(projection)
+        || consequence.duration_minutes !== projection) {
+      invalid('Timed site traversal duration projection differs from its exact elapsed value.');
+    }
+    return exact;
+  }
+  return exactMinutes(requireIntegralDuration(
+    consequence?.duration_minutes)).exact_minutes;
 }
 function validBodyUpdate(value) {
   return plain(value) && value.schema === 'turn_body_update'

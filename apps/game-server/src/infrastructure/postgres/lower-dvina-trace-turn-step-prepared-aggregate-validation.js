@@ -56,7 +56,9 @@ export function validatePreparedEnvelopeAggregate({ ledger, envelope, factual })
   const consequence = envelope?.consequence;
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
   const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
-  const totalDuration = Number(expectedTime.exact_elapsed.exact_minutes.numerator);
+  const totalDuration = Number(
+    expectedTime.exact_elapsed.exact_minutes.numerator
+  ) / Number(expectedTime.exact_elapsed.exact_minutes.denominator);
   if (consequence?.prepared_effect_ledger_digest !== ledger.ledger_digest
       || consequence.duration_minutes !== totalDuration
       || !samePreparedTimeBase(expectedTime, envelope.time_update)

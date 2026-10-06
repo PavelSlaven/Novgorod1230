@@ -6,13 +6,18 @@ import assert from 'node:assert/strict';
 const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url)));
 const bindings = read('../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json');
 export const g5 = (name) => `cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_${name}`;
+export const passageBinding = (from, to) => {
+  const matches = bindings.filter((row) => row.from_canonical_g5_id === g5(from)
+    && row.to_canonical_g5_id === g5(to));
+  assert.equal(matches.length, 1, `expected one approved line: ${from} -> ${to}`);
+  return matches[0];
+};
 export const passage = (from, to) => {
-  const binding = bindings.find((row) => row.from_canonical_g5_id === g5(from) && row.to_canonical_g5_id === g5(to));
-  assert.ok(binding, `approved line missing: ${from} -> ${to}`);
+  const binding = passageBinding(from, to);
   return binding.line_discriminator ? `${binding.line_name} · ${binding.line_discriminator}` : binding.line_name;
 };
 
-export function createRouteWalker({ env, runtimeRef, partyId }) {
+export function createRouteWalker({ env, runtimeRef, partyId, movementPrefs }) {
   let step = 0;
   const turn = (raw_text) => runtimeRef().runtime.submitTurn(partyId, { raw_text, request_id: `route-${partyId}-${step++}` });
   const where = async () => {
@@ -30,8 +35,15 @@ export function createRouteWalker({ env, runtimeRef, partyId }) {
   /** The named line includes its local approach and traversal in one turn. */
   async function walkTo(to) {
     const from = (await where()).name;
-    const named = passage(from, to);
-    await turn(named);
+    const binding = passageBinding(from, to);
+    const named = binding.line_discriminator
+      ? `${binding.line_name} · ${binding.line_discriminator}` : binding.line_name;
+    if (movementPrefs) movementPrefs.expectedRouteRef = binding.id;
+    try {
+      await turn(named);
+    } finally {
+      if (movementPrefs) delete movementPrefs.expectedRouteRef;
+    }
     const arrived = await where();
     assert.equal(arrived.name, to, `${from} -> ${to} via "${named}"`);
     return arrived;

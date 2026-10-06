@@ -14,13 +14,14 @@ import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 test('a composition floor puts a person on the place; coming back neither adds nor changes people',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
-    const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs: { exactMovement: true } });
+    const movementPrefs = { exactMovement: true };
+    const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs });
     t.after(() => restoreFetch());
     let root = await createPresenceProductionRoot(env);
     t.after(() => root.runtime.close());
     const partyId = await publicStartScenario(root.runtime, 'novgorod_vikhtuy_household_cluster_v1');
     await submitObserveTurn(root.runtime, partyId, TARGET_SMOKE_INPUT);
-    const walker = createRouteWalker({ env, runtimeRef: () => root, partyId });
+    const walker = createRouteWalker({ env, runtimeRef: () => root, partyId, movementPrefs });
     assert.equal((await walker.where()).name, 'household_cluster', 'the start may hold nobody from the composition');
     const restart = async () => { await root.runtime.close(); root = await createPresenceProductionRoot(env); };
     const snapshot = async (siteId) => (await peopleAt(env, partyId, siteId)).npcs.map((npc) => npc.npc_id);

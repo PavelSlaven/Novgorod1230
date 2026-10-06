@@ -10,6 +10,10 @@ import {
   buildTurnStepPreparedTimeUpdate,
   requireTurnStepPreparedEffectLedger
 } from '../src/turn-step-prepared-effects.js';
+import { bindTurnStepPreparedConsequence } from
+  '../src/turn-step-prepared-effects.js';
+import { buildTimeUpdateStage } from '../src/stages/time-update.js';
+import { addElapsedTime } from '@rus/time-events-history';
 import { preparedDirectContinuation } from '../src/turn-step-loop-support.js';
 import {
   at, available, body, clarificationPlan, directOperationPlan, directPlan, effect,
@@ -65,6 +69,57 @@ test('two prepared body changes use the existing composite body owner', () => {
   assert.deepEqual(update.proposal.exact_deltas,
     { health: 0, satiety: 0, energy: -2 });
   assert.deepEqual(update.state_after, secondAfter);
+});
+
+test('fractional prepared line slices aggregate from exact rationals', async () => {
+  const firstElapsed = { numerator: '1', denominator: '10' };
+  const secondElapsed = { numerator: '2', denominator: '10' };
+  const start = at(0);
+  const middle = addElapsedTime(start, { exact_minutes: firstElapsed });
+  const finish = addElapsedTime(middle, { exact_minutes: secondElapsed });
+  const lineEffect = ({ step, elapsed, before, after, projectionBefore,
+    projectionAfter }) => {
+    const prepared = effect({ step, kind: 'domain_command', owner: 'line',
+      operation: `line:${step}`, availability: available(),
+      duration: Number(elapsed.numerator) / Number(elapsed.denominator),
+      before: Number(before.whole_minutes), after: Number(after.whole_minutes) });
+    prepared.consequence = {
+      ...prepared.consequence,
+      position_transition: { owner:
+        '@rus/turn/spatial-v3-site-connection-traversal' },
+      movement: { cost_kind: 'time' },
+      spatial_v3_traversal: { clock_update: { actual_elapsed: elapsed } }
+    };
+    prepared.time_update.clock_before = structuredClone(before);
+    prepared.time_update.clock_after = structuredClone(after);
+    prepared.time_update.exact_elapsed = { exact_minutes: elapsed };
+    return { effect: prepared,
+      working_projection_before: { clock: structuredClone(projectionBefore) },
+      working_projection_after: { clock: structuredClone(projectionAfter) } };
+  };
+  const ledger = buildTurnStepPreparedEffectLedger({
+    rootTurnId: 'turn:fractional-lines', committedStateVersion: 3,
+    effects: [
+      lineEffect({ step: 1, elapsed: firstElapsed, before: start,
+        after: middle, projectionBefore: start, projectionAfter: middle }),
+      lineEffect({ step: 2, elapsed: secondElapsed, before: middle,
+        after: finish, projectionBefore: middle, projectionAfter: finish })
+    ]
+  });
+  const preparedTime = buildTurnStepPreparedTimeUpdate(ledger);
+  assert.deepEqual(preparedTime.exact_elapsed.exact_minutes,
+    { numerator: '3', denominator: '10' });
+  const consequence = bindTurnStepPreparedConsequence({
+    duration_minutes: 0.1 + 0.2
+  }, ledger);
+  assert.equal(consequence.duration_minutes, 0.3);
+  const result = await buildTimeUpdateStage({
+    retrievedState: { clock: start }, consequence,
+    preparedEffectLedger: ledger
+  });
+  assert.deepEqual(result.exact_elapsed.exact_minutes,
+    { numerator: '3', denominator: '10' });
+  assert.deepEqual(result.clock_after, finish);
 });
 
 test('a charged semantic prefix may continue through the same direct action chain', () => {

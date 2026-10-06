@@ -177,7 +177,8 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
           ?? approach.edges } : {}),
         context: { ...context,
           ...(approach ? { approach_departure_position: approach.position } : {}),
-          snapshot: { ...context.snapshot, line_bindings: [selected.line_binding] },
+          snapshot: { ...context.snapshot, line_bindings: [{ ...selected.line_binding,
+            site_connection_id: selected.connection.id }] },
           closure: { ...context.closure, connection_profiles: [selected.profile] } } });
     },
     async listExpansionOptions(input) {
@@ -282,10 +283,11 @@ export function eligibleCanonicalConnections(context) {
     && row.required_position_slot_key === position.template_slot_key
     && row.required_position_instance_ordinal === position.template_instance_ordinal)
     .map((row) => row.slot_key);
-  return connections.flatMap(({ binding, profile }) => {
+  return connections.flatMap(({ binding, profile, line_binding }) => {
     if (!here.includes(binding.from_scene_endpoint_slot_key)) return [];
     const committed = snapshot.site_connections.find((row) => row.id === canonicalConnectionId(partyId, binding.id));
-    return committed && committed.status !== 'active' ? [] : [{ binding, profile, connection: committed }];
+    return committed && committed.status !== 'active' ? []
+      : [{ binding, profile, line_binding, connection: committed }];
   });
 }
 

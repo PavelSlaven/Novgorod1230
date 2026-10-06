@@ -34,13 +34,14 @@ const ROUTE = [
 test('route of Vikhtuy: the start may be empty, every other place has at least one person from approved data',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
-    const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs: { exactMovement: true } });
+    const movementPrefs = { exactMovement: true };
+    const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs });
     t.after(() => restoreFetch());
     let root = await createPresenceProductionRoot(env);
     t.after(() => root.runtime.close());
     const partyId = await publicStartScenario(root.runtime, 'novgorod_vikhtuy_work_storage_v1');
     await submitObserveTurn(root.runtime, partyId, TARGET_SMOKE_INPUT);
-    const walker = createRouteWalker({ env, runtimeRef: () => root, partyId });
+    const walker = createRouteWalker({ env, runtimeRef: () => root, partyId, movementPrefs });
     const start = await walker.where();
     assert.equal(start.name, 'work_storage');
     const startPeople = await peopleAt(env, partyId, start.site_id);

@@ -6,6 +6,8 @@ import { join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import pg from 'pg';
 
+import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { deriveEnvironment } from '@rus/environment-state';
 import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs';
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { createSpatialV3ProductionCompositionRoot } from
@@ -26,6 +28,93 @@ export const VIKHTUY_MEETING_G5 = 'cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_local
 export const VIKHTUY_LOCALITY_G4 = 'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality';
 export const PF_RURAL_YARD = 'pf_rural_yard';
 export const PF_PEASANT_HOMESTEAD = 'pf_peasant_homestead';
+
+const testEnvironmentEntityRef = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const testEnvironmentVersionedRef = (entity_kind, entity_id) => ({
+  entity_ref: testEnvironmentEntityRef(entity_kind, entity_id), authoring_version: 'v1'
+});
+const sealTestEnvironmentRecord = (payload) => ({
+  ...payload, canonical_digest: computeSpatialV3CanonicalDigest(payload)
+});
+const testEnvironmentScope = testEnvironmentEntityRef('party_g6_instance', 'lines-b1-test-scope');
+const testEnvironmentWeatherRef = testEnvironmentVersionedRef('weather_state', 'lines-b1-test-weather');
+const testEnvironmentLightRef = testEnvironmentVersionedRef('light_profile', 'lines-b1-test-light');
+const testEnvironmentCompositionRef = testEnvironmentVersionedRef('transition_environment_profile', 'lines-b1-test-composition');
+const testEnvironmentAccessRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-access');
+const testEnvironmentWeatherBoundaryRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-weather-boundary');
+const testEnvironmentWeatherVisibilityRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-weather-visibility');
+const testEnvironmentLightBoundaryRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-light-boundary');
+const testEnvironmentLightVisibilityRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-light-visibility');
+const testEnvironmentAccessVisibilityRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-access-visibility');
+const testEnvironmentPin = (dependency_role, value) => ({
+  dependency_role,
+  entity_ref: value.entity_ref,
+  version_pin: { pin_kind: 'authoring_version', authoring_version: value.authoring_version }
+});
+
+/** Test-only approved environment-state input for the local-line route PG fixture. */
+export function projectTestOnlyLineEnvironmentAtClock({ clock } = {}) {
+  const rational = (numerator, denominator = '1') => ({ numerator, denominator });
+  const result = deriveEnvironment({
+    clock,
+    weather_state: sealTestEnvironmentRecord({
+      profile_ref: testEnvironmentWeatherRef,
+      status: 'approved',
+      provenance_ref: testEnvironmentEntityRef('source_record', 'lines-b1-test-weather-source'),
+      applicability: { scope_refs: [testEnvironmentScope] },
+      current_weather_id: 'clear',
+      current_movement_factor: rational('3', '2'),
+      boundary_policy_ref: testEnvironmentWeatherBoundaryRef,
+      visibility_policy_ref: testEnvironmentWeatherVisibilityRef,
+      interrupt_effect: 'background',
+      transitions: []
+    }),
+    light_profile: sealTestEnvironmentRecord({
+      profile_ref: testEnvironmentLightRef,
+      status: 'approved',
+      provenance_ref: testEnvironmentEntityRef('source_record', 'lines-b1-test-light-source'),
+      applicability: { scope_refs: [testEnvironmentScope] },
+      current_light_id: 'daylight',
+      current_movement_factor: rational('1'),
+      boundary_policy_ref: testEnvironmentLightBoundaryRef,
+      visibility_policy_ref: testEnvironmentLightVisibilityRef,
+      interrupt_effect: 'background',
+      transitions: [],
+      artificial_light: null
+    }),
+    place_access_context: sealTestEnvironmentRecord({
+      scope_ref: testEnvironmentScope,
+      portal_access_state_id: 'open',
+      invalidates_at: null,
+      invalidation_reason_id: null,
+      access_policy_ref: testEnvironmentAccessRef,
+      visibility_policy_ref: testEnvironmentAccessVisibilityRef,
+      interrupt_effect: 'background'
+    }),
+    movement_composition_policy: sealTestEnvironmentRecord({
+      policy_ref: testEnvironmentCompositionRef,
+      status: 'approved',
+      composition_kind: 'worst_applicable',
+      factor_reducer: 'maximum_rational',
+      provenance_ref: testEnvironmentEntityRef('source_record', 'lines-b1-test-composition-source')
+    }),
+    catalog_pins: sealTestEnvironmentRecord({ pins: [
+      testEnvironmentPin('weather_dependency', testEnvironmentWeatherRef),
+      testEnvironmentPin('light_profile', testEnvironmentLightRef),
+      testEnvironmentPin('dynamic_environment_rule_set', testEnvironmentCompositionRef),
+      testEnvironmentPin('availability_condition_set', testEnvironmentAccessRef),
+      testEnvironmentPin('condition_rule', testEnvironmentWeatherBoundaryRef),
+      testEnvironmentPin('condition', testEnvironmentWeatherVisibilityRef),
+      testEnvironmentPin('condition_rule', testEnvironmentLightBoundaryRef),
+      testEnvironmentPin('condition', testEnvironmentLightVisibilityRef),
+      testEnvironmentPin('condition', testEnvironmentAccessVisibilityRef)
+    ] })
+  });
+  if (result.status !== 'ok') {
+    throw new Error(`test-only environment-state fixture failed: ${result.error.code}`);
+  }
+  return result;
+}
 export async function assertBootstrapV17PartyProductionLedger(partyPool) {
   const { row, fingerprint, release } = await readV17PartyProductionCatalogLedger(partyPool);
   assert.ok(row, 'bootstrap must record party_runtime_catalog_pins_v2 ledger row');
@@ -252,11 +341,19 @@ export async function bootstrapV17PresenceE2e(t, {
  * instead of ping-ponging over the first one).
  * exactMovement (rt-walk): the player names one option by its label; anything else is no movement.
  */
-function pickMovementChoice(request, localHopVisits, { exactMovement = false } = {}) {
+export function pickMovementChoice(request, localHopVisits, { exactMovement = false,
+  expectedRouteRef } = {}) {
   const movementChoices = turnStepOperationChoices(request).filter(({ operation }) =>
     operation.op === 'request_movement'
     && ['local', 'route'].includes(operation.movement_kind));
   if (exactMovement) {
+    if (expectedRouteRef != null) {
+      const matches = movementChoices.filter(({ operation }) =>
+        operation.op === 'request_movement' && operation.movement_kind === 'route'
+        && operation.target_ref === expectedRouteRef && operation.route_ref === expectedRouteRef);
+      assert.equal(matches.length, 1, `expected one route operation for ${expectedRouteRef}`);
+      return matches[0];
+    }
     return movementChoices.find(({ operation }) => operation.description === request.root_player_action);
   }
   const decisive = movementChoices.find(({ operation }) => operation.movement_kind === 'route')
@@ -390,7 +487,7 @@ const zeroVectorEncoderFactory = () => ({
 export async function createPresenceProductionRoot({
   worldPool, partyPool, approvals, rootDir, llmSettings = null, extraConfig = {},
   env = FIXTURE_ROOT_ENV, worldKnowledgeEncoderFactory = zeroVectorEncoderFactory,
-}) {
+}, { testOnlyProjectEnvironmentAtClock = null } = {}) {
   const pinDigest = approvals.itemApproval.request.compatible_world_pin_manifest_digest;
   const rootOptions = {
     env,
@@ -420,6 +517,7 @@ export async function createPresenceProductionRoot({
       partyPool,
       async close() {},
     },
+    ...(testOnlyProjectEnvironmentAtClock == null ? {} : { testOnlyProjectEnvironmentAtClock }),
     ...(worldKnowledgeEncoderFactory == null ? {} : { worldKnowledgeEncoderFactory }),
   };
   const runtime = await createSpatialV3ProductionCompositionRoot(rootOptions);

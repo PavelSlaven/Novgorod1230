@@ -1,5 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
-import { addElapsedTime } from '@rus/time-events-history';
+import { addElapsedTime, compareRationalMinutes, normalizeElapsedTime } from
+  '@rus/time-events-history';
 import { fail, text } from
   './lower-dvina-trace-turn-step-persistence-support.js';
 
@@ -66,7 +67,8 @@ function validateStateAwareTransition({ commit, state }) {
   if (!same(commit.time_update?.clock_before, state.clock)
       || !same(commit.time_update?.clock_after, expectedClockAfter)
       || !durationMatches(commit.consequence?.duration_minutes,
-        commit.time_update?.exact_elapsed?.exact_minutes)) {
+        commit.time_update?.exact_elapsed?.exact_minutes,
+        commit.consequence)) {
     noBatchFail('no-batch clock transition is not state-aware');
   }
 
@@ -93,7 +95,25 @@ function validateStateAwareTransition({ commit, state }) {
   }
 }
 
-function durationMatches(duration, exact) {
+function durationMatches(duration, exact, consequence) {
+  const traversalElapsed = consequence?.spatial_v3_traversal?.clock_update
+    ?.actual_elapsed;
+  if (consequence?.position_transition?.owner
+        === '@rus/turn/spatial-v3-site-connection-traversal'
+      && consequence?.movement?.cost_kind === 'time'
+      && traversalElapsed != null) {
+    try {
+      const expected = normalizeElapsedTime({
+        exact_minutes: traversalElapsed
+      }).exact_minutes;
+      const actual = normalizeElapsedTime({ exact_minutes: exact }).exact_minutes;
+      return Number.isFinite(duration)
+        && duration === Number(expected.numerator) / Number(expected.denominator)
+        && compareRationalMinutes(actual, expected) === 0;
+    } catch {
+      return false;
+    }
+  }
   if (!Number.isSafeInteger(duration) || duration < 0) return false;
   try {
     const denominator = BigInt(exact?.denominator);

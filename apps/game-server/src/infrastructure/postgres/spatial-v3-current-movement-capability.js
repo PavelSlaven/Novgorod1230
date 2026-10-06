@@ -59,11 +59,11 @@ export async function readCurrentActorBodyCapability({ transaction, partyId, act
   if (conditions.rows.some((condition) => condition.status === 'active')
     && (purpose === 'perception' || status !== 'restrained')) gap(reason);
   return { visual_capability: 'clear', hearing_capability: 'clear',
-    allowed_movement_methods: status === 'restrained' ? [] : ['movement.foot@1'],
+    allowed_movement_methods: status === 'restrained' ? [] : ['movement_method.walk'],
     body_state_version: version, dependency_pins: pins };
 }
 
-/** Current actor body is the movement admission owner for action-cost site crossings. */
+/** Current actor body is the owner of Spatial movement admission. */
 export function createSpatialV3CurrentMovementCapability({ pool } = {}) {
   if (!pool?.query) throw new TypeError('PostgreSQL pool is required.');
   async function assessMovementCapability({ transaction = pool, partyId, actorId } = {}) {

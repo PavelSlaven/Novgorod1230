@@ -93,8 +93,13 @@ export async function createSpatialV3ProductionCompositionRoot({
   pools: suppliedPools = null,
   bindingsFactory = null,
   worldKnowledgeEncoderFactory = undefined,
+  testOnlyProjectEnvironmentAtClock = null,
   targetRootFactory = createSpatialV3ProductionComposition
 } = {}) {
+  if (testOnlyProjectEnvironmentAtClock != null
+    && typeof testOnlyProjectEnvironmentAtClock !== 'function') {
+    throw new TypeError('testOnlyProjectEnvironmentAtClock must be a function');
+  }
   const pools = suppliedPools ?? createPostgresPools({ env, PoolClass });
   let worldKnowledgeEncoder = null;
   try {
@@ -244,7 +249,8 @@ export async function createSpatialV3ProductionCompositionRoot({
         readConnectionDisclosure: currentVisibility.readConnectionDisclosure,
         prepareSiteTraversal: createSpatialV3SiteTraversalRuntime({
           pool: pools.partyPool, ...siteTraversalCapability, projectDestination,
-          projectEnvironmentAtClock: factualContext.projectEnvironmentAtClock }),
+          projectEnvironmentAtClock: testOnlyProjectEnvironmentAtClock
+            ?? factualContext.projectEnvironmentAtClock }),
         materializerVersion: targetStartPublication.binding.execution_identity.materializer_version,
         generatedExpansionAdapter: createSpatialV3GeneratedExpansionAdapter({
           worldBaseReader: targetContext.runtime.worldBaseReader,

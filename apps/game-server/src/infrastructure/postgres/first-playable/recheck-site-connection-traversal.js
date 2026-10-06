@@ -7,6 +7,11 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
   if (typeof assessAvailability !== 'function'
     || typeof assessMovementCapability !== 'function'
     || typeof projectDestination !== 'function') return result(false, 'line_recheck_owner_missing');
+  const legacyAction = check.cost_kind === 'action'
+    && integer(check.action_units) && check.action_units > 0
+    && check.base_minutes == null && check.line_kind_id == null
+    && check.line_name == null && check.line_kind_profile_ref == null
+    && check.source_canonical_connection_ref == null;
   if (check.party_id !== partyId || ![check.actor_id, check.connection_id,
     check.journey_location_id, check.from_position_ref, check.to_position_ref,
     check.source_site_id, check.destination_site_id,
@@ -17,21 +22,23 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
     || check.availability_condition_set_ref != null
       && ![check.availability_condition_set_ref.entity_id,
         check.availability_condition_set_ref.authoring_version].every(text)
-    || !text(check.line_kind_id) || !text(check.line_name)
-    || check.line_discriminator != null && !text(check.line_discriminator)
-    || check.line_direction_id != null && !text(check.line_direction_id)
-    || !['line_kind_profile_ref', 'baseline_movement_method_id',
+    || !legacyAction && (!text(check.line_kind_id) || !text(check.line_name)
+      || check.line_discriminator != null && !text(check.line_discriminator)
+      || check.line_direction_id != null && !text(check.line_direction_id)
+      || !['line_kind_profile_ref', 'baseline_movement_method_id',
       'movement_method_cost_profile_ref', 'transition_environment_profile_ref',
       'movement_orientation_profile_ref', 'dynamic_recheck_policy_ref']
-      .every((key) => check[key] != null)
+        .every((key) => check[key] != null))
     || !['expected_journey_state_version', 'connection_state_version',
       'source_endpoint_state_version', 'destination_endpoint_state_version',
       'source_position_state_version', 'destination_position_state_version',
       'source_g6_state_version', 'destination_g6_state_version',
       'source_baseline_state_version', 'destination_baseline_state_version',
       'source_site_state_version', 'destination_site_state_version',
-      'destination_capacity', 'base_minutes'].every((key) => integer(check[key]))
-    || check.base_minutes < 1 || check.destination_capacity < 1) {
+      'destination_capacity'].every((key) => integer(check[key]))
+    || legacyAction && !integer(check.action_units)
+    || !legacyAction && (!integer(check.base_minutes) || check.base_minutes < 1)
+    || check.destination_capacity < 1) {
     return result(false, 'line_recheck_snapshot_invalid');
   }
   const current = await transaction.query(`SELECT
@@ -39,6 +46,7 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
       c.from_site_id,c.to_site_id,c.status AS connection_status,
       c.state_version AS connection_version,c.cost_kind,c.action_units,c.base_minutes,
       c.line_kind_id,c.line_kind_profile_ref,c.line_name,c.line_discriminator,c.line_direction_id,
+      c.source_canonical_connection_ref,
       c.baseline_movement_method_id,c.movement_method_cost_profile_ref,
       c.transition_environment_profile_ref,c.movement_orientation_profile_ref,
       c.dynamic_recheck_policy_ref,
@@ -94,13 +102,20 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
     destination_host: row.destination_g4_id === check.destination_g4_id
       && row.destination_g6_id === check.destination_g6_instance_id
       && row.destination_baseline_id === check.destination_scene_baseline_id,
-    time_contract: row.cost_kind === 'time' && row.action_units === null
-      && Number(row.base_minutes) === check.base_minutes && row.portal_entity_id === null
+    time_contract: (legacyAction
+      ? row.cost_kind === 'action' && Number(row.action_units) === check.action_units
+        && row.base_minutes === null && row.portal_entity_id === null
+      : row.cost_kind === 'time' && row.action_units === null
+        && Number(row.base_minutes) === check.base_minutes && row.portal_entity_id === null)
       && (row.connection_capacity == null || Number(row.connection_capacity) >= 1),
-    line_identity: row.line_kind_id === check.line_kind_id && row.line_name === check.line_name
+    line_identity: legacyAction
+      ? row.line_kind_id == null && row.line_name == null
+        && row.line_kind_profile_ref == null && row.source_canonical_connection_ref == null
+      : row.line_kind_id === check.line_kind_id && row.line_name === check.line_name
       && row.line_discriminator === check.line_discriminator
       && row.line_direction_id === check.line_direction_id,
-    line_profiles: isDeepStrictEqual(row.line_kind_profile_ref, check.line_kind_profile_ref)
+    line_profiles: legacyAction ? true
+      : isDeepStrictEqual(row.line_kind_profile_ref, check.line_kind_profile_ref)
       && row.baseline_movement_method_id === check.baseline_movement_method_id
       && isDeepStrictEqual(row.movement_method_cost_profile_ref, check.movement_method_cost_profile_ref)
       && isDeepStrictEqual(row.transition_environment_profile_ref, check.transition_environment_profile_ref)

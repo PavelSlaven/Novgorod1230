@@ -447,6 +447,7 @@ test('opted-in semantic workflow executes a generic check before one commit', as
 });
 
 test('opted-in semantic clarification produces one persisted player response', async () => {
+  let movementCalls = 0;
   const { commits, services } = createServices([], {
     command: {
       matches: () => false,
@@ -459,21 +460,30 @@ test('opted-in semantic clarification produces one persisted player response', a
     playerSafeStateProjector: async () => ({
       actor: { actor_ref: 'party-1' },
       player_safe_state: {
-        visible_entities: [{ entity_ref: 'place-gate' }]
+        visible_entities: [
+          { entity_ref: 'route:passage-a' },
+          { entity_ref: 'route:passage-b' }
+        ]
       }
+    }),
+    turnStepExecutionRegistry: createTurnStepExecutionRegistry({
+      domain: { request_movement: async () => {
+        movementCalls += 1;
+        assert.fail('clarification must not dispatch a movement owner');
+      } }
     }),
     turnStepModel: async (request) => turnStepPlan(request, {
       resolution: 'clarification_required',
       goal_result: 'pending',
       clarification: {
-        question: 'Какие именно ворота ты осматриваешь?',
-        target_refs: ['place-gate']
+        question: 'По какому из двух проходов вы идёте?',
+        target_refs: ['route:passage-a', 'route:passage-b']
       }
     })
   });
 
   const result = await runTurnWorkflow({
-    ...input(), raw_text: 'Осматриваю их.'
+    ...input(), raw_text: 'Пойду по одному из двух проходов.'
   }, services);
 
   assert.equal(result.status, 'partial');
@@ -482,9 +492,10 @@ test('opted-in semantic clarification produces one persisted player response', a
     target: 'party_player_visible_message',
     value: {
       clarification: {
-        question: 'Какие именно ворота ты осматриваешь?',
-        target_refs: ['place-gate']
+        question: 'По какому из двух проходов вы идёте?',
+        target_refs: ['route:passage-a', 'route:passage-b']
       }
     }
   }]);
+  assert.equal(movementCalls, 0);
 });

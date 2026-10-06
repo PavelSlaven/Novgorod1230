@@ -253,6 +253,28 @@ test('travel prompt prioritizes supplied movement over unrelated inspection', as
   assert.deepEqual((await model(input)).operations, [movement]);
 });
 
+test('movement prompt clarifies missing or materially ambiguous references', async () => {
+  const movement = { op: 'request_movement', actor_ref: 'actor:player',
+    movement_kind: 'route', target_ref: 'location:camp',
+    description: 'Follow path to fishing camp.' };
+  const input = request({ root_player_action: 'Continue toward fishing camp by the marked way.',
+    remaining_intent: 'Continue toward fishing camp by the marked way.', actor: { actor_ref: 'actor:player' },
+    available_domain_operations: [movement] });
+  const model = modelFor(input, 'domain_operation_1_request_movement_route', {
+    onPrompt: (prompt) => {
+      assert.match(prompt,
+        /For movement, select a supplied player-safe choice when the player intent uniquely identifies it/u);
+      assert.match(prompt,
+        /If an explicitly named destination or label matches no supplied choice, or the intent remains materially compatible with multiple choices, return clarification_required/u);
+      assert.match(prompt,
+        /Do not guess, choose the first or only choice to satisfy an unmatched named destination/u);
+      assert.match(prompt,
+        /For clarification_required, use clarification:\{question:<non-empty question>,target_refs:<array of refs copied only from the supplied player-safe request, or \[\]>\}/u);
+    }
+  });
+  assert.deepEqual((await model(input)).operations, [movement]);
+});
+
 test('mismatched semantic operation family cannot restore unrelated choice', async () => {
   const movement = { op: 'request_movement', actor_ref: 'actor:player', movement_kind: 'route', target_ref: 'location:camp' };
   const inspect = { op: 'request_discovery', actor_ref: 'actor:player', discovery_kind: 'inspect', target_refs: ['location:shore'], query: 'Inspect shore.' };

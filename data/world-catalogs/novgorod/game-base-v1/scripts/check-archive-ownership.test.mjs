@@ -322,6 +322,25 @@ test('external root still rejects a changed material overlay', () => {
   } finally { fs.rmSync(parent, { recursive: true, force: true }); }
 });
 
+test('external root rejects a changed overlay when source and overlay are both stale', () => {
+  const { parent, root } = gameBaseCopy();
+  try {
+    const source = path.join(parent, 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv');
+    const overlay = path.join(root, 'source-overlays/master-material-materials.csv');
+    fs.appendFileSync(source, '\n');
+    fs.appendFileSync(overlay, '\n');
+
+    assert.throws(
+      () => checkArchiveOwnershipRaw(root, {
+        allowSyntheticRootSourceMismatch: true,
+        materialViewPath: path.join(root, 'generated/master-material-material-view.json'),
+        materialOverlayPath: overlay,
+      }),
+      error => error.code === 'MATERIAL_VIEW_OVERLAY_STALE',
+    );
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
 test('terminal references resolve a stable target without requiring a new entity row', () => {
   const root = fixture();
   try {

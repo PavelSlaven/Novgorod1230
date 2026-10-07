@@ -18,14 +18,14 @@ function loadMaterialOverrides(sourcePath, { viewPath = VIEW_PATH, overlayPath =
   const view = JSON.parse(fs.readFileSync(viewPath, 'utf8'));
   const sourceSha = sha256(fs.readFileSync(sourcePath));
   const overlaySha = sha256(fs.readFileSync(overlayPath));
-  if (view.source_sha256 !== sourceSha) {
-    const error = new Error('material view is stale for the normalized master source');
-    error.code = 'MATERIAL_VIEW_SOURCE_STALE';
-    throw error;
-  }
   if (view.overlay_sha256 !== overlaySha) {
     const error = new Error('material view is stale for the material overlay');
     error.code = 'MATERIAL_VIEW_OVERLAY_STALE';
+    throw error;
+  }
+  if (view.source_sha256 !== sourceSha) {
+    const error = new Error('material view is stale for the normalized master source');
+    error.code = 'MATERIAL_VIEW_SOURCE_STALE';
     throw error;
   }
   const result = new Map();

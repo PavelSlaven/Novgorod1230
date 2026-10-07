@@ -219,6 +219,7 @@ test('position transition without prepared route loads destination NPCs for pend
 test('direct-only semantic turn commits one P16 root with snapshot and pending presentation',
   async () => {
     const f = fixture({ direct: true });
+    f.envelope.consequence.visible_seed.destination_site_origin = 'generated';
     const committed = await f.commit();
 
     assert.equal(committed.state_version, 4);
@@ -244,6 +245,8 @@ test('direct-only semantic turn commits one P16 root with snapshot and pending p
       table === 'party_narration_jobs').length, 1);
     const snapshot = plan.inserts.find(({ target_table: table }) =>
       table === 'party_state_snapshots').record.state_payload;
+    assert.equal(JSON.stringify(snapshot).includes('destination_site_origin'),
+      false, 'prepared snapshot must not retain transient destination origin');
     assert.equal(snapshot.schema, 'rus.lower_dvina_trace_turn_snapshot.v2');
     assert.equal(snapshot.last_turn.turn_step_commit.player_input.raw_text,
       'беру песок');

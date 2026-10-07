@@ -34,8 +34,7 @@ import { runActorBaseAttributesRuntimeActivation } from
   '../../scripts/run-actor-base-attributes-runtime-activation.mjs';
 import { loadActiveActorBaseAttributesBinding } from
   '../../apps/game-server/src/infrastructure/postgres/actor-base-attributes-profile-loader.js';
-import { loadActiveRuntimeCatalogPin } from
-  '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
+import { loadActiveRuntimeCatalogPin } from '@rus/runtime-catalog/active-pin';
 import { buildLowerDvinaBoundaryV1ImportSql } from
   '../spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildLowerDvinaV2ImportSql } from

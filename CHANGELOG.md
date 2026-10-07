@@ -6,7 +6,6 @@
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)
 - fix(npc-runtime): apply D87 day-type selection to D-1 schedules (#98)
-
 - fix(local-play): v17 slice acceptance requires a visible people panel for meet, a committed readable NPC answer for talk, and prior talk at the current place for take/make; D49 minimum is additive (#98)
 - data(spatial): world-routes b2 candidate and generator with 24 cross pairs @2, Opus APPROVE_WITH_LIMITS and M1–M5 mechanical continuation; draft for b2 runtime reader (#98)
 - fix(turn): repeated NPC waits pause the fire-rest schedule; first ordinary search after seed-only preflight costs 15 minutes under the shared plan-binding predicate; NPC inspects an available committed item by ref (#98)
@@ -23,13 +22,10 @@
 - fix(wk): remove context_text, max_context_chars and omitWorldKnowledgeContextText from the World Knowledge wire (#98)
 - fix(test): remove temporary fixture directories after tests, including setup failures (#231)
 - fix(test): route Russian opening writer and audit fixtures by payload shape (#98)
-
 - fix(game-base): sort builder file scans and pin sort locale; two-environment byte determinism check (#201)
 - fix(turn): project world_process_step input to qualitative facts and opaque choices; keep runtime refs, versions and quantities server-side (#230)
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series
 - fix(time): account for leap days in inverse calendar projection; recalculate historical profile derivations; LW-124 closed
-Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
-
 - feat(materialization): O1 v1 — approved applicability selector (75 rules, 4 tuples) makes template closure strict only for the selected tuple and rule; everything else keeps the generic presence path (#133)
 - feat(economy): pure @rus/economy owner — exact rational currency conversion by approved region/date/unit rates, one final half-up, unresolved/conflict/invalid outcomes, local-sum render without rates or metadata; no wiring yet (#184)
 - docs(corpus): §9 adds exact scoped currency conversion and confirmed local-sum handoff (#184)
@@ -47,7 +43,6 @@
 - fix(test): orphan test-container reaper is PID-namespace aware — removes only dead owners from its own namespace; foreign-namespace, legacy pid-only and unreadable owner labels are kept (fail-closed), so parallel PG runs are no longer killed (#98)
 - data(start-types): D62 — сад, бортничество и каменоломня «не применим по имеющимся данным», песок — кандидат; evidence-tooling; только кандидат, без активации
 - fix(materialization): D59 filters needs_check only in O1/O2b/S1, preserves player actions and authored O2a, replaces matching NPC A1/create_entity/O1 proposals with wait; LW-122 added (#98)
-
 - data(game-base): names-gaps D61 follow-up — exact candidate coverage, authoring checks and current draft/gap status (#98)
 - docs(changelog): восстановлена запись о ранее выполненном закрытии LW-112: исходы людей первого прибытия теперь фиксируются в агрегате присутствия; LW-112 closed
 - fix(spatial): rt-lines a5 — turn-back after a pause also allows interrupted_at_anchor/stranded and keys on travel-state status (refusal = turn_back_refused), no resume after returned_to_departure, zero-progress pause is no transit (Spatial 4.7.0 §4.10.1/§10.7.1/§10.8/A.4.1/F.1.1), A.4.1 gates synced in state-machines.js, line kinds are `line.*` with a vocabulary check, LINES_WAVE_MANIFEST repinned, gate test on attestation v6/224 tables.
@@ -282,7 +277,44 @@
 - feat(knowledge-source): оформлен RAG и добавлен agent CLI (#11)
 - feat(spatial): интегрирована Temporal travel, environment и perception runtime (#8)
 - feat(world-base): добавлены Stage 3C promotion, legacy inventory и approved-only materialization (#7)
+- data(npc): apply Opus-approved address forms and evidence for #510
+- fix(npc): select address forms only for their materialized source rule, resolve role/occupation specificity, and preserve validated NPC profile refs on scene readback (#436, #532)
+- docs(runtime-plan): apply D149 slice scope labels and M7 place-generation coverage; keep structured WK technology outside the norm (#98)
+- docs(runtime-plan): apply owner decisions D147/D148 and the D49+ final delta; move the playable slice and player start to M2c, retain M7 seeding, and update merge and progress gates (#98)
+- fix(game-server): preserve typed visible-scene gap after confirmed expansion rollback (#530, #531)
+- fix(screen): preserve committed NPC perceptions when finalizing the People panel (#523)
+- fix(architecture): keep runtime workers and catalog-pin ownership out of tools; audit both boundary directions (#459, #461)
+- docs(governance): WR §21.1 — an approval record names the exact approved bytes: path and sha256 of the approved content (git commit when available) and the date; no signatures or receipts (owner decisions D142, D144)
+- fix(game-base): resolve Novgorod SQLite refs exactly from the tracked read-only source; fail closed on unchecked refs (#469)
+- fix(spatial): allow visible-package persistence against matching committed v0 snapshot (#467)
+- fix(tools): portable main-module checks; the P05 checker now runs on Linux (#474)
+- fix(runtime-boundary): move new-game projections out of tools, centralize committed v5 inventory defaults in items-property; LW-038/LW-106 closed (#326, #281)
+- fix(game-base): apply approved master material corrections through a fail-closed overlay (#432, #431)
+- fix(npc): materialize named NPC relationships only from approved rule and D-2 slot evidence, persist pairs atomically on first entry and authored starts
+- fix(game-base): correct 1230 historical event dates and sources (both chronicle dates of the departure to Torzhok kept, neutral title), figure office bounds, recreation and health notes; health kinds for three epidemics; regression tests (#339, #340, #341, #325)
+- data(combat): approved generic v17 execution profile landed; activation pending (#224)
+- fix(tools): reject stale signed approvals, discover in-repository MapMaker symlink datasets, and test supplied calendar profiles (#306, #328, #350)
+- fix(presentation): preserve current committed NPC speech on first delivery, pending screens and replay (#98)
+- fix(docs-tools): сохранять полные пункты MODULE.md в индексе и убрать повтор World Knowledge (#354, #355)
+- fix(test): compare route panel labels with planner operations in the D72 player-safe space (#98)
+- docs(process): HOW_WE_WORK §11.2 — the lead reads the full bench wire (data, form, path, destination) before every BENCH-OK; wire-review file and its SHA-256 in the approval (D132) (#98)
+- docs(npc): add approved ACTIVE family, household and named-relations norm (D122, D124–D128); record pending household data approval/import as LW-136 (#133, #259, #338)
+- fix(turn-scene): keep current scene projection grounded in committed changes and drop prior-turn NPC speech from narration input (D80)
+- docs(player-start): add D111 player character and start contract; LW-135 added (#109)
+- docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
+- fix(npc): replay committed conversation claims from the verified prepared request snapshot (#98)
+- fix(spatial): use the D107 approved place label for v17 menu, opening, scene, route and narrator title; add LW-134
+- fix(runtime): filter typed item gaps from model facts, operations and visible envelopes; resolve approved labels in inspection; ignore ordinal exits in WK and require schema-only router recognition
+- fix(prompts/docs): align planner wording with reviewed Stage L text, correct addressed-request meaning, and record deferred group-3 P projection as LW-132
+- fix(prompts): перевести промпты планировщика хода и маршрутизатора на русский (prompt-rev-turn)
+- fix(turn): reject prepared follow-up refs outside projected allowlist; LW-131 added (#236)
+- fix(items): keep unnamed visible items as typed label gaps; LW-130 added (prompt-rev-turn)
+- fix(turn): current scene rebuilt from committed state each turn (departed items/NPCs dropped, speech never becomes the place title); movement narration from owner facts - site arrival from the destination package, route visible change, Spatial-signed local label (#98)
+- fix(test): copy only the Phase 2 bundle closure and surface rollback errors (#235)
+- feat(combat): scope approved missing-body initialization to combat participants and the existing P16 writer; admit request_combat from current scene readback without gating on unrelated NPC bodies; keep generic v17 execution fail-closed pending cutover; LW-099 updated (#224)
+- docs(tech-debt): record D65 body-effect scoring limit and retreat-menu gap; LW-137 added (#224)
 
+Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 ## 0.23.0-migration.24 — 2026-07-14
 
 - chore(release): root version повышена до `0.23.0-migration.24` (#4)

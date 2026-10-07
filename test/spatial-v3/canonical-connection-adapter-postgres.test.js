@@ -120,6 +120,7 @@ test('canonical connection creates the unvisited place atomically, replays, and 
       fields.map((key) => record[key]));
   }
   let failCommit = false; let admissions = 0; const firstEntries = [];
+  let projectedDiagnostics = null;
   const { perception } = await approvedNaturalPerceptionFixture();
   const readSources = async ({ overlay }) => ({ naturalInput: { ...perception,
     observer: { ...perception.observer, party_id: 'p', actor_id: 'test-actor', position_id: overlay.position.id },
@@ -153,8 +154,12 @@ test('canonical connection creates the unvisited place atomically, replays, and 
         validation_report: { status: 'pass', digest: digest('test-admission') },
         commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].map((kind) => ({ kind, digest: digest(kind) })),
         recheck: async () => ({ ok: !failCommit }) }; },
-    projectVisible: ({ transaction, snapshot, proposal, firstEntry, envelopeInput }) =>
-      projectSpatialV3ProposedVisiblePackage({ transaction, snapshot, proposal, firstEntry, readSources, envelopeInput })
+    projectVisible: ({ transaction, snapshot, proposal, firstEntry, envelopeInput,
+      request: visibleRequest, onLabelGapsOmitted }) => {
+      projectedDiagnostics = { visibleRequest, onLabelGapsOmitted };
+      return projectSpatialV3ProposedVisiblePackage({ transaction, snapshot,
+        proposal, firstEntry, readSources, envelopeInput });
+    }
   });
   const request = { party_id: 'p', actor_id: 'test-actor', g4: { id: 'g4', version: 1, world_revision_id: 'world', canonical_digest: hash },
     profile: { id: 'profile', version: 1, canonical_digest: hash }, binding_id: 'bind-out',
@@ -170,7 +175,11 @@ test('canonical connection creates the unvisited place atomically, replays, and 
   assert.deepEqual([(await state()).sites.length, await count('party_command_idempotency'), await count('party_materialization_runs')], [1, 0, 0],
     'a refused commit leaves nothing behind');
 
-  const both = await Promise.all([adapter.prepareCanonicalConnection(request), adapter.prepareCanonicalConnection(request)]);
+  // First creation is a true race: both callers start while the target place is absent.
+  const both = await Promise.all([
+    adapter.prepareCanonicalConnection(request),
+    adapter.prepareCanonicalConnection(request)
+  ]);
   assert.equal(both.every((result) => result.ok), true, JSON.stringify(both));
   assert.equal(both.filter((result) => result.replay).length, 1);
   assert.equal(both[0].connection_id, 'canconn:p:bind-out');
@@ -197,11 +206,36 @@ test('canonical connection creates the unvisited place atomically, replays, and 
   assert.equal((await adapter.prepareCanonicalConnection(request)).replay, true);
   assert.equal(admissions, admissionsBefore, 'replay is answered before admission');
 
-  const back = await adapter.prepareCanonicalConnection({ ...request, binding_id: 'bind-back', source_site_id: target.id,
+  const backRequest = { ...request, binding_id: 'bind-back', source_site_id: target.id,
     source_position_id: (await state()).scene_positions.find((row) => row.template_slot_key === 'departure'
-      && row.g6_instance_id.startsWith(`${target.id.replace(/:site$/u, '')}:baseline`)).id });
+      && row.g6_instance_id.startsWith(`${target.id.replace(/:site$/u, '')}:baseline`)).id };
+  // Separate bridge regression: diagnostics pass through the production runtime on the return connection.
+  const returnRuntime = createSpatialV3ExpansionRuntime({
+    readContext: async () => ({ partyId: 'p', actorId: 'test-actor',
+      g4: request.g4, profile: request.profile,
+      position: { id: backRequest.source_position_id, template_slot_key: 'departure',
+        template_instance_ordinal: 0 },
+      site: { id: target.id, origin: 'canonical', canonical_g5_ref: {
+        entity_id: 'canonical-terminal', authoring_version: '1' } },
+      scene: { endpoint_slots: scene.endpoint_slots },
+      snapshot: { site_connections: first.site_connections },
+      canonical_connections: [bindings['canonical-terminal'][0]] }),
+    readConnectionDisclosure: async ({ connections }) => connections.map(({ binding }) => ({
+      connection_binding_id: binding.id, knowledge_state: 'visible', display_label: 'Проход' })),
+    generatedExpansionAdapter: adapter, materializerVersion: 'm2c'
+  });
+  const onLabelGapsOmitted = () => {};
+  const back = await returnRuntime.prepareConnection({ partyId: 'p', actorId: 'test-actor',
+    connectionBindingId: 'bind-back' }, { onLabelGapsOmitted });
   assert.equal(back.ok, true, JSON.stringify(back));
+  assert.equal(projectedDiagnostics.onLabelGapsOmitted, onLabelGapsOmitted,
+    'the production runtime carries diagnostics through planProposal to visible projection');
+  assert.equal(Object.hasOwn(projectedDiagnostics.visibleRequest,
+    'onLabelGapsOmitted'), false);
+  const backReplay = await adapter.prepareCanonicalConnection(backRequest);
+  assert.equal(backReplay.ok && backReplay.replay, true, JSON.stringify(backReplay));
   const after = await state();
+  assert.doesNotMatch(JSON.stringify(after), /onLabelGapsOmitted/u);
   assert.deepEqual([after.sites.length, after.site_connections.length], [2, 2], 'the way back adds a connection, not a place');
   assert.deepEqual(firstEntries, [target.id], 'no second first entry for an already created place');
   const returning = after.endpoint_bindings.filter((row) => row.site_connection_id === 'canconn:p:bind-back');

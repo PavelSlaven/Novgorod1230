@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { passTargetRowForSlot } from
+  '../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
+import { passTargetDisclosureForExit } from '../src/runtime/spatial-v3-pass-target-disclosure.js';
 import { createSpatialV3CurrentVisibilityProvider } from
+  '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { approvedSpatialItemLabels } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
 import { loadApprovedExitLineLabels } from
   '../../../data/world-catalogs/novgorod/m2c-exit-line-labels/approved-labels.mjs';
@@ -9,10 +14,17 @@ import { createSpatialV3WorldBaseReader } from
   '../src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { approvedNaturalStableCover } from
   '../src/infrastructure/postgres/g4-natural-perception-reader.js';
-import { readCurrentTargetConditions } from
+import { readCommittedEntityExterior, readCurrentTargetConditions } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
 import { withPhase2CurrentLocalEdges } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
+import { projectSpatialV3CurrentVisibleContext } from
+  '../src/runtime/spatial-v3-current-visible-context.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../src/runtime/lower-dvina-trace-player-safe-visible-context.js';
+import { projectTurnStepModelRequest } from
+  '../src/runtime/lower-dvina-trace-turn-step-model-projection.js';
 
 const label = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url))).labels[0];
@@ -40,7 +52,9 @@ test('canonical exit reader requires approved authoring at exact G4 revision and
 });
 function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   readNatural: suppliedReadNatural = null,
-  readLocalMovementAdmission, readTargetConditions = readCurrentTargetConditions } = {}) {
+  readLocalMovementAdmission, itemDisplayName = null, itemTemplateId = null,
+  itemLabels = {}, itemStateRow = null, readEntityExterior: suppliedReadEntityExterior = null,
+  readTargetConditions = readCurrentTargetConditions } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
     site: { parent_g4_id: g4 }, baseline: { id: 'baseline' },
@@ -58,17 +72,104 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
     ambient_visibility: { g6_instance_id: 'g6', lighting: 'clear', weather: 'clear',
       stable_cover: 'clear' } };
   const queries = [];
-  const pool = { async connect() { return { async query(sql) { queries.push(sql); }, release() {} }; } };
+  const pool = { async connect() { return { async query(sql) {
+    queries.push(sql);
+    if (itemStateRow && sql.includes('SELECT i.state,i.condition_state,i.template_id')) {
+      return { rows: [itemStateRow] };
+    }
+    return { rows: [] };
+  }, release() {} }; } };
   const provider = createSpatialV3CurrentVisibilityProvider({ pool,
+    itemLabels,
     worldBaseReader,
     readScene: async () => scene, readNatural: suppliedReadNatural ?? (async () => natural),
     readTargetConditions,
-    readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id }),
+    readEntityExterior: suppliedReadEntityExterior ?? (async ({ placement }) => ({
+      visible_clothing: placement.entity_id,
+      ...(placement.entity_kind === 'item' && itemDisplayName != null
+        ? { display_name: itemDisplayName } : {}),
+      ...(placement.entity_kind === 'item' && itemTemplateId != null
+        ? { template_id: itemTemplateId } : {}) })),
     readPlayerKnowledge: async ({ placement }) => placement.entity_id === 'one'
       ? { display_name: 'Known person' } : null,
     ...(readLocalMovementAdmission ? { readLocalMovementAdmission } : {}) });
   return { scene, natural, provider, queries };
 }
+
+test('visible items retain identity with a typed gap when no safe display name exists', async () => {
+  const named = fixture({ itemDisplayName: 'Речная лодка' });
+  named.scene.placements = [{ entity_kind: 'item', entity_id: 'boat',
+    position_node_id: 'b' }];
+  const observations = await named.provider.readEntityObservations({
+    partyId: 'party', actorId: 'actor' });
+  assert.equal(observations[0].display_label, 'Речная лодка');
+
+  const unnamed = fixture();
+  unnamed.scene.placements = [{ entity_kind: 'item', entity_id: 'unknown-item',
+    position_node_id: 'b' }];
+  const unnamedObservations = await unnamed.provider.readEntityObservations({
+    partyId: 'party', actorId: 'actor' });
+  assert.deepEqual(unnamedObservations[0], {
+    entity_kind: 'item', entity_id: 'unknown-item', visibility: 'clear',
+    exterior: { visible_clothing: 'unknown-item' },
+    label_gap: { code: 'player_safe_item_label_required' }
+  });
+
+  const invalid = fixture({ itemDisplayName: 'item_template_secret' });
+  invalid.scene.placements = [{ entity_kind: 'item', entity_id: 'invalid-item',
+    position_node_id: 'b' }];
+  const invalidObservation = await invalid.provider.readEntityObservations({
+    partyId: 'party', actorId: 'actor' });
+  assert.deepEqual(invalidObservation[0].label_gap,
+    { code: 'player_safe_item_label_required' });
+  assert.equal(Object.hasOwn(invalidObservation[0], 'display_label'), false);
+});
+
+test('current item visibility uses an approved template label when committed state has no name', async () => {
+  const current = fixture({ itemTemplateId: 'approved-template',
+    itemLabels: { 'approved-template': 'Утверждённое название' } });
+  current.scene.placements = [{ entity_kind: 'item', entity_id: 'unnamed-template-item',
+    position_node_id: 'b' }];
+
+  const observations = await current.provider.readEntityObservations({
+    partyId: 'party', actorId: 'actor' });
+
+  assert.equal(observations[0].display_label, 'Утверждённое название');
+  assert.equal(observations[0].label_gap, undefined);
+});
+
+test('approved template label flows from committed reader through model and public projections', async () => {
+  const { perception } = await approvedNaturalPerceptionFixture();
+  const current = fixture({ itemLabels: { 'approved-template': 'Утверждённое название' },
+    readEntityExterior: readCommittedEntityExterior,
+    itemStateRow: { state: {}, condition_state: 'intact', template_id: 'approved-template',
+      anchor_id: 'anchor', scene_position_id: null, container_id: null,
+      holder_npc_id: null, holder_character_id: null } });
+  current.scene.placements = [{ entity_kind: 'item', entity_id: 'unnamed-template-item',
+    position_node_id: 'b', placement_kind: 'scene_position' }];
+  const observations = await current.provider.readEntityObservations({
+    partyId: 'party', actorId: 'actor' });
+  const visibleContext = projectSpatialV3CurrentVisibleContext({
+    naturalInput: perception, partyId: 'party:1',
+    actorId: 'player:1', positionId: 'position:inside', entityObservations: observations,
+    localEdges: [], directionalExits: [] });
+  const publicContext = projectVisibleContextForPlayerPackage(visibleContext).visible_context;
+  const modelRequest = projectTurnStepModelRequest({ root_player_action: 'Осмотреть вещь.',
+    player_safe_state: { items: [], current_visible_context: visibleContext } }).request;
+
+  assert.equal(observations[0].exterior.template_id, 'approved-template');
+  assert.equal(publicContext.visible_objects[0].display_label, 'Утверждённое название');
+  assert.equal(modelRequest.player_safe_state.current_visible_context.visible_objects[0].display_label,
+    'Утверждённое название');
+});
+
+test('spatial template labels come only from approved verified catalog rows', () => {
+  assert.deepEqual(approvedSpatialItemLabels({ records_by_table: { item_templates: [
+    { id: 'approved', title: 'Утверждённая вещь', status: 'approved' },
+    { id: 'pending', title: 'Черновая вещь', status: 'candidate' },
+    { id: 'invalid-title', title: 'item_template_hidden', status: 'approved' }
+  ] } }), { approved: 'Утверждённая вещь' });
+});
 
 test('prepared destination visibility carries the root post-turn clock into entity admission', async () => {
   const clock = { whole_minutes: '720', subminute_numerator: '0',

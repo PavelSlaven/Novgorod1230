@@ -102,7 +102,8 @@ export function createFactualTurnDeliveryScreenReadModel({
   currentProjectionAnchor,
   presentationContext,
   sceneAssetId,
-  combatState
+  combatState,
+  exactNpcUtterances = []
 } = {}) {
   if (!text(partyId) || !text(turnId) || !text(packageId)) {
     throw presentationError('FACTUAL_TURN_DELIVERY_ID_REQUIRED', 'partyId, turnId and packageId are required.');
@@ -121,6 +122,7 @@ export function createFactualTurnDeliveryScreenReadModel({
       || !textArray(uncertainties) || !validActionPanel(safeActionPanel)
       || !sameJson(safeActionPanel.suggested_actions, actions)
       || !validChecks(checks) || !plain(panels)
+      || !validExactNpcUtterances(exactNpcUtterances)
       || !validInputPanel(inputPanel)
       || !validReadyDeliveryState(deliveryState)
       || (fullCarrier && !validFullFactualCarrier({ actionPanel, actions, checks,
@@ -141,6 +143,9 @@ export function createFactualTurnDeliveryScreenReadModel({
     scenario_id: scenarioId,
     screen_kind: screenKind,
     visible_context: structuredClone(visibleContext),
+    ...(exactNpcUtterances.length ? {
+      exact_npc_utterances: structuredClone(exactNpcUtterances)
+    } : {}),
     visible_changes: structuredClone(visibleChanges),
     uncertainties: structuredClone(uncertainties),
     action_panel: structuredClone(safeActionPanel),
@@ -188,6 +193,10 @@ export function validateTurnScreen(value) {
   if (!validChecks(value.checks ?? [])) errors.push('checks must be an ordered player-safe array');
   errors.push(...sceneAffordanceContextErrors(value.visible_context));
   errors.push(...sceneAffordancePanelErrors(value.panels));
+  if (Object.hasOwn(value, 'exact_npc_utterances')
+      && !validExactNpcUtterances(value.exact_npc_utterances)) {
+    errors.push('exact_npc_utterances must use verified committed speech');
+  }
   if (detectHiddenLeaks(value).length) errors.push('screen contains hidden data');
   return result(errors);
 }
@@ -201,7 +210,8 @@ export function validateFactualTurnDeliveryScreen(value) {
     'uncertainties', 'presentation_quality', 'scenario_id', 'screen_kind',
     'action_panel', 'actions', 'checks', 'panels', 'input_panel',
     'delivery_state', 'opening_screen_digest', 'current_projection_anchor',
-    'presentation_context', 'scene_asset_id', 'combat_state'
+    'presentation_context', 'scene_asset_id', 'combat_state',
+    'exact_npc_utterances'
   ]);
   for (const key of Object.keys(value)) if (!allowed.has(key)) errors.push(`forbidden key: ${key}`);
   if (value.version !== 1 || value.schema !== FACTUAL_TURN_DELIVERY_SCREEN_SCHEMA) errors.push(`expected ${FACTUAL_TURN_DELIVERY_SCREEN_SCHEMA} version 1`);
@@ -220,6 +230,10 @@ export function validateFactualTurnDeliveryScreen(value) {
   if (!validChecks(value.checks)) errors.push('checks must be an ordered player-safe array');
   if (!validInputPanel(value.input_panel)) errors.push('input contract must be intent_not_fact');
   if (!validReadyDeliveryState(value.delivery_state)) errors.push('delivery_state must be ready');
+  if (Object.hasOwn(value, 'exact_npc_utterances')
+      && !validExactNpcUtterances(value.exact_npc_utterances)) {
+    errors.push('exact_npc_utterances must use verified committed speech');
+  }
   const carrier = factualCarrierFromScreen(value);
   if (hasFullFactualCarrier(carrier) && !validFullFactualCarrier(carrier)) {
     errors.push('full factual carrier is incomplete or invalid');
@@ -235,6 +249,35 @@ export function validateLowerDvinaFactualTurnDeliveryScreen(value) {
   if (!base.ok) return base;
   return validFullFactualCarrier(factualCarrierFromScreen(value))
     ? base : fail('Lower Dvina factual delivery requires a complete carrier');
+}
+
+function validExactNpcUtterances(value) {
+  const exactKeys = (record, keys) => plain(record)
+    && Object.keys(record).length === keys.length
+    && keys.every((key) => Object.hasOwn(record, key));
+  const nonempty = (item) => typeof item === 'string' && item.trim();
+  return Array.isArray(value) && value.every((entry) =>
+    exactKeys(entry, ['speaker_ref', 'utterance_text', 'provenance'])
+    && exactKeys(entry.speaker_ref, ['entity_kind', 'entity_id'])
+    && entry.speaker_ref.entity_kind === 'npc'
+    && nonempty(entry.speaker_ref.entity_id)
+    && nonempty(entry.utterance_text)
+    && exactKeys(entry.provenance, ['source', 'player_receipt',
+      'precommit_service_marker_check', 'statement_ref', 'listener_ref',
+      'receipt_utterance_text'])
+    && entry.provenance.source === 'phase3_statement_receipt'
+    && entry.provenance.player_receipt === 'full'
+    && entry.provenance.precommit_service_marker_check === true
+    && exactKeys(entry.provenance.statement_ref,
+      ['entity_kind', 'entity_id'])
+    && entry.provenance.statement_ref.entity_kind
+      === 'conversation_statement'
+    && nonempty(entry.provenance.statement_ref.entity_id)
+    && exactKeys(entry.provenance.listener_ref,
+      ['entity_kind', 'entity_id'])
+    && entry.provenance.listener_ref.entity_kind === 'player_character'
+    && nonempty(entry.provenance.listener_ref.entity_id)
+    && entry.provenance.receipt_utterance_text === entry.utterance_text);
 }
 
 export function createPublicViewModel({ visibleContext, prose, actions = [] }) {

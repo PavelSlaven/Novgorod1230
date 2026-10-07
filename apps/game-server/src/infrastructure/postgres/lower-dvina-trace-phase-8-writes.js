@@ -13,19 +13,24 @@ import { appendNpcSemanticConversationWrites,
 import { phase2ScreenDigest, phase2VisibleContextFromPayload,
   publicCombatStateFromConsequence } from
   './lower-dvina-trace-phase-2-projection.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function phase8VisibleEnvelope({ partyId, factual, visibleContext,
-  nextVersion, turnNumber, changeSetId, idemId }) {
+  nextVersion, turnNumber, changeSetId, idemId,
+  onLabelGapsOmitted = null }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const initialization = factual.consequence.accusation?.combat_initialization
     ?? factual.consequence.combat_initialization ?? null;
   const payload = { schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details,
-    visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects,
-    known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties, hypotheses: [],
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details,
+    visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects,
+    known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties, hypotheses: [],
     player_safe_interruption: initialization == null ? null
       : 'Требуется решение в бою.',
     allowed_action_affordances: initialization == null ? [] : [{ action_id: 'request_combat',

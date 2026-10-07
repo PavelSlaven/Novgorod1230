@@ -8,7 +8,8 @@ import { passagePhrases } from
   '../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 
 export async function createTraceExpansionCommands({ state, requestId,
-  inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime }) {
+  inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime,
+  onLabelGapsOmitted = null }) {
   if (spatialExpansionRuntime == null) return [];
   if (typeof spatialExpansionRuntime.listExpansionOptions !== 'function'
       || typeof spatialExpansionRuntime.listApproachOptions !== 'function') {
@@ -119,7 +120,7 @@ export async function createTraceExpansionCommands({ state, requestId,
    * consequence (topology first, then the shared site traversal). `owner` names the runtime entry
    * points of the kind of passage: an exit of the G4 or a canonical connection inside it. */
   const crossingCommand = ({ routeId, label, commandKey, optionKey, selectedKey, prepare, traverse,
-    ownerMissing }) => {
+    ownerMissing, diagnosticCallback = null }) => {
     const operation = { op: 'request_movement', actor_ref: identity.actorId,
       target_ref: routeId, movement_kind: 'route', route_ref: routeId,
       description: label };
@@ -154,8 +155,17 @@ export async function createTraceExpansionCommands({ state, requestId,
         if (typeof traverse !== 'function') fail('LIVE_WORLD_TRAVERSAL_OWNER_MISSING');
         if (typeof prepare !== 'function') fail(ownerMissing);
         const selected = { ...identity, [selectedKey]: routeId, requestId };
-        const expansion = await prepare(selected);
+        const expansion = await prepare(selected, diagnosticCallback == null ? undefined
+          : { onLabelGapsOmitted: diagnosticCallback });
         if (expansion?.ok !== true) {
+          const error = expansion?.error;
+          if (error?.code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP'
+              && error.diagnostics?.reason === 'player_safe_visible_scene_required'
+              && error.diagnostics?.turn_commit_status === 'not_started') {
+            throw Object.assign(serverError(error.code,
+              'The approved directional exit cannot be traversed.',
+              { status: 409, details: error }), { turn_commit_status: 'not_started' });
+          }
           fail('LIVE_WORLD_EXPANSION_PREPARATION_FAILED', expansion?.error ?? null);
         }
         try {
@@ -185,10 +195,12 @@ export async function createTraceExpansionCommands({ state, requestId,
     ...candidates.map(({ directional_exit_id: exitId, display_label: label }) => crossingCommand({
       routeId: exitId, label, commandKey: 'follow_directional_exit', optionKey: 'directional_exit',
       selectedKey: 'directionalExitId', ownerMissing: 'LIVE_WORLD_EXPANSION_OWNER_MISSING',
+      diagnosticCallback: onLabelGapsOmitted,
       prepare: runtime.prepareExpansion?.bind(runtime), traverse: runtime.prepareTraversal?.bind(runtime) })),
     ...connections.map(({ connection_binding_id: bindingId, display_label: label }) => crossingCommand({
       routeId: bindingId, label, commandKey: 'follow_canonical_connection', optionKey: 'canonical_connection',
       selectedKey: 'connectionBindingId', ownerMissing: 'LIVE_WORLD_EXPANSION_OWNER_MISSING',
+      diagnosticCallback: onLabelGapsOmitted,
       prepare: runtime.prepareConnection?.bind(runtime), traverse: runtime.prepareConnectionTraversal?.bind(runtime) }))];
 }
 

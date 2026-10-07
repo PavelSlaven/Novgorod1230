@@ -6,7 +6,8 @@ import {
   projectionError,
   scalarRecord,
   text,
-  textArray
+  textArray,
+  optionalVisibleText
 } from './lower-dvina-trace-player-safe-json.js';
 import { projectKnowledge } from './lower-dvina-trace-player-safe-world.js';
 
@@ -43,9 +44,15 @@ const BODY_PART_KEYS = new Set([
 export function projectActor({ profile, body, actorId }) {
   return compact({
     actor_id: actorId,
-    name: text(profile?.identity?.name),
-    role: text(profile?.social_status?.display_name),
-    biography: text(profile?.origin?.biography),
+    name: optionalVisibleText(profile?.identity?.name, {
+      path: 'actor.name', code: invalidCode()
+    }),
+    role: optionalVisibleText(profile?.social_status?.display_name, {
+      path: 'actor.role', code: invalidCode()
+    }),
+    biography: optionalVisibleText(profile?.origin?.biography, {
+      path: 'actor.biography', code: invalidCode()
+    }),
     memory: projectKnowledge(profile?.memory?.records),
     attributes: projectCapabilityMap(profile?.attributes, ATTRIBUTE_IDS,
       ['value', 'bonus']),
@@ -98,7 +105,9 @@ export function projectInteractions(records, { strict = false } = {}) {
       speaker_actor_id: text(record.speaker_actor_id ?? record.npc_id),
       target_actor_ids: textArray(record.target_actor_ids),
       statement_ref: text(record.statement_ref),
-      content: text(record.content ?? record.journal_text),
+      content: optionalVisibleText(record.content ?? record.journal_text, {
+        path: 'interactions[].content', code: invalidCode()
+      }),
       occurred_at: scalarRecord(record.occurred_at, {
         strict, path: 'occurred_at', allowedKeys: OCCURRED_AT_KEYS
       })
@@ -116,7 +125,11 @@ function projectCapabilityMap(value, allowedIds, allowedKeys) {
         field,
         field === 'value' || field === 'bonus'
           ? finite(record?.[field])
-          : text(record?.[field])
+          : field === 'display'
+            ? optionalVisibleText(record?.[field], {
+              path: `capabilities.${key}.${field}`, code: invalidCode()
+            })
+            : text(record?.[field])
       ])))
     ]));
 }
@@ -146,9 +159,15 @@ function projectCondition(value, strict) {
     assertAllowedKeys(value, allowed, 'active_conditions[]', invalidCode());
   }
   return compact({
-    id: text(value.id), label: text(value.label), status: text(value.status),
-    location: text(value.location), severity: finite(value.severity),
-    effect: text(value.effect)
+    id: text(value.id), label: optionalVisibleText(value.label, {
+      path: 'active_conditions[].label', code: invalidCode()
+    }), status: text(value.status),
+    location: optionalVisibleText(value.location, {
+      path: 'active_conditions[].location', code: invalidCode()
+    }), severity: finite(value.severity),
+    effect: optionalVisibleText(value.effect, {
+      path: 'active_conditions[].effect', code: invalidCode()
+    })
   });
 }
 
@@ -184,7 +203,9 @@ function projectIdentity(value, strict) {
   const allowed = new Set(['canonical_name', 'display_name']);
   if (strict) assertAllowedKeys(value, allowed, 'identity_state', invalidCode());
   return compact({
-    display_name: text(value.display_name)
+    display_name: optionalVisibleText(value.display_name, {
+      path: 'identity_state.display_name', code: invalidCode()
+    })
   });
 }
 

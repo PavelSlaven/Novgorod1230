@@ -8,6 +8,8 @@ import { phase2ScreenDigest, phase2VisibleContextFromPayload,
   './lower-dvina-trace-phase-2-projection.js';
 import { appendPhase5FinalTreatment } from
   './lower-dvina-trace-phase-5-final-writes.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 import {
   appendPhase5ConsentDecision,
   appendPhase5InitialBindings
@@ -21,16 +23,19 @@ import { assertSharedSemanticSnapshotSafe } from
   './lower-dvina-trace-conversation-state.js';
 
 export function phase5VisibleEnvelope({ partyId, nextVersion, turnNumber,
-  changeSetId, idemId, factual, visibleContext, contracts }) {
+  changeSetId, idemId, factual, visibleContext, contracts,
+  onLabelGapsOmitted = null }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const payload = {
     schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details,
-    visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects,
-    known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties,
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details,
+    visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects,
+    known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties,
     hypotheses: [],
     player_safe_interruption: factual.consequence.treatment.interrupted
       ? 'treatment_progress_preserved' : null,
@@ -89,6 +94,10 @@ export function phase5PendingScreen({ state, factual, visibleEnvelope,
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    ...(state.last_turn?.exact_npc_utterances?.length ? {
+      exact_npc_utterances: structuredClone(
+        state.last_turn.exact_npc_utterances)
+    } : {}),
     checks: projectPlayerSafeChecks(state),
     main_prose:
       'Факты хода сохранены; повествование ожидает повторной доставки.'

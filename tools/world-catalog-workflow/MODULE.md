@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также владеет internal CLI/authoring-компиляцией approved World Knowledge records в deterministic immutable bundle и предоставляет нейтральные чистые projections утверждённых `world_base` records для Stage 8 и G5 materialization. Он не владеет gameplay World Knowledge runtime, runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.
+Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также владеет internal CLI/authoring-компиляцией approved World Knowledge records в deterministic immutable bundle. Совместимые exports projections утверждённых `world_base` records делегируют реализации-владельцу `@rus/runtime-catalog`; production runtime этот tool не импортирует. Модуль не владеет gameplay World Knowledge runtime, runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.
 
 Полный реестр публичных контрактов и ошибок находится в [CONTRACTS.md](CONTRACTS.md). Единственный package entrypoint — `./src/index.js`; прямой импорт внутренних файлов другими пакетами запрещён.
 
@@ -15,7 +15,7 @@
 - чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })` без доступа к БД, файлам, глобальному состоянию, массы или fallback;
 - `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback.
 - Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation.
-- `buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set.
+- compatibility exports чистых runtime projections и G4 binding resolver из `@rus/runtime-catalog`; реализация и owner runtime-контрактов находятся там.
 - internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay; condition facets валидирует через `@rus/world-knowledge` (`CONDITION_FACETS`, `isValidCondition`);
 - production authoring approval: один независимый `APPROVE` на claim, exact
   digest проверенного claim/localizations/concepts/predicate/evidence/sources,
@@ -43,9 +43,9 @@
   (facts/hard/disputes), including access, applicability-date and
   `domain_internal_only` vs `npc_decision`. Planner `focus_refs` may name cut
   claims; Core must still exclude them. Live judge metrics — owner
-  (CR #153 шаг 8). Optional `src/bge-reranker.py` loads a **local** D17
-  snapshot only (`--model-path`, no hub / no `trust_remote_code`); production
-  enablement stays behind D21 (LW-053).
+(CR #153 шаг 8). Reranker scoring is evaluated against local D17 snapshots;
+  the worker belongs to game-server. Production enablement stays behind D21
+  (LW-053).
 
 ## Публичные интерфейсы
 
@@ -56,13 +56,24 @@
 | item/container | `validateItemContainerClassificationCatalog`, `assessItemContainerClassificationMigration`, `assessItemContainerClassificationReadiness`, `calculatePackingSlots` | normalised records/legacy inventory → errors, typed gaps/conflicts/readiness или exact packing count |
 | supplemental | `SUPPLEMENTAL_AUTHORING_TABLES`, `supplementalDigest`, `validateSupplementalCatalogBundle`, `applySupplementalCatalogBundle` | draft manifest + datasets + declared external IDs → deterministic validation или transactional adapter result |
 | Stage 3C readiness/promotion | `LEGACY_CLASSIFICATION_FIELD_REGISTRY`, `flattenLegacyRows`, `buildLegacyClassificationInventory`, `buildCatalogEditorialReadinessReport`, `buildEditorialEvidenceReviewPlan`, `buildCoherentEditorialApprovalPlan`, `buildRevisionPromotionPlan`, `buildAllTemplateRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `applyRevisionPromotionPlan`, `buildRevisionRollbackPlan` | verified operator export + exact candidate/coverage digests + all-120 attestation → typed readiness/blocked plan или revision-pinned transactional promotion with exact G4 transitions and without activation |
-| approved runtime projections | `buildApprovedItemCatalogSnapshot`, `buildAllowedG5TemplateSet` | approved `world_base` records + revision ID + catalog digest (+ exact G4 for G5 projection) → immutable approved Stage 8 catalog snapshot / allowed G5 template set либо typed `RUNTIME_*` hard error |
+| runtime projection compatibility facade | `buildApprovedItemCatalogSnapshot`, `buildAllowedG5TemplateSet`, `resolveG4MaterializationBinding` | Делегирует чистую реализацию `@rus/runtime-catalog`; не выполняет runtime I/O |
 
 World Knowledge compiler остаётся internal authoring surface (`src/world-knowledge-pack.js` + CLI `compile-world-knowledge`), потому отсутствует в public package entrypoint.
 
 `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle` никогда не переводят `draft` records в `approved`, не активируют revision и не создают party/runtime candidates. Детали всех входов, результатов, ошибок и test cases приведены в [CONTRACTS.md](CONTRACTS.md).
 
 PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan` и их spatial JSON Schema находятся в `src/internal/`. Это immutable migration tooling для единственного PR17 lifecycle: оно не экспортируется package entrypoint и не является постоянным публичным контрактом модуля.
+
+## Разрешённые зависимости
+
+```architecture-tool-app-dependencies
+[
+  {"source":"src/world-knowledge-pipeline-eval.js","target":"apps/game-server","reason":"Evaluate production World Knowledge roles against their production implementation"},
+  {"source":"src/generate-item-display-content.mjs","target":"apps/game-server","reason":"Temporary access to the app-owned materialization bundle until issue #488 transfers this generator","temporary":true,"issue":"#488"},
+  {"source":"src/generate-character-appearance-content.mjs","target":"apps/game-server","reason":"Temporary access to the app-owned materialization bundle until issue #488 transfers this generator","temporary":true,"issue":"#488"},
+  {"source":"src/generate-opening-orientation-content.mjs","target":"apps/game-server","reason":"LD/v16 digest re-pinner; remove or archive per D97/D98 after ld-harvest (#476)","temporary":true,"issue":"#476"}
+]
+```
 
 ## Внешние зависимости и побочные эффекты
 
@@ -88,7 +99,7 @@ PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan`
 ## Взаимодействия и потребители
 
 - `@rus/new-game` и `@rus/items-property` используют только публичную `calculatePackingSlots` для fail-closed inventory checks;
-- caller читает approved revision records из `world_base`; new-game orchestration строит через `buildApprovedItemCatalogSnapshot` чистую Stage 8 projection и через `buildAllowedG5TemplateSet` — один G4-specific template set для Stage 13/14/16. Обе projection сохраняют exact domain `source_catalog_digest`, а собственный `catalog_digest` связывает их canonical payload; database readback остаётся вне модуля;
+- `@rus/new-game` использует совместимые exports чистых projections; их реализация и runtime ownership — в `@rus/runtime-catalog`. Database readback остаётся вне обоих модулей;
 - Stage 3B-1 CLI использует supplemental validator и injected PostgreSQL executor только в editor/import workflow;
 - карта взаимодействий и границы party/runtime Stage 3B-1/3C — [INTERACTION_MAP.md](../../data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/INTERACTION_MAP.md).
 

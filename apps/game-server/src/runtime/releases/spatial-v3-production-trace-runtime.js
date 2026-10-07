@@ -43,6 +43,8 @@ import { compareGameTimestamp } from '@rus/time-events-history';
 import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
   '@rus/turn/temporal-advance';
 import { calculatePackingSlots } from '@rus/items-property';
+import { hasActiveTurnDeadline, withTurnDeadlineTransaction } from
+  '../../infrastructure/postgres/query-with-turn-deadline.js';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-effect-owner.js';
 import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
@@ -74,6 +76,8 @@ import { createPostgresWorldBaseReader } from
   '../../infrastructure/postgres/world-base.js';
 import { createRuntimeCatalogCoordinator } from '../runtime-catalog.js';
 import { createBodyNeedsTemporalAdapter } from '../body-needs-temporal.js';
+import { readAndProjectSpatialV3CurrentVisibleContext } from
+  '../spatial-v3-current-visible-context.js';
 
 export function createTraceTurnRuntime({
   partyPool, worldPool, committer, env, config, ordinaryMaterializationProfile,
@@ -94,6 +98,7 @@ export function createTraceTurnRuntime({
   readCurrentExitDisclosure = null,
   readCurrentConnectionDisclosure = null,
   readCurrentVisibleContext = null,
+  readCurrentSources = null,
   loadInitialNaturalScenePerceptionInput = null,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts,
@@ -236,12 +241,22 @@ export function createTraceTurnRuntime({
     ]
   });
   const npcRuntimePorts = createNpcRuntimePorts({ roleRunner,
-    worldKnowledgeGrounder });
+    worldKnowledgeGrounder,
+    npcSpeechAddressForms: materializationInputs?.npc_speech_address_forms ?? [],
+    npcSpeechRegisters: materializationInputs?.npc_speech_registers ?? [] });
+  const projectCurrentSpatialContext = createCurrentSpatialContextProjector({
+    partyPool, readCurrentSources,
+    onProjected: config.onCurrentSpatialContextProjection ?? null
+  });
+  if (typeof config.onCurrentSpatialContextProjector === 'function') {
+    config.onCurrentSpatialContextProjector(projectCurrentSpatialContext);
+  }
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
       trustedBodyNeedsBindingPin: bodyTimeEffectAdapter?.trustedBindingPin ?? null,
       trustedBodyNeedsProfile: bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null,
+      projectCurrentSpatialContext,
       readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,
       readCurrentVisibleContext,
       projectEnvironmentAtClock: targetStartRuntime == null ? null
@@ -263,10 +278,11 @@ export function createTraceTurnRuntime({
     loadTurnRuntimeCatalogContext: partyCatalogCoordinator == null ? null
       : ({ partyId }) => partyCatalogCoordinator.loadPartyContext({ partyId }),
     createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest,
-      assertNeedsCheckAllowed, recordNeedsCheckFilter }) =>
+      assertNeedsCheckAllowed, recordNeedsCheckFilter, itemLabels }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel,
+        itemLabels,
         assertNeedsCheckAllowed,
         recordNeedsCheckFilter,
         requestSubject: 'player',
@@ -408,6 +424,44 @@ const BODY_THRESHOLD_PROFILE_METRICS = Object.freeze({
 function versionedRef(entityKind, entityId, authoringVersion) {
   return { entity_ref: { entity_kind: entityKind, entity_id: entityId },
     authoring_version: authoringVersion };
+}
+
+export function createCurrentSpatialContextProjector({ partyPool,
+  readCurrentSources, onProjected = null } = {}) {
+  if (typeof readCurrentSources !== 'function') return null;
+  return async ({ partyId, actorId, state, turnBudget = null }) => {
+    const positionId = state?.position?.position_id
+      ?? state?.journey_location?.scene_position_id;
+    if (typeof positionId !== 'string' || positionId.length === 0) {
+      throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
+        'Current position is required for scene perception.', { status: 409,
+          details: { reason: 'current_position_required' } });
+    }
+    const project = (transaction) => readAndProjectSpatialV3CurrentVisibleContext({
+      transaction, partyId, actorId, positionId, observedPositionId: positionId,
+      readCurrentSources, state, directionalExits: []
+    });
+    let visible;
+    if (hasActiveTurnDeadline(turnBudget)) {
+      visible = await withTurnDeadlineTransaction(partyPool, turnBudget,
+        project, { beginMode: 'repeatable_read_read_only' });
+    } else {
+      const transaction = await partyPool.connect();
+      try {
+        await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+        visible = await project(transaction);
+        await transaction.query('COMMIT');
+      } catch (error) {
+        await transaction.query('ROLLBACK');
+        throw error;
+      } finally {
+        transaction.release();
+      }
+    }
+    onProjected?.({ partyId, actorId, positionId,
+      visible: structuredClone(visible) });
+    return visible;
+  };
 }
 
 function ordinaryStageBUnavailable() {

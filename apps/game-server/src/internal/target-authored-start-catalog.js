@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { selectSpatialV3PlaceLabel } from '@rus/presentation/spatial-v3-projection';
+import { loadApprovedPlaceLabels } from '../../../../data/world-catalogs/novgorod/m2c-place-labels/approved-labels.mjs';
 import { serverError } from '../errors.js';
 
 export const TARGET_START_CATALOG_ID = 'novgorod_live_world_runtime_v17';
@@ -41,12 +43,15 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
     ...(start.initial_perception_rule == null ? {} : { initial_natural_perception_rule_pin:
       profile.canonical_start.policy_profile_pins.find((pin) =>
         pin.key === start.initial_perception_rule.id && pin.revision === start.initial_perception_rule.version) }) });
-  const metadata = Object.freeze({ ...profile.public_metadata,
-    available: release.production_activation === true && release.runtime_selectable_in_canonical_production === true });
+  const startPlaceRef = start.initial_placement?.canonical_g5_ref;
+  const placeLabel = selectSpatialV3PlaceLabel(startPlaceRef, loadApprovedPlaceLabels());
+  const displayMetadata = Object.freeze({ ...profile.public_metadata, title: placeLabel,
+    available: release.production_activation === true
+      && release.runtime_selectable_in_canonical_production === true });
   const world = start.world_pin;
   const binding = Object.freeze({ schema: 'rus.live_world_runtime.authored_start_binding.v1',
     binding_id: `${profile.scenario_id}@${bindingRevision}`, revision: bindingRevision, status: 'approved', scenario_id: profile.scenario_id,
-    publication_availability: 'public', fallback_policy: 'forbidden', public_metadata: metadata,
+    publication_availability: 'public', fallback_policy: 'forbidden', public_metadata: displayMetadata,
     materializer_binding_id: runtimeBinding.materializer_binding_id,
     phase_1a_manifest_ref: { digest: profile.manifest_digest },
     scenario_definition_ref: { revision: 1, digest: profile.manifest_digest },
@@ -57,17 +62,19 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
       production_world_catalog_digest: world.world_catalog_digest, lineage: [] },
     runtime_binding: { catalog_id: runtimeBinding.catalog_id, revision: runtimeBinding.revision } });
   const date = start.initial_environment_inputs.calendar_date;
+  const projectionMetadata = Object.freeze(Object.fromEntries(
+    Object.entries(displayMetadata).filter(([key]) => key !== 'description')));
   const publication = Object.freeze({
     manifest_digest: canonicalDigest({ source_pins: profile.canonical_start.policy_profile_pins, world_pin: world }),
     binding, binding_digest: canonicalDigest(binding), materialization_profile: profile,
-    public_projection: { scenario_id: profile.scenario_id, public_metadata: metadata,
+    public_projection: { scenario_id: profile.scenario_id, public_metadata: projectionMetadata,
       opening_projection: { version: 1, schema: 'first_game_screen',
         visible_field_allowlist: ['party_id', 'player.name', 'player.social_status', 'position', 'timestamp', 'body', 'environment'],
-        place_label: metadata.title, calendar_label: `${date.day}.${date.month}.${date.year}`, opening_prose: '' } } });
+        place_label: placeLabel, calendar_label: `${date.day}.${date.month}.${date.year}`, opening_prose: '' } } });
   return Object.freeze({ actor_catalog: profile.actor_catalog, turn_profile: turnProfile,
     ordinary_profiles: ordinaryProfiles, runtime_binding: binding.runtime_binding,
-    listPublic: () => [{ scenario_id: profile.scenario_id, ...metadata }],
-    hasScenario: (scenarioId) => metadata.available && scenarioId === profile.scenario_id,
+    listPublic: () => [{ scenario_id: profile.scenario_id, ...projectionMetadata }],
+    hasScenario: (scenarioId) => displayMetadata.available && scenarioId === profile.scenario_id,
     resolveProfile: (scenarioId) => scenarioId === profile.scenario_id ? profile : historicalCatalog?.resolveProfile(scenarioId) ?? null,
     loadPublication: async (scenarioId, { bindingRevision: requestedRevision = bindingRevision } = {}) => {
       if (scenarioId === profile.scenario_id) return requestedRevision == null || requestedRevision === bindingRevision ? publication : null;

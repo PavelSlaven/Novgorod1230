@@ -13,13 +13,13 @@ import { DEFAULT_GAMEPLAY_MODEL, createLlmSettingsOwner } from
   '../../apps/game-server/src/runtime/llm-settings.js';
 import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 const TAKE = 'Беру валежник.';
 const MAKE = 'Оторву полосу от подола рубахи.';
 const TAKE_THREE = 'Возьму три палки из валежника.';
 const WALK = PRESENCE_E2E_MOVE_TEXT;
 const LOOK = 'Осматриваюсь вокруг.';
-const PLANNER = 'Return only one JSON object containing the semantic choice for one turn step.';
 
 const direct = (operations, extra = {}) => ({ interpretation: { adaptation: 'literal' },
   resolution: 'direct', goal_result: 'achieved',
@@ -31,7 +31,9 @@ const direct = (operations, extra = {}) => ({ interpretation: { adaptation: 'lit
  * the take turn (planner, ordinary Stage B, grounding auditor) is scripted here. Stage A
  * must never be asked for a finite-only scope. */
 function installTakeFetch(seen) {
-  const restoreBase = installPresenceProductionE2eFetch({ observeText: LOOK });
+  seen.narrationLog = [];
+  const restoreBase = installPresenceProductionE2eFetch({ observeText: LOOK,
+    narrationLog: seen.narrationLog });
   const base = globalThis.fetch;
   globalThis.fetch = async (url, init) => {
     try { return await scripted(url, init); } catch (error) { seen.stubError ??= error; throw error; }
@@ -40,6 +42,7 @@ function installTakeFetch(seen) {
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const user = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    const role = identifyLlmTestRole(call);
     const respond = (output) => new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify(output) } }] }), { status: 200 });
     const beat = user.required_current_beat;
@@ -52,7 +55,7 @@ function installTakeFetch(seen) {
         ...(scene.visible_npc ?? []).map(({ display_label: label }) => label)]
         .filter(Boolean).join('. ') });
     }
-    if (system.includes('schema must equal world_knowledge_query_plan_v1.')
+    if (role === 'world_knowledge_query_planner'
         && user.purpose === 'materialization_support') {
       return respond({ schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: ['environment', 'material_culture'],
@@ -79,7 +82,7 @@ function installTakeFetch(seen) {
       seen.auditorCalls += 1;
       return respond({ pass: true, concerns: [] });
     }
-    if (system.startsWith(PLANNER)) {
+    if (role === 'turn_step_planner') {
       const request = user.request ?? user;
       const visible = request.player_safe_state?.current_visible_context?.visible_objects ?? [];
       const actor = request.actor.actor_id ?? request.actor.actor_ref;
@@ -164,6 +167,33 @@ async function qualifiedSettings() {
 
 async function rows(pool, sql, params) { return (await pool.query(sql, params)).rows; }
 
+async function currentSiteOrigin(pool, partyId) {
+  return (await rows(pool, `SELECT site.origin
+    FROM party_runtime.party_journey_locations loc
+    JOIN party_runtime.scene_position_nodes pos
+      ON pos.party_id=loc.party_id AND pos.id=loc.scene_position_id
+    JOIN party_runtime.party_g6_instances g6
+      ON g6.party_id=pos.party_id AND g6.id=pos.g6_instance_id
+    JOIN party_runtime.party_scene_baselines base
+      ON base.party_id=g6.party_id AND base.id=g6.scene_baseline_id
+    JOIN party_runtime.party_g5_sites site
+      ON site.party_id=base.party_id AND site.id=base.host_id
+    WHERE loc.party_id=$1 AND loc.owner_kind='actor'`, [partyId]))[0]?.origin;
+}
+
+async function assertPerceptionArrivalContainsOnlyCommittedItemFacts(pool, partyId,
+  narrationLog) {
+  const destination = (await rows(pool,
+    `SELECT visible_payload FROM party_runtime.party_visible_packages
+      WHERE party_id=$1
+      ORDER BY committed_state_version::bigint DESC
+      LIMIT 1`, [partyId]))[0]?.visible_payload;
+  assert.deepEqual(destination?.sensory_details, [],
+    'generated-G5 arrival with no perception facts must commit without invented detail');
+  assert.deepEqual(narrationLog.at(-1)?.changes, ['Вы прибыли.'],
+    'the narrator receives the confirmed arrival without replaying the item facts as events');
+}
+
 test('make at the canonical start (A1) and take at a generated G5: results persist across a restart',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t, { withTestWaveEnrichment: false });
@@ -200,14 +230,29 @@ test('make at the canonical start (A1) and take at a generated G5: results persi
         assert.ok(made.some(({ item_id: id }) => id.startsWith('a1-result:')), 'new strip item');
         assert.ok(made.some(({ state_version: v }) => v === '2'), 'source shirt changed in place');
         madeSnapshot = { sql: madeSql, made };
+        let verifiedGroundedPerceptionArrival = false;
         for (const step of [WALK, WALK, WALK]) {
           await runtime.submitTurn(opening.party_id, { raw_text: step,
             request_id: `finite-take-${attempt}-${n++}` });
+          if (!verifiedGroundedPerceptionArrival
+              && await currentSiteOrigin(env.partyPool, opening.party_id) === 'generated') {
+            await assertPerceptionArrivalContainsOnlyCommittedItemFacts(
+              env.partyPool, opening.party_id, seen.narrationLog);
+            verifiedGroundedPerceptionArrival = true;
+          }
         }
         const generated = (await rows(env.partyPool,
           `SELECT 1 FROM party_runtime.party_g5_sites WHERE party_id=$1 AND origin='generated'`,
           [opening.party_id])).length > 0;
         if (generated) {
+          if (!verifiedGroundedPerceptionArrival
+              && await currentSiteOrigin(env.partyPool, opening.party_id) === 'generated') {
+            await assertPerceptionArrivalContainsOnlyCommittedItemFacts(
+              env.partyPool, opening.party_id, seen.narrationLog);
+            verifiedGroundedPerceptionArrival = true;
+          }
+          assert.ok(verifiedGroundedPerceptionArrival,
+            'the route must commit generated-G5 arrival without inventing destination detail');
           await runtime.submitTurn(opening.party_id, { raw_text: WALK,
             request_id: `finite-take-${attempt}-focus` });
           partyId = opening.party_id;

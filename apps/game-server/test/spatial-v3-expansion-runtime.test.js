@@ -110,6 +110,22 @@ test('exact approved entry and current disclosure select server-owned request on
   assert.equal(request.source_position_id, 'departure-position'); assert.equal(request.actor_id, 'actor');
   assert.deepEqual(current, before);
 });
+test('generated expansion diagnostic callback stays outside adapter request', async () => {
+  const current = context();
+  const callback = () => {};
+  let request; let diagnostics;
+  const runtime = createSpatialV3ExpansionRuntime({ readContext: async () => current,
+    readExitDisclosure: disclosure, materializerVersion: 'version',
+    generatedExpansionAdapter: { prepareExpansion: async (...args) => {
+      [request, diagnostics] = args;
+      return { ok: true };
+    } } });
+
+  await runtime.prepareExpansion(identity, { onLabelGapsOmitted: callback });
+
+  assert.equal(diagnostics.onLabelGapsOmitted, callback);
+  assert.equal(Object.hasOwn(request, 'onLabelGapsOmitted'), false);
+});
 test('a resolved pass-target description reaches listExpansionOptions verbatim (step 3)', async () => {
   // The disclosure owner (spatial-v3-current-visibility-provider.js) already resolved and, if
   // needed, disambiguated the pass-target text ("к руслу", or "к руслу (1)" on a collision)

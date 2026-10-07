@@ -22,6 +22,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     state, contracts, registry, repository, semanticResolver,
     turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
     locationProfiles, scenePresentation,
+    itemLabels = {},
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
@@ -91,15 +92,33 @@ export function buildLowerDvinaTracePhase2Services(context) {
       repository.loadPreparedMovementScene({
         partyId: preparedPartyId, state: preparedState, clock, turnBudget
       }) : null;
-  const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
-    committedState, locationProfiles, scenePresentation
-  });
+  const projectCurrentScene = (committedState) => {
+    const isFresh = committedState.current_spatial_context_is_fresh === true
+      && committedState.current_spatial_context != null;
+    const projected = withLowerDvinaTraceCurrentScene({
+      committedState,
+      locationProfiles: locationProfiles ?? committedState.location_profiles ?? null,
+      scenePresentation: scenePresentation
+        ?? committedState.scene_presentation ?? null,
+      itemLabels,
+      currentSpatialContext: committedState.current_spatial_context,
+      currentSpatialContextIsFresh: isFresh,
+      currentSpatialContextFiltersEntities:
+        isFresh && committedState.current_spatial_context_filters_entities === true
+    });
+    return isFresh ? { ...projected,
+      current_spatial_context: committedState.current_spatial_context,
+      current_spatial_context_is_fresh: true,
+      current_spatial_context_filters_entities:
+        committedState.current_spatial_context_filters_entities === true } : projected;
+  };
   const { temporalAdvance, bodyEffect, evaluatePrecondition, createVisibleProjector } =
     createLowerDvinaTracePhase2ServiceFlow({
       contracts, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts,
       phase7Contracts, turn10Contracts, phase8Contracts, phase9Contracts,
       temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation,
-      bodyTimeEffectAdapter
+      bodyTimeEffectAdapter,
+      partyId, loadPreparedMovementScene, projectCurrentScene
     });
   const turnStepPorts = createLowerDvinaTraceTurnStepRuntimePorts({
     bodyEffect,
@@ -109,6 +128,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
       ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest,
+        itemLabels,
         assertNeedsCheckAllowed: needsCheckGuard,
         recordNeedsCheckFilter }),
     ordinaryContainerContentsResolver:
@@ -267,7 +287,10 @@ export function buildLowerDvinaTracePhase2Services(context) {
           turn10Contracts, phase8Contracts, phase9Contracts,
           phase10Contracts, turnStepApprovedOwners: {
             ...turnStepApprovedOwners, scenePresentation,
-            loadPreparedMovementScene
+            loadPreparedMovementScene, projectCurrentScene,
+            recordVisiblePackageDiagnostic: (count) => trace({
+              event: 'visible_item_label_gap_omitted', omitted_count: count
+            })
           }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {

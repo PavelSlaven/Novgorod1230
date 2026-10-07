@@ -1,8 +1,146 @@
+import { createHash } from 'node:crypto';
+import { readFile as readFileDefault } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { deepFreeze, fail, rowsFrom } from './shared.js';
 import {
   assertApprovedWorldCatalogActivation,
   assertSpatialV3WorldRevisionPin,
 } from './world-catalog-gate.js';
+
+export const NPC_SPEECH_REGISTERS_PIN = Object.freeze({
+  path: 'data/world-catalogs/novgorod/game-base-v1/'
+    + 'households-psychology-speech/speech_address/speech_registers.csv',
+  sha256: 'abbb6a27b4ec3b9ebe0a4f039aef5907dc564fc0118101818240e29bb3b9b71d',
+  approval_ref: 'C007c2',
+  snapshot_commit: '8f0c1d91',
+});
+
+const NPC_SPEECH_REGISTERS_MAX_BYTES = 1_000_000;
+const NPC_SPEECH_REGISTERS_MAX_ROWS = 500;
+const npcSpeechRegistersCache = new Map();
+
+/** Read approved, process-cached speech registers from their exact pinned CSV. */
+export async function loadNpcSpeechRegisters({
+  rootDir = process.cwd(),
+  readFile = readFileDefault,
+  onDiagnostic,
+} = {}) {
+  const path = resolve(rootDir, NPC_SPEECH_REGISTERS_PIN.path);
+  if (!npcSpeechRegistersCache.has(path)) {
+    const pending = loadPinnedSpeechRegisters(path, readFile, onDiagnostic);
+    npcSpeechRegistersCache.set(path, pending);
+  }
+  return npcSpeechRegistersCache.get(path);
+}
+
+async function loadPinnedSpeechRegisters(path, readFile, onDiagnostic) {
+  try {
+    const bytes = await readFile(path);
+    const source = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes);
+    if (source.length > NPC_SPEECH_REGISTERS_MAX_BYTES
+        || createHash('sha256').update(source).digest('hex')
+          !== NPC_SPEECH_REGISTERS_PIN.sha256) {
+      diagnoseSpeechRegisters(onDiagnostic, 'pin_mismatch');
+      return Object.freeze([]);
+    }
+    return parseNpcSpeechRegisters(source.toString('utf8'));
+  } catch {
+    diagnoseSpeechRegisters(onDiagnostic, 'unavailable');
+    return Object.freeze([]);
+  }
+}
+
+function diagnoseSpeechRegisters(onDiagnostic, reason) {
+  if (typeof onDiagnostic !== 'function') return;
+  try {
+    onDiagnostic(Object.freeze({
+      code: 'NPC_SPEECH_REGISTERS_UNAVAILABLE',
+      reason,
+      source: NPC_SPEECH_REGISTERS_PIN.path,
+    }));
+  } catch {
+    // Diagnostics must not turn optional speech context into a failed turn.
+  }
+}
+
+function parseNpcSpeechRegisters(source) {
+  const records = parseBoundedCsv(source);
+  const headers = records.shift();
+  const expectedHeaders = [
+    'subject_kind', 'subject_ref', 'register', 'literacy_expectation_ru',
+    'speech_notes_ru', 'derivation_rule', 'source_refs', 'confidence',
+  ];
+  if (!headers || headers.length !== expectedHeaders.length
+      || headers.some((value, index) => value !== expectedHeaders[index])
+      || records.length !== 139) {
+    throw new TypeError('invalid_pinned_speech_register_csv');
+  }
+  const seen = new Set();
+  const rows = records.map((record) => {
+    if (record.length !== headers.length) throw new TypeError('invalid_csv_record');
+    const [subject_kind, subject_ref, register] = record;
+    const key = `${subject_kind}\0${subject_ref}`;
+    if (!['role', 'occupation'].includes(subject_kind) || !subject_ref
+        || !['formal_literate', 'everyday_oral', 'plain_oral'].includes(register)
+        || seen.has(key)) {
+      throw new TypeError('invalid_speech_register_row');
+    }
+    seen.add(key);
+    return Object.freeze({ subject_kind, subject_ref, register });
+  });
+  return Object.freeze(rows);
+}
+
+function parseBoundedCsv(source) {
+  const records = [];
+  let record = [];
+  let field = '';
+  let quoted = false;
+  for (let index = source.charCodeAt(0) === 0xfeff ? 1 : 0;
+    index < source.length; index += 1) {
+    const char = source[index];
+    if (quoted) {
+      if (char === '"') {
+        if (source[index + 1] === '"') {
+          field += '"';
+          index += 1;
+        } else {
+          quoted = false;
+        }
+      } else {
+        field += char;
+      }
+    } else if (char === '"') {
+      if (field.length !== 0) throw new TypeError('invalid_csv_quote');
+      quoted = true;
+    } else if (char === ',') {
+      record.push(field);
+      field = '';
+    } else if (char === '\n' || char === '\r') {
+      if (char === '\r' && source[index + 1] === '\n') index += 1;
+      else if (char === '\r') throw new TypeError('invalid_csv_newline');
+      record.push(field);
+      records.push(record);
+      if (records.length > NPC_SPEECH_REGISTERS_MAX_ROWS) {
+        throw new TypeError('too_many_csv_rows');
+      }
+      record = [];
+      field = '';
+    } else {
+      field += char;
+    }
+    if (field.length > 100_000) throw new TypeError('csv_field_too_large');
+  }
+  if (quoted) throw new TypeError('unterminated_csv_quote');
+  if (field.length || record.length) {
+    record.push(field);
+    records.push(record);
+  }
+  if (records.length > NPC_SPEECH_REGISTERS_MAX_ROWS) {
+    throw new TypeError('too_many_csv_rows');
+  }
+  return records;
+}
 
 async function assertReadableContext(input) {
   await assertSpatialV3WorldRevisionPin({
@@ -14,6 +152,26 @@ async function assertReadableContext(input) {
     worldPin: input.worldPin,
     runtimeCatalogPin: input.runtimeCatalogPin,
   });
+}
+
+/** Read approved speech-address forms from the exact spatial revision. */
+export async function loadNpcSpeechAddressForms({
+  worldBaseReader,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
+} = {}) {
+  await assertReadableContext({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin });
+  const rows = rowsFrom(await worldBaseReader.read(
+    `SELECT form_id, form_version, world_revision_id, channel, relationship_kind,
+      speaker_role_ref, addressee_role_ref, register_ref, form_ru, situation,
+      status, confidence, provenance_ref, payload
+     FROM world_base.speech_address_forms
+     WHERE world_revision_id = $1 AND status = 'approved'
+     ORDER BY form_id, form_version`,
+    [spatialWorldPin.world_revision_id],
+  ));
+  return rows.map((row) => deepFreeze({ ...row, payload: structuredClone(row.payload ?? {}) }));
 }
 
 /** Read-only D-1 schedules after spatial pin and runtime-catalog activation checks. */
@@ -98,6 +256,34 @@ export async function loadPlacePopulationComposition({
       world_revision_id: row.world_revision_id,
     },
   });
+}
+
+/** Read approved relationship rules from the exact spatial revision after both catalog gates. */
+export async function loadNpcRelationshipMaterializationRules({
+  worldBaseReader,
+  spatialWorldPin,
+  worldPin,
+  runtimeCatalogPin,
+} = {}) {
+  await assertReadableContext({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin });
+  const rows = rowsFrom(await worldBaseReader.read(
+    `SELECT rule_id, rule_version, world_revision_id, scope_kind, scope_ref,
+      subject_role_ref, object_role_ref, relationship_kind, direction,
+      materialization_guard, status, confidence, provenance_ref, payload
+     FROM world_base.npc_relationship_materialization_rules
+     WHERE world_revision_id = $1 AND status = 'approved'
+     ORDER BY rule_id, rule_version`,
+    [spatialWorldPin.world_revision_id],
+  ));
+  const versions = new Set();
+  for (const row of rows) {
+    if (versions.has(row.rule_id)) {
+      fail('M2C_NPC_RELATIONSHIP_RULE_VERSION_AMBIGUOUS',
+        'At most one approved relationship rule version per id is allowed.');
+    }
+    versions.add(row.rule_id);
+  }
+  return rows.map((row) => deepFreeze({ ...row, payload: structuredClone(row.payload ?? {}) }));
 }
 
 /** G0 region node id for a pinned spatial node (walk parents to spatial_level = G0). */

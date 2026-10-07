@@ -7,13 +7,24 @@ import { createTraceLocalSceneCommands } from
   '../src/runtime/lower-dvina-trace-local-scene-commands.js';
 import { selectedTurnStepOperation, turnStepOperationChoices } from
   '../src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
-import { fixture, loadScenarioBundle } from './lower-dvina-trace-phase-2-fixture.js';
+import { fixture, fixtureOpeningCurrentVisibleContext, loadScenarioBundle } from
+  './lower-dvina-trace-phase-2-fixture.js';
 import { canonicalDigest } from '@rus/materialization';
 import { packageBase } from '../src/runtime/lower-dvina-trace-phase-3-command-shared.js';
 import { errorEnvelope } from '../src/http/contracts.js';
 import LIVE_WORLD_TURN_PROFILE from
   '../../../data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json'
   with { type: 'json' };
+import { SCENE_PRESENTATION } from './lower-dvina-trace-phase-2-fixture.js';
+const WRECK_TITLE = SCENE_PRESENTATION.locations.find(({ location_ref }) =>
+  location_ref === 'trace_ld_v1_loc_wreck_shore').display_name;
+
+function useCurrentSpatialTitle(state) {
+  state.current_spatial_context = { visible_scene: WRECK_TITLE,
+    sensory_details: [], visible_objects: [], known_context: [] };
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = false;
+}
 
 const state = { party_id: 'party:expansion', actor_id: 'actor:traveller',
   party_state: { state_version: 4 },
@@ -21,12 +32,50 @@ const state = { party_id: 'party:expansion', actor_id: 'actor:traveller',
 const candidate = { directional_exit_id: 'exit:woods',
   display_label: 'Продолжить путь по тропе в лес.' };
 
-async function commands(runtime, current = state) {
+async function commands(runtime, current = state, onLabelGapsOmitted = null) {
   return createTraceExpansionCommands({ state: current,
     requestId: 'request:walk', inputDigest: 'input:digest',
+    onLabelGapsOmitted,
     spatialExpansionRuntime: runtime == null ? null
       : { listApproachOptions: async () => [], ...runtime } });
 }
+
+test('generated expansion diagnostic callback stays outside its request', async () => {
+  const callback = () => {};
+  let received;
+  const [command] = await commands({ listExpansionOptions: async () => [candidate],
+    prepareExpansion: async (request, diagnostics) => {
+      received = { request, diagnostics };
+      return { ok: true, connection_id: 'connection:generated' };
+    },
+    prepareTraversal: async () => packageBase({ inputDigest: 'a'.repeat(64),
+      duration: 1, kind: 'movement' }) }, state, callback);
+
+  await command.consequence({ retrievedState: state });
+
+  assert.equal(received.diagnostics.onLabelGapsOmitted, callback);
+  assert.equal(Object.hasOwn(received.request, 'onLabelGapsOmitted'), false);
+});
+
+test('canonical connection diagnostic callback stays outside its request', async () => {
+  const callback = () => {};
+  let received;
+  const connection = { connection_binding_id: 'connection:canonical',
+    display_label: 'Проход между дворами' };
+  const [command] = await commands({ listExpansionOptions: async () => [],
+    listConnectionOptions: async () => [connection],
+    prepareConnection: async (request, diagnostics) => {
+      received = { request, diagnostics };
+      return { ok: true, connection_id: 'connection:canonical' };
+    },
+    prepareConnectionTraversal: async () => packageBase({ inputDigest: 'a'.repeat(64),
+      duration: 1, kind: 'movement' }) }, state, callback);
+
+  await command.consequence({ retrievedState: state });
+
+  assert.equal(received.diagnostics.onLabelGapsOmitted, callback);
+  assert.equal(Object.hasOwn(received.request, 'onLabelGapsOmitted'), false);
+});
 
 test('the free phrase "иду к руслу" resolves to the one exit disclosed with that pass-target text (step 3)',
   async () => {
@@ -192,6 +241,10 @@ test('restrained free-text movement commits a blocked zero-minute turn', async (
   const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
   const current = structuredClone(seed.state);
   current.scenario_id = 'authored:unseen-woodland';
+  current.current_visible_context = fixtureOpeningCurrentVisibleContext({
+    state: current, materializationBundle: bundle
+  });
+  useCurrentSpatialTitle(current);
   current.combat_sessions = [{ combat_id: 'combat:restrained',
     status: 'paused_for_player', scope_ref: { entity_kind: 'location',
       entity_id: current.position.location_ref },
@@ -243,6 +296,7 @@ test('official exit action reports known movement denial without moving or advan
     const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
     const current = structuredClone(seed.state);
     current.scenario_id = 'authored:unseen-woodland';
+    useCurrentSpatialTitle(current);
     const f = fixture({ committedState: current,
       authoredTurnProfile: { profile: LIVE_WORLD_TURN_PROFILE, pin: {
         artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
@@ -299,8 +353,10 @@ for (const topologyCommitted of [false, true]) test(topologyCommitted
     const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
     const current = structuredClone(seed.state);
     current.scenario_id = 'authored:unseen-woodland';
-    let prepared = 0;
+    useCurrentSpatialTitle(current);
+    let prepared = 0; const diagnostics = [];
     const f = fixture({ committedState: current,
+      llmDiagnostics: { recordGameplayTrace: (record) => diagnostics.push(record) },
       authoredTurnProfile: { profile: LIVE_WORLD_TURN_PROFILE, pin: {
         artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
         revision: LIVE_WORLD_TURN_PROFILE.revision,
@@ -309,7 +365,12 @@ for (const topologyCommitted of [false, true]) test(topologyCommitted
       spatialExpansionRuntime: {
         listApproachOptions: async () => [],
         listExpansionOptions: async () => [candidate],
-        prepareExpansion: async () => { prepared += 1; return { ok: true }; },
+        prepareExpansion: async (request, { onLabelGapsOmitted } = {}) => {
+          prepared += 1;
+          assert.equal(Object.hasOwn(request, 'onLabelGapsOmitted'), false);
+          onLabelGapsOmitted(1);
+          return { ok: true };
+        },
         ...(topologyCommitted ? { prepareTraversal: async () => {
           throw Object.assign(new Error('Private route admission evidence.'),
             { code: 'ROUTE_CAPACITY_UNAVAILABLE' });
@@ -359,6 +420,9 @@ for (const topologyCommitted of [false, true]) test(topologyCommitted
     });
     assert.equal(f.turnStepCount(), 1);
     assert.equal(prepared, topologyCommitted ? 1 : 0);
+    assert.deepEqual(diagnostics.filter(({ event }) =>
+      event === 'visible_item_label_gap_omitted').map(({ omitted_count }) => omitted_count),
+    topologyCommitted ? [1] : []);
     assert.equal(f.commitCount(), 0);
     assert.deepEqual(f.state.position, beforePosition);
     assert.deepEqual(f.state.clock, beforeClock);

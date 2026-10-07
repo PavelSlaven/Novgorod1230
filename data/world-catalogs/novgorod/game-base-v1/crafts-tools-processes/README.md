@@ -39,6 +39,8 @@ Gate проверяет entity tables и generated item-bearing tables: item pla
 
 ## Запуск
 
+Для standalone-сборки после изменения overlay сначала из корня `game-base-v1` выполните `python3 scripts/build-master-material-view.py`. Он строит узкое представление из неизменённого `sources/master-archive-v1` и `source-overlays/master-material-materials.csv` в `generated/master-material-material-view.json`; `generated-freshness.test.mjs` запускает producer автоматически перед сборщиками.
+
 ```bash
 cd data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes
 # необязательно: пути к распакованным кандидатным архивам для дополнительных проверок

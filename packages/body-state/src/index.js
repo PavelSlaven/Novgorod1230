@@ -172,6 +172,8 @@ export function accumulateBodyTimeEffects(input) {
 }
 
 export { applyApprovedFixedBodyEffect };
+export { initializeBodyState } from './initialization.js';
+export { projectCombatBodyStateDescriptions } from './combat-context.js';
 export { detectBodyThresholdCrossings } from './thresholds.js';
 
 export function stateModifier(state = {}, relevantMetrics = BODY_METRICS) {

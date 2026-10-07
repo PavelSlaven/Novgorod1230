@@ -2,6 +2,8 @@ import { canonicalDigest } from '@rus/materialization';
 import {
   projectLowerDvinaTracePlayerSafeState
 } from '../../runtime/lower-dvina-trace-player-safe-state.js';
+import { withLowerDvinaTraceCurrentScene } from
+  '../../runtime/lower-dvina-trace-turn-step-current-scene.js';
 import {
   projectLowerDvinaTraceTurnStepPlannerState
 } from '../../runtime/lower-dvina-trace-phase-2-player-safe.js';
@@ -29,6 +31,7 @@ export function validatePreparedRouteTraceLineage({
   phase3Contracts,
   routeOnly,
   scenePresentation = null,
+  projectCurrentScene = null,
   preparedMovementState = null,
   intermediateTraces = []
 }) {
@@ -41,8 +44,16 @@ export function validatePreparedRouteTraceLineage({
   let routeWorkingAfter;
   let playerSafeAfter;
   try {
+    const currentSceneState = withLowerDvinaTraceCurrentScene({
+      committedState: state,
+      locationProfiles: phase3Contracts?.locationProfiles,
+      scenePresentation,
+      currentSpatialContext: state.current_spatial_context,
+      currentSpatialContextIsFresh:
+        state.current_spatial_context_is_fresh === true
+    });
     projected = projectLowerDvinaTracePlayerSafeState({
-      committed_state: state,
+      committed_state: currentSceneState,
       scene_presentation: scenePresentation,
       actor_id: state.actor_id
     });
@@ -72,7 +83,9 @@ export function validatePreparedRouteTraceLineage({
     }
     routeWorkingAfter = refreshPreparedMovementScene({
       projection: routeWorkingAfter, committedState: stateAfterRoute,
-      locationProfiles: phase3Contracts?.locationProfiles, scenePresentation
+      locationProfiles: phase3Contracts?.locationProfiles, scenePresentation,
+      ...(typeof projectCurrentScene === 'function'
+        ? { projectCurrentScene } : {})
     });
     const authority =
       createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();

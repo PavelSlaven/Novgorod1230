@@ -13,6 +13,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 OUT = HERE.parent
 NOV = OUT.parents[1]  # data/world-catalogs/novgorod
+sys.path.insert(0, str(OUT.parent / 'scripts'))
+from material_view import apply_material_overrides, overlay_source_ref
 MASTER = NOV / 'sources/master-archive-v1/data/normalized_source_tables/food_system'
 MATERIAL_MASTER = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities'
 SNAP = HERE / 'source_snapshot'
@@ -76,7 +78,8 @@ MSRC = {r['source_id']: r for r in rd(MASTER / 'sources.csv')}
 STEPS = rd(SNAP / 'recipe_steps.csv')
 LINKS = rd(SNAP / 'recipe_ingredient_links.csv')
 MEALS = rd(SNAP / 'meal_sets.csv')
-MATERIAL_ENTITIES = rd(MATERIAL_MASTER / 'material_entities.csv')
+MATERIAL_SOURCE_PATH = MATERIAL_MASTER / 'material_entities.csv'
+MATERIAL_ENTITIES = apply_material_overrides(rd(MATERIAL_SOURCE_PATH), MATERIAL_SOURCE_PATH)
 STATE_VARIANTS = rd(MATERIAL_MASTER / 'state_variants.csv')
 
 ing_by = {r['ingredient_id']: r for r in ING}
@@ -352,7 +355,7 @@ for archive_id in ARCHIVE['material_entity_ids']:
         item_id=canonical_material_id(archive_id),
         basis=basis,
         derivation=derivation,
-        source_refs=[f'{MATERIAL_REL}/material_entities.csv:{archive_id}'],
+        source_refs=[f'{MATERIAL_REL}/material_entities.csv:{archive_id}'] + ([overlay_source_ref(archive_id, MATERIAL_SOURCE_PATH)] if overlay_source_ref(archive_id, MATERIAL_SOURCE_PATH) else []),
         confidence=confidence,
         status='candidate')
     material_rows.append(row)
@@ -742,7 +745,7 @@ for u in sorted(used):
     elif u.startswith('wk:claim:'):
         title, trust = 'WK production-v1 approved claim', 'approved (WK)'
     elif u.startswith('sqlite:'):
-        title, url, trust = 'Curated SQLite novgorod_1230 (owner Downloads), table:key', 'C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite', 'A/B/C per row (see table confidence)'
+        title, url, trust = 'Tracked curated SQLite source, table:key', 'sources/bic-reproducible-inputs-v1/data/curated/novgorod_1230_curated.sqlite', 'A/B/C per row (see table confidence)'
     elif u.startswith('temporal-v4:'):
         title, trust = 'Temporal v4 approved record', 'approved'
     elif u.startswith('rule:'):

@@ -28,16 +28,39 @@ export function identifyLlmTestRole(callOrBody = {}) {
   const messages = callOrBody.messages ?? callOrBody.body?.messages;
   const input = providerUserInput(messages);
   const request = input?.request ?? input;
-  if (request?.schema === 'world_knowledge_query_planner_request_v1') {
+  if (request?.schema === 'world_knowledge_query_planner_request_v1'
+      || isProjectedWorldKnowledgeRequest(request)) {
     return 'world_knowledge_query_planner';
   }
   if (Object.hasOwn(request ?? {}, 'root_player_action')
       && Number.isInteger(request?.step_index)) {
     return 'turn_step_planner';
   }
-  if (typeof request?.player_text === 'string'
-      && Object.hasOwn(request, 'current_state')) {
+  if (request?.schema === 'turn_semantic_resolution_request') {
     return 'intent_router';
   }
   return null;
+}
+
+function isProjectedWorldKnowledgeRequest(request) {
+  const refs = request?.available_knowledge_refs;
+  const limits = request?.planner_limits;
+  return ['semantic_resolution', 'materialization_support', 'npc_decision',
+    'conversation', 'narration'].includes(request?.purpose)
+    && typeof request.input_locale === 'string'
+    && typeof request.semantic_input === 'string'
+    && typeof request.situation_summary === 'string'
+    && Array.isArray(request.allowed_domains)
+    && request.allowed_domains.every((value) => typeof value === 'string')
+    && refs != null && typeof refs === 'object' && !Array.isArray(refs)
+    && Object.entries(refs).every(([key, value]) =>
+      /^(?:f[0-9a-z]+|wk:[a-z0-9_-]+:[a-z0-9_-]+)$/u.test(key)
+      && value != null && typeof value === 'object' && !Array.isArray(value)
+      && Array.isArray(value.domains)
+      && value.domains.every((domain) => typeof domain === 'string')
+      && typeof value.label === 'string'
+      && typeof value.description === 'string')
+    && Number.isInteger(limits?.max_domains)
+    && Number.isInteger(limits?.max_search_hints)
+    && Number.isInteger(limits?.max_focus_refs);
 }

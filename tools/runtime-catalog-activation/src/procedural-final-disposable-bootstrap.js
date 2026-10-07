@@ -23,7 +23,7 @@ import { buildProceduralFinalV2DevelopmentActivation,
   applyProceduralFinalV2DevelopmentActivation,
   buildProceduralFinalCurrentSchemaV2DevelopmentActivation,
   applyProceduralFinalCurrentSchemaV2DevelopmentActivation } from './procedural-final-v2-development-activation.js';
-import { loadActiveRuntimeCatalogPin } from '../../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
+import { loadActiveRuntimeCatalogPin } from '@rus/runtime-catalog/active-pin';
 
 const SHA = '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0';
 

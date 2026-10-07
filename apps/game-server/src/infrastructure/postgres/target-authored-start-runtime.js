@@ -1,7 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { createRuntimeCatalogLoader, loadApprovedActorProfileCatalog,
-  loadApprovedProceduralActorTemporalBundle, loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
+  loadApprovedProceduralActorTemporalBundle, loadApprovedCanonicalNaturalInitialRule,
+  loadNpcRelationshipMaterializationRules, loadNpcSpeechAddressForms,
+  loadNpcSpeechRegisters } from '@rus/runtime-catalog';
 import { canonicalDigest } from '@rus/materialization';
 import { loadTargetAuthoredStartProfile, readPinnedArtifact } from '../../internal/live-world-authored-starts.js';
 import { buildCalendarProjectionProfile } from '../../internal/lower-dvina-trace-phase-1a-bundle.js';
@@ -49,7 +51,7 @@ export async function loadTargetAuthoredStartRuntimes(options = {}) {
 }
 
 export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actorBinding,
-  rootDir = process.cwd(), artifacts = null } = {}) {
+  rootDir = process.cwd(), artifacts = null, onDiagnostic = null } = {}) {
   if (!worldPool?.query || !itemPin?.activation_event_id || !actorBinding?.pin?.activation_event_id) {
     gap('SPATIAL_V3_TARGET_RUNTIME_PIN_REQUIRED');
   }
@@ -108,8 +110,24 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
       FROM world_base.temporal_authoring_records WHERE status='approved' ORDER BY record_id`)
   ]);
   if (!npc.ok || !acoustic.ok || !acoustic.value.rows.length) gap('SPATIAL_V3_TARGET_START_OWNER_DATA_REQUIRED');
-  const actorBundle = await loadApprovedProceduralActorTemporalBundle({ worldBaseReader: { read: worldPool.query.bind(worldPool) },
-    worldPin, actorCatalog: profile.actor_catalog, actorProfileCatalog: actorProfiles, temporalRecords: temporal.rows });
+  const actorBundleReader = { read: worldPool.query.bind(worldPool) };
+  const [actorBundle, relationshipRules, speechAddressForms, speechRegisters] = await Promise.all([
+    loadApprovedProceduralActorTemporalBundle({ worldBaseReader: actorBundleReader,
+      worldPin, actorCatalog: profile.actor_catalog, actorProfileCatalog: actorProfiles, temporalRecords: temporal.rows }),
+    loadNpcRelationshipMaterializationRules({ worldBaseReader: actorBundleReader,
+      spatialWorldPin: { world_revision_id: worldPin.world_revision_id,
+        catalog_digest: worldPin.world_catalog_digest }, worldPin, runtimeCatalogPin: itemPin }),
+    loadNpcSpeechAddressForms({ worldBaseReader: actorBundleReader,
+      spatialWorldPin: { world_revision_id: worldPin.world_revision_id,
+        catalog_digest: worldPin.world_catalog_digest }, worldPin, runtimeCatalogPin: itemPin }),
+    loadNpcSpeechRegisters({ rootDir, onDiagnostic: onDiagnostic ?? ((diagnostic) => {
+      console.error('[game-server] NPC speech register catalog unavailable', {
+        reason: diagnostic.reason, source: diagnostic.source
+      });
+    }) }),
+  ]);
+  const approvedActorTemporalBundle = Object.freeze({ ...actorBundle,
+    npc_relationship_materialization_rules: relationshipRules });
   const initialRule = start.initial_perception_rule == null ? null
     : loadApprovedCanonicalNaturalInitialRule({ verifiedCatalog: catalog, pin: itemPin,
       rule_ref: { id: start.initial_perception_rule.id, version: start.initial_perception_rule.version } });
@@ -124,8 +142,10 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
         && ['satiety_hourly_spend_v2', 'energy_awake_spend_v2', 'starvation_health_harm_v2']
           .includes(row.payload?.body_effect_profile_id))),
       materialization_inputs: Object.freeze({ scenario_bundle: profile, domain_catalog: catalog, domain_catalog_pin: itemPin,
-      world_base_reference_snapshot: snapshot, approved_actor_temporal_bundle: actorBundle,
+      world_base_reference_snapshot: snapshot, approved_actor_temporal_bundle: approvedActorTemporalBundle,
       canonical_npc_closure: npc.value, canonical_acoustic_rows: acoustic.value.rows,
+      npc_speech_address_forms: speechAddressForms,
+      npc_speech_registers: speechRegisters,
       actor_base_attributes_runtime_profile: actorBinding.runtime_profile,
       actor_equipment_activation: { status: 'active', event_id: itemPin.activation_event_id },
       calendar_profile: buildCalendarProjectionProfile(calendar) }) });

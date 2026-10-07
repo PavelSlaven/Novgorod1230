@@ -24,6 +24,9 @@ import {
 import {
   lowerDvinaTracePhase1ADomainPin
 } from '../../../test/fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
+import SCENE_PRESENTATION from
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json'
+  with { type: 'json' };
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 9
@@ -221,7 +224,9 @@ function fixture({
     repository,
     bundleLoader: async (request) => {
       bundleRequests.push(structuredClone(request));
-      return contractBundle;
+      return contractBundle.scene_presentation == null
+        ? { ...contractBundle, scene_presentation: SCENE_PRESENTATION }
+        : contractBundle;
     },
     semanticResolver: async (input) => {
       semanticRequests.push(structuredClone(input));

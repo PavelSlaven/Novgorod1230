@@ -36,7 +36,7 @@ test('condition order is not a bodily event and unchanged symptoms stay supporti
   assert.deepEqual(next.visible_changes, []);
 });
 
-test('simultaneous routine changes preserve equally labelled NPCs', () => {
+test('simultaneous routine changes preserve equal labels without ordinal prose', () => {
   const visibleNpc = ['npc:1', 'npc:2'].map((entity_id) => ({
     entity_ref: { entity_kind: 'npc', entity_id }, display_label: 'рыбак'
   }));
@@ -57,9 +57,13 @@ test('simultaneous routine changes preserve equally labelled NPCs', () => {
   const projected = enrichLowerDvinaTraceVisibleNpcCues({
     visibleContext: current, committedState, temporalResults
   });
-  assert.deepEqual(projected.visible_changes, [
-    'рыбак (1) прерывает работу для короткого отдыха.',
-    'рыбак (2) прерывает работу для короткого отдыха.'
+  assert.equal(projected.visible_changes.length, 1);
+  assert.match(projected.visible_changes[0], /рыбак/iu);
+  assert.match(projected.visible_changes[0], /короткого отдыха/iu);
+  assert.doesNotMatch(projected.visible_changes[0], /npc:|рыбак\s*\(\d+\)/iu);
+  assert.deepEqual(projected.visible_npc.map(({ visible_status }) => visible_status), [
+    'Прерывает работу для короткого отдыха.',
+    'Прерывает работу для короткого отдыха.'
   ]);
 });
 

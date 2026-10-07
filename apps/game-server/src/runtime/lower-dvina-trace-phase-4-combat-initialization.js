@@ -8,6 +8,10 @@ import { resolveTraceCombatSpatialAffordances } from
   './lower-dvina-trace-combat-position-owner.js';
 import { restrictTraceCombatSpatialIntents } from
   './lower-dvina-trace-combat-position-owner.js';
+import { projectNpcCharacterBehavior } from
+  './lower-dvina-trace-m2-conversation-projections.js';
+import { projectTraceCombatSubjectiveState } from
+  './lower-dvina-trace-combat-subjective.js';
 
 export async function initializeTracePhase4Combat({
   state,
@@ -103,7 +107,8 @@ export async function initializeTraceCombat({ state, binding, actor,
       npc_ref: ref('npc', subject.instance_id),
       state_version: String(state.party_state.state_version),
       current_intent: null,
-      npc_subjective_state: projectNpcSubjectiveState(subject),
+      npc_subjective_state: projectNpcSubjectiveState(subject,
+        npcCombatModel),
       perceived_combat_state: {
         scope: ref('location', binding.scope_location_ref),
         visible_opponents: subject.instance_id === actor.instance_id
@@ -175,22 +180,33 @@ function operationContract(binding, opponents, protectable, actor, state,
   }, spatial);
 }
 
-function projectNpcSubjectiveState(actor) {
+function projectNpcSubjectiveState(actor, npcCombatModel) {
   const profile = actor.semantic_profile ?? actor.profile ?? {};
+  const character = projectNpcCharacterBehavior(actor);
+  const actorRef = ref('npc', actor.instance_id);
+  const bodyState = actor.body_state_persisted === true
+    ? { [`npc:${actor.instance_id}`]: { body_state: actor.body_state,
+      body_state_persisted: true } } : {};
+  const body = projectTraceCombatSubjectiveState(actorRef, {
+    npcs: [actor], actor_states: bodyState
+  }, { combatBodyBandContext:
+    npcCombatModel?.combatBodyBandContext ?? null }).body;
   return {
     identity: {
-      name_or_label: profile.identity?.canonical_name
+      name_or_label: actor.identity_state?.canonical_name
+        ?? profile.identity?.canonical_name
         ?? actor.participant_slot_ref ?? 'NPC'
     },
     social_role: structuredClone(profile.social_role ?? {}),
     combat_experience: profile.combat_experience ?? 'limited',
     attributes: structuredClone(profile.attributes ?? []),
     skills: structuredClone(profile.skills ?? []),
-    body: structuredClone(profile.body ?? {}),
+    body,
     mood: structuredClone(profile.mood ?? {}),
-    temperament: structuredClone(profile.temperament ?? []),
-    goals: structuredClone(profile.goals ?? []),
-    fears: structuredClone(profile.fears ?? []),
+    temperament: character === null ? structuredClone(profile.temperament ?? [])
+      : [character.temperament],
+    goals: character?.goals ?? structuredClone(profile.goals ?? []),
+    fears: character?.fears ?? structuredClone(profile.fears ?? []),
     obligations: structuredClone(profile.obligations ?? []),
     relationships: structuredClone(profile.relationships ?? []),
     available_equipment: []

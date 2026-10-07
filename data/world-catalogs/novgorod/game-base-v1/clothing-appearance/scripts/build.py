@@ -7,12 +7,15 @@ Stdlib only.  Run:  python scripts/build.py   then   python scripts/check.py
 """
 import csv, json, re, unicodedata
 import subprocess
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent                                   # clothing-appearance/
 NOV = ROOT.parents[1]                                # data/world-catalogs/novgorod
 REPO = ROOT.parents[4]
+sys.path.insert(0, str(ROOT.parent / 'scripts'))
+from material_view import apply_material_overrides, overlay_source_ref
 COSTUME = NOV / 'sources' / 'costume-dataset-v1' / 'data'
 REGION = REPO / 'data' / 'novgorod-region'
 REGION_ID = 'region_novgorod_land'
@@ -101,7 +104,7 @@ def manifest_garment_variants(manifest=None):
 def build_material_entities():
     """Project only explicitly owned new clothing entities; routed rows stay in the ledger."""
     source_path = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'
-    source_rows = {r['item_id']: r for r in read_csv(source_path)}
+    source_rows = {r['item_id']: r for r in apply_material_overrides(read_csv(source_path), source_path)}
     manifest = json.loads((ROOT / 'authoring/archive_inclusion_manifest.json').read_text(encoding='utf-8'))['records']
     source_fields = list(next(iter(source_rows.values())).keys())
     fields = source_fields + ['basis', 'derivation', 'source_refs', 'confidence', 'status']
@@ -112,8 +115,12 @@ def build_material_entities():
         archive_id = decision['archive_ref'].rsplit(':', 1)[-1]
         row = dict(source_rows[archive_id])
         row['item_id'] = decision.get('game_base_ref') or f'n1230:material_item:{archive_id.lower()}'
+        source_refs = [decision['archive_ref']]
+        correction_ref = overlay_source_ref(archive_id, source_path)
+        if correction_ref:
+            source_refs.append(correction_ref)
         row.update(basis=decision['basis'], derivation=decision['basis_note'],
-                   source_refs=json.dumps([decision['archive_ref']], ensure_ascii=False),
+                   source_refs=json.dumps(source_refs, ensure_ascii=False),
                    confidence=decision['confidence'], status=STATUS)
         rows.append(row)
     return rows, fields
@@ -1366,8 +1373,8 @@ def main():
     srows += [dict(ref='sqlite:S01', title='НПЛ, изд. 1950 (via novgorod_1230(1) (1).sqlite sources)', url='https://archive.org/details/novhorodskyj_litopys', kind='primary', confidence_hint='A'),
               dict(ref='sqlite:S15', title='Лёгкой поступью по мостовой. Обувь древнего Новгорода X–XV вв.', url='https://novgorodmuseum.ru/visit/sobytiya/legkoj-postupyu-po-mostovoj.-obuv-drevnego-novgoroda-x-xv-vv.', kind='museum', confidence_hint='A'),
               dict(ref='sqlite:S16', title='Е. А. Рыбина. Мир вещей средневекового Новгорода', url='https://cyberleninka.ru/article/n/mir-veschey-srednevekovogo-novgoroda-po-arheologicheskim-nahodkam', kind='scholarly', confidence_hint='B'),
-              dict(ref='sqlite:material_culture', title='C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite table material_culture (15 rows)', url='', kind='local curated db', confidence_hint='A-B'),
-              dict(ref='sqlite:social_groups', title='C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite table social_groups (13 rows)', url='', kind='local curated db', confidence_hint='A-B'),
+              dict(ref='sqlite:material_culture', title='tracked curated Novgorod 1230 SQLite table material_culture (15 rows)', url='', kind='local curated db', confidence_hint='A-B'),
+              dict(ref='sqlite:social_groups', title='tracked curated Novgorod 1230 SQLite table social_groups (13 rows)', url='', kind='local curated db', confidence_hint='A-B'),
               dict(ref='risovalka', title='Документы/РИСОВАЛКА ВЕБ/novgorod_character_1230.md (copy: sources/character-bible-1230)', url='', kind='author research bible (candidate)', confidence_hint='B-C'),
               dict(ref='wk:*/claim:*', title='WK production-v1 clothing.json, historical-population.json, household-agriculture.json, settlement-craft.json, reconstructed-ordinary-lifeways-v1.json (approved)', url='data/world-catalogs/novgorod/world-knowledge/production-v1/', kind='approved WK', confidence_hint='per claim'),
               dict(ref='source:clothing-rabinovich-1986', title='Рабинович М. Г. Древнерусская одежда IX–XIII вв.', url='https://www.booksite.ru/ancient/reader/human_3_02.htm', kind='scholarly (WK)', confidence_hint='B'),

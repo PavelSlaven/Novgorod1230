@@ -41,6 +41,28 @@ test('committed calendar phase survives player-safe package and retry readback',
   }
 });
 
+test('turn-step visible envelope omits typed label gaps and retains named items', () => {
+  const namedItem = { entity_ref: { entity_kind: 'item', entity_id: 'knife' },
+    display_label: 'Хозяйственный нож', recognition: 'known',
+    visible_status: 'serviceable' };
+  const sourceContext = { ...visibleContext('daylight'),
+    visible_objects: [namedItem, {
+      entity_ref: { entity_kind: 'item', entity_id: 'unnamed' },
+      label_gap: { code: 'player_safe_item_label_required' }
+    }] };
+  const envelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
+    partyId: 'party', turnNumber: 1, nextVersion: 1,
+    changeSetId: 'change:1', idemId: 'idem:1', currentLightPhase: 'daylight',
+    envelope: { root_turn_id: 'turn:1', visible_context: sourceContext,
+      loop_trace: { clarification: null }, consequence: { state_changes: [] } }
+  });
+
+  assert.deepEqual(envelope.visible_payload.visible_objects, [namedItem]);
+  assert.deepEqual(validatePlayerSafeVisiblePayload(envelope.visible_payload), []);
+  assert.doesNotMatch(JSON.stringify(envelope.visible_payload),
+    /unnamed|label_gap|player_safe_item_label_required/u);
+});
+
 test('turn commit projects the post-turn clock through the pinned Temporal owner', async () => {
   const f = fixture({ direct: true });
   const clocks = [];

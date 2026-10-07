@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(spatial): use the D107 approved place label for v17 menu, opening, scene, route and narrator title; add LW-134
 - fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)

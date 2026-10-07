@@ -228,9 +228,28 @@ export function projectSpatialV3NaturalScene(input = {}) {
     return gap('explicit_p22_perception_inputs_required');
   }
   const visible_context = { version: 1, schema: 'visible_context_package',
-    visible_scene: scene.visible_scene, sensory_details: facts.map((fact) => fact.text),
+    visible_scene: selectSpatialV3PlaceLabel(scene.canonical_g5_ref,
+      scene.approved_place_labels, { natural_profile_ref: scene.natural_profile_ref,
+        scene_template_ref: scene.scene_template_ref }) ?? scene.visible_scene,
+    sensory_details: facts.map((fact) => fact.text),
     visible_changes: [], visible_npc: [], visible_objects: [], known_context: [],
     uncertainties: [], allowed_tensions: [], do_not_imply: [] };
   if (!validateVisibleContext(visible_context).ok) return gap('player_safe_descriptors_required');
   return sealed({ ok: true, visible_context, perceived_facts: facts });
+}
+
+/** Select exact G5 label first, then the label for its selected natural profile/template. */
+export function selectSpatialV3PlaceLabel(canonicalG5Ref, approvedLabels, naturalPlaceRef = null) {
+  if (!(approvedLabels instanceof Map)) return null;
+  if (text(canonicalG5Ref?.id) && Number.isSafeInteger(canonicalG5Ref?.version)
+    && canonicalG5Ref.version >= 1) {
+    const exact = text(approvedLabels.get(`${canonicalG5Ref.id}@${canonicalG5Ref.version}`)?.display_label);
+    if (exact) return exact;
+  }
+  const profile = naturalPlaceRef?.natural_profile_ref;
+  const template = naturalPlaceRef?.scene_template_ref;
+  if (!text(profile?.id) || !Number.isSafeInteger(profile?.version) || profile.version < 1
+    || !text(template?.id) || !Number.isSafeInteger(template?.version) || template.version < 1) return null;
+  const key = `natural:${profile.id}@${profile.version}|${template.id}@${template.version}`;
+  return text(approvedLabels.get(key)?.display_label);
 }

@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- docs(prose): закрепить D153 — субъективный контекст прозовых ролей, содержание людей в пределах восприятия, согласованная WK prose-проекция и требования проверки фактического провода; реализация входов ролей — отдельные задачи (#565)
+- ci: the full-profile suites get 75 minutes; the sequential fast suite exceeded 45 minutes after the latest merges and was cancelled (#98, D89)
 - fix(mapmaker): test:unit lists the existing unit tests explicitly; the old globs matched no files (#457)
 - test(spatial): the perception reload regression creates prior NPC perceptions with a real turn and real recognition, so the persisted body history stays consistent; the saved name is kept per NPC against a generic fresh label (#377, D84)
 - fix(items): общий выбор материала из утверждённых привязок через selectApprovedItemMaterial в @rus/runtime-catalog; Stage 16 сохраняет material_category_id у снаряжения игрока и NPC (#178).

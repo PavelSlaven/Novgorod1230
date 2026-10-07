@@ -17,7 +17,7 @@ jobs:
   full-profile:
     name: full-npm-test-${{ matrix.suite }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 75
     strategy:
       fail-fast: false
       matrix:

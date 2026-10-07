@@ -12,6 +12,7 @@ import { chromium } from 'playwright-core';
 import { createGameHttpServer, createStaticAssetResolver, listen } from
   '@rus/game-server';
 import { createSeededRandomSource } from '@rus/checks-rng';
+import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { adaptApprovedOpeningNarration } from '@rus/narration';
 import {
@@ -664,8 +665,27 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     authoredRuntimeBindingResolver:
       authoredStartCatalog.resolveRuntimeBinding
   });
+  const neutralSceneTitle = authoredStartCatalog.resolveProfile(
+    'vikhtuy_fishing_camp_v1').opening.place_label;
+  const neutralScenePresentation = { locations: [{
+    location_ref: authoredInternal.position.location_ref,
+    display_name: neutralSceneTitle,
+    player_visible_physical_facts: []
+  }] };
+  // These manually composed runtimes use the approved title if none is loaded.
+  const scenePresentationPhase2Repository = {
+    ...phase2Repository,
+    async loadPhase2State(...args) {
+      const state = await phase2Repository.loadPhase2State(...args);
+      return { ...state,
+        scene_presentation: state.scene_presentation ?? neutralScenePresentation };
+    }
+  };
+  assert.equal(scenePresentationPhase2Repository.commitPhase2Turn,
+    phase2Repository.commitPhase2Turn);
+  const m2bNarrationSceneTitles = [];
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
-    repository: phase2Repository,
+    repository: scenePresentationPhase2Repository,
     semanticResolver: async () => ({ status: 'unknown',
       reason_code: 'free_intent' }),
     turnStepModel: m2bTurnPlan,
@@ -673,8 +693,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     npcSemanticModel: async () => { throw new Error('unexpected'); },
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool: pool,
-      narrationService: { run: async (request) =>
-        approvedNarration(request.request_id) }
+      narrationService: { run: async (request) => {
+        m2bNarrationSceneTitles.push(request.visible_context.visible_scene);
+        return approvedNarration(request.request_id);
+      } }
     }),
     randomSourceFactory: () => createSeededRandomSource(
       'm2b-live-world-postgres'),
@@ -683,8 +705,9 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     authoredTurnProfile: authoredStartCatalog.turn_profile,
     now: () => '2026-09-19T08:00:00.000Z'
   });
+  const neutralNarrationSceneTitles = [];
   const neutralTraceTurnRuntime = createLowerDvinaTracePhase2Runtime({
-    repository: phase2Repository,
+    repository: scenePresentationPhase2Repository,
     semanticResolver: async () => ({ status: 'unknown',
       reason_code: 'free_intent' }),
     turnStepModel: m3NeutralTurnPlan,
@@ -692,8 +715,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     npcSemanticModel: async () => { throw new Error('unexpected'); },
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool: pool,
-      narrationService: { run: async (request) =>
-        approvedNarration(request.request_id) }
+      narrationService: { run: async (request) => {
+        neutralNarrationSceneTitles.push(request.visible_context.visible_scene);
+        return approvedNarration(request.request_id);
+      } }
     }),
     randomSourceFactory: () => createSeededRandomSource('m3-neutral-postgres'),
     temporalAdvanceOwner: createTemporalAdvanceOwner({}),
@@ -741,6 +766,20 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       request_id: key, idempotency_key: key, raw_text: rawText
     });
     assert.equal(submitted.turn_number, index + 1);
+  }
+  assert.deepEqual(neutralNarrationSceneTitles,
+    Array(4).fill(neutralSceneTitle));
+  const neutralSnapshots = (await pool.query(`SELECT
+      state_version,state_payload,state_digest
+      FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1 AND state_version BETWEEN 0 AND 4
+      ORDER BY state_version`, [authoredPartyId])).rows;
+  assert.deepEqual(neutralSnapshots.map(({ state_version }) =>
+    Number(state_version)), [0, 1, 2, 3, 4]);
+  for (const snapshot of neutralSnapshots) {
+    assert.equal(Object.hasOwn(snapshot.state_payload, 'scene_presentation'),
+      false);
+    assert.equal(snapshot.state_digest, canonicalDigest(snapshot.state_payload));
   }
   const neutralRows = (await pool.query(`SELECT
       (SELECT count(*)::int FROM party_runtime.party_spatial_semantic_resolutions
@@ -808,6 +847,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       }), { code: 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT' });
     }
   }
+  assert.deepEqual(m2bNarrationSceneTitles, Array(10).fill(neutralSceneTitle));
   assert.equal((await playable.getPartyScreen(playablePartyId)).turn_number, 10);
   const demoPlayableStart = await playable.startNewGame({
     scenario_id: 'lower_dvina_trace_v1',

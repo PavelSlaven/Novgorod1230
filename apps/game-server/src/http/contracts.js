@@ -5,10 +5,17 @@ import { serverError } from '../errors.js';
 export const HTTP_API_VERSION = 1;
 export const API_SUCCESS_SCHEMA = 'rus_api_success';
 export const API_ERROR_SCHEMA = 'rus_api_error';
+const PUBLIC_IDEMPOTENCY_ERROR_MESSAGES = new Map([
+  ['TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', 'Этот ход уже отправлен с другим текстом.'],
+  ['TURN_IDEMPOTENCY_CONFLICT', 'Этот ход уже отправлен с другим текстом.'],
+  ['TURN_IDEMPOTENCY_IN_PROGRESS', 'Этот ход ещё обрабатывается. Попробуйте чуть позже.']
+]);
 const PUBLIC_CLIENT_ERROR_CODES = new Set([
   'REQUEST_BODY_INVALID', 'NEW_GAME_START_REQUIRED', 'CLIENT_ACK_ID_REQUIRED',
   'OPENING_ACK_REQUIRED', 'PARTY_ID_REQUIRED',
   'TURN_INPUT_REQUIRED', 'PORTRAIT_REQUEST_FIELD_UNKNOWN',
+  'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT',
+  'TURN_IDEMPOTENCY_CONFLICT', 'TURN_IDEMPOTENCY_IN_PROGRESS',
   'PORTRAIT_TEXT_TYPE_INVALID', 'PORTRAIT_TEXT_REQUIRED',
   'PORTRAIT_TEXT_TOO_LONG', 'LLM_SETTINGS_BODY_INVALID',
   'LLM_SETTINGS_LOCAL_PROVIDER_RETIRED', 'LLM_SETTINGS_MODE_INVALID',
@@ -81,7 +88,8 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
     : text(error?.code) || 'REQUEST_FAILED');
   const message = openingFailure?.message ?? scenarioFailure?.message ?? openingAckFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message ?? catalogFailure?.message ?? (internal
     ? 'Действие временно недоступно. Попробуйте ещё раз.'
-    : unsafePublicClientMessage ? 'Некорректный запрос.' : candidateMessage);
+    : PUBLIC_IDEMPOTENCY_ERROR_MESSAGES.get(error?.code)
+      ?? (unsafePublicClientMessage ? 'Некорректный запрос.' : candidateMessage));
   return Object.freeze({
     status,
     body: Object.freeze({

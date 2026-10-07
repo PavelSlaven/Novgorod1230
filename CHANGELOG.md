@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(spatial): allow visible-package persistence against matching committed v0 snapshot (#467)
 - fix(tools): portable main-module checks; the P05 checker now runs on Linux (#474)
 - fix(runtime-boundary): move new-game projections out of tools, centralize committed v5 inventory defaults in items-property; LW-038/LW-106 closed (#326, #281)
 - fix(game-base): apply approved master material corrections through a fail-closed overlay (#432, #431)

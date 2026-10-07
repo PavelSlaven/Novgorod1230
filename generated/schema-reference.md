@@ -218,6 +218,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/036_party_runtime_visibility_modifiers.sql` | sql | 1576 | `61a0324e9e2328a87997f98007373674fcfa2c2403ad7559be3c32de9ac8b223` |
 | `schemas/party-db/037_party_runtime_m2c_presence_routines.sql` | sql | 4578 | `7f06036423e135e0a8daedabe4548eb35f3ca49544d28e2f25eae10330c07da8` |
 | `schemas/party-db/038_party_runtime_npc_seasonal_presence.sql` | sql | 10875 | `bd90769eb40e0735a294a672c308c0694d32947d347c28197c754f8b1043ff73` |
+| `schemas/party-db/040_party_runtime_visible_package_initial_state.sql` | sql | 291 | `8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

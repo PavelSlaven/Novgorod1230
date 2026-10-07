@@ -14,6 +14,27 @@ const semanticRows = (rows) => rows.map(({ target_table, id, record }) => ({ tar
     !key.endsWith('_change_set_id') && !key.endsWith('_digest')
     && !['materialization_trace_id', 'choice_trace_id', 'idempotency_record_id'].includes(key))) }));
 
+/** The party clock and turn a P16 topology commit is based on. */
+export async function readCurrentParty(transaction, party_id) {
+  const current = await transaction.query(`SELECT party.state_version, session.last_turn_id
+      FROM party_runtime.parties party
+      JOIN party_runtime.party_state_snapshots state
+        ON state.party_id=party.party_id AND state.state_version=party.state_version
+      LEFT JOIN party_runtime.party_server_sessions session ON session.party_id=party.party_id
+      WHERE party.party_id=$1`, [party_id]);
+  return current.rows.length === 1 && /^(0|[1-9][0-9]*)$/u.test(String(current.rows[0].state_version))
+    ? current.rows[0] : null;
+}
+
+export function buildVisiblePackageEnvelopeInput({ party_id, change_set_id, current,
+  dependency_pins, projection_policy_ref }) {
+  return { party_id, turn_id: change_set_id,
+    committed_state_version: String(current.state_version),
+    change_set_id, package_id: `visible:${change_set_id}`,
+    idempotency_record_id: `idem:${change_set_id}`, dependency_pins,
+    projection_policy_ref };
+}
+
 /** Dependency pins of one preparation. `pins()` is read at the moment a proposal is built. */
 function createPinBook(g4, profile) {
   const first = [[g4, 'canonical_spatial_node'], [profile, 'g4_expansion_profile']].filter(([pin]) => pin)
@@ -154,11 +175,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
     const factualWrites = [...proposal.inserts, ...proposal.updates, ...firstEntryWrites];
     const expected_state_versions = [...proposal.expected_state_versions,
       ...(firstEntry.expected_state_versions ?? [])];
-    const envelopeInput = { party_id, turn_id: change_set_id,
-      committed_state_version: String(current.state_version),
-      change_set_id, package_id: `visible:${change_set_id}`,
-      idempotency_record_id: `idem:${change_set_id}`, dependency_pins,
-      projection_policy_ref: projectionPolicyRef };
+    const envelopeInput = buildVisiblePackageEnvelopeInput({ party_id, change_set_id,
+      current, dependency_pins, projection_policy_ref: projectionPolicyRef });
     const visible = await projectVisible({ transaction, request, closure, snapshot, proposal, firstEntry,
       factual_writes: factualWrites, expected_state_versions, dependency_pins,
       current_state_version: envelopeInput.committed_state_version,
@@ -208,18 +226,6 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       return firstEntry.recheck(context);
     },
       created_at_turn: admitted.created_at_turn } : built;
-  }
-
-  /** The party clock and turn a P16 topology commit is based on. */
-  async function readCurrentParty(transaction, party_id) {
-    const current = await transaction.query(`SELECT party.state_version, session.last_turn_id
-      FROM party_runtime.parties party
-      JOIN party_runtime.party_state_snapshots state
-        ON state.party_id=party.party_id AND state.state_version=party.state_version
-      LEFT JOIN party_runtime.party_server_sessions session ON session.party_id=party.party_id
-      WHERE party.party_id=$1`, [party_id]);
-    return current.rows.length === 1 && /^[1-9][0-9]*$/u.test(String(current.rows[0].state_version))
-      ? current.rows[0] : null;
   }
 
   /** The exact departure endpoint of the committed source position, from its scene template. */

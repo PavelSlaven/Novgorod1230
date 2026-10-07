@@ -1,4 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
+import { compareGameTimestamp } from '@rus/time-events-history';
 import { applyNpcRoutineProjection } from './npc-routine-temporal.js';
 import { applyLocalFireTemporalProjection } from
   './lower-dvina-trace-local-fire-temporal.js';
@@ -14,6 +15,11 @@ export function lowerDvinaTraceTemporalSourceRegistrations(registrations) {
     return { ...registration,
       resolve(candidate, context) {
         const resolution = registration.resolve(candidate, context);
+        if (candidate?.boundary_kind === 'body_threshold') {
+          return validateBodyThresholdProjection({ candidate,
+            projection: context.projection, resolution,
+            request: context.request });
+        }
         const routine = resolution?.proposals?.find((proposal) => proposal.npc_routine_transition);
         if (routine) {
           const expected = applyNpcRoutineProjection(context.projection, routine.npc_routine_transition);
@@ -30,6 +36,90 @@ export function lowerDvinaTraceTemporalSourceRegistrations(registrations) {
       } };
   });
 }
+
+function validateBodyThresholdProjection({ candidate, projection,
+  resolution, request }) {
+  const descriptors = projection?.body_threshold_descriptors;
+  const candidateDigest = canonicalDigest(candidate);
+  const profileId = candidate.rule_ref?.entity_ref?.entity_id;
+  const expectedMetric = BODY_THRESHOLD_PROFILE_METRICS[profileId];
+  const matches = Array.isArray(descriptors) ? descriptors.filter((entry) =>
+    entry?.candidate_digest === candidateDigest
+      && entry?.boundary_id === candidate.boundary_id) : [];
+  const descriptor = matches.length === 1 ? matches[0] : null;
+  const critical = descriptor?.threshold_value?.numerator === '0'
+    && descriptor?.threshold_value?.denominator === '1';
+  const stop = critical && request?.inclusive_limit_timestamp
+    && compareGameTimestamp(candidate.scheduled_at,
+      request.inclusive_limit_timestamp) < 0;
+  const proposal = resolution?.proposals?.length === 1
+    ? resolution.proposals[0] : null;
+  const expectedSource = { entity_kind: 'temporal_boundary_candidate',
+    entity_id: candidate.boundary_id };
+  const proposalKeys = stop
+    ? ['boundary_kind', 'boundary_id', 'candidate_digest', 'source_event_ref',
+      'subject_ref', 'scope_ref', 'threshold', 'reason_code']
+    : ['boundary_kind', 'boundary_id', 'candidate_digest', 'source_event_ref',
+      'subject_ref', 'scope_ref', 'threshold'];
+  const value = descriptor?.threshold_value;
+  if (candidate?.boundary_kind !== 'body_threshold'
+      || candidate.primary_subject_ref?.entity_kind !== 'body_state'
+      || candidate.scope_ref?.entity_kind !== 'party'
+      || candidate.primary_subject_ref?.entity_id
+        !== projection?.phase6_state?.actor_id
+      || candidate.scope_ref?.entity_id !== projection?.phase6_state?.party_id
+      || candidate.rule_ref?.entity_ref?.entity_kind !== 'body_effect'
+      || !expectedMetric
+      || candidate.policy_ref?.entity_ref?.entity_kind !== 'condition_set'
+      || candidate.policy_ref?.entity_ref?.entity_id
+        !== `${profileId}:threshold-boundary`
+      || !Array.isArray(candidate.subject_refs)
+      || !candidate.subject_refs.some((subject) =>
+        canonicalDigest(subject) === canonicalDigest(candidate.primary_subject_ref))
+      || !Array.isArray(descriptors)
+      || matches.length !== 1
+      || !exactKeys(descriptor, ['candidate_digest', 'boundary_id', 'metric',
+        'threshold_value', 'critical'])
+      || descriptor?.metric !== expectedMetric
+      || descriptor?.critical !== critical
+      || !value || !/^(0|[1-9]\d*)$/u.test(String(value.numerator))
+      || value.denominator !== '1'
+      || !['0', '20', '50'].includes(value.numerator)
+      || !request?.inclusive_limit_timestamp
+      || resolution?.disposition !== 'execute'
+      || !proposal || !exactKeys(proposal, proposalKeys)
+      || proposal.boundary_kind !== candidate.boundary_kind
+      || proposal.boundary_id !== candidate.boundary_id
+      || proposal.candidate_digest !== candidateDigest
+      || canonicalDigest(proposal.source_event_ref)
+        !== canonicalDigest(expectedSource)
+      || canonicalDigest(proposal.subject_ref)
+        !== canonicalDigest(candidate.primary_subject_ref)
+      || canonicalDigest(proposal.scope_ref)
+        !== canonicalDigest(candidate.scope_ref)
+      || !exactKeys(proposal.threshold, ['metric', 'value'])
+      || proposal.threshold.metric !== descriptor.metric
+      || canonicalDigest(proposal.threshold.value) !== canonicalDigest(value)
+      || (stop ? proposal.reason_code !== 'event_effect_gap'
+        : Object.hasOwn(proposal, 'reason_code'))
+      || resolution.stop_after_current_batch !== Boolean(stop)
+      || canonicalDigest(resolution.state_projection ?? projection)
+        !== canonicalDigest(projection)) {
+    fail(candidate, 'TRACE_BODY_THRESHOLD_TEMPORAL_SOURCE_PROJECTION_INVALID');
+  }
+  return resolution;
+}
+
+function exactKeys(value, expected) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).sort().join('|') === [...expected].sort().join('|');
+}
+
+const BODY_THRESHOLD_PROFILE_METRICS = Object.freeze({
+  satiety_hourly_spend_v2: 'satiety',
+  energy_awake_spend_v2: 'energy',
+  starvation_health_harm_v2: 'health'
+});
 
 export function validatePhase6TemporalSourceResolution({ candidate,
   projection, resolution }) {

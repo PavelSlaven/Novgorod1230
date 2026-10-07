@@ -11,6 +11,7 @@ import {
   requireTurnStepPreparedEffectLedger
 } from '../src/turn-step-prepared-effects.js';
 import { preparedDirectContinuation } from '../src/turn-step-loop-support.js';
+import { canonicalDigest } from '@rus/materialization';
 import {
   at, available, body, clarificationPlan, directOperationPlan, directPlan, effect,
   followup, genericPlan, input, minutes, ports, preparedFollowupOperation,
@@ -65,6 +66,120 @@ test('two prepared body changes use the existing composite body owner', () => {
   assert.deepEqual(update.proposal.exact_deltas,
     { health: 0, satiety: 0, energy: -2 });
   assert.deepEqual(update.state_after, secondAfter);
+});
+
+test('prepared body-time aggregation preserves its exact composite proposal', () => {
+  const bodyTimeProposal = (amount, elapsed, step) => ({
+    proposal_kind: 'body_time_effect',
+    profile_ref: `body:approved:${step}`,
+    time_effect_policy_ref: `body-time:approved:${step}:time`,
+    exact_elapsed: { numerator: String(elapsed), denominator: '1' },
+    metric_changes: [{ metric: 'satiety', direction: 'decrease',
+      amount: { numerator: amount.numerator, denominator: amount.denominator } }],
+    profile_pin: { profile_ref: `body:approved:${step}`, version: String(step),
+      sha256: String(step).repeat(64) },
+    binding_pin: { binding_ref: 'body:binding:approved', version: '1',
+      sha256: 'b'.repeat(64) }
+  });
+  const makeEffect = ({ step, before, after, amount, elapsed,
+    includeFixedEffectProposals = true }) => {
+    const value = effect({ step, kind: 'semantic_activity',
+      owner: 'activity:ordinary', operation: `activity:${step}`,
+      availability: null, duration: elapsed, before, after });
+    const proposal = { proposal_kind: 'body_time_effect_composite',
+      component_proposals: [bodyTimeProposal(amount, elapsed, step)],
+      exact_changes: Object.fromEntries(['health', 'satiety', 'energy'].map(
+        (metric) => [metric, {
+          increase: { numerator: '0', denominator: '1' },
+          decrease: metric === 'satiety'
+            ? { numerator: amount.numerator, denominator: amount.denominator }
+            : { numerator: '0', denominator: '1' }
+        }])) };
+    if (includeFixedEffectProposals) {
+      proposal.fixed_effect_proposals = [{ proposal_id: `fixed:${step}` }];
+    }
+    value.body_update = { ...value.body_update, applied: true,
+      proposal,
+      state_after: { ...body(), satiety: 100 - Number(amount.numerator)
+        / Number(amount.denominator) } };
+    return value;
+  };
+  const preparedLedger = (effects, initialBodyState = body()) => {
+    let priorBodyState = initialBodyState;
+    const ledgerEffects = effects.map((item) => {
+      item.body_state_before = priorBodyState;
+      const entry = {
+        effect: item,
+        working_projection_before: {
+          clock: at(Number(item.time_update.clock_before.whole_minutes))
+        },
+        working_projection_after: {
+          clock: at(Number(item.time_update.clock_after.whole_minutes))
+        }
+      };
+      priorBodyState = item.body_update.state_after;
+      return entry;
+    });
+    return buildTurnStepPreparedEffectLedger({
+      rootTurnId: 'turn:body-time-chain', committedStateVersion: 8,
+      effects: ledgerEffects
+    });
+  };
+  const oneSource = body();
+  const oneLedger = preparedLedger([makeEffect({ step: 1, before: 0, after: 3,
+    elapsed: 3, amount: { numerator: '1', denominator: '3' } })], oneSource);
+  const oneSlice = buildTurnStepPreparedBodyUpdate(oneLedger, oneSource);
+  assert.deepEqual(Object.keys(oneSlice.proposal).sort(), [
+    'component_proposals', 'exact_changes', 'fixed_effect_proposals',
+    'proposal_kind'
+  ]);
+  assert.deepEqual(oneSlice.proposal.fixed_effect_proposals,
+    [{ proposal_id: 'fixed:1' }]);
+  assert.equal(canonicalDigest(oneSlice.proposal),
+    canonicalDigest(oneLedger.slices[0].body_update.proposal));
+  const threeSource = body();
+  const threeLedger = preparedLedger([
+    makeEffect({ step: 1, before: 0, after: 1, elapsed: 1,
+      amount: { numerator: '1', denominator: '9' } }),
+    makeEffect({ step: 2, before: 1, after: 2, elapsed: 1,
+      amount: { numerator: '1', denominator: '9' } }),
+    makeEffect({ step: 3, before: 2, after: 3, elapsed: 1,
+      amount: { numerator: '1', denominator: '9' } })
+  ], threeSource);
+  const threeSlices = buildTurnStepPreparedBodyUpdate(threeLedger, threeSource);
+  assert.deepEqual(Object.keys(threeSlices.proposal).sort(), [
+    'component_proposals', 'exact_changes', 'fixed_effect_proposals',
+    'proposal_kind'
+  ]);
+  assert.deepEqual(threeSlices.proposal.fixed_effect_proposals, [
+    { proposal_id: 'fixed:1' }, { proposal_id: 'fixed:2' },
+    { proposal_id: 'fixed:3' }
+  ]);
+  assert.equal(canonicalDigest(threeSlices.proposal), canonicalDigest(
+    buildTurnStepPreparedBodyUpdate(threeLedger, threeSource).proposal));
+  assert.equal(oneSlice.state_after.satiety, 99.666667);
+  assert.deepEqual(threeSlices.state_after, oneSlice.state_after);
+  assert.equal(threeSlices.proposal.proposal_kind,
+    'body_time_effect_composite');
+  assert.equal(threeSlices.proposal.component_proposals.length, 3);
+  assert.deepEqual(threeSlices.proposal.component_proposals.map((proposal) =>
+    proposal.profile_ref), ['body:approved:1', 'body:approved:2', 'body:approved:3']);
+  assert.deepEqual(threeSlices.proposal.exact_changes.satiety,
+    { increase: { numerator: '0', denominator: '1' },
+      decrease: { numerator: '1', denominator: '3' } });
+  const missingFixedProposal = preparedLedger([makeEffect({ step: 1,
+    before: 0, after: 3, elapsed: 3,
+    amount: { numerator: '1', denominator: '3' },
+    includeFixedEffectProposals: false })]);
+  assert.throws(() => buildTurnStepPreparedBodyUpdate(missingFixedProposal,
+    body()), { code: 'TURN_STEP_PREPARED_EFFECT_INVALID' });
+  assert.throws(() => buildTurnStepPreparedBodyUpdate(oneLedger), {
+    code: 'TURN_STEP_PREPARED_EFFECT_INVALID'
+  });
+  assert.throws(() => buildTurnStepPreparedBodyUpdate(oneLedger,
+    { ...oneSource, satiety: 90 }), {
+    code: 'TURN_STEP_PREPARED_EFFECT_INVALID'
+  });
 });
 
 test('a charged semantic prefix may continue through the same direct action chain', () => {

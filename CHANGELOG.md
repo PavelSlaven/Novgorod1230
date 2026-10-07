@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(body-state): bind approved satiety and awake-energy profiles to elapsed v17 activity time (#244)
 - fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)

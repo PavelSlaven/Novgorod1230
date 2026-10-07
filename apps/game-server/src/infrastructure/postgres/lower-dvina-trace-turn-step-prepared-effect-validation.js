@@ -46,12 +46,14 @@ export function validatePreparedEffectCommit({
   } catch (cause) {
     preparedEffectFail('ledger contract or digest is invalid', cause);
   }
-  validatePreparedEnvelopeAggregate({ ledger, envelope, factual });
+  validatePreparedEnvelopeAggregate({ ledger, envelope, factual,
+    bodyStateBefore: state?.body_state });
   const slices = ledger.slices;
   const traces = envelope.loop_trace?.step_traces;
   if (slices.every((slice) => slice.effect_kind === 'semantic_activity')) {
     const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
-    const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+    const expectedBody = buildTurnStepPreparedBodyUpdate(
+      ledger, state?.body_state);
     if (ledger.root_turn_id !== batch?.root_turn_id
         || ledger.committed_state_version !== batch?.committed_state_version
         || !samePreparedValue(expectedBody, envelope.body_update)
@@ -172,7 +174,8 @@ export function validatePreparedEffectCommit({
       'prepared working state differs from approved requests');
   }
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
-  const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  const expectedBody = buildTurnStepPreparedBodyUpdate(
+    ledger, state?.body_state);
   if (!samePreparedValue(envelope.consequence, factual?.consequence)
       || !samePreparedValue(envelope.time_update, factual?.time_update)
       || !samePreparedValue(envelope.body_update, factual?.body_update)

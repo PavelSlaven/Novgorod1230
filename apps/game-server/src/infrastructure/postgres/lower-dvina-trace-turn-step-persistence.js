@@ -53,7 +53,9 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       localFirePlans: writePlan
         ?.local_fire_atomic_write_plans ?? []
     });
-    validateNoBatchFactualCommit({ writePlan, factual, state, preparedEffect });
+    validateNoBatchFactualCommit({ writePlan, factual, state, preparedEffect,
+      trustedBodyNeedsBindingPin:
+        turnStepApprovedOwners?.bodyNeedsBindingPin ?? null });
     return emptyTurnStepPersistence(committedSnapshot);
   }
   if (targets.length !== 1) fail('TRACE_TURN_STEP_OPERATION_BATCH_INVALID', {
@@ -108,7 +110,8 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     prevalidateFragment({ fragment, index, batch, commit, state, context });
   }
   if (!preparedEffect.prepared) {
-    validateBodyComponentOrder(batch, commit, state);
+    validateBodyComponentOrder(batch, commit, state,
+      turnStepApprovedOwners?.bodyNeedsBindingPin ?? null);
   }
   const hasActivityFragments = batch.operations.some(({ target }) =>
     target === 'party_events');
@@ -171,8 +174,10 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     factual: commit, batch, bodySlices
   });
   context.bodyHistory = preparedEffect.prepared && bodySlices.length === 0 ? null
-    : prepareTurnStepBodyHistory({
-        partyId, state, ...bodyHistoryInput, changeSetId, idemId
+      : prepareTurnStepBodyHistory({
+        partyId, state, ...bodyHistoryInput, changeSetId, idemId,
+        trustedBodyNeedsBindingPin:
+          turnStepApprovedOwners?.bodyNeedsBindingPin ?? null
       });
   if (context.bodyHistory != null) {
     next.turn_step_body_history = [

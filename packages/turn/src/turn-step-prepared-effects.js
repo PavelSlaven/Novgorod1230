@@ -1,4 +1,5 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
+import { applyBodyTimeEffectProposals } from '@rus/body-state';
 import { addRationalMinutes,
   compareRationalMinutes,
   normalizeElapsedTime,
@@ -255,7 +256,7 @@ export function buildTurnStepPreparedTimeUpdate(value) {
     prepared_effect_ledger: structuredClone(ledger)
   });
 }
-export function buildTurnStepPreparedBodyUpdate(value) {
+export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
   const ledger = requireTurnStepPreparedEffectLedger(value);
   const applied = ledger.slices.filter(
     (slice) => slice.body_update.applied === true);
@@ -271,6 +272,48 @@ export function buildTurnStepPreparedBodyUpdate(value) {
       prepared_effect_ledger_digest: ledger.ledger_digest
     });
   }
+  const updates = applied.map(({ body_update: update }) => update);
+  const first = updates[0];
+  if (updates.every((update) =>
+    update.proposal?.proposal_kind === 'body_time_effect_composite'
+      && Array.isArray(update.proposal.component_proposals)
+      && update.proposal.component_proposals.length > 0
+      && update.proposal.component_proposals.every((proposal) =>
+        proposal?.proposal_kind === 'body_time_effect'))) {
+    if (updates.some((update) =>
+      !Array.isArray(update.proposal.fixed_effect_proposals))) {
+      invalid('Prepared body-time composite requires fixed effect proposals.');
+    }
+    if (!plain(bodyStateBefore)) {
+      invalid('Prepared body-time updates require the source body state.');
+    }
+    if (sha256(bodyStateBefore) !== ledger.slices[0].body_state_before_digest) {
+      invalid('Prepared body-time source state does not match the ledger digest.');
+    }
+    const componentProposals = updates.flatMap((update) =>
+      structuredClone(update.proposal.component_proposals));
+    const fixedEffectProposals = updates.flatMap((update) =>
+      structuredClone(update.proposal.fixed_effect_proposals));
+    const result = applyBodyTimeEffectProposals(
+      bodyStateBefore, componentProposals);
+    if (result?.ok !== true || result.owner !== '@rus/body-state'
+        || result.applied !== true || !plain(result.state_after)
+        || !plain(result.exact_changes)) {
+      invalid(`Prepared body-time updates could not be applied by body-state: ${JSON.stringify(result)}`,
+        { result });
+    }
+    return deepFreeze({
+      ...structuredClone(first),
+      proposal: {
+        proposal_kind: 'body_time_effect_composite',
+        fixed_effect_proposals: fixedEffectProposals,
+        component_proposals: componentProposals,
+        exact_changes: structuredClone(result.exact_changes)
+      },
+      state_after: structuredClone(result.state_after),
+      prepared_effect_ledger_digest: ledger.ledger_digest
+    });
+  }
   if (applied.length === 1) {
     return deepFreeze({
       ...structuredClone(applied[0].body_update),
@@ -278,8 +321,6 @@ export function buildTurnStepPreparedBodyUpdate(value) {
       prepared_effect_ledger_digest: ledger.ledger_digest
     });
   }
-  const updates = applied.map(({ body_update: update }) => update);
-  const first = updates[0];
   const proposal = structuredClone(first.proposal);
   if (updates.some((update) => update.owner !== first.owner
       || update.proposal?.profile_ref !== proposal.profile_ref

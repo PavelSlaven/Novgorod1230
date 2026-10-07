@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { validateTurnStepBodyTimeProposal } from
+  './lower-dvina-trace-turn-step-body-history.js';
 import { exactShape, fail, plain, text } from
   './lower-dvina-trace-turn-step-persistence-support.js';
 
@@ -35,7 +37,11 @@ export function validateBodyEventCommit(operation, factual, state) {
     component?.kind === 'direct_body_event'
       && component.operation_id === operation.operation_id);
   const component = components[componentIndex];
-  const proposals = factual.body_update?.proposal?.component_proposals;
+  const bodyProposal = factual.body_update?.proposal;
+  const proposals = bodyProposal?.proposal_kind
+      === 'body_time_effect_composite'
+    ? bodyProposal.fixed_effect_proposals
+    : bodyProposal?.component_proposals;
   const proposal = Array.isArray(proposals) ? proposals[componentIndex] : null;
   const hidden = factual.hidden_update ?? factual.consequence?.hidden_update;
   const hiddenMatches = plain(hidden) && Object.values(hidden).filter(
@@ -54,13 +60,16 @@ export function validateBodyEventCommit(operation, factual, state) {
       || proposal.selection_policy !== payload.selection_policy
       || proposal.rng_consumption !== payload.rng_consumption
       || hiddenMatches !== 1) reconciliationFail(operation.operation_id);
-  if (!same(proposals.at(-1)?.state_after, factual.body_update?.state_after)) {
+  if (bodyProposal?.proposal_kind !== 'body_time_effect_composite'
+      && !same(proposals.at(-1)?.state_after,
+        factual.body_update?.state_after)) {
     reconciliationFail(operation.operation_id,
       'final component state_after differs from factual body_update');
   }
 }
 
-export function validateBodyComponentOrder(batch, factual, state) {
+export function validateBodyComponentOrder(batch, factual, state,
+  trustedBodyNeedsBindingPin = null) {
   const expected = batch.operations.flatMap((fragment) => {
     if (fragment.target === 'party_events') return [{
       kind: 'semantic_activity', ref: fragment.value.activity_id }];
@@ -89,6 +98,11 @@ export function validateBodyComponentOrder(batch, factual, state) {
   if (!applied) return;
   const proposals = factual.body_update?.proposal?.component_proposals;
   const composite = factual.body_update?.proposal;
+  if (composite?.proposal_kind === 'body_time_effect_composite') {
+    validateBodyTimeComposite({ bodyEffectRef, factual, batch, state,
+      trustedBodyNeedsBindingPin });
+    return;
+  }
   const compositeShape = exactShape(composite, ['schema', 'profile_ref',
     'profile_pin', 'component_proposals', 'exact_deltas', 'selection_policy',
     'rng_consumption'])
@@ -131,6 +145,25 @@ export function validateBodyComponentOrder(batch, factual, state) {
   if (!same(factual.body_update.state_after, expectedState)) {
     reconciliationFail(null,
       'final body state differs from ordered component arithmetic');
+  }
+}
+
+function validateBodyTimeComposite({ bodyEffectRef, factual, batch, state,
+  trustedBodyNeedsBindingPin }) {
+  if (bodyEffectRef != null && !text(bodyEffectRef)) {
+    reconciliationFail(null, 'continuous body effect reference is invalid');
+  }
+  try {
+    validateTurnStepBodyTimeProposal({ factual, batch, state,
+      trustedBodyNeedsBindingPin });
+  } catch (cause) {
+    const details = cause?.details ?? {};
+    const causeReason = [cause?.code, details.reason,
+      ...(details.operation_id == null
+        ? [] : [`operation_id=${details.operation_id}`])]
+      .filter(Boolean).join(': ') || cause?.message;
+    reconciliationFail(null,
+      `continuous body-time proposal is invalid: ${causeReason}`);
   }
 }
 function bodyActorId(factual, state) {

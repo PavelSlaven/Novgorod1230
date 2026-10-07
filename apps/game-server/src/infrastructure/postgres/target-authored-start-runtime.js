@@ -118,6 +118,11 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
     gap('SPATIAL_V3_TARGET_START_TEMPORAL_REQUIRED');
   }
   return Object.freeze({ profile, worldBaseReader: reader, initialRule, itemPin, actorBinding,
+      body_time_effect_records: Object.freeze(temporal.rows.filter((row) =>
+        row.family_id === 'body_time_effect_profiles_thresholds'
+        && row.record_kind === 'body_time_effect_profile' && row.status === 'approved'
+        && ['satiety_hourly_spend_v2', 'energy_awake_spend_v2', 'starvation_health_harm_v2']
+          .includes(row.payload?.body_effect_profile_id))),
       materialization_inputs: Object.freeze({ scenario_bundle: profile, domain_catalog: catalog, domain_catalog_pin: itemPin,
       world_base_reference_snapshot: snapshot, approved_actor_temporal_bundle: actorBundle,
       canonical_npc_closure: npc.value, canonical_acoustic_rows: acoustic.value.rows,

@@ -52,10 +52,12 @@ export function validateRouteOnlyBoundaryTrace({ routeTrace, directTrace,
     preparedEffectFail('route-only boundary trace is not an exact deferred step');
   }
 }
-export function validatePreparedEnvelopeAggregate({ ledger, envelope, factual }) {
+export function validatePreparedEnvelopeAggregate({ ledger, envelope, factual,
+  bodyStateBefore }) {
   const consequence = envelope?.consequence;
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
-  const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  const expectedBody = buildTurnStepPreparedBodyUpdate(
+    ledger, bodyStateBefore);
   const totalDuration = Number(expectedTime.exact_elapsed.exact_minutes.numerator);
   if (consequence?.prepared_effect_ledger_digest !== ledger.ledger_digest
       || consequence.duration_minutes !== totalDuration

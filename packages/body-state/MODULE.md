@@ -6,7 +6,7 @@ Pure owner body metrics and target Temporal v4 body-time proposals. Из exact e
 
 ## Владеет
 
-- Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `calculateBodyTimeEffectProposal`, `predictNearestBodyThreshold`, direct-event body transition и edge-triggered threshold crossing между authoritative before/after states.
+- Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `calculateBodyTimeEffectProposal`, `applyBodyTimeEffectProposals`, `predictNearestBodyThreshold`, direct-event body transition и edge-triggered threshold crossing между authoritative before/after states.
 - Сохраняет supplied approved `decision_signal` descriptor на crossing; не вычисляет его category/significance и не создаёт NPC boundary.
 
 ## Не владеет
@@ -15,7 +15,7 @@ Pure owner body metrics and target Temporal v4 body-time proposals. Из exact e
 
 ## Public API и контракты
 
-`BODY_METRICS`, `clampBodyMetric`, `normalizeBodyState`, `applyBodyStateChange`, `applyApprovedFixedBodyEffect`, `detectBodyThresholdCrossings`, `stateModifier`, `validateBodyState`; target API принимает closed approved profile + exact rational elapsed (или `(window_start, window_end]`), explicit `body_state_ref`, scope, environment snapshot, conditions and matching dependency pins. `applyApprovedFixedBodyEffect` отдельно применяет один exact digest-pinned semantic/direct event без владения clock или persistence. `detectBodyThresholdCrossings` сравнивает before/after, выдаёт crossing только на ребре и переносит approved generic `self` descriptor без самостоятельного выбора semantic significance. Выход — frozen `{ ok: true, body_change_proposal | threshold_candidate, validation_report, trace }`; threshold can be `null` when none is reached.
+`BODY_METRICS`, `clampBodyMetric`, `normalizeBodyState`, `applyBodyStateChange`, `applyBodyTimeEffectProposals`, `applyApprovedFixedBodyEffect`, `detectBodyThresholdCrossings`, `stateModifier`, `validateBodyState`; target API принимает closed approved profile + exact rational elapsed (или `(window_start, window_end]`), explicit `body_state_ref`, scope, environment snapshot, conditions and matching dependency pins. `applyBodyTimeEffectProposals` агрегирует точные rational body-time proposals, ограничивает итоговые метрики диапазоном 0..100 и округляет каждый scalar при commit до 6 знаков half-even; входные десятичные значения с точностью до 6 знаков сохраняют значение. Exact directional totals возвращаются для replay/commit. `applyApprovedFixedBodyEffect` отдельно применяет один exact digest-pinned semantic/direct event без владения clock или persistence. `detectBodyThresholdCrossings` сравнивает before/after, выдаёт crossing только на ребре и переносит approved generic `self` descriptor без самостоятельного выбора semantic significance. Выход — frozen `{ ok: true, body_change_proposal | threshold_candidate, validation_report, trace }`; threshold can be `null` when none is reached.
 
 Versioned declarative registry `src/declarative-content-contracts.v2.json` exact-supersedes v1 и добавляет schema `rus.trace_body_environment_profiles.v2`. Runtime-ready fixed effect обязан содержать точные числовые deltas, точные `from`/`to` condition outcomes, единственную policy `fixed_approved_effect` и запрет RNG; ranges, `may`, aliases и неявный выбор значения блокируют admission. Registry остаётся generic: он не содержит scenario-specific IDs, runtime handlers или persistence.
 

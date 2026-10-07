@@ -19,6 +19,7 @@ import {
 } from '../lower-dvina-trace-phase-2.js';
 import { createTraceTurnRuntime } from
   './spatial-v3-production-trace-runtime.js';
+import { deriveTrustedBodyNeedsBindingPin } from '../body-needs-temporal.js';
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../../internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 import { loadLiveWorldAuthoredStartCatalog } from
@@ -194,10 +195,13 @@ export async function createSpatialV3ProductionBindings(
           const spatial = await authoredSpatialProvisioner.provision(input);
           return Object.freeze({ ordinary, spatial });
         } };
+      const trustedBodyNeedsBindingPin = deriveTrustedBodyNeedsBindingPin(
+        targetRuntimeProfiles?.body_needs_profile ?? null);
       const traceStartAdapter = createLowerDvinaTracePhase1BProductionAdapter({
         partyPool: ports.partyPool, worldPool: ports.worldPool, release, runtimeCatalogPin, worldKnowledge,
         authoredStartResolver: authoredStartCatalog.resolveProfile,
         committer, authoredRuntimeBindingResolver: authoredStartCatalog.resolveRuntimeBinding,
+        trustedBodyNeedsBindingPin,
         approvedActorCatalog: authoredStartCatalog.actor_catalog, actorBaseAttributesBinding,
         ...(targetStartRuntime == null ? {} : { targetStartRuntime }),
         ...(authoredInitialProvisioner == null ? {} : { initialOrdinaryProvisioner: authoredInitialProvisioner })
@@ -216,6 +220,7 @@ export async function createSpatialV3ProductionBindings(
         spatialSemanticProfile,
         npcSemanticRemainderProfile,
         authoredTurnProfile: authoredStartCatalog.turn_profile,
+        bodyNeedsProfile: targetRuntimeProfiles?.body_needs_profile ?? null,
         postActionPerceptionProfile:
           targetRuntimeProfiles?.post_action_perception_profile ?? null,
         authoredSpatialSemanticProfile:

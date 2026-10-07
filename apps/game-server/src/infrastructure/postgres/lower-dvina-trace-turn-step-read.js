@@ -5,12 +5,14 @@ import { assertTurnStepSemanticActivityRows } from
 import { assertTurnStepBodyHistoryRows } from
   './lower-dvina-trace-turn-step-body-read.js';
 
-export async function assertTurnStepNormalizedRows(pool, payload, headRow) {
+export async function assertTurnStepNormalizedRows(pool, payload, headRow,
+  trustedBodyNeedsBindingPin = null) {
   await assertTurnStepRuntimeItemRows(pool, payload);
   await assertTurnStepAuthoredItemRows(pool, payload);
   await assertTurnStepAuthoredContainerRows(pool, payload);
   await assertTurnStepSemanticActivityRows(pool, payload);
-  await assertTurnStepBodyHistoryRows(pool, payload, headRow);
+  await assertTurnStepBodyHistoryRows(pool, payload, headRow,
+    trustedBodyNeedsBindingPin);
 }
 
 async function assertTurnStepAuthoredContainerRows(pool, payload) {

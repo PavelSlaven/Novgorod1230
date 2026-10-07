@@ -36,6 +36,7 @@ import { loadLowerDvinaTraceScenePresentation } from '../../internal/lower-dvina
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
+  trustedBodyNeedsBindingPin = null,
   loadInitialNaturalScenePerceptionInput = null,
   readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
   readCurrentConnectionDisclosure = null,
@@ -181,7 +182,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       await assertPhase5NormalizedRows(readPool, payload, row);
       await assertPhase6NormalizedRows(readPool, payload, row);
       await assertPhase7NormalizedRows(readPool, payload, row);
-      await assertTurnStepNormalizedRows(readPool, payload, row);
+      await assertTurnStepNormalizedRows(readPool, payload, row,
+        trustedBodyNeedsBindingPin);
       await assertCombatSessionRows(readPool, payload);
       await assertPhase9NormalizedRows(readPool, payload);
       await assertPhase10NormalizedRows(readPool, payload, row);

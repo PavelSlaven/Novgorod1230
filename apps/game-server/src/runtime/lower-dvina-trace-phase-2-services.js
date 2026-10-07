@@ -49,6 +49,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnBudget,
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
     temporalAdvanceOwner,
+    bodyTimeEffectAdapter,
     decisionSecret, phase3Contracts,
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
@@ -97,7 +98,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createLowerDvinaTracePhase2ServiceFlow({
       contracts, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts,
       phase7Contracts, turn10Contracts, phase8Contracts, phase9Contracts,
-      temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation
+      temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation,
+      bodyTimeEffectAdapter
     });
   const turnStepPorts = createLowerDvinaTraceTurnStepRuntimePorts({
     bodyEffect,

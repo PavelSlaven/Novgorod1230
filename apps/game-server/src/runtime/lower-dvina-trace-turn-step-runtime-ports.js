@@ -325,7 +325,9 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
       state_after: structuredClone(after)
     });
   }
-  if ((input.consequence?.body_effect_ref == null
+  const continuousActivity = bodyEffect?.supportsBodyTimeEffects === true
+    && input.effect_kind === 'semantic_activity';
+  if ((input.consequence?.body_effect_ref == null && !continuousActivity
         && input.consequence?.parent_activity_completion?.status
           !== 'completed')
       || input.consequence?.generic_known_route === true
@@ -350,6 +352,7 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
         input.prepared_chain_context.current_body_state)
     },
     consequence: structuredClone(input.consequence),
+    effect_kind: input.effect_kind,
     time_update: structuredClone(input.time_update)
   });
   return Object.freeze({

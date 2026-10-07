@@ -40,7 +40,8 @@ export function validatePreparedPhase3RouteConversation({ ledger, envelope,
     conversationTrace?.plan_request?.available_domain_operations?.filter(
       (operation) => samePreparedValue(operation, conversationOperation)) ?? [];
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
-  const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  const expectedBody = buildTurnStepPreparedBodyUpdate(
+    ledger, state?.body_state);
   const target = conversationOperation?.target_actor_refs?.[0];
   if (batch != null || !Array.isArray(traces) || traces.length !== 2
       || traces.some(({ applied }) => applied !== true)
@@ -115,7 +116,8 @@ export function validatePreparedPhase4Conversation({ ledger, envelope, factual,
   const conversationTrace = traces?.[0];
   const operation = conversationTrace?.approved_plan?.operations?.[0];
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
-  const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  const expectedBody = buildTurnStepPreparedBodyUpdate(
+    ledger, state?.body_state);
   const temporalBoundary = (conversation.time_update?.temporal_results ?? [])
     .some((result) => result.temporal_status === 'paused'
       || result.trace?.stopped_after_current_batch === true
@@ -193,7 +195,8 @@ export function validatePreparedPhase4Route({ ledger, envelope, factual, state,
   const movement = route.consequence?.movement;
   const routeStep = hasPrefix ? 2 : 1;
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
-  const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  const expectedBody = buildTurnStepPreparedBodyUpdate(
+    ledger, state?.body_state);
   const expectedParticipants = phase4Contracts == null ? [] : [state.actor_id,
     phase4Contracts.actors.eremey_fisher.instance_id,
     phase4Contracts.actors.participating_fisher.instance_id];

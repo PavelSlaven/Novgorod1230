@@ -57,6 +57,70 @@ export function applyBodyStateChange(state = {}, change = {}) {
   return deepFreeze(next);
 }
 
+/**
+ * Applies already-approved body-time proposals without losing rational
+ * arithmetic between proposals. The persisted scalar state is rounded once,
+ * at this owner boundary; exact directional totals remain available for replay.
+ */
+export function applyBodyTimeEffectProposals(state, proposals) {
+  if (!plainObject(state) || !Array.isArray(proposals)) {
+    return hardBlock('body_time_proposal_invalid', 'body state and proposal array are required');
+  }
+  const exactState = {};
+  for (const metric of BODY_METRICS) {
+    if (!Object.hasOwn(state, metric) || typeof state[metric] !== 'number' || !Number.isFinite(state[metric])
+      || state[metric] < 0 || state[metric] > 100) {
+      return hardBlock('body_state_invalid', `body state ${metric} must be a finite number from 0 to 100`);
+    }
+    exactState[metric] = decimalNumberRational(state[metric]);
+  }
+
+  const totals = Object.fromEntries(BODY_METRICS.map((metric) => [metric, {
+    increase: rationalPair(0n, 1n), decrease: rationalPair(0n, 1n)
+  }]));
+  for (const proposal of proposals) {
+    if (!plainObject(proposal) || proposal.proposal_kind !== 'body_time_effect'
+      || !Array.isArray(proposal.metric_changes) || proposal.metric_changes.length === 0) {
+      return hardBlock('body_time_proposal_invalid', 'each proposal must be a body_time_effect with metric changes');
+    }
+    for (const change of proposal.metric_changes) {
+      if (!plainObject(change) || !BODY_METRICS.includes(change.metric)
+        || !['increase', 'decrease'].includes(change.direction)) {
+        return hardBlock('body_time_proposal_invalid', 'body-time metric change has invalid metric or direction');
+      }
+      const amount = parseRationalDto(change.amount);
+      if (!amount || amount.numerator < 0n) {
+        return hardBlock('body_time_proposal_invalid', 'body-time amount must be a nonnegative exact rational');
+      }
+      const metricTotals = totals[change.metric];
+      metricTotals[change.direction] = addRational(metricTotals[change.direction], amount);
+    }
+  }
+
+  const stateAfter = structuredClone(state);
+  const exactChanges = {};
+  for (const metric of BODY_METRICS) {
+    const increase = totals[metric].increase;
+    const decrease = totals[metric].decrease;
+    const net = addRational(exactState[metric], subtractRational(increase, decrease));
+    const bounded = compareRational(net, rationalPair(0n, 1n)) < 0
+      ? rationalPair(0n, 1n)
+      : compareRational(net, rationalPair(100n, 1n)) > 0 ? rationalPair(100n, 1n) : net;
+    stateAfter[metric] = rationalToScalar(bounded);
+    exactChanges[metric] = {
+      increase: rationalDto(increase),
+      decrease: rationalDto(decrease)
+    };
+  }
+  return deepFreeze({
+    ok: true,
+    owner: '@rus/body-state',
+    applied: true,
+    state_after: stateAfter,
+    exact_changes: exactChanges
+  });
+}
+
 export { applyApprovedFixedBodyEffect } from './fixed-approved-effect.js';
 export { detectBodyThresholdCrossings } from './thresholds.js';
 
@@ -417,6 +481,87 @@ function elapsedUntilThreshold(current, threshold, direction, rate) {
 
 function hardBlock(code, message) {
   return deepFreeze({ ok: false, status: 'hard_block', error: deepFreeze({ code, message }) });
+}
+
+function decimalNumberRational(value) {
+  const source = value.toString().toLowerCase();
+  const [mantissa, exponentText] = source.split('e');
+  const exponent = exponentText === undefined ? 0 : Number(exponentText);
+  const negative = mantissa.startsWith('-');
+  const unsigned = negative || mantissa.startsWith('+') ? mantissa.slice(1) : mantissa;
+  const [whole, fraction = ''] = unsigned.split('.');
+  const digits = `${whole}${fraction}`.replace(/^0+(?=\d)/, '');
+  let numerator = BigInt(digits || '0') * (negative ? -1n : 1n);
+  const scale = fraction.length - exponent;
+  let denominator = 1n;
+  if (scale > 0) denominator = 10n ** BigInt(scale);
+  else if (scale < 0) numerator *= 10n ** BigInt(-scale);
+  return reduceRational(numerator, denominator);
+}
+
+function parseRationalDto(value) {
+  if (!plainObject(value) || Object.keys(value).length !== 2
+    || typeof value.numerator !== 'string' || !/^-?(0|[1-9]\d*)$/.test(value.numerator)
+    || typeof value.denominator !== 'string' || !/^[1-9]\d*$/.test(value.denominator)) return null;
+  const rational = reduceRational(BigInt(value.numerator), BigInt(value.denominator));
+  if (rational.numerator.toString() !== value.numerator || rational.denominator.toString() !== value.denominator) return null;
+  return rational;
+}
+
+function rationalPair(numerator, denominator) {
+  return reduceRational(numerator, denominator);
+}
+
+function reduceRational(numerator, denominator) {
+  if (denominator === 0n) throw new RangeError('rational denominator cannot be zero');
+  if (denominator < 0n) { numerator = -numerator; denominator = -denominator; }
+  const divisor = greatestCommonDivisor(numerator, denominator);
+  return { numerator: numerator / divisor, denominator: denominator / divisor };
+}
+
+function greatestCommonDivisor(left, right) {
+  let a = left < 0n ? -left : left;
+  let b = right < 0n ? -right : right;
+  while (b !== 0n) [a, b] = [b, a % b];
+  return a || 1n;
+}
+
+function addRational(left, right) {
+  return reduceRational(left.numerator * right.denominator + right.numerator * left.denominator,
+    left.denominator * right.denominator);
+}
+
+function subtractRational(left, right) {
+  return reduceRational(left.numerator * right.denominator - right.numerator * left.denominator,
+    left.denominator * right.denominator);
+}
+
+function compareRational(left, right) {
+  const delta = left.numerator * right.denominator - right.numerator * left.denominator;
+  return delta < 0n ? -1 : delta > 0n ? 1 : 0;
+}
+
+function rationalDto(value) {
+  return { numerator: value.numerator.toString(), denominator: value.denominator.toString() };
+}
+
+function rationalToScalar(value) {
+  const scale = 1_000_000n;
+  const absoluteScaledNumerator = (value.numerator < 0n ? -value.numerator : value.numerator) * scale;
+  let quotient = absoluteScaledNumerator / value.denominator;
+  const remainder = absoluteScaledNumerator % value.denominator;
+  const twiceRemainder = remainder * 2n;
+  if (twiceRemainder > value.denominator || (twiceRemainder === value.denominator && quotient % 2n !== 0n)) quotient += 1n;
+  if (value.numerator < 0n) quotient = -quotient;
+  return Number(decimalIntegerString(quotient, 6));
+}
+
+function decimalIntegerString(value, places) {
+  const negative = value < 0n;
+  let digits = (negative ? -value : value).toString();
+  if (places === 0) return `${negative ? '-' : ''}${digits}`;
+  digits = digits.padStart(places + 1, '0');
+  return `${negative ? '-' : ''}${digits.slice(0, -places)}.${digits.slice(-places)}`;
 }
 
 function contractValid(name, value) {

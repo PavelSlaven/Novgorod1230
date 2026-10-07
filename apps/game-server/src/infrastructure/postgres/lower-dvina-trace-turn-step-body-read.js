@@ -7,11 +7,12 @@ import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 import { buildTurnStepBodyEffectRef, preparedBodyHistoryInput } from
   './lower-dvina-trace-turn-step-body-history.js';
 
-export async function assertTurnStepBodyHistoryRows(pool, payload, headRow) {
+export async function assertTurnStepBodyHistoryRows(pool, payload, headRow,
+  trustedBodyNeedsBindingPin = null) {
   assertNormalizedBody(payload, headRow);
   const history = payload.turn_step_body_history ?? [];
   if (history.length === 0) {
-    assertCurrentEffect(history, payload);
+    assertCurrentEffect(history, payload, trustedBodyNeedsBindingPin);
     return;
   }
   const ids = history.map(({ history_id: id }) => id);
@@ -35,10 +36,10 @@ export async function assertTurnStepBodyHistoryRows(pool, payload, headRow) {
         || row.party_id !== payload.party_id
         || !validSubject(row, payload)) invalid();
   }
-  assertCurrentEffect(history, payload);
+  assertCurrentEffect(history, payload, trustedBodyNeedsBindingPin);
 }
 
-function assertCurrentEffect(history, payload) {
+function assertCurrentEffect(history, payload, trustedBodyNeedsBindingPin) {
   const envelope = payload.last_turn?.turn_step_commit;
   if (!envelope) return;
   const batch = payload.last_turn?.turn_step_operation_batch;
@@ -57,8 +58,8 @@ function assertCurrentEffect(history, payload) {
     let ledger;
     try {
       ledger = requireTurnStepPreparedEffectLedger(preparedLedger);
-    } catch {
-      invalid();
+    } catch (cause) {
+      invalid(readbackFailureReason(cause));
     }
     const digest = ledger.ledger_digest;
     if (typeof digest !== 'string'
@@ -67,8 +68,10 @@ function assertCurrentEffect(history, payload) {
         || envelope.time_update.prepared_effect_ledger_digest !== digest
         || envelope.body_update?.prepared_effect_ledger_digest !== digest
         || envelope.consequence?.prepared_effect_ledger_digest !== digest
-        || !same(envelope.body_update,
-          buildTurnStepPreparedBodyUpdate(ledger))) invalid();
+        || (isContinuousBodyTimeComposite(envelope.body_update)
+          ? !continuousBodyLedgerMatches(envelope.body_update, ledger)
+          : !same(envelope.body_update,
+            buildTurnStepPreparedBodyUpdate(ledger)))) invalid();
     if (ledger.slices.some((slice) => slice.effect_kind !== 'semantic_activity')) {
       if (current.length !== 0) invalid();
       return;
@@ -96,17 +99,22 @@ function assertCurrentEffect(history, payload) {
   const subject = currentBodySubject(payload);
   let effectRef;
   try {
-    effectRef = buildTurnStepBodyEffectRef(preparedBodyHistoryInput({
-      factual: envelope, batch, bodySlices: preparedBodySlices
-    }));
-  } catch {
-    invalid();
+    effectRef = buildTurnStepBodyEffectRef(
+      isContinuousBodyTimeComposite(envelope.body_update)
+        ? { factual: envelope, batch, trustedBodyNeedsBindingPin }
+        : preparedBodyHistoryInput({
+          factual: envelope, batch, bodySlices: preparedBodySlices
+        })
+    );
+  } catch (cause) {
+    invalid(readbackFailureReason(cause));
   }
   if (expected.subject_kind !== subject.kind
       || expected.subject_id !== subject.id
       || !same(expected.effect_ref, effectRef)
-      || !sameBodyMetrics(subject.body,
-        envelope.body_update.state_after)
+      || !(isContinuousBodyTimeComposite(envelope.body_update)
+        ? samePersistedBodyState(subject.body, envelope.body_update.state_after)
+        : sameBodyMetrics(subject.body, envelope.body_update.state_after))
       || expected.change_set_id
         !== bodyChangeSetId(payload)
       || expected.idempotency_record_id
@@ -117,6 +125,30 @@ function assertCurrentEffect(history, payload) {
         !== envelope.time_update?.clock_after?.subminute_numerator
       || expected.occurred_at_subminute_denominator
         !== envelope.time_update?.clock_after?.subminute_denominator) invalid();
+}
+
+function isContinuousBodyTimeComposite(bodyUpdate) {
+  return bodyUpdate?.proposal?.proposal_kind
+    === 'body_time_effect_composite';
+}
+
+function continuousBodyLedgerMatches(bodyUpdate, ledger) {
+  const updates = ledger.slices
+    .filter((slice) => slice.body_update.applied === true)
+    .map((slice) => slice.body_update);
+  const proposal = bodyUpdate.proposal;
+  const componentProposals = updates.flatMap(({ proposal: sliceProposal }) =>
+    sliceProposal?.proposal_kind === 'body_time_effect_composite'
+      && Array.isArray(sliceProposal.component_proposals)
+      ? sliceProposal.component_proposals
+      : sliceProposal?.proposal_kind === 'body_time_effect'
+        ? [sliceProposal] : []);
+  return bodyUpdate.applied === true
+    && bodyUpdate.prepared_effect_ledger_digest === ledger.ledger_digest
+    && proposal?.proposal_kind === 'body_time_effect_composite'
+    && Array.isArray(proposal.component_proposals)
+    && componentProposals.length > 0
+    && same(componentProposals, proposal.component_proposals);
 }
 
 function assertNormalizedBody(payload, row) {
@@ -131,6 +163,15 @@ function assertNormalizedBody(payload, row) {
     && row?.body_satiety === String(body.satiety);
   if (!valid) invalid();
   const envelope = payload.last_turn?.turn_step_commit;
+  if (isContinuousBodyTimeComposite(envelope?.body_update)) {
+    const after = envelope.body_update.state_after;
+    if (!sameBodyScalarStrings(body, after)
+        || row?.body_health !== String(after?.health)
+        || row?.body_energy !== String(after?.energy)
+        || row?.body_satiety !== String(after?.satiety)
+        || canonicalDigest(bodyMetricProjection(body))
+          !== canonicalDigest(bodyMetricProjection(after))) invalid();
+  }
   if (envelope?.body_update?.applied === true
       && currentBodySubject(payload).kind === 'player_character'
       && (!sameBodyMetrics(body, envelope.body_update.state_after)
@@ -170,10 +211,42 @@ function sameBodyMetrics(left, right) {
     left?.[key] === right?.[key]);
 }
 
+function sameBodyScalarStrings(left, right) {
+  return ['health', 'energy', 'satiety'].every((key) =>
+    String(left?.[key]) === String(right?.[key]));
+}
+
+function bodyMetricProjection(value) {
+  return Object.fromEntries(['health', 'energy', 'satiety'].map((key) =>
+    [key, value?.[key]]));
+}
+
+function samePersistedBodyState(left, right) {
+  return sameBodyScalarStrings(left, right)
+    && canonicalDigest(bodyMetricProjection(left))
+      === canonicalDigest(bodyMetricProjection(right));
+}
+
 function same(left, right) {
   return canonicalDigest(left) === canonicalDigest(right);
 }
 
-function invalid() {
-  throw phase2IntegrityError();
+function readbackFailureReason(cause) {
+  const details = cause?.details ?? {};
+  const reason = [cause?.code, details.reason,
+    details.failed_condition == null
+      ? null : `failed_condition=${details.failed_condition}`,
+    details.keys == null ? null : `keys=${JSON.stringify(details.keys)}`,
+    details.state_change_kinds === undefined ? null
+      : `state_change_kinds=${JSON.stringify(details.state_change_kinds)}`,
+    details.operation_id == null
+      ? null : `operation_id=${details.operation_id}`]
+    .filter(Boolean).join(': ');
+  return reason || cause?.message;
+}
+
+function invalid(reason = null) {
+  const error = phase2IntegrityError();
+  if (reason != null) error.details = { reason };
+  throw error;
 }

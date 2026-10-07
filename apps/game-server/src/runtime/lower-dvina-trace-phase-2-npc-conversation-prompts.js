@@ -3,6 +3,8 @@ import { requiredNpcConversationCandidate, routeDisclosureCandidate,
   routeDisclosureCandidateIsValid } from
   './lower-dvina-trace-npc-required-conversation-candidate.js';
 
+export const NPC_INTERLOCUTOR_SPEECH_INSTRUCTION = 'Учитывай переданные сведения о собеседнике, допустимом обращении и регистре; неизвестное не додумывай, обращение не обязательно, а форма обращения сама по себе не устанавливает связь, полномочия или обязанности';
+
 export { requiredNpcConversationCandidate };
 export function npcConversationCandidates(request) {
   const scope = request?.decision_scope;
@@ -173,6 +175,7 @@ export function npcConversationInstructions(repair, request = null) {
     'social_context.npc_behavior is the speaker own current stance, goals, and fears.',
     'Use it to choose a distinct response without stating hidden goals or fears as facts.',
     'social_context.npc_behavior may also carry temperament and values: they shape the tone, pace, and choices of the speech, and are never named, listed, or claimed as facts about the speaker.',
+    NPC_INTERLOCUTOR_SPEECH_INSTRUCTION,
     'When required_interaction_tag is present, copy it into speech.interaction_tags.',
     'Never invent a settlement, place, route, direction, distance, duration, supply,',
     'shelter, warmth, person, condition, motive, possession, or amenity.',

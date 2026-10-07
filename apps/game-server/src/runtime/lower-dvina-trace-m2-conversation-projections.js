@@ -222,3 +222,120 @@ export function allowedPlayerContributionReferences(context) {
     ))
   };
 }
+
+const RELATION_RU = Object.freeze({
+  spouse: 'они супруги',
+  kin_parent_child: 'между ними установлена связь родителя и ребёнка',
+  kin_siblings: 'между ними установлена связь брата и сестры',
+  kin_uncle_nephew: 'между ними установлена связь дяди и племянника',
+  master_servant: 'между ними установлена связь господина и слуги',
+  dependent_patron: 'между ними установлена связь зависимого и покровителя',
+  joint_work: 'между ними установлена связь совместной работы',
+  co_resident: 'они указаны как совместно живущие',
+  community_member: 'они указаны как члены одной общины'
+});
+
+const REGISTER_RU = Object.freeze({
+  plain_oral: 'Говори просто, обычной устной речью.',
+  everyday_oral: 'Говори привычной повседневной устной речью.',
+  formal_literate: 'Говори сдержанно и почтительно, книжной речью.'
+});
+
+/** Project only approved, exact speech facts for the NPC's recognized interlocutor. */
+export function interlocutorSpeechProjection(context, contribution,
+  perceivedMessage) {
+  const speakerRef = contribution?.speaker_ref;
+  if (!filled(speakerRef?.entity_kind) || !filled(speakerRef?.entity_id)
+      || !sameRef(perceivedMessage?.speaker_ref, speakerRef)) return null;
+
+  const interlocutor = speakerRef.entity_kind === 'player_character'
+    ? null
+    : (context.actualNpcActors ?? []).find((actor) =>
+      sameRef(actor.ref, speakerRef));
+  if (speakerRef.entity_kind !== 'player_character' && !interlocutor) return null;
+
+  const targetKeys = actorSpeechKeys(context.targetActor);
+  const interlocutorKeys = speakerRef.entity_kind === 'player_character'
+    ? playerSpeechKeys(context.state?.player_profile)
+    : actorSpeechKeys(interlocutor);
+  const relationship = (context.targetActor?.semantic_state?.relationships ?? [])
+    .find((edge) => edge?.target_actor_id === speakerRef.entity_id
+      && filled(edge?.kind));
+  const relation = typeof RELATION_RU[relationship?.kind] === 'string'
+    ? RELATION_RU[relationship.kind] : undefined;
+  const address = selectSpeechAddress(
+    context.npcSpeechAddressForms
+      ?? context.npcSemanticModel?.npcSpeechAddressForms ?? [], {
+    targetKeys,
+    interlocutorKeys,
+    speakerRef: context.targetRef,
+    addresseeRef: speakerRef,
+    relationshipKind: relationship?.kind
+  });
+  const register = speechRegister(
+    context.npcSpeechRegisters
+      ?? context.npcSemanticModel?.npcSpeechRegisters ?? [],
+    context.targetActor
+  );
+  const result = {
+    ...(relation === undefined ? {} : { relation }),
+    ...(address === undefined ? {} : { address }),
+    ...(register === undefined ? {} : { register })
+  };
+  return Object.keys(result).length === 0 ? null : result;
+}
+
+function actorSpeechKeys(actor) {
+  const role = actor?.role_ref?.id;
+  const occupation = actor?.occupation_ref?.id;
+  return new Set([role, occupation].filter(filled));
+}
+
+function playerSpeechKeys(profile) {
+  const social = profile?.social_status;
+  return new Set([social?.social_role_id, social?.occupation_id].filter(filled));
+}
+
+function selectSpeechAddress(forms, {
+  targetKeys, interlocutorKeys, speakerRef, addresseeRef, relationshipKind
+}) {
+  const matches = (kind) => forms.filter((form) =>
+    form?.status === 'approved'
+      && form.channel === 'oral'
+      && form.relationship_kind === kind
+      && filled(form.form_ru)
+      && russianSpeechText(form.form_ru)
+      && !filled(form.payload?.no_source)
+      && filled(form.speaker_role_ref)
+      && filled(form.addressee_role_ref)
+      && targetKeys.has(form.speaker_role_ref)
+      && interlocutorKeys.has(form.addressee_role_ref)
+      && formRefMatches(form.speaker_ref, speakerRef)
+      && formRefMatches(form.addressee_ref, addresseeRef));
+  const hasRelationship = filled(relationshipKind);
+  const related = hasRelationship ? matches(relationshipKind) : [];
+  const selected = hasRelationship ? related : matches('unspecified');
+  return selected.length === 1 ? selected[0].form_ru.trim() : undefined;
+}
+
+function formRefMatches(constraint, actual) {
+  return constraint == null || sameRef(constraint, actual);
+}
+
+function russianSpeechText(value) {
+  return typeof value === 'string'
+    && /[А-Яа-яЁё]/u.test(value)
+    && !/[A-Za-z]|\b\d{4,}\b/u.test(value);
+}
+
+function speechRegister(rows, actor) {
+  const occupation = actor?.occupation_ref?.id;
+  const role = actor?.role_ref?.id;
+  const subjectKind = filled(occupation) ? 'occupation' : 'role';
+  const subjectRef = filled(occupation) ? occupation : role;
+  if (!filled(subjectRef)) return undefined;
+  const matches = rows.filter((row) => row?.subject_kind === subjectKind
+    && row.subject_ref === subjectRef
+    && typeof REGISTER_RU[row.register] === 'string');
+  return matches.length === 1 ? REGISTER_RU[matches[0].register] : undefined;
+}

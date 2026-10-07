@@ -2,11 +2,6 @@
   "schema": "spatial-ci-exclusions/v1",
   "exceptions": [
     {
-      "path": "tools/llm-runtime-eval/test/runner.test.mjs",
-      "reason": "Host run confirms frozen fixtures mismatch current validator; track repair under #241.",
-      "reference": "#241"
-    },
-    {
       "path": "scripts/m2c-capacity-successor.test.mjs",
       "reason": "Inventory reports stale contract hash; isolated repeat only generic failure, issue proposal pending precise assertion.",
       "reference": "#309"
@@ -230,6 +225,11 @@
       "path": "test/spatial-v3/nonportal-availability-postgres.test.js",
       "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
       "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/npc-address-speech-capture-v17-postgres.test.js",
+      "reason": "Task #436 provider-payload capture; excluded from default spatial CI and run as an explicit PG-backed review capture. Output is limited to the task out/captures/after directory.",
+      "reference": "#436"
     },
     {
       "path": "test/spatial-v3/o1-selected-production-root-postgres.test.js",
@@ -560,6 +560,11 @@
       "path": "test/spatial-v3/visibility-modifier-persistence-postgres.test.js",
       "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
       "reference": "#485"
+    },
+    {
+      "path": "tools/llm-runtime-eval/test/runner.test.mjs",
+      "reason": "Host run confirms frozen fixtures mismatch current validator; track repair under #241.",
+      "reference": "#241"
     }
   ]
 }

@@ -6,6 +6,7 @@ import { canonicalDigest } from '@rus/materialization';
 import {
   allowedNpcContributionReferences,
   currentSceneObservationProjection,
+  interlocutorSpeechProjection,
   ownKnowledgeProjection,
   ownMemoryProjection,
   ownNpcProjection,
@@ -63,6 +64,9 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
   const perceivedMessage = perceivedBoundaryMessage(
     context, working, resolvedRecords
   );
+  const interlocutorSpeech = interlocutorSpeechProjection(
+    context, latestContribution, perceivedMessage
+  );
   const currentOfferPerceived = fullyPerceivedCurrentOffer(
     context, perceivedMessage
   );
@@ -113,6 +117,9 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
       delivery_cues: structuredClone(perceivedMessage?.delivery_cues ?? []),
       claims_are_speaker_assertions_not_objective_truth: true,
       ...npcPresentationContext(context, latestContribution),
+      ...(interlocutorSpeech === null ? {} : {
+        interlocutor_speech: interlocutorSpeech
+      }),
       ...(context.phase === 'phase_3' && presentedEvidenceRecognized
         ? { presented_evidence_ref: context.contracts.ids.evidence }
         : {}),

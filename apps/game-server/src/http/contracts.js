@@ -89,7 +89,8 @@ function publicTurnFailureFor(error) {
     code: 'TURN_NOT_SAVED',
     message: 'Ход не сохранён. Попробуйте сформулировать действие иначе.'
   };
-  if (code === 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP') return {
+  if (code === 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP'
+    || code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP') return {
     code: 'WORLD_ACTION_UNAVAILABLE',
     message: 'Ход не сохранён. Для этого действия не хватает данных мира.'
   };

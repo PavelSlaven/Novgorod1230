@@ -7,7 +7,8 @@ import { createTraceLocalSceneCommands } from
   '../src/runtime/lower-dvina-trace-local-scene-commands.js';
 import { selectedTurnStepOperation, turnStepOperationChoices } from
   '../src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
-import { fixture, loadScenarioBundle } from './lower-dvina-trace-phase-2-fixture.js';
+import { fixture, fixtureOpeningCurrentVisibleContext, loadScenarioBundle } from
+  './lower-dvina-trace-phase-2-fixture.js';
 import { canonicalDigest } from '@rus/materialization';
 import { packageBase } from '../src/runtime/lower-dvina-trace-phase-3-command-shared.js';
 import { errorEnvelope } from '../src/http/contracts.js';
@@ -230,6 +231,9 @@ test('restrained free-text movement commits a blocked zero-minute turn', async (
   const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
   const current = structuredClone(seed.state);
   current.scenario_id = 'authored:unseen-woodland';
+  current.current_visible_context = fixtureOpeningCurrentVisibleContext({
+    state: current, materializationBundle: bundle
+  });
   current.combat_sessions = [{ combat_id: 'combat:restrained',
     status: 'paused_for_player', scope_ref: { entity_kind: 'location',
       entity_id: current.position.location_ref },

@@ -1,3 +1,5 @@
+import { findUnsafePlayerText } from '../public-boundary.js';
+
 const GENERIC_ITEM_LABEL = /^предмет\s*[,.;:]?$/iu;
 const SERVICE_REFERENCE = /\b[a-z][a-z\d]*(?:_[a-z\d]+)+\b|\b[a-f\d]{24,}\b|[{}]/iu;
 
@@ -27,5 +29,6 @@ function safeLabel(value) {
   if (typeof value !== 'string') return null;
   const label = value.trim();
   return label.length > 0 && !GENERIC_ITEM_LABEL.test(label)
-    && !SERVICE_REFERENCE.test(label) ? label : null;
+    && !SERVICE_REFERENCE.test(label)
+    && findUnsafePlayerText(label, { label: true }) == null ? label : null;
 }

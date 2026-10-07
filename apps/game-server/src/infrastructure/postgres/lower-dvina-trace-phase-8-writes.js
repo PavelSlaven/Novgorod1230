@@ -20,7 +20,7 @@ export function phase8VisibleEnvelope({ partyId, factual, visibleContext,
   nextVersion, turnNumber, changeSetId, idemId,
   onLabelGapsOmitted = null }) {
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted });
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const initialization = factual.consequence.accusation?.combat_initialization
     ?? factual.consequence.combat_initialization ?? null;
   const payload = { schema: 'temporal_visible_package.v1',

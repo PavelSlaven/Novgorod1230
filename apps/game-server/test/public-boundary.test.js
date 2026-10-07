@@ -175,11 +175,11 @@ test('player-safe projection checks prose only when caller marks it visible', ()
   });
   assert.equal(visibleText('У берега шумят волны.', { path: 'visible' }),
     'У берега шумят волны.');
-  assert.equal(projectVisibleContext({ schema: 'visible_context_package',
+  const projected = projectVisibleContext({ schema: 'visible_context_package',
     visible_scene: 'INFERENCE: private draft', visible_changes: [],
     sensory_details: [], visible_npc: [], visible_objects: [],
-    known_context: [], uncertainties: [] })?.visible_scene,
-  'Обстановка не описана.');
+    known_context: [], uncertainties: [] });
+  assert.equal(Object.hasOwn(projected, 'visible_scene'), false);
 });
 
 test('ordinary Russian prose does not trigger the service detector', () => {

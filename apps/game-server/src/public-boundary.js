@@ -21,15 +21,20 @@ const PLAYER_TEXT_FIELDS = new Set([
 
 const CALIBRATION_PREFIX = /^(?:INFERENCE|HARD|FACT|CALIBRATION|DIRECTNESS|ANALOGY|EDITORIAL|UNCERTAIN)\s*:\s*/iu;
 
+const playerIdentifierPattern = (pattern) => new RegExp(
+  String.raw`(?<![\p{L}\p{N}_])(?:${pattern.source})(?![\p{L}\p{N}_])`,
+  pattern.flags
+);
+
 // One content rule set for published prose and player-safe projection.
 const PLAYER_TEXT_MARKERS = Object.freeze([
-  ['entity_ref', /(?:^|[\s([{])(?:npc|item|claim|canconn|party|actor|location|route|trace|node|g[0-6])[:/][a-z0-9][a-z0-9_.:/-]*/iu],
-  ['entity_ref', /(?:^|[\s([{])baseline:g[45]_[a-z0-9][a-z0-9_.:/-]*/iu],
-  ['entity_id', /\b(?:npc|item|claim|canconn|party|actor|location|route|trace|node|g[0-6])-[a-z0-9][a-z0-9_-]*/iu],
-  ['entity_id', /(?:^|[\s([{])(?:npc|item|claim|canconn|party|actor|location|route|trace|node|pf|g[0-6])_[a-z0-9][a-z0-9_-]*/iu],
-  ['entity_id', /(?:^|[\s([{])cg[45][a-z0-9_]*[a-z0-9][a-z0-9_-]*/iu],
-  ['technical_enum', /\b(?:npc|actor|player|turn|phase|screen|scene|entity|world|item|claim|canconn|party|route|trace|game|llm|public|visible|presentation|typed|free|semantic|runtime|m2c|g[0-6])_[a-z0-9]+(?:_[a-z0-9]+)*\b/iu],
-  ['error_code', /\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b/u],
+  ['entity_ref', playerIdentifierPattern(/(?:npc|item|claim|canconn|party|actor|location|route|trace|node|g[0-6])[:/][a-z0-9][a-z0-9_.:/-]*/iu)],
+  ['entity_ref', playerIdentifierPattern(/baseline:g[45]_[a-z0-9][a-z0-9_.:/-]*/iu)],
+  ['entity_id', playerIdentifierPattern(/(?:npc|item|claim|canconn|party|actor|location|route|trace|node|g[0-6])-[a-z0-9][a-z0-9_-]*/iu)],
+  ['entity_id', playerIdentifierPattern(/(?:npc|item|claim|canconn|party|actor|location|route|trace|node|pf|g[0-6])_[a-z0-9][a-z0-9_-]*/iu)],
+  ['entity_id', playerIdentifierPattern(/cg[45][a-z0-9_]*[a-z0-9][a-z0-9_-]*/iu)],
+  ['technical_enum', playerIdentifierPattern(/(?:npc|actor|player|turn|phase|screen|scene|entity|world|item|claim|canconn|party|route|trace|game|llm|public|visible|presentation|typed|free|semantic|runtime|m2c|g[0-6])_[a-z0-9]+(?:_[a-z0-9]+)*/iu)],
+  ['error_code', playerIdentifierPattern(/[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+/u)],
   ['calibration_marker', /\b(?:INFERENCE|HARD|FACT|CALIBRATION|DIRECTNESS|ANALOGY|EDITORIAL|UNCERTAIN)\s*:/iu],
   ['calibration_marker', /\b(?:confidence|calibration|directness)\s*[:=]/iu],
   ['data_status', /\b(?:typed_gap|on_site|game_policy|not_started|retryable|uncommitted|runtime_text)\b/iu],

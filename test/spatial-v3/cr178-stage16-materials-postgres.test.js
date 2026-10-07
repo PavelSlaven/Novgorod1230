@@ -160,9 +160,13 @@ test('D102: real v17 Stage 16 persists approved material for player and NPC equi
       });
     } finally {
       if (REPORT_DIR) {
-        await mkdir(REPORT_DIR, { recursive: true });
-        await writeFile(resolve(REPORT_DIR, 'd102-stage16-material-readback.json'),
-          `${JSON.stringify(report, null, 2)}\n`);
+        try {
+          await mkdir(REPORT_DIR, { recursive: true });
+          await writeFile(resolve(REPORT_DIR, 'd102-stage16-material-readback.json'),
+            `${JSON.stringify(report, null, 2)}\n`);
+        } catch (error) {
+          console.error('CR178_D102 optional report write failed:', error);
+        }
       }
     }
   });

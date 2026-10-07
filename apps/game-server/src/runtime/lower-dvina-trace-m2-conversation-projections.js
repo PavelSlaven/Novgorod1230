@@ -270,7 +270,8 @@ export function interlocutorSpeechProjection(context, contribution,
     interlocutorKeys,
     speakerRef: context.targetRef,
     addresseeRef: speakerRef,
-    relationshipKind: relationship?.kind
+    relationshipKind: relationship?.kind,
+    sourceRuleRef: relationship?.source_rule_ref
   });
   const register = speechRegister(
     context.npcSpeechRegisters
@@ -286,36 +287,71 @@ export function interlocutorSpeechProjection(context, contribution,
 }
 
 function actorSpeechKeys(actor) {
-  const role = actor?.role_ref?.id;
-  const occupation = actor?.occupation_ref?.id;
-  return new Set([role, occupation].filter(filled));
+  return { role: actor?.role_ref?.id, occupation: actor?.occupation_ref?.id };
 }
 
 function playerSpeechKeys(profile) {
   const social = profile?.social_status;
-  return new Set([social?.social_role_id, social?.occupation_id].filter(filled));
+  return { role: social?.social_role_id, occupation: social?.occupation_id };
 }
 
 function selectSpeechAddress(forms, {
-  targetKeys, interlocutorKeys, speakerRef, addresseeRef, relationshipKind
+  targetKeys, interlocutorKeys, speakerRef, addresseeRef, relationshipKind,
+  sourceRuleRef
 }) {
-  const matches = (kind) => forms.filter((form) =>
-    form?.status === 'approved'
-      && form.channel === 'oral'
-      && form.relationship_kind === kind
-      && filled(form.form_ru)
-      && russianSpeechText(form.form_ru)
-      && !filled(form.payload?.no_source)
-      && filled(form.addressee_role_ref)
-      && (!filled(form.speaker_role_ref)
-        || targetKeys.has(form.speaker_role_ref))
-      && interlocutorKeys.has(form.addressee_role_ref)
-      && formRefMatches(form.speaker_ref, speakerRef)
-      && formRefMatches(form.addressee_ref, addresseeRef));
+  const matches = (kind) => forms.flatMap((form) => {
+    const speakerSpecificity = speechRefSpecificity(form?.speaker_role_ref,
+      targetKeys, true);
+    const addresseeSpecificity = speechRefSpecificity(form?.addressee_role_ref,
+      interlocutorKeys, false);
+    if (speakerSpecificity === undefined || addresseeSpecificity === undefined) return [];
+    if (!formSourceMatches(form, sourceRuleRef)) return [];
+    if (form?.status !== 'approved'
+        || form.channel !== 'oral'
+        || form.relationship_kind !== kind
+        || !filled(form.form_ru)
+        || !russianSpeechText(form.form_ru)
+        || filled(form.payload?.no_source)
+        || !formRefMatches(form.speaker_ref, speakerRef)
+        || !formRefMatches(form.addressee_ref, addresseeRef)) return [];
+    return [{ form, specificity: [speakerSpecificity, addresseeSpecificity] }];
+  });
   const hasRelationship = filled(relationshipKind);
-  const related = hasRelationship ? matches(relationshipKind) : [];
-  const selected = hasRelationship ? related : matches('unspecified');
-  return selected.length === 1 ? selected[0].form_ru.trim() : undefined;
+  const candidates = hasRelationship ? matches(relationshipKind) : matches('unspecified');
+  const best = candidates.filter((candidate, index) => !candidates.some((other, otherIndex) =>
+    otherIndex !== index && dominates(other.specificity, candidate.specificity)));
+  return best.length === 1 ? best[0].form.form_ru.trim() : undefined;
+}
+
+function speechRefSpecificity(constraint, actual, allowWildcard) {
+  if (!filled(constraint)) return allowWildcard ? 0 : undefined;
+  if (constraint === actual.occupation) return 2;
+  if (constraint === actual.role) return 1;
+  return undefined;
+}
+
+function dominates(left, right) {
+  return left[0] >= right[0] && left[1] >= right[1]
+    && (left[0] > right[0] || left[1] > right[1]);
+}
+
+function formSourceMatches(form, sourceRuleRef) {
+  const suffix = onlyForRuleIds(form?.situation);
+  if (suffix === null) return true;
+  return Array.isArray(suffix) && filled(sourceRuleRef?.id)
+    && positiveVersion(sourceRuleRef?.version) && suffix.includes(sourceRuleRef.id);
+}
+
+function onlyForRuleIds(situation) {
+  if (typeof situation !== 'string') return null;
+  const suffix = /; only for ([^;\s]+(?:;[^;\s]+)*)$/u.exec(situation);
+  if (suffix) return suffix[1].split(';');
+  return /; only for $/u.test(situation) ? [] : null;
+}
+
+function positiveVersion(value) {
+  return (typeof value === 'string' || Number.isSafeInteger(value))
+    && Number.isSafeInteger(Number(value)) && Number(value) > 0;
 }
 
 function formRefMatches(constraint, actual) {

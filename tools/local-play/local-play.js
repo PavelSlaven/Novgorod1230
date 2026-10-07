@@ -7,8 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 import pg from 'pg';
 
-import { loadActiveRuntimeCatalogPin } from
-  '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
+import { loadActiveRuntimeCatalogPin } from '@rus/runtime-catalog/active-pin';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE
 } from '../../apps/game-server/src/composition/production-spatial-v3.js';

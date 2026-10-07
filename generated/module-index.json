@@ -56,7 +56,7 @@
       ],
       "path": "apps/game-server",
       "public_entry": "./src/index.js",
-      "purpose": "Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`, runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade и post-commit presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.",
+      "purpose": "Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`, runtime-catalog pins, World Knowledge loader/encoder and D17 reranker worker, turn/public runtime facade и post-commit presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.",
       "version": "0.23.0"
     },
     {
@@ -445,7 +445,8 @@
         "чистой projection по region/effective date после полной проверки",
         "единой загрузкой неперсистентных common catalog lookups до projection",
         "чистой проверкой кросс-доменного versioned `needs_check` snapshot для новых фактов бытности мира и NPC-кандидатов; чтение authoring queues и сборка snapshot остаются у game-base CLI, решение о фильтрации результата или отклонении NPC-операции принадлежит consumer owner",
-        "чистой идентичностью PostgreSQL-схемы, общей для activation и runtime ledger: `readPostgresSchemaFingerprint(client, schemaName)` публичного subpath `@rus/runtime-catalog/schema-fingerprint` вычисляет fingerprint по переданному query-клиенту; пакет не создаёт соединение и не владеет пулом"
+        "чистой идентичностью PostgreSQL-схемы, общей для activation и runtime ledger: `readPostgresSchemaFingerprint(client, schemaName)` публичного subpath `@rus/runtime-catalog/schema-fingerprint` вычисляет fingerprint по переданному query-клиенту; пакет не создаёт соединение и не владеет пулом",
+        "чтением и exact validation последнего approved runtime-catalog activation pin: `loadActiveRuntimeCatalogPin(queryClient, catalogScope)` публичного subpath `@rus/runtime-catalog/active-pin` использует переданный query-клиент; пакет не создаёт соединение и не владеет пулом"
       ],
       "path": "packages/runtime-catalog",
       "public_entry": "./src/index.js",
@@ -670,6 +671,18 @@
     },
     {
       "dependencies": [],
+      "name": "tools/llm-runtime-eval",
+      "owns": [
+        "running and recording isolated role evaluations",
+        "freezing exact production role messages for deterministic comparisons"
+      ],
+      "path": "tools/llm-runtime-eval",
+      "public_entry": "—",
+      "purpose": "Development-time harness for evaluating production LLM roles against the exact game-server implementation used by runtime.",
+      "version": null
+    },
+    {
+      "dependencies": [],
       "name": "tools/local-play",
       "owns": [
         "проверкой Node.js и launcher prerequisites",
@@ -763,7 +776,7 @@
         "`editorial_reconstruction` source для игровых реконструкций: существующие inference qualifiers сохраняются при compile; реконструкция не выдаётся за direct/high/attested факт и не создаёт hard exclusion. Независимый approval проверяет её plausibility, не требует выдуманного внешнего свидетельства",
         "internal `build-world-knowledge-vectors` и `benchmark-world-knowledge-vectors` CLI: строят pinned Giga-Embeddings flat index из compiled production pack и сравнивают lexical/hybrid retrieval на committed unseen-query benchmark. Model weights остаются в локальном Hugging Face cache, не в Git. Provisioning и exact offline readiness выполняются по `docs/setup/WORLD_KNOWLEDGE_GIGA_EMBEDDINGS.md` командой `npm run world-knowledge:giga-readiness`",
         "internal `build-gameplay-gap-backlog --campaign FILE --audit FILE --out FILE`: сохраняет structured backlog из реальных traces и независимого premise audit; невалидный audit даёт blocked report и ненулевой exit code. Это development authoring, без runtime auditor, research, fact approval или corpus mutation",
-        "internal deterministic WK audit **plan-mode** harness (`src/wk-audit-plan-harness.js` + fixtures under `test/fixtures/wk-audit-plan`): applies fixture plans through Core without LLM/encoder; acceptance is `expect_absent_claim_refs` / `expect_present_claim_refs` on the packed slice (facts/hard/disputes), including access, applicability-date and `domain_internal_only` vs `npc_decision`. Planner `focus_refs` may name cut claims; Core must still exclude them. Live judge metrics — owner (CR #153 шаг 8). Optional `src/bge-reranker.py` loads a **local** D17 snapshot only (`--model-path`, no hub / no `trust_remote_code`); production enablement stays behind D21 (LW-053)"
+        "internal deterministic WK audit **plan-mode** harness (`src/wk-audit-plan-harness.js` + fixtures under `test/fixtures/wk-audit-plan`): applies fixture plans through Core without LLM/encoder; acceptance is `expect_absent_claim_refs` / `expect_present_claim_refs` on the packed slice (facts/hard/disputes), including access, applicability-date and `domain_internal_only` vs `npc_decision`. Planner `focus_refs` may name cut claims; Core must still exclude them. Live judge metrics — owner"
       ],
       "path": "tools/world-catalog-workflow",
       "public_entry": "./src/index.js",

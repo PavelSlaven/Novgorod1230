@@ -43,9 +43,9 @@
   (facts/hard/disputes), including access, applicability-date and
   `domain_internal_only` vs `npc_decision`. Planner `focus_refs` may name cut
   claims; Core must still exclude them. Live judge metrics — owner
-  (CR #153 шаг 8). Optional `src/bge-reranker.py` loads a **local** D17
-  snapshot only (`--model-path`, no hub / no `trust_remote_code`); production
-  enablement stays behind D21 (LW-053).
+(CR #153 шаг 8). Reranker scoring is evaluated against local D17 snapshots;
+  the worker belongs to game-server. Production enablement stays behind D21
+  (LW-053).
 
 ## Публичные интерфейсы
 
@@ -63,6 +63,16 @@ World Knowledge compiler остаётся internal authoring surface (`src/world
 `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle` никогда не переводят `draft` records в `approved`, не активируют revision и не создают party/runtime candidates. Детали всех входов, результатов, ошибок и test cases приведены в [CONTRACTS.md](CONTRACTS.md).
 
 PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan` и их spatial JSON Schema находятся в `src/internal/`. Это immutable migration tooling для единственного PR17 lifecycle: оно не экспортируется package entrypoint и не является постоянным публичным контрактом модуля.
+
+## Разрешённые зависимости
+
+```architecture-tool-app-dependencies
+[
+  {"source":"src/world-knowledge-pipeline-eval.js","target":"apps/game-server","reason":"Evaluate production World Knowledge roles against their production implementation"},
+  {"source":"src/generate-item-display-content.mjs","target":"apps/game-server","reason":"Temporary access to the app-owned materialization bundle until issue #488 transfers this generator","temporary":true,"issue":"#488"},
+  {"source":"src/generate-character-appearance-content.mjs","target":"apps/game-server","reason":"Temporary access to the app-owned materialization bundle until issue #488 transfers this generator","temporary":true,"issue":"#488"}
+]
+```
 
 ## Внешние зависимости и побочные эффекты
 

@@ -688,7 +688,7 @@ for (const appSpec of [
       '@rus/new-game/stages/stage-24',
       '@rus/new-game/stages/stage-24/internal/lower-dvina-trace-phase-1a', '@rus/new-game/stages/stage-25', '@rus/narration',
       '@rus/party-store', '@rus/party-store/spatial-v3', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/party-store/ordinary-materialization', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/presentation/spatial-v3-projection', '@rus/turn', '@rus/turn/action-produced-result', '@rus/turn/spatial-v3-execution', '@rus/turn/spatial-v3-target-composition', '@rus/turn/spatial-v3-temporal-write-integration', '@rus/turn/temporal-advance',
-      '@rus/runtime-catalog', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/runtime-catalog/schema-fingerprint', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
+      '@rus/runtime-catalog', '@rus/runtime-catalog/active-pin', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/runtime-catalog/schema-fingerprint', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
       '@rus/time-events-history/temporal-boundaries',
       '@rus/visibility-knowledge-memory',
       '@rus/visibility-knowledge-memory/ordinary-resolution-capability',

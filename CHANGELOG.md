@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - ci: the full-profile suites get 75 minutes; the sequential fast suite exceeded 45 minutes after the latest merges and was cancelled (#98, D89)
 - fix: Phase 1B neutral and HTTP turns use the approved authored-start scene title in their test repository; preserve S1/N1 checks and snapshot digests without persisting test presentation; preserve public idempotency error codes and provide Russian messages at the HTTP boundary (#98, D89)
 - docs(governance): WR §21.1 — an approval record names the exact approved bytes: path and sha256 of the approved content (git commit when available) and the date; no signatures or receipts (owner decisions D142, D144)

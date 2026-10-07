@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- docs(runtime-plan): apply D149 slice scope labels and M7 place-generation coverage; keep structured WK technology outside the norm (#98)
+- docs(runtime-plan): apply owner decisions D147/D148 and the D49+ final delta; move the playable slice and player start to M2c, retain M7 seeding, and update merge and progress gates (#98)
 - fix(game-server): preserve typed visible-scene gap after confirmed expansion rollback (#530, #531)
 - fix(screen): preserve committed NPC perceptions when finalizing the People panel (#523)
 - fix(architecture): keep runtime workers and catalog-pin ownership out of tools; audit both boundary directions (#459, #461)

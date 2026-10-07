@@ -21,7 +21,8 @@ export async function buildBodyUpdateStage({
       error.code = 'TURN_STEP_PREPARED_EFFECT_INVALID';
       throw error;
     }
-    return freezeOutput(buildTurnStepPreparedBodyUpdate(ledger));
+    return freezeOutput(buildTurnStepPreparedBodyUpdate(
+      ledger, retrievedState.body_state));
   }
   const required = consequence.body_effect_ref != null;
   if (!required) {

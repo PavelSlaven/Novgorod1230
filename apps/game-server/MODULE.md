@@ -439,6 +439,17 @@ slice сохраняет original/planned duration отдельно от actual 
 а terminal completion operations не входят в прерванный commit.
 Domain-command ledger contracts сохраняются.
 
+Continuous body-time replay использует trusted profile, загруженный через
+`loadTargetBodyNeedsProfile` и переданный composition root; профиль не выбирается
+из prepared envelope. История сверяет fixed proposals с body-компонентами в их
+порядке, заново проверяет continuous proposals по профилю и exact elapsed, затем
+переигрывает цепочку от исходного состояния через `accumulateBodyTimeEffects`
+в `@rus/body-state`. Readback получает исходное состояние из
+`party_runtime.party_state_snapshots` по `party_id` и `base_state_version` и
+проверяет его digest и идентичность. Без trusted profile, исходного снимка или
+валидных replay-входов readback отклоняет запись; текущий округлённый scalar не
+используется как запасная точка начала.
+
 ## Не владеет
 
 Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy вне ролей, явно назначенных активными контрактами (NPC combat: `lower-dvina-trace-combat-llm.js`, §§32–33), narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.

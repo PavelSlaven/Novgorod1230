@@ -13,6 +13,7 @@ import {
   normalizeRationalMinutes,
   subtractRationalMinutes
 } from '@rus/time-events-history';
+import { applyApprovedFixedBodyEffect } from './fixed-approved-effect.js';
 
 export const BODY_METRICS = deepFreeze(['health', 'satiety', 'energy']);
 const INTERRUPTION_EFFECTS = new Set(['background', 'emergency', 'hard_interrupt', 'interaction', 'notice', 'strand']);
@@ -57,7 +58,120 @@ export function applyBodyStateChange(state = {}, change = {}) {
   return deepFreeze(next);
 }
 
-export { applyApprovedFixedBodyEffect } from './fixed-approved-effect.js';
+/**
+ * Applies already-approved body-time proposals without losing rational
+ * arithmetic between proposals. The persisted scalar state is rounded once,
+ * at this owner boundary; exact directional totals remain available for replay.
+ */
+export function applyBodyTimeEffectProposals(state, proposals) {
+  const result = accumulateBodyTimeEffects({
+    body_state_before: state,
+    slices: [{ exact_elapsed: { numerator: '0', denominator: '1' },
+      fixed_effect_proposals: [], component_proposals: proposals }]
+  });
+  if (result.ok !== true) return result;
+  return deepFreeze({ ok: true, owner: '@rus/body-state', applied: true,
+    state_after: result.state_after, exact_changes: result.exact_changes });
+}
+
+/** Applies ordered fixed and continuous proposals from one exact root state. */
+export function accumulateBodyTimeEffects(input) {
+  if (!plainObject(input) || !plainObject(input.body_state_before)
+      || !Array.isArray(input.slices)) {
+    return hardBlock('body_time_proposal_invalid',
+      'body_state_before and ordered body-time slices are required');
+  }
+  let exactState = {};
+  for (const metric of BODY_METRICS) {
+    const value = input.body_state_before[metric];
+    const exactValue = typeof value === 'number'
+      ? Number.isFinite(value) && value >= 0 && value <= 100
+        ? decimalNumberRational(value) : null
+      : plainObject(value) ? parseRationalDto(value) : null;
+    if (!exactValue || compareRational(exactValue, rationalPair(0n, 1n)) < 0
+        || compareRational(exactValue, rationalPair(100n, 1n)) > 0) {
+      return hardBlock('body_state_invalid',
+        typeof value === 'number' || !plainObject(value)
+          ? `body state ${metric} must be a finite number from 0 to 100`
+          : `body state ${metric} must be a normalized exact rational from 0 to 100`);
+    }
+    exactState[metric] = exactValue;
+  }
+  let bodyState = structuredClone(input.body_state_before);
+  const aggregate = emptyBodyTimeTotals();
+  const sliceResults = [];
+  for (const slice of input.slices) {
+    if (!plainObject(slice)) return hardBlock('body_time_proposal_invalid',
+      'each body-time slice must be an object');
+    const elapsed = parseBodyElapsed(slice.exact_elapsed);
+    if (!elapsed || elapsed.numerator < 0n) return hardBlock(
+      'body_time_proposal_invalid', 'slice exact_elapsed must be a nonnegative rational');
+    const fixedProposals = slice.fixed_effect_proposals ?? [];
+    const componentProposals = slice.component_proposals ?? [];
+    if (!Array.isArray(fixedProposals) || !Array.isArray(componentProposals)) {
+      return hardBlock('body_time_proposal_invalid',
+        'slice fixed and component proposals must be arrays');
+    }
+    for (const proposal of fixedProposals) {
+      const fixed = applyApprovedFixedBodyEffect({
+        body_state: scalarBodyState(bodyState, exactState),
+        body_effect_profile: fixedProfileFromProposal(proposal),
+        selected_context: proposal?.selected_context
+      });
+      if (fixed?.ok !== true || fixed.owner !== '@rus/body-state'
+          || fixed.applied !== true || !plainObject(fixed.state_after)) return fixed;
+      for (const metric of BODY_METRICS) {
+        const delta = decimalNumberRational(proposal.exact_deltas[metric]);
+        exactState[metric] = boundRational(addRational(exactState[metric], delta));
+      }
+      bodyState = { ...bodyState,
+        active_conditions: structuredClone(fixed.state_after.active_conditions) };
+    }
+    const sliceTotals = emptyBodyTimeTotals();
+    for (const proposal of componentProposals) {
+      if (!plainObject(proposal) || proposal.proposal_kind !== 'body_time_effect'
+          || !Array.isArray(proposal.metric_changes)
+          || proposal.metric_changes.length === 0) {
+        return hardBlock('body_time_proposal_invalid',
+          'each proposal must be a body_time_effect with metric changes');
+      }
+      for (const change of proposal.metric_changes) {
+        if (!plainObject(change) || !BODY_METRICS.includes(change.metric)
+            || !['increase', 'decrease'].includes(change.direction)) {
+          return hardBlock('body_time_proposal_invalid',
+            'body-time metric change has invalid metric or direction');
+        }
+        const amount = parseRationalDto(change.amount);
+        if (!amount || amount.numerator < 0n) return hardBlock(
+          'body_time_proposal_invalid',
+          'body-time amount must be a nonnegative exact rational');
+        sliceTotals[change.metric][change.direction] = addRational(
+          sliceTotals[change.metric][change.direction], amount);
+        aggregate[change.metric][change.direction] = addRational(
+          aggregate[change.metric][change.direction], amount);
+      }
+    }
+    for (const metric of BODY_METRICS) {
+      const net = addRational(exactState[metric], subtractRational(
+        sliceTotals[metric].increase, sliceTotals[metric].decrease));
+      exactState[metric] = boundRational(net);
+    }
+    const exactChanges = bodyTimeTotalsDto(sliceTotals);
+    const exactStateAfter = exactBodyState(bodyState, exactState);
+    bodyState = scalarBodyState(bodyState, exactState);
+    sliceResults.push(deepFreeze({
+      exact_elapsed: rationalDto(elapsed), exact_state_after: exactStateAfter,
+      state_after: structuredClone(bodyState), exact_changes: exactChanges
+    }));
+  }
+  const exactStateAfter = exactBodyState(bodyState, exactState);
+  bodyState = scalarBodyState(bodyState, exactState);
+  return deepFreeze({ ok: true, owner: '@rus/body-state', applied: true,
+    exact_state_after: exactStateAfter, state_after: bodyState,
+    exact_changes: bodyTimeTotalsDto(aggregate), slice_results: sliceResults });
+}
+
+export { applyApprovedFixedBodyEffect };
 export { initializeBodyState } from './initialization.js';
 export { projectCombatBodyStateDescriptions } from './combat-context.js';
 export { detectBodyThresholdCrossings } from './thresholds.js';
@@ -419,6 +533,140 @@ function elapsedUntilThreshold(current, threshold, direction, rate) {
 
 function hardBlock(code, message) {
   return deepFreeze({ ok: false, status: 'hard_block', error: deepFreeze({ code, message }) });
+}
+
+function decimalNumberRational(value) {
+  const source = value.toString().toLowerCase();
+  const [mantissa, exponentText] = source.split('e');
+  const exponent = exponentText === undefined ? 0 : Number(exponentText);
+  const negative = mantissa.startsWith('-');
+  const unsigned = negative || mantissa.startsWith('+') ? mantissa.slice(1) : mantissa;
+  const [whole, fraction = ''] = unsigned.split('.');
+  const digits = `${whole}${fraction}`.replace(/^0+(?=\d)/, '');
+  let numerator = BigInt(digits || '0') * (negative ? -1n : 1n);
+  const scale = fraction.length - exponent;
+  let denominator = 1n;
+  if (scale > 0) denominator = 10n ** BigInt(scale);
+  else if (scale < 0) numerator *= 10n ** BigInt(-scale);
+  return reduceRational(numerator, denominator);
+}
+
+function parseRationalDto(value) {
+  if (!plainObject(value) || Object.keys(value).length !== 2
+    || typeof value.numerator !== 'string' || !/^-?(0|[1-9]\d*)$/.test(value.numerator)
+    || typeof value.denominator !== 'string' || !/^[1-9]\d*$/.test(value.denominator)) return null;
+  const rational = reduceRational(BigInt(value.numerator), BigInt(value.denominator));
+  if (rational.numerator.toString() !== value.numerator || rational.denominator.toString() !== value.denominator) return null;
+  return rational;
+}
+
+function parseBodyElapsed(value) {
+  const candidate = plainObject(value?.exact_minutes) ? value.exact_minutes : value;
+  return parseRationalDto(candidate);
+}
+
+function emptyBodyTimeTotals() {
+  return Object.fromEntries(BODY_METRICS.map((metric) => [metric, {
+    increase: rationalPair(0n, 1n), decrease: rationalPair(0n, 1n)
+  }]));
+}
+
+function bodyTimeTotalsDto(totals) {
+  return Object.fromEntries(BODY_METRICS.map((metric) => [metric, {
+    increase: rationalDto(totals[metric].increase),
+    decrease: rationalDto(totals[metric].decrease)
+  }]));
+}
+
+function boundRational(value) {
+  if (compareRational(value, rationalPair(0n, 1n)) < 0) return rationalPair(0n, 1n);
+  if (compareRational(value, rationalPair(100n, 1n)) > 0) return rationalPair(100n, 1n);
+  return value;
+}
+
+function scalarBodyState(bodyState, exactState) {
+  return { ...structuredClone(bodyState),
+    ...Object.fromEntries(BODY_METRICS.map((metric) => [
+      metric, rationalToScalar(exactState[metric])
+    ])) };
+}
+
+function exactBodyState(bodyState, exactState) {
+  return { ...structuredClone(bodyState),
+    ...Object.fromEntries(BODY_METRICS.map((metric) => [
+      metric, rationalDto(exactState[metric])
+    ])),
+    active_conditions: structuredClone(bodyState.active_conditions ?? []) };
+}
+
+function fixedProfileFromProposal(proposal) {
+  return {
+    schema: 'rus.body_state.fixed_approved_effect.v1',
+    profile_ref: proposal?.profile_ref,
+    profile_pin: proposal?.profile_pin,
+    status: 'approved',
+    applicability: proposal?.selected_context,
+    exact_deltas: proposal?.exact_deltas,
+    condition_outcomes: proposal?.condition_transitions,
+    selection_policy: proposal?.selection_policy,
+    rng_consumption: proposal?.rng_consumption
+  };
+}
+
+function rationalPair(numerator, denominator) {
+  return reduceRational(numerator, denominator);
+}
+
+function reduceRational(numerator, denominator) {
+  if (denominator === 0n) throw new RangeError('rational denominator cannot be zero');
+  if (denominator < 0n) { numerator = -numerator; denominator = -denominator; }
+  const divisor = greatestCommonDivisor(numerator, denominator);
+  return { numerator: numerator / divisor, denominator: denominator / divisor };
+}
+
+function greatestCommonDivisor(left, right) {
+  let a = left < 0n ? -left : left;
+  let b = right < 0n ? -right : right;
+  while (b !== 0n) [a, b] = [b, a % b];
+  return a || 1n;
+}
+
+function addRational(left, right) {
+  return reduceRational(left.numerator * right.denominator + right.numerator * left.denominator,
+    left.denominator * right.denominator);
+}
+
+function subtractRational(left, right) {
+  return reduceRational(left.numerator * right.denominator - right.numerator * left.denominator,
+    left.denominator * right.denominator);
+}
+
+function compareRational(left, right) {
+  const delta = left.numerator * right.denominator - right.numerator * left.denominator;
+  return delta < 0n ? -1 : delta > 0n ? 1 : 0;
+}
+
+function rationalDto(value) {
+  return { numerator: value.numerator.toString(), denominator: value.denominator.toString() };
+}
+
+function rationalToScalar(value) {
+  const scale = 1_000_000n;
+  const absoluteScaledNumerator = (value.numerator < 0n ? -value.numerator : value.numerator) * scale;
+  let quotient = absoluteScaledNumerator / value.denominator;
+  const remainder = absoluteScaledNumerator % value.denominator;
+  const twiceRemainder = remainder * 2n;
+  if (twiceRemainder > value.denominator || (twiceRemainder === value.denominator && quotient % 2n !== 0n)) quotient += 1n;
+  if (value.numerator < 0n) quotient = -quotient;
+  return Number(decimalIntegerString(quotient, 6));
+}
+
+function decimalIntegerString(value, places) {
+  const negative = value < 0n;
+  let digits = (negative ? -value : value).toString();
+  if (places === 0) return `${negative ? '-' : ''}${digits}`;
+  digits = digits.padStart(places + 1, '0');
+  return `${negative ? '-' : ''}${digits.slice(0, -places)}.${digits.slice(-places)}`;
 }
 
 function contractValid(name, value) {

@@ -37,6 +37,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   actorBaseAttributesBinding = null,
   runtimeCatalogLoader = null,
   targetStartRuntime = null,
+  trustedBodyNeedsBindingPin = null,
+  trustedBodyNeedsProfile = null,
   committer = null,
   authoredRuntimeBindingResolver = null,
   rootDir = process.cwd()
@@ -222,7 +224,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
           const { domain_catalog: verifiedCatalog } = selectedStart.materialization_inputs;
           const factualContext = selectedStart.initialRule == null
             ? createTargetCurrentFactualContext({ partyPool, committer, runtime: selectedStart,
-              authoredRuntimeBindingResolver }) : null;
+              authoredRuntimeBindingResolver,
+              trustedBodyNeedsBindingPin, trustedBodyNeedsProfile }) : null;
           const readCurrentEnvironment = factualContext == null ? null
             : internal == null ? factualContext.readCurrentEnvironment
               : factualContext.readInitialEnvironment;

@@ -6,6 +6,7 @@
         "@rus/checks-rng",
         "@rus/combat-health",
         "@rus/contracts",
+        "@rus/environment-state",
         "@rus/items-property",
         "@rus/knowledge-source",
         "@rus/llm-runtime",
@@ -123,7 +124,7 @@
       ],
       "name": "@rus/body-state",
       "owns": [
-        "Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `calculateBodyTimeEffectProposal`, `predictNearestBodyThreshold`, direct-event body transition и edge-triggered threshold crossing между authoritative before/after states",
+        "Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `initializeBodyState`, `projectCombatBodyStateDescriptions`, `calculateBodyTimeEffectProposal`, `accumulateBodyTimeEffects`, `applyBodyTimeEffectProposals`, `predictNearestBodyThreshold`, direct-event body transition и edge-triggered threshold crossing между authoritative before/after states",
         "Сохраняет supplied approved `decision_signal` descriptor на crossing; не вычисляет его category/significance и не создаёт NPC boundary"
       ],
       "path": "packages/body-state",
@@ -203,7 +204,8 @@
       "owns": [
         "применением supplied approved weather, light и access profiles к supplied exact clock",
         "выводом environment snapshot и ближайших domain boundaries",
-        "proposal соответствующего weather, light или access effect"
+        "proposal соответствующего weather, light или access effect",
+        "sealing body environment snapshot для сохранённого факта партии"
       ],
       "path": "packages/environment-state",
       "public_entry": "./src/index.js",

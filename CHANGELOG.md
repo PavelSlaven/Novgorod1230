@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- test(spatial): the perception reload regression creates prior NPC perceptions with a real turn and real recognition, so the persisted body history stays consistent; the saved name is kept per NPC against a generic fresh label (#377, D84)
 - fix(runtime-catalog): cache successful G4 projections and approved place-label validation (#527, #513)
 - fix(body-state): bind approved satiety and awake-energy profiles to elapsed v17 activity time (#244)
 - fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)

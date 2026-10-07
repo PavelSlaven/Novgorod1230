@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- data(npc): apply Opus-approved address forms and evidence for #510
 - fix(npc): select address forms only for their materialized source rule, resolve role/occupation specificity, and preserve validated NPC profile refs on scene readback (#436, #532)
 - fix(tools): portable main-module checks; the P05 checker now runs on Linux (#474)
 - fix(runtime-boundary): move new-game projections out of tools, centralize committed v5 inventory defaults in items-property; LW-038/LW-106 closed (#326, #281)

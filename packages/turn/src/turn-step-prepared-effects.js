@@ -1,6 +1,5 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
-import { applyApprovedFixedBodyEffect,
-  applyBodyTimeEffectProposals } from '@rus/body-state';
+import { accumulateBodyTimeEffects } from '@rus/body-state';
 import { addRationalMinutes,
   compareRationalMinutes,
   normalizeElapsedTime,
@@ -81,7 +80,8 @@ export async function orchestrateTurnStepPreparedEffect({
     const previous = context.body_time_replay ?? {
       body_state_before: structuredClone(context.current_body_state),
       fixed_effect_proposals: [],
-      component_proposals: []
+      component_proposals: [],
+      slices: []
     };
     const fixedEffectProposals = [
       ...structuredClone(previous.fixed_effect_proposals),
@@ -91,43 +91,34 @@ export async function orchestrateTurnStepPreparedEffect({
       ...structuredClone(previous.component_proposals),
       ...structuredClone(bodyUpdate.proposal.component_proposals)
     ];
-    if (hasIndependentSemanticHealthEffects(fixedEffectProposals,
-      componentProposals)) {
-      let bodyAfterFixed = structuredClone(previous.body_state_before);
-      for (const proposal of fixedEffectProposals) {
-        const fixed = applyApprovedFixedBodyEffect({ body_state: bodyAfterFixed,
-          body_effect_profile: {
-            schema: 'rus.body_state.fixed_approved_effect.v1',
-            profile_ref: proposal.profile_ref,
-            profile_pin: proposal.profile_pin,
-            status: 'approved', applicability: proposal.selected_context,
-            exact_deltas: proposal.exact_deltas,
-            condition_outcomes: proposal.condition_transitions,
-            selection_policy: proposal.selection_policy,
-            rng_consumption: proposal.rng_consumption
-          }, selected_context: proposal.selected_context });
-        if (fixed?.ok !== true || fixed.owner !== '@rus/body-state'
-            || fixed.applied !== true || !plain(fixed.state_after)) {
-          invalid('Prepared cumulative fixed body effects could not be applied by body-state.',
-            { result: fixed });
-        }
-        bodyAfterFixed = structuredClone(fixed.state_after);
-      }
-      const cumulative = applyBodyTimeEffectProposals(
-        bodyAfterFixed, componentProposals);
-      if (cumulative?.ok !== true || cumulative.owner !== '@rus/body-state'
-          || cumulative.applied !== true || !plain(cumulative.state_after)) {
-        invalid('Prepared cumulative body-time effects could not be applied by body-state.',
-          { result: cumulative });
-      }
-      bodyUpdateForEffect = { ...structuredClone(bodyUpdate),
-        state_after: structuredClone(cumulative.state_after) };
-      preparedBodyTimeReplay = {
-        body_state_before: structuredClone(previous.body_state_before),
-        fixed_effect_proposals: fixedEffectProposals,
-        component_proposals: componentProposals
-      };
+    const slices = [...structuredClone(previous.slices ?? []), {
+      exact_elapsed: structuredClone(timeUpdate.exact_elapsed),
+      fixed_effect_proposals: structuredClone(
+        bodyUpdate.proposal.fixed_effect_proposals ?? []),
+      component_proposals: structuredClone(bodyUpdate.proposal.component_proposals)
+    }];
+    const applyFixed = hasIndependentSemanticHealthEffects(
+      fixedEffectProposals, componentProposals);
+    const cumulative = accumulateBodyTimeEffects({
+      body_state_before: previous.body_state_before,
+      slices: slices.map((slice) => ({ ...slice,
+        fixed_effect_proposals: applyFixed ? slice.fixed_effect_proposals : [] }))
+    });
+    if (cumulative?.ok !== true || cumulative.owner !== '@rus/body-state'
+        || cumulative.applied !== true || !plain(cumulative.state_after)
+        || !plain(cumulative.exact_state_after)) {
+      invalid('Prepared cumulative body-time effects could not be applied by body-state.',
+        { result: cumulative });
     }
+    bodyUpdateForEffect = { ...structuredClone(bodyUpdate),
+      state_after: structuredClone(cumulative.state_after) };
+    preparedBodyTimeReplay = {
+      body_state_before: structuredClone(previous.body_state_before),
+      fixed_effect_proposals: fixedEffectProposals,
+      component_proposals: componentProposals,
+      exact_state_after: structuredClone(cumulative.exact_state_after),
+      slices
+    };
   }
   const effect = {
     step_index: request?.step_index,
@@ -361,7 +352,6 @@ export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
       structuredClone(update.proposal.component_proposals));
     const fixedEffectProposals = updates.flatMap((update) =>
       structuredClone(update.proposal.fixed_effect_proposals));
-    let bodyStateAfterFixedEffects = structuredClone(bodyStateBefore);
     const fixedEffectsAreIndependentSemanticHealthChanges =
       fixedEffectProposals.every((proposal) =>
         proposal.selected_context?.kind === 'semantic_activity'
@@ -374,33 +364,19 @@ export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
         Array.isArray(proposal.metric_changes)
         && proposal.metric_changes.every(({ metric, direction }) =>
           metric !== 'health' || direction === 'decrease'));
-    if (fixedEffectsAreIndependentSemanticHealthChanges) {
-      for (const proposal of fixedEffectProposals) {
-        const fixed = applyApprovedFixedBodyEffect({
-          body_state: bodyStateAfterFixedEffects,
-          body_effect_profile: {
-            schema: 'rus.body_state.fixed_approved_effect.v1',
-            profile_ref: proposal.profile_ref,
-            profile_pin: proposal.profile_pin,
-            status: 'approved',
-            applicability: proposal.selected_context,
-            exact_deltas: proposal.exact_deltas,
-            condition_outcomes: proposal.condition_transitions,
-            selection_policy: proposal.selection_policy,
-            rng_consumption: proposal.rng_consumption
-          },
-          selected_context: proposal.selected_context
-        });
-        if (fixed?.ok !== true || fixed.owner !== '@rus/body-state'
-            || fixed.applied !== true || !plain(fixed.state_after)) {
-          invalid(`Prepared fixed body effects could not be applied by body-state: ${JSON.stringify(fixed)}`,
-            { result: fixed });
-        }
-        bodyStateAfterFixedEffects = structuredClone(fixed.state_after);
-      }
-    }
-    const result = applyBodyTimeEffectProposals(
-      bodyStateAfterFixedEffects, componentProposals);
+    const replaySlices = ledger.slices.filter((slice) =>
+      slice.body_update.applied === true
+      && slice.body_update.proposal?.proposal_kind
+        === 'body_time_effect_composite');
+    const result = accumulateBodyTimeEffects({
+      body_state_before: bodyStateBefore,
+      slices: replaySlices.map((slice) => ({
+        exact_elapsed: slice.time_update.exact_elapsed,
+        fixed_effect_proposals: fixedEffectsAreIndependentSemanticHealthChanges
+          ? slice.body_update.proposal.fixed_effect_proposals : [],
+        component_proposals: slice.body_update.proposal.component_proposals
+      }))
+    });
     if (result?.ok !== true || result.owner !== '@rus/body-state'
         || result.applied !== true || !plain(result.state_after)
         || !plain(result.exact_changes)) {

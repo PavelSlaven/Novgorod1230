@@ -55,7 +55,9 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     });
     validateNoBatchFactualCommit({ writePlan, factual, state, preparedEffect,
       trustedBodyNeedsBindingPin:
-        turnStepApprovedOwners?.bodyNeedsBindingPin ?? null });
+        turnStepApprovedOwners?.bodyNeedsBindingPin ?? null,
+      trustedBodyNeedsProfile:
+        turnStepApprovedOwners?.trustedBodyNeedsProfile ?? null });
     return emptyTurnStepPersistence(committedSnapshot);
   }
   if (targets.length !== 1) fail('TRACE_TURN_STEP_OPERATION_BATCH_INVALID', {
@@ -111,7 +113,8 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   }
   if (!preparedEffect.prepared) {
     validateBodyComponentOrder(batch, commit, state,
-      turnStepApprovedOwners?.bodyNeedsBindingPin ?? null);
+      turnStepApprovedOwners?.bodyNeedsBindingPin ?? null,
+      turnStepApprovedOwners?.trustedBodyNeedsProfile ?? null);
   }
   const hasActivityFragments = batch.operations.some(({ target }) =>
     target === 'party_events');
@@ -177,7 +180,9 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       : prepareTurnStepBodyHistory({
         partyId, state, ...bodyHistoryInput, changeSetId, idemId,
         trustedBodyNeedsBindingPin:
-          turnStepApprovedOwners?.bodyNeedsBindingPin ?? null
+          turnStepApprovedOwners?.bodyNeedsBindingPin ?? null,
+        trustedBodyNeedsProfile:
+          turnStepApprovedOwners?.trustedBodyNeedsProfile ?? null
       });
   if (context.bodyHistory != null) {
     next.turn_step_body_history = [

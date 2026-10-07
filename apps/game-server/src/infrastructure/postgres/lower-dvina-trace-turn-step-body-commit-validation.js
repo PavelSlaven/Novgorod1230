@@ -69,7 +69,7 @@ export function validateBodyEventCommit(operation, factual, state) {
 }
 
 export function validateBodyComponentOrder(batch, factual, state,
-  trustedBodyNeedsBindingPin = null) {
+  trustedBodyNeedsBindingPin = null, trustedBodyNeedsProfile = null) {
   const expected = batch.operations.flatMap((fragment) => {
     if (fragment.target === 'party_events') return [{
       kind: 'semantic_activity', ref: fragment.value.activity_id }];
@@ -100,7 +100,7 @@ export function validateBodyComponentOrder(batch, factual, state,
   const composite = factual.body_update?.proposal;
   if (composite?.proposal_kind === 'body_time_effect_composite') {
     validateBodyTimeComposite({ bodyEffectRef, factual, batch, state,
-      trustedBodyNeedsBindingPin });
+      trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
     return;
   }
   const compositeShape = exactShape(composite, ['schema', 'profile_ref',
@@ -149,13 +149,13 @@ export function validateBodyComponentOrder(batch, factual, state,
 }
 
 function validateBodyTimeComposite({ bodyEffectRef, factual, batch, state,
-  trustedBodyNeedsBindingPin }) {
+  trustedBodyNeedsBindingPin, trustedBodyNeedsProfile }) {
   if (bodyEffectRef != null && !text(bodyEffectRef)) {
     reconciliationFail(null, 'continuous body effect reference is invalid');
   }
   try {
     validateTurnStepBodyTimeProposal({ factual, batch, state,
-      trustedBodyNeedsBindingPin });
+      trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
   } catch (cause) {
     const details = cause?.details ?? {};
     const causeReason = [cause?.code, details.reason,

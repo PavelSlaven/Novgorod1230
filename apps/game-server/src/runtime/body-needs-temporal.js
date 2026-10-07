@@ -250,7 +250,7 @@ export function createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsPr
 
   return Object.freeze({ schema: 'rus.live_world_runtime.body_needs_temporal_adapter.v1',
     candidate_status: bodyNeedsProfile.status, approved: true,
-    trustedBindingPin,
+    trustedBindingPin, trustedBodyNeedsProfile: bodyNeedsProfile,
     calculateProposals, predictNearestThreshold, predictThresholdCandidates });
 }
 

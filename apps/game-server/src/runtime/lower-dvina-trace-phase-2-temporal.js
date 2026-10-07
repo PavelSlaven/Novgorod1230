@@ -27,6 +27,7 @@ export function createTracePhase2TemporalAdvance({ contracts,
   return async function advance({
     clock_before: clockBefore,
     exact_elapsed: exactElapsed, effect_kind: effectKind, consequence,
+    body_time_exact_state: bodyTimeExactState = null,
     relevant_state: state,local_fire_atomic_write_plans:actorPlans=[],
     root_turn_id:rootTurnId='turn:prepared',change_set_id:changeSetId=
       `change:${state.party_id}:trace-phase2:${state.party_state.turn_number+1}`
@@ -45,7 +46,8 @@ export function createTracePhase2TemporalAdvance({ contracts,
       state.temporal_boundary_candidates??[],localFireProjection,actorPlans);
     const bodyThresholds = bodyNeedsThresholdCandidates({
       adapter: bodyTimeEffectAdapter, state, consequence, effectKind,
-      clockBefore, clockAfter: window.clock_after
+      clockBefore, clockAfter: window.clock_after,
+      exactBodyState: bodyTimeExactState
     });
     const bodyCandidates = bodyThresholds.map(({ candidate }) => candidate);
     const allSourceCandidates = [...sourceCandidates, ...bodyCandidates];
@@ -111,7 +113,7 @@ export function createTracePhase2TemporalAdvance({ contracts,
 }
 
 function bodyNeedsThresholdCandidates({ adapter, state, consequence,
-  effectKind, clockBefore, clockAfter }) {
+  effectKind, clockBefore, clockAfter, exactBodyState = null }) {
   if (adapter == null || effectKind !== 'semantic_activity') return [];
   const activity = (consequence?.state_changes ?? []).find((entry) =>
     entry?.kind === 'semantic_activity');
@@ -124,9 +126,9 @@ function bodyNeedsThresholdCandidates({ adapter, state, consequence,
   const input = {
     effort: activity.effort,
     body_state: {
-      health: state.body_state.health,
-      satiety: state.body_state.satiety,
-      energy: state.body_state.energy
+      health: (exactBodyState ?? state.body_state).health,
+      satiety: (exactBodyState ?? state.body_state).satiety,
+      energy: (exactBodyState ?? state.body_state).energy
     },
     body_state_ref: { entity_kind: 'body_state', entity_id: state.actor_id },
     scope_ref: { entity_kind: 'party', entity_id: state.party_id },

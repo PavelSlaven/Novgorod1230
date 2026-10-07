@@ -241,13 +241,16 @@ export function createTraceTurnRuntime({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
       trustedBodyNeedsBindingPin: bodyTimeEffectAdapter?.trustedBindingPin ?? null,
+      trustedBodyNeedsProfile: bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null,
       readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,
       readCurrentVisibleContext,
       projectEnvironmentAtClock: targetStartRuntime == null ? null
         : createTargetCurrentFactualContext({ partyPool, committer,
           runtime: targetStartRuntime, authoredRuntimeBindingResolver,
           trustedBodyNeedsBindingPin:
-            bodyTimeEffectAdapter?.trustedBindingPin ?? null
+            bodyTimeEffectAdapter?.trustedBindingPin ?? null,
+          trustedBodyNeedsProfile:
+            bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null
         }).projectEnvironmentAtClock
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),

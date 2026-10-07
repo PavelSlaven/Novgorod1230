@@ -13,7 +13,8 @@ const DELEGATED_FACTUAL_FIELDS = Object.freeze([
 
 /** Validates a semantic commit that has no generic mechanics batch. */
 export function validateNoBatchFactualCommit({ writePlan, factual, state,
-  preparedEffect = null, trustedBodyNeedsBindingPin = null }) {
+  preparedEffect = null, trustedBodyNeedsBindingPin = null,
+  trustedBodyNeedsProfile = null }) {
   if (writePlan?.turn_step_commit == null) return;
   const commit = writePlan.turn_step_commit;
   const selectedOption = commit.mode_resolution?.decision_trace
@@ -41,12 +42,12 @@ export function validateNoBatchFactualCommit({ writePlan, factual, state,
     }
     if (preparedEffect?.combatSlice != null) return;
     validateStateAwareTransition({ commit: factual, state,
-      trustedBodyNeedsBindingPin });
+      trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
     return;
   }
 
   validateStateAwareTransition({ commit, state,
-    trustedBodyNeedsBindingPin });
+    trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
   if (!same(commit.time_update?.clock_after, state.clock)
       || Number(commit.consequence?.duration_minutes) !== 0) {
     noBatchFail('no-batch clock window differs from the persisted clock');
@@ -60,7 +61,7 @@ export function validateNoBatchFactualCommit({ writePlan, factual, state,
 }
 
 function validateStateAwareTransition({ commit, state,
-  trustedBodyNeedsBindingPin = null }) {
+  trustedBodyNeedsBindingPin = null, trustedBodyNeedsProfile = null }) {
   let expectedClockAfter;
   try {
     expectedClockAfter = addElapsedTime(
@@ -91,7 +92,7 @@ function validateStateAwareTransition({ commit, state,
     try {
       validateTurnStepBodyTimeProposal({ factual: commit,
         batch: { root_turn_id: 'no-batch', operations: [] }, state,
-        trustedBodyNeedsBindingPin });
+        trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
     } catch (cause) {
       const reason = [cause?.code, cause?.details?.reason,
         cause?.details?.operation_id == null

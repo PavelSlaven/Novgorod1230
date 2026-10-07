@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { canonicalDigest } from '@rus/materialization';
 import { applyApprovedFixedBodyEffect,
   applyBodyTimeEffectProposals } from '@rus/body-state';
 import {
@@ -345,6 +346,7 @@ test('continuous body readback rejects altered after-state and profile pin', asy
     state_after: fixed.state_after };
   const factual = {
     root_turn_id: 'turn:p:1',
+    base_state_version: 1,
     body_update: { applied: true, proposal: {
       proposal_kind: 'body_time_effect_composite',
       fixed_effect_proposals: [fixedEffectProposal],
@@ -356,15 +358,27 @@ test('continuous body readback rejects altered after-state and profile pin', asy
       body_effect_profile_ref: 'body:generic', profile_pin: fixedProfilePin,
       body_effect_context: fixedContext }] },
     time_update: { exact_elapsed: { exact_minutes: exactElapsed },
+      clock_before: timestamp(0),
       clock_after: timestamp(60) }
   };
   const batch = { root_turn_id: 'turn:p:1', operations: [{
     target: 'party_events', value: { activity_id: activityId }
   }] };
-  const stateBefore = { actor_id: 'actor-1', body_state: before,
-    party_state: { turn_number: 0 } };
+  const stateBefore = { party_id: 'p', actor_id: 'actor-1', body_state: before,
+    party_state: { state_version: 1, turn_number: 0 },
+    environment_snapshot: { schema: 'rus.approved_initial_environment.v1', version: 1,
+      season: 'summer', light_state: 'daylight',
+      weather_state: { weather_state_id: 'clear' } } };
+  function pool(rows) {
+    return { async query(sql) {
+      const result = sql.includes('party_state_snapshots')
+        ? [{ state_payload: stateBefore, state_digest: canonicalDigest(stateBefore) }]
+        : rows;
+      return { rows: result, rowCount: result.length };
+    } };
+  }
   assert.doesNotThrow(() => validateBodyComponentOrder(batch, factual,
-    stateBefore, adapter.trustedBindingPin));
+    stateBefore, adapter.trustedBindingPin, adapter.trustedBodyNeedsProfile));
   const preparedBodyContext = { kind: 'semantic_activity',
     duration_class: 'brief', effort: 'moderate' };
   const preparedFixedEffect = applyApprovedFixedBodyEffect({
@@ -405,7 +419,8 @@ test('continuous body readback rejects altered after-state and profile pin', asy
       body_effect_profile_ref: 'body:generic', body_effect_ref: null }) },
     bodyEffect: { supportsBodyTimeEffects: true,
       apply: () => structuredClone(preparedSlice.body_update) },
-    bodyNeedsBindingPin: adapter.trustedBindingPin
+    bodyNeedsBindingPin: adapter.trustedBindingPin,
+    trustedBodyNeedsProfile: adapter.trustedBodyNeedsProfile
   };
   const validatePreparedSlice = (slice) => validatePreparedSemanticSlices({
     ledger: { slices: [slice] }, batch: preparedBatch,
@@ -429,7 +444,8 @@ test('continuous body readback rejects altered after-state and profile pin', asy
   invalidInternalProposal.body_update.proposal.component_proposals[0]
     .metric_changes[0].metric = 'forged';
   assert.throws(() => validateBodyComponentOrder(batch,
-    invalidInternalProposal, stateBefore, adapter.trustedBindingPin),
+    invalidInternalProposal, stateBefore, adapter.trustedBindingPin,
+    adapter.trustedBodyNeedsProfile),
   (error) => error.code === 'TRACE_TURN_STEP_BODY_EVENT_RECONCILIATION_FAILED'
     && error.details.reason.includes(
       'TRACE_TURN_STEP_BODY_HISTORY_RECONCILIATION_FAILED')
@@ -503,7 +519,8 @@ test('continuous body readback rejects altered after-state and profile pin', asy
       operation_id: 'body-event-1', payload: eventOperation.payload } }
   ] };
   assert.doesNotThrow(() => validateBodyComponentOrder(extremeBatch,
-    extremeFactual, extremeState, adapter.trustedBindingPin));
+    extremeFactual, extremeState, adapter.trustedBindingPin,
+    adapter.trustedBodyNeedsProfile));
   assert.doesNotThrow(() => validateBodyEventCommit(eventOperation,
     extremeFactual, extremeState));
   for (const tamper of [
@@ -515,14 +532,15 @@ test('continuous body readback rejects altered after-state and profile pin', asy
     const forged = structuredClone(factual);
     tamper(forged);
     assert.throws(() => validateBodyComponentOrder(batch, forged,
-      stateBefore, adapter.trustedBindingPin),
+      stateBefore, adapter.trustedBindingPin, adapter.trustedBodyNeedsProfile),
     { code: 'TRACE_TURN_STEP_BODY_EVENT_RECONCILIATION_FAILED' });
   }
   const historyInput = { partyId: 'p',
     state: stateBefore, factual, batch,
     changeSetId: 'change-1', idemId: 'idem-1' };
   assert.throws(() => buildTurnStepBodyEffectRef({ factual, batch,
-    state: stateBefore, trustedBodyNeedsBindingPin: null
+    state: stateBefore, trustedBodyNeedsBindingPin: null,
+    trustedBodyNeedsProfile: adapter.trustedBodyNeedsProfile
   }), (error) => error.code ===
     'TRACE_TURN_STEP_BODY_HISTORY_RECONCILIATION_FAILED'
       && error.details?.failed_condition === 'trusted_pin_invalid');
@@ -533,7 +551,8 @@ test('continuous body readback rejects altered after-state and profile pin', asy
   });
   assert.throws(() => buildTurnStepBodyEffectRef({ factual: extraActivity,
     batch, state: stateBefore,
-    trustedBodyNeedsBindingPin: adapter.trustedBindingPin
+    trustedBodyNeedsBindingPin: adapter.trustedBindingPin,
+    trustedBodyNeedsProfile: adapter.trustedBodyNeedsProfile
   }), (error) => error.code ===
     'TRACE_TURN_STEP_BODY_HISTORY_RECONCILIATION_FAILED'
       && error.details?.failed_condition === 'activity_group_count'
@@ -556,11 +575,13 @@ test('continuous body readback rejects altered after-state and profile pin', asy
       approval_attestation_sha256: 'f'.repeat(64) },
     ...mismatchedTrustedPins]) {
     assert.throws(() => prepareTurnStepBodyHistory({ ...historyInput,
-      trustedBodyNeedsBindingPin
+      trustedBodyNeedsBindingPin,
+      trustedBodyNeedsProfile: adapter.trustedBodyNeedsProfile
     }), { code: 'TRACE_TURN_STEP_BODY_HISTORY_RECONCILIATION_FAILED' });
   }
   const prepared = prepareTurnStepBodyHistory({ ...historyInput,
-    trustedBodyNeedsBindingPin: adapter.trustedBindingPin });
+    trustedBodyNeedsBindingPin: adapter.trustedBindingPin,
+    trustedBodyNeedsProfile: adapter.trustedBodyNeedsProfile });
   const payload = { party_id: 'p', actor_id: 'actor-1',
     party_state: { body_state_version: 2 },
     body_state: applied.state_after,
@@ -577,14 +598,15 @@ test('continuous body readback rejects altered after-state and profile pin', asy
     body_updated_change_set_id: 'change-1' };
   const trustedPin = adapter.trustedBindingPin;
   await assert.doesNotReject(() => assertTurnStepBodyHistoryRows(
-    pool([structuredClone(history[0])]), payload, normalized, trustedPin
+    pool([structuredClone(history[0])]), payload, normalized, trustedPin,
+    adapter.trustedBodyNeedsProfile
   ));
   const invalidReadbackEffect = structuredClone(payload);
   invalidReadbackEffect.last_turn.turn_step_commit.body_update.proposal
     .component_proposals[0].metric_changes[0].metric = 'forged';
   await assert.rejects(() => assertTurnStepBodyHistoryRows(
     pool(invalidReadbackEffect.turn_step_body_history), invalidReadbackEffect,
-    normalized, trustedPin
+    normalized, trustedPin, adapter.trustedBodyNeedsProfile
   ), (error) => error.code === 'TRACE_PHASE_2_SESSION_READ_INVALID'
     && error.details?.reason?.includes(
       'TRACE_TURN_STEP_BODY_HISTORY_RECONCILIATION_FAILED')
@@ -597,7 +619,7 @@ test('continuous body readback rejects altered after-state and profile pin', asy
     .turn_step_commit.body_update.proposal).sort();
   await assert.rejects(() => assertTurnStepBodyHistoryRows(
     pool(invalidReadbackShape.turn_step_body_history), invalidReadbackShape,
-    normalized, trustedPin
+    normalized, trustedPin, adapter.trustedBodyNeedsProfile
   ), (error) => error.code === 'TRACE_PHASE_2_SESSION_READ_INVALID'
     && error.details?.reason?.includes(
       'TRACE_TURN_STEP_BODY_HISTORY_RECONCILIATION_FAILED')
@@ -611,7 +633,8 @@ test('continuous body readback rejects altered after-state and profile pin', asy
     .state_changes = [];
   await assert.rejects(() => assertTurnStepBodyHistoryRows(
     pool(missingReadbackComponents.turn_step_body_history),
-    missingReadbackComponents, normalized, trustedPin
+    missingReadbackComponents, normalized, trustedPin,
+    adapter.trustedBodyNeedsProfile
   ), (error) => error.code === 'TRACE_PHASE_2_SESSION_READ_INVALID'
     && error.details?.reason?.includes(
       'TRACE_TURN_STEP_BODY_HISTORY_RECONCILIATION_FAILED')
@@ -620,7 +643,8 @@ test('continuous body readback rejects altered after-state and profile pin', asy
     && error.details.reason.includes('failed_condition=components_empty')
     && error.details.reason.includes('state_change_kinds=[]'));
   await assert.rejects(() => assertTurnStepBodyHistoryRows(
-    pool(history), payload, normalized
+    pool(history), payload, normalized, null,
+    adapter.trustedBodyNeedsProfile
   ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
   const allBindingPinMismatches = ['candidate_sha256',
     'approval_attestation_sha256', ...secondaryPinFields].map((key) => ({
@@ -631,7 +655,8 @@ test('continuous body readback rejects altered after-state and profile pin', asy
   allBindingPinMismatches.push({ ...trustedPin, forged: true });
   for (const mismatchedPin of allBindingPinMismatches) {
     await assert.rejects(() => assertTurnStepBodyHistoryRows(
-      pool(history), payload, normalized, mismatchedPin
+      pool(history), payload, normalized, mismatchedPin,
+      adapter.trustedBodyNeedsProfile
     ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
   }
 
@@ -639,14 +664,15 @@ test('continuous body readback rejects altered after-state and profile pin', asy
   alteredAfterState.last_turn.turn_step_commit.body_update.state_after.energy += 1;
   await assert.rejects(() => assertTurnStepBodyHistoryRows(
     pool(alteredAfterState.turn_step_body_history), alteredAfterState, normalized,
-    trustedPin
+    trustedPin, adapter.trustedBodyNeedsProfile
   ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
 
   const alteredPin = structuredClone(payload);
   alteredPin.last_turn.turn_step_commit.body_update.proposal
     .component_proposals[0].binding_pin.approval_attestation_sha256 = 'f'.repeat(64);
   await assert.rejects(() => assertTurnStepBodyHistoryRows(
-    pool(history), alteredPin, normalized, trustedPin
+    pool(history), alteredPin, normalized, trustedPin,
+    adapter.trustedBodyNeedsProfile
   ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
 });
 

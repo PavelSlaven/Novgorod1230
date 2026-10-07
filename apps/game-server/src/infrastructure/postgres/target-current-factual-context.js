@@ -7,7 +7,8 @@ import { readCurrentEntityVisibilityScene } from './g4-natural-perception-reader
 
 /** Reuse the normalized committed-state owner inside the caller's transaction. */
 export function createTargetCurrentFactualContext({ partyPool, committer, runtime,
-  authoredRuntimeBindingResolver, trustedBodyNeedsBindingPin = null } = {}) {
+  authoredRuntimeBindingResolver, trustedBodyNeedsBindingPin = null,
+  trustedBodyNeedsProfile = null } = {}) {
   const inputs = runtime?.materialization_inputs;
   const calendarProfile = inputs?.calendar_profile;
   const records = inputs?.approved_actor_temporal_bundle?.temporal_records;
@@ -16,7 +17,7 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
     const repository = createLowerDvinaTracePhase2PostgresRepository({
       partyPool: { query: transaction.query.bind(transaction), connect: partyPool.connect.bind(partyPool) },
       committer, authoredRuntimeBindingResolver,
-      trustedBodyNeedsBindingPin });
+      trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
     const state = await repository.loadPhase2State(partyId, { includeCurrentVisibleContext: false });
     if (state.world_identity?.world_revision_id !== runtime.itemPin.compatible_world_revision_id
       || state.world_identity?.world_catalog_digest !== runtime.itemPin.compatible_world_catalog_digest) gap();

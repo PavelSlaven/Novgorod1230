@@ -1,5 +1,5 @@
 import {
-  applyBodyTimeEffectProposals,
+  accumulateBodyTimeEffects,
   applyApprovedFixedBodyEffect,
   stateModifier
 } from '@rus/body-state';
@@ -56,7 +56,8 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
   bodyTimeEffectAdapter = null
 } = {}) {
   if (bodyTimeEffectAdapter != null
-      && typeof bodyTimeEffectAdapter.calculateProposals !== 'function') {
+      && (typeof bodyTimeEffectAdapter.calculateProposals !== 'function'
+        || bodyTimeEffectAdapter.trustedBodyNeedsProfile?.approved !== true)) {
     ownerFail('TRACE_TURN_STEP_BODY_TIME_ADAPTER_INVALID');
   }
   const admitted = admitTurnStepOwnerProfiles(profiles, artifactPin, selectedProfilePin);
@@ -245,12 +246,29 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
         });
       }
       let continuousProposal = null;
+      let exactStateAfter = null;
       if (continuousActivity) {
         const activity = consequence.state_changes.find(
           ({ kind }) => kind === 'semantic_activity');
         const exactElapsed = continuousElapsed;
         if (BigInt(exactElapsed.numerator) !== 0n) {
-          const activityContext = bodyTimeEffectContext(state, bodyState,
+          const exactBodyBefore = state.body_time_exact_state
+            ?? state.body_state;
+          const fixedReplay = accumulateBodyTimeEffects({
+            body_state_before: exactBodyBefore,
+            slices: [{ exact_elapsed: { numerator: '0', denominator: '1' },
+              fixed_effect_proposals: proposals, component_proposals: [] }]
+          });
+          if (fixedReplay?.ok !== true
+              || fixedReplay.owner !== '@rus/body-state'
+              || fixedReplay.applied !== true
+              || !plain(fixedReplay.exact_state_after)) {
+            ownerFail('TRACE_TURN_STEP_BODY_TIME_APPLY_INVALID', {
+              body_error: fixedReplay?.error?.code ?? null
+            });
+          }
+          const activityContext = bodyTimeEffectContext(state,
+            fixedReplay.exact_state_after,
             timeUpdate?.clock_before);
           const calculated = bodyTimeEffectAdapter.calculateProposals({
             effort: activity.effort ?? activity.body_effect_context?.effort,
@@ -263,21 +281,27 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
               body_error: calculated?.error?.code ?? calculated?.code ?? null
             });
           }
-          const applied = applyBodyTimeEffectProposals(
-            bodyState, calculated.proposals);
+          const componentsWithActivity = calculated.proposals.map((proposal) => ({
+            ...structuredClone(proposal),
+            activity_id: activity.activity_id,
+            effort: activity.effort ?? activity.body_effect_context?.effort
+          }));
+          const applied = accumulateBodyTimeEffects({
+            body_state_before: exactBodyBefore,
+            slices: [{ exact_elapsed: exactElapsed,
+              fixed_effect_proposals: proposals,
+              component_proposals: componentsWithActivity }]
+          });
           if (applied?.ok !== true || applied.owner !== '@rus/body-state'
               || applied.applied !== true || !plain(applied.state_after)
+              || !plain(applied.exact_state_after)
               || !plain(applied.exact_changes)) {
             ownerFail('TRACE_TURN_STEP_BODY_TIME_APPLY_INVALID', {
               body_error: applied?.error?.code ?? null
             });
           }
           bodyState = structuredClone(applied.state_after);
-          const componentsWithActivity = calculated.proposals.map((proposal) => ({
-            ...structuredClone(proposal),
-            activity_id: activity.activity_id,
-            effort: activity.effort ?? activity.body_effect_context?.effort
-          }));
+          exactStateAfter = structuredClone(applied.exact_state_after);
           continuousProposal = {
             proposal_kind: 'body_time_effect_composite',
             fixed_effect_proposals: structuredClone(proposals),
@@ -294,6 +318,9 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
       return deepFreeze({
         owner: '@rus/body-state',
         applied: true,
+        ...(exactStateAfter == null ? {} : {
+          exact_state_after: exactStateAfter
+        }),
         proposal: {
           ...(continuousProposal == null ? {
             schema: 'rus.body_state.composite_fixed_effect_proposal.v1',
@@ -317,6 +344,8 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
     genericCheckContextOwner,
     bodyEffect,
     bodyNeedsBindingPin: bodyTimeEffectAdapter?.trustedBindingPin ?? null,
+    trustedBodyNeedsProfile:
+      bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null,
     ordinaryResultPolicy: deepFreeze(structuredClone(
       admitted.ordinary_result_policy))
   });
@@ -375,7 +404,8 @@ function bodyTimeEffectContext(committedState, bodyState, observedAt) {
 
 function exactBodyState(bodyState) {
   return Object.fromEntries(BODY_METRICS.map((metric) => [
-    metric, decimalRational(bodyState[metric])
+    metric, bodyState[metric] != null && typeof bodyState[metric] === 'object'
+      ? structuredClone(bodyState[metric]) : decimalRational(bodyState[metric])
   ]));
 }
 

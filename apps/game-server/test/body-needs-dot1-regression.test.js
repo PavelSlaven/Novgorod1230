@@ -100,10 +100,12 @@ test('dot1-05: history and commit replay two real body substeps in causal order'
     // A single real owner slice is accepted by both existing validators.
     const singleBatch = { root_turn_id: rootTurnId, operations: [event(activityId)] };
     const singleFactual = { consequence, time_update: timeUpdate, body_update: effect.body_update };
-    validateBodyComponentOrder(singleBatch, singleFactual, current, adapter.trustedBindingPin);
+    validateBodyComponentOrder(singleBatch, singleFactual, current, adapter.trustedBindingPin,
+      adapter.trustedBodyNeedsProfile);
     prepareTurnStepBodyHistory({ partyId: state.party_id, state: current, factual: singleFactual,
       batch: singleBatch, changeSetId: 'change:dot1', idemId: 'idem:dot1',
-      trustedBodyNeedsBindingPin: adapter.trustedBindingPin });
+      trustedBodyNeedsBindingPin: adapter.trustedBindingPin,
+      trustedBodyNeedsProfile: adapter.trustedBodyNeedsProfile });
     effects.push({ effect, working_projection_before: { clock: current.clock },
       working_projection_after: { clock: at(index) } });
     current = { ...current, clock: at(index), body_state: update.state_after };
@@ -122,11 +124,12 @@ test('dot1-05: history and commit replay two real body substeps in causal order'
   const accepted = {};
   for (const [name, check] of Object.entries({
     commit: () => validateBodyComponentOrder(input.batch, input.factual, state,
-      adapter.trustedBindingPin),
+      adapter.trustedBindingPin, adapter.trustedBodyNeedsProfile),
     history: () => {
       const history = prepareTurnStepBodyHistory({ partyId: state.party_id, state,
         ...input, changeSetId: 'change:dot1', idemId: 'idem:dot1',
-        trustedBodyNeedsBindingPin: adapter.trustedBindingPin });
+        trustedBodyNeedsBindingPin: adapter.trustedBindingPin,
+        trustedBodyNeedsProfile: adapter.trustedBodyNeedsProfile });
       assert.equal(history.snapshot.effect_ref.state_after_digest,
         canonicalDigest(aggregate.state_after));
       assert.deepEqual(history.snapshot.effect_ref.component_effects.map(

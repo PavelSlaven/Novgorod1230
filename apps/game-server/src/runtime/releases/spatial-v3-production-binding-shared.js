@@ -202,6 +202,7 @@ export async function createSpatialV3ProductionBindings(
         authoredStartResolver: authoredStartCatalog.resolveProfile,
         committer, authoredRuntimeBindingResolver: authoredStartCatalog.resolveRuntimeBinding,
         trustedBodyNeedsBindingPin,
+        trustedBodyNeedsProfile: targetRuntimeProfiles?.body_needs_profile ?? null,
         approvedActorCatalog: authoredStartCatalog.actor_catalog, actorBaseAttributesBinding,
         ...(targetStartRuntime == null ? {} : { targetStartRuntime }),
         ...(authoredInitialProvisioner == null ? {} : { initialOrdinaryProvisioner: authoredInitialProvisioner })

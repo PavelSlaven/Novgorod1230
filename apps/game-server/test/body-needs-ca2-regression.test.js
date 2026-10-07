@@ -78,7 +78,8 @@ test('BNB2-01: extreme fixed health loss survives prepared body aggregation and 
       buildTurnStepBodyEffectRef({ factual: { body_update: bodyUpdate,
         consequence, time_update: timeUpdate },
       batch: { root_turn_id: rootTurnId, operations: [] }, state,
-      trustedBodyNeedsBindingPin: adapter.trustedBindingPin });
+      trustedBodyNeedsBindingPin: adapter.trustedBindingPin,
+      trustedBodyNeedsProfile: profile });
       return { accepted: true, code: null };
     } catch (error) {
       return { accepted: false, code: error.code };

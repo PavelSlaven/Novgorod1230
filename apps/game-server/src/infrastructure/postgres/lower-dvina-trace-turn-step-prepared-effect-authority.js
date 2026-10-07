@@ -216,6 +216,7 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
     preparedEffectFail('semantic slices must cover every activity from committed time');
   }
   let body = state.body_state;
+  let bodyTimeExact = state.body_state;
   for (const [index, slice] of ledger.slices.entries()) {
     const fragment = activities[index];
     const activity = fragment.value;
@@ -236,7 +237,8 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
       try {
         approvedBodyEffect = turnStepApprovedOwners.bodyEffect.apply({
           committed_state: { ...structuredClone(state),
-            body_state: structuredClone(body) },
+            body_state: structuredClone(body),
+            body_time_exact_state: structuredClone(bodyTimeExact) },
           consequence: structuredClone(slice.consequence),
           time_update: structuredClone(slice.time_update)
         });
@@ -269,8 +271,15 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
     validateBodyComponentOrder({ ...batch, operations: [fragment] }, {
       consequence: slice.consequence, time_update: slice.time_update,
       body_update: slice.body_update
-    }, { ...state, body_state: body },
-    turnStepApprovedOwners?.bodyNeedsBindingPin);
+    }, { ...state, body_state: body,
+      body_time_exact_state: structuredClone(bodyTimeExact) },
+    turnStepApprovedOwners?.bodyNeedsBindingPin,
+    turnStepApprovedOwners?.trustedBodyNeedsProfile);
     body = slice.body_update.state_after;
+    if (continuousBodyEffect) {
+      bodyTimeExact = structuredClone(approvedBodyEffect.exact_state_after);
+    } else {
+      bodyTimeExact = structuredClone(body);
+    }
   }
 }

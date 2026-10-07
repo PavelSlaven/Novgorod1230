@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalDigest } from '../src/core.js';
-import { materializeSpatialV3CanonicalConnection, materializeSpatialV3Expansion } from '../src/spatial-v3.js';
+import { materializeSpatialV3CanonicalConnection, materializeSpatialV3Expansion,
+  resolveSpatialV3CanonicalEndpointSlot } from '../src/spatial-v3.js';
 
 const ref = (id, version) => ({ entity_id: id, authoring_version: String(version) });
 const G4 = { id: 'g4', version: 1 };
@@ -179,4 +180,20 @@ test('branch entry-line binding may omit direction', () => {
     entry_line_kind_profile_ref: ref('line.path.profile', 1), entry_line_name: 'лесная дорога',
     entry_line_minutes: 12 });
   assert.equal(result.ok, true);
+});
+
+test('canonical endpoint resolver matches the binding slot without requiring a role', () => {
+  const endpoint = { slot_key: 'line-end', endpoint_role: 'arrival',
+    required_position_slot_key: 'shore', required_position_instance_ordinal: 0 };
+  assert.deepEqual(resolveSpatialV3CanonicalEndpointSlot([
+    { slot_key: 'other', endpoint_role: 'departure' }, endpoint,
+  ], 'line-end'), { ok: true, endpoint });
+});
+
+test('canonical endpoint resolver rejects missing and duplicate binding slots', () => {
+  const endpoint = { slot_key: 'line-end', endpoint_role: 'both' };
+  assert.deepEqual(resolveSpatialV3CanonicalEndpointSlot([endpoint], 'missing'),
+    { ok: false, reason: 'endpoint_slot_missing' });
+  assert.deepEqual(resolveSpatialV3CanonicalEndpointSlot([endpoint, { ...endpoint }], 'line-end'),
+    { ok: false, reason: 'endpoint_slot_ambiguous' });
 });

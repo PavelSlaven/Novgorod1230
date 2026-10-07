@@ -1,4 +1,4 @@
-import { selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
+import { resolveSpatialV3CanonicalEndpointSlot, selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
 import { serverError } from '../errors.js';
 import { slotByExitOf } from './spatial-v3-pass-target-disclosure.js';
 import { spatialV3LineLabel } from './spatial-v3-line-label.js';
@@ -23,8 +23,12 @@ function atDepartureSlot(scene, position) {
  * itself offers from the current position - visible, eligible, admitted; the walk past
  * the first hop is only path-finding over raw topology and never executes anything. */
 export function findReachableDeparturePosition(context, firstStepEdgeIds = null) {
+  return findReachablePosition(context, (position) => atDepartureSlot(context.scene, position), firstStepEdgeIds);
+}
+
+function findReachablePosition(context, isTarget, firstStepEdgeIds = null) {
   const { position, scene } = context;
-  if (atDepartureSlot(scene, position)) return { position, path: [] };
+  if (isTarget(position)) return { position, path: [] };
   const positions = new Map((scene.positions ?? []).map((row) => [row.id, row]));
   const edges = [...(scene.movement_edges ?? [])].filter((row) => row.status === 'active')
     .sort((left, right) => left.id.localeCompare(right.id));
@@ -40,13 +44,38 @@ export function findReachableDeparturePosition(context, firstStepEdgeIds = null)
         visited.add(edge.to_position_id);
         const toPosition = positions.get(edge.to_position_id);
         const nextPath = [...path, edge.id];
-        if (toPosition && atDepartureSlot(scene, toPosition)) return { position: toPosition, path: nextPath };
+        if (toPosition && isTarget(toPosition)) return { position: toPosition, path: nextPath };
         if (toPosition) next.push({ positionId: edge.to_position_id, path: nextPath });
       }
     }
     frontier = next;
   }
   return null;
+}
+
+function canonicalSourceEndpoint(scene, binding) {
+  const resolved = resolveSpatialV3CanonicalEndpointSlot(scene?.endpoint_slots ?? [],
+    binding?.from_scene_endpoint_slot_key);
+  if (!resolved.ok) gap('canonical_connection_source_endpoint_required');
+  return resolved.endpoint;
+}
+
+function atCanonicalSourceEndpoint(endpoint, position) {
+  return endpoint?.required_position_slot_key === position?.template_slot_key
+    && endpoint?.required_position_instance_ordinal === position?.template_instance_ordinal;
+}
+
+function findReachableCanonicalConnectionSources(context, firstStepEdgeIds) {
+  const targets = new Map();
+  for (const { binding } of context.canonical_connections ?? []) {
+    const endpoint = canonicalSourceEndpoint(context.scene, binding);
+    if (endpoint) targets.set(endpoint.slot_key, endpoint);
+  }
+  return [...targets.values()].flatMap((endpoint) => {
+    const reachable = findReachablePosition(context,
+      (position) => atCanonicalSourceEndpoint(endpoint, position), firstStepEdgeIds);
+    return !reachable || !reachable.path.length ? [] : [{ endpoint, ...reachable }];
+  });
 }
 
 /** Server command bridge. Read-only menus never seed frontiers. Selection is
@@ -126,7 +155,9 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
     ordered_local_edge_path = [] }) {
     if (typeof readContext !== 'function') gap('current_expansion_reader_required');
     const context = await readContext({ partyId, actorId });
-    const approach = resolveLocalApproachPath(context, ordered_local_edge_path);
+    const binding = context.canonical_connections?.find((row) => row.binding.id === connectionBindingId)?.binding;
+    const sourceEndpoint = binding ? canonicalSourceEndpoint(context.scene, binding) : null;
+    const approach = resolveLocalApproachPath(context, ordered_local_edge_path, sourceEndpoint);
     const selectionContext = approach == null ? context : { ...context, position: approach.position };
     const visible = await revealedConnections(context, eligibleCanonicalConnections(selectionContext));
     return { context, approach, selected: one(visible.filter((row) => row.binding.id === connectionBindingId),
@@ -145,12 +176,15 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
       if (typeof readContext !== 'function') gap('current_expansion_reader_required');
       if (!Array.isArray(input.firstStepEdgeIds) || !input.firstStepEdgeIds.length) return [];
       const context = await readContext({ partyId: input.partyId, actorId: input.actorId });
-      const reachable = findReachableDeparturePosition(context, input.firstStepEdgeIds);
-      if (reachable == null || reachable.path.length === 0) return [];
-      const eligible = eligibleCanonicalConnections({ ...context, position: reachable.position });
-      return (await revealedConnections(context, eligible)).map(({ binding, display_label }) => ({
-        kind: 'approach', connection_binding_id: binding.id, edge_id: reachable.path[0],
-        ordered_local_edge_path: describeLocalEdgePath(context, reachable.path), display_label }));
+      const reachable = findReachableCanonicalConnectionSources(context, input.firstStepEdgeIds);
+      if (!reachable.length) return [];
+      const eligible = reachable.flatMap(({ endpoint, position, path }) =>
+        eligibleCanonicalConnections({ ...context, position }).filter(({ binding }) =>
+          binding.from_scene_endpoint_slot_key === endpoint.slot_key).map((option) => ({
+          ...option, reachable_path: path })));
+      return (await revealedConnections(context, eligible)).map(({ binding, display_label, reachable_path }) => ({
+        kind: 'approach', connection_binding_id: binding.id, edge_id: reachable_path[0],
+        ordered_local_edge_path: describeLocalEdgePath(context, reachable_path), display_label }));
     },
     async prepareConnection(input) {
       const { context, approach, selected } = await selectedConnection(input);
@@ -279,19 +313,16 @@ export const canonicalConnectionId = (partyId, bindingId) => `canconn:${partyId}
 export function eligibleCanonicalConnections(context) {
   const { canonical_connections: connections, snapshot, site, position, scene, partyId } = context;
   if (site?.origin !== 'canonical' || !connections?.length) return [];
-  const here = scene.endpoint_slots.filter((row) => ['departure', 'both'].includes(row.endpoint_role)
-    && row.required_position_slot_key === position.template_slot_key
-    && row.required_position_instance_ordinal === position.template_instance_ordinal)
-    .map((row) => row.slot_key);
   return connections.flatMap(({ binding, profile, line_binding }) => {
-    if (!here.includes(binding.from_scene_endpoint_slot_key)) return [];
+    const sourceEndpoint = canonicalSourceEndpoint(scene, binding);
+    if (!sourceEndpoint || !atCanonicalSourceEndpoint(sourceEndpoint, position)) return [];
     const committed = snapshot.site_connections.find((row) => row.id === canonicalConnectionId(partyId, binding.id));
     return committed && committed.status !== 'active' ? []
       : [{ binding, profile, line_binding, connection: committed }];
   });
 }
 
-function resolveLocalApproachPath(context, edgePath) {
+function resolveLocalApproachPath(context, edgePath, targetEndpoint = null) {
   if (edgePath == null || !Array.isArray(edgePath)) gap('local_approach_path_invalid');
   if (edgePath.length === 0) return null;
   let positionId = context.position?.id;
@@ -312,7 +343,9 @@ function resolveLocalApproachPath(context, edgePath) {
     positionId = selected.to_position_id;
   }
   const position = context.scene?.positions?.find((row) => row.id === positionId);
-  if (!position || !atDepartureSlot(context.scene, position)) gap('local_approach_path_not_at_departure');
+  if (!position || !(targetEndpoint
+    ? atCanonicalSourceEndpoint(targetEndpoint, position)
+    : atDepartureSlot(context.scene, position))) gap('local_approach_path_not_at_departure');
   return { position, edges };
 }
 

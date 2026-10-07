@@ -102,6 +102,14 @@ the destination's own scene text as `visible_changes` (turn-step visible project
 for every site connection). Entering a never-visited place needs its approved G6
 ambient baseline (the walk-acoustics data covers every connection target).
 
+For an intra-G4 canonical connection, the selected binding names both endpoint
+slots. The adapter resolves `from_scene_endpoint_slot_key` in the committed source
+scene and checks its exact position, then resolves `to_scene_endpoint_slot_key` in
+the target scene; reciprocal travel uses the reverse binding's own keys. These exact
+lookups ignore endpoint role so they can honor the binding. Runtime eligibility for
+directional exits and frontier expansion still uses `departure`/`both` source slots,
+and an unbound frontier terminal still requires its unique `arrival`/`both` target.
+
 Availability of a traversed connection is evaluated by `assessAvailability` of the current
 movement capability (traversal admission and its commit recheck share it and both require
 `status: 'open'`). Other gates still treat a non-empty condition-set ref as unusable without

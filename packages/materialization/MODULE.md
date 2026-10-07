@@ -285,6 +285,15 @@ reservation and never moves a traveller. The P16 owner commits it as
 reverse binding's own connection, prepared when the traveller first stands at the
 target's departure.
 
+`resolveSpatialV3CanonicalEndpointSlot` resolves exactly one endpoint in the approved
+scene closure by its authored `slot_key`; missing and duplicate keys return distinct
+lookup failures, which the runtime and adapter expose as typed data gaps.
+The lookup is deliberately independent of `endpoint_role`: a reciprocal canonical
+binding can name an `arrival` slot as its source and a `departure` slot as its target.
+Its caller still checks the exact canonical place, binding key and committed position.
+This helper does not change role-based endpoint selection for directional exits or
+frontier expansion.
+
 Принимает `world_materialization_request_v2` либо stage-specific approved bundle. Authoring candidates ссылаются на будущие экземпляры через однозначные `slot_key`, которые код разрешает после deterministic selection. Generic result содержит стартовую позицию и исполняемый, но не записанный materializer-ом `proposed_write_set` для нормализованных таблиц `party_runtime`. Profile/layout/slot/template refs, capacities, access, visibility, quantity, condition, legal status, causal basis и property policy обязательны; пропуск завершает операцию typed failure.
 
 ## Допустимые зависимости

@@ -35,7 +35,9 @@ test('a place offers its connections only at the departure position named by the
   assert.deepEqual(eligibleCanonicalConnections(elsewhere), []);
   const generated = { ...current, site: { ...current.site, origin: 'generated' } };
   assert.deepEqual(eligibleCanonicalConnections(generated), []);
-  const moved = { ...current, canonical_connections: [{ binding: { ...binding('x', 'g5x'), from_scene_endpoint_slot_key: 'other' }, profile }] };
+  const moved = { ...current, canonical_connections: [{ binding: { ...binding('x', 'g5x'), from_scene_endpoint_slot_key: 'other' }, profile }],
+    scene: { ...current.scene, endpoint_slots: [...current.scene.endpoint_slots, { slot_key: 'other',
+      endpoint_role: 'arrival', required_position_slot_key: 'elsewhere', required_position_instance_ordinal: 0 }] } };
   assert.deepEqual(eligibleCanonicalConnections(moved), []);
 });
 
@@ -159,4 +161,57 @@ test('traversal runs the shared site traversal with the binding profile and the 
     expansion: { ...expansion, connection_id: 'other' } }), (e) => e.details.reason === 'committed_site_connection_required');
   await assert.rejects(runtime.prepareConnectionTraversal({ ...identity, connectionBindingId: 'b-yard', expansion }),
     (e) => e.details.reason === 'committed_site_connection_required');
+});
+
+test('a canonical connection is offered at the exact from slot even when its role is arrival', () => {
+  const current = context();
+  current.position = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  current.scene.endpoint_slots = [{ slot_key: 'arrival-slot', endpoint_role: 'arrival',
+    required_position_slot_key: 'arrival', required_position_instance_ordinal: 0 }];
+  current.canonical_connections = [{ binding: { ...binding('b-reverse', 'g5-origin'),
+    from_scene_endpoint_slot_key: 'arrival-slot' }, profile }];
+
+  assert.deepEqual(eligibleCanonicalConnections(current).map((row) => row.binding.id), ['b-reverse']);
+
+  const wrongKey = { ...current, canonical_connections: [{ binding: { ...current.canonical_connections[0].binding,
+    from_scene_endpoint_slot_key: 'other-slot' }, profile }], scene: { ...current.scene,
+    endpoint_slots: [...current.scene.endpoint_slots, { slot_key: 'other-slot', endpoint_role: 'arrival',
+      required_position_slot_key: 'somewhere-else', required_position_instance_ordinal: 0 }] } };
+  assert.deepEqual(eligibleCanonicalConnections(wrongKey), []);
+
+  const missingKey = { ...current, canonical_connections: [{ binding: { ...current.canonical_connections[0].binding,
+    from_scene_endpoint_slot_key: 'missing-slot' }, profile }] };
+  assert.throws(() => eligibleCanonicalConnections(missingKey), (error) =>
+    error.code === 'LIVE_WORLD_EXPANSION_DATA_GAP'
+      && error.details.reason === 'canonical_connection_source_endpoint_required');
+});
+
+test('a hidden local approach may end at the exact arrival source slot of a canonical connection', async () => {
+  const current = context();
+  const focus = { id: 'focus-position', template_slot_key: 'focus', template_instance_ordinal: 0 };
+  const arrival = { id: 'arrival-position', template_slot_key: 'arrival', template_instance_ordinal: 0 };
+  current.position = focus;
+  current.scene = { ...current.scene, positions: [focus, arrival], endpoint_slots: [
+    { slot_key: 'arrival-slot', endpoint_role: 'arrival', required_position_slot_key: 'arrival',
+      required_position_instance_ordinal: 0 }], movement_edges: [
+    { id: 'edge-arrival', from_position_id: focus.id, to_position_id: arrival.id, status: 'active' }] };
+  current.canonical_connections = [{ binding: { ...binding('b-reverse', 'g5-origin'),
+    from_scene_endpoint_slot_key: 'arrival-slot' }, profile }];
+  const path = [{ edge_id: 'edge-arrival', from_position_id: focus.id, to_position_id: arrival.id }];
+  const received = [];
+  const runtime = runtimeFor(current, { generatedExpansionAdapter: {
+    prepareCanonicalConnection: async (request) => { received.push(request); return { ok: true }; }
+  } });
+
+  assert.deepEqual(await runtime.listConnectionOptions(identity), []);
+  assert.deepEqual(await runtime.listConnectionApproachOptions({ ...identity, firstStepEdgeIds: ['edge-arrival'] }), [
+    { kind: 'approach', connection_binding_id: 'b-reverse', edge_id: 'edge-arrival',
+      ordered_local_edge_path: path, display_label: 'бродом' }
+  ]);
+  assert.deepEqual(await runtime.prepareConnection({ ...identity, connectionBindingId: 'b-reverse',
+    ordered_local_edge_path: path }), { ok: true });
+  assert.equal(received.length, 1);
+  assert.equal(received[0].source_position_id, arrival.id);
+  assert.equal(received[0].approach_origin_position_id, focus.id);
+  assert.deepEqual(received[0].ordered_local_edge_path, path);
 });

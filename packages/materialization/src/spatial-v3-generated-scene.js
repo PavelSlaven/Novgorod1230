@@ -5,6 +5,15 @@ const optionalRef = (row, name) => row[`${name}_id`] == null ? null
   : ref(row[`${name}_id`], row[`${name}_version`]);
 const clean = (row, keys) => Object.fromEntries(keys.map((key) => [key, row[key] ?? null]));
 
+/** Resolve one canonical endpoint by its authored slot key, regardless of endpoint role. */
+export function resolveSpatialV3CanonicalEndpointSlot(endpoint_slots, slot_key) {
+  const matches = Array.isArray(endpoint_slots) && text(slot_key)
+    ? endpoint_slots.filter((row) => row?.slot_key === slot_key) : [];
+  if (matches.length === 0) return { ok: false, reason: 'endpoint_slot_missing' };
+  if (matches.length !== 1) return { ok: false, reason: 'endpoint_slot_ambiguous' };
+  return { ok: true, endpoint: matches[0] };
+}
+
 /** Exact approved scene rows; no inferred topology, ambient default or database access. */
 export function materializeSpatialV3GeneratedScene({ party_id, site_id, baseline_id,
   change_set_id, materializer_version, materialization_trace_id, generation_template,

@@ -2,6 +2,7 @@ import { SCENE_NPC_SOURCE, withoutSceneNpcs } from
   '../../runtime/lower-dvina-trace-scene-presence.js';
 import { loadApprovedMaterializedNpcBodyInitializationProfile } from
   '../../runtime/combat-min-data.js';
+import { serverError } from '../../errors.js';
 
 export { SCENE_NPC_SOURCE, withoutSceneNpcs };
 
@@ -153,8 +154,8 @@ function sceneNpcSnapshot(row, initializationProfile = null,
     anchor_id: row.anchor_id,
     location_profile_ref: row.semantic_state?.location_profile_ref,
     zone_ref: row.semantic_state?.zone_ref,
-    role_ref: { id: row.role_ref, source: 'approved_social_roles' },
-    occupation_ref: { id: row.occupation_ref, source: 'approved_occupations' },
+    role_ref: sceneNpcProfileRef(row.role_ref, 'role_ref'),
+    occupation_ref: sceneNpcProfileRef(row.occupation_ref, 'occupation_ref'),
     identity_state: row.identity_state,
     machine_state: row.machine_state,
     semantic_state: row.semantic_state,
@@ -172,6 +173,16 @@ function sceneNpcSnapshot(row, initializationProfile = null,
     }),
     runtime_source: SCENE_NPC_SOURCE
   };
+}
+
+function sceneNpcProfileRef(value, field) {
+  if (value !== null && typeof value === 'object' && !Array.isArray(value)
+      && typeof value.id === 'string' && value.id.trim() !== ''
+      && typeof value.source === 'string' && value.source.trim() !== '') return value;
+  throw serverError('TRACE_SCENE_NPC_PROFILE_REF_INVALID',
+    'The persisted NPC profile reference has an unsupported shape.', {
+      status: 409, public_exposure: 'internal', details: { field }
+    });
 }
 
 function sceneNpcBodyState(row, existingProfile = null) {

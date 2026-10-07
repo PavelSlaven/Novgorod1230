@@ -669,43 +669,20 @@ def build_speech_address(occs, roles):
     )
 
     # A letter opening is a written formula, never a default oral address.
-    FORMS = [
-        ("form_poklon", "written_letter", "", "", "formal_literate", "Поклон от {отправитель} к {адресат}", "письмо, письменный зачин", "", "грамота № 717: игуменья к Офросении", "book:641351 §2966", "", "", "A"),
-        ("form_prince", "unspecified", "", "nov_role_prince", "", "Господин князь", "устный доклад воина князю; роль говорящего не установлена", "", "воин докладывает князю", "book:641352 §423", "", "", "A"),
-        ("form_bishop", "unspecified", "", "nov_role_archbishop", "", "Владыко", "устный вопрос епископу; роль говорящего не установлена", "", "вопрос тверскому епископу, перенос на новгородского владыку как кандидат", "book:641352 §2037", "", "", "C"),
-        ("form_master_servant", "master_servant", "nov_role_servant", "nov_role_boyar", "plain_oral", "Господин", "устный доклад слуги хозяину", "", "слуги обращаются к своему господину; перенос на боярский двор", "book:641352 §1814", "", "", "C"),
-        ("form_gospodine", "dependent_patron", "nov_occ_household_servant", "nov_role_smerd_householder", "plain_oral", "господине", "устное обращение зависимого к хозяину", "", "форма засвидетельствована к господину; перенос на названного хозяина условен", "book:641351 §1482", "", "", "C"),
-        ("form_herder_master", "dependent_patron", "nov_occ_herder", "nov_role_householder", "plain_oral", "господине", "устное обращение закупа-пастуха к своему хозяину", "", "форма засвидетельствована к господину; перенос на закупа условен", "book:641351 §1482", "", "", "C"),
-        ("form_herder_smerd", "dependent_patron", "nov_occ_herder", "nov_role_smerd_householder", "plain_oral", "господине", "устное обращение закупа-пастуха к названному хозяину", "", "форма засвидетельствована к господину; перенос на закупа условен", "book:641351 §1482", "", "", "C"),
-        ("form_brother", "kin_siblings", "", "", "", "Господин брат", "письмо сестры брату", "", "берестяная грамота, сестра просит брата вступиться", "book:641351 §2984", "", "", "A"),
-        ("form_spouse", "spouse", "nov_role_household_mistress", "nov_role_householder", "", "Господине мой", "жена к мужу; книжный топос, только вариант", "", "слово Даниила Заточника", "book:641351 §1673", "", "", "C"),
-        ("form_spouse_smerd", "spouse", "nov_role_household_mistress", "nov_role_smerd_householder", "", "Господине мой", "только для пары, связанной spouse в составе двора; книжный топос, только вариант", "", "слово Даниила Заточника; перенос на двор смерда условен", "book:641351 §1673", "", "", "C"),
-        ("form_son", "kin_parent_child", "", "", "", "Сын мой", "отец к сыну", "", "летописная речь, medieval_general", "book:641352 §1765", "", "", "C"),
-        ("form_father_in_law", "unspecified", "", "", "", "Господин и отец", "зять к тестю", "", "летописная речь, medieval_general; термин обращения не доказывает отцовство", "book:641352 §1722", "", "", "C"),
-        ("form_gospozha", "written_letter", "", "", "", "госпожа моя", "письменная вежливая просьба женщины к женщине", "", "берестяная грамота; устный перенос не установлен", "book:641351 §2968", "", "", "A"),
-        ("form_children", "unspecified", "", "", "", "Дети мои", "клирик к собранию людей", "", "речь клирика, не индивидуальная родственная форма", "book:641352 §1966", "", "", "A"),
-        ("form_bratie", "unspecified", "", "", "", "Братия", "коллективное обращение к собранию", "", "летописная коллективная речь", "book:641352 §278", "", "", "A"),
-        ("form_brothers_novgorod", "unspecified", "", "", "", "Братья новгородцы", "коллективное обращение к новгородцам", "", "речь Мстислава", "book:641352 §269", "", "", "A"),
-        ("form_knyazhe", "unspecified", "", "nov_role_prince", "", "княже", "новгородцы к князю", "", "1228 год; отдельный вариант", "book:556930 §158", "", "", "B"),
-        ("form_letter_from", "written_letter", "", "", "formal_literate", "От {отправитель} к {адресат}", "письмо", "", "письменный зачин", "book:641351 §2921", "", "", "C"),
-        ("form_letter_gramota", "written_letter", "", "", "formal_literate", "Грамота от {отправитель} к {адресат}", "письмо", "", "письменный зачин", "book:641351 §2937", "", "", "A"),
-        ("form_letter_greeting", "written_letter", "", "", "formal_literate", "Приветствую тебя", "письмо", "", "письменная формула", "book:641351 §2968", "", "", "A"),
-        ("form_household_gap", "co_resident", "", "", "everyday_oral", "", "разговор жильцов одного двора", "", "", "", "", "No universal address follows from shared residence.", "C"),
-        ("form_spouse_reverse_gap", "spouse", "nov_role_householder", "nov_role_household_mistress", "everyday_oral", "", "устное обращение мужа к жене", "", "", "", "", "No sourced oral form for this direction.", "C"),
-        ("form_neighbor_gap", "unspecified", "", "", "everyday_oral", "", "устное обращение соседей", "", "", "", "", "No universal oral form or tie strength for neighboring households.", "C"),
-        ("form_siblings_gap", "kin_siblings", "", "", "everyday_oral", "", "устное обращение родных братьев и сестёр", "", "", "", "", "No sourced general oral sibling address.", "C"),
-        ("form_uncle_nephew_gap", "kin_uncle_nephew", "", "", "everyday_oral", "", "устное обращение дяди и племянника", "", "", "", "", "No sourced general oral uncle-nephew address.", "C"),
-        ("form_joint_work_gap", "joint_work", "", "", "everyday_oral", "", "устное обращение коллег", "", "", "", "", "No universal oral address follows from joint work.", "C"),
-        ("form_community_gap", "community_member", "", "", "everyday_oral", "", "устное обращение членов верви", "", "", "", "", "No sourced general oral address for community members.", "C"),
-        ("form_spouse_smerd_reverse_gap", "spouse", "nov_role_smerd_householder", "nov_role_household_mistress", "everyday_oral", "", "только для пары, связанной spouse в составе двора; устное обращение мужа к жене", "", "", "", "", "No sourced oral form for this direction.", "C"),
-    ]
     columns = ["sp_id", "channel", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
     linked_pairs = {}
     for pf, subject, object_, link in composition_spouse_links():
         linked_pairs.setdefault(frozenset((subject, object_)), []).append(
             generated_id("rel_composition_spouse_", [pf, link["from_group_id"], link["to_group_id"]]))
-    af_rows = [dict(zip(columns, (row[0], "written" if row[1] == "written_letter" or row[0] == "form_brother" else "oral", *row[1:], "candidate")))
-               for row in FORMS if include_composition_spouse_form(row, linked_pairs)]
+    authoring_path = os.path.join(out_dir, "address_forms_authoring.csv")
+    with open(authoring_path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        if reader.fieldnames != columns:
+            raise ValueError("address_forms_authoring.csv: schema mismatch")
+        authored_forms = list(reader)
+    af_rows = [dict(row) for row in authored_forms
+               if include_composition_spouse_form(
+                   (row["sp_id"], "", row["speaker_role_ref"], row["addressee_role_ref"]), linked_pairs)]
     for row in af_rows:
         if row["sp_id"].startswith("form_spouse_smerd"):
             row["situation"] += "; only for " + ";".join(linked_pairs[frozenset((row["speaker_role_ref"], row["addressee_role_ref"]))])

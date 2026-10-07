@@ -48,6 +48,10 @@ export function materializeApprovedItems(candidates, { input, partyId, runId, an
       const totalMass = candidate.quantity * quantityRequirement.mass_grams_per_unit;
       const itemState = {
         ...(candidate.display_name ? { display_name: candidate.display_name } : {}),
+        ...(candidate.physical_state?.material_selection ? {
+          material_selection:
+            structuredClone(candidate.physical_state.material_selection)
+        } : {}),
         ...(candidate.inventory_profile_snapshot ? {
           inventory_profile_snapshot:
             structuredClone(candidate.inventory_profile_snapshot)

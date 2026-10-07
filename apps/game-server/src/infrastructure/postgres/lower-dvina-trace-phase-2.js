@@ -13,6 +13,8 @@ import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2
 import { replayLowerDvinaTracePhase2Presentation } from './lower-dvina-trace-phase-2-presentation-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { hydrateNpcRoutineState } from '../../runtime/npc-routine-temporal.js';
+import { withLowerDvinaTraceCurrentScene } from
+  '../../runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
 import { assertPhase3NormalizedRows, hydrateSemanticDecisionReplay } from './lower-dvina-trace-phase-3-read.js';
 import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
@@ -36,6 +38,8 @@ import { withLowerDvinaTracePostActionKnowledge } from './lower-dvina-trace-post
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
+  trustedBodyNeedsBindingPin = null,
+  trustedBodyNeedsProfile = null,
   loadInitialNaturalScenePerceptionInput = null,
   projectCurrentSpatialContext = null,
   readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
@@ -188,7 +192,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       await assertPhase5NormalizedRows(readPool, payload, row);
       await assertPhase6NormalizedRows(readPool, payload, row);
       await assertPhase7NormalizedRows(readPool, payload, row);
-      await assertTurnStepNormalizedRows(readPool, payload, row);
+      await assertTurnStepNormalizedRows(readPool, payload, row,
+        trustedBodyNeedsBindingPin, trustedBodyNeedsProfile);
       await assertCombatSessionRows(readPool, payload);
       await assertPhase9NormalizedRows(readPool, payload);
       await assertPhase10NormalizedRows(readPool, payload, row);
@@ -411,10 +416,17 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       ? await loadPhase2State(partyId, {
         includeCurrentVisibleContext: true, turnBudget
       }) : null;
+    const presentation = await loadLowerDvinaTraceScreenPresentation(screenPayload);
+    const currentVisibleContext = refreshedScene == null ? null
+      : withLowerDvinaTraceCurrentScene({
+        committedState: refreshedScene,
+        scenePresentation: presentation?.scenePresentation ?? null,
+        itemLabels: presentation?.itemLabels ?? {}
+      }).current_visible_context;
     const screen = projectLowerDvinaTraceScreenPanels({
       payload: screenPayload,
-      currentVisibleContext: refreshedScene?.current_visible_context ?? null,
-      presentation: await loadLowerDvinaTraceScreenPresentation(screenPayload),
+      currentVisibleContext,
+      presentation,
       screen: {
         ...structuredClone(result.screen),
         ...(Array.isArray(payload.last_turn?.exact_npc_utterances)

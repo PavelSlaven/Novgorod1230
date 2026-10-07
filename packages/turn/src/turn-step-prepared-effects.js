@@ -1,4 +1,5 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
+import { accumulateBodyTimeEffects } from '@rus/body-state';
 import { addRationalMinutes,
   compareRationalMinutes,
   normalizeElapsedTime,
@@ -10,7 +11,7 @@ import { LEDGER_KEYS, LEDGER_SCHEMA, SLICE_SCHEMA, advanceWorkingClock,
   rationalAsNumber, requireObject, requirePreparedRequest, requireRawEffect,
   same, text, validateSlice } from './turn-step-prepared-effect-validation.js';
 export function buildTurnStepPreparedChainContext({
-  priorEffectCount, currentClock, currentBodyState
+  priorEffectCount, currentClock, currentBodyState, bodyTimeReplay = null
 }) {
   if (!Number.isSafeInteger(priorEffectCount) || priorEffectCount < 0
       || !plain(currentClock)
@@ -22,7 +23,10 @@ export function buildTurnStepPreparedChainContext({
     schema: 'turn_step_prepared_chain_context_v1',
     prior_effect_count: priorEffectCount,
     current_clock: structuredClone(currentClock),
-    current_body_state: structuredClone(currentBodyState)
+    current_body_state: structuredClone(currentBodyState),
+    ...(bodyTimeReplay == null ? {} : {
+      body_time_replay: structuredClone(bodyTimeReplay)
+    })
   });
 }
 export async function orchestrateTurnStepPreparedEffect({
@@ -36,7 +40,8 @@ export async function orchestrateTurnStepPreparedEffect({
   const context = buildTurnStepPreparedChainContext({
     priorEffectCount: preparedChainContext?.prior_effect_count,
     currentClock: preparedChainContext?.current_clock,
-    currentBodyState: preparedChainContext?.current_body_state
+    currentBodyState: preparedChainContext?.current_body_state,
+    bodyTimeReplay: preparedChainContext?.body_time_replay ?? null
   });
   if (typeof timeOwner !== 'function' || typeof bodyOwner !== 'function') {
     invalid('Prepared effects require injected time and body owners.');
@@ -64,6 +69,57 @@ export async function orchestrateTurnStepPreparedEffect({
     ...ownerInput,
     time_update: structuredClone(timeUpdate)
   }));
+  let preparedBodyTimeReplay = context.body_time_replay ?? null;
+  let bodyUpdateForEffect = bodyUpdate;
+  if (bodyUpdate?.applied === true
+      && bodyUpdate.proposal?.proposal_kind === 'body_time_effect_composite'
+      && Array.isArray(bodyUpdate.proposal.component_proposals)
+      && bodyUpdate.proposal.component_proposals.length > 0
+      && bodyUpdate.proposal.component_proposals.every((proposal) =>
+        proposal?.proposal_kind === 'body_time_effect')) {
+    const previous = context.body_time_replay ?? {
+      body_state_before: structuredClone(context.current_body_state),
+      fixed_effect_proposals: [],
+      component_proposals: [],
+      slices: []
+    };
+    const fixedEffectProposals = [
+      ...structuredClone(previous.fixed_effect_proposals),
+      ...structuredClone(bodyUpdate.proposal.fixed_effect_proposals ?? [])
+    ];
+    const componentProposals = [
+      ...structuredClone(previous.component_proposals),
+      ...structuredClone(bodyUpdate.proposal.component_proposals)
+    ];
+    const slices = [...structuredClone(previous.slices ?? []), {
+      exact_elapsed: structuredClone(timeUpdate.exact_elapsed),
+      fixed_effect_proposals: structuredClone(
+        bodyUpdate.proposal.fixed_effect_proposals ?? []),
+      component_proposals: structuredClone(bodyUpdate.proposal.component_proposals)
+    }];
+    const applyFixed = hasIndependentSemanticHealthEffects(
+      fixedEffectProposals, componentProposals);
+    const cumulative = accumulateBodyTimeEffects({
+      body_state_before: previous.body_state_before,
+      slices: slices.map((slice) => ({ ...slice,
+        fixed_effect_proposals: applyFixed ? slice.fixed_effect_proposals : [] }))
+    });
+    if (cumulative?.ok !== true || cumulative.owner !== '@rus/body-state'
+        || cumulative.applied !== true || !plain(cumulative.state_after)
+        || !plain(cumulative.exact_state_after)) {
+      invalid('Prepared cumulative body-time effects could not be applied by body-state.',
+        { result: cumulative });
+    }
+    bodyUpdateForEffect = { ...structuredClone(bodyUpdate),
+      state_after: structuredClone(cumulative.state_after) };
+    preparedBodyTimeReplay = {
+      body_state_before: structuredClone(previous.body_state_before),
+      fixed_effect_proposals: fixedEffectProposals,
+      component_proposals: componentProposals,
+      exact_state_after: structuredClone(cumulative.exact_state_after),
+      slices
+    };
+  }
   const effect = {
     step_index: request?.step_index,
     effect_kind: candidate.effect_kind,
@@ -72,7 +128,7 @@ export async function orchestrateTurnStepPreparedEffect({
     availability: structuredClone(candidate.availability),
     consequence: structuredClone(candidate.consequence),
     time_update: structuredClone(timeUpdate),
-    body_update: structuredClone(bodyUpdate),
+    body_update: structuredClone(bodyUpdateForEffect),
     body_state_before: structuredClone(context.current_body_state)
   };
   requireRawEffect(effect);
@@ -97,6 +153,9 @@ export async function orchestrateTurnStepPreparedEffect({
       }));
   return deepFreeze({
     ...structuredClone(result),
+    ...(preparedBodyTimeReplay == null ? {} : {
+      prepared_body_time_replay: structuredClone(preparedBodyTimeReplay)
+    }),
     interrupted,
     player_response_boundary: result.player_response_boundary === true
       || (timeUpdate.temporal_results ?? []).some((temporal) =>
@@ -255,7 +314,7 @@ export function buildTurnStepPreparedTimeUpdate(value) {
     prepared_effect_ledger: structuredClone(ledger)
   });
 }
-export function buildTurnStepPreparedBodyUpdate(value) {
+export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
   const ledger = requireTurnStepPreparedEffectLedger(value);
   const applied = ledger.slices.filter(
     (slice) => slice.body_update.applied === true);
@@ -271,6 +330,71 @@ export function buildTurnStepPreparedBodyUpdate(value) {
       prepared_effect_ledger_digest: ledger.ledger_digest
     });
   }
+  const updates = applied.map(({ body_update: update }) => update);
+  const first = updates[0];
+  if (updates.every((update) =>
+    update.proposal?.proposal_kind === 'body_time_effect_composite'
+      && Array.isArray(update.proposal.component_proposals)
+      && update.proposal.component_proposals.length > 0
+      && update.proposal.component_proposals.every((proposal) =>
+        proposal?.proposal_kind === 'body_time_effect'))) {
+    if (updates.some((update) =>
+      !Array.isArray(update.proposal.fixed_effect_proposals))) {
+      invalid('Prepared body-time composite requires fixed effect proposals.');
+    }
+    if (!plain(bodyStateBefore)) {
+      invalid('Prepared body-time updates require the source body state.');
+    }
+    if (sha256(bodyStateBefore) !== ledger.slices[0].body_state_before_digest) {
+      invalid('Prepared body-time source state does not match the ledger digest.');
+    }
+    const componentProposals = updates.flatMap((update) =>
+      structuredClone(update.proposal.component_proposals));
+    const fixedEffectProposals = updates.flatMap((update) =>
+      structuredClone(update.proposal.fixed_effect_proposals));
+    const fixedEffectsAreIndependentSemanticHealthChanges =
+      fixedEffectProposals.every((proposal) =>
+        proposal.selected_context?.kind === 'semantic_activity'
+        && Array.isArray(proposal.condition_transitions)
+        && proposal.condition_transitions.length === 0
+        && proposal.exact_deltas?.health <= 0
+        && proposal.exact_deltas?.satiety === 0
+        && proposal.exact_deltas?.energy === 0)
+      && componentProposals.every((proposal) =>
+        Array.isArray(proposal.metric_changes)
+        && proposal.metric_changes.every(({ metric, direction }) =>
+          metric !== 'health' || direction === 'decrease'));
+    const replaySlices = ledger.slices.filter((slice) =>
+      slice.body_update.applied === true
+      && slice.body_update.proposal?.proposal_kind
+        === 'body_time_effect_composite');
+    const result = accumulateBodyTimeEffects({
+      body_state_before: bodyStateBefore,
+      slices: replaySlices.map((slice) => ({
+        exact_elapsed: slice.time_update.exact_elapsed,
+        fixed_effect_proposals: fixedEffectsAreIndependentSemanticHealthChanges
+          ? slice.body_update.proposal.fixed_effect_proposals : [],
+        component_proposals: slice.body_update.proposal.component_proposals
+      }))
+    });
+    if (result?.ok !== true || result.owner !== '@rus/body-state'
+        || result.applied !== true || !plain(result.state_after)
+        || !plain(result.exact_changes)) {
+      invalid(`Prepared body-time updates could not be applied by body-state: ${JSON.stringify(result)}`,
+        { result });
+    }
+    return deepFreeze({
+      ...structuredClone(first),
+      proposal: {
+        proposal_kind: 'body_time_effect_composite',
+        fixed_effect_proposals: fixedEffectProposals,
+        component_proposals: componentProposals,
+        exact_changes: structuredClone(result.exact_changes)
+      },
+      state_after: structuredClone(result.state_after),
+      prepared_effect_ledger_digest: ledger.ledger_digest
+    });
+  }
   if (applied.length === 1) {
     return deepFreeze({
       ...structuredClone(applied[0].body_update),
@@ -278,8 +402,6 @@ export function buildTurnStepPreparedBodyUpdate(value) {
       prepared_effect_ledger_digest: ledger.ledger_digest
     });
   }
-  const updates = applied.map(({ body_update: update }) => update);
-  const first = updates[0];
   const proposal = structuredClone(first.proposal);
   if (updates.some((update) => update.owner !== first.owner
       || update.proposal?.profile_ref !== proposal.profile_ref
@@ -320,4 +442,19 @@ export function bindTurnStepPreparedConsequence(value, ledgerValue) {
     ),
     prepared_effect_ledger_digest: ledger.ledger_digest
   });
+}
+
+function hasIndependentSemanticHealthEffects(fixedEffectProposals,
+  componentProposals) {
+  return fixedEffectProposals.every((proposal) =>
+    proposal.selected_context?.kind === 'semantic_activity'
+      && Array.isArray(proposal.condition_transitions)
+      && proposal.condition_transitions.length === 0
+      && proposal.exact_deltas?.health <= 0
+      && proposal.exact_deltas?.satiety === 0
+      && proposal.exact_deltas?.energy === 0)
+    && componentProposals.every((proposal) =>
+      Array.isArray(proposal.metric_changes)
+      && proposal.metric_changes.every(({ metric, direction }) =>
+        metric !== 'health' || direction === 'decrease'));
 }

@@ -16,7 +16,8 @@ const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'p
   profile_level: 'background', anchor_id: null,
   identity_state: { public_role_label: 'рыбак' }, machine_state: { status: 'active' },
   semantic_state: { participant_slot_ref: `slot:${id}`, location_profile_ref: 'loc' },
-  role_ref: 'role_fisher', occupation_ref: 'occ_fisher',
+  role_ref: { id: 'role_fisher', source: 'approved_social_roles' },
+  occupation_ref: { id: 'occ_fisher', source: 'approved_occupations' },
   skill_profile_snapshot: { approved_defaults: [] }, knowledge_profile_snapshot: { local: 'x' },
   attribute_profile_snapshot: { strength: 3 }, profile_candidate_set_digest: 'digest',
   body_profile_ref: { id: 'body:npc', schema: 'body-profile-v1', revision: 2 },
@@ -61,6 +62,74 @@ test('scene NPCs are read from the database for the current site with the G6', a
   assert.equal(loaded.runtime_source, SCENE_NPC_SOURCE);
   assert.equal(state.npcs.length, 2);
 });
+
+// D102: real persisted ref shapes, both consumers of the shared NPC snapshot.
+// No legacy conversion, registry lookup, model call or database mutation.
+function profileReadbackFixture(mode, npcRow) {
+  if (mode === 'scene') return { reader: pool([npcRow]), state: base({ npcs: [] }) };
+  const body = { actor_id: npcRow.npc_id, body_profile_ref: npcRow.body_profile_ref,
+    health: npcRow.health, energy: npcRow.energy, satiety: npcRow.satiety,
+    body_state_version: npcRow.body_state_version };
+  return { reader: pool([], [], [body], [npcRow]), state: base({
+    position: { position_id: 'pos:elsewhere' }, npcs: [],
+    combat_sessions: [{ status: 'paused_for_player', participant_refs: [
+      { entity_kind: 'npc', entity_id: npcRow.npc_id }
+    ] }] }) };
+}
+
+for (const mode of ['scene', 'missing combat participant']) {
+  test(`D102 profile refs: ${mode} preserves exact objects, source and metadata`, async () => {
+    const npcRow = row('npc_profile_refs', {
+      role_ref: { id: 'role_fisher', source: 'approved_scenario_profile', test_metadata: 'role fixture' },
+      occupation_ref: { id: 'occ_fisher', source: 'approved_occupations', test_metadata: 'occupation fixture' }
+    });
+    const { reader, state } = profileReadbackFixture(mode, npcRow);
+    const beforeRow = structuredClone(npcRow);
+    const beforeState = structuredClone(state);
+    const loaded = await withSceneNpcs(reader, 'party', state);
+    const npc = loaded.npcs.find(({ instance_id }) => instance_id === npcRow.npc_id);
+    assert.ok(npc);
+    assert.deepEqual(npc.role_ref, npcRow.role_ref);
+    assert.deepEqual(npc.occupation_ref, npcRow.occupation_ref);
+    assert.deepEqual(npcRow, beforeRow, 'readback must not mutate the database row');
+    assert.deepEqual(state, beforeState, 'readback must not mutate the input snapshot');
+  });
+}
+
+const invalidProfileRefs = [
+  ['string', 'TEST:RAW_REF'],
+  ['null', null],
+  ['array', [{ id: 'TEST:RAW_REF', source: 'TEST:RAW_SOURCE' }]],
+  ['empty object', {}],
+  ['nested id', { id: { id: 'TEST:RAW_REF' }, source: 'TEST:RAW_SOURCE' }],
+  ['empty id', { id: '', source: 'TEST:RAW_SOURCE' }],
+  ['missing source', { id: 'TEST:RAW_REF' }],
+  ['empty source', { id: 'TEST:RAW_REF', source: '' }],
+  ['first-playable entity ref', { entity_kind: 'role', entity_id: 'TEST:RAW_REF', version: 1 }]
+];
+for (const mode of ['scene', 'missing combat participant']) {
+  for (const field of ['role_ref', 'occupation_ref']) {
+    for (const [label, value] of invalidProfileRefs) {
+      test(`D102 profile refs: ${mode} rejects ${field} ${label} with an internal diagnostic`, async () => {
+        const npcRow = row('npc_invalid_profile_ref', { [field]: structuredClone(value) });
+        const { reader, state } = profileReadbackFixture(mode, npcRow);
+        const beforeRow = structuredClone(npcRow);
+        const beforeState = structuredClone(state);
+        await assert.rejects(withSceneNpcs(reader, 'party', state), (error) => {
+          assert.equal(error.code, 'TRACE_SCENE_NPC_PROFILE_REF_INVALID');
+          assert.equal(error.status, 409);
+          assert.equal(error.public_exposure, 'internal');
+          assert.deepEqual(error.details, { field });
+          assert.doesNotMatch(error.message + JSON.stringify(error.details), /TEST:RAW_REF|TEST:RAW_SOURCE/u,
+            'invalid persisted values must not appear in the diagnostic');
+          return true;
+        });
+        assert.deepEqual(npcRow, beforeRow);
+        assert.deepEqual(state, beforeState);
+      });
+    }
+  }
+}
 
 test('scene body readback refreshes existing NPC instead of duplicating it', async () => {
   const npc = { instance_id: 'npc_start', body_profile_ref: { id: 'body:old' },

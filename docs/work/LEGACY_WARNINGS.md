@@ -122,6 +122,7 @@
 | 135 | `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json` | семь `player_inputs` задают роль, занятие и имя «Микула», вопреки D111; долг реализации #109 | [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109) |
 | 136 | `npc_family_household_contract.md`, `packages/actors/MODULE.md`, household data/import | нет утверждённых и импортированных данных дворов, необходимых для полноты мира | [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338) |
 | 137 | `combat-min-data-v1/typed-gaps.json` (`G-RETREAT-MOVEMENT`), меню выбора NPC в бою | метрика D65 body-effect некорректна в сценах с пересекающимися предпочтениями; реального отхода в меню нет | [#426](https://github.com/PavelSlaven/Novgorod1230/issues/426) |
+| 138 | `packages/environment-state`, `apps/game-server/src/runtime/body-needs-temporal.js` | утверждённый body time-effect набор не задаёт факторов холода или сырости | [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -745,3 +746,9 @@
 - **Что.** ACTIVE-норма требует для каждого человека двор либо явно указанную иную форму жизни и полный состав каждого двора на выбранную дату начала игры. Данные дворов для этого состава ещё не утверждены и не импортированы (#259, #338).
 - **Как жить.** Считать полноту обязательным требованием нормы, а не подтверждённым свойством текущих данных или runtime. Не объявлять исходный мир полным до отдельного утверждения и импорта данных дворов с проверкой состава и связей.
 - **Issue.** [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338)
+
+### LW-138 — влияние холода и сырости на тело не утверждено (body-needs-bind, #315)
+- **Где.** `packages/environment-state` формирует body snapshot; `apps/game-server/src/runtime/body-needs-temporal.js` передаёт его в `@rus/body-state`.
+- **Что.** Утверждённый body time-effect набор не задаёт факторов холода или сырости, поэтому v17 не меняет телесные эффекты по этим условиям. Это отсутствие утверждённых правил, а не вывод о том, что погода исторически не влияла на человека.
+- **Как жить.** Не выводить температурное воздействие из погоды, сезона, одежды или помещения. До отдельного утверждённого профиля `body_factor_ids` остаётся пустым.
+- **Issue.** [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315)

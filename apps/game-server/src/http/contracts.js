@@ -7,6 +7,7 @@ export const API_SUCCESS_SCHEMA = 'rus_api_success';
 export const API_ERROR_SCHEMA = 'rus_api_error';
 const PUBLIC_CLIENT_ERROR_CODES = new Set([
   'REQUEST_BODY_INVALID', 'NEW_GAME_START_REQUIRED', 'CLIENT_ACK_ID_REQUIRED',
+  'OPENING_ACK_REQUIRED', 'PARTY_ID_REQUIRED',
   'TURN_INPUT_REQUIRED', 'PORTRAIT_REQUEST_FIELD_UNKNOWN',
   'PORTRAIT_TEXT_TYPE_INVALID', 'PORTRAIT_TEXT_REQUIRED',
   'PORTRAIT_TEXT_TOO_LONG', 'LLM_SETTINGS_BODY_INVALID',
@@ -14,8 +15,10 @@ const PUBLIC_CLIENT_ERROR_CODES = new Set([
   'LLM_SETTINGS_COMPATIBILITY_INVALID', 'LLM_SETTINGS_MODEL_REQUIRED',
   'LLM_SETTINGS_API_KEY_INVALID', 'LLM_SETTINGS_BASE_URL_REQUIRED',
   'LLM_SETTINGS_BASE_URL_INVALID', 'LLM_SETTINGS_FIELD_UNKNOWN',
+  'LLM_SETTINGS_APPLY_STALE', 'LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED',
+  'LLM_SETTINGS_ORDINARY_STAGE_B_QUALIFICATION_FAILED',
   'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED',
-  'AUTHORED_OPENING_AUDIT_REJECTED'
+  'AUTHORED_OPENING_AUDIT_REJECTED', 'SCENARIO_NOT_SUPPORTED'
 ]);
 
 export function successEnvelope(data, { requestId = null } = {}) {
@@ -40,24 +43,32 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
   const openingFailure = error?.code === 'AUTHORED_OPENING_AUDIT_REJECTED'
     ? { code: 'AUTHORED_OPENING_AUDIT_REJECTED',
         message: 'Не удалось начать игру. Попробуйте ещё раз.' } : null;
+  const scenarioFailure = error?.code === 'SCENARIO_NOT_SUPPORTED'
+    ? { code: 'SCENARIO_NOT_SUPPORTED', message: 'Такой старт недоступен.' }
+    : null;
+  const openingAckFailure = error?.code === 'OPENING_ACK_REQUIRED'
+    ? { code: 'OPENING_ACK_REQUIRED', message: 'Некорректный запрос.' }
+    : null;
   const publicTurnFailure = publicTurnFailureFor(error);
-  const candidateMessage = openingFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message
+  const candidateMessage = openingFailure?.message ?? scenarioFailure?.message
+    ?? openingAckFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message
     ?? catalogFailure?.message ?? text(error?.message) ?? 'Request failed.';
   const publicClientCode = PUBLIC_CLIENT_ERROR_CODES.has(error?.code);
   const unsafeMessage = findUnsafePlayerText(candidateMessage) != null;
   const unsafePublicClientMessage = publicClientCode && unsafeMessage;
   const unsafeCode = !PUBLIC_CLIENT_ERROR_CODES.has(error?.code)
     && findUnsafePlayerText(error?.code) != null;
-  const status = openingFailure || unresolvedOrdinary || publicTurnFailure ? 409
+  const status = scenarioFailure ? 400 : openingFailure || unresolvedOrdinary || publicTurnFailure ? 409
     : providerFailure || catalogFailure ? 503
       : Number.isInteger(error?.status) ? error.status : 500;
-  const internal = !openingFailure && !providerFailure && !catalogFailure && !publicTurnFailure
+  const internal = !openingFailure && !scenarioFailure && !openingAckFailure
+    && !providerFailure && !catalogFailure && !publicTurnFailure
     && (unresolvedOrdinary || status >= 500
       || (unsafeMessage && !publicClientCode)
       || unsafeCode || error?.public_exposure === 'internal');
-  const code = openingFailure?.code ?? publicTurnFailure?.code ?? providerFailure?.code ?? catalogFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
+  const code = openingFailure?.code ?? scenarioFailure?.code ?? openingAckFailure?.code ?? publicTurnFailure?.code ?? providerFailure?.code ?? catalogFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
     : text(error?.code) || 'REQUEST_FAILED');
-  const message = openingFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message ?? catalogFailure?.message ?? (internal
+  const message = openingFailure?.message ?? scenarioFailure?.message ?? openingAckFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message ?? catalogFailure?.message ?? (internal
     ? 'Действие временно недоступно. Попробуйте ещё раз.'
     : unsafePublicClientMessage ? 'Некорректный запрос.' : candidateMessage);
   return Object.freeze({

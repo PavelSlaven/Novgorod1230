@@ -37,8 +37,8 @@ const PLAYER_TEXT_MARKERS = Object.freeze([
   ['error_code', playerIdentifierPattern(/[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+/u)],
   ['calibration_marker', /\b(?:INFERENCE|HARD|FACT|CALIBRATION|DIRECTNESS|ANALOGY|EDITORIAL|UNCERTAIN)\s*:/iu],
   ['calibration_marker', /\b(?:confidence|calibration|directness)\s*[:=]/iu],
-  ['data_status', /\b(?:typed_gap|on_site|game_policy|not_started|retryable|uncommitted|runtime_text)\b/iu],
-  ['data_status', /\b(?:status|data_status|visible_status)\s*[:=]\s*(?:pending|available|unavailable|ready|blocked|approved|rejected|failed|success|unknown|debug|fallback|recovery|enum)\b/iu],
+  ['data_status', playerIdentifierPattern(/(?:typed_gap|on_site|game_policy|not_started|retryable|uncommitted|runtime_text)/iu)],
+  ['data_status', playerIdentifierPattern(/(?:status|data_status|visible_status)\s*[:=]\s*(?:pending|available|unavailable|ready|blocked|approved|rejected|failed|success|unknown|debug|fallback|recovery|enum)/iu)],
   ['digest', /\b(?:sha-?256|digest)\s*[:=]?\s*[a-f0-9]{8,}\b/iu],
   ['digest', /\b[a-f0-9]{32,}\b/iu]
 ]);

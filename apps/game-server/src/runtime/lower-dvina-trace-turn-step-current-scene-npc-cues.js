@@ -60,9 +60,9 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
       `${BODY_CHANGE_CONTEXT}${JSON.stringify({ before: removed, after: added })}`];
   return deepFreeze({
     ...structuredClone(visibleContext),
-    visible_changes: [...new Set([...visibleContext.visible_changes,
+    visible_changes: [...new Set(visibleContext.visible_changes),
       ...observedChangeCues,
-      ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])])],
+      ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])],
     known_context: [...new Set([...visibleContext.known_context.filter(value =>
       !beforeContext.includes(value) && !value.startsWith(BODY_CHANGE_CONTEXT)),
       ...afterContext, ...conditionChanges,

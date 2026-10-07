@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-const SCHEMAS = Object.freeze({
+export const SCHEMAS = Object.freeze({
   world_base: Object.freeze({
     ledgerTable: 'world_base.schema_migrations',
     advisoryLockKey: '742019260001',

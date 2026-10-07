@@ -1,25 +1,8 @@
 import { createHash } from 'node:crypto';
-import { readPostgresSchemaFingerprint } from
+import { SCHEMAS, readPostgresSchemaFingerprint } from
   '@rus/runtime-catalog/schema-fingerprint';
 export { readPostgresSchemaFingerprint } from
   '@rus/runtime-catalog/schema-fingerprint';
-
-const SCHEMAS = Object.freeze({
-  world_base: Object.freeze({
-    ledgerTable: 'world_base.schema_migrations',
-    advisoryLockKey: '742019260001',
-    securityRoles: Object.freeze([
-      'runtime_catalog_activator',
-      'runtime_catalog_importer',
-      'world_reader'
-    ])
-  }),
-  party_runtime: Object.freeze({
-    ledgerTable: 'party_runtime.schema_migrations',
-    advisoryLockKey: '742019260002',
-    securityRoles: Object.freeze([])
-  })
-});
 const SHA256 = /^[a-f0-9]{64}$/u;
 
 export class ForwardMigrationError extends Error {

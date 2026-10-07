@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { stableStringify } from '@rus/kernel';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url));
@@ -25,20 +25,17 @@ const LABEL_FILES = [
   ['../m2c-natural/nature-successor-candidate-v2.json', false],
   ['../m2c-natural/nature-successor-data-approval.json', false]
 ];
-const sourceSignature = () => {
-  const entries = [];
+const readLabelSources = () => {
+  const sources = [];
+  const signature = createHash('sha256');
   for (const [path, required] of LABEL_FILES) {
-    try {
-      const stat = statSync(new URL(path, import.meta.url), { bigint: true });
-      entries.push([path, stat.dev, stat.ino, stat.size, stat.mtimeNs, stat.ctimeNs]
-        .map((value) => String(value)));
-    } catch (error) {
-      if (error.code !== 'ENOENT') throw error;
-      if (required) return null;
-      entries.push([path, 'missing']);
-    }
+    const bytes = required ? read(path) : readOptional(path);
+    signature.update(path).update('\0');
+    if (bytes == null) signature.update('missing\0');
+    else signature.update('present\0').update(String(bytes.length)).update('\0').update(bytes);
+    sources.push(bytes);
   }
-  return JSON.stringify(entries);
+  return { signature: signature.digest('hex'), sources };
 };
 const copyLabels = (labels) => {
   const copy = new Map([...labels].map(([key, row]) => [key, structuredClone(row)]));
@@ -79,23 +76,21 @@ const approvalKey = (row) => {
 
 export function loadApprovedPlaceLabels() {
   try {
-    const signature = sourceSignature();
-    if (signature != null && approvedLabelsCache?.signature === signature) {
+    const { signature, sources } = readLabelSources();
+    if (approvedLabelsCache?.signature === signature) {
       logSuccessorDiagnostic(approvedLabelsCache.labels);
       return copyLabels(approvedLabelsCache.labels);
     }
     approvedLabelsCache = null;
-    const labels = approvedPlaceLabelsWithNaturalSuccessors(read('./candidate.json'),
-      JSON.parse(read('./approval-attestation.json')), {
-        naturalCandidateBytes: readOptional('../m2c-natural/candidate.json'),
-        successorCandidateBytes: readOptional('../m2c-natural/nature-successor-candidate-v2.json'),
-        successorApproval: parseOptionalJson(readOptional('../m2c-natural/nature-successor-data-approval.json'))
+    const labels = approvedPlaceLabelsWithNaturalSuccessors(sources[0],
+      JSON.parse(sources[1]), {
+        naturalCandidateBytes: sources[2],
+        successorCandidateBytes: sources[3],
+        successorApproval: parseOptionalJson(sources[4])
       });
     if (!(labels instanceof Map)) return null;
     logSuccessorDiagnostic(labels);
-    if (signature != null && sourceSignature() === signature) {
-      approvedLabelsCache = { signature, labels };
-    }
+    approvedLabelsCache = { signature, labels };
     return copyLabels(labels);
   } catch (error) {
     if (error.code === 'ENOENT' || error instanceof SyntaxError) return null;

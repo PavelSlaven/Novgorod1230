@@ -60,23 +60,30 @@ test('body threshold validator rejects projection mutation', () => {
   assertInvalid(() => validate(candidate, projection, request, resolution));
 });
 
-test('event_effect_gap is valid only for a critical zero before the requested end', () => {
+test('event_effect_gap is valid only for energy zero before the requested end', () => {
   const ordinary = fixture();
   ordinary.resolution.proposals[0].reason_code = 'event_effect_gap';
   assertInvalid(() => validate(ordinary.candidate, ordinary.projection,
     ordinary.request, ordinary.resolution));
 
-  const criticalBeforeEnd = fixture({ threshold: 0, scheduled: 7, limit: 60 });
+  const criticalBeforeEnd = fixture({ metric: 'energy', threshold: 0,
+    scheduled: 7, limit: 60 });
   criticalBeforeEnd.resolution.proposals[0].reason_code = 'event_effect_gap';
   criticalBeforeEnd.resolution.stop_after_current_batch = true;
   assert.doesNotThrow(() => validate(criticalBeforeEnd.candidate,
     criticalBeforeEnd.projection, criticalBeforeEnd.request,
     criticalBeforeEnd.resolution));
 
-  const criticalAtEnd = fixture({ threshold: 0, scheduled: 60, limit: 60 });
+  const criticalAtEnd = fixture({ metric: 'energy', threshold: 0,
+    scheduled: 60, limit: 60 });
   assert.doesNotThrow(() => validate(criticalAtEnd.candidate,
     criticalAtEnd.projection, criticalAtEnd.request,
     criticalAtEnd.resolution));
+
+  const satietyZero = fixture({ metric: 'satiety', threshold: 0,
+    scheduled: 7, limit: 60 });
+  assertInvalid(() => validate(satietyZero.candidate, satietyZero.projection,
+    satietyZero.request, satietyZero.resolution));
 });
 
 function validate(candidate, projection, request, resolution) {
@@ -97,7 +104,7 @@ function fixture({ threshold = 50, scheduled = 30, limit = 60,
     health: 'starvation_health_harm_v2'
   }[profileMetric];
   const candidate = {
-    boundary_id: `body-threshold:actor-1:satiety-${threshold}`,
+    boundary_id: `body-threshold:actor-1:${metric}-${threshold}`,
     boundary_kind: 'body_threshold', scheduled_at: at(scheduled),
     primary_subject_ref: ref('body_state', 'actor-1'),
     subject_refs: [ref('body_state', 'actor-1')],

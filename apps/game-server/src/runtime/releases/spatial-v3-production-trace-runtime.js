@@ -373,7 +373,8 @@ function bodyNeedsTemporalSourceRegistrations(profile) {
           });
         }
         const critical = threshold.threshold_value.numerator === '0';
-        const stop = critical && compareGameTimestamp(candidate.scheduled_at,
+        const stop = threshold.metric === 'energy' && critical
+          && compareGameTimestamp(candidate.scheduled_at,
           context.request.inclusive_limit_timestamp) < 0;
         const sourceEvent = { entity_kind: 'temporal_boundary_candidate',
           entity_id: candidate.boundary_id };

@@ -8,6 +8,7 @@ import { exactShape, fail, plain, text } from
   './lower-dvina-trace-turn-step-persistence-support.js';
 
 const BODY_METRICS = ['health', 'satiety', 'energy'];
+const BODY_HISTORY_SLICES = Symbol('body_history_slices');
 
 export function prepareTurnStepBodyHistory({
   partyId, state, factual, batch, changeSetId, idemId,
@@ -45,8 +46,7 @@ export function preparedBodyHistoryInput({ factual, batch, bodySlices = [] }) {
   if (bodySlices.length === 0) return { factual, batch };
   const activityIds = new Set(bodySlices.map(
     ({ operation_ref: ref }) => ref));
-  return {
-    factual: bodySlices.length === 1 ? {
+  const preparedFactual = bodySlices.length === 1 ? {
       ...factual,
       consequence: bodySlices[0].consequence,
       body_update: bodySlices[0].body_update
@@ -55,7 +55,12 @@ export function preparedBodyHistoryInput({ factual, batch, bodySlices = [] }) {
       consequence: { ...factual.consequence,
         state_changes: bodySlices.flatMap(
           ({ consequence }) => consequence.state_changes ?? []) }
-    },
+    };
+  Object.defineProperty(preparedFactual, BODY_HISTORY_SLICES, {
+    value: structuredClone(bodySlices)
+  });
+  return {
+    factual: preparedFactual,
     batch: { ...batch, operations: batch.operations.filter(
       ({ target, value }) => target === 'party_events'
         && activityIds.has(value.activity_id)) }
@@ -257,13 +262,24 @@ function buildBodyTimeEffectRef({ factual, batch, proposal, components, state,
   const activityEffects = [];
   for (const [activityId, activity] of activityById) {
     const activityProposals = groupedProposals.get(activityId) ?? [];
-    const elapsedForActivity = normalizeElapsed(activityProposals[0]?.exact_elapsed);
     const metrics = activityProposals.flatMap(({ metric_changes: changes }) =>
       changes.map(({ metric }) => metric));
+    const satietyProposal = activityProposals.find(({ metric_changes }) =>
+      metric_changes[0]?.metric === 'satiety');
+    const energyProposal = activityProposals.find(({ metric_changes }) =>
+      metric_changes[0]?.metric === 'energy');
+    const healthProposal = activityProposals.find(({ metric_changes }) =>
+      metric_changes[0]?.metric === 'health');
+    const elapsedForActivity = normalizeElapsed(satietyProposal?.exact_elapsed);
     if (new Set(metrics).size !== metrics.length
         || metrics.some((metric) => !['satiety', 'energy', 'health'].includes(metric))
-        || activityProposals.some((item) => !sameRational(
-          item.exact_elapsed, elapsedForActivity))) {
+        || !validPositiveElapsed(elapsedForActivity)
+        || !sameRational(energyProposal?.exact_elapsed, elapsedForActivity)
+        || (healthProposal != null
+          && (!validPositiveElapsed(healthProposal.exact_elapsed)
+            || compareRationalMinutes(
+              normalizeElapsed(healthProposal.exact_elapsed),
+              elapsedForActivity) > 0))) {
       bodyHistoryFail('continuous activity profile set or elapsed is invalid', {
         activity_id: activityId
       });
@@ -309,11 +325,10 @@ function buildBodyTimeEffectRef({ factual, batch, proposal, components, state,
     const bodyBefore = actor === state.actor_id ? state.body_state
       : state.npcs?.find(({ instance_id }) => instance_id === actor)
         ?.check_body_state;
-    const afterFixed = replayFixedEffects(bodyBefore, components,
-      proposal.fixed_effect_proposals);
-    const replay = afterFixed.ok
-      ? applyBodyTimeEffectProposals(afterFixed.state_after, proposals)
-      : afterFixed;
+    const slices = factual[BODY_HISTORY_SLICES];
+    const replay = slices == null
+      ? replayBodyTimeComposite(bodyBefore, components, proposal, proposals)
+      : replayBodyTimeSlices(bodyBefore, slices, factual, proposal, components);
     if (!sameBodyReplay(replay, proposal, factual.body_update.state_after)) {
       bodyHistoryFail('continuous body state differs from owner replay');
     }
@@ -438,8 +453,75 @@ function replayFixedEffects(bodyBefore, components, proposals) {
   return { ok: true, state_after: stateAfter };
 }
 
+function replayBodyTimeComposite(bodyBefore, components, proposal, proposals) {
+  const afterFixed = replayFixedEffects(bodyBefore, components,
+    proposal.fixed_effect_proposals);
+  if (!afterFixed.ok) return afterFixed;
+  validateStarvationProposalStart(afterFixed.state_after, proposals);
+  return applyBodyTimeEffectProposals(afterFixed.state_after, proposals);
+}
+
+function replayBodyTimeSlices(bodyBefore, slices, factual, proposal,
+  components) {
+  const fixedProposals = [];
+  const timeProposals = [];
+  let stateAfter = bodyBefore == null ? null : structuredClone(bodyBefore);
+  for (const [index, slice] of slices.entries()) {
+    const sliceProposal = slice.body_update?.proposal;
+    if (slice.body_update?.applied !== true
+        || sliceProposal?.proposal_kind !== 'body_time_effect_composite'
+        || !Array.isArray(sliceProposal.fixed_effect_proposals)
+        || !Array.isArray(sliceProposal.component_proposals)) {
+      bodyHistoryFail('causal body-time slice owner is invalid', { index });
+    }
+    fixedProposals.push(...sliceProposal.fixed_effect_proposals);
+    timeProposals.push(...sliceProposal.component_proposals);
+    if (stateAfter == null) continue;
+    const sliceComponents = (slice.consequence?.state_changes ?? []).filter(
+      ({ kind }) => ['semantic_activity', 'direct_body_event'].includes(kind));
+    const afterFixed = replayFixedEffects(stateAfter, sliceComponents,
+      sliceProposal.fixed_effect_proposals);
+    if (afterFixed.ok) {
+      validateStarvationProposalStart(afterFixed.state_after,
+        sliceProposal.component_proposals);
+    }
+    const replay = afterFixed.ok
+      ? applyBodyTimeEffectProposals(afterFixed.state_after,
+        sliceProposal.component_proposals)
+      : afterFixed;
+    if (replay?.ok !== true
+        || !same(replay.state_after, slice.body_update.state_after)) {
+      bodyHistoryFail('causal body-time slice replay differs from its proposal', {
+        index
+      });
+    }
+    stateAfter = replay.state_after;
+  }
+  if (!same(fixedProposals, proposal.fixed_effect_proposals)
+      || !same(timeProposals, proposal.component_proposals)
+      || !same(components, slices.flatMap(({ consequence }) =>
+        (consequence?.state_changes ?? []).filter(({ kind }) =>
+          ['semantic_activity', 'direct_body_event'].includes(kind))))) {
+    bodyHistoryFail('causal body-time slices differ from composite proposal');
+  }
+  return stateAfter == null
+    ? applyBodyTimeEffectProposals(null, proposals)
+    : { ok: true, exact_changes: proposal.exact_changes, state_after: stateAfter };
+}
+
 function same(left, right) {
   return canonicalDigest(left) === canonicalDigest(right);
+}
+
+function validateStarvationProposalStart(bodyState, proposals) {
+  if (!proposals.some(({ metric_changes }) =>
+    metric_changes[0]?.metric === 'health')) return;
+  const fullProposals = proposals.filter(({ metric_changes }) =>
+    metric_changes[0]?.metric !== 'health');
+  const fullReplay = applyBodyTimeEffectProposals(bodyState, fullProposals);
+  if (fullReplay?.ok !== true || fullReplay.state_after?.satiety !== 0) {
+    bodyHistoryFail('starvation proposal does not follow satiety reaching zero');
+  }
 }
 
 function versionedProfileRef(value) {
@@ -498,6 +580,14 @@ function normalizeElapsed(value) {
 function validElapsed(value) {
   try {
     return BigInt(normalizeRationalMinutes(value).numerator) >= 0n;
+  } catch {
+    return false;
+  }
+}
+
+function validPositiveElapsed(value) {
+  try {
+    return BigInt(normalizeRationalMinutes(value).numerator) > 0n;
   } catch {
     return false;
   }

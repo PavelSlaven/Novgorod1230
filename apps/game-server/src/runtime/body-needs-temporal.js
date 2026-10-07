@@ -1,7 +1,8 @@
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { calculateBodyTimeEffectProposal, predictNearestBodyThreshold }
   from '@rus/body-state';
-import { compareGameTimestamp } from '@rus/time-events-history';
+import { addElapsedTime, compareGameTimestamp, isPositiveRationalMinutes,
+  subtractGameTimestamp } from '@rus/time-events-history';
 import { deriveBodyEnvironmentSnapshot } from '@rus/environment-state';
 
 const METRICS = ['health', 'satiety', 'energy'];
@@ -32,10 +33,8 @@ export function createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsPr
       return failure('BODY_NEEDS_EFFORT_BINDING_REQUIRED');
     }
 
-    const metrics = ['satiety', 'energy'];
-    if (rationalIsZero(context.body_state.satiety)) metrics.push('health');
     const proposals = [];
-    for (const metric of metrics) {
+    const appendProposal = (metric, exactElapsed) => {
       const profileId = PROFILE_IDS[metric];
       const source = bodyNeedsProfile.profiles[profileId];
       const profile = makeBodyEffectProfile(source, metric, intensity, environment.snapshot.state_ref.entity_id);
@@ -45,7 +44,7 @@ export function createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsPr
         body_state_ref: context.body_state_ref,
         scope_ref: context.scope_ref,
         body_state: context.body_state,
-        exact_elapsed: input.exact_elapsed,
+        exact_elapsed: exactElapsed,
         environment_snapshot: environment.snapshot,
         active_conditions: context.active_conditions,
         body_time_effect_policy_pins: pins
@@ -54,6 +53,43 @@ export function createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsPr
       proposals.push(Object.freeze({ ...result.body_change_proposal,
         profile_pin: sourceProfilePin(source),
         binding_pin: trustedBindingPin }));
+      return null;
+    };
+    for (const metric of ['satiety', 'energy']) {
+      const error = appendProposal(metric, input.exact_elapsed);
+      if (error) return error;
+    }
+
+    let healthElapsed = null;
+    if (rationalIsZero(context.body_state.satiety)) {
+      healthElapsed = proposals[0].exact_elapsed;
+    } else {
+      const actualElapsed = proposals[0].exact_elapsed;
+      const windowEnd = addElapsedTime(context.observed_at,
+        { exact_minutes: actualElapsed });
+      const satietyProfile = bodyNeedsProfile.profiles[PROFILE_IDS.satiety];
+      const zeroThresholdProfile = makeBodyEffectProfile(satietyProfile, 'satiety',
+        intensity, environment.snapshot.state_ref.entity_id, [0]);
+      const crossing = predictNearestBodyThreshold({
+        body_effect_profile: zeroThresholdProfile,
+        body_state_ref: context.body_state_ref,
+        scope_ref: context.scope_ref,
+        body_state: context.body_state,
+        environment_snapshot: environment.snapshot,
+        active_conditions: context.active_conditions,
+        body_time_effect_policy_pins: makePins(zeroThresholdProfile),
+        window_start: context.observed_at,
+        window_end: windowEnd
+      });
+      if (!crossing.ok) return crossing;
+      if (crossing.threshold_candidate) {
+        healthElapsed = subtractGameTimestamp(windowEnd,
+          crossing.threshold_candidate.scheduled_at);
+      }
+    }
+    if (healthElapsed && isPositiveRationalMinutes(healthElapsed)) {
+      const error = appendProposal('health', healthElapsed);
+      if (error) return error;
     }
     return Object.freeze({ ok: true, proposals: Object.freeze(proposals),
       trace: Object.freeze({ owner: '@rus/body-state', effort: input.effort,
@@ -67,7 +103,7 @@ export function createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsPr
     if (!environment.ok) return environment;
     const metric = input.metric;
     const profileId = PROFILE_IDS[metric];
-    if (!profileId || (metric === 'health' && !rationalIsZero(context.body_state.satiety))) {
+    if (!profileId) {
       return failure('BODY_NEEDS_THRESHOLD_PROFILE_REQUIRED');
     }
     const intensity = INTENSITY_BY_EFFORT[input.effort];
@@ -75,15 +111,40 @@ export function createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsPr
         ?.activity_intensity_id !== intensity) return failure('BODY_NEEDS_EFFORT_BINDING_REQUIRED');
     const source = bodyNeedsProfile.profiles[profileId];
     const profile = makeBodyEffectProfile(source, metric, intensity, environment.snapshot.state_ref.entity_id);
+    let bodyState = context.body_state;
+    let windowStart = input.window_start;
+    if (metric === 'health' && !rationalIsZero(context.body_state.satiety)) {
+      const satietySource = bodyNeedsProfile.profiles[PROFILE_IDS.satiety];
+      const satietyProfile = makeBodyEffectProfile(satietySource, 'satiety',
+        intensity, environment.snapshot.state_ref.entity_id, [0]);
+      const satietyResult = predictNearestBodyThreshold({
+        body_effect_profile: satietyProfile,
+        body_state_ref: context.body_state_ref,
+        scope_ref: context.scope_ref,
+        body_state: context.body_state,
+        environment_snapshot: environment.snapshot,
+        active_conditions: context.active_conditions,
+        body_time_effect_policy_pins: makePins(satietyProfile),
+        window_start: input.window_start,
+        window_end: input.window_end
+      });
+      if (!satietyResult.ok) return satietyResult;
+      if (satietyResult.threshold_candidate) {
+        windowStart = satietyResult.threshold_candidate.scheduled_at;
+        bodyState = { ...context.body_state, satiety: rational('0') };
+      } else {
+        windowStart = input.window_end;
+      }
+    }
     const result = predictNearestBodyThreshold({
       body_effect_profile: profile,
       body_state_ref: context.body_state_ref,
       scope_ref: context.scope_ref,
-      body_state: context.body_state,
+      body_state: bodyState,
       environment_snapshot: environment.snapshot,
       active_conditions: context.active_conditions,
       body_time_effect_policy_pins: makePins(profile),
-      window_start: input.window_start,
+      window_start: windowStart,
       window_end: input.window_end
     });
     if (!result.ok) return result;
@@ -102,37 +163,88 @@ export function createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsPr
     const found = [];
     const values = [50, 20, 0];
     const metrics = ['satiety', 'energy'];
-    if (rationalIsZero(context.body_state.satiety)) metrics.push('health');
+    let healthState = null;
+    let healthWindowStart = input.window_start;
+    if (rationalIsZero(context.body_state.satiety)) {
+      healthState = context.body_state;
+    } else {
+      const source = bodyNeedsProfile.profiles[PROFILE_IDS.satiety];
+      const profile = makeBodyEffectProfile(source, 'satiety', intensity,
+        environment.snapshot.state_ref.entity_id, [0]);
+      const crossing = predictNearestBodyThreshold({
+        body_effect_profile: profile,
+        body_state_ref: context.body_state_ref,
+        scope_ref: context.scope_ref,
+        body_state: context.body_state,
+        environment_snapshot: environment.snapshot,
+        active_conditions: context.active_conditions,
+        body_time_effect_policy_pins: makePins(profile),
+        window_start: input.window_start,
+        window_end: input.window_end
+      });
+      if (!crossing.ok) return crossing;
+      if (crossing.threshold_candidate) {
+        healthState = { ...context.body_state, satiety: rational('0') };
+        healthWindowStart = crossing.threshold_candidate.scheduled_at;
+      }
+    }
+    if (healthState) metrics.push('health');
     for (const metric of metrics) {
       const source = bodyNeedsProfile.profiles[PROFILE_IDS[metric]];
       for (const value of values) {
         const profile = makeBodyEffectProfile(source, metric, intensity,
           environment.snapshot.state_ref.entity_id, [value]);
+        const pins = makePins(profile);
         const result = predictNearestBodyThreshold({
           body_effect_profile: profile,
           body_state_ref: context.body_state_ref,
           scope_ref: context.scope_ref,
-          body_state: context.body_state,
+          body_state: metric === 'health' ? healthState : context.body_state,
           environment_snapshot: environment.snapshot,
           active_conditions: context.active_conditions,
-          body_time_effect_policy_pins: makePins(profile),
-          window_start: input.window_start,
+          body_time_effect_policy_pins: pins,
+          window_start: metric === 'health' ? healthWindowStart : input.window_start,
           window_end: input.window_end
         });
         if (!result.ok) return result;
         if (result.threshold_candidate) found.push({
           candidate: result.threshold_candidate,
           descriptor: Object.freeze({ metric,
-            threshold_value: rational(String(value)), critical: value === 0 })
+            threshold_value: rational(String(value)),
+            critical: value === 0 })
         });
+        else if (metric === 'energy' && value === 0
+            && rationalIsZero(context.body_state[metric])) {
+          found.push({
+            candidate: currentZeroThresholdCandidate({ profile, metric, context,
+              environment: environment.snapshot, windowStart: input.window_start,
+              bodyStateRef: context.body_state_ref, scopeRef: context.scope_ref,
+              pins }),
+            descriptor: Object.freeze({ metric,
+              threshold_value: rational('0'), critical: true })
+          });
+        } else if (metric === 'health' && value === 0
+            && rationalIsZero(healthState.health)) {
+          found.push({
+            candidate: currentZeroThresholdCandidate({ profile, metric,
+              context: { ...context, body_state: healthState },
+              environment: environment.snapshot, windowStart: healthWindowStart,
+              bodyStateRef: context.body_state_ref, scopeRef: context.scope_ref,
+              pins }),
+            descriptor: Object.freeze({ metric,
+              threshold_value: rational('0'), critical: true })
+          });
+        }
       }
     }
     found.sort((left, right) => compareGameTimestamp(
       left.candidate.scheduled_at, right.candidate.scheduled_at));
-    const firstCritical = found.find(({ descriptor }) => descriptor.critical);
-    const candidates = firstCritical == null ? found : found.filter(({ candidate }) =>
+    const firstEnergyZero = found.find(({ descriptor }) =>
+      descriptor.metric === 'energy'
+        && descriptor.threshold_value.numerator === '0');
+    const candidates = firstEnergyZero == null ? found : found.filter(({ candidate }) =>
       compareGameTimestamp(candidate.scheduled_at,
-        firstCritical.candidate.scheduled_at) <= 0);
+        firstEnergyZero.candidate.scheduled_at) <= 0);
     return Object.freeze({ ok: true, candidates: Object.freeze(candidates) });
   }
 
@@ -140,6 +252,41 @@ export function createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsPr
     candidate_status: bodyNeedsProfile.status, approved: true,
     trustedBindingPin,
     calculateProposals, predictNearestThreshold, predictThresholdCandidates });
+}
+
+function currentZeroThresholdCandidate({ profile, metric, context, environment,
+  windowStart, bodyStateRef, scopeRef, pins }) {
+  const preconditionsDigest = computeSpatialV3CanonicalDigest({
+    observed_at: windowStart,
+    body_state_ref: bodyStateRef,
+    scope_ref: scopeRef,
+    body_state: METRICS.map((stateMetric) => ({ metric: stateMetric,
+      value: context.body_state[stateMetric] }))
+      .sort((left, right) => left.metric.localeCompare(right.metric)),
+    active_conditions: [...context.active_conditions]
+      .sort((left, right) => left.localeCompare(right)),
+    environment_snapshot_digest: environment.canonical_digest,
+    profile_digest: profile.canonical_digest,
+    dependency_pins_digest: pins.canonical_digest
+  });
+  const thresholdId = `${metric}-0`;
+  return Object.freeze({
+    boundary_id: `body-threshold:${bodyStateRef.entity_id}:${thresholdId}`,
+    boundary_kind: 'body_threshold',
+    scheduled_at: windowStart,
+    source_ref: profile.provenance_ref,
+    primary_subject_ref: bodyStateRef,
+    scope_ref: scopeRef,
+    rule_ref: profile.profile_ref,
+    policy_ref: profile.boundary_policy_ref,
+    preconditions_digest: preconditionsDigest,
+    resolution_class: 'physical_hazard_access',
+    interrupt_effect: profile.interrupt_effect,
+    visibility_policy_ref: profile.visibility_policy_ref,
+    idempotency_key: `body-threshold:${bodyStateRef.entity_id}:${thresholdId}:${preconditionsDigest}`,
+    subject_refs: [bodyStateRef],
+    causal_parent_refs: []
+  });
 }
 
 function makeBodyEffectProfile(source, metric, intensity, environmentId,
@@ -204,7 +351,8 @@ function bindingPin(profile) {
     status: 'approved_by_attestation', approved: true });
 }
 export function deriveTrustedBodyNeedsBindingPin(profile) {
-  if (profile == null) return null;
+  if (profile == null || profile.approved !== true
+    || profile.import_authorized !== true || profile.activation_authorized !== true) return null;
   validateBodyNeedsProfile(profile);
   return bindingPin(profile);
 }

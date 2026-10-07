@@ -1,5 +1,6 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
-import { applyBodyTimeEffectProposals } from '@rus/body-state';
+import { applyApprovedFixedBodyEffect,
+  applyBodyTimeEffectProposals } from '@rus/body-state';
 import { addRationalMinutes,
   compareRationalMinutes,
   normalizeElapsedTime,
@@ -294,8 +295,46 @@ export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
       structuredClone(update.proposal.component_proposals));
     const fixedEffectProposals = updates.flatMap((update) =>
       structuredClone(update.proposal.fixed_effect_proposals));
+    let bodyStateAfterFixedEffects = structuredClone(bodyStateBefore);
+    const fixedEffectsAreIndependentSemanticHealthChanges =
+      fixedEffectProposals.every((proposal) =>
+        proposal.selected_context?.kind === 'semantic_activity'
+        && Array.isArray(proposal.condition_transitions)
+        && proposal.condition_transitions.length === 0
+        && proposal.exact_deltas?.health <= 0
+        && proposal.exact_deltas?.satiety === 0
+        && proposal.exact_deltas?.energy === 0)
+      && componentProposals.every((proposal) =>
+        Array.isArray(proposal.metric_changes)
+        && proposal.metric_changes.every(({ metric, direction }) =>
+          metric !== 'health' || direction === 'decrease'));
+    if (fixedEffectsAreIndependentSemanticHealthChanges) {
+      for (const proposal of fixedEffectProposals) {
+        const fixed = applyApprovedFixedBodyEffect({
+          body_state: bodyStateAfterFixedEffects,
+          body_effect_profile: {
+            schema: 'rus.body_state.fixed_approved_effect.v1',
+            profile_ref: proposal.profile_ref,
+            profile_pin: proposal.profile_pin,
+            status: 'approved',
+            applicability: proposal.selected_context,
+            exact_deltas: proposal.exact_deltas,
+            condition_outcomes: proposal.condition_transitions,
+            selection_policy: proposal.selection_policy,
+            rng_consumption: proposal.rng_consumption
+          },
+          selected_context: proposal.selected_context
+        });
+        if (fixed?.ok !== true || fixed.owner !== '@rus/body-state'
+            || fixed.applied !== true || !plain(fixed.state_after)) {
+          invalid(`Prepared fixed body effects could not be applied by body-state: ${JSON.stringify(fixed)}`,
+            { result: fixed });
+        }
+        bodyStateAfterFixedEffects = structuredClone(fixed.state_after);
+      }
+    }
     const result = applyBodyTimeEffectProposals(
-      bodyStateBefore, componentProposals);
+      bodyStateAfterFixedEffects, componentProposals);
     if (result?.ok !== true || result.owner !== '@rus/body-state'
         || result.applied !== true || !plain(result.state_after)
         || !plain(result.exact_changes)) {
@@ -310,7 +349,9 @@ export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
         component_proposals: componentProposals,
         exact_changes: structuredClone(result.exact_changes)
       },
-      state_after: structuredClone(result.state_after),
+      state_after: structuredClone(
+        fixedEffectsAreIndependentSemanticHealthChanges
+          ? lastState : result.state_after),
       prepared_effect_ledger_digest: ledger.ledger_digest
     });
   }

@@ -127,12 +127,28 @@ test('adapter derives body snapshot from persisted party version and exact segme
   assert.equal(invalidStart.code, 'time_timestamp_invalid');
 });
 
-test('heavy work uses approved heavy rates and starvation only activates at zero satiety', async () => {
+test('heavy work uses approved heavy rates and starvation activates from the moment satiety reaches zero', async () => {
   const { bodyNeedsProfile, value } = await adapter();
   const ordinary = value.calculateProposals({ ...context('1'), effort: 'heavy', exact_elapsed: rational('60') });
   assert.equal(ordinary.ok, true);
-  assert.equal(ordinary.proposals.length, 2);
+  assert.equal(ordinary.proposals.length, 3);
   assert.deepEqual(ordinary.proposals[0].metric_changes[0].amount, rational('25', '12'));
+  assert.deepEqual(ordinary.proposals.flatMap(({ metric_changes }) => metric_changes), [
+    { metric: 'satiety', direction: 'decrease', amount: rational('25', '12') },
+    { metric: 'energy', direction: 'decrease', amount: rational('25', '12') },
+    { metric: 'health', direction: 'decrease', amount: rational('13', '12') }
+  ]);
+  const ordinaryHealth = ordinary.proposals.find(({ metric_changes }) => metric_changes[0].metric === 'health');
+  assert.equal(ordinaryHealth.profile_pin.artifact_id, bodyNeedsProfile.profiles.starvation_health_harm_v2.record_id);
+  // Approved heavy rate: satiety 1 reaches zero at 144/5 min, leaving 156/5 min of starvation.
+  assert.deepEqual(ordinaryHealth.exact_elapsed, rational('156', '5'));
+  for (const proposal of ordinary.proposals.filter(({ metric_changes }) => metric_changes[0].metric !== 'health')) {
+    assert.deepEqual(proposal.exact_elapsed, rational('60'));
+  }
+  const { applyBodyTimeEffectProposals } = await import('@rus/body-state');
+  const applied = applyBodyTimeEffectProposals({ health: 100, satiety: 1, energy: 80 }, ordinary.proposals);
+  assert.equal(applied.ok, true);
+  assert.equal(applied.state_after.satiety, 0);
   const starving = value.calculateProposals({ ...context('0'), effort: 'heavy', exact_elapsed: rational('60') });
   assert.equal(starving.ok, true);
   assert.equal(starving.proposals.length, 3);

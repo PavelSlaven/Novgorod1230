@@ -243,40 +243,43 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
       if (continuousActivity) {
         const activity = consequence.state_changes.find(
           ({ kind }) => kind === 'semantic_activity');
-        const activityContext = bodyTimeEffectContext(state, bodyState,
-          timeUpdate?.clock_before);
-        const calculated = bodyTimeEffectAdapter.calculateProposals({
-          effort: activity.effort ?? activity.body_effect_context?.effort,
-          exact_elapsed: exactElapsedFrom(timeUpdate),
-          ...activityContext
-        });
-        if (calculated?.ok !== true || !Array.isArray(calculated.proposals)
-            || calculated.proposals.length === 0) {
-          ownerFail('TRACE_TURN_STEP_BODY_TIME_PROPOSAL_INVALID', {
-            body_error: calculated?.error?.code ?? calculated?.code ?? null
+        const exactElapsed = exactElapsedFrom(timeUpdate);
+        if (BigInt(exactElapsed.numerator) !== 0n) {
+          const activityContext = bodyTimeEffectContext(state, bodyState,
+            timeUpdate?.clock_before);
+          const calculated = bodyTimeEffectAdapter.calculateProposals({
+            effort: activity.effort ?? activity.body_effect_context?.effort,
+            exact_elapsed: exactElapsed,
+            ...activityContext
           });
+          if (calculated?.ok !== true || !Array.isArray(calculated.proposals)
+              || calculated.proposals.length === 0) {
+            ownerFail('TRACE_TURN_STEP_BODY_TIME_PROPOSAL_INVALID', {
+              body_error: calculated?.error?.code ?? calculated?.code ?? null
+            });
+          }
+          const applied = applyBodyTimeEffectProposals(
+            bodyState, calculated.proposals);
+          if (applied?.ok !== true || applied.owner !== '@rus/body-state'
+              || applied.applied !== true || !plain(applied.state_after)
+              || !plain(applied.exact_changes)) {
+            ownerFail('TRACE_TURN_STEP_BODY_TIME_APPLY_INVALID', {
+              body_error: applied?.error?.code ?? null
+            });
+          }
+          bodyState = structuredClone(applied.state_after);
+          const componentsWithActivity = calculated.proposals.map((proposal) => ({
+            ...structuredClone(proposal),
+            activity_id: activity.activity_id,
+            effort: activity.effort ?? activity.body_effect_context?.effort
+          }));
+          continuousProposal = {
+            proposal_kind: 'body_time_effect_composite',
+            fixed_effect_proposals: structuredClone(proposals),
+            component_proposals: componentsWithActivity,
+            exact_changes: structuredClone(applied.exact_changes)
+          };
         }
-        const applied = applyBodyTimeEffectProposals(
-          bodyState, calculated.proposals);
-        if (applied?.ok !== true || applied.owner !== '@rus/body-state'
-            || applied.applied !== true || !plain(applied.state_after)
-            || !plain(applied.exact_changes)) {
-          ownerFail('TRACE_TURN_STEP_BODY_TIME_APPLY_INVALID', {
-            body_error: applied?.error?.code ?? null
-          });
-        }
-        bodyState = structuredClone(applied.state_after);
-        const componentsWithActivity = calculated.proposals.map((proposal) => ({
-          ...structuredClone(proposal),
-          activity_id: activity.activity_id,
-          effort: activity.effort ?? activity.body_effect_context?.effort
-        }));
-        continuousProposal = {
-          proposal_kind: 'body_time_effect_composite',
-          fixed_effect_proposals: structuredClone(proposals),
-          component_proposals: componentsWithActivity,
-          exact_changes: structuredClone(applied.exact_changes)
-        };
       }
       const exactDeltas = Object.fromEntries(BODY_METRICS.map((metric) => [
         metric,

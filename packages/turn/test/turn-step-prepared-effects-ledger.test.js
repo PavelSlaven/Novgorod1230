@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { applyBodyTimeEffectProposals } from '@rus/body-state';
 import {
   createTurnStepExecutionRegistry,
   runTurnStepLoop
@@ -180,6 +181,62 @@ test('prepared body-time aggregation preserves its exact composite proposal', ()
     { ...oneSource, satiety: 90 }), {
     code: 'TURN_STEP_PREPARED_EFFECT_INVALID'
   });
+});
+
+test('body-time aggregation preserves the final per-slice rounded owner state', () => {
+  const initialBody = { ...body(), satiety: 70 };
+  let ownerState = initialBody;
+  const effects = [];
+  for (let step = 1; step <= 7; step += 1) {
+    const selectedContext = { kind: 'semantic_activity',
+      duration_class: 'moment', effort: 'none' };
+    const fixedProposal = {
+      profile_ref: `activity:ordinary:${step}`,
+      profile_pin: { artifact_id: `fixed:${step}`, revision: 1,
+        digest: String(step).repeat(64) },
+      selected_context: selectedContext,
+      exact_deltas: { health: 0, satiety: 0, energy: 0 },
+      condition_transitions: [], selection_policy: 'fixed_approved_effect',
+      rng_consumption: 'forbidden'
+    };
+    const timeProposal = {
+      proposal_kind: 'body_time_effect',
+      activity_id: `activity:${step}`,
+      profile_ref: `body:approved:${step}`,
+      time_effect_policy_ref: `body-time:approved:${step}:time`,
+      exact_elapsed: { numerator: '1', denominator: '1' },
+      metric_changes: [{ metric: 'satiety', direction: 'decrease',
+        amount: { numerator: '5', denominator: '216' } }],
+      profile_pin: { profile_ref: `body:approved:${step}`, version: '1',
+        sha256: String(step).repeat(64) },
+      binding_pin: { binding_ref: 'body:binding:approved', version: '1',
+        sha256: 'b'.repeat(64) }
+    };
+    const applied = applyBodyTimeEffectProposals(ownerState, [timeProposal]);
+    assert.equal(applied.ok, true);
+    const item = effect({ step, kind: 'semantic_activity',
+      owner: 'activity:ordinary', operation: `activity:${step}`,
+      availability: null, duration: 1, before: step - 1, after: step });
+    item.consequence = { duration_minutes: 1, state_changes: [{
+      kind: 'semantic_activity', activity_id: `activity:${step}`, effort: 'none'
+    }] };
+    item.body_state_before = structuredClone(ownerState);
+    item.body_update = { ...item.body_update, applied: true,
+      proposal: { proposal_kind: 'body_time_effect_composite',
+        fixed_effect_proposals: [fixedProposal],
+        component_proposals: [timeProposal],
+        exact_changes: applied.exact_changes },
+      state_after: applied.state_after };
+    effects.push({ effect: item,
+      working_projection_before: { clock: at(step - 1) },
+      working_projection_after: { clock: at(step) } });
+    ownerState = applied.state_after;
+  }
+  const ledger = buildTurnStepPreparedEffectLedger({ rootTurnId: 'turn:body-rounding',
+    committedStateVersion: 1, effects });
+  const aggregate = buildTurnStepPreparedBodyUpdate(ledger, initialBody);
+  assert.equal(ownerState.satiety, 69.837964);
+  assert.deepEqual(aggregate.state_after, ownerState);
 });
 
 test('a charged semantic prefix may continue through the same direct action chain', () => {

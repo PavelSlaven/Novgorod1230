@@ -41,40 +41,45 @@ test('waiting continues across normal and penalized body thresholds', async (t) 
   }
 });
 
-test('critical zero before the end pauses with event_effect_gap and accrued body', async () => {
+test('satiety zero inside the window continues with harm only for time after zero', async () => {
   const run = await wait({ satiety: 10, energy: 80, minutes: 540 });
   const temporal = onlyTemporalResult(run);
-  assert.deepEqual(run.result.exact_elapsed.exact_minutes, rational(432));
-  assert.deepEqual(run.result.clock_after, at(432));
-  assert.equal(temporal.temporal_status, 'paused');
-  assert.equal(temporal.trace.stopped_after_current_batch, true);
-  assert.deepEqual(savedBody(run), { health: 100, satiety: 0, energy: 70 });
-  assert.ok(temporal.combined_change_set.proposals.some(
-    (proposal) => proposal.reason_code === 'event_effect_gap'),
-  'the saved temporal change set must explain the missing critical consequence');
+  assert.deepEqual(run.result.exact_elapsed.exact_minutes, rational(540));
+  assert.deepEqual(run.result.clock_after, at(540));
+  assert.equal(temporal.temporal_status, 'completed');
+  assert.equal(temporal.trace.stopped_after_current_batch, false);
+  assert.deepEqual(temporal.combined_change_set.time_slice_results
+    .filter((slice) => slice.processed_boundary_refs.length > 0)
+    .map((slice) => slice.clock_after), [at(432)]);
+  // Zero at 432; only the remaining 108 minutes charge 108/60 * 25/18 = 2.5.
+  assert.deepEqual(savedBody(run), { health: 97.5, satiety: 0, energy: 67.5 });
+  assert.equal(temporal.combined_change_set.proposals.some(
+    (proposal) => proposal.reason_code === 'event_effect_gap'), false,
+  'approved starvation must continue without a missing-consequence gap');
 });
 
-test('waiting visits every ordinary threshold before stopping at the first critical zero', async () => {
-  const run = await wait({ satiety: 70, energy: 80, minutes: 3300 });
+test('waiting visits satiety zero and every threshold before stopping at energy zero', async () => {
+  const run = await wait({ satiety: 70, energy: 80, minutes: 3600 });
   const temporal = onlyTemporalResult(run);
-  assert.deepEqual(run.result.exact_elapsed.exact_minutes, rational(3024));
+  assert.deepEqual(run.result.exact_elapsed.exact_minutes, rational(3456));
   assert.equal(temporal.temporal_status, 'paused');
   assert.equal(temporal.trace.stopped_after_current_batch, true);
   const slices = temporal.combined_change_set.time_slice_results.filter(
     (slice) => slice.processed_boundary_refs.length > 0);
   assert.deepEqual(slices.map((slice) => slice.clock_after),
-    [864, 1296, 2160, 2592, 3024].map(at));
+    [864, 1296, 2160, 2592, 3024, 3456].map(at));
   assert.deepEqual(slices.map((slice) => slice.processed_boundary_refs.length),
-    [1, 1, 1, 1, 1]);
+    [1, 1, 1, 1, 1, 1]);
   assert.deepEqual(slices.flatMap((slice) => slice.processed_boundary_refs
     .map((boundary) => boundary.entity_id)), temporal.trace.processed_boundary_ids);
-  assert.equal(temporal.trace.dispositions.length, 5);
+  assert.equal(temporal.trace.dispositions.length, 6);
   assert.ok(temporal.trace.dispositions.every((entry) => entry.disposition === 'execute'));
-  assert.deepEqual(savedBody(run), { health: 100, satiety: 0, energy: 10 });
+  // Starvation from 3024 to energy zero at 3456: 432/60 * 25/18 = 10.
+  assert.deepEqual(savedBody(run), { health: 90, satiety: 0, energy: 0 });
   assert.ok(temporal.combined_change_set.proposals.some(
     (proposal) => proposal.reason_code === 'event_effect_gap'));
-  assert.ok(run.candidates.every((candidate) => Number(candidate.scheduled_at.whole_minutes) <= 3024),
-    'the predicted set ends at the first critical zero');
+  assert.ok(run.candidates.every((candidate) => Number(candidate.scheduled_at.whole_minutes) <= 3456),
+    'the predicted set ends at energy zero, not satiety zero');
 });
 
 test('critical zero at the requested end completes the same-time batch without overrun', async () => {

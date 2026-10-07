@@ -49,7 +49,8 @@ function validateBodyThresholdProjection({ candidate, projection,
   const descriptor = matches.length === 1 ? matches[0] : null;
   const critical = descriptor?.threshold_value?.numerator === '0'
     && descriptor?.threshold_value?.denominator === '1';
-  const stop = critical && request?.inclusive_limit_timestamp
+  const stop = descriptor?.metric === 'energy' && critical
+    && request?.inclusive_limit_timestamp
     && compareGameTimestamp(candidate.scheduled_at,
       request.inclusive_limit_timestamp) < 0;
   const proposal = resolution?.proposals?.length === 1

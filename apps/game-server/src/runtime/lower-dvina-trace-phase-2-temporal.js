@@ -8,7 +8,7 @@ import {
 import { serverError } from '../errors.js';
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
-import { PHASE6_PROGRESS_EFFECT_REF } from
+import { PHASE2_PROGRESS_EFFECT_REF } from
   './lower-dvina-trace-phase-6-temporal-effect-owner.js';
 import { buildTracePhase7TemporalRequest,
   TRACE_PHASE7_EXTERNAL_PROVIDER,TRACE_PHASE7_PROVIDER,
@@ -58,7 +58,8 @@ export function createTracePhase2TemporalAdvance({ contracts,
       active_execution_refs:[{entity_kind:'party_timed_activity_execution',
         entity_id:executionId}],active_execution_requires_boundary:false,
       available_event_ids:allSourceCandidates.map(({boundary_id:id})=>id),
-      cumulative_elapsed_minutes:0,processed_source_boundary_ids:[],
+      cumulative_elapsed_minutes:{ numerator:'0', denominator:'1' },
+      processed_source_boundary_ids:[],
       phase6_state: structuredClone(state),
       npc_schedule_runtime: structuredClone(state.npc_schedule_runtime ?? []),
       local_fire_runtime:localFireProjection.local_fire_runtime,
@@ -80,7 +81,7 @@ export function createTracePhase2TemporalAdvance({ contracts,
       source_provider_ref:TRACE_PHASE7_EXTERNAL_PROVIDER,
       source_candidates:allSourceCandidates,
       registered_provider_ref:TRACE_PHASE7_PROVIDER,registered_effects:[],
-      continuous_effect:{effect_ref:PHASE6_PROGRESS_EFFECT_REF,input:{}},
+      continuous_effect:{effect_ref:PHASE2_PROGRESS_EFFECT_REF,input:{}},
       finalization:{visible_package_candidate:
         tracePhase7TemporalVisibleEnvelope(request),
         validation_report:{ok:true}},stop_after_source_batch:false});

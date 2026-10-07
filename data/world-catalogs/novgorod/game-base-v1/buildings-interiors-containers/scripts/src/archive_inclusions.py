@@ -4,9 +4,12 @@ import os
 import re
 import csv
 import unicodedata
+import sys
 
 
 GROUP = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(GROUP), "scripts"))
+from material_view import apply_material_overrides, overlay_source_ref
 MANIFEST = os.path.join(GROUP, "authoring", "archive_inclusion_manifest.json")
 NEEDS_CHECK = os.path.join(GROUP, "authoring", "needs_check.csv")
 FIELDS = ["archive_ref", "archive_name", "archive_action", "match_type", "game_base_ref", "owner_group", "target_group", "target_ref", "basis", "evidence_basis", "family_key",
@@ -127,7 +130,10 @@ def default_master_dir(group):
 
 def build_entity_rows(group, read_csv, matcult_dir=None, master_dir=None):
     master_root = os.path.join(master_dir or default_master_dir(group), "normalized_source_tables", "material_entities")
-    source_rows = {r.get("item_id"): r for r in read_csv(os.path.join(master_root, "material_entities.csv"), ",")}
+    material_path = os.path.join(master_root, "material_entities.csv")
+    source_rows = {r.get("item_id"): r for r in apply_material_overrides(
+        read_csv(material_path, ","), material_path
+    )}
     material_fields = list(next(iter(source_rows.values()), {}).keys())
     mil_path = os.path.abspath(os.path.join(group, "..", "items-weapons-armour", "authoring", "master_military_snapshot.csv"))
     military_rows = {r.get("item_id"): r for r in read_csv(mil_path, ",")}
@@ -189,6 +195,9 @@ def build_entity_rows(group, read_csv, matcult_dir=None, master_dir=None):
         else:
             row = dict(source)
             refs = ["sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:" + archive_id]
+            correction_ref = overlay_source_ref(archive_id, os.path.join(master_root, "material_entities.csv"))
+            if correction_ref:
+                refs.append(correction_ref)
         row.update(
             item_id="n1230:material_item:" + archive_id.lower(),
             basis=item.get("basis", ""),
@@ -208,7 +217,11 @@ def build_ledger(group, read_csv, matcult_dir=None, existing_group=None, master_
     source_cache = {}
     for filename, id_field in (("material_entities.csv", "item_id"), ("state_variants.csv", "state_id")):
         try:
-            source_cache.update({r.get(id_field): r for r in read_csv(os.path.join(master_root, filename), ",")})
+            source_path = os.path.join(master_root, filename)
+            source_rows = read_csv(source_path, ",")
+            if filename == "material_entities.csv":
+                source_rows = apply_material_overrides(source_rows, source_path)
+            source_cache.update({r.get(id_field): r for r in source_rows})
         except (OSError, TypeError):
             pass
     if matcult_dir:
@@ -358,7 +371,10 @@ def validate_ledger(ledger, repo, matcult_dir, read_csv, master_dir=None):
                         ("data/normalized_source_tables/material_entities/state_variants.csv", "state_id")):
         path = os.path.join(master_dir, rel[len("data/"):])
         try:
-            master_cache[rel] = {r.get(id_col): r for r in read_csv(path)}
+            source_rows = read_csv(path)
+            if rel.endswith("material_entities.csv"):
+                source_rows = apply_material_overrides(source_rows, path)
+            master_cache[rel] = {r.get(id_col): r for r in source_rows}
         except OSError:
             pass
     matcult_cache = {r.get("item_id"): r for r in read_csv(os.path.join(matcult_dir, "catalog_items.csv"))}

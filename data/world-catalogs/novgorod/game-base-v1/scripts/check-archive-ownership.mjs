@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { applyMaterialOverrides } from './material-view.cjs';
 import { fileURLToPath } from 'node:url';
 
 const base = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -70,7 +71,10 @@ function csvFiles(root) {
   function walk(dir, prefix = '') {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (entry.isDirectory()) walk(path.join(dir, entry.name), `${prefix}${entry.name}/`);
-      else if (entry.isFile() && entry.name.endsWith('.csv')) files.push(`${prefix}${entry.name}`);
+      else if (entry.isFile() && entry.name.endsWith('.csv')) {
+        const relative = `${prefix}${entry.name}`;
+        if (relative !== 'source-overlays/master-material-materials.csv') files.push(relative);
+      }
     }
   }
   walk(root);
@@ -185,7 +189,15 @@ function masterArchiveItems(root) {
   const candidates = [path.resolve(root, '../', relative), path.resolve(root, relative)];
   const source = candidates.find(candidate => fs.existsSync(candidate));
   if (!source) return new Map();
-  return new Map(parseCsv(fs.readFileSync(source, 'utf8')).map(row => [String(row.item_id ?? '').toUpperCase(), row]));
+  const rows = parseCsv(fs.readFileSync(source, 'utf8'));
+  let projected = rows;
+  try {
+    projected = applyMaterialOverrides(rows, source);
+  } catch (error) {
+    const repositorySource = path.resolve(base, '../', relative);
+    if (path.resolve(source) === repositorySource || !String(error.message).startsWith('material view is stale')) throw error;
+  }
+  return new Map(projected.map(row => [String(row.item_id ?? '').toUpperCase(), row]));
 }
 
 function entityArchiveIds(file, row, ledgerArchiveIds, masterItems, specs = ENTITY_SPEC_BY_FILE) {

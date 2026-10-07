@@ -24,6 +24,8 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE.parent
 GB = OUT.parent
 NOV = GB.parent
+sys.path.insert(0, str(GB / 'scripts'))
+from material_view import apply_material_overrides, overlay_source_ref
 WK = NOV / 'world-knowledge/production-v1'
 MASTER = NOV / 'sources/master-archive-v1/data/normalized_source_tables/food_system'
 MATERIAL_MASTER = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities'
@@ -297,7 +299,8 @@ for m in data['dishes/meal_profiles.csv']:
         warns.append(f'meal profile has unresolved recipes {m["mp_id"]}')
 
 # 7 archive inclusions: 151 reviewed rows -> 94 new, 53 demoted variants, 4 merges.
-material_source = {r['item_id']: r for r in rd(MATERIAL_MASTER / 'material_entities.csv')}
+material_path = MATERIAL_MASTER / 'material_entities.csv'
+material_source = {r['item_id']: r for r in apply_material_overrides(rd(material_path), material_path)}
 state_source = {r['state_id']: r for r in rd(MATERIAL_MASTER / 'state_variants.csv')}
 if MATERIAL_VALIDATION.get('status') != 'PASS' or MATERIAL_VALIDATION.get('blocking_failures'):
     fails.append('7 material archive validation report is not PASS')
@@ -369,6 +372,9 @@ for row in MAT:
         continue
     expected_function = source['function']
     expected_refs = [f'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:{raw_id}']
+    correction_ref = overlay_source_ref(raw_id, material_path)
+    if correction_ref:
+        expected_refs.append(correction_ref)
     expected_basis, expected_derivation = material_basis(source)
     for spec in merges_by_target.get(raw_id, []):
         merged_id = spec['archive_ref'].rsplit(':', 1)[1]

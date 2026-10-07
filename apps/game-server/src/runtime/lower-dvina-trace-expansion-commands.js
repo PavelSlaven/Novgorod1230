@@ -158,6 +158,14 @@ export async function createTraceExpansionCommands({ state, requestId,
         const expansion = await prepare(selected, diagnosticCallback == null ? undefined
           : { onLabelGapsOmitted: diagnosticCallback });
         if (expansion?.ok !== true) {
+          const error = expansion?.error;
+          if (error?.code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP'
+              && error.diagnostics?.reason === 'player_safe_visible_scene_required'
+              && error.diagnostics?.turn_commit_status === 'not_started') {
+            throw Object.assign(serverError(error.code,
+              'The approved directional exit cannot be traversed.',
+              { status: 409, details: error }), { turn_commit_status: 'not_started' });
+          }
           fail('LIVE_WORLD_EXPANSION_PREPARATION_FAILED', expansion?.error ?? null);
         }
         try {

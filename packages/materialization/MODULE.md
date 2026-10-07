@@ -283,7 +283,10 @@ reservation and never moves a traveller. The P16 owner commits it as
 `resolve_frontier:canconn:<party>:<binding_id>`; a frontier key is
 `resolve_frontier:` plus a digest and cannot collide with it. The way back is the
 reverse binding's own connection, prepared when the traveller first stands at the
-target's departure.
+target. Under the paired-slot rule, its `from` is the exact slot named by the forward
+binding's `to`, which may have `endpoint_role: arrival`; the endpoint owner resolves
+it by exact `slot_key` and validates the canonical place, binding key and committed
+position.
 
 `resolveSpatialV3CanonicalEndpointSlot` resolves exactly one endpoint in the approved
 scene closure by its authored `slot_key`; missing and duplicate keys return distinct

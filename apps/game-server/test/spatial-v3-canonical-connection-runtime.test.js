@@ -35,10 +35,17 @@ test('a place offers its connections only at the departure position named by the
   assert.deepEqual(eligibleCanonicalConnections(elsewhere), []);
   const generated = { ...current, site: { ...current.site, origin: 'generated' } };
   assert.deepEqual(eligibleCanonicalConnections(generated), []);
-  const moved = { ...current, canonical_connections: [{ binding: { ...binding('x', 'g5x'), from_scene_endpoint_slot_key: 'other' }, profile }],
-    scene: { ...current.scene, endpoint_slots: [...current.scene.endpoint_slots, { slot_key: 'other',
-      endpoint_role: 'arrival', required_position_slot_key: 'elsewhere', required_position_instance_ordinal: 0 }] } };
-  assert.deepEqual(eligibleCanonicalConnections(moved), []);
+});
+
+test('a binding with a missing named source slot fails closed as a typed data gap', () => {
+  const current = context();
+  const moved = { ...current, canonical_connections: [{
+    binding: { ...binding('x', 'g5x'), from_scene_endpoint_slot_key: 'other' }, profile
+  }] };
+
+  assert.throws(() => eligibleCanonicalConnections(moved), (error) =>
+    error.code === 'LIVE_WORLD_EXPANSION_DATA_GAP'
+      && error.details.reason === 'canonical_connection_source_endpoint_required');
 });
 
 test('line options use the world-base line label after disclosure admits the connection', async () => {

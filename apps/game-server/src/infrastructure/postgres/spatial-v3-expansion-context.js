@@ -78,17 +78,14 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     [partyId, current.position.g6_instance_id, current.baseline.id]);
   const sceneWithLocalTopology = { ...scene.value,
     positions: local.rows[0]?.positions ?? [], movement_edges: local.rows[0]?.movement_edges ?? [] };
-  if (findReachableDeparturePosition({ position: current.position, scene: sceneWithLocalTopology }) == null) {
+  const departureReachable = findReachableDeparturePosition({
+    position: current.position, scene: sceneWithLocalTopology }) != null;
+  if (!departureReachable && current.site.origin !== 'canonical') {
     return { ...current, scene: sceneWithLocalTopology, partyId, actorId };
   }
   const binding = await worldBaseReader.readG4ExpansionBinding({ g4_id: current.site.parent_g4_id,
     world_revision_id: current.world_revision_id });
   if (!binding?.ok) gap('approved_g4_expansion_binding_required', binding?.error);
-  const closure = await worldBaseReader.readPinnedG4ExpansionClosure(binding.value);
-  if (!closure?.ok) gap('approved_g4_expansion_closure_required', closure?.error);
-  const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({
-    party_id: partyId, g4_id: current.site.parent_g4_id });
-  if (!loaded.ok) gap('committed_expansion_snapshot_required', loaded.error);
   let canonical_connections = [];
   let canonical_connection_gaps = [];
   if (current.site.origin === 'canonical') {
@@ -99,6 +96,18 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     canonical_connections = connections.value;
     canonical_connection_gaps = connections.gaps ?? [];
   }
+  if (!departureReachable && !canonical_connections.some(({ binding: row }) =>
+    sceneWithLocalTopology.endpoint_slots?.some((slot) =>
+      slot.slot_key === row.from_scene_endpoint_slot_key
+      && slot.required_position_slot_key === current.position.template_slot_key
+      && slot.required_position_instance_ordinal === current.position.template_instance_ordinal))) {
+    return { ...current, scene: sceneWithLocalTopology, partyId, actorId };
+  }
+  const closure = await worldBaseReader.readPinnedG4ExpansionClosure(binding.value);
+  if (!closure?.ok) gap('approved_g4_expansion_closure_required', closure?.error);
+  const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({
+    party_id: partyId, g4_id: current.site.parent_g4_id });
+  if (!loaded.ok) gap('committed_expansion_snapshot_required', loaded.error);
   return { ...current, ...binding.value, closure: closure.value, snapshot: loaded.snapshot,
     canonical_connections, canonical_connection_gaps, scene: sceneWithLocalTopology, partyId, actorId };
 }

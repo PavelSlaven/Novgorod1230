@@ -114,6 +114,17 @@ with ({}) /import('@fixture\/authoring')/.test('');`;
   assert.match(violations[0], /packages\/probe\/src\/division\.mjs: runtime import targets tools package @fixture\/authoring/u);
 });
 
+test('runtime-tools guard treats member methods named like control headers as calls', async (t) => {
+  const root = await createFixture(t);
+  const source = `obj.if(true) / import('@fixture/authoring');\nobj?.while(x) / import('@fixture/authoring');\n`;
+  await writeFile(join(root, 'packages/probe/src/member-control.mjs'), source);
+
+  const violations = await findRuntimeToolsBoundaryViolations({ root });
+
+  assert.equal(violations.length, 2);
+  assert.ok(violations.every((entry) => entry.includes('runtime import targets tools package @fixture/authoring')));
+});
+
 test('runtime-tools guard still catches a direct dynamic import', async (t) => {
   const root = await createFixture(t);
   await writeFile(join(root, 'packages/probe/src/index.mjs'), "export const value = import('@fixture/authoring');\n");

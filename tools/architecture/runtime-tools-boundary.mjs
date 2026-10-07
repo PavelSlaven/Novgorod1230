@@ -113,6 +113,7 @@ function isMemberMethod(tokens, index) {
   return tokens[index - 1]?.value === '.';
 }
 
+// Heuristic for ordinary code, not a parser for intentionally obfuscated JavaScript.
 function tokenize(source) {
   const tokens = [];
   scanCode(source, 0, tokens, false);
@@ -239,7 +240,11 @@ function closesControlHeader(tokens) {
     if (tokens[index].value === ')') depth += 1;
     else if (tokens[index].value === '(') {
       depth -= 1;
-      if (depth === 0) return CONTROL_HEADER_KEYWORDS.has(tokens[index - 1]?.value);
+      if (depth === 0) {
+        const keywordIndex = index - 1;
+        return CONTROL_HEADER_KEYWORDS.has(tokens[keywordIndex]?.value)
+          && tokens[keywordIndex - 1]?.value !== '.';
+      }
     }
   }
   return false;

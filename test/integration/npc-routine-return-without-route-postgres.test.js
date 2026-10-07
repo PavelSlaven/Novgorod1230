@@ -5,7 +5,8 @@ import pg from 'pg';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { buildCombinedWritePlan } from '@rus/turn/spatial-v3-write-plan';
 import { integrateSpatialV3TemporalWriteFragments } from '@rus/turn/spatial-v3-temporal-write-integration';
-import { createNpcRoutineState, npcRoutineActivity } from '@rus/npc-runtime';
+import { createNpcRoutineState, npcRoutineActivity, selectNpcRoutineSchedule } from
+  '@rus/npc-runtime';
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
 import { createPostgresTestBackend } from '../fixtures/postgres-test-backend.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from
@@ -195,17 +196,29 @@ async function seedWorld(pool) {
   for (const npcId of ['npc-no-return-route', 'npc-authorized-return']) {
     const hasReturnRoute = npcId === 'npc-authorized-return';
     const profile = routineProfile(npcId, hasReturnRoute);
-    const runtime = structuredClone(createNpcRoutineState({ profile, started_at: at(0),
-      current_activity: { activity_ref: 'work' } }));
+    const calendar = testCalendar();
+    const schedule = selectNpcRoutineSchedule({ schedule_context: {
+      home_scope_ref: 'pf_home', subject_kind: 'occupation',
+      subject_ref: 'nov_occ_worker', day_type: 'normal',
+      approved_rule_rows: [scheduleRow('cold', profile), scheduleRow('warm', profile)],
+      calendar_profile: calendar
+    }, scheduled_at: at(0) });
+    const selectedProfile = schedule.rule.routine_profile;
+    const runtime = structuredClone(createNpcRoutineState({
+      profile: selectedProfile, started_at: at(0),
+      calendar_profile: calendar, current_activity: { activity_ref: 'work' },
+      schedule_context: schedule.schedule_context }));
     runtime.presence_state = 'on_site';
     const activity = npcRoutineActivity(runtime);
     await pool.query(`UPDATE party_runtime.party_npcs SET machine_state=$3::jsonb
       WHERE party_id=$1 AND npc_id=$2`, [partyId, npcId, JSON.stringify({ status: 'idle',
       current_activity: activity, current_activity_ref: activity.activity_ref })]);
     const causal = { routine_state: runtime };
-    const scheduleRef = { entity_ref: ref('activity_profile', profile.profile_id), authoring_version: '1' };
+    const scheduleRef = { entity_ref: ref('activity_profile', selectedProfile.profile_id),
+      authoring_version: String(selectedProfile.revision) };
     const pins = { pins: [{ dependency_role: 'profile', entity_ref: scheduleRef.entity_ref,
-      version_pin: { pin_kind: 'authoring_version', authoring_version: '1' } }] };
+      version_pin: { pin_kind: 'authoring_version',
+        authoring_version: scheduleRef.authoring_version } }] };
     pins.canonical_digest = digest(pins);
     await pool.query(`INSERT INTO party_runtime.party_npc_spatial_schedules
       (id,party_id,npc_id,current_position_node_id,schedule_profile_ref,dependency_pins,
@@ -266,6 +279,29 @@ function routineProfile(npcId, hasReturnRoute) {
   };
   return { schema: 'npc_routine_profile_v1', profile_id: `routine:${npcId}`,
     revision: 1, status: 'approved', phases };
+}
+
+function scheduleRow(season, routine_profile) {
+  return { schedule_id: `schedule-${season}`, schedule_version: 1,
+    world_revision_id: 'routine-test-world', scope_kind: 'place_family',
+    scope_ref: 'pf_home', subject_kind: 'occupation', subject_ref: 'nov_occ_worker',
+    season, months: null, day_type: 'normal', status: 'approved', routine_profile };
+}
+
+function testCalendar() {
+  return { profile_id: 'npc-calendar', version: '1', status: 'approved',
+    provenance: { source_id: 'test', source_version: '1' },
+    epoch: { game_timestamp: at(0), year: '1', month: '1', day: '1' },
+    calendar_system: 'test', month_rules: { month_lengths: ['30', '30'] },
+    leap_rules: { cycle_years: '4', leap_year_indexes: ['3'], leap_month: '2', leap_days: '1' },
+    day_start_rule: { local_minute: '360' }, local_offset_rule: { offset_minutes: '0' },
+    daypart_rule: { ranges: [{ id: 'night', start_minute: '0', end_minute: '360' },
+      { id: 'day', start_minute: '360', end_minute: '1080' },
+      { id: 'evening', start_minute: '1080', end_minute: '1440' }] },
+    season_rule: { ranges: [{ id: 'cold', start_day: '1', end_day: '30' },
+      { id: 'warm', start_day: '31', end_day: '61' }] },
+    daylight_rule: { ranges: [{ id: 'dark', start_day: '1', end_day: '30' },
+      { id: 'light', start_day: '31', end_day: '61' }] } };
 }
 
 function temporalState(proof, turnNumber, clock) {

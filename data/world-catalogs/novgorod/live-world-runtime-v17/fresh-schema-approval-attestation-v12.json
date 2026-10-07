@@ -1,0 +1,524 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "codex-gpt-6.1-sol-ap-fresh-v12-2026-10-07",
+  "approved_date": "2026-10-07",
+  "approved_at": "2026-10-07T11:37:37+00:00",
+  "independence_basis": "Отдельный независимый проход ap-fresh-v12 по WR §21.1 и D144; авторы — lines-b1 (039) и initial-v0-package (040), ведущий только закоммитил. Этот утверждающий не автор request, schema inputs или репина. Три помощника gpt-6-luna проверили независимые части; основной утверждающий прочитал их скрипты, результаты и первичные SQL/owner/gate/PG-источники и вынес решение. Логи PostgreSQL предоставлены автором; независимого PG-прогона не было. Записывались только отчёты в out/ и append-only мост своей задачи.",
+  "reviewed_repository_head": "a442b9aac414865f19dfa2206134889e72f09bd5",
+  "source_commit": "45505b37fb1fbe4a1b253a482b2bb40edb4135eb",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+  "request_digest": "b512a084c1ebe73a35d8471ffccee894d883ece562524ece2576da96c0b1f0a8",
+  "request_bytes": 16589,
+  "review_request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md",
+  "review_request_sha256": "e06d1ee49f54fc98deb1f081a958fee406f1acc9488971065e86fab14fc120f9",
+  "review_request_bytes": 2166,
+  "supersedes": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v11.json",
+      "sha256_at_reviewed_head": "0f3720ab050f80db3a976c9a70dca422e7a995d32800d6af2e8c121e7c17c9f0",
+      "request_digest": "a726a73e6d08d315053f7eeabbbb2f521189645b5ac57c1ebea91370693d01a8",
+      "reason": "v11 binds a 39-migration request lacking 039 local lines. v12 combines unchanged 039 and 040 in ordered 001–040; owner list/hash, chain digest, source_commit, count and execution text change. Prior attestation remains historical. Its unresolved acceptance/execution conditions are preserved for the combined chain."
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v10.json",
+      "sha256_at_reviewed_head": "8f38031a80a178c720049816f893e8f174af2f3ad9d412d2df7d77829ac9a1b9",
+      "request_digest": "88ebd34856884c009ed45b4cd4be161c7113446fea306bbc82a809d0c08bbd30",
+      "reason": "v10 binds a 39-migration request lacking 040 visible-package initial state. v12 combines unchanged 039 and 040 in ordered 001–040; owner list/hash, chain digest, source_commit, count and execution text change. Prior attestation remains historical. Its unresolved acceptance/execution conditions are preserved for the combined chain."
+    }
+  ],
+  "scope": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "party_database": "novgorod_party_v17",
+    "party_owner": "party_operator",
+    "world_schema": "Exact hashed entrypoint and 30 ordered world parts; unchanged from v10/v11.",
+    "party_schema": "Exact hashed owner module and 40 ordered migrations 001–040; 039 then 040, both byte-identical to previous approved generations.",
+    "party_chain_digest": "3e50597b60a0bf9538ce48ec6a15684233688a95dfcac30b93ddda3f9b1257fd",
+    "expected_world_base_tables": 224,
+    "expected_party_runtime_tables": 133,
+    "expected_party_migrations_applied": 40
+  },
+  "verified_by_approver": {
+    "request_digest_recomputed": {
+      "bytes": 16589,
+      "sha256": "b512a084c1ebe73a35d8471ffccee894d883ece562524ece2576da96c0b1f0a8",
+      "head_blob_equals_worktree": true
+    },
+    "source_commit_is_ancestor_of_reviewed_head": true,
+    "schema_inputs_unchanged_source_commit_to_reviewed_head": true,
+    "ordered_parts_and_migrations": "72 unique inputs: entrypoint + 30 parts + owner + 40 SQL; declared lengths/hashes match source, HEAD and working copy. No schema-input commits after source.",
+    "generator_rebuild": "Exported buildFreshSchemaRequest and render functions with explicit source_commit reproduce both files byte-for-byte in memory. CLI not invoked. Template noncomputed fields covered by predecessor recursive deltas.",
+    "predecessor_deltas": {
+      "v10": {
+        "attestation_file": "/srv/novgorod-work/fleet/tasks/ap-fresh-v10/out/fresh-schema-approval-attestation-v10.json",
+        "attestation_path_line_evidence": {
+          "reviewed_repository_head": 6,
+          "request_digest": 9
+        },
+        "reviewed_head": "3ee25bddfe9871c85635c9b8ba740b257768e9c9",
+        "request": {
+          "bytes": 16377,
+          "sha256": "88ebd34856884c009ed45b4cd4be161c7113446fea306bbc82a809d0c08bbd30"
+        },
+        "review_md": {
+          "bytes": 2166,
+          "sha256": "51fa367158f94f58fa19c6d5a12c61bead0ab3879b7b10f641aeee7f9fa58e94"
+        },
+        "bindings": {
+          "attestation_head_matches_pin": true,
+          "attestation_request_digest_matches_pin": true,
+          "attestation_request_bytes_matches_pin": true,
+          "request_blob_matches_attestation": true,
+          "request_blob_matches_task_pin": true,
+          "review_md_blob_matches_pin": true
+        },
+        "recursive_delta_paths": [
+          "execution_order[3]",
+          "expected_readback.party_migrations_applied",
+          "party_schema.chain_digest",
+          "party_schema.ordered_migrations.length",
+          "party_schema.ordered_migrations[39]",
+          "party_schema.owner_migration_module.bytes",
+          "party_schema.owner_migration_module.sha256",
+          "source_commit"
+        ],
+        "recursive_delta": [
+          {
+            "path": "execution_order[3]",
+            "old": "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-039 inside one transaction.",
+            "new": "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-040 inside one transaction."
+          },
+          {
+            "path": "expected_readback.party_migrations_applied",
+            "old": 39,
+            "new": 40
+          },
+          {
+            "path": "party_schema.chain_digest",
+            "old": "9995faff3fe4fafcf43d572e4d79b862a4195c46a48d2318bde77a233946b51a",
+            "new": "3e50597b60a0bf9538ce48ec6a15684233688a95dfcac30b93ddda3f9b1257fd"
+          },
+          {
+            "path": "party_schema.ordered_migrations.length",
+            "old": 39,
+            "new": 40
+          },
+          {
+            "path": "party_schema.ordered_migrations[39]",
+            "old": "<absent>",
+            "new": {
+              "path": "schemas/party-db/040_party_runtime_visible_package_initial_state.sql",
+              "bytes": 291,
+              "sha256": "8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76"
+            }
+          },
+          {
+            "path": "party_schema.owner_migration_module.bytes",
+            "old": 5492,
+            "new": 5547
+          },
+          {
+            "path": "party_schema.owner_migration_module.sha256",
+            "old": "23452151976724d2a55b2bd9f14f505d7986db4bb1b1d547806acd5039818146",
+            "new": "4317a73860bf752a1a8dc7feac2fe7da3d3491aa40d1dcf06b49ba0bad54262c"
+          },
+          {
+            "path": "source_commit",
+            "old": "9ffee5eda34404578a3e2107b6a90782523ba367",
+            "new": "45505b37fb1fbe4a1b253a482b2bb40edb4135eb"
+          }
+        ],
+        "expected_recursive_delta_paths": [
+          "execution_order[3]",
+          "expected_readback.party_migrations_applied",
+          "party_schema.chain_digest",
+          "party_schema.ordered_migrations.length",
+          "party_schema.ordered_migrations[39]",
+          "party_schema.owner_migration_module.bytes",
+          "party_schema.owner_migration_module.sha256",
+          "source_commit"
+        ],
+        "review_md_delta": {
+          "changed": true,
+          "exact_metadata_only": true,
+          "expected_replacements": [
+            [
+              "9ffee5eda34404578a3e2107b6a90782523ba367",
+              "45505b37fb1fbe4a1b253a482b2bb40edb4135eb"
+            ],
+            [
+              "9995faff3fe4fafcf43d572e4d79b862a4195c46a48d2318bde77a233946b51a",
+              "3e50597b60a0bf9538ce48ec6a15684233688a95dfcac30b93ddda3f9b1257fd"
+            ],
+            [
+              "39 party migrations",
+              "40 party migrations"
+            ],
+            [
+              "applied: 39",
+              "applied: 40"
+            ],
+            [
+              "`88ebd34856884c009ed45b4cd4be161c7113446fea306bbc82a809d0c08bbd30` (16377 bytes)",
+              "`b512a084c1ebe73a35d8471ffccee894d883ece562524ece2576da96c0b1f0a8` (16589 bytes)"
+            ]
+          ],
+          "old_sha256": "51fa367158f94f58fa19c6d5a12c61bead0ab3879b7b10f641aeee7f9fa58e94",
+          "new_sha256": "e06d1ee49f54fc98deb1f081a958fee406f1acc9488971065e86fab14fc120f9"
+        }
+      },
+      "v11": {
+        "attestation_file": "/srv/novgorod-work/fleet/tasks/ap-fresh-v11/out/fresh-schema-approval-attestation-v11.json",
+        "attestation_path_line_evidence": {
+          "reviewed_repository_head": 6,
+          "request_digest": 9
+        },
+        "reviewed_head": "95a6139ae26e6bc80d3dc72e8c5b7fa81aae4e94",
+        "request": {
+          "bytes": 16393,
+          "sha256": "a726a73e6d08d315053f7eeabbbb2f521189645b5ac57c1ebea91370693d01a8"
+        },
+        "review_md": {
+          "bytes": 2166,
+          "sha256": "fcdaf585a512a808f6b20dc2e5ae6c0d5e23cf9bd185aa3438c457d5c8dc9f41"
+        },
+        "bindings": {
+          "attestation_head_matches_pin": true,
+          "attestation_request_digest_matches_pin": true,
+          "attestation_request_bytes_matches_pin": true,
+          "request_blob_matches_attestation": true,
+          "request_blob_matches_task_pin": true,
+          "review_md_blob_matches_pin": true
+        },
+        "recursive_delta_paths": [
+          "execution_order[3]",
+          "expected_readback.party_migrations_applied",
+          "party_schema.chain_digest",
+          "party_schema.ordered_migrations.length",
+          "party_schema.ordered_migrations[38].bytes",
+          "party_schema.ordered_migrations[38].path",
+          "party_schema.ordered_migrations[38].sha256",
+          "party_schema.ordered_migrations[39]",
+          "party_schema.owner_migration_module.bytes",
+          "party_schema.owner_migration_module.sha256",
+          "source_commit"
+        ],
+        "recursive_delta": [
+          {
+            "path": "execution_order[3]",
+            "old": "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-037 inside one transaction.",
+            "new": "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-040 inside one transaction."
+          },
+          {
+            "path": "expected_readback.party_migrations_applied",
+            "old": 39,
+            "new": 40
+          },
+          {
+            "path": "party_schema.chain_digest",
+            "old": "b3662352cb66a6ae1244fc6f778e813f1c6af9fc7b09a41b81abb318e4661a0e",
+            "new": "3e50597b60a0bf9538ce48ec6a15684233688a95dfcac30b93ddda3f9b1257fd"
+          },
+          {
+            "path": "party_schema.ordered_migrations.length",
+            "old": 39,
+            "new": 40
+          },
+          {
+            "path": "party_schema.ordered_migrations[38].bytes",
+            "old": 291,
+            "new": 12763
+          },
+          {
+            "path": "party_schema.ordered_migrations[38].path",
+            "old": "schemas/party-db/040_party_runtime_visible_package_initial_state.sql",
+            "new": "schemas/party-db/039_party_runtime_local_lines.sql"
+          },
+          {
+            "path": "party_schema.ordered_migrations[38].sha256",
+            "old": "8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76",
+            "new": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007"
+          },
+          {
+            "path": "party_schema.ordered_migrations[39]",
+            "old": "<absent>",
+            "new": {
+              "path": "schemas/party-db/040_party_runtime_visible_package_initial_state.sql",
+              "bytes": 291,
+              "sha256": "8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76"
+            }
+          },
+          {
+            "path": "party_schema.owner_migration_module.bytes",
+            "old": 5510,
+            "new": 5547
+          },
+          {
+            "path": "party_schema.owner_migration_module.sha256",
+            "old": "8571f10a22e4ffa752572167f087edef6ef194005bac86ddbdd2d18c6f70591e",
+            "new": "4317a73860bf752a1a8dc7feac2fe7da3d3491aa40d1dcf06b49ba0bad54262c"
+          },
+          {
+            "path": "source_commit",
+            "old": "533bcba3f5ff38927a507895586218d6214247f0",
+            "new": "45505b37fb1fbe4a1b253a482b2bb40edb4135eb"
+          }
+        ],
+        "expected_recursive_delta_paths": [
+          "execution_order[3]",
+          "expected_readback.party_migrations_applied",
+          "party_schema.chain_digest",
+          "party_schema.ordered_migrations.length",
+          "party_schema.ordered_migrations[38].bytes",
+          "party_schema.ordered_migrations[38].path",
+          "party_schema.ordered_migrations[38].sha256",
+          "party_schema.ordered_migrations[39]",
+          "party_schema.owner_migration_module.bytes",
+          "party_schema.owner_migration_module.sha256",
+          "source_commit"
+        ],
+        "review_md_delta": {
+          "changed": true,
+          "exact_metadata_only": true,
+          "expected_replacements": [
+            [
+              "533bcba3f5ff38927a507895586218d6214247f0",
+              "45505b37fb1fbe4a1b253a482b2bb40edb4135eb"
+            ],
+            [
+              "b3662352cb66a6ae1244fc6f778e813f1c6af9fc7b09a41b81abb318e4661a0e",
+              "3e50597b60a0bf9538ce48ec6a15684233688a95dfcac30b93ddda3f9b1257fd"
+            ],
+            [
+              "39 party migrations",
+              "40 party migrations"
+            ],
+            [
+              "applied: 39",
+              "applied: 40"
+            ],
+            [
+              "`a726a73e6d08d315053f7eeabbbb2f521189645b5ac57c1ebea91370693d01a8` (16393 bytes)",
+              "`b512a084c1ebe73a35d8471ffccee894d883ece562524ece2576da96c0b1f0a8` (16589 bytes)"
+            ]
+          ],
+          "old_sha256": "fcdaf585a512a808f6b20dc2e5ae6c0d5e23cf9bd185aa3438c457d5c8dc9f41",
+          "new_sha256": "e06d1ee49f54fc98deb1f081a958fee406f1acc9488971065e86fab14fc120f9"
+        }
+      }
+    },
+    "migration_identity": {
+      "039": {
+        "path": "schemas/party-db/039_party_runtime_local_lines.sql",
+        "approved_source_commit": "9ffee5eda34404578a3e2107b6a90782523ba367",
+        "approved_bytes": 12763,
+        "approved_sha256": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007",
+        "approved_request_entry": {
+          "path": "schemas/party-db/039_party_runtime_local_lines.sql",
+          "bytes": 12763,
+          "sha256": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007"
+        },
+        "current_bytes": 12763,
+        "current_sha256": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007",
+        "byte_identical": true,
+        "approved_input_hash_matches": true
+      },
+      "040": {
+        "path": "schemas/party-db/040_party_runtime_visible_package_initial_state.sql",
+        "approved_source_commit": "533bcba3f5ff38927a507895586218d6214247f0",
+        "approved_bytes": 291,
+        "approved_sha256": "8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76",
+        "approved_request_entry": {
+          "path": "schemas/party-db/040_party_runtime_visible_package_initial_state.sql",
+          "bytes": 291,
+          "sha256": "8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76"
+        },
+        "current_bytes": 291,
+        "current_sha256": "8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76",
+        "byte_identical": true,
+        "approved_input_hash_matches": true
+      }
+    },
+    "ddl_combination": "Static full-text inspection including function v3_event_causal_integrity: 039 concerns local-line/travel tables and causal-event function; 040 only replaces visible-package committed_state_version CHECK >=1 with >=0. No intersecting table references, no extra DDL from combination; owner differs only by missing array entry.",
+    "fingerprints": {
+      "schema": "ap-fresh-v12-fingerprint-verification/v1",
+      "ok": true,
+      "reviewed_head": "a442b9aac414865f19dfa2206134889e72f09bd5",
+      "commit_changed_paths": [
+        "apps/game-server/src/composition/production-spatial-v3-release-v17.js",
+        "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+        "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md",
+        "scripts/v17-party-production-catalog-ledger.test.mjs",
+        "tools/runtime-catalog-activation/src/forward-migrations.js",
+        "tools/runtime-catalog-activation/test/forward-migration.test.js"
+      ],
+      "measurement_path": "/srv/novgorod-work/fleet/tasks/lines-b1/out/sync/fingerprint-recalc-step-g.json",
+      "measurement_sha256": "e12c7e69da16ca76a472b6c949d0941d3a09e94a28fd961a040a92c43c2f0dec",
+      "measurement": {
+        "migration_count": 40,
+        "migration_chain_digest": "3e50597b60a0bf9538ce48ec6a15684233688a95dfcac30b93ddda3f9b1257fd",
+        "world_base": {
+          "source": "34fb081a453053175c95900ac6cdb239f74bfcaf35184d5614eda93ea8638849",
+          "catalog_target": "2d354a46c0b45b8f0a24944c3bd9d1082666511d4b8cfe805da4974674ea41d8",
+          "actor_target": "a085a88b460eb8d0e655bae29a01e1b56c92054dc901969bd9b1ac50cbc8f143"
+        },
+        "party_runtime": {
+          "source": "ec03c537f70470ef503b69f6354e17ab8ae5efac34b497088a438fc5c9aa0944",
+          "catalog_target": "30c9bced614255d8287cd8a32975b526e74f33e65ee4fbd2e4c8f758a065f209",
+          "actor_source": "30c9bced614255d8287cd8a32975b526e74f33e65ee4fbd2e4c8f758a065f209",
+          "actor_target": "3d376bf1ff96b44755afbcc70b7171ff332d51c478f6916a6b05d5950dc33e81"
+        }
+      },
+      "four_repinned_files": [
+        {
+          "path": "apps/game-server/src/composition/production-spatial-v3-release-v17.js",
+          "line": 18,
+          "bytes": 5341,
+          "sha256": "cc6cccba803947800613d82113896e1a75c0ec1427ba99e3230276074526221d",
+          "git_blob_head": "b3c4cdb2fe75233e18d8b29924a1f94588613516",
+          "git_blob_worktree": "b3c4cdb2fe75233e18d8b29924a1f94588613516",
+          "head_blob_matches_file": true
+        },
+        {
+          "path": "tools/runtime-catalog-activation/src/forward-migrations.js",
+          "line": 101,
+          "bytes": 9205,
+          "sha256": "17dd8fc1ee90d3966cab7d4192b7c4ee8f559277fac4e180a77a30a5528f6c9a",
+          "git_blob_head": "d8ec60fe992d9b163a60b196a11b435bba585b0f",
+          "git_blob_worktree": "d8ec60fe992d9b163a60b196a11b435bba585b0f",
+          "head_blob_matches_file": true
+        },
+        {
+          "path": "tools/runtime-catalog-activation/test/forward-migration.test.js",
+          "line": 162,
+          "bytes": 12757,
+          "sha256": "51dacb045e08c0ed05afbd96ef786f81c027f745897bcd351a68ef4f29d858f4",
+          "git_blob_head": "c6a9ab3523b4e7cf0cb3f63d443938bcd1c96e9c",
+          "git_blob_worktree": "c6a9ab3523b4e7cf0cb3f63d443938bcd1c96e9c",
+          "head_blob_matches_file": true
+        },
+        {
+          "path": "scripts/v17-party-production-catalog-ledger.test.mjs",
+          "line": 20,
+          "bytes": 863,
+          "sha256": "4d4524272ce5e3a782c066a2923b8a770bdb79e81da4ea29e1311bb8d34f9d43",
+          "git_blob_head": "24a4567737a8cbdb38d3c09c7105d91921f39880",
+          "git_blob_worktree": "24a4567737a8cbdb38d3c09c7105d91921f39880",
+          "head_blob_matches_file": true
+        }
+      ],
+      "checks": {
+        "step_g_matches_expected_all_fields": "PASS",
+        "four_head_blobs_equal_worktree_file_bytes": "PASS",
+        "source_to_target_checkpoints": "PASS",
+        "actor_source_equals_catalog_target_world_and_party": "PASS",
+        "release_owner_pin_exact": "PASS",
+        "all_forward_migration_source_target_fields_exact": "PASS",
+        "changed_party_test_literals_and_world_chain_relation_exact": "PASS",
+        "ledger_test_asserts_exact_release_target": "PASS",
+        "commit_changed_paths_are_exact_four_repins_plus_request_review": "PASS",
+        "pg_log_marker_exactly_matches_measurement": "PASS",
+        "pg_log_counts": {
+          "tests": 1,
+          "pass": 1,
+          "fail": 0,
+          "skipped": 0
+        }
+      },
+      "pg_evidence": {
+        "path": "/srv/novgorod-work/fleet/tasks/lines-b1/pg/res-20261007T111740.477094Z-1.log",
+        "bytes": 1156,
+        "sha256": "094b13f3f597c503ef8d563cede323fea552683615b60bf743589a30a0c5b415",
+        "marker_line": 3,
+        "success_line": 4,
+        "test_counts_lines": {
+          "tests": 5,
+          "pass": 7,
+          "fail": 8,
+          "skipped": 10
+        },
+        "measurement_scope": "helper asserts 40 party files and exact tail 039 then 040; applies each party SQL, snapshots source/catalog/actor, and applies all 30 world parts followed by catalog/actor SQL in disposable PostgreSQL",
+        "limitation": "measurement validates schema application and fingerprints in disposable PostgreSQL; it does not establish runtime/deployment acceptance"
+      },
+      "provenance_refs": {
+        "measurement_helper": "fleet/tasks/lines-b1/out/sync/party-fingerprint-recalc.mjs:17-22,30-44,50-61",
+        "temporary_pg_caller": "fleet/tasks/lines-b1/questions.md:2081 (allowlisted wrapper path and invocation protocol); wrapper was removed after run per fleet/tasks/lines-b1/questions.md READY-lines-b1-sync-request section",
+        "chain_definition": "worktrees/lines-b1/apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js:5-15 (40 entries and ordered digest)"
+      },
+      "external_findings": {
+        "status": "none observed within this fingerprint/evidence subtask",
+        "scope_limit": "unrelated runtime, schema, and data behavior were not audited"
+      }
+    },
+    "fresh_schema_gate": "Verbatim bootstrap lines 101–147 tested in VM against this artifact; see gate-results.json. Candidate accepted, old catalog lacks current binding, in-memory integration selects exactly v12; invalid fields and duplicate binding rejected. No bootstrap import or DB call.",
+    "acceptance_test_pins": [
+      {
+        "path": "apps/game-server/test/spatial-v3-expansion-initial-state-postgres.test.js",
+        "sha256": "14c40b7387e4dbd1fbe52ef6cdefe8ce88c1087c6363ccebdfda5f6ee342e4af",
+        "head_blob_equals_worktree": true,
+        "run_by_this_auditor": false
+      },
+      {
+        "path": "apps/game-server/test/spatial-v3-generated-expansion-initial-state.test.js",
+        "sha256": "388bd74f4ed4e5b8fd04cd44d551a73279274007e17c4415e21512d4e89a3acf",
+        "head_blob_equals_worktree": true,
+        "run_by_this_auditor": false
+      },
+      {
+        "path": "packages/contracts/test/visible-package-initial-state.test.js",
+        "sha256": "af50974aec6d59ca05d9e2462d40fd2509235385e19ac44bee435e98fdf480b6",
+        "head_blob_equals_worktree": true,
+        "run_by_this_auditor": false
+      }
+    ],
+    "documentation_notes": "Request execution_order[3] says 001-040; review MD says 40 migrations. Stale 001-037 is corrected (#491).",
+    "limitations": [
+      "PG evidence is author-supplied measurement on disposable PostgreSQL, not a new run or acceptance-suite proof; log does not pin full tested HEAD.",
+      "No live cluster identity, backups, DB absence/emptiness, target execution/readback, import, activation or cutover checked.",
+      "224/133 table counts are expected readbacks, not independently measured here.",
+      "Actual v12 integration and post-integration gate/P22/P16 suites were not run. Gate does not enforce textual execution_preconditions."
+    ]
+  },
+  "approval": "Условно утверждены точные fresh schema definitions и ordered inputs запроса b512a084c1ebe73a35d8471ffccee894d883ece562524ece2576da96c0b1f0a8 при reviewed HEAD a442b9aac414865f19dfa2206134889e72f09bd5. Объединение 039 и 040 допустимо, репин согласован. Сохраняются условия v10/v11; это не окончательная gameplay-приёмка и не разрешение операторского исполнения.",
+  "execution_preconditions": [
+    "Ведущий принимает и интегрирует v12 побайтно рядом с запросом, сохраняя v10/v11 историей. Selector exact request_path/request_digest выбирает только v12; действующие post-integration gate checks должны пройти. В этом аудите интеграция лишь смоделирована в памяти.",
+    "Сохранённое условие v11: закреплённые P22 и P16 (acceptance_test_pins) должны стать GREEN целиком, все subtests без skips, на exact combined request/chain. Приложить логи и pins к сдаче. При провале аттестация недействительна. Измерительный PG PASS шага (г) не заменяет эту приёмку; bootstrap JSON gate это условие не проверяет. Три test hashes остаются неизменными.",
+    "Перед отдельно разрешённым исполнением сверить SHA-256 и длины всех 72 schema inputs, request и review MD, owner list 001–040 и chain 3e50597b60a0bf9538ce48ec6a15684233688a95dfcac30b93ddda3f9b1257fd. Применять полную owner chain в одной транзакции, applied 40. Любое изменение утверждённых байтов снимает approval.",
+    "Любое создание/переименование БД или schema write требует отдельной явной команды владельца. Проверить managed cluster identity/version, exact target names/owners, backups и исходные counts старых БД. Оба имени v17 должны отсутствовать; после отдельно разрешённого создания targets должны быть пустыми и иметь нужного owner. При несоответствии стоп без drop/reuse/overwrite.",
+    "World entrypoint применять целиком с ON_ERROR_STOP в одной транзакции только к доказанно свежему target: part 01 включает DROP world_base CASCADE. Старые БД и saves не менять.",
+    "После отдельно разрешённого schema execution нужна независимая execution attestation actual readbacks: 224 world tables и world_reader grants, ожидаемые 133 party tables, applied 40 с exact digest, пустые data/parties и неизменные old row counts. Каждый import/activation/cutover требует собственной approval."
+  ],
+  "excludes": [
+    "database creation/rename/drop/reuse/overwrite or actual schema writes",
+    "data import, catalog activation, runtime/default startup cutover",
+    "mutation of existing databases/saves",
+    "live execution attestation/readback",
+    "full lines-b1/#467 gameplay and LLM acceptance"
+  ],
+  "database_mutated_by_review": false,
+  "repository_mutated_by_review": false,
+  "out_of_scope_findings": [
+    {
+      "problem": "REFERENCE-карта DB_SCHEMA устарела: 26 world parts и party 001–039/count 39; следующий номер указан после 039 при фактической цепочке 001–040.",
+      "file_line": "docs/context/DB_SCHEMA.md:17",
+      "additional_file_lines": [
+        "docs/context/DB_SCHEMA.md:18",
+        "docs/context/DB_SCHEMA.md:76",
+        "docs/context/DB_SCHEMA.md:79",
+        "docs/context/DB_SCHEMA.md:111"
+      ],
+      "evidence": "Request содержит 30 world parts и 40 SQL; owner manifest spatial-v3-target-migrations.js:4 заканчивается 040; независимые скрипты проверили точный состав.",
+      "known_issue": null,
+      "action": "Отдельный issue заводит ведущий; документы не исправлялись. Похожий дрейф отмечен в v11, номер отдельного issue не установлен."
+    },
+    {
+      "problem": "Отложены интеграция v12, проверки gate после интеграции и закреплённые P22/P16 на объединённой цепочке.",
+      "file_line": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v11.json:74",
+      "evidence": "Условие v11 требует полного GREEN без skips; fingerprint PG-log содержит только один measurement test и не подтверждает эти acceptance suites.",
+      "known_issue": "#467 (initial-state); #491 (combined-chain sync)",
+      "action": "Передать ведущему в качестве сохранённых условий; результат этого аудита их не снимает."
+    }
+  ]
+}

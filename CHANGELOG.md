@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(runtime-catalog): cache successful G4 projections and approved place-label validation (#527, #513)
 - fix(body-state): bind approved satiety and awake-energy profiles to elapsed v17 activity time (#244)
 - fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)

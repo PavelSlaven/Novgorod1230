@@ -30,6 +30,12 @@ natural profiles from the existing verified compiled-record membership. It
 requires matching world/catalog pins, immutable payload digests and one
 profile per G4 version. Authoring candidates are not runtime input.
 
+The natural, presentation and placement G4 projections cache successful
+validation per verified catalog object and canonical pin. Only deeply frozen
+verified inputs use the cache; mutable inputs keep the uncached validation
+path. Failed stages are retried, while completed successful stages can be
+reused by later projections.
+
 - `createRuntimeCatalogLoader({ worldBaseReader, supportedRuntimeContractDigests })`;
 - `loadActivePin({ catalogScope })`;
 - `loadActiveRuntimeCatalogPin(queryClient, catalogScope)` из

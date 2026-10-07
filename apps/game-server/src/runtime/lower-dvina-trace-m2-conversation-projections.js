@@ -306,9 +306,9 @@ function selectSpeechAddress(forms, {
       && filled(form.form_ru)
       && russianSpeechText(form.form_ru)
       && !filled(form.payload?.no_source)
-      && filled(form.speaker_role_ref)
       && filled(form.addressee_role_ref)
-      && targetKeys.has(form.speaker_role_ref)
+      && (!filled(form.speaker_role_ref)
+        || targetKeys.has(form.speaker_role_ref))
       && interlocutorKeys.has(form.addressee_role_ref)
       && formRefMatches(form.speaker_ref, speakerRef)
       && formRefMatches(form.addressee_ref, addresseeRef));

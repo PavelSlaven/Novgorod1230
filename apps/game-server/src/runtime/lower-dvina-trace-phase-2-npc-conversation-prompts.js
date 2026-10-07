@@ -3,7 +3,7 @@ import { requiredNpcConversationCandidate, routeDisclosureCandidate,
   routeDisclosureCandidateIsValid } from
   './lower-dvina-trace-npc-required-conversation-candidate.js';
 
-export const NPC_INTERLOCUTOR_SPEECH_INSTRUCTION = 'Учитывай переданные сведения о собеседнике, допустимом обращении и регистре; неизвестное не додумывай, обращение не обязательно, а форма обращения сама по себе не устанавливает связь, полномочия или обязанности';
+export const NPC_INTERLOCUTOR_SPEECH_INSTRUCTION = 'Учитывай переданные сведения о собеседнике, допустимом обращении и регистре; неизвестное не додумывай, обращение не обязательно, а форма обращения сама по себе не устанавливает связь, полномочия или обязанности.\n';
 
 export { requiredNpcConversationCandidate };
 export function npcConversationCandidates(request) {

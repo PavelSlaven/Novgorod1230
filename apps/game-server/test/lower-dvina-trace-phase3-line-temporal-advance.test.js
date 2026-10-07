@@ -175,6 +175,7 @@ test('line window resolves a real due NPC routine through Phase 2 temporal owner
     pending_event_count: 0,
     active_schedule_count: 1,
     candidate_count: state.temporal_boundary_candidates.length,
+    npc_schedule_runtime: structuredClone(state.npc_schedule_runtime),
     candidates: structuredClone(state.temporal_boundary_candidates)
   };
   const temporalEngine = createTemporalAdvanceOwner({

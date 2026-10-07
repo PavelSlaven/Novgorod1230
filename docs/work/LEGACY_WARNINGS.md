@@ -117,6 +117,7 @@
 | 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 128 | `packages/turn/src/turn-step-admission.js:57–67`, `test/spatial-v3/prepared-destination-light-seam-postgres.test.js` | approved route operation отсутствует в проверенном continuation после ожидания; точный menu regression ждёт exit-one-action | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 129 | `lower-dvina-trace-conversation-llm.js`, conversation prompt builders | разговорные роли получают канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 | — |
+| 136 | `@rus/movement-routes`, правила среды `world_base` | время пути пока не зависит от погоды и света до загрузки правил среды | [#321](https://github.com/PavelSlaven/Novgorod1230/issues/321) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -703,3 +704,9 @@
 - **Что.** Вход разговорных ролей — канонический DTO, нарушение D72/D78; проекция P отвергнута судьями 2026-10-05 (опора 1,58 → 1,28); условие закрытия — проекция, прошедшая стенд.
 - **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
 - **Issue.** —
+
+### LW-136 — время пути пока не зависит от погоды и света до загрузки правил среды (movement-routes)
+- **Где.** `@rus/movement-routes`; правила погоды и света в `world_base`.
+- **Что.** До загрузки правил среды в `world_base` время пути не зависит от погоды и света (#321).
+- **Как жить.** Не считать рассчитанное время пути учитывающим погоду или свет до загрузки правил среды в `world_base` и подключения их к расчёту.
+- **Issue.** [#321](https://github.com/PavelSlaven/Novgorod1230/issues/321)

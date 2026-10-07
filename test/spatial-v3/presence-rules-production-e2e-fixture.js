@@ -553,7 +553,10 @@ const zeroVectorEncoderFactory = () => ({
 export async function createPresenceProductionRoot({
   worldPool, partyPool, approvals, rootDir, llmSettings = null, extraConfig = {},
   env = FIXTURE_ROOT_ENV, worldKnowledgeEncoderFactory = zeroVectorEncoderFactory,
-}, { testOnlyProjectEnvironmentAtClock = null } = {}) {
+}, {
+  testOnlyProjectEnvironmentAtClock = null,
+  testOnlyProjectStartMaterializationInput = null,
+} = {}) {
   let readCurrentVisibleContext = null;
   const pinDigest = approvals.itemApproval.request.compatible_world_pin_manifest_digest;
   const rootOptions = {
@@ -587,7 +590,25 @@ export async function createPresenceProductionRoot({
     ...(testOnlyProjectEnvironmentAtClock == null ? {} : { testOnlyProjectEnvironmentAtClock }),
     bindingsFactory: async (context) => {
       readCurrentVisibleContext = context.readCurrentVisibleContext ?? null;
-      return loadSpatialV3RuntimeBindings(context.config.spatialV3BindingsModule, context);
+      const targetStartRuntime = context.targetStartRuntime;
+      const bindingsContext = testOnlyProjectStartMaterializationInput == null
+        ? context
+        : {
+          ...context,
+          targetStartRuntime: {
+            ...targetStartRuntime,
+            starts: targetStartRuntime.starts.map((startRuntime, startIndex) => ({
+              ...startRuntime,
+              materialization_inputs: testOnlyProjectStartMaterializationInput({
+                materializationInput: startRuntime.materialization_inputs,
+                startRuntime,
+                startIndex,
+                context,
+              }),
+            })),
+          },
+        };
+      return loadSpatialV3RuntimeBindings(context.config.spatialV3BindingsModule, bindingsContext);
     },
     ...(worldKnowledgeEncoderFactory == null ? {} : { worldKnowledgeEncoderFactory }),
   };

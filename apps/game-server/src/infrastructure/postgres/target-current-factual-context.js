@@ -34,10 +34,12 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
     const projected = projectCalendar(clock, calendarProfile);
     const minute = Number(BigInt(projected.local_time_of_day.numerator)
       / BigInt(projected.local_time_of_day.denominator));
-    return projectApprovedCurrentEnvironment({ calendar_record: calendar,
+    const environmentProjection = projectApprovedCurrentEnvironment({ calendar_record: calendar,
       weather_record: weather, current_environment: environment,
       calendar_date: { year: Number(projected.year), month: Number(projected.month), day: Number(projected.day) },
       local_minute_of_day: minute });
+    return Object.freeze({ ...environmentProjection, effects: Object.freeze({ ...environmentProjection.effects,
+      movement_factor: Object.freeze({ numerator: '1', denominator: '1' }) }) });
   }
   return Object.freeze({
     projectEnvironmentAtClock: ({ state, clock }) => projectEnvironment(state, clock),

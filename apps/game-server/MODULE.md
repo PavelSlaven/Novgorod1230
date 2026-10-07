@@ -902,15 +902,17 @@ restrained actor is refused the same way and its continuation is dropped. This i
 while restraint blocks the actor's actions in practice; the test
 `a restrained actor's non-movement not_achieved plan is refused too` pins it.
 
-Approach to an exit. When the actor is not yet at a departure position, the exit is
-offered as a plain local `request_movement` to the first step of a path to it. The
-first step is only an edge that `listLocalOptions` lists now (visible, eligible,
-admitted) and carries that edge's own status; the local-scene owner applies the hop.
-`route_ref` (the exit id) on this local operation is not read by the movement owner:
-it only keeps the approach structurally distinct from the plain local operation for
-the same edge, because binding `matches()` compares structure and ignores
-`description` (without it two commands claim one operation,
-`TURN_STEP_DOMAIN_BINDING_AMBIGUOUS`). The way-of-going wording is approved data
+Following an exit or canonical G5 connection. When the actor is not yet at a
+departure position, each is offered as one route `request_movement`, named by its
+approved label (`follow_directional_exit` or `follow_canonical_connection`). Any
+ordered path through hidden positions stays inside the command. The path's first
+edge must be among the edges currently listed by `listLocalOptions`; the local-scene
+owner rechecks admission and occupancy for the whole path and returns its proof to
+the route preparation and traversal owners. An occupied first edge is refused by
+that owner before route preparation or traversal; it is not a separate local move
+or a label-based refusal. Repeated ids between direct and approach options are a
+typed data gap. Player-visible choices contain one route operation, not an
+additional command for the first local edge. The way-of-going wording is approved data
 (`m2c-pass-target-labels` `passage_phrases`), not text composed in code.
 Exit labels are selected by `spatial-v3-exit-label-policy.js`: a unique approved
 pass-target description at the current place, then the exact exit row in the

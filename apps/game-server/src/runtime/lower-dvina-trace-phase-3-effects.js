@@ -41,7 +41,7 @@ export function createTracePhase3TemporalAdvance({ phase2Advance }) {
                 root_elapsed: input.exact_elapsed?.exact_minutes ?? null,
                 traversal_elapsed: elapsed ?? null,
                 root_clock_before: input.clock_before ?? null,
-                traversal_clock_before: traversal.clock_update?.world_time_before ?? null
+                traversal_clock_before: traversal?.clock_update?.world_time_before ?? null
               })}`),
               { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' });
           }
@@ -60,8 +60,8 @@ export function createTracePhase3TemporalAdvance({ phase2Advance }) {
                 root_elapsed: input.exact_elapsed?.exact_minutes ?? null,
                 traversal_elapsed: elapsed,
                 root_clock_before: input.clock_before ?? null,
-                traversal_clock_before: traversal.clock_update?.world_time_before ?? null,
-                traversal_clock_after: traversal.clock_update?.world_time_after ?? null,
+                traversal_clock_before: traversal?.clock_update?.world_time_before ?? null,
+                traversal_clock_after: traversal?.clock_update?.world_time_after ?? null,
                 advanced_elapsed: advanced.exact_elapsed?.exact_minutes ?? null,
                 advanced_clock_after: advanced.clock_after ?? null
               })}`),

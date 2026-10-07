@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- docs(tech-debt): record route time independence from weather and light until world_base environment rules load; LW-136 added (#321)
 - fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)

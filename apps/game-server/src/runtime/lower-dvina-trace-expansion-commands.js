@@ -95,6 +95,18 @@ export async function createTraceExpansionCommands({ state, requestId,
         matches: ({ operation: selected }) => selected != null
           && isDeepStrictEqual({ ...selected, description: label }, operation)
       },
+      async attemptRefusal({ committed_state: current }) {
+        if (orderedLocalEdgePath.length === 0) return null;
+        if (typeof spatialLocalSceneRuntime?.localEdgeAttemptStatus !== 'function') {
+          fail('SPATIAL_V3_LOCAL_LINE_APPROACH_OWNER_MISSING');
+        }
+        const status = await spatialLocalSceneRuntime.localEdgeAttemptStatus({ ...identity,
+          state: current, edgeId: orderedLocalEdgePath[0].edge_id });
+        if (status == null) fail('SPATIAL_V3_LOCAL_LINE_APPROACH_EDGE_UNAVAILABLE');
+        if (status === 'occupied') return true;
+        if (status !== 'open') fail('SPATIAL_V3_LOCAL_LINE_APPROACH_STATUS_INVALID');
+        return null;
+      },
       availability({ committed_state: current, retrievedState }) {
         const state = current ?? retrievedState;
         const sourceReady = currentSource(state);

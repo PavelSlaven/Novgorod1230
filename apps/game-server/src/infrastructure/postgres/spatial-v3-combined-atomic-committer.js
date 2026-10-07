@@ -100,7 +100,7 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         return rejectedBeforeCommit('generated_schema_mismatch', party_id,
           { reason: 'server-owned expansion identity and preparation are required' });
       }
-      try { return await withTransaction(async (transaction) => {
+      try { const result = await withTransaction(async (transaction) => {
         await lockSpatialV3WritePlan(transaction, [
           `01:clock:${party_id}`, `04:g4:${party_id}:${g4_id}`
         ]);
@@ -143,13 +143,13 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         });
         return scoped.commit({ plan, recheck: prepared.recheck ?? recheck,
           created_at_turn: prepared.created_at_turn ?? 0 });
-      }); } catch (cause) {
-        return Object.freeze({ ok: false, error: error(
-          cause.spatialCode ?? 'generated_schema_mismatch', party_id, {
-            reason: cause.message,
-            ...(cause.transaction_rollback_confirmed === true
-              ? { turn_commit_status: 'not_started' } : {})
-          }) });
+      });
+        if (result?.ok !== false) return result;
+        const { transaction_rollback_confirmed: rollbackConfirmed, ...publicResult } = result;
+        return rollbackConfirmed === true && result.in_progress !== true
+          ? markNotStarted(publicResult) : Object.freeze(publicResult);
+      } catch (cause) {
+        return Object.freeze({ ok: false, error: spatialCommitFailure(cause, party_id) });
       }
     },
     async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck, turnBudget = null } = {}) {
@@ -334,10 +334,21 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
     }, turnBudget); if (result?.ok !== false) return result; const { transaction_rollback_confirmed: rollbackConfirmed, ...publicResult } = result; return rollbackConfirmed === true && result.in_progress !== true ? markNotStarted(publicResult) : Object.freeze(publicResult);
     } catch (cause) {
       if (cause?.code === 'LLM_TURN_BUDGET_EXHAUSTED') throw cause;
-      const diagnostics = { reason: cause.message, ...(cause?.transaction_rollback_confirmed === true ? { turn_commit_status: 'not_started' } : {}) };
-      return Object.freeze({ ok: false, error: error(cause.spatialCode ?? 'generated_schema_mismatch', plan.party_id, diagnostics) });
+      return Object.freeze({ ok: false, error: spatialCommitFailure(cause, plan.party_id) });
     }
   } });
+}
+function spatialCommitFailure(cause, partyId) {
+  const visibleContextGap = cause?.code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP';
+  const diagnostics = {
+    reason: visibleContextGap
+      ? cause.details?.reason ?? cause.message : cause.message,
+    ...(cause?.transaction_rollback_confirmed === true
+      ? { turn_commit_status: 'not_started' } : {})
+  };
+  return visibleContextGap
+    ? Object.freeze({ code: cause.code, diagnostics: Object.freeze(diagnostics) })
+    : error(cause.spatialCode ?? 'generated_schema_mismatch', partyId, diagnostics);
 }
 function rejectedBeforeCommit(code, partyId, diagnostics) { return Object.freeze({ ok: false, error: error(code, partyId, { ...diagnostics, turn_commit_status: 'not_started' }) }); }
 function markNotStarted(result) { return Object.freeze({ ...result, error: Object.freeze({ ...result.error, diagnostics: Object.freeze({ ...result.error?.diagnostics, turn_commit_status: 'not_started' }) }) }); }

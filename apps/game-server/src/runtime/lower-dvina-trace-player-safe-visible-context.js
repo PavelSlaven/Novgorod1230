@@ -9,6 +9,8 @@ import {
   optionalVisibleText
 } from './lower-dvina-trace-player-safe-json.js';
 import { playerSafeOrdinalLabel } from '../public-boundary.js';
+import { resolveVisibleItemLabel } from './lower-dvina-trace-visible-item-label.js';
+import { serverError } from '../errors.js';
 
 const VISIBLE_CONTEXT_KEYS = new Set([
   'version', 'schema', 'visible_scene', 'visible_changes', 'sensory_details',
@@ -47,32 +49,47 @@ export function projectPhase2VisibleContext(payload) {
 }
 
 export function projectVisibleContextForPlayerPackage(value, {
-  onLabelGapsOmitted = null
+  onLabelGapsOmitted = null, requireScene = false
 } = {}) {
   const playerSafeContext = projectVisibleContext(value, {
     path: 'visible_context'
   });
+  if (requireScene && (typeof playerSafeContext?.visible_scene !== 'string'
+    || !playerSafeContext.visible_scene.trim())) {
+    throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
+      'A safe player-visible scene is required.', {
+        status: 409,
+        details: { reason: 'player_safe_visible_scene_required' }
+      });
+  }
   const visibleObjects = Array.isArray(value?.visible_objects)
     ? value.visible_objects : null;
+  const projectedVisibleObjects = Array.isArray(playerSafeContext?.visible_objects)
+    ? playerSafeContext.visible_objects : null;
   const itemLabelGap = (item) => item?.entity_ref?.entity_kind === 'item'
     && item?.label_gap?.code === 'player_safe_item_label_required';
-  const omittedCount = visibleObjects == null ? 0
-    : visibleObjects.filter(itemLabelGap).length;
-  const safeObjects = visibleObjects?.flatMap((item) => {
-    if (itemLabelGap(item)) return [];
+  const omittedCount = projectedVisibleObjects == null ? 0
+    : projectedVisibleObjects.filter(itemLabelGap).length;
+  const safeObjects = visibleObjects?.flatMap((item, index) => {
+    const projectedItem = projectVisibleRefs([item], false,
+      `visible_context.visible_objects[${index}]`)[0];
+    if (itemLabelGap(projectedItem)) return [];
     if (item?.label_gap?.code === 'player_safe_item_label_required') {
       return [structuredClone(item)];
     }
-    return projectVisibleRefs([item], false,
-      'visible_context.visible_objects');
+    return projectedItem == null ? [] : [projectedItem];
   });
   if (omittedCount > 0 && typeof onLabelGapsOmitted === 'function') {
     try { onLabelGapsOmitted(omittedCount); }
     catch { /* Diagnostics must not affect visible package construction. */ }
   }
+  const safeContext = { ...value, ...playerSafeContext,
+    ...(safeObjects == null ? {} : { visible_objects: safeObjects }) };
+  if (!Object.hasOwn(playerSafeContext ?? {}, 'visible_scene')) {
+    delete safeContext.visible_scene;
+  }
   return {
-    visible_context: { ...value, ...playerSafeContext,
-      ...(safeObjects == null ? {} : { visible_objects: safeObjects }) },
+    visible_context: safeContext,
     omitted_label_gap_count: omittedCount
   };
 }
@@ -85,11 +102,9 @@ export function projectVisibleContext(value, {
   const visibleScene = optionalVisibleText(value.visible_scene, {
     path: `${path}.visible_scene`, code: invalidCode()
   });
-  const safeVisibleScene = visibleScene ?? (typeof value.visible_scene === 'string'
-      && value.visible_scene.trim() ? 'Обстановка не описана.' : undefined);
   return compact({
     version: finite(value.version), schema: text(value.schema),
-    visible_scene: safeVisibleScene,
+    visible_scene: visibleScene,
     visible_changes: textArray(value.visible_changes, {
       strict, path: `${path}.visible_changes`, visible: true,
       code: invalidCode()
@@ -131,13 +146,17 @@ function projectVisibleRefs(records, strict, path) {
     if (strict) assertAllowedKeys(record, allowed, `${path}[]`, invalidCode());
     const labelGap = projectItemLabelGap(record.label_gap, entityRef, strict,
       `${path}[].label_gap`);
+    const resolvedItemLabel = entityRef?.entity_kind === 'item'
+      ? resolveVisibleItemLabel({ name: record.display_label }) : null;
+    const effectiveLabelGap = labelGap ?? (resolvedItemLabel?.kind === 'gap'
+      ? { code: resolvedItemLabel.code } : undefined);
     return compact({
       entity_ref: entityRef,
-      display_label: labelGap ? undefined : optionalVisibleText(
+      display_label: effectiveLabelGap ? undefined : optionalVisibleText(
         playerSafeOrdinalLabel(record.display_label, entityRef?.entity_kind), {
         path: `${path}[].display_label`, label: true, code: invalidCode()
       }) ?? safeGenericLabel(entityRef?.entity_kind),
-      label_gap: labelGap,
+      label_gap: effectiveLabelGap,
       recognition: text(record.recognition),
       visible_status: optionalVisibleText(record.visible_status, {
         path: `${path}[].visible_status`, statusField: true,

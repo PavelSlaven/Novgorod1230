@@ -52,5 +52,6 @@ test('exact committed NPC speech is rendered as escaped typed text', () => {
     exact_npc_utterances: [{ speaker_ref: {
       entity_kind: 'npc', entity_id: 'npc-1'
     }, utterance_text: 'До вечера.' }] });
-  assert.equal((repeated.match(/До вечера\./gu) ?? []).length, 1);
+  assert.equal((repeated.match(/До вечера\./gu) ?? []).length, 2);
+  assert.match(repeated, /<blockquote><strong>Собеседник<\/strong><p>До вечера\.<\/p><\/blockquote>/u);
 });

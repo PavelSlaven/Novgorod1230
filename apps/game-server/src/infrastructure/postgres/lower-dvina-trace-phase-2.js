@@ -303,17 +303,42 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       narrator, turnBudget, persistPhase2Screen });
   }
   async function commitPhase2Turn(input) {
-    return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget),
-      projectEnvironmentAtClock });
+    const commitState = { p16CommitCalls: 0 };
+    try {
+      return await commitLowerDvinaTracePhase2({ ...input,
+        ...commitPorts(input.turnBudget, commitState), projectEnvironmentAtClock });
+    } catch (cause) {
+      if (cause?.code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP'
+          && commitState.p16CommitCalls === 0
+          && cause.turn_commit_status == null) {
+        cause.turn_commit_status = 'not_started';
+      }
+      throw cause;
+    }
   }
-  function commitPorts(turnBudget = null) {
+  function commitPorts(turnBudget = null, commitState = null) {
     const loadState = turnBudget == null ? loadCommittablePhase2State :
       (partyId, options = {}) => loadCommittablePhase2State(
         partyId, { ...options, turnBudget });
     return { loadState, committer: {
       async commit(input) {
         turnBudget?.assertCanCommit();
-        return committer.commit({ ...input, turnBudget });
+        if (commitState != null) commitState.p16CommitCalls += 1;
+        const result = await committer.commit({ ...input, turnBudget });
+        if (result?.ok !== false
+            || result.error?.code !== 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP') {
+          return result;
+        }
+        const reason = result.error.diagnostics?.reason;
+        const failure = serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
+          'Complete player-visible scene data is required.', {
+            status: 409,
+            details: typeof reason === 'string' ? { reason } : null
+          });
+        if (result.error.diagnostics?.turn_commit_status === 'not_started') {
+          failure.turn_commit_status = 'not_started';
+        }
+        throw failure;
       }
     } };
   }

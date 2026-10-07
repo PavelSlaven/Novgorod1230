@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import {
   errorEnvelope,
+  operationalEnvelope,
   successEnvelope,
   validateLlmSettingsProbeRequest,
   validateLlmSettingsRequest,
@@ -29,13 +30,16 @@ export function createHttpHandler({
         const data = await executeRoute(route, {
           request, root, portraitNormalizer, maxBodyBytes, developerMode
         });
-        return sendJson(response, route.status ?? 200, successEnvelope(data, { requestId }));
+        const envelope = ['health', 'llm_turn_report'].includes(route.id)
+          ? operationalEnvelope(data, { requestId })
+          : successEnvelope(data, { requestId });
+        return sendJson(response, route.status ?? 200, envelope);
       }
       if (request.method === 'GET') {
         const asset = await staticAssets?.read(url.pathname);
         if (asset) return sendText(response, 200, asset.body, asset.contentType);
       }
-      return sendJson(response, 404, errorEnvelope({ code: 'ROUTE_NOT_FOUND', message: 'Route not found.', status: 404 }, { requestId }).body);
+      return sendJson(response, 404, errorEnvelope({ code: 'ROUTE_NOT_FOUND', message: 'Адрес не найден.', status: 404 }, { requestId }).body);
     } catch (error) {
       const failure = errorEnvelope(error, { requestId, developerMode });
       if (failure.body.error.code === 'TEMPORARY_ACTION_UNAVAILABLE'
@@ -77,7 +81,7 @@ async function executeRoute(route, context) {
   if (route.id === 'llm_settings') return context.root.getLlmSettings();
   if (route.id === 'llm_turn_report') {
     if (context.developerMode !== true || typeof context.root.getLlmTurnReport !== 'function') {
-      throw Object.assign(new Error('Route not found.'), { code: 'ROUTE_NOT_FOUND', status: 404 });
+      throw Object.assign(new Error('Адрес не найден.'), { code: 'ROUTE_NOT_FOUND', status: 404 });
     }
     const report = context.root.getLlmTurnReport({ party_id: route.partyId, request_id: route.requestId });
     if (report == null) throw Object.assign(new Error('LLM turn report not found.'), { code: 'LLM_TURN_REPORT_NOT_FOUND', status: 404 });

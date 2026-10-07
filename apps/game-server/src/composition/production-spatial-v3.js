@@ -555,7 +555,8 @@ export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transac
   const visible = projectSpatialV3CurrentVisibleContext({ ...sources,
     partyId, actorId, positionId });
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(visible, { onLabelGapsOmitted });
+    projectVisibleContextForPlayerPackage(visible,
+      { onLabelGapsOmitted, requireScene: true });
   const visible_payload = { schema: 'temporal_visible_package.v1',
     perceived_scene: playerContext.visible_scene,
     perceived_changes: playerContext.visible_changes ?? [],

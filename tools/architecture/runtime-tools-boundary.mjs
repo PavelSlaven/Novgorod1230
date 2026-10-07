@@ -3,6 +3,13 @@ import { dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url';
 
 const SOURCE_EXTENSIONS = new Set(['.js', '.mjs', '.cjs']);
+const FILE_PATH_OPERATIONS = new Set([
+  'access', 'accessSync', 'appendFile', 'appendFileSync', 'chmod', 'chmodSync', 'copyFile', 'copyFileSync',
+  'createReadStream', 'createWriteStream', 'existsSync', 'lstat', 'lstatSync', 'mkdir', 'mkdirSync',
+  'open', 'openSync', 'readFile', 'readFileSync', 'readdir', 'readdirSync', 'realpath', 'realpathSync',
+  'rename', 'renameSync', 'rm', 'rmSync', 'stat', 'statSync', 'unlink', 'unlinkSync', 'writeFile', 'writeFileSync'
+]);
+const PROCESS_PATH_OPERATIONS = new Set(['execFile', 'execFileSync', 'fork', 'spawn', 'spawnSync']);
 const REGEX_PREFIX_KEYWORDS = new Set([
   'await', 'case', 'delete', 'do', 'else', 'in', 'instanceof', 'new', 'of',
   'return', 'throw', 'typeof', 'void', 'yield'
@@ -56,7 +63,7 @@ export async function findRuntimeToolsBoundaryViolations({ root }) {
       const physicalApp = await resolveAppPath(physicalFile, appDirectories);
       if (physicalApp && physicalFile !== file) {
         reportToolAppEdge(violations, permissions, ownerFile, relativeFile,
-          physicalApp, 'tools source resolves to app');
+          relative(repositoryRoot, physicalApp).split(sep).join('/'), 'tools source resolves to app');
       }
       const source = await readFile(file, 'utf8');
       for (const specifier of importSpecifiers(source)) {
@@ -66,11 +73,12 @@ export async function findRuntimeToolsBoundaryViolations({ root }) {
             relative(repositoryRoot, target).split(sep).join('/'), 'tools import targets app', specifier);
         }
       }
-      for (const pathValue of pathReferences(source)) {
-        const target = await resolveBoundaryPath(pathValue, file, repositoryRoot, 'apps', appDirectories);
+      for (const pathValue of pathReferences(source, { ignoreFileReads: ownerRelative === 'tools/architecture' })) {
+        const target = await resolveBoundaryPath(pathValue.value, file, repositoryRoot, 'apps', appDirectories,
+          pathValue.dynamic);
         if (target) {
           reportToolAppEdge(violations, permissions, ownerFile, relativeFile,
-            relative(repositoryRoot, target).split(sep).join('/'), 'tools path targets app', pathValue);
+            relative(repositoryRoot, target).split(sep).join('/'), 'tools path targets app', pathValue.value);
         }
       }
     }
@@ -106,8 +114,9 @@ export async function findRuntimeToolsBoundaryViolations({ root }) {
           if (toolName) violations.push(`${relativeFile}: runtime import targets tools package ${toolName} (${specifier})`);
         }
         for (const pathValue of pathReferences(source)) {
-          const toolPath = await resolveBoundaryPath(pathValue, file, repositoryRoot, 'tools', toolOwners);
-          if (toolPath) violations.push(`${relativeFile}: runtime path targets tools (${pathValue})`);
+          const toolPath = await resolveBoundaryPath(pathValue.value, file, repositoryRoot, 'tools', toolOwners,
+            pathValue.dynamic);
+          if (toolPath) violations.push(`${relativeFile}: runtime path targets tools (${pathValue.value})`);
         }
       }
     }
@@ -206,7 +215,7 @@ async function resolveAppPath(target, apps) {
   return null;
 }
 
-async function resolveBoundaryPath(value, importer, root, boundary, directories) {
+async function resolveBoundaryPath(value, importer, root, boundary, directories, dynamic = false) {
   let target = null;
   if (/^[a-z][a-z\d+.-]*:/iu.test(value) && !value.startsWith('file:')) return null;
   if (value.startsWith('file:')) {
@@ -226,8 +235,10 @@ async function resolveBoundaryPath(value, importer, root, boundary, directories)
     if (isWithin(lexicalTarget, directory) || isWithin(physicalTarget, physicalDirectory)) return directory;
   }
 
-  // A template rooted in a runtime variable may retain only `/tools/...` or
-  // `/apps/...`; recover its repository-relative boundary path.
+  if (!dynamic) return null;
+
+  // Dynamic templates may retain only `/tools/...` or `/apps/...`; recover
+  // their repository-relative boundary path when the static suffix is known.
   const normalized = value.replaceAll('\\', '/');
   const segments = normalized.split('/');
   const index = segments.indexOf(boundary);
@@ -243,42 +254,113 @@ async function resolveBoundaryPath(value, importer, root, boundary, directories)
   return null;
 }
 
-function pathReferences(source) {
+function pathReferences(source, { ignoreFileReads = false } = {}) {
   const tokens = tokenize(source);
   const values = [];
+  const operationTokens = new Set();
+  const add = (value, dynamic = false) => {
+    if (typeof value === 'string' && isConcreteBoundaryPath(value)) values.push({ value, dynamic });
+  };
+
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
-    if (token.type === 'template' && isConcreteBoundaryPath(token.value)) values.push(token.value);
+    if (token.type === 'identifier' && tokens[index + 1]?.value === '(') {
+      const args = callArguments(tokens, index + 1);
+      if (FILE_PATH_OPERATIONS.has(token.value)) {
+        for (const argument of args.slice(0, 1)) {
+          for (const part of argument) operationTokens.add(part);
+          if (!ignoreFileReads) for (const value of staticPathValues(argument)) add(value);
+        }
+      } else if (PROCESS_PATH_OPERATIONS.has(token.value)) {
+        for (const argument of args) for (const part of argument) operationTokens.add(part);
+        for (const argument of args.slice(0, 2)) {
+          for (const value of staticPathValues(argument)) add(value);
+        }
+        for (const value of arrayArgumentValues(args[1] ?? [])) {
+          for (const pathValue of staticPathValues(value)) add(pathValue);
+        }
+      }
+    }
+  }
+
+  for (let index = 0; index < tokens.length; index += 1) {
+    const token = tokens[index];
+    if (operationTokens.has(token)) continue;
+    if (token.type === 'template' && isConcreteBoundaryPath(token.value)) add(token.value, token.hasSubstitution);
     if (token.value === 'new' && tokens[index + 1]?.value === 'URL'
       && tokens[index + 2]?.value === '(') {
       const first = tokens[index + 3];
-      if (['string', 'template'].includes(first?.type)) values.push(first.value);
+      if (!operationTokens.has(first) && ['string', 'template'].includes(first?.type)) {
+        values.push({ value: first.value, dynamic: first.type === 'template' && first.hasSubstitution });
+      }
     }
     if (token.type !== 'identifier' || !['join', 'resolve'].includes(token.value)
       || tokens[index + 1]?.value !== '(') continue;
-    // Architecture tools often read source files as data. That is not a
-    // runtime dependency edge; still inspect path builders used elsewhere.
-    if (tokens[index - 1]?.value === '(' && tokens[index - 2]?.value === 'readFile') continue;
+    if (operationTokens.has(token)) continue;
     const args = callArguments(tokens, index + 1);
-    const parts = [];
-    for (let argumentIndex = 0; argumentIndex < args.length; argumentIndex += 1) {
-      const argument = args[argumentIndex];
-      const literals = argument.filter((part) => ['string', 'template'].includes(part.type));
-      const other = argument.filter((part) => !['string', 'template'].includes(part.type)
-        && part.value !== ',');
-      if (literals.length === 1 && other.length === 0) {
-        parts.push(literals[0].value);
-      } else if (argumentIndex > 0) {
-        break;
-      }
-    }
-    const combined = parts.join('/');
-    if (isConcreteBoundaryPath(combined)) values.push(combined);
-    for (const part of parts) {
-      if (/^(?:\.\.?\/)+/u.test(part) && isConcreteBoundaryPath(part)) values.push(part);
+    for (const value of staticPathValues([token, ...tokens.slice(index + 1, findCallEnd(tokens, index + 1))])) add(value);
+  }
+  return [...new Map(values.map((entry) => [`${entry.value}\0${entry.dynamic}`, entry])).values()];
+}
+
+function staticPathValues(expression) {
+  if (!expression.length) return [];
+  const first = expression[0];
+  if (first.type === 'string' || (first.type === 'template' && !first.hasSubstitution)) {
+    return typeof first.value === 'string' ? [first.value] : [];
+  }
+  if (first.value === 'new' && expression[1]?.value === 'URL' && expression[2]?.value === '(') {
+    return staticPathValues([expression[3] ?? {}]);
+  }
+  if (first.type !== 'identifier' || !['join', 'resolve'].includes(first.value)
+    || expression[1]?.value !== '(') return [];
+
+  const args = callArguments(expression, 1);
+  const parts = [];
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+    const literal = argument[0];
+    if (argument.length === 1 && (literal.type === 'string'
+      || (literal.type === 'template' && !literal.hasSubstitution))) {
+      parts.push(literal.value);
+    } else if (index > 0) {
+      break;
     }
   }
-  return [...new Set(values)];
+  const values = [];
+  const combined = parts.join('/');
+  if (isConcreteBoundaryPath(combined)) values.push(combined);
+  for (const part of parts) {
+    if (/^(?:\.\.?\/)+/u.test(part) && isConcreteBoundaryPath(part)) values.push(part);
+  }
+  return values;
+}
+
+function arrayArgumentValues(argument) {
+  if (argument[0]?.value !== '[' || argument.at(-1)?.value !== ']') return [];
+  const values = [];
+  let start = 1;
+  let depth = 0;
+  for (let index = 1; index < argument.length - 1; index += 1) {
+    const token = argument[index];
+    if (['(', '[', '{'].includes(token.value)) depth += 1;
+    else if ([')', ']', '}'].includes(token.value)) depth -= 1;
+    if (token.value === ',' && depth === 0) {
+      values.push(argument.slice(start, index));
+      start = index + 1;
+    }
+  }
+  if (start < argument.length - 1) values.push(argument.slice(start, -1));
+  return values;
+}
+
+function findCallEnd(tokens, openIndex) {
+  let depth = 0;
+  for (let index = openIndex; index < tokens.length; index += 1) {
+    if (tokens[index].value === '(') depth += 1;
+    else if (tokens[index].value === ')' && --depth === 0) return index + 1;
+  }
+  return tokens.length;
 }
 
 function callArguments(tokens, openIndex) {
@@ -333,28 +415,36 @@ function importSpecifiers(source) {
     const token = tokens[index];
     if (token.type !== 'identifier') continue;
     if (['require', 'import'].includes(token.value) && isMemberMethod(tokens, index)) continue;
-    if (token.value === 'require' && tokens[index + 1]?.value === '(' && tokens[index + 2]?.type === 'string') {
-      specifiers.push(tokens[index + 2].value);
+    if (token.value === 'require' && tokens[index + 1]?.value === '(') {
+      const specifier = staticSpecifier(tokens[index + 2]);
+      if (specifier !== null) specifiers.push(specifier);
       continue;
     }
     if (token.value !== 'import' && token.value !== 'export') continue;
-    if (token.value === 'import' && tokens[index + 1]?.type === 'string') {
-      specifiers.push(tokens[index + 1].value);
+    if (token.value === 'import' && staticSpecifier(tokens[index + 1]) !== null) {
+      specifiers.push(staticSpecifier(tokens[index + 1]));
       continue;
     }
-    if (token.value === 'import' && tokens[index + 1]?.value === '(' && tokens[index + 2]?.type === 'string') {
-      specifiers.push(tokens[index + 2].value);
+    if (token.value === 'import' && tokens[index + 1]?.value === '(') {
+      const specifier = staticSpecifier(tokens[index + 2]);
+      if (specifier !== null) specifiers.push(specifier);
       continue;
     }
     for (let cursor = index + 1; cursor < tokens.length && tokens[cursor].value !== ';'; cursor += 1) {
-      if (tokens[cursor].value === 'from' && tokens[cursor + 1]?.type === 'string') {
-        specifiers.push(tokens[cursor + 1].value);
+      if (tokens[cursor].value === 'from' && staticSpecifier(tokens[cursor + 1]) !== null) {
+        specifiers.push(staticSpecifier(tokens[cursor + 1]));
         break;
       }
       if (tokens[cursor].type === 'identifier' && ['import', 'export'].includes(tokens[cursor].value)) break;
     }
   }
   return specifiers;
+}
+
+function staticSpecifier(token) {
+  if (token?.type === 'string') return token.value;
+  if (token?.type === 'template' && !token.hasSubstitution && token.cooked) return token.value;
+  return null;
 }
 
 function isMemberMethod(tokens, index) {
@@ -405,7 +495,8 @@ function scanCode(source, start, tokens, templateExpression) {
     if (char === '`') {
       const template = scanTemplate(source, index + 1, tokens);
       index = template.end;
-      tokens.push({ type: 'template', value: template.value });
+      tokens.push({ type: 'template', value: template.value,
+        hasSubstitution: template.hasSubstitution, cooked: template.cooked });
       continue;
     }
     if (templateExpression && char === '{') braceDepth += 1;
@@ -518,21 +609,63 @@ function skipRegexLiteral(source, start) {
 
 function scanTemplate(source, start, tokens) {
   let value = '';
+  let hasSubstitution = false;
+  let cooked = true;
   for (let index = start; index < source.length;) {
     if (source[index] === '\\') {
-      if (index + 1 < source.length) value += source[index + 1];
-      index += 2;
+      const escape = decodeTemplateEscape(source, index);
+      if (escape.value === null) cooked = false;
+      else value += escape.value;
+      index = escape.end;
       continue;
     }
-    if (source[index] === '`') return { end: index + 1, value };
+    if (source[index] === '`') return { end: index + 1, value, hasSubstitution, cooked };
     if (source[index] === '$' && source[index + 1] === '{') {
+      hasSubstitution = true;
       index = scanCode(source, index + 2, tokens, true);
       continue;
     }
     value += source[index];
     index += 1;
   }
-  return { end: source.length, value };
+  return { end: source.length, value, hasSubstitution, cooked };
+}
+
+function decodeTemplateEscape(source, start) {
+  const escaped = source[start + 1];
+  if (escaped === undefined) return { value: null, end: start + 1 };
+  if (escaped === '\n') return { value: '', end: start + 2 };
+  if (escaped === '\r') return { value: '', end: start + (source[start + 2] === '\n' ? 3 : 2) };
+  if (escaped === 'u') {
+    if (source[start + 2] === '{') {
+      const close = source.indexOf('}', start + 3);
+      const digits = close < 0 ? '' : source.slice(start + 3, close);
+      if (/^[\da-f]{1,6}$/iu.test(digits) && Number.parseInt(digits, 16) <= 0x10ffff) {
+        return { value: String.fromCodePoint(Number.parseInt(digits, 16)), end: close + 1 };
+      }
+      return { value: null, end: close < 0 ? start + 2 : close + 1 };
+    }
+    const digits = source.slice(start + 2, start + 6);
+    if (/^[\da-f]{4}$/iu.test(digits)) {
+      return { value: String.fromCharCode(Number.parseInt(digits, 16)), end: start + 6 };
+    }
+    return { value: null, end: start + 2 };
+  }
+  if (escaped === 'x') {
+    const digits = source.slice(start + 2, start + 4);
+    if (/^[\da-f]{2}$/iu.test(digits)) {
+      return { value: String.fromCharCode(Number.parseInt(digits, 16)), end: start + 4 };
+    }
+    return { value: null, end: start + 2 };
+  }
+  const shortEscapes = { b: '\b', f: '\f', n: '\n', r: '\r', t: '\t', v: '\v' };
+  if (Object.hasOwn(shortEscapes, escaped)) return { value: shortEscapes[escaped], end: start + 2 };
+  if (escaped === '0') {
+    if (/\d/u.test(source[start + 2] ?? '')) return { value: null, end: start + 2 };
+    return { value: '\0', end: start + 2 };
+  }
+  if (['\\', '`', '$', '"', "'"].includes(escaped)) return { value: escaped, end: start + 2 };
+  return { value: null, end: start + 2 };
 }
 
 async function childDirectories(directory) {

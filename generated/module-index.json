@@ -756,6 +756,19 @@
       "version": "0.20.0"
     },
     {
+      "dependencies": [],
+      "name": "tools/spatial-v3",
+      "owns": [
+        "CLI и генераторами данных Spatial V3",
+        "статическими проверками migration, projection и activation contracts",
+        "readiness-проверками Spatial V3 authoring и deployment artifacts"
+      ],
+      "path": "tools/spatial-v3",
+      "public_entry": "—",
+      "purpose": "Набор CLI и проверок для authoring, импорта и проверки Spatial V3 migrations, contracts и readiness. Эти инструменты обслуживают разработку и проверку артефактов Spatial V3.",
+      "version": null
+    },
+    {
       "dependencies": [
         "@rus/items-property",
         "@rus/runtime-catalog",

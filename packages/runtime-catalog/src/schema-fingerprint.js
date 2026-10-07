@@ -222,4 +222,3 @@ export async function readPostgresSchemaFingerprint(client, schemaName) {
 function digest(value) {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex');
 }
-

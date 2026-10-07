@@ -41,7 +41,6 @@
 | 035 | `scripts/bootstrap-live-world-v17.mjs` | bootstrap v17 без календаря | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 036 | `scripts/*.test.mjs`, `test/spatial-v3/` | тесты M2c вне гейта, заглушки планировщика | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 037 | `data/world-catalogs/novgorod/` | утверждения данных разбросаны | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
-| 038 | `tools/world-catalog-workflow/` | tool импортируется runtime | — |
 | 039 | `universal_category_classification_policy.md` и ещё 3 | обрезанные документы корпуса | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 040 | `infra/world-base/README.md` | README пишет 201 таблиц при 208 в схеме | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 | 041 | `first-playable-party-migration.test.js` | тест ожидает 35 миграций при 36 | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |

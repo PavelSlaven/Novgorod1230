@@ -17,6 +17,6 @@ test('v17 production ledger pin literals match forward migration contract (no PG
   );
   assert.equal(
     release.party_runtime_catalog_target_fingerprint,
-    '5102437c6175f17e900e144a75f3be02998823c26b14d1e7729587b6915bba81',
+    '3d376bf1ff96b44755afbcc70b7171ff332d51c478f6916a6b05d5950dc33e81',
   );
 });

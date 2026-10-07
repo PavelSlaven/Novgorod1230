@@ -228,7 +228,9 @@ export function createTraceTurnRuntime({
     ]
   });
   const npcRuntimePorts = createNpcRuntimePorts({ roleRunner,
-    worldKnowledgeGrounder });
+    worldKnowledgeGrounder,
+    npcSpeechAddressForms: materializationInputs?.npc_speech_address_forms ?? [],
+    npcSpeechRegisters: materializationInputs?.npc_speech_registers ?? [] });
   const projectCurrentSpatialContext = createCurrentSpatialContextProjector({
     partyPool, readCurrentSources,
     onProjected: config.onCurrentSpatialContextProjection ?? null

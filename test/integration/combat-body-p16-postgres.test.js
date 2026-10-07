@@ -419,7 +419,9 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
      skill_profile_snapshot,name_profile_snapshot,language_profile_snapshot,
      knowledge_profile_snapshot,profile_candidate_set_digest,
      created_change_set_id,updated_change_set_id)
-    VALUES ($1,'npc',$2,'{}','{}','{}','{}','{}','{}','fixture-digest',$3,$3)`,
+    VALUES ($1,'npc',$2,'{"id":"nov_role_fisher","source":"approved_social_roles"}',
+      '{"id":"nov_occ_fisher","source":"approved_occupations"}',
+      '{}','{}','{}','{}','fixture-digest',$3,$3)`,
   [partyId, npcId, `combat-body-change-${suffix}-1`]);
 
   const ownerNpcId = `combat-body-owner-npc-${suffix}`;
@@ -466,7 +468,9 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
      skill_profile_snapshot,name_profile_snapshot,language_profile_snapshot,
      knowledge_profile_snapshot,profile_candidate_set_digest,
      created_change_set_id,updated_change_set_id)
-    VALUES ($1,'npc',$2,'{}','{}','{}','{}','{}','{}','fixture-digest',$3,$3)`,
+    VALUES ($1,'npc',$2,'{"id":"nov_role_fisher","source":"approved_social_roles"}',
+      '{"id":"nov_occ_fisher","source":"approved_occupations"}',
+      '{}','{}','{}','{}','fixture-digest',$3,$3)`,
   [partyId, ownerNpcId, sceneChangeSetId]);
   await client.query(`INSERT INTO party_runtime.entity_placements
     (party_id,entity_kind,entity_id,placement_kind,position_node_id,

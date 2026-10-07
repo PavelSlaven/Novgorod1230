@@ -29,7 +29,8 @@ import {
   loadPlacePopulationComposition,
   loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules,
-  loadNpcRelationshipMaterializationRules
+  loadNpcRelationshipMaterializationRules,
+  loadNpcSpeechAddressForms,
 } from './m2c-npc-wave-readers.js';
 import {
   createRuntimeCatalogWorldBaseReader,
@@ -60,6 +61,9 @@ export {
   loadPresenceRulesForPlaceFamilies,
   loadScheduleRoutineRules,
   loadNpcRelationshipMaterializationRules,
+  loadNpcSpeechAddressForms,
+  loadNpcSpeechRegisters,
+  NPC_SPEECH_REGISTERS_PIN,
 } from './m2c-npc-wave-readers.js';
 export { loadApprovedG4NaturalCatalog } from './g4-natural-catalog.js';
 export { loadApprovedG4NaturalPresentationCatalog } from './g4-natural-presentation-catalog.js';

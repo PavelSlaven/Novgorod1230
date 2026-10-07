@@ -14,6 +14,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - единой загрузкой неперсистентных common catalog lookups до projection.
 - чистой проверкой кросс-доменного versioned `needs_check` snapshot для новых фактов бытности мира и NPC-кандидатов; чтение authoring queues и сборка snapshot остаются у game-base CLI, решение о фильтрации результата или отклонении NPC-операции принадлежит consumer owner.
 - чистой идентичностью PostgreSQL-схемы, общей для activation и runtime ledger: `readPostgresSchemaFingerprint(client, schemaName)` публичного subpath `@rus/runtime-catalog/schema-fingerprint` вычисляет fingerprint по переданному query-клиенту; пакет не создаёт соединение и не владеет пулом.
+- чтением и exact validation последнего approved runtime-catalog activation pin: `loadActiveRuntimeCatalogPin(queryClient, catalogScope)` публичного subpath `@rus/runtime-catalog/active-pin` использует переданный query-клиент; пакет не создаёт соединение и не владеет пулом.
 
 ## Не делает
 
@@ -31,6 +32,8 @@ profile per G4 version. Authoring candidates are not runtime input.
 
 - `createRuntimeCatalogLoader({ worldBaseReader, supportedRuntimeContractDigests })`;
 - `loadActivePin({ catalogScope })`;
+- `loadActiveRuntimeCatalogPin(queryClient, catalogScope)` из
+  `@rus/runtime-catalog/active-pin` — читает и проверяет последний activation;
 - `loadApprovedItemCatalog({ pin })`;
 - `loadApprovedNeedsCheckBlockerSnapshot({ verifiedCatalog, pin })` — exact
   immutable `profile:needs_check_blockers` member, без latest fallback;

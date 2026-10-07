@@ -1,0 +1,47 @@
+{
+  "schema": "rus.m2c_nature_successor_data_approval.v1",
+  "decision": "APPROVE_AUTHORING_DATA_ONLY",
+  "reviewed_on": "2026-10-07",
+  "reviewer_role": "independent_substantive_data_reviewer",
+  "auditor_ref": "codex-gpt-6.1-sol-ap-nature-successor-v2-bytes-2026-10-07",
+  "reviewed_head": "fabaf1cd372366f0c77e9a54aeb5e20a0bcb71d2",
+  "candidates": {
+    "natural": {
+      "path": "data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json",
+      "sha256": "58e0d2be66df86a79faf76d4ef57d3d020ba778711736a61b4478c255d8cbef7"
+    }
+  },
+  "scope": "Exact current natural authoring successor v2 bytes only: 32 G4 profiles, four seasons, 142 conditional alternatives. Independent review of the mechanical additions in ad870c4a8 against the previously approved natural bytes. Presentation successor bytes are outside this decision.",
+  "provenance": {
+    "prior_approval": {
+      "path": "data/world-catalogs/novgorod/m2c-natural/nature-successor-data-approval.json",
+      "commit": "2c85f570cd79f209cba6a092417024ffbe134559",
+      "sha256": "310bf952bbd219f3935fdb4f26f5f8cb71c0edf5837eacc445ca838061db605d",
+      "approved_natural_candidate_sha256": "3fc9f2e539dcb5d5e1f52e49100044f19d5810316f2798c6993936f45bc379ea"
+    },
+    "mechanical_change_commit": "ad870c4a8350f2cae76c439faa67ee5b2aa99dbf",
+    "generator_path": "scripts/generate-m2c-nature-successors.mjs",
+    "approved_richness_candidate_sha256": "a6bb9dc862ae9257c3f588776a10395769d06ef56744f7b9c8c55d18e6bbf4e6",
+    "richness_approval": "data/world-catalogs/novgorod/m2c-natural/nature-richness-data-approval.json",
+    "historical_scope": "Inherited regional medieval archaeological compatibility; no new historical fact or exact G4 occurrence is asserted or independently re-researched in this pass.",
+    "ecological_scope": "Inherited low-confidence inferred or analogical habitat and seasonal compatibility; no new local ecology fact is asserted.",
+    "spatial_scope": "Existing exact G4 baseline and template context only delimit applicability; they do not establish current taxon presence.",
+    "verification_report": "verdict.md"
+  },
+  "supersedes": {
+    "path": "data/world-catalogs/novgorod/m2c-natural/nature-successor-data-approval.json",
+    "sha256": "310bf952bbd219f3935fdb4f26f5f8cb71c0edf5837eacc445ca838061db605d",
+    "reason": "Reapproves the exact current natural authoring bytes after ad870c4a8 retained mechanically derived fields. Supersession concerns natural candidate authoring approval only; the prior record is preserved and its presentation approval is not replaced by this decision."
+  },
+  "review_result": "All 7365 added field occurrences across eight field names are exact copies of approved editorial data, references to approved source rows or existing baseline members, exclusion reasons already represented by the previous approved candidate, or explicit unresolved condition/source-gap markers. No prior field was removed or changed; all 3033 shared array lengths are unchanged. The 142 layer alternatives and 568 seasonal alternative entries retain their approved membership and values. Editorial weights remain 8/4/2/1 relative preferences, not historical frequency, abundance, encounter probability or yield. Two willow exclusions and one decomposer-fungi substrate exclusion were already absent from the approved member set. The actual current compilation gate accepts current bytes with the preserved old approval/base and strips exactly the added paths on this reviewed object. Generator --check passed.",
+  "limits": [
+    "Authoring approval only; no current local species, animal, trace, sound, visibility, stock, yield or access is established.",
+    "The unresolved_machine_condition and unresolved_source_gap markers remain unresolved. Mandatory baseline references repeat existing membership and do not create new admission.",
+    "Seasonal selection and player presentation still require the respective current-state, source, perception and owner admission; a season row alone authorizes no phrase.",
+    "This decision does not reapprove the presentation successor candidate or replace its preserved approval.",
+    "No runtime reader, bootstrap pin, generated index, mapped import or active binding is changed or authorized here. The current stripping gate is not directly compatible with replacing its old approval/base by this new current-byte approval.",
+    "Mapped import, runtime activation, first-screen readiness and M2c final acceptance remain separate decisions."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false
+}

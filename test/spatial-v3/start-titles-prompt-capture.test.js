@@ -165,11 +165,16 @@ test('capture exact provider request payloads for seven v17 opening and first-tu
         natural_label_lookups: naturalLabelLookups,
         returned_screen_label: result?.screen?.visible_context?.visible_scene ?? null,
         persisted_screen_label: observed.screen?.visible_context?.visible_scene ?? null,
+        persisted_location_label: observed.screen?.presentation_context?.location_label ?? null,
         narrator_payload_count_with_expected_label: narrator.length,
         requests,
       }, null, 2)}\n`);
+      assert.equal(result?.screen?.visible_context?.visible_scene, displayLabel,
+        'returned destination screen uses the approved natural label');
       assert.equal(observed.screen?.visible_context?.visible_scene, displayLabel,
         'persisted destination screen uses the approved natural label');
+      assert.equal(observed.screen?.presentation_context?.location_label, displayLabel,
+        'persisted screen location label uses the approved natural label');
       assert.ok(narrator.length > 0,
         'actual production narrator payload after natural arrival contains the approved label');
     }

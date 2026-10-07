@@ -745,7 +745,7 @@ for u in sorted(used):
     elif u.startswith('wk:claim:'):
         title, trust = 'WK production-v1 approved claim', 'approved (WK)'
     elif u.startswith('sqlite:'):
-        title, url, trust = 'Curated SQLite novgorod_1230 (owner Downloads), table:key', 'C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite', 'A/B/C per row (see table confidence)'
+        title, url, trust = 'Tracked curated SQLite source, table:key', 'sources/bic-reproducible-inputs-v1/data/curated/novgorod_1230_curated.sqlite', 'A/B/C per row (see table confidence)'
     elif u.startswith('temporal-v4:'):
         title, trust = 'Temporal v4 approved record', 'approved'
     elif u.startswith('rule:'):

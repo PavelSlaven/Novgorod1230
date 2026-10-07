@@ -70,7 +70,8 @@ PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan`
 [
   {"source":"src/world-knowledge-pipeline-eval.js","target":"apps/game-server","reason":"Evaluate production World Knowledge roles against their production implementation"},
   {"source":"src/generate-item-display-content.mjs","target":"apps/game-server","reason":"Temporary access to the app-owned materialization bundle until issue #488 transfers this generator","temporary":true,"issue":"#488"},
-  {"source":"src/generate-character-appearance-content.mjs","target":"apps/game-server","reason":"Temporary access to the app-owned materialization bundle until issue #488 transfers this generator","temporary":true,"issue":"#488"}
+  {"source":"src/generate-character-appearance-content.mjs","target":"apps/game-server","reason":"Temporary access to the app-owned materialization bundle until issue #488 transfers this generator","temporary":true,"issue":"#488"},
+  {"source":"src/generate-opening-orientation-content.mjs","target":"apps/game-server","reason":"LD/v16 digest re-pinner; remove or archive per D97/D98 after ld-harvest (#476)","temporary":true,"issue":"#476"}
 ]
 ```
 

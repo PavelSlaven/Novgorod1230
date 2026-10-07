@@ -121,6 +121,8 @@ test('food check rejects an unresolved reference instead of WARN plus PASS', (t)
   for (const relative of [
     'game-base-v1/food-drink',
     'game-base-v1/scripts',
+    'game-base-v1/generated/master-material-material-view.json',
+    'game-base-v1/source-overlays/',
     'game-base-v1/flora-trees-shrubs/flora',
     'sources/master-archive-v1',
     'sources/bic-reproducible-inputs-v1',

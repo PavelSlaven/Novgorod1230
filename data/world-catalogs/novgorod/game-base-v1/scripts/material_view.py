@@ -8,7 +8,6 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 GAME_BASE = SCRIPT_DIR.parent
-REPO = GAME_BASE.parents[3]
 VIEW_PATH = GAME_BASE / "generated/master-material-material-view.json"
 OVERLAY_PATH = GAME_BASE / "source-overlays/master-material-materials.csv"
 OVERLAY_REF = "data/world-catalogs/novgorod/game-base-v1/source-overlays/master-material-materials.csv:"

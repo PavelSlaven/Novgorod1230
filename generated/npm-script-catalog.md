@@ -242,7 +242,7 @@
 - `temporal-v4:vocabularies`
 - `temporal-v4:vocabularies-check`
 
-## test (41)
+## test (42)
 
 - `test`
 - `test:acceptance`
@@ -262,6 +262,7 @@
 - `test:narration-presentation`
 - `test:new-game-orchestrator`
 - `test:shadow`
+- `test:spatial`
 - `test:stage13`
 - `test:stage14`
 - `test:stage15`

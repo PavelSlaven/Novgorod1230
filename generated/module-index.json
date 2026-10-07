@@ -124,7 +124,7 @@
       ],
       "name": "@rus/body-state",
       "owns": [
-        "Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `calculateBodyTimeEffectProposal`, `accumulateBodyTimeEffects`, `applyBodyTimeEffectProposals`, `predictNearestBodyThreshold`, direct-event body transition и edge-triggered threshold crossing между authoritative before/after states",
+        "Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `initializeBodyState`, `projectCombatBodyStateDescriptions`, `calculateBodyTimeEffectProposal`, `accumulateBodyTimeEffects`, `applyBodyTimeEffectProposals`, `predictNearestBodyThreshold`, direct-event body transition и edge-triggered threshold crossing между authoritative before/after states",
         "Сохраняет supplied approved `decision_signal` descriptor на crossing; не вычисляет его category/significance и не создаёт NPC boundary"
       ],
       "path": "packages/body-state",

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- test(spatial): a failing optional CR178 readback report no longer masks the test assertion; the write error is logged next to it (#568)
 - test(spatial): the Lower Dvina boundary compile test uses the pinned exact head instead of CI GITHUB_SHA, so it no longer rewrites the committed production-v3 candidate and breaks the activation boundary check (#98, D89)
 - docs(prose): закрепить D153 — субъективный контекст прозовых ролей, содержание людей в пределах восприятия, согласованная WK prose-проекция и требования проверки фактического провода; реализация входов ролей — отдельные задачи (#565)
 - ci: the full-profile suites get 75 minutes; the sequential fast suite exceeded 45 minutes after the latest merges and was cancelled (#98, D89)

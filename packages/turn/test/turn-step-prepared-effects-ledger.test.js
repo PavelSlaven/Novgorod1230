@@ -183,7 +183,7 @@ test('prepared body-time aggregation preserves its exact composite proposal', ()
   });
 });
 
-test('body-time aggregation preserves the final per-slice rounded owner state', () => {
+test('body-time aggregation rounds the exact cumulative change once', () => {
   const initialBody = { ...body(), satiety: 70 };
   let ownerState = initialBody;
   const effects = [];
@@ -235,8 +235,11 @@ test('body-time aggregation preserves the final per-slice rounded owner state', 
   const ledger = buildTurnStepPreparedEffectLedger({ rootTurnId: 'turn:body-rounding',
     committedStateVersion: 1, effects });
   const aggregate = buildTurnStepPreparedBodyUpdate(ledger, initialBody);
-  assert.equal(ownerState.satiety, 69.837964);
-  assert.deepEqual(aggregate.state_after, ownerState);
+  const single = applyBodyTimeEffectProposals(initialBody,
+    effects.flatMap(({ effect }) => effect.body_update.proposal.component_proposals));
+  assert.equal(single.ok, true);
+  assert.equal(single.state_after.satiety, 69.837963);
+  assert.deepEqual(aggregate.state_after, single.state_after);
 });
 
 test('a charged semantic prefix may continue through the same direct action chain', () => {

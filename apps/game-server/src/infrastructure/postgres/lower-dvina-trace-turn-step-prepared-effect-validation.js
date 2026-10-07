@@ -61,6 +61,7 @@ export function validatePreparedEffectCommit({
         || envelope.consequence?.prepared_effect_ledger_digest !== ledger.ledger_digest
         || Number(envelope.consequence?.duration_minutes)
           !== Number(expectedTime.exact_elapsed.exact_minutes.numerator)
+            / Number(expectedTime.exact_elapsed.exact_minutes.denominator)
         || ['consequence', 'time_update', 'body_update',
           'player_input', 'mode_resolution'].some((key) =>
           !samePreparedValue(envelope[key], factual?.[key]))) {

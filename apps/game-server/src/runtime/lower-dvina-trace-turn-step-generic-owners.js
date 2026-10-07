@@ -211,6 +211,10 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
           || !plain(state?.body_state)) {
         ownerFail('TRACE_TURN_STEP_BODY_EFFECT_DATA_GAP');
       }
+      const continuousElapsed = continuousActivity
+        ? exactElapsedFrom(timeUpdate) : null;
+      const continuousActivityStarted = continuousElapsed == null
+        || BigInt(continuousElapsed.numerator) > 0n;
       let bodyState = structuredClone(state.body_state);
       const proposals = [];
       for (const component of components) {
@@ -224,7 +228,8 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
           ? semanticActivityFixedProfile({ selected: definition,
             profilePin: admitted.profile_pin,
             context: component.body_effect_context,
-            continuous: bodyTimeEffectAdapter != null })
+            continuous: bodyTimeEffectAdapter != null,
+            activityStarted: continuousActivityStarted })
           : fixedBodyProfile(
             definition, admitted.profile_pin, component.body_effect_context);
         const result = applyApprovedFixedBodyEffect({
@@ -243,7 +248,7 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
       if (continuousActivity) {
         const activity = consequence.state_changes.find(
           ({ kind }) => kind === 'semantic_activity');
-        const exactElapsed = exactElapsedFrom(timeUpdate);
+        const exactElapsed = continuousElapsed;
         if (BigInt(exactElapsed.numerator) !== 0n) {
           const activityContext = bodyTimeEffectContext(state, bodyState,
             timeUpdate?.clock_before);
@@ -318,13 +323,13 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
 }
 
 function semanticActivityFixedProfile({ selected, profilePin, context,
-  continuous }) {
+  continuous, activityStarted = true }) {
   const profile = fixedBodyProfile(selected, profilePin, context);
   if (!continuous) return profile;
   return deepFreeze({
     ...structuredClone(profile),
     exact_deltas: {
-      health: selected.effort === 'extreme'
+      health: selected.effort === 'extreme' && activityStarted
         ? selected.exact_deltas.health : 0,
       satiety: 0,
       energy: 0

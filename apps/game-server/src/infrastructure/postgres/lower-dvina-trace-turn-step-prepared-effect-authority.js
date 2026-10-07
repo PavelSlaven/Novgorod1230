@@ -257,6 +257,9 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
         || !samePreparedValue(slice.body_update.state_after,
           continuousBodyEffect ? approvedBodyEffect?.state_after
             : approved?.body_state_after)
+        || continuousBodyEffect
+          && !samePreparedValue(slice.body_update.proposal,
+            approvedBodyEffect?.proposal)
         || (slice.consequence.body_effect_ref ?? null) !== approved?.body_effect_ref
         || (slice.body_update.applied === true) !== (continuousBodyEffect
           ? approvedBodyEffect?.applied === true

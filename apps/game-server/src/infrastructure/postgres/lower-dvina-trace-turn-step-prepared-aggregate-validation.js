@@ -58,7 +58,9 @@ export function validatePreparedEnvelopeAggregate({ ledger, envelope, factual,
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
   const expectedBody = buildTurnStepPreparedBodyUpdate(
     ledger, bodyStateBefore);
-  const totalDuration = Number(expectedTime.exact_elapsed.exact_minutes.numerator);
+  const totalElapsed = expectedTime.exact_elapsed.exact_minutes;
+  const totalDuration = Number(totalElapsed.numerator)
+    / Number(totalElapsed.denominator);
   if (consequence?.prepared_effect_ledger_digest !== ledger.ledger_digest
       || consequence.duration_minutes !== totalDuration
       || !samePreparedTimeBase(expectedTime, envelope.time_update)
@@ -79,8 +81,11 @@ export function validatePreparedEnvelopeAggregate({ ledger, envelope, factual,
 function validatePreparedConsequenceContribution(slice, consequence) {
   const fragment = structuredClone(slice.consequence);
   for (const seed of Object.values(fragment.visible_seed ?? {})) {
-    if (seed?.kind === 'semantic_activity') seed.duration_minutes = Number(
-      slice.time_update.exact_elapsed.exact_minutes.numerator);
+    if (seed?.kind === 'semantic_activity') {
+      const elapsed = slice.time_update.exact_elapsed.exact_minutes;
+      seed.duration_minutes = Number(elapsed.numerator)
+        / Number(elapsed.denominator);
+    }
   }
   const merged = new Set(['duration_minutes', 'visible_seed', 'hidden_update',
     'state_changes', 'suggested_actions', 'prepared_effect_ledger_digest',

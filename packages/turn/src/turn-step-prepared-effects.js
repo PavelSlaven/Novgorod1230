@@ -12,7 +12,7 @@ import { LEDGER_KEYS, LEDGER_SCHEMA, SLICE_SCHEMA, advanceWorkingClock,
   rationalAsNumber, requireObject, requirePreparedRequest, requireRawEffect,
   same, text, validateSlice } from './turn-step-prepared-effect-validation.js';
 export function buildTurnStepPreparedChainContext({
-  priorEffectCount, currentClock, currentBodyState
+  priorEffectCount, currentClock, currentBodyState, bodyTimeReplay = null
 }) {
   if (!Number.isSafeInteger(priorEffectCount) || priorEffectCount < 0
       || !plain(currentClock)
@@ -24,7 +24,10 @@ export function buildTurnStepPreparedChainContext({
     schema: 'turn_step_prepared_chain_context_v1',
     prior_effect_count: priorEffectCount,
     current_clock: structuredClone(currentClock),
-    current_body_state: structuredClone(currentBodyState)
+    current_body_state: structuredClone(currentBodyState),
+    ...(bodyTimeReplay == null ? {} : {
+      body_time_replay: structuredClone(bodyTimeReplay)
+    })
   });
 }
 export async function orchestrateTurnStepPreparedEffect({
@@ -38,7 +41,8 @@ export async function orchestrateTurnStepPreparedEffect({
   const context = buildTurnStepPreparedChainContext({
     priorEffectCount: preparedChainContext?.prior_effect_count,
     currentClock: preparedChainContext?.current_clock,
-    currentBodyState: preparedChainContext?.current_body_state
+    currentBodyState: preparedChainContext?.current_body_state,
+    bodyTimeReplay: preparedChainContext?.body_time_replay ?? null
   });
   if (typeof timeOwner !== 'function' || typeof bodyOwner !== 'function') {
     invalid('Prepared effects require injected time and body owners.');
@@ -66,6 +70,65 @@ export async function orchestrateTurnStepPreparedEffect({
     ...ownerInput,
     time_update: structuredClone(timeUpdate)
   }));
+  let preparedBodyTimeReplay = context.body_time_replay ?? null;
+  let bodyUpdateForEffect = bodyUpdate;
+  if (bodyUpdate?.applied === true
+      && bodyUpdate.proposal?.proposal_kind === 'body_time_effect_composite'
+      && Array.isArray(bodyUpdate.proposal.component_proposals)
+      && bodyUpdate.proposal.component_proposals.length > 0
+      && bodyUpdate.proposal.component_proposals.every((proposal) =>
+        proposal?.proposal_kind === 'body_time_effect')) {
+    const previous = context.body_time_replay ?? {
+      body_state_before: structuredClone(context.current_body_state),
+      fixed_effect_proposals: [],
+      component_proposals: []
+    };
+    const fixedEffectProposals = [
+      ...structuredClone(previous.fixed_effect_proposals),
+      ...structuredClone(bodyUpdate.proposal.fixed_effect_proposals ?? [])
+    ];
+    const componentProposals = [
+      ...structuredClone(previous.component_proposals),
+      ...structuredClone(bodyUpdate.proposal.component_proposals)
+    ];
+    if (hasIndependentSemanticHealthEffects(fixedEffectProposals,
+      componentProposals)) {
+      let bodyAfterFixed = structuredClone(previous.body_state_before);
+      for (const proposal of fixedEffectProposals) {
+        const fixed = applyApprovedFixedBodyEffect({ body_state: bodyAfterFixed,
+          body_effect_profile: {
+            schema: 'rus.body_state.fixed_approved_effect.v1',
+            profile_ref: proposal.profile_ref,
+            profile_pin: proposal.profile_pin,
+            status: 'approved', applicability: proposal.selected_context,
+            exact_deltas: proposal.exact_deltas,
+            condition_outcomes: proposal.condition_transitions,
+            selection_policy: proposal.selection_policy,
+            rng_consumption: proposal.rng_consumption
+          }, selected_context: proposal.selected_context });
+        if (fixed?.ok !== true || fixed.owner !== '@rus/body-state'
+            || fixed.applied !== true || !plain(fixed.state_after)) {
+          invalid('Prepared cumulative fixed body effects could not be applied by body-state.',
+            { result: fixed });
+        }
+        bodyAfterFixed = structuredClone(fixed.state_after);
+      }
+      const cumulative = applyBodyTimeEffectProposals(
+        bodyAfterFixed, componentProposals);
+      if (cumulative?.ok !== true || cumulative.owner !== '@rus/body-state'
+          || cumulative.applied !== true || !plain(cumulative.state_after)) {
+        invalid('Prepared cumulative body-time effects could not be applied by body-state.',
+          { result: cumulative });
+      }
+      bodyUpdateForEffect = { ...structuredClone(bodyUpdate),
+        state_after: structuredClone(cumulative.state_after) };
+      preparedBodyTimeReplay = {
+        body_state_before: structuredClone(previous.body_state_before),
+        fixed_effect_proposals: fixedEffectProposals,
+        component_proposals: componentProposals
+      };
+    }
+  }
   const effect = {
     step_index: request?.step_index,
     effect_kind: candidate.effect_kind,
@@ -74,7 +137,7 @@ export async function orchestrateTurnStepPreparedEffect({
     availability: structuredClone(candidate.availability),
     consequence: structuredClone(candidate.consequence),
     time_update: structuredClone(timeUpdate),
-    body_update: structuredClone(bodyUpdate),
+    body_update: structuredClone(bodyUpdateForEffect),
     body_state_before: structuredClone(context.current_body_state)
   };
   requireRawEffect(effect);
@@ -99,6 +162,9 @@ export async function orchestrateTurnStepPreparedEffect({
       }));
   return deepFreeze({
     ...structuredClone(result),
+    ...(preparedBodyTimeReplay == null ? {} : {
+      prepared_body_time_replay: structuredClone(preparedBodyTimeReplay)
+    }),
     interrupted,
     player_response_boundary: result.player_response_boundary === true
       || (timeUpdate.temporal_results ?? []).some((temporal) =>
@@ -349,9 +415,7 @@ export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
         component_proposals: componentProposals,
         exact_changes: structuredClone(result.exact_changes)
       },
-      state_after: structuredClone(
-        fixedEffectsAreIndependentSemanticHealthChanges
-          ? lastState : result.state_after),
+      state_after: structuredClone(result.state_after),
       prepared_effect_ledger_digest: ledger.ledger_digest
     });
   }
@@ -402,4 +466,19 @@ export function bindTurnStepPreparedConsequence(value, ledgerValue) {
     ),
     prepared_effect_ledger_digest: ledger.ledger_digest
   });
+}
+
+function hasIndependentSemanticHealthEffects(fixedEffectProposals,
+  componentProposals) {
+  return fixedEffectProposals.every((proposal) =>
+    proposal.selected_context?.kind === 'semantic_activity'
+      && Array.isArray(proposal.condition_transitions)
+      && proposal.condition_transitions.length === 0
+      && proposal.exact_deltas?.health <= 0
+      && proposal.exact_deltas?.satiety === 0
+      && proposal.exact_deltas?.energy === 0)
+    && componentProposals.every((proposal) =>
+      Array.isArray(proposal.metric_changes)
+      && proposal.metric_changes.every(({ metric, direction }) =>
+        metric !== 'health' || direction === 'decrease'));
 }

@@ -466,6 +466,9 @@ function replayBodyTimeSlices(bodyBefore, slices, factual, proposal,
   const fixedProposals = [];
   const timeProposals = [];
   let stateAfter = bodyBefore == null ? null : structuredClone(bodyBefore);
+  let exactChanges = null;
+  const cumulativeHealthOnly = isIndependentSemanticHealthEffects(
+    proposal.fixed_effect_proposals, proposal.component_proposals);
   for (const [index, slice] of slices.entries()) {
     const sliceProposal = slice.body_update?.proposal;
     if (slice.body_update?.applied !== true
@@ -485,10 +488,14 @@ function replayBodyTimeSlices(bodyBefore, slices, factual, proposal,
       validateStarvationProposalStart(afterFixed.state_after,
         sliceProposal.component_proposals);
     }
-    const replay = afterFixed.ok
-      ? applyBodyTimeEffectProposals(afterFixed.state_after,
-        sliceProposal.component_proposals)
-      : afterFixed;
+    const cumulativeFixed = cumulativeHealthOnly && afterFixed.ok
+      ? applyCumulativeFixedEffects(bodyBefore, fixedProposals) : afterFixed;
+    const replay = cumulativeFixed?.ok === true
+      ? cumulativeHealthOnly
+        ? applyBodyTimeEffectProposals(cumulativeFixed.state_after, timeProposals)
+        : applyBodyTimeEffectProposals(afterFixed.state_after,
+          sliceProposal.component_proposals)
+      : cumulativeFixed;
     if (replay?.ok !== true
         || !same(replay.state_after, slice.body_update.state_after)) {
       bodyHistoryFail('causal body-time slice replay differs from its proposal', {
@@ -496,6 +503,7 @@ function replayBodyTimeSlices(bodyBefore, slices, factual, proposal,
       });
     }
     stateAfter = replay.state_after;
+    exactChanges = replay.exact_changes;
   }
   if (!same(fixedProposals, proposal.fixed_effect_proposals)
       || !same(timeProposals, proposal.component_proposals)
@@ -506,7 +514,44 @@ function replayBodyTimeSlices(bodyBefore, slices, factual, proposal,
   }
   return stateAfter == null
     ? applyBodyTimeEffectProposals(null, proposals)
-    : { ok: true, exact_changes: proposal.exact_changes, state_after: stateAfter };
+    : { ok: true, exact_changes: exactChanges, state_after: stateAfter };
+}
+
+function isIndependentSemanticHealthEffects(fixedProposals, timeProposals) {
+  return fixedProposals.every((proposal) =>
+    proposal.selected_context?.kind === 'semantic_activity'
+      && Array.isArray(proposal.condition_transitions)
+      && proposal.condition_transitions.length === 0
+      && proposal.exact_deltas?.health <= 0
+      && proposal.exact_deltas?.satiety === 0
+      && proposal.exact_deltas?.energy === 0)
+    && timeProposals.every((proposal) =>
+      Array.isArray(proposal.metric_changes)
+      && proposal.metric_changes.every(({ metric, direction }) =>
+        metric !== 'health' || direction === 'decrease'));
+}
+
+function applyCumulativeFixedEffects(bodyBefore, proposals) {
+  let stateAfter = structuredClone(bodyBefore);
+  for (const proposal of proposals) {
+    const replay = applyApprovedFixedBodyEffect({ body_state: stateAfter,
+      body_effect_profile: {
+        schema: 'rus.body_state.fixed_approved_effect.v1',
+        profile_ref: proposal.profile_ref,
+        profile_pin: proposal.profile_pin,
+        status: 'approved', applicability: proposal.selected_context,
+        exact_deltas: proposal.exact_deltas,
+        condition_outcomes: proposal.condition_transitions,
+        selection_policy: proposal.selection_policy,
+        rng_consumption: proposal.rng_consumption
+      }, selected_context: proposal.selected_context });
+    if (replay?.ok !== true || replay.owner !== '@rus/body-state'
+        || replay.applied !== true || !plain(replay.state_after)) {
+      bodyHistoryFail('cumulative fixed body effect replay failed');
+    }
+    stateAfter = structuredClone(replay.state_after);
+  }
+  return { ok: true, state_after: stateAfter };
 }
 
 function same(left, right) {

@@ -83,10 +83,15 @@ materialization, persistence, body, combat, NPC, narration или spatial рад
 из-за правдоподобия. Варианты и качественные диапазоны предпочтительнее
 ложной точности.
 
-Model-facing consumers получают structured slice и сохраняют его
-`qualifiers.directness`; отдельного compact prose renderer и отображения в
-текстовые метки этот контракт не задаёт. Нельзя описать editorial claim как
-`FACT` только потому, что он прошёл plausibility review.
+Исходные structured slice, `qualifiers.directness`, confidence и evidence
+остаются у существующего WK/knowledge owner и доступны предусмотренным
+проверкам. Прозовые роли получают специализированную субъективную
+prose-проекцию: она передаёт содержание и степень уверенности естественным
+русским текстом, не раскрывая служебные метки. Реализация renderer здесь не
+утверждается; остальные consumers сохраняют structured slice и исходные
+qualifiers по этому контракту. Нельзя описать editorial claim как
+исторически установленный факт только потому, что он прошёл plausibility
+review.
 `EDITORIAL` означает редакторскую посылку, включая реконструкцию или
 обобщение источника; это не метка происхождения источника. Аналогия и вывод
 могут опираться как на внешний источник, так и на редакторскую реконструкцию.
@@ -2457,7 +2462,8 @@ Applicability и actor access остаются обязательными фил
 }
 ```
 
-Model-facing World Knowledge состоит только из структурированных полей среза.
+Model-facing World Knowledge состоит только из структурированных полей среза,
+кроме prose-проекции по §0.2.
 
 `search_hint_hits` — не model-facing поле среза: массив bool длиной
 `search_hints`, `true` если hint нашёл допущенный claim (`strongest > 0` по
@@ -2485,7 +2491,8 @@ hard constraints
 
 Число claims ограничивается `max_candidates` и `max_facts` в query budget.
 Каждый consumer передаёт модели сам структурированный slice; отдельная prose
-проекция и лимит её символов отсутствуют. Facts, qualifiers, constraints,
+проекция и лимит её символов отсутствуют (кроме prose-проекции по §0.2).
+Facts, qualifiers, constraints,
 coverage, disputes и gaps остаются в своих структурированных полях.
 
 ---

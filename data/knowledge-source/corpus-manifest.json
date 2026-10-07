@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "437ab9ba7e4d695051f0e97bb77d39346a70dd2491977abe2f9ec5b1e9e4c986",
-      "bytes": 34881,
+      "sha256": "ad9301826198f2dc8593db381b878358e6be4a31632fead37d5059d42bd891f4",
+      "bytes": 36142,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -354,8 +354,8 @@
       "file_name": "situational_prose_requirements.md",
       "status": "active",
       "provenance_mode": "native",
-      "sha256": "05b2ce9bc60971ef66529d8a932a101e1d9192ba26ffbd1aa449b32ff894d990",
-      "bytes": 71039,
+      "sha256": "042640f25ee4f911d44525ceeab389b3b4e914810f5ff9a3d1af093e39cfa9c4",
+      "bytes": 85231,
       "priority_tier": "highest_materialization_normative"
     },
     {
@@ -499,8 +499,8 @@
       "document_id": "world-knowledge-platform-implementation-contract",
       "canonical_path": "corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md",
       "file_name": "world_knowledge_platform_implementation_contract.md",
-      "sha256": "bfc16156204f76c65a17d22281ae2aa45a90eebe777b215527e790cf83d9ea6f",
-      "bytes": 162299,
+      "sha256": "2e6b37a63593785d6c0b066982fd0bf8d29f327da1968138ca0cca1c8a6f6ca0",
+      "bytes": 162935,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- test(spatial): the perception reload regression creates prior NPC perceptions with a real turn and real recognition, so the persisted body history stays consistent; the saved name is kept per NPC against a generic fresh label (#377, D84)
 - fix(items): общий выбор материала из утверждённых привязок через selectApprovedItemMaterial в @rus/runtime-catalog; Stage 16 сохраняет material_category_id у снаряжения игрока и NPC (#178).
 - test(tools): calendar derivation check fails when the resolver or the projector ignores the selected calendar profile on an advanced input date (#350)
 - fix: Phase 1B neutral and HTTP turns use the approved authored-start scene title in their test repository; preserve S1/N1 checks and snapshot digests without persisting test presentation; preserve public idempotency error codes and provide Russian messages at the HTTP boundary (#98, D89)

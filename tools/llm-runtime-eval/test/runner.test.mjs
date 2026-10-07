@@ -11,6 +11,28 @@ import { validateTurnStepPlan } from '@rus/turn';
 
 const corpus = JSON.parse(await readFile(new URL('../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url), 'utf8'));
 
+async function runFixtureResponses(fixture, outputs) {
+  const requests = [];
+  const server = createServer(async (request, response) => {
+    let body = ''; for await (const chunk of request) body += chunk;
+    requests.push(JSON.parse(body));
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(outputs.shift())
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    return { report, requests };
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+}
+
 function providerOutput(fixture) {
   const output = fixture.expected_output;
   if (!fixture.role_id.startsWith('npc_autonomous_decider')) return output;
@@ -200,6 +222,38 @@ test('combat eval records its single bounded production repair', async () => {
     assert.equal(report.metadata.role_config_policy.find(({ role_id }) =>
       role_id === 'npc_combat_decider').max_tokens, 20000);
   } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('combat primary fixture assembles and validates against canonical request', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'npc-combat-engage');
+  const { report, requests } = await runFixtureResponses(fixture,
+    [fixture.expected_output]);
+  assert.equal(report.results[0].pass, true);
+  assert.equal(report.results[0].valid, true);
+  assert.equal(report.results[0].llm_calls, 1);
+  assert.deepEqual(requests[0].messages, fixture.messages);
+});
+
+test('standalone combat repair fixture restores canonical choices', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'npc-combat-format-repair');
+  const { report, requests } = await runFixtureResponses(fixture,
+    [fixture.expected_output]);
+  assert.equal(report.results[0].pass, true);
+  assert.equal(report.results[0].valid, true);
+  assert.equal(report.results[0].repair_calls, 1);
+  assert.deepEqual(requests[0].messages, fixture.messages);
+});
+
+test('invalid combat primary is repaired into a valid plan', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'npc-combat-engage');
+  const { report } = await runFixtureResponses(fixture,
+    [{}, fixture.expected_output]);
+  assert.equal(report.results[0].pass, true);
+  assert.equal(report.results[0].valid, true);
+  assert.equal(report.results[0].llm_calls, 2);
+  assert.equal(report.results[0].repair_calls, 1);
+  assert.equal(report.aggregates.total.repairs, 1);
 });
 
 test('combat eval fails after one invalid production repair', async () => {

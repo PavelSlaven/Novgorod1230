@@ -3,7 +3,7 @@ import { concern, isPlainObject, readSelectedChain, readSelectedPlaceTemplateId,
 import { filterAllowedG5Templates, normalizeAllowedG5TemplateSet } from '../../../g5-scene/templates.js';
 import { normalizeStage13MaterializationPolicy } from '../policy/constants.js';
 import { MATERIALIZER_VERSION, RNG_VERSION } from '@rus/materialization';
-import { buildAllowedG5TemplateSet } from '@rus/world-catalog-workflow';
+import { buildAllowedG5TemplateSet } from '@rus/runtime-catalog/approved-record-snapshots';
 
 export function buildStage13G5MaterializationInput(context, options = {}) {
   const selectedStartNode = options.selected_start_node

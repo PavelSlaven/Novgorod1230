@@ -3,7 +3,7 @@ import { calculateHandsState, calculateInventoryMass, resolveInventoryLoad,
   validateInventoryTopology } from '@rus/items-property';
 import { deepFreeze } from '@rus/kernel';
 import { MaterializationError } from '@rus/materialization';
-import { calculatePackingSlots } from '@rus/world-catalog-workflow';
+import { calculatePackingSlots } from '@rus/items-property';
 import { evaluateStage16NormalizedInventory } from './validation/inventory-validation.js';
 
 /** Pure Stage 16 mechanics dry-run; it never mutates or persists party state. */

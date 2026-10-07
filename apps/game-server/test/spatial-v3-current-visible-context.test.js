@@ -5,6 +5,79 @@ import { prepareG4NaturalScenePerceptionInput } from '../src/runtime/g4-natural-
 import { projectSpatialV3CurrentVisibleContext,
   readAndProjectSpatialV3CurrentVisibleContext } from
   '../src/runtime/spatial-v3-current-visible-context.js';
+import { createCurrentSpatialContextProjector } from
+  '../src/runtime/releases/spatial-v3-production-trace-runtime.js';
+
+test('production current-scene adapter reads and projects only current source observations', async () => {
+  const { perception } = await approvedNaturalPerceptionFixture();
+  const commands = [];
+  const transaction = { async query(sql) { commands.push(sql); } };
+  const connection = { ...transaction, release() { commands.push('release'); } };
+  const state = { position: { position_id: 'position:inside' },
+    journey_location: { scene_position_id: 'position:before-move' } };
+  const calls = [];
+  const project = createCurrentSpatialContextProjector({
+    partyPool: { async connect() { return connection; } },
+    readCurrentSources: async (input) => {
+      calls.push(input);
+      return {
+        partyId: 'party:1', actorId: 'player:1',
+        naturalInput: perception,
+        entityObservations: [{ entity_kind: 'npc', entity_id: 'npc:present',
+          visibility: 'clear', display_label: 'Еремей', display_name: 'Еремей',
+          exterior: { sex_category: 'male', age_category: 'adult',
+            appearance: { build: 'thin' }, visible_equipment: [] } },
+        { entity_kind: 'item', entity_id: 'item:held', visibility: 'clear',
+          display_label: 'клочок шерсти',
+          exterior: { condition_state: 'у вас в руках' } }],
+        localEdges: [], directionalExits: [], siteConnections: []
+      };
+    }
+  });
+  const projected = await project({ partyId: 'party:1', actorId: 'player:1', state });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].transaction, connection);
+  assert.equal(calls[0].positionId, 'position:inside');
+  assert.equal(calls[0].state, state);
+  assert.deepEqual(commands, [
+    'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY', 'COMMIT', 'release'
+  ]);
+  assert.deepEqual(projected.visible_npc.map(({ entity_ref: ref }) =>
+    ref.entity_id), ['npc:present']);
+  assert.deepEqual(projected.visible_objects.map(({ entity_ref: ref, visible_status }) =>
+    [ref.entity_id, visible_status]), [['item:held', 'у вас в руках']]);
+  assert.ok(projected.sensory_details.length > 0);
+});
+
+test('production current-scene adapter applies the active turn deadline to its read transaction',
+  async () => {
+    const { perception } = await approvedNaturalPerceptionFixture();
+    const commands = [];
+    let released = false;
+    let deadlineChecks = 0;
+    const connection = { async query(sql) { commands.push(sql); } };
+    const turnBudget = {
+      remaining: () => ({ deadline_ms: 30_000 }),
+      assertWithinDeadline() { deadlineChecks += 1; }
+    };
+    const project = createCurrentSpatialContextProjector({
+      partyPool: { connect(callback) { callback(null, connection,
+        () => { released = true; }); } },
+      readCurrentSources: async () => ({ partyId: 'party:1', actorId: 'player:1',
+        naturalInput: perception, entityObservations: [], localEdges: [],
+        directionalExits: [], siteConnections: [] })
+    });
+
+    await project({ partyId: 'party:1', actorId: 'player:1',
+      state: { position: { position_id: 'position:inside' } }, turnBudget });
+
+    assert.ok(commands.includes('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY'));
+    assert.ok(commands.some((sql) => String(sql).startsWith('SET statement_timeout = ')));
+    assert.ok(commands.some((sql) => String(sql).includes("set_config('statement_timeout'")));
+    assert.ok(commands.includes('RESET statement_timeout'));
+    assert.equal(released, true);
+    assert.ok(deadlineChecks > 0);
+  });
 
 test('canonical and generated current scenes compose admitted natural, entities and exits', async () => {
   const args = { partyId: 'party:1', actorId: 'player:1',

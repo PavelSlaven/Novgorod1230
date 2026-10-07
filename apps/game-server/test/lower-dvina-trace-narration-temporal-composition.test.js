@@ -28,7 +28,12 @@ test('code-owned durations never enter narrator sources', async () => {
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
     project: async () => assert.fail('unexpected fallback')
   } }).project({
-    retrieved_state: { current_visible_context: scene() },
+    retrieved_state: {
+      actor_id: 'mikula',
+      position: { location_ref: 'shore' },
+      current_spatial_context: scene(),
+      current_spatial_context_is_fresh: true
+    },
     consequence: { status: 'resolved', visible_seed: { ...speech, ...handling } },
     time_update: { exact_elapsed: { numerator: '6', denominator: '1' },
       prepared_effect_ledger: { slices: [

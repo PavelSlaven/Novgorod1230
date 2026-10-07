@@ -59,6 +59,7 @@ import { compileGeneratedNpcBindings, compilePlacePeopleBindings, placePeopleCap
 import { decidePlacePeople, resolvePlacePeople, wantPlacePeople } from './place-people-first-arrival.js';
 import { resolveProceduralFunctionalAllocations } from
   './procedural-functional-allocation.js';
+import { materializeNpcRelationshipRules } from './npc-relationship-materialization.js';
 import {
   ACTOR_BASE_ATTRIBUTE_KEYS,
   canonicalCandidateDigest,
@@ -96,6 +97,7 @@ export {
   profileFromVerifiedRuntimeRecord, repairWorldInstances, RNG_VERSION,
   validateActorBaseAttributes, validateActorBaseAttributesCandidate,
   validateBoundedDecisionResult, validateProceduralSceneAuthoringCandidate,
+  materializeNpcRelationshipRules,
   validateSupportingBasisAdmission, assertAndNormalizeOrdinaryAggregate,
   applyOrdinaryAggregateTransition, computeOrdinaryIdentityBudget,
   validateOrdinaryBackgroundGroup,

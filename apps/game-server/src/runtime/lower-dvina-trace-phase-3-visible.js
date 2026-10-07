@@ -41,7 +41,6 @@ export function phase3ConversationProjection(input, contracts,
   if (responseKind != null && speaker == null) {
     throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_SPEAKER_GAP');
   }
-  const speakerIsEremey = speaker?.ref === contracts.ids.eremeyRef;
   const disclosed = semantic
     ? semantic.route_disclosure != null
     : conversation.route_knowledge_ref != null;
@@ -109,19 +108,7 @@ export function phase3ConversationProjection(input, contracts,
   return {
     version: 1,
     schema: 'visible_context_package',
-    visible_scene: groupLines != null
-      ? groupLines.join(' ')
-      : speechResponse
-      ? speechLines.join(' ')
-      : responseKind === 'silence'
-        ? `${speakerLabel} молчит.`
-        : responseKind === 'leave_conversation'
-          ? `${speakerLabel} прекращает разговор.`
-          : semantic
-            ? 'На ваш вопрос никто не ответил.'
-      : disclosed
-        ? `${speakerLabel} рассказал, что слышал удар и видел мокрого Ратшу с чужой сумкой.`
-        : `${speakerLabel} уклонился от полного ответа о крушении.`,
+    visible_scene: visibleContext?.visible_scene ?? null,
     visible_changes: visibleChanges,
     sensory_details: [],
     visible_npc: visibleNpcs,
@@ -133,10 +120,7 @@ export function phase3ConversationProjection(input, contracts,
         `Слова ${speakerLabel} и найденная синяя шерсть остаются независимыми сведениями.`
       ] : [])
     ],
-    uncertainties: responseKind == null || !speakerIsEremey
-      ? [] : disclosed
-      ? ['Синяя шерсть ещё не сопоставлена с одеждой Ратши.']
-      : [`${speakerLabel} мог сообщить не всё, что знает.`],
+    uncertainties: [],
     allowed_tensions: [],
     do_not_imply: [
       'blue_wool_matches_ratsha_caftan',

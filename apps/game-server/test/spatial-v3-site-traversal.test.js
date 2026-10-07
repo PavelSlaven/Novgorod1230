@@ -39,8 +39,8 @@ const profile = { id: 'profile', version: 1, status: 'approved', profile_scope: 
   movement_orientation_profile_id: 'orientation', movement_orientation_profile_version: 1,
   availability_condition_set_ref: 'availability.local_state_conditional@1',
   capacity_semantics_ref: 'capacity.no_static_limit@1', canonical_digest: 'profile-digest' };
-const sites = [active('site:source', { parent_g4_id: 'g4' }),
-  active('site:target', { parent_g4_id: 'g4' })];
+const sites = [active('site:source', { parent_g4_id: 'g4', origin: 'canonical' }),
+  active('site:target', { parent_g4_id: 'g4', origin: 'canonical' })];
 const baselines = [active('baseline:source', { host_kind: 'g5_site', host_id: 'site:source' }),
   active('baseline:target', { host_kind: 'g5_site', host_id: 'site:target' })];
 const g6 = [active('g6:source', { scene_baseline_id: 'baseline:source', host_kind: 'g5_site', host_id: 'site:source' }),
@@ -67,7 +67,11 @@ for (const conditionRef of [connection.availability_condition_set_ref, null]) te
   const localConnection = { ...connection, availability_condition_set_ref: conditionRef };
   const localProfile = { ...profile, availability_condition_set_ref: conditionRef == null
     ? null : profile.availability_condition_set_ref };
-  const localContext = { ...context, closure: { connection_profiles: [localProfile] } };
+  const destinationOrigin = conditionRef == null ? 'generated' : 'canonical';
+  const localContext = { ...context,
+    closure: { connection_profiles: [localProfile] },
+    snapshot: { ...context.snapshot, sites: sites.map((site) =>
+      site.id === 'site:target' ? { ...site, origin: destinationOrigin } : site) } };
   const current = { scene_position_id: 'position:source', location_kind: 'scene',
     journey_version: 1, from_site_id: 'site:source', to_site_id: 'site:target',
     connection_status: 'active', connection_version: 1, cost_kind: 'action',
@@ -99,6 +103,8 @@ for (const conditionRef of [connection.availability_condition_set_ref, null]) te
   assert.equal(consequence.duration_minutes, 0);
   assert.equal(consequence.spatial_v3_traversal.result.result_kind, 'completed');
   assert.equal(consequence.position_transition.to_position_ref, 'position:target');
+  assert.equal(consequence.visible_seed.destination_site_origin,
+    destinationOrigin);
   const snapshot = structuredClone(state);
   applyS1LocalPositionTransition({ snapshot, state,
     transition: consequence.position_transition });

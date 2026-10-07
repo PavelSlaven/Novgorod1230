@@ -47,6 +47,10 @@ runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
+Committed v5 inventory mechanics defaults принадлежат `@rus/items-property`;
+game-server сохраняет границы validation своих adapters и делегирует им только
+чистую проекцию профиля.
+
 Runtime `needs_check` filter is limited to O1, O2b and S1. Server gets
 `rus.needs_check_blockers.v2` only from verified immutable catalog snapshot for
 same turn pin; lookup is lazy. Guard uses year from committed clock and region
@@ -243,18 +247,23 @@ and adds no second transaction owner.
   не поступают writer/auditor/repair. Newly relevant sensory details уже входят
   в required visible changes; полный пересказ окружения запрещён.
   Newly relevant facts приходят через visible_changes: applied observation
-  продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
+  продвигает воспринимаемые scene facts, а подтверждённое прибытие — одно событие
+  из player-safe факта места назначения,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums
   не становятся prose и не требуют нового словаря,
   ordinary scene seed — только факты текущего результата. Общая projection
-  выполняет arrival promotion после NPC enrichment, но берёт route knowledge
-  из исходного arrival result. Snapshot self-knowledge и carried objects
+  использует arrival result и факты destination-пакета; неизменные route knowledge
+  и self-knowledge остаются контекстом. Snapshot carried objects
   не продвигаются общим осмотром; ими владеет explicit item observation. Без current beat
   descriptive support сохраняется для scene-only perception. Outcome/intent
   передаются только своим ролям; used_references остаётся [].
-  Initial current-scene projection reads persisted player/local items plus
-  player-safe NPC appearance, activity and equipped-item refs; state version 0
-  does not replace existing rows with an empty `visible_objects` list.
+  Current-scene projection prefers a Spatial package freshly read for the
+  player's current position; otherwise it uses the matching approved scene
+  presentation. It has no location-profile fallback. Spatial freshness and
+  entity-filter flags are read-time data and never enter the persisted turn
+  snapshot. Item placement/status/facts and visible NPCs come from committed
+  state; movement objects come from the current Spatial projection. A prior
+  visible package is not a source for current item, NPC, or movement facts.
   Private auditor возвращает только полный ordered reviewed_segments,
   ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,
@@ -424,7 +433,7 @@ Domain-command ledger contracts сохраняются.
 
 ## Не владеет
 
-Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy вне ролей, явно назначенных активными контрактами (NPC combat: `lower-dvina-trace-combat-llm.js`, §§32–33), narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
 
 ## Public API и контракты
 
@@ -620,8 +629,10 @@ but creates no presence resolution and incurs no discovery activity.
 The admitted activity projects a performed discovery with its exact duration;
 its separate candidate query remains a question, never ownership or success.
 An admitted O1 item adds a strict `ordinary_presence_seed` with resolution
-`materialized`, exact query and admitted `display_name`. The current beat reports
-that discovery once. Applied step traces and prepared ledger slice seed keys group
+`materialized`, exact query and admitted `display_name`. Its current-scene placement
+supports one natural discovery fact using that name; the beat never emits a bare
+name or claims a surface or position beyond the committed placement. Applied step
+traces and prepared ledger slice seed keys group
 each step into one required change: exact speech then its elapsed time; discovery time
 then discovery; physical result after its activity. The ordinary material prerequisite
 mapping binds `inspect` for an exact full-intent continuation in ordinary scope;
@@ -787,6 +798,28 @@ outcome воды вне SQL transaction.
 Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Публичные категории отказа хода (HTTP 409, `src/http/contracts.js`): `TURN_NOT_SAVED` (`TURN_STEP_PLAN_INVALID`) и `WORLD_ACTION_UNAVAILABLE` (`M2C_TARGET_A1_APPLICABILITY_DATA_GAP`) — только при `turn_commit_status: not_started`, с безопасным текстом «Ход не сохранён…»; остальные 5xx маскируются `TEMPORARY_ACTION_UNAVAILABLE`, внутренняя причина — в server log. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
 
 ## Production activation и тесты
+
+Combat #224/D65 keeps mechanics in the shared `@rus/body-state` and `@rus/npc-runtime` owners; scenario code does not own combat rules. `combat-min-data.js` validates the scoped qualitative-profile approval and source pin, and builds the materialized-NPC initialization DTO only from the exact D67-approved bytes. Active v17 bindings still omit `combatBodyBandContext`; combat body bands therefore remain typed gaps in production until authoritative actor scope and a separate versioned v17 cutover are approved. The body initialization approval does not activate the broader combat bundle.
+
+The generic live-world `request_combat` command implementation derives
+candidate presence only from `scene_readback_present`, which marks rows read by
+the current scene owner and is not combat approval. An absent body row receives
+the exact D67-approved initialization DTO only after successful authoritative
+readback; a conflicting approved materialization profile remains a typed gap.
+The command is registered when the current scene has a target, regardless of
+unrelated NPC body rows. The initialization DTO is transient combat-owner input:
+snapshots and ordinary-turn/model projections do not retain or expose it.
+Execution remains fail-closed until a separate generic profile and v17 cutover
+are approved, so registration alone cannot start combat.
+The codes `combat_actor_body_state_required`,
+`combat_actor_unavailable`, and
+`combat_actor_execution_profile_required` remain private diagnostics and are
+not whole-turn HTTP 409 responses. When registered, its mode uses only blocks
+already allowed by `@rus/turn` (`party_state`, `current_position`,
+`relevant_npcs`). Scene positions loaded for the current
+turn are transient; snapshot stripping restores an existing NPC's prior
+`position_id` and `g6_instance_id`, while persisted placement records remain
+the source for refreshed scene presence.
 
 The separately callable v17 target release factory remains outside the default
 selector. It requires the exact issued item and actor successor approvals,
@@ -1039,6 +1072,8 @@ prose wire: её вычисляет temporal owner и показывает serve
 обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
 dump остаётся static_context_dump. При отсутствии current beat scene-only wire
 сохраняет `visible_scene` и grounded descriptive sensory support.
+Материализованная обычная вещь передаётся как одно естественное сообщение о находке,
+подтверждённое её размещением в текущей сцене, без неподтверждённой детали о поверхности.
 Полный grounded пересказ required sources по одному в исходном порядке является
 weak_literary_composition, если действие или воспринятый результат не организует
 поддержанные пространственные детали в сцену; выдуманная связка недопустима.

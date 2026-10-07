@@ -1,8 +1,21 @@
 # Changelog
 
 ## Unreleased
+- fix(game-base): resolve Novgorod SQLite refs exactly from the tracked read-only source; fail closed on unchecked refs (#469)
+- fix(spatial): allow visible-package persistence against matching committed v0 snapshot (#467)
+- fix(tools): portable main-module checks; the P05 checker now runs on Linux (#474)
+- fix(runtime-boundary): move new-game projections out of tools, centralize committed v5 inventory defaults in items-property; LW-038/LW-106 closed (#326, #281)
+- fix(game-base): apply approved master material corrections through a fail-closed overlay (#432, #431)
+- fix(npc): materialize named NPC relationships only from approved rule and D-2 slot evidence, persist pairs atomically on first entry and authored starts
+- fix(game-base): correct 1230 historical event dates and sources (both chronicle dates of the departure to Torzhok kept, neutral title), figure office bounds, recreation and health notes; health kinds for three epidemics; regression tests (#339, #340, #341, #325)
+- data(combat): approved generic v17 execution profile landed; activation pending (#224)
+- fix(tools): reject stale signed approvals, discover in-repository MapMaker symlink datasets, and test supplied calendar profiles (#306, #328, #350)
+- fix(presentation): preserve current committed NPC speech on first delivery, pending screens and replay (#98)
+- fix(docs-tools): сохранять полные пункты MODULE.md в индексе и убрать повтор World Knowledge (#354, #355)
+- fix(test): compare route panel labels with planner operations in the D72 player-safe space (#98)
 - docs(process): HOW_WE_WORK §11.2 — the lead reads the full bench wire (data, form, path, destination) before every BENCH-OK; wire-review file and its SHA-256 in the approval (D132) (#98)
 - docs(npc): add approved ACTIVE family, household and named-relations norm (D122, D124–D128); record pending household data approval/import as LW-136 (#133, #259, #338)
+- fix(turn-scene): keep current scene projection grounded in committed changes and drop prior-turn NPC speech from narration input (D80)
 - docs(player-start): add D111 player character and start contract; LW-135 added (#109)
 - docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
 - fix(npc): replay committed conversation claims from the verified prepared request snapshot (#98)
@@ -33,6 +46,9 @@
 - fix(test): remove temporary fixture directories after tests, including setup failures (#231)
 - fix(test): copy only the Phase 2 bundle closure and surface rollback errors (#235)
 - fix(test): route Russian opening writer and audit fixtures by payload shape (#98)
+
+- feat(combat): scope approved missing-body initialization to combat participants and the existing P16 writer; admit request_combat from current scene readback without gating on unrelated NPC bodies; keep generic v17 execution fail-closed pending cutover; LW-099 updated (#224)
+- docs(tech-debt): record D65 body-effect scoring limit and retreat-menu gap; LW-137 added (#224)
 
 - fix(game-base): sort builder file scans and pin sort locale; two-environment byte determinism check (#201)
 - fix(turn): project world_process_step input to qualitative facts and opaque choices; keep runtime refs, versions and quantities server-side (#230)

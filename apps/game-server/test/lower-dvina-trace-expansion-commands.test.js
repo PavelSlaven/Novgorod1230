@@ -15,6 +15,16 @@ import { errorEnvelope } from '../src/http/contracts.js';
 import LIVE_WORLD_TURN_PROFILE from
   '../../../data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json'
   with { type: 'json' };
+import { SCENE_PRESENTATION } from './lower-dvina-trace-phase-2-fixture.js';
+const WRECK_TITLE = SCENE_PRESENTATION.locations.find(({ location_ref }) =>
+  location_ref === 'trace_ld_v1_loc_wreck_shore').display_name;
+
+function useCurrentSpatialTitle(state) {
+  state.current_spatial_context = { visible_scene: WRECK_TITLE,
+    sensory_details: [], visible_objects: [], known_context: [] };
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = false;
+}
 
 const state = { party_id: 'party:expansion', actor_id: 'actor:traveller',
   party_state: { state_version: 4 },
@@ -234,6 +244,7 @@ test('restrained free-text movement commits a blocked zero-minute turn', async (
   current.current_visible_context = fixtureOpeningCurrentVisibleContext({
     state: current, materializationBundle: bundle
   });
+  useCurrentSpatialTitle(current);
   current.combat_sessions = [{ combat_id: 'combat:restrained',
     status: 'paused_for_player', scope_ref: { entity_kind: 'location',
       entity_id: current.position.location_ref },
@@ -285,6 +296,7 @@ test('official exit action reports known movement denial without moving or advan
     const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
     const current = structuredClone(seed.state);
     current.scenario_id = 'authored:unseen-woodland';
+    useCurrentSpatialTitle(current);
     const f = fixture({ committedState: current,
       authoredTurnProfile: { profile: LIVE_WORLD_TURN_PROFILE, pin: {
         artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
@@ -341,6 +353,7 @@ for (const topologyCommitted of [false, true]) test(topologyCommitted
     const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
     const current = structuredClone(seed.state);
     current.scenario_id = 'authored:unseen-woodland';
+    useCurrentSpatialTitle(current);
     let prepared = 0; const diagnostics = [];
     const f = fixture({ committedState: current,
       llmDiagnostics: { recordGameplayTrace: (record) => diagnostics.push(record) },

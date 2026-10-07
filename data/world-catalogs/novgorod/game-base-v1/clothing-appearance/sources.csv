@@ -59,8 +59,8 @@ web:WEB07,История русских причёсок (Культура.РФ)
 sqlite:S01,"НПЛ, изд. 1950 (via novgorod_1230(1) (1).sqlite sources)",https://archive.org/details/novhorodskyj_litopys,primary,A
 sqlite:S15,Лёгкой поступью по мостовой. Обувь древнего Новгорода X–XV вв.,https://novgorodmuseum.ru/visit/sobytiya/legkoj-postupyu-po-mostovoj.-obuv-drevnego-novgoroda-x-xv-vv.,museum,A
 sqlite:S16,Е. А. Рыбина. Мир вещей средневекового Новгорода,https://cyberleninka.ru/article/n/mir-veschey-srednevekovogo-novgoroda-po-arheologicheskim-nahodkam,scholarly,B
-sqlite:material_culture,C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite table material_culture (15 rows),,local curated db,A-B
-sqlite:social_groups,C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite table social_groups (13 rows),,local curated db,A-B
+sqlite:material_culture,tracked curated Novgorod 1230 SQLite table material_culture (15 rows),,local curated db,A-B
+sqlite:social_groups,tracked curated Novgorod 1230 SQLite table social_groups (13 rows),,local curated db,A-B
 risovalka,Документы/РИСОВАЛКА ВЕБ/novgorod_character_1230.md (copy: sources/character-bible-1230),,author research bible (candidate),B-C
 wk:*/claim:*,"WK production-v1 clothing.json, historical-population.json, household-agriculture.json, settlement-craft.json, reconstructed-ordinary-lifeways-v1.json (approved)",data/world-catalogs/novgorod/world-knowledge/production-v1/,approved WK,per claim
 source:clothing-rabinovich-1986,Рабинович М. Г. Древнерусская одежда IX–XIII вв.,https://www.booksite.ru/ancient/reader/human_3_02.htm,scholarly (WK),B

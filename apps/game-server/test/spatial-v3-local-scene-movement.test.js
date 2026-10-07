@@ -55,7 +55,7 @@ function state(position) {
       scene_position_id: position, state_version: 1 } };
 }
 
-test('local movement follows only committed directed edges; P16 changes exact position', async () => {
+test('local movement follows committed directed edges without turning ordinal labels into movement events', async () => {
   let committed = state('arrival');
   const pool = { async query(_sql, [partyId, actorId, positionId]) {
     assert.deepEqual([partyId, actorId], ['party', 'actor']);
@@ -75,6 +75,13 @@ test('local movement follows only committed directed edges; P16 changes exact po
     actorId: committed.actor_id, policyPins: [] });
   assert.deepEqual(actionSet.options.map(({ option_id: id }) => id),
     ['local_scene_edge:arrival:focus']);
+  const preparedCommand = await commands[0].consequence({
+    retrievedState: committed, playerInput: {}
+  });
+  assert.equal(preparedCommand.position_transition.movement_edge_ref, 'arrival:focus');
+  assert.equal(Object.hasOwn(preparedCommand.visible_seed,
+    'turn_step_local_movement_signature'), false,
+  'technical display labels are not confirmed movement events');
   await assert.rejects(runtime.prepareLocalMovement({ partyId: 'party', actorId: 'actor',
     state: committed, edgeId: 'focus:departure', playerInput: {}, inputDigest: 'digest' }),
   { code: 'SPATIAL_V3_LOCAL_EDGE_UNAVAILABLE' });

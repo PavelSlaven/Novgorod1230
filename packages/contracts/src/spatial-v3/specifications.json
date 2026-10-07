@@ -1,7 +1,7 @@
 {
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "amendment_scope": "Appendix A.1-A.8",
+  "amendment_scope": "Appendix A.1-A.9",
   "additional_amendment_sources": [
     {
       "source": "data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
@@ -11824,7 +11824,7 @@
         {
           "name": "committed_state_version",
           "required": true,
-          "type": "positive_decimal_string"
+          "type": "non_negative_decimal_string"
         },
         {
           "name": "change_set_id",
@@ -11864,6 +11864,7 @@
       ],
       "relations": [],
       "invariants": [
+        "committed_state_version identifies the existing committed party snapshot; zero is valid only when that snapshot has version 0.",
         "Payload contains only perceived/known player-safe facts, uncertainty and already calculated affordances.",
         "Hidden queues, future timestamps, unperceived knowledge, motives, raw options, traces, rolls, DC and state patches are forbidden.",
         "Package and pending status commit atomically with facts; narration output is stored separately."

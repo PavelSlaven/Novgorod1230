@@ -7,7 +7,7 @@ const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках
 const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
 
 export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
-  body = {}) {
+  body = {}, currentScene = null) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
   const directPlans = plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
@@ -19,8 +19,7 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
     ...(directPlans.some((plan) => plan.direct_result_kind === 'player_safe_observation'
         && plan.assessment == null)
       ? ['Вы внимательно изучили обстановку.',
-        ...lowerDvinaTraceObservedSceneChanges(
-          input?.retrieved_state?.current_visible_context)] : []),
+        ...lowerDvinaTraceObservedSceneChanges(currentScene)] : []),
     ...(kinds.has('player_safe_item_observation')
       ? carriedItemObservationChanges(sceneItems) : []),
     ...(kinds.has('player_safe_body_observation')
@@ -96,7 +95,7 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId,
         && location === position?.location_ref
       || text(anchor) && [position?.g5_anchor_id, position?.anchor_id]
         .filter(text).includes(anchor);
-    const held = placement.holder_character_id === actorId;
+    const held = isLowerDvinaTraceItemHeldBy(item, actorId);
     const itemId = item?.item_id ?? item?.instance_id;
     if ((!coLocated && !held) || !text(itemId)) return [];
     const label = resolveVisibleItemLabel(item, itemLabels);
@@ -111,6 +110,19 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId,
           ? CARRIED_VISIBLE_STATUSES.hands : CARRIED_VISIBLE_STATUSES.other
         : 'available' } }];
   });
+}
+
+export function lowerDvinaTraceCarriedItemIds(items, actorId) {
+  return new Set((items ?? []).flatMap((item) => {
+    if (!isLowerDvinaTraceItemHeldBy(item, actorId)) return [];
+    const itemId = item?.item_id ?? item?.instance_id;
+    return text(itemId) ? [itemId] : [];
+  }));
+}
+
+function isLowerDvinaTraceItemHeldBy(item, actorId) {
+  return typeof actorId === 'string' && actorId.length > 0
+    && item?.placement?.holder_character_id === actorId;
 }
 
 export function lowerDvinaTraceCarriedItemObservations(items, visibleObjects) {

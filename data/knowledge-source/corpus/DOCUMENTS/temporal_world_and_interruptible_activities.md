@@ -3005,6 +3005,39 @@ invariants:
   - Provider inputs and state projection are complete; hidden reads and implicit providers are forbidden.
 ```
 
+## A.9. Committed NewGame visible package baseline
+
+For the current target registry, the visible-package persistence envelope may
+identify the existing committed NewGame snapshot at state version 0. This
+amendment supersedes A.6 only for the current definition of this contract;
+historical A.1–A.6 and the pinned 4.2.0/4.3.0 target specifications remain
+unchanged. The package records the matching committed snapshot version; it does
+not synthesize a successor version.
+
+```yaml
+contract_name: visible_package_persistence_envelope
+storage: party_runtime_append_only
+identity:
+  - package_id
+fields:
+  package_id: required stable_id
+  party_id: required stable_id
+  turn_id: required stable_id
+  committed_state_version: required non_negative_decimal_string
+  change_set_id: required stable_id
+  package_digest: required sha256_hex
+  visible_payload: required json_object
+  presentation_status: required enum[pending, delivered, failed_retryable]
+  projection_policy_ref: required versioned_ref
+  dependency_pins: required dependency_pin_set
+  idempotency_record_id: required stable_id
+invariants:
+  - committed_state_version identifies the existing committed party snapshot; zero is valid only when that snapshot has version 0.
+  - Payload contains only perceived/known player-safe facts, uncertainty and already calculated affordances.
+  - Hidden queues, future timestamps, unperceived knowledge, motives, raw options, traces, rolls, DC and state patches are forbidden.
+  - Package and pending status commit atomically with facts; narration output is stored separately.
+```
+
 # Приложение B. Temporal typed-error amendment
 
 | Error code | Meaning | Required reaction | Retryability |

@@ -9,6 +9,7 @@
 - каталогом и публичными entrypoints Stages 2–26;
 - stage-local precheck/validation/repair contracts;
 - общим new-game orchestration order;
+- потреблением exact approved actor/item/G5 projections из `@rus/runtime-catalog` и расчётом packing через `@rus/items-property`; production stages не зависят от `tools/*`;
 - handoff к Stage 25 persistence и Stage 26 first-screen result.
 
 ## Не делает

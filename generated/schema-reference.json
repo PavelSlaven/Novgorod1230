@@ -1116,6 +1116,12 @@
       "type": "sql"
     },
     {
+      "bytes": 291,
+      "path": "schemas/party-db/040_party_runtime_visible_package_initial_state.sql",
+      "sha256": "8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

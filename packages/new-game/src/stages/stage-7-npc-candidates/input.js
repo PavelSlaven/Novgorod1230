@@ -1,4 +1,4 @@
-import { buildApprovedActorProfileSnapshot } from '@rus/world-catalog-workflow';
+import { buildApprovedActorProfileSnapshot } from '@rus/runtime-catalog/approved-record-snapshots';
 
 export function buildStage7NpcCandidatesInput(context, {
   normalizedRequest = null,

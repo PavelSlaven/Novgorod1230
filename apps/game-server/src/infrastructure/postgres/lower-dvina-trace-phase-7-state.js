@@ -16,6 +16,8 @@ import { tracePhase7ActorStep } from
   '../../runtime/lower-dvina-trace-phase-7-schedule-execution.js';
 import { projectLowerDvinaTraceNpcActorStepModeHandoff } from
   '../../runtime/lower-dvina-trace-npc-actor-step-mode-handoffs.js';
+import { phase3CommittedNpcUtterances } from
+  '../../runtime/lower-dvina-trace-npc-utterances.js';
 
 export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest, turn10Contracts = null }) {
@@ -190,6 +192,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     },
     time_update: structuredClone(factual.time_update),
     body_update: structuredClone(factual.body_update),
+    exact_npc_utterances: phase3CommittedNpcUtterances(conversation),
     visible_package: null,
     change_set_id: changeSetId
   };

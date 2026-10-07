@@ -142,6 +142,25 @@ export function resolveInventoryMechanicsProfile({ instance, profiles } = {}) {
   }, snapshot);
 }
 
+export function projectCommittedInventoryMechanicsProfile(profile = {}) {
+  const {
+    mass_grams,
+    external_hand_cost,
+    carry_form,
+    packing_slot_cost = 0,
+    quantity = null,
+    container = null
+  } = profile;
+  return {
+    mass_grams,
+    external_hand_cost,
+    carry_form,
+    packing_slot_cost,
+    quantity,
+    container
+  };
+}
+
 function validOrdinaryWorldProvenance(value) {
   return exactObject(value, ORDINARY_WORLD_PROVENANCE_FIELDS)
     && value.source_kind === 'ordinary_world_materialization'

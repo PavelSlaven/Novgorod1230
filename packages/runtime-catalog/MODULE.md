@@ -13,6 +13,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - чистой projection по region/effective date после полной проверки.
 - единой загрузкой неперсистентных common catalog lookups до projection.
 - чистой проверкой кросс-доменного versioned `needs_check` snapshot для новых фактов бытности мира и NPC-кандидатов; чтение authoring queues и сборка snapshot остаются у game-base CLI, решение о фильтрации результата или отклонении NPC-операции принадлежит consumer owner.
+- чистой идентичностью PostgreSQL-схемы, общей для activation и runtime ledger: `readPostgresSchemaFingerprint(client, schemaName)` публичного subpath `@rus/runtime-catalog/schema-fingerprint` вычисляет fingerprint по переданному query-клиенту; пакет не создаёт соединение и не владеет пулом.
 
 ## Не делает
 
@@ -43,6 +44,7 @@ profile per G4 version. Authoring candidates are not runtime input.
 - `createRuntimeCatalogWorldBaseReader(query)` — thin `worldBaseReader` adapter для SQL gate readers в тестах и game-server;
 - `loadCategoryParentMap({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, categoryIds })` — `parent_category_id` для `object_type` (LW-071 ancestor skip в consumer);
 - `loadPlacePopulationComposition({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, compositionVersion? })` — D-2 состав населения из `world_base.place_population_composition_rules` с тем же gate;
+- `loadNpcRelationshipMaterializationRules({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin })` — approved NPC relationship rules from the exact world revision, after spatial and latest runtime-catalog activation gates; rejects multiple approved versions of one rule id.
 - `loadApprovedProceduralSceneRecordBundle(...)` verifies the exact world pin,
   latest matching activation event and approved regional applicability before
   exporting compiler inputs; candidate/manifests alone are rejected;

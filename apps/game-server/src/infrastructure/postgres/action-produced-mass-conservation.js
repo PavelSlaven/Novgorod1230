@@ -1,5 +1,6 @@
 import { isDeepStrictEqual } from 'node:util';
 import { createRuntimeInstanceMechanicsSnapshot,
+  projectCommittedInventoryMechanicsProfile,
   resolveInventoryMechanicsProfile } from '@rus/items-property';
 import { resolveActionProducedAllocationMechanics } from
   '@rus/items-property/action-produced-transition';
@@ -84,8 +85,10 @@ export function committedMechanics(item) {
   const resolved = resolveInventoryMechanicsProfile({ instance, profiles });
   if (!resolved.pass) fail('ACTION_PRODUCED_RESULT_INVALID');
   // v5 item inventory profiles (v17 clothing) omit packing/quantity/container.
-  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost = 0,
-    quantity = null, container = null } = resolved.profile;
+  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
+    quantity, container } = projectCommittedInventoryMechanicsProfile(
+      resolved.profile
+    );
   return { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
     quantity: structuredClone(quantity), container };
 }

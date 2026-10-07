@@ -33,7 +33,9 @@ test('exact self-introduction recognizes only its stable speaking NPC', () => {
     retrieved_state: { current_visible_context: priorContext }
   }, { actors, ids: { eremeyRef: actors[0].ref } });
 
-  assert.match(visible.visible_scene, /^Еремей говорит:/u);
+  assert.equal(visible.visible_scene, 'рыбацкий стан');
+  assert.deepEqual(visible.visible_changes,
+    [`Еремей говорит: «${utterance}»`]);
   assert.deepEqual(visible.visible_npc.map(({ entity_ref: ref, display_label,
     recognition }) => [ref.entity_id, display_label, recognition]), [
     ['npc-eremey', 'Еремей', 'recognized'],
@@ -162,13 +164,17 @@ test('group conversation keeps exact replies without synthetic speaker numbers',
       uncertainties: [], allowed_tensions: [], do_not_imply: []
     } });
 
-  assert.equal(visible.visible_scene.match(/человек говорит:/gu)?.length, 3);
+  assert.equal(visible.visible_scene, 'стан');
   assert.deepEqual(visible.visible_changes, [
     'Вы пришли в стан.',
     'человек говорит: «Одинаковый ответ.»'
   ]);
+  assert.deepEqual(visible.visible_npc.map(({ entity_ref }) =>
+    entity_ref.entity_id), actors.map(({ instance_id }) => instance_id));
   assert.ok(visible.visible_npc.every(({ visible_status: status }) =>
     status === 'говорит с вами'));
+  assert.ok(visible.visible_npc.every(({ display_label }) =>
+    !/\(\d+\)/u.test(display_label)));
 });
 
 test('group labels retain recognized aliases without synthetic numbers', () => {

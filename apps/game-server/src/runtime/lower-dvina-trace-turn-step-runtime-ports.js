@@ -11,6 +11,7 @@ import { prepareOrdinaryDiscoveryResult } from './lower-dvina-trace-ordinary-dis
 import { createLowerDvinaTracePostAppliedActorStepOwner } from './lower-dvina-trace-post-applied-actor-step.js';
 import { npcSharesPlayerScene, SCENE_NPC_SOURCE } from './lower-dvina-trace-scene-presence.js';
 import { projectNpcs } from './lower-dvina-trace-player-safe-entities.js';
+import { plain } from './lower-dvina-trace-turn-step-runtime-common.js';
 export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
   committedState = null,
@@ -283,11 +284,14 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
     throw new TypeError('Prepared effect duration must be integral.');
   }
   const exactElapsed = { exact_minutes: { numerator: String(duration), denominator: '1' } };
+  const bodyTimeExactState = preparedBodyTimeExactState(input,
+    committedState.body_state);
   const result = await temporalAdvance({
     clock_before: structuredClone(
       input.prepared_chain_context.current_clock),
     exact_elapsed: exactElapsed, effect_kind: input.effect_kind,
     relevant_state: structuredClone(committedState),
+    body_time_exact_state: bodyTimeExactState,
     consequence: structuredClone(input.consequence),
     working_projection: structuredClone(input.working_projection),
     local_fire_atomic_write_plans: structuredClone(
@@ -325,7 +329,9 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
       state_after: structuredClone(after)
     });
   }
-  if ((input.consequence?.body_effect_ref == null
+  const continuousActivity = bodyEffect?.supportsBodyTimeEffects === true
+    && input.effect_kind === 'semantic_activity';
+  if ((input.consequence?.body_effect_ref == null && !continuousActivity
         && input.consequence?.parent_activity_completion?.status
           !== 'completed')
       || input.consequence?.generic_known_route === true
@@ -343,20 +349,38 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
   if (typeof bodyEffect?.apply !== 'function') {
     throw new TypeError('bodyEffect.apply is required for prepared effects.');
   }
+  const bodyTimeExactState = continuousActivity
+    ? preparedBodyTimeExactState(input, committedState.body_state) : null;
   const result = await bodyEffect.apply({
     committed_state: {
       ...structuredClone(committedState),
       body_state: structuredClone(
-        input.prepared_chain_context.current_body_state)
+        input.prepared_chain_context.current_body_state),
+      ...(bodyTimeExactState == null ? {} : {
+        body_time_exact_state: structuredClone(bodyTimeExactState)
+      })
     },
     consequence: structuredClone(input.consequence),
+    effect_kind: input.effect_kind,
     time_update: structuredClone(input.time_update)
   });
+  const { exact_state_after: _exactStateAfter, ...publicResult } = result;
   return Object.freeze({
     version: 1,
     schema: 'turn_body_update',
-    ...structuredClone(result)
+    ...structuredClone(publicResult)
   });
+}
+
+function preparedBodyTimeExactState(input, fallback) {
+  const replay = input.prepared_chain_context?.body_time_replay;
+  if (replay == null) return structuredClone(fallback);
+  if (!plain(replay) || !plain(replay.exact_state_after)) {
+    const error = new TypeError('TRACE_TURN_STEP_BODY_TIME_EXACT_REPLAY_INVALID');
+    error.code = 'TRACE_TURN_STEP_BODY_TIME_EXACT_REPLAY_INVALID';
+    throw error;
+  }
+  return structuredClone(replay.exact_state_after);
 }
 async function admitResult(pending, authority) {
   const result = await pending;

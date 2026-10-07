@@ -9,7 +9,8 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
   generation_template_ref: template, canonical_g5_ref: canonical,
   scene, npc_inputs: inputs, equipment_catalog: equipment,
   npc_relationship_materialization_rules: relationshipRules = [], relationship_compositions = [],
-  started_at: startedAt, calendar_profile: calendarProfile } = {}) {
+  started_at: startedAt, calendar_profile: calendarProfile,
+  selectItemMaterial } = {}) {
   if (![partyId, runId, changeSetId, worldRevisionId, scene?.site_id].every(text)
       || scene.party_id !== partyId || !Array.isArray(scene.rows)
       || !Array.isArray(inputs) || inputs.length === 0) gap('NPC_FIRST_ENTRY_INPUT_GAP');
@@ -70,6 +71,8 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
     request_id: changeSetId, world_revision_id: worldRevisionId, g4_id: g4.id,
     actor_candidate_instance_map: results.flatMap((result) => result.actor_candidate_instance_map),
     initial_equipment_candidates: candidates, catalog_digest: equipment.catalog_digest,
+    item_template_category_bindings: equipment.item_template_category_bindings ?? [],
+    select_item_material: selectItemMaterial,
     item_templates: equipment.item_templates, item_inventory_profiles: equipment.item_inventory_profiles,
     item_visual_profiles: equipment.item_visual_profiles });
   const items = equipmentResult.item_instances;

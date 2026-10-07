@@ -11,6 +11,7 @@ import {
 } from './lower-dvina-trace-phase-1b-snapshots.js';
 import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
 import { createRuntimeCatalogLoader, loadApprovedProceduralCompiledCatalog } from '@rus/runtime-catalog';
+import { selectApprovedItemMaterial } from '@rus/runtime-catalog';
 import { createPostgresWorldBaseReader } from './world-base.js';
 import { projectApprovedPartyHistoricalEvents } from '@rus/time-events-history';
 import { readCurrentNaturalPerceptionFacts } from './g4-natural-perception-reader.js';
@@ -37,6 +38,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   actorBaseAttributesBinding = null,
   runtimeCatalogLoader = null,
   targetStartRuntime = null,
+  trustedBodyNeedsBindingPin = null,
+  trustedBodyNeedsProfile = null,
   committer = null,
   authoredRuntimeBindingResolver = null,
   rootDir = process.cwd()
@@ -135,7 +138,12 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             }
           }),
           materializePartyInstance: (input) => materializeAuthoredStartPartyInstance({
-            ...(selectedStart?.materialization_inputs ?? {}), ...input }),
+            ...(selectedStart?.materialization_inputs ?? {}), ...input
+          }, {
+            selectItemMaterial: ({ item_template_id: itemTemplateId }) =>
+              selectApprovedItemMaterial({ item_template_id: itemTemplateId,
+                bindings: domainCatalog.records_by_table.item_template_category_bindings })
+          }),
           validatePlayerDossier: (result) => result.validation_report
         }),
         rootDir
@@ -222,7 +230,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
           const { domain_catalog: verifiedCatalog } = selectedStart.materialization_inputs;
           const factualContext = selectedStart.initialRule == null
             ? createTargetCurrentFactualContext({ partyPool, committer, runtime: selectedStart,
-              authoredRuntimeBindingResolver }) : null;
+              authoredRuntimeBindingResolver,
+              trustedBodyNeedsBindingPin, trustedBodyNeedsProfile }) : null;
           const readCurrentEnvironment = factualContext == null ? null
             : internal == null ? factualContext.readCurrentEnvironment
               : factualContext.readInitialEnvironment;

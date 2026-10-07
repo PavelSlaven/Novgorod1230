@@ -17,6 +17,43 @@ const APPROVED_NATURAL_SUCCESSOR_IDENTITY_SHA256 =
 const APPROVED_NATURAL_CANDIDATE_ID = 'novgorod_m2c_natural_baseline_g4_v1';
 const APPROVED_NATURAL_SUCCESSOR_ID = 'novgorod_m2c_natural_baseline_g4_v2';
 let successorDiagnosticLogged = false;
+let approvedLabelsCache = null;
+const LABEL_FILES = [
+  ['./candidate.json', true],
+  ['./approval-attestation.json', true],
+  ['../m2c-natural/candidate.json', false],
+  ['../m2c-natural/nature-successor-candidate-v2.json', false],
+  ['../m2c-natural/nature-successor-data-approval.json', false]
+];
+const readLabelSources = () => {
+  const candidateBytes = read(LABEL_FILES[0][0]);
+  const approvalBytes = read(LABEL_FILES[1][0]);
+  const approval = JSON.parse(approvalBytes);
+  const sources = [candidateBytes, approvalBytes];
+  for (const [path] of LABEL_FILES.slice(2)) sources.push(readOptional(path));
+  const signature = createHash('sha256');
+  for (const [index, [path]] of LABEL_FILES.entries()) {
+    const bytes = sources[index];
+    signature.update(path).update('\0');
+    if (bytes == null) signature.update('missing\0');
+    else signature.update('present\0').update(String(bytes.length)).update('\0').update(bytes);
+  }
+  return { signature: signature.digest('hex'), sources, approval };
+};
+const copyLabels = (labels) => {
+  const copy = new Map([...labels].map(([key, row]) => [key, structuredClone(row)]));
+  Object.defineProperty(copy, 'diagnostics', {
+    value: Object.freeze(labels.diagnostics.map((diagnostic) => Object.freeze(structuredClone(diagnostic)))),
+    enumerable: false
+  });
+  return copy;
+};
+const logSuccessorDiagnostic = (labels) => {
+  if (labels.diagnostics.length && !successorDiagnosticLogged) {
+    console.warn('[PLACE_LABEL_SUCCESSOR_LINEAGE_UNVERIFIED] Natural successor labels unavailable.');
+    successorDiagnosticLogged = true;
+  }
+};
 const naturalKey = (ref) => {
   if (!validRef(ref?.natural_profile_ref) || !validRef(ref?.scene_template_ref)) return null;
   return `natural:${g5Key(ref.natural_profile_ref)}|${g5Key(ref.scene_template_ref)}`;
@@ -42,17 +79,21 @@ const approvalKey = (row) => {
 
 export function loadApprovedPlaceLabels() {
   try {
-    const labels = approvedPlaceLabelsWithNaturalSuccessors(read('./candidate.json'),
-      JSON.parse(read('./approval-attestation.json')), {
-        naturalCandidateBytes: readOptional('../m2c-natural/candidate.json'),
-        successorCandidateBytes: readOptional('../m2c-natural/nature-successor-candidate-v2.json'),
-        successorApproval: parseOptionalJson(readOptional('../m2c-natural/nature-successor-data-approval.json'))
-      });
-    if (labels?.diagnostics.length && !successorDiagnosticLogged) {
-      console.warn('[PLACE_LABEL_SUCCESSOR_LINEAGE_UNVERIFIED] Natural successor labels unavailable.');
-      successorDiagnosticLogged = true;
+    const { signature, sources, approval } = readLabelSources();
+    if (approvedLabelsCache?.signature === signature) {
+      logSuccessorDiagnostic(approvedLabelsCache.labels);
+      return copyLabels(approvedLabelsCache.labels);
     }
-    return labels;
+    approvedLabelsCache = null;
+    const labels = approvedPlaceLabelsWithNaturalSuccessors(sources[0], approval, {
+        naturalCandidateBytes: sources[2],
+        successorCandidateBytes: sources[3],
+        successorApproval: parseOptionalJson(sources[4])
+      });
+    if (!(labels instanceof Map)) return null;
+    logSuccessorDiagnostic(labels);
+    approvedLabelsCache = { signature, labels };
+    return copyLabels(labels);
   } catch (error) {
     if (error.code === 'ENOENT' || error instanceof SyntaxError) return null;
     throw error;

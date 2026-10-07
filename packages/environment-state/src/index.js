@@ -30,6 +30,44 @@ function gap(code, message, details = {}) {
   });
 }
 
+export function deriveBodyEnvironmentSnapshot({
+  environment_fact,
+  party_id,
+  state_version,
+  observed_at
+} = {}) {
+  if (!stableId(party_id) || !((Number.isSafeInteger(state_version) && state_version >= 0)
+    || stableId(state_version))) {
+    return gap('environment_identity_required', 'Persisted party and state version are required');
+  }
+  try {
+    normalizeGameTimestamp(observed_at);
+  } catch {
+    return gap('time_timestamp_invalid', 'observed_at must be an exact canonical GameTimestamp');
+  }
+  if (!isRecord(environment_fact)) {
+    return gap('environment_fact_required', 'A saved environment fact is required');
+  }
+  if (environment_fact.schema !== 'rus.approved_initial_environment.v1' || environment_fact.version !== 1) {
+    return gap('environment_fact_schema_mismatch', 'A version 1 approved initial environment fact is required');
+  }
+  const payload = {
+    state_ref: {
+      entity_kind: 'environment_overlay_state',
+      entity_id: `${party_id}:environment:${state_version}`
+    },
+    body_factor_ids: []
+  };
+  return frozen({
+    status: 'ok',
+    environment_snapshot: {
+      ...payload,
+      canonical_digest: computeSpatialV3CanonicalDigest(payload)
+    },
+    trace: { owner: '@rus/environment-state' }
+  });
+}
+
 function sealedRecord(value) {
   if (!isRecord(value) || typeof value.canonical_digest !== 'string') return false;
   const payload = Object.fromEntries(Object.entries(value).filter(([key]) => key !== 'canonical_digest'));

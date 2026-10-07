@@ -22,6 +22,9 @@ import { createTracePhase3VisibleProjector } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 import { validateAuthoritativePreparedRoute } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-prepared-effect-authority.js';
+import SCENE_PRESENTATION from
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json'
+  with { type: 'json' };
 test('generic camp-to-shed prepared route binds its resolved destination zone', () => {
   const state = { clock: { whole_minutes: '10', subminute_numerator: '0',
     subminute_denominator: '1' }, position: { location_ref: 'camp',
@@ -169,7 +172,8 @@ test('route-only commit preserves one exact deferred second-step boundary',
 
 test('a known reverse route is offered and committed once without an authored command',
   async () => {
-    const bundle = await loadScenarioBundle(13);
+    const bundle = { ...await loadScenarioBundle(13),
+      scene_presentation: SCENE_PRESENTATION };
     const seed = fixture({ scenarioBundle: bundle,
       materializationBundle: bundle, rollValue: 0.99 });
     const state = structuredClone(seed.state);
@@ -193,15 +197,6 @@ test('a known reverse route is offered and committed once without an authored co
       appearance: { ...ratsha.identity_state?.appearance,
         build: 'средний' } };
     ratsha.player_safe_presentation = { emotion: 'настороженность' };
-    state.current_visible_context = {
-      version: 1, schema: 'visible_context_package',
-      visible_scene: 'старая сушильня', visible_changes: [],
-      sensory_details: [], visible_npc: [{
-        entity_ref: { entity_kind: 'npc', entity_id: ratsha.instance_id },
-        display_label: 'Ратша', recognition: 'recognized'
-      }], visible_objects: [], known_context: ['старая сушильня'],
-      uncertainties: []
-    };
     state.conversation_sessions = [{ schema: 'conversation_session_v1',
       conversation_id: 'shed-conversation', status: 'active',
       location_ref: { entity_kind: 'location', entity_id: shed.location_profile_ref },
@@ -212,7 +207,15 @@ test('a known reverse route is offered and committed once without an authored co
     }];
     state.conversation_statements = [{ statement_id: 'shed-ratsha-statement',
       conversation_id: 'shed-conversation', speaker_ref: {
-        entity_kind: 'npc', entity_id: ratsha.instance_id } }];
+        entity_kind: 'npc', entity_id: ratsha.instance_id },
+      utterance_text: 'Я Ратша.' }];
+    state.received_messages = [{
+      source_statement_ref: { entity_kind: 'conversation_statement',
+        entity_id: 'shed-ratsha-statement' },
+      speaker_ref: { entity_kind: 'npc', entity_id: ratsha.instance_id },
+      listener_ref: { entity_kind: 'player_character', entity_id: state.actor_id },
+      comprehension: 'full', utterance_text: 'Я Ратша.'
+    }];
     const before = structuredClone(state);
     const scenario = fixture({ scenarioBundle: bundle,
       materializationBundle: bundle, committedState: state, rollValue: 0.99,
@@ -290,7 +293,8 @@ test('a known reverse route is offered and committed once without an authored co
 
 test('known-route candidates admit a prepared first-entry scene and keep parallel routes distinct',
   async () => {
-    const bundle = await loadScenarioBundle(13);
+    const bundle = { ...await loadScenarioBundle(13),
+      scene_presentation: SCENE_PRESENTATION };
     const seed = fixture({ scenarioBundle: bundle,
       materializationBundle: bundle, rollValue: 0.99 });
     const state = structuredClone(seed.state);
@@ -377,7 +381,8 @@ test('known-route capacity accepts a visitor without rewriting their home profil
   });
 
 test('generic known route awaits matching authored route availability', async () => {
-  const bundle = await loadScenarioBundle(13);
+  const bundle = { ...await loadScenarioBundle(13),
+    scene_presentation: SCENE_PRESENTATION };
   const seed = fixture({ scenarioBundle: bundle,
     materializationBundle: bundle, rollValue: 0.99 });
   const state = structuredClone(seed.state);
@@ -438,7 +443,7 @@ test('generic known-route projection uses the authored route and location presen
   assert.deepEqual(visible, {
     version: 1, schema: 'visible_context_package',
     visible_scene: 'незнакомая пристань',
-    visible_changes: ['Перед вами — незнакомая пристань.'],
+    visible_changes: ['Тропа вывела к незнакомой пристани.'],
     sensory_details: ['Сухой настил поднимается над водой.'],
     visible_npc: [{ entity_ref: { entity_kind: 'npc',
       entity_id: destinationActor.instance_id }, display_label: 'человек',

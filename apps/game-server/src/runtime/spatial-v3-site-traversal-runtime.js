@@ -58,6 +58,9 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       || destinationG6.host_id !== destinationSite.id || destinationSite.parent_g4_id !== context.site.parent_g4_id
       || [to, destinationPosition, destinationG6, destinationBaseline, destinationSite]
         .some((row) => row.status !== 'active')) gap('committed_arrival_endpoint_required');
+    if (!['canonical', 'generated'].includes(destinationSite.origin)) {
+      gap('destination_site_origin_invalid');
+    }
     const occupancy = await readSiteTraversalDestinationOccupancy({ pool,
       partyId, positionId: destinationPosition.id });
     if (!Number.isSafeInteger(occupancy) || !Number.isSafeInteger(destinationPosition.capacity)
@@ -157,7 +160,8 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       spatial_v3_traversal: { plan: prepared.plan, result: prepared.result,
         expected_state_versions: prepared.expected_state_versions },
       movement: { status: 'completed', cost_kind: 'action', action_units: connection.action_units } }),
-      visible_seed: { destination_visible_context: projected.visible_context } };
+      visible_seed: { destination_site_origin: destinationSite.origin,
+        destination_visible_context: projected.visible_context } };
   };
 }
 

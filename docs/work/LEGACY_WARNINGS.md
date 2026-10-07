@@ -41,7 +41,6 @@
 | 035 | `scripts/bootstrap-live-world-v17.mjs` | bootstrap v17 без календаря | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 036 | `scripts/*.test.mjs`, `test/spatial-v3/` | тесты M2c вне гейта, заглушки планировщика | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 037 | `data/world-catalogs/novgorod/` | утверждения данных разбросаны | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
-| 038 | `tools/world-catalog-workflow/` | tool импортируется runtime | — |
 | 039 | `universal_category_classification_policy.md` и ещё 3 | обрезанные документы корпуса | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 040 | `infra/world-base/README.md` | README пишет 201 таблиц при 208 в схеме | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 | 041 | `first-playable-party-migration.test.js` | тест ожидает 35 миграций при 36 | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
@@ -109,7 +108,7 @@
 | 117 | `apps/game-server/src/infrastructure/postgres/target-generated-first-entry.js`, `finiteFirstEntryProfile.technical_limits.max_resolution_records` | без лимита профиля агрегат для людских исходов не строится; правила не читаются, в trace typed gap | — |
 | 118 | `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js`, narration | результат A1 лежит на позиции сцены, рассказчик пишет «в руках» (расхождение narration и committed state); ёмкость позиции ограничивает число полос | — |
 | 119 | `data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_g4_npc_composition_bindings.json`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/place_population_composition_rules.json`, `presence_rules.json` | строки G4 v2 и волны v1 D49 изменены на месте под тем же `{id, version, revision}`; существующие пары v17 надо пересобрать | — |
-| 120 | `tools/spatial-v3/m2c-npc-wave-approval.mjs`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json` | approval-валидатор не проверяет `resign_required`; зелёная проверка может принять подпись старого пина | — |
+| 120 | `tools/spatial-v3/m2c-npc-wave-approval.mjs`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json` | закрыто D131 #306: validator отклоняет `resign_required: true` | — |
 | 121 | `data/novgorod-region/novgorod_occupations_v1_enriched.tsv`, `data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupations/occupation_term_status.csv`, `game-base-v1/items-weapons-armour/military/security.csv` | недоказанный термин «сторож брода» и его занятие/снаряжение остаются; term-status помечен not_attested | — |
 | 122 | `packages/items-property` A1 admission; `apps/game-server` A1 planner/wiring | A1 не сверяет вид материала и работоспособность результата | — |
 | 125 | `apps/game-server/src/infrastructure/postgres/target-place-people-first-entry.js`, `packages/npc-runtime`, `apps/game-server/src/runtime/npc-routine-temporal.js` | typed gap при first-entry может потерять D-1 schedule context и не получить следующую календарную переоценку | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
@@ -117,6 +116,12 @@
 | 127 | `apps/game-server/src/runtime/npc-routine-temporal.js`, D-1 `movement_handoff` profiles | два перемещения одного NPC в одном temporal window могут дать конфликт evolving CAS версии `entity_placements`; в текущих 161 утверждённых D-1 правилах handoff нет | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 128 | `packages/turn/src/turn-step-admission.js:57–67`, `test/spatial-v3/prepared-destination-light-seam-postgres.test.js` | approved route operation отсутствует в проверенном continuation после ожидания; точный menu regression ждёт exit-one-action | [#227](https://github.com/PavelSlaven/Novgorod1230/issues/227) |
 | 129 | `lower-dvina-trace-conversation-llm.js`, conversation prompt builders | разговорные роли получают канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 | — |
+| 130 | `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, Lower Dvina phase-5 placed item templates | шесть видимых шаблонов не имеют утверждённой player-safe подписи; runtime обязан сохранять typed gap | — |
+| 131 | `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` | item/inventory rows с typed label gap временно скрыты от planner вопреки §7.2 | [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236) |
+| 132 | `apps/game-server` turn-step planner input projection | P-проекция группы 3 для intent_router и turn_step_planner не сделана; D72 service ids/version/counts остаются во входе | отдельная задача со своим стендом |
+| 135 | `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json` | семь `player_inputs` задают роль, занятие и имя «Микула», вопреки D111; долг реализации #109 | [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109) |
+| 136 | `npc_family_household_contract.md`, `packages/actors/MODULE.md`, household data/import | нет утверждённых и импортированных данных дворов, необходимых для полноты мира | [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338) |
+| 137 | `combat-min-data-v1/typed-gaps.json` (`G-RETREAT-MOVEMENT`), меню выбора NPC в бою | метрика D65 body-effect некорректна в сценах с пересекающимися предпочтениями; реального отхода в меню нет | [#426](https://github.com/PavelSlaven/Novgorod1230/issues/426) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -256,10 +261,6 @@
 - **Что.** Около 94 файлов approval/attest без индекса; у многих кандидатов в поле стоит `approved:false` или `pending`, хотя их точный sha утверждён в отдельном файле. `data/world-catalogs/novgorod/m2c-natural/nature-successor-*` изменены после утверждения и сверяются через `git show ae212e78`.
 - **Как жить.** Статус кандидата брать из файлов утверждения, а не из поля кандидата. Производные поля в утверждённый файл не дописывать (WR §21.1). Данные, изменённые после утверждения (`nature-successor-*`), считаются неутверждёнными до нового прохода (WR §21.1).
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
-
-### LW-038 — `tools/world-catalog-workflow` в runtime
-- **Что.** Стадии 7, 8, 13 и 16 `packages/new-game` импортируют `tools/world-catalog-workflow`, хотя `docs/architecture/DEPENDENCY_RULES.md` утверждает, что production runtime не импортирует tools; `check-boundaries.mjs` это не проверяет. `docs/context/ARCHITECTURE.md` и `TOOLS_INVENTORY` фиксируют исключение LW-038; расхождение остаётся с DEPENDENCY_RULES.
-- **Как жить.** Правка этого tool меняет new-game: кандидаты NPC и предметов, шаблоны G5, упаковку снаряжения. Гонять `test:domain` и профильные тесты стадий 7, 8, 13, 16.
 
 ### LW-039 — обрезанные документы корпуса
 - **Что.** В `universal_category_classification_policy.md` разделы 10–11.4 восстановлены (#146 шаг 1). Архивные приложения v2 с маркерами «…tokens truncated…» вынесены из корпуса (#146 шаг 4) у `formulas.md`, `base_turn_orchestration.txt`, `movement_locations_regions.txt`, `world_generation_and_turns.txt`, `interface_ux.md`, `time_system.txt`. После #146 зеркала canonicalized-документов совпадают с корпусом; исходный legacy-текст v2 есть только в истории git (≤ `97644bae`). `source_basis` схемы party DB v1 (`infra/party-db/party_database_tables_v1.csv:10`, `party_database_validation_rules_v1.csv:4`, `schema/party_database_schema_v1.json:74, 5048`) и source map rus13 (`tools/rus13-start-g5-materialization/…source_map_v1.csv:3`, `tools/rus13-new-party-generator/…source_map_v1.csv:2-3`) ещё ссылаются на удалённые разделы v2. REFERENCE-документы (`interface_ux.md:8`, `time_system.txt:63`, `movement_locations_regions.txt:88`) ещё содержат устаревшее «active production остаётся materialization v2». `docs/work/temporal-world-v4/README.md:71` упоминает маркеры обрезки, которые уже сняты (исторический отчёт).
@@ -551,6 +552,7 @@
 ### LW-099 — NPC текущего сайта читаются в состояние хода отдельным читателем (rt-talk)
 - **Где.** `apps/game-server/src/infrastructure/postgres/scene-npcs-readback.js` (`withSceneNpcs`; реэкспорт `withoutSceneNpcs`), `withoutSceneNpcs`/`withoutSceneRead`/`containsSceneNpc` определены в `apps/game-server/src/runtime/lower-dvina-trace-scene-presence.js`, вызов в `loadPhase2State` (`lower-dvina-trace-phase-2.js`), срез в писателях снимка (`state_payload:` в `lower-dvina-trace-phase-2/3/4…10-writes`, `combat-writes`, `turn-step-commit`; guard-тест в `scene-npcs-readback.test.js`).
 - **Что.** Состояние хода несёт только NPC, запечатанных при старте партии; NPC, созданные при первом входе (сгенерированные и канонические места), лежат только в `party_npcs` + `entity_placements`. Читатель подмешивает NPC сайта игрока (`position.site_id`) с `position_id`, `g6_instance_id`, `runtime_source` и карту `scene_position_g6`; в снимок они не пишутся. Ограничения: (1) форма записи собрана в app-слое и дублирует `hydratedNpcs` из `packages/party-store` (нет `schedule_records`, `knowledge_records`, `check_body_state`, `relationships: []`); (2) читается в каждом вызове `loadPhase2State` (два запроса), включая replay/presentation/validateSession, где NPC не нужны; (3) берутся только placement `scene_position` (NPC на лодке и «внутри сущности» не читаются) и только с binding в `party_actor_profile_bindings`; (4) тело NPC (`check_body_state`) отсутствует, событие тела для него fail closed; (5) панель people строится из сохранённого payload без этих NPC.
+- **Прогресс (#224, D65; частично).** Боевой readback дополнительно читает `party_actor_body_states` для NPC текущей сцены; `@rus/body-state` и combat working-state требуют версионированный approved initialization profile, а первый боевой P16 атомарно вставляет тело участника и последующие изменения обновляет с проверкой версии. Числа тела остаются во внутреннем состоянии и не копируются в LLM DTO или legacy `machine_state.body_condition.health`. `fleet/combat-data` commit `63b5ee1c` утвердил только scoped полосы и девять описаний собственного тела NPC; active v17 binding намеренно не передаёт профиль, поэтому метрики остаются typed gaps до authoritative actor scope и отдельного versioned cutover. Остальные ограничения LW-099 не закрыты.
 - **Ещё.** (а) `withoutSceneNpcs` молча отбрасывает изменения записи NPC сцены в `next.npcs`: сохраняется только то, что пишется строкой в `party_npcs` (пути: `lower-dvina-trace-turn-step-prepared-state-projection.js:106`, `lower-dvina-trace-combat-state.js:34` — сейчас авторские). (б) Загрузчик выбирает NPC по `entity_placements`, а присутствие — по строке распорядка; рутина `entity_placements` не обновляет, поэтому NPC, приведённый рутиной на сайт, не загружается (ошибка в безопасную сторону; задача владельцу связки «рутина → размещение»). (в) `participant_slot_ref` undefined даёт ключ `"undefined"` в `actorMap` (`phase-6-carry-support.js:12`) и `actorRefs` (`combat-item-owner.js:79`). (г) Стартовый сайт до первого перехода: NPC, созданные при первом входе на канонические места, читаются только после того, как `position.site_id` есть в состоянии (пометка для rt-people); ссылка `location` для `site_id` не проверялась; идемпотентный повтор хода-разговора доказан PG-тестом (digest конверта считается от конверта без NPC сцены: они вырезаются из `semantic_exchange` в `consequence` команды разговора, `lower-dvina-trace-phase-3-conversation-command.js`, до `buildTurnStepCommitEnvelope`); экран replay сверялся только на наличие записи, не побайтно; `exchange.js` сохранил запасную ветку по локации для авторских фаз.
 - **Инвариант.** Команда, чей consequence несёт копию состояния (рабочее состояние обмена, `world_state.npcs`, карта `scene_position_g6`), вырезает NPC сцены **до** конверта хода: конверт и его digest-ы идемпотентности считаются от вырезанного объекта (сейчас это делает команда разговора фазы 3 через `withoutSceneRead`). Фильтр писателей снимка (`withoutSceneNpcs`) — только страховка снимка. `bindLowerDvinaTraceTurnStepIdempotency` (одна точка всех 9 путей коммита) падает `TRACE_TURN_STEP_SCENE_NPC_IN_ENVELOPE`, если запись сцены осталась в конверте. Латентные пути без вырезания (сейчас недостижимы: авторские контракты без `site_id`): `phase-4-semantic-command.js:223`, `turn-10-command.js:79`, `npc-actor-step-mode-handoffs.js:199` (→ `consequence.state_changes`), `combat-command.js:70`; при переводе на сайты v17 они получат громкую ошибку, вырезание нужно добавить в команду.
 - **Как жить.** Не считать `state.npcs` полным списком NPC места вне `loadPhase2State`. Новые писатели снимка обязаны вызывать `withoutSceneNpcs` (guard-тест это проверяет). Владельцу загрузки состояния — перенести чтение в общий читатель формы NPC и добавить флаг «без NPC» для replay/validation.
@@ -593,12 +595,6 @@
 - **Где.** `data/world-catalogs/novgorod/m2c-items/README.md` (`M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`), `packages/items-property`.
 - **Что.** Профиль задаёт 50 г на порцию, проверка `mass_grams = quantity × 50` есть в `packages/turn` (presence) и phase-6 commit, но владелец предмета (`@rus/items-property`) её не выводит и не проверяет.
 - **Как жить.** Не считать массу порции гарантированной владельцем предмета; закрывается отдельной правкой items-property.
-- **Issue.** —
-
-### LW-106 — толкование v5-профиля инвентаря лежит в game-server (rt-items)
-- **Где.** `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js` (`committedMechanics`, значения по умолчанию), `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` (то же), владелец — `packages/items-property` (`resolveInventoryMechanicsProfile`).
-- **Что.** Профили `item-container-120-v5` не содержат `packing_slot_cost`, `quantity`, `container`; A1 подставляет 0, `null`, `null` в двух файлах game-server. Это толкование профиля вне владельца.
-- **Как жить.** Не добавлять третье место. Правка — перенести значения в резолвер items-property и проверить, что рубаха после A1 не получает выдуманный packing 0 в сохранённом состоянии.
 - **Issue.** —
 
 ### LW-107 — NPC гостевых и путевых контекстов остаются без имени (rt-names)
@@ -653,10 +649,10 @@
 - **Где.** `data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_g4_npc_composition_bindings.json` (`…vikhtuy_locality`, версия 2), `data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/place_population_composition_rules.json` и `presence_rules.json` (D-2, волна v1).
 - **Что.** Пороги D49 поменяли содержимое строк без новой версии: G4 v2 `min_count 0 → 1`, три D-2 состава и −3 правила присутствия. Допустимо только потому, что пара v17 пересоздаётся заново, без обратной совместимости (`people-d49/approval.json`, `approval_note`).
 - **Как жить.** Все существующие пары v17 пересобирать (bootstrap заново). Не полагаться на неизменность этих строк в старой базе; будущие правки этих данных — новой версией или новой волной.
-### LW-120 — валидатор approval волны не знает `resign_required` (people-data)
+### LW-120 — валидатор approval волны не знает `resign_required` (people-data) — **closed D131 #306**
 - **Где.** `tools/spatial-v3/m2c-npc-wave-approval.mjs`, `data/world-catalogs/novgorod/m2c-npc-wave/v1/approval.json`.
 - **Что.** Валидатор требует непустые `checked_by`/`checked_at` и не читает `resign_required`: подпись под старым пином машинно валидна. От неподписанных данных защищает только несовпадение аттестации запроса (`request_digest`).
-- **Как жить.** Не считать зелёный тест approval признаком подписи нового пина; сверять `source_commit` подписи с `source_commit` данных и аттестацию запроса. Правка — научить валидатор отвергать `resign_required` (отдельная задача).
+- **Исправлено.** Валидатор отклоняет `resign_required: true` с `M2C_WAVE_APPROVAL_RESIGN_REQUIRED`; тест проверяет отказ и принимает запись без маркера или с `false`.
 ### LW-118 — результат A1 лежит на сцене, а рассказчик пишет «в руках» (rt-make)
 - **Где.** `apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js`, `action-produced-atomic-write-plan-pins.js` (`actionProducedOwnerOutputDestination`: `placement_kind ∈ {anchor, scene_position}`), `packages/items-property/src/action-produced-transition-entities.js`; рассказчик — `apps/game-server` narration (проекция committed-изменений).
 - **Что.** Независимый выход A1 попадает на позицию сцены (на старте — на якорь). Игрок «оторвал полосу» — вещь лежит под ногами, а рассказчик пишет «В твоих руках лежит отрезанный кусок». Это расхождение narration и committed state; владелец — narration (рассказчик не должен утверждать место, которого нет в committed). Сцена занята вещью: ёмкость позиции ограничена (7), при большом числе полос ход отвергается `ACTION_PRODUCED_DESTINATION_CAPACITY`.
@@ -699,7 +695,7 @@
 
 ### LW-129 — разговорные роли передают модели канонический DTO (npc-conversation)
 - **Где.** `apps/game-server/src/runtime/lower-dvina-trace-conversation-llm.js` и builders разговора с NPC.
-- **Что.** Вход разговорных ролей — канонический DTO, нарушение D72/D78; проекция P отвергнута судьями 2026-10-05 (опора 1,58 → 1,28); условие закрытия — проекция, прошедшая стенд.
+- **Что.** Вход разговорных ролей — канонический DTO, нарушение D72/D78; проекция P отклонена судьями 2026-10-05 (опора 1,58 → 1,28); условие закрытия — проекция, прошедшая стенд.
 - **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
 - **Issue.** —
 
@@ -708,3 +704,44 @@
 - **Что.** Заголовок из metadata может быть топонимом, которого персонаж не знает, и раньше напрямую попадал в меню, открытие, маршрут и вход рассказчика. Семь утверждённых подписей D107 теперь выбираются по точной ссылке canonical G5 из `m2c-place-labels`; природная сцена использует тот же selector. Для новых мест без строки остаётся прежняя подпись природной сцены; новый toponym в title не добавлять без решения о знании места.
 - **Как жить.** Не возвращать `public_metadata.title` в экранный/model-facing путь v17 и не выводить сырые G4/G5 имена как подпись. Новые подписи добавлять через отдельную аттестацию в общий каталог.
 - **Issue.** —
+
+### LW-137 — D65 body-effect не измеряет влияние тела на выбор во всех сценах (combat-min)
+- **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/typed-gaps.json` (`G-RETREAT-MOVEMENT`); меню выбора NPC в бою `apps/game-server/src/runtime/lower-dvina-trace-combat-llm.js`. Стенды D65 (RESULT ids ниже) — артефакты моста флота, не в репозитории.
+- **Что.** Baseline `RESULT 20261005T014614.534569Z-1` и one-sentence follow-up `RESULT 20261005T063228.683049Z-1` оба дали 0/4 сцен по метрике. В сценах 2–4 здоровый уже набирает 2/2: классы допустимых предпочтений пересекаются и требуют больше hit rate, чем потолок, поэтому сравнение `wounded/exhausted > healthy` там некорректно. Сцена 1 остаётся содержательной: NPC ранен/измотан при угрозе на расстоянии удара, но меню не даёт физически выполнимого отхода; сдача или прекращение враждебности при продолжающейся угрозе не задают очевидно лучшего выбора. Судьи v4 отдельно отметили причины без упоминания тела. Результаты не доказывают отсутствия влияния тела; body-фраза эффекта не показала и в production prompt не принята.
+- **Как жить.** Не трактовать 0/4 как общий вывод о влиянии тела и не менять постоянные цели профиля или проекцию. Повторить проверку после появления реального варианта отхода; сравнивать выбор между действиями одного и того же класса предпочтений при разных телесных состояниях.
+- **Issue.** —
+
+### LW-130 — безымянные шаблоны Lower Dvina ждут утверждённых подписей (prompt-rev-turn)
+- **Где.** `data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/item-container-set.json` (`placement_slot_ref`), resolver `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, current-visible/WK/narrator/screen projections.
+- **Что.** `trace_ld_v1_item_blue_wool_fragment`, `trace_ld_v1_item_cut_bag_fastening`, `trace_ld_v1_item_persistent_debris`, `trace_ld_v1_item_broken_oar`, `trace_ld_v1_item_side_collision_trace`, `trace_ld_v1_item_hidden_trunk_trace`, `trace_ld_v1_item_carry_poles` и `trace_ld_v1_container_road_bag` пока не имеют утверждённой подписи для всех путей показа. Сценовые наблюдения не являются стабильными подписями вещей.
+- **Как жить.** Не придумывать имя или категорию: сохранять typed `player_safe_item_label_required` gap для проекции модели и убирать саму строку из публичного видимого пакета с записью счётчика диагностики. Закрыть запись после утверждения подписей владельцем данных и снятия соответствующих исключений. Два acceptance-теста старого прохождения Phase-11 пропущены с причиной D97; по D101 их нельзя удалять до переноса сюжета в старт v17 и полного прогона.
+- **Issue.** [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236) (D92: у каждой вещи есть имя — утверждённое или название общей категории).
+
+### LW-131 — typed-gap вещи временно исключены из turn-step model inventory (prompt-rev-turn)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-model-projection.js` проецирует `items` и `inventory.items` в planner/auditor payload.
+- **Что.** Item rows, связанные с точным typed `player_safe_item_label_required`, не доходят до планировщика, вопреки требованию полного player-safe набора в `turn_step_llm_contract.md` §7.2. Это временное отступление A-05-02, принятое из-за решений владельца D92 и D97: вещь без имени не должна существовать, а безымянная вещь должна получать закрытый отказ. В Lower Dvina остаются пробелы подписи у `trace_ld_v1_item_carry_poles` и `trace_ld_v1_container_road_bag`.
+- **Как жить.** Fail closed: не подставлять категорию или выдуманное имя; вещь с gap не передавать модели или игроку, связанный недоступный выбор отклонять, named и остальные item rows и факты сохранять. Снять исключение и эту запись после того, как item-generic-names (#236) даст каждой вещи проверенное имя по цепочке D92; затем повторно проверить полный inventory и удалить LW-131. Два Phase-11 acceptance-теста пропущены по D97 и остаются в файле до переноса сюжета в старт v17 и полного прогона по D101.
+- **Issue.** [#236](https://github.com/PavelSlaven/Novgorod1230/issues/236), [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133); принято ведущим A-prompt-rev-turn-04 как временное исключение A-05-02.
+
+### LW-132 — P-проекция групп 3 отложена до отдельного стенда (prompt-rev-turn)
+- **Где.** `intent_router` и `turn_step_planner` player-facing LLM inputs в `apps/game-server`.
+- **Что.** На финальном проходе `ca-final-prompt-rev-turn` (2026-10-06, finding 10) подтверждено, что user payload маршрутизатора и планировщика сохраняет служебные id, версии и счётчики, вопреки D72. Переход на P не оценивался стендом и в этой задаче не выполняется.
+- **Как жить.** Не менять эти проекции без отдельного BENCH-PLAN/BENCH-OK на пары L против L+P, с одинаковыми model-visible входами у модели и судей и явным перечнем допустимых смысловых полей. Закрыть запись после принятой P-проекции.
+- **Issue.** Отдельную задачу создаёт ведущий; основание — финальный проход `ca-final-prompt-rev-turn` finding 10.
+### LW-133 — scene presentation привязана к revision 33 (turn-scene-fix)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-phase-2.js` (`scenarioDefinitionRevision: 33` при загрузке сцены для `TRACE_SCENARIO_ID`).
+- **Что.** Когда turn bundle не содержит `scene_presentation`, fallback загрузчика сцены закреплён за revision 33. Если presentation сценария изменится, а эта ветка останется без своего pin в bundle, текущий scene title может разрешиться по устаревшей ревизии.
+- **Как жить.** Не менять revision 33 и не считать fallback актуальным для иных ревизий сценария без регрессии загрузки; переносить выбор revision в pinned bundle отдельной задачей.
+- **Issue.** —
+
+### LW-135 — старт v17 задаёт героя вместо места (player-start-norm)
+- **Где.** Семь файлов `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json`, поле `player_inputs`.
+- **Что.** Их стартовые заявки фиксируют игроку роль, занятие и имя «Микула». Это расходится с ACTIVE-нормой «Персонаж игрока и место старта» (D108, D110, D111): место и сезон задают обстоятельства, а героя — заявка игрока. Текущий runtime остаётся долгом отдельной задачи #109.
+- **Как жить.** Не использовать эти поля как норму и не переносить их ограничения в новую генерацию. Закрыть после реализации #109 и проверки свободной заявки на стартах.
+- **Issue.** [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109)
+
+### LW-136 — исходные данные дворов не утверждены и не импортированы (npc-family-norm-apply)
+- **Где.** `npc_family_household_contract.md`, `packages/actors/MODULE.md` и отдельные наборы исходных данных дворов и связей.
+- **Что.** ACTIVE-норма требует для каждого человека двор либо явно указанную иную форму жизни и полный состав каждого двора на выбранную дату начала игры. Данные дворов для этого состава ещё не утверждены и не импортированы (#259, #338).
+- **Как жить.** Считать полноту обязательным требованием нормы, а не подтверждённым свойством текущих данных или runtime. Не объявлять исходный мир полным до отдельного утверждения и импорта данных дворов с проверкой состава и связей.
+- **Issue.** [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338)

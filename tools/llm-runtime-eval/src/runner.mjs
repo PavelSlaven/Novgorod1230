@@ -387,7 +387,8 @@ function sumUsage(calls) {
 
 function validateRoleOutput(fixture, output) {
   const authoritativeRequest = fixture.role_id.startsWith('gameplay_narrator')
-    || fixture.validator === 'world_process_step_plan';
+    || fixture.validator === 'world_process_step_plan'
+    || fixture.validator === 'npc_combat_plan';
   const payload = authoritativeRequest ? fixture.request
     : messagePayload(fixture.messages);
   const request = fixture.repair === true && payload?.request ? payload.request : payload;
@@ -469,7 +470,8 @@ function assembleFixtureOutput(fixture, output) {
     return assembleTurnStepPlan(output, request);
   }
   if (fixture.role_id.startsWith('npc_combat_decider')) {
-    return assembleNpcCombatPlan(output, request);
+    const combatRequest = fixture.request?.request ?? fixture.request ?? request;
+    return assembleNpcCombatPlan(output, combatRequest);
   }
   if (fixture.role_id.startsWith('player_conversation_interpreter')) {
     return assemblePlayerConversationPlan(output, request);

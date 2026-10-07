@@ -52,7 +52,7 @@ test('v17 dense-fog start offers first-action movement with committed retry',
       const call = JSON.parse(init.body);
       const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
       const plannerCall = system.startsWith(
-        'Return only one JSON object containing the semantic choice for one turn step.');
+        'Верни только один JSON-объект с семантическим выбором для одного шага хода.');
       let movementChoices = null;
       if (plannerCall) {
         const input = JSON.parse(call.messages.find(({ role }) => role === 'user').content);

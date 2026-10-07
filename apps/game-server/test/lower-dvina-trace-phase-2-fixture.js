@@ -28,6 +28,10 @@ import { phase2VisibleContextFromPayload } from '../src/infrastructure/postgres/
 import { phase2InitialCurrentVisibleContext } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 import { fixturePhase2VisibleState } from './lower-dvina-trace-phase-2-fixture-current-visible.js';
+import SCENE_PRESENTATION from
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json'
+  with { type: 'json' };
+export { SCENE_PRESENTATION };
 const bundle = await loadLowerDvinaTraceMaterializationBundle();
 const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 9,
@@ -48,6 +52,7 @@ function fixture({
   npcCombatModel = unexpectedNpcCombatModel,
   playerSafeStateProjector = null,
   temporalAdvanceOwner = null,
+  currentSpatialContextProvider = null,
   createTurnStepOrdinaryDiscoveryResolver = null,
   ordinaryDiscoveryEnablementMarker = null,
   ordinaryDiscoveryScopeBinding = null,
@@ -158,6 +163,11 @@ function fixture({
           },
         }
       : structuredClone(committedState);
+  if (committedState == null) {
+    state.current_visible_context = fixtureOpeningCurrentVisibleContext({
+      state, materializationBundle
+    });
+  }
   const replays = new Map();
   const events = [];
   let committedVisible = null;
@@ -181,9 +191,22 @@ function fixture({
   const npcCombatInputs = [];
   const bundleRequests = [];
   const repository = {
-    async loadPhase2State() {
+    async loadPhase2State(_partyId, options = {}) {
       events.push('load_state');
-      return structuredClone(state);
+      const current = structuredClone(state);
+      if (options.includeCurrentVisibleContext === true
+          && typeof currentSpatialContextProvider === 'function') {
+        current.current_spatial_context = structuredClone(
+          await currentSpatialContextProvider({ partyId,
+            actorId: current.actor_id, state: current }));
+        current.current_spatial_context_is_fresh = true;
+        current.current_spatial_context_filters_entities = true;
+      }
+      if (committedVisible?.visible_payload != null) {
+        current.current_visible_context = phase2VisibleContextFromPayload(
+          committedVisible.visible_payload);
+      }
+      return current;
     },
     async loadPhase2Replay({ idempotencyKey }) {
       return structuredClone(replays.get(idempotencyKey) ?? null);
@@ -530,7 +553,9 @@ function fixture({
     repository,
     bundleLoader: async (request) => {
       bundleRequests.push(structuredClone(request));
-      return scenarioBundle;
+      return scenarioBundle.scene_presentation == null
+        ? { ...scenarioBundle, scene_presentation: SCENE_PRESENTATION }
+        : scenarioBundle;
     },
     decisionSecret: 'phase-2-decision-secret',
     now: () => '2026-07-30T08:00:00.000Z',
@@ -657,6 +682,7 @@ function fixture({
     state,
   };
 }
+
 export function fixtureOpeningCurrentVisibleContext({ state, materializationBundle }) {
   const profiles = materializationBundle?.location_topology_set?.location_profiles;
   const matches = Array.isArray(profiles)

@@ -34,6 +34,8 @@ import { assertSharedSemanticSnapshotSafe } from
 
 import { appendSemanticNegotiation } from './lower-dvina-trace-phase-4-write-projection-semantic.js';
 import { exactActivityRoots, validPersistedOfferStage } from './lower-dvina-trace-phase-4-write-projection-shared.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
   pendingScreen, nextVersion, turnNumber, changeSetId, idemId, contracts,
@@ -209,13 +211,15 @@ function appendNegotiation({ inserts, updates, appends, partyId, state, next,
 }
 
 export function phase4VisibleEnvelope({ partyId, nextVersion, turnNumber, changeSetId,
-  idemId, factual, visibleContext, contracts }) {
+  idemId, factual, visibleContext, contracts, onLabelGapsOmitted = null }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted });
   const payload = { schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details, visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects, known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties, hypotheses: [],
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details, visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects, known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties, hypotheses: [],
     player_safe_interruption:
       factual.consequence.negotiation?.player_response_boundary
         ? 'ratsha_attack_player_response_required'
@@ -245,6 +249,10 @@ export function phase4PendingScreen({ state, factual, visibleEnvelope, turnNumbe
       package_id: visibleEnvelope.package_id, package_digest: visibleEnvelope.package_digest,
       narration_output_digest: null },
     visible_context: phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    ...(state.last_turn?.exact_npc_utterances?.length ? {
+      exact_npc_utterances: structuredClone(
+        state.last_turn.exact_npc_utterances)
+    } : {}),
     checks: projectPlayerSafeChecks(state),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.' };
   screen.screen_digest = phase2ScreenDigest(screen);

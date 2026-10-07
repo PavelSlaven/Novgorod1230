@@ -4,6 +4,9 @@ import re
 from collections import Counter
 
 from common import ITEMS, ME, ROOT, read_csv, split
+import sys
+sys.path.insert(0, str(ROOT / "data/world-catalogs/novgorod/game-base-v1/scripts"))
+from material_view import apply_material_overrides, overlay_source_ref
 import rules as R
 from build_trace_relations import TRANSPORT_CONTEXT
 
@@ -28,7 +31,8 @@ def source_policy_allows(entity):
 
 
 def source_state():
-    entities = {r["item_id"]: r for r in read_csv(ME / "material_entities.csv")}
+    material_path = ME / "material_entities.csv"
+    entities = {r["item_id"]: r for r in apply_material_overrides(read_csv(material_path), material_path)}
     links = {r["link_id"]: r for r in read_csv(ME / "item_location_links.csv")}
     canonical = {}
     for row in read_csv(ROOT / "data/world-catalogs/novgorod/sources/master-archive-v1/data/canonical/material_items.csv"):
@@ -52,6 +56,7 @@ def validate_rows(rows):
     recipe_ids = {r["recipe_id"] for r in read_csv(
         ROOT / "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/food_system/recipes.csv"
     )}
+    material_source_path = ME / "material_entities.csv"
     seen_ids, seen_links = set(), set()
     for row in rows:
         rid, link_id = row.get("trace_id", ""), row.get("source_link_id", "")
@@ -65,6 +70,19 @@ def validate_rows(rows):
             continue
         link = links[link_id]
         entity = entities[link["item_id"]]
+        expected_refs = [
+            f"sources/master-archive-v1/data/normalized_source_tables/material_entities/item_location_links.csv#{link_id}",
+            f"sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv#{link['item_id']}",
+        ]
+        correction_ref = overlay_source_ref(link["item_id"], material_source_path)
+        if correction_ref:
+            expected_refs.append(correction_ref)
+        if row.get("source_refs") != ";".join(expected_refs):
+            fail.append(f"{rid}: source refs do not identify archive and material overlay provenance")
+        if correction_ref and correction_ref not in row.get("derivation", ""):
+            fail.append(f"{rid}: material state correction provenance missing from derivation")
+        if not correction_ref and "source-overlays/master-material-materials.csv:" in row.get("derivation", ""):
+            fail.append(f"{rid}: derivation claims an unrelated material overlay")
         if row.get("source_item_id") != link["item_id"] or row.get("master_item_ref") != canonical.get(link["item_id"]):
             fail.append(f"{rid}: source item/canonical FK mismatch")
         if row.get("trace_kind") != entity["entity_kind"] or row.get("trace_kind") not in TRACE_KINDS:
@@ -142,6 +160,11 @@ def self_test(rows):
     for changed, expected in probes:
         failures, _ = validate_rows([changed] + rows[1:])
         assert any(expected in failure for failure in failures), expected
+    corrected = next((row for row in rows if "source-overlays/master-material-materials.csv:" in row.get("source_refs", "")), None)
+    if corrected:
+        missing_overlay = {**corrected, "source_refs": corrected["source_refs"].rsplit(";", 1)[0]}
+        failures, _ = validate_rows([missing_overlay] + [row for row in rows if row is not corrected])
+        assert any("source refs do not identify" in failure for failure in failures)
     assert source_policy_allows({"historical_confidence": "D", "generation_policy": "conditional"})
     assert not source_policy_allows({"historical_confidence": "A", "generation_policy": "never_generate"})
     print(f"trace relation negative probes PASS ({len(probes) + 2})")

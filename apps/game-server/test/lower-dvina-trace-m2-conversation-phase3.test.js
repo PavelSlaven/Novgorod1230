@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  buildNpcSemanticDecisionTrace,
+  validateNpcSemanticDecisionTrace
+} from '@rus/npc-runtime';
+import { normalizeNpcDecision } from
+  '../../../packages/turn/src/conversation-exchange-npc-batch.js';
+import {
   resolveTracePhase3Contracts
 } from '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
 import {
@@ -27,10 +33,156 @@ import {
   runPhase3,
   withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+import { npcSpeechPlan } from
+  './lower-dvina-trace-m2-conversation-speech-fixture.js';
 import { createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { phase3ConversationProjection } from
+  '../src/runtime/lower-dvina-trace-phase-3-visible.js';
+import { hydrateSemanticDecisionReplay } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-3-read.js';
 import { projectM2ConversationExecutionResult } from
   '../src/runtime/lower-dvina-trace-m2-conversation-result.js';
+
+test('committed WK claim replays from its persisted prepared request', async () => {
+  const initialState = phase3State();
+  const contracts = resolveTracePhase3Contracts({
+    state: initialState, bundle: revision14Bundle
+  });
+  const knowledgeRef = ref('knowledge_record', 'claim:fish-net');
+  let modelCalls = 0;
+  let unpreparedRequest;
+  const semanticModel = async (request) => {
+    modelCalls += 1;
+    const player = request.allowed_references.actor_refs.find(
+      ({ entity_kind: kind }) => kind === 'player_character'
+    );
+    return {
+      schema: 'conversation_contribution_plan_v1',
+      request_id: request.request_id,
+      boundary_id: request.boundary_id,
+      conversation_id: request.conversation_id,
+      exchange_id: request.exchange_id,
+      state_version: request.state_version,
+      speaker_ref: request.npc_ref,
+      contribution_kind: 'speech',
+      primary_addressee_ref: player,
+      intended_addressee_refs: [player],
+      affected_actor_refs: [],
+      speech: {
+        utterance_text: 'Сети служат для ловли рыбы.',
+        dominant_act: 'inform', interaction_tags: [], topic_refs: [],
+        claims: [{ claim_id: 'fish-net',
+          content_summary: 'Сети служат для ловли рыбы.',
+          form: 'assertion', speaker_posture: 'believed_true',
+          source_knowledge_refs: [knowledgeRef],
+          mentioned_entity_refs: [] }],
+        response_expectation: { kind: 'none', target_refs: [] }
+      },
+      interpretation: { intent: 'ответить',
+        grounded_contribution: 'рассказать о сетях', adaptation: 'literal' },
+      resolution: 'automatic',
+      activity: { duration_class: 'domain_owned', effort: 'none' },
+      supporting_operations: [], check: null, handoff: null,
+      reason: 'Ответ на вопрос.'
+    };
+  };
+  semanticModel.prepareRequest = async (request) => {
+    unpreparedRequest = structuredClone(request);
+    return { request: {
+      ...request,
+      allowed_references: {
+        ...request.allowed_references,
+        knowledge_refs: [...request.allowed_references.knowledge_refs,
+          knowledgeRef].sort((left, right) =>
+          `${left.entity_kind}\u0000${left.entity_id}`.localeCompare(
+            `${right.entity_kind}\u0000${right.entity_id}`))
+      }
+    } };
+  };
+
+  const first = await runPhase3({
+    state: initialState, contracts,
+    rawText: 'Как ловят рыбу?', inputDigest: digest('a'),
+    responseKind: 'speech', npcSemanticModel: semanticModel
+  });
+  const committedDecision = first.result.exchange.npc_decisions[0];
+  assert.deepEqual(committedDecision.proposal.plan.speech.claims[0]
+    .source_knowledge_refs, [knowledgeRef]);
+  assert.equal(modelCalls, 1);
+
+  const trace = buildNpcSemanticDecisionTrace({
+    request: committedDecision.request,
+    plan: committedDecision.proposal.plan,
+    root_turn_id: 'turn-wk-claim-replay', working_revision: 0,
+    applied_change_set_id: 'change-wk-claim-replay'
+  });
+  // The exact boundary and fresh request are valid. Only the prepared WK ref
+  // makes the committed claim legal during trace validation.
+  assert.doesNotThrow(() => normalizeNpcDecision({
+    boundary: committedDecision.boundary,
+    request: unpreparedRequest,
+    persisted_trace: null
+  }, committedDecision.boundary));
+  assert.equal(validateNpcSemanticDecisionTrace(trace,
+    committedDecision.request), true);
+  assert.equal(validateNpcSemanticDecisionTrace(trace,
+    unpreparedRequest), false);
+  const persistedInput = structuredClone({
+    trace,
+    request_snapshot: committedDecision.request,
+    boundary_snapshot: committedDecision.boundary,
+    signal_records: []
+  });
+  assert.deepEqual(persistedInput.boundary_snapshot,
+    committedDecision.boundary);
+  const replayState = structuredClone(initialState);
+  hydrateSemanticDecisionReplay(replayState, [trace], [persistedInput]);
+  let replayModelCalls = 0;
+  const replayModel = async () => {
+    replayModelCalls += 1;
+    throw new Error('committed conversation must replay without the model');
+  };
+  replayModel.prepareRequest = async () => {
+    throw new Error('committed conversation must not retrieve WK again');
+  };
+  // Control: the same integrated replay succeeds when only the WK claim is
+  // absent. This excludes boundary drift and unrelated fixture failures.
+  const controlPlan = structuredClone(committedDecision.proposal.plan);
+  controlPlan.speech.claims = [];
+  const controlTrace = buildNpcSemanticDecisionTrace({
+    request: committedDecision.request, plan: controlPlan,
+    root_turn_id: trace.root_turn_id, working_revision: trace.working_revision,
+    applied_change_set_id: trace.applied_change_set_id
+  });
+  const controlState = structuredClone(initialState);
+  hydrateSemanticDecisionReplay(controlState, [controlTrace], [{
+    ...structuredClone(persistedInput), trace: controlTrace
+  }]);
+  const control = await runPhase3({
+    state: controlState, contracts,
+    rawText: 'Как ловят рыбу?', inputDigest: digest('a'),
+    responseKind: 'speech', npcSemanticModel: replayModel
+  });
+  assert.equal(control.result.exchange.npc_decisions[0].proposal.status,
+    'replayed');
+  assert.equal(replayModelCalls, 0);
+
+  let replay;
+  await assert.doesNotReject(async () => {
+    replay = await runPhase3({
+      state: replayState, contracts,
+      rawText: 'Как ловят рыбу?', inputDigest: digest('a'),
+      responseKind: 'speech', npcSemanticModel: replayModel
+    });
+  }, 'P2: committed WK claim must replay with its persisted prepared request');
+
+  assert.equal(replayModelCalls, 0);
+  assert.equal(replay.result.exchange.npc_decisions[0].proposal.status,
+    'replayed');
+  assert.deepEqual(replay.result.exchange.npc_decisions[0].request,
+    committedDecision.request);
+});
 
 test('multi-NPC result selects the addressed NPC as the primary decision', () => {
   const background = ref('npc', 'background');
@@ -200,6 +352,57 @@ test('NPC speech owner accepts exact route disclosure and ordinary reply', async
   });
 });
 
+test('Eremey preserves current uncertainty as speech without withhold or route disclosure', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({
+    state, bundle: revision14Bundle
+  });
+  const utterance = 'Не уверен, видел ли лодочника после крушения.';
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Ты видел лодочника после крушения?',
+    inputDigest: digest('a'),
+    npcSemanticModel: async (request) => npcSpeechPlan(request, {
+      utteranceText: utterance,
+      dominantAct: 'answer'
+    })
+  });
+
+  assert.equal(exchange.result.response_kind, 'speech');
+  assert.equal(exchange.result.route_disclosure, null);
+  assert.deepEqual(exchange.result.decision_plan.speech.interaction_tags, []);
+  assert.deepEqual(exchange.result.decision_plan.speech.topic_refs, []);
+  assert.deepEqual(exchange.result.decision_plan.speech.claims, []);
+  const npcStatement = exchange.result.statements.find(
+    ({ speaker_ref: speaker }) => speaker.entity_kind === 'npc'
+  );
+  assert.equal(npcStatement.utterance_text, utterance);
+  const sceneProjection = phase3ConversationProjection({
+    consequence: { conversation: { semantic_exchange: exchange.result } }
+  }, contracts, { visible_scene: 'Берег', visible_npc: [] });
+  assert.equal(sceneProjection.visible_scene, 'Берег');
+  assert.deepEqual(sceneProjection.visible_changes,
+    ['человек говорит: «Не уверен, видел ли лодочника после крушения.»']);
+  assert.deepEqual(sceneProjection.uncertainties, []);
+
+  const publicResult = phase2PublicResult({
+    payload: phase2ConversationPayload({
+      state,
+      optionId: contracts.ids.talkOption,
+      check: null,
+      activityRef: contracts.talk.profile_id,
+      result: exchange.result
+    }),
+    screen: { schema: 'test-screen' }
+  });
+  assert.deepEqual(publicResult.conversation.semantic_exchange, {
+    response_kind: 'speech',
+    npc_utterance: utterance,
+    disclosed_route_ref: null
+  });
+});
+
 test('action-set evaluation does not require player input or invoke the interpreter', async () => {
   const state = phase3State();
   const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
@@ -317,6 +520,14 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
   assert.equal(withheld.result.route_disclosure, null);
   assert.equal(withheld.playerCalls, 1);
   assert.equal(withheld.npcCalls, 1);
+  const withheldScene = phase3ConversationProjection({ consequence: {
+    conversation: { semantic_exchange: withheld.result }
+  } }, contracts, { visible_scene: 'Рыбацкий стан', visible_npc: [] });
+  assert.deepEqual(withheldScene.uncertainties, [],
+    'internal withholding does not establish a player-visible disclosure limit');
+  assert.equal(withheldScene.visible_changes.some((change) =>
+    change.includes('не раскрыл полный ответ')), false,
+  'internal withholding does not create an unsupported disclosure claim');
 
   const utterance = 'Вот синяя шерсть с берега. Покажи дорогу к старой сушильне.';
   const disclosed = await runPhase3({
@@ -435,6 +646,11 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
     npc_utterance: 'От лагеря иди к старой сушильне по тропе.',
     disclosed_route_ref: 'trace_ld_v1_route_camp_to_shed'
   });
+  const disclosedScene = phase3ConversationProjection({
+    consequence: { conversation: { semantic_exchange: disclosed.result } }
+  }, contracts, { visible_scene: 'Окрестности.', visible_npc: [] });
+  assert.ok(disclosedScene.visible_changes.some((change) =>
+    change.includes(publicResult.conversation.semantic_exchange.npc_utterance)));
   assert.deepEqual(
     Object.keys(publicResult.conversation.semantic_exchange).sort(),
     ['disclosed_route_ref', 'npc_utterance', 'response_kind']

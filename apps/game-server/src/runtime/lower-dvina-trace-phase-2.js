@@ -1,7 +1,11 @@
 import { buildTracePhase2Registry, resolveTracePhase2InheritedContracts } from './lower-dvina-trace-phase-2-runtime-context.js'; import { serverError } from '../errors.js';
 import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
+import { loadLowerDvinaTracePinnedItemLabels } from
+  '../internal/lower-dvina-trace-screen-presentation.js';
 import { isExactLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
 import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js';
+import { loadLowerDvinaTraceScenePresentation } from
+  '../internal/lower-dvina-trace-scene-presentation.js';
 import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contracts.js';
 import { createTracePhase8Runtime } from './lower-dvina-trace-phase-8-runtime.js';
 import { createTracePhase9Runtime } from './lower-dvina-trace-phase-9-runtime.js';
@@ -32,6 +36,7 @@ import { createSemanticConversationCommand } from
 import { createTraceExpansionCommands } from
   './lower-dvina-trace-expansion-commands.js';
 import { createTraceLocalSceneCommands } from './lower-dvina-trace-local-scene-commands.js';
+import { createLiveWorldCombatCommand } from './live-world-combat-command.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   turnStepSemanticGroundingValidator = null, playerConversationModel = null,
@@ -101,8 +106,11 @@ export function createLowerDvinaTracePhase2Runtime({
           llmDiagnostics });
         const state = await repository.loadPhase2State(partyId, {
           presentationIdempotencyKey: idempotencyKey,
+          includeCurrentVisibleContext: true,
           turnBudget,
         });
+        const authored = state.scenario_id != null
+          && state.scenario_id !== TRACE_SCENARIO_ID;
         let runtimeCatalogContextPromise = null;
         const getRuntimeCatalogContext = () => {
           if (typeof loadTurnRuntimeCatalogContext !== 'function') return null;
@@ -123,8 +131,13 @@ export function createLowerDvinaTracePhase2Runtime({
             });
           } catch { /* Diagnostics must not affect the turn. */ }
         };
-        const authored = state.scenario_id != null
-          && state.scenario_id !== TRACE_SCENARIO_ID;
+        const recordVisiblePackageDiagnostic = (count) => {
+          try {
+            llmDiagnostics?.recordGameplayTrace?.({
+              event: 'visible_item_label_gap_omitted', omitted_count: count
+            });
+          } catch { /* Diagnostics must not affect the turn. */ }
+        };
         const scenarioDefinitionRevision = authored ? null
           : committedTraceScenarioDefinitionRevision(state);
         const phase2Bundle = authored ? null
@@ -141,6 +154,14 @@ export function createLowerDvinaTracePhase2Runtime({
             postActionPerceptionProfile })
           : await runWithinTurnDeadline(turnBudget, () =>
             bundleLoader({ scenarioDefinitionRevision }));
+        const scenePresentation = bundle.scene_presentation
+          ?? (state.scenario_id === TRACE_SCENARIO_ID
+            ? await runWithinTurnDeadline(turnBudget, () =>
+              loadLowerDvinaTraceScenePresentation({
+                scenarioDefinitionRevision: 33
+              })) : null);
+        const itemLabels = bundle.item_container_set == null ? {}
+          : await loadLowerDvinaTracePinnedItemLabels(bundle);
         const selectedPostActionPerceptionProfile =
           bundle.post_action_perception_profile ?? null;
         const postActionPerceptionAdapter = selectedPostActionPerceptionProfile?.schema
@@ -268,9 +289,11 @@ export function createLowerDvinaTracePhase2Runtime({
           phase8Contracts,
         });
         const registry = authored ? await liveWorldTurnRegistry({ state,
-          requestId, spatialExpansionRuntime, spatialLocalSceneRuntime,
+          repository, partyId, requestId, idempotencyKey, turnBudget,
+          spatialExpansionRuntime, spatialLocalSceneRuntime,
           inputDigest, authoredTurnProfile, playerConversationModel,
-          npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
+          npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion,
+          onLabelGapsOmitted: recordVisiblePackageDiagnostic })
           : buildTracePhase2Registry({
           bundle,
           turnStepNeedsCheckGuard: assertNeedsCheckAllowed,
@@ -323,7 +346,8 @@ export function createLowerDvinaTracePhase2Runtime({
           npcAutonomousModel, npcCombatModel,
           playerSafeStateProjector,
           locationProfiles: bundle.location_topology_set.location_profiles,
-          scenePresentation: bundle.scene_presentation ?? null,
+          scenePresentation,
+          itemLabels,
           turnStepBodyEventOwner: turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner, turnStepSemanticActivityOwner: turnStepSemanticActivityOwner ?? genericOwners?.semanticActivityOwner,
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
@@ -372,7 +396,7 @@ export function createLowerDvinaTracePhase2Runtime({
   });
 }
 
-function liveWorldTurnBundle({ state, authoredTurnProfile,
+function liveWorldTurnBundle({ authoredTurnProfile,
   postActionPerceptionProfile = null }) {
   if (authoredTurnProfile?.profile?.schema
       !== 'rus.live_world_runtime.turn_step_owner_profiles.v1'
@@ -381,9 +405,6 @@ function liveWorldTurnBundle({ state, authoredTurnProfile,
     throw serverError('LIVE_WORLD_TURN_PROFILE_MISSING',
       'Approved live-world turn profile is required.', { status: 409 });
   }
-  const locationRef = state.position?.location_ref;
-  const displayName = state.current_visible_context?.visible_scene
-    ?? state.visible_context?.visible_scene ?? locationRef;
   return Object.freeze({
     definition_revision: null,
     profile: 'live_world_authored',
@@ -391,9 +412,7 @@ function liveWorldTurnBundle({ state, authoredTurnProfile,
       turn_step_owner_profiles: structuredClone(authoredTurnProfile.pin)
     },
     turn_step_owner_profiles: structuredClone(authoredTurnProfile.profile),
-    location_topology_set: { location_profiles: [{
-      location_profile_id: locationRef, display_name: displayName
-    }] },
+    location_topology_set: { location_profiles: [] },
     calendar_profile: null,
     scene_presentation: null,
     post_action_perception_profile: postActionPerceptionProfile
@@ -415,9 +434,14 @@ function liveWorldTurnContracts(authoredTurnProfile) {
   });
 }
 
-async function liveWorldTurnRegistry(context) {
+export async function liveWorldTurnRegistry(context) {
   const blocked = () => ({ status: 'blocked', can_attempt: false,
     check_requests: [] });
+  const sceneTargets = (context.state?.npcs ?? []).filter((npc) =>
+    npc.scene_readback_present === true
+      && npcSharesPlayerScene(context.state, npc));
+  const combatCommand = sceneTargets.length > 0
+    ? createLiveWorldCombatCommand(context) : null;
   return createTurnCommandRegistry([{
     command_id: 'live_world_semantic_boundary',
     option_id: 'live_world_semantic_boundary',
@@ -431,7 +455,9 @@ async function liveWorldTurnRegistry(context) {
     availability: blocked,
     consequence: blocked,
     writeTargets: () => []
-  }, ...liveWorldConversationCommands(context),
+  },
+  ...(combatCommand ? [combatCommand] : []),
+  ...liveWorldConversationCommands(context),
   ...await createTraceLocalSceneCommands(context),
   ...await createTraceExpansionCommands(context)]);
 }

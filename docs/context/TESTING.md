@@ -38,9 +38,9 @@
 | `test/integration/*.test.js` | `test:integration` | `--test-concurrency=1`; часть тестов требует PostgreSQL |
 | `test/acceptance/*.test.js` | `test:acceptance` | `--test-concurrency=1` |
 | `test/e2e/*.test.js` | `test:browser-e2e` | браузерные (playwright-core) |
-| `test/spatial-v3/*.test.js` | отдельные `spatial-v3:*`, `lower-dvina:*`, `temporal-v4:*`, `character-appearance:*`; все — `spatial-v3:red` | в `npm test` входит только `p04-catalog-sync` (через `test:tools`) |
+| `test/spatial-v3/*.test.js`, `scripts/m2c-*.test.mjs`, `tools/llm-runtime-eval/test/*.test.mjs` | `test:spatial` | включает найденные по умолчанию файлы кроме перечисленных с причиной и `#issue`/`LW-N` в `test/spatial-v3/ci-exclusions.json`; новые файлы входят автоматически, непокрытый файл, исключение без issue/LW или устаревшее исключение роняет скрипт. PG-тесты ждут отдельного необязательного набора; часть файлов уже входит в `test:tools` или `p12` |
 | `legacy/test/*.test.js` | `test:legacy` | в `npm test` не входит |
-| `test/*.test.js` (корень `test/`) | — | ни один скрипт package.json их не запускает; см. [LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md) |
+| `test/*.test.js` (корень `test/`) | — | пока не добавлены; кандидаты требуют host-green и отсутствия импорта `../src/`, см. [LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md) |
 
 `test:knowledge-source` — сборный срез: `packages/knowledge-source/test` (часть `test:domain`), два файла из
 `tools/docs-tools/test` (часть `test:tools`) и `test/modules/knowledge-source-architecture.test.js`
@@ -79,7 +79,7 @@ PostgreSQL-тесты: часть из них пропускается без п
 
 ## 3. Состав `npm test` и CI
 
-`npm test` последовательно запускает `test:modules`, `test:domain`, `test:apps`, `test:tools`, `test:game-base`,
+`npm test` последовательно запускает `test:modules`, `test:domain`, `test:apps`, `test:tools`, `test:spatial`, `test:game-base`,
 `test:shadow`, `test:cutover`, `docs:check`, `test:integration`, `test:acceptance`, `test:browser-e2e` и
 `architecture:check` (скрипт `test` в [package.json](../../package.json)).
 
@@ -92,7 +92,7 @@ CI описан в [.github/workflows/test.yml](../../.github/workflows/test.yml
   проверкой 224 таблиц и grants `world_reader`; интеграции `world-db:import:stage3b1:integration` и
   `character-appearance:test-world-v4-postgres`; `knowledge:check-corpus`; `docs:generate` и
   `character-appearance:generate` с проверкой generated-файлов на чистый diff; затем `test:modules`, `test:domain`,
-  `test:apps`, `test:tools`, `test:game-base`, `test:shadow`, `test:cutover` и `docs:check`.
+  `test:apps`, `test:tools`, `test:spatial`, `test:game-base`, `test:shadow`, `test:cutover` и `docs:check`.
 - `integration`: schema checks и DDL world_base в PostgreSQL 16, затем `test:integration` через
   `scripts/run-integration-tests.mjs`.
 - `p12`: PostgreSQL 16 и `spatial-v3:test-p12-postgres`.

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
-import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { canonicalDigest } from '@rus/materialization';
 import {
   loadLowerDvinaTracePhase2Bundle
@@ -36,7 +36,25 @@ test('Phase 2 package excludes Phase 3', async (t) => {
 
   const rootDir = await mkdtemp(join(tmpdir(), 'trace-phase2-bundle-'));
   t.after(() => rm(rootDir, { recursive: true, force: true }));
-  await cp(resolve('data'), join(rootDir, 'data'), { recursive: true });
+  const manifestPath =
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-2/manifest.json';
+  const bundlePaths = [
+    manifestPath,
+    phase2.manifest.content_refs.wreck_inspection_execution_binding.path,
+    ...Object.values(phase2.manifest.source_refs).map(({ path }) => path),
+    phase2.manifest.definition_ref.path,
+    phase2.manifest.phase_1a_manifest_ref.path,
+    phase2.manifest.phase_1b_manifest_ref.path
+  ];
+  for (const sourcePath of bundlePaths) {
+    const targetPath = join(rootDir, sourcePath);
+    await mkdir(dirname(targetPath), { recursive: true });
+    await cp(resolve(sourcePath), targetPath);
+  }
+  assert.deepEqual(
+    await loadLowerDvinaTracePhase2Bundle({ rootDir }),
+    phase2
+  );
   const bindingPath = join(
     rootDir,
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-2',

@@ -1,5 +1,5 @@
 import { calculateContainerUsage, calculateHandsState, calculateInventoryMass, resolveInventoryAccess, resolveInventoryLoad, validateInventoryTopology } from '@rus/items-property';
-import { calculatePackingSlots } from '@rus/world-catalog-workflow';
+import { calculatePackingSlots } from '@rus/items-property';
 import { concern } from '../shared/utils.js';
 
 /**

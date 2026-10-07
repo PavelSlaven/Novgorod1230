@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "4fe359b18be1e8a0644ed709c6d9f03839f214e86ab695b27c196da145fba07e",
-      "bytes": 33027,
+      "sha256": "f40631a4003c673a740616cd622b2e931a1a644adfdeeac6f7af73017cc5a421",
+      "bytes": 34799,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -244,8 +244,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "7c7ff8bb68e588b23f71148955fa111534ec17fa979667a3363ef17f028c0f9b",
-      "bytes": 91283,
+      "sha256": "27da7a90b6adb4946155be99f6b3409533255ffe8611ab0f67c32567b16a2db6",
+      "bytes": 96256,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -268,6 +268,16 @@
       "bytes": 106669,
       "status": "active",
       "provenance_mode": "native",
+      "priority_tier": "technical_contract"
+    },
+    {
+      "document_id": "npc-family-household-contract",
+      "canonical_path": "corpus/DOCUMENTS/npc_family_household_contract.md",
+      "file_name": "npc_family_household_contract.md",
+      "provenance_mode": "native",
+      "sha256": "8947927948d36e79f8f45665e3b2330c0c2c6f13afa67d759ae2d9a0e7ed2002",
+      "bytes": 10347,
+      "status": "active",
       "priority_tier": "technical_contract"
     },
     {
@@ -308,6 +318,15 @@
       "source_legacy_sha256": "4d0f6e4cdc2ecbb2b1ccd1bd5f84d903fd0aa62999a27bfc57848782aa79d68f",
       "source_legacy_bytes": 44986,
       "priority_tier": "reference"
+    },
+    {
+      "document_id": "player-character-start-contract",
+      "canonical_path": "corpus/DOCUMENTS/player_character_start_contract.md",
+      "file_name": "player_character_start_contract.md",
+      "sha256": "2297b70b9a280daafe0e4160f315a54c6d6c3adfd31426d2ca7ce184b3dfb0b5",
+      "bytes": 3479,
+      "status": "active",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "read-only-database-and-graph-architecture",

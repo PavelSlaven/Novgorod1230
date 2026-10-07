@@ -74,7 +74,7 @@ const eventMap = new Map(); // ev_id -> first-seen metadata
 const phaseRows = [];
 let bookVerifiedCount = 0;
 const correctedEvents = {
-  nov_hist_1230_004: { title: 'Расправа в Новгороде, бегство в Торжок и возвращение Ярослава', chronicle: '8 декабря Водовик и Ростислав уехали в Торжок; 9 декабря Семён Борисович убит в Новгороде; 30 декабря вернулся Ярослав' },
+  nov_hist_1230_004: { title: 'Расправа в Новгороде, отъезд в Торжок и возвращение Ярослава', chronicle: 'По одному летописному свидетельству, Водовик и Ростислав уехали в Торжок 8 декабря; другое датирует их отъезд 9 декабря. Разночтение дат отъезда не разрешено. 9 декабря в Новгороде убит Семён Борисович; 30 декабря вернулся Ярослав' },
   nov_hist_1243_001: { title: 'Смерть Варлаама (Вячеслава Прокшинича) и погребение на Хутыни', chronicle: '4 мая 1243 умер Варлаам, в миру Вячеслав Прокшинич, погребён на Хутыни', source: 'book:667380 §Приложение 2 ¶499' },
   nov_hist_1242_002: { title: 'Поездка Ярослава к Батыю в 1243 году', chronicle: 'В 1243 году Батый вручил Ярославу ярлык на старшинство', source: 'book:220871 §Новгород во времена Александра Невского ¶393' },
   nov_hist_1245_001: { title: 'Казнь Михаила Черниговского в 1246 году', chronicle: 'В 1246 году казнён Михаил Черниговский', source: 'book:378072 §Домонгольская Русь > Русские князья и междоусобные войны > Черниговские, новгород-северские, полоцкие князья ¶274' },
@@ -92,7 +92,10 @@ for (const p of d.timeline) {
       sources: (p.sources || []).map(s => s.title).join(' | '),
     });
   }
-  const rumors = (p.rumors || []).map(r => r.rumor_text).join(' / ');
+  let rumors = (p.rumors || []).map(r => r.rumor_text).join(' / ');
+  if (p.event_id === 'nov_hist_1230_004') {
+    rumors = rumors.replace(/торжокск\p{L}*\s+расправ\p{L}*/giu, 'расправа в Новгороде');
+  }
   const roads = p.road_effects ? p.road_effects.summary : '';
   const market = p.market_effects ? p.market_effects.summary : '';
   const power = p.authority_effects ? p.authority_effects.summary : '';
@@ -143,6 +146,19 @@ for (const p of d.timeline) {
     dateRange = '1231';
     seasonRange = '';
   }
+  if (p.event_id === 'nov_hist_1230_004') {
+    const dates = {
+      background: ['1230', ''],
+      omens: ['1230-12', 'winter'],
+      escalation: ['1230-12-09', 'winter'],
+      impact: ['1230-12-30', 'winter'],
+      aftermath: ['1231', 'winter'],
+    };
+    [dateRange, seasonRange] = dates[p.phase];
+  }
+
+  const phaseConfidence = p.event_id === 'nov_hist_1230_004'
+    && ['background', 'aftermath'].includes(p.phase) ? 'C' : confidence;
 
   phaseRows.push({
     ev_id: p.event_id,
@@ -168,13 +184,15 @@ for (const p of d.timeline) {
     forbidden_knowledge: (p.forbidden_player_knowledge || []).join('|'),
     node_refs_v6: nodeRefsV6,
     node_refs_v17: '', // GAP: v6->v17 G2/G3/G4 id mapping not built in this pass (~11k v6 nodes; needs place_names/spatial owner)
-    chronicle_ref: corrected ? `уточнение по книжному свидетельству: ${corrected.chronicle}${p.event_id === 'nov_hist_1245_001' && p.phase === 'impact' ? '; no_source: точный день 20.09 не подтверждён этим свидетельством' : ''}` : chronicleRef,
+    chronicle_ref: corrected ? `уточнение по книжному свидетельству: ${corrected.chronicle}${p.event_id === 'nov_hist_1230_004' ? '; book:301539 §ПРОДОЛЖЕНИЕ МЕЖДОУСОБИЙ ¶4366 датирует отъезд 8 декабря, book:667380 §Приложение 2 ¶486 — 9 декабря; разночтение не разрешено' : ''}${p.event_id === 'nov_hist_1245_001' && p.phase === 'impact' ? '; no_source: точный день 20.09 не подтверждён этим свидетельством' : ''}` : chronicleRef,
     source_refs: sourceRefs + (bookRefNote ? ('|' + bookRefNote) : '') + (corrected && corrected.source ? ('|' + corrected.source) : '') + (p.event_id === 'nov_hist_1245_001' && p.phase === 'impact' ? '|no_source: точный день 20.09' : ''),
-    confidence: confidence,
+    confidence: phaseConfidence,
     status: 'candidate',
     needs_review: needsReview ? 'true' : 'false',
     needs_review_note: needsReviewNote,
-    audit_note: bookRefs
+    audit_note: p.event_id === 'nov_hist_1230_004' && ['background', 'aftermath'].includes(p.phase)
+      ? 'Годовая граница фазы реконструирована по книжной хронологии; точный день и начало фазы источником не установлены.'
+      : bookRefs
       ? 'построчно сверено с книжными свидетельствами группы (servak history-events-knowledge.csv) в проходе 2026-09-26, см. source_refs'
       : 'не сверено построчно с текстом НПЛ ни по sqlite, ни по книжным свидетельствам в этом проходе; требует полного аудита (см. README gaps)',
   });
@@ -206,7 +224,7 @@ const eventRows = [...eventMap.values()].map(e => ({
   ev_id: e.ev_id,
   year: e.year,
   event_type: e.event_type,
-  event_title: e.event_title,
+  event_title: e.ev_id === 'nov_hist_1230_004' ? correctedEvents[e.ev_id].title : e.event_title,
   first_phase_id: e.first_phase_id,
   source_titles: e.sources,
   status: 'candidate',

@@ -26,6 +26,11 @@ test('Phase 4 break_contact pauses at the earlier combat boundary exactly once',
     }));
     const ratsha = state.npcs.find(({ participant_slot_ref: slot }) =>
       slot === 'ratsha_storehouse_helper');
+    ratsha.body_state_profile = { schema:
+      'rus.body_state.initialization_profile.v1', status: 'approved',
+    profile_ref: { entity_ref: { entity_kind: 'body_state_profile',
+      entity_id: `test:${ratsha.instance_id}` }, authoring_version: 'fixture-v1' },
+    initial_state: { health: 100, energy: 80, satiety: 70 } };
     const shed = state.prepared_scenes.find(({ location_profile_ref: id }) =>
       id === 'trace_ld_v1_loc_old_drying_shed');
     const camp = state.prepared_scenes.find(({ location_profile_ref: id }) =>

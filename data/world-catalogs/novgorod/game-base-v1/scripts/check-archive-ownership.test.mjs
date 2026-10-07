@@ -4,9 +4,13 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { archiveIds, checkArchiveOwnership, checkArchiveOwnershipRegistry, normalizeSemanticRoot, parseCsv } from './check-archive-ownership.mjs';
+import { archiveIds, checkArchiveOwnership as checkArchiveOwnershipRaw, checkArchiveOwnershipRegistry, normalizeSemanticRoot, parseCsv } from './check-archive-ownership.mjs';
 
 const gameBase = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+function checkArchiveOwnership(root) {
+  return checkArchiveOwnershipRaw(root, { allowSyntheticRootSourceMismatch: true });
+}
 
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'archive-ownership-'));
@@ -301,6 +305,40 @@ test('unmapped archive material gets its own stable code', () => {
     append(root, 'crafts-tools-processes/archive_inclusion_ledger.csv', 'OMI00008,Неизвестный материал,variant,crafts-tools-processes/materials_registry/materials.csv#mt_flax,tool,1180–1260,,variant,Mixed material is not comparable.');
     assert.equal(checkArchiveOwnership(root).errors.some(error => error.startsWith('OMI00008:') && /material/.test(error)), false);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test('external root still rejects a changed material overlay', () => {
+  const { parent, root } = gameBaseCopy();
+  try {
+    const overlay = path.join(root, 'source-overlays/master-material-materials.csv');
+    fs.appendFileSync(overlay, '\n');
+    assert.throws(
+      () => checkArchiveOwnershipRaw(root, {
+        materialViewPath: path.join(root, 'generated/master-material-material-view.json'),
+        materialOverlayPath: overlay,
+      }),
+      error => error.code === 'MATERIAL_VIEW_OVERLAY_STALE',
+    );
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('external root rejects a changed overlay when source and overlay are both stale', () => {
+  const { parent, root } = gameBaseCopy();
+  try {
+    const source = path.join(parent, 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv');
+    const overlay = path.join(root, 'source-overlays/master-material-materials.csv');
+    fs.appendFileSync(source, '\n');
+    fs.appendFileSync(overlay, '\n');
+
+    assert.throws(
+      () => checkArchiveOwnershipRaw(root, {
+        allowSyntheticRootSourceMismatch: true,
+        materialViewPath: path.join(root, 'generated/master-material-material-view.json'),
+        materialOverlayPath: overlay,
+      }),
+      error => error.code === 'MATERIAL_VIEW_OVERLAY_STALE',
+    );
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
 });
 
 test('terminal references resolve a stable target without requiring a new entity row', () => {

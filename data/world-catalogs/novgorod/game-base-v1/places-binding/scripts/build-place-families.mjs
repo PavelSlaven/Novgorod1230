@@ -2,6 +2,8 @@
 // world-base template seeds, the regional-environment candidate (via pr98 extract),
 // v6 g4_locations, spatial-v3 scene templates and MASTER location archetypes.
 import path from 'node:path';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { REPO, GROUP, readJson, readTsv, readCsv, writeCsv, writeJson, sha256, rel } from './lib.mjs';
 
 export const WK_PLACE_FIRST = path.join(REPO, 'data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json');
@@ -190,4 +192,4 @@ export function build() {
   return counts;
 }
 
-if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}` || process.argv[1]?.endsWith('build-place-families.mjs')) build();
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) build();

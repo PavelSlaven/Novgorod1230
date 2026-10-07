@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "b80ec63e18f201777f47becf9e7b73ad3116a6da5de67d64f1b6bceedea476f4",
+  "baseline_manifest_sha256": "b83c6e7a7d9ce3e479e9317d0d6f6f610b446e974834e312577e4cf30ddd6f3d",
   "default_statuses": [
     "active",
     "reference"
@@ -631,6 +631,46 @@
       "conflicts_with_document_ids": []
     },
     {
+      "document_id": "player-character-start-contract",
+      "document_type": "canonical_normative",
+      "subsystems": [
+        "player-character",
+        "new-game"
+      ],
+      "related_document_ids": [
+        "contract-index",
+        "player-character-generation",
+        "new-game-start-pipeline",
+        "code-driven-world-materialization-architecture",
+        "situational-prose-requirements"
+      ],
+      "related_module_paths": [
+        "packages/new-game",
+        "packages/narration",
+        "apps/game-server"
+      ],
+      "related_contracts": [
+        "player character profile",
+        "start scene explanation",
+        "pre-first-turn acceptance and persistence"
+      ],
+      "search_terms": [
+        "персонаж игрока",
+        "создание персонажа",
+        "место старта",
+        "сезон старта",
+        "заявка игрока",
+        "профиль героя",
+        "объяснение старта",
+        "player character",
+        "new game start",
+        "starting location",
+        "player request",
+        "opening context"
+      ],
+      "conflicts_with_document_ids": []
+    },
+    {
       "document_id": "read-only-database-and-graph-architecture",
       "document_type": "reference",
       "subsystems": [
@@ -967,6 +1007,46 @@
         "npc-generation-profiles",
         "llm-agent-prompt-templates"
       ]
+    },
+    {
+      "document_id": "npc-family-household-contract",
+      "document_type": "canonical_normative",
+      "subsystems": [
+        "npc",
+        "social",
+        "conversation"
+      ],
+      "related_document_ids": [
+        "contract-index",
+        "npc-autonomous-decision-contract",
+        "npc-conversation-mode-contract",
+        "items-and-property",
+        "code-driven-world-materialization-architecture"
+      ],
+      "related_module_paths": [
+        "packages/actors",
+        "packages/materialization",
+        "packages/items-property",
+        "packages/npc-runtime",
+        "packages/visibility-knowledge-memory"
+      ],
+      "related_contracts": [
+        "NPC household membership and named relationships",
+        "NPC subjective knowledge and conversation"
+      ],
+      "search_terms": [
+        "семья",
+        "двор",
+        "старшинство",
+        "именованные связи",
+        "родство",
+        "служба",
+        "household",
+        "kinship",
+        "household membership",
+        "NPC relationships"
+      ],
+      "conflicts_with_document_ids": []
     },
     {
       "document_id": "turn-step-llm-contract",

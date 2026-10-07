@@ -3,6 +3,7 @@ import { validateActorBaseAppearance } from '@rus/actors';
 import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { playerSafeHeardNpcIntroduction, safeVisualProfile } from
   '../../runtime/lower-dvina-trace-player-safe-npc-details.js';
+import { visibleItemName } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 
 /** Exclude only scopes proven outside this exact scene; unknown wider scopes stay fail-closed. */
 export function currentSceneVisibilityModifiers(rows, scene) {
@@ -90,7 +91,7 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
       appearance: structuredClone(identity.appearance), visible_equipment };
   }
   if (placement.entity_kind === 'item') {
-    const result = await transaction.query(`SELECT i.state,i.condition_state,
+    const result = await transaction.query(`SELECT i.state,i.condition_state,i.template_id,
         p.anchor_id,p.scene_position_id,p.container_id,p.holder_npc_id,p.holder_character_id
       FROM party_runtime.party_items i
       JOIN party_runtime.party_item_placements p ON p.party_id=i.party_id AND p.item_id=i.item_id
@@ -109,7 +110,11 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
     const snapshot = row.state?.visual_profile_snapshot;
     const visual_profile_snapshot = snapshot == null ? null : safeVisualProfile(snapshot);
     if (snapshot != null && !visual_profile_snapshot) gap('committed_entity_exterior_required');
+    const display_name = visibleItemName({ state: row.state });
     return { condition_state: row.condition_state,
+      ...(typeof row.template_id === 'string' && row.template_id.length > 0
+        ? { template_id: row.template_id } : {}),
+      ...(display_name == null ? {} : { display_name }),
       ...(visual_profile_snapshot == null ? {} : { visual_profile_snapshot }) };
   }
   gap('committed_entity_exterior_required');

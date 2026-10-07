@@ -11,6 +11,7 @@ Player and NPC entity contracts, identity, biography, social and skill bindings.
 - biography fields
 - social and skill references
 - actor state shape and invariants
+- canonical source records for household membership or another explicit form of life, and named family/social relations
 
 ## Не делает
 
@@ -31,6 +32,8 @@ Player and NPC entity contracts, identity, biography, social and skill bindings.
 ## Контракты и инварианты
 
 Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. `validateActor(..., { requireCompleteAppearance: true })` обязателен для нового actor; прежний режим остаётся для historical actors. Внешность не содержит одежду, головной убор, `portrait_*`, sex или age; `body` также не дублирует sex, age, build, hair, eyes или clothing. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+
+Household membership and named relationships are explicit source facts; kinship, co-residence, service, office, work and property rights are not inferred from one another. `@rus/actors` owns these records and references; `@rus/materialization` forms the complete initial roster from approved data. Items and access, NPC knowledge and persistence remain with their current owners.
 
 ## Зависимости
 

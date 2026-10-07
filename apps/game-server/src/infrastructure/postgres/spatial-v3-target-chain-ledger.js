@@ -1,5 +1,5 @@
 import { readPostgresSchemaFingerprint } from
-  '../../../../../tools/runtime-catalog-activation/src/forward-migration.js';
+  '@rus/runtime-catalog/schema-fingerprint';
 import {
   runSpatialV3TargetMigrations,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,

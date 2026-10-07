@@ -20,7 +20,7 @@ import { bindOrdinaryPlanToCombinedInput } from
   './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
-  inputDigest, loadState, committer }) {
+  inputDigest, loadState, committer, onLabelGapsOmitted = null }) {
   const factual = target(writePlan, 'party_state');
   const visibleContext = target(writePlan, 'party_visible_context_package');
   if (factual?.consequence?.combat_kind !== 'exchange'
@@ -37,7 +37,8 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
   let next = nextCombatState({ state, factual, nextVersion, turnNumber,
     changeSetId, inputDigest });
   const visibleEnvelope = combatVisibleEnvelope({ partyId, factual,
-    visibleContext, nextVersion, turnNumber, changeSetId, idemId });
+    visibleContext, nextVersion, turnNumber, changeSetId, idemId,
+    onLabelGapsOmitted });
   next.last_turn.visible_package = { package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest,
     change_set_id: changeSetId };
@@ -119,7 +120,7 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
     committed_public_result: committedPublicResult };
 }
 
-function expectedVersions({ partyId, state, factual }) {
+export function expectedVersions({ partyId, state, factual }) {
   const session = (state.combat_sessions ?? []).find(({ combat_id: id }) =>
     id === factual.consequence.combat.session_after.combat_id);
   const values = [expected('parties', partyId, state.party_state.state_version),
@@ -133,6 +134,20 @@ function expectedVersions({ partyId, state, factual }) {
     values.push(expected('party_actor_body_states',
       `player_character:${state.actor_id}`,
       state.party_state.body_state_version));
+  }
+  const npcById = new Map((state.npcs ?? []).map((npc) =>
+    [npc.instance_id, npc]));
+  for (const { entity_kind: kind, entity_id: id } of
+    factual.consequence.combat.session_after.participant_refs ?? []) {
+    const prior = npcById.get(id);
+    const body = factual.consequence.combat.working_state_after?.actor_states
+      ?.[`npc:${id}`]?.body_state;
+    if (kind !== 'npc' || !prior?.body_state_persisted || !body
+        || prior.body_state.health === body.health
+          && prior.body_state.energy === body.energy
+          && prior.body_state.satiety === body.satiety) continue;
+    values.push(expected('party_actor_body_states', `npc:${id}`,
+      Number(prior.body_state_version)));
   }
   for (const position of factual.consequence.combat.position_transitions) {
     const traversal = position?.movement_result?.traversal;

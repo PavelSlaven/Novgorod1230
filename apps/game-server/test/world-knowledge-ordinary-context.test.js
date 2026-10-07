@@ -26,7 +26,9 @@ test('ordinary lookup preserves approved scene and complete need without opaque-
     visible_objects: ['Обрывок верёвки'] };
   const authoritative = { semantic_context: scene };
   const first = await grounder.ground(request, 'materialization_support', authoritative);
-  assert.deepEqual(JSON.parse(calls[0].situation_summary), { visible: scene });
+  assert.match(calls[0].situation_summary, /Место: Мокрый речной берег/u);
+  assert.match(calls[0].situation_summary, /Ощущения: На гальке обломки мокрых досок\./u);
+  assert.match(calls[0].situation_summary, /Видимый предмет: Обрывок верёвки/u);
   const need = calls[0].semantic_input;
   assert.match(need, new RegExp(request.candidate_query.candidate_hint, 'u'));
   assert.match(need, /resolve_presence/u);
@@ -57,12 +59,16 @@ test('ordinary lookup preserves approved scene and complete need without opaque-
   assert.match(seedNeed, /seed_scope/u);
   assert.doesNotMatch(seedNeed, /candidate_hint/u);
   assert.doesNotMatch(seedNeed, /[{}"]/);
-  assert.deepEqual(JSON.parse(calls[2].situation_summary), { visible: scene });
+  assert.match(calls[2].situation_summary, /Место: Мокрый речной берег/u);
+  assert.match(calls[2].situation_summary, /Ощущения: На гальке обломки мокрых досок\./u);
+  assert.match(calls[2].situation_summary, /Видимый предмет: Обрывок верёвки/u);
   assert.ok(Object.keys(calls[2].available_knowledge_refs).length > 0);
   const changedScene = { visible_scene: 'Сухой луг', sensory_details: [],
     visible_objects: ['Луговая трава'] };
   await grounder.ground(seed, 'materialization_support', { semantic_context: changedScene });
-  assert.deepEqual(JSON.parse(calls[3].situation_summary), { visible: changedScene });
+  assert.match(calls[3].situation_summary, /Место: Сухой луг/u);
+  assert.match(calls[3].situation_summary, /Видимый предмет: Луговая трава/u);
+  assert.doesNotMatch(calls[3].situation_summary, /Мокрый речной берег/u);
   assert.notDeepEqual(calls[3].available_knowledge_refs, calls[2].available_knowledge_refs);
   assert.equal(await grounder.ground(seed, 'materialization_support', authoritative), seeded);
   assert.equal(calls.length, 4, 'retry retains context-specific lookup cache');

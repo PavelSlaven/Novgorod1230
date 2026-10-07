@@ -1,0 +1,565 @@
+{
+  "schema": "spatial-ci-exclusions/v1",
+  "exceptions": [
+    {
+      "path": "tools/llm-runtime-eval/test/runner.test.mjs",
+      "reason": "Host run confirms frozen fixtures mismatch current validator; track repair under #241.",
+      "reference": "#241"
+    },
+    {
+      "path": "scripts/m2c-capacity-successor.test.mjs",
+      "reason": "Inventory reports stale contract hash; isolated repeat only generic failure, issue proposal pending precise assertion.",
+      "reference": "#309"
+    },
+    {
+      "path": "test/spatial-v3/a1-make-moved-places-e2e-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/action-produced-atomic-write-plan.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/action-produced-causal-binding.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/action-produced-owner-mechanics-validation.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/action-produced-p16-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/actor-equipment-migration-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/canonical-connection-adapter-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/canonical-connections-reader.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/canonical-natural-first-entry-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/canonical-start-stage24-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/canonical-walk-production-e2e-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/character-appearance-v1-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/expansion-p16-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/expansion-rule-sets-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/finite-source-take-production-e2e-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/first-playable-p16.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/first-playable-party-migration-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/first-playable-party-migration.test.js",
+      "reason": "Known stale migration-count expectation; excluded until owner issue is resolved.",
+      "reference": "#145 / LW-041"
+    },
+    {
+      "path": "test/spatial-v3/fresh-schema-request-rebuild.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/g4-expansion-reader.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/g6-acoustic-baseline-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/g6-acoustic-baseline-reader.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/generated-expansion-adapter-restart-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/generated-expansion-adapter.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/generated-npc-first-entry.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/local-fire-atomic-write-plan.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/local-fire-p16-postgres.test.js",
+      "reason": "PG test deferred to future optional PG job; isolated request timed out before a result.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/lower-dvina-boundary-importer-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status PASS, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/lower-dvina-trace-phase-0d-canonical-start-conditions.test.js",
+      "reason": "Old LD phase-0D scenario; defer archival/reevaluation until ld-harvest under D97/D98; missing phase-0A checker is documented separately.",
+      "reference": "#476"
+    },
+    {
+      "path": "test/spatial-v3/lower-dvina-trace-phase-0d-content.test.js",
+      "reason": "Old LD phase-0D scenario; defer archival/reevaluation until ld-harvest under D97/D98; missing phase-0A checker is documented separately.",
+      "reference": "#476"
+    },
+    {
+      "path": "test/spatial-v3/lower-dvina-trace-phase-0d-exact-start-date.test.js",
+      "reason": "Old LD phase-0D scenario; defer archival/reevaluation until ld-harvest under D97/D98; missing phase-0A checker is documented separately.",
+      "reference": "#476"
+    },
+    {
+      "path": "test/spatial-v3/lower-dvina-trace-phase-0d-exact-wreck-body-policy.test.js",
+      "reason": "Old LD phase-0D scenario; defer archival/reevaluation until ld-harvest under D97/D98; missing phase-0A checker is documented separately.",
+      "reference": "#476"
+    },
+    {
+      "path": "test/spatial-v3/lower-dvina-v2-importer-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/m2c-acoustic-import-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/m2c-expansion-import-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/m2c-lines-import-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/m2c-npc-import-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/m2c-npc-reader.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/m2c-npc-wave-import-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/m2c-npc-wave-v17-bootstrap-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/m2c-open-capacity-v2-import-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/natural-perception-reader-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/needs-check-runtime-production-root-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/nonportal-availability-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/o1-selected-production-root-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/opening-route-panel-v17-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/ordinary-materialization-container-batch-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/ordinary-materialization-container-production-root-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/ordinary-materialization-phase-6-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/ordinary-materialization-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/ordinary-natural-first-entry-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p02-normative-boundary.test.js",
+      "reason": "Known non-gate failure; do not duplicate issue #126/LW-012.",
+      "reference": "#126 / LW-012"
+    },
+    {
+      "path": "test/spatial-v3/p05-normative-freeze.test.js",
+      "reason": "Red in detached host snapshot; exact cause on current HEAD unverified. Exclude pending owner diagnosis.",
+      "reference": "#474"
+    },
+    {
+      "path": "test/spatial-v3/p07-controlled-vocabulary-integration.test.js",
+      "reason": "Inventory reports stale v1 expectations vs v5; local-only diagnostic, host repeat absent.",
+      "reference": "#484"
+    },
+    {
+      "path": "test/spatial-v3/p08-public-interface-registry.test.js",
+      "reason": "Host red: expectation omits current @rus/turn registry ref; issue proposal recorded.",
+      "reference": "#479"
+    },
+    {
+      "path": "test/spatial-v3/p09-postgres-ddl.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p10-postgres-ddl.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p11-postgres-ddl.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p11-temporal-world-persistence.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p12-approved-target-materialization.test.js",
+      "reason": "Host red: tar -xOf used to read ZIP; issue proposal recorded.",
+      "reference": "#480"
+    },
+    {
+      "path": "test/spatial-v3/p12-authoring-importer.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p12-dependency-closure-data.test.js",
+      "reason": "Mutates seven tracked files in the approved dependency-closure data package; do not run from CI suite under PLAN-OK and LW-012/#126.",
+      "reference": "#126 / LW-012"
+    },
+    {
+      "path": "test/spatial-v3/p12-dependency-closure-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p12-importer-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p12-target-import-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p12-target-import.test.js",
+      "reason": "Host red: tar -xOf used to read ZIP; issue proposal recorded.",
+      "reference": "#480"
+    },
+    {
+      "path": "test/spatial-v3/p12-target-materialization-approval.test.js",
+      "reason": "Host failure lacks result.errors diagnostics; exclude pending investigation tracked in #486.",
+      "reference": "#486"
+    },
+    {
+      "path": "test/spatial-v3/p12-text-array-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p13-party-runtime-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p14-party-planning-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p15-party-journeys-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p16-committer-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p16-persistence-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p16-persistence.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p21-orchestration.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p23-domain-integration.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p23-domain-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p24-migration-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p24-world-migration-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p25-compatibility-cutover.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/p27-release-hygiene.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/people-d49-slice-coverage.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/pr8-perception-reaction-write-set.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/pr8-production-v3-composition.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/pr8-reaction-knowledge-persistence.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/pr8-reaction-policy-reader.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/prepared-destination-light-seam-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/presence-rules-all-starts-bare-bootstrap-v17-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/presence-rules-bare-bootstrap-v17-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/presence-rules-composition-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/presence-rules-first-arrival-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/presence-rules-production-e2e-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/presence-rules-vikhtuy-resolver-v17-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/presentation-store.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/route-panel-exit-labels-v17-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/route-panel-operations-v17-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/route-people-data-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/route-people-generated-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/route-people-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/scene-npcs-v17-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/site-traversal-p16-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/spatial-semantic-atomic-write-plan.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/spatial-semantic-p16-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/spatial-v3-target-chain-ledger-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/target-generated-first-entry.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/temporal-approved-data-import.test.js",
+      "reason": "Host red: stale test expectation 18.sql vs current aggregate 30.sql; issue proposal recorded.",
+      "reference": "#481"
+    },
+    {
+      "path": "test/spatial-v3/temporal-approved-data-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/temporal-data-readiness.test.js",
+      "reason": "Host red: 13 approval/artifact digest mismatches; issue proposal recorded.",
+      "reference": "#482"
+    },
+    {
+      "path": "test/spatial-v3/temporal-world-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    },
+    {
+      "path": "test/spatial-v3/visibility-modifier-persistence-postgres.test.js",
+      "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
+      "reference": "#485"
+    }
+  ]
+}

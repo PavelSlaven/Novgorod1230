@@ -35,7 +35,8 @@ for (const [intent, emittedQuery, material] of [
     assert.deepEqual(payload.operation.target_refs, ['current-place']);
     assert.equal(payload.continuation, null);
     assert.deepEqual(payload.player_safe_state.items, []);
-    assert.match(call.messages[0].content, /Hidden contents, evidence\/clues[\s\S]*different_action/u);
+    assert.match(call.messages[0].content,
+      /Hidden contents, evidence\/clues[\s\S]*не могут стать ordinary prerequisite: выбери different_action/u);
     return { output: { mode: 'material_prerequisite', consumed_intent: null,
       prerequisite_query: material } };
   } };
@@ -146,8 +147,10 @@ for (const [kind, intent, material] of [
     const payload = JSON.parse(call.messages[1].content);
     assert.equal(payload.remaining_intent, intent);
     assert.equal(payload.correction_candidate, 'missing_ordinary_referent');
-    assert.match(call.messages[0].content, /НЕ выбранный игроком discovery[\s\S]*ОБЯЗАТЕЛЬНО верни/u);
-    assert.match(call.messages[0].content, /ТОЛЬКО БЕЗ correction_candidate/u);
+    assert.ok(call.messages[0].content.includes(
+      'correction_candidate="missing_ordinary_referent"'));
+    assert.ok(call.messages[0].content.includes(
+      '"mode":"material_prerequisite","consumed_intent":null,"prerequisite_query"'));
     assert.equal(payload.continuation, null);
     assert.deepEqual(payload.operation, { op: 'request_discovery', actor_ref: input.actor.actor_ref,
       discovery_kind: 'inspect', target_refs: ['current-location'], query: intent });

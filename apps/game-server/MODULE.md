@@ -5,6 +5,32 @@
 Server передаёт актуальные восприятие, память, тело, время, причины и остаток
 действия от существующих owners; литературную композицию выполняет narration.
 
+Чистотой видимого текста (D72) владеет `public-boundary`: один детерминированный
+detector применяется к отображаемым полям, player-safe проекциям и generated
+prose. Структурные refs, selectors и исходный ввод игрока не являются прозой.
+Narration adapter передаёт обязательный code-owned output admission в существующий
+bounded workflow: marker rejection использует единственный semantic repair,
+проверяется повторно до `approved`/ready persistence и при повторном нарушении
+остаётся retryable pending. Committed мир и identity хода сохраняются; admission
+failure не даёт factual terminal delivery и не становится поздним HTTP 500.
+
+Narration-specific WK projection опускает известные leading calibration prefixes
+из reviewed `runtime_text`, сохраняя adjacent qualifiers, evidence и claim refs;
+общий helper `@rus/turn` по-прежнему опускает дублирующий `context_text`.
+Writer, repair и auditor получают явное требование передать неопределённость,
+directness, confidence и предел typicality обычной речью возле соответствующего
+факта. Canonical WK bundle и wire других consumers не переписываются.
+Format repair разговора получает исходный request, полный original output и
+конкретные validation errors; marker-specific semantic retry остаётся отдельным.
+Marker-specific retry сохраняет исходный contribution и speech act; повторная
+грязная реплика или изменение акта завершаются штатным typed fail-closed до
+NPC proposal, без синтеза слов или применения вклада.
+Error envelope проверяет динамический message независимо от allowlist code:
+грязный validation message заменяется общим текстом с сохранением HTTP 400
+и структурного кода; поле и служебная диагностика игроку не отражаются.
+Pass-target projection сохраняет одинаковые наблюдаемые подписи без номеров;
+разные action refs сохраняются. Различимые описания — пробел данных, не UI fallback.
+
 Development-only gameplay gap tracing использует существующий private party
 log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
 контекст, WK planner/query/consumer slice и owner commit/rejection. Эти поля
@@ -20,6 +46,10 @@ bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_ba
 runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade и post-commit
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
+
+Committed v5 inventory mechanics defaults принадлежат `@rus/items-property`;
+game-server сохраняет границы validation своих adapters и делегирует им только
+чистую проекцию профиля.
 
 Runtime `needs_check` filter is limited to O1, O2b and S1. Server gets
 `rus.needs_check_blockers.v2` only from verified immutable catalog snapshot for
@@ -217,18 +247,23 @@ and adds no second transaction owner.
   не поступают writer/auditor/repair. Newly relevant sensory details уже входят
   в required visible changes; полный пересказ окружения запрещён.
   Newly relevant facts приходят через visible_changes: applied observation
-  продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
+  продвигает воспринимаемые scene facts, а подтверждённое прибытие — одно событие
+  из player-safe факта места назначения,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums
   не становятся prose и не требуют нового словаря,
   ordinary scene seed — только факты текущего результата. Общая projection
-  выполняет arrival promotion после NPC enrichment, но берёт route knowledge
-  из исходного arrival result. Snapshot self-knowledge и carried objects
+  использует arrival result и факты destination-пакета; неизменные route knowledge
+  и self-knowledge остаются контекстом. Snapshot carried objects
   не продвигаются общим осмотром; ими владеет explicit item observation. Без current beat
   descriptive support сохраняется для scene-only perception. Outcome/intent
   передаются только своим ролям; used_references остаётся [].
-  Initial current-scene projection reads persisted player/local items plus
-  player-safe NPC appearance, activity and equipped-item refs; state version 0
-  does not replace existing rows with an empty `visible_objects` list.
+  Current-scene projection prefers a Spatial package freshly read for the
+  player's current position; otherwise it uses the matching approved scene
+  presentation. It has no location-profile fallback. Spatial freshness and
+  entity-filter flags are read-time data and never enter the persisted turn
+  snapshot. Item placement/status/facts and visible NPCs come from committed
+  state; movement objects come from the current Spatial projection. A prior
+  visible package is not a source for current item, NPC, or movement facts.
   Private auditor возвращает только полный ordered reviewed_segments,
   ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,
@@ -398,7 +433,7 @@ Domain-command ledger contracts сохраняются.
 
 ## Не владеет
 
-Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy вне ролей, явно назначенных активными контрактами (NPC combat: `lower-dvina-trace-combat-llm.js`, §§32–33), narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
 
 ## Public API и контракты
 
@@ -567,6 +602,14 @@ appearance vocabularies to Russian, and fails closed on unknown enum values.
 The writer receives each NPC label once as the group name; the auditor retains
 the source-backed label fact with its opaque fact key. Unsupported appearance
 values fail with a field-specific server error without echoing the supplied value.
+Unknown day-part/light values (`OPENING_TEMPORAL_TRANSLATION_UNSUPPORTED`) and item
+conditions (`OPENING_ITEM_CONDITION_UNSUPPORTED`) fail opening projection with a
+field-specific server error and do not echo the supplied value. Scene-label
+deduplication uses only visible scene facts and whole token sequences; knowledge,
+held-item, and uncertain or negative facts do not suppress entities. An item with
+its own `item_instance_id` is suppressed only when the matching scene fact cites
+that same reference; NPC, anchor, and exit labels likewise require their own
+source reference in the matching fact.
 Weather evidence uses stable field references; weather instance ids and movement
 factors stay out of the player-safe role payload.
 Session identity persists the complete approved opening narration flow and the
@@ -586,8 +629,10 @@ but creates no presence resolution and incurs no discovery activity.
 The admitted activity projects a performed discovery with its exact duration;
 its separate candidate query remains a question, never ownership or success.
 An admitted O1 item adds a strict `ordinary_presence_seed` with resolution
-`materialized`, exact query and admitted `display_name`. The current beat reports
-that discovery once. Applied step traces and prepared ledger slice seed keys group
+`materialized`, exact query and admitted `display_name`. Its current-scene placement
+supports one natural discovery fact using that name; the beat never emits a bare
+name or claims a surface or position beyond the committed placement. Applied step
+traces and prepared ledger slice seed keys group
 each step into one required change: exact speech then its elapsed time; discovery time
 then discovery; physical result after its activity. The ordinary material prerequisite
 mapping binds `inspect` for an exact full-intent continuation in ordinary scope;
@@ -754,6 +799,28 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
+Combat #224/D65 keeps mechanics in the shared `@rus/body-state` and `@rus/npc-runtime` owners; scenario code does not own combat rules. `combat-min-data.js` validates the scoped qualitative-profile approval and source pin, and builds the materialized-NPC initialization DTO only from the exact D67-approved bytes. Active v17 bindings still omit `combatBodyBandContext`; combat body bands therefore remain typed gaps in production until authoritative actor scope and a separate versioned v17 cutover are approved. The body initialization approval does not activate the broader combat bundle.
+
+The generic live-world `request_combat` command implementation derives
+candidate presence only from `scene_readback_present`, which marks rows read by
+the current scene owner and is not combat approval. An absent body row receives
+the exact D67-approved initialization DTO only after successful authoritative
+readback; a conflicting approved materialization profile remains a typed gap.
+The command is registered when the current scene has a target, regardless of
+unrelated NPC body rows. The initialization DTO is transient combat-owner input:
+snapshots and ordinary-turn/model projections do not retain or expose it.
+Execution remains fail-closed until a separate generic profile and v17 cutover
+are approved, so registration alone cannot start combat.
+The codes `combat_actor_body_state_required`,
+`combat_actor_unavailable`, and
+`combat_actor_execution_profile_required` remain private diagnostics and are
+not whole-turn HTTP 409 responses. When registered, its mode uses only blocks
+already allowed by `@rus/turn` (`party_state`, `current_position`,
+`relevant_npcs`). Scene positions loaded for the current
+turn are transient; snapshot stripping restores an existing NPC's prior
+`position_id` and `g6_instance_id`, while persisted placement records remain
+the source for refreshed scene presence.
+
 The separately callable v17 target release factory remains outside the default
 selector. It requires the exact issued item and actor successor approvals,
 committed activation events, approved Spatial revision, and verified catalog
@@ -814,10 +881,15 @@ empty or unsupported refs still fail admission.
 The private O1 wire carries the structured `world_knowledge` factual slice.
 Facts, qualifiers, constraints, coverage, disputes and gaps remain; claim
 binding and telemetry use the full request.
-The private WK planner wire sends each ranked focus ref once as a key in
-`available_knowledge_refs`, with its allowed claim domains as the value (including
-empty arrays). Native planner requests retain the complete ordered ref array for
-validation and diagnostics; candidate and retrieval budgets are unchanged.
+The private WK planner wire projects the ordered candidate refs to an object
+keyed by stable `wk:<domain>:<concept>` refs for canonical concepts and short
+opaque base-36 handles (`f0`, `f1`, …) for non-concept refs; each value is
+`{ domains, label, description }`. Domains include only allowed, applicable and
+accessible claim domains; label and description are localized selection
+metadata, not evidence. Native planner requests retain the complete ordered ref
+array. Main and repair responses use these menu keys on the wire; the server
+maps only keys from that request back to canonical refs before validation and
+retrieval. Candidate and retrieval budgets are unchanged.
 Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
 The Giga/vector path is mandatory whenever v16 needs a WK slice. Missing local
@@ -1000,6 +1072,8 @@ prose wire: её вычисляет temporal owner и показывает serve
 обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
 dump остаётся static_context_dump. При отсутствии current beat scene-only wire
 сохраняет `visible_scene` и grounded descriptive sensory support.
+Материализованная обычная вещь передаётся как одно естественное сообщение о находке,
+подтверждённое её размещением в текущей сцене, без неподтверждённой детали о поверхности.
 Полный grounded пересказ required sources по одному в исходном порядке является
 weak_literary_composition, если действие или воспринятый результат не организует
 поддержанные пространственные детали в сцену; выдуманная связка недопустима.

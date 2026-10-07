@@ -42,8 +42,8 @@ test('impossible jump and absent spaceship plans stay grounded model contracts',
             async run(call) {
               assert.equal(call.messages[0].content.includes(
                 current.name === 'jump'
-                  ? 'real or ordinary referents with a physically limited action mean reality_limited'
-                  : 'absent fantastical required referent means make_believe'), true);
+                  ? 'реальные или обычные объекты при физически ограниченном действии означают reality_limited'
+                  : 'отсутствие необходимого фантастического объекта означает make_believe'), true);
               return { output: groundedPlan(input, current) };
             }
           }
@@ -92,48 +92,48 @@ test('repair role receives original output, request, and structural errors', asy
     { resolution: 'domain_request', operation_choice: 'missing' });
   assert.deepEqual(payload.request, input);
   assert.deepEqual(payload.structural_errors, structuralErrors);
-  assert.equal(seen.messages[0].content.includes('Repair the listed errors and their dependent causal fields'), true);
-  assert.equal(seen.messages[0].content.includes('complete player_utterance envelope'), false);
+  assert.equal(seen.messages[0].content.includes(
+    'Перепланируй поля, указанные в structural_errors, и причинно зависящие от них поля'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'Для исправления речи без адресата используй полную структуру player_utterance'), false);
   assert.match(seen.messages[0].content,
-    /only error is.*activity\.owner[\s\S]*action production requires semantic activity[\s\S]*keep domain_request and the original action_production operation[\s\S]*duration_class and effort[\s\S]*Never clear operations or switch to direct/u);
+    /Если единственная ошибка — \$\.activity\.owner: для action production нужна semantic activity[\s\S]*сохрани domain_request и исходную операцию action_production[\s\S]*duration_class и effort[\s\S]*Никогда не очищай operations и не переключайся на direct/u);
   assert.equal(seen.messages[0].content.includes(
-    'Owner absence does not establish physical impossibility or fantasy'), true);
+    'Отсутствие владельца не доказывает физическую невозможность или фантастику'), true);
   assert.equal(seen.messages[0].content.includes(
-    'Never combine move_entity and action_production in one plan'), true);
+    'Никогда не объединяй move_entity и action_production в одном плане'), true);
   assert.equal(seen.messages[0].content.includes(
-    'semantic grounding wins: do not move the discarded ref'), true);
+    'приоритет у семантической привязки: не перемещай отброшенный ref'), true);
   assert.equal(seen.messages[0].content.includes(
-    '{"op":"move_entity","entity_ref":"<grounded source ref>","placement"'), true);
+    '{"op":"move_entity","entity_ref":"<обоснованный ref источника>","placement"'), true);
   assert.equal(seen.messages[0].content.includes(
-    'never preserve a ref whose descriptors identify another object'), true);
+    'никогда не сохраняй ref, описание которого указывает на другой объект'), true);
   assert.equal(seen.messages[0].content.includes(
-    'For action_production_identity_grounding'), true);
+    'Для action_production_identity_grounding сохрани обоснованный источник'), true);
   assert.equal(seen.messages[0].content.includes(
-    'remove the unavailable domain operation and use a lawful direct reality_limited attempt'), true);
+    'удали недоступную domain operation и выполни правомерную прямую попытку reality_limited'), true);
   assert.equal(seen.messages[0].content.includes(
-    'For continuation_progress, preserve the original action order'), true);
+    'Для continuation_progress сохрани исходный порядок действий'), true);
   assert.equal(seen.messages[0].content.includes(
-    'Equality between continuation.remaining_intent and request.remaining_intent'), true);
+    'Одного равенства continuation.remaining_intent и request.remaining_intent недостаточно'), true);
   assert.equal(seen.messages[0].content.includes(
-    'does not prove that the selected operation consumed none of the intent'), true);
+    'чтобы доказать, что выбранная операция ничего из намерения не выполнила'), true);
   assert.equal(seen.messages[0].content.includes(
-    'keep it and remove only that covered event'), true);
+    'сохрани её и удали из continuation.remaining_intent только покрытое событие'), true);
   assert.equal(seen.messages[0].content.includes(
-    'never return the discarded later operation in operations'), true);
+    'никогда не возвращай отброшенную более позднюю операцию в operations'), true);
   assert.equal(seen.messages[0].content.includes(
-    'Never drop an earlier uncommitted utterance'), true);
+    'Никогда не отбрасывай более раннюю ещё не зафиксированную реплику'), true);
   assert.equal(seen.messages[0].content.includes(
-    'preserve independent uncovered actions'), true);
+    'сохрани независимые непокрытые действия'), true);
   assert.equal(seen.messages[0].content.includes(
-    'Re-plan fields named by structural_errors and their causally dependent fields; use supplied semantic mappings and existing refs, never invent refs.'), true);
+    'Перепланируй поля, указанные в structural_errors, и причинно зависящие от них поля; используй переданные семантические сопоставления и существующие refs, никогда не выдумывай refs.'), true);
   assert.equal(seen.messages[0].content.includes(
-    'restore the matching supplied semantic mapping'), true);
+    'восстанови подходящее переданное семантическое сопоставление'), true);
   assert.equal(seen.messages[0].content.includes(
-    'one domain operation exactly equal to a supplied code-owned choice'), false);
+    'никогда не подменяй авторский вариант операции широкого охвата'), true);
   assert.equal(seen.messages[0].content.includes(
-    'never substitute a broad authored operation choice'), true);
-  assert.equal(seen.messages[0].content.includes(
-    'For ordinary_discovery_query_identity follow the required ordinary discovery repair below'), false);
+    'Обязательное исправление запроса ordinary discovery'), false);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 
@@ -154,9 +154,11 @@ test('semantic repair prompt preserves both discovery continuation shapes',
       }]
     });
     assert.match(prompt,
-      /Required ordinary discovery repair:[\s\S]*material prerequisite[\s\S]*continuation is exactly[\s\S]*standalone focused discovery losslessly[\s\S]*exact uncovered suffix/u);
+      /Обязательное исправление запроса ordinary discovery:[\s\S]*Если discovery — необходимое условие[\s\S]*continuation в точности равен[\s\S]*без потерь сохрани самостоятельный focused discovery[\s\S]*точному непокрытому остатку/u);
     assert.match(prompt,
-      /Never return a focused discovery query that starts after the beginning[\s\S]*include that introduction in the query[\s\S]*plan the earlier action first/u);
+      /Никогда не пересказывай, не пропускай и не переписывай ни одну из частей/u);
+    assert.match(prompt,
+      /Никогда не возвращай focused discovery query, начинающийся не с начала remaining_intent[\s\S]*Если вводное действие — подойти, обратить внимание или посмотреть — ведёт к осмотру того же текущего места, включи это вступление в query[\s\S]*Иначе сначала спланируй более раннее действие и сохрани discovery как последующее намерение/u);
 });
 
 test('continuation repair treats only the current suffix as executable', async () => {
@@ -177,9 +179,9 @@ test('continuation repair treats only the current suffix as executable', async (
     }]
   });
   assert.match(prompt,
-    /Plan only request\.remaining_intent[\s\S]*never repeat, re-plan, or place a completed event/u);
+    /планируй только request\.remaining_intent[\s\S]*root_player_action и completed_steps — история, а не исполняемый ввод[\s\S]*Не повторяй завершённый шаг/u);
   assert.match(prompt,
-    /Current step repair:[\s\S]*затем развязываю узел[\s\S]*root_player_action and completed_steps are history[\s\S]*only the exact uncovered suffix/u);
+    /Исправление текущего шага:[\s\S]*затем развязываю узел[\s\S]*root_player_action и completed_steps — история[\s\S]*только точный непокрытый остаток/u);
 });
 
 test('operation grounding repair preserves physical acts after discovery',
@@ -195,9 +197,9 @@ test('operation grounding repair preserves physical acts after discovery',
       path: '$.operations.0', code: 'operation_semantic_grounding'
     }] });
     assert.match(prompt,
-      /Required operation grounding repair:[\s\S]*discovery only reveals or materializes[\s\S]*never acquires, relocates, transforms, handles, or uses[\s\S]*Words copied into a discovery query do not execute a physical act[\s\S]*every physical act[\s\S]*continuation[\s\S]*textual prefix/u);
+      /Обязательное исправление привязки операции:[\s\S]*discovery только раскрывает или материализует[\s\S]*он не берёт, не перемещает, не преобразует, не обрабатывает и не использует[\s\S]*Слова, скопированные в запрос discovery, не выполняют физическое действие[\s\S]*continuation каждое физическое действие[\s\S]*текстовый префикс/u);
     assert.match(prompt,
-      /current_visible_context\.sensory_details or visible_npc visible_status values already directly answer every visible fact requested[\s\S]*explicit negative fact[\s\S]*achieved direct player_safe_observation/u);
+      /current_visible_context\.sensory_details или значения visible_status у visible_npc прямо на каждый запрошенный видимый факт[\s\S]*включая явно отрицательный факт[\s\S]*achieved direct player_safe_observation/u);
   });
 
 test('repair drops a field rejected as an additional property', async () => {

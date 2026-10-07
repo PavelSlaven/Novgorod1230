@@ -1,5 +1,7 @@
 import { readFile } from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
 import path from 'node:path';
+import { resolve } from 'node:path';
 import {
   REVIEWED_BASELINE_PATH,
   REVIEWED_BASELINE_SHA256,
@@ -55,7 +57,7 @@ export async function verifyHistoricalP05Evidence({
   return { freezeBytes, freeze, baseline };
 }
 
-if (import.meta.url === `file:///${process.argv[1].replaceAll('\\', '/')}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   await verifyHistoricalP05Evidence({
     root: argument('--root', '.'),
     freezePath: argument('--freeze', HISTORICAL_FREEZE_PATH)

@@ -126,7 +126,7 @@ test('strict working visible-context projection preserves only valid O2a bounds'
   });
   const projectedRoundTrip = roundTrip(visible);
   assert.deepEqual(projectedRoundTrip.visible_context.visible_objects,
-    visible.visible_objects);
+    visible.visible_objects.map(({ visible_status: _status, ...object }) => object));
 
   const malformed = structuredClone(visible);
   malformed.visible_objects[0].ambient_portion_bounds.min_quantity = 0;

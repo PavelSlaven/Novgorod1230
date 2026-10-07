@@ -15,7 +15,15 @@ const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 // varied around them. npcs[0] shares the player's position, npcs[1] is on another
 // position of the same G6, npcs[2] is in another G6.
 async function committed(mutate = () => {}) {
-  const { f, say } = conversationRun(generatedState());
+  const seedState = generatedState();
+  seedState.current_spatial_context = {
+    version: 1, schema: 'visible_context_package',
+    visible_scene: 'Рыбацкий стан у Вихтуя.', visible_changes: [],
+    sensory_details: [], visible_npc: [], visible_objects: [],
+    known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+  };
+  seedState.current_spatial_context_is_fresh = true;
+  const { f, say } = conversationRun(seedState);
   await say('perception-turn', 'Спрашиваю человека, как дела.');
   const state = structuredClone(f.state);
   mutate(state);

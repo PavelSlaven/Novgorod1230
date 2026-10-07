@@ -25,6 +25,7 @@ export async function runNarrationFlow(request, ports, options = {}) {
     errors = outputErrors(draft, request.request_id);
   }
   if (errors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'output_validation', errors);
+  let admissionFinding = await checkOutputAdmission(options.outputAdmission, draft.prose);
 
   const segments = segmentProse(draft.prose);
   const audit = await audited(ports.auditor, request, draft, segments, 'initial');
@@ -34,12 +35,18 @@ export async function runNarrationFlow(request, ports, options = {}) {
     ? audit.concerns.filter((concern) => typeof concern?.reason === 'string'
       && concern.reason.trim().length > 0) : [];
   if (auditErrors.length && !actionableConcerns.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'audit_validation', auditErrors);
-  if (audit.pass) return approved(request, draft, audit, generationHistory, repairHistory, auditHistory);
+  if (audit.pass && admissionFinding == null) {
+    return approved(request, draft, audit, generationHistory, repairHistory, auditHistory);
+  }
 
   const repairSegment = {
     segment_id: 's1', prose: draft.prose, nearby_context: []
   };
-  const repairConcerns = (auditErrors.length ? actionableConcerns : audit.concerns).map((concern) => ({
+  const repairSourceConcerns = admissionFinding == null
+    ? (auditErrors.length ? actionableConcerns : audit.concerns)
+    : [...(auditErrors.length ? actionableConcerns : audit.concerns),
+      generatedProseAdmissionConcern(admissionFinding)];
+  const repairConcerns = repairSourceConcerns.map((concern) => ({
     ...(auditErrors.length
       ? { reason: concern.reason }
       : { ...clone(concern), source_segment_ids: concern.segment_id == null
@@ -66,6 +73,13 @@ export async function runNarrationFlow(request, ports, options = {}) {
   const repaired = { ...draft, prose: repair.replacements[0].prose };
   errors = outputErrors(repaired, request.request_id);
   if (errors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'reassembled_output_validation', errors);
+  admissionFinding = await checkOutputAdmission(options.outputAdmission, repaired.prose);
+  if (admissionFinding != null) {
+    return blocked(request, generationHistory, repairHistory, auditHistory,
+      'generated_prose_admission_failed', [
+        'Generated prose did not pass deterministic output admission.'
+      ]);
+  }
 
   const finalSegments = segmentProse(repaired.prose);
   const finalAudit = await audited(ports.auditor, request, repaired, finalSegments, 'final');
@@ -74,6 +88,21 @@ export async function runNarrationFlow(request, ports, options = {}) {
   if (finalErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'final_audit_validation', finalErrors);
   if (!finalAudit.pass) return blocked(request, generationHistory, repairHistory, auditHistory, 'final_audit_failed', finalAudit.concerns);
   return approved(request, repaired, finalAudit, generationHistory, repairHistory, auditHistory);
+}
+
+async function checkOutputAdmission(outputAdmission, prose) {
+  if (typeof outputAdmission !== 'function') return null;
+  return await outputAdmission(prose) ?? null;
+}
+
+function generatedProseAdmissionConcern(finding) {
+  const category = typeof finding?.category === 'string'
+    ? finding.category : 'service_marker';
+  return {
+    segment_id: 's1',
+    kind: 'generated_prose_admission',
+    reason: `Remove the ${category} service marker from the passage while preserving supported meaning.`
+  };
 }
 
 export function createNarrationService(ports, defaults = {}) {

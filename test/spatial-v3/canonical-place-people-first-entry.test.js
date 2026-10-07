@@ -49,7 +49,7 @@ const regionalFor = (g4Wide) => regionalProfiles.map((row) => ({ ...row, payload
 
 const fisherRule = { rule_id: 'pr_fisher', rule_version: 1, status: 'approved', scope_kind: 'place_family', scope_ref: 'pf_riverbank',
   region_id: null, subject_kind: 'occupation', subject_ref: 'nov_occ_fisher', presence_probability_ppm: 1_000_000, count_limit: 1,
-  allowed_seasons: ['all'], refresh_class: 'none', entry_exposed_weight: 1, search_concealed_weight: 0 };
+  allowed_seasons: ['all'], refresh_class: 'none' };
 
 function setup({ ordinal = 0, g4Wide = true, groups = [servantGroup], placeFamilyId = 'pf_outbuildings',
   rules = [], physicalClass = null, readCandidates = null,

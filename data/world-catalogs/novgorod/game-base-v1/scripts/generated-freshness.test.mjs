@@ -31,6 +31,7 @@ const GB = 'data/world-catalogs/novgorod/game-base-v1';
 // [cwd relative to game-base-v1, interpreter, script, ...args]. Order: group builders, then places-binding, catalog, status.
 const N = 'node', P = 'py';
 const BUILDERS = [
+  ['.', P, 'scripts/build-master-material-view.py'],
   ['buildings-interiors-containers', P, 'scripts/build.py'],
   ['clothing-appearance', P, 'scripts/build.py'],
   ['crafts-tools-processes', N, 'scripts/build.cjs'],

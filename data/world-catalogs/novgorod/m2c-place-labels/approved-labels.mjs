@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { stableStringify } from '@rus/kernel';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url));
@@ -17,6 +17,43 @@ const APPROVED_NATURAL_SUCCESSOR_IDENTITY_SHA256 =
 const APPROVED_NATURAL_CANDIDATE_ID = 'novgorod_m2c_natural_baseline_g4_v1';
 const APPROVED_NATURAL_SUCCESSOR_ID = 'novgorod_m2c_natural_baseline_g4_v2';
 let successorDiagnosticLogged = false;
+let approvedLabelsCache = null;
+const LABEL_FILES = [
+  ['./candidate.json', true],
+  ['./approval-attestation.json', true],
+  ['../m2c-natural/candidate.json', false],
+  ['../m2c-natural/nature-successor-candidate-v2.json', false],
+  ['../m2c-natural/nature-successor-data-approval.json', false]
+];
+const sourceSignature = () => {
+  const entries = [];
+  for (const [path, required] of LABEL_FILES) {
+    try {
+      const stat = statSync(new URL(path, import.meta.url), { bigint: true });
+      entries.push([path, stat.dev, stat.ino, stat.size, stat.mtimeNs, stat.ctimeNs]
+        .map((value) => String(value)));
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+      if (required) return null;
+      entries.push([path, 'missing']);
+    }
+  }
+  return JSON.stringify(entries);
+};
+const copyLabels = (labels) => {
+  const copy = new Map([...labels].map(([key, row]) => [key, structuredClone(row)]));
+  Object.defineProperty(copy, 'diagnostics', {
+    value: Object.freeze(labels.diagnostics.map((diagnostic) => Object.freeze(structuredClone(diagnostic)))),
+    enumerable: false
+  });
+  return copy;
+};
+const logSuccessorDiagnostic = (labels) => {
+  if (labels.diagnostics.length && !successorDiagnosticLogged) {
+    console.warn('[PLACE_LABEL_SUCCESSOR_LINEAGE_UNVERIFIED] Natural successor labels unavailable.');
+    successorDiagnosticLogged = true;
+  }
+};
 const naturalKey = (ref) => {
   if (!validRef(ref?.natural_profile_ref) || !validRef(ref?.scene_template_ref)) return null;
   return `natural:${g5Key(ref.natural_profile_ref)}|${g5Key(ref.scene_template_ref)}`;
@@ -42,17 +79,24 @@ const approvalKey = (row) => {
 
 export function loadApprovedPlaceLabels() {
   try {
+    const signature = sourceSignature();
+    if (signature != null && approvedLabelsCache?.signature === signature) {
+      logSuccessorDiagnostic(approvedLabelsCache.labels);
+      return copyLabels(approvedLabelsCache.labels);
+    }
+    approvedLabelsCache = null;
     const labels = approvedPlaceLabelsWithNaturalSuccessors(read('./candidate.json'),
       JSON.parse(read('./approval-attestation.json')), {
         naturalCandidateBytes: readOptional('../m2c-natural/candidate.json'),
         successorCandidateBytes: readOptional('../m2c-natural/nature-successor-candidate-v2.json'),
         successorApproval: parseOptionalJson(readOptional('../m2c-natural/nature-successor-data-approval.json'))
       });
-    if (labels?.diagnostics.length && !successorDiagnosticLogged) {
-      console.warn('[PLACE_LABEL_SUCCESSOR_LINEAGE_UNVERIFIED] Natural successor labels unavailable.');
-      successorDiagnosticLogged = true;
+    if (!(labels instanceof Map)) return null;
+    logSuccessorDiagnostic(labels);
+    if (signature != null && sourceSignature() === signature) {
+      approvedLabelsCache = { signature, labels };
     }
-    return labels;
+    return copyLabels(labels);
   } catch (error) {
     if (error.code === 'ENOENT' || error instanceof SyntaxError) return null;
     throw error;

@@ -1,10 +1,13 @@
 import { createHash } from 'node:crypto';
 import { validateG4NaturalProfile } from '@rus/materialization';
 import { canonicalStringify } from './canonical-records.js';
+import { cacheG4NaturalCatalog, getCachedG4NaturalCatalog } from './g4-natural-catalog-cache.js';
 import { deepFreeze, fail } from './shared.js';
 
 /** Uses the existing verified import/activation owner, never authoring files. */
 export function loadApprovedG4NaturalCatalog({ verifiedCatalog, pin } = {}) {
+  const cached = getCachedG4NaturalCatalog(verifiedCatalog, pin, 'natural');
+  if (cached) return cached;
   if (verifiedCatalog?.schema !== 'rus.verified_item_catalog.v2' || verifiedCatalog.verified !== true
     || !pin || canonicalStringify(pin) !== canonicalStringify(verifiedCatalog.pin)
     || !pin.compatible_world_revision_id || !pin.compatible_world_catalog_digest) invalid('pin');
@@ -29,8 +32,10 @@ export function loadApprovedG4NaturalCatalog({ verifiedCatalog, pin } = {}) {
   const profiles = refs ? allProfiles.filter((row) => refs.some((ref) =>
     ref.id === row.payload.profile_id && ref.version === row.payload.profile_version
     && ref.payload_digest === row.payload_digest)) : allProfiles;
-  return deepFreeze({ schema: 'rus.verified_g4_natural_catalog.v1', verified: true,
-    pin: structuredClone(pin), profiles: structuredClone(profiles) });
+  return cacheG4NaturalCatalog(verifiedCatalog, pin, 'natural', deepFreeze({
+    schema: 'rus.verified_g4_natural_catalog.v1', verified: true,
+    pin: structuredClone(pin), profiles: structuredClone(profiles),
+  }));
 }
 function invalid(reason) { fail('G4_NATURAL_CATALOG_INVALID',
   'Exact activated natural catalog membership is required.', { reason }); }

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(runtime-catalog): cache successful G4 projections and approved place-label validation (#527, #513)
 - docs(governance): WR §21.1 — an approval record names the exact approved bytes: path and sha256 of the approved content (git commit when available) and the date; no signatures or receipts (owner decisions D142, D144)
 - fix(game-base): resolve Novgorod SQLite refs exactly from the tracked read-only source; fail closed on unchecked refs (#469)
 - fix(spatial): allow visible-package persistence against matching committed v0 snapshot (#467)
@@ -761,7 +762,6 @@
 
 
 - docs(plans): owner's scenario spec «След на Нижней Двине» (frame + instance generator at party start) and an example playthrough, verbatim, as design input for the v17 quest start (D101, D105) (#238)
-
 
 
 

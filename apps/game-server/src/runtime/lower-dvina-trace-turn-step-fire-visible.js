@@ -79,8 +79,7 @@ function finishVisibleProjection(base, input, calendarProfile) {
     || (consequence?.phase6_kind === 'synchronized_carry'
       && consequence.carry?.intent?.execution_after?.status === 'completed');
   return overlayTurnStepResults(arrival ? { ...enriched,
-    visible_changes: unique([...enriched.visible_changes,
-      ...base.known_context]),
+    visible_changes: [...enriched.visible_changes, ...base.known_context],
     sensory_details: lowerDvinaTraceObservedSceneChanges(enriched)
   } : enriched, input);
 }
@@ -145,9 +144,11 @@ function overlayTurnStepResults(base, input) {
   projectDirectSeedChanges({ input, directSeedKeys: [...usedKeys] }).forEach(change => components.add(change));
   if (!text(remaining) && orderedChanges.length === 0 && inspection == null && itemInspections.length === 0) return base;
   return deepFreeze({ ...structuredClone(base),
-    visible_changes: unique([...orderedChanges,
+    visible_changes: [...orderedChanges,
       ...base.visible_changes.filter(change => !components.has(change)),
-      ...itemInspections.flatMap(result => result.changes).filter(change => !components.has(change))]),
+      ...itemInspections.flatMap(result => result.changes)
+        .filter(change => !components.has(change)
+          && !base.visible_changes.includes(change))],
     uncertainties: unique([...base.uncertainties,
       ...itemInspections.map(result => result.uncertainty),
       ...(pendingNpcResponse ? [
@@ -254,10 +255,10 @@ function overlayFireVisible(base, fireVisible) {
     ...structuredClone(base),
     visible_scene: [base.visible_scene, fireVisible.scene]
       .filter(Boolean).join(' '),
-    visible_changes: unique([
+    visible_changes: [
       ...base.visible_changes,
       ...fireVisible.changes.values()
-    ])
+    ]
   });
 }
 function directSeedKeys(entries) {

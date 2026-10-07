@@ -90,6 +90,20 @@ export function parse(groupRoot) {
     }
   }
 
+  function applyApprovalEvidence(text, number) {
+    if (!/^\s*[-*]\s+Основание утверждения:/i.test(text) ||
+      !/approval\.json/i.test(text) || !/final-verdict\.json/i.test(text)) return;
+    const candidate = text.match(/кандидат\s+`([^`]+)`/i)?.[1];
+    if (!candidate) return;
+    for (const target of targets(candidate, available)) {
+      const previous = target.file ? files.get(target.file) : null;
+      const line = previous?.status === 'approve' ? previous.line : number;
+      const source = { status: 'approve', anchor: heading, line };
+      if (target.file) files.set(target.file, source);
+      else unresolved.push({ ...target, original: clean(candidate), ...source });
+    }
+  }
+
   for (const [index, line] of lines.entries()) {
     const number = index + 1;
     const match = line.match(/^#{1,6}\s+(.*)$/);
@@ -104,6 +118,7 @@ export function parse(groupRoot) {
       continue;
     }
 
+    applyApprovalEvidence(line, number);
     const bullet = line.match(/^\s*[-*]\s+(.+?)\s+—\s+(.+)$/);
     if (bullet) {
       const status = verdict(bullet[2]);

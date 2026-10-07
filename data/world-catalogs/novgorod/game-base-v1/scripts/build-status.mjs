@@ -77,6 +77,7 @@ export function parse(groupRoot) {
   const unresolved = [];
   const anchors = new Map();
   let heading = '';
+  let sectionLines = [];
   let inTable = false;
   let fileColumn = -1;
   let verdictColumn = -1;
@@ -90,10 +91,28 @@ export function parse(groupRoot) {
     }
   }
 
+  function applyApprovalEvidence() {
+    const evidenceLines = sectionLines.filter(({ text }) =>
+      /^\s*[-*]\s+Основание утверждения:/i.test(text) &&
+      /approval\.json/i.test(text) && /final-verdict\.json/i.test(text));
+    for (const { text, number } of evidenceLines) {
+      const candidate = text.match(/кандидат\s+`([^`]+)`/i)?.[1];
+      if (!candidate) continue;
+      for (const target of targets(candidate, available)) {
+        const previous = target.file ? files.get(target.file) : null;
+        const source = { status: 'approve', anchor: heading, line: previous?.line ?? number };
+        if (target.file) files.set(target.file, source);
+        else unresolved.push({ ...target, original: clean(candidate), ...source });
+      }
+    }
+  }
+
   for (const [index, line] of lines.entries()) {
     const number = index + 1;
     const match = line.match(/^#{1,6}\s+(.*)$/);
     if (match) {
+      applyApprovalEvidence();
+      sectionLines = [];
       const baseSlug = slug(match[1]);
       const count = anchors.get(baseSlug) ?? 0;
       anchors.set(baseSlug, count + 1);
@@ -104,6 +123,7 @@ export function parse(groupRoot) {
       continue;
     }
 
+    sectionLines.push({ text: line, number });
     const bullet = line.match(/^\s*[-*]\s+(.+?)\s+—\s+(.+)$/);
     if (bullet) {
       const status = verdict(bullet[2]);
@@ -129,6 +149,7 @@ export function parse(groupRoot) {
     if (cells.every(cell => /^:?-+:?$/.test(cell))) continue;
     if (inTable && cells.length > Math.max(fileColumn, verdictColumn)) record(cells[fileColumn], verdict(cells[verdictColumn]), number);
   }
+  applyApprovalEvidence();
   return { files, unresolved };
 }
 

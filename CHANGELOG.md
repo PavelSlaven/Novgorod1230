@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(game-base): build STATUS verdict links from the latest approval evidence (#560)
 - fix(mapmaker): test:unit lists the existing unit tests explicitly; the old globs matched no files (#457)
 - test(spatial): the perception reload regression creates prior NPC perceptions with a real turn and real recognition, so the persisted body history stays consistent; the saved name is kept per NPC against a generic fresh label (#377, D84)
 - fix(items): общий выбор материала из утверждённых привязок через selectApprovedItemMaterial в @rus/runtime-catalog; Stage 16 сохраняет material_category_id у снаряжения игрока и NPC (#178).

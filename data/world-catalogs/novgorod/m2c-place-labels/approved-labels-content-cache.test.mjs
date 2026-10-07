@@ -88,3 +88,29 @@ test('changed approved bytes are revalidated when the stat tuple stays unchanged
     fs.statSync(urls.candidate, { bigint: true }).ctimeNs].map(String), initialStatTuple);
   assert.deepEqual(statTuples.candidate, initialStatTuple);
 });
+
+test('malformed required approval returns null before optional source EACCES', async (t) => {
+  const realRead = fs.readFileSync;
+  const namesByPath = new Map(Object.entries(urls).map(([name, url]) => [fileURLToPath(url), name]));
+  let optionalNaturalRead = false;
+  const pathName = (path) => namesByPath.get(path instanceof URL ? fileURLToPath(path)
+    : Buffer.isBuffer(path) ? path.toString() : path);
+
+  t.mock.method(fs, 'readFileSync', function (path, options) {
+    const name = pathName(path);
+    if (!name) return realRead.call(this, path, options);
+    if (name === 'approval') return Buffer.from('{ malformed');
+    if (name === 'natural') {
+      optionalNaturalRead = true;
+      throw Object.assign(new Error('Fixture EACCES'), { code: 'EACCES' });
+    }
+    const encoding = typeof options === 'string' ? options : options?.encoding;
+    return encoding ? originals[name].toString(encoding) : Buffer.from(originals[name]);
+  });
+  syncBuiltinESMExports();
+  t.after(() => { t.mock.restoreAll(); syncBuiltinESMExports(); });
+
+  const { loadApprovedPlaceLabels } = await import('./approved-labels.mjs?error-precedence-regression');
+  assert.equal(loadApprovedPlaceLabels(), null);
+  assert.equal(optionalNaturalRead, false, 'Required approval JSON must be parsed before optional reads');
+});

@@ -26,16 +26,19 @@ const LABEL_FILES = [
   ['../m2c-natural/nature-successor-data-approval.json', false]
 ];
 const readLabelSources = () => {
-  const sources = [];
+  const candidateBytes = read(LABEL_FILES[0][0]);
+  const approvalBytes = read(LABEL_FILES[1][0]);
+  const approval = JSON.parse(approvalBytes);
+  const sources = [candidateBytes, approvalBytes];
+  for (const [path] of LABEL_FILES.slice(2)) sources.push(readOptional(path));
   const signature = createHash('sha256');
-  for (const [path, required] of LABEL_FILES) {
-    const bytes = required ? read(path) : readOptional(path);
+  for (const [index, [path]] of LABEL_FILES.entries()) {
+    const bytes = sources[index];
     signature.update(path).update('\0');
     if (bytes == null) signature.update('missing\0');
     else signature.update('present\0').update(String(bytes.length)).update('\0').update(bytes);
-    sources.push(bytes);
   }
-  return { signature: signature.digest('hex'), sources };
+  return { signature: signature.digest('hex'), sources, approval };
 };
 const copyLabels = (labels) => {
   const copy = new Map([...labels].map(([key, row]) => [key, structuredClone(row)]));
@@ -76,14 +79,13 @@ const approvalKey = (row) => {
 
 export function loadApprovedPlaceLabels() {
   try {
-    const { signature, sources } = readLabelSources();
+    const { signature, sources, approval } = readLabelSources();
     if (approvedLabelsCache?.signature === signature) {
       logSuccessorDiagnostic(approvedLabelsCache.labels);
       return copyLabels(approvedLabelsCache.labels);
     }
     approvedLabelsCache = null;
-    const labels = approvedPlaceLabelsWithNaturalSuccessors(sources[0],
-      JSON.parse(sources[1]), {
+    const labels = approvedPlaceLabelsWithNaturalSuccessors(sources[0], approval, {
         naturalCandidateBytes: sources[2],
         successorCandidateBytes: sources[3],
         successorApproval: parseOptionalJson(sources[4])

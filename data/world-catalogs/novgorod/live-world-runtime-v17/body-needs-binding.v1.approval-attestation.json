@@ -1,0 +1,13 @@
+{
+  "schema": "rus.live_world_runtime_v17_body_needs_binding_approval.v1",
+  "verdict": "APPROVE",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/body-needs-binding.v1.json",
+  "candidate_sha256": "dff07688e26736dd4a924a8fb7602c1a5a91c1a43fa97d5c6739c1096c8c548b",
+  "approved": true,
+  "import_authorized": true,
+  "activation_authorized": true,
+  "auditor_ref": "codex-gpt-6.1-sol-ap-body-needs-binding-2026-10-06",
+  "independence_basis": "Отдельный независимый проход задачи ap-body-needs-binding: утверждающий не участвовал в авторинге/реализации body-needs-bind и не общался с автором; gpt-6-luna выполняли только механические сверки, вердикт вынес утверждающий.",
+  "reviewed_repository_head": "e60c5dfbd39605a7ffb8ee3c0af4c6295432c668",
+  "approval": "Утверждены точные байты binding-кандидата с указанным SHA-256: привязка satiety_hourly_spend_v2, energy_awake_spend_v2 и starvation_health_harm_v2 к утверждённому temporal-v4 набору commit 0b20ca6fdf548de24445c21dd2d7b46c3063eab2; none/light/moderate соответствуют rest_or_ordinary_activity, heavy/extreme — heavy_activity; energy_sleep_recovery_v1 явно исключён. Отдельный разовый extreme health=-1 не заменяется голодным вредом. Данные, импорт и активация привязки разрешены, дополнительных условий к данным нет. Это утверждение данных по WR §21.1/TASK/A-06, не приёмка всей реализации: PostgreSQL и модель не запускались. Внеобъектный runtime-дефект finite-decimal→Number и отложенные #267/#315 описаны в verdict.md для решения ведущего; сама привязка от них не изменяется."
+}

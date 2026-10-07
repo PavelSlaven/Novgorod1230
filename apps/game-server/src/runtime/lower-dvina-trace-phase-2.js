@@ -72,6 +72,7 @@ export function createLowerDvinaTracePhase2Runtime({
   llmTurnBudget = null, llmDiagnostics = null,
   onNpcSceneProjection = null,
   temporalAdvanceOwner = undefined, now = () => new Date().toISOString(),
+  bodyTimeEffectAdapter = null,
   bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
     scenarioDefinitionRevision,
   }),
@@ -219,7 +220,9 @@ export function createLowerDvinaTracePhase2Runtime({
           ? createLowerDvinaTraceTurnStepGenericOwners({
               profiles: bundle.turn_step_owner_profiles,
               artifactPin: bundle.artifact_pins.turn_step_owner_profiles,
-              selectedProfilePin: authored ? authoredTurnProfile.selected_profile_pin : undefined,
+              selectedProfilePin: authored
+                ? authoredTurnProfile.selected_profile_pin : undefined,
+              bodyTimeEffectAdapter,
             })
           : null;
         const createBoundaryNpcDirectOperations = phase7Contracts == null ? null : (boundary) => createLowerDvinaTraceNpcActorStepDirectOperations({
@@ -377,6 +380,7 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
+          bodyTimeEffectAdapter,
           decisionNow: now, turnBudget, llmDiagnostics,
           onNpcSceneProjection,
         });

@@ -30,6 +30,14 @@ Error envelope проверяет динамический message незави�
 и структурного кода; поле и служебная диагностика игроку не отражаются.
 Pass-target projection сохраняет одинаковые наблюдаемые подписи без номеров;
 разные action refs сохраняются. Различимые описания — пробел данных, не UI fallback.
+NPC-реплика получает в `social_context.interlocutor_speech` установленную связь,
+обращение и регистр по-русски. Обращение выбирается только из утверждённых
+устных форм вида известной связи, а без связи — из форм `unspecified`. Роль
+адресата задана всегда, роль говорящего может быть пустой; точность стороны:
+занятие > роль > пустая роль. Форма, которую другая не уступает на обеих
+сторонах и превосходит хотя бы на одной, исключается; обращение передаётся
+только при одном оставшемся кандидате. Конечный суффикс `; only for <rule_id>`
+в `situation` допускает форму лишь для ребра связи с этим `source_rule_ref`.
 
 Development-only gameplay gap tracing использует существующий private party
 log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
@@ -43,7 +51,7 @@ Gap Auditor работает отдельно в authoring workflow; в runtime 
 
 Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3
 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`,
-runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade и post-commit
+runtime-catalog pins, World Knowledge loader/encoder and D17 reranker worker, turn/public runtime facade и post-commit
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
@@ -431,6 +439,17 @@ slice сохраняет original/planned duration отдельно от actual 
 а terminal completion operations не входят в прерванный commit.
 Domain-command ledger contracts сохраняются.
 
+Continuous body-time replay использует trusted profile, загруженный через
+`loadTargetBodyNeedsProfile` и переданный composition root; профиль не выбирается
+из prepared envelope. История сверяет fixed proposals с body-компонентами в их
+порядке, заново проверяет continuous proposals по профилю и exact elapsed, затем
+переигрывает цепочку от исходного состояния через `accumulateBodyTimeEffects`
+в `@rus/body-state`. Readback получает исходное состояние из
+`party_runtime.party_state_snapshots` по `party_id` и `base_state_version` и
+проверяет его digest и идентичность. Без trusted profile, исходного снимка или
+валидных replay-входов readback отклоняет запись; текущий округлённый scalar не
+используется как запасная точка начала.
+
 ## Не владеет
 
 Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy вне ролей, явно назначенных активными контрактами (NPC combat: `lower-dvina-trace-combat-llm.js`, §§32–33), narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
@@ -795,7 +814,7 @@ outcome воды вне SQL transaction.
 
 ## Ошибки, зависимости и effects
 
-Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Публичные категории отказа хода (HTTP 409, `src/http/contracts.js`): `TURN_NOT_SAVED` (`TURN_STEP_PLAN_INVALID`) и `WORLD_ACTION_UNAVAILABLE` (`M2C_TARGET_A1_APPLICABILITY_DATA_GAP`) — только при `turn_commit_status: not_started`, с безопасным текстом «Ход не сохранён…»; остальные 5xx маскируются `TEMPORARY_ACTION_UNAVAILABLE`, внутренняя причина — в server log. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
+Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Публичные категории отказа хода (HTTP 409, `src/http/contracts.js`): `TURN_NOT_SAVED` (`TURN_STEP_PLAN_INVALID`) и `WORLD_ACTION_UNAVAILABLE` (`M2C_TARGET_A1_APPLICABILITY_DATA_GAP` или `SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP`; последний также при нехватке сцены сгенерированного перехода) — только при `turn_commit_status: not_started`, с безопасным текстом «Ход не сохранён…»; остальные 5xx маскируются `TEMPORARY_ACTION_UNAVAILABLE`, внутренняя причина — в server log. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
 
 ## Production activation и тесты
 

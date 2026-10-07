@@ -79,6 +79,7 @@ import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKno
   '../infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
 import { createTargetCurrentFactualContext } from
   '../infrastructure/postgres/target-current-factual-context.js';
+import { deriveTrustedBodyNeedsBindingPin } from '../runtime/body-needs-temporal.js';
 import { createTargetAuthoredStartCatalog } from '../internal/target-authored-start-catalog.js';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
@@ -181,7 +182,10 @@ export async function createSpatialV3ProductionCompositionRoot({
       partyPool: pools.partyPool,
       committer: { commit: (...args) => committer.commit(...args) },
       runtime: targetContext.runtime,
-      authoredRuntimeBindingResolver
+      authoredRuntimeBindingResolver,
+      trustedBodyNeedsBindingPin: deriveTrustedBodyNeedsBindingPin(
+        targetProfiles?.body_needs_profile ?? null),
+      trustedBodyNeedsProfile: targetProfiles?.body_needs_profile ?? null
     });
     if (factualContext != null && targetContext?.runtime?.materialization_inputs?.calendar_profile) {
       readTargetPartyPresenceCalendar = (args) => resolveTargetPartyPresenceCalendar({

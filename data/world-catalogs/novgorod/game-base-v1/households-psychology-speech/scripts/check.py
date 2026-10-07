@@ -361,7 +361,7 @@ rel_fields = ["rel_rule_id", "scope_kind", "scope_ref", "subject_role_ref", "obj
 form_fields = ["sp_id", "channel", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
 
 
-def checked_rows(path, fields, key):
+def checked_rows(path, fields, key, allow_c_rule_ref=False):
     with open(path, encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         if reader.fieldnames != fields:
@@ -375,7 +375,7 @@ def checked_rows(path, fields, key):
         if not row.get(key) or row[key] in seen:
             errors.append(f"{prefix}: missing or duplicate {key}")
         seen.add(row.get(key))
-        if sum(bool(row.get(x)) for x in ("source_refs", "rule_ref", "no_source")) != 1:
+        if not evidence_channels_valid(row, allow_c_rule_ref=allow_c_rule_ref):
             errors.append(f"{prefix}: exactly one evidence channel required")
         if row.get("confidence") not in {"A", "B", "C"} or row.get("status") != "candidate":
             errors.append(f"{prefix}: invalid confidence/status")
@@ -384,8 +384,15 @@ def checked_rows(path, fields, key):
     return rows
 
 
+def evidence_channels_valid(row, allow_c_rule_ref=False):
+    evidence_count = sum(bool(row.get(x)) for x in ("source_refs", "rule_ref", "no_source"))
+    c_reconstruction = (allow_c_rule_ref and row.get("confidence") == "C" and row.get("rule_ref") and
+                        (row.get("source_refs") or row.get("no_source")))
+    return evidence_count == 1 or bool(c_reconstruction)
+
+
 rel_rows = checked_rows(os.path.join(ROOT, "households_kinship", "relationship_rules.csv"), rel_fields, "rel_rule_id")
-af_rows = checked_rows(os.path.join(ROOT, "speech_address", "address_forms.csv"), form_fields, "sp_id")
+af_rows = checked_rows(os.path.join(ROOT, "speech_address", "address_forms.csv"), form_fields, "sp_id", allow_c_rule_ref=True)
 household_ids = {r["hh_id"] for r in read_csv(os.path.join(ROOT, "households_kinship", "household_composition_profiles.csv"))}
 registers = {r["register"] for r in register_rows}
 pf_ids = set()
@@ -409,12 +416,40 @@ for file in os.listdir(wk_dir):
     if file.endswith(".json"):
         with open(os.path.join(wk_dir, file), encoding="utf-8") as f:
             known_wk.update((file, claim["claim_ref"]) for claim in json.load(f).get("claims", []))
+known_claim_refs = {claim_ref for _, claim_ref in known_wk}
 editorial_rules = {"editorial_joint_work_acquaintance_c": "Only named actors assigned to work together at the same place and time may be acquainted; no kinship, debt or enmity follows."}
+ADDRESS_REPEAT_EXCEPTIONS = {"человече": 12, "господине": 5, "рыбарю": 4, "охотник": 4}
 
 
-def check_evidence(r, prefix):
-    if r["rule_ref"] and r["rule_ref"] not in known_rules | set(editorial_rules):
-        errors.append(f"{prefix}: unknown rule_ref")
+def rule_ref_failures(rule_ref, composite=False):
+    if not rule_ref:
+        return []
+    if not composite:
+        return [] if rule_ref in known_rules | set(editorial_rules) else ["unknown rule_ref"]
+    tokens = [token.strip() for token in rule_ref.split(";")]
+    allowed = known_rules | set(editorial_rules) | {"D128", "D140"} | known_claim_refs
+    return ["unknown rule_ref token"] if not tokens or any(not token or token not in allowed for token in tokens) else []
+
+
+def book_period_conflict(r):
+    if r["confidence"] == "C" or not r["source_refs"]:
+        return False
+    book_refs = []
+    for ref in r["source_refs"].split(";"):
+        book = re.fullmatch(r"book:(\d+) §(\d+)", ref.strip())
+        if book:
+            book_refs.append(book.groups())
+    if not book_refs:
+        return False
+    period_rows = [book_evidence.get(ref, []) for ref in book_refs]
+    if any(not rows for rows in period_rows):
+        return False
+    return all(all(row["period"] in {"medieval_general", "ethnographic_late"} for row in rows)
+               for rows in period_rows)
+
+
+def unresolved_source_refs(r):
+    failures = []
     if r["source_refs"]:
         for ref in r["source_refs"].split(";"):
             ref = ref.strip()
@@ -423,10 +458,17 @@ def check_evidence(r, prefix):
             role = re.fullmatch(r"data/novgorod-region/novgorod_social_roles_v1(?:_enriched)?\.tsv#(nov_role_\w+)", ref)
             if not ((book and book.groups() in book_evidence) or (wk and wk.groups() in known_wk) or
                     (role and role[1] in all_role)):
-                errors.append(f"{prefix}: unresolved source_ref {ref}")
-            if book and book.groups() in book_evidence and r["confidence"] != "C":
-                if all(row["period"] in {"medieval_general", "ethnographic_late"} for row in book_evidence[book.groups()]):
-                    errors.append(f"{prefix}: book period requires confidence C: {ref}")
+                failures.append(f"unresolved source_ref {ref}")
+    return failures
+
+
+def check_evidence(r, prefix, composite_rule_ref=False):
+    for message in rule_ref_failures(r["rule_ref"], composite=composite_rule_ref):
+        errors.append(f"{prefix}: {message}")
+    for message in unresolved_source_refs(r):
+        errors.append(f"{prefix}: {message}")
+    if book_period_conflict(r):
+        errors.append(f"{prefix}: book period requires confidence C: {r['source_refs']}")
 
 for i, r in enumerate(rel_rows):
     prefix = f"relationship_rules row {i}"
@@ -452,21 +494,98 @@ for i, r in enumerate(rel_rows):
     if r["rule_ref"] in editorial_rules and (r["relationship_kind"] != "joint_work" or r["confidence"] != "C"):
         errors.append(f"{prefix}: editorial rule can only assert joint-work acquaintance at C")
 
+def no_source_failures(row):
+    return bool(row["no_source"] and (row["form_ru"] or row["attestation"] or row["confidence"] != "C"))
+
+
 for i, r in enumerate(af_rows):
     prefix = f"address_forms row {i}"
-    check_evidence(r, prefix)
+    check_evidence(r, prefix, composite_rule_ref=True)
     if r["relationship_kind"] not in relation_kinds | {"written_letter"} or (r["register_ref"] and r["register_ref"] not in registers):
         errors.append(f"{prefix}: unknown relationship kind or register")
     if r["channel"] not in {"oral", "written"} or (r["relationship_kind"] == "written_letter" and r["channel"] != "written"):
         errors.append(f"{prefix}: invalid oral/written channel")
     if any(r[x] and r[x] not in all_role | all_occ | schedule_occ for x in ("speaker_role_ref", "addressee_role_ref")):
         errors.append(f"{prefix}: unknown role or occupation")
-    if r["source_refs"] and (not r["form_ru"] or not r["attestation"]):
+    if r["source_refs"] and not r["no_source"] and (not r["form_ru"] or not r["attestation"]):
         errors.append(f"{prefix}: sourced form needs text and attestation")
-    if r["no_source"] and (r["form_ru"] or r["attestation"] or r["confidence"] != "C"):
-        errors.append(f"{prefix}: gap must have no form or attestation and confidence C")
+    if no_source_failures(r):
+        errors.append(f"{prefix}: no_source requires empty form_ru and confidence C")
     if "поклон от" in r["form_ru"].lower() and "письмо" not in r["situation"].lower():
         errors.append(f"{prefix}: epistolary opening used as oral address")
+
+
+def address_repeat_failures(forms):
+    counts = Counter(row["form_ru"].strip().lower() for row in forms
+                     if row["channel"] == "oral" and row["confidence"] == "C" and row["form_ru"].strip())
+    failures = []
+    for form, count in counts.items():
+        allowed = ADDRESS_REPEAT_EXCEPTIONS.get(form, 3)
+        if count > allowed:
+            failures.append(f"address form {form!r}: {count} C oral repetitions exceed limit {allowed}")
+    for form, approved_count in ADDRESS_REPEAT_EXCEPTIONS.items():
+        if counts.get(form, 0) != approved_count:
+            failures.append(f"address form {form!r}: expected approved repetition count {approved_count}, got {counts.get(form, 0)}")
+    return failures
+
+
+errors.extend(address_repeat_failures(af_rows))
+
+if "--probe" in sys.argv:
+    period_only_general = {"confidence": "A", "source_refs": "book:641352 §1155"}
+    period_direct_and_general = {"confidence": "A", "source_refs": "book:641352 §360; book:641352 §1155"}
+    period_general_c = {"confidence": "C", "source_refs": "book:641352 §1155"}
+    if not book_period_conflict(period_only_general):
+        errors.append("negative period probe failed: A with only general book evidence")
+    else:
+        print("OK: negative period probe detects A with only general book evidence")
+    if book_period_conflict(period_direct_and_general):
+        errors.append("period probe failed: direct-period and general book evidence must coexist")
+    else:
+        print("OK: period probe accepts direct-period plus general book evidence")
+    if book_period_conflict(period_general_c):
+        errors.append("period probe failed: C with general book evidence must pass")
+    else:
+        print("OK: period probe accepts C with general book evidence")
+    if not rule_ref_failures("claim:claim:not-a-real-production-claim", composite=True):
+        errors.append("negative address rule_ref probe failed: unknown claim")
+    if not rule_ref_failures("local_rule_that_does_not_exist", composite=True):
+        errors.append("negative address rule_ref probe failed: unknown local id")
+    if not rule_ref_failures("D129", composite=True):
+        errors.append("negative address rule_ref probe failed: generic D-number")
+    if not unresolved_source_refs({"source_refs": "book:999999 §999999"}):
+        errors.append("negative address source_ref probe failed: unknown book")
+    if evidence_channels_valid({"source_refs": "book:641352 §360", "no_source": "gap", "confidence": "C"}, allow_c_rule_ref=True):
+        errors.append("negative address evidence probe failed: source plus no_source without a C rule")
+    no_source_gap = next((dict(row) for row in af_rows if row["no_source"]), None)
+    if no_source_gap is None:
+        errors.append("negative no_source probe has no candidate gap")
+    else:
+        bad_gap = dict(no_source_gap, form_ru="unsupported")
+        if not no_source_failures(bad_gap):
+            errors.append("negative no_source probe failed: nonempty form")
+        bad_gap = dict(no_source_gap, confidence="A")
+        if not no_source_failures(bad_gap):
+            errors.append("negative no_source probe failed: non-C confidence")
+        bad_gap = dict(no_source_gap, attestation="form attestation")
+        if not no_source_failures(bad_gap):
+            errors.append("negative no_source probe failed: attestation is not a form on an unsourced gap")
+        bad_gap = dict(no_source_gap, source_refs="book:999999 §999999")
+        if not unresolved_source_refs(bad_gap):
+            errors.append("negative no_source probe failed: unresolved source reference")
+    repeated = next((row for row in af_rows if row["channel"] == "oral" and row["confidence"] == "C" and
+                     row["form_ru"].strip() == "лодочник"), None)
+    if repeated and not address_repeat_failures([*af_rows, dict(repeated)]):
+        errors.append("negative address repeat probe failed to detect a fourth ordinary repetition")
+    changed_exception = [dict(row) for row in af_rows]
+    removed = next((row for row in changed_exception if row["form_ru"].strip().lower() == "человече" and
+                    row["channel"] == "oral" and row["confidence"] == "C"), None)
+    if removed:
+        changed_exception.remove(removed)
+        if not address_repeat_failures(changed_exception):
+            errors.append("negative address repeat probe failed to detect changed approved exception count")
+    else:
+        errors.append("negative address repeat probe has no approved exception row")
 
 # Builder and checker derive the same G5-node/season/phase pairs.
 from build import starting_pairs, composition_spouse_links, include_composition_spouse_form, generated_id
@@ -524,16 +643,26 @@ explicit = {(row["subject_role_ref"], row["object_role_ref"]): row["relationship
             for row in static_rel if row["scope_kind"] == "role_pair" and row["subject_role_ref"] and row["object_role_ref"]
             and not row["rel_rule_id"].startswith("rel_composition_spouse_")}
 expected_rel = set()
-expected_forms = set()
-static_forms = {(row["speaker_role_ref"], row["addressee_role_ref"], row["relationship_kind"])
-                for row in af_rows if not row["sp_id"].startswith("form_start_gap_") and row["channel"] == "oral"}
+authoring_path = os.path.join(ROOT, "speech_address", "address_forms_authoring.csv")
+authoring_forms = read_csv(authoring_path)
+linked_pairs = {}
+for pf, subject, object_, link in composition_spouse_links():
+    linked_pairs.setdefault(frozenset((subject, object_)), []).append(
+        generated_id("rel_composition_spouse_", [pf, link["from_group_id"], link["to_group_id"]]))
+effective_authoring_forms = [row for row in authoring_forms
+                             if include_composition_spouse_form(
+                                 (row["sp_id"], "", row["speaker_role_ref"], row["addressee_role_ref"]), linked_pairs)]
+authoring_oral_forms = {(row["speaker_role_ref"], row["addressee_role_ref"], row["relationship_kind"])
+                        for row in effective_authoring_forms if row["channel"] == "oral"}
+expected_forms = {(row["speaker_role_ref"], row["addressee_role_ref"], row["relationship_kind"])
+                  for row in effective_authoring_forms if row["sp_id"].startswith("form_start_gap_")}
 for a, b in start_pairs:
     kind = explicit.get((a, b), explicit.get((b, a),
            "joint_work" if (a, b) in same_pf_pairs else "unspecified"))
     if (a, b) not in explicit and (b, a) not in explicit:
         expected_rel.add((a, b, kind, "symmetric"))
     for speaker, addressee in ((a, b), (b, a)):
-        if (speaker, addressee, kind) not in static_forms:
+        if (speaker, addressee, kind) not in authoring_oral_forms:
             expected_forms.add((speaker, addressee, kind))
 rel_key_fields = ("subject_role_ref", "object_role_ref", "relationship_kind", "direction")
 form_key_fields = ("speaker_role_ref", "addressee_role_ref", "relationship_kind")
@@ -668,16 +797,52 @@ def ferry_fisher_failures(relations, forms):
                 {r["subject_role_ref"], r["object_role_ref"]} == {a, b} and
                 r["relationship_kind"] == "unspecified" and r["no_source"]]
     failures = [] if len(relation) == 1 else ["ferryman/fisher: expected one neutral relationship gap"]
+    expected_ids = {
+        (a, b): "form_start_gap_44fce0cf41604aec",
+        (b, a): "form_start_gap_196110db57ec8988",
+    }
     for speaker, addressee in ((a, b), (b, a)):
         matches = [r for r in forms if r["channel"] == "oral" and
-                   r["speaker_role_ref"] == speaker and r["addressee_role_ref"] == addressee and
-                   r["relationship_kind"] == "unspecified" and r["no_source"] and not r["form_ru"]]
+                   r["speaker_role_ref"] == speaker and r["addressee_role_ref"] == addressee]
         if len(matches) != 1:
-            failures.append(f"ferryman/fisher: expected one neutral oral gap {speaker}->{addressee}")
+            failures.append(f"ferryman/fisher: expected one oral row {speaker}->{addressee}")
+            continue
+        row = matches[0]
+        if row["relationship_kind"] != "unspecified" or row["sp_id"] != expected_ids[(speaker, addressee)]:
+            failures.append(f"ferryman/fisher: unexpected kind or sp_id {speaker}->{addressee}")
+        if row["form_ru"]:
+            if row["confidence"] != "C" or not row["rule_ref"] or row["no_source"]:
+                failures.append(f"ferryman/fisher: reconstructed form must be C with rule_ref and no no_source {speaker}->{addressee}")
+        elif not row["no_source"] or row["attestation"] or row["source_refs"] or row["rule_ref"] or row["confidence"] != "C":
+            failures.append(f"ferryman/fisher: empty form must be a C no_source gap {speaker}->{addressee}")
     return failures
 
 
 errors.extend(ferry_fisher_failures(rel_rows, af_rows))
+
+if "--probe" in sys.argv:
+    ferry_forms = [dict(row) for row in af_rows if row["channel"] == "oral" and
+                   {row["speaker_role_ref"], row["addressee_role_ref"]} == {"nov_occ_ferryman", "nov_occ_fisher"}]
+    if ferry_fisher_failures(rel_rows, ferry_forms):
+        errors.append("ferry/fisher probe rejected the approved reconstruction pair")
+    bad = dict(ferry_forms[0])
+    bad["confidence"] = "B"
+    if not ferry_fisher_failures(rel_rows, [bad, ferry_forms[1]]):
+        errors.append("negative ferry/fisher probe failed: reconstructed form without C")
+    bad = dict(ferry_forms[0])
+    bad["rule_ref"] = ""
+    if not ferry_fisher_failures(rel_rows, [bad, ferry_forms[1]]):
+        errors.append("negative ferry/fisher probe failed: reconstructed form without rule_ref")
+    bad = dict(ferry_forms[0])
+    bad["no_source"] = "unsupported gap"
+    if not ferry_fisher_failures(rel_rows, [bad, ferry_forms[1]]):
+        errors.append("negative ferry/fisher probe failed: form together with no_source")
+    if not ferry_fisher_failures(rel_rows, [*ferry_forms, dict(ferry_forms[0])]):
+        errors.append("negative ferry/fisher probe failed: third directed pair row")
+    bad = dict(ferry_forms[0])
+    bad["sp_id"] = "form_removed_by_probe"
+    if not ferry_fisher_failures(rel_rows, [bad, ferry_forms[1]]):
+        errors.append("negative ferry/fisher probe failed: changed approved sp_id")
 
 homestead_pair = frozenset(("nov_role_smerd_householder", "nov_role_household_mistress"))
 

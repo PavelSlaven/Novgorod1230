@@ -14,6 +14,7 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - единой загрузкой неперсистентных common catalog lookups до projection.
 - чистой проверкой кросс-доменного versioned `needs_check` snapshot для новых фактов бытности мира и NPC-кандидатов; чтение authoring queues и сборка snapshot остаются у game-base CLI, решение о фильтрации результата или отклонении NPC-операции принадлежит consumer owner.
 - чистой идентичностью PostgreSQL-схемы, общей для activation и runtime ledger: `readPostgresSchemaFingerprint(client, schemaName)` публичного subpath `@rus/runtime-catalog/schema-fingerprint` вычисляет fingerprint по переданному query-клиенту; пакет не создаёт соединение и не владеет пулом.
+- чтением и exact validation последнего approved runtime-catalog activation pin: `loadActiveRuntimeCatalogPin(queryClient, catalogScope)` публичного subpath `@rus/runtime-catalog/active-pin` использует переданный query-клиент; пакет не создаёт соединение и не владеет пулом.
 
 ## Не делает
 
@@ -29,8 +30,16 @@ natural profiles from the existing verified compiled-record membership. It
 requires matching world/catalog pins, immutable payload digests and one
 profile per G4 version. Authoring candidates are not runtime input.
 
+The natural, presentation and placement G4 projections cache successful
+validation per verified catalog object and canonical pin. Only deeply frozen
+verified inputs use the cache; mutable inputs keep the uncached validation
+path. Failed stages are retried, while completed successful stages can be
+reused by later projections.
+
 - `createRuntimeCatalogLoader({ worldBaseReader, supportedRuntimeContractDigests })`;
 - `loadActivePin({ catalogScope })`;
+- `loadActiveRuntimeCatalogPin(queryClient, catalogScope)` из
+  `@rus/runtime-catalog/active-pin` — читает и проверяет последний activation;
 - `loadApprovedItemCatalog({ pin })`;
 - `loadApprovedNeedsCheckBlockerSnapshot({ verifiedCatalog, pin })` — exact
   immutable `profile:needs_check_blockers` member, без latest fallback;
@@ -45,6 +54,8 @@ profile per G4 version. Authoring candidates are not runtime input.
 - `loadCategoryParentMap({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, categoryIds })` — `parent_category_id` для `object_type` (LW-071 ancestor skip в consumer);
 - `loadPlacePopulationComposition({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, compositionVersion? })` — D-2 состав населения из `world_base.place_population_composition_rules` с тем же gate;
 - `loadNpcRelationshipMaterializationRules({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin })` — approved NPC relationship rules from the exact world revision, after spatial and latest runtime-catalog activation gates; rejects multiple approved versions of one rule id.
+- `loadNpcSpeechAddressForms({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin })` — approved speech-address forms from the exact world revision after the same spatial and runtime-catalog gates.
+- `NPC_SPEECH_REGISTERS_PIN` and `loadNpcSpeechRegisters({ rootDir?, readFile?, onDiagnostic? })` — read-only process-cached CSV projection, available only when the `C007c2` source matches its pinned SHA-256 (`8f0c1d91` approval snapshot); pin/read/parse failure returns no rows and emits one sanitized diagnostic per source path.
 - `loadApprovedProceduralSceneRecordBundle(...)` verifies the exact world pin,
   latest matching activation event and approved regional applicability before
   exporting compiler inputs; candidate/manifests alone are rejected;

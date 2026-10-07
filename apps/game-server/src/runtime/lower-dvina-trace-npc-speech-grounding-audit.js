@@ -1,8 +1,11 @@
 import { serverError } from '../errors.js';
+import { NPC_INTERLOCUTOR_SPEECH_INSTRUCTION } from
+  './lower-dvina-trace-phase-2-npc-conversation-prompts.js';
 
 const PROMPT = [
   'Возвращай только {"pass":true,"concerns":[]} либо',
   '{"pass":false,"concerns":[{"kind":"<краткий устойчивый вид замечания>"}]}.',
+  NPC_INTERLOCUTOR_SPEECH_INSTRUCTION,
   'Проверяй переданный план речи NPC только по переданному субъективному',
   'запросу. Проверь каждое фактическое утверждение в utterance_text, claims, reason,',
   'interpretation, topic_refs и supporting_operations. Для каждого фактического',

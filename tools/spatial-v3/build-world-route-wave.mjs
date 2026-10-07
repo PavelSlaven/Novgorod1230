@@ -4,6 +4,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { computeSpatialV3CanonicalDigest } from '../../packages/contracts/src/spatial-v3/registry.js';
 import { lineNameProblems, policyProblem, policySlices } from './build-line-wave.mjs';
 
@@ -811,4 +812,4 @@ function main() {
   if (check && changed.length) { console.error(`world route candidate differs: ${changed.join(', ')}`); process.exitCode = 1; return; }
   console.log(JSON.stringify({ ok: true, check, counts: built.report.counts, manifest_datasets: built.manifest.datasets.length }, null, 2));
 }
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main();

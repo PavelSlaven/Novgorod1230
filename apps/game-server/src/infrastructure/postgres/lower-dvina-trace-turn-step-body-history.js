@@ -514,10 +514,8 @@ function replayTrustedBodyTime({ bodyBefore, scalarBodyBefore, components, propo
     }
     const fixed = slice.fixed_effect_proposals ?? [];
     const time = slice.component_proposals ?? [];
-    const fixedReplay = fixed.length === 0
-      ? { ok: true, state_after: scalarBefore }
-      : replayFixedEffects(scalarBefore, slice.components, fixed);
-    if (fixed.length > 0 && fixedReplay?.ok !== true) return fixedReplay;
+    const fixedReplay = replayFixedEffects(scalarBefore, slice.components, fixed);
+    if (fixedReplay?.ok !== true) return fixedReplay;
 
     const exactElapsed = slice.time_update?.exact_elapsed;
     const observedAt = slice.time_update?.clock_before;

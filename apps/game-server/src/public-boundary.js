@@ -112,10 +112,7 @@ function findPublishedText(value, path = '$', field = '', seen = new Set()) {
 
 export function assertPublicPayload(value) {
   validateExactNpcUtteranceFields(value);
-  const leaks = detectHiddenLeaks(value);
-  if (leaks.length) {
-    throw serverError('PUBLIC_PAYLOAD_HIDDEN_LEAK', 'Public API payload contains hidden fields.', { status: 500 });
-  }
+  assertNoHiddenLeaks(value);
   const finding = findPublishedText(value);
   if (finding != null) {
     throw serverError('PUBLIC_PAYLOAD_SERVICE_TEXT',
@@ -123,6 +120,14 @@ export function assertPublicPayload(value) {
         status: 500,
         details: { field_path: finding.path, category: finding.category }
       });
+  }
+  return value;
+}
+
+export function assertNoHiddenLeaks(value) {
+  const leaks = detectHiddenLeaks(value);
+  if (leaks.length) {
+    throw serverError('PUBLIC_PAYLOAD_HIDDEN_LEAK', 'Public API payload contains hidden fields.', { status: 500 });
   }
   return value;
 }

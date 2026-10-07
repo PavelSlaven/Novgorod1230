@@ -1,4 +1,4 @@
-import { assertPublicPayload, findUnsafePlayerText, projectPublicPayload } from
+import { assertNoHiddenLeaks, assertPublicPayload, findUnsafePlayerText, projectPublicPayload } from
   '../public-boundary.js';
 import { serverError } from '../errors.js';
 
@@ -17,7 +17,8 @@ const PUBLIC_CLIENT_ERROR_CODES = new Set([
   'LLM_SETTINGS_BASE_URL_INVALID', 'LLM_SETTINGS_FIELD_UNKNOWN',
   'LLM_SETTINGS_APPLY_STALE',
   'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED',
-  'AUTHORED_OPENING_AUDIT_REJECTED', 'SCENARIO_NOT_SUPPORTED'
+  'AUTHORED_OPENING_AUDIT_REJECTED', 'SCENARIO_NOT_SUPPORTED',
+  'ROUTE_NOT_FOUND'
 ]);
 
 export function successEnvelope(data, { requestId = null } = {}) {
@@ -28,6 +29,17 @@ export function successEnvelope(data, { requestId = null } = {}) {
     ok: true,
     request_id: requestId,
     data: projectPublicPayload(data)
+  });
+}
+
+export function operationalEnvelope(data, { requestId = null } = {}) {
+  assertNoHiddenLeaks(data);
+  return Object.freeze({
+    version: HTTP_API_VERSION,
+    schema: API_SUCCESS_SCHEMA,
+    ok: true,
+    request_id: requestId,
+    data
   });
 }
 

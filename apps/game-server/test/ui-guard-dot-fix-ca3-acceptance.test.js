@@ -84,7 +84,8 @@ async function project(mode, proposals) {
     assert.ok(projected.visible_changes.some((value) => value.includes(utterance)));
     assert.ok(projected.do_not_imply.includes('uncompleted_remaining_intent'));
   } else {
-    assert.ok(projected.visible_changes.includes(knownContext));
+    assert.ok(projected.known_context.includes(knownContext));
+    assert.equal(projected.visible_changes.includes(knownContext), false);
   }
   return projected;
 }

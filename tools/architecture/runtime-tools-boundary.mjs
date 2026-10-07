@@ -262,12 +262,8 @@ async function resolveBoundaryPath(value, importer, root, boundary, directories,
 function pathReferences(source, { allowReadOnly = false, includeArrayPaths = false } = {}) {
   const tokens = tokenize(source);
   const importedSpecifiers = new Set(importSpecifiers(source));
-  const { arrayDataTokens, stringMatcherTokens } = ignoredPathTokens(tokens, {
-    ignoreArrays: !includeArrayPaths,
-    ignoreStringMatchers: allowReadOnly
-  });
   const bindings = new Map();
-  const bindingTokens = new Set();
+  const bindingDeclarations = [];
   for (let index = 0; index < tokens.length; index += 1) {
     if (!['const', 'let', 'var'].includes(tokens[index].value)
       || tokens[index + 1]?.type !== 'identifier' || tokens[index + 2]?.value !== '=') continue;
@@ -275,17 +271,14 @@ function pathReferences(source, { allowReadOnly = false, includeArrayPaths = fal
     const end = expressionEnd(tokens, start);
     const expression = tokens.slice(start, end);
     bindings.set(tokens[index + 1].value, expression);
-    for (let cursor = index; cursor < start; cursor += 1) bindingTokens.add(tokens[cursor]);
-    for (let cursor = start; cursor < end; cursor += 1) bindingTokens.add(tokens[cursor]);
+    bindingDeclarations.push({ name: tokens[index + 1].value, declaration: index, start, end });
   }
 
   const references = [];
-  const bindingUses = new Set();
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
-    if (bindingTokens.has(token)) continue;
-    if (token.type === 'identifier' && bindings.has(token.value)) bindingUses.add(token.value);
-    if (arrayDataTokens.has(token) || stringMatcherTokens.has(token)) continue;
+    if (token.type === 'identifier' && ['const', 'let', 'var'].includes(tokens[index - 1]?.value)
+      && tokens[index + 1]?.value === '=') continue;
     let expression = [token];
     if (token.value === 'new' && tokens[index + 1]?.value === 'URL') {
       expression = tokens.slice(index, findCallEnd(tokens, index + 2));
@@ -297,16 +290,8 @@ function pathReferences(source, { allowReadOnly = false, includeArrayPaths = fal
       if (isHandledImportReference(pathValue.value, importedSpecifiers)) continue;
       references.push({
         ...pathValue,
-        readOnly: allowReadOnly && isReadOnlyPathReference(tokens, index)
+        readOnly: allowReadOnly && isReadOnlyPathReference(tokens, index, bindingDeclarations)
       });
-    }
-  }
-  for (const [name, expression] of bindings) {
-    if (bindingUses.has(name)) continue;
-    for (const pathValue of staticPathReferences(expression, bindings)) {
-      if (!isConcreteBoundaryPath(pathValue.value)) continue;
-      if (isHandledImportReference(pathValue.value, importedSpecifiers)) continue;
-      references.push({ ...pathValue, readOnly: false });
     }
   }
   return [...new Map(references.map((entry) =>
@@ -315,37 +300,6 @@ function pathReferences(source, { allowReadOnly = false, includeArrayPaths = fal
 
 function isHandledImportReference(value, importedSpecifiers) {
   return !value.startsWith('file:') && importedSpecifiers.has(value);
-}
-
-function ignoredPathTokens(tokens, { ignoreArrays, ignoreStringMatchers }) {
-  const processArgumentTokens = new Set();
-  const stringMatcherTokens = new Set();
-  const stringMatchers = new Set(['endsWith', 'includes', 'startsWith']);
-  for (let index = 0; index < tokens.length; index += 1) {
-    if (tokens[index].type !== 'identifier' || tokens[index + 1]?.value !== '(') continue;
-    const name = tokens[index].value;
-    const args = callArguments(tokens, index + 1);
-    if (PROCESS_PATH_OPERATIONS.has(name)) {
-      for (const argument of args) for (const token of argument) processArgumentTokens.add(token);
-    }
-    if (ignoreStringMatchers && stringMatchers.has(name)) {
-      for (const argument of args) for (const token of argument) stringMatcherTokens.add(token);
-    }
-  }
-  const arrayDataTokens = new Set();
-  for (let index = 0; ignoreArrays && index < tokens.length; index += 1) {
-    if (tokens[index].value !== '[') continue;
-    let depth = 1;
-    let end = index + 1;
-    for (; end < tokens.length && depth > 0; end += 1) {
-      if (tokens[end].value === '[') depth += 1;
-      else if (tokens[end].value === ']') depth -= 1;
-    }
-    if (depth === 0 && !processArgumentTokens.has(tokens[index])) {
-      for (let cursor = index; cursor < end; cursor += 1) arrayDataTokens.add(tokens[cursor]);
-    }
-  }
-  return { arrayDataTokens, stringMatcherTokens };
 }
 
 function staticPathReferences(expression, bindings, depth = 0) {
@@ -397,7 +351,7 @@ function expressionEnd(tokens, start) {
   return tokens.length;
 }
 
-function isReadOnlyPathReference(tokens, referenceIndex) {
+function isReadOnlyPathReference(tokens, referenceIndex, bindingDeclarations = []) {
   let foundRead = false;
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
@@ -409,9 +363,20 @@ function isReadOnlyPathReference(tokens, referenceIndex) {
       && !['import', 'require'].includes(name)) continue;
     if (!ARCHITECTURE_READ_OPERATIONS.has(name)) return false;
     if (name === 'open' || name === 'openSync') {
-      if (args[1]?.[0]?.type !== 'string' || args[1][0].value !== 'r') return false;
+      if (args[1]?.length !== 1 || args[1][0].type !== 'string' || args[1][0].value !== 'r') return false;
     }
     if (args[0]?.includes(tokens[referenceIndex])) foundRead = true;
+  }
+  const declaration = bindingDeclarations.find(({ start, end }) => referenceIndex >= start && referenceIndex < end);
+  if (declaration) {
+    let foundUse = false;
+    for (let index = 0; index < tokens.length; index += 1) {
+      if (index === declaration.declaration + 1 || tokens[index].type !== 'identifier'
+        || tokens[index].value !== declaration.name) continue;
+      foundUse = true;
+      if (!isReadOnlyPathReference(tokens, index)) return false;
+    }
+    if (foundUse) return true;
   }
   return foundRead;
 }

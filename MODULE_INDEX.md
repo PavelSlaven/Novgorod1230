@@ -47,6 +47,7 @@ Release: `0.23.0-migration.24`
 
 | Tool | Path | Purpose |
 |---|---|---|
+| `tools/architecture` | `tools/architecture` | Проверки архитектурных границ и структуры исходников репозитория. |
 | `@rus/audit-tools` | `tools/audit-tools` | Безопасная инвентаризация release/audit trees и проверка запрещённых путей. Пакет создаёт manifests, но не помещает ZIP или `dist` внутрь source tree. |
 | `@rus/cutover` | `tools/cutover` | Автономный migration-tool для управляемого 13-шагового переключения с legacy route на modular runtime. Инструмент применяет только versioned feature-flag profiles, запускает обязательные gates и выпускает доказуемый cutover report. |
 | `@rus/db-tools` | `tools/db-tools` | Автономные контракты и проверки для export/import/seed/audit операций БД. Инструмент не является runtime adapter и не выполняет SQL сам. |

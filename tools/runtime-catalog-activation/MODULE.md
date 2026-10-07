@@ -147,3 +147,11 @@ Migration, artifact, CLI и runtime-boundary ошибки имеют отдел�
 
 Parameterized/property unit suites для canonical/delta/digest logic и одна
 профильная PostgreSQL integration suite для migration/transaction/privileges.
+
+## Разрешённые зависимости
+
+```architecture-tool-app-dependencies
+[
+  {"source":"src/first-playable-v2-activation.js","target":"apps/game-server","reason":"The active v17 bootstrap includes production app artifact paths in the target catalog compatibility manifest"}
+]
+```

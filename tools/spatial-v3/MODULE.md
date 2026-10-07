@@ -22,7 +22,10 @@
 [
   {"source":"check-p14.mjs","target":"apps/game-server","reason":"Contract check reads application source as text without importing or spawning it"},
   {"source":"check-p15.mjs","target":"apps/game-server","reason":"Contract check reads application source as text without importing or spawning it"},
-  {"source":"check-p22.mjs","target":"apps/game-web","reason":"Contract check reads application source as text without importing or spawning it"}
+  {"source":"check-p16.mjs","target":"apps/game-server","reason":"P16 persistence boundary check reads app-owned persistence sources as text"},
+  {"source":"check-p21.mjs","target":"apps/game-server","reason":"Contract check reads application source as text without importing or spawning it"},
+  {"source":"check-p22.mjs","target":"apps/game-web","reason":"Contract check reads application source as text without importing or spawning it"},
+  {"source":"check-production-activation-boundary.mjs","target":"apps/game-server","reason":"Production activation boundary check reads application sources and package metadata as text"}
 ]
 ```
 

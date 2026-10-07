@@ -610,6 +610,18 @@
   "tools": [
     {
       "dependencies": [],
+      "name": "tools/architecture",
+      "owns": [
+        "статическими проверками импортов, модульных границ и production wiring",
+        "проверкой архитектурных контрактов по исходникам приложений"
+      ],
+      "path": "tools/architecture",
+      "public_entry": "—",
+      "purpose": "Проверки архитектурных границ и структуры исходников репозитория.",
+      "version": null
+    },
+    {
+      "dependencies": [],
       "name": "@rus/audit-tools",
       "owns": [
         "`createAuditManifest`",

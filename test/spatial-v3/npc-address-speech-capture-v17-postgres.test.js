@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { isAbsolute, resolve } from 'node:path';
 import test from 'node:test';
 import {
   bootstrapV17PresenceE2e,
@@ -12,8 +12,12 @@ import { turnStepOperationChoices } from
 
 const MANIFEST_PATH = resolve(process.cwd(),
   'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json');
-const CANDIDATES_PATH = '/srv/novgorod-work/fleet/tasks/n1-wire/out/captures/seeded-candidates.json';
-const CAPTURE_OUTPUT_DIR = '/srv/novgorod-work/fleet/tasks/npc-address-projection/out/captures/after';
+const CANDIDATES_PATH = process.env.NPC_ADDRESS_CAPTURE_CANDIDATES_PATH?.trim();
+const CAPTURE_OUTPUT_DIR = process.env.NPC_ADDRESS_CAPTURE_OUTPUT_DIR?.trim();
+const MISSING_CAPTURE_PATHS = [
+  !CANDIDATES_PATH && 'NPC_ADDRESS_CAPTURE_CANDIDATES_PATH',
+  !CAPTURE_OUTPUT_DIR && 'NPC_ADDRESS_CAPTURE_OUTPUT_DIR',
+].filter(Boolean);
 const TARGET_ORDINALS = new Map([
   ['novgorod_pine_ridge_approach_v1', [0]],
   ['novgorod_reed_backwater_entrance_v1', [0]],
@@ -105,7 +109,12 @@ function plannerResult(request, targetOrdinal) {
 
 test('capture production v17 speech payloads for all seeded NPCs', {
   timeout: 1_800_000,
+  skip: MISSING_CAPTURE_PATHS.length > 0
+    ? `set ${MISSING_CAPTURE_PATHS.join(' and ')} to run this capture`
+    : false,
 }, async (t) => {
+  assert.ok(isAbsolute(CANDIDATES_PATH), 'NPC_ADDRESS_CAPTURE_CANDIDATES_PATH must be absolute');
+  assert.ok(isAbsolute(CAPTURE_OUTPUT_DIR), 'NPC_ADDRESS_CAPTURE_OUTPUT_DIR must be absolute');
   const manifest = JSON.parse(await readFile(MANIFEST_PATH, 'utf8'));
   const candidates = JSON.parse(await readFile(CANDIDATES_PATH, 'utf8'));
   assert.equal(manifest.status, 'approved');

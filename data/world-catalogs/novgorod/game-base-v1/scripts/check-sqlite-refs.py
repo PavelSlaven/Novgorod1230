@@ -67,11 +67,9 @@ def quoted_value_end(line, target):
             opening = None
             target_inside = False
         elif quote is None and char in ('"', "'", '`'):
-            before = line[:index].rstrip()
-            if char == '"' or not before or before[-1] in "([{=:,":
-                quote = char
-                opening = index
-            elif before[-1].isspace():
+            previous = line[index - 1] if index else ''
+            if (char == '"' or not previous or previous.isspace() or
+                    previous in "([{=:,"):
                 quote = char
                 opening = index
         index += 1

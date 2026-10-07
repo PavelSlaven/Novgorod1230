@@ -222,6 +222,7 @@
         "physical access",
         "normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans",
         "immutable mechanics snapshots for template-less ordinary direct-action and admitted O1/O2a instances",
+        "ownership of the future normalized contract for item properties and immutable instance property snapshots; Stage 16 material selection currently arrives from `@rus/runtime-catalog` in `state.material_selection`. A1 material composition handoff is deferred to the separately accepted follow-up; a missing material basis must remain unknown and cannot produce a material result. This snapshot does not replace the existing mechanics or ownership owners",
         "approved property/container transitions that independently preserve owner, holder/controller, access, seal and document-content boundaries"
       ],
       "path": "packages/items-property",
@@ -292,7 +293,8 @@
         "code-only item placement primitive, который Stage 16 использует для equipment candidate → NPC/player instance resolution",
         "pure ordinary foundation helpers: density metadata, supporting-basis and prepared-group validation, stable refs and minimal aggregate transitions",
         "signed command tokens и проверкой bounded decisions",
-        "pure `materializeNpcRelationshipRules` resolves named NPC pairs only from an approved rule, exact D-2 composition lineage, explicit slot relationship fact, role match and same-household binding; each new outgoing edge carries the selected `{id, version}` as `source_rule_ref` in both projections, while existing edges are not rewritten; persistence remains with the party writer"
+        "pure `materializeNpcRelationshipRules` resolves named NPC pairs only from an approved rule, exact D-2 composition lineage, explicit slot relationship fact, role match and same-household binding; each new outgoing edge carries the selected `{id, version}` as `source_rule_ref` in both projections, while existing edges are not rewritten; persistence remains with the party writer",
+        "Один Stage 16 adapter создаёт начальное снаряжение игрока и NPC. Выбор материала принадлежит `@rus/runtime-catalog`; adapter переносит выбранный `material_category_id` и способ выбора в снимок экземпляра, без полного списка допустимых материалов. Существующий writer сохраняет `state`. Кандидат без material binding не получает материал из имени, визуала или догадки"
       ],
       "path": "packages/materialization",
       "public_entry": "./src/index.js",

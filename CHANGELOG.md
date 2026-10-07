@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(items): общий выбор материала из утверждённых привязок через selectApprovedItemMaterial в @rus/runtime-catalog; Stage 16 сохраняет material_category_id у снаряжения игрока и NPC (#178).
 - data(npc): apply Opus-approved address forms and evidence for #510
 - fix(npc): select address forms only for their materialized source rule, resolve role/occupation specificity, and preserve validated NPC profile refs on scene readback (#436, #532)
 - docs(runtime-plan): apply D149 slice scope labels and M7 place-generation coverage; keep structured WK technology outside the norm (#98)

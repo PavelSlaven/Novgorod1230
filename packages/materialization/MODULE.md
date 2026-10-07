@@ -20,6 +20,11 @@
   prepared-group validation, stable refs and minimal aggregate transitions;
 - signed command tokens и проверкой bounded decisions.
 - pure `materializeNpcRelationshipRules` resolves named NPC pairs only from an approved rule, exact D-2 composition lineage, explicit slot relationship fact, role match and same-household binding; each new outgoing edge carries the selected `{id, version}` as `source_rule_ref` in both projections, while existing edges are not rewritten; persistence remains with the party writer.
+- Один Stage 16 adapter создаёт начальное снаряжение игрока и NPC. Выбор
+  материала принадлежит `@rus/runtime-catalog`; adapter переносит выбранный
+  `material_category_id` и способ выбора в снимок экземпляра, без полного списка
+  допустимых материалов. Существующий writer сохраняет `state`. Кандидат без
+  material binding не получает материал из имени, визуала или догадки.
 
 ## Не делает
 

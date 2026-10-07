@@ -69,6 +69,7 @@ export { loadApprovedG4NaturalCatalog } from './g4-natural-catalog.js';
 export { loadApprovedG4NaturalPresentationCatalog } from './g4-natural-presentation-catalog.js';
 export { loadApprovedG4NaturalPlacementCatalog } from './g4-natural-placement-catalog.js';
 export { loadApprovedCanonicalNaturalInitialRule } from './g4-natural-canonical-initial-rule.js';
+export { selectApprovedItemMaterial } from './approved-record-snapshots.js';
 
 export const RUNTIME_CATALOG_SCOPE = 'item_container_materialization_v2';
 

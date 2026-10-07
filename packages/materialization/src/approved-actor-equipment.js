@@ -14,7 +14,9 @@ export function materializeApprovedActorEquipment({
   item_templates: itemTemplates,
   item_inventory_profiles: itemInventoryProfiles,
   item_visual_profiles: itemVisualProfiles,
-  catalog_digest: catalogDigest
+  catalog_digest: catalogDigest,
+  item_template_category_bindings: itemTemplateCategoryBindings = [],
+  select_item_material: selectItemMaterial
 }) {
   const actorByCandidate = actorCandidateMap(actorCandidateInstanceMap);
   const players = [...actorByCandidate.values()].filter(
@@ -40,6 +42,11 @@ export function materializeApprovedActorEquipment({
       itemInventoryProfiles, 'inventory_profile_id',
       candidate.inventory_profile_ref
     );
+    const materialSelection = resolveMaterialSelection({
+      itemTemplateId: template.item_template_id,
+      bindings: itemTemplateCategoryBindings,
+      selectItemMaterial
+    });
     const equipped = candidate.physical_position === 'equipped';
     const visualProfile = equipped ? exactApprovedRecord(
       itemVisualProfiles, 'visual_profile_id', candidate.visual_profile_ref
@@ -78,6 +85,7 @@ export function materializeApprovedActorEquipment({
       template,
       visualProfile,
       visualProfileSnapshot,
+      materialSelection,
       target,
       worldRevisionId,
       itemProfileCandidateId,
@@ -145,7 +153,7 @@ export function materializeApprovedActorEquipment({
 }
 
 function itemProfileCandidate({ candidate, profile, template, visualProfile, target,
-  visualProfileSnapshot,
+  visualProfileSnapshot, materialSelection,
   worldRevisionId, itemProfileCandidateId, quantityRequirementId }) {
   const carried = candidate.physical_position !== 'equipped';
   const actorKind = target.actor_kind === 'npc' ? 'npc' : 'player';
@@ -177,7 +185,8 @@ function itemProfileCandidate({ candidate, profile, template, visualProfile, tar
       condition: candidate.condition_state,
       mass_grams_per_unit: profile.mass_grams,
       external_hand_cost: profile.external_hand_cost,
-      weight: profile.mass_grams / 1000
+      weight: profile.mass_grams / 1000,
+      material_selection: structuredClone(materialSelection)
     },
     property_state: {
       owner_model: carried ? actorKind : 'pending_actor_binding',
@@ -307,11 +316,39 @@ function projectActorEquipmentInstance(item) {
     equipment_slot_category_id: placement.equipment_slot_category_id,
     state: {
       ...structuredClone(item.state ?? {}),
+      ...(item.physical_state?.material_selection ? {
+        material_selection: structuredClone(item.physical_state.material_selection)
+      } : {}),
       source_equipment_candidate_ref: item.equipment_candidate_id
         ?? item.source_trace.find(({ source_kind: kind }) =>
           kind === 'approved_initial_equipment_candidate')?.source_id
     }
   };
+}
+
+function resolveMaterialSelection({ itemTemplateId, bindings, selectItemMaterial }) {
+  const unknown = {
+    material_category_id: null,
+    mode: 'unknown',
+    data_gap: { code: 'ITEM_MATERIAL_BINDING_MISSING', item_template_id: itemTemplateId }
+  };
+  if (typeof selectItemMaterial !== 'function') return unknown;
+  const selection = selectItemMaterial({ item_template_id: itemTemplateId, bindings });
+  if (selection?.mode === 'unknown' && selection.material_category_id === null
+    && selection.data_gap?.code === unknown.data_gap.code
+    && selection.data_gap.item_template_id === itemTemplateId) {
+    return structuredClone(unknown);
+  }
+  if (selection?.mode === 'deterministic_from_approved_bindings'
+    && typeof selection.material_category_id === 'string'
+    && selection.material_category_id.length > 0
+    && !selection.data_gap) {
+    return {
+      material_category_id: selection.material_category_id,
+      mode: selection.mode
+    };
+  }
+  return unknown;
 }
 
 function exactApprovedRecord(values, key, id) {

@@ -72,6 +72,12 @@ reused by later projections.
 - `verifyCatalogImportLedger(...)` replays shared canonical record projection,
   exact table/record root digests and the immutable import audit root;
 - `selectApplicableItemCatalog({ verifiedCatalog, regionId, effectiveDate })`.
+- `selectApprovedItemMaterial({ item_template_id, bindings })` — общий чистый
+  выбор категории материала из утверждённых `item_template_category_bindings`.
+  При отсутствии явного утверждённого выбора берётся первый `category_id` после
+  сортировки; `mode` равен `deterministic_from_approved_bindings`. Это выбор по
+  порядку, не по сезону, занятию или иной причине. Stage 8 и Stage 16 используют
+  одну функцию. Отсутствующая привязка даёт `unknown` и типизированный пробел.
 - `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.
 - `RUNTIME_CATALOG_CONTRACT` и `RUNTIME_CATALOG_CONTRACT_DIGEST` из
   `@rus/runtime-catalog/runtime-contract`.

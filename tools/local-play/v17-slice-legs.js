@@ -527,6 +527,7 @@ export async function runLegs({
     `на экране: ${seen.npc.labels.map((label) => `«${label}»`).join(', ') || 'панель людей пуста'}; NPC в G6 игрока по SQL: ${seen.npc.sql_npcs.length}`);
   else if (seen.missingPanelNpc) set('meet', 'fail', `на месте ${seen.missingPanelNpc.place} восприятие допускает NPC, но панель людей пуста`,
     `Допущенных NPC: ${seen.missingPanelNpc.count}; на экране: панель людей пуста`);
+  else if (legs.walk.status !== 'pass') set('meet', 'blocked', 'зависимость walk не выполнена', legs.walk.reason);
   else set('meet', 'blocked', `${captureVisibilityConditions(last?.screen).admission_source === 'unknown'
     ? 'допуск восприятия неизвестен' : 'восприятие не допускает NPC при текущих условиях'} на местах: ${places.join(', ') || '—'} (${exploreEnd.reason ?? 'бюджет ходов'})`,
     `NPC-размещений во всей партии по SQL: ${last?.snap?.npc_placements_all?.length ?? '?'}`);

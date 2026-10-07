@@ -151,3 +151,39 @@ test('meet 569: captures before/response/after and renders known phase with unav
   assert.match(markdown, /"local_light":"unknown"/u);
   assert.match(markdown, /"visibility_factors":"unknown"/u);
 });
+
+test('meet 569: walk dependency blocks meet when opening already admits a person', async () => {
+  const fixture = world();
+  const start = scene({ admission: [admittedNpc], panel: [panelPerson] });
+  start.labels = ['Тропа'];
+  fixture.api.screen = async () => response({ screen: start });
+  fixture.api.newGame = async () => response({ party_id: 'p-1', screen: start });
+  fixture.maxTurns = 0;
+
+  const result = await runLegs(fixture);
+  const startLeg = result.legs.find(({ id }) => id === 'start');
+  const walkLeg = result.legs.find(({ id }) => id === 'walk');
+  const meet = meetStatus(result);
+  const openingConditions = result.opening.visibility_conditions_after_ack;
+  const preconditions = {
+    start_pass: startLeg.status === 'pass',
+    walk_blocked: walkLeg.status === 'blocked',
+    walk_blocked_by_budget: /бюджет/u.test(walkLeg.reason),
+    admitted_from_visible_context: openingConditions.admission_source === 'visible_context',
+    admitted_count: openingConditions.admitted_npcs_count,
+    panel_people_count: openingConditions.panel_people_count,
+    turns_zero: result.turns.length === 0,
+    meet_blocked: meet.status === 'blocked'
+  };
+  console.log(`walk dependency preconditions: ${JSON.stringify(preconditions)}`);
+  assert.equal(preconditions.start_pass, true);
+  assert.equal(preconditions.walk_blocked, true);
+  assert.equal(preconditions.walk_blocked_by_budget, true);
+  assert.equal(preconditions.admitted_from_visible_context, true);
+  assert.equal(preconditions.admitted_count, 1);
+  assert.equal(preconditions.panel_people_count, 1);
+  assert.equal(preconditions.turns_zero, true);
+  assert.equal(preconditions.meet_blocked, true);
+  assert.equal(meet.reason, 'зависимость walk не выполнена');
+  assert.doesNotMatch(meet.reason, /не допускает/u);
+});

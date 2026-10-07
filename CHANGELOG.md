@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- docs(runtime-plan): apply owner decisions D147/D148 and the D49+ final delta; move the playable slice and player start to M2c, retain M7 seeding, and update merge and progress gates (#98)
 - docs(governance): WR §21.1 — an approval record names the exact approved bytes: path and sha256 of the approved content (git commit when available) and the date; no signatures or receipts (owner decisions D142, D144)
 - fix(game-base): resolve Novgorod SQLite refs exactly from the tracked read-only source; fail closed on unchecked refs (#469)
 - fix(spatial): allow visible-package persistence against matching committed v0 snapshot (#467)

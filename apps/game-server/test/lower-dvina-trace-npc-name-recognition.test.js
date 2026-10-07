@@ -39,8 +39,8 @@ test('exact self-introduction recognizes only its stable speaking NPC', () => {
   assert.deepEqual(visible.visible_npc.map(({ entity_ref: ref, display_label,
     recognition }) => [ref.entity_id, display_label, recognition]), [
     ['npc-eremey', 'Еремей', 'recognized'],
-    ['npc-fisher-2', 'человек (2)', 'unrecognized'],
-    ['npc-fisher-3', 'человек (3)', 'unrecognized']
+    ['npc-fisher-2', 'человек', 'unrecognized'],
+    ['npc-fisher-3', 'человек', 'unrecognized']
   ]);
 });
 
@@ -72,8 +72,8 @@ test('committed perceived self-introduction survives player-safe reload', () => 
   assert.deepEqual(safe.current_visible_context.visible_npc.map(
     ({ display_label, recognition }) => [display_label, recognition]), [
     ['Еремей', 'recognized'],
-    ['человек (1)', 'unrecognized'],
-    ['человек (2)', 'unrecognized']
+    ['человек', 'unrecognized'],
+    ['человек', 'unrecognized']
   ]);
   assert.equal(safe.active_interlocutor, undefined);
 });
@@ -114,11 +114,11 @@ test('mentioning a canonical name does not reveal NPC identity', () => {
     } } },
     retrieved_state: { current_visible_context: context() }
   }, { actors, ids: { eremeyRef: actors[0].ref } });
-  assert.equal(visible.visible_npc[0].display_label, 'человек (1)');
+  assert.equal(visible.visible_npc[0].display_label, 'человек');
   assert.equal(visible.visible_npc[0].recognition, 'unrecognized');
 });
 
-test('group conversation keeps identical replies attributable', () => {
+test('group conversation keeps exact replies without synthetic speaker numbers', () => {
   const playerStatementRef = {
     entity_kind: 'conversation_statement', entity_id: 'statement-player'
   };
@@ -165,19 +165,19 @@ test('group conversation keeps identical replies attributable', () => {
     } });
 
   assert.equal(visible.visible_scene, 'стан');
-  assert.equal(visible.visible_changes.filter((change) =>
-    /человек \(\d\) говорит:/u.test(change)).length, 3);
   assert.deepEqual(visible.visible_changes, [
     'Вы пришли в стан.',
-    'человек (1) говорит: «Одинаковый ответ.»',
-    'человек (2) говорит: «Одинаковый ответ.»',
-    'человек (3) говорит: «Одинаковый ответ.»'
+    'человек говорит: «Одинаковый ответ.»'
   ]);
+  assert.deepEqual(visible.visible_npc.map(({ entity_ref }) =>
+    entity_ref.entity_id), actors.map(({ instance_id }) => instance_id));
   assert.ok(visible.visible_npc.every(({ visible_status: status }) =>
     status === 'говорит с вами'));
+  assert.ok(visible.visible_npc.every(({ display_label }) =>
+    !/\(\d+\)/u.test(display_label)));
 });
 
-test('group labels are renumbered after a non-first self-introduction', () => {
+test('group labels retain recognized aliases without synthetic numbers', () => {
   const visible = phase3ConversationProjection(groupReplyInput([
     'Первый ответ.',
     'Здравствуйте. Я Влас. Об этом я ничего подтвердить не могу.',
@@ -186,13 +186,13 @@ test('group labels are renumbered after a non-first self-introduction', () => {
 
   assert.deepEqual(visible.visible_changes.map((line) =>
     line.match(/^(.*?) (?:говорит|промолчал|не ответил)/u)?.[1]), [
-    'человек (1)', 'Влас', 'человек (2)'
+    'человек', 'Влас', 'человек'
   ]);
   assert.deepEqual(visible.visible_npc.map(({ entity_ref: ref, display_label,
     recognition }) => [ref.entity_id, display_label, recognition]), [
-    ['npc-eremey', 'человек (1)', 'unrecognized'],
+    ['npc-eremey', 'человек', 'unrecognized'],
     ['npc-fisher-2', 'Влас', 'recognized'],
-    ['npc-fisher-3', 'человек (2)', 'unrecognized']
+    ['npc-fisher-3', 'человек', 'unrecognized']
   ]);
 });
 
@@ -229,9 +229,9 @@ test('group conversation shows silence and unavailable targets', () => {
   }, { actors, ids: { eremeyRef: actors[0].ref } });
 
   assert.deepEqual(visible.visible_changes, [
-    'человек (1) говорит: «Первый ответ.»',
-    'человек (2) промолчал.',
-    'человек (3) не ответил.'
+    'человек говорит: «Первый ответ.»',
+    'человек промолчал.',
+    'человек не ответил.'
   ]);
   assert.deepEqual(visible.visible_npc.map(({ visible_status: status }) =>
     status), ['говорит с вами', 'молчит после вашего обращения', 'не ответил']);

@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "e190e2c0cfcd1d0c5c3aa48291a873329ca9e0d6c2c656cdf4ac2265800fceaa",
+  "baseline_manifest_sha256": "b83c6e7a7d9ce3e479e9317d0d6f6f610b446e974834e312577e4cf30ddd6f3d",
   "default_statuses": [
     "active",
     "reference"
@@ -1007,6 +1007,46 @@
         "npc-generation-profiles",
         "llm-agent-prompt-templates"
       ]
+    },
+    {
+      "document_id": "npc-family-household-contract",
+      "document_type": "canonical_normative",
+      "subsystems": [
+        "npc",
+        "social",
+        "conversation"
+      ],
+      "related_document_ids": [
+        "contract-index",
+        "npc-autonomous-decision-contract",
+        "npc-conversation-mode-contract",
+        "items-and-property",
+        "code-driven-world-materialization-architecture"
+      ],
+      "related_module_paths": [
+        "packages/actors",
+        "packages/materialization",
+        "packages/items-property",
+        "packages/npc-runtime",
+        "packages/visibility-knowledge-memory"
+      ],
+      "related_contracts": [
+        "NPC household membership and named relationships",
+        "NPC subjective knowledge and conversation"
+      ],
+      "search_terms": [
+        "семья",
+        "двор",
+        "старшинство",
+        "именованные связи",
+        "родство",
+        "служба",
+        "household",
+        "kinship",
+        "household membership",
+        "NPC relationships"
+      ],
+      "conflicts_with_document_ids": []
     },
     {
       "document_id": "turn-step-llm-contract",

@@ -249,6 +249,10 @@ export function phase4PendingScreen({ state, factual, visibleEnvelope, turnNumbe
       package_id: visibleEnvelope.package_id, package_digest: visibleEnvelope.package_digest,
       narration_output_digest: null },
     visible_context: phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    ...(state.last_turn?.exact_npc_utterances?.length ? {
+      exact_npc_utterances: structuredClone(
+        state.last_turn.exact_npc_utterances)
+    } : {}),
     checks: projectPlayerSafeChecks(state),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.' };
   screen.screen_digest = phase2ScreenDigest(screen);

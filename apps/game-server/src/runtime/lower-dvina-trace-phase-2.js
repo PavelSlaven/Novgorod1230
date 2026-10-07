@@ -36,6 +36,7 @@ import { createSemanticConversationCommand } from
 import { createTraceExpansionCommands } from
   './lower-dvina-trace-expansion-commands.js';
 import { createTraceLocalSceneCommands } from './lower-dvina-trace-local-scene-commands.js';
+import { createLiveWorldCombatCommand } from './live-world-combat-command.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   turnStepSemanticGroundingValidator = null, playerConversationModel = null,
@@ -288,7 +289,8 @@ export function createLowerDvinaTracePhase2Runtime({
           phase8Contracts,
         });
         const registry = authored ? await liveWorldTurnRegistry({ state,
-          requestId, spatialExpansionRuntime, spatialLocalSceneRuntime,
+          repository, partyId, requestId, idempotencyKey, turnBudget,
+          spatialExpansionRuntime, spatialLocalSceneRuntime,
           inputDigest, authoredTurnProfile, playerConversationModel,
           npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion,
           onLabelGapsOmitted: recordVisiblePackageDiagnostic })
@@ -432,9 +434,14 @@ function liveWorldTurnContracts(authoredTurnProfile) {
   });
 }
 
-async function liveWorldTurnRegistry(context) {
+export async function liveWorldTurnRegistry(context) {
   const blocked = () => ({ status: 'blocked', can_attempt: false,
     check_requests: [] });
+  const sceneTargets = (context.state?.npcs ?? []).filter((npc) =>
+    npc.scene_readback_present === true
+      && npcSharesPlayerScene(context.state, npc));
+  const combatCommand = sceneTargets.length > 0
+    ? createLiveWorldCombatCommand(context) : null;
   return createTurnCommandRegistry([{
     command_id: 'live_world_semantic_boundary',
     option_id: 'live_world_semantic_boundary',
@@ -448,7 +455,9 @@ async function liveWorldTurnRegistry(context) {
     availability: blocked,
     consequence: blocked,
     writeTargets: () => []
-  }, ...liveWorldConversationCommands(context),
+  },
+  ...(combatCommand ? [combatCommand] : []),
+  ...liveWorldConversationCommands(context),
   ...await createTraceLocalSceneCommands(context),
   ...await createTraceExpansionCommands(context)]);
 }

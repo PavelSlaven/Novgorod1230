@@ -50,8 +50,9 @@ test('occupied local edge in visible context carries its status onto the route p
   const options = screen.panels.route.data.movement.options;
   // Same text the actor would submit as the command's visible label — the panel
   // and the operation must never disagree on what is "the exact displayed label".
-  assert.deepEqual(options.find((option) => option.label.startsWith('Проход 1')),
-    { label: 'Проход 1 (проход занят)', knowledge_state: 'known', status: 'occupied' });
+  // D72: observed occupancy remains; a service ordinal cannot be its identity.
+  assert.deepEqual(options.find((option) => option.label === 'проход (проход занят)'),
+    { label: 'проход (проход занят)', knowledge_state: 'known', status: 'occupied' });
   assert.ok(options.some((option) => !('status' in option)),
     'the scripted route option stays unaffected');
 });

@@ -86,6 +86,7 @@ export const TABLE_MODES = Object.freeze({
   party_npc_knowledge_merge_states: ['inserts', 'updates'],
   party_npc_knowledge: ['inserts'],
   party_npcs: ['inserts', 'updates'],
+  party_npc_relations: ['inserts'],
   party_npc_traits: ['inserts'],
   party_items: ['inserts', 'updates'],
   party_item_placements: ['inserts', 'updates'],
@@ -173,7 +174,9 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                           : write?.target_table === 'party_check_resolutions' ? write.record?.check_resolution_id === write.id
                             : write?.target_table === 'party_actor_npc_interactions' ? write.record?.interaction_id === write.id
                               : write?.target_table === 'party_actor_npc_interaction_summaries' ? write.record?.summary_id === write.id
-                                : write?.target_table === 'party_npcs' ? write.record?.npc_id === write.id
+                                  : write?.target_table === 'party_npcs' ? write.record?.npc_id === write.id
+                                    : write?.target_table === 'party_npc_relations'
+                                      ? write.id === `${write.record?.party_id}:${write.record?.from_npc_id}:${write.record?.to_npc_id}:${write.record?.relation_category_id}`
                                   : write?.target_table === 'party_npc_traits' ? write.id === `${write.record?.npc_id}:${write.record?.trait_domain}:${write.record?.category_id}`
                                     : write?.target_table === 'party_items' ? write.record?.item_id === write.id
                                       : write?.target_table === 'party_item_placements' ? write.record?.item_id === write.id
@@ -206,6 +209,11 @@ export function childParentIdentities(write) {
   switch (write?.target_table) {
     case 'party_materialization_choices':
       return [`party_runtime.party_materialization_runs:${write.record?.run_id}`];
+    case 'party_npc_relations':
+      return [
+        `party_runtime.party_npcs:${write.record?.from_npc_id}`,
+        `party_runtime.party_npcs:${write.record?.to_npc_id}`
+      ];
     case 'party_combat_sessions':
       return [`party_runtime.party_v3_change_sets:${write.record?.last_change_set_id}`];
     case 'party_activity_participant_bindings':

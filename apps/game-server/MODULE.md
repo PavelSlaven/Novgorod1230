@@ -5,6 +5,32 @@
 Server передаёт актуальные восприятие, память, тело, время, причины и остаток
 действия от существующих owners; литературную композицию выполняет narration.
 
+Чистотой видимого текста (D72) владеет `public-boundary`: один детерминированный
+detector применяется к отображаемым полям, player-safe проекциям и generated
+prose. Структурные refs, selectors и исходный ввод игрока не являются прозой.
+Narration adapter передаёт обязательный code-owned output admission в существующий
+bounded workflow: marker rejection использует единственный semantic repair,
+проверяется повторно до `approved`/ready persistence и при повторном нарушении
+остаётся retryable pending. Committed мир и identity хода сохраняются; admission
+failure не даёт factual terminal delivery и не становится поздним HTTP 500.
+
+Narration-specific WK projection опускает известные leading calibration prefixes
+из reviewed `runtime_text`, сохраняя adjacent qualifiers, evidence и claim refs;
+общий helper `@rus/turn` по-прежнему опускает дублирующий `context_text`.
+Writer, repair и auditor получают явное требование передать неопределённость,
+directness, confidence и предел typicality обычной речью возле соответствующего
+факта. Canonical WK bundle и wire других consumers не переписываются.
+Format repair разговора получает исходный request, полный original output и
+конкретные validation errors; marker-specific semantic retry остаётся отдельным.
+Marker-specific retry сохраняет исходный contribution и speech act; повторная
+грязная реплика или изменение акта завершаются штатным typed fail-closed до
+NPC proposal, без синтеза слов или применения вклада.
+Error envelope проверяет динамический message независимо от allowlist code:
+грязный validation message заменяется общим текстом с сохранением HTTP 400
+и структурного кода; поле и служебная диагностика игроку не отражаются.
+Pass-target projection сохраняет одинаковые наблюдаемые подписи без номеров;
+разные action refs сохраняются. Различимые описания — пробел данных, не UI fallback.
+
 Development-only gameplay gap tracing использует существующий private party
 log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
 контекст, WK planner/query/consumer slice и owner commit/rejection. Эти поля
@@ -403,7 +429,7 @@ Domain-command ledger contracts сохраняются.
 
 ## Не владеет
 
-Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy вне ролей, явно назначенных активными контрактами (NPC combat: `lower-dvina-trace-combat-llm.js`, §§32–33), narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
 
 ## Public API и контракты
 
@@ -768,6 +794,28 @@ outcome воды вне SQL transaction.
 Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Публичные категории отказа хода (HTTP 409, `src/http/contracts.js`): `TURN_NOT_SAVED` (`TURN_STEP_PLAN_INVALID`) и `WORLD_ACTION_UNAVAILABLE` (`M2C_TARGET_A1_APPLICABILITY_DATA_GAP`) — только при `turn_commit_status: not_started`, с безопасным текстом «Ход не сохранён…»; остальные 5xx маскируются `TEMPORARY_ACTION_UNAVAILABLE`, внутренняя причина — в server log. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
 
 ## Production activation и тесты
+
+Combat #224/D65 keeps mechanics in the shared `@rus/body-state` and `@rus/npc-runtime` owners; scenario code does not own combat rules. `combat-min-data.js` validates the scoped qualitative-profile approval and source pin, and builds the materialized-NPC initialization DTO only from the exact D67-approved bytes. Active v17 bindings still omit `combatBodyBandContext`; combat body bands therefore remain typed gaps in production until authoritative actor scope and a separate versioned v17 cutover are approved. The body initialization approval does not activate the broader combat bundle.
+
+The generic live-world `request_combat` command implementation derives
+candidate presence only from `scene_readback_present`, which marks rows read by
+the current scene owner and is not combat approval. An absent body row receives
+the exact D67-approved initialization DTO only after successful authoritative
+readback; a conflicting approved materialization profile remains a typed gap.
+The command is registered when the current scene has a target, regardless of
+unrelated NPC body rows. The initialization DTO is transient combat-owner input:
+snapshots and ordinary-turn/model projections do not retain or expose it.
+Execution remains fail-closed until a separate generic profile and v17 cutover
+are approved, so registration alone cannot start combat.
+The codes `combat_actor_body_state_required`,
+`combat_actor_unavailable`, and
+`combat_actor_execution_profile_required` remain private diagnostics and are
+not whole-turn HTTP 409 responses. When registered, its mode uses only blocks
+already allowed by `@rus/turn` (`party_state`, `current_position`,
+`relevant_npcs`). Scene positions loaded for the current
+turn are transient; snapshot stripping restores an existing NPC's prior
+`position_id` and `g6_instance_id`, while persisted placement records remain
+the source for refreshed scene presence.
 
 The separately callable v17 target release factory remains outside the default
 selector. It requires the exact issued item and actor successor approvals,

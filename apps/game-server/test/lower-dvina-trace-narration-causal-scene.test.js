@@ -73,8 +73,8 @@ async function assertCurrentWire(visible, required, omitted = []) {
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.equal(wire.optional_support.visible_scene,
-      visible.visible_scene);
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visible.visible_scene });
     const facts = wire.required_current_beat.changes.map(({ text }) => text);
     for (const fact of required) assert.ok(facts.includes(fact), fact);
     for (const fact of omitted) assert.equal(call.messages[1].content.includes(fact), false, fact);
@@ -203,7 +203,8 @@ test('observation preserves separately visible NPCs with the same label', async 
   scene.sensory_details = [];
   scene.visible_npc = ['first', 'second'].map((id) => ({
     entity_ref: { entity_kind: 'npc', entity_id: id },
-    display_label: 'рыбак', recognition: 'unrecognized'
+    display_label: 'рыбак', recognition: 'unrecognized',
+    visible_status: 'чинит снасти'
   }));
   const input = { consequence: { visible_seed: {} },
     retrieved_state: currentSceneState(scene),
@@ -218,9 +219,10 @@ test('observation preserves separately visible NPCs with the same label', async 
 
   assert.deepEqual(visible.visible_changes, [
     'Вы внимательно изучили обстановку.',
-    'В поле зрения — рыбак (1).',
-    'В поле зрения — рыбак (2).'
+    'В поле зрения — рыбак: чинит снасти.'
   ]);
+  assert.deepEqual(visible.visible_npc.map(({ entity_ref }) =>
+    entity_ref.entity_id), ['first', 'second']);
 });
 
 test('ordinary seed keeps new observation and drops elapsed prose and old snapshot', async () => {

@@ -17,8 +17,10 @@ import LIVE_WORLD_TURN_PROFILE from
   '../../../data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json'
   with { type: 'json' };
 import { canonicalDigest } from '@rus/materialization';
-import { liveWorldConversationCommands } from
+import { liveWorldConversationCommands, liveWorldTurnRegistry } from
   '../src/runtime/lower-dvina-trace-phase-2.js';
+import { SCENE_NPC_SOURCE, withSceneNpcs } from
+  '../src/infrastructure/postgres/scene-npcs-readback.js';
 import { conversationTemporalOwner, createM2ConversationModels } from
   './lower-dvina-trace-m2-conversation-fixture.js';
 import SCENE_PRESENTATION from
@@ -125,6 +127,64 @@ test('authored submitTurn uses common workflow with null perception profile',
     assert.equal(f.bundleRequests.length, 0);
     assert.equal(result.screen.scenario_id, 'vikhtuy_fishing_camp_v1');
     assert.equal(result.screen.screen_kind, 'live_world_turn');
+  });
+
+test('blocked live-world combat request repairs into an ordinary narrated turn',
+  async () => {
+    let plannerCalls = 0;
+    let sawUnavailable = false;
+    let availableOperations = null;
+    const { f, candidateNpcId, candidateReadbackCount,
+      readbackCount } = await markedLiveWorldFixture({
+      turnStepModel: (request, repairContext) => {
+        plannerCalls += 1;
+        if (plannerCalls === 1) {
+          availableOperations = request.available_domain_operations;
+        }
+        if (repairContext) {
+          sawUnavailable = repairContext.structural_errors?.some(
+            ({ rule }) => rule === 'domain_owner_unavailable') === true;
+          return observationPlan(request);
+        }
+        return domainPlan(request, { op: 'request_combat',
+          actor_ref: request.actor.actor_id, intent_kind: 'engage',
+          target_refs: [candidateNpcId],
+          protected_refs: [], scope_ref: null, destination_ref: null,
+          force_limit: 'ordinary', risk_posture: 'ordinary' });
+      }
+    });
+    const state = await f.repository.loadPhase2State(f.partyId);
+    const registry = await liveWorldTurnRegistry({ state,
+      repository: f.repository, partyId: f.partyId,
+      idempotencyKey: 'combat-blocked-repair-registry' });
+    assert.ok(registry.registered().some(({ command_id: id }) =>
+      id === 'live_world.request_combat'));
+
+    const result = await submit(f, turn('combat-blocked-repair',
+      'Начинаю бой с человеком рядом.'));
+
+    assert.ok(readbackCount() > 0);
+    assert.ok(candidateReadbackCount() > 0);
+    assert.equal(availableOperations?.some(({ operation }) =>
+      operation?.op === 'request_combat'), false);
+    assert.equal(plannerCalls, 2);
+    assert.equal(sawUnavailable, true);
+    assert.equal(f.commitCount(), 1);
+    assert.equal(result.screen.screen_kind, 'live_world_turn');
+    assert.equal(typeof result.screen.main_prose, 'string');
+  });
+
+test('ordinary observation commits and narrates with NPCs marked by scene readback',
+  async () => {
+    const { f, readbackCount } = await markedLiveWorldFixture({
+      turnStepModel: observationPlan
+    });
+    const result = await submit(f, turn('combat-marked-observation',
+      'Осматриваюсь.'));
+    assert.ok(readbackCount() > 0);
+    assert.equal(f.commitCount(), 1);
+    assert.equal(result.screen.screen_kind, 'live_world_turn');
+    assert.equal(typeof result.screen.main_prose, 'string');
   });
 
 test('revision 15 early turns carry the Phase 7 action policy pin', async () => {
@@ -646,6 +706,73 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
 
 function submit(f, input) {
   return f.runtime.submitTurn({ partyId: f.partyId, input });
+}
+
+async function markedLiveWorldFixture({ turnStepModel }) {
+  const seed = fixture({ scenarioBundle: bundle13,
+    materializationBundle: bundle13 });
+  const state = structuredClone(seed.state);
+  state.scenario_id = 'vikhtuy_fishing_camp_v1';
+  state.position.location_ref = 'trace_ld_v1_loc_fishing_camp';
+  state.position.site_id = 'site:combat-fixture';
+  state.position.position_id = 'pos:player';
+  state.position.g6_instance_id = 'g6:combat-fixture';
+  state.scene_presentation = structuredClone(SCENE_PRESENTATION);
+  const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
+    artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
+    revision: LIVE_WORLD_TURN_PROFILE.revision,
+    digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
+  } };
+  const f = fixture({ committedState: state, authoredTurnProfile: profile,
+    postActionPerceptionProfile: null, turnStepModel });
+  const positions = [{ id: state.position.position_id,
+    g6_instance_id: state.position.g6_instance_id }];
+  const sceneRows = state.npcs.map((npc) => {
+    const id = npc.instance_id;
+    const positionId = `pos:${id}`;
+    positions.push({ id: positionId,
+      g6_instance_id: state.position.g6_instance_id });
+    return { npc_id: id, profile_set_id: npc.profile_id ?? 'fixture-npc-profile',
+      profile_level: npc.profile_level ?? 'background',
+      anchor_id: state.position.g5_anchor_id,
+      identity_state: npc.identity_state ?? {},
+      machine_state: npc.machine_state ?? { status: 'active' },
+      semantic_state: npc.semantic_state ?? {},
+      role_ref: npc.role_ref?.id ?? 'fixture-role',
+      occupation_ref: npc.occupation_ref?.id ?? 'fixture-occupation',
+      skill_profile_snapshot: npc.skill_profile_snapshot ?? {},
+      knowledge_profile_snapshot: npc.knowledge_profile_snapshot ?? {},
+      attribute_profile_snapshot: npc.base_attributes ?? {},
+      profile_candidate_set_digest: npc.profile_candidate_set_digest ?? 'fixture',
+      body_profile_ref: null, health: null, energy: null, satiety: null,
+      body_state_version: null, position_id: positionId,
+      g6_instance_id: state.position.g6_instance_id };
+  });
+  const pool = { async query(text) {
+    if (/FROM party_runtime\.party_actor_body_states/u.test(text)) {
+      return { rows: [] };
+    }
+    if (/SELECT pos\.id,/u.test(text)) return { rows: positions };
+    return { rows: sceneRows };
+  } };
+  const load = f.repository.loadPhase2State.bind(f.repository);
+  let readbackCount = 0;
+  let candidateReadbackCount = 0;
+  const candidateNpcId = state.npcs[0]?.instance_id;
+  f.repository.loadPhase2State = async (...args) => {
+    const loaded = await withSceneNpcs(pool, f.partyId,
+      await load(...args));
+    const marked = loaded.npcs.filter(({ scene_readback_present: present,
+      runtime_source: source }) => present === true
+        || source === SCENE_NPC_SOURCE).length;
+    readbackCount += marked;
+    if (loaded.npcs.some(({ instance_id: id, scene_readback_present: present }) =>
+      id === candidateNpcId && present === true)) candidateReadbackCount += 1;
+    return loaded;
+  };
+  return { f, candidateNpcId,
+    candidateReadbackCount: () => candidateReadbackCount,
+    readbackCount: () => readbackCount };
 }
 
 function turn(key, rawText) {

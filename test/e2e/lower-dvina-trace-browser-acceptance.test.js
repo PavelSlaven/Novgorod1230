@@ -21,7 +21,7 @@ const PHASE2_GENERAL_LOOK = ['look', 'Осмотреться'];
 
 test('Chromium restores a saved party through production-v16 and PostgreSQL', {
   timeout: 360_000,
-  skip: !CHROME_PATH && 'Chrome or Chromium executable not found.'
+  skip: 'D97: прохождение старого сценария (ревизии 34/35) не поддерживается; тест удаляется после переноса сюжета в старт v17 и полного прогона (D101)'
 }, async (context) => {
   const environment = await startLowerDvinaProductionAcceptanceEnv({
     llmRespond: createCanonicalPhase11LlmResponder()

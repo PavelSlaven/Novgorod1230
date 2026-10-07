@@ -77,6 +77,7 @@ source scope нельзя заменить отдельным caller ref.
   `occupied_site_default` → `genuinely_unowned` (только с explicit closed cause).
   Legacy v1 precedence сохраняется только для O1; ambiguity является data gap
 - `resolveInventoryMechanicsProfile` — выбирает ровно один источник механики: authored template profile, template-less direct-action v1 snapshot либо disjoint committed O1 v2 snapshot
+- `projectCommittedInventoryMechanicsProfile` — проецирует шесть mechanics fields committed v5 profile; defaults применяются только к отсутствующим или `undefined` полям (`packing_slot_cost: 0`, `quantity: null`, `container: null`), без мутации или ранней валидации
 
 ## Контракты и инварианты
 

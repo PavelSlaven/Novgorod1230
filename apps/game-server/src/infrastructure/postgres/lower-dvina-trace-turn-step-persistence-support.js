@@ -4,13 +4,15 @@ import {
   createRuntimeInstanceMechanicsSnapshot
 } from '@rus/items-property';
 import { serverError } from '../../errors.js';
+import { withoutTransientDestinationOrigin } from
+  './lower-dvina-trace-turn-step-state.js';
 
 export function attachTurnStepCommit({ snapshot, envelope, idemId }) {
   if (envelope == null) return snapshot;
   const next = structuredClone(snapshot);
   next.last_turn = {
     ...(next.last_turn ?? {}),
-    turn_step_commit: structuredClone(envelope),
+    turn_step_commit: withoutTransientDestinationOrigin(envelope),
     turn_step_idempotency_record_id: idemId
   };
   return next;

@@ -13,6 +13,8 @@
 
 ## Как пересобрать и проверить
 
+Для standalone-сборки после изменения overlay сначала из корня `game-base-v1` выполните `python3 scripts/build-master-material-view.py`. Он строит узкое представление из неизменённого `sources/master-archive-v1` и `source-overlays/master-material-materials.csv` в `generated/master-material-material-view.json`; `generated-freshness.test.mjs` запускает producer автоматически перед сборщиками.
+
 ```
 python3 scripts/build.py              # пишет все CSV/JSON и scripts/build_counts.json
 python3 scripts/build.py --check      # сравнивает ожидаемые байты без записи в checkout

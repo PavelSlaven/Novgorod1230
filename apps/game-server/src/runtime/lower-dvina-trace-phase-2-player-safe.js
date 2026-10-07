@@ -40,6 +40,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       committed_state: committedState,
       working_projection_authority: workingProjectionAuthority
     });
+    const actorRole = projected.actor?.role;
     const preparedOrdinaryPlan =
       input.prepared_ordinary_materialization_atomic_write_plan;
     const basePlayerSafeState = projectPreparedOrdinaryScene(
@@ -82,7 +83,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     if (typeof ordinaryDiscoveryEnablementMarker !== 'function'
         || typeof ordinaryDiscoveryResolver !== 'function') {
       return { ...base, player_safe_state:
-        projectLowerDvinaTraceTurnStepPlannerState(npcState) };
+        projectLowerDvinaTraceTurnStepPlannerState(npcState, actorRole) };
     }
     const scopeId = committedState.position?.g6_id
       ?? committedState.position?.g6_ref
@@ -91,13 +92,13 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
         ? ordinaryDiscoveryScopeBinding.g6_ref : null);
     if (typeof scopeId !== 'string' || !scopeId) {
       return { ...base, player_safe_state:
-        projectLowerDvinaTraceTurnStepPlannerState(npcState) };
+        projectLowerDvinaTraceTurnStepPlannerState(npcState, actorRole) };
     }
     const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
       scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
     if (enabled !== true && enabled?.discovery_available !== true) {
       return { ...base, player_safe_state:
-        projectLowerDvinaTraceTurnStepPlannerState(npcState) };
+        projectLowerDvinaTraceTurnStepPlannerState(npcState, actorRole) };
     }
     const withSources = projectLowerDvinaTraceO2aDiscoverySources({
       projected:{...base,player_safe_state:npcState},
@@ -116,7 +117,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     });
     return {...withSources,initial_working_projection:initialWorkingProjection,
       player_safe_state:projectLowerDvinaTraceTurnStepPlannerState({
-        ...withScene,...capability})};
+        ...withScene,...capability}, actorRole)};
   };
 }
 
@@ -145,7 +146,7 @@ function projectObservedEvidenceInspection({ playerSafeState,
   };
 }
 
-export function projectLowerDvinaTraceTurnStepPlannerState(state) {
+export function projectLowerDvinaTraceTurnStepPlannerState(state, actorRole = null) {
   const { npcs: _npcs, visible_npcs: _visibleNpcs,
     scene_npcs: _sceneNpcs, ...safe } = state;
   const actorRef = safe.actor_id;
@@ -157,8 +158,11 @@ export function projectLowerDvinaTraceTurnStepPlannerState(state) {
       ? [[ref.entity_id, { op: 'request_movement', actor_ref: actorRef,
           target_ref: ref.entity_id, movement_kind: 'local' }]]
       : [])).values()];
-  return localMovement.length === 0 ? safe : { ...safe,
+  const projected = localMovement.length === 0 ? safe : { ...safe,
     available_domain_operations: localMovement };
+  const safeActorRole = typeof actorRole === 'string'
+    ? actorRole.trim() : '';
+  return safeActorRole ? { ...projected, actor_role: safeActorRole } : projected;
 }
 
 function projectLowerDvinaTraceN1Capability({ playerSafeState,

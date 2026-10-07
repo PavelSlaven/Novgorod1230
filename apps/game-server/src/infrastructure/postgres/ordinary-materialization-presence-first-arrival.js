@@ -262,6 +262,7 @@ async function loadPrimaryPlaceFamilyCompositions({ primaryIds, ...readerInput }
       compositions.push({ place_family_id: composition.place_family_id,
         composition_ref: composition.composition_ref,
         population_groups: composition.population_groups,
+        slot_relationships: structuredClone(composition.slot_relationships),
         scheduled_absences: structuredClone(composition.scheduled_absences ?? []) });
     }
   }

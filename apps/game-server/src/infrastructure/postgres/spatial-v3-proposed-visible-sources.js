@@ -20,6 +20,7 @@ const gap = () => { throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
 /** Read committed mutable facts on the caller's transaction; scene geometry comes only from P16 overlay. */
 export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, worldBaseReader,
   actorId, sourceLocation, expansionClosure, readCurrentEnvironment, readTargetConditions,
+  itemLabels = {},
   readEntityExterior = readCommittedEntityExterior, readKnowledge = readPlayerKnowledge,
   readExitLabels = loadApprovedExitLineLabels,
   readLegacyExitLabels = loadApprovedLegacyExitLabels } = {}) {
@@ -153,11 +154,15 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
         if (!exterior || typeof exterior !== 'object' || Array.isArray(exterior)) gap();
         const known = await readKnowledge({ transaction, partyId, actorId,
           placement: target.placement });
+        const displayName = known?.display_name?.trim()
+          || exterior.display_name?.trim()
+          || (target.placement.entity_kind === 'item'
+            ? itemLabels[exterior.template_id]?.trim() : null) || null;
         entityObservations.push({ entity_kind: target.placement.entity_kind,
           entity_id: target.placement.entity_id, visibility: row.visibility, exterior,
-          display_label: known?.display_name?.trim()
+          display_label: displayName
             || (target.placement.entity_kind === 'npc' ? 'человек' : 'предмет'),
-          ...(known?.display_name?.trim() ? { display_name: known.display_name } : {}) });
+          ...(displayName ? { display_name: displayName } : {}) });
       } else if (target.edge) {
         const displayLabel = spatialV3LocalEdgeLabel(positions,
           target.edge.from_position_id, target.edge.to_position_id);

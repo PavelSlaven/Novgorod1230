@@ -36,7 +36,7 @@ export function scalar(value) {
 
 export function stateLabel(value, labels = {}) {
   const key = scalar(value);
-  return key == null ? null : labels[key] ?? key;
+  return key == null ? null : labels[key] ?? null;
 }
 
 export function listItem(primary, secondary = null) {

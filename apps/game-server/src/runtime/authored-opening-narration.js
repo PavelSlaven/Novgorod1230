@@ -9,6 +9,7 @@ import { adaptApprovedOpeningNarration } from '@rus/narration';
 import { serverError } from '../errors.js';
 import { GAMEPLAY_LLM_CALL_TIMEOUT_MS } from './llm-turn-budget.js';
 import { buildOpeningRejectionSnapshot } from './opening-rejection-snapshot.js';
+import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
 
 const WRITER = `Верните только {"prose":"<полное вступление>"}. Напишите 2–4 связанных
 абзаца сдержанной литературной прозы на русском языке во втором лице. Используйте только
@@ -269,6 +270,7 @@ function projectOpeningFacts(source) {
   const seenByScope = new Map();
   const npcIndexByRef = new Map((source?.visible_npcs ?? []).map((npc, index) =>
     [npc?.npc_instance_id, index]).filter(([ref]) => typeof ref === 'string' && ref));
+  const visibleSceneFacts = [];
   const add = (text, factId = null, refs = [], npcIndex = null) => {
     if (typeof text !== 'string') return;
     const normalized = text.normalize('NFC').replace(/\s+/gu, ' ').trim();
@@ -283,8 +285,8 @@ function projectOpeningFacts(source) {
       return;
     }
     const fact = { key, text: normalized, fact_ids: factId ? [factId] : [],
-      source_refs: [...new Set(refs.filter((ref) => typeof ref === 'string' && ref))] };
-    if (npcIndex != null) fact.npc_index = npcIndex;
+      source_refs: [...new Set(refs.filter((ref) => typeof ref === 'string' && ref))],
+      npc_index: Number.isInteger(npcIndex) ? npcIndex : null };
     seen.set(key, fact);
     seenByScope.set(scope, seen);
     facts.push(fact);
@@ -292,8 +294,13 @@ function projectOpeningFacts(source) {
   for (const fact of source?.visible_scene_facts ?? []) {
     const npcIndexes = [...new Set((fact.source_refs ?? [])
       .map((ref) => npcIndexByRef.get(ref)).filter(Number.isInteger))];
-    add(fact.text, fact.fact_id, fact.source_refs ?? [],
-      npcIndexes.length === 1 ? npcIndexes[0] : null);
+    const npcIndex = npcIndexes.length === 1 ? npcIndexes[0] : null;
+    const sourceRefs = fact.source_refs ?? [];
+    if (typeof fact.text === 'string') {
+      visibleSceneFacts.push({ text: fact.text, npc_index: npcIndex,
+        source_refs: sourceRefs });
+    }
+    add(fact.text, fact.fact_id, sourceRefs, npcIndex);
   }
   const heldItemLabels = new Set((source?.visible_items ?? [])
     .filter((item) => item?.placement === 'held_by_player')
@@ -307,12 +314,21 @@ function projectOpeningFacts(source) {
     if (!repeatsHeldItem) add(entry?.text, null, entry?.basis_refs ?? []);
   }
   for (const entry of source?.touch_body_context ?? []) add(entry?.text);
-  const containsFact = (text, npcIndex = null) => typeof text === 'string' && text.trim().length > 2
-    && facts.some((fact) => fact.npc_index === npcIndex
-      && fact.text.toLocaleLowerCase('ru')
-      .includes(text.trim().toLocaleLowerCase('ru')));
+  const containsFact = (text, npcIndex = null, sourceRef = null) => {
+    if (typeof text !== 'string' || text.trim().length <= 2) return false;
+    const tokens = (value) => value.normalize('NFC').toLocaleLowerCase('ru')
+      .match(/[\p{L}\p{N}_]+/gu) ?? [];
+    const label = tokens(text);
+    return label.length > 0 && visibleSceneFacts.some((fact) => {
+      if (fact.npc_index !== npcIndex
+          || (sourceRef && !fact.source_refs.includes(sourceRef))) return false;
+      const words = tokens(fact.text);
+      return words.some((_, index) => label.every((word, offset) =>
+        words[index + offset] === word));
+    });
+  };
   for (const [npcIndex, npc] of (source?.visible_npcs ?? []).entries()) {
-    if (!containsFact(npc?.label, npcIndex)) add(npc?.label, null,
+    if (!containsFact(npc?.label, npcIndex, npc?.npc_instance_id)) add(npc?.label, null,
       [npc?.npc_instance_id], npcIndex);
     add(npc?.current_activity, null, [npc?.npc_instance_id], npcIndex);
     for (const fact of projectNpcCueFacts(npc?.observable_cues)) {
@@ -335,7 +351,9 @@ function projectOpeningFacts(source) {
         null, [item.item_instance_id]);
       continue;
     }
-    if (!containsFact(label)) add(label, null, [item.item_instance_id]);
+    if (!containsFact(label, null, item.item_instance_id)) {
+      add(label, null, [item.item_instance_id]);
+    }
     if (condition) add(`${label}; состояние — ${condition}.`, null,
       [item.item_instance_id]);
     else if (typeof item.visible_status === 'string'
@@ -344,10 +362,10 @@ function projectOpeningFacts(source) {
     }
   }
   for (const anchor of source?.visible_anchors ?? []) {
-    if (!containsFact(anchor?.label)) add(anchor?.label);
+    if (!containsFact(anchor?.label, null, anchor?.anchor_id)) add(anchor?.label);
   }
   for (const exit of source?.visible_exits ?? []) {
-    if (!containsFact(exit?.label)) add(exit?.label);
+    if (!containsFact(exit?.label, null, exit?.edge_id)) add(exit?.label);
   }
   for (const collection of [source?.audible_context, source?.smell_context]) {
     for (const entry of collection ?? []) add(entry?.text);
@@ -466,10 +484,15 @@ function projectedFrameFacts(frame, weatherLightContext = []) {
   const context = weatherLightContext.find((entry) => entry && typeof entry === 'object') ?? {};
   const contextText = [context.text, ...(context.facts ?? [])]
     .filter((value) => typeof value === 'string').join(' ');
-  const season = russianSeason(context.season ?? frame.season);
-  const dayPart = russianDayPart(context.day_part ?? frame.day_part);
-  const light = russianLight(context.light_state ?? context.light_profile
-    ?? frame.light_profile);
+  const translated = openingWeatherLightFacts({
+    season: context.season ?? frame.season,
+    day_part: context.day_part ?? frame.day_part,
+    light_state: context.light_state ?? context.light_profile
+      ?? frame.light_profile
+  });
+  const season = translated.find(({ field }) => field === 'season')?.text;
+  const dayPart = translated.find(({ field }) => field === 'day_part')?.text;
+  const light = translated.find(({ field }) => field === 'light_state')?.text;
   const current = [];
   if (season && !/лет|зим|весн|осен/iu.test(contextText)) current.push(season);
   if (dayPart && !/рассвет|утр|днём|вечер|сумерк|ночью/iu.test(contextText)) current.push(dayPart);
@@ -478,37 +501,14 @@ function projectedFrameFacts(frame, weatherLightContext = []) {
   return current;
 }
 
-function russianSeason(value) {
-  return ({ spring: 'Весна.', early_spring: 'Ранняя весна.', late_spring: 'Поздняя весна.',
-    summer: 'Лето.', early_summer: 'Начало лета.', late_summer: 'Позднее лето.',
-    late_summer_open_water: 'Позднее лето.', autumn: 'Осень.', early_autumn: 'Ранняя осень.',
-    late_autumn: 'Поздняя осень.', winter: 'Зима.', early_winter: 'Начало зимы.',
-    late_winter: 'Конец зимы.' })[value] ?? null;
-}
-
-function russianDayPart(value) {
-  return temporalTranslation(value, { civil_dawn: 'Рассвет.',
-    civil_dusk: 'Сумерки.', dawn: 'Рассвет.', sunrise: 'Восход.',
-    morning: 'Утро.', daylight: 'День.',
-    noon: 'Полдень.', afternoon: 'После полудня.', sunset: 'Закат.', evening: 'Вечер.',
-    twilight: 'Сумерки.', night: 'Ночь.', late_night: 'Поздняя ночь.' }, 'day_part');
-}
-
-function russianLight(value) {
-  return temporalTranslation(value, { night: 'Ночь.', civil_dawn: 'Светает.',
-    daylight: 'Стоит светлое время дня.', civil_dusk: 'Сгущаются сумерки.',
-    clear: 'Светло.', dim: 'Сумеречно.', twilight: 'Сумерки.', dark: 'Темно.' },
-  'light_state');
-}
-
-function temporalTranslation(value, translations, field) {
-  if (value == null) return null;
-  if (typeof value !== 'string' || !Object.hasOwn(translations, value)) {
+function openingWeatherLightFacts(input) {
+  try {
+    return playerSafeWeatherLightFacts(input);
+  } catch (error) {
     throw serverError('OPENING_TEMPORAL_TRANSLATION_UNSUPPORTED',
       'Не удалось подготовить время суток и освещение для вступления.',
-      { status: 500, details: { field } });
+      { status: 500, details: { field: error?.field ?? null } });
   }
-  return translations[value];
 }
 
 function projectWeatherFacts(state) {
@@ -516,18 +516,9 @@ function projectWeatherFacts(state) {
   const facts = Array.isArray(state.facts)
     ? state.facts.filter((text) => typeof text === 'string')
       .map((text) => ({ text, fact_id: null, source_refs: [] })) : [];
-  const translated = {
-    sky: { clear: 'Небо ясное.', overcast: 'Небо затянуто облаками.',
-      obscured: 'Небо не видно.', variable: 'Состояние неба меняется.' },
-    precipitation: { none: 'Осадков нет.', rain: 'Идёт дождь.', snow: 'Идёт снег.' },
-    visibility: { normal: 'Видимость обычная.', reduced: 'Видимость снижена.',
-      poor: 'Видимость плохая.', normal_or_reduced: 'Видимость обычная или сниженная.' },
-    wind: { calm_or_light: 'Ветер отсутствует или слабый.',
-      light_or_moderate: 'Ветер слабый или умеренный.', strong: 'Сильный ветер.' }
-  };
-  for (const [field, values] of Object.entries(translated)) {
-    const text = values[state[field]];
-    if (text) facts.push({ text, fact_id: `opening:weather:${field}`,
+  for (const { field, text } of openingWeatherLightFacts({ weather_state: state })) {
+    const weatherField = field.slice('weather_state.'.length);
+    facts.push({ text, fact_id: `opening:weather:${weatherField}`,
       source_refs: [] });
   }
   return facts;

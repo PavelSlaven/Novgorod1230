@@ -62,6 +62,16 @@ test('public screen contract accepts versioned read models and rejects hidden fi
     assert.throws(() => validatePublicScreen({ ...firstScreen(), wrapper: { [leak]: { secret: 'never public' } } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' }, leak);
   }
   assert.throws(() => assertNoHiddenFields({ nested: { private_motives: [] } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
+  assert.doesNotThrow(() => validatePublicScreen({ ...firstScreen(),
+    exact_npc_utterances: [{ speaker_ref: {
+      entity_kind: 'npc', entity_id: 'npc-1'
+    }, utterance_text: 'Я видел лодку.' }] }));
+  assert.throws(() => validatePublicScreen({ ...firstScreen(),
+    exact_npc_utterances: [{ speaker_ref: { entity_kind: 'npc',
+      entity_id: 'npc-1' }, utterance_text: 'Я видел лодку.',
+      extra: 'unexpected' }] }), {
+    code: 'SCREEN_EXACT_SPEECH_INVALID'
+  });
 });
 
 test('public screen validates exact optional scene affordances', () => {

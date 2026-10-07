@@ -1,3 +1,5 @@
+import { findUnsafePlayerText } from '../public-boundary.js';
+
 export function assertAllowedKeys(value, allowed, path, code) {
   if (!plain(value)) throw projectionError(code, `${path} must be an object.`);
   const unknown = Object.keys(value).find((key) => !allowed.has(key));
@@ -68,17 +70,47 @@ export function text(value) {
   return typeof value === 'string' && value.trim() ? value : undefined;
 }
 
-export function textArray(value, { strict = false, path = 'array',
+export function visibleText(value, { path = 'text', label = false,
+  statusField = false,
   code = 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' } = {}) {
+  const finding = findUnsafePlayerText(value, { label, statusField });
+  if (finding != null) {
+    throw projectionError(code,
+      `${path} contains service text (${finding.category}).`);
+  }
+  return text(value);
+}
+
+export function optionalVisibleText(value, { path = 'text', label = false,
+  statusField = false,
+  code = 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID', strict = false } = {}) {
+  try {
+    return visibleText(value, { path, label, statusField, code });
+  } catch (error) {
+    if (error?.code !== code || strict) throw error;
+    const finding = findUnsafePlayerText(value, { label, statusField });
+    console.error('[game-server] suppressed unsafe player text', {
+      field_path: path, category: finding?.category ?? 'unknown'
+    });
+    return undefined;
+  }
+}
+
+export function textArray(value, { strict = false, path = 'array',
+  code = 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID',
+  visible = false } = {}) {
   if (value === undefined) return undefined;
   if (!Array.isArray(value)) {
     if (strict) throw projectionError(code, `${path} must be an array.`);
     return undefined;
   }
+  const project = (entry, index) => visible
+    ? optionalVisibleText(entry, { path: `${path}[${index}]`, code })
+    : text(entry);
   if (strict && value.some((entry) => text(entry) === undefined)) {
-    throw projectionError(code, `${path} must contain only text refs.`);
+    throw projectionError(code, `${path} must contain only non-empty text.`);
   }
-  return value.map(text).filter(Boolean);
+  return value.map(project).filter(Boolean);
 }
 
 export function physicalFactRecords(value, { strict = false,
@@ -98,7 +130,9 @@ export function physicalFactRecords(value, { strict = false,
     if (strict) assertAllowedKeys(fact, new Set(['fact_ref', 'text']), path,
       code);
     const factRef = text(fact.fact_ref);
-    const factText = text(fact.text);
+    const factText = optionalVisibleText(fact.text, {
+      path: `${path}[].text`, code
+    });
     if (factRef && factText) result.push({ fact_ref: factRef, text: factText });
   }
   return result.length ? result : undefined;

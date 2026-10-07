@@ -17,17 +17,60 @@ import LIVE_WORLD_TURN_PROFILE from
   '../../../data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json'
   with { type: 'json' };
 import { canonicalDigest } from '@rus/materialization';
-import { liveWorldConversationCommands } from
+import { liveWorldConversationCommands, liveWorldTurnRegistry } from
   '../src/runtime/lower-dvina-trace-phase-2.js';
+import { SCENE_NPC_SOURCE, withSceneNpcs } from
+  '../src/infrastructure/postgres/scene-npcs-readback.js';
 import { conversationTemporalOwner, createM2ConversationModels } from
   './lower-dvina-trace-m2-conversation-fixture.js';
+import SCENE_PRESENTATION from
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json'
+  with { type: 'json' };
+import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
+import { prepareG4NaturalScenePerceptionInput } from
+  '../src/runtime/g4-natural-perception.js';
+import { projectSpatialV3CurrentVisibleContext } from
+  '../src/runtime/spatial-v3-current-visible-context.js';
 
-const [bundle12, bundle13, bundle15, bundle25] = await Promise.all([
+const loadedBundles = await Promise.all([
   loadScenarioBundle(12),
   loadScenarioBundle(13),
   loadScenarioBundle(15),
   loadScenarioBundle(25)
 ]);
+const [bundle12, bundle13, bundle15, bundle25] = loadedBundles.map(
+  (bundle) => ({ ...bundle, scene_presentation: SCENE_PRESENTATION }));
+
+async function currentSpatialProjection({ partyId, actorId }) {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const naturalInput = structuredClone(input);
+  naturalInput.currentFacts.observer = {
+    ...naturalInput.currentFacts.observer,
+    party_id: partyId,
+    actor_id: actorId,
+    position_id: 'position:inside'
+  };
+  naturalInput.currentFacts.scene.party_id = partyId;
+  naturalInput.currentFacts.scene.positions =
+    naturalInput.currentFacts.scene.positions.map((row) => ({
+      ...row, party_id: partyId
+    }));
+  naturalInput.currentFacts.scene.g6 = naturalInput.currentFacts.scene.g6
+    .map((row) => ({ ...row, party_id: partyId }));
+  naturalInput.currentFacts.scene.acoustic_profiles =
+    naturalInput.currentFacts.scene.acoustic_profiles.map((row) => ({
+      ...row, party_id: partyId
+    }));
+  naturalInput.currentFacts.source_bindings =
+    naturalInput.currentFacts.source_bindings.map((row) => ({
+      ...row, party_id: partyId
+    }));
+  return projectSpatialV3CurrentVisibleContext({
+    naturalInput: prepareG4NaturalScenePerceptionInput(naturalInput),
+    partyId, actorId, positionId: 'position:inside',
+    entityObservations: [], localEdges: [], directionalExits: []
+  });
+}
 
 test('revision 12 free input stays on the historical bounded path', async () => {
   const f = fixture({
@@ -53,7 +96,8 @@ test('authored submitTurn uses common workflow with null perception profile',
       materializationBundle: bundle13 });
     const state = structuredClone(seed.state);
     state.scenario_id = 'vikhtuy_fishing_camp_v1';
-    state.position.location_ref = 'trace_ld_v1_smp_fishing_camp';
+    state.position.location_ref = 'trace_ld_v1_loc_fishing_camp';
+    state.position.position_id = 'position:inside';
     state.current_visible_context = {
       version: 1, schema: 'visible_context_package',
       visible_scene: 'рыбацкий стан у Вихтуя', visible_changes: [],
@@ -61,7 +105,13 @@ test('authored submitTurn uses common workflow with null perception profile',
       known_context: ['рыбацкий стан у Вихтуя'], uncertainties: [],
       allowed_tensions: [], do_not_imply: ['hidden_fact']
     };
+    delete state.current_spatial_context;
+    delete state.current_spatial_context_is_fresh;
+    const spatial = await currentSpatialProjection({ partyId: seed.partyId,
+      actorId: state.actor_id });
     const f = fixture({ committedState: state,
+      scenarioBundle: bundle13, materializationBundle: bundle13,
+      currentSpatialContextProvider: async () => spatial,
       authoredTurnProfile: { profile: LIVE_WORLD_TURN_PROFILE, pin: {
         artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
         revision: LIVE_WORLD_TURN_PROFILE.revision,
@@ -77,6 +127,64 @@ test('authored submitTurn uses common workflow with null perception profile',
     assert.equal(f.bundleRequests.length, 0);
     assert.equal(result.screen.scenario_id, 'vikhtuy_fishing_camp_v1');
     assert.equal(result.screen.screen_kind, 'live_world_turn');
+  });
+
+test('blocked live-world combat request repairs into an ordinary narrated turn',
+  async () => {
+    let plannerCalls = 0;
+    let sawUnavailable = false;
+    let availableOperations = null;
+    const { f, candidateNpcId, candidateReadbackCount,
+      readbackCount } = await markedLiveWorldFixture({
+      turnStepModel: (request, repairContext) => {
+        plannerCalls += 1;
+        if (plannerCalls === 1) {
+          availableOperations = request.available_domain_operations;
+        }
+        if (repairContext) {
+          sawUnavailable = repairContext.structural_errors?.some(
+            ({ rule }) => rule === 'domain_owner_unavailable') === true;
+          return observationPlan(request);
+        }
+        return domainPlan(request, { op: 'request_combat',
+          actor_ref: request.actor.actor_id, intent_kind: 'engage',
+          target_refs: [candidateNpcId],
+          protected_refs: [], scope_ref: null, destination_ref: null,
+          force_limit: 'ordinary', risk_posture: 'ordinary' });
+      }
+    });
+    const state = await f.repository.loadPhase2State(f.partyId);
+    const registry = await liveWorldTurnRegistry({ state,
+      repository: f.repository, partyId: f.partyId,
+      idempotencyKey: 'combat-blocked-repair-registry' });
+    assert.ok(registry.registered().some(({ command_id: id }) =>
+      id === 'live_world.request_combat'));
+
+    const result = await submit(f, turn('combat-blocked-repair',
+      'Начинаю бой с человеком рядом.'));
+
+    assert.ok(readbackCount() > 0);
+    assert.ok(candidateReadbackCount() > 0);
+    assert.equal(availableOperations?.some(({ operation }) =>
+      operation?.op === 'request_combat'), false);
+    assert.equal(plannerCalls, 2);
+    assert.equal(sawUnavailable, true);
+    assert.equal(f.commitCount(), 1);
+    assert.equal(result.screen.screen_kind, 'live_world_turn');
+    assert.equal(typeof result.screen.main_prose, 'string');
+  });
+
+test('ordinary observation commits and narrates with NPCs marked by scene readback',
+  async () => {
+    const { f, readbackCount } = await markedLiveWorldFixture({
+      turnStepModel: observationPlan
+    });
+    const result = await submit(f, turn('combat-marked-observation',
+      'Осматриваюсь.'));
+    assert.ok(readbackCount() > 0);
+    assert.equal(f.commitCount(), 1);
+    assert.equal(result.screen.screen_kind, 'live_world_turn');
+    assert.equal(typeof result.screen.main_prose, 'string');
   });
 
 test('revision 15 early turns carry the Phase 7 action policy pin', async () => {
@@ -102,10 +210,27 @@ test('authored background NPC uses the common persisted conversation owner',
       materializationBundle: bundle13 });
     const state = structuredClone(seed.state);
     state.scenario_id = 'vikhtuy_fishing_camp_v1';
-    state.position.location_ref = 'trace_ld_v1_smp_fishing_camp';
+    state.position.location_ref = 'trace_ld_v1_loc_fishing_camp';
+    state.position.position_id = 'position:inside';
     const npc = state.npcs[0];
     npc.anchor_id = state.position.g5_anchor_id;
     npc.location_profile_ref = state.position.location_ref;
+    state.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Окрестности.', visible_changes: [],
+      sensory_details: ['Виден речной проток.'],
+      visible_npc: [{ entity_ref: { entity_kind: 'npc',
+        entity_id: npc.instance_id }, display_label: 'человек',
+        recognition: 'unrecognized' }],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: []
+    };
+    delete state.current_spatial_context;
+    delete state.current_spatial_context_is_fresh;
+    const spatial = await currentSpatialProjection({ partyId: seed.partyId,
+      actorId: state.actor_id });
+    const currentSceneTitle = spatial.visible_scene;
+    const currentSceneFacts = [...spatial.sensory_details];
     const conversation = createM2ConversationModels();
     const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
       artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
@@ -122,11 +247,16 @@ test('authored background NPC uses the common persisted conversation owner',
       action_set_evaluation: true })).can_attempt, true,
     JSON.stringify(commands[0].preconditions));
     const f = fixture({ committedState: state,
+      scenarioBundle: bundle13, materializationBundle: bundle13,
+      currentSpatialContextProvider: async () => spatial,
       authoredTurnProfile: profile,
       playerConversationModel: conversation.playerConversationModel,
       npcSemanticModel: conversation.npcSemanticModel,
       temporalAdvanceOwner: conversationTemporalOwner(state),
       turnStepModel: async (request) => {
+        if (request.root_player_action === 'Осматриваюсь.') {
+          return observationPlan(request);
+        }
         const interaction = request.available_domain_operations.find(
           ({ op }) => op === 'emit_interaction');
         assert.ok(interaction, JSON.stringify(request.player_safe_state));
@@ -168,6 +298,19 @@ test('authored background NPC uses the common persisted conversation owner',
     assert.equal(npcStatements.length > firstNpcStatements.length, true);
     assert.equal(npcStatements.every(({ speaker_ref: speaker }) =>
       speaker.entity_id === npc.instance_id), true);
+    const previousUtterance = npcStatements.at(-1).utterance_text;
+
+    await submit(f, turn('live-world-after-talk', 'Осматриваюсь.'));
+
+    const currentScene = f.narratorInput().visible_context;
+    assert.equal(currentScene.visible_scene, currentSceneTitle);
+    assert.deepEqual(currentScene.sensory_details, [
+      ...currentSceneFacts,
+      'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.'
+    ]);
+    assert.equal(JSON.stringify(currentScene).includes(previousUtterance), false);
+    assert.equal(f.state.conversation_statements.some(({ utterance_text: text }) =>
+      text === previousUtterance), true);
   });
 
 test('revision 13 discovery delegates to the unchanged Phase 2 mechanics',
@@ -471,6 +614,17 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
       raw_text: 'Осмотреть место крушения подробно.'
     });
     const before = stateWithCommittedBlueWool(bootstrap.state);
+    before.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'У места крушения.', visible_changes: [],
+      sensory_details: ['Под ногами влажная земля.'], visible_npc: [],
+      visible_objects: [], known_context: [
+      'Вас зовут Микула.',
+      'Ваш род занятий: лесной промысловик.'
+      ], uncertainties: [], allowed_tensions: [], do_not_imply: []
+    };
+    delete before.current_spatial_context;
+    delete before.current_spatial_context_is_fresh;
     const semantic = fixture({
       scenarioBundle: bundle13,
       materializationBundle: bundle13,
@@ -487,6 +641,13 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
       'turn-step-rev13-production-move',
       'Хочу выбраться к рыбакам по тропинке, заметной от берега.'
     ));
+
+    const scene = semantic.narratorInput().visible_context;
+    assert.equal(scene.visible_changes.includes('Вас зовут Микула.'), false);
+    assert.equal(scene.visible_changes.includes(
+      'Ваш род занятий: лесной промысловик.'), false);
+    assert.equal(scene.visible_changes.includes(
+      'Вы переместились в пределах текущего места.'), false);
 
     const writePlan = semantic.lastWritePlan();
     const envelope = writePlan.turn_step_commit;
@@ -545,6 +706,73 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
 
 function submit(f, input) {
   return f.runtime.submitTurn({ partyId: f.partyId, input });
+}
+
+async function markedLiveWorldFixture({ turnStepModel }) {
+  const seed = fixture({ scenarioBundle: bundle13,
+    materializationBundle: bundle13 });
+  const state = structuredClone(seed.state);
+  state.scenario_id = 'vikhtuy_fishing_camp_v1';
+  state.position.location_ref = 'trace_ld_v1_loc_fishing_camp';
+  state.position.site_id = 'site:combat-fixture';
+  state.position.position_id = 'pos:player';
+  state.position.g6_instance_id = 'g6:combat-fixture';
+  state.scene_presentation = structuredClone(SCENE_PRESENTATION);
+  const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
+    artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
+    revision: LIVE_WORLD_TURN_PROFILE.revision,
+    digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
+  } };
+  const f = fixture({ committedState: state, authoredTurnProfile: profile,
+    postActionPerceptionProfile: null, turnStepModel });
+  const positions = [{ id: state.position.position_id,
+    g6_instance_id: state.position.g6_instance_id }];
+  const sceneRows = state.npcs.map((npc) => {
+    const id = npc.instance_id;
+    const positionId = `pos:${id}`;
+    positions.push({ id: positionId,
+      g6_instance_id: state.position.g6_instance_id });
+    return { npc_id: id, profile_set_id: npc.profile_id ?? 'fixture-npc-profile',
+      profile_level: npc.profile_level ?? 'background',
+      anchor_id: state.position.g5_anchor_id,
+      identity_state: npc.identity_state ?? {},
+      machine_state: npc.machine_state ?? { status: 'active' },
+      semantic_state: npc.semantic_state ?? {},
+      role_ref: npc.role_ref?.id ?? 'fixture-role',
+      occupation_ref: npc.occupation_ref?.id ?? 'fixture-occupation',
+      skill_profile_snapshot: npc.skill_profile_snapshot ?? {},
+      knowledge_profile_snapshot: npc.knowledge_profile_snapshot ?? {},
+      attribute_profile_snapshot: npc.base_attributes ?? {},
+      profile_candidate_set_digest: npc.profile_candidate_set_digest ?? 'fixture',
+      body_profile_ref: null, health: null, energy: null, satiety: null,
+      body_state_version: null, position_id: positionId,
+      g6_instance_id: state.position.g6_instance_id };
+  });
+  const pool = { async query(text) {
+    if (/FROM party_runtime\.party_actor_body_states/u.test(text)) {
+      return { rows: [] };
+    }
+    if (/SELECT pos\.id,/u.test(text)) return { rows: positions };
+    return { rows: sceneRows };
+  } };
+  const load = f.repository.loadPhase2State.bind(f.repository);
+  let readbackCount = 0;
+  let candidateReadbackCount = 0;
+  const candidateNpcId = state.npcs[0]?.instance_id;
+  f.repository.loadPhase2State = async (...args) => {
+    const loaded = await withSceneNpcs(pool, f.partyId,
+      await load(...args));
+    const marked = loaded.npcs.filter(({ scene_readback_present: present,
+      runtime_source: source }) => present === true
+        || source === SCENE_NPC_SOURCE).length;
+    readbackCount += marked;
+    if (loaded.npcs.some(({ instance_id: id, scene_readback_present: present }) =>
+      id === candidateNpcId && present === true)) candidateReadbackCount += 1;
+    return loaded;
+  };
+  return { f, candidateNpcId,
+    candidateReadbackCount: () => candidateReadbackCount,
+    readbackCount: () => readbackCount };
 }
 
 function turn(key, rawText) {

@@ -32,9 +32,15 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
   }).map((npc) => [npc.instance_id, npc]));
   const visibleBefore = new Set((committedState?.current_visible_context
     ?.visible_npc ?? []).map(({ entity_ref: ref }) => ref?.entity_id));
-  const visibleAfter = new Map(distinctNpcLabels(visibleContext.visible_npc).map((npc) => [
+  const visibleAfterEntries = distinctNpcLabels(visibleContext.visible_npc);
+  const visibleAfter = new Map(visibleAfterEntries.map((npc) => [
     npc?.entity_ref?.entity_id, npc?.display_label
   ]));
+  const visibleLabelCounts = new Map();
+  for (const label of visibleAfter.values()) {
+    if (text(label)) visibleLabelCounts.set(label,
+      (visibleLabelCounts.get(label) ?? 0) + 1);
+  }
   const observedTransitions = transitions.filter(({ npc_id: id }) =>
     visibleBefore.has(id) && visibleAfter.has(id));
   const beforeContext = currentActorContext(committedState?.body_state, committedState?.clock, calendarProfile);
@@ -55,7 +61,8 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
       ...observedTransitions.flatMap(({ npc_id: id, proposal }) => {
         const summary = proposal?.factual_transition?.summary;
         const label = visibleAfter.get(id);
-        return text(label) && text(summary)
+        return text(label) && visibleLabelCounts.get(label) === 1
+            && text(summary)
           ? [`${label} ${lowerInitial(summary)}`] : [];
       }),
       ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])])],

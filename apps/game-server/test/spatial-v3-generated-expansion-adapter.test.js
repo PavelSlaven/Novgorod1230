@@ -79,8 +79,8 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
     { id: 'target-position', g6_instance_id: 'target-g6', status: 'active',
       template_slot_key: 'arrival', template_instance_ordinal: 0 }] };
   const transaction = { query: async (sql) => String(sql).includes('WITH sites')
-    ? { rows: [snapshot] } : { rows: [{ state_version: '6', last_turn_id: 'turn-5' }] } };
-  let visibleInput;
+    ? { rows: [snapshot] } : { rows: [{ state_version: '0', last_turn_id: 'turn-5' }] } };
+  let visibleInput; const commitInputs = [];
   let visibleEnvelope = {};
   const adapter = createSpatialV3GeneratedExpansionAdapter({
     worldBaseReader: {
@@ -91,26 +91,35 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
             required_position_instance_ordinal: 0 }]
           : [{ slot_key: 'in', endpoint_role: 'arrival', required_position_slot_key: 'arrival',
             required_position_instance_ordinal: 0 }] } }) },
-    committer: { prepareExpansion: async ({ prepare }) => prepare({ transaction }) },
+    committer: { prepareExpansion: async (input) => {
+      commitInputs.push(input);
+      return input.prepare({ transaction });
+    } },
     admitGeneration: async () => ({ ok: true, validation_report: { status: 'pass' },
       commit_rechecks: [], recheck: async () => ({ ok: true }) }),
     projectVisible: async (input) => { visibleInput = input; return { ok: true, envelope: visibleEnvelope }; }
   });
+  const diagnostic = () => {};
   const result = await adapter.prepareExpansion({ party_id: 'party', g4, profile,
     slot_ref: { id: slot.id, version: slot.version },
     directional_exit: { id: exit.id, version: exit.version }, candidate_ordinal: 0,
     entry_binding: { id: 'entry', version: 1 }, source_site_id: 'source-site',
-    source_position_id: 'source-position', materializer_version: 'v1' });
+    source_position_id: 'source-position', materializer_version: 'v1' },
+  { onLabelGapsOmitted: diagnostic });
   assert.equal(result.ok, false);
   assert.equal(result.error.code, 'visible_package_persistence_gap', JSON.stringify(result.error));
   assert.equal(result.error.diagnostics.reason, 'approved_projection_policy_ref_required');
   assert.equal(visibleInput.transaction, transaction);
+  assert.equal(visibleInput.onLabelGapsOmitted, diagnostic);
+  assert.equal(Object.hasOwn(visibleInput.request, 'onLabelGapsOmitted'), false);
+  assert.equal(Object.hasOwn(commitInputs[0], 'onLabelGapsOmitted'), false);
   assert.equal(visibleInput.closure, closure);
-  assert.equal(visibleInput.current_state_version, '6');
+  assert.equal(visibleInput.current_state_version, '0',
+    'the adapter production path accepts a matching committed initial state');
   assert.equal(visibleInput.current_turn_id, 'turn-5');
   assert.equal(visibleInput.firstEntry.ok, true);
   assert.equal(visibleInput.envelopeInput.turn_id, visibleInput.change_set_id);
-  assert.equal(visibleInput.envelopeInput.committed_state_version, '6');
+  assert.equal(visibleInput.envelopeInput.committed_state_version, '0');
   assert.equal(visibleInput.envelopeInput.idempotency_record_id,
     `idem:${visibleInput.change_set_id}`);
   assert.deepEqual(visibleInput.envelopeInput.dependency_pins, visibleInput.dependency_pins);
@@ -126,6 +135,8 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
     directional_exit: { id: exit.id, version: exit.version }, candidate_ordinal: 0,
     entry_binding: { id: 'entry', version: 1 }, source_site_id: 'source-site',
     source_position_id: 'source-position', materializer_version: 'v1' });
+  assert.equal(commitInputs[0].canonical_input_digest,
+    commitInputs[1].canonical_input_digest);
   assert.equal(malformed.error.code, 'visible_package_persistence_gap');
   assert.equal(malformed.error.diagnostics.reason, 'visible_envelope_identity_or_digest_mismatch');
 

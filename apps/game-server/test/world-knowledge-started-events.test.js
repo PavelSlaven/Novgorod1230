@@ -27,6 +27,14 @@ const CLAIM = 'claim:social-debt-records-accounting-amount';
 const MARK = 'FUTURE_FAMINE_MARKER';
 const EVENT = 'event:famine-1230';
 
+function focusKeyFor(call) {
+  const payload = JSON.parse(call.messages[1].content);
+  const request = payload.request ?? payload;
+  return Object.entries(request.available_knowledge_refs ?? {})
+    .find(([, metadata]) => /счётная величина/iu.test(JSON.stringify(metadata)))?.[0]
+    ?? null;
+}
+
 function loadMutableBundle() {
   const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
   const claim = bundle.claims.find((c) => c.claim_ref === CLAIM);
@@ -86,15 +94,13 @@ function makeGrounder(bundle, log) {
     roleRunner: {
       async run(call) {
         log.calls.push(call);
-        const payload = JSON.parse(call.messages[1].content);
-        const wire = payload.request ?? payload;
-        const avail = Object.keys(wire.available_knowledge_refs ?? {});
+        const focusKey = focusKeyFor(call);
         return {
           output: {
             schema: 'world_knowledge_query_plan_v1',
             query_locale: 'ru',
             domains: ['social_law_economy'],
-            focus_refs: avail.includes(CONCEPT) ? [CONCEPT] : [],
+            focus_refs: focusKey == null ? [] : [focusKey],
             requested_predicates: [],
             search_hints: ['счётная величина долговая запись']
           }
@@ -122,7 +128,9 @@ async function run(purpose, request, authoritative) {
   return {
     error,
     context: query?.context ?? null,
-    concept_in_planner_refs: plannerText.includes(CONCEPT),
+    concept_in_planner_refs: log.traces[0]?.planner_request
+      ?.available_knowledge_refs?.includes(CONCEPT) ?? false,
+    concept_selected: query?.focus_refs?.includes(CONCEPT) ?? false,
     marker_in_planner: plannerText.includes(MARK),
     claim_in_slice: sliceText.includes(CLAIM),
     marker_in_slice: sliceText.includes(MARK),
@@ -140,6 +148,7 @@ test('A-01 empty started_historical_events is valid through real Core path',
     assert.equal(result.error, null, result.error);
     assert.deepEqual(result.context?.conditions?.started_historical_events, []);
     assert.equal(result.concept_in_planner_refs, false);
+    assert.equal(result.concept_selected, false);
     assert.equal(result.marker_in_planner, false);
     assert.equal(result.claim_in_slice, false);
     assert.equal(result.marker_in_slice, false);
@@ -157,6 +166,7 @@ test('A-05 unseen-equivalent: before event claim absent; after event present',
     assert.equal(before.error, null, before.error);
     assert.deepEqual(before.context?.conditions?.started_historical_events, []);
     assert.equal(before.concept_in_planner_refs, false);
+    assert.equal(before.concept_selected, false);
     assert.equal(before.marker_in_planner, false);
     assert.equal(before.claim_in_slice, false);
     assert.equal(before.marker_in_slice, false);
@@ -169,6 +179,7 @@ test('A-05 unseen-equivalent: before event claim absent; after event present',
     assert.deepEqual(after.context?.conditions?.started_historical_events,
       [EVENT]);
     assert.equal(after.concept_in_planner_refs, true);
+    assert.equal(after.concept_selected, true);
     // Planner wire carries concept labels, not claim runtime_text — MARK is
     // slice-only. Before-event path already asserts MARK absent from planner.
     assert.equal(after.marker_in_planner, false);

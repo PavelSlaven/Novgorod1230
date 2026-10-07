@@ -23,9 +23,14 @@ export async function resolveConsequenceStage({ playerInput, modeResolution, ret
     return freezeOutput(output);
   }
   const command = commandRegistry.get(modeResolution.command_id);
+  const semanticPlan = draft?.loop_result?.step_traces?.findLast(
+    ({ applied, player_response_boundary: boundary }) =>
+      applied === true && boundary === true)?.approved_plan;
   const preparedDomain = buildTurnStepPreparedDomainConsequence(draft);
   const commandOutput = preparedDomain
-    ?? await command.consequence(Object.freeze(structuredClone({ playerInput, modeResolution, retrievedState, availability, checks })));
+    ?? await command.consequence(Object.freeze(structuredClone({ playerInput,
+      modeResolution, retrievedState, availability, checks,
+      ...(semanticPlan == null ? {} : { semanticPlan }) })));
   assertValid(
     'turn_consequence_package',
     validateConsequencePackage(commandOutput)

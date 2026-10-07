@@ -1,0 +1,1102 @@
+{
+  "status": "synthetic_script_dry_run_pass",
+  "model_called": false,
+  "game_server_or_database_used": false,
+  "combat_case_count": 15,
+  "combat_case_assertion_evaluation": {
+    "case_count": 15,
+    "case_results": [
+      {
+        "case_id": "cd01",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "generic_applicability_closed",
+          "fist_danger_rule_pinned",
+          "paraphrase_or_player_action_execution"
+        ],
+        "executed_assertion_ids": [
+          "generic_applicability_closed",
+          "fist_danger_rule_pinned"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "paraphrase_or_player_action_execution",
+            "reason": "Requires parser/runtime; not executed by data-only bench."
+          }
+        ]
+      },
+      {
+        "case_id": "cd02",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "scenario_fallback_disabled",
+          "authored_scene_runtime_parity"
+        ],
+        "executed_assertion_ids": [
+          "scenario_fallback_disabled"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "authored_scene_runtime_parity",
+            "reason": "Requires runtime scenario execution; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd03",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "candidate_never_emits_unapproved",
+          "paraphrase_mapping"
+        ],
+        "executed_assertion_ids": [
+          "candidate_never_emits_unapproved"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "paraphrase_mapping",
+            "reason": "Requires player-action parser/runtime; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd04",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "exact_owner_capability_required",
+          "current_item_snapshot_resolution"
+        ],
+        "executed_assertion_ids": [
+          "exact_owner_capability_required"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "current_item_snapshot_resolution",
+            "reason": "Requires live owner facts; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd05",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "ordinary_armament_condition_scoped",
+          "damaged_instance_resolution"
+        ],
+        "executed_assertion_ids": [
+          "ordinary_armament_condition_scoped"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "damaged_instance_resolution",
+            "reason": "Requires owner runtime state; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd06",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "d47_enum_map_exact",
+          "physical_facts_from_action"
+        ],
+        "executed_assertion_ids": [
+          "d47_enum_map_exact"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "physical_facts_from_action",
+            "reason": "Requires action-produced item runtime; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd07",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "unknown_items_fail_closed",
+          "item_nonmaterialization"
+        ],
+        "executed_assertion_ids": [
+          "unknown_items_fail_closed"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "item_nonmaterialization",
+            "reason": "Requires action parser/runtime; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd08",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "target_facts_gap_present",
+          "armor_and_vulnerability_resolution"
+        ],
+        "executed_assertion_ids": [
+          "target_facts_gap_present"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "armor_and_vulnerability_resolution",
+            "reason": "Requires combat profile/runtime facts; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd09",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "perception_boundary_is_declared",
+          "npc_perception_of_threat"
+        ],
+        "executed_assertion_ids": [
+          "perception_boundary_is_declared"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "npc_perception_of_threat",
+            "reason": "Requires NPC perception/runtime; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd10",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "surrender_has_no_universal_threshold",
+          "npc_surrender_choice"
+        ],
+        "executed_assertion_ids": [
+          "surrender_has_no_universal_threshold"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "npc_surrender_choice",
+            "reason": "Requires individual context/model/runtime; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd11",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "retreat_movement_gap_present",
+          "route_feasibility_and_success"
+        ],
+        "executed_assertion_ids": [
+          "retreat_movement_gap_present"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "route_feasibility_and_success",
+            "reason": "Requires movement owner/runtime; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd12",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "retreat_movement_gap_present",
+          "blocked_route_outcome"
+        ],
+        "executed_assertion_ids": [
+          "retreat_movement_gap_present"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "blocked_route_outcome",
+            "reason": "Requires movement owner/runtime; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd13",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "health_transition_clamps_at_zero",
+          "runtime_incapacitation_event"
+        ],
+        "executed_assertion_ids": [
+          "health_transition_clamps_at_zero"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "runtime_incapacitation_event",
+            "reason": "Requires health owner/runtime; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd14",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "duration_is_exact_rational",
+          "clock_owner_subminute_handoff"
+        ],
+        "executed_assertion_ids": [
+          "duration_is_exact_rational"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "clock_owner_subminute_handoff",
+            "reason": "Requires clock integration; not run."
+          }
+        ]
+      },
+      {
+        "case_id": "cd15",
+        "status": "pass_with_not_run",
+        "declared_assertion_ids": [
+          "persistence_and_replay_are_gaps",
+          "duplicate_delivery_behavior"
+        ],
+        "executed_assertion_ids": [
+          "persistence_and_replay_are_gaps"
+        ],
+        "not_run_assertions": [
+          {
+            "id": "duplicate_delivery_behavior",
+            "reason": "Requires persistence/runtime; not run."
+          }
+        ]
+      }
+    ],
+    "declared_assertions": [
+      {
+        "case_id": "cd01",
+        "assertion_id": "generic_applicability_closed"
+      },
+      {
+        "case_id": "cd01",
+        "assertion_id": "fist_danger_rule_pinned"
+      },
+      {
+        "case_id": "cd01",
+        "assertion_id": "paraphrase_or_player_action_execution"
+      },
+      {
+        "case_id": "cd02",
+        "assertion_id": "scenario_fallback_disabled"
+      },
+      {
+        "case_id": "cd02",
+        "assertion_id": "authored_scene_runtime_parity"
+      },
+      {
+        "case_id": "cd03",
+        "assertion_id": "candidate_never_emits_unapproved"
+      },
+      {
+        "case_id": "cd03",
+        "assertion_id": "paraphrase_mapping"
+      },
+      {
+        "case_id": "cd04",
+        "assertion_id": "exact_owner_capability_required"
+      },
+      {
+        "case_id": "cd04",
+        "assertion_id": "current_item_snapshot_resolution"
+      },
+      {
+        "case_id": "cd05",
+        "assertion_id": "ordinary_armament_condition_scoped"
+      },
+      {
+        "case_id": "cd05",
+        "assertion_id": "damaged_instance_resolution"
+      },
+      {
+        "case_id": "cd06",
+        "assertion_id": "d47_enum_map_exact"
+      },
+      {
+        "case_id": "cd06",
+        "assertion_id": "physical_facts_from_action"
+      },
+      {
+        "case_id": "cd07",
+        "assertion_id": "unknown_items_fail_closed"
+      },
+      {
+        "case_id": "cd07",
+        "assertion_id": "item_nonmaterialization"
+      },
+      {
+        "case_id": "cd08",
+        "assertion_id": "target_facts_gap_present"
+      },
+      {
+        "case_id": "cd08",
+        "assertion_id": "armor_and_vulnerability_resolution"
+      },
+      {
+        "case_id": "cd09",
+        "assertion_id": "perception_boundary_is_declared"
+      },
+      {
+        "case_id": "cd09",
+        "assertion_id": "npc_perception_of_threat"
+      },
+      {
+        "case_id": "cd10",
+        "assertion_id": "surrender_has_no_universal_threshold"
+      },
+      {
+        "case_id": "cd10",
+        "assertion_id": "npc_surrender_choice"
+      },
+      {
+        "case_id": "cd11",
+        "assertion_id": "retreat_movement_gap_present"
+      },
+      {
+        "case_id": "cd11",
+        "assertion_id": "route_feasibility_and_success"
+      },
+      {
+        "case_id": "cd12",
+        "assertion_id": "retreat_movement_gap_present"
+      },
+      {
+        "case_id": "cd12",
+        "assertion_id": "blocked_route_outcome"
+      },
+      {
+        "case_id": "cd13",
+        "assertion_id": "health_transition_clamps_at_zero"
+      },
+      {
+        "case_id": "cd13",
+        "assertion_id": "runtime_incapacitation_event"
+      },
+      {
+        "case_id": "cd14",
+        "assertion_id": "duration_is_exact_rational"
+      },
+      {
+        "case_id": "cd14",
+        "assertion_id": "clock_owner_subminute_handoff"
+      },
+      {
+        "case_id": "cd15",
+        "assertion_id": "persistence_and_replay_are_gaps"
+      },
+      {
+        "case_id": "cd15",
+        "assertion_id": "duplicate_delivery_behavior"
+      }
+    ],
+    "executed_assertions": [
+      {
+        "case_id": "cd01",
+        "assertion_id": "generic_applicability_closed",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd01",
+        "assertion_id": "fist_danger_rule_pinned",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd02",
+        "assertion_id": "scenario_fallback_disabled",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd03",
+        "assertion_id": "candidate_never_emits_unapproved",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd04",
+        "assertion_id": "exact_owner_capability_required",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd05",
+        "assertion_id": "ordinary_armament_condition_scoped",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd06",
+        "assertion_id": "d47_enum_map_exact",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd07",
+        "assertion_id": "unknown_items_fail_closed",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd08",
+        "assertion_id": "target_facts_gap_present",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd09",
+        "assertion_id": "perception_boundary_is_declared",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd10",
+        "assertion_id": "surrender_has_no_universal_threshold",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd11",
+        "assertion_id": "retreat_movement_gap_present",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd12",
+        "assertion_id": "retreat_movement_gap_present",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd13",
+        "assertion_id": "health_transition_clamps_at_zero",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd14",
+        "assertion_id": "duration_is_exact_rational",
+        "status": "pass"
+      },
+      {
+        "case_id": "cd15",
+        "assertion_id": "persistence_and_replay_are_gaps",
+        "status": "pass"
+      }
+    ],
+    "not_run_assertions": [
+      {
+        "case_id": "cd01",
+        "assertion_id": "paraphrase_or_player_action_execution",
+        "reason": "Requires parser/runtime; not executed by data-only bench."
+      },
+      {
+        "case_id": "cd02",
+        "assertion_id": "authored_scene_runtime_parity",
+        "reason": "Requires runtime scenario execution; not run."
+      },
+      {
+        "case_id": "cd03",
+        "assertion_id": "paraphrase_mapping",
+        "reason": "Requires player-action parser/runtime; not run."
+      },
+      {
+        "case_id": "cd04",
+        "assertion_id": "current_item_snapshot_resolution",
+        "reason": "Requires live owner facts; not run."
+      },
+      {
+        "case_id": "cd05",
+        "assertion_id": "damaged_instance_resolution",
+        "reason": "Requires owner runtime state; not run."
+      },
+      {
+        "case_id": "cd06",
+        "assertion_id": "physical_facts_from_action",
+        "reason": "Requires action-produced item runtime; not run."
+      },
+      {
+        "case_id": "cd07",
+        "assertion_id": "item_nonmaterialization",
+        "reason": "Requires action parser/runtime; not run."
+      },
+      {
+        "case_id": "cd08",
+        "assertion_id": "armor_and_vulnerability_resolution",
+        "reason": "Requires combat profile/runtime facts; not run."
+      },
+      {
+        "case_id": "cd09",
+        "assertion_id": "npc_perception_of_threat",
+        "reason": "Requires NPC perception/runtime; not run."
+      },
+      {
+        "case_id": "cd10",
+        "assertion_id": "npc_surrender_choice",
+        "reason": "Requires individual context/model/runtime; not run."
+      },
+      {
+        "case_id": "cd11",
+        "assertion_id": "route_feasibility_and_success",
+        "reason": "Requires movement owner/runtime; not run."
+      },
+      {
+        "case_id": "cd12",
+        "assertion_id": "blocked_route_outcome",
+        "reason": "Requires movement owner/runtime; not run."
+      },
+      {
+        "case_id": "cd13",
+        "assertion_id": "runtime_incapacitation_event",
+        "reason": "Requires health owner/runtime; not run."
+      },
+      {
+        "case_id": "cd14",
+        "assertion_id": "clock_owner_subminute_handoff",
+        "reason": "Requires clock integration; not run."
+      },
+      {
+        "case_id": "cd15",
+        "assertion_id": "duplicate_delivery_behavior",
+        "reason": "Requires persistence/runtime; not run."
+      }
+    ],
+    "declared_assertion_count": 31,
+    "executed_assertion_count": 16,
+    "not_run_assertion_count": 15
+  },
+  "candidate_emission_mutation_probe": {
+    "status": "pass",
+    "mutated_nested_field": "execution.health_transition.body_initialization.owner_initialization_profile_adapter.candidate_emission",
+    "mutation_nonempty": true,
+    "rejected_by_assertion": "data assertion failed: cd03/candidate_never_emits_unapproved"
+  },
+  "body_mapping_case_count": 15,
+  "body_mapping_cases": [
+    {
+      "id": "bm01",
+      "disposition": "candidate_profile",
+      "observed": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 80
+        }
+      }
+    },
+    {
+      "id": "bm02",
+      "disposition": "candidate_profile",
+      "observed": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 78,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 78
+        }
+      }
+    },
+    {
+      "id": "bm03",
+      "disposition": "candidate_profile",
+      "observed": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 84,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 84
+        }
+      }
+    },
+    {
+      "id": "bm04",
+      "disposition": "candidate_profile",
+      "observed": {
+        "B": {
+          "health": 100,
+          "energy": 76,
+          "satiety": 70
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 76
+        }
+      }
+    },
+    {
+      "id": "bm05",
+      "disposition": "candidate_profile",
+      "observed": {
+        "B": {
+          "health": 100,
+          "energy": 86,
+          "satiety": 70
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 86
+        }
+      }
+    },
+    {
+      "id": "bm06",
+      "disposition": "candidate_profile",
+      "observed": {
+        "B": {
+          "health": 100,
+          "energy": 82,
+          "satiety": 70
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 82
+        }
+      }
+    },
+    {
+      "id": "bm07",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm08",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm09",
+      "disposition": "read_persisted",
+      "observed": {
+        "health": 43,
+        "energy": 22,
+        "satiety": 11
+      }
+    },
+    {
+      "id": "bm10",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm11",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm12",
+      "disposition": "candidate_profile",
+      "observed": {
+        "B": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        }
+      },
+      "owner_dto_fixture": {
+        "schema": "rus.body_state.initialization_profile.v1",
+        "status": "approved",
+        "profile_ref": {
+          "entity_ref": {
+            "entity_kind": "body_state_profile",
+            "entity_id": "candidate.generic-npc-initial-body.v1"
+          },
+          "authoring_version": "1"
+        },
+        "initial_state": {
+          "health": 100,
+          "satiety": 70,
+          "energy": 80
+        }
+      }
+    },
+    {
+      "id": "bm13",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm14",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    },
+    {
+      "id": "bm15",
+      "disposition": "typed_gap_for_actor",
+      "observed": null
+    }
+  ],
+  "adapter_transformation_probes": {
+    "endurance_13_energy": 86,
+    "swapped_energy_satiety_rejected": true
+  },
+  "body_variant_outputs": {
+    "A": {
+      "health": {
+        "min": 100,
+        "max": 100,
+        "values": [
+          100,
+          100,
+          100
+        ]
+      },
+      "energy": {
+        "min": 80,
+        "max": 80,
+        "values": [
+          80,
+          80,
+          80
+        ]
+      },
+      "satiety": {
+        "min": 70,
+        "max": 70,
+        "values": [
+          70,
+          70,
+          70
+        ]
+      }
+    },
+    "B": {
+      "health": {
+        "min": 100,
+        "max": 100,
+        "values": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      },
+      "energy": {
+        "min": 76,
+        "max": 86,
+        "values": [
+          80,
+          78,
+          84,
+          76,
+          86,
+          82,
+          80
+        ]
+      },
+      "satiety": {
+        "min": 70,
+        "max": 70,
+        "values": [
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70
+        ]
+      }
+    },
+    "C": {
+      "health": {
+        "min": 100,
+        "max": 100,
+        "values": [
+          100,
+          100,
+          100
+        ]
+      },
+      "energy": {
+        "min": 60,
+        "max": 60,
+        "values": [
+          60,
+          60,
+          60
+        ]
+      },
+      "satiety": {
+        "min": 60,
+        "max": 60,
+        "values": [
+          60,
+          60,
+          60
+        ]
+      }
+    }
+  },
+  "check_boundary_assertions": 12,
+  "harm_boundary_assertions": 10,
+  "npc_state_description_eval": {
+    "case_count": 15,
+    "case_results": [
+      {
+        "id": "q-energy-29",
+        "disposition": "description",
+        "band_id": "low",
+        "description": "Запас энергии низкий."
+      },
+      {
+        "id": "q-energy-30",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Запас энергии умеренный."
+      },
+      {
+        "id": "q-energy-69",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Запас энергии умеренный."
+      },
+      {
+        "id": "q-energy-70",
+        "disposition": "description",
+        "band_id": "high",
+        "description": "Запас энергии высокий."
+      },
+      {
+        "id": "q-energy-unknown",
+        "disposition": "omitted_typed_gap",
+        "description": null
+      },
+      {
+        "id": "q-health-29",
+        "disposition": "description",
+        "band_id": "low",
+        "description": "Здоровье низкое."
+      },
+      {
+        "id": "q-health-30",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Здоровье умеренное."
+      },
+      {
+        "id": "q-health-69",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Здоровье умеренное."
+      },
+      {
+        "id": "q-health-70",
+        "disposition": "description",
+        "band_id": "high",
+        "description": "Здоровье высокое."
+      },
+      {
+        "id": "q-health-unknown",
+        "disposition": "omitted_typed_gap",
+        "description": null
+      },
+      {
+        "id": "q-satiety-29",
+        "disposition": "description",
+        "band_id": "low",
+        "description": "Сытость низкая."
+      },
+      {
+        "id": "q-satiety-30",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Сытость умеренная."
+      },
+      {
+        "id": "q-satiety-69",
+        "disposition": "description",
+        "band_id": "moderate",
+        "description": "Сытость умеренная."
+      },
+      {
+        "id": "q-satiety-70",
+        "disposition": "description",
+        "band_id": "high",
+        "description": "Сытость высокая."
+      },
+      {
+        "id": "q-satiety-unknown",
+        "disposition": "omitted_typed_gap",
+        "description": null
+      }
+    ],
+    "exhaustive_integer_values_checked": 303,
+    "fractional_boundary_checks": 36,
+    "fractional_values_checked_per_metric": [
+      0,
+      0.001,
+      29.5,
+      29.999,
+      30,
+      30.001,
+      69.5,
+      69.999,
+      70,
+      70.001,
+      99.999,
+      100
+    ],
+    "out_of_range_and_non_finite_rejected": true,
+    "scorer_version": "exact-candidate-mapping.v1",
+    "model_called": false,
+    "naturalness_assessed": false,
+    "interpretation_limit": "Script checks exact mapping, finite fractional coverage at boundaries, and omission policy. It does not assess naturalness, readability, tone, variation, NPC decisions, or model behavior; those require separate blinded human review."
+  },
+  "candidate_status_after_run": "candidate_not_approved",
+  "seed": 2246701,
+  "synthetic_sample_size": 1000,
+  "synthetic_quality_counts": {
+    "0": 615,
+    "1": 162,
+    "2": 189,
+    "3": 34,
+    "4": 0
+  },
+  "synthetic_health_loss_counts": {
+    "0": 615,
+    "5": 351,
+    "12": 34,
+    "25": 0,
+    "45": 0
+  },
+  "duration_comparison": {
+    "5": {
+      "one_step_minutes": {
+        "numerator": 1,
+        "denominator": 12
+      },
+      "ten_step_minutes": {
+        "numerator": 5,
+        "denominator": 6
+      },
+      "ten_step_seconds": 50
+    },
+    "6": {
+      "one_step_minutes": {
+        "numerator": 1,
+        "denominator": 10
+      },
+      "ten_step_minutes": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "ten_step_seconds": 60
+    },
+    "10": {
+      "one_step_minutes": {
+        "numerator": 1,
+        "denominator": 6
+      },
+      "ten_step_minutes": {
+        "numerator": 5,
+        "denominator": 3
+      },
+      "ten_step_seconds": 100
+    }
+  },
+  "typed_gap_count": 14,
+  "interpretation": "Synthetic arithmetic and D71 candidate comparison only; no gameplay winner, historical result, D41, D67, or production approval."
+}

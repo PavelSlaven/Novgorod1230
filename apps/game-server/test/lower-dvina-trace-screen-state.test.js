@@ -62,6 +62,16 @@ test('catalog labels resolve exact template and never expose uncarried or hidden
   assert.deepEqual(project(state).panels.inventory.data.zones.hands.map(x => x.label), ['хозяйственный нож']);
 });
 
+test('inventory omits an item whose pinned presentation has no safe label', () => {
+  const state = payload();
+  delete state.items[0].state.display_name;
+  state.items[0].template_id = 'unapproved-template';
+  const screen = project(state);
+  assert.deepEqual(screen.panels.inventory.data.zones.hands, []);
+  assert.doesNotMatch(JSON.stringify(screen.panels.inventory),
+    /unapproved-template|item_template|предмет/u);
+});
+
 test('route panel includes only disclosed scene edges, directional exits and canonical connections', () => {
   const context = structuredClone(visible);
   context.visible_objects = [
@@ -77,7 +87,8 @@ test('route panel includes only disclosed scene edges, directional exits and can
   assert.deepEqual(screen.panels.route.data.movement.options.slice(-3), [
     { label: 'К просеке', knowledge_state: 'known' },
     { label: 'К лесу', knowledge_state: 'known' },
-    { label: 'Проход 3', knowledge_state: 'known' }
+    // D72: canonical connection remains visible without a synthetic ordinal.
+    { label: 'переход', knowledge_state: 'known' }
   ]);
   assert.doesNotMatch(JSON.stringify(screen.panels.route), /local-edge|world-exit|world-connection|Топор/u);
 });

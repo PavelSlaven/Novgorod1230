@@ -132,11 +132,11 @@ test('semantic repair cannot reselect the rejected exact operation', async () =>
     path: '$.operations', code: 'operation_semantic_grounding',
     rejected_operation: operation
   }] });
-  assert.match(prompt, /Code-owned exact operation choices are:\n\[\]/u);
+  assert.match(prompt, /Точные варианты операций, управляемые кодом:\n\[\]/u);
   assert.match(prompt,
-    /operation_semantic_grounding[\s\S]*every compared referent[\s\S]*observed_evidence_inspection[\s\S]*exact supplied candidate refs/u);
+    /operation_semantic_grounding[\s\S]*каждый сравниваемый объект представлен[\s\S]*observed_evidence_inspection[\s\S]*только точные переданные refs кандидатов/u);
   assert.match(prompt,
-    /comparison counterpart or requested detail is missing[\s\S]*focused_ordinary_discovery[\s\S]*missing referent[\s\S]*complete comparison in continuation/u);
+    /Если какая-либо сторона сравнения или запрошенная подробность не передана[\s\S]*сначала используй focused_ordinary_discovery[\s\S]*сохрани полное сравнение в continuation/u);
 });
 
 test('mismatched echoed operation retries once with semantic repair',

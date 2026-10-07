@@ -14,7 +14,7 @@ const { scenario_binding_id, scenario_profile_exact_pins,
 
 export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   ...sharedReleaseContract,
-  // Measured after 001–039, catalog pins, and actor-base pins in isolated PG 16.14.
+  // Temporary HEAD pin for the merged SQL bootstrap; recalculate after the merge commit.
   party_runtime_catalog_target_fingerprint:
     '5102437c6175f17e900e144a75f3be02998823c26b14d1e7729587b6915bba81',
   release_id: 'spatial-v3-production-v17',

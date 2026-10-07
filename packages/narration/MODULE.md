@@ -21,6 +21,16 @@ Native `narration_request` и `runNarrationFlow` принимают только
   source reviews и semantic/literary failures через immutable segment IDs;
 - историей генераций и ремонтов.
 
+`runNarrationFlow` / `createNarrationService.run` принимают необязательный
+code-owned `options.outputAdmission(prose)` (null либо finding с category).
+Game-server supplies its single public-boundary detector through this port;
+the package owns no service-marker patterns. An admission failure prevents
+approval even when the model auditor passes, contributes a concern to the same
+single semantic repair, and is checked again before final audit/approval.
+Repeated rejection returns `blocked` with private phase
+`generated_prose_admission_failed`; it is a retryable presentation failure,
+not `final_audit_failed` or eligibility for factual terminal delivery.
+
 ## Продуктовые принципы прозы
 
 Подробная единая норма художественной подачи и смысловой приёмки —

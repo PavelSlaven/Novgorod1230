@@ -11,6 +11,16 @@ import { loadLowerDvinaTraceMaterializationBundle } from
   '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
 import { createLowerDvinaTraceTurnStepModel } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
+function focusKeyFor(call, { domain, label }) {
+  const input = JSON.parse(call.messages[1].content);
+  const request = input.request ?? input;
+  const match = Object.entries(request.available_knowledge_refs ?? {}).find(([, metadata]) =>
+    metadata.domains.includes(domain)
+      && `${metadata.label} ${metadata.description}`.toLowerCase().includes(label.toLowerCase()));
+  assert.ok(match, `missing projected focus for ${domain}: ${label}`);
+  return match[0];
+}
+
 function assertRetrievalObservability(observability, grounded) {
   assert.equal(observability.pack_ref, 'wk-pack:novgorod-1230');
   assert.equal(observability.pack_revision, 'revision:production-v2');
@@ -44,6 +54,38 @@ test('production normalization removes unavailable domains and refs without chan
     import.meta.url), 'utf8'));
   const inputs = [];
   const encoded = [];
+  const traces = [];
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
+      encoder: { encode: async (text) => { encoded.push(text); return new Float32Array(1024); } },
+      vector_index: { search: () => new Map() } },
+    telemetry: { onGameplayTrace: trace => traces.push(trace) },
+    roleRunner: { async run(call) {
+      const input = JSON.parse(call.messages[1].content);
+      inputs.push(input.request ?? input);
+      const focusKey = Object.keys((input.request ?? input)
+        .available_knowledge_refs)[0];
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: ['environment', 'biology'],
+        focus_refs: [focusKey, 'f-unknown'],
+        requested_predicates: [], search_hints: [] } };
+    } }
+  });
+  await grounder.ground({ semantic_input: 'Контекст места', player_safe_state: {} },
+    'semantic_resolution');
+  assert.equal(inputs.length, 1);
+  assert.deepEqual(encoded, ['Контекст места']);
+  assert.deepEqual(traces[0].query.domains, ['environment']);
+  assert.deepEqual(traces[0].query.focus_refs,
+    [traces[0].planner_request.available_knowledge_refs[0]]);
+});
+
+test('production accepts a legal plan without selected focus refs', async () => {
+  const bundle = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json',
+    import.meta.url), 'utf8'));
+  const inputs = [];
+  const encoded = [];
   const grounder = createProductionWorldKnowledgeGrounder({
     worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
       encoder: { encode: async (text) => { encoded.push(text); return new Float32Array(1024); } },
@@ -52,8 +94,7 @@ test('production normalization removes unavailable domains and refs without chan
       const input = JSON.parse(call.messages[1].content);
       inputs.push(input.request ?? input);
       return { output: { schema: 'world_knowledge_query_plan_v1',
-        query_locale: 'ru', domains: ['environment', 'biology'],
-        focus_refs: ['wk:unavailable-ref'],
+        query_locale: 'ru', domains: ['environment'], focus_refs: [],
         requested_predicates: [], search_hints: [] } };
     } }
   });
@@ -68,17 +109,19 @@ test('an unused focus does not block a supplied physical premise or force its hi
     '../../../data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json',
     import.meta.url), 'utf8'));
   let calls = 0;
-  const plan = { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
-    domains: ['craft_technology', 'physics_material_science'],
-    focus_refs: ['wk:physics_material_science:fibre-twisting',
-      'wk:physics_material_science:plant-cellulosic-fibres'],
-    requested_predicates: [], search_hints: ['twisting textile fibres to form yarn'] };
   const grounder = createProductionWorldKnowledgeGrounder({
     worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
       encoder: { encode: async () => new Float32Array(1024) },
       vector_index: { search: () => new Map() } },
     placeRefs: ['region_novgorod_land'],
-    roleRunner: { async run() { calls += 1; return { output: plan }; } }
+    roleRunner: { async run(call) {
+      calls += 1;
+      return { output: { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
+        domains: ['craft_technology', 'physics_material_science'],
+        focus_refs: [focusKeyFor(call, { domain: 'physics_material_science', label: 'twisting textile fibres' }),
+          focusKeyFor(call, { domain: 'physics_material_science', label: 'Plant cellulosic fibres' })],
+        requested_predicates: [], search_hints: ['twisting textile fibres to form yarn'] } };
+    } }
   });
   const grounded = await grounder.ground({ input_locale: 'en',
     semantic_input: 'What transformation can twisting textile fibres produce?',
@@ -99,13 +142,16 @@ test('a material focus can retrieve its chemical facts without expanding selecte
       vector_index: { search: () => new Map() } },
     placeRefs: ['region_novgorod_land'], telemetry: { onDetail: row => diagnostics.push(row) },
     roleRunner: { async run(call) {
-      assert.deepEqual(JSON.parse(call.messages[1].content).available_knowledge_refs[
-        'wk:material_culture:vegetable-tanned-leather'],
+      const request = JSON.parse(call.messages[1].content);
+      const projectedFocus = Object.entries(request.available_knowledge_refs)
+        .find(([, metadata]) => metadata.label === 'Vegetable-tanned leather');
+      assert.ok(projectedFocus);
+      assert.deepEqual(projectedFocus[1],
       { domains: ['chemistry_process', 'physics_material_science'],
         label: 'Vegetable-tanned leather',
         description: "Leather with vegetable tannage; a particular object's processing needs separate grounding." });
       return { output: { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
-        domains: ['chemistry_process'], focus_refs: ['wk:material_culture:vegetable-tanned-leather'],
+        domains: ['chemistry_process'], focus_refs: [projectedFocus[0]],
         requested_predicates: [], search_hints: ['tanning prepared hide collagen tannins'] } };
     } }
   });
@@ -146,11 +192,12 @@ test('grounding fails closed when query encoding fails, then retries without lex
     } } };
   const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
     placeRefs: ['region_novgorod_land'],
-    roleRunner: { async run() {
+    roleRunner: { async run(call) {
+      const fishFocus = focusKeyFor(call, { domain: 'environment', label: 'рыбных ресурсов' });
       return { output: {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: ['environment'],
-        focus_refs: ['wk:environment:regional-fish-exploitation'],
+        focus_refs: [fishFocus],
         requested_predicates: ['supported_fact'],
         search_hints: ['добыча рыбы']
       }, provider_record: { duration_ms: 5,
@@ -204,7 +251,7 @@ test('grounding fails closed when the single vector scan fails without calling C
     roleRunner: { async run() { return { output: {
       schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
       domains: ['environment'],
-      focus_refs: ['wk:environment:regional-fish-exploitation'],
+      focus_refs: [],
       requested_predicates: [], search_hints: ['добыча рыбы', 'сезон рыбной ловли']
     } }; } }
   });
@@ -243,7 +290,7 @@ test('NPC action grounding reads only the projected NPC role and historical cont
       return { output: {
       schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
       domains: ['environment'],
-      focus_refs: ['wk:environment:regional-fish-exploitation'],
+      focus_refs: [],
       requested_predicates: [], search_hints: ['рыба']
     } }; } } });
   await grounder.ground({
@@ -272,12 +319,13 @@ test('player semantic grounding can request occupation context without assigning
     roleRunner: { async run(call) {
       const request = JSON.parse(call.messages[1].content);
       assert.ok(request.allowed_domains.includes('npc_daily_life'));
-      assert.ok(Object.hasOwn(request.available_knowledge_refs,
-        'wk:npc_daily_life:resource-occupation-needs-setting'));
+      const occupationFocus = focusKeyFor(call, { domain: 'npc_daily_life',
+        label: 'require separately established resources' });
+      assert.ok(Object.hasOwn(request.available_knowledge_refs, occupationFocus));
       return { output: {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
         domains: ['npc_daily_life'],
-        focus_refs: ['wk:npc_daily_life:resource-occupation-needs-setting'],
+        focus_refs: [occupationFocus],
         requested_predicates: [], search_hints: ['occupation skills setting']
       } };
     } }

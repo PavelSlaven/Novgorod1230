@@ -93,6 +93,7 @@ export function validatePreparedPhase3RouteConversation({ ledger, envelope,
     loopTrace: envelope.loop_trace, envelope, state, phase3Contracts,
     routeOnly: false, intermediateTraces: [],
     scenePresentation: turnStepApprovedOwners?.scenePresentation,
+    projectCurrentScene: turnStepApprovedOwners?.projectCurrentScene,
     preparedMovementState
   });
   validatePreparedBodyReplay({ route, direct: conversation,

@@ -51,6 +51,25 @@ test('m2c-npc-wave approval accepts reviewer-signed record', async () => {
   assert.equal(result.ok, true, JSON.stringify(result.errors));
 });
 
+test('m2c-npc-wave approval rejects a signed record requiring a new signature', async () => {
+  await withApproval({ resign_required: true }, async (path) => {
+    const result = await validateM2cNpcWaveApproval({ root: process.cwd(), approvalPath: path });
+    assert.equal(result.ok, false, 'an old signature must not approve a record awaiting re-signing');
+    assert.ok(result.errors.some((error) => error.code === 'M2C_WAVE_APPROVAL_RESIGN_REQUIRED'));
+  });
+});
+
+test('m2c-npc-wave approval accepts a signed record with no re-signing requirement', async (t) => {
+  for (const [name, overrides] of [['absent marker', {}], ['false marker', { resign_required: false }]]) {
+    await t.test(name, async () => {
+      await withApproval(overrides, async (path) => {
+        const result = await validateM2cNpcWaveApproval({ root: process.cwd(), approvalPath: path });
+        assert.equal(result.ok, true, JSON.stringify(result.errors));
+      });
+    });
+  }
+});
+
 test('M2C_WAVE_APPROVAL_AUTHORED_BY_MISSING', async () => {
   await withApproval({ authored_by: '' }, async (path) => {
     const result = await validateM2cNpcWaveApproval({ root: process.cwd(), approvalPath: path });

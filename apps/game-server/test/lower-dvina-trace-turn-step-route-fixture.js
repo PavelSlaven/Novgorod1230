@@ -15,8 +15,15 @@ import {
 } from '../src/runtime/lower-dvina-trace-turn-step-prepared-effects.js';
 import { projectLowerDvinaTracePlayerSafeState } from
   '../src/runtime/lower-dvina-trace-player-safe-state.js';
+import SCENE_PRESENTATION from
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json'
+  with { type: 'json' };
 
 const bundle13 = await loadScenarioBundle(13);
+
+function withScenePresentation(scenarioBundle) {
+  return { ...scenarioBundle, scene_presentation: SCENE_PRESENTATION };
+}
 
 export async function routeDirectScenario({ firstEntryOnly = false,
   plannerPortrait = false, plannerPresentationOverlay = false,
@@ -26,7 +33,7 @@ export async function routeDirectScenario({ firstEntryOnly = false,
   npcSemanticModel = undefined, temporalAdvanceOwner = undefined,
   rootText = null, continuationText = 'осмотреться у ворот',
   destinationPlanOverrides = {}, committedStateVersion = null } = {}) {
-  const bootstrap = fixture({ scenarioBundle,
+  const bootstrap = fixture({ scenarioBundle: withScenePresentation(scenarioBundle),
     materializationBundle: scenarioBundle, rollValue: 0 });
   await submit(bootstrap, turn('route-direct-bootstrap',
     'Осмотреть место крушения подробно.'));
@@ -53,8 +60,8 @@ export async function routeDirectScenario({ firstEntryOnly = false,
     };
   }
   const semantic = fixture({
-    scenarioBundle: scenePresentation == null ? scenarioBundle
-      : { ...scenarioBundle, scene_presentation: scenePresentation },
+    scenarioBundle: { ...scenarioBundle, scene_presentation:
+      scenePresentation ?? SCENE_PRESENTATION },
     materializationBundle: scenarioBundle,
     committedState: before,
     rollValue: 0.99,
@@ -109,13 +116,13 @@ export async function routeDirectScenario({ firstEntryOnly = false,
 }
 
 export async function routeBoundaryScenario(resolution) {
-  const bootstrap = fixture({ scenarioBundle: bundle13,
+  const bootstrap = fixture({ scenarioBundle: withScenePresentation(bundle13),
     materializationBundle: bundle13, rollValue: 0 });
   await submit(bootstrap, turn(`route-boundary-${resolution}-bootstrap`,
     'Осмотреть место крушения подробно.'));
   const before = stateWithCommittedBlueWool(bootstrap.state);
   const semantic = fixture({
-    scenarioBundle: bundle13,
+    scenarioBundle: withScenePresentation(bundle13),
     materializationBundle: bundle13,
     committedState: before,
     rollValue: 0.99,

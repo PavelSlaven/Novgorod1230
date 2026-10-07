@@ -292,7 +292,7 @@ test('canonical first arrival returns all pinned D-1 seasons with month applicab
   ]);
   assert.deepEqual(result.people.compositions, [{ place_family_id: 'pf_ferry_landing', composition_ref: {
     id: 'composition-ferry', version: 1, world_revision_id: REV,
-  }, population_groups: [{ group_id: 'carriers', count: 2 }], scheduled_absences: [
+  }, population_groups: [{ group_id: 'carriers', count: 2 }], slot_relationships: [], scheduled_absences: [
     { group_id: 'carriers', season: 'winter', location_ref: 'pf_winter_ice_crossing' },
   ] }]);
   assert.equal(result.people.compositions[0].scheduled_absences[0].location_ref,

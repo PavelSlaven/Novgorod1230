@@ -6,6 +6,7 @@ import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { addElapsedTime } from '@rus/time-events-history';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { requestNpcSemanticDecision } from '@rus/turn';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import { lowerDvinaTraceTemporalSourceRegistrations } from
@@ -390,6 +391,8 @@ async function assertRepeatedNpcCausalChain({
   const baseModels = createM2ConversationModels({
     ratshaResponseKind: 'speech'
   });
+  const knowledgeRef = { entity_kind: 'knowledge_record',
+    entity_id: 'claim:fish-net' };
   let eremeyRef = null;
   let responderRef = null;
   let npcCalls = 0;
@@ -402,6 +405,13 @@ async function assertRepeatedNpcCausalChain({
       const plan = await baseModels.npcSemanticModel(request);
       const targetRef = npcCalls === 1
         ? responderRef : npcCalls === 2 ? eremeyRef : null;
+      if (npcCalls === 2) {
+        plan.speech.utterance_text = 'Рыбацкая работа связана с сетями.';
+        plan.speech.claims = [{ claim_id: 'fish-net',
+          content_summary: 'Рыбацкая работа связана с сетями.',
+          form: 'assertion', speaker_posture: 'believed_true',
+          source_knowledge_refs: [knowledgeRef], mentioned_entity_refs: [] }];
+      }
       if (targetRef !== null) {
         plan.primary_addressee_ref = targetRef;
         plan.intended_addressee_refs = [targetRef];
@@ -413,6 +423,18 @@ async function assertRepeatedNpcCausalChain({
       return plan;
     }
   };
+  conversationModels.npcSemanticModel.prepareRequest = async (request) => ({
+    request: {
+      ...request,
+      allowed_references: {
+        ...request.allowed_references,
+        knowledge_refs: [...request.allowed_references.knowledge_refs,
+          knowledgeRef].sort((left, right) =>
+          `${left.entity_kind}\u0000${left.entity_id}`.localeCompare(
+            `${right.entity_kind}\u0000${right.entity_id}`))
+      }
+    }
+  });
   const runtime = buildRuntime({
     pool,
     release,
@@ -442,6 +464,18 @@ async function assertRepeatedNpcCausalChain({
     [party.party_id]
   )).rows.map(({ request_id: requestId }) => requestId);
   assert.equal(new Set(persistedRequestIds).size, 3);
+  const persistedClaim = (await pool.query(
+    `SELECT semantic_request, semantic_plan
+       FROM party_runtime.party_npc_decision_traces
+      WHERE party_id=$1`, [party.party_id])).rows.find(({ semantic_plan: plan }) =>
+    plan.speech?.claims?.some(({ source_knowledge_refs: refs }) =>
+      refs?.some(({ entity_kind: kind, entity_id: id }) =>
+        kind === knowledgeRef.entity_kind && id === knowledgeRef.entity_id)));
+  assert.ok(persistedClaim, 'the WK claim and prepared request must commit');
+  assert.deepEqual(persistedClaim.semantic_request.allowed_references
+    .knowledge_refs.filter(({ entity_kind: kind, entity_id: id }) =>
+      kind === knowledgeRef.entity_kind && id === knowledgeRef.entity_id),
+    [knowledgeRef]);
 
   const restarted = buildRuntime({
     pool,
@@ -450,6 +484,34 @@ async function assertRepeatedNpcCausalChain({
     conversationModels
   });
   await restarted.getPartyScreen(party.party_id);
+  const replayRepository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool,
+    committer: { async commit() { throw new Error('read-only replay'); } }
+  });
+  const loadedState = await replayRepository.loadPhase2State(party.party_id);
+  const persistedInput = loadedState.npc_semantic_decision_inputs.find(
+    ({ request_snapshot: request }) =>
+      request.request_id === persistedClaim.semantic_request.request_id);
+  assert.ok(persistedInput, 'the prepared WK request must survive PG reload');
+  assert.deepEqual(persistedInput.request_snapshot, persistedClaim.semantic_request);
+  let replayModelCalls = 0;
+  const replayed = await requestNpcSemanticDecision({
+    boundary: persistedInput.boundary_snapshot,
+    request: persistedInput.request_snapshot,
+    persistedTrace: persistedInput.trace,
+    persistedInput,
+    orderedSignals: persistedInput.signal_records,
+    semanticModel: async () => {
+      replayModelCalls += 1;
+      throw new Error('committed WK claim must replay without the model');
+    },
+    revalidateStateVersion: async () =>
+      Number(persistedInput.request_snapshot.state_version)
+  });
+  assert.equal(replayModelCalls, 0);
+  assert.equal(replayed.status, 'replayed');
+  assert.deepEqual(replayed.plan.speech.claims[0].source_knowledge_refs,
+    [knowledgeRef]);
   const replay = await restarted.submitTurn(party.party_id, input);
   assert.deepEqual(replay, result);
   assert.equal(npcCalls, 3);

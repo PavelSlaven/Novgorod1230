@@ -50,6 +50,19 @@ test('visible S1 local ref exposes one code-owned bidirectional movement operati
   }]);
 });
 
+test('turn planner state adds only a supplied player-safe actor role', () => {
+  const source = { actor_id: 'player_character_abcdef1234567890',
+    position: { location_ref: 'trace_ld_v1_hidden' } };
+  const labeled = projectLowerDvinaTraceTurnStepPlannerState(source, ' кожевник ');
+  assert.equal(labeled.actor_role, 'кожевник');
+  assert.equal(labeled.actor_id, source.actor_id);
+  assert.equal(labeled.position, source.position);
+
+  const unlabeled = projectLowerDvinaTraceTurnStepPlannerState(source);
+  assert.equal(Object.hasOwn(unlabeled, 'actor_role'), false);
+  assert.equal(unlabeled.actor_id, source.actor_id);
+});
+
 test('visible scene movement edge does not bypass movement command admission', () => {
   const state = projectLowerDvinaTraceTurnStepPlannerState({
     actor_id: 'actor:player', current_visible_context: { visible_objects: [{

@@ -74,8 +74,10 @@ const windowOverrides = {
   // Verifier: office_end extended by dedupe to 1246-12-31 (Yaroslav's death year), conflicting with the
   // Novgorod-reign window (1231-1236) already used in po_vladimir_suzdal_principality of this same group.
   R03: {
-    end: '1236-12-31',
-    note: 'Для этой строки выбрана граница 1236-12-31 по book:378072 §Нашествие иноземцев ¶464: Александр назван новгородским князем с 1236 г.; она согласуется с окном polities_external_relations. Другая хронология, book:566840 §Хронологическая таблица ¶1878, даёт четвёртое княжение Ярослава с 1230 до 1246 г.; источники расходятся, поэтому 1236 — принятый для каталога годовой предел, не бесспорная дата окончания княжения.',
+    end: '',
+    confidence: 'B',
+    source_refs: 'book:667380 §Приложение 2 ¶486; book:566840 §Хронологическая таблица ¶1878; book:378072 §Нашествие иноземцев > Борьба с крестоносцами ¶464',
+    note: 'Начало приглашённого княжения — 30 декабря 1230 (book:667380 §Приложение 2 ¶486). Конец не установлен: book:566840 §Хронологическая таблица ¶1878 даёт четвёртое княжение 1230–1246, а book:378072 §Нашествие иноземцев > Борьба с крестоносцами ¶464 называет Александра новгородским князем с 1236 г.; начало княжения сына не устанавливает последний день отца. Поэтому office_end оставлен пустым.',
   },
   // Verifier: sqlite/period text gives only "конец 1230"; book evidence (566840 ¶1879) gives a specific
   // month for the sons' arrival as намеcтники — January 1231, one month later than the draft text.
@@ -85,8 +87,12 @@ const windowOverrides = {
     note: 'office_start скорректирован с 1230-01-01 ("конец 1230" в period_1230 не давало точного дня) на 1231-01-01 по book:566840 §Хронологическая таблица ¶1879 ("в январе 1231 княжичи прибыли в Новгород как наместники"). office_end сужен с 1233-12-31 до точной даты смерти 1233-06-10 (book:667380 §Приложение 2 ¶489 "старший сын Ярослава Фёдор скончался 10 июня 1233 г."; book:566840 §Хронологическая таблица ¶1890).',
   },
   R05: {
-    start: '1231-01-01',
-    note: 'office_start скорректирован с 1230-01-01 на 1231-01-01 тем же основанием, что и у Фёдора (R04): book:566840 §Хронологическая таблица ¶1879 датирует прибытие княжичей-наместников январём 1231, а не "концом 1230" из period_1230.',
+    start: '',
+    end: '',
+    period_note: 'Январь 1231: прибытие в Новгород как наместника; точный день и непрерывное окно должности не установлены.',
+    confidence: 'B',
+    source_refs: 'book:566840 §Хронологическая таблица ¶1879',
+    note: 'Book:566840 §Хронологическая таблица ¶1879 датирует январём 1231 прибытие Фёдора и Александра как наместников. День января не указан; draft years не подтверждают непрерывный срок до конца 1250. Обе границы окна не заполнены.',
   },
   // Verifier: dedupe from draft years "1230-1240-е" parsed only 4-digit years, giving 1240-12-31 —
   // Stepan Tverdislavich died in office 16.08.1243, not in 1240.
@@ -95,9 +101,12 @@ const windowOverrides = {
     note: 'office_end скорректирован с 1240-12-31 (артефакт парсинга "1240-е" из draft) на дату смерти в должности 16.08.1243 — book:667380 §Приложение 2 ¶499 "скончался 16 авг. 1243; посадничал без трёх месяцев 13 лет"; book:378072 §Нашествие иноземцев ¶478 "ум. 16.08.1243; посадник 1230–1243".',
   },
   R09: {
-    start: '1230-12-09',
+    start: '',
     end: '',
-    note: 'office_start скорректирован с 1230-01-01 на 1230-12-09 (не 1230-12-01: точный день месяца в period_1230 "с декабря 1230" не дан, но sqlite.events, confidence A, S01, датирует смену власти "1230-12: Степан — посадник, Микита — тысяцкий" тем же днём, что назначение Степана посадником — 9 дек. 1230, тем же днём кончается тысяцкое предшественника hf_book_boris_negochevich); согласуется с book:667380 §Приложение 2 ¶486. office_end очищен: источники дают избрание, но не конец тысяцкого.',
+    period_note: 'Избран тысяцким в декабре 1230; точный день и окончание должности не установлены.',
+    confidence: 'B',
+    source_refs: 'book:667380 §Приложение 2 ¶486',
+    note: 'Book:667380 §Приложение 2 ¶486 сообщает об избрании Никиты Петриловича тысяцким, но не указывает точный день или дату окончания должности; обе границы окна оставлены пустыми.',
   },
   R02: {
     end: '1230-12-08',
@@ -109,7 +118,7 @@ const sqRows = extract.persons_1230.map(p => {
   const override = windowOverrides[p.id];
   let note = '';
   if (override) {
-    if (override.start) w.start = override.start;
+    if (Object.hasOwn(override, 'start')) w.start = override.start;
     if (Object.hasOwn(override, 'end')) w.end = override.end;
     note = override.note;
   }
@@ -119,12 +128,12 @@ const sqRows = extract.persons_1230.map(p => {
   office: p.role,
   office_start: w.start,
   office_end: w.end,
-  period_note: p.period_1230,
+  period_note: Object.hasOwn(override || {}, 'period_note') ? override.period_note : p.period_1230,
   event_refs: '',
   location_refs: 'Новгород',
   significance: p.action,
-  source_refs: 'НПЛ (Насонов 1950; Michell & Forbes 1914) via sqlite novgorod_1230(1).persons_1230[' + p.id + '], sources=' + p.sources,
-  confidence: p.confidence,
+  source_refs: (override && override.source_refs ? override.source_refs + '; ' : '') + 'НПЛ (Насонов 1950; Michell & Forbes 1914) via sqlite novgorod_1230(1).persons_1230[' + p.id + '], sources=' + p.sources,
+  confidence: override && override.confidence ? override.confidence : p.confidence,
   status: 'candidate',
   note: note,
   };

@@ -1,6 +1,6 @@
 fam_id,kind,name_ru,value,fd_id,game_use,materialization_policy,source_refs,confidence,status
 fam_frost_1230,event,Мороз на Воздвижение побил весь урожай по волости,14.09.1230 (юлианский),,Начало голодной фазы; урожай 1230 г. в полях погиб до уборки.,state_of_world,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:events:1230-09-14 ок.""]",A,candidate
-fam_price_bread,price,Хлеб,8 кун (единица товара в летописи неясна),,"Порядок роста цен, не прейскурант.",price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:хлеб""]",A,candidate
+fam_price_bread,price,Хлеб,8 кун (единица товара в летописи неясна),,"Порядок роста цен, не прейскурант.",price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:хлеб (готовая мера/каравай в летописном переводе)""]",A,candidate
 fam_price_rye,price,Рожь,"20 гривен за кадь; «а въ дворех пол 30» (в дворах — 25, чтение обсуждается)",,,price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:рожь""]",A,candidate
 fam_price_wheat,price,Пшеница,40 гривен за кадь,,,price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:пшеница""]",A,candidate
 fam_price_millet,price,Пшено,50 гривен за кадь,,,price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:просо""]",A,candidate

@@ -48,6 +48,8 @@ import { applySiteTraversalTransition, siteTraversalWrites } from
   './spatial-v3-site-traversal-commit.js';
 import { projectPreparedDomainState } from
   '../../runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
+import { lowerDvinaTraceCarriedItemIds, uniqueLowerDvinaTraceVisibleObjects } from
+  '../../runtime/lower-dvina-trace-visible-scene-items.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer,
@@ -144,10 +146,18 @@ export async function commitLowerDvinaTraceTurnStep({
   }
   const destinationVisibleContext = preparedMovementState?.current_visible_context
     ?? envelope.consequence?.visible_seed?.destination_visible_context ?? null;
+  const carriedItemIds = lowerDvinaTraceCarriedItemIds(state.items, state.actor_id);
+  const carriedVisibleObjects = (envelope.visible_context.visible_objects ?? [])
+    .filter(({ entity_ref: ref }) => ref?.entity_kind === 'item'
+      && carriedItemIds.has(ref.entity_id));
   const sourceVisibleContext = destinationVisibleContext == null
     ? envelope.visible_context
     : {
       ...destinationVisibleContext,
+      visible_objects: uniqueLowerDvinaTraceVisibleObjects([
+        ...carriedVisibleObjects,
+        ...(destinationVisibleContext.visible_objects ?? [])
+      ]),
       visible_changes: [...new Set([
         ...(destinationVisibleContext.visible_changes ?? []),
         ...(envelope.visible_context.visible_changes ?? [])
@@ -187,7 +197,9 @@ export async function commitLowerDvinaTraceTurnStep({
   const visibleEnvelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
     partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts,
     currentLightPhase: projectEnvironmentAtClock?.({ state,
-      clock: envelope.time_update.clock_after }).light_state ?? null
+      clock: envelope.time_update.clock_after }).light_state ?? null,
+    onLabelGapsOmitted:
+      turnStepApprovedOwners?.recordVisiblePackageDiagnostic
   });
   const base = buildLowerDvinaTraceTurnStepSnapshot({
     state, envelope, inputDigest, nextVersion, turnNumber, changeSetId,

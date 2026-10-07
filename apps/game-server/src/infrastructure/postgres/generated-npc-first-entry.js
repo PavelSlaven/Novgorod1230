@@ -1,4 +1,5 @@
-import { materializeApprovedProceduralNpc, materializeApprovedActorEquipment } from '@rus/materialization';
+import { materializeApprovedProceduralNpc, materializeApprovedActorEquipment,
+  materializeNpcRelationshipRules } from '@rus/materialization';
 import { createNpcRoutineState, npcRoutineActivity } from '@rus/npc-runtime';
 import { approvedNpcBodyRows, approvedNpcConditionRows, initialNpcRoutineRecords } from '@rus/new-game/stages/stage-24';
 
@@ -7,6 +8,7 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
   change_set_id: changeSetId, world_revision_id: worldRevisionId, g4_ref: g4,
   generation_template_ref: template, canonical_g5_ref: canonical,
   scene, npc_inputs: inputs, equipment_catalog: equipment,
+  npc_relationship_materialization_rules: relationshipRules = [], relationship_compositions = [],
   started_at: startedAt, calendar_profile: calendarProfile } = {}) {
   if (![partyId, runId, changeSetId, worldRevisionId, scene?.site_id].every(text)
       || scene.party_id !== partyId || !Array.isArray(scene.rows)
@@ -59,7 +61,9 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
     npc.machine_state.schedule_state = npc.routine_state.profile.phases[npc.routine_state.phase_index].state_id;
     return { ...result, npc };
   });
-  const npcs = results.map(({ npc }) => npc);
+  const relationshipResult = materializeNpcRelationshipRules({ rules: relationshipRules,
+    compositions: relationship_compositions, npcs: results.map(({ npc }) => npc) });
+  const npcs = relationshipResult.npcs;
   const candidates = results.flatMap((result) => result.initial_equipment_candidates);
   if (!candidates.length || equipment?.activation?.status !== 'active') gap('NPC_FIRST_ENTRY_EQUIPMENT_GAP');
   const equipmentResult = materializeApprovedActorEquipment({ party_id: partyId, run_id: runId,
@@ -94,6 +98,10 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
   ]);
   for (const body of approvedNpcBodyRows(npcs, partyId, changeSetId)) {
     inserts.push(row('party_actor_body_states', `npc:${body.actor_id}`, body));
+  }
+  for (const relation of relationshipResult.relations) {
+    const id = `${partyId}:${relation.from_npc_id}:${relation.to_npc_id}:${relation.relation_category_id}`;
+    inserts.push(row('party_npc_relations', id, relation));
   }
   for (const condition of approvedNpcConditionRows(npcs, partyId, changeSetId)) {
     inserts.push(row('party_actor_active_conditions', `npc:${condition.actor_id}:${condition.condition_id}`, condition));

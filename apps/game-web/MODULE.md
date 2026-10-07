@@ -11,6 +11,8 @@ Browser-клиент, который получает только versioned pub
 ## Владеет
 
 - HTTP API client `/api/v1`;
+- отображением безопасного error message; структурный error code не добавляется
+  в текст экрана ни при каком developerMode;
 - валидацией публичных API envelopes и screen contracts;
 - UI-only store;
 - persisted pending new-game request identity reused after timeout/reload until
@@ -21,6 +23,7 @@ Browser-клиент, который получает только versioned pub
   exact длительность последнего committed хода вычисляет server из committed
   state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen/FactualTurnDeliveryScreen;
+- проверкой optional `exact_npc_utterances` на ready/pending TurnScreen и `FactualTurnDeliveryScreen v1`; принимает только публичный leaf `{ speaker_ref: { entity_kind: 'npc', entity_id }, utterance_text }` без server provenance и отображает точные NPC слова с атрибуцией, не повторяя их в prose slot;
 - проверкой и rendering `FactualTurnDeliveryScreen v1`: degraded recovery
   переиспользует обычные context, navigation, scene, task, checks, actions и
   overlays, заменяя только prose slot factual block; сохраняет `intent_not_fact`

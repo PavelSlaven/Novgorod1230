@@ -53,6 +53,7 @@ export const TABLES = Object.freeze({
   party_positions: { modes: ['update'], key: ['party_id'], version: false },
   party_carrier_attachments: { modes: ['insert', 'update'], key: ['id'], version: true },
   party_npc_spatial_schedules: { modes: ['insert', 'update'], key: ['id'], version: true },
+  party_npc_relations: { modes: ['insert'], key: ['party_id', 'from_npc_id', 'to_npc_id', 'relation_category_id'] },
   entity_placements: { modes: ['insert', 'update', 'delete'], key: ['party_id', 'entity_kind', 'entity_id'], version: true },
   party_entity_controls: { modes: ['insert', 'update'], key: ['party_id', 'entity_kind', 'entity_id'], version: true },
   party_actor_profile_bindings: { modes: ['insert', 'update'], key: ['party_id', 'actor_kind', 'actor_id'], version: true },

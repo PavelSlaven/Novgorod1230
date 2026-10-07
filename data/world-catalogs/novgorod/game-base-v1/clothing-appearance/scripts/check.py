@@ -13,6 +13,7 @@ import csv, json, re, shutil, subprocess, sys
 from pathlib import Path
 from build import (HAIR_COVERAGE_EVIDENCE, HEAD_SLOTS, build_archive_inclusion_ledger,
                    build_material_entities, load_actor_age_categories, normalized_name)
+from material_view import apply_material_overrides
 
 ROOT = Path(__file__).resolve().parents[1]
 NOV = ROOT.parents[1]
@@ -195,7 +196,8 @@ def main():
     # ---- archive ownership ledger
     manifest = json.loads((ROOT / 'authoring/archive_inclusion_manifest.json').read_text(encoding='utf-8'))['records']
     ledger = rd(ROOT / 'reports/archive_inclusion_ledger.csv')
-    master_items = {r['item_id']: r for r in rd(NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv')}
+    master_path = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'
+    master_items = {r['item_id']: r for r in apply_material_overrides(rd(master_path), master_path)}
     costume_items = {r['item_id']: r for r in costume}
     costume_combinations = {r['combo_id']: r for r in rd(NOV / 'sources/costume-dataset-v1/data/combinations.csv')}
     validate_archive_decisions(manifest, ledger)

@@ -1,0 +1,104 @@
+{
+  "schema": "combat_data_independent_approval_review_v5",
+  "who": "Codex — независимый ведущий ap-combat-data по D67; не автор данных",
+  "when": "2026-10-04T20:09:31Z",
+  "repository": "/srv/novgorod-work/worktrees/combat-data",
+  "branch": "fleet/combat-data",
+  "path": "/srv/novgorod-work/worktrees/combat-data/data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1",
+  "repository_relative_path": "data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/",
+  "commit": "feed71c2647b38e3ba4ab7bc613aa1483beaa774",
+  "files": [
+    "minimal-combat-bundle.candidate.json",
+    "source-map.json",
+    "typed-gaps.json",
+    "combat-data-report.md",
+    "validate_combat_data.py",
+    "bench/combat-data/manifest.json",
+    "bench/combat-data/runner.py",
+    "bench/combat-data/body-interface.mjs",
+    "bench/combat-data/results.json",
+    "bench/combat-data/README.md"
+  ],
+  "file_sha256": {
+    "minimal-combat-bundle.candidate.json": "dc1a53306ec363d49b9286221e13782cba25c651b489547aa9094a015e4cee01",
+    "source-map.json": "619d225928e3c6f51b00ffb2f0484356aad31c829ff4361c8d7c76116a909702",
+    "typed-gaps.json": "97e79a83a0d732b793ada29d7e42fb0644ba7d2f8bc5c5c25a570b0bf9646afc",
+    "combat-data-report.md": "2d5250f3cbc7b26a90635fcfb202c7f295ddfb8c5768116c8bef755de2eebd9e",
+    "validate_combat_data.py": "1de3dbc53de3b2387c8ca0b0ea400a84b43fa0e1100b7d03ccc57f4e9c3d768f",
+    "bench/combat-data/manifest.json": "611f02dc2555089acf518eda30ab29c16ac7aebbe6694eee5897586e624bcd39",
+    "bench/combat-data/runner.py": "476c77a244d96ca135c1fbcd149ba399ed38cf1a4f4d90441b7fb91ce97dd2a2",
+    "bench/combat-data/body-interface.mjs": "180ff4501ddfad6c31d80f2f51f00519aee230f8716ce45bb8d5cdad8eb37f8a",
+    "bench/combat-data/results.json": "29908ec8bf91373243948929b21fa7e658c9ab5cae156cddc4a2558e0fe8b0a9",
+    "bench/combat-data/README.md": "1403a2c934b27146aa479dc92626aea93d4505bccb2c7e98d1512d5713dade9d"
+  },
+  "sha256_purpose": "Наблюдение сверки десяти файлов по явному A-ap-combat-data-record5; не подпись, receipt или дополнительный approval gate.",
+  "commit_status": "10/10 git blobs совпали с review-5/package-snapshot и рабочей копией; новых содержательных изменений относительно прохода5 нет.",
+  "reviewer_request": "A-ap-combat-data-record5 | 2026-10-04T20:06:18Z",
+  "verdict": "APPROVE_WITH_LIMITS",
+  "approval_granted": true,
+  "approval_status": "APPROVED_WITH_LIMITS",
+  "approval_scope": "WR §21.1: фиксация ограниченного технического вердикта прохода5 на перечисленные файлы feed71c2. Утверждено закрытие R4-F01 (действительный вложенный emission assertion и прямая отрицательная проба), новые изменённые байты optional owner API probe и честное разделение not_run. Объём содержательного прохода5 не расширен; полного успешного прогона пакета и production/owner approval эта запись не подтверждает.",
+  "findings_closed": [
+    "R4-F01-EMISSION-PATH"
+  ],
+  "new_blocking_regressions_in_review5": [],
+  "full_package_acceptance_granted": false,
+  "checks": {
+    "recording_pass6": {
+      "commit_content_equality": "pass_10_of_10",
+      "json_validation": "pass",
+      "behavior_tests_rerun": false
+    },
+    "review5": {
+      "isolated_evaluator_baseline": "pass",
+      "nested_nonempty_emission": "rejected",
+      "exact_error": "data assertion failed: cd03/candidate_never_emits_unapproved",
+      "direct_mutation_helper": "pass",
+      "python_ast": "pass",
+      "node_syntax_exit": 0,
+      "validator_check_exit": 1,
+      "runner_exit": 1,
+      "error": "SOURCE_HASH_MISMATCH",
+      "author_results_regenerated": false,
+      "self_test_rerun": false,
+      "owner_api_probe": "not_run",
+      "owner_api_imported": false,
+      "owner_api_verification_error": "EPERM"
+    }
+  },
+  "known_source_drift": {
+    "source_id": "src.contract-index.v-current",
+    "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md",
+    "pin": "7a33888c3208e049100436e2c4652556f92439bd",
+    "review5_expected_sha256": "262d34f2cd0addaeb2e1cdabed526f88c20e3f365ae7a555290ad6158287dd49",
+    "review5_observed_sha256": "ba1821b1ba645f6ffcc2d33ece0900e4a2af42403a4bdcb6fca0b7a2b7fb4e61",
+    "observed_in": "review-5/source-pin-diagnostic-5.json; это наблюдение прохода5, источник в проходе6 повторно не проверялся",
+    "pinned_blob_matches_expected": true,
+    "difference": "Одна строка World Knowledge, строка181; source-map и pins оставлены прежними.",
+    "consequence": "Полный check и main runner в проходе5 остановились; нужен доступ к закреплённому источнику и успешный полный прогон перед положительной полной приёмкой пакета."
+  },
+  "limits": [
+    "Это запись прежнего ограниченного вердикта на commit, без нового содержательного аудита или повторных тестов.",
+    "R4-F01 закрыт для непустого nested emission; missing key и null evaluator не различает.",
+    "Полный validator/runner в проходе5 не PASS; результаты автора не регенерированы, прежний self-test PASS61 относится к проходу4.",
+    "Optional owner API success branch не проверена: no-root и configured-root дали not_run; current root aa5e14baf01b79c66ae33df27c522a2fd508dcec не равен ожидаемому 8ef2b6494a88589ef88b7bacf13a9c427408e91d.",
+    "D41/модельная естественность, gameplay/баланс, owner approval, generic runtime applicability, readback/commit, persistence/replay и clock/movement не проверены.",
+    "D71 значения и D72 полосы остаются authoring proposals; запись не разрешает emission, импорт, активацию или production.",
+    "Прежние P3 V01/V02 и ограничения селекторного fixture/helper сохраняются без повторного аудита.",
+    "Правка перечисленных байтов после feed71c2 снимает это утверждение до нового прохода."
+  ],
+  "evidence": [
+    "report-ap-combat-data-5.md",
+    "review-5/review-status-5.json",
+    "review-5/emission/results.json",
+    "review-5/optional/results.json",
+    "review-5/commands-5.json",
+    "review-5/source-pin-diagnostic-5.json",
+    "review-5/contract-index-external-drift.diff",
+    "review-6/root-commit-comparison.json"
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "production_authorized": false,
+  "record_placement": "Создано только в собственном out; для размещения ведущим рядом с данными. Репозиторий исполнитель не менял."
+}

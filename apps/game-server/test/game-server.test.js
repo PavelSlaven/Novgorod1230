@@ -120,6 +120,17 @@ test('known turn failures use safe public categories and never expose internal d
   assert.doesNotMatch(JSON.stringify(needsCheck), /private-queue|NEEDS_CHECK/u);
 });
 
+test('error envelope masks service text in messages that would otherwise be public', () => {
+  const response = errorEnvelope(Object.assign(new Error(
+    'INFERENCE: claim:final-static-b01-living-birch'), {
+    code: 'INVALID_REQUEST', status: 400
+  }));
+  assert.equal(response.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  assert.equal(response.body.error.message,
+    'Действие временно недоступно. Попробуйте ещё раз.');
+  assert.doesNotMatch(JSON.stringify(response), /INFERENCE|claim:/u);
+});
+
 test('immutable blocker catalog failures are permanent and player-safe', () => {
   for (const code of ['NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED',
     'NEEDS_CHECK_BLOCKER_CATALOG_INVALID']) {

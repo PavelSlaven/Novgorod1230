@@ -195,6 +195,13 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
       relationships: structuredClone(npc.relationships ?? [])
     }
   })), ['party_materialization_runs', 'party_g5_anchors'], sourceTrace);
+  addBatch(batches, 'party_npc_relations', (result.immediate.npc_relationships ?? []).map((relation) => ({
+    party_id: partyId,
+    from_npc_id: relation.from_npc_id,
+    to_npc_id: relation.to_npc_id,
+    relation_category_id: relation.relation_category_id,
+    state: structuredClone(relation.state),
+  })), ['party_npcs'], sourceTrace);
   addBatch(batches, 'party_npc_schedules', identityNpcs.filter((npc) =>
     npc.routine_state == null).flatMap((npc) =>
     (npc.schedule_records ?? []).map((schedule) => ({

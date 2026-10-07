@@ -186,7 +186,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         kind: 'approach', connection_binding_id: binding.id, edge_id: reachable_path[0],
         ordered_local_edge_path: describeLocalEdgePath(context, reachable_path), display_label }));
     },
-    async prepareConnection(input) {
+    async prepareConnection(input, { onLabelGapsOmitted = null } = {}) {
       const { context, approach, selected } = await selectedConnection(input);
       if (selected.connection) return Object.freeze({ ok: true, replay: true,
         topology_status: 'committed', connection_id: selected.connection.id,
@@ -197,7 +197,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         actor_id: input.actorId, g4: context.g4, profile: context.profile, binding_id: selected.binding.id,
         source_site_id: context.site.id, source_position_id: approach?.position.id ?? context.position.id,
         ...orderedApproachFields(input, context, approach),
-        materializer_version: materializerVersion });
+        materializer_version: materializerVersion }, { onLabelGapsOmitted });
     },
     async prepareConnectionTraversal(input) {
       if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
@@ -225,7 +225,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         firstStepEdgeIds: input.firstStepEdgeIds });
       return approaches.map((row) => ({ kind: 'approach', ...row }));
     },
-    async prepareExpansion(input) {
+    async prepareExpansion(input, { onLabelGapsOmitted = null } = {}) {
       const { context, approach, selected } = await selectedContext(input);
       if (selected.connection) return Object.freeze({ ok: true, replay: true,
         topology_status: 'committed', connection_id: selected.connection.id,
@@ -238,7 +238,7 @@ export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansio
         source_site_id: context.site.id, source_position_id: approach?.position.id ?? context.position.id,
         ...orderedApproachFields(input, context, approach),
         ...(selected.entry ? { entry_binding: pin(selected.entry) } : {}),
-        materializer_version: materializerVersion });
+        materializer_version: materializerVersion }, { onLabelGapsOmitted });
     },
     async prepareTraversal(input) {
       if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');

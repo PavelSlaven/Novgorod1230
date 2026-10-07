@@ -32,10 +32,13 @@ test('fresh-schema-request rebuild equals committed file and pins chain_digest',
     rebuilt.party_schema.chain_digest,
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST
   );
-  assert.equal(rebuilt.party_schema.ordered_migrations.length, 39);
-  assert.equal(
-    rebuilt.party_schema.ordered_migrations.at(-1).path,
-    'schemas/party-db/039_party_runtime_local_lines.sql'
+  assert.equal(rebuilt.party_schema.ordered_migrations.length, 40);
+  assert.deepEqual(
+    rebuilt.party_schema.ordered_migrations.slice(-2).map(({ path }) => path),
+    [
+      'schemas/party-db/039_party_runtime_local_lines.sql',
+      'schemas/party-db/040_party_runtime_visible_package_initial_state.sql'
+    ]
   );
   assert.equal(rebuilt.world_schema.ordered_parts.length, 30);
   assert.equal(rebuilt.world_schema.expected_world_base_tables, 224);

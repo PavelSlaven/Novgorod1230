@@ -377,7 +377,17 @@ function section(markdown, names) {
 }
 
 function bullets(text) {
-  return String(text ?? '').split(/\r?\n/u).map((line) => /^[-*]\s+(.+)$/u.exec(line)?.[1]?.trim().replace(/[;.]$/u, '')).filter(Boolean);
+  const items = [];
+  let continuing = false;
+  for (const line of String(text ?? '').split(/\r?\n/u)) {
+    const item = /^[-*][ \t]+(.+)$/u.exec(line);
+    if (item) {
+      items.push(item[1].trim());
+      continuing = true;
+    } else if (continuing && /^[ \t]+\S/u.test(line)) items[items.length - 1] += ` ${line.trim()}`;
+    else continuing = false;
+  }
+  return items.map((item) => item.replace(/[;.]$/u, ''));
 }
 
 function firstParagraph(text) {
@@ -385,7 +395,11 @@ function firstParagraph(text) {
 }
 
 function ownerSummary(module) {
-  if (module.owns.length) return module.owns.slice(0, 3).join('; ');
+  if (module.owns.length) {
+    const shown = module.owns.slice(0, 3).join('; ');
+    const omitted = module.owns.length - 3;
+    return omitted > 0 ? `${shown}; …ещё ${omitted}` : shown;
+  }
   return module.purpose;
 }
 

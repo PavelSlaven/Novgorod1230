@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { initializeTracePhase4Combat } from
   '../src/runtime/lower-dvina-trace-phase-4-combat-initialization.js';
+import { projectTraceCombatSubjectiveState } from
+  '../src/runtime/lower-dvina-trace-combat-subjective.js';
 
 const at = {
   whole_minutes: '620',
@@ -18,6 +20,14 @@ const contracts = {
   actors: {
     ratsha_storehouse_helper: {
       instance_id: 'ratsha-1',
+      identity_state: { canonical_name: 'Ратша' },
+      semantic_state: { character: {
+        temperament_label_ru: 'осторожная',
+        value_refs: ['kin_loyalty', 'responsibility'],
+        value_labels_ru: ['забота о родне', 'ответственность'],
+        goals_ru: ['сберечь запасы для семьи'],
+        fear_ru: 'остаться без крова зимой'
+      } },
       semantic_profile: {
         identity: { canonical_name: 'Ратша' },
         combat_experience: 'limited'
@@ -92,8 +102,58 @@ test('Phase 4 handoff opens one common paused combat session without harm', asyn
   assert.equal(initialized.session.exchange_ordinal, 0);
   assert.equal(initialized.session.participant_states[1]
     .current_intent.intent_kind, 'engage');
+  assert.deepEqual(initialized.decision_records[0].request.npc_subjective_state,
+    {
+      identity: { name_or_label: 'Ратша' },
+      social_role: {},
+      combat_experience: 'limited',
+      attributes: [],
+      skills: [],
+      body: { body_state_descriptions: [],
+        body_state_gaps: ['health', 'energy', 'satiety'].map((metric) => ({
+          metric, code: 'body_state_qualitative_metric_gap'
+        })) },
+      mood: {},
+      temperament: ['осторожная'],
+      goals: ['сберечь запасы для семьи'],
+      fears: ['остаться без крова зимой'],
+      obligations: [],
+      relationships: [],
+      available_equipment: []
+    });
   assert.equal(initialized.decision_records.length, 1);
   assert.equal('harm_packages' in initialized, false);
+});
+
+test('combat reassessment projects persisted NPC identity and character labels', () => {
+  const projected = projectTraceCombatSubjectiveState({
+    entity_kind: 'npc', entity_id: 'npc-1'
+  }, { npcs: [{ instance_id: 'npc-1',
+    identity_state: { canonical_name: 'Гость' },
+    semantic_state: { character: {
+      temperament_label_ru: 'упорный', value_labels_ru: ['семья', 'долг'],
+      goals_ru: ['защитить дом'], fear_ru: 'потерять близких',
+      temperament_ref: 'private-id', value_refs: ['private-a', 'private-b']
+    } }
+  }] });
+  assert.deepEqual(projected.identity, { name_or_label: 'Гость' });
+  assert.deepEqual(projected.temperament, ['упорный']);
+  assert.deepEqual(projected.goals, ['защитить дом']);
+  assert.deepEqual(projected.fears, ['потерять близких']);
+  assert.equal(JSON.stringify(projected).includes('private-id'), false);
+  assert.equal(JSON.stringify(projected).includes('private-a'), false);
+});
+
+test('combat reassessment ignores scene NPC body snapshot without owner state', () => {
+  const projected = projectTraceCombatSubjectiveState({
+    entity_kind: 'npc', entity_id: 'npc-1'
+  }, { npcs: [{ instance_id: 'npc-1', body_state: {
+    health: 91, energy: 88, satiety: 77
+  } }] });
+  assert.deepEqual(projected.body, { body_state_descriptions: [],
+    body_state_gaps: ['health', 'energy', 'satiety'].map((metric) => ({
+      metric, code: 'body_state_qualitative_metric_gap'
+    })) });
 });
 
 test('non-combat conversation outcome does not call the combat model', async () => {

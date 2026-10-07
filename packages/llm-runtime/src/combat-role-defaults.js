@@ -33,6 +33,7 @@ function semanticRole(envPrefix, outputContractMode) {
   return {
     envPrefix, model: 'qwen3.8-27b-uncensored-w4a16-tp2', thinking: 'disabled',
     reasoningEffort: null, responseFormat: 'json_object', maxTokens: 20_000,
+    temperature: 0,
     outputContractMode, expectedSchema: null,
     parseJson: true, targetInputTokens: 100000, comfortableInputTokens: 220000,
     hardInputLimitTokens: 600000, reserveOutputTokens: 8000,

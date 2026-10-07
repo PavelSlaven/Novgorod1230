@@ -40,6 +40,13 @@ export async function prepareCanonicalPlacePeople({ context, site, presenceConte
   if (!info) return null;
   const { request, proposal, change_set_id: changeSetId } = context;
   const rules = presenceContext.rules ?? [];
+  const relationshipRules = approvedActorTemporalBundle?.npc_relationship_materialization_rules ?? [];
+  if (relationshipRules.length > 0 && (info.compositions ?? []).some((composition) =>
+    !Array.isArray(composition.slot_relationships))) {
+    throw serverError('NPC_RELATIONSHIP_SOURCE_GAP',
+      'The approved D-2 composition omitted its slot relationship source facts.',
+      { status: 409, public_exposure: 'internal' });
+  }
   const { wanted, trace: wantTrace } = wantPlacePeople({ party_id: request.party_id,
     scope_instance_ref: presenceContext.scopeInstanceRef, compositions: info.compositions ?? [],
     rule_outcomes: ruleOutcomes(presenceAggregate, rules) });
@@ -104,6 +111,8 @@ export async function prepareCanonicalPlacePeople({ context, site, presenceConte
     }
     const npc = prepareGeneratedNpcFirstEntry({ party_id: request.party_id, run_id: runId, change_set_id: changeSetId,
       world_revision_id: request.g4.world_revision_id, g4_ref: request.g4, canonical_g5_ref: canonical, scene,
+      npc_relationship_materialization_rules: relationshipRules,
+      relationship_compositions: info.compositions ?? [],
       ...compiled, started_at: factual.started_at, calendar_profile: factual.calendar_profile });
     return { created_count: npc.validation_report.created_count, write_set: npc.write_set,
       expected_state_versions: factual.expected_state_versions ?? [], commit_rechecks: factual.commit_rechecks ?? [],

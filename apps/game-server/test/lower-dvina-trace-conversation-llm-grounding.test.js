@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { validateConversationContributionPlan,
-  validateNpcConversationResponseRequest, buildNpcDecisionBoundary,
-  buildNpcSemanticDecisionTrace } from '@rus/npc-runtime';
+import { buildNpcDecisionBoundary, validateConversationContributionPlan }
+  from '@rus/npc-runtime';
+import { validateNpcConversationResponseRequest, buildNpcSemanticDecisionTrace }
+  from '@rus/npc-runtime';
 import { requestNpcSemanticDecision } from '@rus/turn';
-import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel } from
+import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel,
+  createLowerDvinaTracePlayerConversationModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { npcConversationCandidates } from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
@@ -13,6 +15,7 @@ import { allowedNpcContributionReferences,
   '../src/runtime/lower-dvina-trace-m2-conversation-projections.js';
 import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
+import { findUnsafePlayerText } from '../src/public-boundary.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 function request(required = {}) {
@@ -46,6 +49,23 @@ function plan(input) {
 function runner(reply) {
   const calls = [];
   return { calls, roleRunner: { async run(call) { calls.push(structuredClone(call)); return { output: await reply(call) }; } } };
+}
+async function requestNpcProposal(input, model) {
+  const boundary = buildNpcDecisionBoundary({
+    decision_mode: 'conversation', scheduled_at: input.requested_at,
+    npc_ref: input.npc_ref,
+    same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+    significance: input.decision_reasons.significance,
+    categories: input.decision_reasons.categories,
+    signal_refs: input.decision_reasons.signal_refs,
+    state_version: String(input.state_version)
+  });
+  input.boundary_id = boundary.boundary_id;
+  return requestNpcSemanticDecision({
+    boundary, request: input, semanticModel: model,
+    validateFreshPlan: model.validateFreshPlan,
+    revalidateStateVersion: async () => input.state_version
+  });
 }
 
 async function runNpcConversationTurn({ batchId, responder, audit = () => ({
@@ -149,16 +169,15 @@ test('prepared NPC request admits only exact grounded WK claim refs', async () =
   const worldKnowledge = conversationWorldKnowledge(() => { queryCount += 1; });
   worldKnowledge.calendar_profile = conversationCalendarProfile();
   const fixture = runner((call) => call.role_id
-    === 'world_knowledge_query_planner' ? {
-      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
-      domains: ['npc_daily_life', 'material_culture',
-        'architecture_settlement'],
-      focus_refs: ['wk:npc_daily_life:fisher',
-        'wk:material_culture:work-clothing',
-        'wk:architecture_settlement:fishing-workspace'],
-      requested_predicates: ['supports_function'],
-      search_hints: ['рыбак сети одежда стоянка']
-    } : (() => {
+    === 'world_knowledge_query_planner' ? (() => {
+      const request = JSON.parse(call.messages[1].content);
+      return { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+        domains: ['npc_daily_life', 'material_culture',
+          'architecture_settlement'],
+        focus_refs: Object.keys(request.available_knowledge_refs),
+        requested_predicates: ['supports_function'],
+        search_hints: ['рыбак сети одежда стоянка'] };
+    })() : (() => {
       const response = plan(input);
       response.speech.claims = [{ claim_id: 'claim:fish-net',
         content_summary: 'Рыбацкая работа связана с сетями.',
@@ -521,6 +540,207 @@ test('source-free NPC claims fail before the semantic auditor call', async () =>
   assert.equal(fixture.calls.length, 0);
 });
 
+test('NPC service markers fail before grounding audit while ordinary wording passes',
+  async () => {
+    const input = request();
+    const marked = plan(input);
+    marked.speech.utterance_text = 'INFERENCE: available';
+    const fixture = runner(() => assert.fail('marked speech must not reach auditor'));
+    const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+    const rejected = await model.validateFreshPlan(marked, input);
+    assert.equal(rejected.pass, false);
+    assert.equal(rejected.errors[0].retryable, true);
+    assert.deepEqual(rejected.errors[0].concern_kinds, ['service_text_marker']);
+    assert.equal(fixture.calls.length, 0);
+
+    marked.speech.utterance_text = 'Вам нужен Проход 2.';
+    const ordinalRejected = await model.validateFreshPlan(marked, input);
+    assert.equal(ordinalRejected.pass, false);
+    assert.equal(ordinalRejected.errors[0].code, 'TRACE_NPC_SPEECH_SERVICE_TEXT');
+    assert.equal(fixture.calls.length, 0);
+
+    const safeRetry = plan(input);
+    safeRetry.speech.utterance_text = 'Не отдам тебе это.';
+    safeRetry.speech.dominant_act = 'refuse';
+    const repairFixture = runner(() => safeRetry);
+    const repairModel = createLowerDvinaTraceNpcSemanticModel(repairFixture);
+    const original = plan(input);
+    original.speech.utterance_text = 'Я INFERENCE: npc_test.';
+    original.speech.dominant_act = 'refuse';
+    const safeReply = await repairModel(input, { repair: {
+      original_output: original, validation_errors: rejected.errors
+    } });
+    assert.equal(repairFixture.calls.length, 1);
+    const repairWire = JSON.stringify(repairFixture.calls[0].messages);
+    assert.doesNotMatch(repairWire,
+      /TRACE_NPC_SPEECH_SERVICE_TEXT|INFERENCE:|npc_test/u);
+    assert.equal(findUnsafePlayerText(safeReply.speech.utterance_text, {
+      label: true
+    }), null);
+    assert.equal(safeReply.speech.dominant_act,
+      original.speech.dominant_act);
+    assert.doesNotMatch(safeReply.speech.utterance_text, /INFERENCE|npc_test/u);
+
+    const ordinary = plan(input);
+    ordinary.speech.utterance_text = 'The passage is available.';
+    const cleanFixture = runner(() => ({ pass: true, concerns: [] }));
+    const accepted = await createLowerDvinaTraceNpcSemanticModel(cleanFixture)
+      .validateFreshPlan(ordinary, input);
+    assert.equal(accepted, true);
+    assert.equal(cleanFixture.calls.length, 1);
+  });
+
+test('NPC format repair preserves original decision and concrete validation errors',
+  async () => {
+    const input = request();
+    const originalOutput = plan(input);
+    originalOutput.speech.utterance_text = 'У переправы ждут перевозчика.';
+    originalOutput.speech.dominant_act = 'share';
+    originalOutput.speech.claims = [{ claim_id: 'claim-1',
+      text: 'У переправы ждут перевозчика.', source_knowledge_refs: [
+        ref('perception_result', 'perception-1')
+      ] }];
+    originalOutput.supporting_operations = [{ op: 'emit_interaction',
+      kind: 'inform', actor_ref: ref('npc', 'npc-1'),
+      target_ref: ref('player_character', 'player-1') }];
+    const validationErrors = [{ code: 'TRACE_NPC_PLAN_INVALID',
+      category: 'format', path: '$.speech.dominant_act',
+      message: 'speech.dominant_act must be one of the allowed values.' }];
+    const fixture = runner(() => plan(input));
+    const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+
+    await model(input, { repair: {
+      original_output: originalOutput, validation_errors: validationErrors
+    } });
+
+    const repairPayload = JSON.parse(fixture.calls[0].messages[1].content);
+    assert.deepEqual(repairPayload.request, input);
+    assert.deepEqual(repairPayload.original_output, originalOutput);
+    assert.deepEqual(repairPayload.validation_errors, validationErrors);
+    assert.equal(fixture.calls[0].role_id,
+      'npc_conversation_responder_format_repair');
+  });
+
+test('NPC marker retry succeeds while preserving the original refusal act',
+  async () => {
+    const input = request();
+    const marked = plan(input);
+    marked.speech.utterance_text = 'Я INFERENCE: npc_test.';
+    marked.speech.dominant_act = 'refuse';
+    const safeRetry = structuredClone(marked);
+    safeRetry.speech.utterance_text = 'Не отдам тебе это.';
+    const fixture = runner((call) => call.role_id
+      === 'npc_conversation_grounding_auditor'
+      ? { pass: true, concerns: [] }
+      : call.role_id === 'npc_conversation_responder_format_repair'
+        ? safeRetry : marked);
+    const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+    const proposal = await requestNpcProposal(input, model);
+
+    assert.equal(proposal.status, 'planned');
+    assert.equal(proposal.plan.speech.dominant_act, 'refuse');
+    assert.equal(proposal.plan.speech.utterance_text, 'Не отдам тебе это.');
+    assert.equal(findUnsafePlayerText(proposal.plan.speech.utterance_text, {
+      label: true, generatedProse: true
+    }), null);
+    const retry = fixture.calls.find(({ role_id }) =>
+      role_id === 'npc_conversation_responder_format_repair');
+    assert.ok(retry);
+    assert.doesNotMatch(JSON.stringify(retry.messages),
+      /TRACE_NPC_SPEECH_SERVICE_TEXT|INFERENCE:|npc_test/u);
+  });
+
+test('repeated dirty NPC marker retry fails closed before planning', async () => {
+  for (const originalAct of ['refuse', 'offer', 'question']) {
+    const input = request();
+    const markedPlan = plan(input);
+    markedPlan.speech.utterance_text = 'Initial contribution. INFERENCE: private.';
+    markedPlan.speech.dominant_act = originalAct;
+    const fixture = runner((call) => call.role_id
+      === 'npc_conversation_grounding_auditor'
+      ? { pass: true, concerns: [] } : markedPlan);
+    const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+    let typedFailure;
+    try {
+      await requestNpcProposal(input, model);
+    } catch (error) {
+      typedFailure = error;
+    }
+
+    assert.equal(typedFailure?.code, 'TURN_NPC_PLAN_INVALID', originalAct);
+    assert.doesNotMatch(JSON.stringify(typedFailure.details),
+      /Об этом я ничего подтвердить не могу/u);
+    assert.deepEqual(fixture.calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder',
+      'npc_conversation_responder_format_repair'
+    ], originalAct);
+    assert.equal(input.state_version, 1, originalAct);
+  }
+});
+
+test('safe NPC marker repair rejects changed act with typed non-applicable outcome',
+  async () => {
+    for (const [originalAct, repairedAct] of [
+      ['refuse', 'answer'], ['offer', 'refuse'], ['question', 'inform']
+    ]) {
+      const input = request();
+      const marked = plan(input);
+      marked.speech.utterance_text = 'Original meaning. INFERENCE: private.';
+      marked.speech.dominant_act = originalAct;
+      const cleanButChanged = structuredClone(marked);
+      cleanButChanged.speech.utterance_text = 'Repaired response.';
+      cleanButChanged.speech.dominant_act = repairedAct;
+      const fixture = runner((call) => call.role_id
+        === 'npc_conversation_grounding_auditor'
+        ? { pass: true, concerns: [] }
+        : call.role_id === 'npc_conversation_responder_format_repair'
+          ? cleanButChanged : marked);
+      const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+      let typedFailure;
+      try {
+        await requestNpcProposal(input, model);
+      } catch (error) {
+        typedFailure = error;
+      }
+
+      assert.equal(typedFailure?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE',
+        `${originalAct} -> ${repairedAct}`);
+      assert.equal(fixture.calls.some(({ role_id }) =>
+        role_id === 'npc_conversation_grounding_auditor'), false);
+      assert.equal(input.state_version, 1);
+    }
+  });
+
+test('player format repair preserves original decision and validation errors',
+  async () => {
+    const fixture = runner(() => ({ schema: 'broken' }));
+    const model = createLowerDvinaTracePlayerConversationModel(fixture);
+    const playerRequest = { schema: 'player_conversation_input_v1',
+      request_id: 'player-request', raw_text: 'Попросить рассказать правду.',
+      player_safe_context: {}, operation_contract: {} };
+    const originalOutput = { schema: 'broken', contribution_kind: 'speech',
+      input_mode: 'intent_paraphrase',
+      interpretation: { intent: 'попросить рассказать правду',
+        grounded_contribution: 'запросить ответ', adaptation: 'literal' },
+      speech: { utterance_text: 'Расскажи мне правду.', dominant_act: 'request',
+        claims: [{ claim_id: 'claim-1', text: 'Иван ждёт у ворот.',
+          source_knowledge_refs: [{ entity_kind: 'perception_result',
+            entity_id: 'perception-1' }] }] },
+      supporting_operations: [{ op: 'emit_interaction', kind: 'request' }] };
+    const validationErrors = [{ code: 'TRACE_PLAN_INVALID', path: '$.schema',
+      message: 'schema must equal player_conversation_contribution_plan_v1.' }];
+    await model(playerRequest, { repair: {
+      original_output: originalOutput, validation_errors: validationErrors
+    } });
+    assert.equal(fixture.calls.length, 1);
+    const repairPayload = JSON.parse(fixture.calls[0].messages[1].content);
+    assert.deepEqual(repairPayload.request, playerRequest);
+    assert.deepEqual(repairPayload.original_output, originalOutput);
+    assert.deepEqual(repairPayload.validation_errors, validationErrors);
+    assert.match(fixture.calls[0].messages[0].content,
+      /Сохраняй исходный смысл вклада/u);
+  });
+
 test('first-contact identity and guarded behavior are required and repaired',
   async () => {
     const input = request();
@@ -726,13 +946,16 @@ test('conversation production model receives planner-selected role, material, an
   const calls = [];
   const roleRunner = { async run(call) {
     calls.push(call);
-    if (call.role_id === 'world_knowledge_query_planner') return { output: {
-      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
-      domains: ['npc_daily_life', 'material_culture', 'architecture_settlement'],
-      focus_refs: ['wk:npc_daily_life:fisher', 'wk:material_culture:work-clothing',
-        'wk:architecture_settlement:fishing-workspace'],
-      requested_predicates: ['supports_function'], search_hints: ['рыбак сеть одежда стоянка']
-    } };
+    if (call.role_id === 'world_knowledge_query_planner') {
+      const request = JSON.parse(call.messages[1].content);
+      return { output: {
+        schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+        domains: ['npc_daily_life', 'material_culture', 'architecture_settlement'],
+        focus_refs: Object.keys(request.available_knowledge_refs),
+        requested_predicates: ['supports_function'],
+        search_hints: ['рыбак сеть одежда стоянка']
+      } };
+    }
     if (call.role_id === 'npc_conversation_grounding_auditor') return { output: {
       pass: true, concerns: []
     } };

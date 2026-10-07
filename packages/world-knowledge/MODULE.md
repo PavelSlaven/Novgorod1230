@@ -10,11 +10,10 @@ Pack может включать независимо проверенные и�
 
 ## Владеет
 
-- query/bundle validation и structured slices без prose context;
+- query/bundle validation и structured slice construction без prose context; query budget содержит
+  `max_facts` и `max_candidates`, slice не содержит prose `context_text`;
 - применимость, доступ и ранжирование утверждений;
 - coverage, sufficiency, gaps и deterministic claim packing;
-- query/bundle validation и structured slice construction; query budget содержит
-  `max_facts` и `max_candidates`, slice не содержит prose `context_text`;
 - canonical empty six-field `semantic_resolution` query plan как
   `NO_KNOWLEDGE_REQUIRED`; при пустом
   `domains` refs/predicates/hints тоже обязаны быть пустыми;

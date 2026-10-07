@@ -230,19 +230,24 @@ test('generic composition preserves domain body and handles direct visible',
           resolution: 'direct', operations: [], check: null
         }
       }] } },
-      retrieved_state: { current_visible_context: {
-        version: 1,
-        schema: 'visible_context_package',
-        visible_scene: 'Уже видимый берег.',
-        visible_changes: [],
-        sensory_details: ['cold', 'wet'],
-        visible_npc: [],
-        visible_objects: [],
-        known_context: ['берег'],
-        uncertainties: [],
-        allowed_tensions: [],
-        do_not_imply: []
-      } },
+      retrieved_state: {
+        actor_id: 'player',
+        position: { location_ref: 'shore' },
+        current_spatial_context: {
+          version: 1,
+          schema: 'visible_context_package',
+          visible_scene: 'Уже видимый берег.',
+          visible_changes: [],
+          sensory_details: ['cold', 'wet'],
+          visible_npc: [],
+          visible_objects: [],
+          known_context: ['берег'],
+          uncertainties: [],
+          allowed_tensions: [],
+          do_not_imply: []
+        },
+        current_spatial_context_is_fresh: true
+      },
       consequence: { visible_seed: { completed_steps: [],
         clarification: null, turn_step_y: { kind: 'semantic_activity',
           duration_minutes: 5 } } },
@@ -256,11 +261,31 @@ test('generic composition preserves domain body and handles direct visible',
 
 test('generic visible projector preserves ordered player F1 facts',
   async () => {
+    const context = currentVisibleContext();
+    const committedScene = {
+      actor_id: 'player',
+      position: { location_ref: 'shore' },
+      current_visible_context: context,
+      current_spatial_context: context,
+      current_spatial_context_is_fresh: true,
+      npcs: [{ instance_id: 'npc-1', location_ref: 'shore' }],
+      conversation_statements: [{ statement_id: 'statement-1',
+        speaker_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+        utterance_text: 'Я Еремей.' }],
+      received_messages: [{
+        source_statement_ref: { entity_kind: 'conversation_statement',
+          entity_id: 'statement-1' },
+        listener_ref: { entity_kind: 'player_character', entity_id: 'player' },
+        comprehension: 'full', utterance_text: 'Я Еремей.'
+      }],
+      items: [{ item_id: 'fuel-1', name: 'топливо',
+        placement: { location_ref: 'shore' } }]
+    };
     const visible = createLowerDvinaTraceTurnStepVisibleProjector({
       fallback: { project() { throw new Error('unexpected fallback'); } }
     });
     const result = await visible.project({
-      retrieved_state: { current_visible_context: currentVisibleContext() },
+      retrieved_state: committedScene,
       consequence: { visible_seed: {
         completed_steps: [], clarification: 'Что делать дальше?',
         turn_step_world_process_5:
@@ -278,10 +303,15 @@ test('generic visible projector preserves ordered player F1 facts',
       + 'Воздействие не изменило огонь. '
       + 'Огонь изменился, но продолжает гореть. Огонь погас. '
       + 'Требуется уточнение дальнейшего действия.');
-    assert.deepEqual(result.visible_npc,
-      currentVisibleContext().visible_npc);
-    assert.deepEqual(result.visible_objects,
-      currentVisibleContext().visible_objects);
+    assert.deepEqual(result.visible_npc, [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+      display_label: 'Еремей', recognition: 'recognized'
+    }]);
+    assert.deepEqual(result.visible_objects, [{
+      entity_ref: { entity_kind: 'item', entity_id: 'fuel-1' },
+      display_label: 'топливо', recognition: 'recognized',
+      visible_status: 'available'
+    }]);
     assert.deepEqual(result.sensory_details, ['cold', 'wet']);
     assert.equal(result.known_context.includes('берег'), true);
     assert.deepEqual(result.visible_changes, [
@@ -299,8 +329,8 @@ test('generic visible projector overlays F1 facts on domain projection',
     const base = {
       ...currentVisibleContext(),
       visible_scene: 'Микула пришёл в рыбацкий стан.',
-      visible_changes: ['route'],
-      known_context: ['стан']
+      visible_changes: [],
+      known_context: ['стан', 'route']
     };
     const visible = createLowerDvinaTraceTurnStepVisibleProjector({
       fallback: { project() { fallbackCalls += 1; return base; } }
@@ -316,9 +346,7 @@ test('generic visible projector overlays F1 facts on domain projection',
     assert.deepEqual(result, {
       ...base,
       visible_scene: 'Микула пришёл в рыбацкий стан. Огонь разгорелся.',
-      visible_changes: [
-        'route', 'turn_step_world_process_1:local_fire:started', 'стан'
-      ],
+      visible_changes: ['turn_step_world_process_1:local_fire:started'],
       sensory_details: ['cold', 'wet', 'В поле зрения — Еремей.']
     });
   });
@@ -495,7 +523,10 @@ test('generic visible projector rejects malformed player F1 facts',
     const visible = createLowerDvinaTraceTurnStepVisibleProjector({
       fallback: { project() { fallbackCalls += 1; return {}; } }
     });
-    const project = (seed, phase3_kind) => visible.project({ consequence: {
+    const project = (seed, phase3_kind) => visible.project({
+      retrieved_state: { actor_id: 'player',
+        position: { location_ref: 'shore' } },
+      consequence: {
       phase3_kind, visible_seed: {
       completed_steps: [], clarification: null,
       turn_step_world_process_1: seed

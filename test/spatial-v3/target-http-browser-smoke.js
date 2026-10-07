@@ -7,6 +7,7 @@ import { isDeepStrictEqual } from 'node:util';
 import { createHttpHandler } from '../../apps/game-server/src/http/handler.js';
 import { createStaticAssetResolver } from '../../apps/game-server/src/http/static-assets.js';
 import { turnStepOperationChoices } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 
 export const TARGET_SMOKE_INPUT = 'Осматриваюсь вокруг, оставаясь на месте.';
 
@@ -26,6 +27,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   if (realProvider) globalThis.fetch = async (url, init) => {
     const call = JSON.parse(init.body);
     const system = (call.messages?.[0]?.content ?? '').replace(/^Return a valid json object\.\s*/u, '');
+    const role = identifyLlmTestRole(call);
     if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
       const response = await provider(url, init);
       report.model_calls.push({ role: 'gameplay_narrator_auditor',
@@ -33,7 +35,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
       await save();
       return response;
     }
-    if (!system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+    if (role !== 'turn_step_planner') {
       return provider(url, init);
     }
     const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
@@ -51,6 +53,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    const role = identifyLlmTestRole(call);
     const started = performance.now();
     const captured = { model: call.model, system: call.messages[0].content, input };
     report.model_calls.push(captured);
@@ -83,14 +86,15 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
       const split = Math.ceil(facts.length / 2);
       output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
         .filter(Boolean).join('\n\n') };
-    } else if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+    } else if (role === 'world_knowledge_query_planner'
+        || system.includes('schema must equal world_knowledge_query_plan_v1.')) {
       captured.role = 'world_knowledge_query_planner';
       assert.equal(typeof (input.request ?? input).semantic_input, 'string');
       output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: [], focus_refs: [], requested_predicates: [], search_hints: [] };
-    } else if (system.startsWith('Resolve the raw Russian player text')) {
+    } else if (role === 'intent_router') {
       captured.role = 'intent_router'; output = { status: 'unknown', reason_code: 'unknown_intent' };
-    } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+    } else if (role === 'turn_step_planner') {
       captured.role = 'turn_step_planner';
       const request = input.request ?? input;
       if (request.root_player_action === TARGET_SMOKE_INPUT) {
@@ -128,7 +132,8 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
       const sources = [...input.required_current_beat.changes, ...input.required_current_beat.uncertainties];
       output = { reviewed_segments: ids, source_reviews: sources.map(({ ref }) => ({ ref, segment_choices: ids })),
         unsupported: [], literary_failures: [], evidence: ['Deterministic test source-copy; no production prose-quality claim.'] };
-    } else if (system.startsWith('Return only {"prose"') || system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
+    } else if (system.startsWith('Return only {"prose"') || system.startsWith('Return only {"pass"')
+        || system.startsWith('Возвращай только {"pass"')) {
       captured.role = system.startsWith('Return only {"prose"') ? 'gameplay_narrator' : 'gameplay_narrator_auditor';
       const response = await provider(url, init);
       captured.output = await response.clone().json(); captured.duration_ms = performance.now() - started;

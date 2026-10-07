@@ -1,5 +1,5 @@
 {
- "_about": "Hand-curated inputs for build.py (collector collect-food-drink, 2026-09-26). Status candidate; not approved. Every entry carries refs. Ref prefixes: master-food:<SRCID> = sources/master-archive-v1/data/normalized_source_tables/food_system/sources.csv row; wk:claim:<id> = WK production-v1 approved claim; ext:<id> = bibliography in new_sources below; sqlite:novgorod_1230:<table>:<key> = C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite (curated, owner Downloads); temporal-v4:<record_id> = data/world-catalogs/novgorod/temporal-v4 approved record.",
+ "_about": "Hand-curated inputs for build.py (collector collect-food-drink, 2026-09-26). Status candidate; not approved. Every entry carries refs. Ref prefixes: master-food:<SRCID> = sources/master-archive-v1/data/normalized_source_tables/food_system/sources.csv row; wk:claim:<id> = WK production-v1 approved claim; ext:<id> = bibliography in new_sources below; sqlite refs resolve against the tracked curated Novgorod 1230 SQLite source under sources/bic-reproducible-inputs-v1; temporal-v4:<record_id> = data/world-catalogs/novgorod/temporal-v4 approved record.",
  "new_sources": [
   {
    "id": "ext:kirjanova1979",
@@ -1842,7 +1842,7 @@
    "confidence": "A",
    "refs": [
     "ext:npl1950_6738_6739",
-    "sqlite:novgorod_1230:famine_prices:хлеб"
+    "sqlite:novgorod_1230:famine_prices:хлеб (готовая мера/каравай в летописном переводе)"
    ],
    "game_use": "Порядок роста цен, не прейскурант.",
    "materialization_policy": "price_band_input"

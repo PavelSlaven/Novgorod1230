@@ -15,6 +15,27 @@ const semanticRows = (rows) => rows.map(({ target_table, id, record }) => ({ tar
     !key.endsWith('_change_set_id') && !key.endsWith('_digest')
     && !['materialization_trace_id', 'choice_trace_id', 'idempotency_record_id'].includes(key))) }));
 
+/** The party clock and turn a P16 topology commit is based on. */
+export async function readCurrentParty(transaction, party_id) {
+  const current = await transaction.query(`SELECT party.state_version, session.last_turn_id
+      FROM party_runtime.parties party
+      JOIN party_runtime.party_state_snapshots state
+        ON state.party_id=party.party_id AND state.state_version=party.state_version
+      LEFT JOIN party_runtime.party_server_sessions session ON session.party_id=party.party_id
+      WHERE party.party_id=$1`, [party_id]);
+  return current.rows.length === 1 && /^(0|[1-9][0-9]*)$/u.test(String(current.rows[0].state_version))
+    ? current.rows[0] : null;
+}
+
+export function buildVisiblePackageEnvelopeInput({ party_id, change_set_id, current,
+  dependency_pins, projection_policy_ref }) {
+  return { party_id, turn_id: change_set_id,
+    committed_state_version: String(current.state_version),
+    change_set_id, package_id: `visible:${change_set_id}`,
+    idempotency_record_id: `idem:${change_set_id}`, dependency_pins,
+    projection_policy_ref };
+}
+
 /** Dependency pins of one preparation. `pins()` is read at the moment a proposal is built. */
 function createPinBook(g4, profile) {
   const first = [[g4, 'canonical_spatial_node'], [profile, 'g4_expansion_profile']].filter(([pin]) => pin)
@@ -120,7 +141,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
    * visible package, sealed write plan. Frontier resolution and canonical connections both end here. */
   async function planProposal({ transaction, request, closure, snapshot, selection, proposal,
     admitted, book, authoring_refs, change_set_id, idempotency_key, canonical_input_digest,
-    materializer_version, occurrence, current }) {
+    materializer_version, occurrence, current, onLabelGapsOmitted = null }) {
     const { party_id, g4 } = request;
     const reject = book.reject;
     const dependency_pins = book.pins();
@@ -163,18 +184,16 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
     const factualWrites = [...proposal.inserts, ...proposal.updates, ...firstEntryWrites];
     const expected_state_versions = [...proposal.expected_state_versions,
       ...(firstEntry.expected_state_versions ?? [])];
-    const envelopeInput = { party_id, turn_id: change_set_id,
-      committed_state_version: String(current.state_version),
-      change_set_id, package_id: `visible:${change_set_id}`,
-      idempotency_record_id: `idem:${change_set_id}`, dependency_pins,
-      projection_policy_ref: projectionPolicyRef };
+    const envelopeInput = buildVisiblePackageEnvelopeInput({ party_id, change_set_id,
+      current, dependency_pins, projection_policy_ref: projectionPolicyRef });
     const visible = await projectVisible({ transaction, request, closure, snapshot, proposal, firstEntry,
       factual_writes: factualWrites, expected_state_versions, dependency_pins,
       current_state_version: envelopeInput.committed_state_version,
       current_turn_id: current.last_turn_id, envelopeInput,
       projection_policy_ref: projectionPolicyRef,
       package_id: envelopeInput.package_id, idempotency_key, change_set_id,
-      idempotency_record_id: envelopeInput.idempotency_record_id });
+      idempotency_record_id: envelopeInput.idempotency_record_id,
+      ...(typeof onLabelGapsOmitted === 'function' ? { onLabelGapsOmitted } : {}) });
     if (!visible?.ok) return visible?.error ? visible : reject('visible_projection_required');
     if (!visible.envelope?.projection_policy_ref
       || canonicalDigest(visible.envelope?.projection_policy_ref) !== canonicalDigest(projectionPolicyRef)) {
@@ -218,18 +237,6 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       created_at_turn: admitted.created_at_turn } : built;
   }
 
-  /** The party clock and turn a P16 topology commit is based on. */
-  async function readCurrentParty(transaction, party_id) {
-    const current = await transaction.query(`SELECT party.state_version, session.last_turn_id
-      FROM party_runtime.parties party
-      JOIN party_runtime.party_state_snapshots state
-        ON state.party_id=party.party_id AND state.state_version=party.state_version
-      LEFT JOIN party_runtime.party_server_sessions session ON session.party_id=party.party_id
-      WHERE party.party_id=$1`, [party_id]);
-    return current.rows.length === 1 && /^[1-9][0-9]*$/u.test(String(current.rows[0].state_version))
-      ? current.rows[0] : null;
-  }
-
   /** Canonical connections use the exact binding slot regardless of role; frontier expansion
    * keeps its unique departure/both endpoint check at the committed source position. */
   async function readSourceDeparture({ snapshot, source_site_id, source_position_id, world_revision_id,
@@ -260,7 +267,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
     return departure.length === 1 ? { departure: departure[0] } : { failure: 'source_departure_endpoint_required' };
   }
 
-  async function prepareExpansion(request) {
+  async function prepareExpansion(request, { onLabelGapsOmitted = null } = {}) {
     const { party_id, g4, profile, slot_ref, directional_exit, candidate_ordinal,
       source_site_id, source_position_id, approach_origin_position_id,
       ordered_local_edge_path = [], local_edge_path_proofs = [], entry_binding, materializer_version } = request ?? {};
@@ -381,7 +388,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         if (!prepared.ok) return prepared;
         return planProposal({ transaction, request, closure, snapshot, selection,
           proposal: prepared.proposal, admitted, book, authoring_refs, change_set_id, idempotency_key,
-          canonical_input_digest, materializer_version, occurrence: candidate_ordinal, current });
+          canonical_input_digest, materializer_version, occurrence: candidate_ordinal, current,
+          onLabelGapsOmitted });
       } });
     return outcome.ok ? Object.freeze({ ...outcome, topology_status: 'committed',
       connection_id: `expansion:${suffix}:connection:${candidate_ordinal}`,
@@ -391,7 +399,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
   /** Intra-G4 connection between two canonical places, by an approved connection binding. The same
    * P16 topology commit as a frontier resolution (`resolve_frontier`), under its own idempotency key
    * space `resolve_frontier:canconn:<party>:<binding>`; no frontier, chain or ledger row is involved. */
-  async function prepareCanonicalConnection(request) {
+  async function prepareCanonicalConnection(request,
+    { onLabelGapsOmitted = null } = {}) {
     const { party_id, g4, profile, binding_id, source_site_id, source_position_id,
       materializer_version } = request ?? {};
     const book = createPinBook(g4, profile);
@@ -462,7 +471,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         if (!prepared.ok) return prepared;
         return planProposal({ transaction, request, closure, snapshot, selection,
           proposal: prepared.proposal, admitted, book, authoring_refs, change_set_id, idempotency_key,
-          canonical_input_digest, materializer_version, occurrence: 0, current });
+          canonical_input_digest, materializer_version, occurrence: 0, current,
+          onLabelGapsOmitted });
       } });
     return outcome.ok ? Object.freeze({ ...outcome, topology_status: 'committed', connection_id,
       source_position_id, moves_traveller: false, advances_time: false }) : outcome;

@@ -38,7 +38,8 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
   let next = nextPhase9State({ state, factual, nextVersion, turnNumber,
     changeSetId, inputDigest, contracts: phase9Contracts });
   const envelope = phase9VisibleEnvelope({ partyId, factual,
-    visibleContext: visible, nextVersion, turnNumber, changeSetId, idemId });
+    visibleContext: visible, nextVersion, turnNumber, changeSetId, idemId,
+    onLabelGapsOmitted: turnStepApprovedOwners?.recordVisiblePackageDiagnostic });
   next.last_turn.visible_package = { package_id: envelope.package_id,
     package_digest: envelope.package_digest, change_set_id: changeSetId };
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({ partyId,

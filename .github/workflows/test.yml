@@ -165,7 +165,7 @@ jobs:
           PGUSER: postgres
         run: |
           set +e
-          { npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:game-base && npm run test:shadow && npm run test:cutover && npm run docs:check; } > "$RUNNER_TEMP/npm-test.log" 2>&1
+          { npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:spatial && npm run test:game-base && npm run test:shadow && npm run test:cutover && npm run docs:check; } > "$RUNNER_TEMP/npm-test.log" 2>&1
           status=$?
           cat "$RUNNER_TEMP/npm-test.log"
           exit "$status"

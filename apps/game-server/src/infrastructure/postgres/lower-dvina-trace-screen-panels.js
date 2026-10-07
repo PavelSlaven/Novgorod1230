@@ -3,13 +3,16 @@ import { projectCalendar } from '@rus/time-events-history/calendar';
 import { projectTraceInventoryPanel } from './lower-dvina-trace-screen-inventory.js';
 import { distinctNpcLabels } from
   '../../runtime/lower-dvina-trace-visible-scene-items.js';
-
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
+import { playerSafeAppearanceSummary } from
+  '../../runtime/lower-dvina-trace-player-safe-appearance.js';
 import { LOCAL_EDGE_OCCUPIED_STATUS, localEdgeOccupiedLabel } from
   '../../runtime/local-edge-occupancy.js';
+import { playerSafeOrdinalLabel } from '../../public-boundary.js';
 
-export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null }) {
+export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null,
+  currentVisibleContext = null }) {
   const { actor, player_safe_state: projection } = projectLowerDvinaTracePlayerSafeState({
     scene_presentation: presentation?.scenePresentation,
     committed_state: screen.visible_context == null ? payload : {
@@ -25,14 +28,15 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     ? structuredClone(previousPeople.data) : {};
   delete peopleData.active_interlocutor;
   delete peopleData.visible_npcs;
-  const visibleNpcs = distinctNpcLabels(
-    projection.current_visible_context?.visible_npc ?? []);
+  const peopleContext = currentVisibleContext ?? projection.current_visible_context;
+  const visibleNpcs = distinctNpcLabels(peopleContext?.visible_npc ?? []);
   if (visibleNpcs.length > 0) {
     peopleData.visible_npcs = visibleNpcs.map((npc) => {
       const appearance = playerSafeAppearanceSummary(npc);
       return {
         display_label: npc.display_label,
-        ...(appearance == null ? {} : { appearance }),
+        ...(appearance == null || npc.display_label?.endsWith(appearance)
+          ? {} : { appearance }),
         ...(typeof npc.visible_status === 'string'
           ? { status: npc.visible_status } : {})
       };
@@ -102,10 +106,15 @@ export function projectLowerDvinaTraceRoutePanel({ currentPlace, projection = {}
   return createRoutePanel({ current_place: currentPlace, movement: {
     options: [...routes.map(route => ({ label: route.label,
       knowledge_state: route.known === true ? 'known' : 'uncertain' })),
-    ...visibleExits.map(({ display_label: label, visible_status: status }) => ({
-      label: status === LOCAL_EDGE_OCCUPIED_STATUS ? localEdgeOccupiedLabel(label) : label,
-      knowledge_state: 'known',
-      ...(status === LOCAL_EDGE_OCCUPIED_STATUS ? { status: 'occupied' } : {}) }))]
+    ...visibleExits.map(({ entity_ref: ref, display_label: sourceLabel,
+      visible_status: status }) => {
+      const label = playerSafeOrdinalLabel(sourceLabel, ref?.entity_kind);
+      return {
+        label: status === LOCAL_EDGE_OCCUPIED_STATUS ? localEdgeOccupiedLabel(label) : label,
+        knowledge_state: 'known',
+        ...(status === LOCAL_EDGE_OCCUPIED_STATUS ? { status: 'occupied' } : {})
+      };
+    })]
   } });
 }
 
@@ -165,53 +174,4 @@ function exactElapsedLabel(value) {
   const denominator = BigInt(value.denominator);
   if (denominator === 0n) return null;
   return `${denominator === 1n ? numerator : `${numerator}/${denominator}`} мин`;
-}
-
-const HAIR_COLORS = Object.freeze({
-  blond: 'русые', light_brown: 'светло-каштановые',
-  dark_brown: 'тёмно-каштановые', black: 'чёрные', auburn: 'рыжие',
-  gray: 'седые', white: 'белые'
-});
-const HAIR_STYLES = Object.freeze({
-  straight: 'прямые', wavy: 'волнистые', loose: 'распущенные',
-  braided: 'заплетённые'
-});
-const FACIAL_HAIR = Object.freeze({
-  moustache: 'усы', short_beard: 'короткая борода',
-  full_beard: 'густая борода'
-});
-const CLOTHING_COLORS = Object.freeze({
-  undyed_linen: 'неокрашенная льняная', dark_blue: 'тёмно-синяя',
-  forest_green: 'зелёная', madder_red: 'красная', ochre: 'охряная',
-  brown: 'коричневая', charcoal: 'угольно-серая'
-});
-
-function playerSafeAppearanceSummary(npc) {
-  const appearance = npc?.observable_cues?.identity?.appearance;
-  const hair = appearance?.hair;
-  const details = [];
-  if (hair?.length === 'bald') {
-    details.push('лысина');
-  } else {
-    const color = HAIR_COLORS[hair?.color];
-    const style = HAIR_STYLES[hair?.style];
-    const length = hair?.length === 'short' ? 'короткие'
-      : hair?.length === 'long' ? 'длинные' : null;
-    const hairDescription = [length, color, style, 'волосы']
-      .filter(Boolean).join(' ');
-    if (color != null || style != null || length != null) {
-      details.push(hair?.length === 'medium'
-        ? `${hairDescription} средней длины` : hairDescription);
-    }
-  }
-  if (FACIAL_HAIR[hair?.facial_hair]) {
-    details.push(FACIAL_HAIR[hair.facial_hair]);
-  }
-  const garment = (npc?.observable_cues?.equipment ?? []).find(({ visual_profile_snapshot: visual }) =>
-    ['outer_garment', 'outer'].includes(visual?.equipment_slot))
-    ?? npc?.observable_cues?.equipment?.[0];
-  const garmentColor = CLOTHING_COLORS[
-    garment?.visual_profile_snapshot?.main_visible_color];
-  if (garmentColor != null) details.push(`${garmentColor} одежда`);
-  return details.length > 0 ? details.join(', ') : null;
 }

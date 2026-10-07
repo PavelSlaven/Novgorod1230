@@ -1,9 +1,22 @@
-import { assertPublicPayload } from '../public-boundary.js';
+import { assertPublicPayload, findUnsafePlayerText, projectPublicPayload } from
+  '../public-boundary.js';
 import { serverError } from '../errors.js';
 
 export const HTTP_API_VERSION = 1;
 export const API_SUCCESS_SCHEMA = 'rus_api_success';
 export const API_ERROR_SCHEMA = 'rus_api_error';
+const PUBLIC_CLIENT_ERROR_CODES = new Set([
+  'REQUEST_BODY_INVALID', 'NEW_GAME_START_REQUIRED', 'CLIENT_ACK_ID_REQUIRED',
+  'TURN_INPUT_REQUIRED', 'PORTRAIT_REQUEST_FIELD_UNKNOWN',
+  'PORTRAIT_TEXT_TYPE_INVALID', 'PORTRAIT_TEXT_REQUIRED',
+  'PORTRAIT_TEXT_TOO_LONG', 'LLM_SETTINGS_BODY_INVALID',
+  'LLM_SETTINGS_LOCAL_PROVIDER_RETIRED', 'LLM_SETTINGS_MODE_INVALID',
+  'LLM_SETTINGS_COMPATIBILITY_INVALID', 'LLM_SETTINGS_MODEL_REQUIRED',
+  'LLM_SETTINGS_API_KEY_INVALID', 'LLM_SETTINGS_BASE_URL_REQUIRED',
+  'LLM_SETTINGS_BASE_URL_INVALID', 'LLM_SETTINGS_FIELD_UNKNOWN',
+  'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED',
+  'AUTHORED_OPENING_AUDIT_REJECTED'
+]);
 
 export function successEnvelope(data, { requestId = null } = {}) {
   assertPublicPayload(data);
@@ -12,7 +25,7 @@ export function successEnvelope(data, { requestId = null } = {}) {
     schema: API_SUCCESS_SCHEMA,
     ok: true,
     request_id: requestId,
-    data: structuredClone(data)
+    data: projectPublicPayload(data)
   });
 }
 
@@ -24,17 +37,29 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
     'NEEDS_CHECK_BLOCKER_CATALOG_INVALID'].includes(error?.code)
     ? { code: 'WORLD_CATALOG_PIN_INVALID',
         message: 'Данные мира этой партии недоступны.' } : null;
+  const openingFailure = error?.code === 'AUTHORED_OPENING_AUDIT_REJECTED'
+    ? { code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+        message: 'Не удалось начать игру. Попробуйте ещё раз.' } : null;
   const publicTurnFailure = publicTurnFailureFor(error);
-  const status = unresolvedOrdinary || publicTurnFailure ? 409
+  const candidateMessage = openingFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message
+    ?? catalogFailure?.message ?? text(error?.message) ?? 'Request failed.';
+  const publicClientCode = PUBLIC_CLIENT_ERROR_CODES.has(error?.code);
+  const unsafeMessage = findUnsafePlayerText(candidateMessage) != null;
+  const unsafePublicClientMessage = publicClientCode && unsafeMessage;
+  const unsafeCode = !PUBLIC_CLIENT_ERROR_CODES.has(error?.code)
+    && findUnsafePlayerText(error?.code) != null;
+  const status = openingFailure || unresolvedOrdinary || publicTurnFailure ? 409
     : providerFailure || catalogFailure ? 503
       : Number.isInteger(error?.status) ? error.status : 500;
-  const internal = !providerFailure && !catalogFailure && !publicTurnFailure && (unresolvedOrdinary || status >= 500
-    || error?.public_exposure === 'internal');
-  const code = publicTurnFailure?.code ?? providerFailure?.code ?? catalogFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
+  const internal = !openingFailure && !providerFailure && !catalogFailure && !publicTurnFailure
+    && (unresolvedOrdinary || status >= 500
+      || (unsafeMessage && !publicClientCode)
+      || unsafeCode || error?.public_exposure === 'internal');
+  const code = openingFailure?.code ?? publicTurnFailure?.code ?? providerFailure?.code ?? catalogFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
     : text(error?.code) || 'REQUEST_FAILED');
-  const message = publicTurnFailure?.message ?? providerFailure?.message ?? catalogFailure?.message ?? (internal
+  const message = openingFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message ?? catalogFailure?.message ?? (internal
     ? 'Действие временно недоступно. Попробуйте ещё раз.'
-    : text(error?.message) || 'Request failed.');
+    : unsafePublicClientMessage ? 'Некорректный запрос.' : candidateMessage);
   return Object.freeze({
     status,
     body: Object.freeze({

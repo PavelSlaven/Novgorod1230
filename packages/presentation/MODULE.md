@@ -57,13 +57,15 @@ this pure projection creates no world state and performs no writes or model call
 ## Инварианты
 
 - публичный экран не содержит hidden/audit/source payloads;
-- TurnScreen строится только из approved narration flow;
+- TurnScreen строится только из approved narration flow; ready/pending TurnScreen и `FactualTurnDeliveryScreen v1` могут нести optional `exact_npc_utterances` с публичным leaf `{ speaker_ref: { entity_kind: 'npc', entity_id }, utterance_text }`. Server-only statement/receipt и pre-commit marker-check proof validated before HTTP и удаляется на границе; presentation проверяет форму leaf и не переписывает exact utterance;
 - `FactualTurnDeliveryScreen v1` строится только из уже validated committed
   public projection после terminal narration-policy rejection. Это degraded
   availability recovery, а не approved narration и не quality PASS. Его exact fields:
   `version`, `schema`, `screen_status`, `party_id`, `turn_id`, `turn_number`,
   `package_id`, `committed_state_version`, `presentation_quality`,
-  `visible_context`, `visible_changes`, `uncertainties`, `panels`, `input_panel`.
+  `visible_context`, `visible_changes`, `uncertainties`, `panels`, `input_panel`,
+  and optional `exact_npc_utterances`, whose server-only statement/receipt and
+  pre-commit marker-check proof is validated before the HTTP edge strips proof.
   Полный scenario carrier (`scenario_id`, `screen_kind`, `action_panel`,
   `actions`, `checks`, `delivery_state`, `opening_screen_digest`,
   `current_projection_anchor`, `presentation_context`, optional

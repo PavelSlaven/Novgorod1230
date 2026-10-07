@@ -396,6 +396,24 @@ test('PostgreSQL presence composition: world and party DBs, real activation, no 
   ({ worldPool, partyPool } = await startDualPools(name));
   const worldBaseReader = createRuntimeCatalogWorldBaseReader((sql, params) => worldPool.query(sql, params));
 
+  await t.test('D-2 composition projection preserves approved slot relationship evidence', async () => {
+    const context = await resolvePresenceRulesFirstArrivalForSite({
+      worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin,
+      spatialNodeId: compositionFixture.nodeId, spatialNodeVersion: 1,
+      partyId: 'party-composition-d2-projection', siteId: 'g5:party-composition-d2-projection',
+      regionId: 'region_novgorod_land', season: 'summer', periodNumber: 1230,
+      bindingRows: [{ binding_role: 'primary', place_family_id: 'pf_peasant_homestead' }],
+      withPlacePeople: true,
+    });
+    const sourceRows = JSON.parse(await readFile(
+      'data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/place_population_composition_rules.json', 'utf8'));
+    const source = sourceRows.find((row) => row.composition_id === 'pf_peasant_homestead');
+    assert.equal(source.status, 'approved');
+    assert.deepEqual(context.people.compositions.find((row) =>
+      row.place_family_id === 'pf_peasant_homestead')?.slot_relationships,
+    source.authoring_payload.slot_relationships);
+  });
+
   await t.test('canonical G5 first entry: presence rules without O1 rows', async () => {
     const { first, second } = await provisionPartyStart({
       worldPool, partyPool, partyId: 'party-composition-canonical',

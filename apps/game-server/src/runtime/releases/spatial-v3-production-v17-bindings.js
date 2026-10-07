@@ -5,7 +5,7 @@ import { serverError } from '../../errors.js';
 
 /** Production v17 NPC/player semantic ports (A2). Exported for direct wire tests. */
 export function createSpatialV3ProductionV17NpcRuntimePorts({
-  roleRunner, worldKnowledgeGrounder
+  roleRunner, worldKnowledgeGrounder, combatBodyBandContext = null
 } = {}) {
   return {
     playerConversationModel: createLowerDvinaTracePlayerConversationModel({
@@ -17,7 +17,8 @@ export function createSpatialV3ProductionV17NpcRuntimePorts({
     npcAutonomousModel: createLowerDvinaTraceNpcAutonomousModel({
       roleRunner, worldKnowledgeGrounder
     }),
-    npcCombatModel: createLowerDvinaTraceNpcCombatModel({ roleRunner })
+    npcCombatModel: createLowerDvinaTraceNpcCombatModel({ roleRunner,
+      combatBodyBandContext })
   };
 }
 

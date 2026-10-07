@@ -133,8 +133,11 @@ test('world route import commits, is idempotent, rejects conflicts and enforces 
     await client.query("UPDATE world_base.spatial_v3_world_route_segments SET line_name=line_name WHERE world_route_id=$1 AND world_route_version=2 AND ordinal=0", [target.id]);
     await assert.rejects(client.query('SET CONSTRAINTS ALL IMMEDIATE'), /route_cycle_or_branch/u);
   } finally {
-    if (transactionOpen) await client.query('ROLLBACK').catch(() => {});
-    client.release();
+    try {
+      if (transactionOpen) await client.query('ROLLBACK');
+    } finally {
+      client.release();
+    }
   }
   assert.deepEqual(await snapshot(), afterFirstImport, 'rejected reverse-version mutation leaves committed candidate unchanged');
 });

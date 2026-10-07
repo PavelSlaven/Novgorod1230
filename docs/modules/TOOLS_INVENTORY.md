@@ -1,7 +1,7 @@
 # Tools inventory
 
 REFERENCE. tools с MODULE.md — [MODULE_INDEX](../../MODULE_INDEX.md); граница tools/runtime —
-[`docs/architecture/DEPENDENCY_RULES.md`](../architecture/DEPENDENCY_RULES.md) (+LW-038).
+[`docs/architecture/DEPENDENCY_RULES.md`](../architecture/DEPENDENCY_RULES.md), её проверяет `architecture:check`.
 Запись в БД и operator flows — `MODULE.md` соответствующего tool
 (например [tools/runtime-catalog-activation/MODULE.md](../../tools/runtime-catalog-activation/MODULE.md)).
 

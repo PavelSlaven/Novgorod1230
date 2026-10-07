@@ -226,6 +226,7 @@ const resolveValue = L.makeResolver(mats, deny, crosswalk);
 function* walk(dir) { for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) { const p = path.join(dir, e.name); if (e.isDirectory()) { if (e.name !== 'node_modules') yield* walk(p); } else if (e.name.endsWith('.csv')) yield p; } }
 const resRows = []; const perFile = {};
 for (const f of walk(GAME_BASE)) {
+  if (f.endsWith(`${path.sep}source-overlays${path.sep}master-material-materials.csv`)) continue;
   if (f.includes(`${path.sep}materials_registry${path.sep}`)) continue;
   let rows; try { rows = readCsv(f); } catch { continue; }
   if (!rows.length) continue;

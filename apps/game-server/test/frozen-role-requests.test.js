@@ -129,7 +129,7 @@ test('unowned domain intent uses one direct planner step', async () => {
     async run(call) {
       calls += 1;
       assert.match(call.messages[0].content,
-        /domain_request only when player_safe_state contains the exact/u);
+        /domain_request, только когда player_safe_state содержит точные capability/u);
       return { output: {
         schema: 'turn_step_plan_v1', request_id: request.request_id,
         committed_state_version: 1, working_revision: 0, step_index: 1,
@@ -166,9 +166,15 @@ async function productionMessages(fixture) {
     call = next;
     return { output: {} };
   } } });
-  const payload = fixture.role_id === 'world_process_step'
-    ? fixture.request : JSON.parse(fixture.messages.at(-1).content);
+  const wire = JSON.parse(fixture.messages.at(-1).content);
+  const npcCombat = fixture.role_id.startsWith('npc_combat_decider');
+  const payload = npcCombat ? fixture.request ?? wire
+    : fixture.role_id === 'world_process_step' ? fixture.request : wire;
   if (!fixture.repair) await model(payload);
+  else if (npcCombat) await model(payload.request, { repair: {
+    original_output: payload.original_output,
+    validation_errors: payload.validation_errors
+  } });
   else if (fixture.role_id === 'turn_step_planner_repair') await model(
     payload.request?.request ?? payload.request, {
       structural_errors: payload.request?.structural_errors

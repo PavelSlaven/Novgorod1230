@@ -24,6 +24,8 @@ function factual(overrides = {}) {
     package_id: 'package-7', committed_state_version: '39',
     visible_context: { visible_scene: 'У телеги мокрая ось.' },
     visible_changes: ['Верёвка снята с телеги.'],
+    exact_npc_utterances: [{ speaker_ref: { entity_kind: 'npc',
+      entity_id: 'npc-1' }, utterance_text: 'Я отложил сеть.' }],
     uncertainties: ['Прочность оси ещё не установлена.'],
     presentation_quality: 'degraded', scenario_id: 'lower_dvina_trace_v1',
     screen_kind: 'trace_turn', presentation_context: {},
@@ -55,6 +57,7 @@ test('degraded factual delivery reuses normal screen UI and replaces only prose'
     'Верёвка снята с телеги.', 'Прочность оси ещё не установлена.',
     'Осмотреть ось', 'data-turn-form', 'Проверки хода', 'Возможные действия']) assert.match(html, new RegExp(text, 'u'));
   assert.match(html, /aria-label="Восстановленное состояние после хода"/u);
+  assert.match(html, /Я отложил сеть\./u);
   assert.match(html, /Восстановленное состояние/u);
   assert.match(html, /<h1>Текущий момент<\/h1>/u);
   assert.doesNotMatch(html, /package-7|committed_state_version|diagnostics|main_prose|Запрещённая проза/u);

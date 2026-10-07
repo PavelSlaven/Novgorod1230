@@ -1,7 +1,7 @@
-<!-- GENERATED FILE. Sources: schemas/party-db/001–039, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->
+<!-- GENERATED FILE. Sources: schemas/party-db/001–040, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->
 # Справочник схемы `party_runtime`
 
-- Исполняемый источник: 39 упорядоченных SQL-миграций в `schemas/party-db/`.
+- Исполняемый источник: 40 упорядоченных SQL-миграций в `schemas/party-db/`.
 - Таблиц: 133.
 - Для каждой таблицы приведены SQL-определения `CREATE TABLE`, `ALTER TABLE` и `CREATE INDEX` в порядке миграций. Полный SQL всех миграций, включая `DROP`, триггеры и условные блоки, приведён ниже. Исполняемые файлы остаются источником истины.
 
@@ -46,6 +46,7 @@
 - [`037_party_runtime_m2c_presence_routines.sql`](../../schemas/party-db/037_party_runtime_m2c_presence_routines.sql)
 - [`038_party_runtime_npc_seasonal_presence.sql`](../../schemas/party-db/038_party_runtime_npc_seasonal_presence.sql)
 - [`039_party_runtime_local_lines.sql`](../../schemas/party-db/039_party_runtime_local_lines.sql)
+- [`040_party_runtime_visible_package_initial_state.sql`](../../schemas/party-db/040_party_runtime_visible_package_initial_state.sql)
 
 ## `party_runtime.acoustic_edges`
 
@@ -4855,6 +4856,21 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_visible_packages (
 ```sql
 CREATE UNIQUE INDEX IF NOT EXISTS party_visible_packages_package_party_uq
   ON party_runtime.party_visible_packages(package_id,party_id);
+```
+
+Источник: [`040_party_runtime_visible_package_initial_state.sql`](../../schemas/party-db/040_party_runtime_visible_package_initial_state.sql)
+
+```sql
+ALTER TABLE party_runtime.party_visible_packages
+  DROP CONSTRAINT IF EXISTS party_visible_packages_committed_state_version_check;
+```
+
+Источник: [`040_party_runtime_visible_package_initial_state.sql`](../../schemas/party-db/040_party_runtime_visible_package_initial_state.sql)
+
+```sql
+ALTER TABLE party_runtime.party_visible_packages
+  ADD CONSTRAINT party_visible_packages_committed_state_version_check
+  CHECK (committed_state_version >= 0);
 ```
 
 ## `party_runtime.party_visible_read_models`
@@ -10990,4 +11006,15 @@ BEGIN
   END IF;
   RETURN NEW;
 END $$;
+```
+
+### [`040_party_runtime_visible_package_initial_state.sql`](../../schemas/party-db/040_party_runtime_visible_package_initial_state.sql)
+
+```sql
+ALTER TABLE party_runtime.party_visible_packages
+  DROP CONSTRAINT IF EXISTS party_visible_packages_committed_state_version_check;
+
+ALTER TABLE party_runtime.party_visible_packages
+  ADD CONSTRAINT party_visible_packages_committed_state_version_check
+  CHECK (committed_state_version >= 0);
 ```

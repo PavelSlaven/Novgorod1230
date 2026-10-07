@@ -1,6 +1,8 @@
 import { isDeepStrictEqual } from 'node:util';
 import { isOrdinaryDiscoveryInScope, validateTurnStepPlan } from '@rus/turn';
 import { serverError } from '../errors.js';
+import { projectTurnStepModelRequest } from
+  './lower-dvina-trace-turn-step-model-projection.js';
 
 const KINDS = new Set(['operation_semantic_grounding',
   'source_semantic_grounding', 'material_transformation_grounding',
@@ -140,15 +142,17 @@ function auditable(operation) {
         || typeof operation.description === 'string');
 }
 export function groundingState(state = {}, audited = []) {
+  const projected = projectTurnStepModelRequest({ player_safe_state: state })
+    .request.player_safe_state;
   return {
-    actor_id: state.actor_id, position: state.position,
-    items: state.items ?? [], inventory: state.inventory ?? {},
-    current_visible_context: state.current_visible_context ?? null,
-    visible_context: state.visible_context ?? null,
-    ordinary_resolution: state.ordinary_resolution ?? null,
-    observed_evidence_inspection: state.observed_evidence_inspection ?? null,
+    actor_id: projected.actor_id, position: projected.position,
+    items: projected.items ?? [], inventory: projected.inventory ?? {},
+    current_visible_context: projected.current_visible_context ?? null,
+    visible_context: projected.visible_context ?? null,
+    ordinary_resolution: projected.ordinary_resolution ?? null,
+    observed_evidence_inspection: projected.observed_evidence_inspection ?? null,
     available_domain_operation_grounding:
-      (state.available_domain_operation_grounding ?? []).filter(({ operation }) =>
+      (projected.available_domain_operation_grounding ?? []).filter(({ operation }) =>
         audited.some((entry) => isDeepStrictEqual(entry.operation, operation)))
   };
 }

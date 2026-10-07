@@ -21,6 +21,7 @@ import { readCurrentNaturalPerceptionFacts } from '../../apps/game-server/src/in
 import { readInitialCanonicalNaturalSourceState } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-initial-state.js';
 import { prepareG4NaturalScenePerceptionInput, projectG4NaturalPerception } from '../../apps/game-server/src/runtime/g4-natural-perception.js';
 import { createTargetCurrentFactualContext } from '../../apps/game-server/src/infrastructure/postgres/target-current-factual-context.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
 import { serveTargetHttpBrowserSmoke, TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 import { createLlmSettingsFileStore } from '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
 import { createLlmSettingsOwner } from '../../apps/game-server/src/runtime/llm-settings.js';
@@ -181,6 +182,8 @@ export async function assertTargetCanonicalStartPostgres({
       diagnostic.schema = call.response_format?.json_schema?.name ?? '<absent>';
       diagnostic.system = system.slice(0, 120);
       let output;
+      const role = identifyLlmTestRole(call);
+      diagnostic.role = role;
       const hasScene = typeof modelInput?.сцена?.граница === 'string';
       const hasRejectedProse = Object.hasOwn(modelInput ?? {}, 'отклонённая_проза');
       const hasCheckedProse = Object.hasOwn(modelInput ?? {}, 'проверяемая_проза');
@@ -223,14 +226,15 @@ export async function assertTargetCanonicalStartPostgres({
         const split = Math.ceil(facts.length / 2);
         output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
           .filter(Boolean).join('\n\n') };
-      } else if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+      } else if (role === 'world_knowledge_query_planner'
+          || system.includes('schema must equal world_knowledge_query_plan_v1.')) {
         modelCalls.push({ role: 'world_knowledge_query_planner' });
         output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
           domains: [], focus_refs: [], requested_predicates: [], search_hints: [] };
-      } else if (system.startsWith('Resolve the raw Russian player text')) {
+      } else if (role === 'intent_router') {
         modelCalls.push({ role: 'intent_router' });
         output = { status: 'unknown', reason_code: 'unknown_intent' };
-      } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+      } else if (role === 'turn_step_planner') {
         modelCalls.push({ role: 'turn_step_planner' });
         assert.equal((modelInput.request ?? modelInput).root_player_action, TARGET_SMOKE_INPUT);
         output = { operation_choice: null, interpretation: { adaptation: 'literal' },
@@ -252,7 +256,8 @@ export async function assertTargetCanonicalStartPostgres({
           source_reviews: [...modelInput.required_current_beat.changes,
             ...modelInput.required_current_beat.uncertainties].map(({ ref }) => ({ ref, segment_choices: ids })),
           unsupported: [], literary_failures: [], evidence: ['Deterministic source-copy.'] };
-      } else if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
+      } else if (system.startsWith('Return only {"pass"')
+          || system.startsWith('Возвращай только {"pass"')) {
         narrationRoles.push('gameplay_narrator_auditor');
         modelCalls.push({ role: 'gameplay_narrator_auditor' });
         output = { pass: true, failed_checks: [], concerns: [], evidence: ['Test response uses the supplied committed visible facts.'] };

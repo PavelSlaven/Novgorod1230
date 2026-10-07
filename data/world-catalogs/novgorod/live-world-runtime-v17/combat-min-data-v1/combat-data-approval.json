@@ -1,0 +1,74 @@
+{
+  "schema": "combat_data_independent_approval_review_v3",
+  "who": "Codex — независимый ведущий ap-combat-data по D67; не автор данных",
+  "when": "2026-10-03T13:49:06Z",
+  "repository": "/srv/novgorod-work/worktrees/combat-data",
+  "branch": "fleet/combat-data",
+  "path": "/srv/novgorod-work/worktrees/combat-data/data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1",
+  "repository_relative_path": "data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/",
+  "files": [
+    "minimal-combat-bundle.candidate.json",
+    "source-map.json",
+    "typed-gaps.json",
+    "validate_combat_data.py",
+    "combat-data-report.md",
+    "bench/combat-data/manifest.json",
+    "bench/combat-data/runner.py",
+    "bench/combat-data/body-interface.mjs",
+    "bench/combat-data/results.json",
+    "bench/combat-data/README.md"
+  ],
+  "commit": "b270c8267062036f6d830497dfa162cee7f21904",
+  "commit_status": "Сверены все 10 commit blobs с рабочей копией; 8 прежних файлов совпали со снимком, дельта двух файлов ограничена исправлением self-locator и его self-tests.",
+  "reviewer_request": "A-ap-combat-data-final | 2026-10-03T13:20:29Z",
+  "verdict": "APPROVE_WITH_LIMITS",
+  "approval_granted": true,
+  "approval_status": "APPROVED_WITH_LIMITS",
+  "approval_scope": "WR §21.1: только authoring/data-only пакет минимального боя в перечисленных файлах и commit. Утверждены форма, привязки источников, объявленные D71 предложения с обоснованием/границами, качественные полосы как авторские данные, явный owner DTO adapter и текущие typed gaps; не подтверждены игровой баланс, модельное понимание или применимость к произвольному live NPC.",
+  "findings_closed": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07",
+    "F08"
+  ],
+  "blocking_data_findings": [],
+  "workflow_blockers": [],
+  "nonblocking_findings": [
+    {
+      "id": "V01",
+      "severity": "P3",
+      "target": "next_validator_version",
+      "summary": "Определить обязательность embedded refs; проверить null/пустые ссылки по явной схеме. Обязательные field_sources уже сохраняются и проверяются."
+    },
+    {
+      "id": "V02",
+      "severity": "P3",
+      "target": "next_validator_version",
+      "summary": "Определить политику расширения gap inventory и проверки ID/type/path; текущие 14 gaps валидны, будущие незаявленные gaps не утверждены."
+    }
+  ],
+  "limits": [
+    "D71 длительность 6 с, body mapping и D72 cut points утверждены как явно обозначенные authoring-предложения, без подтверждения темпа/баланса/playtest.",
+    "Модельная естественность и понимание полос, D41 и human playtest не проверены: модельные прогоны завершились до вызовов модели.",
+    "Generic v17 applicability, body-state owner approval, реальные actor/identity источники и owner input bindings остаются внешними gates.",
+    "Live body readback, атомарная инициализация/commit в P16, persistence/replay и runtime handoff не проверены; текущие typed gaps остаются открытыми.",
+    "Нет разрешения на import, activation, release или production runtime; candidate_emission=null и production_usable=false в данных сохранены.",
+    "Изменение утверждённых данных после этого commit снимает утверждение до нового прохода; производные поля размещаются отдельно по WR §21.1."
+  ],
+  "evidence": [
+    "report-ap-combat-data-3.md",
+    "report-ap-combat-data-2.md",
+    "review-3/committed-content-check.json",
+    "review-3/commands-3.json",
+    "review-3/locator-review.json",
+    "review-2/final-audit-2.json"
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "production_authorized": false,
+  "record_placement": "Запись создана в собственном out по задаче; файл для размещения ведущим рядом с данными. Репозиторий исполнитель не менял."
+}

@@ -1,6 +1,9 @@
 import { runtimeItemIsAccessibleInPlace } from '@rus/items-property';
 import { isOrdinaryDiscoveryInScope, validateTurnStepPlan } from '@rus/turn';
 import { serverError } from '../errors.js';
+import { containsAny, projectTurnStepModelRequest, redactGapItemData,
+  untransmittedGapItemSecrets } from
+  './lower-dvina-trace-turn-step-model-projection.js';
 import { auditFocusedSpeech } from './lower-dvina-trace-turn-step-speech-audit.js';
 import { assertDiscoveryIntent, auditedOperations, concern,
   directCreateEntries, directSemanticActivity, focusedDiscoveryGrounded,
@@ -24,6 +27,9 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     throw new TypeError('Turn-step grounding auditor requires a role runner.');
   }
   return async ({ plan, request, resolved_domain_operations: resolved = [], allow_speech_metadata_projection = false, allow_denial_metadata_projection = false, material_prerequisite_candidate = false }) => {
+    const modelRequest = projectTurnStepModelRequest(request).request;
+    const gapSecrets = untransmittedGapItemSecrets(request);
+    const scrubGapData = (value) => redactGapItemData(value, gapSecrets);
     const invalidCreate = directCreateEntries(plan).find(({ operation }) =>
       !matchesAmbientCreateCapability(operation, request));
     if (invalidCreate) throw serverError('TURN_STEP_PLAN_INVALID',
@@ -63,6 +69,15 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       plan = { ...plan, operations: [{ ...use, description: request.remaining_intent }] };
       audited = [...auditedOperations(plan)];
     }
+    if (containsAny(plan, untransmittedGapItemSecrets(request))) {
+      throw serverError('TURN_STEP_PLAN_INVALID',
+        'Turn-step plan references player-safe item data unavailable to the planner.', {
+          details: { errors: [{ path: '$.operations',
+            rule: 'operation_semantic_grounding',
+            code: 'operation_semantic_grounding',
+            message: 'must not reference an item without a player-safe label' }] }
+        });
+    }
     if (ordinaryDenial(plan, request)) throw serverError('TURN_STEP_PLAN_INVALID',
       'Literal physical denial must use the available grounded owner.', {
         details: { errors: [concern('operation_semantic_grounding',
@@ -80,10 +95,10 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         request_identity: request.request_id,
         messages: [{ role: 'system', content: TRANSIENT_ITEM_USE_PROMPT }, {
           role: 'user', content: JSON.stringify({
-            remaining_intent: request.remaining_intent,
-            actor_ref: request.actor?.actor_id ?? request.actor?.actor_ref ?? null,
-            player_safe_state: groundingState(request.player_safe_state, audited),
-            operation: audited[0].operation
+            remaining_intent: modelRequest.remaining_intent,
+            actor_ref: modelRequest.actor?.actor_id ?? modelRequest.actor?.actor_ref ?? null,
+            player_safe_state: groundingState(modelRequest.player_safe_state, audited),
+            operation: scrubGapData(audited[0].operation)
           }) }]
       });
       if (!valid(response?.output)) throw serverError(
@@ -116,10 +131,10 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         request_identity: request.request_id,
         messages: [{ role: 'system', content: DIRECT_SEMANTIC_ACTIVITY_PROMPT }, {
           role: 'user', content: JSON.stringify({
-            remaining_intent: request.remaining_intent,
-            grounded_attempt: plan.interpretation?.grounded_attempt,
-            activity: plan.activity,
-            continuation: plan.continuation
+            remaining_intent: modelRequest.remaining_intent,
+            grounded_attempt: scrubGapData(plan.interpretation?.grounded_attempt),
+            activity: scrubGapData(plan.activity),
+            continuation: scrubGapData(plan.continuation)
           }) }]
       });
       if (!valid(response?.output)) throw serverError(
@@ -171,11 +186,11 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
             FOCUSED_DISCOVERY_PREREQUISITE_REPAIR_PROMPT
           ].join(' ') }, {
             role: 'user', content: JSON.stringify({ remaining_intent:
-              request.remaining_intent, operation: genericDiscovery,
+              modelRequest.remaining_intent, operation: scrubGapData(genericDiscovery),
               ...(material_prerequisite_candidate || prerequisiteProjection ? { correction_candidate:
                 material_prerequisite_candidate ? 'missing_ordinary_referent' : 'proposed_material_prerequisite' } : {}),
-              continuation: structuredClone(plan.continuation ?? null),
-              player_safe_state: groundingState(request.player_safe_state),
+              continuation: scrubGapData(structuredClone(plan.continuation ?? null)),
+              player_safe_state: groundingState(modelRequest.player_safe_state),
               effect_contract: DISCOVERY_EFFECT_CONTRACT }) }]
         });
         if (!validFocusedDiscovery(focused?.output)) throw serverError(
@@ -262,12 +277,13 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
       request_identity: request.request_id,
       messages: [{ role: 'system', content: PROMPT }, { role: 'user',
-        content: JSON.stringify({ remaining_intent: request.remaining_intent,
-          actor_ref: request.actor?.actor_id ?? request.actor?.actor_ref ?? null,
-          actor_body: request.actor?.body ?? null,
-          player_safe_state: groundingState(request.player_safe_state,
+        content: JSON.stringify({ remaining_intent: modelRequest.remaining_intent,
+          actor_ref: modelRequest.actor?.actor_id ?? modelRequest.actor?.actor_ref ?? null,
+          actor_body: scrubGapData(modelRequest.actor?.body ?? null),
+          player_safe_state: groundingState(modelRequest.player_safe_state,
             audited),
-          operations: audited, continuation: plan.continuation }) }]
+          operations: scrubGapData(audited),
+          continuation: scrubGapData(plan.continuation) }) }]
     });
     if (!valid(response?.output, { allowMovePrerequisite: moveOnly })) throw serverError(
       'TRACE_TURN_STEP_GROUNDING_AUDIT_INVALID',

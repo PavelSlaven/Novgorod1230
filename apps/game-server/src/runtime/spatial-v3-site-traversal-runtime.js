@@ -344,9 +344,11 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       movement: { status: prepared.final_travel_state.status,
         cost_kind: 'time', duration_minutes: durationMinutesProjection } }),
       visible_seed: prepared.result.result_kind === 'segment_completed'
-        ? { destination_visible_context: projected.visible_context }
+        ? { destination_site_origin: destinationSite.origin,
+          destination_visible_context: projected.visible_context }
         : returnedToDeparture || interruptedAtShore
-          ? { destination_visible_context: sourceProjection.visible_context } : {} };
+          ? { destination_site_origin: context.site.origin,
+            destination_visible_context: sourceProjection.visible_context } : {} };
   };
 }
 

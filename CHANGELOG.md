@@ -1,7 +1,36 @@
 # Changelog
 
 ## Unreleased
-- docs(tech-debt): record route time independence from weather and light until world_base environment rules load; LW-136 added (#321)
+- docs(governance): WR §21.1 — an approval record names the exact approved bytes: path and sha256 of the approved content (git commit when available) and the date; no signatures or receipts (owner decisions D142, D144)
+- fix(game-base): resolve Novgorod SQLite refs exactly from the tracked read-only source; fail closed on unchecked refs (#469)
+- fix(spatial): allow visible-package persistence against matching committed v0 snapshot (#467)
+- fix(tools): portable main-module checks; the P05 checker now runs on Linux (#474)
+- fix(runtime-boundary): move new-game projections out of tools, centralize committed v5 inventory defaults in items-property; LW-038/LW-106 closed (#326, #281)
+- fix(game-base): apply approved master material corrections through a fail-closed overlay (#432, #431)
+- fix(npc): materialize named NPC relationships only from approved rule and D-2 slot evidence, persist pairs atomically on first entry and authored starts
+- fix(game-base): correct 1230 historical event dates and sources (both chronicle dates of the departure to Torzhok kept, neutral title), figure office bounds, recreation and health notes; health kinds for three epidemics; regression tests (#339, #340, #341, #325)
+- data(combat): approved generic v17 execution profile landed; activation pending (#224)
+- fix(tools): reject stale signed approvals, discover in-repository MapMaker symlink datasets, and test supplied calendar profiles (#306, #328, #350)
+- fix(presentation): preserve current committed NPC speech on first delivery, pending screens and replay (#98)
+- fix(docs-tools): сохранять полные пункты MODULE.md в индексе и убрать повтор World Knowledge (#354, #355)
+- fix(test): compare route panel labels with planner operations in the D72 player-safe space (#98)
+- docs(process): HOW_WE_WORK §11.2 — the lead reads the full bench wire (data, form, path, destination) before every BENCH-OK; wire-review file and its SHA-256 in the approval (D132) (#98)
+- docs(npc): add approved ACTIVE family, household and named-relations norm (D122, D124–D128); record pending household data approval/import as LW-136 (#133, #259, #338)
+- fix(turn-scene): keep current scene projection grounded in committed changes and drop prior-turn NPC speech from narration input (D80)
+- docs(player-start): add D111 player character and start contract; LW-135 added (#109)
+- docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
+- fix(npc): replay committed conversation claims from the verified prepared request snapshot (#98)
+- fix(runtime): filter typed item gaps from model facts, operations and visible envelopes; resolve approved labels in inspection; ignore ordinal exits in WK and require schema-only router recognition
+- fix(prompts/docs): align planner wording with reviewed Stage L text, correct addressed-request meaning, and record deferred group-3 P projection as LW-132
+- fix(prompts): перевести промпты планировщика хода и маршрутизатора на русский (prompt-rev-turn)
+- fix(turn): reject prepared follow-up refs outside projected allowlist; LW-131 added (#236)
+- fix(items): keep unnamed visible items as typed label gaps; LW-130 added (prompt-rev-turn)
+- fix(turn): current scene rebuilt from committed state each turn (departed items/NPCs dropped, speech never becomes the place title); movement narration from owner facts - site arrival from the destination package, route visible change, Spatial-signed local label (#98)
+- fix(test): copy only the Phase 2 bundle closure and surface rollback errors (#235)
+- feat(combat): scope approved missing-body initialization to combat participants and the existing P16 writer; admit request_combat from current scene readback without gating on unrelated NPC bodies; keep generic v17 execution fail-closed pending cutover; LW-099 updated (#224)
+- docs(tech-debt): record D65 body-effect scoring limit and retreat-menu gap; LW-137 added (#224)
+- docs(plans): owner's scenario spec «След на Нижней Двине» (frame + instance generator at party start) and an example playthrough, verbatim, as design input for the v17 quest start (D101, D105) (#238)
+- docs(tech-debt): record route time independence from weather and light until world_base environment rules load; LW-138 added (#321)
 - fix(llm-runtime): use neutral LLM_* deployment settings with Qwen default and fail closed without endpoint (#237)
 - fix(spatial): evaluate prepared destination visibility with the root post-turn clock (#227)
 - docs(tech-debt): record continuation route menu pending exit-one-action; LW-128 added (#227)

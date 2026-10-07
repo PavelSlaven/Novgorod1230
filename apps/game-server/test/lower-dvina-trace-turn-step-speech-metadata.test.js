@@ -34,7 +34,7 @@ test('misclassified sustained action repairs to non-speech activity', async () =
     const payload = JSON.parse(call.messages[1].content);
     const instructions = turnStepRepairSpecificInstructions(payload, input).join(' ');
     assert.match(instructions,
-      /proposed utterance failed semantic grounding[\s\S]*Typed first-person action prose is not speech/u);
+      /Предложенный utterance не прошёл семантическую привязку[\s\S]*Напечатанное от первого лица описание действия не является речью/u);
     return { output: {
       interpretation: { player_goal: action,
         grounded_attempt: 'Жду под навесом.',
@@ -84,7 +84,7 @@ test('misclassified unquoted request in a chain repairs to speech before later a
     if (call.role_id === 'turn_step_planner_repair') {
       const payload = JSON.parse(call.messages[1].content);
       assert.match(turnStepRepairSpecificInstructions(payload, input).join(' '),
-        /Speech, a request, an answer[\s\S]*never complete it as ordinary semantic activity/u);
+        /Речь, просьба, ответ, оклик, крик или другой голосовой сигнал должны использовать player_utterance или переданный вариант взаимодействия[\s\S]*никогда не завершай их как обычную semantic activity/u);
       const repaired = speechOutput(input, 'Спутник, подай воды.', later);
       repaired.utterance.input_mode = 'intent_paraphrase';
       return { output: repaired };

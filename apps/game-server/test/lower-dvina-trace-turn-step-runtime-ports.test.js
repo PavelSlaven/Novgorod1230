@@ -149,7 +149,7 @@ test('prepared movement hydrates the destination scene and captures IDs without 
     loadPreparedMovementScene: async ({ partyId, state: preparedState, clock }) => {
       loaderPartyId = partyId;
       loaderSite = preparedState.position.site_id;
-      loaderClock = clock;
+      loaderClock = structuredClone(clock);
       return { ...preparedState, npcs: [destinationNpc],
         scene_position_g6: { 'position:destination': 'g6:destination' } };
     },

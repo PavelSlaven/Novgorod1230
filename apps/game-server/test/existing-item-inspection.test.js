@@ -22,18 +22,34 @@ function safe(records = items) {
     ordinary_resolution: { discovery_available: true,
       container_resolution_available: false, scene_seed_available: true } };
 }
-function resolver() {
+function resolver(itemLabels = {}) {
   return createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'party', inputDigest: 'inspection', verifyStageBCutover: () => true,
+    itemLabels,
     loadEnablement: async () => null,
     ordinaryMaterializationModel: async () => assert.fail('No materialization call for known item state')
   });
 }
-function execution(target = 'tool', projection = safe()) {
+test('existing inspection resolves a template-only item label from the pinned catalog', async () => {
+  const templateItem = { item_id: 'template-item', template_id: 'approved-shirt',
+    condition_state: 'damaged',
+    placement: { holder_character_id: 'actor-1', physical_position: 'worn' } };
+  const projection = safe([templateItem]);
+  const result = await resolver({ 'approved-shirt': 'шерстяная рубаха' })(
+    execution('template-item', projection, [templateItem]));
+  const seed = result.consequence_fragment.visible_seed.turn_step_item_inspection_1;
+
+  assert.ok(seed.visible_changes.some(text => text.includes('шерстяная рубаха')));
+  assert.ok(seed.visible_changes.some(text => text.includes('повреждено')));
+});
+function execution(target = 'tool', projection = safe(), committedItems = items) {
   return { request: { root_turn_id: 'turn-1', step_index: 1, player_safe_state: projection },
     operation: { op: 'request_discovery', discovery_kind: 'inspect', target_refs: [target], query },
     plan: { continuation: null }, working_projection: projection,
-    committed_state: { items: [{ ...items[0], condition_state: 'serviceable' }] } };
+    committed_state: { party_id: 'party', actor_id: 'actor-1',
+      party_state: { state_version: 1 },
+      position: { location_ref: 'shore', g5_anchor_id: 'shore-anchor' },
+      npcs: [], items: structuredClone(committedItems) } };
 }
 function currentScene() {
   return { version: 1, schema: 'visible_context_package', visible_scene: 'Берег.',
@@ -58,11 +74,20 @@ test('existing inspection reads current exact target without ordinary enablement
   const projector = createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
     project: async () => assert.fail('Inspection preserves the current scene') } });
   const renderInput = { retrieved_state: { actor_id: 'actor-1',
+    party_id: 'party', party_state: { state_version: 1 },
+    position: { location_ref: 'shore', g5_anchor_id: 'shore-anchor' },
+    scene_presentation: { locations: [{ location_ref: 'shore',
+      display_name: 'Берег.', player_visible_physical_facts: [
+        'Рядом лежит мокрая ветвь.' ] }] },
+    npcs: [], items,
     current_visible_context: currentScene() }, consequence: {
       status: 'partial', visible_seed: result.consequence_fragment.visible_seed } };
   const visible = await projector.project(renderInput);
   assert.equal(visible.visible_scene, 'Берег.');
-  assert.deepEqual(visible.sensory_details, currentScene().sensory_details);
+  assert.deepEqual(visible.sensory_details, [
+    'Рядом лежит мокрая ветвь.',
+    'На рукояти видна продольная трещина.'
+  ]);
   assert.deepEqual(visible.visible_changes, seed.visible_changes);
   const applied = await projector.project({ ...renderInput,
     mode_resolution: { decision_trace: { step_traces: [{ applied: true, step_index: 1,
@@ -88,7 +113,7 @@ test('concealed or closed-container contents never enter the existing inspection
   { item_id: 'hidden', name: 'Скрытый предмет', placement: { container_id: 'bag' } }];
   const projection = safe(records);
   assert.equal(projection.items.some(item => item.item_id === 'hidden'), false);
-  const result = await resolver()(execution('hidden', projection));
+  const result = await resolver()(execution('hidden', projection, records));
   assert.equal(result.summary, 'ordinary discovery unavailable');
   assert.equal(Object.values(result.consequence_fragment.visible_seed)
     .some(seed => seed.kind === 'existing_item_inspection'), false);

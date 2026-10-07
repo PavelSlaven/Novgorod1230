@@ -1,0 +1,116 @@
+{
+  "source_sha256": "c338980b40594e1eaa2da00c547bb12152f1d0cf417f78cc146fc8c4fcbd9ede",
+  "overlay_sha256": "fb34ff0db863d22a09db1c58fc05cae974ea6c1140af13856f64311e4d3c2839",
+  "rows": [
+    {
+      "item_id": "OMI00228",
+      "primary_material": "hemp",
+      "materials": "[\"hemp\"]"
+    },
+    {
+      "item_id": "OMI00229",
+      "primary_material": "hemp",
+      "materials": "[\"hemp\"]"
+    },
+    {
+      "item_id": "OMI00233",
+      "primary_material": "hemp",
+      "materials": "[\"hemp\"]"
+    },
+    {
+      "item_id": "OMI00349",
+      "primary_material": "wool",
+      "materials": "[\"wool\"]"
+    },
+    {
+      "item_id": "OMI00427",
+      "primary_material": "fur",
+      "materials": "[\"fur\",\"leather\"]"
+    },
+    {
+      "item_id": "OMI00560",
+      "primary_material": "leather",
+      "materials": "[\"leather\"]"
+    },
+    {
+      "item_id": "OMI00564",
+      "primary_material": "leather",
+      "materials": "[\"leather\"]"
+    },
+    {
+      "item_id": "OMI00852",
+      "primary_material": "clay",
+      "materials": "[\"clay\"]"
+    },
+    {
+      "item_id": "OMI01524",
+      "primary_material": "leather",
+      "materials": "[\"leather\"]"
+    },
+    {
+      "item_id": "OMI01616",
+      "primary_material": "wood",
+      "materials": "[\"wood\",\"birch_bark\"]"
+    },
+    {
+      "item_id": "OMI01692",
+      "primary_material": "animal_byproduct",
+      "materials": "[\"animal_byproduct\"]"
+    },
+    {
+      "item_id": "OMI01705",
+      "primary_material": "wood",
+      "materials": "[\"wood\"]"
+    },
+    {
+      "item_id": "OMI01786",
+      "primary_material": "wood",
+      "materials": "[\"wood\",\"birch_bark\"]"
+    },
+    {
+      "item_id": "OMI01850",
+      "primary_material": "wool",
+      "materials": "[\"wool\"]"
+    },
+    {
+      "item_id": "OMI01872",
+      "primary_material": "textile",
+      "materials": "[\"textile\"]"
+    },
+    {
+      "item_id": "OMI01968",
+      "primary_material": "wood",
+      "materials": "[\"wood\"]"
+    },
+    {
+      "item_id": "OMI01969",
+      "primary_material": "leather",
+      "materials": "[\"leather\"]"
+    },
+    {
+      "item_id": "OMI01970",
+      "primary_material": "iron",
+      "materials": "[\"iron\"]"
+    },
+    {
+      "item_id": "OMI01972",
+      "primary_material": "iron",
+      "materials": "[\"iron\"]"
+    },
+    {
+      "item_id": "OMI01978",
+      "primary_material": "wood",
+      "materials": "[\"wood\"]"
+    },
+    {
+      "item_id": "OMI02114",
+      "primary_material": "wood",
+      "materials": "[\"wood\"]"
+    },
+    {
+      "item_id": "OMI02232",
+      "primary_material": "textile",
+      "materials": "[\"textile\"]"
+    }
+  ]
+}

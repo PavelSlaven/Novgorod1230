@@ -1,0 +1,168 @@
+{
+  "schema": "novgorod.combat_data_typed_gaps.v1",
+  "candidate_status": "candidate_not_approved",
+  "gaps": [
+    {
+      "id": "G-APPLICABILITY-V17",
+      "type": "contract_applicability",
+      "field_paths": [
+        "applicability.values",
+        "execution.check",
+        "execution.harm",
+        "execution.health_transition"
+      ],
+      "owner": "@rus/knowledge-source + @rus/combat-health + @rus/turn",
+      "reason": "combat_system is indexed ACTIVE DOMAIN NORM, while its header retains rev16/spatial-v3-v6 applicability; a generic v17 binding/source pin is not demonstrated by the candidate sources",
+      "consumer": "generic combat admission and execution",
+      "closure": "independent applicability decision with exact contract revision and source pin"
+    },
+    {
+      "id": "G-ACTOR-CHECK-FACTS",
+      "type": "source_binding",
+      "field_paths": [
+        "execution.check.typed_inputs.actor attribute/skill/state/equipment/circumstances",
+        "execution.check.typed_inputs.target defense/position"
+      ],
+      "owner": "@rus/items-property + @rus/npc-runtime + @rus/body-state + @rus/combat-health",
+      "reason": "the formulas exist, but approved generic source refs and applicability of every actor/target modifier to arbitrary current NPCs were not established",
+      "consumer": "check request construction",
+      "closure": "pin each input to approved owner fields; missing values block only the affected step"
+    },
+    {
+      "id": "G-GENERIC-WEAPON-ROWS",
+      "type": "item_mechanics_mapping",
+      "field_paths": [
+        "execution.weapon_capability_mapping game-base catalog rows"
+      ],
+      "owner": "@rus/items-property + @rus/combat-health",
+      "reason": "The listed game-base rows establish item identity/category but do not provide exact combat mechanics. No weapon_danger is assigned from the row; absent exact owner mechanics or independently source-pinned physical-form facts that satisfy D47, each row remains blocked by this typed gap.",
+      "consumer": "weapon capability and danger resolution",
+      "closure": "For each row, supply exact approved owner mechanics or independently source-pinned physical-form facts and an applicable D47 mapping; otherwise keep the row blocked. Do not infer danger from item name, category, military tier, role, mass, frequency, or access."
+    },
+    {
+      "id": "G-TARGET-PROTECTION-VULNERABILITY",
+      "type": "combat_input_profile",
+      "field_paths": [
+        "execution.harm.target_vulnerability",
+        "execution.harm.target_protection"
+      ],
+      "owner": "@rus/combat-health + @rus/items-property + @rus/body-state",
+      "reason": "normative arithmetic exists, but supported generic facts for target vulnerability and threat-relevant protection are not pinned; armor-zone interaction is outside the minimum slice",
+      "consumer": "harm score",
+      "closure": "source-bound explicit supported value/rule for each input or block that attack; do not silently substitute zero"
+    },
+    {
+      "id": "G-BODY-READBACK-COMMIT",
+      "type": "runtime_body_handoff",
+      "field_paths": [
+        "execution.health_transition"
+      ],
+      "owner": "@rus/body-state + @rus/turn + apps/game-server",
+      "reason": "reviewer decisions provide the first-commit initializer rule and this bundle now supplies a D71 body-profile proposal; authoritative scene-NPC body readback, exact identity binding, owner/D67 approval and atomic handoff are still unverified",
+      "consumer": "committed health and incapacitation state",
+      "closure": "approve or revise the D71 profile with @rus/body-state and D67; bind source-pinned actor/identity inputs, read persisted body first, then atomically initialize/update in P16; readback errors remain gaps for that NPC only"
+    },
+    {
+      "id": "G-DURATION-APPROVAL",
+      "type": "game_calibration_approval",
+      "field_paths": [
+        "durations.per_action_profiles[0]"
+      ],
+      "owner": "@rus/time-events-history + @rus/combat-health + independent D67 approver",
+      "reason": "six seconds is an explicit unbenchmarked play-pacing proposal with no medieval measurement and has not received D41, owner or data approval",
+      "consumer": "elapsed time for one resolved melee attack step",
+      "closure": "compare 5/6/10-second calibration variants, confirm gameplay cadence and approve one value independently; keep D71 label internal"
+    },
+    {
+      "id": "G-RATIONAL-TIME-HANDOFF",
+      "type": "clock_representation_handoff",
+      "field_paths": [
+        "durations.per_action_profiles[0].duration_minutes",
+        "durations.npc_boundary_and_intent_events"
+      ],
+      "owner": "@rus/time-events-history + @rus/turn + apps/game-server",
+      "reason": "temporal contract represents rational elapsed time, but current turn helper accepts positive integer minutes and generic sub-minute adapter handoff/control-outcome behavior is not confirmed",
+      "consumer": "GameTimestamp advance and same-time boundary events",
+      "closure": "approve exact numerator/denominator DTO and zero-time control semantics; do not round to whole minutes"
+    },
+    {
+      "id": "G-AUTO-DEFENSE-TIMING",
+      "type": "step_duration_composition",
+      "field_paths": [
+        "durations.per_action_profiles[0].automatic_defense_timing"
+      ],
+      "owner": "@rus/combat-health + @rus/time-events-history",
+      "reason": "the source contract allows automatic defense mechanics but does not establish whether a defense shares the attack step's elapsed interval",
+      "consumer": "timing of a contested attack exchange",
+      "closure": "time/combat owners explicitly define same-time ordering and whether defense is folded into the attack step"
+    },
+    {
+      "id": "G-RETREAT-MOVEMENT",
+      "type": "movement_profile",
+      "field_paths": [
+        "durations.retreat_movement",
+        "npc_decision.surrender_or_exit_facts.break_contact_basis"
+      ],
+      "owner": "@rus/space-map + @rus/movement-routes + @rus/time-events-history",
+      "reason": "a break_contact intent and known exit ref do not determine route feasibility, safe-exit policy, movement capability, progress or exact elapsed time",
+      "consumer": "physical departure from combat",
+      "closure": "bind a source-approved route and movement profile with exact time/progress; until then emit intent only and claim no successful escape"
+    },
+    {
+      "id": "G-INDIVIDUAL-SURRENDER-BASIS",
+      "type": "npc_individual_context",
+      "field_paths": [
+        "npc_decision.surrender_or_exit_facts.surrender_basis"
+      ],
+      "owner": "@rus/npc-runtime + @rus/visibility-knowledge-memory",
+      "reason": "candidate psychology material describes possible motives but supplies no individual bravery/fear values, weights, probabilities or approved mapping from perceived threat to choice",
+      "consumer": "NPC continue/surrender/break_contact decision",
+      "closure": "source individual facts and owner-approved decision context; otherwise preserve as an unfilled semantic choice input, with no universal HP threshold"
+    },
+    {
+      "id": "G-PERCEPTION-BOUNDARY-APPLICABILITY",
+      "type": "perception_binding",
+      "field_paths": [
+        "npc_decision.meaningful_boundary",
+        "npc_decision.decision_context_required"
+      ],
+      "owner": "@rus/visibility-knowledge-memory + @rus/npc-runtime",
+      "reason": "contract defines allowed signal categories and context but generic scene-to-current-NPC perception/readback binding for the D65 path needs source-pin and applicability confirmation",
+      "consumer": "decision trigger and permitted NPC model context",
+      "closure": "confirm owner-produced perception snapshot and causal signal refs; omit hidden or unknown facts"
+    },
+    {
+      "id": "G-SURRENDER-PHYSICAL-ACTION",
+      "type": "physical_effect_profile",
+      "field_paths": [
+        "npc_decision.surrender_or_exit_facts.physical_effect"
+      ],
+      "owner": "@rus/combat-health + @rus/items-property + @rus/turn",
+      "reason": "the intent can terminate offensive behavior, but the exact generic physical effect/action sequence (e.g. release or lower held item) and its timing are not approved by this data bundle",
+      "consumer": "committed surrender facts and opponent perception",
+      "closure": "approve action/result profile and exact elapsed only if it is a time-bearing step"
+    },
+    {
+      "id": "G-WEAPON-UNMAPPED-MELEE-VARIANTS",
+      "type": "weapon_variant_classification",
+      "field_paths": [
+        "execution.weapon_capability_mapping.unmapped_catalog_melee_rows"
+      ],
+      "owner": "@rus/items-property + @rus/combat-health",
+      "reason": "sabre, working axe, mace, flail and staff rows do not map unambiguously to a danger example with the current sourced properties; row status is candidate and physical size/use facts are incomplete",
+      "consumer": "melee weapon danger/capability resolution",
+      "closure": "source-pin the exact identity and owner-approved physical/use mapping or preserve typed gap; ranged and mounted rows remain outside this package"
+    },
+    {
+      "id": "G-NPC-BODY-QUALITATIVE-BANDS",
+      "type": "owner_semantics_and_game_calibration_approval",
+      "field_paths": [
+        "npc_decision.body_state_qualitative_context"
+      ],
+      "owner": "@rus/body-state + @rus/npc-runtime + independent D67 approver",
+      "reason": "the descriptive character guide is undeclared for runtime, no approved generic vocabulary/band thresholds cover health, energy and satiety together, and energy is not established as semantically identical to guide бодрость; the health-only threshold-signal prose is causal and cannot be reused under D72",
+      "consumer": "NPC decision context for a current authoritative body-state readback",
+      "closure": "review or revise the neutral phrases and D71 cut points for each metric, confirm energy semantics and current-value binding, then approve the complete vocabulary independently; until then omit unapproved/unknown values and do not use bands as action thresholds"
+    }
+  ]
+}

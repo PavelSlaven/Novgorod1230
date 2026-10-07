@@ -1,4 +1,5 @@
 import { mergeActionProducedPhysicalFacts,
+  projectCommittedInventoryMechanicsProfile,
   resolveInventoryMechanicsProfile } from '@rus/items-property';
 import { admitActionProducedResult } from
   '@rus/items-property/action-produced-result';
@@ -165,8 +166,10 @@ export function committedMechanics(item) {
   }];
   const resolved = resolveInventoryMechanicsProfile({ instance, profiles });
   // v5 item inventory profiles (v17 clothing) omit packing/quantity/container: none of them applies.
-  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost = 0,
-    quantity = null, container = null } = resolved.profile ?? {};
+  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
+    quantity, container } = projectCommittedInventoryMechanicsProfile(
+      resolved.profile ?? {}
+    );
   if (!resolved.pass || container !== null) {
     fail('TRACE_A1_ITEM_MECHANICS_INVALID');
   }

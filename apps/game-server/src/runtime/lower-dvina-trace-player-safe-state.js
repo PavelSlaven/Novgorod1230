@@ -56,7 +56,7 @@ export function projectLowerDvinaTracePlayerSafeState({
   const currentVisibleContext = projectLowerDvinaTraceRecognizedNpcContext({
     visibleContext: projectCampFireState(projectVisibleContext(
       committedState.current_visible_context,
-      { path: 'current_visible_context' }
+      { path: 'current_visible_context', allowMissingScene: true }
     ), committedState, position),
     committedNpcs: committedState.npcs,
     conversationStatements: committedState.conversation_statements,

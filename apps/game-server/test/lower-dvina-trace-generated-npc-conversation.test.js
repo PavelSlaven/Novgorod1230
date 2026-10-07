@@ -6,10 +6,21 @@ import { FAR, commandsFor, conversationRun, generatedState } from
 const targets = (commands) => commands.map(({ command_id: id }) =>
   id.replace('live_world.conversation.', ''));
 
+function sceneState(mutate) {
+  const state = generatedState(mutate);
+  state.current_spatial_context = {
+    version: 1, schema: 'visible_context_package',
+    visible_scene: 'Рыбацкий стан у Вихтуя.', visible_changes: [],
+    sensory_details: [], visible_npc: [], visible_objects: [],
+    known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+  };
+  state.current_spatial_context_is_fresh = true;
+  return state;
+}
+
 test('NPCs of the player G6 are partners; the start NPC of another site is not',
   async () => {
-    // the real v17 position has no location_ref: the site stands in for it
-    const state = generatedState((next) => { delete next.position.location_ref; });
+    const state = sceneState();
     const commands = commandsFor(state);
     assert.deepEqual(targets(commands),
       [state.npcs[0].instance_id, state.npcs[1].instance_id]);
@@ -19,7 +30,7 @@ test('NPCs of the player G6 are partners; the start NPC of another site is not',
   });
 
 test('an NPC in another G6 is not a partner although the site is shared', () => {
-  const state = generatedState();
+  const state = sceneState();
   assert.equal(state.npcs.length > 4, true);
   for (const far of state.npcs.slice(2)) {
     assert.equal(targets(commandsFor(state)).includes(far.instance_id), false);
@@ -27,12 +38,12 @@ test('an NPC in another G6 is not a partner although the site is shared', () => 
 });
 
 test('an unknown G6 is never co-presence: only the same position remains', () => {
-  const state = generatedState((next) => { delete next.scene_position_g6; });
+  const state = sceneState((next) => { delete next.scene_position_g6; });
   assert.deepEqual(targets(commandsFor(state)), [state.npcs[0].instance_id]);
 });
 
 test('an authored scene without a site (no G6 map): the anchor decides between positions', () => {
-  const state = generatedState((next) => {
+  const state = sceneState((next) => {
     delete next.scene_position_g6; delete next.position.g6_instance_id;
     next.position.g5_anchor_id = 'anchor:a';
     next.npcs.forEach((npc) => { npc.anchor_id = 'anchor:b'; });
@@ -45,7 +56,7 @@ test('an authored scene without a site (no G6 map): the anchor decides between p
 
 test('LW-098 known limit: an anchored NPC without a G6 map stays co-present after a routine moved it', () => {
   // authored scenes have no map and the routine does not update the anchor
-  const state = generatedState((next) => {
+  const state = sceneState((next) => {
     delete next.scene_position_g6; delete next.position.g6_instance_id;
     next.position.g5_anchor_id = 'anchor:a';
     next.npcs[0].anchor_id = 'anchor:a';
@@ -56,7 +67,7 @@ test('LW-098 known limit: an anchored NPC without a G6 map stays co-present afte
 });
 
 test('null anchor and null position never match each other', () => {
-  const state = generatedState((next) => {
+  const state = sceneState((next) => {
     next.position.position_id = null;
     next.npcs.forEach((npc) => { npc.anchor_id = null; delete npc.position_id; });
   });
@@ -64,7 +75,7 @@ test('null anchor and null position never match each other', () => {
 });
 
 test('anchor decides only where a side has no position (authored scene)', () => {
-  const state = generatedState((next) => {
+  const state = sceneState((next) => {
     delete next.position.position_id;
     next.position.g5_anchor_id = 'anchor:a';
     next.npcs.forEach((npc) => { delete npc.position_id; npc.anchor_id = 'anchor:b'; });
@@ -74,7 +85,7 @@ test('anchor decides only where a side has no position (authored scene)', () => 
 });
 
 test('a routine that moved an NPC into another G6 removes it from the scene', () => {
-  const state = generatedState((next) => {
+  const state = sceneState((next) => {
     next.npc_schedule_runtime = [{ npc_id: next.npcs[0].instance_id,
       current_position_node_id: FAR }];
   });
@@ -83,7 +94,7 @@ test('a routine that moved an NPC into another G6 removes it from the scene', ()
 });
 
 test('generated-shape NPC hears the player and answers over two turns', async () => {
-  const state = generatedState();
+  const state = sceneState();
   const npc = state.npcs[0];
   const { f, say } = conversationRun(state);
   await say('generated-talk-1', 'Спрашиваю незнакомого человека, как идёт работа.');
@@ -98,7 +109,7 @@ test('generated-shape NPC hears the player and answers over two turns', async ()
 });
 
 test('greeting, question, second turn and leaving run as one lifecycle', async () => {
-  const state = generatedState();
+  const state = sceneState();
   const npc = state.npcs[0];
   const { f, say, npcRequests } = conversationRun(state,
     { greeting: true, leaveOn: /прощай/u });

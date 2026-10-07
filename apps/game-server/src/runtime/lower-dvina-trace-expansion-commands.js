@@ -5,7 +5,8 @@ import { actorMovementBlocked, available, mode, phase3WriteTargets } from
   './lower-dvina-trace-phase-3-command-shared.js';
 
 export async function createTraceExpansionCommands({ state, requestId,
-  inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime }) {
+  inputDigest, spatialExpansionRuntime, spatialLocalSceneRuntime,
+  onLabelGapsOmitted = null }) {
   if (spatialExpansionRuntime == null) return [];
   if (typeof spatialExpansionRuntime.listExpansionOptions !== 'function'
       || typeof spatialExpansionRuntime.listApproachOptions !== 'function') {
@@ -148,7 +149,8 @@ export async function createTraceExpansionCommands({ state, requestId,
           ? await spatialLocalSceneRuntime.prepareLocalLineApproach({
             ...identity, state: current, orderedLocalEdgePath: orderedPath }) : [];
         const expansion = await prepare({ ...selected,
-          ...(localEdgePathProofs.length ? { local_edge_path_proofs: localEdgePathProofs } : {}) });
+          ...(localEdgePathProofs.length ? { local_edge_path_proofs: localEdgePathProofs } : {}) },
+        onLabelGapsOmitted == null ? undefined : { onLabelGapsOmitted });
         if (expansion?.ok !== true) {
           fail('LIVE_WORLD_EXPANSION_PREPARATION_FAILED', expansion?.error ?? null);
         }

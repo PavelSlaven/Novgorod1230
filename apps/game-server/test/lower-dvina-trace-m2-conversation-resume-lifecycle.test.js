@@ -114,13 +114,17 @@ test('NPC response survives two interruptions and resumes one exact plan',
       phase2Projector: { project: async () => null },
       contracts: resolveContracts(pausedAgain)
     }).project({
+      retrieved_state: { current_visible_context: {
+        visible_scene: 'рыбацкий стан', visible_npc: []
+      } },
       consequence: {
         phase3_kind: 'conversation',
         conversation: { semantic_exchange: third.result }
       }
     });
-    assert.equal(visible.visible_scene,
-      'человек говорит: «От лагеря иди к старой сушильне по тропе.»');
+    assert.equal(visible.visible_scene, 'рыбацкий стан');
+    assert.deepEqual(visible.visible_changes,
+      ['человек говорит: «От лагеря иди к старой сушильне по тропе.»']);
   });
 
 test('remaining addressed NPC responds after interrupted first responder reload',

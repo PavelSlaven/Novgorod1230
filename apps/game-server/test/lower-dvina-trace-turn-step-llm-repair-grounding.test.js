@@ -26,7 +26,7 @@ test('explicit duration is removed from performed prose before narration',
       } };
       if (call.role_id === 'turn_step_planner_repair') {
         assert.match(call.messages[0].content,
-          /Required elapsed-time repair:[\s\S]*code-owned UI/u);
+          /Обязательное исправление привязки прошедшего времени:[\s\S]*UI, управляемый кодом/u);
         return { output: { ...output(), interpretation: {
           player_goal: intent, grounded_attempt: 'Сижу здесь.',
           adaptation: 'literal' }, goal_result: 'achieved',
@@ -173,7 +173,7 @@ test('copied authored discovery is semantically rejected before its one repair',
         assert.equal(payload.structural_errors.some(({ code }) =>
           code === 'operation_semantic_grounding'), true);
         assert.match(call.messages[0].content,
-          /Code-owned exact operation choices are:\n\[\]/u);
+          /operation_choice — ровно одна переданная строка choice_id или null/u);
         return { output: { ...output(), resolution: 'domain_request',
           operation_choice: null, operations: [ordinary]
         } };
@@ -220,7 +220,7 @@ test('lossy discovery wording gets one lossless split repair',
         } };
         assert.equal(call.role_id, 'turn_step_planner_repair');
         assert.match(call.messages[0].content,
-          /Required ordinary discovery repair:[\s\S]*standalone focused discovery losslessly[\s\S]*exact earliest discovery prefix[\s\S]*exact uncovered suffix/u);
+          /Обязательное исправление запроса ordinary discovery:[\s\S]*без потерь сохрани самостоятельный focused discovery[\s\S]*точному самому раннему фрагменту discovery[\s\S]*точному непокрытому остатку/u);
         return { output: {
           ...output(), resolution: 'domain_request', operations: [{
             op: 'request_discovery', actor_ref: 'actor_mikula',
@@ -289,8 +289,8 @@ test('material prerequisite repair restores full intent and is revalidated',
           assert.deepEqual(payload.structural_errors.map(({ path }) => path), [
             '$.operations.0.query', '$.continuation.remaining_intent'
           ]);
-          assert.match(call.messages[0].content,
-            /If discovery is a material prerequisite[\s\S]*query names only that needed referent, material, or physically connected group[\s\S]*continuation is exactly[\s\S]*Do not invent refs, outcomes, or execute the later action/u);
+        assert.match(call.messages[0].content,
+          /Если discovery — необходимое условие[\s\S]*запрос называет только нужный объект, материал или физически связанную группу[\s\S]*continuation в точности равен[\s\S]*Не выдумывай refs или результаты и не выполняй последующее действие/u);
           return { output: { ...output(), resolution: 'domain_request',
             operations: [operation], continuation: {
               remaining_intent: entry.intent, depends_on_refs: []

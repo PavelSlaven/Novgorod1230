@@ -120,6 +120,9 @@ export async function validateM2cNpcWaveApproval({ root = process.cwd(), approva
   }
   const allowedVerdicts = new Set(['approve', 'approve_with_limits']);
   if (!allowedVerdicts.has(approval.verdict)) errors.push({ code: 'M2C_WAVE_APPROVAL_VERDICT_INVALID', subject_ref: String(approval.verdict ?? '') });
+  if (approval.resign_required === true) {
+    errors.push({ code: 'M2C_WAVE_APPROVAL_RESIGN_REQUIRED', subject_ref: approvalPath });
+  }
   const manifestPathInApproval = normalizeRepoPath(projectRoot, approval.manifest_path);
   if (!manifestPathInApproval) {
     errors.push({ code: 'M2C_WAVE_APPROVAL_MANIFEST_PATH_MISSING', subject_ref: approvalPath });

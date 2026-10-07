@@ -2,6 +2,7 @@
 
 const { rows: authoredRows, semanticVariants, semanticDuplicates, semanticKeepReasons, craftsOwnerHandoffs, craftsBicHandoffs } = require('./src/archive-inclusions.cjs');
 const { fs, path, REPO, DOMAIN_ROOT, readCsv } = require('./lib.cjs');
+const { applyMaterialOverrides, overlaySourceRef } = require('../../scripts/material-view.cjs');
 const NEEDS_CHECK_HEADER = ['archive_id', 'current_result', 'current_target_group', 'current_target_ref', 'reason_code', 'finding_ref', 'cluster_id', 'note', 'block_pattern_ru', 'block_pattern_lat', 'doubt_kind', 'block_region', 'block_period', 'block_exception'];
 const NEEDS_CHECK_ROWS = readCsv(path.join(DOMAIN_ROOT, 'authoring/needs_check.csv'));
 if (Object.keys(NEEDS_CHECK_ROWS[0] || {}).join(',') !== NEEDS_CHECK_HEADER.join(',')) throw new Error('needs_check.csv header does not match the approved schema');
@@ -30,7 +31,8 @@ for (const item of CANONICAL_ITEMS) {
 }
 const COSTUME_BY_ID = new Map(COSTUME_ITEMS.map(item => [item.item_id, item]));
 const MATERIAL_MASTER_DIR = path.join(MASTER_SOURCE_ROOT, 'data/normalized_source_tables/material_entities');
-const MATERIAL_MASTER_ROWS = new Map(readCsv(path.join(MATERIAL_MASTER_DIR, 'material_entities.csv')).map(row => [row.item_id, row]));
+const MATERIAL_MASTER_PATH = path.join(MATERIAL_MASTER_DIR, 'material_entities.csv');
+const MATERIAL_MASTER_ROWS = new Map(applyMaterialOverrides(readCsv(MATERIAL_MASTER_PATH), MATERIAL_MASTER_PATH).map(row => [row.item_id, row]));
 const STATE_MASTER_ROWS = new Map(readCsv(path.join(MATERIAL_MASTER_DIR, 'state_variants.csv')).map(row => [row.state_id, row]));
 // Deduplicated from master source_item_links.csv (sha256 8ec5dbcb016f48e2e973bce07a5f1c9fbb6f6429812f853c8a05222660281ddc).
 // Keep the evidence role in authoring so builds do not depend on an unpacked archive outside the repo.
@@ -316,7 +318,11 @@ function sourceRowFor(entry) {
     const relativePath = derivation.split('#')[0];
     const sourcePath = path.resolve(MASTER_SOURCE_ROOT, relativePath);
     if (!sourcePath.startsWith(`${MASTER_SOURCE_ROOT}${path.sep}`)) return { error: `source path escapes master snapshot: ${relativePath}` };
-    if (!SOURCE_CSV_CACHE.has(sourcePath)) SOURCE_CSV_CACHE.set(sourcePath, readCsv(sourcePath));
+    if (!SOURCE_CSV_CACHE.has(sourcePath)) {
+      let rows = readCsv(sourcePath);
+      if (path.resolve(sourcePath) === path.resolve(MATERIAL_MASTER_PATH)) rows = applyMaterialOverrides(rows, sourcePath);
+      SOURCE_CSV_CACHE.set(sourcePath, rows);
+    }
     const rows = SOURCE_CSV_CACHE.get(sourcePath);
     const match = rows.filter(row => row.item_id === archiveId || row.state_id === archiveId);
     return match.length === 1 ? { row: match[0] } : { error: `${relativePath}#${archiveId} resolves to ${match.length} rows` };
@@ -721,15 +727,16 @@ function buildMaterialEntities(ledger) {
       const source = entry ? sourceRowFor(entry).row : null;
       if (!source || !source.item_id) continue;
       const itemId = `n1230:material_item:${archiveId.toLowerCase()}`;
-      const ref = row.archive_ref.includes('material_entities.csv:')
-        ? `sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:${archiveId}`
-        : row.archive_ref;
       const derivation = row.confidence === 'A' && /category_form_material_process_or_context/u.test(row.derivation)
         ? `category-level evidence (category_form_material_process_or_context): ${source.evidence_basis || ''}`
         : source.evidence_basis || row.derivation;
+      const sourceRef = row.archive_ref.includes('material_entities.csv:')
+        ? `sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:${archiveId}`
+        : row.archive_ref;
+      const correctionRef = overlaySourceRef(archiveId, masterPath);
       const entity = {
         ...source, item_id: itemId, record_origin: 'imp_crafts_archive_addition',
-        basis: row.basis, derivation, source_refs: [ref], confidence: row.confidence, status: 'candidate',
+        basis: row.basis, derivation, source_refs: correctionRef ? [sourceRef, correctionRef] : [sourceRef], confidence: row.confidence, status: 'candidate',
       };
       if (archiveId === 'MIL0031') {
         entity.description_ru = `${source.description_ru} Состав: походный топор tl_axe_household и лопата tl_spade; это комплект имеющихся инструментов, а не новый тип каждого из них.`;

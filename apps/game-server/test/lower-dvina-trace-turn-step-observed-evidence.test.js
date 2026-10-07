@@ -1,10 +1,14 @@
-import { promptMappings } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { output, request } from
   './lower-dvina-trace-turn-step-llm-test-helpers.js';
+
+function plannerPromptMappings(prompt) {
+  return Object.fromEntries([...prompt.matchAll(/^Сопоставление: ([^\n]+)\n([^\n]+)/gmu)]
+    .map(([, name, json]) => [name, JSON.parse(json)]));
+}
 
 test('turn step planner routes observed-evidence comparison before ordinary discovery',
   async () => {
@@ -21,16 +25,16 @@ test('turn step planner routes observed-evidence comparison before ordinary disc
           { fact_ref: 'fact:wool', text: 'На ветке висит клочок шерсти.' }
         ] }
     } }));
-    const mappings = promptMappings(prompt);
+    const mappings = plannerPromptMappings(prompt);
     assert.deepEqual(mappings.observed_evidence_inspection.operations[0], {
       op: 'request_discovery',
-      actor_ref: '<copy current actor ref from request>',
+      actor_ref: '<скопируй ref текущего актора из request>',
       discovery_kind: 'inspect',
-      target_refs: ['<copy every relevant candidate fact_ref exactly>'],
-      query: '<copy the current evidence-inspection question>'
+      target_refs: ['<скопируй точно каждую подходящую ссылку fact_ref из request>'],
+      query: '<полный вопрос об осмотре свидетельств из request>'
     });
     assert.match(prompt,
-      /observed_evidence_inspection\.semantic_grounding_available[\s\S]*before focused_ordinary_discovery[\s\S]*never target the current location[\s\S]*no new hidden conclusion/u);
+      /observed_evidence_inspection\.semantic_grounding_available[\s\S]*раньше focused_ordinary_discovery[\s\S]*никогда не указывай текущую локацию или обычную область[\s\S]*не устанавливают идентичность/u);
     assert.match(prompt,
-      /every physical fact or object being inspected or compared[\s\S]*comparison counterpart or requested detail is not supplied[\s\S]*query naming only that missing referent[\s\S]*complete comparison in continuation/u);
+      /каждый физический факт или объект для осмотра либо сравнения представлен текстом кандидата[\s\S]*Если какая-либо сторона сравнения или запрошенная подробность не передана[\s\S]*query, называющим только недостающий объект[\s\S]*сохрани полное сравнение в continuation/u);
   });

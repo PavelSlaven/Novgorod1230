@@ -1,4 +1,4 @@
-import { renderProse } from '../features/prose/render.js';
+import { renderExactNpcUtterances, renderProse } from '../features/prose/render.js';
 import { renderActions } from '../features/actions/render.js';
 import { renderCharacterPanel } from '../features/character/render.js';
 import { renderInventoryPanel } from '../features/inventory/render.js';
@@ -43,7 +43,7 @@ function renderNarrativeSlot(screen) {
 }
 
 function renderFactualTurnDelivery(screen) {
-  return `<section class="factual-turn-delivery" aria-label="Восстановленное состояние после хода"><p class="eyebrow">Восстановленное состояние</p><h1>Текущий момент</h1><p>${escapeHtml(screen.visible_context.visible_scene ?? '')}</p>${renderFactualList('Изменения', screen.visible_changes)}${renderFactualList('Неясное', screen.uncertainties)}</section>`;
+  return `<section class="factual-turn-delivery" aria-label="Восстановленное состояние после хода"><p class="eyebrow">Восстановленное состояние</p><h1>Текущий момент</h1><p>${escapeHtml(screen.visible_context.visible_scene ?? '')}</p>${renderExactNpcUtterances(screen)}${renderFactualList('Изменения', screen.visible_changes)}${renderFactualList('Неясное', screen.uncertainties)}</section>`;
 }
 
 function renderFactualList(title, items) {

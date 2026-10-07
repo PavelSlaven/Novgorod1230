@@ -14,21 +14,28 @@ Checks (domain acceptance from catalog.json + conventions):
  8. recipe_months is the complete 268 x 12 logical relation and applies five reviewed refinements.
  9. every row: non-empty source_refs, confidence in A/B/C, status candidate.
 10. refs resolve: wk:claim ids exist+approved in WK production-v1; master-food ids in sources.csv;
-    ext ids defined; sqlite table:key exist (read-only) when the file is present; file refs exist.
+    ext ids defined; SQLite refs resolve exactly through the shared read-only resolver; file refs exist.
 Exit code 1 on any failure. Prints counts.
 """
-import csv, json, re, sqlite3, sys, glob
+import csv, json, re, sys, glob
+import sqlite3
+import importlib.util
 from pathlib import Path
 
+
 HERE = Path(__file__).resolve().parent
+SQLITE_SPEC = importlib.util.spec_from_file_location('food_sqlite_ref_checker', HERE.parents[1] / 'scripts/check-sqlite-refs.py')
+SQLITE_RESOLVER = importlib.util.module_from_spec(SQLITE_SPEC)
+SQLITE_SPEC.loader.exec_module(SQLITE_RESOLVER)
 OUT = HERE.parent
 GB = OUT.parent
 NOV = GB.parent
+sys.path.insert(0, str(GB / 'scripts'))
+from material_view import apply_material_overrides, overlay_source_ref
 WK = NOV / 'world-knowledge/production-v1'
 MASTER = NOV / 'sources/master-archive-v1/data/normalized_source_tables/food_system'
 MATERIAL_MASTER = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities'
 MATERIAL_VALIDATION = json.loads((MATERIAL_MASTER / 'validation_report.json').read_text(encoding='utf-8'))
-SQLITE = Path('C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite')
 CUR = json.loads((HERE / 'curated/curated.json').read_text(encoding='utf-8'))
 ARCHIVE = json.loads((HERE / 'curated/archive_inclusions.json').read_text(encoding='utf-8'))
 REPORT = json.loads((HERE / 'build_report.json').read_text(encoding='utf-8'))
@@ -297,7 +304,8 @@ for m in data['dishes/meal_profiles.csv']:
         warns.append(f'meal profile has unresolved recipes {m["mp_id"]}')
 
 # 7 archive inclusions: 151 reviewed rows -> 94 new, 53 demoted variants, 4 merges.
-material_source = {r['item_id']: r for r in rd(MATERIAL_MASTER / 'material_entities.csv')}
+material_path = MATERIAL_MASTER / 'material_entities.csv'
+material_source = {r['item_id']: r for r in apply_material_overrides(rd(material_path), material_path)}
 state_source = {r['state_id']: r for r in rd(MATERIAL_MASTER / 'state_variants.csv')}
 if MATERIAL_VALIDATION.get('status') != 'PASS' or MATERIAL_VALIDATION.get('blocking_failures'):
     fails.append('7 material archive validation report is not PASS')
@@ -369,6 +377,9 @@ for row in MAT:
         continue
     expected_function = source['function']
     expected_refs = [f'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv:{raw_id}']
+    correction_ref = overlay_source_ref(raw_id, material_path)
+    if correction_ref:
+        expected_refs.append(correction_ref)
     expected_basis, expected_derivation = material_basis(source)
     for spec in merges_by_target.get(raw_id, []):
         merged_id = spec['archive_ref'].rsplit(':', 1)[1]
@@ -520,8 +531,12 @@ for p in WK.glob('*.json'):
             wk[c['claim_ref']] = c.get('review_status')
 msrc = {r['source_id'] for r in rd(MASTER / 'sources.csv')}
 ext = {s['id'] for s in CUR['new_sources']} | {'ext:pvl_6504_996', 'ext:pvl_6505_997'}
-con = sqlite3.connect(f'file:{SQLITE.as_posix()}?mode=ro', uri=True) if SQLITE.exists() else None
-SQL_KEY = {'economy': 'item', 'famine_prices': 'item', 'events': 'date'}
+try:
+    con = SQLITE_RESOLVER.open_database()
+    sqlite_open_error = None
+except (OSError, sqlite3.Error) as error:
+    con = None
+    sqlite_open_error = str(error)
 allrefs = set()
 for name, rows in data.items():
     if name == 'sources.csv':
@@ -542,13 +557,11 @@ for x in sorted(allrefs):
             fails.append(f'10 ext ref undefined {x}')
     elif x.startswith('sqlite:'):
         if con is None:
-            warns.append(f'sqlite not present, unchecked {x}')
+            fails.append(f'10 sqlite source unavailable: {sqlite_open_error}')
             continue
-        _, _, table, key = x.split(':', 3)
-        col = SQL_KEY[table]
-        n = con.execute(f'select count(*) from {table} where {col} = ? or {col} like ?', (key, key + ' %')).fetchone()[0]
-        if not n:
-            fails.append(f'10 sqlite key not found {x}')
+        error = SQLITE_RESOLVER.reference_error(con, x)
+        if error:
+            fails.append(f'10 {error}')
     elif x.startswith('temporal-v4:'):
         rec = x.split(':', 1)[1]
         txt = (NOV / 'temporal-v4/datasets/historical_phase_local_effect_rules.json').read_text(encoding='utf-8')

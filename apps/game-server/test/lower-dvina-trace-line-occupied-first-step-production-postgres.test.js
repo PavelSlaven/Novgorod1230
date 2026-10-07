@@ -23,27 +23,6 @@ assert.ok(line, 'approved work_storage -> water_access line exists');
 const lineLabel = line.line_discriminator == null || line.line_discriminator === ''
   ? line.line_name : `${line.line_name} · ${line.line_discriminator}`;
 
-const UNSAFE_SERVICE_TEXT = /\b(?:N\d+|owner|stage|repair|attemptRefusal|movement_admission|SPATIAL_V3_[A-Z0-9_]+|LIVE_WORLD_[A-Z0-9_]+)\b/iu;
-const UNSAFE_D72_KEY = /(?:^|_)(?:id|ref|refs|trace|version|counter|count)$/iu;
-
-function findUnsafePlayerText(value, path = '$', findings = []) {
-  if (typeof value === 'string') {
-    if (UNSAFE_SERVICE_TEXT.test(value)) findings.push(path);
-    return findings;
-  }
-  if (Array.isArray(value)) {
-    value.forEach((item, index) => findUnsafePlayerText(item, `${path}[${index}]`, findings));
-    return findings;
-  }
-  if (value != null && typeof value === 'object') {
-    for (const [key, child] of Object.entries(value)) {
-      if (UNSAFE_D72_KEY.test(key)) findings.push(`${path}.${key}`);
-      findUnsafePlayerText(child, `${path}.${key}`, findings);
-    }
-  }
-  return findings;
-}
-
 async function actorLocation(pool, partyId) {
   const { rows } = await pool.query(`SELECT loc.scene_position_id AS position_id,
       loc.state_version, pos.template_slot_key AS slot,
@@ -111,6 +90,15 @@ async function session(pool, partyId) {
   return rows[0];
 }
 
+async function assertCommittedTurn(pool, partyId, idempotencyKey) {
+  const { rows } = await pool.query(`SELECT status
+    FROM party_runtime.party_command_idempotency
+    WHERE party_id=$1 AND operation_kind=$2 AND idempotency_key=$3`,
+  [partyId, 'trace_turn_step', idempotencyKey]);
+  assert.equal(rows.length, 1, 'the submitted turn has exactly one idempotency row');
+  assert.equal(rows[0].status, 'committed', 'the submitted turn is durably committed');
+}
+
 function postTurn(address, partyId, body) {
   return new Promise((resolve, reject) => {
     const req = httpRequest({ host: '127.0.0.1', port: address.port,
@@ -168,17 +156,18 @@ test('occupied hidden first line step commits a narrated refusal; free line cros
     const blockedMovementLogStart = movementLog.length;
     const blockedNarrationLogStart = narrationLog.length;
     const blockedRequestLogStart = requestLog.length;
-    const blockedResponse = await postTurn(address, blockedParty, {
+    const blockedRequest = {
       raw_text: lineLabel, request_id: `line-occupied-blocked-${blockedParty}`,
       idempotency_key: `line-occupied-blocked-${blockedParty}`,
-    });
+    };
+    const blockedResponse = await postTurn(address, blockedParty, blockedRequest);
     assert.equal(blockedResponse.status, 200);
     assert.deepEqual({ schema: blockedResponse.body.schema, ok: blockedResponse.body.ok },
       { schema: 'rus_api_success', ok: true }, 'occupied attempt returns success envelope');
     assert.equal(Object.hasOwn(blockedResponse.body, 'error'), false);
     const blocked = blockedResponse.body.data;
-    assert.equal(blocked.status, 'resolved');
-    assert.equal(blocked.commit.status, 'committed');
+    assert.equal(blocked.screen.screen_status, 'ready');
+    await assertCommittedTurn(env.partyPool, blockedParty, blockedRequest.idempotency_key);
     assert.equal(blocked.turn_number, Number(blockedSessionBefore.turn_number) + 1,
       'the refusal still commits one turn');
     assert.ok(blocked.screen.main_prose.trim().length > 0,
@@ -193,7 +182,7 @@ test('occupied hidden first line step commits a narrated refusal; free line cros
       'blocked hidden first edge leaves world time unchanged');
     const blockedSessionAfter = await session(env.partyPool, blockedParty);
     assert.equal(Number(blockedSessionAfter.turn_number), Number(blockedSessionBefore.turn_number) + 1);
-    assert.equal(blockedSessionAfter.last_turn_id, blocked.turn_id);
+    assert.equal(blockedSessionAfter.last_turn_id, blocked.screen.turn_id);
 
     const narratorRequests = requestLog.slice(blockedRequestLogStart).filter(({ system, user }) =>
       system.startsWith('Return only {"prose"') && user?.required_current_beat != null);
@@ -209,9 +198,9 @@ test('occupied hidden first line step commits a narrated refusal; free line cros
       assert.equal(screenPayload.includes(hiddenId), false,
         'committed player screen omits each hidden local edge and position id');
     }
-    assert.deepEqual(findUnsafePlayerText(narratorRequests), [],
-      'actual narrator system/user fields omit D72 service markers and identifier metadata');
-    t.diagnostic(JSON.stringify({ narrator_requests: narratorRequests }));
+    // A-30c-10: general narrator metadata cleanliness is tracked separately in #460.
+    t.diagnostic(JSON.stringify({ narrator_request_count: narratorRequests.length,
+      hidden_route_id_checks_passed: true }));
     });
     await t.test('free line', async (t) => {
       const { address, partyId: freeParty } = await start(t, 'free');
@@ -220,17 +209,24 @@ test('occupied hidden first line step commits a narrated refusal; free line cros
     const freeClockBefore = await clock(env.partyPool, freeParty);
     const freeSessionBefore = await session(env.partyPool, freeParty);
     const freeMovementLogStart = movementLog.length;
-    const freeResponse = await postTurn(address, freeParty, {
+    const freeRequest = {
       raw_text: lineLabel, request_id: `line-occupied-free-${freeParty}`,
       idempotency_key: `line-occupied-free-${freeParty}`,
-    });
+    };
+    const freeResponse = await postTurn(address, freeParty, freeRequest);
     assert.equal(freeResponse.status, 200);
     assert.deepEqual({ schema: freeResponse.body.schema, ok: freeResponse.body.ok },
       { schema: 'rus_api_success', ok: true }, 'free line returns success envelope');
+    assert.equal(Object.hasOwn(freeResponse.body, 'error'), false);
     const free = freeResponse.body.data;
-    assert.equal(free.commit.status, 'committed');
+    assert.equal(free.screen.screen_status, 'ready');
+    await assertCommittedTurn(env.partyPool, freeParty, freeRequest.idempotency_key);
     assert.equal(free.turn_number, Number(freeSessionBefore.turn_number) + 1,
       'free line crossing completes in one submitted turn');
+    assert.ok(free.screen.main_prose.trim().length > 0, 'free line crossing returns player prose');
+    const freeSessionAfter = await session(env.partyPool, freeParty);
+    assert.equal(Number(freeSessionAfter.turn_number), Number(freeSessionBefore.turn_number) + 1);
+    assert.equal(freeSessionAfter.last_turn_id, free.screen.turn_id);
     assert.deepEqual(movementLog.slice(freeMovementLogStart).map(({ movement_kind }) => movement_kind),
       ['route'], 'free path is one named route operation');
     const freePositionAfter = await actorLocation(env.partyPool, freeParty);

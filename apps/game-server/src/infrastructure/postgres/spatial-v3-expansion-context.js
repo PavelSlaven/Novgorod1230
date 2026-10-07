@@ -96,11 +96,14 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     canonical_connections = connections.value;
     canonical_connection_gaps = connections.gaps ?? [];
   }
-  if (!departureReachable && !canonical_connections.some(({ binding: row }) =>
-    sceneWithLocalTopology.endpoint_slots?.some((slot) =>
-      slot.slot_key === row.from_scene_endpoint_slot_key
-      && slot.required_position_slot_key === current.position.template_slot_key
-      && slot.required_position_instance_ordinal === current.position.template_instance_ordinal))) {
+  const canonicalSourceSlots = canonical_connections.flatMap(({ binding: row }) =>
+    sceneWithLocalTopology.endpoint_slots?.filter((slot) =>
+      slot.slot_key === row.from_scene_endpoint_slot_key) ?? []);
+  const canonicalSourceReachable = canonicalSourceSlots.length > 0
+    && findReachableDeparturePosition({ position: current.position,
+      scene: { ...sceneWithLocalTopology,
+        endpoint_slots: canonicalSourceSlots.map((slot) => ({ ...slot, endpoint_role: 'departure' })) } }) != null;
+  if (!departureReachable && !canonicalSourceReachable) {
     return { ...current, scene: sceneWithLocalTopology, partyId, actorId };
   }
   const closure = await worldBaseReader.readPinnedG4ExpansionClosure(binding.value);

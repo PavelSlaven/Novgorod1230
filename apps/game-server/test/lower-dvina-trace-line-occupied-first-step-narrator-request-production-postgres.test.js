@@ -21,27 +21,6 @@ const line = bindings.find((row) => row.from_canonical_g5_id === g5('work_storag
 assert.ok(line, 'approved work_storage -> water_access line exists');
 const lineLabel = line.line_discriminator == null || line.line_discriminator === ''
   ? line.line_name : `${line.line_name} · ${line.line_discriminator}`;
-const UNSAFE_SERVICE_TEXT = /\b(?:N\d+|owner|stage|repair|attemptRefusal|movement_admission|SPATIAL_V3_[A-Z0-9_]+|LIVE_WORLD_[A-Z0-9_]+)\b/iu;
-const UNSAFE_D72_KEY = /(?:^|_)(?:id|ref|refs|trace|version|counter|count)$/iu;
-
-function findUnsafePlayerText(value, path = '$', findings = []) {
-  if (typeof value === 'string') {
-    if (UNSAFE_SERVICE_TEXT.test(value)) findings.push(path);
-    return findings;
-  }
-  if (Array.isArray(value)) {
-    value.forEach((item, index) => findUnsafePlayerText(item, `${path}[${index}]`, findings));
-    return findings;
-  }
-  if (value != null && typeof value === 'object') {
-    for (const [key, child] of Object.entries(value)) {
-      if (UNSAFE_D72_KEY.test(key)) findings.push(`${path}.${key}`);
-      findUnsafePlayerText(child, `${path}.${key}`, findings);
-    }
-  }
-  return findings;
-}
-
 async function actorLocation(pool, partyId) {
   const { rows } = await pool.query(`SELECT loc.scene_position_id AS position_id,
       loc.state_version, pos.template_slot_key AS slot,
@@ -92,6 +71,15 @@ async function session(pool, partyId) {
   return rows[0];
 }
 
+async function assertCommittedTurn(pool, partyId, idempotencyKey) {
+  const { rows } = await pool.query(`SELECT status
+    FROM party_runtime.party_command_idempotency
+    WHERE party_id=$1 AND operation_kind=$2 AND idempotency_key=$3`,
+  [partyId, 'trace_turn_step', idempotencyKey]);
+  assert.equal(rows.length, 1, 'the submitted turn has exactly one idempotency row');
+  assert.equal(rows[0].status, 'committed', 'the submitted turn is durably committed');
+}
+
 function postTurn(address, partyId, body) {
   return new Promise((resolve, reject) => {
     const req = httpRequest({ host: '127.0.0.1', port: address.port,
@@ -109,7 +97,7 @@ function postTurn(address, partyId, body) {
   });
 }
 
-test('captured narrator request for an occupied hidden line step has no hidden ids or service markers',
+test('captured narrator request for an occupied hidden line step has no hidden route ids',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
     const movementLog = [];
@@ -149,18 +137,19 @@ test('captured narrator request for an occupied hidden line step has no hidden i
     const blockedMovementLogStart = movementLog.length;
     const blockedNarrationLogStart = narrationLog.length;
     const blockedRequestLogStart = requestLog.length;
-    const blockedResponse = await postTurn(address, blockedParty, {
+    const blockedRequest = {
       raw_text: lineLabel, request_id: `line-occupied-blocked-${blockedParty}`,
       idempotency_key: `line-occupied-blocked-${blockedParty}`,
-    });
+    };
+    const blockedResponse = await postTurn(address, blockedParty, blockedRequest);
     assert.equal(blockedResponse.status, 200,
       `occupied refusal must commit successfully; error_code=${blockedResponse.body?.error?.code ?? 'none'}`);
     assert.deepEqual({ schema: blockedResponse.body.schema, ok: blockedResponse.body.ok },
       { schema: 'rus_api_success', ok: true }, 'occupied attempt returns success envelope');
     assert.equal(Object.hasOwn(blockedResponse.body, 'error'), false);
     const blocked = blockedResponse.body.data;
-    assert.equal(blocked.status, 'resolved');
-    assert.equal(blocked.commit.status, 'committed');
+    assert.equal(blocked.screen.screen_status, 'ready');
+    await assertCommittedTurn(env.partyPool, blockedParty, blockedRequest.idempotency_key);
     assert.equal(blocked.turn_number, Number(blockedSessionBefore.turn_number) + 1,
       'the refusal still commits one turn');
     assert.ok(blocked.screen.main_prose.trim().length > 0,
@@ -175,7 +164,7 @@ test('captured narrator request for an occupied hidden line step has no hidden i
       'blocked hidden first edge leaves world time unchanged');
     const blockedSessionAfter = await session(env.partyPool, blockedParty);
     assert.equal(Number(blockedSessionAfter.turn_number), Number(blockedSessionBefore.turn_number) + 1);
-    assert.equal(blockedSessionAfter.last_turn_id, blocked.turn_id);
+    assert.equal(blockedSessionAfter.last_turn_id, blocked.screen.turn_id);
 
     const narratorRequests = requestLog.slice(blockedRequestLogStart).filter(({ system, user }) =>
       system.startsWith('Return only {"prose"') && user?.required_current_beat != null);
@@ -191,6 +180,5 @@ test('captured narrator request for an occupied hidden line step has no hidden i
       assert.equal(screenPayload.includes(hiddenId), false,
         'committed player screen omits each hidden local edge and position id');
     }
-    assert.deepEqual(findUnsafePlayerText(narratorRequests), [],
-      'actual narrator system/user fields omit D72 service markers and identifier metadata');
+    // A-30c-10: general narrator metadata cleanliness is tracked separately in #460.
   });

@@ -72,7 +72,12 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
   const visibleContext = {};
   const location = presentation?.scenePresentation?.locations.find(
     ({ location_ref: ref }) => ref === projection.position?.location_ref);
-  const place = location?.display_name ?? projection.current_visible_context?.visible_scene;
+  const currentVisibleScene = currentVisibleContext
+    ?? projection.current_visible_context;
+  const currentVisibleSceneLabel = typeof currentVisibleScene?.visible_scene === 'string'
+      && currentVisibleScene.visible_scene.trim()
+    ? currentVisibleScene.visible_scene : null;
+  const place = currentVisibleSceneLabel ?? location?.display_name;
   if (place) visibleContext.location_label = place;
   if (projection.clock != null && presentation?.calendarProfile != null) {
     const calendar = projectCalendar(projection.clock, presentation.calendarProfile);
@@ -88,7 +93,15 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     panels.route = projectLowerDvinaTraceRoutePanel({ currentPlace: place,
       projection, visibleContext: screen.visible_context });
   }
-  const projected = { ...screen, presentation_context: visibleContext, panels };
+  const projected = {
+    ...screen,
+    ...(currentVisibleSceneLabel == null ? {} : { visible_context: {
+      ...(screen.visible_context ?? {}),
+      visible_scene: currentVisibleSceneLabel
+    } }),
+    presentation_context: visibleContext,
+    panels
+  };
   const sceneAssetId = sceneAssetFor(projection.position);
   if (sceneAssetId === null) delete projected.scene_asset_id;
   else projected.scene_asset_id = sceneAssetId;

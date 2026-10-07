@@ -314,6 +314,20 @@ test('new-game view keeps free text and published scenarios as start choices', (
   assert.equal(store.getState().rememberedPartyId, 'party-old');
 });
 
+test('new-game scenario card omits description markup when description is absent or blank', () => {
+  const store = createUiStore();
+  store.setScenarios([
+    { scenario_id: 'without-description', title: 'У реки' },
+    { scenario_id: 'blank-description', title: 'У леса', description: '  ' }
+  ]);
+  store.showNewGame();
+  const html = renderAppState(store.getState());
+
+  assert.match(html, /<h3>У реки<\/h3><\/div><button/u);
+  assert.match(html, /<h3>У леса<\/h3><\/div><button/u);
+  assert.doesNotMatch(html, /<p>(?:undefined|\s*)<\/p>/u);
+});
+
 test('game shell has factual context, neutral viewport, independent input and no fake geography', () => {
   const screen = {
     ...firstScreen(),

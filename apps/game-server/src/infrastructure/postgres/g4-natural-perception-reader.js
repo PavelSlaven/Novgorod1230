@@ -1,5 +1,6 @@
 import { loadApprovedG4NaturalCatalog, loadApprovedG4NaturalPlacementCatalog,
   loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
+import { loadApprovedPlaceLabels } from '../../../../../data/world-catalogs/novgorod/m2c-place-labels/approved-labels.mjs';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { serverError } from '../../errors.js';
@@ -208,6 +209,12 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
     visual_capability: conditions?.visual_capability,
     hearing_capability: conditions?.hearing_capability },
   scene: { party_id: partyId, baseline_id: snapshot.baseline.id, site_id: snapshot.site.id,
+    canonical_g5_ref: snapshot.site.canonical_g5_ref ? {
+      id: snapshot.site.canonical_g5_ref.entity_id,
+      version: Number(snapshot.site.canonical_g5_ref.authoring_version) } : null,
+    approved_place_labels: loadApprovedPlaceLabels(),
+    natural_profile_ref: { id: profiles[0].payload.profile_id,
+      version: profiles[0].payload.profile_version },
     g4_ref: profiles[0].payload.g4_ref, scene_template_ref,
     visible_scene: conditions?.visible_scene, positions: snapshot.positions,
     g6: snapshot.g6, acoustic_profiles: snapshot.acoustic_profiles,

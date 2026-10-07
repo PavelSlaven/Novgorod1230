@@ -77,7 +77,9 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       ?? { display_name: null, player_visible_physical_facts: [] };
   // Presence comes from the current owner below; an NPC who is still here keeps
   // the label of the last committed perception of the same entity.
-  const perceivedNpcs = new Map((committedState.current_visible_context?.visible_npc ?? [])
+  const priorPerceivedNpcs = committedState.prior_perceived_visible_npcs
+    ?? committedState.current_visible_context?.visible_npc ?? [];
+  const perceivedNpcs = new Map(priorPerceivedNpcs
     .filter((npc) => npc?.entity_ref?.entity_kind === 'npc'
       && text(npc.entity_ref.entity_id))
     .map((npc) => [npc.entity_ref.entity_id, npc]));
@@ -91,8 +93,23 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
         playerId: committedState.actor_id,
         npcId: id
       });
-      return text(knownName) ? { ...structuredClone(npc),
-        display_label: knownName, recognition: 'recognized' } : structuredClone(npc);
+      const perceived = perceivedNpcs.get(id);
+      const currentLabel = npc?.display_label;
+      const currentKnownName = text(knownName) ? knownName
+        : npc?.recognition === 'recognized' && text(currentLabel)
+          && currentLabel !== 'человек' ? currentLabel : null;
+      return {
+        ...structuredClone(npc),
+        ...(text(currentKnownName) ? {
+          display_label: currentKnownName, recognition: 'recognized'
+        } : perceived == null ? {} : {
+          display_label: perceived.display_label,
+          recognition: perceived.recognition ?? npc?.recognition
+        }),
+        ...(npc?.observable_cues == null && perceived?.observable_cues != null ? {
+          observable_cues: structuredClone(perceived.observable_cues)
+        } : {})
+      };
     })
     : (playerSafe.npcs ?? []).map((npc) => {
       const id = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
@@ -144,6 +161,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const { current_spatial_context: _currentSpatialContext,
     current_spatial_context_is_fresh: _currentSpatialContextIsFresh,
     current_spatial_context_filters_entities: _currentSpatialContextFiltersEntities,
+    prior_perceived_visible_npcs: _priorPerceivedVisibleNpcs,
     ...projectedState } = committedState;
   return { ...projectedState, current_visible_context: deepFreeze(current) };
 }
@@ -223,6 +241,7 @@ function withoutCurrentSpatialContext(state) {
   const { current_spatial_context: _currentSpatialContext,
     current_spatial_context_is_fresh: _currentSpatialContextIsFresh,
     current_spatial_context_filters_entities: _currentSpatialContextFiltersEntities,
+    prior_perceived_visible_npcs: _priorPerceivedVisibleNpcs,
     ...projectedState } = state;
   return projectedState;
 }

@@ -855,6 +855,78 @@ test('direct player-safe observation does not replay previous-package sensory fa
     false);
 });
 
+test('fresh authoritative NPC presence retains labels of the same perceived people', () => {
+  const state = committedState();
+  const oldSpeech = 'Я Влас.';
+  const oldBackground = 'На прежнем месте клубился дым.';
+  const npc = (id, label, recognition = 'unrecognized') => ({
+    entity_ref: { entity_kind: 'npc', entity_id: id },
+    display_label: label, recognition
+  });
+  state.items = [];
+  state.npcs = ['retained-a', 'retained-b', 'named', 'incoming', 'departed']
+    .map((id) => ({ instance_id: id, location_ref: 'shed',
+      anchor_id: 'shed-anchor', zone_ref: 'yard',
+      identity_state: { canonical_name: 'Нераскрытое имя' } }));
+  state.current_visible_context = {
+    ...structuredClone(state.current_visible_context),
+    visible_scene: oldSpeech, visible_changes: [oldSpeech],
+    sensory_details: [oldBackground], known_context: [oldBackground],
+    visible_npc: [npc('retained-a', 'коренастый рыбак'),
+      npc('retained-b', 'седой мужчина'), npc('named', 'мужчина с веслом'),
+      npc('departed', 'человек в плаще')]
+  };
+  for (const [index, build] of [[0, 'stocky'], [1, 'slim']]) {
+    state.current_visible_context.visible_npc[index].observable_cues = {
+      identity: { appearance: { build } }, equipment: [], outward_presentation: {}
+    };
+  }
+  state.conversation_statements = [{ statement_id: 'heard-intro',
+    speaker_ref: { entity_kind: 'npc', entity_id: 'named' },
+    utterance_text: oldSpeech }];
+  state.received_messages = [{
+    source_statement_ref: { entity_kind: 'conversation_statement',
+      entity_id: 'heard-intro' },
+    listener_ref: { entity_kind: 'player_character', entity_id: 'player' },
+    speaker_ref: { entity_kind: 'npc', entity_id: 'named' },
+    comprehension: 'full', utterance_text: oldSpeech
+  }];
+  state.current_spatial_context = {
+    ...structuredClone(state.current_visible_context),
+    visible_scene: 'Старая сушильня', visible_changes: [],
+    sensory_details: ['У настила видна вода.'], known_context: [],
+    visible_npc: [npc('retained-a', 'человек'), npc('retained-b', 'человек'),
+      npc('named', 'человек'), npc('incoming', 'незнакомый лодочник')]
+  };
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = true;
+  state.current_spatial_context.visible_npc[3].observable_cues = {
+    identity: { appearance: { build: 'average' } }, equipment: [], outward_presentation: {}
+  };
+
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state
+  }).current_visible_context;
+
+  assert.deepEqual(current.visible_npc.map(({ entity_ref }) => entity_ref.entity_id),
+    ['retained-a', 'retained-b', 'named', 'incoming'],
+    'fresh Spatial alone decides which people remain visible');
+  assert.equal(current.visible_scene, 'Старая сушильня');
+  assert.deepEqual(current.sensory_details, ['У настила видна вода.']);
+  for (const stale of [oldSpeech, oldBackground, 'человек в плаще', 'Нераскрытое имя']) {
+    assert.equal(JSON.stringify(current).includes(stale), false,
+      'remembering a visible person must not restore old speech, scenery or private names');
+  }
+  assert.deepEqual(current.visible_npc.map(({ entity_ref, display_label, recognition,
+    observable_cues }) => [entity_ref.entity_id, display_label, recognition,
+      observable_cues?.identity?.appearance?.build ?? null]), [
+    ['retained-a', 'коренастый рыбак', 'unrecognized', 'stocky'],
+    ['retained-b', 'седой мужчина', 'unrecognized', 'slim'],
+    ['named', 'Влас', 'recognized', null],
+    ['incoming', 'незнакомый лодочник', 'unrecognized', 'average']
+  ], 'same-entity perceptions survive generic fresh labels, while heard names win');
+});
+
 function committedState() {
   const state = { actor_id: 'player', party_state: { state_version: 9 },
     position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor', zone_ref: 'yard' },

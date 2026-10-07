@@ -202,13 +202,23 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     withJourneyLocation(loadedPayload, journeyLocation);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
+    const priorVisibleContext = includeCurrentVisibleContext
+        && typeof projectCurrentSpatialContext === 'function'
+        && Number(row.party_state_version) > 0
+      ? await loadPhase2VisibleContext(partyPool, {
+        commit: loadedPayload.last_turn.visible_package, turnBudget
+      }) : null;
     const loadedWithCurrentVisible = !includeCurrentVisibleContext
       || typeof projectCurrentSpatialContext === 'function' ? loadedPayload : withPhase2CurrentVisibleContext(
       loadedPayload, await loadPhase2VisibleContext(partyPool, {
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));
     const sceneInput = typeof projectCurrentSpatialContext === 'function'
-      ? loadedWithCurrentVisible : await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
+      ? { ...loadedWithCurrentVisible,
+        ...(priorVisibleContext == null ? {} : {
+          prior_perceived_visible_npcs: priorVisibleContext.visible_npc
+        }) }
+      : await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
         includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
         includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
         includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);

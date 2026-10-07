@@ -14,12 +14,19 @@ function sha256(bytes) {
   return crypto.createHash('sha256').update(bytes).digest('hex');
 }
 
-function loadMaterialOverrides(sourcePath) {
-  const view = JSON.parse(fs.readFileSync(VIEW_PATH, 'utf8'));
+function loadMaterialOverrides(sourcePath, { viewPath = VIEW_PATH, overlayPath = OVERLAY_PATH } = {}) {
+  const view = JSON.parse(fs.readFileSync(viewPath, 'utf8'));
   const sourceSha = sha256(fs.readFileSync(sourcePath));
-  const overlaySha = sha256(fs.readFileSync(OVERLAY_PATH));
-  if (view.source_sha256 !== sourceSha || view.overlay_sha256 !== overlaySha) {
-    throw new Error('material view is stale for the normalized master source or overlay');
+  const overlaySha = sha256(fs.readFileSync(overlayPath));
+  if (view.source_sha256 !== sourceSha) {
+    const error = new Error('material view is stale for the normalized master source');
+    error.code = 'MATERIAL_VIEW_SOURCE_STALE';
+    throw error;
+  }
+  if (view.overlay_sha256 !== overlaySha) {
+    const error = new Error('material view is stale for the material overlay');
+    error.code = 'MATERIAL_VIEW_OVERLAY_STALE';
+    throw error;
   }
   const result = new Map();
   for (const row of view.rows || []) {
@@ -32,8 +39,8 @@ function loadMaterialOverrides(sourcePath) {
   return result;
 }
 
-function applyMaterialOverrides(rows, sourcePath) {
-  const overrides = loadMaterialOverrides(sourcePath);
+function applyMaterialOverrides(rows, sourcePath, options) {
+  const overrides = loadMaterialOverrides(sourcePath, options);
   return rows.map(row => {
     const override = overrides.get(row.item_id);
     return override ? { ...row, primary_material: override.primary_material, materials: override.materials } : row;

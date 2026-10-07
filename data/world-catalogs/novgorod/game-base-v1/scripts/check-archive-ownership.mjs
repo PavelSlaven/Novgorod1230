@@ -184,7 +184,11 @@ function primaryArchiveIds(row, targetId) {
   return [...ids];
 }
 
-function masterArchiveItems(root) {
+function masterArchiveItems(root, {
+  allowSyntheticRootSourceMismatch = false,
+  materialViewPath,
+  materialOverlayPath,
+} = {}) {
   const relative = 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv';
   const candidates = [path.resolve(root, '../', relative), path.resolve(root, relative)];
   const source = candidates.find(candidate => fs.existsSync(candidate));
@@ -192,10 +196,15 @@ function masterArchiveItems(root) {
   const rows = parseCsv(fs.readFileSync(source, 'utf8'));
   let projected = rows;
   try {
-    projected = applyMaterialOverrides(rows, source);
+    projected = applyMaterialOverrides(rows, source, {
+      viewPath: materialViewPath,
+      overlayPath: materialOverlayPath,
+    });
   } catch (error) {
     const repositorySource = path.resolve(base, '../', relative);
-    if (path.resolve(source) === repositorySource || !String(error.message).startsWith('material view is stale')) throw error;
+    if (path.resolve(source) === repositorySource
+      || !allowSyntheticRootSourceMismatch
+      || error.code !== 'MATERIAL_VIEW_SOURCE_STALE') throw error;
   }
   return new Map(projected.map(row => [String(row.item_id ?? '').toUpperCase(), row]));
 }
@@ -697,7 +706,7 @@ function errorCode(message) {
   return 'ICA_OWNERSHIP_INVALID';
 }
 
-export function checkArchiveOwnership(root = base) {
+export function checkArchiveOwnership(root = base, options = {}) {
   const errors = [];
   const currentRegistry = fs.existsSync(path.join(root, REGISTRY_FILE)) ? registryAt(root) : registry;
   const specs = new Map(currentRegistry.entity_tables.map(spec => [spec.file, spec]));
@@ -708,7 +717,7 @@ export function checkArchiveOwnership(root = base) {
   const ledgerEntityTable = new Map(ledgerFiles.map((file, index) => [file, LEDGER_ENTITY_TABLES[index]]));
   const files = csvFiles(root);
   const masterIds = masterArchiveIds(root);
-  const masterItems = masterArchiveItems(root);
+  const masterItems = masterArchiveItems(root, options);
   const archiveMaterialMap = buildArchiveMaterialMap(root, masterItems);
   const rowsByFile = new Map(files.map(file => [file, parseCsv(fs.readFileSync(path.join(root, file), 'utf8'))]));
   errors.push(...registryCoverageErrors(root, files, rowsByFile));

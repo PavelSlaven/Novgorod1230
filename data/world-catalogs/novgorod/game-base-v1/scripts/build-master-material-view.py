@@ -109,7 +109,17 @@ def write_atomically(path, data):
             temporary.unlink()
 
 
+def build_and_write(source_path=SOURCE, overlay_path=OVERLAY, output_path=OUTPUT,
+                    expected_source_sha=EXPECTED_SOURCE_SHA256, expected_count=EXPECTED_ROWS):
+    expected = build_bytes(source_path, overlay_path, expected_source_sha, expected_count)
+    write_atomically(output_path, expected)
+    row_count = len(json.loads(expected)["rows"])
+    print(f"built material view: {output_path} ({row_count} rows)")
+    return expected
+
+
 def self_test():
+    from contextlib import redirect_stdout
     import io
 
     source_rows = [{"item_id": f"OMI{i:05d}", "primary_material": "old", "materials": '["old"]'} for i in range(22)]
@@ -140,14 +150,32 @@ def self_test():
         bad[0]["primary_material_before"] = "not-old"
         overlay_path.write_bytes(csv_bytes(OVERLAY_FIELDS, bad))
         before = output_path.read_bytes()
+        stdout = io.StringIO()
         try:
-            write_atomically(output_path, build_bytes(source_path, overlay_path, None, 22))
+            with redirect_stdout(stdout):
+                build_and_write(source_path, overlay_path, output_path, None, 22)
         except ValueError:
             pass
         else:
             raise AssertionError("mismatched before-value unexpectedly passed")
+        if stdout.getvalue():
+            raise AssertionError("before-value guard failure wrote to stdout")
         if output_path.read_bytes() != before:
             raise AssertionError("guard failure changed existing output")
+        overlay_path.write_bytes(overlay_bytes)
+        stdout = io.StringIO()
+        try:
+            with redirect_stdout(stdout):
+                build_and_write(source_path, overlay_path, output_path, "stale-source-sha", 22)
+        except ValueError as error:
+            if "source sha256 mismatch" not in str(error):
+                raise
+        else:
+            raise AssertionError("stale source hash unexpectedly passed")
+        if stdout.getvalue():
+            raise AssertionError("stale source hash failure wrote to stdout")
+        if output_path.read_bytes() != before:
+            raise AssertionError("stale source hash changed existing output")
     print("material view self-test: guards, no partial output, deterministic rebuild PASS")
 
 
@@ -159,15 +187,13 @@ def main():
     if args.self_test:
         self_test()
         return 0
-    expected = build_bytes()
     if args.check:
+        expected = build_bytes()
         if not OUTPUT.is_file() or OUTPUT.read_bytes() != expected:
             raise SystemExit(f"stale material view: {OUTPUT}")
         print(f"material view current: {OUTPUT}")
         return 0
-    write_atomically(OUTPUT, expected)
-    row_count = len(json.loads(expected)["rows"])
-    print(f"built material view: {OUTPUT} ({row_count} rows)")
+    build_and_write()
     return 0
 
 

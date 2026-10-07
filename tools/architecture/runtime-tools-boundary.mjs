@@ -6,6 +6,7 @@ const REGEX_PREFIX_KEYWORDS = new Set([
   'await', 'case', 'delete', 'do', 'else', 'in', 'instanceof', 'new', 'of',
   'return', 'throw', 'typeof', 'void', 'yield'
 ]);
+const CONTROL_HEADER_KEYWORDS = new Set(['for', 'if', 'while', 'with']);
 
 export async function findRuntimeToolsBoundaryViolations({ root }) {
   const repositoryRoot = resolve(root);
@@ -226,9 +227,22 @@ function canStartRegex(tokens, tokenStart) {
   const previous = localTokens.at(-1);
   if (previous.type === 'identifier') return REGEX_PREFIX_KEYWORDS.has(previous.value);
   if (['number', 'regex', 'string', 'template'].includes(previous.type)) return false;
-  if ([')', ']', '}', '.'].includes(previous.value)) return false;
+  if (previous.value === ')') return closesControlHeader(localTokens);
+  if ([']', '}', '.'].includes(previous.value)) return false;
   if (['+', '-'].includes(previous.value) && localTokens.at(-2)?.value === previous.value) return false;
   return true;
+}
+
+function closesControlHeader(tokens) {
+  let depth = 0;
+  for (let index = tokens.length - 1; index >= 0; index -= 1) {
+    if (tokens[index].value === ')') depth += 1;
+    else if (tokens[index].value === '(') {
+      depth -= 1;
+      if (depth === 0) return CONTROL_HEADER_KEYWORDS.has(tokens[index - 1]?.value);
+    }
+  }
+  return false;
 }
 
 function skipRegexLiteral(source, start) {

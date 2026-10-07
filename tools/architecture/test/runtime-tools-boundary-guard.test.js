@@ -98,6 +98,22 @@ test('runtime-tools guard ignores regex literals and member methods named requir
   assert.deepEqual(violations, []);
 });
 
+test('runtime-tools guard ignores regex literals after control headers, but keeps division after other calls', async (t) => {
+  const root = await createFixture(t);
+  const controlSource = String.raw`if (true) /import('@fixture\/authoring')/.test('');
+while (false) /import('@fixture\/authoring')/.test('');
+for (; false;) /import('@fixture\/authoring')/.test('');
+with ({}) /import('@fixture\/authoring')/.test('');`;
+  await writeFile(join(root, 'packages/probe/src/control-headers.mjs'), `${controlSource}\n`);
+  await writeFile(join(root, 'packages/probe/src/division.mjs'),
+    "function amount() { return 8; }\nexport const value = amount() / import('@fixture/authoring');\n");
+
+  const violations = await findRuntimeToolsBoundaryViolations({ root });
+
+  assert.equal(violations.length, 1);
+  assert.match(violations[0], /packages\/probe\/src\/division\.mjs: runtime import targets tools package @fixture\/authoring/u);
+});
+
 test('runtime-tools guard still catches a direct dynamic import', async (t) => {
   const root = await createFixture(t);
   await writeFile(join(root, 'packages/probe/src/index.mjs'), "export const value = import('@fixture/authoring');\n");

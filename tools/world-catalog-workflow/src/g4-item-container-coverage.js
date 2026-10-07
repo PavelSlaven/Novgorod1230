@@ -1,3 +1,4 @@
+import { resolveG4MaterializationBinding } from '@rus/runtime-catalog/g4-materialization-binding';
 export { resolveG4MaterializationBinding } from '@rus/runtime-catalog/g4-materialization-binding';
 
 export function buildG4ItemContainerCoverageReport(recordsByTable = {}) {

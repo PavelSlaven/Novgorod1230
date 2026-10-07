@@ -13,6 +13,7 @@
 - fix(test): compare route panel labels with planner operations in the D72 player-safe space (#98)
 - docs(process): HOW_WE_WORK §11.2 — the lead reads the full bench wire (data, form, path, destination) before every BENCH-OK; wire-review file and its SHA-256 in the approval (D132) (#98)
 - docs(npc): add approved ACTIVE family, household and named-relations norm (D122, D124–D128); record pending household data approval/import as LW-136 (#133, #259, #338)
+- fix(turn-scene): keep current scene projection grounded in committed changes and drop prior-turn NPC speech from narration input (D80)
 - docs(player-start): add D111 player character and start contract; LW-135 added (#109)
 - docs(npc): apply approved NPC lifecycle and compact history norm in section 15.3 (D121, #245)
 - fix(npc): replay committed conversation claims from the verified prepared request snapshot (#98)

@@ -37,6 +37,7 @@ export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
   loadInitialNaturalScenePerceptionInput = null,
+  projectCurrentSpatialContext = null,
   readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
   readCurrentConnectionDisclosure = null,
   readCurrentVisibleContext = null,
@@ -156,9 +157,15 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
         includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
         includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
-      return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, hydrateNpcRoutineState({ ...current,
+      const hydrated = await withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, hydrateNpcRoutineState({ ...current,
         npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime) })));
+      return includeCurrentVisibleContext
+        ? { ...hydrated,
+          current_spatial_context: structuredClone(hydrated.current_visible_context),
+          current_spatial_context_is_fresh: true,
+          current_spatial_context_filters_entities: canonicalInitialState }
+        : hydrated;
     }
     const payload = row.state_payload;
     if (!validPhase2Snapshot(payload, row, partyId)) {
@@ -195,12 +202,28 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     withJourneyLocation(loadedPayload, journeyLocation);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    const loadedWithCurrentVisible = !includeCurrentVisibleContext ? loadedPayload : withPhase2CurrentVisibleContext(
+    const priorVisibleContext = includeCurrentVisibleContext
+        && typeof projectCurrentSpatialContext === 'function'
+        && Number(row.party_state_version) > 0
+      ? await loadPhase2VisibleContext(partyPool, {
+        commit: loadedPayload.last_turn.visible_package, turnBudget
+      }) : null;
+    const loadedWithCurrentVisible = !includeCurrentVisibleContext
+      || typeof projectCurrentSpatialContext === 'function' ? loadedPayload : withPhase2CurrentVisibleContext(
       loadedPayload, await loadPhase2VisibleContext(partyPool, {
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));
+    const sceneInput = typeof projectCurrentSpatialContext === 'function'
+      ? { ...loadedWithCurrentVisible,
+        ...(priorVisibleContext == null ? {} : {
+          prior_perceived_visible_npcs: priorVisibleContext.visible_npc
+        }) }
+      : await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
+        includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
     const loadedWithSceneNpcs = await withSceneNpcs(readPool, partyId, {
-      ...loadedWithCurrentVisible,
+      ...sceneInput,
       world_identity: {
         world_revision_id: row.world_revision_id,
         world_catalog_digest: row.world_catalog_digest
@@ -209,19 +232,34 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         structuredClone(temporalSourceProof.candidates),
       temporal_source_proof: structuredClone(temporalSourceProof),
       npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
-        local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
-      });
-    const hydrated = hydrateNpcRoutineState(loadedWithSceneNpcs);
-    const containers = await withCommittedRuntimeContainers(readPool, partyId, hydrated);
+      local_fire_runtime: structuredClone(temporalSourceProof.local_fire_runtime)
+    });
+    const hydratedNpcState = hydrateNpcRoutineState(loadedWithSceneNpcs);
+    const containers = await withCommittedRuntimeContainers(readPool, partyId,
+      hydratedNpcState);
     const visible = includeCurrentVisibleContext
-      ? await refreshCurrentSpatialNpcs(containers, turnBudget)
-      : containers;
-    const current = await withPhase2CurrentLocalEdges(visible,
-      includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
-      includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
-      includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
-    return withLowerDvinaTracePostActionKnowledge(readPool, partyId,
-      await withSpatialSemanticCommittedState(readPool, partyId, current));
+        && typeof projectCurrentSpatialContext !== 'function'
+      ? await refreshCurrentSpatialNpcs(containers, turnBudget) : containers;
+    const currentState = typeof projectCurrentSpatialContext === 'function'
+      ? visible : await withPhase2CurrentLocalEdges(visible,
+        includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
+    const hydrated = await withLowerDvinaTracePostActionKnowledge(readPool, partyId,
+      await withSpatialSemanticCommittedState(readPool, partyId, currentState));
+    if (!includeCurrentVisibleContext || typeof projectCurrentSpatialContext !== 'function') {
+      return hydrated;
+    }
+    const currentSpatialContext = await projectCurrentSpatialContext({ partyId,
+      actorId: hydrated.actor_id, state: hydrated, turnBudget });
+    const spatial = { ...withPhase2CurrentVisibleContext(hydrated,
+      currentSpatialContext), current_spatial_context: currentSpatialContext,
+      current_spatial_context_is_fresh: true,
+      current_spatial_context_filters_entities: true };
+    const disclosed = await withPhase2CurrentLocalEdges(spatial, readLocalEdgeDisclosure,
+      readCurrentExitDisclosure, readCurrentConnectionDisclosure);
+    return { ...disclosed,
+      current_spatial_context: structuredClone(disclosed.current_visible_context) };
   }
   async function loadPhase2Replay({ partyId, idempotencyKey, turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
@@ -233,8 +271,16 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   async function loadPreparedMovementScene({ partyId, state, clock = null,
     turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
+    const clockPreparedState = clock == null ? state : {
+      ...state,
+      clock: structuredClone(clock),
+      clock_weather_light: {
+        ...structuredClone(state.clock_weather_light ?? {}),
+        clock: structuredClone(clock)
+      }
+    };
     const { prepared_destination_visible_context: preparedDestinationVisibleContext,
-      ...sceneInput } = state;
+      ...sceneInput } = clockPreparedState;
     const scene = await withSceneNpcs(readPool, partyId,
       withoutSceneNpcs(sceneInput));
     return refreshCurrentSpatialNpcs(scene, turnBudget,
@@ -336,8 +382,13 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     const screenPayload = await withSceneNpcs(
       withTurnDeadlineQueryPool(partyPool, turnBudget), partyId,
       withoutSceneNpcs(payload));
+    const refreshedScene = typeof projectCurrentSpatialContext === 'function'
+      ? await loadPhase2State(partyId, {
+        includeCurrentVisibleContext: true, turnBudget
+      }) : null;
     const screen = projectLowerDvinaTraceScreenPanels({
       payload: screenPayload,
+      currentVisibleContext: refreshedScene?.current_visible_context ?? null,
       presentation: await loadLowerDvinaTraceScreenPresentation(screenPayload),
       screen: {
         ...structuredClone(result.screen),

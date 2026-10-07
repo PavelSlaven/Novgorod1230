@@ -3,25 +3,62 @@ import test from 'node:test';
 import { assertCurrentSceneSelfIdentity } from './lower-dvina-trace-current-scene-self-identity.js';
 import {
   projectCurrentSceneForNoOperationDirect,
-  projectCurrentSceneForVisibleOverlay,
-  withLowerDvinaTraceCurrentScene
+  projectCurrentSceneForVisibleOverlay
 } from
   '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
-import { projectLowerDvinaTracePlayerSafeState } from
-  '../src/runtime/lower-dvina-trace-player-safe-state.js';
 import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
   '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
-import { lowerDvinaTraceDirectResultChanges } from
+import { lowerDvinaTraceCarriedItemIds, lowerDvinaTraceDirectResultChanges } from
   '../src/runtime/lower-dvina-trace-visible-scene-items.js';
 
-const locationProfiles = [{ location_profile_id: 'shed',
-  display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
-  economic_basis: 'Пустая сушильня.' }];
+test('carried item ownership comes from placement and holder, not display status', () => {
+  assert.deepEqual([...lowerDvinaTraceCarriedItemIds([
+    { item_id: 'held', placement: { holder_character_id: 'actor' } },
+    { item_id: 'nearby', placement: { location_ref: 'site' } }
+  ], 'actor')], ['held']);
+});
+
+test('generated arrival preserves carried items and current Spatial exits', async () => {
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { async project() { return {}; } },
+    projectCurrentScene: () => ({ current_visible_context: {
+      sensory_details: [], visible_objects: [
+        { entity_ref: { entity_kind: 'item', entity_id: 'held' },
+          display_label: 'мешок', visible_status: 'при вас' },
+        { entity_ref: { entity_kind: 'item', entity_id: 'nearby' },
+          display_label: 'корзина', visible_status: 'available' },
+        { entity_ref: { entity_kind: 'g5_site_connection', entity_id: 'exit' },
+          display_label: 'проход к броду' }
+      ]
+    } })
+  });
+  const result = await projector.project({
+    retrieved_state: { actor_id: 'actor', items: [
+      { item_id: 'held', placement: { holder_character_id: 'actor' } },
+      { item_id: 'nearby', placement: { location_ref: 'site' } }
+    ], position: { position_id: 'source' } },
+    consequence: { phase3_kind: 'movement', position_transition: {
+      owner: '@rus/turn/spatial-v3-site-connection-traversal',
+      destination_site_id: 'site:destination',
+      destination_g6_instance_id: 'g6:destination',
+      to_position_ref: 'position:destination'
+    }, visible_seed: { destination_site_origin: 'generated',
+      destination_visible_context: { visible_scene: 'берег', sensory_details: [],
+        visible_npc: [], visible_objects: [], visible_changes: [], uncertainties: [] } } }
+  });
+
+  assert.deepEqual(result.visible_objects.map(({ entity_ref: ref }) =>
+    [ref.entity_kind, ref.entity_id]), [
+    ['item', 'held'], ['g5_site_connection', 'exit']
+  ]);
+});
 
 test('carried item observation exposes concrete player-safe belongings', () => {
   const state = committedState();
+  state.npcs = [];
+  state.items = [];
   state.items.push({ item_id: 'case', name: 'кожаный футляр',
     condition_state: 'serviceable', placement: {
       holder_character_id: state.actor_id, physical_position: 'worn_quick'
@@ -32,12 +69,9 @@ test('carried item observation exposes concrete player-safe belongings', () => {
     condition_state: 'serviceable', placement: {
       location_ref: 'shed', anchor_id: 'shed-anchor'
     } });
-  const current = withLowerDvinaTraceCurrentScene({
-    committedState: state, locationProfiles
-  });
   const visible = projectCurrentSceneForNoOperationDirect({ input: {
     consequence: { status: 'resolved', visible_seed: {} },
-    retrieved_state: current, mode_resolution: { decision_trace: {
+    retrieved_state: state, mode_resolution: { decision_trace: {
       remaining_intent: null, step_traces: [{ applied: true, approved_plan: {
         resolution: 'direct', goal_result: 'achieved', operations: [],
         check: null, direct_result_kind: 'player_safe_item_observation'
@@ -82,7 +116,7 @@ test('ordinary scene seed augments the current scene in the same turn', async ()
     fallback: { project: async () => assert.fail('fallback not expected') }
   });
   const state = committedState();
-  state.current_visible_context.sensory_details = ['Мокрый песок у воды.'];
+  state.current_spatial_context.sensory_details = ['Мокрый песок у воды.'];
   const visible = await projector.project({
     consequence: { status: 'resolved', visible_seed: {
       completed_steps: [{ step_index: 1, summary: 'осмотреть берег' }],
@@ -101,7 +135,8 @@ test('ordinary scene seed augments the current scene in the same turn', async ()
       'В ивняке застряли плавник и речной сор.']);
   assert.deepEqual(visible.visible_npc.map(({ entity_ref, display_label,
     recognition }) => ({ entity_ref, display_label, recognition })),
-  state.current_visible_context.visible_npc);
+  [{ entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
+    display_label: 'человек', recognition: 'unrecognized' }]);
   assert.equal(JSON.stringify(visible).includes('ordinary_scene_seed'), false);
 });
 
@@ -131,8 +166,8 @@ for (const [resolution, change] of Object.entries({
     assert.deepEqual(visible.visible_changes, ['На песке остались следы от пешни.',
       ...(resolution === 'absent' ? [result] : [])]);
     assert.deepEqual(visible.uncertainties, resolution === 'absent' ? [] : [result]);
-    assert.equal(visible.visible_scene, committedState().current_visible_context.visible_scene);
-    assert.deepEqual(visible.visible_objects, committedState().current_visible_context.visible_objects);
+    assert.equal(visible.visible_scene, committedState().current_spatial_context.visible_scene);
+    assert.deepEqual(visible.visible_objects, committedState().current_spatial_context.visible_objects);
     assert.ok(visible.do_not_imply.includes(
       'discovery_query_as_existence_ownership_or_executed_action'));
   });
@@ -143,7 +178,7 @@ test('unfinished domain prerequisite preserves the scene without inventing parti
     fallback: { project: async () => assert.fail('fallback not expected') }
   });
   const state = committedState();
-  state.current_visible_context.sensory_details = ['На досках лежит мокрая трава.'];
+  state.current_spatial_context.sensory_details = ['На досках лежит мокрая трава.'];
   const visible = await projector.project({
     consequence: { status: 'partial', visible_seed: { completed_steps: [] } },
     retrieved_state: state, body_update: { state_after: {} },
@@ -151,7 +186,7 @@ test('unfinished domain prerequisite preserves the scene without inventing parti
       step_traces: [{ approved_plan: { resolution: 'domain_request',
         goal_result: 'pending', operations: [{ op: 'request_discovery' }], check: null } }] } }
   });
-  assert.equal(visible.visible_scene, state.current_visible_context.visible_scene);
+  assert.equal(visible.visible_scene, state.current_spatial_context.visible_scene);
   assert.deepEqual(visible.sensory_details, ['На досках лежит мокрая трава.']);
   assert.deepEqual(visible.visible_changes, []);
   assert.equal(visible.uncertainties.some((value) =>
@@ -159,11 +194,16 @@ test('unfinished domain prerequisite preserves the scene without inventing parti
   assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
 });
 
-test('visible turn projection includes the current authored camp-fire state', () => {
+test('authored current-scene rebuild includes camp-fire state without fresh Spatial context', () => {
   const state = committedState();
   state.position = { location_ref: 'trace_ld_v1_loc_fishing_camp',
     g5_anchor_id: 'camp-anchor' };
-  state.current_visible_context.visible_scene = 'Рыбацкий стан';
+  state.scene_presentation = { locations: [{
+    location_ref: 'trace_ld_v1_loc_fishing_camp',
+    display_name: 'Рыбацкий стан', player_visible_physical_facts: []
+  }] };
+  state.current_spatial_context = null;
+  state.current_spatial_context_is_fresh = false;
   const before = projectCurrentSceneForVisibleOverlay({
     input: { retrieved_state: state, consequence: { visible_seed: {} } },
     directSeedKeys: [], body: {}
@@ -185,13 +225,11 @@ test('visible turn projection includes the current authored camp-fire state', ()
 });
 
 function committedState() {
-  return { actor_id: 'player', party_state: { state_version: 9 },
+  const state = { actor_id: 'player', party_state: { state_version: 9 },
     position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor', zone_ref: 'yard' },
     current_visible_context: { version: 1,
       schema: 'visible_context_package', visible_scene: 'Старая сушильня',
-      visible_changes: [], sensory_details: [], visible_npc: [{
-        entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
-        display_label: 'раненый мужчина', recognition: 'unrecognized' }],
+      visible_changes: [], sensory_details: [], visible_npc: [],
       visible_objects: [], known_context: [], uncertainties: [],
       allowed_tensions: [], do_not_imply: [] },
     route_history: [{ route_ref: 'camp-shed' }], npcs: [{ instance_id: 'onisim',
@@ -219,4 +257,15 @@ function committedState() {
           main_visible_color: 'undyed_linen',
           secondary_visible_color: 'undyed_linen', headwear_kind: 'none' }
       } }] };
+  state.current_spatial_context = { visible_scene: 'Старая сушильня',
+    sensory_details: [], visible_objects: [] };
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = false;
+  state.location_profiles = [{ location_profile_id: 'shed',
+    display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
+    economic_basis: 'Пустая сушильня.' }, {
+    location_profile_id: 'trace_ld_v1_loc_fishing_camp',
+    display_name: 'Рыбацкий стан', landscape_basis: 'Укрытие у воды.',
+    economic_basis: 'Рыбацкий стан.' }];
+  return state;
 }

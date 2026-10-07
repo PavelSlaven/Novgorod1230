@@ -23,13 +23,54 @@ import { SCENE_NPC_SOURCE, withSceneNpcs } from
   '../src/infrastructure/postgres/scene-npcs-readback.js';
 import { conversationTemporalOwner, createM2ConversationModels } from
   './lower-dvina-trace-m2-conversation-fixture.js';
+import SCENE_PRESENTATION from
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json'
+  with { type: 'json' };
+import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
+import { prepareG4NaturalScenePerceptionInput } from
+  '../src/runtime/g4-natural-perception.js';
+import { projectSpatialV3CurrentVisibleContext } from
+  '../src/runtime/spatial-v3-current-visible-context.js';
 
-const [bundle12, bundle13, bundle15, bundle25] = await Promise.all([
+const loadedBundles = await Promise.all([
   loadScenarioBundle(12),
   loadScenarioBundle(13),
   loadScenarioBundle(15),
   loadScenarioBundle(25)
 ]);
+const [bundle12, bundle13, bundle15, bundle25] = loadedBundles.map(
+  (bundle) => ({ ...bundle, scene_presentation: SCENE_PRESENTATION }));
+
+async function currentSpatialProjection({ partyId, actorId }) {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const naturalInput = structuredClone(input);
+  naturalInput.currentFacts.observer = {
+    ...naturalInput.currentFacts.observer,
+    party_id: partyId,
+    actor_id: actorId,
+    position_id: 'position:inside'
+  };
+  naturalInput.currentFacts.scene.party_id = partyId;
+  naturalInput.currentFacts.scene.positions =
+    naturalInput.currentFacts.scene.positions.map((row) => ({
+      ...row, party_id: partyId
+    }));
+  naturalInput.currentFacts.scene.g6 = naturalInput.currentFacts.scene.g6
+    .map((row) => ({ ...row, party_id: partyId }));
+  naturalInput.currentFacts.scene.acoustic_profiles =
+    naturalInput.currentFacts.scene.acoustic_profiles.map((row) => ({
+      ...row, party_id: partyId
+    }));
+  naturalInput.currentFacts.source_bindings =
+    naturalInput.currentFacts.source_bindings.map((row) => ({
+      ...row, party_id: partyId
+    }));
+  return projectSpatialV3CurrentVisibleContext({
+    naturalInput: prepareG4NaturalScenePerceptionInput(naturalInput),
+    partyId, actorId, positionId: 'position:inside',
+    entityObservations: [], localEdges: [], directionalExits: []
+  });
+}
 
 test('revision 12 free input stays on the historical bounded path', async () => {
   const f = fixture({
@@ -55,7 +96,8 @@ test('authored submitTurn uses common workflow with null perception profile',
       materializationBundle: bundle13 });
     const state = structuredClone(seed.state);
     state.scenario_id = 'vikhtuy_fishing_camp_v1';
-    state.position.location_ref = 'trace_ld_v1_smp_fishing_camp';
+    state.position.location_ref = 'trace_ld_v1_loc_fishing_camp';
+    state.position.position_id = 'position:inside';
     state.current_visible_context = {
       version: 1, schema: 'visible_context_package',
       visible_scene: 'рыбацкий стан у Вихтуя', visible_changes: [],
@@ -63,7 +105,13 @@ test('authored submitTurn uses common workflow with null perception profile',
       known_context: ['рыбацкий стан у Вихтуя'], uncertainties: [],
       allowed_tensions: [], do_not_imply: ['hidden_fact']
     };
+    delete state.current_spatial_context;
+    delete state.current_spatial_context_is_fresh;
+    const spatial = await currentSpatialProjection({ partyId: seed.partyId,
+      actorId: state.actor_id });
     const f = fixture({ committedState: state,
+      scenarioBundle: bundle13, materializationBundle: bundle13,
+      currentSpatialContextProvider: async () => spatial,
       authoredTurnProfile: { profile: LIVE_WORLD_TURN_PROFILE, pin: {
         artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
         revision: LIVE_WORLD_TURN_PROFILE.revision,
@@ -162,10 +210,27 @@ test('authored background NPC uses the common persisted conversation owner',
       materializationBundle: bundle13 });
     const state = structuredClone(seed.state);
     state.scenario_id = 'vikhtuy_fishing_camp_v1';
-    state.position.location_ref = 'trace_ld_v1_smp_fishing_camp';
+    state.position.location_ref = 'trace_ld_v1_loc_fishing_camp';
+    state.position.position_id = 'position:inside';
     const npc = state.npcs[0];
     npc.anchor_id = state.position.g5_anchor_id;
     npc.location_profile_ref = state.position.location_ref;
+    state.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Окрестности.', visible_changes: [],
+      sensory_details: ['Виден речной проток.'],
+      visible_npc: [{ entity_ref: { entity_kind: 'npc',
+        entity_id: npc.instance_id }, display_label: 'человек',
+        recognition: 'unrecognized' }],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: []
+    };
+    delete state.current_spatial_context;
+    delete state.current_spatial_context_is_fresh;
+    const spatial = await currentSpatialProjection({ partyId: seed.partyId,
+      actorId: state.actor_id });
+    const currentSceneTitle = spatial.visible_scene;
+    const currentSceneFacts = [...spatial.sensory_details];
     const conversation = createM2ConversationModels();
     const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
       artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
@@ -182,11 +247,16 @@ test('authored background NPC uses the common persisted conversation owner',
       action_set_evaluation: true })).can_attempt, true,
     JSON.stringify(commands[0].preconditions));
     const f = fixture({ committedState: state,
+      scenarioBundle: bundle13, materializationBundle: bundle13,
+      currentSpatialContextProvider: async () => spatial,
       authoredTurnProfile: profile,
       playerConversationModel: conversation.playerConversationModel,
       npcSemanticModel: conversation.npcSemanticModel,
       temporalAdvanceOwner: conversationTemporalOwner(state),
       turnStepModel: async (request) => {
+        if (request.root_player_action === 'Осматриваюсь.') {
+          return observationPlan(request);
+        }
         const interaction = request.available_domain_operations.find(
           ({ op }) => op === 'emit_interaction');
         assert.ok(interaction, JSON.stringify(request.player_safe_state));
@@ -228,6 +298,19 @@ test('authored background NPC uses the common persisted conversation owner',
     assert.equal(npcStatements.length > firstNpcStatements.length, true);
     assert.equal(npcStatements.every(({ speaker_ref: speaker }) =>
       speaker.entity_id === npc.instance_id), true);
+    const previousUtterance = npcStatements.at(-1).utterance_text;
+
+    await submit(f, turn('live-world-after-talk', 'Осматриваюсь.'));
+
+    const currentScene = f.narratorInput().visible_context;
+    assert.equal(currentScene.visible_scene, currentSceneTitle);
+    assert.deepEqual(currentScene.sensory_details, [
+      ...currentSceneFacts,
+      'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.'
+    ]);
+    assert.equal(JSON.stringify(currentScene).includes(previousUtterance), false);
+    assert.equal(f.state.conversation_statements.some(({ utterance_text: text }) =>
+      text === previousUtterance), true);
   });
 
 test('revision 13 discovery delegates to the unchanged Phase 2 mechanics',
@@ -531,6 +614,17 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
       raw_text: 'Осмотреть место крушения подробно.'
     });
     const before = stateWithCommittedBlueWool(bootstrap.state);
+    before.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'У места крушения.', visible_changes: [],
+      sensory_details: ['Под ногами влажная земля.'], visible_npc: [],
+      visible_objects: [], known_context: [
+      'Вас зовут Микула.',
+      'Ваш род занятий: лесной промысловик.'
+      ], uncertainties: [], allowed_tensions: [], do_not_imply: []
+    };
+    delete before.current_spatial_context;
+    delete before.current_spatial_context_is_fresh;
     const semantic = fixture({
       scenarioBundle: bundle13,
       materializationBundle: bundle13,
@@ -547,6 +641,13 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
       'turn-step-rev13-production-move',
       'Хочу выбраться к рыбакам по тропинке, заметной от берега.'
     ));
+
+    const scene = semantic.narratorInput().visible_context;
+    assert.equal(scene.visible_changes.includes('Вас зовут Микула.'), false);
+    assert.equal(scene.visible_changes.includes(
+      'Ваш род занятий: лесной промысловик.'), false);
+    assert.equal(scene.visible_changes.includes(
+      'Вы переместились в пределах текущего места.'), false);
 
     const writePlan = semantic.lastWritePlan();
     const envelope = writePlan.turn_step_commit;
@@ -612,10 +713,11 @@ async function markedLiveWorldFixture({ turnStepModel }) {
     materializationBundle: bundle13 });
   const state = structuredClone(seed.state);
   state.scenario_id = 'vikhtuy_fishing_camp_v1';
-  state.position.location_ref = 'trace_ld_v1_smp_fishing_camp';
+  state.position.location_ref = 'trace_ld_v1_loc_fishing_camp';
   state.position.site_id = 'site:combat-fixture';
   state.position.position_id = 'pos:player';
   state.position.g6_instance_id = 'g6:combat-fixture';
+  state.scene_presentation = structuredClone(SCENE_PRESENTATION);
   const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
     artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
     revision: LIVE_WORLD_TURN_PROFILE.revision,

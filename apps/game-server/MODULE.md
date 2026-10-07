@@ -247,18 +247,23 @@ and adds no second transaction owner.
   не поступают writer/auditor/repair. Newly relevant sensory details уже входят
   в required visible changes; полный пересказ окружения запрещён.
   Newly relevant facts приходят через visible_changes: applied observation
-  продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
+  продвигает воспринимаемые scene facts, а подтверждённое прибытие — одно событие
+  из player-safe факта места назначения,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums
   не становятся prose и не требуют нового словаря,
   ordinary scene seed — только факты текущего результата. Общая projection
-  выполняет arrival promotion после NPC enrichment, но берёт route knowledge
-  из исходного arrival result. Snapshot self-knowledge и carried objects
+  использует arrival result и факты destination-пакета; неизменные route knowledge
+  и self-knowledge остаются контекстом. Snapshot carried objects
   не продвигаются общим осмотром; ими владеет explicit item observation. Без current beat
   descriptive support сохраняется для scene-only perception. Outcome/intent
   передаются только своим ролям; used_references остаётся [].
-  Initial current-scene projection reads persisted player/local items plus
-  player-safe NPC appearance, activity and equipped-item refs; state version 0
-  does not replace existing rows with an empty `visible_objects` list.
+  Current-scene projection prefers a Spatial package freshly read for the
+  player's current position; otherwise it uses the matching approved scene
+  presentation. It has no location-profile fallback. Spatial freshness and
+  entity-filter flags are read-time data and never enter the persisted turn
+  snapshot. Item placement/status/facts and visible NPCs come from committed
+  state; movement objects come from the current Spatial projection. A prior
+  visible package is not a source for current item, NPC, or movement facts.
   Private auditor возвращает только полный ordered reviewed_segments,
   ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,
@@ -624,8 +629,10 @@ but creates no presence resolution and incurs no discovery activity.
 The admitted activity projects a performed discovery with its exact duration;
 its separate candidate query remains a question, never ownership or success.
 An admitted O1 item adds a strict `ordinary_presence_seed` with resolution
-`materialized`, exact query and admitted `display_name`. The current beat reports
-that discovery once. Applied step traces and prepared ledger slice seed keys group
+`materialized`, exact query and admitted `display_name`. Its current-scene placement
+supports one natural discovery fact using that name; the beat never emits a bare
+name or claims a surface or position beyond the committed placement. Applied step
+traces and prepared ledger slice seed keys group
 each step into one required change: exact speech then its elapsed time; discovery time
 then discovery; physical result after its activity. The ordinary material prerequisite
 mapping binds `inspect` for an exact full-intent continuation in ordinary scope;
@@ -1065,6 +1072,8 @@ prose wire: её вычисляет temporal owner и показывает serve
 обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
 dump остаётся static_context_dump. При отсутствии current beat scene-only wire
 сохраняет `visible_scene` и grounded descriptive sensory support.
+Материализованная обычная вещь передаётся как одно естественное сообщение о находке,
+подтверждённое её размещением в текущей сцене, без неподтверждённой детали о поверхности.
 Полный grounded пересказ required sources по одному в исходном порядке является
 weak_literary_composition, если действие или воспринятый результат не организует
 поддержанные пространственные детали в сцену; выдуманная связка недопустима.

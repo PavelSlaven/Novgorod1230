@@ -1309,7 +1309,14 @@ async function assertGeneralLookAfterInspection({
     'берег крушения');
   assert.notEqual(lookContext.visible_scene,
     narrationRequests[0].visible_context.visible_scene);
-  assert.deepEqual(lookContext.sensory_details, []);
+  assert.deepEqual(lookContext.sensory_details, [
+    'Мокрый песок и ивняк тянутся вдоль берега реки.',
+    'У самой воды лежат разбитые доски и обрывки снастей.',
+    'У воды тянется полоса камыша и осоки; среди обломков лежат вынесенные течением ветви.',
+    'Над открытым берегом тянется низкое сырое небо.',
+    'Между мокрым песком и ивняком начинается приметная тропа; за кустами её продолжения не видно.',
+    'У самого берега слышен плеск воды.'
+  ]);
   assert.equal(JSON.stringify(lookContext).includes(
     'visible:road_bag_missing'), false);
   assert.equal(randomDraws, beforeLook.randomDraws);
@@ -1326,7 +1333,7 @@ async function assertGeneralLookAfterInspection({
     raw_text: 'Дойти до рыбацкого стана.'
   });
   assert.equal(narrationRequests[2].visible_context.visible_scene,
-    'Микула пришёл в рыбацкий стан.');
+    'рыбацкий стан');
   const beforeCampLook = {
     checks: await count(pool, 'party_runtime.party_check_resolutions',
       opened.party_id),
@@ -1342,14 +1349,20 @@ async function assertGeneralLookAfterInspection({
   });
   const campLookContext = narrationRequests[3].visible_context;
   assert.equal(campLooked.check, null);
-  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
   assert.notEqual(campLookContext.visible_scene,
     opened.screen.visible_context.place);
-  assert.notEqual(campLookContext.visible_scene,
-    narrationRequests[2].visible_context.visible_scene);
   assert.deepEqual(campLookContext.sensory_details, [
+    'На сухом берегу стоят навес и очаговая площадка.',
+    'Под навесом есть место укрыться от речной сырости.',
+    'От стана видна вода Нижней Двины.',
+    'Сухой песчаный берег тянется вдоль воды.',
+    'Сети развешены на кольях и между навесами.',
+    'Лодки стоят у воды.',
+    'Под навесом сложены свёрнутые снасти.',
+    'В воздухе держится речная сырость.',
     'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.'
   ]);
+  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
   assert.equal(randomDraws, beforeCampLook.randomDraws);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), beforeCampLook.checks);

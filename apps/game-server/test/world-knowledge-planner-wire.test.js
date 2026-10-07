@@ -268,7 +268,9 @@ test('production WK payload preserves visible fabric and item condition on main 
 
 test('synchronized item condition and environment reach WK after scene rebuild', async () => {
   const current = withLowerDvinaTraceCurrentScene({ committedState: {
-    actor_id: 'player', position: { location_ref: 'shore' }, items: [{
+    actor_id: 'player', position: { location_ref: 'shore' },
+    scene_presentation: { locations: [{ location_ref: 'shore',
+      display_name: 'Берег', player_visible_physical_facts: [] }] }, items: [{
       item_id: 'boat', name: 'лодка', condition_state: 'damaged',
       placement: { location_ref: 'shore' }
     }], current_visible_context: {

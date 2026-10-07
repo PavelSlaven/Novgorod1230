@@ -196,5 +196,8 @@ export async function withPhase2CurrentLocalEdges(state, readLocalEdgeDisclosure
 
 export function withoutPhase2CurrentVisibleContext(state) {
   delete state.current_visible_context;
+  delete state.current_spatial_context;
+  delete state.current_spatial_context_is_fresh;
+  delete state.current_spatial_context_filters_entities;
   return state;
 }

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 
 import LIVE_WORLD_TURN_PROFILE from
   '../../data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json'
@@ -13,6 +14,8 @@ import { liveWorldConversationCommands } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import { npcSharesPlayerScene } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-scene-presence.js';
+import { withLowerDvinaTraceCurrentScene } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import {
@@ -25,6 +28,7 @@ import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 import { identifyLlmTestRole } from './llm-test-role.js';
 
 const TALK_TEXT = 'Здороваюсь с человеком.';
+const TALK_FOLLOWUP_TEXT = 'Спрашиваю человека ещё раз.';
 const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
   artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
   revision: LIVE_WORLD_TURN_PROFILE.revision,
@@ -42,7 +46,7 @@ function installStub({ onNarration = null } = {}) {
     const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
     const role = identifyLlmTestRole(call);
     if (system.startsWith('Return only {"prose"') && input.required_current_beat) {
-      await onNarration?.();
+      await onNarration?.(input);
     }
     if (role === 'world_knowledge_query_planner'
         && input.purpose !== 'semantic_resolution') {
@@ -61,7 +65,7 @@ function installStub({ onNarration = null } = {}) {
           ?? pickOp((op) => op.op === 'request_movement'
             && String(op.description ?? '').includes('подход'))
           ?? pickOp((op) => op.op === 'request_movement');
-      } else if (request.root_player_action === TALK_TEXT) {
+      } else if ([TALK_TEXT, TALK_FOLLOWUP_TEXT].includes(request.root_player_action)) {
         pick = pickOp((op) => op.op === 'emit_interaction');
         assert.ok(pick, 'a conversation operation must be offered at the generated site');
       }
@@ -89,7 +93,8 @@ function installStub({ onNarration = null } = {}) {
           adaptation: 'literal' }, resolution: 'automatic',
         activity: { duration_class: input.player_safe_context.allowed_duration_classes[0], effort: 'none' },
         supporting_operations: [], check: null, handoff: null });
-    } else if (system.startsWith('Return only one plain JSON object with the semantic conversation contribution. Do not return request, boundary')) {
+    } else if (system.startsWith('Return only one plain JSON object with the semantic conversation contribution. Do not return request, boundary')
+      || system.startsWith('Возвращай только один обычный JSON-объект с семантическим вкладом в разговор.')) {
       const player = input.allowed_references.actor_refs.find(
         ({ entity_kind: kind }) => kind === 'player_character');
       return json({ contribution_kind: 'speech', primary_addressee_ref: player,
@@ -141,7 +146,12 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
     const env = await bootstrapV17PresenceE2e(t);
     let observingPartyId = null;
     let arrivalPendingScreen = null;
-    const restore = installStub({ onNarration: async () => {
+    const narrationRequests = [];
+    const sceneProjectionDiagnostics = [];
+    const currentSpatialReads = [];
+    let productionSpatialProjector = null;
+    const restore = installStub({ onNarration: async (input) => {
+      narrationRequests.push(structuredClone(input));
       if (observingPartyId == null) return;
       const { rows } = await env.partyPool.query(
         'SELECT screen FROM party_runtime.party_server_sessions WHERE party_id=$1',
@@ -151,7 +161,15 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       }
     } });
     t.after(() => restore());
-    let { runtime, readCurrentVisibleContext } = await createPresenceProductionRoot({ ...env });
+    let { runtime, readCurrentVisibleContext } = await createPresenceProductionRoot({ ...env,
+      extraConfig: {
+        onNpcSceneProjection: (event) => sceneProjectionDiagnostics.push(event),
+        onCurrentSpatialContextProjection: (event) => currentSpatialReads.push(event),
+        onCurrentSpatialContextProjector: (projector) => {
+          productionSpatialProjector = projector;
+        }
+      }
+    });
     try {
       let partyId = null;
       let arrivalResponse = null;
@@ -220,6 +238,9 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       assert.equal(arrivalResponse?.screen?.turn_id, arrivalPendingScreen?.turn_id,
         'the pending screen must be captured during narration for the arrival turn');
       const readback = await runtime.getPartyScreen(partyId);
+      const committedPayload = JSON.stringify(arrivalSnapshot?.payload ?? {});
+      assert.equal(committedPayload.includes('destination_site_origin'), false,
+        'transient destination origin must not enter committed or prepared state');
       const pendingPeople = arrivalPendingScreen?.panels?.people;
       const responsePeople = arrivalResponse?.screen?.panels?.people;
       const readbackPeople = readback.screen?.panels?.people;
@@ -247,6 +268,28 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
         'the pending visible context matches its persisted package');
       assert.equal(pendingPeople?.data?.visible_npcs?.length > 0, true,
         'the pending arrival screen must include the scene NPC');
+      const arrivalItems = (arrivalPendingScreen?.visible_context?.visible_objects ?? [])
+        .filter(({ entity_ref: ref }) => ref?.entity_kind === 'item');
+      const committedHeldItems = (arrivalSnapshot?.payload?.items ?? []).filter((item) =>
+        item?.placement?.holder_character_id === arrivalSnapshot?.payload?.actor_id
+        && !runtimeItemRecordIsConcealed(item)
+        && ['hands', 'worn', 'equipped', 'worn_quick']
+          .includes(item.placement.physical_position)
+        // Hidden or contained items are not scene-visible (items contract §12).
+        && item.placement.container_id == null
+        && item.placement.attached_item_id == null);
+      assert.ok(committedHeldItems.length > 0,
+        'the player must carry committed items into the generated-site arrival');
+      for (const item of committedHeldItems) {
+        assert.ok(arrivalItems.some(({ entity_ref: ref, visible_status: status }) =>
+          ref?.entity_id === item.item_id
+          && ['при вас', 'у вас в руках'].includes(status)),
+        `committed carried item ${item.item_id} must remain in the arrival scene`);
+      }
+      assert.equal(arrivalItems.some(({ visible_status: status }) =>
+        status === 'available'), false,
+      `uncommitted destination items must not enter narration: ${
+        JSON.stringify(arrivalItems)}`);
       assert.deepEqual(responsePeople, readbackPeople,
         'the completed turn response and screen readback must agree on People');
       assert.deepEqual(pendingPeople, responsePeople,
@@ -255,8 +298,10 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       assert.equal(movementChannel(arrivalSnapshot?.payload), 'position_transition',
         'the generated-site case must exercise the top-level position_transition path');
 
+      assert.equal(typeof productionSpatialProjector, 'function');
       const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: env.partyPool,
         readCurrentVisibleContext,
+        projectCurrentSpatialContext: productionSpatialProjector,
         committer: { async commit() { throw new Error('read-only'); } } });
       const stateBeforeRestart = await repository.loadPhase2State(partyId);
       const readbackNpcIds = (state) => (state.current_visible_context?.visible_npc ?? [])
@@ -275,13 +320,21 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
         'the visible destination package includes a SQL-loaded NPC before restart');
 
       await runtime.close();
-      ({ runtime, readCurrentVisibleContext } = await createPresenceProductionRoot({ ...env }));
+      ({ runtime, readCurrentVisibleContext } = await createPresenceProductionRoot({ ...env,
+        extraConfig: {
+          onNpcSceneProjection: (event) => sceneProjectionDiagnostics.push(event),
+          onCurrentSpatialContextProjection: (event) => currentSpatialReads.push(event),
+          onCurrentSpatialContextProjector: (projector) => {
+            productionSpatialProjector = projector;
+          }
+        }
+      }));
       const restartReadback = (await runtime.getPartyScreen(partyId)).screen;
       assert.deepEqual(await readPackageNpcIds(restartReadback), packageNpcIds,
         'restart readback keeps exactly the admitted destination NPC IDs');
       assert.deepEqual((restartReadback.visible_context?.visible_npc ?? [])
         .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean).sort(), packageNpcIds,
-      'restart visible context matches the persisted admitted NPC package');
+'restart visible context matches the persisted admitted NPC package');
 
       const state = await repository.loadPhase2State(partyId);
       assert.deepEqual(readbackNpcIds(state), packageNpcIds,
@@ -346,6 +399,69 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       const reloaded = await repository.loadPhase2State(partyId);
       assert.equal(loaded.every(({ instance_id: id }) => reloaded.npcs.some(
         (npc) => npc.instance_id === id && npc.runtime_source === SCENE_NPC_SOURCE)), true);
+
+      await runtime.submitTurn(partyId, {
+        raw_text: TALK_FOLLOWUP_TEXT,
+        request_id: 'scene-npcs-talk-again'
+      });
+      const afterSecondTalk = await snapshotNpcs(env.partyPool, partyId);
+      const priorNpcSpeeches = afterSecondTalk.payload.conversation_statements
+        .filter(({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc')
+        .map(({ utterance_text: text }) => text);
+      const priorNpcSpeechTexts = priorNpcSpeeches.filter((text) =>
+        typeof text === 'string' && text.trim() !== '');
+      assert.ok(priorNpcSpeechTexts.length > 0,
+        'at least one NPC speech must remain in committed conversation history');
+      const spatialReadsBeforeFollowup = currentSpatialReads.length;
+      await runtime.submitTurn(partyId, {
+        raw_text: TARGET_SMOKE_INPUT,
+        request_id: 'scene-npcs-after-speech'
+      });
+      const followupNarrationRequest = narrationRequests.at(-1);
+      assert.ok(followupNarrationRequest,
+        'the post-dialogue action must reach the production narrator');
+      for (const speech of priorNpcSpeechTexts) {
+        assert.equal(JSON.stringify(followupNarrationRequest).includes(speech), false,
+          'a fresh readCurrentSources narration after speech must omit old dialogue');
+      }
+      assert.equal(currentSpatialReads.length > spatialReadsBeforeFollowup, true,
+        'the post-dialogue submitTurn must read current Spatial sources');
+      assert.equal(currentSpatialReads.at(-1)?.partyId, partyId);
+      const postDialogueReload = await assertCurrentSpatialProjectionSurvivesDialogueReload({
+        repository, partyId, currentSpatialReads, priorNpcSpeeches: priorNpcSpeechTexts,
+        priorSiteNpcIds: start.map(({ instance_id: id }) => id)
+      });
+      assert.equal(postDialogueReload.current_visible_context.visible_npc.length > 0, true,
+        'current observed NPCs remain in the post-dialogue scene');
+      const currentPositionId = postDialogueReload.journey_location.scene_position_id;
+      const currentG6Id = postDialogueReload.scene_position_g6[currentPositionId];
+      const observedNpcIds = new Set((postDialogueReload.current_spatial_context?.visible_npc ?? [])
+        .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean));
+      const crossPositionNpcIds = postDialogueReload.npcs.filter((npc) =>
+        npc.runtime_source === SCENE_NPC_SOURCE
+        && npc.position_id !== currentPositionId
+        && npc.g6_instance_id === currentG6Id
+        && npc.location_ref == null
+        && npc.anchor_id == null
+        && observedNpcIds.has(npc.instance_id))
+        .map(({ instance_id: id }) => id);
+      const projectionRegressionFailures = [];
+      if (crossPositionNpcIds.length === 0) {
+        projectionRegressionFailures.push(
+          'fixture must include a currently observed NPC at another position in the same G6 without legacy aliases');
+      }
+      const rebuiltAfterDialogue = withLowerDvinaTraceCurrentScene({
+        committedState: postDialogueReload
+      }).current_visible_context;
+      for (const npcId of crossPositionNpcIds) {
+        if (!rebuiltAfterDialogue.visible_npc.some(({ entity_ref: ref }) =>
+            ref?.entity_id === npcId)) {
+          projectionRegressionFailures.push(
+            `same-G6 currently visible NPC ${npcId} was dropped by committed-scene rebuild`);
+        }
+      }
+      assert.deepEqual(projectionRegressionFailures, [],
+        'current scene preserves v17 same-G6 NPC visibility');
 
       const stateBeforeRace = await snapshotNpcs(env.partyPool, partyId);
       const attemptRequestId = 'scene-npcs-stale-prepared-read';
@@ -469,3 +585,26 @@ test('a generated site: its NPCs are loaded with G6, conversation is offered, th
       await runtime.close();
     }
   });
+
+async function assertCurrentSpatialProjectionSurvivesDialogueReload({
+  repository, partyId, currentSpatialReads, priorNpcSpeeches, priorSiteNpcIds
+}) {
+  const state = await repository.loadPhase2State(partyId);
+  const visible = state.current_visible_context;
+  const serialized = JSON.stringify(visible);
+  assert.equal(state.current_spatial_context_is_fresh, true,
+    'reload must run the production Spatial projector');
+  assert.equal(state.current_spatial_context_filters_entities, true,
+    'reload must mark its entity observation as authoritative');
+  assert.equal(currentSpatialReads.at(-1)?.positionId,
+    state.journey_location.scene_position_id,
+    'the production read must target the committed current position');
+  assert.equal(typeof visible.visible_scene, 'string');
+  assert.ok(Array.isArray(visible.sensory_details));
+  assert.equal(priorNpcSpeeches.every((speech) => !serialized.includes(speech)), true,
+    'dialogue history must not become current scene text');
+  assert.equal(visible.visible_npc.some(({ entity_ref: ref }) =>
+    priorSiteNpcIds.includes(ref?.entity_id)), false,
+  'NPCs from the previous site must not survive the current observation');
+  return state;
+}

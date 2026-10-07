@@ -6,6 +6,11 @@ import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { buildProviderRequestPayload } from '../../../packages/llm-runtime/src/provider-request.js';
 import { createHttpHandler } from '../src/http/handler.js';
+import { createLowerDvinaTracePublicRuntime } from '../src/runtime/lower-dvina-trace-public-runtime.js';
+import { buildTracePhase2TurnRequest } from '../src/runtime/lower-dvina-trace-phase-2-turn-request.js';
+import { hash, json } from '../src/runtime/first-playable/shared.js';
+import { TRACE_PHASE_1B_SESSION_IDENTITIES, TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
+  TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID } from '../src/internal/lower-dvina-trace-phase-1b-identities.js';
 import { projectVisibleContext, projectVisibleContextForPlayerPackage } from
   '../src/runtime/lower-dvina-trace-player-safe-visible-context.js';
 import { phase2VisibleContextFromPayload } from
@@ -146,17 +151,19 @@ test('CA-03: narrationWire omits the rejected projected scene both with and with
 // This storage fixture represents an already committed, valid Phase 2 head.
 // Its rows are read by the production repository and cross-table validators.
 // Unknown SQL is an error: the fixture cannot silently admit another write path.
-function committedReadPool(snapshot, screen) {
-  const visible_payload = phase2Payload(validScene);
-  const last = snapshot.last_turn;
+function committedReadPool(saved) {
   const emptyTables = ['party_temporal_events', 'party_npc_spatial_schedules',
     'party_local_world_processes', 'party_world_route_endpoint_position_bindings',
     'party_npc_runtime_transitions', 'party_journey_locations', 'party_npcs',
     'scene_position_nodes', 'party_containers', 'party_spatial_semantic_envelopes',
     'party_spatial_semantic_resolutions', 'party_npc_knowledge'];
   return { async connect() { throw new Error('unexpected storage connection'); },
-    async query(input) {
+    async query(input, params) {
       const sql = typeof input === 'string' ? input : input.text;
+      const values = typeof input === 'string' ? params : input.values;
+      saved.reads.push({ sql, values });
+      const { snapshot, visible_payload, session } = saved;
+      const screen = session.screen, last = snapshot.last_turn;
       assert.match(sql.trim(), /^SELECT\b/u, 'read fixture must never accept a mutation');
       let rows;
       if (sql.includes('AS party_state_version')) rows = [{
@@ -168,6 +175,23 @@ function committedReadPool(snapshot, screen) {
         world_revision_id: 'ca03-world', world_catalog_digest: 'ca03-catalog',
         delivery_ack_result: { pass: true }, screen,
         state_payload: snapshot, state_digest: canonicalDigest(snapshot)
+      }];
+      else if (sql.includes('SELECT s.request_id,s.stage26_result')) rows = [{
+        ...session, current_party_snapshot_payload: snapshot,
+        current_party_snapshot_digest: canonicalDigest(snapshot)
+      }];
+      else if (sql.includes('SELECT session.screen,session.turn_number')) rows = [{
+        screen, turn_number: snapshot.party_state.turn_number,
+        party_id: snapshot.party_id, package_id: last.visible_package.package_id,
+        turn_id: session.last_turn_id,
+        committed_state_version: String(snapshot.party_state.state_version),
+        package_digest: last.visible_package.package_digest, visible_payload,
+        snapshot_payload: snapshot, state_digest: canonicalDigest(snapshot),
+        dependency_pins: { pins: [] }, source_dependency_pins: { pins: [] },
+        narration_status: session.current_narration_status,
+        delivery_mode: session.current_narration_delivery_mode,
+        narration_output: session.current_narration_output,
+        output_digest: session.current_narration_output_digest, factual_screen: null
       }];
       else if (sql.includes('FROM party_runtime.party_actor_body_states')) rows = [{
         ...snapshot.body_state, state_version: snapshot.party_state.body_state_version
@@ -188,12 +212,15 @@ function committedReadPool(snapshot, screen) {
         visible_payload, package_digest: last.visible_package.package_digest,
         committed_state_version: String(snapshot.party_state.state_version)
       }];
-      else if (sql.includes('FROM party_runtime.party_command_idempotency')) rows = [{
-        request_id: last.request_id, semantic_command_snapshot: {
+      else if (sql.includes('FROM party_runtime.party_command_idempotency')) rows =
+        values?.includes(last.idempotency_key) ? [{
+        id: 'ca03-prior-idem', request_id: last.request_id, status: 'committed',
+        operation_kind: 'immediate_action', result_change_set_id: last.visible_package.change_set_id,
+        semantic_command_snapshot: {
           input_digest: last.input_digest, selected_option_id: last.option_id,
           action_set_digest: last.action_set_digest, semantic_trace: last.semantic_trace
         }
-      }];
+      }] : [];
       else if (sql.includes('FROM party_runtime.party_body_temporal_history')
         || sql.includes('FROM party_runtime.party_check_resolutions')
         || emptyTables.some((table) => new RegExp(`FROM party_runtime[.]${table}\\b`, 'u').test(sql))) rows = [];
@@ -203,31 +230,83 @@ function committedReadPool(snapshot, screen) {
   };
 }
 
+function committedSession(snapshot, visible_payload) {
+  const partyId = snapshot.party_id, turnId = snapshot.last_turn.request_id;
+  const expected = TRACE_PHASE_1B_SESSION_IDENTITIES.find(({ phase_1a_manifest_digest }) =>
+    phase_1a_manifest_digest === snapshot.materialization_trace.scenario_manifest_digest);
+  assert.ok(expected, 'baseline must use an actual historical publication identity');
+  const openingDigest = snapshot.opening_identity.opening_screen_digest;
+  const requestId = 'ca03-opening';
+  const narration = { kind: 'approved_narration', text: 'Вы стоите у мельницы.' };
+  narration.canonical_digest = computeSpatialV3CanonicalDigest(narration);
+  const screen = { version: 1, schema: 'lower_dvina_trace_turn_screen', screen_status: 'ready',
+    scenario_id: 'lower_dvina_trace_v1', party_id: partyId, turn_id: turnId,
+    turn_number: snapshot.party_state.turn_number, main_prose: narration.text,
+    opening_screen_digest: openingDigest, visible_context: phase2VisibleContextFromPayload(visible_payload),
+    current_projection_anchor: { package_id: snapshot.last_turn.visible_package.package_id,
+      package_digest: snapshot.last_turn.visible_package.package_digest,
+      committed_state_version: String(snapshot.party_state.state_version),
+      narration_output_digest: narration.canonical_digest } };
+  screen.screen_digest = canonicalDigest(screen);
+  return { request_id: requestId, turn_number: snapshot.party_state.turn_number,
+    state_version: snapshot.party_state.session_state_version, last_turn_id: turnId,
+    party_snapshot_schema: snapshot.schema,
+    party_materializer_version: TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
+    party_rng_algorithm_id: TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
+    party_scenario_manifest_digest: expected.phase_1a_manifest_digest,
+    current_party_state_version: snapshot.party_state.state_version,
+    stage26_result: { ...expected, version: 1,
+      schema: 'rus.lower_dvina_trace_phase_1b_session_identity.v1',
+      scenario_id: 'lower_dvina_trace_v1', party_id: partyId, request_id: requestId,
+      materializer_version: TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
+      rng_algorithm_id: TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
+      opening_screen_digest: openingDigest, creation_identity: { version: 1,
+        schema: 'rus.first_playable_public_creation_identity.v1', party_id: partyId,
+        request_id_digest: hash(requestId), launch_branch: 'scenario_id',
+        scenario_id: 'lower_dvina_trace_v1', effective_player_name: null,
+        branch_input_digest: hash(json({ launch_branch: 'scenario_id', scenario_id: 'lower_dvina_trace_v1' })) } },
+    delivery_attempt: { party_id: partyId, message_id: `opening:${partyId}`,
+      delivery_attempt_id: `delivery:${partyId}`, status: 'sent', awaiting_client_ack: true,
+      screen_digest: openingDigest },
+    delivery_ack_result: { pass: true, client_ack_id: 'ca03-opening-ack', acknowledged_at: '2026-01-01T00:00:00Z' },
+    current_projection_package_id: snapshot.last_turn.visible_package.package_id,
+    current_projection_state_version: String(snapshot.party_state.state_version),
+    current_projection_package_digest: snapshot.last_turn.visible_package.package_digest,
+    current_projection_payload: visible_payload, current_narration_status: 'delivered',
+    current_narration_delivery_mode: 'narrated', current_narration_output: narration,
+    current_narration_output_digest: narration.canonical_digest, screen };
+}
+
 async function assertRejectedSceneTurnDelivery(t, rejectedScene) {
   // Real turn workflow -> production repository -> Phase 2 visible-envelope
   // builder -> public HTTP boundary. Only committed read rows/P16/session ports
   // are fixtures. Corruption is injected into the candidate BEFORE persistence.
   const f = fixture();
+  // A real committed turn makes both facade reads exercise validateSessionRead.
+  f.state.party_state.turn_number = 1;
+  const priorInput = { request_id: 'ca03-prior', idempotency_key: 'ca03-prior', raw_text: 'Остановиться у мельницы.' };
+  const visible_payload = { schema: 'temporal_visible_package.v1', ...phase2Payload(validScene),
+    hypotheses: [], player_safe_interruption: null, allowed_action_affordances: [] };
   const snapshot = { ...structuredClone(f.state),
     schema: 'rus.lower_dvina_trace_phase_2_snapshot.v1', last_turn: {
-      request_id: 'ca03-prior', idempotency_key: 'ca03-prior', input_digest: 'prior-input',
+      request_id: 'ca03-prior', idempotency_key: 'ca03-prior',
+      input_digest: buildTracePhase2TurnRequest({ partyId: f.partyId, input: priorInput }).inputDigest,
       option_id: 'prior-option', action_set_digest: 'prior-actions', semantic_trace: {},
+      consequence: { observations: [], evidence_relations: [] },
       check_result: null, visible_package: { package_id: 'ca03-prior-visible',
-        package_digest: computeSpatialV3CanonicalDigest(phase2Payload(validScene)) }
+        change_set_id: 'ca03-prior-change', package_digest: computeSpatialV3CanonicalDigest(visible_payload) }
     }
   };
-  const prior = { party_id: f.partyId, state_version: f.state.party_state.state_version,
-    turn_number: f.state.party_state.turn_number, screen: {
-      version: 1, schema: 'lower_dvina_trace_turn_screen', screen_status: 'ready',
-      party_id: f.partyId, turn_number: f.state.party_state.turn_number,
-      main_prose: 'Вы стоите у мельницы.', visible_context: scene()
-    }
-  };
+  const saved = { snapshot, visible_payload, session: committedSession(snapshot, visible_payload), reads: [] };
+  const persistedBaseline = structuredClone({ snapshot: saved.snapshot, session: saved.session });
+  const prior = { party_id: f.partyId, turn_number: f.state.party_state.turn_number,
+    screen: structuredClone(saved.session.screen) };
+  const partyPool = committedReadPool(saved);
   const baseline = structuredClone(f.state);
   const errors = [];
   let p16Calls = 0, candidateSeen = false;
   const repository = createLowerDvinaTracePhase2PostgresRepository({
-    partyPool: committedReadPool(snapshot, prior.screen),
+    partyPool,
     committer: { async commit() {
       p16Calls += 1;
       throw new Error('unsafe visible scene reached P16');
@@ -237,6 +316,10 @@ async function assertRejectedSceneTurnDelivery(t, rejectedScene) {
   const loaded = await repository.loadPhase2State(f.partyId);
   assert.equal(loaded.party_state.turn_number, baseline.party_state.turn_number);
   assert.equal(loaded.current_visible_context.visible_scene, validScene);
+  for (const name of ['loadPhase2State', 'loadPhase2StateVersion', 'loadPhase2Replay',
+    'replayPhase2Turn', 'loadPhase2VisibleContext', 'persistPhase2Screen']) {
+    f.repository[name] = repository[name].bind(repository);
+  }
   f.repository.commitPhase2Turn = (input) => {
     const writePlan = structuredClone(input.writePlan);
     const candidate = writePlan.write_targets.find(({ target }) => target === 'party_visible_context_package');
@@ -245,21 +328,26 @@ async function assertRejectedSceneTurnDelivery(t, rejectedScene) {
     candidate.value.visible_scene = rejectedScene;
     return repository.commitPhase2Turn({ ...input, writePlan });
   };
-  const handler = createHttpHandler({ root: {
-    async submitTurn(partyId, input) {
-      try { return await f.runtime.submitTurn({ partyId, input }); }
+  const publicRuntime = createLowerDvinaTracePublicRuntime({ partyPool,
+    release: { release_id: 'ca03-offline-release' },
+    runtimeCatalogPin: { catalog_revision_id: 'ca03-offline-catalog' },
+    traceTurnRuntime: { ...f.runtime, async submitTurn(input) {
+      try { return await f.runtime.submitTurn(input); }
       catch (error) {
         errors.push({ code: error.code, status: error.status, details: error.details,
           turn_commit_status: error.turn_commit_status, stack: error.stack });
         throw error;
       }
-    },
-    async getPartyScreen(partyId) {
-      await f.runtime.validateSessionRead({ partyId });
-      return structuredClone(prior);
-    }
-  } });
+    } } });
+  const handler = createHttpHandler({ root: publicRuntime });
   const path = `/api/v1/parties/${encodeURIComponent(f.partyId)}`;
+  const beforeGet = await send(handler, 'GET', `${path}/screen`);
+  assert.equal(beforeGet.status, 200, 'baseline must pass the actual public session validator');
+  assert.deepEqual(beforeGet.body.data, prior);
+  const priorReplay = await send(handler, 'POST', `${path}/turns`, priorInput);
+  assert.equal(priorReplay.status, 200, 'the prior key must use the production persisted replay owner');
+  assert.deepEqual(priorReplay.body.data.screen, prior.screen);
+  assert.equal(candidateSeen, false, 'prior replay must not prepare a new candidate');
   const submitted = await send(handler, 'POST', `${path}/turns`, {
     raw_text: 'Осмотреть лодку, верёвку и следы.',
     request_id: 'ca03-unsafe-turn', idempotency_key: 'ca03-unsafe-turn'
@@ -301,6 +389,15 @@ async function assertRejectedSceneTurnDelivery(t, rejectedScene) {
     assert.deepEqual(fetched.body.data, prior);
     assert.equal(fetched.body.data.screen.screen_status, 'ready');
     assert.doesNotMatch(JSON.stringify(fetched.body), /pending|INFERENCE:|Обстановка не описана\./u);
+    assert.equal(saved.session.turn_number, baseline.party_state.turn_number);
+    assert.deepEqual(saved.snapshot, persistedBaseline.snapshot);
+    assert.deepEqual(saved.session, persistedBaseline.session);
+    assert.ok(saved.reads.filter(({ sql }) => sql.includes('SELECT s.request_id,s.stage26_result')).length >= 4,
+      'GET and both POST identities must read the same stored session through the production repository');
+    assert.ok(saved.reads.some(({ sql, values }) => sql.includes('SELECT id,request_id,operation_kind,status')
+      && values?.includes('ca03-unsafe-turn')), 'new POST must use production replay lookup, not a separate Map');
+    assert.ok(saved.reads.some(({ sql }) => sql.includes('SELECT session.screen,session.turn_number')),
+      'the committed baseline must reach the persisted replay owner');
   });
 }
 

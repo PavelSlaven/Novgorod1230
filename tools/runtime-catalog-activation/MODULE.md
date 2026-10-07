@@ -152,6 +152,6 @@ Parameterized/property unit suites для canonical/delta/digest logic и одн
 
 ```architecture-tool-app-dependencies
 [
-  {"source":"src/first-playable-v2-activation.js","target":"apps/game-server","reason":"The active v17 bootstrap includes production app artifact paths in the target catalog compatibility manifest"}
+  {"source":"src/first-playable-v2-activation.js","target":"apps/game-server","reason":"The activation bundle records the production composition and release binding files as source artifacts in the base-world compatibility manifest"}
 ]
 ```

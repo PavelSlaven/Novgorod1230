@@ -221,23 +221,28 @@ async function resolveAppPath(target, apps) {
 }
 
 async function resolveBoundaryPath(value, importer, root, boundary, directories, dynamic = false) {
-  let target = null;
+  let targets = [];
   if (/^[a-z][a-z\d+.-]*:/iu.test(value) && !value.startsWith('file:')) return null;
   if (value.startsWith('file:')) {
-    try { target = fileURLToPath(value); }
+    try { targets = [fileURLToPath(value)]; }
     catch { return null; }
   } else if (isAbsolute(value)) {
-    target = value;
+    targets = [value];
   } else if (/^(?:\.\.?\/)+/u.test(value)) {
-    target = resolve(dirname(await realPath(importer)), value);
+    targets = [
+      resolve(dirname(await realPath(importer)), value),
+      resolve(root, value)
+    ];
   } else {
-    target = resolve(root, value);
+    targets = [resolve(root, value)];
   }
-  const lexicalTarget = resolve(target);
-  let physicalTarget = await realPath(target);
-  for (const directory of directories) {
-    const physicalDirectory = await realPath(directory);
-    if (isWithin(lexicalTarget, directory) || isWithin(physicalTarget, physicalDirectory)) return directory;
+  for (const target of targets) {
+    const lexicalTarget = resolve(target);
+    const physicalTarget = await realPath(target);
+    for (const directory of directories) {
+      const physicalDirectory = await realPath(directory);
+      if (isWithin(lexicalTarget, directory) || isWithin(physicalTarget, physicalDirectory)) return directory;
+    }
   }
 
   if (!dynamic) return null;
@@ -250,10 +255,10 @@ async function resolveBoundaryPath(value, importer, root, boundary, directories,
   if (index >= 0 && segments[index + 1]) {
     const suffix = segments.slice(index).join('/');
     const lexicalBoundaryTarget = resolve(root, suffix);
-    physicalTarget = await realPath(lexicalBoundaryTarget);
+    const physicalBoundaryTarget = await realPath(lexicalBoundaryTarget);
     for (const directory of directories) {
       const physicalDirectory = await realPath(directory);
-      if (isWithin(lexicalBoundaryTarget, directory) || isWithin(physicalTarget, physicalDirectory)) return directory;
+      if (isWithin(lexicalBoundaryTarget, directory) || isWithin(physicalBoundaryTarget, physicalDirectory)) return directory;
     }
   }
   return null;
@@ -261,7 +266,11 @@ async function resolveBoundaryPath(value, importer, root, boundary, directories,
 
 function pathReferences(source, { allowReadOnly = false, includeArrayPaths = false } = {}) {
   const tokens = tokenize(source);
-  const importedSpecifiers = new Set(importSpecifiers(source));
+  const importedSpecifiers = new Set(importSpecifiersFromTokens(tokens));
+  return pathReferencesFromTokens(tokens, { allowReadOnly, includeArrayPaths }, importedSpecifiers);
+}
+
+function pathReferencesFromTokens(tokens, { allowReadOnly = false, includeArrayPaths = false }, importedSpecifiers) {
   const bindings = new Map();
   const bindingDeclarations = [];
   for (let index = 0; index < tokens.length; index += 1) {
@@ -292,6 +301,13 @@ function pathReferences(source, { allowReadOnly = false, includeArrayPaths = fal
         ...pathValue,
         readOnly: allowReadOnly && isReadOnlyPathReference(tokens, index, bindingDeclarations)
       });
+    }
+  }
+  for (const token of tokens) {
+    if (token.type !== 'template') continue;
+    for (const expression of token.expressions ?? []) {
+      references.push(...pathReferencesFromTokens(expression,
+        { allowReadOnly, includeArrayPaths }, importedSpecifiers));
     }
   }
   return [...new Map(references.map((entry) =>
@@ -362,9 +378,8 @@ function isReadOnlyPathReference(tokens, referenceIndex, bindingDeclarations = [
     if (!FILE_PATH_OPERATIONS.has(name) && !PROCESS_PATH_OPERATIONS.has(name)
       && !['import', 'require'].includes(name)) continue;
     if (!ARCHITECTURE_READ_OPERATIONS.has(name)) return false;
-    if (name === 'open' || name === 'openSync') {
-      if (args[1]?.length !== 1 || args[1][0].type !== 'string' || args[1][0].value !== 'r') return false;
-    }
+    if (!provesReadOnlyFileOptions(args,
+      { modeIndex: 1, modeForm: name === 'open' || name === 'openSync' ? 'positional' : 'options' })) return false;
     if (args[0]?.includes(tokens[referenceIndex])) foundRead = true;
   }
   const declaration = bindingDeclarations.find(({ start, end }) => referenceIndex >= start && referenceIndex < end);
@@ -379,6 +394,54 @@ function isReadOnlyPathReference(tokens, referenceIndex, bindingDeclarations = [
     if (foundUse) return true;
   }
   return foundRead;
+}
+
+function provesReadOnlyFileOptions(args, { modeIndex, modeForm }) {
+  const options = args[modeIndex];
+  if (!options?.length) return true;
+  if (modeForm === 'positional') {
+    return options.length === 1 && options[0].type === 'string' && options[0].value === 'r';
+  }
+  if (isFunctionExpression(options)) return true;
+  if (options.length === 1 && options[0].type === 'string') return true;
+  if (options[0]?.value !== '{' || options.at(-1)?.value !== '}') return false;
+  const properties = splitTopLevel(options.slice(1, -1), ',');
+  for (const property of properties) {
+    if (property.length === 0) continue;
+    if (property[0].value === '...') return false;
+    const colon = property.findIndex((token) => token.value === ':');
+    if (colon < 1 || colon === property.length - 1) return false;
+    const key = property.slice(0, colon);
+    const value = property.slice(colon + 1);
+    if (key.length !== 1 || !['identifier', 'string'].includes(key[0].type)) return false;
+    if (['flag', 'flags'].includes(key[0].value)
+      && !(value.length === 1 && value[0].type === 'string' && value[0].value === 'r')) return false;
+  }
+  return true;
+}
+
+function isFunctionExpression(tokens) {
+  if (tokens[0]?.value === 'function') return true;
+  let depth = 0;
+  for (let index = 0; index < tokens.length; index += 1) {
+    const value = tokens[index].value;
+    if (depth === 0 && value === '=' && tokens[index + 1]?.value === '>') return true;
+    if (['(', '[', '{'].includes(value)) depth += 1;
+    else if ([')', ']', '}'].includes(value)) depth -= 1;
+  }
+  return false;
+}
+
+function splitTopLevel(tokens, separator) {
+  const parts = [[]];
+  let depth = 0;
+  for (const token of tokens) {
+    if (['(', '[', '{'].includes(token.value)) depth += 1;
+    else if ([')', ']', '}'].includes(token.value)) depth -= 1;
+    if (token.value === separator && depth === 0) parts.push([]);
+    else parts.at(-1).push(token);
+  }
+  return parts;
 }
 
 function findCallEnd(tokens, openIndex) {
@@ -437,10 +500,18 @@ function isWithin(path, directory) {
 }
 
 function importSpecifiers(source) {
-  const tokens = tokenize(source);
+  return importSpecifiersFromTokens(tokenize(source));
+}
+
+function importSpecifiersFromTokens(tokens) {
   const specifiers = [];
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
+    if (token.type === 'template') {
+      for (const expression of token.expressions ?? []) {
+        specifiers.push(...importSpecifiersFromTokens(expression));
+      }
+    }
     if (token.type !== 'identifier') continue;
     if (['require', 'import'].includes(token.value) && isMemberMethod(tokens, index)) continue;
     if (token.value === 'require' && tokens[index + 1]?.value === '(') {
@@ -524,7 +595,8 @@ function scanCode(source, start, tokens, templateExpression) {
       const template = scanTemplate(source, index + 1, tokens);
       index = template.end;
       tokens.push({ type: 'template', value: template.value,
-        hasSubstitution: template.hasSubstitution, cooked: template.cooked });
+        hasSubstitution: template.hasSubstitution, cooked: template.cooked,
+        expressions: template.expressions });
       continue;
     }
     if (templateExpression && char === '{') braceDepth += 1;
@@ -639,6 +711,7 @@ function scanTemplate(source, start, tokens) {
   let value = '';
   let hasSubstitution = false;
   let cooked = true;
+  const expressions = [];
   for (let index = start; index < source.length;) {
     if (source[index] === '\\') {
       const escape = decodeTemplateEscape(source, index);
@@ -647,16 +720,18 @@ function scanTemplate(source, start, tokens) {
       index = escape.end;
       continue;
     }
-    if (source[index] === '`') return { end: index + 1, value, hasSubstitution, cooked };
+    if (source[index] === '`') return { end: index + 1, value, hasSubstitution, cooked, expressions };
     if (source[index] === '$' && source[index + 1] === '{') {
       hasSubstitution = true;
-      index = scanCode(source, index + 2, [], true);
+      const expression = [];
+      index = scanCode(source, index + 2, expression, true);
+      expressions.push(expression);
       continue;
     }
     value += source[index];
     index += 1;
   }
-  return { end: source.length, value, hasSubstitution, cooked };
+  return { end: source.length, value, hasSubstitution, cooked, expressions };
 }
 
 function decodeTemplateEscape(source, start) {

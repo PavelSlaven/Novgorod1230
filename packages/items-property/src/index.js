@@ -41,6 +41,7 @@ export {
   createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
   createRuntimeInstanceMechanicsSnapshot,
   playerSafeItemConditionLabel,
+  projectCommittedInventoryMechanicsProfile,
   resolveInventoryMechanicsProfile,
   resolvePhysicalItemCondition,
   validateRuntimeInstanceMechanics

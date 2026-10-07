@@ -8,7 +8,11 @@
     "./common-lookups": "./src/common-catalog-lookups.js",
     "./ledger-digests": "./src/ledger-digests.js",
     "./needs-check-blocker": "./src/needs-check-blocker.js",
-    "./runtime-contract": "./src/runtime-contract.js"
+    "./runtime-contract": "./src/runtime-contract.js",
+    "./approved-record-snapshots": "./src/approved-record-snapshots.js",
+    "./g4-materialization-binding": "./src/g4-materialization-binding.js",
+    "./snapshot-digest": "./src/snapshot-digest.js",
+    "./schema-fingerprint": "./src/schema-fingerprint.js"
   },
   "dependencies": {
     "@rus/items-property": "0.13.0",

@@ -41,7 +41,6 @@
 | 035 | `scripts/bootstrap-live-world-v17.mjs` | bootstrap v17 без календаря | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 036 | `scripts/*.test.mjs`, `test/spatial-v3/` | тесты M2c вне гейта, заглушки планировщика | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 037 | `data/world-catalogs/novgorod/` | утверждения данных разбросаны | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
-| 038 | `tools/world-catalog-workflow/` | tool импортируется runtime | — |
 | 039 | `universal_category_classification_policy.md` и ещё 3 | обрезанные документы корпуса | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 040 | `infra/world-base/README.md` | README пишет 201 таблиц при 208 в схеме | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 | 041 | `first-playable-party-migration.test.js` | тест ожидает 35 миграций при 36 | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
@@ -262,10 +261,6 @@
 - **Что.** Около 94 файлов approval/attest без индекса; у многих кандидатов в поле стоит `approved:false` или `pending`, хотя их точный sha утверждён в отдельном файле. `data/world-catalogs/novgorod/m2c-natural/nature-successor-*` изменены после утверждения и сверяются через `git show ae212e78`.
 - **Как жить.** Статус кандидата брать из файлов утверждения, а не из поля кандидата. Производные поля в утверждённый файл не дописывать (WR §21.1). Данные, изменённые после утверждения (`nature-successor-*`), считаются неутверждёнными до нового прохода (WR §21.1).
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
-
-### LW-038 — `tools/world-catalog-workflow` в runtime
-- **Что.** Стадии 7, 8, 13 и 16 `packages/new-game` импортируют `tools/world-catalog-workflow`, хотя `docs/architecture/DEPENDENCY_RULES.md` утверждает, что production runtime не импортирует tools; `check-boundaries.mjs` это не проверяет. `docs/context/ARCHITECTURE.md` и `TOOLS_INVENTORY` фиксируют исключение LW-038; расхождение остаётся с DEPENDENCY_RULES.
-- **Как жить.** Правка этого tool меняет new-game: кандидаты NPC и предметов, шаблоны G5, упаковку снаряжения. Гонять `test:domain` и профильные тесты стадий 7, 8, 13, 16.
 
 ### LW-039 — обрезанные документы корпуса
 - **Что.** В `universal_category_classification_policy.md` разделы 10–11.4 восстановлены (#146 шаг 1). Архивные приложения v2 с маркерами «…tokens truncated…» вынесены из корпуса (#146 шаг 4) у `formulas.md`, `base_turn_orchestration.txt`, `movement_locations_regions.txt`, `world_generation_and_turns.txt`, `interface_ux.md`, `time_system.txt`. После #146 зеркала canonicalized-документов совпадают с корпусом; исходный legacy-текст v2 есть только в истории git (≤ `97644bae`). `source_basis` схемы party DB v1 (`infra/party-db/party_database_tables_v1.csv:10`, `party_database_validation_rules_v1.csv:4`, `schema/party_database_schema_v1.json:74, 5048`) и source map rus13 (`tools/rus13-start-g5-materialization/…source_map_v1.csv:3`, `tools/rus13-new-party-generator/…source_map_v1.csv:2-3`) ещё ссылаются на удалённые разделы v2. REFERENCE-документы (`interface_ux.md:8`, `time_system.txt:63`, `movement_locations_regions.txt:88`) ещё содержат устаревшее «active production остаётся materialization v2». `docs/work/temporal-world-v4/README.md:71` упоминает маркеры обрезки, которые уже сняты (исторический отчёт).
@@ -600,12 +595,6 @@
 - **Где.** `data/world-catalogs/novgorod/m2c-items/README.md` (`M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED`), `packages/items-property`.
 - **Что.** Профиль задаёт 50 г на порцию, проверка `mass_grams = quantity × 50` есть в `packages/turn` (presence) и phase-6 commit, но владелец предмета (`@rus/items-property`) её не выводит и не проверяет.
 - **Как жить.** Не считать массу порции гарантированной владельцем предмета; закрывается отдельной правкой items-property.
-- **Issue.** —
-
-### LW-106 — толкование v5-профиля инвентаря лежит в game-server (rt-items)
-- **Где.** `apps/game-server/src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js` (`committedMechanics`, значения по умолчанию), `apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js` (то же), владелец — `packages/items-property` (`resolveInventoryMechanicsProfile`).
-- **Что.** Профили `item-container-120-v5` не содержат `packing_slot_cost`, `quantity`, `container`; A1 подставляет 0, `null`, `null` в двух файлах game-server. Это толкование профиля вне владельца.
-- **Как жить.** Не добавлять третье место. Правка — перенести значения в резолвер items-property и проверить, что рубаха после A1 не получает выдуманный packing 0 в сохранённом состоянии.
 - **Issue.** —
 
 ### LW-107 — NPC гостевых и путевых контекстов остаются без имени (rt-names)

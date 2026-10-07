@@ -343,13 +343,14 @@
         "@rus/materialization",
         "@rus/party-store",
         "@rus/pipeline-engine",
-        "@rus/world-catalog-workflow"
+        "@rus/runtime-catalog"
       ],
       "name": "@rus/new-game",
       "owns": [
         "каталогом и публичными entrypoints Stages 2–26",
         "stage-local precheck/validation/repair contracts",
         "общим new-game orchestration order",
+        "потреблением exact approved actor/item/G5 projections из `@rus/runtime-catalog` и расчётом packing через `@rus/items-property`; production stages не зависят от `tools/*`",
         "handoff к Stage 25 persistence и Stage 26 first-screen result"
       ],
       "path": "packages/new-game",
@@ -443,7 +444,8 @@
         "проверкой compatible full-world pin и runtime contract",
         "чистой projection по region/effective date после полной проверки",
         "единой загрузкой неперсистентных common catalog lookups до projection",
-        "чистой проверкой кросс-доменного versioned `needs_check` snapshot для новых фактов бытности мира и NPC-кандидатов; чтение authoring queues и сборка snapshot остаются у game-base CLI, решение о фильтрации результата или отклонении NPC-операции принадлежит consumer owner"
+        "чистой проверкой кросс-доменного versioned `needs_check` snapshot для новых фактов бытности мира и NPC-кандидатов; чтение authoring queues и сборка snapshot остаются у game-base CLI, решение о фильтрации результата или отклонении NPC-операции принадлежит consumer owner",
+        "чистой идентичностью PostgreSQL-схемы, общей для activation и runtime ledger: `readPostgresSchemaFingerprint(client, schemaName)` публичного subpath `@rus/runtime-catalog/schema-fingerprint` вычисляет fingerprint по переданному query-клиенту; пакет не создаёт соединение и не владеет пулом"
       ],
       "path": "packages/runtime-catalog",
       "public_entry": "./src/index.js",
@@ -743,6 +745,7 @@
     {
       "dependencies": [
         "@rus/items-property",
+        "@rus/runtime-catalog",
         "@rus/world-knowledge"
       ],
       "name": "@rus/world-catalog-workflow",
@@ -754,7 +757,7 @@
         "чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })` без доступа к БД, файлам, глобальному состоянию, массы или fallback",
         "`validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback",
         "Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation",
-        "`buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set",
+        "compatibility exports чистых runtime projections и G4 binding resolver из `@rus/runtime-catalog`; реализация и owner runtime-контрактов находятся там",
         "internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay; condition facets валидирует через `@rus/world-knowledge` (`CONDITION_FACETS`, `isValidCondition`)",
         "production authoring approval: один независимый `APPROVE` на claim, exact digest проверенного claim/localizations/concepts/predicate/evidence/sources, evidence set и reviewer/candidate/limits metadata; runtime получает только `verification_ref`, не editorial ledger",
         "`editorial_reconstruction` source для игровых реконструкций: существующие inference qualifiers сохраняются при compile; реконструкция не выдаётся за direct/high/attested факт и не создаёт hard exclusion. Независимый approval проверяет её plausibility, не требует выдуманного внешнего свидетельства",
@@ -764,7 +767,7 @@
       ],
       "path": "tools/world-catalog-workflow",
       "public_entry": "./src/index.js",
-      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также владеет internal CLI/authoring-компиляцией approved World Knowledge records в deterministic immutable bundle и предоставляет нейтральные чистые projections утверждённых `world_base` records для Stage 8 и G5 materialization. Он не владеет gameplay World Knowledge runtime, runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.",
+      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также владеет internal CLI/authoring-компиляцией approved World Knowledge records в deterministic immutable bundle. Совместимые exports projections утверждённых `world_base` records делегируют реализации-владельцу `@rus/runtime-catalog`; production runtime этот tool не импортирует. Модуль не владеет gameplay World Knowledge runtime, runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.",
       "version": "0.1.0"
     }
   ]

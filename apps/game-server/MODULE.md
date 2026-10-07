@@ -47,6 +47,10 @@ runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
+Committed v5 inventory mechanics defaults принадлежат `@rus/items-property`;
+game-server сохраняет границы validation своих adapters и делегирует им только
+чистую проекцию профиля.
+
 Runtime `needs_check` filter is limited to O1, O2b and S1. Server gets
 `rus.needs_check_blockers.v2` only from verified immutable catalog snapshot for
 same turn pin; lookup is lazy. Guard uses year from committed clock and region

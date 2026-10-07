@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(screen): preserve committed NPC perceptions when finalizing the People panel (#523)
 - docs(governance): WR §21.1 — an approval record names the exact approved bytes: path and sha256 of the approved content (git commit when available) and the date; no signatures or receipts (owner decisions D142, D144)
 - fix(game-base): resolve Novgorod SQLite refs exactly from the tracked read-only source; fail closed on unchecked refs (#469)
 - fix(spatial): allow visible-package persistence against matching committed v0 snapshot (#467)

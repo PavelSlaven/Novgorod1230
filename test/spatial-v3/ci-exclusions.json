@@ -472,6 +472,11 @@
       "reference": "#485"
     },
     {
+      "path": "test/spatial-v3/people-panel-perception-screen-postgres.test.js",
+      "reason": "PG-hinted end-to-end regression for #523 (runtime about 500 s); deferred to the first batch of the future optional PG job.",
+      "reference": "#485"
+    },
+    {
       "path": "test/spatial-v3/presence-rules-vikhtuy-resolver-v17-postgres.test.js",
       "reason": "PG-hinted test deferred to a future optional PG job; baseline status NOT_RUN, timing/result at current HEAD not independently measured.",
       "reference": "#485"

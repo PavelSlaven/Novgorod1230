@@ -52,8 +52,11 @@ Gap Auditor работает отдельно в authoring workflow; в runtime 
 Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3
 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`,
 runtime-catalog pins, World Knowledge loader/encoder and D17 reranker worker, turn/public runtime facade и post-commit
-presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
+presentation delivery. Shared startup resolves its project root from the module location and accepts an explicit root override.
+На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
+
+For the v17 target composition, the pinned `C007c2` speech-register source is a startup requirement: missing, unreadable, pin-mismatched or unparsable data refuses startup with `SPATIAL_V3_TARGET_NPC_SPEECH_REGISTERS_REQUIRED` before listen. Other profiles keep the direct runtime-catalog reader fail-soft; an unavailable source yields no rows and one sanitized diagnostic.
 
 Committed v5 inventory mechanics defaults принадлежат `@rus/items-property`;
 game-server сохраняет границы validation своих adapters и делегирует им только

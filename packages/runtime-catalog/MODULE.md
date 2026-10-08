@@ -55,7 +55,8 @@ reused by later projections.
 - `loadPlacePopulationComposition({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin, placeFamilyId, compositionVersion? })` — D-2 состав населения из `world_base.place_population_composition_rules` с тем же gate;
 - `loadNpcRelationshipMaterializationRules({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin })` — approved NPC relationship rules from the exact world revision, after spatial and latest runtime-catalog activation gates; rejects multiple approved versions of one rule id.
 - `loadNpcSpeechAddressForms({ worldBaseReader, spatialWorldPin, worldPin, runtimeCatalogPin })` — approved speech-address forms from the exact world revision after the same spatial and runtime-catalog gates.
-- `NPC_SPEECH_REGISTERS_PIN` and `loadNpcSpeechRegisters({ rootDir?, readFile?, onDiagnostic? })` — read-only process-cached CSV projection, available only when the `C007c2` source matches its pinned SHA-256 (`8f0c1d91` approval snapshot); pin/read/parse failure returns no rows and emits one sanitized diagnostic per source path.
+- `NPC_SPEECH_REGISTERS_PIN` and `loadNpcSpeechRegisters({ rootDir?, readFile?, onDiagnostic? })` — read-only process-cached CSV projection, available only when the `C007c2` source matches its pinned SHA-256 (`8f0c1d91` approval snapshot); the default root is derived from the module location, `rootDir` overrides it, and cache entries are keyed by absolute source path. Pin/read/parse failure returns no rows and emits one sanitized diagnostic per source path.
+  The game-server v17 target startup requires a nonempty result from this reader and rejects an unavailable pinned source with `SPATIAL_V3_TARGET_NPC_SPEECH_REGISTERS_REQUIRED` (503), including cached failures. Direct callers retain the fail-soft contract.
 - `loadApprovedProceduralSceneRecordBundle(...)` verifies the exact world pin,
   latest matching activation event and approved regional applicability before
   exporting compiler inputs; candidate/manifests alone are rejected;
@@ -78,7 +79,7 @@ reused by later projections.
   сортировки; `mode` равен `deterministic_from_approved_bindings`. Это выбор по
   порядку, не по сезону, занятию или иной причине. Stage 8 и Stage 16 используют
   одну функцию. Отсутствующая привязка даёт `unknown` и типизированный пробел.
-- `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.
+- `loadCommonCatalogLookupRecords({ rootDir? })` — cached read-only lookup loader for common catalog records; by default it derives the project root from the module location, with an explicit `rootDir` override and cache keyed by absolute path.
 - `RUNTIME_CATALOG_CONTRACT` и `RUNTIME_CATALOG_CONTRACT_DIGEST` из
   `@rus/runtime-catalog/runtime-contract`.
 - `ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT` и exact digest из того же subpath;

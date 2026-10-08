@@ -1,7 +1,10 @@
 import { serverError } from './errors.js';
+import { fileURLToPath } from 'node:url';
 import {
   SPATIAL_V3_PRODUCTION_BINDINGS_MODULE, SPATIAL_V3_TARGET_BINDINGS_MODULE
 } from './runtime/load-spatial-v3-bindings.js';
+
+export const GAME_SERVER_PROJECT_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 
 const MODULAR_FLAGS = Object.freeze([
   'modulesEnabled',
@@ -26,6 +29,7 @@ export function readServerConfig(env = process.env) {
   const runtimeRoute = route(env.RUS_RUNTIME_ROUTE, bool(env.RUS_LEGACY_RUNTIME_ENABLED, false) ? 'legacy' : 'modular');
   const modularDefault = runtimeRoute === 'modular';
   const config = {
+    rootDir: GAME_SERVER_PROJECT_ROOT,
     host,
     port,
     maxBodyBytes,

@@ -5,6 +5,7 @@ import { assertTargetCatalogActivationReadiness, withRuntimeCatalogActivationLoc
 import { serverError } from '../errors.js';
 import { loadTargetAuthoredStartRuntimes } from '../infrastructure/postgres/target-authored-start-runtime.js';
 import { createSpatialV3WorldBaseReader } from '../infrastructure/postgres/spatial-v3-world-base-reader.js';
+import { GAME_SERVER_PROJECT_ROOT } from '../config.js';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { TARGET_O1_PROFILE_ARTIFACT_PINS } from '../internal/target-o1-profile-pins.js';
@@ -33,19 +34,19 @@ export async function loadTargetCatalogActivationApprovals({ config = {}, env = 
   if (config.targetCatalogActivationApprovals != null) return config.targetCatalogActivationApprovals;
   const path = config.targetCatalogActivationApprovalsPath ?? env.RUS_SPATIAL_V3_TARGET_ACTIVATION_APPROVALS_PATH;
   if (!path) return {};
-  return JSON.parse(await readFile(resolve(config.rootDir ?? process.cwd(), path), 'utf8'));
+  return JSON.parse(await readFile(resolve(config.rootDir ?? GAME_SERVER_PROJECT_ROOT, path), 'utf8'));
 }
 
 // This factory is deliberately not the default release selector. All operational
 // evidence comes from the existing catalog owners and the supplied database.
 export async function createSpatialV3TargetProductionRelease({
-  worldPool, itemApproval, actorApproval, rootDir = process.cwd()
+  worldPool, itemApproval, actorApproval, rootDir = GAME_SERVER_PROJECT_ROOT
 } = {}) {
   return (await loadSpatialV3TargetProductionRelease({ worldPool, itemApproval, actorApproval, rootDir })).release;
 }
 
 export async function loadSpatialV3TargetProductionRelease({
-  worldPool, itemApproval, actorApproval, rootDir = process.cwd()
+  worldPool, itemApproval, actorApproval, rootDir = GAME_SERVER_PROJECT_ROOT
 } = {}) {
   const compatibleDigest = itemApproval?.request?.compatible_world_pin_manifest_digest;
   if (!/^[a-f0-9]{64}$/u.test(compatibleDigest ?? '') || !worldPool?.query) {

@@ -81,6 +81,7 @@ import { createTargetCurrentFactualContext } from
   '../infrastructure/postgres/target-current-factual-context.js';
 import { deriveTrustedBodyNeedsBindingPin } from '../runtime/body-needs-temporal.js';
 import { createTargetAuthoredStartCatalog } from '../internal/target-authored-start-catalog.js';
+import { GAME_SERVER_PROJECT_ROOT } from '../config.js';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
   SPATIAL_V3_PRODUCTION_RELEASE,
@@ -101,13 +102,14 @@ export async function createSpatialV3ProductionCompositionRoot({
   worldKnowledgeEncoderFactory = undefined,
   targetRootFactory = createSpatialV3ProductionComposition
 } = {}) {
+  config = { ...config, rootDir: config.rootDir ?? GAME_SERVER_PROJECT_ROOT };
   const pools = suppliedPools ?? createPostgresPools({ env, PoolClass });
   let worldKnowledgeEncoder = null;
   try {
     const selectedModule = resolveSpatialV3ProductionBindingsModule(config, env);
     const targetContext = selectedModule === SPATIAL_V3_TARGET_BINDINGS_MODULE
       ? await loadSpatialV3TargetProductionRelease({ worldPool: pools.worldPool,
-          ...await loadTargetCatalogActivationApprovals({ config, env }), rootDir: config.rootDir ?? process.cwd() }) : null;
+          ...await loadTargetCatalogActivationApprovals({ config, env }), rootDir: config.rootDir }) : null;
     const release = targetContext?.release ?? createSpatialV3ProductionRelease(
       config.runtimeCatalogPinManifestDigest
         ?? env.RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST
@@ -130,7 +132,7 @@ export async function createSpatialV3ProductionCompositionRoot({
     const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
     const targetProfiles = targetContext == null ? null : await loadTargetRuntimeProfiles({
-      rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id,
+      rootDir: config.rootDir, worldRevisionId: release.world_revision_id,
       o1ArtifactPins: release.target_o1_profile_artifact_pins,
       verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
       ...(config.a1ApplicabilityClassPath == null ? {}
@@ -138,16 +140,16 @@ export async function createSpatialV3ProductionCompositionRoot({
     const [profiles, spatialSemanticProfile, scenePresentation,
       npcSemanticRemainderProfile, loadedWorldKnowledge,
       scenarioBundle] = await Promise.all([
-      targetProfiles?.materialization_profiles ?? loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
-      targetContext == null ? loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }) : null,
+      targetProfiles?.materialization_profiles ?? loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir }),
+      targetContext == null ? loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir }) : null,
       targetContext == null ? loadLowerDvinaTraceScenePresentation({
-        rootDir: config.rootDir ?? process.cwd(),
+        rootDir: config.rootDir,
         scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
       }) : null,
       targetContext == null ? loadLowerDvinaTraceN1Profile({
-        rootDir: config.rootDir ?? process.cwd()
+        rootDir: config.rootDir
       }) : null,
-      loadProductionWorldKnowledge({ rootDir: config.rootDir ?? process.cwd(),
+      loadProductionWorldKnowledge({ rootDir: config.rootDir,
         python: env.RUS_WORLD_KNOWLEDGE_PYTHON ?? 'python',
         requireEncoderReady: true,
         packRevision: release.world_knowledge_pack_revision,
@@ -157,7 +159,7 @@ export async function createSpatialV3ProductionCompositionRoot({
             return worldKnowledgeEncoder;
           } }) }),
       targetContext == null ? loadLowerDvinaTraceMaterializationBundle({
-        rootDir: config.rootDir ?? process.cwd(),
+        rootDir: config.rootDir,
         scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
       }) : { calendar_profile: targetContext.runtime.materialization_inputs.calendar_profile }
     ]);

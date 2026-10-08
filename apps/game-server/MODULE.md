@@ -95,6 +95,11 @@ Temporal, equipment and routine inputs. NPC schedules bind the generated
 position directly and retain the existing `@rus/npc-runtime` transition state.
 Every generated NPC requires exact regional and clothing profile bindings;
 clothing belonging to another NPC cannot satisfy its requirements.
+The first-entry NPC loop starts with the compiled inputs' `occupied_names`
+and adds each selected name to a local scene list before materializing the next
+NPC. Name exclusion and weighted selection remain owned by `@rus/materialization`;
+the writer does not reroll names or reserve them across scenes. Pool exhaustion
+keeps a selected pool name with `name_provenance.reason = scene_pool_exhausted`.
 
 The optional target-release natural baseline boundary
 `prepareG4NaturalBaseline` validates exact catalog/G4/scene/Temporal

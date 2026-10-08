@@ -59,6 +59,9 @@ Closure содержит ровно один exact selector: generated template 
 входящего игрока; water G6 без существующего carrier-supported position имеет
 явно authored пустой baseline. Missing profile/variant/position — typed data gap.
 Выбор сохраняется в selection trace; компилятор не читает БД и не коммитит.
+`compileGeneratedNpcBindings` и `compilePlacePeopleBindings` принимают optional
+`occupied_names` — список уже занятых форм имени NPC этой сцены. Компилятор
+передаёт копию списка в каждый NPC input; он не выбирает имя или пол.
 Caller связывает exact target runtime item authority до вызова: отдельный
 `equipment_catalog_digest` передаётся Stage 16, а `world_catalog_digest`
 сохраняет смысл world pin для actor generation. Один active marker не
@@ -168,6 +171,17 @@ approved entries, weighted draw. A context without a binding or without candidat
 `canonical_name: null` and a typed `name_provenance.reason` (LW-107). `character` is
 written only when the occupation has goals and fears and the scales are complete (LW-109).
 A bundle without `npc_identity` keeps the unnamed result.
+
+`materializeApprovedProceduralNpc` принимает optional `occupied_names`.
+Единственный owner выбора имени, `pickNpcName`, исключает занятые точные
+`name_form` из применимого пула, сохраняя веса, сортировку и один прежний draw.
+Групповые callers first-entry и canonical start накапливают выбранные имена
+в локальном списке для этой сцены; повторный вызов начинает с того же исходного
+списка. Между сценами имена не резервируются, committed NPC не переименовываются.
+Если все применимые формы заняты, тот же один draw выбирает из полного
+применимого пула: NPC сохраняет имя, а `name_provenance.reason` получает
+`scene_pool_exhausted`. Отсутствующий binding или исходно пустой пул сохраняют
+прежние `no_pool_binding` / `no_candidates` и `canonical_name: null`.
 
 An exact `clothing_profile_ref` resolves one approved sex/age/season variant
 after the existing appearance draw. Its required slots and explicit personal

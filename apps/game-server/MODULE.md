@@ -399,7 +399,7 @@ and adds no second transaction owner.
   recovery, не factual delivery. Factual replay возвращает тот же validated
   screen без narrator или gameplay execution; terminal mode не upgrade-ится в prose.
 
-Каждый applied direct `not_achieved`, в том числе после achieved speech, передаёт через общий turn-step result overlay недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и failed results выводятся в порядке step traces; unapplied plans не проецируются как результаты.
+Applied direct `not_achieved` сохраняет подтверждённые факты владельцев и препятствия, без статуса цели и сырого `grounded_attempt` завершённой semantic activity. Полное свежее восприятие без людей даёт локальный факт «В поле зрения никого нет.», не подтверждение контакта или молчания. Неизвестная причина отмечается `turn_step_not_achieved_projection_gap` только в private gameplay trace developer mode; model reason/reason_code на провод не идут. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и подтверждённые факты выводятся в порядке step traces; unapplied plans не проецируются как результаты.
 
 Revision 33 production temporal registration читает canonical NPC schedules,
 применяет approved routine transitions в текущем рабочем состоянии и сохраняет

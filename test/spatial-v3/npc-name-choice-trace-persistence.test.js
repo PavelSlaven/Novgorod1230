@@ -307,6 +307,9 @@ test('issue #601 PostgreSQL: committed name trace, identity and snapshot survive
     const before = await readback();
     assert.equal(before.runs.length, 1);
     assert.deepEqual(before.runs[0].trace.first_entry.choices, first.result.materialization_trace.choices);
+    const expectedNpcIds = npcRows(first.result).map((npc) => npc.npc_id).sort();
+    assert.deepEqual(before.npcs.map((npc) => npc.npc_id).sort(), expectedNpcIds,
+      'readback includes every materialized NPC and its name snapshot');
     for (const npc of before.npcs) {
       const expected = npcRows(first.result).find((row) => row.npc_id === npc.npc_id);
       assert.deepEqual(npc.identity_state, expected.identity_state);
@@ -326,6 +329,8 @@ test('issue #601 PostgreSQL: committed name trace, identity and snapshot survive
     const replay = await committer.commit({ plan });
     assert.equal(replay.ok, true, JSON.stringify(replay));
     assert.equal(replay.replay, true);
+    assert.deepEqual((await readback()).npcs.map((npc) => npc.npc_id).sort(), expectedNpcIds,
+      'replay readback includes every materialized NPC and its name snapshot');
     assert.deepEqual(await readback(), before,
       'replay retains committed choices, identities and name snapshots after catalog replacement');
   });

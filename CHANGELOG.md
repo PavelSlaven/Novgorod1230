@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(turn): preserve exact fractional elapsed in prepared consequence bindings and normalized rational pairs throughout activity lifecycle writes (#597)
 - fix(llm-runtime): use a Russian JSON-mode instruction on the provider wire (#563)
 - fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - fix(npc): require source knowledge before occupation-based address selection (#526)

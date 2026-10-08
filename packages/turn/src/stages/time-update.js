@@ -4,8 +4,7 @@ import { freezeOutput } from './shared.js';
 import { resolveTurnStepSemanticActivityTime } from
   '../semantic-activity-time.js';
 import {
-  buildTurnStepPreparedTimeUpdate,
-  requireTurnStepPreparedEffectLedger
+  resolveTurnStepPreparedConsequenceTime
 } from '../turn-step-prepared-effects.js';
 
 export async function buildTimeUpdateStage({
@@ -19,23 +18,15 @@ export async function buildTimeUpdateStage({
   const clock = retrievedState.clock_weather_light?.clock ?? retrievedState.clock ?? {};
   const duration = consequence.duration_minutes ?? 0;
   if (preparedEffectLedger != null) {
-    const ledger = requireTurnStepPreparedEffectLedger(preparedEffectLedger);
-    const prepared = buildTurnStepPreparedTimeUpdate(ledger);
-    if (consequence.prepared_effect_ledger_digest !== ledger.ledger_digest
-        || prepared.exact_elapsed.exact_minutes.numerator
-          !== String(duration)) {
-      const error = new Error(
-        'Prepared effect ledger differs from the consequence duration.');
-      error.code = 'TURN_STEP_PREPARED_EFFECT_INVALID';
-      throw error;
-    }
+    const prepared = resolveTurnStepPreparedConsequenceTime(
+      consequence, preparedEffectLedger);
     const semantic = resolveTurnStepSemanticActivityTime({
       batch: turnStepOperationBatch,
       consequence,
       clockBefore: prepared.clock_before,
       clockAfter: prepared.clock_after,
       exactElapsed: prepared.exact_elapsed,
-      preparedEffectLedger: ledger
+      preparedEffectLedger: prepared.prepared_effect_ledger
     });
     return freezeOutput(withPostAppliedTemporalResults(
       { ...prepared, ...(semantic ?? {}) }, postAppliedTemporalResults));

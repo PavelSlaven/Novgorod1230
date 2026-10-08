@@ -278,8 +278,8 @@ async function seedParty(pool) {
     (party_id,actor_kind,actor_id,role_ref,occupation_ref,skill_profile_snapshot,
       name_profile_snapshot,language_profile_snapshot,knowledge_profile_snapshot,
       profile_candidate_set_digest,created_change_set_id,updated_change_set_id)
-    VALUES ('party:352','npc','npc:positioned','{"id":"role:test"}',
-      '{"id":"occupation:test"}','{}','{}','{}','{}','profile-digest',
+    VALUES ('party:352','npc','npc:positioned','{"id":"role:test","source":"test"}',
+      '{"id":"occupation:test","source":"test"}','{}','{}','{}','{}','profile-digest',
       'change:seed','change:seed')`);
   await pool.query(`INSERT INTO party_runtime.party_g5_sites
     (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,

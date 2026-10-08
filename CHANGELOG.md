@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- test(npc): permanent PG regressions for NPC body readback without a site and return without a route (#352, #394)
 - fix(game-base): build STATUS verdict links from the latest approval evidence (#560)
 - test(spatial): a failing optional CR178 readback report no longer masks the test assertion; the write error is logged next to it (#568)
 - test(spatial): the Lower Dvina boundary compile test uses the pinned exact head instead of CI GITHUB_SHA, so it no longer rewrites the committed production-v3 candidate and breaks the activation boundary check (#98, D89)

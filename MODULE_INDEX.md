@@ -40,7 +40,7 @@ Release: `0.23.0-migration.24`
 
 | Application | Path | Purpose |
 |---|---|---|
-| `@rus/game-server` | `apps/game-server` | Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`, runtime-catalog pins, World Knowledge loader/encoder and D17 reranker worker, turn/public runtime facade и post-commit presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root. |
+| `@rus/game-server` | `apps/game-server` | Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`, runtime-catalog pins, World Knowledge loader/encoder and D17 reranker worker, turn/public runtime facade и post-commit presentation delivery. Shared startup resolves its project root from the module location and accepts an explicit root override. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root. |
 | `@rus/game-web` | `apps/game-web` | Browser-клиент, который получает только versioned public read models от `@rus/game-server` и отображает их без вычисления игровых последствий. |
 
 ## Tools

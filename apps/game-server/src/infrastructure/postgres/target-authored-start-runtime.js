@@ -9,10 +9,11 @@ import { loadTargetAuthoredStartProfile, readPinnedArtifact } from '../../intern
 import { buildCalendarProjectionProfile } from '../../internal/lower-dvina-trace-phase-1a-bundle.js';
 import { createSpatialV3WorldBaseReader } from './spatial-v3-world-base-reader.js';
 import { serverError } from '../../errors.js';
+import { GAME_SERVER_PROJECT_ROOT } from '../../config.js';
 
 /** Read existing approved owners only. Activation approval is checked by the release caller. */
 export async function loadTargetAuthoredStartRuntimes(options = {}) {
-  const rootDir = options.rootDir ?? process.cwd();
+  const rootDir = options.rootDir ?? GAME_SERVER_PROJECT_ROOT;
   let manifest;
   try {
     manifest = JSON.parse(await readFile(resolve(rootDir,
@@ -51,7 +52,7 @@ export async function loadTargetAuthoredStartRuntimes(options = {}) {
 }
 
 export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actorBinding,
-  rootDir = process.cwd(), artifacts = null, onDiagnostic = null } = {}) {
+  rootDir = GAME_SERVER_PROJECT_ROOT, artifacts = null, onDiagnostic = null } = {}) {
   if (!worldPool?.query || !itemPin?.activation_event_id || !actorBinding?.pin?.activation_event_id) {
     gap('SPATIAL_V3_TARGET_RUNTIME_PIN_REQUIRED');
   }
@@ -126,6 +127,10 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
       });
     }) }),
   ]);
+  if (speechRegisters.length === 0) {
+    throw serverError('SPATIAL_V3_TARGET_NPC_SPEECH_REGISTERS_REQUIRED',
+      'Approved NPC speech register catalog is required to start the target runtime.', { status: 503 });
+  }
   const approvedActorTemporalBundle = Object.freeze({ ...actorBundle,
     npc_relationship_materialization_rules: relationshipRules });
   const initialRule = start.initial_perception_rule == null ? null

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile as readFileDefault } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { deepFreeze, fail, rowsFrom } from './shared.js';
 import {
   assertApprovedWorldCatalogActivation,
@@ -17,11 +18,12 @@ export const NPC_SPEECH_REGISTERS_PIN = Object.freeze({
 
 const NPC_SPEECH_REGISTERS_MAX_BYTES = 1_000_000;
 const NPC_SPEECH_REGISTERS_MAX_ROWS = 500;
+const PROJECT_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const npcSpeechRegistersCache = new Map();
 
 /** Read approved, process-cached speech registers from their exact pinned CSV. */
 export async function loadNpcSpeechRegisters({
-  rootDir = process.cwd(),
+  rootDir = PROJECT_ROOT,
   readFile = readFileDefault,
   onDiagnostic,
 } = {}) {

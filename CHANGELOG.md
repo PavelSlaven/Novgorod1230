@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- docs(narration): adopt D158 world/story boundaries and third-person past narration; extend required scene context while preserving CR #158 thresholds; D162 excludes unexecuted intent from prose and keeps perceived blockers; runtime changes follow separately
 - fix(turn): preserve exact fractional elapsed in prepared consequence bindings and normalized rational pairs throughout activity lifecycle writes (#597)
 - fix(game-server): project saved-screen entity refs as stable public keys; keep local-play diagnostics on public keys and visible evidence (#330)
 - fix(npc): exclude occupied scene name forms with the existing deterministic draw; exhausted pools retain a name with diagnostic provenance (#284); LW-108 closed

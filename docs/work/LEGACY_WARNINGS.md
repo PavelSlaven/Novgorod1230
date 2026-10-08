@@ -748,6 +748,12 @@
 - **Как жить.** Не выводить температурное воздействие из погоды, сезона, одежды или помещения. До отдельного утверждённого профиля `body_factor_ids` остаётся пустым.
 - **Issue.** [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315)
 
+### LW-139 — норма прозы D158 опережает промпты (corpus-d158)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-narration-llm.js`, `lower-dvina-trace-narration-audit.js` (+ `-values.js`: `unsupported_sensory`), `authored-opening-narration.js`, `canonical-opening-context.js:80` и `lower-dvina-trace-opening.js:161` (`style_constraints` second_person), промпт ответчика NPC.
+- **Что.** `situational_prose_requirements.md` после D158 требует третье лицо, прошедшее время, имя героя и свободу рассказа (мир из данных). Production-промпты писателя, аудитора и repair пока во втором лице и с запретами рассказа; вход хода ещё без имени и пола героя.
+- **Как жить.** Расхождение ожидаемое: не считать его дефектом правки нормы и не править промпты попутно. Промпты меняют ролевые задачи D158 по одной (вступление, ход, ответчик NPC) с D81, ревью помощника по прозе, облачной пробой и тестом «страж свободы».
+- **Issue.** [#593](https://github.com/PavelSlaven/Novgorod1230/issues/593), [#600](https://github.com/PavelSlaven/Novgorod1230/issues/600)
+
 ### LW-140 — LD revision 25 после маршрута не имеет позиции для strict scene readback (#570)
 - **Где.** `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js:67`, `lower-dvina-trace-phase-4-write-projection.js:61`, `world-route-journey.js:5`; `scene-npcs-readback.js:21`; `test/integration/lower-dvina-trace-phase-4-postgres.test.js:57` (выполняемые маршрутные секции сняты, initial inventory проверка сохранена).
 - **Что.** Старый маршрут LD revision 25 удаляет `position_id` и actor scene journey. Strict reader #570 требует подтверждённую active same-party SQL-позицию и отвечает `SCENE_NPC_READBACK_DATA_GAP` (409). Это подтверждено PG-прогоном army-570: route screen persistence падает до surrender/restart. По D97 старое прохождение LD не поддерживается; исключение legacy и fallback к snapshot site запрещены решением ведущего A-army-570-03.

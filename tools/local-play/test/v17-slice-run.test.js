@@ -183,7 +183,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     screen_status: 'ready', visible_context: { visible_scene: 'У берега стоит человек.' },
     visible_changes: [], uncertainties: [], panels: { people: { visible: true,
       data: { visible_npcs: npcHere() ? [{ display_label: 'человек (1)' }] : [] } } } }) : ({ main_prose: w.prose, labels: labelsAt(),
-    visible_context: { schema: 'visible_context_package', visible_npc: npcHere()
+    visible_context: { schema: 'visible_context_package', visible_npc: npcHere() && !hidePeople
       ? [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc1' }, display_label: 'человек' }] : [] },
     panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
   const env = (data) => ({ status: 200, ok: true, data, error: null });

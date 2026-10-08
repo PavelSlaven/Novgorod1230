@@ -163,14 +163,17 @@ export function projectPreparedSiteLineState(state, transition, traversal) {
   const atDestination = positionId === transition.to_position_ref;
   if (endpoint && (atSource || atDestination)) {
     const source = atSource;
+    const endpointChanged = positionId !== next.position?.position_id;
+    const g6InstanceId = source ? transition.source_g6_instance_id
+      : transition.destination_g6_instance_id;
     next.position = {
       ...structuredClone(next.position ?? {}),
       position_id: positionId,
       location_ref: source ? transition.source_site_id : transition.destination_site_id,
       site_id: source ? transition.source_site_id : transition.destination_site_id,
       g4_id: source ? transition.source_g4_id : transition.destination_g4_id,
-      g6_id: source ? transition.source_g6_instance_id
-        : transition.destination_g6_instance_id
+      g6_id: g6InstanceId,
+      g6_instance_id: g6InstanceId
     };
     if (next.journey_location != null) {
       next.journey_location = {
@@ -183,6 +186,12 @@ export function projectPreparedSiteLineState(state, transition, traversal) {
           : transition.destination_g6_instance_id,
         state_version: Number(next.journey_location.state_version) + 1
       };
+    }
+    if (endpointChanged) {
+      for (const key of ['visible_context', 'visible_context_package',
+        'current_visible_context', 'current_spatial_context',
+        'current_spatial_context_is_fresh',
+        'current_spatial_context_filters_entities']) delete next[key];
     }
   } else {
     if (next.journey_location != null) {

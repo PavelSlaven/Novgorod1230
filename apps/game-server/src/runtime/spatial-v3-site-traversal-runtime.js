@@ -311,6 +311,11 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
     if (!prepared.ok) {
       gap(prepared.error?.diagnostics?.reason ?? prepared.error?.code ?? 'site_traversal_preparation_failed');
     }
+    const predecessor = connection.cost_kind === 'time'
+      ? await loadWaitingExecutionPredecessor({ pool, partyId,
+        journeyOwnerRef: prepared.plan.journey_owner_ref,
+        successorExecutionId: prepared.result.route_plan_execution_id })
+      : null;
     const returnedToDeparture = prepared.result.result_kind === 'returned_to_departure';
     const interruptedAtShore = prepared.result.result_kind === 'interrupted_at_anchor';
     const sourceProjection = returnedToDeparture || interruptedAtShore ? await projectDestination({ partyId, actorId,
@@ -339,6 +344,7 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
         travel_state: prepared.travel_state,
         final_travel_state: prepared.final_travel_state,
         traversal_intervals: prepared.traversal_intervals,
+        predecessor,
         clock_update: prepared.clock_update,
         expected_state_versions: prepared.expected_state_versions },
       movement: { status: prepared.final_travel_state.status,
@@ -350,6 +356,39 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
           ? { destination_site_origin: context.site.origin,
             destination_visible_context: sourceProjection.visible_context } : {} };
   };
+}
+
+async function loadWaitingExecutionPredecessor({ pool, partyId, journeyOwnerRef,
+  successorExecutionId }) {
+  const result = await pool.query(`SELECT to_jsonb(p) AS plan, to_jsonb(e) AS execution
+    FROM party_runtime.party_route_plan_executions e
+    JOIN party_runtime.party_route_plans p ON p.id=e.route_plan_id
+    WHERE e.party_id=$1 AND e.journey_owner_ref=$2::jsonb
+      AND e.journey_scope='world_travel'
+      AND e.status NOT IN ('completed','aborted','superseded')
+      AND e.id<>$3
+    ORDER BY e.id`, [partyId, JSON.stringify(journeyOwnerRef), successorExecutionId]);
+  if (!Array.isArray(result?.rows) || result.rows.length > 1) {
+    gap('site_traversal_multiple_open_executions');
+  }
+  if (result.rows.length === 0) return null;
+  const predecessor = result.rows[0];
+  if (predecessor.execution?.status !== 'waiting_at_anchor'
+    || predecessor.execution?.party_id !== partyId
+    || predecessor.plan?.party_id !== partyId
+    || predecessor.plan?.status !== 'ready'
+    || predecessor.execution?.route_plan_id !== predecessor.plan?.id
+    || predecessor.execution?.journey_scope !== 'world_travel'
+    || !isRecord(predecessor.execution.current_endpoint_ref)
+    || !Number.isSafeInteger(Number(predecessor.execution.state_version))
+    || !Number.isSafeInteger(Number(predecessor.plan.lifecycle_state_version))) {
+    gap('site_traversal_open_execution_not_waiting');
+  }
+  return predecessor;
+}
+
+function isRecord(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value);
 }
 
 function siteConnectionTraversalKind(connection) {

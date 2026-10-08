@@ -4,6 +4,8 @@ import { assertAuthoredStartV0SessionSnapshot } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-authored-start.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import * as phase2 from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 
 const snapshot = () => ({
   party_state_version: 0,
@@ -95,3 +97,29 @@ test('authored-start reader rejects a changed transactional screen before Phase1
       /party_runtime\.party_materialization_runs/u.test(sql)).length, 0);
     assert.equal(statements.at(-1), 'ROLLBACK');
   });
+
+test('Phase 2 projects initial environment through the shared owner without mutating its source', () => {
+  const sourceEnvironment = Object.freeze({ schema: 'rus.approved_initial_environment.v1',
+    season: 'summer' });
+  const projectedEnvironment = Object.freeze({ ...sourceEnvironment,
+    effects: Object.freeze({ movement_factor: Object.freeze({ numerator: '1', denominator: '1' }) }) });
+  const state = Object.freeze({ party_id: 'party:authored',
+    clock: Object.freeze({ whole_minutes: '480', subminute_numerator: '0',
+      subminute_denominator: '1' }), environment_snapshot: sourceEnvironment });
+  let calls = 0;
+  const projectEnvironmentAtClock = (input) => {
+    calls += 1;
+    assert.strictEqual(input.state, state);
+    assert.strictEqual(input.clock, state.clock);
+    return projectedEnvironment;
+  };
+
+  assert.equal(typeof phase2.projectPhase2InitialEnvironment, 'function',
+    'initial Phase 2 reads must use the shared environment projector');
+  const readState = phase2.projectPhase2InitialEnvironment(state, projectEnvironmentAtClock);
+
+  assert.strictEqual(readState.environment_snapshot, projectedEnvironment);
+  assert.strictEqual(state.environment_snapshot, sourceEnvironment,
+    'read projection must leave the persisted initial snapshot unchanged');
+  assert.equal(calls, 1);
+});

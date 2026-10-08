@@ -138,14 +138,14 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       }
       const temporalSourceProof =
         await loadTracePhase2TemporalSourceProof(readPool, partyId);
-      const initial = await loadInitialTracePhase2State({
+      const initial = projectPhase2InitialEnvironment(await loadInitialTracePhase2State({
         partyId,
         row,
         phase1A,
         partyPool: readPool,
         temporalSourceProof,
         runtimeBinding: resolvedBinding
-      });
+      }), projectEnvironmentAtClock);
       const naturalScenePerceptionInput = includeCurrentVisibleContext && canonicalInitialState
         ? await loadInitialNaturalScenePerceptionInput({ partyId,
           actorId: initial.actor_id, initialState: initial }) : null;
@@ -294,9 +294,9 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       });
       const temporalSourceProof =
         await loadTracePhase2TemporalSourceProof(transaction, partyId);
-      const initial = await loadInitialTracePhase2State({ partyId, row: head, phase1A,
+      const initial = projectPhase2InitialEnvironment(await loadInitialTracePhase2State({ partyId, row: head, phase1A,
         partyPool: transaction, temporalSourceProof,
-        runtimeBinding: resolvedBinding });
+        runtimeBinding: resolvedBinding }), projectEnvironmentAtClock);
       const naturalPin = resolvedBinding?.initial_natural_perception_rule_pin;
       const canonicalInitialState = naturalPin != null
         || head.state_payload?.initial_spatial_v3?.canonical_scene_proposal != null;
@@ -564,6 +564,13 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     loadPhase2VisibleContext: (input) => loadPhase2VisibleContext(partyPool, input),
     persistPhase2Screen
   });
+}
+
+export function projectPhase2InitialEnvironment(state, projectEnvironmentAtClock) {
+  if (typeof projectEnvironmentAtClock !== 'function') return state;
+  return { ...state, environment_snapshot: projectEnvironmentAtClock({
+    state, clock: state.clock
+  }) };
 }
 
 async function withPhase2ReadSnapshot(pool, turnBudget, work) {

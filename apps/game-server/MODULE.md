@@ -943,6 +943,7 @@ intensity. Opening time and initial bodily prose are not timeless knowledge.
 Prepared destination visibility after movement receives the prepared effect's
 exact `time_update.clock_after`; standalone phase-2 readback uses the persisted
 party clock.
+Site-line movement is not supported by `PreparedDomainEffect.supports()` inside a prepared chain.
 
 Committed authored conversations expose only their player-facing `journal_text`
 and actual speaker through the existing safe interaction projection. Private NPC

@@ -162,7 +162,8 @@ for (const conditionRef of [connection.availability_condition_set_ref, null]) te
   }
   let environmentProjection = { effects: { movement_factor: rational('1') } };
   const prepare = createSpatialV3SiteTraversalRuntime({ pool: { query: async (sql) =>
-    ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c') ? current : { units: 0 }] }) },
+    sql.includes('to_jsonb(p) AS plan') ? ({ rowCount: 0, rows: [] })
+      : ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c') ? current : { units: 0 }] }) },
   assessAvailability: async () => ({ ok: true, status: 'open', connection_id: 'connection',
     condition_set_ref: conditionRef == null ? null : `${conditionRef.entity_id}@${conditionRef.authoring_version}` }),
   assessMovementCapability: async () => ({ ok: true, actor_id: 'actor',
@@ -219,6 +220,27 @@ for (const conditionRef of [connection.availability_condition_set_ref, null]) te
       local_edge_path: [] }).slice(7)), true);
   assert.equal(written.rechecks[0].kind, 'site_connection_traversal');
   assert.deepEqual(consequence.position_transition.availability_condition_set_ref, conditionRef);
+  const duplicateOpenRows = [
+    { execution_id: 'open-a', plan_id: 'plan-a', execution_status: 'waiting_at_anchor',
+      plan_status: 'ready', execution_version: 2, plan_lifecycle_version: 1,
+      current_endpoint_ref: { endpoint: 'saved' } },
+    { execution_id: 'open-b', plan_id: 'plan-b', execution_status: 'waiting_at_anchor',
+      plan_status: 'ready', execution_version: 2, plan_lifecycle_version: 1,
+      current_endpoint_ref: { endpoint: 'saved' } }
+  ];
+  const doubleOpenCheck = await recheckSiteConnectionTraversal({ transaction: {
+    query: async (sql) => sql.includes('FOR UPDATE OF l,c')
+      ? { rowCount: 1, rows: [recheckRow(localConnection)] }
+      : { rowCount: duplicateOpenRows.length, rows: duplicateOpenRows }
+  }, partyId: party_id, check: { ...written.rechecks[0], journey_owner_ref:
+    consequence.spatial_v3_traversal.plan.journey_owner_ref },
+  assessAvailability: async () => ({ ok: true, status: 'open', connection_id: 'connection' }),
+  assessMovementCapability: async () => ({ ok: true, actor_id: 'actor',
+    capability_context: capability }),
+  projectDestination: async () => ({ ok: true, position_id: 'position:target',
+    site_id: 'site:target', visible_context: visible }) });
+  assert.deepEqual(doubleOpenCheck, { ok: false, code: 'state_version_conflict',
+    reason: 'site_traversal_multiple_open_executions' });
 
   const returned = structuredClone(consequence);
   const traversal = returned.spatial_v3_traversal;
@@ -315,9 +337,10 @@ test('approved local line traverses one timed step with exact D49 rational facto
       dynamic_recheck_policy: { id: 'recheck', version: 1,
         policy_kind: 'fixed_time_interval', interval_minutes: 15 } }] } };
   const prepare = createSpatialV3SiteTraversalRuntime({
-    pool: { query: async (sql) => ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c')
-      ? recheckRow(localConnection)
-      : { units: 0 }] }) },
+    pool: { query: async (sql) => sql.includes('to_jsonb(p) AS plan')
+      ? ({ rowCount: 0, rows: [] })
+      : ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c')
+        ? recheckRow(localConnection) : { units: 0 }] }) },
     assessAvailability: async () => ({ ok: true, status: 'open', connection_id: 'connection',
       condition_set_ref: localProfile.availability_condition_set_ref }),
     assessMovementCapability: async () => ({ ok: true, actor_id: 'actor', capability_context: capability }),
@@ -336,6 +359,24 @@ test('approved local line traverses one timed step with exact D49 rational facto
   assert.ok(consequence.spatial_v3_traversal.traversal_intervals.slice(0, -1)
     .every(({ result }) => result.actual_time.numerator === '15'));
   assert.equal(consequence.spatial_v3_traversal.result.result_kind, 'segment_completed');
+  const preparedProjection = projectPreparedDomainState({ ...state,
+    position: { ...state.position, g6_instance_id: 'g6:source' },
+    visible_context: visible, visible_context_package: visible,
+    current_visible_context: visible, current_spatial_context: { source: true },
+    current_spatial_context_is_fresh: true,
+    current_spatial_context_filters_entities: true }, {
+    consequence, time_update: { clock_after: state.clock, temporal_results: [] },
+    body_update: { state_after: {} }
+  });
+  assert.equal(preparedProjection.position.position_id, 'position:target');
+  assert.equal(preparedProjection.position.g6_id,
+    preparedProjection.position.g6_instance_id);
+  for (const alias of ['visible_context', 'visible_context_package',
+    'current_visible_context', 'current_spatial_context',
+    'current_spatial_context_is_fresh',
+    'current_spatial_context_filters_entities']) {
+    assert.equal(Object.hasOwn(preparedProjection, alias), false, alias);
+  }
 });
 
 test('legacy generated action connection keeps its pre-cutover zero-time traversal', async () => {
@@ -347,8 +388,10 @@ test('legacy generated action connection keeps its pre-cutover zero-time travers
   const localContext = { ...context, closure: { connection_profiles: [localProfile] },
     snapshot: { ...context.snapshot, line_bindings: [] } };
   const prepare = createSpatialV3SiteTraversalRuntime({
-    pool: { query: async (sql) => ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c')
-      ? recheckRow(localConnection) : { units: 0 }] }) },
+    pool: { query: async (sql) => sql.includes('to_jsonb(p) AS plan')
+      ? ({ rowCount: 0, rows: [] })
+      : ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c')
+        ? recheckRow(localConnection) : { units: 0 }] }) },
     assessAvailability: async () => ({ ok: true, status: 'open', connection_id: 'connection',
       condition_set_ref: localProfile.availability_condition_set_ref }),
     assessMovementCapability: async () => ({ ok: true, actor_id: 'actor', capability_context: capability }),
@@ -412,6 +455,7 @@ test('legacy generated action traversal carries a rechecked local approach into 
       destination_status: 'open' } }];
   const prepare = createSpatialV3SiteTraversalRuntime({
     pool: { query: async (sql) => {
+      if (sql.includes('to_jsonb(p) AS plan')) return { rowCount: 0, rows: [] };
       if (sql.includes('FOR UPDATE OF l,c')) return { rowCount: 1, rows: [{
         ...recheckRow(localConnection), from_position: shore.id }] };
       if (sql.includes('jsonb_array_elements')) return { rowCount: 1, rows: [{
@@ -500,8 +544,10 @@ test('fractional site line reaches prepared time and P16 commit with exact elaps
     currentState.scenario_id = 'test';
     currentState.temporal_boundary_candidates = [];
     const prepare = createSpatialV3SiteTraversalRuntime({
-      pool: { query: async (sql) => ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c')
-        ? recheckRow(localConnection) : { units: 0 }] }) },
+      pool: { query: async (sql) => sql.includes('to_jsonb(p) AS plan')
+        ? ({ rowCount: 0, rows: [] })
+        : ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c')
+          ? recheckRow(localConnection) : { units: 0 }] }) },
       assessAvailability: async () => ({ ok: true, status: 'open',
         connection_id: 'connection',
         condition_set_ref: localProfile.availability_condition_set_ref }),
@@ -666,6 +712,7 @@ test('hidden local approach and unresolved swim hazard stay one timed line reque
   swimCapability.canonical_digest = digest(swimCapability);
   const prepare = createSpatialV3SiteTraversalRuntime({
     pool: { query: async (sql) => {
+      if (sql.includes('to_jsonb(p) AS plan')) return { rowCount: 0, rows: [] };
       if (sql.includes('FOR UPDATE OF l,c')) return { rowCount: 1,
         rows: [{ ...recheckRow(localConnection), scene_position_id: origin, from_position: shore.id }] };
       if (sql.includes('jsonb_array_elements')) return { rowCount: 1, rows: [{
@@ -724,14 +771,59 @@ test('hidden local approach and unresolved swim hazard stay one timed line reque
     row.target_table === 'party_journey_locations'), false);
   const finalEvent = writes.writes.appends.filter((row) =>
     row.target_table === 'party_route_plan_execution_events').at(-1).record;
-  assert.equal(execution.status, 'aborted');
-  assert.equal(execution.abort_reason_code, 'interrupted_at_anchor');
-  assert.equal(execution.current_step_ordinal, null);
-  assert.equal(execution.terminal_at_turn, 1);
-  assert.equal(execution.final_location_snapshot.resolved_position_id, shore.id);
-  assert.equal(finalEvent.event_kind, 'aborted');
-  assert.equal(finalEvent.from_status, 'waiting_at_anchor');
-  assert.equal(finalEvent.to_status, 'aborted');
+  assert.equal(execution.status, 'waiting_at_anchor');
+  assert.equal(execution.abort_reason_code, null);
+  assert.equal(execution.current_step_ordinal, 0);
+  assert.equal(execution.current_endpoint_ref, consequence.spatial_v3_traversal.plan.steps[0]
+    .departure_endpoint_snapshot);
+  assert.equal(execution.terminal_at_turn, null);
+  assert.equal(execution.final_location_snapshot, null);
+  assert.equal(finalEvent.event_kind, 'wait_started');
+  assert.equal(finalEvent.from_status, 'active');
+  assert.equal(finalEvent.to_status, 'waiting_at_anchor');
+
+  const currentPlan = writes.writes.inserts.find((row) =>
+    row.target_table === 'party_route_plans').record;
+  const priorPlan = { ...currentPlan, id: 'prior-plan', lifecycle_state_version: 1 };
+  const priorExecution = { id: 'prior-execution', party_id: party_id,
+    route_plan_id: priorPlan.id, journey_owner_ref: currentPlan.journey_owner_ref,
+    journey_scope: 'world_travel', status: 'waiting_at_anchor',
+    current_step_ordinal: 0, current_endpoint_ref: currentPlan.source_endpoint_snapshot,
+    active_travel_state_id: null, active_activity_execution_id: null,
+    suspension_endpoint_ref: null, final_location_snapshot: null,
+    abort_reason_code: null, supersedes_execution_id: null,
+    superseded_by_execution_id: null, started_at_turn: 0, terminal_at_turn: null,
+    state_version: 3, updated_change_set_id: 'prior-change' };
+  const successorConsequence = { ...consequence, spatial_v3_traversal: {
+    ...consequence.spatial_v3_traversal,
+    predecessor: { plan: priorPlan, execution: priorExecution }
+  } };
+  const successorWrites = siteTraversalWrites({ partyId: party_id,
+    envelope: { consequence: successorConsequence },
+    changeSetId: currentPlan.created_change_set_id,
+    idemId: consequence.spatial_v3_traversal.result.idempotency_record_id,
+    turnNumber: currentPlan.created_at_turn });
+  const priorPlanUpdate = successorWrites.writes.updates.find((row) =>
+    row.target_table === 'party_route_plans');
+  const priorExecutionUpdate = successorWrites.writes.updates.find((row) =>
+    row.target_table === 'party_route_plan_executions');
+  const priorEvent = successorWrites.writes.appends.find((row) =>
+    row.target_table === 'party_route_plan_execution_events'
+      && row.record.execution_id === priorExecution.id);
+  const successorExecution = successorWrites.writes.inserts.find((row) =>
+    row.target_table === 'party_route_plan_executions').record;
+  assert.ok(priorPlanUpdate, 'successor P16 write must include predecessor plan lifecycle');
+  assert.ok(priorExecutionUpdate, 'successor P16 write must close predecessor execution');
+  assert.ok(priorEvent, 'successor P16 write must append predecessor lifecycle event');
+  assert.equal(priorPlanUpdate.record.status, 'superseded');
+  assert.equal(priorPlanUpdate.record.superseded_by_plan_id, currentPlan.id);
+  assert.equal(priorPlanUpdate.record.lifecycle_state_version, 2);
+  assert.equal(priorExecutionUpdate.record.status, 'superseded');
+  assert.equal(priorExecutionUpdate.record.superseded_by_execution_id,
+    successorExecution.id);
+  assert.equal(successorExecution.supersedes_execution_id, priorExecution.id);
+  assert.equal(priorEvent.record.event_kind, 'superseded');
+  assert.equal(priorEvent.record.change_set_id, currentPlan.created_change_set_id);
 });
 
 test('P19 repeated interval idempotency key replays one result, clock update, and append', () => {

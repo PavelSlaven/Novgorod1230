@@ -95,7 +95,7 @@ export const TABLE_MODES = Object.freeze({
   party_obligation_transitions: ['appends'],
   party_character_knowledge: ['inserts'],
   party_containers: ['inserts', 'updates'],
-  party_route_plans: ['inserts'],
+  party_route_plans: ['inserts', 'updates'],
   party_route_plan_steps: ['inserts'],
   party_transit_anchors: ['inserts', 'updates'],
   preparation_claims: ['inserts', 'updates'],

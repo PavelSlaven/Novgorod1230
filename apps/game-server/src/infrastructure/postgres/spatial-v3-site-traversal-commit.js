@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { row, sealedCheck } from './first-playable/plan-shared.js';
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { serverError } from '../../errors.js';
@@ -115,19 +116,21 @@ export function siteTraversalWrites({ partyId, envelope, changeSetId, idemId, tu
     || travel.next_interval_ordinal !== intervals.at(-1).result.interval_ordinal + 1) fail();
   const executionId = result.route_plan_execution_id;
   const travelStateId = travel.id;
+  const predecessor = traversal.predecessor ?? null;
   const terminalEndpoint = endpointForResult(result, step, null);
   const interrupted = result.result_kind === 'interrupted_at_anchor';
   const stranded = result.result_kind === 'stranded';
   const terminal = result.result_kind === 'segment_completed';
   const returned = result.result_kind === 'returned_to_departure';
   const suspended = interrupted && travel.progress_ppm > 0;
-  const abortedAtAnchor = interrupted && !suspended;
+  const waitingAtAnchor = interrupted && !suspended;
   if (interrupted && !terminalEndpoint) fail();
   const routeStatus = spatialV3TraversalOutcomeProjection(result, step).route_status;
   const currentEndpoint = returned ? step.departure_endpoint_snapshot
-    : interrupted ? endpointById(step, result.interruption_anchor_id)?.endpoint
+    : waitingAtAnchor ? step.departure_endpoint_snapshot
+      : interrupted ? endpointById(step, result.interruption_anchor_id)?.endpoint
       ?? step.departure_endpoint_snapshot : null;
-  const waitingResult = returned || interrupted && !suspended;
+  const waitingResult = returned || waitingAtAnchor;
   const event = (ordinal, kind, from, to, location, causal = null) => row(
     'party_route_plan_execution_events', `${executionId}:${ordinal}`, {
       execution_id: executionId, event_ordinal: ordinal, event_kind: kind,
@@ -160,12 +163,7 @@ export function siteTraversalWrites({ partyId, envelope, changeSetId, idemId, tu
       || interval.result_kind === 'blocked_before_progress' ? 'step_paused' : 'step_progressed',
     'active', 'active', origin, { entity_kind: 'party_traversal_interval_result', entity_id: interval.id }));
   });
-  if (abortedAtAnchor) events.push(event(intervals.length + 2, 'aborted',
-    'waiting_at_anchor', 'aborted', destination, {
-      entity_kind: 'party_traversal_interval_result', entity_id: intervals.at(-1).result.id
-    }));
-  return { writes: {
-    inserts: [row('party_route_plans', plan.id, {
+  const planRecord = {
       id: plan.id, party_id: partyId, journey_owner_ref: plan.journey_owner_ref,
       journey_scope: plan.journey_scope, request_kind: plan.request_kind,
       recovery_binding_id: null, administrative_authorization_pins: null,
@@ -185,33 +183,94 @@ export function siteTraversalWrites({ partyId, envelope, changeSetId, idemId, tu
       canonical_serialization_digest: plan.canonical_serialization_digest,
       status: 'ready', lifecycle_state_version: 1,
       created_change_set_id: changeSetId, lifecycle_change_set_id: changeSetId,
-      created_at_turn: turnNumber }),
+      created_at_turn: turnNumber };
+  const executionRecord = {
+      id: executionId, party_id: partyId, route_plan_id: plan.id,
+      journey_owner_ref: plan.journey_owner_ref, journey_scope: plan.journey_scope,
+      status: routeStatus, current_step_ordinal: terminal ? null : 0,
+      current_endpoint_ref: currentEndpoint,
+      active_travel_state_id: terminal || returned || interrupted ? null : travelStateId,
+      active_activity_execution_id: null,
+      suspension_endpoint_ref: suspended ? currentEndpoint : null,
+      final_location_snapshot: terminal ? destination : null,
+      abort_reason_code: null, supersedes_execution_id: null,
+      superseded_by_execution_id: null, started_at_turn: turnNumber,
+      terminal_at_turn: terminal ? turnNumber : null,
+      state_version: intervals.length + 2,
+      updated_change_set_id: changeSetId };
+  const inserts = [row('party_route_plans', plan.id, planRecord),
     row('party_route_plan_steps', `${plan.id}:0`, {
       route_plan_id: plan.id, ordinal: 0, step_kind: 'timed_traversal',
       departure_endpoint_snapshot: origin, arrival_endpoint_snapshot: arrival,
       static_contract_snapshot: step.static_contract_snapshot }),
-    row('party_route_plan_executions', executionId, {
-      id: executionId, party_id: partyId, route_plan_id: plan.id,
-      journey_owner_ref: plan.journey_owner_ref, journey_scope: plan.journey_scope,
-      status: routeStatus, current_step_ordinal: terminal || abortedAtAnchor ? null : 0,
-      current_endpoint_ref: abortedAtAnchor ? null : currentEndpoint,
-      active_travel_state_id: terminal || returned || interrupted ? null : travelStateId,
-      active_activity_execution_id: null,
-      suspension_endpoint_ref: suspended ? currentEndpoint : null,
-      final_location_snapshot: terminal || abortedAtAnchor ? destination : null,
-      abort_reason_code: abortedAtAnchor ? 'interrupted_at_anchor' : null, supersedes_execution_id: null,
-      superseded_by_execution_id: null, started_at_turn: turnNumber,
-      terminal_at_turn: terminal || abortedAtAnchor ? turnNumber : null,
-      state_version: intervals.length + 2 + Number(abortedAtAnchor),
-      updated_change_set_id: changeSetId }),
-    row('traveller_travel_states', travelStateId, travelRecord)],
-    updates: [],
-    appends: [...intervalWrites, ...events],
+    row('party_route_plan_executions', executionId, executionRecord),
+    row('traveller_travel_states', travelStateId, travelRecord)];
+  const updates = [];
+  const appends = [...intervalWrites, ...events];
+  if (predecessor != null) {
+    const priorPlan = predecessor.plan;
+    const priorExecution = predecessor.execution;
+    if (priorPlan?.party_id !== partyId || priorExecution?.party_id !== partyId
+      || priorExecution.route_plan_id !== priorPlan.id
+      || priorExecution.id === executionId
+      || priorExecution.status !== 'waiting_at_anchor'
+      || priorPlan.status !== 'ready'
+      || priorExecution.current_step_ordinal == null
+      || priorExecution.current_endpoint_ref == null
+      || priorExecution.journey_scope !== 'world_travel'
+      || !isDeepStrictEqual(priorExecution.journey_owner_ref, plan.journey_owner_ref)) fail();
+    const supersedes = isDeepStrictEqual(plan.source_endpoint_snapshot,
+      priorExecution.current_endpoint_ref);
+    const priorStatus = supersedes ? 'superseded' : 'aborted';
+    const handoffEndpoint = structuredClone(priorExecution.current_endpoint_ref);
+    const priorExecutionRecord = { ...priorExecution,
+      status: priorStatus, current_step_ordinal: null, current_endpoint_ref: null,
+      active_travel_state_id: null, active_activity_execution_id: null,
+      suspension_endpoint_ref: null,
+      final_location_snapshot: supersedes
+        ? { handoff_endpoint_snapshot: handoffEndpoint } : handoffEndpoint,
+      abort_reason_code: supersedes ? null : 'successor_source_mismatch',
+      superseded_by_execution_id: supersedes ? executionId : null,
+      terminal_at_turn: turnNumber,
+      state_version: Number(priorExecution.state_version) + 1,
+      updated_change_set_id: changeSetId };
+    if (supersedes) {
+      executionRecord.supersedes_execution_id = priorExecution.id;
+      updates.push(row('party_route_plans', priorPlan.id, { ...priorPlan,
+        status: 'superseded', superseded_by_plan_id: plan.id,
+        lifecycle_state_version: Number(priorPlan.lifecycle_state_version) + 1,
+        lifecycle_change_set_id: changeSetId }));
+    }
+    updates.push(row('party_route_plan_executions', priorExecution.id,
+      priorExecutionRecord));
+    appends.push(row('party_route_plan_execution_events',
+      `${priorExecution.id}:${priorExecution.state_version}`, {
+        execution_id: priorExecution.id,
+        event_ordinal: Number(priorExecution.state_version),
+        event_kind: priorStatus,
+        from_status: 'waiting_at_anchor', to_status: priorStatus,
+        step_ordinal: priorExecution.current_step_ordinal,
+        location_snapshot: handoffEndpoint, causal_result_ref: null,
+        change_set_id: changeSetId, idempotency_record_id: idemId,
+        occurred_at_turn: turnNumber }));
+  }
+  return { writes: {
+    inserts,
+    updates,
+    appends,
     deletes: [] }, rechecks: [sealedCheck('site_connection_traversal', {
       party_id: partyId, actor_id: transition.actor_id,
       journey_location_id: envelope.consequence.spatial_v3_traversal
         .expected_state_versions.entries.find((entry) =>
           entry.entity_ref.entity_kind === 'party_journey_location')?.entity_ref.entity_id,
+      journey_owner_ref: plan.journey_owner_ref,
+      predecessor_execution_id: predecessor?.execution?.id ?? null,
+      predecessor_execution_version: predecessor == null ? null
+        : Number(predecessor.execution.state_version),
+      predecessor_plan_id: predecessor?.plan?.id ?? null,
+      predecessor_plan_lifecycle_version: predecessor == null ? null
+        : Number(predecessor.plan.lifecycle_state_version),
+      predecessor_endpoint: predecessor?.execution?.current_endpoint_ref ?? null,
       ...transition })] };
 }
 

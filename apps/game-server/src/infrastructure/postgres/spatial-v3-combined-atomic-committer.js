@@ -35,9 +35,10 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
     ? write.record.profile_ref.entity_id : write.record[column];
   const spec = TABLES[write.target_table]; const record = write.target_table === 'party_v3_change_sets' ? { ...Object.fromEntries(Object.entries(write.record).filter(([key]) => !['idempotency_record_id', 'created_at_turn', 'committed_at_turn'].includes(key))), expected_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), expected_state_version_set: sealedPlan.expected_state_versions, committed_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), write_plan_digest: sealedPlan.write_set_digest.replace('sha256:', ''), created_at_turn: committedAtTurn, committed_at_turn: committedAtTurn } : write.record; const columns = Object.keys(record); const table = `party_runtime.${quote(write.target_table)}`;
   if (mode === 'update') {
+    const versionColumn = spec.version_column ?? 'state_version';
     const set = columns.filter((column) =>
       !spec.key.includes(column)
-      && (spec.version !== true || column !== 'state_version'));
+      && (spec.version !== true || column !== versionColumn));
     if (spec.version !== true) {
       const where = spec.key.map((column, index) =>
         `${quote(column)}=$${set.length + index + 1}`);
@@ -63,7 +64,7 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
     const persistsOwnerVersion =
       write.target_table === 'party_timed_activity_executions';
     const nextVersion = persistsOwnerVersion
-      ? Number(record.state_version) : expected + 1;
+      ? Number(record[versionColumn]) : expected + 1;
     if (!Number.isInteger(nextVersion) || nextVersion <= expected) {
       throw Object.assign(new Error('update has invalid next version'), {
         spatialCode: 'state_version_conflict'
@@ -71,14 +72,14 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
     }
     const where = spec.key.map((column, index) =>
       `${quote(column)}=$${set.length + index + 2}`)
-      .concat(`state_version=$${set.length + spec.key.length + 2}`);
+      .concat(`${quote(versionColumn)}=$${set.length + spec.key.length + 2}`);
     const params = [
       ...set.map((column) => serializePlanValue(record[column])),
       nextVersion,
       ...spec.key.map(keyValue),
       expected
     ];
-    const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=$${set.length + 1} WHERE ${where.join(' AND ')}`, params);
+    const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, ${quote(versionColumn)}=$${set.length + 1} WHERE ${where.join(' AND ')}`, params);
     if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' });
     return;
   }

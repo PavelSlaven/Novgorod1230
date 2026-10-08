@@ -38,6 +38,21 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
       'destination_capacity'].every((key) => integer(check[key]))
     || legacyAction && !integer(check.action_units)
     || !legacyAction && (!integer(check.base_minutes) || check.base_minutes < 1)
+    || !legacyAction && check.journey_owner_ref != null
+      && (typeof check.journey_owner_ref !== 'object'
+      || Array.isArray(check.journey_owner_ref)
+      || !['predecessor_execution_id', 'predecessor_plan_id'].every((key) =>
+        check[key] == null || text(check[key]))
+      || !['predecessor_execution_version', 'predecessor_plan_lifecycle_version']
+        .every((key) => check[key] == null || integer(check[key]))
+      || (check.predecessor_execution_id == null)
+        !== (check.predecessor_plan_id == null)
+      || (check.predecessor_execution_id == null)
+        !== (check.predecessor_execution_version == null)
+      || (check.predecessor_execution_id == null)
+        !== (check.predecessor_plan_lifecycle_version == null)
+      || (check.predecessor_execution_id == null)
+        !== (check.predecessor_endpoint == null))
     || check.destination_capacity < 1) {
     return result(false, 'line_recheck_snapshot_invalid');
   }
@@ -130,6 +145,38 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
   };
   const mismatch = Object.entries(rowChecks).find(([, matches]) => !matches)?.[0];
   if (mismatch) return result(false, `line_${mismatch}_mismatch`);
+  if (!legacyAction && check.journey_owner_ref != null) {
+    const open = await transaction.query(`SELECT e.id AS execution_id,
+        e.route_plan_id,e.status AS execution_status,e.state_version AS execution_version,
+        e.current_endpoint_ref,p.id AS plan_id,p.status AS plan_status,
+        p.lifecycle_state_version AS plan_lifecycle_version
+      FROM party_runtime.party_route_plan_executions e
+      JOIN party_runtime.party_route_plans p ON p.id=e.route_plan_id
+      WHERE e.party_id=$1 AND e.journey_owner_ref=$2::jsonb
+        AND e.journey_scope='world_travel'
+        AND e.status NOT IN ('completed','aborted','superseded')
+      ORDER BY e.id
+      FOR UPDATE OF e,p`, [partyId, JSON.stringify(check.journey_owner_ref)]);
+    if (!Array.isArray(open?.rows) || open.rows.length > 1) {
+      return result(false, 'site_traversal_multiple_open_executions');
+    }
+    if (check.predecessor_execution_id == null) {
+      if (open.rows.length !== 0) return result(false, 'site_traversal_predecessor_changed');
+    } else {
+      const predecessor = open.rows[0];
+      if (predecessor?.execution_id !== check.predecessor_execution_id
+        || predecessor?.plan_id !== check.predecessor_plan_id
+        || predecessor?.execution_status !== 'waiting_at_anchor'
+        || predecessor?.plan_status !== 'ready'
+        || Number(predecessor?.execution_version) !== check.predecessor_execution_version
+        || Number(predecessor?.plan_lifecycle_version)
+          !== check.predecessor_plan_lifecycle_version
+        || !isDeepStrictEqual(predecessor?.current_endpoint_ref,
+          check.predecessor_endpoint)) {
+        return result(false, 'site_traversal_predecessor_changed');
+      }
+    }
+  }
   const versions = {
     journey_version: 'expected_journey_state_version',
     connection_version: 'connection_state_version',

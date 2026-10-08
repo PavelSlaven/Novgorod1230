@@ -130,7 +130,8 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
     assert.equal(result.schema.world_tables, 224);
-    assert.equal(SPATIAL_V3_TARGET_MIGRATION_FILES.length, 39);
+    // смена ожидания: цепочка 001–040, attestation v12 (ac229303), spatial-v3-target-migrations.js:4
+    assert.equal(SPATIAL_V3_TARGET_MIGRATION_FILES.length, 40);
     assert.equal(result.schema.party_migrations, SPATIAL_V3_TARGET_MIGRATION_FILES.length);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     // Distinct across five bundles; independent of the request field the bootstrap returns.

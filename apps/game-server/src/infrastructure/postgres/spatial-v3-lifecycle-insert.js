@@ -17,7 +17,7 @@ async function insertRecord(tx, table, record) {
 
 export async function applySealedLifecycleInsert(tx, write) {
   if (write.target_table === 'party_route_plan_executions'
-      && ['active', 'completed', 'aborted'].includes(
+      && ['active', 'waiting_at_anchor', 'completed', 'aborted'].includes(
         write.record.status
       )) {
     return insertRouteExecution(tx, write.record);

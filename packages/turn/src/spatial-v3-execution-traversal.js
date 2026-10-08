@@ -48,7 +48,7 @@ export function spatialV3TraversalOutcomeProjection(result, step) {
           || candidate?.resolved_position_id === result.interruption_anchor_id;
       }) ?? null;
     routeStatus = Number(result.actual_progress_after_ppm) > 0
-      ? 'suspended_at_scene' : 'aborted';
+      ? 'suspended_at_scene' : 'waiting_at_anchor';
   } else if (result?.result_kind === 'stranded') {
     routeStatus = 'stranded_in_transit';
   }

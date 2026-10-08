@@ -106,27 +106,34 @@ const lineBinding = { site_connection_id: 'connection', authoring_version: 3,
   movement_method_options: [{ movement_method_id: 'movement.walk', factor: rational('3', '2') }],
   dynamic_recheck_policy: { id: 'recheck', version: 1,
     policy_kind: 'fixed_time_interval', interval_minutes: 15 }, environment_factor: rational('3') };
-const stateFor = (turnNumber) => ({ party_id: 'p', actor_id: 'actor',
-  party_state: { state_version: 1, turn_number: turnNumber - 1, clock_state_version: 1 },
-  clock: { whole_minutes: '120', subminute_numerator: '0', subminute_denominator: '1' },
-  position: { position_id: 'source-pos', g4_id: 'g4' },
+const stateFor = (turnNumber, options = {}) => ({ party_id: 'p', actor_id: 'actor',
+  party_state: { state_version: options.partyVersion ?? 1,
+    turn_number: turnNumber - 1, clock_state_version: options.clockVersion ?? 1 },
+  clock: { whole_minutes: options.wholeMinutes ?? '120', subminute_numerator: '0', subminute_denominator: '1' },
+  position: { position_id: options.positionId ?? 'source-pos', g4_id: 'g4' },
   journey_location: { id: 'journey', party_id: 'p', owner_kind: 'actor', owner_id: 'actor',
-    location_kind: 'scene', scene_position_id: 'source-pos', state_version: 1 } });
-const contextFor = () => ({ partyId: 'p', actorId: 'actor', world_revision_id: 'world',
-  world_catalog_digest: 'catalog', location: stateFor().journey_location,
-  position: positions[0], site: sites[0], baseline: baselines[0],
-  approach_departure_position: positions[1],
+    location_kind: 'scene', scene_position_id: options.positionId ?? 'source-pos',
+    state_version: options.journeyVersion ?? 1 } });
+const contextFor = (options = {}) => ({ partyId: 'p', actorId: 'actor', world_revision_id: 'world',
+  world_catalog_digest: 'catalog', location: stateFor(1, options).journey_location,
+  position: positions.find(({ id }) => id === (options.positionId ?? 'source-pos')),
+  site: sites[0], baseline: baselines[0],
+  approach_departure_position: positions.find(({ id }) => id === 'approach-pos'),
   closure: { connection_profiles: [profile] }, snapshot: { sites, scene_baselines: baselines,
     g6_instances: g6, scene_positions: positions, endpoint_bindings: endpoints,
     line_bindings: [lineBinding] } });
 
-async function traversal(change, invalidResult = false, conditionRef = condition, pool) {
+async function traversal(change, invalidResult = false, conditionRef = condition, pool,
+  options = {}) {
   const localConnection = { ...connection, availability_condition_set_ref: conditionRef };
   const localProfile = { ...profile, availability_condition_set_ref: conditionRef == null
     ? null : profile.availability_condition_set_ref };
-  const turnNumber = turnFor(change);
-  const localContext = { ...contextFor(), closure: { connection_profiles: [localProfile] } };
-  const current = { scene_position_id: 'source-pos', location_kind: 'scene', journey_version: 1,
+  const turnNumber = options.turnNumber ?? turnFor(change);
+  const baseContext = contextFor(options);
+  const localContext = { ...baseContext, closure: { connection_profiles: [localProfile] },
+    snapshot: { ...baseContext.snapshot, line_bindings: [options.lineBinding ?? lineBinding] } };
+  const current = { scene_position_id: options.positionId ?? 'source-pos', location_kind: 'scene',
+    journey_version: options.journeyVersion ?? 1,
     from_site_id: 'source', to_site_id: 'target', connection_status: 'active', connection_version: 1,
     cost_kind: 'time', action_units: null, base_minutes: 20,
     line_kind_id: waveLineKindProfile.line_kind_id,
@@ -159,22 +166,31 @@ async function traversal(change, invalidResult = false, conditionRef = condition
         : typeof selectedCondition === 'string' ? selectedCondition
           : `${selectedCondition.entity_id}@${selectedCondition.authoring_version}` };
   },
-  assessMovementCapability: async () => ({ ok: true, actor_id: 'actor', capability_context: capability }),
-  projectDestination: async () => ({ ok: true, position_id: 'target-pos',
-    site_id: 'target', visible_context: visible }) });
+  assessMovementCapability: async () => ({ ok: true, actor_id: 'actor',
+    capability_context: options.capability ?? capability }),
+  projectDestination: async ({ destinationPosition, destinationPositionId, destinationSite }) => {
+    const positionId = destinationPosition?.id ?? destinationPositionId ?? 'target-pos';
+    return { ok: true, position_id: positionId,
+      site_id: destinationSite?.id ?? (positionId === 'target-pos' ? 'target' : 'source'),
+      visible_context: visible };
+  } });
   const localSceneRuntime = createSpatialV3LocalSceneRuntime({ pool });
-  const localEdgePathProofs = await localSceneRuntime.prepareLocalLineApproach({
-    partyId: 'p', actorId: 'actor', state: stateFor(turnNumber),
-    orderedLocalEdgePath: [{ edge_id: 'approach-edge', from_position_id: 'source-pos',
-      to_position_id: 'approach-pos' }] });
+  const orderedLocalEdgePath = options.orderedLocalEdgePath
+    ?? [{ edge_id: 'approach-edge', from_position_id: 'source-pos',
+      to_position_id: 'approach-pos' }];
+  const localEdgePathProofs = orderedLocalEdgePath.length === 0 ? []
+    : await localSceneRuntime.prepareLocalLineApproach({
+      partyId: 'p', actorId: 'actor', state: stateFor(turnNumber, options),
+      orderedLocalEdgePath });
   const consequence = await prepare({ partyId: 'p', actorId: 'actor', requestId: change,
-    state: stateFor(turnNumber), playerInput: { idempotency_key: change }, inputDigest: change,
+    state: stateFor(turnNumber, options), playerInput: { idempotency_key: change }, inputDigest: change,
     context: localContext, connection: localConnection, local_edge_path_proofs: localEdgePathProofs });
   return consequence;
 }
 
-async function sealedPlan(change, invalidResult = false, conditionRef = condition, pool) {
-  const consequence = await traversal(change, invalidResult, conditionRef, pool);
+async function sealedPlan(change, invalidResult = false, conditionRef = condition, pool,
+  options = {}) {
+  const consequence = await traversal(change, invalidResult, conditionRef, pool, options);
   const turnNumber = consequence.spatial_v3_traversal.plan.created_at_turn;
   const changeSetId = consequence.spatial_v3_traversal.plan.created_change_set_id;
   const idemId = consequence.spatial_v3_traversal.result.idempotency_record_id;
@@ -184,7 +200,7 @@ async function sealedPlan(change, invalidResult = false, conditionRef = conditio
     prepared.writes.appends.find((row) => row.target_table === 'party_traversal_interval_results')
       .record.result_kind = 'invalid';
   }
-  const state = { ...stateFor(turnNumber), body_state: { active_conditions: [] } };
+  const state = { ...stateFor(turnNumber, options), body_state: { active_conditions: [] } };
   const temporalState = { ...state, party_id: 'p',
     temporal_boundary_candidates: [],
     temporal_source_proof: { version: 2,
@@ -222,9 +238,11 @@ async function sealedPlan(change, invalidResult = false, conditionRef = conditio
   const rootClock = rootWrites.updates.filter((row) => row.target_table === 'party_clocks');
   assert.equal(rootJourney.length, 1);
   assert.equal(rootClock.length, 1);
-  assert.equal(prepared.writes.updates.length, 0,
+  assert.equal(prepared.writes.updates.some((row) =>
+    row.target_table === 'party_journey_locations'), false,
     'site traversal writer must leave journey ownership to the turn-step root');
-  const writes = { inserts: prepared.writes.inserts, updates: [...rootJourney, ...rootClock],
+  const writes = { inserts: prepared.writes.inserts,
+    updates: [...rootJourney, ...rootClock, ...prepared.writes.updates],
     appends: [...rootWrites.appends.filter((row) => row.target_table === 'party_v3_change_sets'),
       ...prepared.writes.appends], deletes: [], rechecks: prepared.rechecks };
   const payload = { schema: 'temporal_visible_package.v1', perceived_scene: 'Цель.',
@@ -237,8 +255,14 @@ async function sealedPlan(change, invalidResult = false, conditionRef = conditio
   const result = await buildCombinedWritePlan({ plan_id: `p16:${change}`, party_id: 'p',
     write_plan_kind: 'semantic_commit', operation_kind: 'trace_turn_step',
     canonical_input_digest: digest(change),
-    expected_state_versions: [{ target_table: 'party_journey_locations', id: 'journey', state_version: 1 },
-      { target_table: 'party_clocks', id: 'p', state_version: 1 }],
+    expected_state_versions: [{ target_table: 'party_journey_locations', id: 'journey',
+      state_version: options.journeyVersion ?? 1 },
+      { target_table: 'party_clocks', id: 'p', state_version: options.clockVersion ?? 1 },
+      ...writes.updates.filter((row) => ['party_route_plans', 'party_route_plan_executions']
+        .includes(row.target_table)).map((row) => ({ target_table: row.target_table,
+        id: row.id, state_version: row.target_table === 'party_route_plans'
+          ? Number(row.record.lifecycle_state_version) - 1
+          : Number(row.record.state_version) - 1 }))],
     validation_report: { status: 'pass', digest: digest(change) },
     idempotency: { id: idemId, key: change }, change_set: { id: changeSetId },
     visible_package_envelope: { package_id: `visible:${change}`, party_id: 'p', turn_id: change,
@@ -388,9 +412,35 @@ for (const conditionRef of [condition, null]) test(
   const invalid = await committer.commit({ plan: await sealedPlan('invalid', true, conditionRef, pool), created_at_turn: turnFor('invalid') });
   assert.equal(invalid.ok, false);
   assert.equal((await pool.query(`SELECT count(*)::int AS n FROM party_runtime.party_route_plans`)).rows[0].n, 0);
+  const swimGapBinding = { ...lineBinding,
+    movement_method_options: [{ movement_method_id: 'movement.walk',
+      factor: rational('3', '2'), hazard_rule_ref: 'hazard.swim_river_channel@1' }],
+    hazard_rule_resolutions: [] };
+  const swimGapPlan = await sealedPlan('swim-gap', false, conditionRef, pool,
+    { lineBinding: swimGapBinding, turnNumber: turnFor('swim-gap') });
+  const swimGap = await committer.commit({ plan: swimGapPlan,
+    created_at_turn: turnFor('swim-gap') });
+  assert.equal(swimGap.ok, true, JSON.stringify(swimGap));
+  const waiting = (await pool.query(`SELECT e.status,e.current_step_ordinal,
+      e.current_endpoint_ref,p.status AS plan_status,t.status AS travel_status,
+      t.closed_result,t.segment_progress_ppm,l.scene_position_id
+    FROM party_runtime.party_route_plan_executions e
+    JOIN party_runtime.party_route_plans p ON p.id=e.route_plan_id
+    JOIN party_runtime.traveller_travel_states t ON t.route_plan_execution_id=e.id
+    JOIN party_runtime.party_journey_locations l ON l.id='journey'`)).rows[0];
+  assert.equal(waiting.status, 'waiting_at_anchor');
+  assert.equal(waiting.current_step_ordinal, 0);
+  assert.equal(waiting.plan_status, 'ready');
+  assert.equal(waiting.travel_status, 'closed');
+  assert.equal(waiting.closed_result, 'interrupted_to_anchor');
+  assert.equal(waiting.segment_progress_ppm, 0);
+  assert.equal(waiting.scene_position_id, 'approach-pos');
+  const successorOptions = { partyVersion: 2, clockVersion: 2,
+    journeyVersion: 2, wholeMinutes: '150', positionId: 'approach-pos',
+    orderedLocalEdgePath: [], turnNumber: turnFor('swim-gap') + 1 };
   const [planA, planB] = await Promise.all([
-    sealedPlan('travel-a', false, conditionRef, pool),
-    sealedPlan('travel-b', false, conditionRef, pool)]);
+    sealedPlan('travel-a', false, conditionRef, pool, successorOptions),
+    sealedPlan('travel-b', false, conditionRef, pool, successorOptions)]);
   const [first, second] = await Promise.all([
     committer.commit({ plan: planA, created_at_turn: turnFor('travel-a') }),
     committer.commit({ plan: planB, created_at_turn: turnFor('travel-b') })]);
@@ -400,27 +450,49 @@ for (const conditionRef of [condition, null]) test(
     created_at_turn: turnFor(winner) })).replay, true);
   assert.equal((await pool.query(`SELECT scene_position_id,state_version FROM party_runtime.party_journey_locations
     WHERE id='journey'`)).rows[0].scene_position_id, 'target-pos');
-  const execution = (await pool.query(`SELECT status,state_version FROM party_runtime.party_route_plan_executions`)).rows;
-  assert.deepEqual(execution.map(({ status, state_version }) => [status, Number(state_version)]), [['completed', 8]]);
+  const execution = (await pool.query(`SELECT status,state_version FROM party_runtime.party_route_plan_executions
+    ORDER BY status`)).rows;
+  assert.deepEqual(execution.map(({ status, state_version }) => [status, Number(state_version)]),
+    [['aborted', 4], ['completed', 8]]);
+  assert.deepEqual((await pool.query(`SELECT p.status,p.lifecycle_state_version,
+      e.status AS execution_status,e.abort_reason_code,e.superseded_by_execution_id
+    FROM party_runtime.party_route_plans p
+    JOIN party_runtime.party_route_plan_executions e ON e.route_plan_id=p.id
+    ORDER BY e.status`)).rows.map((row) => [row.status,
+      Number(row.lifecycle_state_version), row.execution_status,
+      row.abort_reason_code, row.superseded_by_execution_id != null]),
+  [['ready', 1, 'aborted', 'successor_source_mismatch', false],
+    ['ready', 1, 'completed', null, false]]);
   const intervalRows = await pool.query(`SELECT travel_state_id,interval_ordinal,result_kind,
     actual_time_numerator,actual_time_denominator,actual_progress_after_ppm
-    FROM party_runtime.party_traversal_interval_results ORDER BY interval_ordinal`);
-  assert.equal(intervalRows.rowCount, 6);
-  assert.ok(intervalRows.rows.every(({ travel_state_id }) => travel_state_id === 'site-travel:' + digest({
-    partyId: 'p', inputDigest: winner, connection_id: 'connection',
-    local_edge_path: ['approach-edge'] }).slice(7)));
+    FROM party_runtime.party_traversal_interval_results
+    ORDER BY result_kind,interval_ordinal`);
+  assert.equal(intervalRows.rowCount, 7);
+  assert.ok(intervalRows.rows.filter(({ result_kind }) => result_kind === 'interrupted_at_anchor')
+    .every(({ travel_state_id }) => travel_state_id === 'site-travel:' + digest({
+      partyId: 'p', inputDigest: 'swim-gap', connection_id: 'connection',
+      local_edge_path: ['approach-edge'] }).slice(7)));
+  assert.ok(intervalRows.rows.filter(({ result_kind }) => result_kind !== 'interrupted_at_anchor')
+    .every(({ travel_state_id }) => travel_state_id === 'site-travel:' + digest({
+      partyId: 'p', inputDigest: winner, connection_id: 'connection',
+      local_edge_path: [] }).slice(7)));
   assert.deepEqual(intervalRows.rows.map(({ result_kind }) => result_kind),
-    ['progressed', 'progressed', 'progressed', 'progressed', 'progressed', 'segment_completed']);
+    ['interrupted_at_anchor', 'progressed', 'progressed', 'progressed', 'progressed',
+      'progressed', 'segment_completed']);
   assert.ok(intervalRows.rows.every(({ travel_state_id }) => typeof travel_state_id === 'string'
     && travel_state_id.length > 0));
-  assert.ok(intervalRows.rows.every(({ actual_time_numerator, actual_time_denominator }) =>
+  assert.ok(intervalRows.rows.filter(({ result_kind }) => result_kind !== 'interrupted_at_anchor')
+    .every(({ actual_time_numerator, actual_time_denominator }) =>
     Number(actual_time_numerator) / Number(actual_time_denominator) === 15));
+  assert.equal(intervalRows.rows[0].actual_progress_after_ppm, 0);
   assert.equal(intervalRows.rows.at(-1).actual_progress_after_ppm, 1000000);
-  assert.deepEqual((await pool.query(`SELECT t.status,t.closed_result,t.segment_progress_ppm,t.mirrored,
+  const travelStates = (await pool.query(`SELECT t.status,t.closed_result,t.segment_progress_ppm,t.mirrored,
     count(i.id)::int AS interval_count FROM party_runtime.traveller_travel_states t
     LEFT JOIN party_runtime.party_traversal_interval_results i ON i.travel_state_id=t.id
-    GROUP BY t.id`)).rows[0], { status: 'closed', closed_result: 'completed',
-      segment_progress_ppm: 1000000, mirrored: false, interval_count: 6 });
+    GROUP BY t.id ORDER BY t.closed_result`)).rows;
+  assert.deepEqual(travelStates.map(({ closed_result, segment_progress_ppm, interval_count }) =>
+    [closed_result, Number(segment_progress_ppm), interval_count]),
+  [['completed', 1000000, 6], ['interrupted_to_anchor', 0, 1]]);
   const terminalEvent = (await pool.query(`SELECT event_kind,causal_result_ref
     FROM party_runtime.party_route_plan_execution_events ORDER BY event_ordinal DESC LIMIT 1`)).rows[0];
   assert.deepEqual(terminalEvent, { event_kind: 'completed', causal_result_ref: {
@@ -429,7 +501,7 @@ for (const conditionRef of [condition, null]) test(
        ORDER BY interval_ordinal DESC LIMIT 1`)).rows[0].id } });
   assert.deepEqual((await pool.query(`SELECT whole_minutes,subminute_numerator,state_version
     FROM party_runtime.party_clocks WHERE party_id='p'`)).rows[0],
-  { whole_minutes: '210', subminute_numerator: '0', state_version: '2' });
+  { whole_minutes: '240', subminute_numerator: '0', state_version: '3' });
   const countsBeforeReplay = (await pool.query(`SELECT
     (SELECT count(*) FROM party_runtime.party_traversal_interval_results)::int AS intervals,
     (SELECT count(*) FROM party_runtime.party_route_plan_execution_events)::int AS events,

@@ -94,7 +94,7 @@ test('issue #533: repeated v17 screen finalization keeps current route and persi
         const rawSystemPrompt = providerPayload.messages?.find(
           ({ role }) => role === 'system')?.content ?? '';
         const systemPrompt = rawSystemPrompt.replace(
-          /^Return a valid json object\.\s*/u, '');
+          /^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
         if (systemPrompt.startsWith('Return only {"prose"')
             && modelInput?.required_current_beat) {
           const { model, messages, ...params } = providerPayload;

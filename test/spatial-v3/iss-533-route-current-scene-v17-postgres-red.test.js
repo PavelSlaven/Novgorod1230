@@ -63,7 +63,7 @@ test('issue #533: v17 route freshness on movement/replay/recovery — ожида
     globalThis.fetch = async (url, init) => {
       const call = JSON.parse(init.body);
       const input = JSON.parse(call.messages.find(({ role }) => role === 'user').content);
-      const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+      const system = call.messages[0].content.replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
       if (rejectNarration && input.required_current_beat
           && system.startsWith('Return only {"prose"')) {
         rejectedCalls += 1;

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- docs(prose): уточнить границу выдумок рассказчика — факты мира из данных, ощущения, мысли, чувства героя и связки свободны без новых зацепок и противоречий (D158 п.4, D159)
 - fix(llm-runtime): use a Russian JSON-mode instruction on the provider wire (#563)
 - fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - fix(npc): require source knowledge before occupation-based address selection (#526)

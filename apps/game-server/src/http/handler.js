@@ -60,19 +60,28 @@ export function matchApiRoute(method, pathname) {
   if (method === 'POST' && pathname === '/api/v1/llm-settings/test') return { id: 'llm_settings_probe', status: 200 };
   if (method === 'POST' && pathname === '/api/v1/portrait-spec') return { id: 'portrait_spec', status: 200 };
   const report = pathname.match(/^\/api\/v1\/developer\/llm-turn-reports\/([^/]+)(?:\/([^/]+))?$/u);
-  if (method === 'GET' && report) return { id: 'llm_turn_report', partyId: decodeURIComponent(report[1]), requestId: report[2] == null ? null : decodeURIComponent(report[2]), status: 200 };
+  if (method === 'GET' && report) return { id: 'llm_turn_report', partyId: decodeRouteSegment(report[1]), requestId: report[2] == null ? null : decodeRouteSegment(report[2]), status: 200 };
   if (method === 'POST' && pathname === '/api/v1/new-games') return { id: 'new_game', status: 201 };
   const screen = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/screen$/u);
-  if (method === 'GET' && screen) return { id: 'party_screen', partyId: decodeURIComponent(screen[1]), status: 200 };
+  if (method === 'GET' && screen) return { id: 'party_screen', partyId: decodeRouteSegment(screen[1]), status: 200 };
   const progress = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/turns\/([^/]+)\/progress$/u);
-  if (method === 'GET' && progress) return { id: 'turn_progress', partyId: decodeURIComponent(progress[1]), requestId: decodeURIComponent(progress[2]), status: 200 };
+  if (method === 'GET' && progress) return { id: 'turn_progress', partyId: decodeRouteSegment(progress[1]), requestId: decodeRouteSegment(progress[2]), status: 200 };
   const ack = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/opening-ack$/u);
-  if (method === 'POST' && ack) return { id: 'opening_ack', partyId: decodeURIComponent(ack[1]), status: 200 };
+  if (method === 'POST' && ack) return { id: 'opening_ack', partyId: decodeRouteSegment(ack[1]), status: 200 };
   const turn = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/turns$/u);
-  if (method === 'POST' && turn) return { id: 'turn', partyId: decodeURIComponent(turn[1]), status: 200 };
+  if (method === 'POST' && turn) return { id: 'turn', partyId: decodeRouteSegment(turn[1]), status: 200 };
   const recovery = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/presentation-recovery$/u);
-  if (method === 'POST' && recovery) return { id: 'presentation_recovery', partyId: decodeURIComponent(recovery[1]), status: 200 };
+  if (method === 'POST' && recovery) return { id: 'presentation_recovery', partyId: decodeRouteSegment(recovery[1]), status: 200 };
   return null;
+}
+
+function decodeRouteSegment(segment) {
+  try {
+    return decodeURIComponent(segment);
+  } catch (error) {
+    if (!(error instanceof URIError)) throw error;
+    throw Object.assign(new Error('Адрес не найден.'), { code: 'ROUTE_NOT_FOUND', status: 404 });
+  }
 }
 
 async function executeRoute(route, context) {

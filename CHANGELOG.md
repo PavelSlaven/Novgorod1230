@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(game-server): return a client 404 for malformed party/request path encoding across all six HTTP routes without logging a server failure (#520)
 - fix(spatial): destination visibility uses exits anchored to the observed G5; route panels use the current Spatial scene (#533)
 - fix(runtime-catalog): resolve speech-register and common lookup roots from the module; v17 startup requires the pinned C007c2 registers (#548)
 - fix(runtime-catalog): reject multiple approved versions of a speech-address form with a typed load error (#546)

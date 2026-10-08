@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(npc): exclude occupied scene name forms with the existing deterministic draw; exhausted pools retain a name with diagnostic provenance (#284); LW-108 closed
 - fix(llm-runtime): use a Russian JSON-mode instruction on the provider wire (#563)
 - fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - fix(npc): require source knowledge before occupation-based address selection (#526)

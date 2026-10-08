@@ -1,12 +1,12 @@
 # Changelog
 
 ## Unreleased
+- fix(game-server): project saved-screen entity refs as stable public keys; keep local-play diagnostics on public keys and visible evidence (#330)
 - docs(tech-debt): record route time independence from weather and light until world_base environment rules load; LW-141 added (#321)
 - fix(spatial): resolve canonical passage endpoints by each binding's exact scene slot, including reciprocal role-reversed endpoints; directional exits and frontier role checks remain unchanged (#98)
 - docs(prose): уточнить границу выдумок рассказчика — факты мира из данных, ощущения, мысли, чувства героя и связки свободны без новых зацепок и противоречий (D158 п.4, D159)
 - docs(narration): adopt D158 world/story boundaries and third-person past narration; extend required scene context while preserving CR #158 thresholds; D162 excludes unexecuted intent from prose and keeps perceived blockers; runtime changes follow separately
 - fix(turn): preserve exact fractional elapsed in prepared consequence bindings and normalized rational pairs throughout activity lifecycle writes (#597)
-- fix(game-server): project saved-screen entity refs as stable public keys; keep local-play diagnostics on public keys and visible evidence (#330)
 - fix(npc): exclude occupied scene name forms with the existing deterministic draw; exhausted pools retain a name with diagnostic provenance (#284); LW-108 closed
 - fix(turn): project failed goals as confirmed perception and owner facts; omit goal status and raw failed intent, record unknown causes only in private developer traces (#573, D153)
 - fix(game-server): return a client 404 for malformed party/request path encoding across all six HTTP routes without logging a server failure (#520)

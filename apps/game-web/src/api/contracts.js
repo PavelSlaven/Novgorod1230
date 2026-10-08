@@ -164,6 +164,22 @@ function validateSceneAffordances(screen) {
       'Landscape inputs must use exact player-safe vocabularies.'
     );
   }
+  const visibleContext = screen.visible_context ?? {};
+  for (const field of ['visible_npc', 'visible_objects']) {
+    if (!Object.hasOwn(visibleContext, field)) continue;
+    const valid = Array.isArray(visibleContext[field])
+      && visibleContext[field].every((entry) => {
+        const ref = entry?.entity_ref;
+        return !['npc', 'item'].includes(ref?.entity_kind)
+          || (plain(ref) && Object.keys(ref).length === 2
+            && Object.hasOwn(ref, 'entity_kind')
+            && Object.hasOwn(ref, 'public_key')
+            && typeof ref.public_key === 'string'
+            && /^e[1-9]\d*$/u.test(ref.public_key));
+      });
+    if (!valid) throw webError('SCREEN_VISIBLE_ENTITY_REF_INVALID',
+      'Visible NPC and item references must use the exact public shape.');
+  }
   const journal = screen.panels?.journal?.data;
   if (plain(journal) && Object.hasOwn(journal, 'current_task')
       && !validCurrentTask(journal.current_task)) {

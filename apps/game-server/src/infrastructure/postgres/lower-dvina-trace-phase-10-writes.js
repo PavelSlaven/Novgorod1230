@@ -1,3 +1,4 @@
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { canonicalDigest } from '@rus/materialization';
@@ -120,8 +121,8 @@ export function phase10Writes({ partyId, next, envelope, screen,
   changeSetId, idemId }) {
   return { inserts: [row('party_state_snapshots',
     `${partyId}:${next.party_state.state_version}`, { party_id: partyId,
-      state_version: next.party_state.state_version, state_payload: next,
-      state_digest: canonicalDigest(next) })],
+      state_version: next.party_state.state_version, state_payload: withoutSceneNpcs(next),
+      state_digest: canonicalDigest(withoutSceneNpcs(next)) })],
   updates: [row('parties', partyId, { party_id: partyId, status: 'active' }),
     row('party_server_sessions', partyId, { party_id: partyId,
       turn_number: next.party_state.turn_number,

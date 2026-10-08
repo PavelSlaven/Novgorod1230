@@ -2,6 +2,9 @@ import {
   RUNTIME_CATALOG_ACTIVATION_LOCK_KEY
 } from '@rus/runtime-catalog/runtime-contract';
 import { serverError } from '../../errors.js';
+import { createHash } from 'node:crypto';
+import { canonicalStringify, createRuntimeCatalogLoader } from '@rus/runtime-catalog';
+import { loadActiveActorBaseAttributesBinding } from './actor-base-attributes-profile-loader.js';
 export {
   loadActiveRuntimeCatalogPin
 } from './runtime-catalog-pin-loader.js';
@@ -18,6 +21,101 @@ const PIN_FIELDS = Object.freeze([
   'compatible_world_catalog_digest',
   'compatible_world_pin_manifest_digest'
 ]);
+
+// Read-only successor gate. The operator owns import, approval validation and
+// activation; composition requires those exact approvals and their committed rows.
+export async function assertTargetCatalogActivationReadiness(worldPool, {
+  release, itemApproval, actorApproval
+} = {}) {
+  const invalid = () => { throw serverError('SPATIAL_V3_TARGET_ACTIVATION_APPROVAL_REQUIRED',
+    'Exact issued target catalog approvals and committed readbacks are required.'); };
+  const hash = (value) => createHash('sha256').update(canonicalStringify(value)).digest('hex');
+  const sealed = (value, field) => {
+    if (value == null) return false;
+    const { [field]: expected, ...payload } = value;
+    return /^[a-f0-9]{64}$/u.test(expected ?? '') && expected === hash(payload);
+  };
+  const item = itemApproval?.request, actor = actorApproval?.request;
+  const itemAttestation = itemApproval?.attestation, actorAttestation = actorApproval?.attestation;
+  if (item?.schema !== 'rus.runtime_catalog_activation_request.v2'
+      || actor?.schema !== 'rus.actor_base_attributes_runtime_activation_request.v2'
+      || item.activation_scope !== 'new_production_parties_only'
+      || actor.activation_scope !== 'new_production_parties_only'
+      || !sealed(item, 'activation_request_digest') || !sealed(actor, 'request_digest')
+      || !sealed(itemAttestation, 'attestation_digest')
+      || !sealed(actorAttestation, 'attestation_digest')
+      || itemAttestation.schema !== 'rus.runtime_catalog_activation_attestation.v2'
+      || itemAttestation.decision !== 'approve_activation'
+      || itemAttestation.activation_request_digest !== item.activation_request_digest
+      || typeof itemAttestation.attested_by !== 'string' || !itemAttestation.attested_by
+      || ['catalog_scope', 'target_revision_id', 'target_catalog_digest', 'import_id',
+        'import_audit_digest', 'runtime_contract_digest', 'runtime_release_id']
+        .some((field) => itemAttestation[field] !== item[field])
+      || actorAttestation.schema !== 'rus.actor_base_attributes_successor_activation_attestation.v1'
+      || actorAttestation.decision !== 'approve_exact_actor_base_attributes_new_production_activation'
+      || actorAttestation.request_digest !== actor.request_digest
+      || typeof actorAttestation.attested_by !== 'string' || !actorAttestation.attested_by
+      || !actorAttestation.independence_basis
+      || actorAttestation.reviewed_repository_head !== actor.subject_commit
+      || actorAttestation.database_mutated !== false
+      || actorAttestation.authority?.import_authorized !== false
+      || actorAttestation.authority?.production_authorized !== true
+      || actorAttestation.authority?.activation_authorized !== true
+      || actorAttestation.authority?.existing_party_migration_authorized !== false
+      || actorAttestation.authority?.old_save_rematerialization_authorized !== false
+      || item.target_revision_id !== release?.runtime_catalog_revision_id
+      || actor.target_binding?.target_revision_id !== release?.actor_base_attributes_catalog_revision_id
+      || item.runtime_release_id !== hash(release.release_id)) invalid();
+  const pins = [];
+  for (const [request, attestation, scope, binding, requestDigest] of [
+    [item, itemAttestation, release.runtime_catalog_scope, item, item.activation_request_digest],
+    [actor, actorAttestation, 'actor_base_attributes_v1', actor.target_binding, actor.request_digest]
+  ]) {
+    const rows = (await worldPool.query(
+      `SELECT * FROM world_base.runtime_catalog_activation_events
+        WHERE catalog_scope=$1 ORDER BY event_sequence DESC LIMIT 1`, [scope])).rows;
+    const event = rows[0];
+    if (rows.length !== 1 || event.event_type !== 'activate'
+        || event.request_digest !== requestDigest
+        || event.attestation_digest !== attestation.attestation_digest
+        || event.catalog_revision_id !== binding.target_revision_id
+        || event.catalog_digest !== binding.target_catalog_digest
+        || event.runtime_release_id !== (request === item ? hash(release.release_id)
+          : hash({ schema: 'rus.actor_base_attributes_runtime_release.v1',
+            activation_request_digest: actor.request_digest,
+            activation_attestation_digest: actorAttestation.attestation_digest,
+            activation_scope: actor.activation_scope,
+            runtime_capability: actor.runtime_capability }))
+        || event.compatible_world_revision_id !== release.world_revision_id
+        || event.compatible_world_catalog_digest !== release.world_catalog_digest
+        || event.compatible_world_pin_manifest_digest !== release.compatible_world_pin_manifest_digest
+        || event.record_registry_digest !== binding.record_registry_digest
+        || event.runtime_contract_digest !== binding.runtime_contract_digest) invalid();
+    const { event_id, event_digest } = event;
+    const envelope = { schema: 'rus.runtime_catalog_activation_event.v2',
+      ...Object.fromEntries([...PIN_FIELDS, 'event_type', 'request_digest',
+        'attestation_digest', 'expected_previous_event_id', 'runtime_release_id',
+        'operator_principal'].map((field) => [field, event[field]])),
+      event_sequence: Number(event.event_sequence) };
+    if (hash(envelope) !== event_digest
+        || event_id !== `runtime_catalog_activation_${event_digest.slice(0, 32)}`) invalid();
+    const imported = request === item ? item : actor.completed_import_readback;
+    if (event.import_id !== imported.import_id || event.import_audit_digest !== imported.import_audit_digest) invalid();
+    pins.push(Object.freeze({ schema: 'rus.runtime_catalog_pin.v2',
+      ...Object.fromEntries(PIN_FIELDS.map((field) => [field, event[field]])),
+      activation_event_id: event.event_id }));
+  }
+  const [itemPin, actorPin] = pins;
+  if (actor.target_binding.parent_catalog?.catalog_revision_id !== itemPin.catalog_revision_id
+      || actor.target_binding.parent_catalog?.catalog_digest !== itemPin.catalog_digest) invalid();
+  const spatial = await assertWorldReleaseReadiness(worldPool, itemPin, release);
+  await createRuntimeCatalogLoader({ worldBaseReader: {
+    read: (sql, values) => worldPool.query(sql, values)
+  }, supportedRuntimeContractDigests: [release.runtime_catalog_contract_digest]
+  }).loadApprovedItemCatalog({ pin: itemPin });
+  const actorBinding = await loadActiveActorBaseAttributesBinding(worldPool, { expectedPin: actorPin });
+  return Object.freeze({ spatial, item_pin: itemPin, actor_binding: actorBinding });
+}
 
 export async function withRuntimeCatalogActivationLock(
   worldPool,
@@ -192,13 +290,14 @@ export async function assertPartyReleaseReadiness(
       count(*)::integer AS party_count,
       count(*) FILTER (
         WHERE p.schema_version <> 3
-           OR p.world_revision_id <> $1
-           OR p.world_catalog_digest <> $2
+           OR (NOT $5 AND p.world_revision_id <> $1)
+           OR (NOT $5 AND p.world_catalog_digest <> $2)
            OR c.party_id IS NULL
            OR c.catalog_scope <> $3
-           OR c.compatible_world_revision_id <> $1
-           OR c.compatible_world_catalog_digest <> $2
-           OR c.compatible_world_pin_manifest_digest <> $4
+           OR c.compatible_world_revision_id <> p.world_revision_id
+           OR c.compatible_world_catalog_digest <> p.world_catalog_digest
+           OR ((NOT $5 OR p.world_revision_id = $1)
+             AND c.compatible_world_pin_manifest_digest <> $4)
       )::integer AS incompatible_party_count
     FROM party_runtime.parties p
     LEFT JOIN party_runtime.party_catalog_pins c
@@ -207,7 +306,8 @@ export async function assertPartyReleaseReadiness(
     release.world_revision_id,
     release.world_catalog_digest,
     release.runtime_catalog_scope,
-    release.compatible_world_pin_manifest_digest
+    release.compatible_world_pin_manifest_digest,
+    release.activation_scope === 'new_production_parties_only'
   ]);
   const row = result.rows?.[0];
   if (!row

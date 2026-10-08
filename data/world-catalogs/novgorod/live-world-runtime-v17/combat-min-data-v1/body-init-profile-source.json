@@ -1,0 +1,53 @@
+{
+  "candidate_status": "candidate_not_approved",
+  "target_schema": "rus.body_state.initialization_profile.v1",
+  "profile_id": "combat-min-materialized-npc-default-v1",
+  "version": 1,
+  "profile_ref": {
+    "entity_ref": {
+      "entity_kind": "body_state_profile",
+      "entity_id": "combat-min-materialized-npc-default-v1"
+    },
+    "authoring_version": "1"
+  },
+  "initial_state_proposal": {
+    "health": 100,
+    "satiety": 70,
+    "energy": 80
+  },
+  "calibration": {
+    "kind": "game_calibration",
+    "label_internal_only": "D71",
+    "status": "proposed_unbenchmarked",
+    "rule": "single default profile for every eligible materialized NPC without a persisted body row; no actor-specific variants",
+    "source_refs": [
+      "data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/minimal-combat-bundle.candidate.json#/execution/health_transition/body_initialization/profile_mapping/output_profile/metrics",
+      "data/world-catalogs/novgorod/first-playable-v1/catalog.json#/character_candidate_sets/player_boatman/body_profile_candidates/0",
+      "data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/body-bands-production-approval-7.json"
+    ],
+    "limits": [
+      "100/80/70 is a D71 gameplay calibration proposal, not a historical or medical claim",
+      "the first-playable 100/80/70 profile is only an analogical anchor scoped to its candidate boatman",
+      "approval-7 authorizes current-state qualitative descriptions only and explicitly excludes initialization and initial metrics",
+      "the existing energy/endurance formula is not used; no body metric is derived from actor attributes, identity, occupation, profile_level, name, or appearance",
+      "values and calibration metadata stay internal and are not model input or player-facing prose"
+    ]
+  },
+  "selection_rule": {
+    "eligible_subject": "materialized NPC with an authoritative body-state readback that confirms no persisted party_actor_body_states row",
+    "selected_profile": "this single default profile, independent of actor attributes and identity",
+    "variants": [],
+    "existing_body_profile_ref": "not used as a selector in this candidate: its current rus.body_state.profile.v1 / values contract is not the target initialization_profile.v1 / initial_state DTO; use requires a separately approved owner mapping",
+    "readback_error": "typed gap for this actor; never treated as row absence",
+    "persisted_row": "preserve and use the existing row; never overwrite or reinitialize",
+    "emission": "no owner initializer DTO is emitted until body-state owner and independent D67 approval cover this exact profile version"
+  },
+  "approval_state": {
+    "body_state_owner": "pending",
+    "independent_D67_Opus": "pending",
+    "import_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "candidate_emission": null
+  }
+}

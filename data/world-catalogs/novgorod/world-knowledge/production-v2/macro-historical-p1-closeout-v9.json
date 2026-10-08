@@ -1,0 +1,200 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {"schema":"world_knowledge_source_v1","source_ref":"source:candidate-v9-cci-care-iron","title":"Care and Cleaning of Iron","authors":["Canadian Conservation Institute"],"publication":"CCI Notes 9/6, Government of Canada","source_kind":"official_documentation","citation":"https://www.canada.ca/en/conservation-institute/services/conservation-preservation-publications/canadian-conservation-institute-notes/care-iron.html","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:candidate-v9-rsf-gippius-1144","title":"«ѿсьлицѣ к ываноу»: в ВШЭ прошла традиционная лекция с разбором берестяных грамот","authors":["Российский научный фонд"],"publication":"РНФ, 14 ноября 2022; summary of A. Gippius lecture","source_kind":"official_documentation","citation":"https://www.rscf.ru/news/humanitarian-sciences/slits-k-yvanou/","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:candidate-v9-britannica-veliky-novgorod","title":"Veliky Novgorod","authors":["Encyclopaedia Britannica Editors"],"publication":"Encyclopaedia Britannica, History section","source_kind":"scholarship","citation":"https://www.britannica.com/place/Veliky-Novgorod","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:candidate-v9-iron-humidity-salts","source_ref":"source:candidate-v9-cci-care-iron","anchor":{"section":"Introduction"},"note":"CCI states bare iron rusts faster in humid air and faster still under a thin water film; water-soluble salts accelerate rust. Universal material relation only, not an historical maintenance custom, inventory, combat statistic, or scene condition.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:candidate-v9-iron-oil-film","source_ref":"source:candidate-v9-cci-care-iron","anchor":{"section":"Caring for Stable Iron"},"note":"CCI says a thin oil film can temporarily protect underlying iron against rusting. Universal conservation relation only; no claim that a medieval weapon was oiled, maintained, usable, or currently present.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:candidate-v9-otrok-administrative-collector","source_ref":"source:candidate-v9-rsf-gippius-1144","anchor":{"section":"Грамота №1144"},"note":"The RSF summary reports Gippius’s reading of a complete late-XII-century Novgorod letter: in Novgorod documents otrok can denote an administrative person, a debt collector, rather than a child; the writer asks the price of his services. It is bounded documentary lexical/role context, not a general hierarchy, childhood category, office system, debt rule, or present NPC role.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:candidate-v9-veche-prince-military","source_ref":"source:candidate-v9-britannica-veliky-novgorod","anchor":{"section":"History, paragraph beginning ‘In 1019’"},"note":"Britannica describes the post-1019 town assembly as electing its prince chiefly as military commander. It is a broad secondary medieval description, not proof of exact 1230 procedure, current officeholder, command, election, entitlement, or force.","review_status":"approved"}
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:physics_material_science:candidate-v9-iron-care-relations","domain":"physics_material_science","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:social_law_economy:candidate-v9-otrok-role-record","domain":"social_law_economy","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:social_law_economy:candidate-v9-assembly-territory-relations","domain":"social_law_economy","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:candidate-v9-bare-iron-rust-humidity-salts","domain":"physics_material_science","subject_ref":"wk:physics_material_science:candidate-v9-iron-care-relations","predicate":"supported_fact","object":{"kind":"literal","value":"bare_iron_rusts_faster_in_humid_air_or_thin_water_film_and_soluble_salts_accelerate_rusting"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"common","confidence":"high","directness":"direct"},"knowledge_access":{"class":"general_physical","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:candidate-v9-iron-humidity-salts"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting","domain":"physics_material_science","subject_ref":"wk:physics_material_science:candidate-v9-iron-care-relations","predicate":"supported_fact","object":{"kind":"literal","value":"a_thin_oil_film_can_temporarily_reduce_rusting_of_underlying_iron"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"common","confidence":"high","directness":"direct"},"knowledge_access":{"class":"general_physical","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:candidate-v9-iron-oil-film"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector","domain":"social_law_economy","subject_ref":"wk:social_law_economy:candidate-v9-otrok-role-record","predicate":"supported_fact","object":{"kind":"literal","value":"late_twelfth_century_novgorod_documentary_context_uses_otrok_for_administrative_debt_collector_not_child"},"polarity":"support","applicability":{"time":{"from":1160,"to":1200,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:candidate-v9-otrok-administrative-collector"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:candidate-v9-veche-elected-prince-chiefly-military-commander","domain":"social_law_economy","subject_ref":"wk:social_law_economy:candidate-v9-assembly-territory-relations","predicate":"supported_fact","object":{"kind":"literal","value":"britannica_describes_post_1019_novgorod_veche_electing_prince_chiefly_as_military_commander"},"polarity":"support","applicability":{"time":{"from":1019,"to":1270,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:candidate-v9-veche-prince-military"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:candidate-v9-iron-care-relations",
+      "locale": "ru",
+      "labels": [
+        "Коррозия и защитная плёнка железа"
+      ],
+      "short_definition": "Универсальные отношения материала, не исторический инвентарь.",
+      "search_aliases": [
+        "железо",
+        "ржавчина",
+        "масло"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:candidate-v9-iron-care-relations",
+      "locale": "en",
+      "labels": [
+        "Iron corrosion and protective film"
+      ],
+      "short_definition": "Universal material relations, not historical inventory.",
+      "search_aliases": [
+        "iron",
+        "rust",
+        "oil"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:candidate-v9-otrok-role-record",
+      "locale": "ru",
+      "labels": [
+        "Документальный контекст отрока"
+      ],
+      "short_definition": "Узкое значение слова в позднем XII веке.",
+      "search_aliases": [
+        "отрок",
+        "сборщик долгов"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:candidate-v9-otrok-role-record",
+      "locale": "en",
+      "labels": [
+        "Otrok documentary role context"
+      ],
+      "short_definition": "A narrow late-twelfth-century word use.",
+      "search_aliases": [
+        "otrok",
+        "debt collector"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:candidate-v9-assembly-territory-relations",
+      "locale": "ru",
+      "labels": [
+        "Собрание, территория и судебное требование"
+      ],
+      "short_definition": "Разные ограниченные исторические записи, не действующая система.",
+      "search_aliases": [
+        "вече",
+        "концы",
+        "суд"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:candidate-v9-assembly-territory-relations",
+      "locale": "en",
+      "labels": [
+        "Assembly, territory, and court-demand records"
+      ],
+      "short_definition": "Separate bounded historical records, not an operative system.",
+      "search_aliases": [
+        "veche",
+        "ends",
+        "court"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-v9-bare-iron-rust-humidity-salts",
+      "locale": "ru",
+      "runtime_text": "Оголённое железо ржавеет быстрее во влажном воздухе, ещё быстрее под тонкой водной плёнкой; растворимые соли ускоряют ржавление. Это универсальная связь материала, не исторический обычай ухода или предмет в сцене.",
+      "search_aliases": [
+        "железо",
+        "влага",
+        "соль",
+        "ржавчина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-v9-bare-iron-rust-humidity-salts",
+      "locale": "en",
+      "runtime_text": "Bare iron rusts faster in humid air and faster still beneath a thin water film; soluble salts accelerate rusting. This is a universal material relation, not a historical care custom or a scene item.",
+      "search_aliases": [
+        "iron",
+        "humidity",
+        "salt",
+        "rust"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+      "locale": "ru",
+      "runtime_text": "Тонкая масляная плёнка может временно уменьшать ржавление железа. Это универсальная связь материала, не доказательство смазки, ухода или наличия средневекового оружия.",
+      "search_aliases": [
+        "железо",
+        "масло",
+        "ржавчина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+      "locale": "en",
+      "runtime_text": "A thin oil film can temporarily reduce iron rusting. This is a universal material relation, not evidence that a medieval weapon was oiled, maintained, or present.",
+      "search_aliases": [
+        "iron",
+        "oil",
+        "rust"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
+      "locale": "ru",
+      "runtime_text": "В позднем XII-вековом новгородском документальном контексте «отрок» может обозначать административное лицо, сборщика долгов, а не ребёнка. Это узкое значение записи, не общая иерархия, должность или роль NPC.",
+      "search_aliases": [
+        "отрок",
+        "сборщик долгов"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
+      "locale": "en",
+      "runtime_text": "In a late-twelfth-century Novgorod documentary context, otrok can denote an administrative debt collector rather than a child. It is a narrow record meaning, not a general hierarchy, office, or NPC role.",
+      "search_aliases": [
+        "otrok",
+        "debt collector"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
+      "locale": "ru",
+      "runtime_text": "Britannica описывает вече после 1019 года как избирающее князя главным образом военным предводителем. Это широкое вторичное историческое описание, не точный порядок 1230 года, текущий князь, выбор или командование.",
+      "search_aliases": [
+        "вече",
+        "князь",
+        "военный предводитель"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
+      "locale": "en",
+      "runtime_text": "Britannica describes the post-1019 veche as electing the prince chiefly as military commander. This is broad secondary history, not exact 1230 procedure, a current prince, election, or command.",
+      "search_aliases": [
+        "veche",
+        "prince",
+        "military commander"
+      ]
+    }
+  ]
+}

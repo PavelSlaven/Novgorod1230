@@ -10,7 +10,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 454
+        "line_end": 573
       }
     },
     {
@@ -34,7 +34,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 211
+        "line_end": 230
       }
     },
     {
@@ -46,7 +46,7 @@
       "source_location": {
         "file": "items_and_property.txt",
         "line_start": 1,
-        "line_end": 405
+        "line_end": 430
       }
     },
     {
@@ -58,7 +58,7 @@
       "source_location": {
         "file": "npc_autonomous_decision_contract.md",
         "line_start": 1,
-        "line_end": 2408
+        "line_end": 2061
       }
     },
     {
@@ -70,7 +70,7 @@
       "source_location": {
         "file": "npc_combat_and_trigger_contract.md",
         "line_start": 1,
-        "line_end": 2973
+        "line_end": 2850
       }
     },
     {
@@ -82,7 +82,31 @@
       "source_location": {
         "file": "npc_conversation_mode_contract.md",
         "line_start": 1,
-        "line_end": 3123
+        "line_end": 2802
+      }
+    },
+    {
+      "id": "canonical-document:npc-family-household-contract",
+      "type": "canonical_document",
+      "label": "npc_family_household_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/npc_family_household_contract.md",
+      "source_location": {
+        "file": "npc_family_household_contract.md",
+        "line_start": 1,
+        "line_end": 31
+      }
+    },
+    {
+      "id": "canonical-document:player-character-start-contract",
+      "type": "canonical_document",
+      "label": "player_character_start_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/player_character_start_contract.md",
+      "source_location": {
+        "file": "player_character_start_contract.md",
+        "line_start": 1,
+        "line_end": 15
       }
     },
     {
@@ -94,7 +118,7 @@
       "source_location": {
         "file": "situational_prose_requirements.md",
         "line_start": 1,
-        "line_end": 439
+        "line_end": 606
       }
     },
     {
@@ -106,7 +130,7 @@
       "source_location": {
         "file": "spatial_architecture_standard_g0_g6.md",
         "line_start": 1,
-        "line_end": 6854
+        "line_end": 7607
       }
     },
     {
@@ -118,7 +142,7 @@
       "source_location": {
         "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 90
+        "line_end": 92
       }
     },
     {
@@ -142,7 +166,7 @@
       "source_location": {
         "file": "spatial_v3_target_read_only_database_and_graph_architecture.md",
         "line_start": 1,
-        "line_end": 59
+        "line_end": 58
       }
     },
     {
@@ -154,7 +178,7 @@
       "source_location": {
         "file": "spatial_v3_target_world_base_materialization_table_requirements.md",
         "line_start": 1,
-        "line_end": 67
+        "line_end": 68
       }
     },
     {
@@ -166,7 +190,7 @@
       "source_location": {
         "file": "temporal_world_and_interruptible_activities.md",
         "line_start": 1,
-        "line_end": 3083
+        "line_end": 3129
       }
     },
     {
@@ -178,7 +202,19 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1910
+        "line_end": 1756
+      }
+    },
+    {
+      "id": "canonical-document:universal-category-classification-policy",
+      "type": "canonical_document",
+      "label": "universal_category_classification_policy.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/universal_category_classification_policy.md",
+      "source_location": {
+        "file": "universal_category_classification_policy.md",
+        "line_start": 1,
+        "line_end": 1274
       }
     },
     {
@@ -190,7 +226,7 @@
       "source_location": {
         "file": "world_base_materialization_table_requirements.md",
         "line_start": 1,
-        "line_end": 378
+        "line_end": 428
       }
     },
     {
@@ -202,7 +238,7 @@
       "source_location": {
         "file": "world_knowledge_platform_implementation_contract.md",
         "line_start": 1,
-        "line_end": 3928
+        "line_end": 4036
       }
     }
   ],

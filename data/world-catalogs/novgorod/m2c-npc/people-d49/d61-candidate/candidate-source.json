@@ -1,0 +1,34 @@
+{
+  "schema": "rus.m2c_people_d61_candidate_source.v1",
+  "status": "candidate_approval_pending",
+  "decision_ref": "D61 (#133, comment 5931406104)",
+  "successor": {
+    "id": "m2c_npc_foreign_merchant_v1",
+    "from_version": 2,
+    "version": 3,
+    "actor_applicability": {
+      "sex_category": [
+        "nov_1200_1250_sex_category_male"
+      ],
+      "sex_basis": "D61 (#133, comment 5931406104): Gotland and German guest profiles on the Lower Dvina are male-only because female merchant travel there around 1230 is unconfirmed.",
+      "confidence": "low",
+      "source_refs": [
+        "D61 (#133, comment 5931406104): male-only authoring decision for Gotland and German guest profiles.",
+        "data/world-catalogs/novgorod/m2c-npc/candidate.json#profile=m2c_npc_foreign_merchant_v1",
+        "book:566839 §672 (German merchant contact in Novgorod; not evidence for female travel)."
+      ]
+    },
+    "note": "D61 successor: male-only foreign guests for existing Gotland and German regional contexts; preserve version 2 and do not activate."
+  },
+  "composition_g4_ids": [
+    "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing"
+  ],
+  "source_base_path": "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/source-base.json"
+}

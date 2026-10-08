@@ -1,0 +1,109 @@
+{
+  "schema": "rus.m2c_finite_only_ordinary_base.v1",
+  "status": "approved",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "source_candidate_sha256": "fcd2b47ff318b79031dc309193c159afd71909418beab1f77e9a455c4160bacd",
+  "source_refs": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json",
+      "sha256": "de2cee442d6f1eaf0c585a4b096b53367becfcd84c22f67aecb0a7f077fddff5"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-items/candidate.json",
+      "sha256": "55a6b48eda10e80af2bb4db200941a22037697afb4e50941ecfec4709c18868d"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json",
+      "sha256": "7352d869d11fc1d903ba6a48b62f0a878500b3b54ece7f0c6b5336a11551f926"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json",
+      "sha256": "11110af0e754ee87ce9b94a82191265952bbdf92c925496205d5da091274370e"
+    }
+  ],
+  "profile": {
+    "profile_id": "m2c_generated_g5_finite_only_ordinary_base_v1",
+    "revision": 1,
+    "catalog_version": 1,
+    "property_version": 1,
+    "placement_version": 1,
+    "technical_limits": {
+      "max_new_entities": 1,
+      "max_new_background_groups": 1,
+      "max_resolution_records": 4
+    },
+    "context_refs": {
+      "period_ref": "m2c_target_1230_1250_period_v1",
+      "region_ref": "m2c_novgorod_land_region_v1",
+      "function_refs": [],
+      "environment_refs": [],
+      "occupation_household_refs": [],
+      "economic_context_ref": "m2c_finite_source_only_no_economy_claim_v1",
+      "occupancy_state_ref": "m2c_finite_source_only_occupancy_unasserted_v1",
+      "material_culture_refs": [],
+      "property_context_ref": "m2c_natural_gathering_access_v1"
+    },
+    "policy_refs": {
+      "authority_policy_ref": "m2c_finite_source_exact_basis_only_v1",
+      "density_policy_ref": "m2c_finite_only_zero_background_density_v1",
+      "ordinary_presence_policy_ref": "m2c_finite_only_no_scope_presence_v1",
+      "runtime_item_mechanics_policy_ref": "m2c_finite_source_row_mechanics_v1",
+      "allowed_admission_classes": [
+        "common_mundane"
+      ],
+      "context_bound_permission_refs": []
+    },
+    "execution": {
+      "allowed_disclosure_policy_refs": [],
+      "density_policy": {
+        "version": "m2c_finite_only_zero_background_density_v1",
+        "mappings": [
+          {
+            "scope_kind": "g6",
+            "function_ref": null,
+            "bands": {
+              "sparse": 0,
+              "ordinary": 0,
+              "dense": 0
+            }
+          }
+        ]
+      },
+      "candidate_context": {
+        "candidate_ref_namespace": "m2c_finite_source_query_candidate_v1",
+        "normalizer_version": "m2c_finite_source_query_normalizer_v1",
+        "semantic_type": "ordinary_object_candidate",
+        "candidate_hint": null,
+        "functional_bucket": "other_ordinary",
+        "admission_class": "common_mundane",
+        "availability_class": "common",
+        "coverage_kind": "finite_source",
+        "coverage_ref": "m2c_finite_source_exact_basis_only_v1",
+        "policy_version": "m2c_finite_only_no_scope_presence_v1"
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_source_row_mechanics_v1",
+        "max_mass_grams": 5000,
+        "allowed_external_hand_costs": [
+          1,
+          2
+        ],
+        "allowed_carry_forms": [
+          "regular",
+          "long"
+        ],
+        "max_packing_slot_cost": 16,
+        "max_quantity": 100
+      },
+      "causal_ref": "m2c_finite_source_exact_basis_only_v1",
+      "source_refs": []
+    },
+    "stage_b_classification_eval": {
+      "schema": "rus.ordinary_materialization_stage_b_eval.v1",
+      "version": 1,
+      "model_contract_ref": "ordinary_materialization_plan_v1",
+      "model_identity_policy": "single_exact_provider_model_config_role",
+      "cases": []
+    }
+  }
+}

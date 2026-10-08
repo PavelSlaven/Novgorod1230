@@ -16,10 +16,12 @@ export function buildLowerDvinaTracePendingScreen({
   presentation = null
 }) {
   const combatState = publicCombatStateFromConsequence(turnConsequence);
+  const scenarioId = state.scenario_id ?? 'lower_dvina_trace_v1';
   const screen = structuredClone(projectLowerDvinaTraceScreenPanels({ payload: state, presentation, screen: {
     version: 1,
-    schema: 'lower_dvina_trace_turn_screen',
-    scenario_id: 'lower_dvina_trace_v1',
+    schema: scenarioId === 'lower_dvina_trace_v1'
+      ? 'lower_dvina_trace_turn_screen' : 'turn_screen',
+    scenario_id: scenarioId,
     party_id: state.party_id,
     turn_id: turnId,
     turn_number: turnNumber,
@@ -33,6 +35,10 @@ export function buildLowerDvinaTracePendingScreen({
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    ...(state.last_turn?.exact_npc_utterances?.length ? {
+      exact_npc_utterances: structuredClone(
+        state.last_turn.exact_npc_utterances)
+    } : {}),
     checks: projectPlayerSafeChecks(state),
     ...(combatState == null ? {} : { combat_state: combatState }),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.'

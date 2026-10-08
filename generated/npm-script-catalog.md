@@ -93,6 +93,10 @@
 - `lower-dvina:first-playable:write-content-manifest`
 - `lower-dvina:v3:production-cutover`
 
+## m2c-npc-wave (1)
+
+- `m2c-npc-wave:generate-datasets`
+
 ## migration (1)
 
 - `migration:status`
@@ -105,9 +109,10 @@
 
 - `party-db:seed`
 
-## play (1)
+## play (2)
 
 - `play:local`
+- `play:v17-slice`
 
 ## playtest (1)
 
@@ -118,6 +123,14 @@
 - `pr8:check-exact-head`
 - `pr8:vocabularies`
 - `pr8:vocabularies-check`
+
+## procedural-scenes (5)
+
+- `procedural-scenes:generate`
+- `procedural-scenes:import-pack`
+- `procedural-scenes:import-pack-check`
+- `procedural-scenes:v6-overlay`
+- `procedural-scenes:v6-overlay-check`
 
 ## release (1)
 
@@ -133,7 +146,7 @@
 
 - `shadow:run`
 
-## spatial-v3 (72)
+## spatial-v3 (74)
 
 - `spatial-v3:check-p01`
 - `spatial-v3:check-p02`
@@ -174,6 +187,8 @@
 - `spatial-v3:p28-github-release-proof`
 - `spatial-v3:p28-local-evidence`
 - `spatial-v3:red`
+- `spatial-v3:test-all-starts-postgres`
+- `spatial-v3:test-m2c-wave-bootstrap-postgres`
 - `spatial-v3:test-p04`
 - `spatial-v3:test-p05`
 - `spatial-v3:test-p09-postgres`
@@ -227,7 +242,7 @@
 - `temporal-v4:vocabularies`
 - `temporal-v4:vocabularies-check`
 
-## test (41)
+## test (42)
 
 - `test`
 - `test:acceptance`
@@ -247,6 +262,7 @@
 - `test:narration-presentation`
 - `test:new-game-orchestrator`
 - `test:shadow`
+- `test:spatial`
 - `test:stage13`
 - `test:stage14`
 - `test:stage15`

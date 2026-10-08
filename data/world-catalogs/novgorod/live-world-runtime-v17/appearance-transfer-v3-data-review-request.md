@@ -1,0 +1,9 @@
+# Appearance transfer v3: independent DATA review request
+
+Review `appearance-transfer-v3-candidate.json` at SHA-256 `ec6e9386c0fdc1b4108bd932d4225c641e5164f9a7c06bae0bde2fca94723d56` using an independent `gpt-6-sol` high reviewer. This request grants no data approval, import approval, DB write, runtime binding or activation.
+
+The v2 import request is blocked: its 44 `existing_dependencies` are absent in the fresh v17 world DB after committed P12. The v3 candidate keeps v2's 85 proposed inserts exactly and carries those 44 approved v4 source rows as inserts: one demographic profile, one appearance profile and 42 universal categories. `existing_dependencies` is empty. Each carried row has a separate exact source file, SHA-256, row ID and `exact_approved_row_transfer` reference; row content is unchanged. The proposed order places all 44 before regional options, then profile entries. This is a targeted transfer, not an import of the v4 bundle or its world revision; v6 carry-forward is corroborating evidence, not a second source.
+
+Source chain: approved `spatial-v3-production-v4/manifest.json`, pinned six source datasets in the separately approved player-basis candidate, `m2c-appearance-repin-data-approval.json` for the exact v2 candidate and mapping, then the committed P12 v17 import execution attestation. The v2 v17 request records zero collisions for its 85 keys and absence of all 44 dependency keys. Recheck all 129 keys against the live v17 DB before any separate import request.
+
+Reviewer: verify the exact 44 row bytes and source pins, no category/profile omissions, 85 unchanged target rows, primary-key and foreign-key closure against the post-P12 v17 baseline, import order, and the no-activation boundaries. Record an independent DATA verdict against this exact candidate digest. Import mapping, rollback probe, DB commit and readback need their own later requests and approvals.

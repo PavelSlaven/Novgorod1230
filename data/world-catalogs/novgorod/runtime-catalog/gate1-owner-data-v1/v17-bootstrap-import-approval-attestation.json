@@ -1,0 +1,47 @@
+{
+  "schema": "rus.gate1_v17_bootstrap_import_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "/root/gate1_v17_approval_v2",
+  "independence_basis": "Independent Sol high review; auditor did not author the request, runner, source approvals, or operation plan and performed no write to the managed PostgreSQL cluster.",
+  "reviewed_repository_head": "6aa83d871be71d0b36ecdc9020de8427f534337a",
+  "request_path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/v17-bootstrap-import-request.json",
+  "request_digest": "a95018d028cb7a68abade7efba35bc2186b4b132c2217d0e8399f0e897e6f6ad",
+  "runner_sha256": "a5aaa5d511eb7c86cd2438f7b5a26a25102b847f2a8e2f8537b3ebd728fda003",
+  "scope": {
+    "operation": "One transactional Gate1 owner closure and item/container catalog import into novgorod_world_v17, followed by exact readback and a second read-only readback on the same database.",
+    "cluster_system_identifier": "7683141184713630856",
+    "postgres_version": "16.14",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "world_schema_tables_before": 208,
+    "world_data_rows_before": 0,
+    "approved_item_templates": 102,
+    "approved_container_templates": 18,
+    "approved_g4_mappings": 9,
+    "seed_table_count": 30,
+    "seed_row_count": 42577,
+    "seed_table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434"
+  },
+  "review_evidence": [
+    "All request-pinned source and runner SHA-256 values match the reviewed files; request_digest matches the canonical request body.",
+    "Fresh v17 schema execution attestation records the requested cluster, owners, 208 empty world tables, 132 party tables, zero parties, and unchanged old database row counts; all 27 world schema source hashes match.",
+    "The dry-run returned the pinned candidate, approval, manifest, and catalog digests, 39 datasets, and nine status transitions.",
+    "The local-play path checks the selected database and exact empty 208-table schema and does not call initializeSchema or execute DROP SCHEMA.",
+    "Local-play commits once, repeats verifyPromotionState without a second apply, records repeat_readback_status exact_match and equal state digests; shared applyRevisionPromotionPlan rejects an existing target revision.",
+    "Both disposable PostgreSQL integration tests passed, including second-apply PROMOTION_TARGET_REVISION_ALREADY_EXISTS with unchanged target and row counts.",
+    "compatibleRows contributes v2-v6 world_revisions metadata only; historical Spatial datasets are not imported."
+  ],
+  "execution_preconditions": [
+    "Immediately before the write, recheck the actual cluster identifier and version, novgorod_world_v17 identity and world_operator ownership, the exact 208 world_base tables, zero rows in every world_base table, and the available offline backup; stop on drift.",
+    "Recheck all pinned source and runner hashes and the dry-run plan digests and counts at execution time.",
+    "Use only the request's local-play command and explicit PR17_TEST_DATABASE_URL for novgorod_world_v17; require the built-in rollback probe, transactional import, exact first readback, and equal second read-only readback digests.",
+    "Record actual v17 import readback, unchanged schema and old database counts before preparing a separate P12 successor request."
+  ],
+  "excludes": [
+    "A second apply or a repeat_clean_apply claim",
+    "P12 or historical Spatial dataset import",
+    "Schema initialization, DROP, database recreation, or mutation of existing databases",
+    "Catalog registration or activation, production composition change, party migration, or save rematerialization"
+  ],
+  "database_mutated_by_review": false
+}

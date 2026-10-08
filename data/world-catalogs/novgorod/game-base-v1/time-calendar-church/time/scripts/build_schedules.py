@@ -27,8 +27,6 @@ FIELDS = ("sch_id", "revision", "role_ref", "occupation_ref", "day_type", "seaso
 SCHEDULES = (
     ("nov_occ_ferryman", "pf_ferry_landing", "pf_ferry_landing", "summer", "normal", "where_work_happens", "ожидает перевоз и помогает при переправе"),
     ("nov_occ_ferryman", "pf_ferry_landing", "pf_ferry_landing", "winter", "normal", "where_work_happens", "следит за переправой; речной перевоз может быть недоступен"),
-    ("nov_occ_crossing_guard", "pf_ferry_landing", "pf_ferry_landing", "summer", "normal", "where_work_happens", "наблюдает за местом переправы"),
-    ("nov_occ_crossing_guard", "pf_winter_ice_crossing", "pf_winter_ice_crossing", "winter", "normal", "where_work_happens", "наблюдает за ледовой переправой"),
     ("nov_occ_ploughman", "pf_peasant_homestead", "pf_arable_field", "spring", "normal", "where_work_happens", "работает в поле при подходящей погоде"),
     ("nov_occ_ploughman", "pf_peasant_homestead", "pf_arable_field", "summer", "normal", "where_work_happens", "работает в поле при подходящей погоде"),
     ("nov_occ_ploughman", "pf_peasant_homestead", "pf_peasant_homestead", "winter", "normal", "where_work_happens", "занимается зимними хозяйственными делами"),
@@ -146,8 +144,7 @@ def build():
                               ("household_child", "")):
             specs.setdefault((kind, subject, "pf_peasant_homestead", season, "normal"),
                              ("pf_peasant_homestead", "daily_schedule_" + ("spring_rasputitsa" if season == "spring" else season), ""))
-        for guard, place in (("nov_occ_crossing_guard", "pf_winter_ice_crossing" if season == "winter" else "pf_ferry_landing"),
-                             ("nov_occ_church_guard", "pf_churchyard"),
+        for guard, place in (("nov_occ_church_guard", "pf_churchyard"),
                              ("nov_occ_market_guard", "pf_market_square")):
             specs[("occupation", guard, place, season, "night_watch")] = (place, "night_behavior", "Ночная стража при назначенной смене.")
     specs[("occupation", "nov_occ_fisher", "pf_riverbank", "summer", "night_fishing")] = (

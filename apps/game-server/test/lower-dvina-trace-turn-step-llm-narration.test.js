@@ -108,7 +108,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   const turnBudget = createLlmTurnBudget();
   const narration = createLowerDvinaTraceNarrationService({
     roleRunner: createLlmRoleRunnerAdapter({ turnBudget,
-      env: { DEEPSEEK_API_KEY: 'test-key' }, async execute(call) {
+      env: { LLM_API_KEY: 'test-key' }, async execute(call) {
       calls.push(call);
       const output = call.roleId === 'gameplay_narrator'
         ? {}
@@ -127,8 +127,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
             : call.roleId === 'gameplay_narrator_semantic_repair'
               ? { replacements: [{ prose: 'A snapped branch lies beside fresh footprints in the mud; where your charter is remains unknown.' }] }
               : null;
-      return { status: 'ok', parsed_json: output, provider: 'deepseek',
-        model: 'deepseek-v4-flash', scope: call.scope, role_id: call.roleId,
+      return { status: 'ok', parsed_json: output, provider: 'openai_compatible',
+        model: 'qwen3.8-27b-uncensored-w4a16-tp2', scope: call.scope, role_id: call.roleId,
         durationMs: 1, config_hash: 'test' };
     } })
   });
@@ -157,7 +157,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     assert.equal(Object.hasOwn(payload, 'visible_context'), false);
     assert.deepEqual(payload.required_current_beat.uncertainties,
       [{ ref: 'uncertainty_1', text: question, status: 'unperformed_result_unknown' }]);
-    assert.deepEqual(payload.optional_support, { visible_scene: 'The clearing is quiet.', sensory_details: [] });
+    assert.deepEqual(payload.optional_support,
+      { visible_scene: 'The clearing is quiet.' });
     assert.deepEqual(payload.confirmed_outcome, {});
     if (call.roleId === 'gameplay_narrator_auditor') {
       assert.match(call.messages[0].content, /strict evidence auditor/u);

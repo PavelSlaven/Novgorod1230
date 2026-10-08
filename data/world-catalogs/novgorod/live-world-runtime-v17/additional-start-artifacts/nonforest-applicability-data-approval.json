@@ -1,0 +1,13 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent content data review",
+  "reviewed_on": "2026-09-24",
+  "reviewed_repository_head": "a21c3c30ceab060ee0fd70bcae4ee331fbbff425",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-applicability-candidate-v1.json",
+  "candidate_sha256": "427d825a628f623cb55328709e260d1f57c6f7bf96f274949d55e89ef3917aac",
+  "scope": "Exact new-player body, ordinary actor attributes and personal clothing applicability for novgorod_riverbank_approach_v1, novgorod_reed_backwater_entrance_v1 and novgorod_zaostrovye_settlement_approach_v1. Body metrics and empty active conditions transfer from the approved first-playable player profile. The approved ordinary actor attribute profile applies through its existing seeded owner with transport_guiding for both boatman starts and fishing_water for the fisher start. The approved Stage 16 male adult summer variant supplies exactly one linen shirt, trousers and low leather shoes in their source quantity units, equipped and owned by the new player through existing item and property owners. Approval covers the pinned candidate bytes and these three new-player starts only.",
+  "exclusions": "No occupation tools, boat, watercraft capability, fishing equipment, food, money, container, outer garment, biography, language, skills, appearance, knowledge, historical population or health claim, NPC instance transfer, existing-player mutation, target import, runtime admission or release activation. Exact actor and item runtime pins and materialization checks remain separate.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

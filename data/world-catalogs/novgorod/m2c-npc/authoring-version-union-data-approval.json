@@ -1,0 +1,39 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "novgorod_m2c_npc_authoring_version_union_repin_v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/approve_npc_imported_v3",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "independent_from_author": true
+  },
+  "reviewed_head": "77c2ee5f176df3144234c729da9ac78be7798816",
+  "reviewed_on": "2026-09-24",
+  "source_authoring_versions_sha256": "b0e704ea2a4fa707d1592b3380cb121d69bba02e75db41cd0bb042ecfafe6c96",
+  "reviewed_bundles": {
+    "m2c-npc-import-manifest.json": {
+      "manifest_sha256": "c9ef915cbd16c41bd06857243af54b6f64a20960e6748feffda96d2144ffbdee",
+      "authoring_versions_sha256": "b4f90a07628f601bbe04d2a94a15d6d82e107258c065b06b4ae5e23d6e549e5a",
+      "authoring_version_rows": 2616,
+      "npc_rows": 73
+    },
+    "m2c-npc-canonical-import-manifest.json": {
+      "manifest_sha256": "1138d846f4728fc472a64f3ed7f9b6444325bac5493431699bcb472f526152c1",
+      "authoring_versions_sha256": "58814ac3007418663809562a0eb9c2d634362b11c013afcb1f5bb6a5967b467f",
+      "authoring_version_rows": 2621,
+      "npc_rows": 78
+    }
+  },
+  "checks": [
+    "Both bundles contain all 2543 expansion authoring-version rows exactly, including 454 canonical_g5_connection_binding@2 and 3 canonical_g5_connection_profile@2 rows added since HEAD.",
+    "All 2159 and 2164 prior authoring-version rows respectively are unchanged; both bundles have unique (entity_kind, entity_id, version) keys.",
+    "All 73 mapped NPC rows retain exact authoring versions, digests, provenance, source records and record-source links; canonical initial adds exactly five NPC rows and links without changing mapped rows.",
+    "All 51 dataset SHA-256 pins in each manifest match current bytes; P12 validation reports no errors or data gaps for either manifest.",
+    "The real PostgreSQL NPC import and reader test passes (1 test, 0 failures, 0 skips)."
+  ],
+  "scope": "Exact NPC dependency-closure authoring-version union and current manifest bytes after the approved connection availability repin.",
+  "import_authorized": false,
+  "runtime_activation_authorized": false,
+  "release_activation_authorized": false
+}

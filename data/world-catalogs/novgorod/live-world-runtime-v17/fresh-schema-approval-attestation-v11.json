@@ -1,0 +1,112 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "codex-gpt-6.1-sol-ap-fresh-v11-2026-10-07",
+  "independence_basis": "Независимый утверждающий проход ap-fresh-v11 по WR §21.1; автор изменений — initial-v0-package, ведущий лишь зафиксировал их. Этот проход не создавал и не изменял запрос, контракт, адаптер, owner module или миграцию 040. Три gpt-6-luna помощника независимо проверили байты/пересборку, цепочку/delta v9 и DDL/предоставленные PG-логи. Основной утверждающий прочитал их скрипты и результаты, непосредственно проверил исходники, усилил проверки явными assertions и проверил bootstrap binding в памяти. Решение вынес основной утверждающий; помощники не подменяют независимое утверждение. Логи — свидетельство автора, не собственный PG-прогон. Репозиторий и базы не изменялись.",
+  "reviewed_repository_head": "95a6139ae26e6bc80d3dc72e8c5b7fa81aae4e94",
+  "source_commit": "533bcba3f5ff38927a507895586218d6214247f0",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+  "request_digest": "a726a73e6d08d315053f7eeabbbb2f521189645b5ac57c1ebea91370693d01a8",
+  "request_bytes": 16393,
+  "review_request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md",
+  "review_request_sha256": "fcdaf585a512a808f6b20dc2e5ae6c0d5e23cf9bd185aa3438c457d5c8dc9f41",
+  "review_request_bytes": 2166,
+  "supersedes": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v9.json",
+    "sha256_at_reviewed_head": "298bb01114a235d6f1731bcf4302bb61b1a64ad7de43791cccd9085b6cb975db",
+    "request_digest": "1e9e220476ac97fe47f8d6ce0de62e62a073eff429b1d7289b4ffc3423bb945a",
+    "reason": "v9 связывает старый запрос из 38 миграций с chain digest 39913e1bc00ccb70ef8330734d6ef75ce1245e2e2eb3d00333789486e1fc7993. Новый запрос добавляет 040 (291 байт; sha256 8a5b565c4c51641c2a260758cc974c5dfdb362636c7e01155e223b40e9f46a76), меняет owner module 5455→5510 байт, его hash, source_commit, digest цепочки и ожидаемое applied 38→39. World inputs и SQL 001–038 побайтно прежние. v9 остаётся неизменной историей и новый digest не утверждает. v10 другой ветки не объект этого прохода."
+  },
+  "scope": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "party_database": "novgorod_party_v17",
+    "party_owner": "party_operator",
+    "world_schema": "Точные hashed entrypoint infra/world-base/schema.sql и ordered parts 01.sql–30.sql; байты прежние относительно v9.",
+    "party_schema": "Точный hashed owner module runSpatialV3TargetMigrations и его 39 ordered SQL inputs: 001–038, затем 040. 039 отсутствует намеренно; диапазон в описательном execution_order[3] устарел и состав утверждённой цепочки не определяет.",
+    "party_chain_digest": "b3662352cb66a6ae1244fc6f778e813f1c6af9fc7b09a41b81abb318e4661a0e",
+    "expected_world_base_tables": 224,
+    "expected_party_runtime_tables": 133,
+    "expected_party_migrations_applied": 39
+  },
+  "verified_by_approver": {
+    "request_digest_recomputed": "16393 raw bytes; sha256 a726a73e6d08d315053f7eeabbbb2f521189645b5ac57c1ebea91370693d01a8. Review MD: 2166 bytes, sha256 fcdaf585a512a808f6b20dc2e5ae6c0d5e23cf9bd185aa3438c457d5c8dc9f41. Оба файла равны HEAD blobs.",
+    "source_commit_is_ancestor_of_reviewed_head": true,
+    "schema_inputs_unchanged_source_commit_to_reviewed_head": true,
+    "ordered_parts_and_migrations": "71 уникальный input: entrypoint, 30 world parts, owner module и 39 migrations. Размеры и SHA-256 совпадают с запросом в source, reviewed HEAD и рабочей копии. Между source и HEAD нет ни diff, ни коммита, затрагивающего schema input paths. Owner: 5510 bytes, sha256 8571f10a22e4ffa752572167f087edef6ef194005bac86ddbdd2d18c6f70591e.",
+    "request_unchanged_vs_v9_except": "Старый request извлечён из v9 reviewed HEAD 6eaa52e38432aaba3047c32b639fc8cf6bc78c18; 16181 байт и digest совпадают с v9 binding. Рекурсивный JSON delta — ровно шесть путей: source_commit, owner bytes/hash, appended ordered_migrations[38], chain_digest, expected_readback.party_migrations_applied. Все 31 world input и первые 38 SQL побайтно равны при старом и новом source. В review MD меняются только source/digest/bytes/chain/count.",
+    "generator_rebuild": "Экспортированные buildFreshSchemaRequest с явным полным source_commit, renderFreshSchemaRequest и renderFreshSchemaReviewRequest воспроизводят оба файла побайтно. CLI генератора не вызывался.",
+    "party_chain_and_gap": "Независимый SHA-256 от NUL-разделённых сегментов ordinal:filename + NUL + SQL bytes совпал для v9 (38) и v11 (39). Owner list, loader и request builder используют явный массив; numeric suffix 040 — ordinal 39, требования сплошных suffix нет. Повторов или потерянных SQL в текущем manifest нет. Включение будущей 039 меняет owner/list/digest/count и требует пересборки request и новой независимой аттестации.",
+    "migration_040_statements": "040 содержит только два ALTER TABLE: DROP CONSTRAINT IF EXISTS и ADD того же party_visible_packages_committed_state_version_check с >=0. Первоначальный inline CHECK >=1 создан в 007:236; его фактическое имя подтверждено старым RED-логом SQLSTATE 23514. bigint, NOT NULL, остальные constraints и строки не изменяются; единственный новый допустимый bigint — 0. A.9:3008–3038 разрешает его только для существующего matching snapshot v0. Полное повторное применение удаляет и создаёт одно ограничение в транзакции owner. Ровно одно после цепочки — статический вывод из SQL, не PG readback.",
+    "postgres_tests": {
+      "current_gate_failure": {
+        "file": "/srv/novgorod-work/fleet/tasks/initial-v0-package/pg/res-20261007T053040.335481Z-1.log",
+        "sha256": "171fdd3243ca70a338dea3a2d756bf2c7cc83efd359e8d9a52c40c706d91ff2b",
+        "tests": 2,
+        "pass": 0,
+        "fail": 2,
+        "skipped": 0,
+        "error": "V17_FRESH_SCHEMA_ATTESTATION_REQUIRED",
+        "evidence_owner": "author; read and parsed, not rerun; neither P22 nor P16 reached its assertions"
+      },
+      "before_implementation_red": {
+        "file": "/srv/novgorod-work/fleet/tasks/initial-v0-package/pg/res-20261007T025402.334391Z-1.log",
+        "sha256": "10dc5108002843750ef1565e15266c0e57a9098643d1d7903b1e9f83a29d7761",
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "skipped": 0,
+        "error": "visible-package INSERT: 23514 party_visible_packages_committed_state_version_check",
+        "evidence_owner": "author; read and parsed, not rerun; zero INSERT failed at test line 76"
+      }
+    },
+    "fresh_schema_gate": {
+      "method": "Фактический блок scripts/bootstrap-live-world-v17.mjs:101–148 исполнен verbatim в VM с read-only fs и memory fs; bootstrap не импортирован и БД не вызвана.",
+      "cases": "Девять проверок: conditional candidate принимается; missing/schema/verdict/path отвергаются; v9 даёт DIGEST_MISMATCH; фактический catalog даёт REQUIRED; memory v9+v11 выбирает только v11; дубликат current binding даёт AMBIGUOUS.",
+      "limitations": "Bootstrap проверяет schema/verdict/path/digest, но не исполняет текстовые execution_preconditions. Проверить условия и снять аттестацию при провале обязан ведущий; автоматической проверки зелёных PG из этого JSON нет."
+    },
+    "documentation_notes": "Наследованный execution_order[3] request:391 всё ещё говорит 001-037; он уже был отмечен в v9. Утверждён только точный список 001–038+040 и count 39. Отдельные внеобъектные находки и сведения об issue перечислены в verdict.md; репозиторий не правился.",
+    "limitations": "PostgreSQL не запускался: применение/повторимость 040 и runtime constraint count ещё не подтверждены в БД. Не проверены live cluster identity, backups, schema/readback, import, activation, runtime cutover и post-integration gate suite. Counts 224/133 — требования readback, не измерения этого прохода. Codebase-memory MCP не предоставлен; scope установлен прямым чтением и rg. Аудит не утверждает полный P16 gameplay path или всю реализацию #467."
+  },
+  "approval": "Условно утверждены только точные fresh schema definitions и ordered inputs запроса a726a73e6d08d315053f7eeabbbb2f521189645b5ac57c1ebea91370693d01a8 при reviewed HEAD 95a6139ae26e6bc80d3dc72e8c5b7fa81aae4e94. Аттестация предоставляет отсутствующий binding для последующих закреплённых PG-тестов; действительность зависит от их полного GREEN. Она не является доказательством исполнения DDL или разрешением на создание БД, импорт либо cutover. Окончательная приёмка и интеграция — у ведущего.",
+  "execution_preconditions": [
+    "Обязательное условие действительности: после byte-identical интеграции v11 ведущим закреплённые P22 apps/game-server/test/spatial-v3-expansion-initial-state-postgres.test.js (sha256 14c40b7387e4dbd1fbe52ef6cdefe8ce88c1087c6363ccebdfda5f6ee342e4af) и P16 apps/game-server/test/spatial-v3-generated-expansion-initial-state.test.js (sha256 388bd74f4ed4e5b8fd04cd44d551a73279274007e17c4415e21512d4e89a3acf) должны стать GREEN целиком, со всеми subtests и без skips, на этом exact request и chain. Логи и хэши pin/request/chain приложить к сдаче initial-v0-package. При любом провале эта аттестация недействительна; её нельзя считать окончательной приёмкой или использовать для отдельно разрешённого исполнения схемы. Этот JSON-гейт условия сам не проверяет.",
+    "Ведущий принимает и интегрирует v11 без изменения байтов; v9 сохраняется историей. Selector по exact path/digest выбирает ровно v11, assertV17FreshSchemaAttestation принимает её; post-integration gate checks обязательны. Три закреплённых test hashes (включая contract unit af50974aec6d59ca05d9e2462d40fd2509235385e19ac44bee435e98fdf480b6) остаются неизменными.",
+    "При разрешённом execution head сверить все 71 длину/hash, request digest, review MD hash и chain b3662352cb66a6ae1244fc6f778e813f1c6af9fc7b09a41b81abb318e4661a0e. Выполнять полный owner list 001–038+040, applied 39, в его транзакции. Описательный текст 001-037 не разрешает пропуск 038 или 040. Любая правка запроса/входов, включая включение 039 из lines-b1, требует нового request и независимого утверждения.",
+    "Любое создание/переименование БД или schema write требует отдельной явной команды владельца. До такого исполнения проверить cluster identity/version, exact names/owners, проверенный backup и исходные row counts защищённых старых БД. Fresh approval разрешает только утверждённые definitions, а не операторские действия.",
+    "Для отдельно разрешённого fresh execution доказать отсутствие обоих v17 имён до создания и пустоту точных targets после создания. Если имя существует либо proof не пройден — стоп без drop/reuse/overwrite. World entrypoint применять целиком с ON_ERROR_STOP в одной транзакции: он включает DROP world_base CASCADE. Старые БД не менять.",
+    "После отдельно разрешённого исполнения нужна самостоятельная execution attestation с actual readbacks: 224 world tables и reader grants, 133 party tables, applied 39 с этим chain digest, пустые данные/parties и неизменные старые row counts. Каждый import/activation/cutover требует собственной действующей approval; v11 их не заменяет."
+  ],
+  "excludes": [
+    "database creation, rename, drop, reuse or overwrite",
+    "any data import, catalog registration/activation, runtime/default startup cutover",
+    "mutation of any existing database or save",
+    "live execution attestation or readback",
+    "039 local lines and v10 attestation in another branch",
+    "five tools/*/src/cli.js mode-only changes and full issue #467 gameplay/LLM acceptance"
+  ],
+  "database_mutated_by_review": false,
+  "repository_mutated_by_review": false,
+  "out_of_scope_findings": [
+    {
+      "problem": "Наследованный диапазон 001-037 в operator-facing execution_order расходится с manifest/count 39.",
+      "file_line": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json:391",
+      "evidence": "Recursive v9 delta показывает, что текст не менялся; owner list содержит 001–038+040, review MD:13 говорит 39. v9 verified_by_approver.documentation_notes уже фиксировал проблему.",
+      "issue": "Отдельный issue не установлен; leading issue заводит ведущий. Это не блокирует exact-schema approval с явным условием полного owner list; текстовая корректировка изменит request digest и потребует переутверждения."
+    },
+    {
+      "problem": "REFERENCE-карта DB_SCHEMA содержит прежние 26 world parts и 38 party migrations.",
+      "file_line": "docs/context/DB_SCHEMA.md:17",
+      "additional_file_lines": ["docs/context/DB_SCHEMA.md:18", "docs/context/DB_SCHEMA.md:76", "docs/context/DB_SCHEMA.md:79"],
+      "evidence": "Фактический world entrypoint включает 30 parts; owner/request содержит 39 migrations. Карта имеет REFERENCE статус и сама признаёт code source of truth.",
+      "issue": "Отдельный issue для этих строк не установлен; создать должен ведущий. Обновление вне scope этого аудита."
+    },
+    {
+      "problem": "Будущая интеграция 039 из lines-b1 отложена на другую ветку; текущая v11 её не утверждает.",
+      "file_line": "apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js:4",
+      "evidence": "039 в текущем owner list отсутствует намеренно согласно TASK; её включение изменит list/owner hash/chain/count.",
+      "issue": "Работа известна как lines-b1 и её v10; отдельный issue последующей пересборки/переутверждения не установлен, отслеживание у ведущего."
+    }
+  ]
+}

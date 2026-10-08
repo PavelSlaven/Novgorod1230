@@ -19,8 +19,16 @@ import {
 } from '../lower-dvina-trace-phase-2.js';
 import { createTraceTurnRuntime } from
   './spatial-v3-production-trace-runtime.js';
+import { deriveTrustedBodyNeedsBindingPin } from '../body-needs-temporal.js';
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../../internal/lower-dvina-trace-ordinary-stage-b-approval.js';
+import { loadLiveWorldAuthoredStartCatalog } from
+  '../../internal/live-world-authored-starts.js';
+import { createSpatialSemanticFirstEntryProvisioner } from
+  '../../infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
+import { loadActiveActorBaseAttributesBinding } from
+  '../../infrastructure/postgres/actor-base-attributes-profile-loader.js';
+import { createTargetAuthoredStartCatalog } from '../../internal/target-authored-start-catalog.js';
 
 export async function firstPlayableCommitRecheck(input) {
   if (input?.plan?.operation_kind === 'first_entry'
@@ -101,12 +109,23 @@ export async function createSpatialV3ProductionBindings(
     localFireProfile = null,
     spatialSemanticProfile = null,
     npcSemanticRemainderProfile = null,
-    worldKnowledge = null
+    worldKnowledge = null,
+    targetStartRuntime = null,
+    targetRuntimeProfiles = null,
+    spatialExpansionRuntime = null,
+    readCurrentVisibleContext = null,
+    spatialLocalSceneRuntime = null,
+    readLocalEdgeDisclosure = null,
+    readCurrentExitDisclosure = null,
+    readCurrentConnectionDisclosure = null,
+    readCurrentSources = null
   } = {},
   {
     createNpcRuntimePorts,
     publicationLoader,
     createPhase2RuntimeFactory = createLowerDvinaTracePhase2Runtime,
+    actorBaseAttributesBindingLoader =
+      loadActiveActorBaseAttributesBinding,
     technicalCommandBoundary = 'production-v2'
   } = {}
 ) {
@@ -116,20 +135,25 @@ export async function createSpatialV3ProductionBindings(
   if (typeof createNpcRuntimePorts !== 'function') {
     throw new TypeError('NPC runtime port factory is required');
   }
-  const runtimeCatalogPin = await loadActiveRuntimeCatalogPin(
+  const activeRuntimeCatalogPin = await loadActiveRuntimeCatalogPin(
     ports.worldPool,
     release.runtime_catalog_scope
   );
+  const runtimeCatalogPin = targetStartRuntime?.itemPin ?? activeRuntimeCatalogPin;
+  if (targetStartRuntime != null && Object.entries(runtimeCatalogPin)
+    .some(([field, value]) => activeRuntimeCatalogPin[field] !== value)) {
+    throw new TypeError('target catalog changed after exact release activation readback');
+  }
   if (runtimeCatalogPin.runtime_contract_digest
       !== release.runtime_catalog_contract_digest) {
     throw new TypeError(
       'active runtime catalog uses another exact runtime contract'
     );
   }
-  const ordinaryStageBApproval =
+  const ordinaryStageBApproval = targetStartRuntime == null ?
     await loadLowerDvinaTraceOrdinaryStageBApproval({
       rootDir: config.rootDir ?? process.cwd()
-    });
+    }) : targetRuntimeProfiles?.finite_first_entry?.stage_b_approval ?? null;
   let publicRuntime = null;
   const targetCompositionPorts =
     createTargetCompositionPorts(
@@ -140,53 +164,103 @@ export async function createSpatialV3ProductionBindings(
     targetCompositionPorts,
     commitRecheck: firstPlayableCommitRecheck,
     createPublicRuntimeFacade: async ({ technicalCore, committer,
-      initialOrdinaryProvisioner }) => {
+      initialOrdinaryProvisioner, release: activatedRelease = release }) => {
       if (typeof technicalCore?.executeReleaseOperation !== 'function') {
         throw new TypeError('technical spatial-v3 core is required');
       }
+      const [historicalCatalog, actorBaseAttributesBinding] =
+        await Promise.all([
+          loadLiveWorldAuthoredStartCatalog({
+            rootDir: config.rootDir ?? process.cwd(),
+            phase1AManifestDigest: targetStartRuntime == null
+              ? release.scenario_profile_exact_pins?.phase_1a_manifest_digest ?? TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST
+              : undefined,
+            scenarioDefinitionRevision: targetStartRuntime == null
+              ? release.scenario_profile_exact_pins?.scenario_definition_revision ?? 32 : undefined
+          }),
+          targetStartRuntime?.actorBinding ?? actorBaseAttributesBindingLoader(ports.worldPool)
+        ]);
+      const authoredStartCatalog = targetStartRuntime == null ? historicalCatalog
+        : createTargetAuthoredStartCatalog({ runtime: targetStartRuntime, release: activatedRelease,
+            historicalCatalog, turnProfile: targetRuntimeProfiles?.turn_profile,
+            ordinaryProfiles: targetRuntimeProfiles?.ordinary_profiles });
+      const authoredSpatialProvisioner = targetStartRuntime != null ? null :
+        createSpatialSemanticFirstEntryProvisioner({
+          loadedProfile: authoredStartCatalog.ordinary_profiles.s1
+        });
+      const authoredInitialProvisioner = initialOrdinaryProvisioner == null ? null
+        : authoredSpatialProvisioner == null ? { async provision(input) {
+          return Object.freeze({ ordinary: await initialOrdinaryProvisioner.provision(input) });
+        } } : { async provision(input) {
+          const ordinary = await initialOrdinaryProvisioner.provision(input);
+          const spatial = await authoredSpatialProvisioner.provision(input);
+          return Object.freeze({ ordinary, spatial });
+        } };
+      const trustedBodyNeedsBindingPin = deriveTrustedBodyNeedsBindingPin(
+        targetRuntimeProfiles?.body_needs_profile ?? null);
+      const traceStartAdapter = createLowerDvinaTracePhase1BProductionAdapter({
+        partyPool: ports.partyPool, worldPool: ports.worldPool, release, runtimeCatalogPin, worldKnowledge,
+        authoredStartResolver: authoredStartCatalog.resolveProfile,
+        committer, authoredRuntimeBindingResolver: authoredStartCatalog.resolveRuntimeBinding,
+        trustedBodyNeedsBindingPin,
+        trustedBodyNeedsProfile: targetRuntimeProfiles?.body_needs_profile ?? null,
+        approvedActorCatalog: authoredStartCatalog.actor_catalog, actorBaseAttributesBinding,
+        ...(targetStartRuntime == null ? {} : { targetStartRuntime }),
+        ...(authoredInitialProvisioner == null ? {} : { initialOrdinaryProvisioner: authoredInitialProvisioner })
+      });
+      const traceTurnRuntime = createTraceTurnRuntime({
+        partyPool: ports.partyPool,
+        worldPool: ports.worldPool,
+        committer,
+        env,
+        config,
+        ordinaryMaterializationProfile,
+        ordinaryContainerContentsProfile,
+        ordinaryStageBApproval,
+        actionProductionProfile,
+        localFireProfile,
+        spatialSemanticProfile,
+        npcSemanticRemainderProfile,
+        authoredTurnProfile: authoredStartCatalog.turn_profile,
+        bodyNeedsProfile: targetRuntimeProfiles?.body_needs_profile ?? null,
+        postActionPerceptionProfile:
+          targetRuntimeProfiles?.post_action_perception_profile ?? null,
+        authoredSpatialSemanticProfile:
+          authoredStartCatalog.ordinary_profiles?.s1 ?? null,
+        authoredNpcSemanticRemainderProfile:
+          authoredStartCatalog.ordinary_profiles?.n1 ?? null,
+        authoredRuntimeBindingResolver:
+          authoredStartCatalog.resolveRuntimeBinding,
+        targetStartRuntime,
+        worldKnowledge,
+        spatialExpansionRuntime,
+        readCurrentVisibleContext,
+        spatialLocalSceneRuntime,
+        readLocalEdgeDisclosure,
+        readCurrentExitDisclosure,
+        readCurrentConnectionDisclosure,
+        readCurrentSources,
+        loadInitialNaturalScenePerceptionInput: traceStartAdapter.loadNaturalScenePerceptionInput ?? null,
+        createPhase2RuntimeFactory,
+        createNpcRuntimePorts
+      });
       publicRuntime ??= createLowerDvinaTracePublicRuntime({
         partyPool: ports.partyPool,
         committer,
-        release,
+        release: activatedRelease,
         runtimeCatalogPin,
         activePhase1AManifestDigest: release.scenario_profile_exact_pins?.phase_1a_manifest_digest
           ?? TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
         activeScenarioDefinitionRevision: release.scenario_profile_exact_pins?.scenario_definition_revision ?? 32,
         publicationLoader,
+        authoredStartCatalog,
         ...(typeof config.idFactory === 'function'
           ? { idFactory: config.idFactory }
           : {}),
-        traceStartAdapter:
-          createLowerDvinaTracePhase1BProductionAdapter({
-            partyPool: ports.partyPool,
-            worldPool: ports.worldPool,
-            release,
-            runtimeCatalogPin,
-            worldKnowledge,
-            ...(initialOrdinaryProvisioner == null ? {} : {
-              initialOrdinaryProvisioner,
-              initialOrdinaryScopeBinding:
-                ordinaryMaterializationProfile.o2a_ambient.scope_binding
-            })
-          }),
-        traceTurnRuntime: createTraceTurnRuntime({
-          partyPool: ports.partyPool,
-          committer,
-          env,
-          config,
-          ordinaryMaterializationProfile,
-          ordinaryContainerContentsProfile,
-          ordinaryStageBApproval,
-          actionProductionProfile,
-          localFireProfile,
-          spatialSemanticProfile,
-          npcSemanticRemainderProfile,
-          worldKnowledge,
-          createPhase2RuntimeFactory,
-          createNpcRuntimePorts
-        })
+        traceStartAdapter,
+        traceTurnRuntime
       });
-      return Object.freeze(Object.fromEntries([
+      const gameplayFacade = Object.fromEntries([
         'listScenarios',
         'startNewGame',
         'acknowledgeOpening',
@@ -197,7 +271,11 @@ export async function createSpatialV3ProductionBindings(
         method,
         (...args) =>
           technicalCore.executeReleaseOperation(method, ...args)
-      ])));
+      ]));
+      return Object.freeze({
+        ...gameplayFacade,
+        getLlmTurnReport: (input) => traceTurnRuntime.llmDiagnostics.report(input)
+      });
     },
     releaseBinding: Object.freeze({ ...release }),
     runtimeCatalogPin

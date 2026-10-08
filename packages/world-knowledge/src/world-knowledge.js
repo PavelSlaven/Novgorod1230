@@ -1,6 +1,7 @@
 import {
   canAccess, coverageStatus, isApplicable, lexicalCandidates, normalizeScores,
-  packCandidates, packContext, projectClaim, compareClaims, structuredPrefilter
+  normalizeRerankScores, packCandidates, projectClaim, compareClaims,
+  structuredPrefilter
 } from './resolution.js';
 
 const BUNDLE_SCHEMA = 'world_knowledge_runtime_bundle_v1';
@@ -8,7 +9,8 @@ const QUERY_SCHEMA = 'world_knowledge_query_v1';
 const SLICE_SCHEMA = 'world_knowledge_slice_v1';
 const PURPOSES = new Set(['semantic_resolution', 'materialization_support', 'source_grounded_qa', 'npc_decision', 'conversation', 'narration']);
 const ACTOR_FACETS = new Set(['occupation_ref', 'role_ref', 'specialist_domain', 'social_status', 'sex_category', 'age_category']);
-const CONDITION_FACETS = new Set(['season', 'climate', 'location_type', 'material_state', 'temperature_state', 'moisture_state', 'process_ref']);
+/** Single owner registry for claim/context condition facets (also imported by pack compiler). */
+export const CONDITION_FACETS = new Set(['season', 'climate', 'location_type', 'material_state', 'temperature_state', 'moisture_state', 'process_ref', 'started_historical_events']);
 const HARD_EXCLUSION_BASES = new Set(['introduced_after_context', 'ceased_before_context', 'not_available_in_region', 'institution_not_existing', 'explicit_domain_incompatibility']);
 const ACCESS_CLASSES = new Set(['general_physical', 'common_cultural', 'occupation_bound', 'role_bound', 'specialist_bound', 'domain_internal_only']);
 const ACCESS_FACETS = Object.freeze({
@@ -19,7 +21,7 @@ const ACCESS_FACETS = Object.freeze({
 const TYPICALITIES = new Set(['common', 'attested', 'uncommon', 'exceptional', 'unknown']);
 const CONFIDENCES = new Set(['high', 'medium', 'low', 'unknown']);
 const DIRECTNESSES = new Set(['direct', 'inferred', 'analogical', 'editorial', 'unknown']);
-const DEFAULT_BUDGET = Object.freeze({ max_facts: 24, max_candidates: 12, max_context_chars: 7000 });
+const DEFAULT_BUDGET = Object.freeze({ max_facts: 24, max_candidates: 12 });
 
 export class WorldKnowledgeError extends Error {
   constructor(code, message, details = {}) {
@@ -36,23 +38,45 @@ export function createWorldKnowledgeCore(inputBundle) {
   const concepts = new Set(Object.keys(bundle.exact_indexes.concept_by_ref));
   const profiles = bundle.coverage_profiles;
   return Object.freeze({
-    resolveWorldKnowledge(query, { vectorScores = null } = {}) {
-      const validation = validateWorldKnowledgeQuery(query, bundle);
-      if (!validation.ok) throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID', validation.errors.join('; '), { errors: validation.errors });
-      if (vectorScores != null && (!(vectorScores instanceof Map)
-          || bundle.manifest.embedding_profile_ref == null
-          || [...vectorScores].some(([ref, score]) =>
+    /** Admitted claim refs before ranking/packing — pure; for D17 candidate scoring. */
+    admittedCandidateRefs(query, { vectorScores = null } = {}) {
+      const { normalized, claimScores } = prepareResolve(query, vectorScores);
+      return Object.freeze(computeAdmittedUnsorted(bundle, claims, normalized, claimScores)
+        .admittedUnsorted.map((claim) => claim.claim_ref));
+    },
+    resolveWorldKnowledge(query, { vectorScores = null, rerankScores = null } = {}) {
+      const { normalized, claimScores } = prepareResolve(query, vectorScores);
+      if (rerankScores != null && (!(rerankScores instanceof Map)
+          || [...rerankScores].some(([ref, score]) =>
             (!claims.has(ref) && !concepts.has(ref))
             || !Number.isFinite(score)))) {
         throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID',
-          'vector scores are invalid for this bundle');
+          'rerank scores are invalid for this bundle');
       }
-      const normalized = structuredClone(query);
-      normalized.context.conditions ??= {};
-      return resolve(bundle, claims, profiles, normalized,
-        claimVectorScores(bundle, claims, vectorScores ?? new Map()));
+      return resolve(bundle, claims, profiles, normalized, claimScores,
+        claimVectorScores(bundle, claims, rerankScores ?? new Map()),
+        rerankScores != null);
     }
   });
+
+  function prepareResolve(query, vectorScores) {
+    const validation = validateWorldKnowledgeQuery(query, bundle);
+    if (!validation.ok) throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID', validation.errors.join('; '), { errors: validation.errors });
+    if (vectorScores != null && (!(vectorScores instanceof Map)
+        || bundle.manifest.embedding_profile_ref == null
+        || [...vectorScores].some(([ref, score]) =>
+          (!claims.has(ref) && !concepts.has(ref))
+          || !Number.isFinite(score)))) {
+      throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID',
+        'vector scores are invalid for this bundle');
+    }
+    const normalized = structuredClone(query);
+    normalized.context.conditions ??= {};
+    return {
+      normalized,
+      claimScores: claimVectorScores(bundle, claims, vectorScores ?? new Map())
+    };
+  }
 }
 
 function claimVectorScores(bundle, claims, scores) {
@@ -87,15 +111,11 @@ export function validateWorldKnowledgeQuery(value, bundle) {
   return frozenValidation(errors);
 }
 
-function resolve(bundle, claimMap, profiles, query, vectorScores) {
-  const exactRefs = new Set();
-  for (const ref of query.focus_refs) {
-    if (claimMap.has(ref)) exactRefs.add(ref);
-    for (const claimRef of bundle.exact_indexes.concept_to_claim_refs[ref] ?? []) exactRefs.add(claimRef);
-  }
+/** Pure admission before ranking/packing — shared by resolve and admittedCandidateRefs. */
+function computeAdmittedUnsorted(bundle, claimMap, query, vectorScores) {
+  const exactRefs = exactFocusRefs(claimMap, bundle, query);
   const lexicalScores = lexicalCandidates(bundle, query);
-  const normalizedLexicalScores = normalizeScores(lexicalScores);
-  const normalizedVectorScores = normalizeScores(vectorScores);
+  // Rerank never expands recall: candidates come from exact/lexical/vector only.
   const candidateRefs = new Set([...exactRefs, ...lexicalScores.keys(),
     ...vectorScores.keys()]);
   if (query.requested_predicates.length) {
@@ -141,10 +161,38 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
   const relevantRefs = new Set(relevant.map(({ claim_ref }) => claim_ref));
   const relevantGroups = new Set(relevant.map(({ conflict_group_ref }) =>
     conflict_group_ref).filter(Boolean));
-  const admitted = allApplicable.filter((claim) => relevantRefs.has(claim.claim_ref)
-    || relevantGroups.has(claim.conflict_group_ref))
+  const admittedUnsorted = allApplicable.filter((claim) => relevantRefs.has(claim.claim_ref)
+    || relevantGroups.has(claim.conflict_group_ref));
+  return { admittedUnsorted, allApplicable, hintScores, exactRefs,
+    lexicalScores };
+}
+
+function exactFocusRefs(claimMap, bundle, query) {
+  const exactRefs = new Set();
+  for (const ref of query.focus_refs) {
+    if (claimMap.has(ref)) exactRefs.add(ref);
+    for (const claimRef of bundle.exact_indexes.concept_to_claim_refs[ref] ?? []) exactRefs.add(claimRef);
+  }
+  return exactRefs;
+}
+
+function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
+  useRerank) {
+  const { admittedUnsorted, allApplicable, hintScores, exactRefs, lexicalScores } =
+    computeAdmittedUnsorted(bundle, claimMap, query, vectorScores);
+  const normalizedLexicalScores = normalizeScores(lexicalScores);
+  const normalizedVectorScores = normalizeScores(vectorScores);
+  // All-or-nothing: rerank applies only when every admitted claim has a score.
+  // Partial maps fall back to hybrid order (no silent mixed-scale ranking).
+  let appliedRerank = null;
+  if (useRerank && admittedUnsorted.length > 0
+      && admittedUnsorted.every((claim) => rerankScores.has(claim.claim_ref))) {
+    appliedRerank = normalizeRerankScores(new Map(admittedUnsorted.map((claim) =>
+      [claim.claim_ref, rerankScores.get(claim.claim_ref)])));
+  }
+  const admitted = admittedUnsorted
     .sort((a, b) => compareClaims(a, b, query, exactRefs,
-      normalizedLexicalScores, normalizedVectorScores));
+      normalizedLexicalScores, normalizedVectorScores, appliedRerank));
   const { selected: applicable, omittedConflictGroups } = packCandidates(admitted, query.budget.max_candidates);
 
   const coverage = query.domains.map((domain) => ({ domain, status: coverageStatus(domain, profiles, query) }));
@@ -164,7 +212,18 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
   const gaps = coverage.filter((entry) => entry.status !== 'covered').map((entry) => ({ domain: entry.domain, status: entry.status }));
   for (const conflict_group_ref of omittedConflictGroups) gaps.push({ domain: query.domains.join(','), status: 'conflict_group_exceeds_candidate_budget', conflict_group_ref });
   if (verdict === 'unresolved' && gaps.length === 0) gaps.push({ domain: query.domains.join(','), status: 'unresolved' });
-  const contextText = packContext({ coverage, hardConstraints: selectedHard, facts: selectedFacts, disputes, gaps }, query.budget.max_context_chars);
+  // Orchestrator maps these hits into §63 sufficiency; not a model-facing field.
+  const search_hint_hits = Object.freeze(hintScores.map(({ strongest }) => strongest > 0));
+  // Topical score per hint: when rerank applied — min-max bge over admitted;
+  // else Giga cosine of the joined search query (claims outside vector top-k → 0).
+  // Do not compare raw bge logits to the cosine sufficiency floor (R8 / LW-054).
+  const relevanceSource = appliedRerank ?? vectorScores;
+  const search_hint_relevance = Object.freeze(hintScores.map(({ scores, strongest }) => {
+    if (strongest <= 0) return 0;
+    return Math.max(0, ...allApplicable.map((claim) =>
+      (scores.get(claim.claim_ref) ?? 0) > 0
+        ? (relevanceSource.get(claim.claim_ref) ?? 0) : 0));
+  }));
   return deepFreeze({
     schema: SLICE_SCHEMA,
     pack_ref: bundle.manifest.pack_ref,
@@ -179,7 +238,10 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
     disputes,
     gaps,
     evidence_fragments: [],
-    context_text: contextText,
+    search_hint_hits,
+    search_hint_relevance,
+    // Orchestrator/audit diagnostic: true only when all-or-nothing rerank ran.
+    rerank_applied: appliedRerank != null,
   });
 }
 
@@ -304,9 +366,21 @@ function validFacetMap(value) {
 function validCondition(value) {
   if (!plainObject(value) || !onlyKeys(value, ['facet', 'operator', 'value']) || !CONDITION_FACETS.has(value.facet)
     || !['equals', 'includes', 'present'].includes(value.operator)) return false;
+  // Event gate before present early-return: present+started_historical_events
+  // would always match an array factory value (F4 / contract: event_id required).
+  if (value.facet === 'started_historical_events') {
+    return value.operator === 'includes'
+      && typeof value.value === 'string' && value.value.trim() === value.value
+      && value.value.length > 0;
+  }
   if (value.operator === 'present') return value.value == null;
   return typeof value.value === 'boolean' || Number.isFinite(value.value) || (typeof value.value === 'string' && value.value.trim())
     || (Array.isArray(value.value) && value.value.length > 0 && value.value.every((item) => typeof item === 'string' && item.trim()));
+}
+
+/** Shared condition validator for Core load and pack compiler (N-3). */
+export function isValidCondition(value) {
+  return validCondition(value);
 }
 
 function onlyKeys(value, allowed) { const keys = new Set(allowed); return Object.keys(value).every((key) => keys.has(key)); }
@@ -334,8 +408,11 @@ function validateContext(value, errors) {
   if (value.conditions != null && !plainObject(value.conditions)) errors.push('query.context.conditions must be an object');
   else if (value.conditions != null) for (const [key, condition] of Object.entries(value.conditions)) {
     if (!CONDITION_FACETS.has(key)) errors.push(`query.context.conditions: unknown field ${key}`);
+    // Empty started_historical_events means "nothing has begun yet" (A-01).
+    const allowEmpty = key === 'started_historical_events';
     const valid = typeof condition === 'boolean' || Number.isFinite(condition) || (typeof condition === 'string' && condition.trim())
-      || (Array.isArray(condition) && condition.length > 0 && condition.every((item) => typeof item === 'string' && item.trim()));
+      || (Array.isArray(condition) && (allowEmpty || condition.length > 0)
+        && condition.every((item) => typeof item === 'string' && item.trim()));
     if (!valid) errors.push(`query.context.conditions.${key} is invalid`);
   }
 }

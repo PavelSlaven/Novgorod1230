@@ -62,6 +62,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     ports.preparedEffectContext);
   let preparedFollowup = null;
   let pendingDiscovery = null;
+  let blockedPlan = false;
+  let blockedPlanReasonCode = null;
   const seen = new Set();
 
   while (stepIndex <= identity.maxInternalSteps) {
@@ -120,7 +122,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         revalidateCommittedState: ports.revalidateCommittedState,
         expectedVersion: identity.committedStateVersion,
         workingProjection, preparedChainContext }) : null;
-    const { plan, repaired } = pendingResult ?? (preparedPlan == null
+    const { plan, repaired, canonicalizations = [] } = pendingResult ?? (preparedPlan == null
       ? await requestTurnStepPlanWithRepair({ request,
           turnStepModel: ports.turnStepModel,
           semanticPlanValidator: ports.semanticPlanValidator,
@@ -134,6 +136,20 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         request,
         plan
       });
+    }
+    const blockReason = typeof ports.blockPlan === 'function'
+      ? await ports.blockPlan(deepFreeze({
+        plan: structuredClone(plan), request: structuredClone(request)
+      }))
+      : false;
+    if (blockReason) {
+      blockedPlan = true;
+      blockedPlanReasonCode = typeof blockReason === 'string' ? blockReason : null;
+      stopReason = 'terminal';
+      remainingIntent = '';
+      stepTraces.push(traceFor({ plan, request, repaired, canonicalizations,
+        applied: false }));
+      break;
     }
     const preparedContinuationAllowed = preparedPlan != null
       || preparedEffects.length === 0
@@ -161,7 +177,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         ? 'clarification_required' : 'player_response';
       remainingIntent = request.remaining_intent;
       stepTraces.push(traceFor({
-        plan, request, repaired, applied: false, boundary: true
+        plan, request, repaired, canonicalizations, applied: false,
+        boundary: true
       }));
       break;
     }
@@ -169,7 +186,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       clarification = structuredClone(plan.clarification);
       stopReason = 'clarification_required';
       stepTraces.push(traceFor({
-        plan, request, repaired, applied: false
+        plan, request, repaired, canonicalizations, applied: false
       }));
       break;
     }
@@ -198,7 +215,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       stopReason = 'player_response';
       remainingIntent = request.remaining_intent;
       stepTraces.push(traceFor({
-        plan, request, repaired, applied: false, boundary: true
+        plan, request, repaired, canonicalizations, applied: false,
+        boundary: true
       }));
       break;
     }
@@ -256,6 +274,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       plan,
       request,
       repaired,
+      canonicalizations,
       applied: true,
       checkResult: execution.checkResult,
       checkRequest: execution.checkRequest,
@@ -323,7 +342,9 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     spatial_semantic_atomic_write_plan: spatialSemanticPlans[0] ?? null,
     background_npc_semantic_atomic_write_plan:
       backgroundNpcSemanticPlans[0] ?? null,
-    clarification
+    clarification,
+    blocked_plan: blockedPlan,
+    blocked_plan_reason_code: blockedPlanReasonCode
   });
 }
 

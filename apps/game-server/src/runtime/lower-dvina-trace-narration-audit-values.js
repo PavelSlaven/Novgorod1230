@@ -10,51 +10,6 @@ const UNSUPPORTED_KINDS = new Set(['unsupported_attempt',
   'unsupported_sensory', 'unsupported_event', 'unsupported_world_state',
   'unsupported_npc_state', 'unsupported_fact']);
 
-export function normalizeNarrationAuditChoices(output, request) {
-  if (!output || typeof output !== 'object' || Array.isArray(output)) return output;
-  const normalizeFinding = (finding) => !finding || typeof finding !== 'object'
-    ? finding : { ...finding,
-      segment_choice: normalizeChoice(finding.segment_choice, request) };
-  const unsupported = Array.isArray(output.unsupported)
-    ? output.unsupported.map(normalizeFinding) : output.unsupported;
-  const literaryFailures = Array.isArray(output.literary_failures)
-    ? output.literary_failures.map(normalizeFinding) : output.literary_failures;
-  const misplacedContinuation = Array.isArray(unsupported)
-    ? unsupported.filter((finding) =>
-      finding?.kind === 'unsupported_response_or_continuation') : [];
-  return { ...output,
-    source_reviews: Array.isArray(output.source_reviews)
-      ? output.source_reviews.map((review) => !review
-        || typeof review !== 'object' ? review : { ...review,
-          segment_choices: Array.isArray(review.segment_choices)
-            ? review.segment_choices.map((choice) =>
-              normalizeChoice(choice, request)) : review.segment_choices })
-      : output.source_reviews,
-    unsupported: Array.isArray(unsupported) ? unsupported.filter((finding) =>
-      finding?.kind !== 'unsupported_response_or_continuation') : unsupported,
-    literary_failures: Array.isArray(literaryFailures)
-      ? [...literaryFailures, ...misplacedContinuation.map((finding) => ({
-        check: 'unsupported_response_or_continuation',
-        segment_choice: finding.segment_choice, reason: finding.reason }))]
-      : literaryFailures };
-}
-function normalizeChoice(value, request) {
-  if (typeof value !== 'string') return value;
-  const normalized = normalizeText(value);
-  const segments = request.segments ?? [];
-  const exact = segments.find(({ segment_id: id }) => id === value);
-  if (exact) return exact.segment_id;
-  const prose = segments.find((segment) =>
-    normalizeText(segment.prose) === normalized);
-  if (prose) return prose.segment_id;
-  const ids = segments.map(({ segment_id: id }) => id);
-  if (normalized === normalizeText(ids.join(', '))
-      || normalized === normalizeText(request.output?.prose)) return ids[0];
-  return value;
-}
-function normalizeText(value) {
-  return typeof value === 'string' ? value.trim().replace(/\s+/gu, ' ') : null;
-}
 export function validNarrationAuditModelOutput(output, request) {
   if (!output || typeof output !== 'object' || Array.isArray(output)
       || !sameKeys(output, ['reviewed_segments', 'source_reviews', 'unsupported',

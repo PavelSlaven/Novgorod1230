@@ -5,7 +5,8 @@ import {
 export async function replayExistingLowerDvinaTraceStart({
   partyId,
   requestId,
-  repository
+  repository,
+  validateSession = validateLowerDvinaTraceSessionRead
 }) {
   let session;
   try {
@@ -14,7 +15,7 @@ export async function replayExistingLowerDvinaTraceStart({
     if (error?.code === 'PARTY_NOT_FOUND') return null;
     throw error;
   }
-  await validateLowerDvinaTraceSessionRead({ partyId, session });
+  await validateSession({ partyId, session });
   return {
     request_id: requestId,
     party_id: partyId,

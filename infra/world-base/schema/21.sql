@@ -257,7 +257,26 @@ CREATE UNIQUE INDEX IF NOT EXISTS item_template_one_active_visual_binding
     'headwear_kind'
   ) AND status = 'approved';
 
+-- Immutable generated cache for approved procedural-scene compiler output.
+CREATE TABLE IF NOT EXISTS world_base.procedural_scene_compiled_records (
+  record_id TEXT NOT NULL,
+  version INTEGER NOT NULL CHECK (version > 0),
+  record_kind TEXT NOT NULL CHECK (record_kind IN (
+    'profile','mapping','approval_metadata'
+  )),
+  family_candidate_ref TEXT,
+  payload JSONB NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
+  payload_digest TEXT NOT NULL CHECK (payload_digest ~ '^[a-f0-9]{64}$'),
+  source_pack_digest TEXT NOT NULL
+    CHECK (source_pack_digest ~ '^[a-f0-9]{64}$'),
+  status TEXT NOT NULL
+    CHECK (status = 'approved_authoring_not_runtime_selectable'),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (record_id, version)
+);
+
 GRANT SELECT ON
   world_base.region_demographic_profile_entries,
-  world_base.region_appearance_profile_entries
+  world_base.region_appearance_profile_entries,
+  world_base.procedural_scene_compiled_records
 TO world_reader;

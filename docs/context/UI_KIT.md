@@ -1,6 +1,6 @@
 # UI kit: устройство game-web
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-25, commit 59c1a33c.
 
 Карта browser-клиента `apps/game-web`. Владелец и инварианты — [apps/game-web/MODULE.md](../../apps/game-web/MODULE.md);
 read models для экрана — [packages/presentation/MODULE.md](../../packages/presentation/MODULE.md) (`@rus/presentation`);
@@ -57,9 +57,10 @@ read models для экрана — [packages/presentation/MODULE.md](../../pack
 Состав панелей задаёт `@rus/presentation` (Character, Inventory, People, Route, Map, Journal, Diagnostic —
 [presentation MODULE.md](../../packages/presentation/MODULE.md)); game-web новые панели не выдумывает.
 
-⚠ PR #98 меняет: overlay «LLM» и стартовый экран (вместо режима локальной Gemma — только OpenAI-compatible vLLM
-endpoint, без настройки кнопка «Новая игра» заблокирована), добавляет `app/pending-new-game.js`; `@rus/presentation`
-начинает принимать `screen_kind` `live_world_turn`.
+Overlay «LLM» и стартовый экран на этой ветке: OpenAI-compatible vLLM endpoint
+([llm-settings](../../apps/game-web/src/app/llm-settings.js)); без настройки кнопка «Новая игра» блокируется;
+`app/pending-new-game.js` — очередь new-game. `@rus/presentation` принимает `screen_kind` `live_world_turn`
+([presentation MODULE.md](../../packages/presentation/MODULE.md)).
 
 ## 4. Хелперы, которые нельзя писать заново
 

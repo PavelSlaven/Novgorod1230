@@ -38,6 +38,15 @@ export const digestInput = (plan) => { const { digest, ...value } = plan; return
 export const keyOf = (write) => `${write.target_schema ?? 'party_runtime'}.${write.target_table}:${write.id}`;
 export const validIdentity = (write) => write?.target_table === 'entity_placements'
   ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
+  : write?.target_table === 'party_materialization_runs' ? write.id === write.record?.run_id
+  : write?.target_table === 'party_materialization_choices' ? write.id === `${write.record?.run_id}:${write.record?.choice_ordinal}`
+  : write?.target_table === 'party_ordinary_materialization_basis_catalog'
+    ? write.id === `${write.record?.party_id}:${write.record?.scope_kind}:${write.record?.scope_id}:${write.record?.basis_ref}`
+  : ['party_ordinary_materialization_aggregates', 'party_ordinary_materialization_contexts', 'party_ordinary_materialization_enablements'].includes(write?.target_table)
+    ? write.id === `${write.record?.party_id}:${write.record?.scope_kind}:${write.record?.scope_id}`
+  : write?.target_table === 'party_g4_expansion_ledgers'
+    ? write.id === `${write.record?.party_id}:${write.record?.g4_id}:${write.record?.profile_ref?.entity_id}`
+      && write.record?.profile_ref_id === undefined
   : write?.target_table === 'g6_acoustic_profiles'
     ? write.record?.g6_instance_id === write.id
   : write?.target_table === 'party_combat_sessions'
@@ -67,7 +76,9 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                           : write?.target_table === 'party_check_resolutions' ? write.record?.check_resolution_id === write.id
                             : write?.target_table === 'party_actor_npc_interactions' ? write.record?.interaction_id === write.id
                               : write?.target_table === 'party_actor_npc_interaction_summaries' ? write.record?.summary_id === write.id
-                                : write?.target_table === 'party_npcs' ? write.record?.npc_id === write.id
+  : write?.target_table === 'party_npcs' ? write.record?.npc_id === write.id
+                                  : write?.target_table === 'party_npc_relations'
+                                    ? write.id === `${write.record?.party_id}:${write.record?.from_npc_id}:${write.record?.to_npc_id}:${write.record?.relation_category_id}`
                                   : write?.target_table === 'party_npc_traits' ? write.id === `${write.record?.npc_id}:${write.record?.trait_domain}:${write.record?.category_id}`
                                     : write?.target_table === 'party_items' ? write.record?.item_id === write.id
                                       : write?.target_table === 'party_item_placements' ? write.record?.item_id === write.id
@@ -98,6 +109,11 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                                   : write?.record?.id === write?.id;
 export function childParentKeys(write) {
   switch (write?.target_table) {
+    case 'party_materialization_choices':
+      return [`party_runtime.party_materialization_runs:${write.record?.run_id}`];
+    case 'party_npc_relations':
+      return [`party_runtime.party_npcs:${write.record?.from_npc_id}`,
+        `party_runtime.party_npcs:${write.record?.to_npc_id}`];
     case 'party_combat_sessions':
       return [`party_runtime.party_v3_change_sets:${write.record?.last_change_set_id}`];
     case 'party_activity_participant_bindings':

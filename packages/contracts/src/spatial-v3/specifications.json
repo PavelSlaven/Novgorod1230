@@ -1,7 +1,7 @@
 {
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "amendment_scope": "Appendix A.1-A.8",
+  "amendment_scope": "Appendix A.1-A.9",
   "additional_amendment_sources": [
     {
       "source": "data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
@@ -14,9 +14,13 @@
     {
       "source": "data/knowledge-source/corpus/DOCUMENTS/npc_conversation_mode_contract.md",
       "scope": "Appendix A"
+    },
+    {
+      "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+      "scope": "Appendix F"
     }
   ],
-  "source_version": "4.5.0-target.1",
+  "source_version": "4.7.0-target.1",
   "specifications": [
     {
       "contract_name": "entity_ref",
@@ -961,6 +965,8 @@
         "No branch or cycle exists inside one route version.",
         "Exactly one approved from and to endpoint binding exists for an approved route version.",
         "Reverse route, when present, is distinct, independently valid, points back reciprocally and has reversed endpoint/segment order; absence declares a one-way route.",
+        "Reverse route is the mirror of the forward route: point k corresponds to point n minus k, segment i to segment n minus 1 minus i; corresponding segments have equal line_kind_id and line_name and inverse line_direction_id; line_discriminator, base_minutes, method and availability may differ.",
+        "route_kind_id equals the route_kind_id of the line_kind_profile of the first segment; it is not authored independently.",
         "Route version changes whenever point, segment, endpoint binding or mechanically relevant route-level dependency changes."
       ]
     },
@@ -1082,6 +1088,36 @@
           "type": "versioned_ref"
         },
         {
+          "name": "line_kind_id",
+          "required": true,
+          "type": "controlled_line_kind"
+        },
+        {
+          "name": "line_kind_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "line_name",
+          "required": true,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "line_discriminator",
+          "required": false,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "line_direction_id",
+          "required": false,
+          "type": "controlled_direction_context"
+        },
+        {
+          "name": "line_toponym",
+          "required": false,
+          "type": "non_empty_text"
+        },
+        {
           "name": "baseline_movement_method_id",
           "required": true,
           "type": "stable_id"
@@ -1131,7 +1167,12 @@
       "invariants": [
         "UNIQUE route version and ordinal.",
         "Segment ordinal i connects point ordinal i to i plus one.",
-        "Segment has exactly one spatial context."
+        "Segment has exactly one spatial context.",
+        "line_kind_profile_ref is an explicit versioned reference (a bare line_kind_id selects no version); line_kind_id equals the line kind of that profile version.",
+        "baseline_movement_method_id, movement_method_cost_profile_ref, dynamic_recheck_policy_ref and transition_environment_profile_ref equal those of the referenced line_kind_profile version (one movement-method id space).",
+        "A segment incident to an internal route point has a non-null line_direction_id.",
+        "base_minutes above 30 requires the dynamic_recheck_policy of that line_kind_profile to slice the segment into parts of at most 30 minutes (section 4.5.2); violation is line_recheck_slicing_missing.",
+        "Active outgoing lines of one place (§4.7.2) have distinct (line_name, line_discriminator, line_direction_id); the line of a multi-segment route for this purpose is its first segment."
       ]
     },
     {
@@ -1464,9 +1505,39 @@
           "type": "stable_id"
         },
         {
-          "name": "passage_type_id",
+          "name": "line_kind_id",
           "required": true,
-          "type": "stable_id"
+          "type": "controlled_line_kind"
+        },
+        {
+          "name": "line_kind_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "line_name",
+          "required": true,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "line_discriminator",
+          "required": false,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "line_direction_id",
+          "required": false,
+          "type": "controlled_direction_context"
+        },
+        {
+          "name": "line_toponym",
+          "required": false,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "source_canonical_connection_ref",
+          "required": false,
+          "type": "versioned_ref"
         },
         {
           "name": "transition_environment_profile_ref",
@@ -1481,31 +1552,26 @@
         {
           "name": "cost_kind",
           "required": true,
-          "type": "enum[action, time]"
-        },
-        {
-          "name": "action_units",
-          "required": false,
-          "type": "positive_integer"
+          "type": "enum[time]"
         },
         {
           "name": "baseline_movement_method_id",
-          "required": false,
+          "required": true,
           "type": "stable_id"
         },
         {
           "name": "movement_method_cost_profile_ref",
-          "required": false,
+          "required": true,
           "type": "versioned_ref"
         },
         {
           "name": "base_minutes",
-          "required": false,
+          "required": true,
           "type": "positive_integer"
         },
         {
           "name": "dynamic_recheck_policy_ref",
-          "required": false,
+          "required": true,
           "type": "versioned_ref"
         },
         {
@@ -1562,11 +1628,12 @@
       "relations": [],
       "invariants": [
         "Source and target sites have the same parent G4.",
-        "action requires action_units and null time fields.",
-        "time requires method, cost profile, base_minutes and recheck policy and null action_units.",
+        "cost_kind is time (§1.4): method, cost profile, base_minutes and recheck policy are populated; there is no action_units field.",
+        "source_canonical_connection_ref is populated exactly for a projection of a canonical_g5_connection_binding created by the canonical_connection trigger; its line fields, minutes and the method/cost/recheck of its line_kind_profile equal that authoring version; it is null for a generated connection, whose line fields and minutes come from the entry_line_* fields of the applicable expansion_slot (§4.7.2).",
         "portal_entity_id requires availability_condition_set_ref that exhaustively resolves movement for portal states open, closed, locked and destroyed; the portal belongs to one endpoint scene baseline and is compatible with both endpoint bindings.",
         "No portal permits availability_condition_set_ref only for non-portal conditions.",
-        "Reverse connection, when present, is a distinct row in the same party with swapped sites and a reciprocal reverse_connection_id.",
+        "Reverse connection, when present, is a distinct row in the same party with swapped sites, a reciprocal reverse_connection_id, equal line_kind_id and line_name, inverse line_direction_id, and endpoint positions swapped as in §4.7.",
+        "Active outgoing lines of one site have distinct (line_name, line_discriminator, line_direction_id) (§4.7.2).",
         "capacity_reduction is permitted only when capacity is explicitly populated.",
         "active forbids terminal_change_set_id; superseded and destroyed require it."
       ]
@@ -1638,7 +1705,8 @@
       "invariants": [
         "UNIQUE one active binding per party, connection and role.",
         "from belongs to connection source site; to belongs to target site.",
-        "Slot role matches endpoint role.",
+        "Slot role matches endpoint role, except for the reverse connection of a pair, which uses the forward slots in reverse roles (paired-slot rule, §6.5).",
+        "The from binding of a reverse connection resolves to the same position as the to binding of its forward connection, and vice versa.",
         "active forbids deactivated_change_set_id; inactive and superseded require it."
       ]
     },
@@ -1968,6 +2036,31 @@
           "type": "versioned_ref"
         },
         {
+          "name": "entry_line_kind_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "entry_line_name",
+          "required": true,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "entry_line_discriminator",
+          "required": false,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "entry_line_direction_id",
+          "required": false,
+          "type": "controlled_direction_context"
+        },
+        {
+          "name": "entry_line_minutes",
+          "required": true,
+          "type": "positive_integer"
+        },
+        {
           "name": "status",
           "required": true,
           "type": "enum[approved, deprecated, retired]"
@@ -1981,6 +2074,7 @@
       ],
       "invariants": [
         "through requires direction, directional exit and length rule and requires terminal policy kind world_route_exit or physical_boundary matching that exit.",
+        "through requires a non-null entry_line_direction_id; entry_line_kind_profile_ref is an explicit versioned reference and the line kind of a generated connection is the kind of that profile version.",
         "branch forbids direction, directional exit and length rule and requires terminal policy kind connect_existing or physical_boundary.",
         "g4_id equals the owning profile G4 and every related authoring record belongs to the same world revision.",
         "allowed_templates is finite and non-empty."
@@ -3909,10 +4003,11 @@
         "UNIQUE one active anchor per party and route point version.",
         "anchor_role matches context_snapshot point_kind so that ordinary_waypoint maps to ordinary, boundary_wait maps to boundary and shared_checkpoint maps to checkpoint.",
         "On creation and on every committed arrival, active_side is set to context_snapshot.default_wait_side.",
-        "ordinary_waypoint pins exactly one authored continuation departure and exposes no alternative.",
-        "boundary_wait pins the one departure authorized by the boundary contract; dispatch applies the shared context-switch state machine before leaving.",
-        "shared_checkpoint pins the default authored continuation; every additional departure is represented only by party_checkpoint_route_departure.",
-        "Every allowed departure originates at source_route_point_ref and is compatible with context_snapshot.departure_side_context.",
+        "ordinary_waypoint pins exactly one authored forward continuation departure and exposes no forward alternative.",
+        "boundary_wait pins the one departure authorized by the boundary contract; dispatch applies the shared context-switch state machine before leaving; a turn-back does not cross the boundary and uses the mirror departure with inverted boundary sides.",
+        "shared_checkpoint pins the default authored continuation; every additional forward departure is represented only by party_checkpoint_route_departure.",
+        "Every allowed departure originates at source_route_point_ref or at its mirror point on the reciprocal route (the same physical point, §4.10) and is compatible with context_snapshot.departure_side_context (for a mirror departure, with the inverted side context).",
+        "A turn-back exists only when the route has a reverse route (reverse_route_ref); it is the mirror departure followed by an ordinary timed_traversal of the reverse segment, subject to that segment's availability. On a one-way route the anchor exposes no turn-back. Executing a mirror departure rebinds the anchor to the reciprocal route without a separate step and without time and introduces no new step kind (A.9).",
         "If switch_phase=outbound_dispatch, dispatch atomically changes active_side from arrival to departure before leaving; inbound_completion anchors are already on departure side. No role changes active_side by any other rule.",
         "active forbids terminal_change_set_id; superseded and retired require it."
       ]
@@ -4431,6 +4526,11 @@
           "type": "enum[exact, bounded, unknown]"
         },
         {
+          "name": "duration_band",
+          "required": false,
+          "type": "controlled_duration_band"
+        },
+        {
           "name": "canonical_digest",
           "required": true,
           "type": "sha256_hex"
@@ -4443,6 +4543,7 @@
         "time requires minute bounds and null action-unit bounds.",
         "segmented requires at least one populated dimension and may populate both.",
         "exact requires equal min and max for every populated dimension.",
+        "duration_band, when present, is the band of minutes_max under the approved band profile; it requires minute bounds, and the player projection shows the band, not the bounds (section 14.4).",
         "bounded requires both bounds for every populated dimension.",
         "unknown requires all numeric bounds null, is not executable and accompanies a blocking reason."
       ]
@@ -4667,7 +4768,7 @@
         {
           "name": "member_kind",
           "required": true,
-          "type": "enum[endpoint, transfer_scene]"
+          "type": "enum[endpoint, transfer_scene, canonical_connection]"
         },
         {
           "name": "source_authoring_ref",
@@ -5331,7 +5432,7 @@
         {
           "name": "member_kind",
           "required": true,
-          "type": "enum[endpoint, transfer_scene]"
+          "type": "enum[endpoint, transfer_scene, canonical_connection]"
         },
         {
           "name": "source_authoring_ref",
@@ -5364,6 +5465,21 @@
           "type": "prepared_scene_materialization_snapshot"
         },
         {
+          "name": "resolved_site_connection_id",
+          "required": false,
+          "type": "stable_id"
+        },
+        {
+          "name": "resolved_reverse_site_connection_id",
+          "required": false,
+          "type": "stable_id"
+        },
+        {
+          "name": "resolved_line_kind_profile_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
           "name": "dependency_pins",
           "required": true,
           "type": "dependency_pin_set"
@@ -5379,10 +5495,16 @@
           "type": "sha256_hex"
         }
       ],
-      "relations": [],
+      "relations": [
+        {
+          "name": "resolved_endpoint_binding_ids",
+          "type": "relation_set[stable_id]"
+        }
+      ],
       "invariants": [
-        "endpoint requires resolved_endpoint_snapshot and forbids every scene field.",
-        "transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization.",
+        "endpoint requires resolved_endpoint_snapshot and forbids every scene field and every connection field.",
+        "canonical_connection requires resolved_site_connection_id, resolved_reverse_site_connection_id, resolved_line_kind_profile_ref and the four endpoint binding ids of the connection pair (paired-slot rule, section 6.5), forbids resolved_endpoint_snapshot, every scene field and prepared_scene_materialization, and its source_authoring_ref is the exact canonical_g5_connection_binding version; the connection pair, its bindings and the site projections are committed in the same transaction as this snapshot (section 6.3).",
+        "transfer_scene requires exactly one branch: the complete resolved baseline/G6/position triple or prepared_scene_materialization, and forbids every connection field.",
         "A resolved position belongs to the declared G6 and active baseline; a prepared branch is materialized only by its atomic first-entry commit.",
         "Ordinals are contiguous from zero and the selected member is linked to the exact route-plan execution through preparation_claim.",
         "Duplicate member_kind plus dependency-pin digest is forbidden within one snapshot.",
@@ -5855,10 +5977,15 @@
         {
           "name": "policy_kind",
           "required": true,
-          "type": "enum[segment_once, fixed_progress_slices, explicit_progress_points]"
+          "type": "enum[segment_once, fixed_progress_slices, explicit_progress_points, fixed_time_interval]"
         },
         {
           "name": "progress_slice_ppm",
+          "required": false,
+          "type": "positive_integer"
+        },
+        {
+          "name": "interval_minutes",
           "required": false,
           "type": "positive_integer"
         },
@@ -5880,9 +6007,10 @@
         }
       ],
       "invariants": [
-        "segment_once forbids slice and explicit points.",
-        "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids explicit points.",
-        "explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice.",
+        "segment_once forbids slice, interval and explicit points.",
+        "fixed_progress_slices requires progress_slice_ppm in 1..1000000 and forbids interval and explicit points.",
+        "explicit_progress_points requires a finite strictly increasing set inside 1..999999 and null slice and interval.",
+        "fixed_time_interval requires interval_minutes as a positive integer and forbids progress_slice_ppm and explicit points; the recheck repeats every interval_minutes of game time.",
         "Slicing policy cannot change final duration under identical factor sequence."
       ]
     },
@@ -6761,6 +6889,11 @@
           "type": "sha256_hex"
         },
         {
+          "name": "mirrored",
+          "required": true,
+          "type": "boolean"
+        },
+        {
           "name": "status",
           "required": true,
           "type": "enum[active, paused_in_transit, stranded_in_transit, closed]"
@@ -6773,7 +6906,7 @@
         {
           "name": "closed_result",
           "required": false,
-          "type": "enum[completed, interrupted_to_anchor, superseded]"
+          "type": "enum[completed, interrupted_to_anchor, returned_to_departure, superseded]"
         },
         {
           "name": "state_version",
@@ -6794,14 +6927,17 @@
       "relations": [],
       "invariants": [
         "movement_carrier_ref kind is actor, cohort or transport and equals the immutable traversal-step carrier.",
-        "New state starts with progress zero, exact cumulative time zero and next_interval_ordinal zero.",
-        "last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state.",
-        "active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id.",
+        "New state starts with progress zero, exact cumulative time zero, next_interval_ordinal zero and mirrored false.",
+        "last_confirmed_endpoint_ref is the real departure/last reached endpoint and never has kind stranded_state; a turn back does not change it (it stays the departure endpoint of the step segment, which is the arrival endpoint of the mirrored segment).",
+        "active and paused_in_transit require progress below one million and forbid stranded_reason_code, closed_result and closed_change_set_id; paused_in_transit additionally requires progress in 1..999999 (a pause at progress zero closes as interrupted_to_anchor, section 10.9).",
         "stranded_in_transit requires progress below one million and stranded_reason_code and forbids closed fields.",
         "closed requires closed_result and closed_change_set_id.",
-        "closed_result=completed requires progress one million and null stranded_reason_code.",
-        "closed_result=interrupted_to_anchor requires progress below one million and null stranded_reason_code.",
+        "closed_result=completed requires progress one million, mirrored false and null stranded_reason_code.",
+        "closed_result=returned_to_departure requires progress one million, mirrored true and null stranded_reason_code.",
+        "closed_result=interrupted_to_anchor requires progress below one million (zero allowed: a pause or interruption before physical advancement closes at the departure endpoint, section 10.9) and null stranded_reason_code.",
         "closed_result=superseded requires progress below one million and stranded_reason_code because only exact stranded recovery may supersede an in-transit state.",
+        "segment_progress_ppm is measured along the side the state traverses: the step segment when mirrored is false, its mirrored segment when mirrored is true (section 4.10.1); while mirrored, cost, method, factors and availability are those of the mirrored segment.",
+        "mirrored flips only in the commit of a turn_back interval result (party_traversal_interval_result), in the same commit as the progress mirror: progress p in 1..999999 becomes 1_000_000 minus p; no other write changes mirrored or mirrors progress.",
         "closed state cannot be reactivated.",
         "UNIQUE one active, paused or stranded state per execution step."
       ]
@@ -7081,9 +7217,14 @@
           "type": "factual_spatial_context_snapshot"
         },
         {
+          "name": "turn_back",
+          "required": true,
+          "type": "boolean"
+        },
+        {
           "name": "result_kind",
           "required": true,
-          "type": "enum[progressed, segment_completed, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]"
+          "type": "enum[progressed, segment_completed, returned_to_departure, paused_in_transit, interrupted_at_anchor, stranded, blocked_before_progress]"
         },
         {
           "name": "result_code",
@@ -7110,7 +7251,12 @@
       "invariants": [
         "Exact elapsed and cumulative state reconcile without float conversion.",
         "direct_party_clock owns one clock update; shared_root_transport_clock owns none.",
-        "Existing six traversal outcomes and spatial completion/interruption semantics are unchanged."
+        "Existing six traversal outcomes and spatial completion/interruption semantics are unchanged; the seventh outcome returned_to_departure and the turn_back interval are added by section 4.10.1.",
+        "Continuity (section 11.5): an interval starts at the previous actual_progress_after_ppm of the same side; the only exception is the turn_back interval, whose progress_before_ppm is 1_000_000 minus the travel-state progress before commit (that progress in 1..999999), and the same commit flips travel-state mirrored and mirrors its progress once.",
+        "turn_back is true only for an interval started while the travel state status is paused_in_transit (also after a refused turn back, which leaves that status), requires a mirrored segment whose dynamic access passes at execution and a travel-state progress in 1..999999, and permits the outcomes progressed, paused_in_transit, interrupted_at_anchor and stranded, plus exactly one terminal outcome chosen by the direction after commit: travel-state mirrored true after commit permits returned_to_departure, mirrored false after commit (a repeated turn back from the mirrored side) permits segment_completed, and the other terminal outcome is invalid; blocked_before_progress with turn_back true is invalid. A refused turn back is an interval with result_kind blocked_before_progress, result_code turn_back_refused and turn_back false, and no change of travel state other than its audit fields.",
+        "Cost, method, factors and availability of an interval are those of the segment of the side it traverses; planned and actual elapsed follow section 4.10.1.",
+        "segment_completed requires actual_progress_after_ppm one million and travel-state mirrored false after commit; returned_to_departure requires actual_progress_after_ppm one million and mirrored true after commit; no other outcome permits actual progress one million.",
+        "A retried request reuses idempotency_record_id and returns the committed result: the mirroring is part of that commit and never applies twice."
       ]
     },
     {
@@ -7841,7 +7987,7 @@
         {
           "name": "trigger",
           "required": true,
-          "type": "enum[new_game, target_preparation, frontier_resolution, transport_scene_preparation, checkpoint_preparation, interruption, migration, repair]"
+          "type": "enum[new_game, target_preparation, frontier_resolution, canonical_connection, transport_scene_preparation, checkpoint_preparation, interruption, migration, repair]"
         },
         {
           "name": "approved_catalog_bundle_ref",
@@ -7886,6 +8032,7 @@
         "new_game requires g4_id and a deterministically preallocated target_host_ref kind g5_site that is created in the same semantic write plan; it forbids administrative_contract_ref.",
         "target_preparation requires g4_id plus an existing active target_host_ref kind g5_site and forbids administrative_contract_ref.",
         "frontier_resolution requires g4_id, forbids target_host_ref and administrative_contract_ref, and pins the exact frontier/chain/profile state.",
+        "canonical_connection requires g4_id, forbids target_host_ref and administrative_contract_ref, and pins the exact canonical_g5_connection_binding version and profile; its only permitted outputs are party_g5_site projections, endpoint scene baseline/G6/positions/relations of absent baselines, g5_site_connection and party_site_connection_endpoint_binding (§6.6.1).",
         "transport_scene_preparation requires target_host_ref kind transport and forbids g4_id and administrative_contract_ref.",
         "checkpoint_preparation and interruption require target_host_ref kind route_anchor_identity and forbid g4_id and administrative_contract_ref.",
         "migration and repair require an approved spatial_admin_mapping_contract of the matching remediation kind; scope_kind=g4 requires g4_id and null target_host_ref, while scope_kind=scene_host requires target_host_ref and null g4_id.",
@@ -7979,7 +8126,7 @@
         {
           "name": "trigger",
           "required": true,
-          "type": "enum[new_game, target_preparation, frontier_resolution, transport_scene_preparation, checkpoint_preparation, interruption, migration, repair]"
+          "type": "enum[new_game, target_preparation, frontier_resolution, canonical_connection, transport_scene_preparation, checkpoint_preparation, interruption, migration, repair]"
         },
         {
           "name": "world_revision_id",
@@ -11677,7 +11824,7 @@
         {
           "name": "committed_state_version",
           "required": true,
-          "type": "positive_decimal_string"
+          "type": "non_negative_decimal_string"
         },
         {
           "name": "change_set_id",
@@ -11717,6 +11864,7 @@
       ],
       "relations": [],
       "invariants": [
+        "committed_state_version identifies the existing committed party snapshot; zero is valid only when that snapshot has version 0.",
         "Payload contains only perceived/known player-safe facts, uncertainty and already calculated affordances.",
         "Hidden queues, future timestamps, unperceived knowledge, motives, raw options, traces, rolls, DC and state patches are forbidden.",
         "Package and pending status commit atomically with facts; narration output is stored separately."
@@ -14338,6 +14486,252 @@
       "invariants": [
         "The result records exactly one code-selected five-band check outcome and its matching delivery quality.",
         "Observable effects are factual and listener responses remain separate NPC decisions."
+      ]
+    },
+    {
+      "contract_name": "line_kind_profile",
+      "storage": "world_base_authoring",
+      "identity": [
+        "id",
+        "version"
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "version",
+          "required": true,
+          "type": "authoring_version"
+        },
+        {
+          "name": "line_kind_id",
+          "required": true,
+          "type": "controlled_line_kind"
+        },
+        {
+          "name": "transition_environment_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "movement_orientation_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "baseline_movement_method_id",
+          "required": true,
+          "type": "controlled_movement_method"
+        },
+        {
+          "name": "movement_method_cost_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "dynamic_recheck_policy_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "route_kind_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[approved, deprecated, retired]"
+        },
+        {
+          "name": "provenance_ref",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [
+        {
+          "name": "alternative_methods",
+          "type": "relation_set[line_kind_alternative_method]"
+        }
+      ],
+      "invariants": [
+        "UNIQUE one approved profile per line_kind_id.",
+        "A segment of this line kind longer than 30 minutes is sliced by dynamic_recheck_policy_ref into parts of at most 30 minutes (section 4.5.2); the 30-minute slice step is one rule of the world, not a profile field.",
+        "route_kind_id is the route kind of every world route whose first segment has this line kind; it is the only line-kind to route-kind mapping.",
+        "cost is time only; there is no action-cost profile for a line (§1.4).",
+        "A water line kind (line.river_channel, line.side_channel, line.open_water, line.ford, line.ferry) has at least one alternative method that needs no transport; a physical boundary, not a missing transport, is the only reason a water line is closed.",
+        "The profile version changes when any field or alternative method changes; values change only by a new version, never in place."
+      ]
+    },
+    {
+      "contract_name": "line_kind_alternative_method",
+      "storage": "world_base_relation",
+      "identity": [
+        "profile_id",
+        "profile_version",
+        "movement_method_id"
+      ],
+      "fields": [
+        {
+          "name": "profile_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "profile_version",
+          "required": true,
+          "type": "authoring_version"
+        },
+        {
+          "name": "movement_method_id",
+          "required": true,
+          "type": "controlled_movement_method"
+        },
+        {
+          "name": "risk_class",
+          "required": true,
+          "type": "enum[low, moderate, high, extreme]"
+        },
+        {
+          "name": "hazard_rule_ref",
+          "required": true,
+          "type": "versioned_ref"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "movement_method_id differs from the profile baseline method and occurs as a rational_factor option of the profile movement_method_cost_profile (the time factor of the alternative is that option, §11.1).",
+        "risk_class is the class shown in movement_risk_summary for an option that selects this method; hazard_rule_ref resolves the interval hazard (§11.7) for it.",
+        "An alternative method needs no transport the baseline method needs."
+      ]
+    },
+    {
+      "contract_name": "canonical_g5_connection_binding",
+      "storage": "world_base_authoring",
+      "identity": [
+        "id",
+        "version"
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "version",
+          "required": true,
+          "type": "authoring_version"
+        },
+        {
+          "name": "parent_g4_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "from_canonical_g5_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "to_canonical_g5_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "line_kind_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "line_name",
+          "required": true,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "line_discriminator",
+          "required": false,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "line_direction_id",
+          "required": false,
+          "type": "controlled_direction_context"
+        },
+        {
+          "name": "line_toponym",
+          "required": false,
+          "type": "non_empty_text"
+        },
+        {
+          "name": "base_minutes",
+          "required": true,
+          "type": "positive_integer"
+        },
+        {
+          "name": "capacity",
+          "required": false,
+          "type": "positive_integer"
+        },
+        {
+          "name": "capacity_semantics_ref",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "risk_profile_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "availability_condition_set_ref",
+          "required": false,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "from_scene_endpoint_slot_key",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "to_scene_endpoint_slot_key",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "reverse_binding_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "source_pair_ref",
+          "required": true,
+          "type": "versioned_ref"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[approved, deprecated, retired]"
+        },
+        {
+          "name": "provenance_ref",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "Both canonical G5 have parent_g4_id as immediate parent in the same world revision; exact G4/G5 versions are carried by authoring_dependency_edge rows of this version; from and to are distinct.",
+        "Reverse binding is distinct, points back reciprocally, has swapped from/to G5, belongs to the same source pair and the same line_kind_profile kind, has equal line_name and inverse line_direction_id; its line_discriminator, base_minutes, risk and availability may differ.",
+        "Paired-slot rule: reverse.from_scene_endpoint_slot_key equals this to_scene_endpoint_slot_key and reverse.to_scene_endpoint_slot_key equals this from_scene_endpoint_slot_key; the slots exist in the approved scene materialization profiles of their G5; slot-role compatibility is not required for this pair.",
+        "line fields satisfy §4.7.2; the set of active outgoing lines of one canonical G5 has distinct (line_name, line_discriminator, line_direction_id).",
+        "availability_condition_set_ref is null for a connection without a portal or another availability record; a reader never infers availability from its absence, it applies the dynamic access of the profile (A.9).",
+        "base_minutes above 30 requires the dynamic_recheck_policy of the line_kind_profile to slice the connection into parts of at most 30 minutes (section 4.5.2); violation is line_recheck_slicing_missing.",
+        "Binding version changes when a profile, line field, minutes, slot or reverse/pair link changes; minutes change only by a new version."
       ]
     }
   ]

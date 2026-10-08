@@ -29,12 +29,30 @@ import {
 } from '../../apps/game-server/src/config.js';
 import { loadProductionWorldKnowledge } from
   '../../apps/game-server/src/internal/world-knowledge-production.js';
+import actorImportRequest from '../../data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/runtime-import-v1/request.json' with { type: 'json' };
+import actorImportAttestation from '../../data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/runtime-import-v1/import-approval-attestation.json' with { type: 'json' };
+import { buildActorBaseAttributesImportLedger } from '../../tools/runtime-catalog-activation/src/actor-base-attributes-import.js';
+import { buildActivationEventFromVerifiedAttestation } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
+
+const actorLedger = buildActorBaseAttributesImportLedger({
+  request: actorImportRequest, attestation: actorImportAttestation
+});
+const actorEvent = buildActivationEventFromVerifiedAttestation({
+  request: { ...actorLedger.root,
+    runtime_contract_digest: actorImportRequest.runtime_contract_digest,
+    activation_request_digest: 'd'.repeat(64), runtime_release_id: 'e'.repeat(64),
+    expected_previous_event_id: null },
+  attestationDigest: 'f'.repeat(64), previousEvent: null,
+  operatorPrincipal: 'isolated-composition-fixture'
+});
 
 const TEST_PIN_MANIFEST_DIGEST = 'e'.repeat(64);
 const TEST_RELEASE = createSpatialV3ProductionRelease(
   TEST_PIN_MANIFEST_DIGEST
 );
-const TEST_WORLD_KNOWLEDGE = await loadProductionWorldKnowledge();
+const TEST_WORLD_KNOWLEDGE = await loadProductionWorldKnowledge({
+  packRevision: TEST_RELEASE.world_knowledge_pack_revision
+});
 const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
   schema: 'rus.runtime_catalog_pin.v2',
   catalog_scope: 'item_container_materialization_v2',
@@ -142,7 +160,9 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
   const catalog = await bindings.targetCompositionPorts.releaseVerticalSliceExecutor.listScenarios();
   assert.equal(catalog.scenarios[0].scenario_id, 'lower_dvina_trace_v1');
   assert.equal(catalog.scenarios[0].available, true);
-  assert.deepEqual(bindings.runtimeCatalogPin, TEST_RUNTIME_CATALOG_PIN);
+  assert.deepEqual(bindings.runtimeCatalogPin, {
+    ...TEST_RUNTIME_CATALOG_PIN, activation_scope: null
+  });
   assert.equal(bindings.runtimeCatalogPin.compatible_world_revision_id,
     'novgorod_spatial_v3_production_v6_candidate_001');
   assert.equal(bindings.runtimeCatalogPin.compatible_world_catalog_digest,
@@ -211,7 +231,29 @@ function fixture() {
         : ({ rows: [] }),
       release() {}
     }),
-    query: async (sql) => {
+    query: async (sql, params = []) => {
+      if (/runtime_catalog_activation_events/u.test(sql)
+          && params[0] === actorImportRequest.catalog_scope) {
+        return { rows: [actorEvent] };
+      }
+      if (/domain_catalog_revisions/u.test(sql)
+          && params[0] === actorImportRequest.target_revision_id) {
+        return { rows: [{ ...actorEvent,
+          target_catalog_digest: actorEvent.catalog_digest, status: 'approved' }] };
+      }
+      if (/catalog_import_tables/u.test(sql) && params[0] === actorLedger.root.import_id) {
+        return { rows: actorLedger.tables };
+      }
+      if (/catalog_import_records/u.test(sql) && params[0] === actorLedger.root.import_id) {
+        return { rows: actorLedger.records };
+      }
+      if (/catalog_imports/u.test(sql) && params[0] === actorLedger.root.import_id) {
+        const { schema: ignoredSchema, ...root } = actorLedger.root;
+        return { rows: [{ ...root, import_approval_status: 'approved' }] };
+      }
+      if (/actor_base_attribute_profiles/u.test(sql)) {
+        return { rows: [actorImportRequest.owner_rows[0].row] };
+      }
       if (/spatial_v3_world_revisions/u.test(sql)) {
         return {
           rows: [{
@@ -501,6 +543,31 @@ test('production composition rejects every binding except builtin v6', async () 
   assert.equal(setup.closed(), 1);
 });
 
+test('production composition closes world-knowledge encoder when startup fails after encoder ready',
+  async () => {
+    let encoderClosed = false;
+    const setup = fixture();
+    await assert.rejects(
+      createSpatialV3ProductionCompositionRoot({
+        config: {
+          runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
+        },
+        pools: setup.pools,
+        worldKnowledgeEncoderFactory: () => Object.freeze({
+          ready: async () => {},
+          encode: async () => new Float32Array(1024),
+          close: async () => { encoderClosed = true; }
+        }),
+        targetRootFactory: () => {
+          throw new Error('startup fail after encoder');
+        }
+      }),
+      /startup fail after encoder/u
+    );
+    assert.equal(encoderClosed, true);
+    assert.equal(setup.closed(), 1);
+  });
+
 function readyWorldKnowledgeEncoder() {
   return Object.freeze({ ready: async () => {},
     encode: async () => new Float32Array(1024), close: async () => {} });
@@ -697,7 +764,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger through migration 032', async () => {
+test('restart extends the exact immutable catalog ledger through the current migration chain', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -727,7 +794,7 @@ test('restart extends the exact immutable catalog ledger through migration 032',
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 21);
+  assert.equal(result.newly_applied, SPATIAL_V3_TARGET_MIGRATIONS.length - 11);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -749,7 +816,8 @@ test('restart extends the exact immutable catalog ledger through migration 032',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commits',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_enablements',
     'initial_amount_bounds jsonb',
-    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commit_items'
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commit_items',
+    'ADD COLUMN IF NOT EXISTS attribute_profile_snapshot jsonb'
   ]) {
     assert.equal(
       statements.filter((sql) => sql.includes(marker)).length,

@@ -1,0 +1,26 @@
+[
+  {
+    "rule_id": "m2c_through_length_0_3",
+    "rule_version": 1,
+    "terminal_ordinal": 0,
+    "weight": 1
+  },
+  {
+    "rule_id": "m2c_through_length_0_3",
+    "rule_version": 1,
+    "terminal_ordinal": 1,
+    "weight": 1
+  },
+  {
+    "rule_id": "m2c_through_length_0_3",
+    "rule_version": 1,
+    "terminal_ordinal": 2,
+    "weight": 1
+  },
+  {
+    "rule_id": "m2c_through_length_0_3",
+    "rule_version": 1,
+    "terminal_ordinal": 3,
+    "weight": 1
+  }
+]

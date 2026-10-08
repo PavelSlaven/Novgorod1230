@@ -1,0 +1,1537 @@
+{
+  "schema": "rus.m2c_generated_property_context_authoring.v1",
+  "candidate_id": "novgorod_m2c_generated_property_context_v1",
+  "version": 1,
+  "status": "candidate_pending_independent_approval",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_count": 32,
+    "g5_family_count": 25,
+    "directional_exit_count": 86
+  },
+  "provenance": {
+    "directness": "editorial_authoring",
+    "confidence": "high_for_authored_scope_only",
+    "authority": "Owner issue #133: free gathering and live-tree felling, with explicit parcel rights taking precedence; separate M2c completeness authoring authorized 2026-09-24.",
+    "historical_claim": false
+  },
+  "source_set": [
+    {
+      "sha256": "05f9c4aa5dbdcf46dca9d40323eeac65fc1273e16aacdfa0bb53b61b6624bfbd",
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/property_profiles.json"
+    },
+    {
+      "sha256": "b74f4fd14e82e8cb548702521aab1192b165021b2c11a7c53bf4a4ed73f708ae",
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/property_profile_rules.json"
+    },
+    {
+      "sha256": "37a9ca28cb49e52fea8f3ccfd9013df2851cc931593a9894e1654f017afcdfa2",
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/g4_item_materialization_rules.json"
+    },
+    {
+      "sha256": "26e394f0202d77cae4bcd91b4426598762b483337c7d93ea781f494bdf827589",
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/g4_container_materialization_rules.json"
+    },
+    {
+      "sha256": "816509df226b1bab8a91a9b3d2b3afee251f925cb169a90633d5676daeb62859",
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json"
+    },
+    {
+      "sha256": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e",
+      "path": "data/world-catalogs/novgorod/spatial-v3/manifest.json"
+    },
+    {
+      "sha256": "55a6b48eda10e80af2bb4db200941a22037697afb4e50941ecfec4709c18868d",
+      "path": "data/world-catalogs/novgorod/m2c-items/candidate.json"
+    },
+    {
+      "sha256": "d44e709e1e6e8e503937a26f5f8111d15ae5fdba82130d1a503daf90c878477b",
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g4_expansion_profiles.json"
+    },
+    {
+      "sha256": "bafdf1e15fcc3ff8b605bd9dc1605ead9263aee44ea34bd0aeef82cee08e355c",
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g4_directional_exits.json"
+    },
+    {
+      "sha256": "a268aab4b1f07b0af03256d4a2d3dc09eed1ca025a95030df3aa3eae18013caa",
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_expansion_slots.json"
+    },
+    {
+      "sha256": "b98be1212f84fc019d7688e254858657cba9a498ea386d23b98fe77db8b329be",
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json"
+    }
+  ],
+  "source_review": [
+    {
+      "tables": [
+        "property_profiles",
+        "property_profile_rules"
+      ],
+      "counts": [
+        19,
+        19
+      ],
+      "finding": "Approved V5 source definitions express item/context property categories and access rules. No spatial parcel/G4/G5 binding exists in their schema. Generic category names are not treated as assignment of a particular generated parcel."
+    },
+    {
+      "tables": [
+        "g4_item_materialization_rules",
+        "g4_container_materialization_rules"
+      ],
+      "counts": [
+        9,
+        18
+      ],
+      "finding": "All 27 bindings address legacy Novgorod urban/monastic graph nodes. None addresses any of the 32 exact target G4 IDs or an M2c generated G5. Their rights remain applicable to their authored items/containers; they do not become generated-natural-parcel defaults."
+    },
+    {
+      "tables": [
+        "spatial_v3_g4_expansion_profiles",
+        "spatial_v3_expansion_slots",
+        "spatial_v3_g4_directional_exits",
+        "spatial_v3_g5_generation_templates"
+      ],
+      "counts": [
+        32,
+        86,
+        86,
+        25
+      ],
+      "finding": "Exact target closure defines physical generation scope. No explicit parcel property assignment is authored in this closure."
+    }
+  ],
+  "completeness_assertion": {
+    "kind": "closed_authored_property_scope",
+    "meaning": "For a newly generated G5 whose exact family, G4, expansion profile, slot and existing directional exit match this document, the enumerated source set is complete for current M2c parcel property authoring and contains no explicit parcel assignment. This declares the current authored game state only; it does not assert historical unowned land.",
+    "valid_only_for_new_generated_scopes": true,
+    "excludes": [
+      "canonical G5",
+      "historical ownership inference",
+      "legacy G4 outside exact target",
+      "occupied household contents",
+      "item/container rights",
+      "unbound or ambiguous runtime parcel assignment"
+    ],
+    "invalidated_by": [
+      "any source_set byte change",
+      "new applicable authored parcel assignment",
+      "runtime property assignment not resolved by the existing ordinary source property context owner",
+      "world revision or generation binding change"
+    ]
+  },
+  "default_policy_ref": "m2c_natural_gathering_access_v1",
+  "operations": [
+    "cut_reeds",
+    "gather_deadwood",
+    "salvage_driftwood",
+    "cut_standing_wood"
+  ],
+  "family_bindings": [
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_habitation_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_burial_ritual_buffer_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_resource_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_exploration_concealment_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_general_hazard_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_estuary__waterway_access__outer_exposed",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_general_hazard_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_seasonal_route_hazard_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_forest__forest_resource_use__forest_tract",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_general_hazard_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_route_approach_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_route_approach_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_ridge__waterway_access__landing_terrace",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_general_hazard_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_exploration_concealment_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_river_channel__waterway_access__channel_split",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_water_navigation_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_route_approach_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_route_approach_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_general_hazard_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_habitation_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1"
+      ]
+    },
+    {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g5_generation_template_id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+      "g5_generation_template_version": 1,
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+          "version": 1
+        }
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_general_hazard_v1@1"
+      ]
+    }
+  ],
+  "g4_bindings": [
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_02",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_06",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_02",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_06",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_01",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_12",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_01",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_12",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_03",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_24",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_03",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_24",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_02",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_13",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_02",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_13",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_01",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_04",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_05",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_01",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_04",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_05",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_09",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_09",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_06",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_07",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_08",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_06",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_07",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_08",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_12",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_13",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_12",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_13",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_09",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_23",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_09",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_23",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_20",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_20",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_08",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_23",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_08",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_23",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_05",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_05",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_04",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_04",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_10",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_11",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_10",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_11",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_11",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_11",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_03",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_03",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_14",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_14",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_21",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_21",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_10",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_22",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_10",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_22",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_15",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_16",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_15",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_16",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_21",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_24",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_21",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_24",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_14",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_18",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_20",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_14",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_18",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_20",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_15",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_15",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_17",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_18",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_17",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_18",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_07",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_22",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_07",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_22",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_19",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_19",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_19",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3f__cross_g4_19",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "g4_version": 1,
+      "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "profile_version": 1,
+      "slot_refs": [
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_16",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_17",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+          "version": 1
+        },
+        {
+          "id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+          "version": 1
+        }
+      ],
+      "directional_exit_refs": [
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_16",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__cross_g4_17",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+          "version": 1
+        },
+        {
+          "id": "g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "explicit_authored_overrides": [],
+  "override_contract": {
+    "owner": "@rus/items-property through existing ordinary first-entry/enablement source property context",
+    "precedence": [
+      "exact committed source/parcel assignment",
+      "exact approved authored override",
+      "this approved scoped editorial default"
+    ],
+    "runtime_lookup_required": true,
+    "runtime_lookup_scope": "Exact party_id + generated G5 + source_ref + operation, proven through generated site/G6/position. Existing source capability and party_resource_nodes must agree on property/access refs; deny and conditional do not remove physical stock.",
+    "no_optional_absence_fallback": true,
+    "missing_or_ambiguous": "M2C_NATURAL_ACCESS_CONTEXT_UNRESOLVED",
+    "deny": "persist physical source, reject extraction before decrement",
+    "conditional": "require resolved actor/operation decision from existing property owner; unresolved blocks extraction",
+    "assignment_changes": "Version/digest update at existing property owner; recheck current decision before decrement. Unsupported parcel assignment remains unresolved; no separate persistence ledger."
+  }
+}

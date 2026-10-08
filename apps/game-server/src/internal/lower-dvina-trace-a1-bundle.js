@@ -114,15 +114,30 @@ export function validLowerDvinaTraceActionProductionProfile(value) {
   return validProfile(value);
 }
 
+export function validNeutralActionProductionProfile(value) {
+  return value?.schema === 'rus.live_world_runtime.action_production_profile.v1'
+    && [value.profile_id, value.context_ref, value.policy_ref].every((entry) =>
+      typeof entry === 'string' && entry.trim().length > 0)
+    && validProfileMechanics(value);
+}
+
+// Exact (context, profile, policy) triples of the loaded A1 profiles: v16 Lower Dvina and the v17 target.
+const PLAN_PROFILE_PINS = Object.freeze([
+  ['lower_dvina_trace:a1:personal_tool_transform',
+    'lower_dvina_trace_a1_open_physical_action_profile_v1',
+    'lower_dvina_trace:a1:personal_tool_policy_v1'],
+  ['novgorod_target:a1:committed_accessible_sources',
+    'novgorod_target_open_physical_action_profile_v1',
+    'novgorod_target:a1:ordinary_physical_action_v1']
+]);
+
 export function validLowerDvinaTraceActionProductionPlanProfile(value) {
   const proposal = value?.transition_proposal;
-  return proposal?.context_pin?.context_ref
-      === 'lower_dvina_trace:a1:personal_tool_transform'
-    && proposal.context_pin.profile_ref
-      === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
+  return PLAN_PROFILE_PINS.some(([context, profile, policy]) =>
+      proposal?.context_pin?.context_ref === context
+      && proposal.context_pin.profile_ref === profile
+      && proposal.technical_policy_pin?.policy_ref === policy)
     && proposal.context_pin.profile_version === '1'
-    && proposal.technical_policy_pin?.policy_ref
-      === 'lower_dvina_trace:a1:personal_tool_policy_v1'
     && proposal.technical_policy_pin.version === 1
     && proposal.technical_policy_pin.max_new_entities === 4
     && ['preserve_source', 'independent_outputs', 'no_useful_result']
@@ -139,14 +154,18 @@ export function validLowerDvinaTraceActionProductionPlanProfile(value) {
 }
 
 function validProfile(value) {
+  return value?.schema === 'rus.lower_dvina_trace_action_production_profile.v1'
+    && value.profile_id === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
+    && validProfileMechanics(value);
+}
+
+function validProfileMechanics(value) {
   return exact(value, ['schema', 'profile_id', 'revision', 'status',
     'context_ref', 'policy_ref', 'policy_version', 'max_new_entities',
     'allowed_access_states', 'allowed_identity_modes', 'allowed_origins',
     'allowed_result_classes', 'allowed_output_classes', 'source_policy',
     'tool_policy', 'execution_policy', 'model_authority',
     'mechanics_owner', 'persistence_owner', 'fallback_policy'])
-    && value.schema === 'rus.lower_dvina_trace_action_production_profile.v1'
-    && value.profile_id === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
     && value.revision === 1 && value.status === 'approved'
     && value.policy_version === 1 && value.max_new_entities === 4
     && same(value.allowed_access_states, ['immediate', 'quick'])

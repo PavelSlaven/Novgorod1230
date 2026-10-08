@@ -1,0 +1,2643 @@
+[
+  {
+    "profile_id": "hh_occ_nov_occ_princely_service_agent",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_occ_princely_service_agent",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_druzhina_warrior",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_occ_druzhina_warrior",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_junior_retainer",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_junior_retainer",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_gate_guard",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_gate_guard",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_market_guard",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_market_guard",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_crossing_guard",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_crossing_guard",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_toll_dues_collector",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_toll_dues_collector",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_court_clerk_service",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_court_clerk_service",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_posadnik_household_service",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_posadnik_household_service",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_tysyatsky_public_order",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_occ_tysyatsky_public_order",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_bishop_court_service",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_bishop_court_service",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_boyar_yard_manager",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_boyar_yard_manager",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_long_distance_merchant",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_occ_long_distance_merchant",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_local_trader",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_local_trader",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_market_stall_seller",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_market_stall_seller",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_merchant_clerk",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_merchant_clerk",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_measurer_weigher",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_measurer_weigher",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_storehouse_keeper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_storehouse_keeper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_debt_account_keeper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_debt_account_keeper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_blacksmith",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_blacksmith",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_carpenter",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_carpenter",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_cooper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_cooper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_leatherworker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_leatherworker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_shoemaker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_shoemaker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_potter",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_potter",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_weaver_cloth_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_weaver_cloth_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_tailor_mender",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_tailor_mender",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_boatbuilder",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_boatbuilder",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_pitch_tar_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_pitch_tar_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_cart_driver",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_cart_driver",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_porter",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_porter",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_landing_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_landing_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_boatman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_boatman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_helmsman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_helmsman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_ferryman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_ferryman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_route_guide",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_route_guide",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_portage_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_portage_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_winter_road_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_winter_road_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_ploughman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_ploughman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_haymaker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_haymaker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_herder",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_herder",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_fisher",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_fisher",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_fish_weir_keeper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_fish_weir_keeper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_hunter_trapper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_hunter_trapper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_bortnik",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_bortnik",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_forest_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_forest_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_saltworker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_saltworker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_miller",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_miller",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_pogost_service_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_pogost_service_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_monastic_laborer",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_monastic_laborer",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_monastery_steward",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_occ_monastery_steward",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_parish_priest_service",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_parish_priest_service",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_deacon_service",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_deacon_service",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_monk_service",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_monk_service",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_novice_work",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_novice_work",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_church_guard",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_church_guard",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_ponomar",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_ponomar",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_scribe",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_scribe",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_cook_baker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_cook_baker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_household_servant",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "dependent",
+    "place_family_id": "nov_occ_household_servant",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_day_laborer",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_day_laborer",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_stable_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_stable_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_cattle_keeper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_cattle_keeper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_midwife_birth_helper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_midwife_birth_helper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_healer_herbal_helper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_healer_herbal_helper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_beggar_alms",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "outcast",
+    "place_family_id": "nov_occ_beggar_alms",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_pilgrim_traveler",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_occ_pilgrim_traveler",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_occ_nov_occ_messenger_runner",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "occupation_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_occ_messenger_runner",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "типовая семья или дом не создаётся автоматически; фиксировать только при сценической нужде, долге, поручительстве или ночлеге",
+      "household_pattern_ru": "имущество и люди домохозяйства остаются фоном до материализации; полный двор не раскрывать без причины",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_prince",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "elite",
+    "place_family_id": "nov_role_prince",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_posadnik",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "elite",
+    "place_family_id": "nov_role_posadnik",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_tysyatsky",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_role_tysyatsky",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_sotsky",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_sotsky",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_city_elder",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_role_city_elder",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_starosta",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_starosta",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_toll_collector",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_toll_collector",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_guard",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_guard",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_princely_man",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_princely_man",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_princely_druzhinnik",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_role_princely_druzhinnik",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_junior_druzhinnik",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_junior_druzhinnik",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_bishop_man",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_bishop_man",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_boyar_man",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_boyar_man",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_boyar",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "elite",
+    "place_family_id": "nov_role_boyar",
+    "members_estimate_min": 15,
+    "members_estimate_max": 24,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "conditional C estimate: medieval_general ~6 people x Novgorod boyar/ordinary plot area ratio 2.5-4; proportional population is the collector's inference, not the quoted source",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_boyar_house_mistress",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_role_boyar_house_mistress",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_merchant_guest",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_role_merchant_guest",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_local_merchant",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_local_merchant",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_merchant_clerk",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_merchant_clerk",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_trader",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_trader",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_foreign_guest",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_role_foreign_guest",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_craftsman_master",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_craftsman_master",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_journeyman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_journeyman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_apprentice",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_apprentice",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_householder",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_householder",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_household_mistress",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_household_mistress",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_servant",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_servant",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_hired_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_hired_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_port_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_port_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_smerd_householder",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_smerd_householder",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_dependent_peasant",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "dependent",
+    "place_family_id": "nov_role_dependent_peasant",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_ploughman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_ploughman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_pastoral_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_pastoral_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_fisher",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_fisher",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_hunter",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_hunter",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_bortnik",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_bortnik",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_forest_promyslovik",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_forest_promyslovik",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_senokos_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_senokos_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_miller",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_miller",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_monastery_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_monastery_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_widow_householder",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_widow_householder",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_youth_helper",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_youth_helper",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_old_household_member",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_old_household_member",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_archbishop",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "elite",
+    "place_family_id": "nov_role_archbishop",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_igumen",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "high",
+    "place_family_id": "nov_role_igumen",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_priest",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_priest",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_deacon",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_deacon",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_monk",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_monk",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_novice",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_novice",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_ponomar",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_ponomar",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_church_guard",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_church_guard",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_church_scribe",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_church_scribe",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_pilgrim",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_pilgrim",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "мирская семья не должна создаваться автоматически; значимы братия, духовная власть, приход, монастырь или церковный двор",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_guide",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_guide",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_ferryman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_ferryman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_boatman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_boatman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_helmsman",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_helmsman",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_cart_driver",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_cart_driver",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_winter_road_man",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_winter_road_man",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_portage_worker",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_portage_worker",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_merchant_companion",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_merchant_companion",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_druzhina_companion",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "middle",
+    "place_family_id": "nov_role_druzhina_companion",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_kholop",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "dependent",
+    "place_family_id": "nov_role_kholop",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_debtor",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_debtor",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_runaway",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "outcast",
+    "place_family_id": "nov_role_runaway",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_orphan",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_orphan",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_outsider",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "variable",
+    "place_family_id": "nov_role_outsider",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_izgoi",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "outcast",
+    "place_family_id": "nov_role_izgoi",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_captive",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "dependent",
+    "place_family_id": "nov_role_captive",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_beggar",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "outcast",
+    "place_family_id": "nov_role_beggar",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_sick_disabled",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "low",
+    "place_family_id": "nov_role_sick_disabled",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  },
+  {
+    "profile_id": "hh_role_nov_role_no_guarantor",
+    "profile_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "household_type": "role_linked",
+    "wealth_band": "outcast",
+    "place_family_id": "nov_role_no_guarantor",
+    "members_estimate_min": null,
+    "members_estimate_max": null,
+    "status": "approved",
+    "confidence": "medium",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "family_pattern_ru": "родня может быть утрачена, зависима или опасна; поручитель и хозяин важнее декоративной семьи",
+      "household_pattern_ru": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+      "members_estimate_basis": "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit",
+      "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit."
+    }
+  }
+]

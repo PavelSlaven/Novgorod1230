@@ -1,9 +1,32 @@
-import { assertPublicPayload } from '../public-boundary.js';
+import { assertNoHiddenLeaks, assertPublicPayload, findUnsafePlayerText, projectPublicPayload } from
+  '../public-boundary.js';
 import { serverError } from '../errors.js';
 
 export const HTTP_API_VERSION = 1;
 export const API_SUCCESS_SCHEMA = 'rus_api_success';
 export const API_ERROR_SCHEMA = 'rus_api_error';
+const PUBLIC_IDEMPOTENCY_ERROR_MESSAGES = new Map([
+  ['TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', 'Этот ход уже отправлен с другим текстом.'],
+  ['TURN_IDEMPOTENCY_CONFLICT', 'Этот ход уже отправлен с другим текстом.'],
+  ['TURN_IDEMPOTENCY_IN_PROGRESS', 'Этот ход ещё обрабатывается. Попробуйте чуть позже.']
+]);
+const PUBLIC_CLIENT_ERROR_CODES = new Set([
+  'REQUEST_BODY_INVALID', 'NEW_GAME_START_REQUIRED', 'CLIENT_ACK_ID_REQUIRED',
+  'OPENING_ACK_REQUIRED', 'PARTY_ID_REQUIRED',
+  'TURN_INPUT_REQUIRED', 'PORTRAIT_REQUEST_FIELD_UNKNOWN',
+  'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT',
+  'TURN_IDEMPOTENCY_CONFLICT', 'TURN_IDEMPOTENCY_IN_PROGRESS',
+  'PORTRAIT_TEXT_TYPE_INVALID', 'PORTRAIT_TEXT_REQUIRED',
+  'PORTRAIT_TEXT_TOO_LONG', 'LLM_SETTINGS_BODY_INVALID',
+  'LLM_SETTINGS_LOCAL_PROVIDER_RETIRED', 'LLM_SETTINGS_MODE_INVALID',
+  'LLM_SETTINGS_COMPATIBILITY_INVALID', 'LLM_SETTINGS_MODEL_REQUIRED',
+  'LLM_SETTINGS_API_KEY_INVALID', 'LLM_SETTINGS_BASE_URL_REQUIRED',
+  'LLM_SETTINGS_BASE_URL_INVALID', 'LLM_SETTINGS_FIELD_UNKNOWN',
+  'LLM_SETTINGS_APPLY_STALE',
+  'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED',
+  'AUTHORED_OPENING_AUDIT_REJECTED', 'SCENARIO_NOT_SUPPORTED',
+  'ROUTE_NOT_FOUND'
+]);
 
 export function successEnvelope(data, { requestId = null } = {}) {
   assertPublicPayload(data);
@@ -12,7 +35,18 @@ export function successEnvelope(data, { requestId = null } = {}) {
     schema: API_SUCCESS_SCHEMA,
     ok: true,
     request_id: requestId,
-    data: structuredClone(data)
+    data: projectPublicPayload(data)
+  });
+}
+
+export function operationalEnvelope(data, { requestId = null } = {}) {
+  assertNoHiddenLeaks(data);
+  return Object.freeze({
+    version: HTTP_API_VERSION,
+    schema: API_SUCCESS_SCHEMA,
+    ok: true,
+    request_id: requestId,
+    data
   });
 }
 
@@ -20,16 +54,42 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
   const unresolvedOrdinary = error?.code === 'TURN_ORDINARY_DISCOVERY_UNRESOLVED';
   const providerFailure = error?.llm_provider_failure === true
     ? publicProviderFailure(error?.code) : null;
-  const status = unresolvedOrdinary ? 409
-    : providerFailure ? 503
+  const catalogFailure = ['NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED',
+    'NEEDS_CHECK_BLOCKER_CATALOG_INVALID'].includes(error?.code)
+    ? { code: 'WORLD_CATALOG_PIN_INVALID',
+        message: 'Данные мира этой партии недоступны.' } : null;
+  const openingFailure = error?.code === 'AUTHORED_OPENING_AUDIT_REJECTED'
+    ? { code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+        message: 'Не удалось начать игру. Попробуйте ещё раз.' } : null;
+  const scenarioFailure = error?.code === 'SCENARIO_NOT_SUPPORTED'
+    ? { code: 'SCENARIO_NOT_SUPPORTED', message: 'Такой старт недоступен.' }
+    : null;
+  const openingAckFailure = error?.code === 'OPENING_ACK_REQUIRED'
+    ? { code: 'OPENING_ACK_REQUIRED', message: 'Некорректный запрос.' }
+    : null;
+  const publicTurnFailure = publicTurnFailureFor(error);
+  const candidateMessage = openingFailure?.message ?? scenarioFailure?.message
+    ?? openingAckFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message
+    ?? catalogFailure?.message ?? text(error?.message) ?? 'Request failed.';
+  const publicClientCode = PUBLIC_CLIENT_ERROR_CODES.has(error?.code);
+  const unsafeMessage = findUnsafePlayerText(candidateMessage) != null;
+  const unsafePublicClientMessage = publicClientCode && unsafeMessage;
+  const unsafeCode = !PUBLIC_CLIENT_ERROR_CODES.has(error?.code)
+    && findUnsafePlayerText(error?.code) != null;
+  const status = scenarioFailure ? 400 : openingFailure || unresolvedOrdinary || publicTurnFailure ? 409
+    : providerFailure || catalogFailure ? 503
       : Number.isInteger(error?.status) ? error.status : 500;
-  const internal = !providerFailure && (unresolvedOrdinary || status >= 500
-    || error?.public_exposure === 'internal');
-  const code = providerFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
+  const internal = !openingFailure && !scenarioFailure && !openingAckFailure
+    && !providerFailure && !catalogFailure && !publicTurnFailure
+    && (unresolvedOrdinary || status >= 500
+      || (unsafeMessage && !publicClientCode)
+      || unsafeCode || error?.public_exposure === 'internal');
+  const code = openingFailure?.code ?? scenarioFailure?.code ?? openingAckFailure?.code ?? publicTurnFailure?.code ?? providerFailure?.code ?? catalogFailure?.code ?? (internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
     : text(error?.code) || 'REQUEST_FAILED');
-  const message = providerFailure?.message ?? (internal
+  const message = openingFailure?.message ?? scenarioFailure?.message ?? openingAckFailure?.message ?? publicTurnFailure?.message ?? providerFailure?.message ?? catalogFailure?.message ?? (internal
     ? 'Действие временно недоступно. Попробуйте ещё раз.'
-    : text(error?.message) || 'Request failed.');
+    : PUBLIC_IDEMPOTENCY_ERROR_MESSAGES.get(error?.code)
+      ?? (unsafePublicClientMessage ? 'Некорректный запрос.' : candidateMessage));
   return Object.freeze({
     status,
     body: Object.freeze({
@@ -38,10 +98,33 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
       ok: false,
       request_id: requestId,
       error: Object.freeze({ code, message,
-        ...(error?.turn_commit_status === 'not_started'
-          ? { turn_commit_status: 'not_started' } : {}) })
+        ...(code === 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED'
+          && error?.details?.topology_status === 'topology_committed'
+          && error?.details?.movement_status === 'movement_denied'
+          ? { turn_commit_status: 'topology_committed',
+              topology_status: 'topology_committed',
+              movement_status: 'movement_denied',
+              actor_moved: false, time_advanced: false }
+          : error?.turn_commit_status === 'not_started'
+            ? { turn_commit_status: 'not_started' } : {}) })
     })
   });
+}
+
+// "Ход не сохранён" is true only when the turn owner reports nothing was committed.
+function publicTurnFailureFor(error) {
+  if (error?.turn_commit_status !== 'not_started') return null;
+  const code = error.code;
+  if (code === 'TURN_STEP_PLAN_INVALID') return {
+    code: 'TURN_NOT_SAVED',
+    message: 'Ход не сохранён. Попробуйте сформулировать действие иначе.'
+  };
+  if (code === 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP'
+    || code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP') return {
+    code: 'WORLD_ACTION_UNAVAILABLE',
+    message: 'Ход не сохранён. Для этого действия не хватает данных мира.'
+  };
+  return null;
 }
 
 function publicProviderFailure(code) {

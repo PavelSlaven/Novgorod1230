@@ -66,6 +66,15 @@ test('public audit and repair text stays typed and placeholder evidence cannot a
   assert.equal(validateNarrationSemanticRepair(repair, ['s1']).ok, false);
 });
 
+test('literary concerns stay visible without blocking factual delivery', () => {
+  const literary = { ...audit, artistic_verdict: 'fail', concerns: [{
+    segment_id: 's1', kind: 'literary_quality', reason: 'Текст похож на перечень.'
+  }], evidence: [] };
+  assert.equal(validateNarrationAudit(literary, ['s1']).ok, true);
+  assert.equal(validateNarrationFlowResult({ ...approved, final_audit: literary }).ok, true);
+  assert.equal(validateNarrationAudit({ ...literary, pass: false }, ['s1']).ok, false);
+});
+
 test('terminal factual eligibility requires the completed strict final-audit flow', () => {
   const concern = { segment_id: 's1', kind: 'unsupported_fact', reason: 'Нет опоры.' };
   const failedAudit = { ...audit, pass: false, concerns: [concern] };

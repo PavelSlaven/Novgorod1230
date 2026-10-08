@@ -1,0 +1,19 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "novgorod_m2c_initial_entity_perception_v2_repin",
+  "candidate_path": "data/world-catalogs/novgorod/m2c-initial-entity-perception/candidate-v2.json",
+  "candidate_sha256": "4500e2864f3e49cf116560d6c4552b4b3e3700c6f6c768dcf58dd49ac576c9ae",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/approve_perception_scene_repin",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "independence_basis": "Independent reviewer; did not author or modify candidate bytes. Verified the sole source pin change, all six current source SHA-256 digests, unchanged initial placement and actor initial state, and active Spatial visibility and projection boundaries."
+  },
+  "scope": "Exact canonical initial-scene perception applicability over current committed placements, directed visibility geometry, complete current modifiers and Temporal conditions; player-safe NPC, item and exit disclosure only after current admission.",
+  "excludes": "Authored entity observation or identity, predecessor approval inheritance, import, runtime use and release activation.",
+  "import_authorized": false,
+  "runtime_activation_authorized": false,
+  "release_activation_authorized": false,
+  "reviewed_on": "2026-09-24"
+}

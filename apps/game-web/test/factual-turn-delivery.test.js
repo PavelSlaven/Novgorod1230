@@ -24,6 +24,8 @@ function factual(overrides = {}) {
     package_id: 'package-7', committed_state_version: '39',
     visible_context: { visible_scene: 'У телеги мокрая ось.' },
     visible_changes: ['Верёвка снята с телеги.'],
+    exact_npc_utterances: [{ speaker_ref: { entity_kind: 'npc',
+      entity_id: 'npc-1' }, utterance_text: 'Я отложил сеть.' }],
     uncertainties: ['Прочность оси ещё не установлена.'],
     presentation_quality: 'degraded', scenario_id: 'lower_dvina_trace_v1',
     screen_kind: 'trace_turn', presentation_context: {},
@@ -55,11 +57,42 @@ test('degraded factual delivery reuses normal screen UI and replaces only prose'
     'Верёвка снята с телеги.', 'Прочность оси ещё не установлена.',
     'Осмотреть ось', 'data-turn-form', 'Проверки хода', 'Возможные действия']) assert.match(html, new RegExp(text, 'u'));
   assert.match(html, /aria-label="Восстановленное состояние после хода"/u);
+  assert.match(html, /Я отложил сеть\./u);
   assert.match(html, /Восстановленное состояние/u);
   assert.match(html, /<h1>Текущий момент<\/h1>/u);
   assert.doesNotMatch(html, /package-7|committed_state_version|diagnostics|main_prose|Запрещённая проза/u);
   assert.doesNotMatch(html, /textarea[^>]+disabled/u);
   assert.match(renderScreen(screen, { activeOverlay: 'journal' }), /Осмотреть ось/u);
+});
+
+test('factual delivery renders starting scene and NPC facts without service labels', () => {
+  const screen = factual({
+    visible_context: { visible_scene: 'У берега стоит женщина в сером платке.' },
+    visible_changes: ['Женщина чинит рыболовную сеть.'],
+    panels: { people: { visible: true, data: { visible_npcs: [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-instance-start-1' },
+      display_label: 'женщина', appearance: 'седые волосы, серый платок',
+      status: 'чинит сети'
+    }] } } }
+  });
+  assert.equal(validatePublicScreen(screen), screen);
+
+  const sceneHtml = renderScreen(screen);
+  const peopleHtml = renderScreen(screen, { activeOverlay: 'people' });
+  for (const text of ['У берега стоит женщина в сером платке.',
+    'Женщина чинит рыболовную сеть.', 'женщина',
+    'седые волосы, серый платок', 'чинит сети']) {
+    assert.match(`${sceneHtml}${peopleHtml}`, new RegExp(text, 'u'));
+  }
+  assert.doesNotMatch(`${sceneHtml}${peopleHtml}`,
+    /npc-instance-start-1|package-7|committed_state_version|package_id|turn_id|delivery_mode|narration_output_digest/u);
+});
+
+test('authored live-world factual delivery uses the same recovery UI', () => {
+  const screen = factual({ scenario_id: 'vikhtuy_fishing_camp_v1',
+    screen_kind: 'live_world_turn' });
+  assert.equal(validatePublicScreen(screen), screen);
+  assert.match(renderScreen(screen), /Восстановленное состояние/u);
 });
 
 test('factual delivery rejects prose, raw package metadata and private leaks', () => {

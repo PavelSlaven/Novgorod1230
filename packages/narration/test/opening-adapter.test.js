@@ -69,3 +69,24 @@ test('adapts approved new-game Stage 22 and Stage 23 outputs', () => {
   }
   assert.equal(result.approved_output.prose, 'Перед воротами начинается дорога.');
 });
+
+test('opening literary finding does not block a factually approved first screen', () => {
+  const audit = openingAudit();
+  audit.checks.literary_composition_check = { pass: false };
+  audit.concerns = [{ code: 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION',
+    severity: 'warning', message: 'Текст похож на досье.' }];
+  const stage22Result = { version: 1, schema: 'stage22_narrator_prose_result',
+    request_id: 'opening-1', pass: true, visible_context_package_digest: 'sha256:visible',
+    narrator_starting_prose: { version: 1, schema: 'narrator_starting_prose',
+      request_id: 'opening-1', prose: 'Перед воротами начинается дорога.',
+      action_options: [], used_visible_context_refs: [], self_constraints_check: {} },
+    generation_history: [] };
+  const stage23Result = { version: 1, schema: 'stage23_narrator_prose_audit_result',
+    request_id: 'opening-1', pass: true, narrator_starting_prose_digest: 'sha256:prose',
+    narrator_prose_audit: audit, repair_route: null, audit_history: [],
+    commit_permission: { can_show_to_player: true, can_write_player_visible_message: true,
+      can_mark_opening_scene_presented: true } };
+  const result = adaptApprovedOpeningNarration({ stage22Result, stage23Result });
+  assert.equal(result.status, 'approved');
+  assert.equal(result.final_audit.checks.literary_composition_check.pass, false);
+});

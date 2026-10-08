@@ -1,0 +1,2867 @@
+{
+  "schema": "rus.regional_environment_approval_request.v1",
+  "request_id": "novgorod_regional_environment_1230_1250_review_001",
+  "revision_id": "novgorod_regional_environment_1230_1250_v1",
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a",
+  "decision_requested": "approve_exact_audited_promotions_and_review_new_place",
+  "region_id": "region_novgorod_land",
+  "period": {
+    "from_year": 1230,
+    "to_year": 1250
+  },
+  "row_reviews": [
+    {
+      "domain": "landscape",
+      "universal_id": "lt_temperate_broadleaf_mixed_forest",
+      "regional_id": "rlt_novgorod_temperate_broadleaf_mixed_forest",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Южные, более освоенные и плодородные участки; не заменяет пашню.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_gez_2010",
+        "src_wwf_teow",
+        "src_iucn_get",
+        "src_fao_gez",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "222dbd70aff7324a74964c360c9ce0ef4ddacaebdc481ac803d73cc5fa162d3e",
+        "regional": "f64aa59c49b82566169635a0a68e8e6e318850159be56f716c9aff007f3ede79"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_temperate_coniferous_forest",
+      "regional_id": "rlt_novgorod_temperate_coniferous_forest",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Использовать как хвойный вариант лесной среды; регионально уточнять по подзонам.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_gez_2010",
+        "src_wwf_teow",
+        "src_iucn_get",
+        "src_fao_gez"
+      ],
+      "source_row_digests": {
+        "universal": "addd4f487a702662d5517205b51bd7439a98159e864b22a5bec4f13496193ff1",
+        "regional": "b143ddafbca56cc20cf2e2ff1054060443f7f151e28e0320032e36fb4a00c3df"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_boreal_taiga_coniferous_forest",
+      "regional_id": "rlt_novgorod_boreal_taiga_coniferous_forest",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Чаще в более северных/глухих лесных участках; не ставить на плотно заселённое Пooзерие как единственную среду.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_gez_2010",
+        "src_wwf_teow",
+        "src_iucn_get",
+        "src_fao_gez",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "4d3956b854b90ba715bb3f01f0e97032ebd75adbb4f698a8433bddd8ad205e93",
+        "regional": "fadabe6902adc352f0611736ee0805a3c46ace5ac7c3843a5e4cf675a1d1f269"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_boreal_mixed_forest",
+      "regional_id": "rlt_novgorod_boreal_mixed_forest",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Основная лесная среда северо-запада и окрестностей Ильменя; применять как частую базу G1/G2.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_gez_2010",
+        "src_wwf_teow",
+        "src_iucn_get",
+        "src_fao_gez",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "745692d2197e659bb3fa2cdf6cd7f4fd45ec96173cba90df608ce452e67db8c8",
+        "regional": "6d654d9478b280b819ca4adeb4c3d11c81caf178036a053879b30002a8ed776c"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_dense_coniferous_forest",
+      "regional_id": "rlt_novgorod_dense_coniferous_forest",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Не делать доминирующим вокруг каждого поселения; чаще в малоосвоенных ячейках.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_gez_2010",
+        "src_iucn_get",
+        "src_fao_gez"
+      ],
+      "source_row_digests": {
+        "universal": "e8e8664179c72f8b982bfdf686270db05a9108f58aba6d4ec3f215a25a9299f8",
+        "regional": "331f43302ccbd3ef4ecf3c6161d759f0f56f589adfc4ab6c68395f72854120ce"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_wet_lowland_forest",
+      "regional_id": "rlt_novgorod_wet_lowland_forest",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Связывать с низинами, водосбором, болотами и озёрно-речной сетью.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "cc590988b2d6d11949ab06f38c3a6a7536e774422d62c6f5c60ba8435648bbfe",
+        "regional": "5b933308b66ddf826341b3eef8c897db4baf479be2e347c5b42bbda1e116f9e6"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_freshwater_marsh",
+      "regional_id": "rlt_novgorod_freshwater_marsh",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Около озёр, рек, низин и заболоченных краёв; не путать с отдельным водным объектом.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "aa87e4a9abd71a13ca26ca2fa50730578cc8262d60ea460e3058c6893fead5e8",
+        "regional": "9e15cd41876a93463ca8d21fd75362e27d5af5029e08a661f78d29a22a7fb96c"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_seasonal_sedge_marsh",
+      "regional_id": "rlt_novgorod_seasonal_sedge_marsh",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Сезонная вода и разлив должны задаваться отдельно через water_body_template.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "3915634b9b408c7c68952ee18d5633aa1c99b8161c38818deb01dc8734315dfe",
+        "regional": "37c0d78dd177fa323bb31dabf88141c3732137a7384cdfcbd70469c36d47ccb9"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_reedbed_marsh",
+      "regional_id": "rlt_novgorod_reedbed_marsh",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Не ставить как весь региональный граф; типично как край озера/старицы/болотной протоки.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "27baebbc9af1fe7e4f12765aef04a195ac89a1e94e496bfe91dc4073bb6af78f",
+        "regional": "03628a96c5d945ec9f36097b365fb9c7a9aee2d4eb488d559d5fe6a66f086242"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_shrub_swamp",
+      "regional_id": "rlt_novgorod_shrub_swamp",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Чаще по окраинам болот, озёр и пойм.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "be663f78e197a2fc01563dbc7302c36cabd4404548141388ad2c43f47178dc6d",
+        "regional": "1e01516d32471941f3579c95f795aa961d9c3cda85816f460d453c0d1604a615"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_wooded_swamp",
+      "regional_id": "rlt_novgorod_wooded_swamp",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Не использовать как “вода”; это ландшафтная болотная среда.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "d4cf688898d92181bf0b47875fb1be019a1e04e998c1bd74a57ff2eba81bf417",
+        "regional": "f24da882e79769dc93a32409338fe5895c4389dda14a8a2db46e256a110118f2"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_peat_swamp_forest",
+      "regional_id": "rlt_novgorod_peat_swamp_forest",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Применять локально; не вся болотная ячейка обязана быть торфяным болотным лесом.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "9b058ebcfc0a9f08066e36458c7b99e2f8e0254e3f4eabadf7db32db5da04424",
+        "regional": "3a8506c69400be99866fb042341871a32d11c04e835988756b256f1594f3e39c"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_raised_bog",
+      "regional_id": "rlt_novgorod_raised_bog",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Болота как G1/G2 среда; не создавать рядом с каждым поселением.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "85e1dbc1116bacbc3f68bbbda594710746a1dab87b5846fbb6126ebdde8b681f",
+        "regional": "26c2b01ffe2548de247ba4218d71688f18b0674a12f8aee829ec79aa6a2083d4"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_fen",
+      "regional_id": "rlt_novgorod_fen",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Связывать с низинами, источниками, ручьями и поймами.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "dc545333fcaa1bac0a326232fe1aa053bfdb5b6091cfbaa0a8d3519ffcfc6c7e",
+        "regional": "d20f7bf6cb0bf0538fbe085b85c1c50e944bb59bf1d694bea39f756b9ba34423"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_dry_meadow",
+      "regional_id": "rlt_novgorod_dry_meadow",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Редко и локально на сухих гривках, высоких берегах, вырубках.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_iucn_get",
+        "src_wwf_teow"
+      ],
+      "source_row_digests": {
+        "universal": "f7c928221bc759f5d15953987826549329ae3cc8a3680ea1654b130497e1a64e",
+        "regional": "ceb86b10ce0382abbd7e84a522561b721d8611cdb1c612072bd902822d8143bb"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_mesic_meadow",
+      "regional_id": "rlt_novgorod_mesic_meadow",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Обычно возле поселений, лесных прогалин и хозяйственно освоенных мест.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_iucn_get",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "e1d376396efa475ba8c3bd05abc1cbe13cc8695640d0c1f8f14df2d552ba61ce",
+        "regional": "33eadc8c47ab9cbebe748dc2bf6bfcf9bec8bf5cd95cce53132353becbc9a2a3"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_wet_meadow",
+      "regional_id": "rlt_novgorod_wet_meadow",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Связывать с поймами и низинами; сезонно подтопляемые варианты через water_body.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "7c384d12bfd283f52f9aa2e691b2fdda72928a98978641a94fd135bb2ceeb0fb",
+        "regional": "8697a6b93351b9720e0f21cb1174ccde90db03ce2214ce7ff936f46cf06792ef"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_scrub_meadow",
+      "regional_id": "rlt_novgorod_scrub_meadow",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "local_topology_ref",
+        "local_succession_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "local_topology_ref",
+          "local_succession_ref"
+        ]
+      },
+      "regional_limits": "Использовать как зарастающий луг/опушка, не как отдельный лес. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_succession_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_iucn_get",
+        "src_wwf_teow"
+      ],
+      "source_row_digests": {
+        "universal": "ac09bd53b07558501c7fee6a5f3ee65341d9517e5dd68220ae0c8ab4f5d92ed9",
+        "regional": "e4141e159c28cf6f03550c01689c7321dd8f0bda81181560b73b2d7ccd8a7cf7"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_alluvial_floodplain",
+      "regional_id": "rlt_novgorod_alluvial_floodplain",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Крупно вдоль Ильменя, Волхова, Мсты, Ловати, Шелони и других речных систем.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_natgeo_landform",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "source_row_digests": {
+        "universal": "7fdbbfa0e9b5fc7ebef8def9ed34d0a5a944d559714389b59b840cebe5cb80a6",
+        "regional": "d13cbbaf1562f3fa0b3c64718546137cfb473e6cd4e6cb3efffc5dcd34faf785"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_floodplain_wet_grassland",
+      "regional_id": "rlt_novgorod_floodplain_wet_grassland",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Пойменные влажные луга; не вся пойма, а хозяйственно важные открытые участки.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iskos_poozerie",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "744f75c07f3c72de6548a3812b6acc155c54ab45677edfbe3f1e42f8f73a6ad5",
+        "regional": "4acc30a23f5055d394245352625dd8394e78d1d7f44da975f4466db4c0ab3140"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_wooded_floodplain",
+      "regional_id": "rlt_novgorod_wooded_floodplain",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Лесистые поймы и пойменные островки; не заменяет общий лес.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "fc6beb85b9a794ce5dc37a902611c1fd0e3948e13e2ddfee1e86781010a254ec",
+        "regional": "f711737f56e3847bfeb67d622b5f314588ad3a9b386e7355bd2fceb6eae4793c"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_seasonally_flooded_forest",
+      "regional_id": "rlt_novgorod_seasonally_flooded_forest",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Локально в низинах и поймах; требуются сезонные правила разлива.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "10f9f1bc0c4e2a086712951e000c8673b0b9ef9c28297be7804e90f7879e2fbd",
+        "regional": "10c44a68cbdac70e29aab11e89818e180cff76b0e68dacb7a3431be1fd123f84"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_low_alluvial_riverbank",
+      "regional_id": "rlt_novgorod_low_alluvial_riverbank",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только рядом с river/water edge; не G1-доминанта без реки.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_natgeo_landform",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "71ede7b55b506f6070c308b3b575a94c5d4c9f0df9aebd473110248b253c47af",
+        "regional": "f3da0b35b582ed32c05406f916d9db90e044340943672c517f12e2f84b79b4f1"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_steep_eroding_riverbank",
+      "regional_id": "rlt_novgorod_steep_eroding_riverbank",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Локально на подмываемых берегах и извилинах; не универсальный берег.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_natgeo_landform",
+        "src_nrcs_landform_glossary",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "11c2f41a963f7cc369fbc980710f260004a23e688c1dc27c6fb4b27456c82037",
+        "regional": "b5365fc003e76d2b9ad39680099706d4178f7fafc5aad4d34a94dc622f0c5834"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_riparian_scrub_bank",
+      "regional_id": "rlt_novgorod_riparian_scrub_bank",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Кустарниковые берега рек/ручьёв; использовать как вторичный слой.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "9d2ea199619ac45b57d85beb62f98801e9aef8a6ae0e0f072c4d975ae711ca92",
+        "regional": "66fd79e91866a4f0071f74879238e255a76bd4ee0a7df36beac4bee04dec2862"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_sandy_lake_shore",
+      "regional_id": "rlt_novgorod_sandy_lake_shore",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Локально у озёр, не все берега Ильменя песчаные.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_natgeo_landform"
+      ],
+      "source_row_digests": {
+        "universal": "a701f7f7f835287f28d46762d209ca0a7879962255e3d7f431a0be9de189be1a",
+        "regional": "b36437deed3a4b60204f5d5512c052f5d83ff99fc9ae82d5e11f2eef7498351d"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_rocky_lake_shore",
+      "regional_id": "rlt_novgorod_rocky_lake_shore",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "local_topology_ref",
+        "local_geology_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "local_topology_ref",
+          "local_geology_ref"
+        ]
+      },
+      "regional_limits": "Редко; скорее для валдайских/ледниковых озёр и каменистых участков. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_geology_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_natgeo_landform",
+        "src_nrcs_landform_glossary",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "8c4fe1b75e27964e6ea277814391d8a2c30789981ce252bf4597b484f0378640",
+        "regional": "0d39a1cf6fcd2cea095089d4ea653eef5486fa94b147b1d8d2cc5ab10177c08d"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_reed_lake_shore",
+      "regional_id": "rlt_novgorod_reed_lake_shore",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Типично для мелководных, заболоченных и низких озёрных краёв.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "9075e34b47cd275f392ab23e3c3328074ca013c7ed180af05a9cbb115db8f538",
+        "regional": "3f6fc6206ca1a79a51f95d2e466daabc32514853518e5d2e8b5981778403ebd9"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_marsh_lake_margin",
+      "regional_id": "rlt_novgorod_marsh_lake_margin",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Край озера/старицы/болотистой низины; не отдельная вода.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "fef7febb36b7ffa4ea6939b92cd8f0af793451ae1dc3c8c8f923016285f5d5c4",
+        "regional": "55f8bee3db89cc777e9f17881c7a6014194384f5947ec879cea8627129ebfff2"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_gentle_hills",
+      "regional_id": "rlt_novgorod_gentle_hills",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Для валдайских и моренных повышений; не превращать Новгородскую землю в горный регион.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_natgeo_landform",
+        "src_nrcs_landform_glossary",
+        "src_iucn_get",
+        "src_fao_gez"
+      ],
+      "source_row_digests": {
+        "universal": "c68142fa18381fbee87db0a214de1afe66a21976009efc81bc4a3ef4b5bb05d9",
+        "regional": "7b5e24f2b88003176cfd48f644a390520d3a5b0476b6d60d12c858511532e0f8"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_steep_hills",
+      "regional_id": "rlt_novgorod_steep_hills",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "local_topology_ref",
+        "local_geology_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "local_topology_ref",
+          "local_geology_ref"
+        ]
+      },
+      "regional_limits": "Редко и локально; не использовать как доминирующую среду. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_geology_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_natgeo_landform",
+        "src_nrcs_landform_glossary",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "ef661d57549d32bba1ca0ac6fa18a3cda5b0b1855ba254bf4b2ae0406aa9a88d",
+        "regional": "5066090d040b0dcf9392bce17c1dc2fe6788b6cd40ad527cc4479e397cc2c68c"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_wooded_hills",
+      "regional_id": "rlt_novgorod_wooded_hills",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Лесистые холмы и моренные участки; не путать с горами.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_natgeo_landform",
+        "src_fao_gez_2010",
+        "src_iucn_get",
+        "src_fao_gez"
+      ],
+      "source_row_digests": {
+        "universal": "fd7adfc52ce4ddacc20af7273b4f2cc630122baf02e0ec2652eb29e6990fac46",
+        "regional": "9b4d3832f9a979bf79b2905754ebcc3a1cab583239741dc34a8f964067d078b3"
+      }
+    },
+    {
+      "domain": "landscape",
+      "universal_id": "lt_dry_ravine_gully",
+      "regional_id": "rlt_novgorod_dry_ravine_gully",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "local_topology_ref",
+        "local_geology_or_erosion_context_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "local_topology_ref",
+          "local_geology_or_erosion_context_ref"
+        ]
+      },
+      "regional_limits": "Локальные овраги/промоины в холмистой местности. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_geology_or_erosion_context_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_natgeo_landform",
+        "src_nrcs_landform_glossary",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "16aa947b9de7a70b9f039e4a9da6ae2de349374d3a8a33a40f96df59881a36ea",
+        "regional": "f7d8348bbe69ae11322c4b47ac169cd12058663a64508f0f6030fdc287df12bd"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_spring",
+      "regional_id": "rwbt_novgorod_spring",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Связывать с лесом, холмами, поселениями; не делать крупным водным объектом.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "e102bb83db7f0570687231f7fa9579af081f6f8e863ef96689e23bc7502500ac",
+        "regional": "ed16f12e8ad1bc5ee42d6efc1123fb03acf489d8a96b8a3f28be5589c5ceede6"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_seep",
+      "regional_id": "rwbt_novgorod_seep",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Мокрое место/сочение; не путать с ручьём или болотом.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "283da2bca2c88f5782bf72cf7591a2e4ee1ea781e566d59009266be2cf8007b7",
+        "regional": "6840fba9016937e604d601b07e5d646c21a1f1113196849fbeeb5f56dfb08f47"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_brook",
+      "regional_id": "rwbt_novgorod_brook",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Ручьи часты в лесной и холмистой среде; обычно не судоходны.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "e4be12767b9efacdafa46df43c1ebbd17c0b5f9a3cd0daf2670471e647818cbb",
+        "regional": "6611c7b1718fe476869f82af81ca0b8833eaa495a5b57bdfed2cd052d3dd26c8"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_small_river",
+      "regional_id": "rwbt_novgorod_small_river",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Малые реки, притоки и сельские переправы; судоходность только локально.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "72641da117e395f50a2ad4453fb0df4f11fe4b00321bf3a4c69bc07f7946e93a",
+        "regional": "8bc736e805ca938b2a3ae9faa613d72e2be9d3cf4b35abb88da109aa657b5a92"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_medium_river",
+      "regional_id": "rwbt_novgorod_medium_river",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Применять для значимых рек и участков речного пути.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context",
+        "src_baltic_route"
+      ],
+      "source_row_digests": {
+        "universal": "03cea682a2c5a6365225bff716cb95543df08f404704d21965606fc2eb6c3731",
+        "regional": "dd4eb7d8657bb55a20d9c19d0f0e8cc0cec3e2aeb6f5733c27ad0cbdd5b2d8dc"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_large_river",
+      "regional_id": "rwbt_novgorod_large_river",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Для Волхова и иных крупных участков; не бродить без отдельного ford/ferry/bridge.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_ramsar_wetlands",
+        "src_baltic_route",
+        "src_iskos_poozerie"
+      ],
+      "source_row_digests": {
+        "universal": "985c9254278b5acfc8316e9557e750473308c8ad23aba46c19fdd9e1fdf72397",
+        "regional": "0658368481a5fd3211780f801af6fc7cf3f8299e73a6881b269bc5e90c1505dc"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_river_channel",
+      "regional_id": "rwbt_novgorod_river_channel",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только в речных/озёрно-речных системах.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_usgs_freshwater"
+      ],
+      "source_row_digests": {
+        "universal": "71aed77c22739e84190879456175ca9d772f969974b796b7eae2fb8c37bc7c76",
+        "regional": "224fdfcb44ae5e599830f922525c6836a00e3082c1699d7116bffbeebf0017ed"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_rapid_section",
+      "regional_id": "rwbt_novgorod_rapid_section",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "hydrology_graph_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "hydrology_graph_ref"
+        ]
+      },
+      "regional_limits": "Редко и только на конкретном river edge; не тип всей реки. AUDIT_GUARD requires_context_refs=[\"hydrology_graph_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_iucn_get",
+        "src_usgs_freshwater",
+        "src_baltic_route"
+      ],
+      "source_row_digests": {
+        "universal": "ebf255358021f9735521909a3897241e9558ffad64d15f80b7c831e5f2d4a849",
+        "regional": "757b730446b07df19201b94868a988ae1c7e8ba52b46bd29b59cde8f9c2311a9"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_oxbow_lake",
+      "regional_id": "rwbt_novgorod_oxbow_lake",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только в поймах и старых руслах.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_usgs_freshwater"
+      ],
+      "source_row_digests": {
+        "universal": "dbee178605359ee3af833c1289acb9bd33b63475098cbd21aab05b6d81a2811d",
+        "regional": "e7369e802d105b8070a8983361671a79b428ed4eded8bd4d4f331152fd9d7bb9"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_backwater",
+      "regional_id": "rwbt_novgorod_backwater",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Заводь/затон рядом с рекой или озером; не самостоятельный большой водоём.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_usgs_freshwater"
+      ],
+      "source_row_digests": {
+        "universal": "033117f14ba9145b2a4dfa66b4fd0e06a6a4f70278c5d95fa37ac4d9b413860a",
+        "regional": "42daa620f10489e30a32fecbbbb1e0e32a16d63ddf3de2daf44585e07edf3fbe"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_floodplain_lake",
+      "regional_id": "rwbt_novgorod_floodplain_lake",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Пойменные озёра и низины вокруг речной системы.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_usgs_freshwater",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "996135640a2a25ee2d9b87e5f417960ba514d7fe59436c4db3a266d9389b6763",
+        "regional": "7d6be4f85ee6dca7032a471687cbfa4f7e3b29b35be618d1275e52e0933351b3"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_freshwater_pond",
+      "regional_id": "rwbt_novgorod_freshwater_pond",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только при поселении/мельнице/хозяйстве или естественном малом пруде.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_ramsar_info",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "5d8dfd0f1d248c8942d374bf62331dfa2d33ad891bbfa7cf97d5512c54e738ae",
+        "regional": "495f598100e80a101abadd5f7ba00439b2292950d06f579a48490fabd7caf123"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_small_fresh_lake",
+      "regional_id": "rwbt_novgorod_small_fresh_lake",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Часто в озёрно-лесной зоне; не каждая ячейка озёрная.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "776b1978b071ad2cb84c0e259434f0d6920b0a8066bba1a3bd39814b8bbd9cf3",
+        "regional": "e0689afd6684b540d467d6757960401b8edea89fee8652ceec6edf7e04fb7af0"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_large_fresh_lake",
+      "regional_id": "rwbt_novgorod_large_fresh_lake",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Для Ильменя и крупных озёр; переход требует route edge.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_usgs_freshwater",
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "source_row_digests": {
+        "universal": "15b42cd864db41a5e6caaa7a22592bd849201050d61546d735353f8ea75282a7",
+        "regional": "6c2462313e1d5e6f02b413a1b63d7f09a828a801a1dff821f72383f2d89842b8"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_seasonal_pool",
+      "regional_id": "rwbt_novgorod_seasonal_pool",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "seasonal_hydrology_context_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "seasonal_hydrology_context_ref"
+        ]
+      },
+      "regional_limits": "Сезонная вода; не фиксировать как постоянный объект без причины. AUDIT_GUARD requires_context_refs=[\"seasonal_hydrology_context_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_info",
+        "src_usgs_freshwater",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "6bdf6934b13394c0a939e64fb86ed6f15fae23768c5fc711130338f352e85bc7",
+        "regional": "05c8c90323f547cfb8b0758a4f6d614b07ae21507a4da7f233c2644b1145294a"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_floodwater",
+      "regional_id": "rwbt_novgorod_floodwater",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "temporal_hydrology_state_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "temporal_hydrology_state_ref"
+        ]
+      },
+      "regional_limits": "Активировать сезонно при паводке; не постоянный water body. AUDIT_GUARD requires_context_refs=[\"temporal_hydrology_state_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_info",
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "680e5e4e8aec3153656c845c39b970604ba8e07f528474f339045cb08cfc572e",
+        "regional": "5ea8b01545b8af06cd5435b627ca912a0e3912339a28d2ceca18319f8d976b2e"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_marsh_pool",
+      "regional_id": "rwbt_novgorod_marsh_pool",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только внутри marsh/fen/wet meadow; опасно для движения.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "959606b46e7781f0fc8ca11d43c89959ae78ab95cf1899deacae0013aafa3fe3",
+        "regional": "2c1983d05f17c3bb5ffb8a23a0250a0f3df8f6579dab1389c752bb0858884c68"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_bog_pool",
+      "regional_id": "rwbt_novgorod_bog_pool",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только внутри верховых/торфяных болот; не питьевая норма.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "source_row_digests": {
+        "universal": "2d1e386d9e4f6b81e7f8d7229568a07d05a976b8c2b97136fc024e05dc02ded1",
+        "regional": "2bcb3d047d1391ed0db9ce69d499e908d9aa945c5e19d85046946176ad6720c3"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_marsh_channel",
+      "regional_id": "rwbt_novgorod_marsh_channel",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Болотные протоки требуют местного знания.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_fao_inland_fisheries"
+      ],
+      "source_row_digests": {
+        "universal": "d9f7ae5240e8809d97657fa1c7fd230ef7c782cdfea74cf5e41266fbabdc7a3f",
+        "regional": "58f4647715f6f469316add85d9c3dc905d1ed271acdb94eb0b2b5eacafe57426"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_brine_spring",
+      "regional_id": "rwbt_novgorod_brine_spring",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "brine_resource_ref",
+        "authored_salt_locality_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "brine_resource_ref",
+          "authored_salt_locality_ref"
+        ]
+      },
+      "regional_limits": "Редко; использовать для Старой Руссы/соляных мест при региональном уточнении. AUDIT_GUARD requires_context_refs=[\"brine_resource_ref\",\"authored_salt_locality_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_historic_england_salterns",
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "2ccbf7c10e3be6c429b8237ac69cf5e6eff588ab953fcd2c6ebe07a1abd3671b",
+        "regional": "80616fe80769e686bcd8a9bddc00210d29aeeacc225c4e3b71c1a6f7d5548042"
+      }
+    },
+    {
+      "domain": "water",
+      "universal_id": "wb_moat_water",
+      "regional_id": "rwbt_novgorod_moat_water",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "fortified_site_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "fortified_site_ref"
+        ]
+      },
+      "regional_limits": "Только при укреплённом месте, если ров действительно наполнен водой. AUDIT_GUARD requires_context_refs=[\"fortified_site_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_info",
+        "src_historic_england_settlements",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "2dd24c10a6ccd5ea2180bdab0f126dec89ee604c853ac740b55fd68667b2df4f",
+        "regional": "349032363426c1ef4cd4b22bdf440c34854e4a2ff53458e9277548a33bfd2e3b"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_rainfed_arable",
+      "regional_id": "rlut_novgorod_rainfed_arable",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Вокруг сельских поселений и Пooзерья; не на болотах без осушения.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_historic_england_fields",
+        "src_novgorod_agriculture",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "4cde19ee3214676dd31d72ce690e2c59e53831d21051d9be14983c320e359bec",
+        "regional": "1b1ff5909f9e5d7ebbf18f1c02a4cd88472491e28fa6b6f664fdc054d87aaf1c"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_fallow_rotation",
+      "regional_id": "rlut_novgorod_fallow_rotation",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Поверх пашни/сельских угодий; не самостоятельный ландшафт.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_historic_england_fields",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "f3e35ba61890c41e8eb8c4da3c7df52b4b78353263d2ed62af3a3c857f239479",
+        "regional": "53eaa145787e386c102a6a20581b14873384592044f04345b988410001425c21"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_slash_burn_cultivation",
+      "regional_id": "rlut_novgorod_slash_burn_cultivation",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только как использование лесной среды; не создавать ландшафт “подсечный лес”.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "2a3cb46d8f2a69f72303513cb965fc8c0788b5f32e9e74938c307413e1e1fc5e",
+        "regional": "edec40dceb264ef884e6e47d9923395fabaefa14be2e3d2748f52e7fe1ce3f68"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_kitchen_garden",
+      "regional_id": "rlut_novgorod_kitchen_garden",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только внутри/рядом с двором, монастырём, посадом.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_historic_england_settlements",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "8f719557787e4348fea860712d902e879b0ac53737ad8ca6c3ee2c9305b0ebd0",
+        "regional": "a5201bed8bbc182ffc145d34bd757ab0a47a32fba256a41cd9c9c883e32b41da"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_orchard_fruit_grove",
+      "regional_id": "rlut_novgorod_orchard_fruit_grove",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "settlement_context_ref",
+        "apple_orchard_basis_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "settlement_context_ref",
+          "apple_orchard_basis_ref"
+        ]
+      },
+      "regional_limits": "Редко, только при дворе/монастыре и без южных культур. AUDIT_GUARD requires_context_refs=[\"settlement_context_ref\",\"apple_orchard_basis_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_giahs",
+        "src_fao_lccs",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "e780b8e890ec02bb26bd16c2b8f95d847f1efe9f0755bf8097019a9679c32671",
+        "regional": "f3348728e3aecd2107bf5abfab8f4b04c13dd733fc52ded178e50e39efe496e6"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_fiber_crop_plot",
+      "regional_id": "rlut_novgorod_fiber_crop_plot",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Лён/конопля возможны на сельских участках; вымачивание требует отдельной воды.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_historic_england_fields",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "dcf4fff6f179fd42e58fd829536472d8497cb2ac0b346b0958f511821a4be309",
+        "regional": "2dcddae71b04c8e74980ad3be4a5edc7dc47337244ddb25bb0a97a36ae1f1e07"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_hay_meadow_cutting",
+      "regional_id": "rlut_novgorod_hay_meadow_cutting",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Особенно по поймам и влажным лугам; не на верховых болотах.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_english_heritage_meadows",
+        "src_historic_england_settlements",
+        "src_novgorod_agriculture",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "b691599955f86d8126493b46d8dc09da0f694042303d6facdb23bcd1ce728ed5",
+        "regional": "7bfcc21414028754745e7e681d11a4d8b2366df898ddb7bc497bf313a29acc24"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_common_pasture",
+      "regional_id": "rlut_novgorod_common_pasture",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Вокруг поселений, на лугах, выгонах, лесных опушках.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_historic_england_fields",
+        "src_historic_england_settlements",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "8a606d03422eabe6a638857961280ee2415b46416f992e1a4b958bba1a7edd80",
+        "regional": "c8e3e8e9702138aaa1eb141c55459ea535dbe569f725d1efcfe56ed4ff55b4c0"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_wood_pasture_silvopasture",
+      "regional_id": "rlut_novgorod_wood_pasture_silvopasture",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только как использование леса/редколесья около поселений.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_giahs",
+        "src_historic_england_settlements",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "e11f7bffc456d3d77a8553fce9df67c9e3654b6214478581fd2b345eb3ebf48d",
+        "regional": "77b0cea24d73b1416da8c7a9f3f4421e9d5ddff96b39a228d5f65693599642c7"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_reed_sedge_harvest",
+      "regional_id": "rlut_novgorod_reed_sedge_harvest",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "wetland_landscape_ref",
+        "economic_basis_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "wetland_landscape_ref",
+          "economic_basis_ref"
+        ]
+      },
+      "regional_limits": "По камышовым берегам, маршам, болотам; не водный объект. AUDIT_GUARD requires_context_refs=[\"wetland_landscape_ref\",\"economic_basis_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_fao_lccs",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "af63020d59ad6d29aaccbfa1e13cc10c1662f3e3bd1369d7312b8013f90cf18a",
+        "regional": "e395b54c3282e6f81b9569bb6ae940389e3de2a64b982fd393673c35e2590055"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_timber_felling",
+      "regional_id": "rlut_novgorod_timber_felling",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Лесной промысел; следы рубки задаются как land_use, не ландшафт.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_historic_england_settlements",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "e13f2513a41da12299b475939d0fea12bfa2a0c5de1b05c16b0044708a838b73",
+        "regional": "b2a7125be99c698355356944910de8aefa04b0245bf1662fcc753991b5429fc5"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_fuelwood_gathering",
+      "regional_id": "rlut_novgorod_fuelwood_gathering",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Часто около поселений; не превращать в отдельный лес.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_historic_england_settlements",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "67cb3e3c83c43ec0f6f32c197c6ede6eec4b22d03ac8bb5b37c99ddb48288622",
+        "regional": "0871f66f46867d69d97fcc6811ee16203241b7d5161c330861fdad0cab34764c"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_charcoal_burning",
+      "regional_id": "rlut_novgorod_charcoal_burning",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "forest_resource_ref",
+        "production_basis_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "forest_resource_ref",
+          "production_basis_ref"
+        ]
+      },
+      "regional_limits": "Рядом с лесом и железоделанием; не каждый лес углежжение. AUDIT_GUARD requires_context_refs=[\"forest_resource_ref\",\"production_basis_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_novgorod_promysly",
+        "src_fao_lccs"
+      ],
+      "source_row_digests": {
+        "universal": "c2450fc0ae23b39597a16112ecc653c5c7f0066deca596cba2304eaebb2eb07c",
+        "regional": "ea60930b139cb9ddc4f09092901fa277f0d4f892d4ffd5c394f4c872814ae365"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_resin_tar_pitch_production",
+      "regional_id": "rlut_novgorod_resin_tar_pitch_production",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "forest_work_context_ref",
+        "economic_basis_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "forest_work_context_ref",
+          "economic_basis_ref"
+        ]
+      },
+      "regional_limits": "Хвойный/смешанный лес, судостроение, деревообработка; не ландшафт. AUDIT_GUARD requires_context_refs=[\"forest_work_context_ref\",\"economic_basis_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_novgorod_promysly",
+        "src_fao_lccs"
+      ],
+      "source_row_digests": {
+        "universal": "969f1ad8f66af385408d50257e88f4264be1f1fbf50eb008ff6b8b6553364a6d",
+        "regional": "64f4b9436b5cc91c491513fcf098daa558479ccec695e782a5c8dd6e77de249f"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_bark_bast_collection",
+      "regional_id": "rlut_novgorod_bark_bast_collection",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Береста/лыко/кора как лесной ресурс; не задаёт породу леса.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_novgorod_promysly",
+        "src_fao_lccs"
+      ],
+      "source_row_digests": {
+        "universal": "79dc23abf027eaad83bf4287c83243078393b372115dd2606c78c439a234756f",
+        "regional": "0c10a87d37703feba6c281505e2ffb157625db22ca08599a3839d54dc83d4b45"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_wild_food_gathering",
+      "regional_id": "rlut_novgorod_wild_food_gathering",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Сезонный ресурс леса/болота/луга; не “сборной лес”.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_novgorod_promysly",
+        "src_fao_giahs"
+      ],
+      "source_row_digests": {
+        "universal": "ce9d7b895b091b15fc5457b4e07744e1bfa01cc4d2394b54487ad826e4f12b53",
+        "regional": "a7d548607fb913d49edbb64bef29ac0f3e235836240fbed6b256df15ebf9d1cc"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_tree_beekeeping_bortnichestvo",
+      "regional_id": "rlut_novgorod_tree_beekeeping_bortnichestvo",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только лесное использование; не “бортный лес”.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_novgorod_promysly",
+        "src_fao_giahs"
+      ],
+      "source_row_digests": {
+        "universal": "f080fb85023098e34f9695cde167dfa83ec2aa26ba842cd671c72f878e377ebf",
+        "regional": "aaadc78718e7cc27fcb4b2f681e95de4bf842de95e166792d1d02c8f833072dc"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_hunting_ground",
+      "regional_id": "rlut_novgorod_hunting_ground",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Зверь задаётся отдельной региональной фауной; шаблон только разрешает охотничьи угодья.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_novgorod_promysly",
+        "src_fao_giahs"
+      ],
+      "source_row_digests": {
+        "universal": "09544adc427e8b6215b248ba702f40a5ffaf41f3aca362c97aea921f95d4ef48",
+        "regional": "61185c97ba74a4684ae0f8d41a475f7d6d50b127d37c8a5b0d6e4d9008b515d8"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_fur_trapping_ground",
+      "regional_id": "rlut_novgorod_fur_trapping_ground",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Не гарантирует конкретный вид пушнины; нужен фаунистический контекст.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_novgorod_promysly",
+        "src_fao_giahs"
+      ],
+      "source_row_digests": {
+        "universal": "8e790ce1157539fe4d0defe4df62c3c7175e65d05e9affa80d6c4d8029a75039",
+        "regional": "e923e8b945fccb00ba1c9c74e3755531a0b1efd95a771d9c435a6bcbc39045ad"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_inland_capture_fishing",
+      "regional_id": "rlut_novgorod_inland_capture_fishing",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только при воде; не создаёт реку/озеро автоматически.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_inland_fisheries",
+        "src_novgorod_promysly",
+        "src_usgs_freshwater",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "d9eb07d5b81e3c7aed2482114fb793ae4ca64da94e7b7bfbf7d3695aba9321c2",
+        "regional": "32aab1fc4f6c43bff62718d304828fe2968bdb6c5daf57fee8acc5692d15fd9a"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_fish_weir_trap_operation",
+      "regional_id": "rlut_novgorod_fish_weir_trap_operation",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "water_ref",
+        "fishing_right_or_infrastructure_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "water_ref",
+          "fishing_right_or_infrastructure_ref"
+        ]
+      },
+      "regional_limits": "Стационарные ловушки только на подходящем водном ребре/месте. AUDIT_GUARD requires_context_refs=[\"water_ref\",\"fishing_right_or_infrastructure_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_novgorod_promysly",
+        "src_fao_inland_fisheries",
+        "src_ramsar_wetlands"
+      ],
+      "source_row_digests": {
+        "universal": "047650b93788343be66076d42b3f99c302d2ef3c64f18c531aa449cf7b07179a",
+        "regional": "735b3c6f7be695a2d1974da0deba6bef6b87a2e73595dd4f12b7b7c73634f72b"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_saltmaking_saltern",
+      "regional_id": "rlut_novgorod_saltmaking_saltern",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "brine_resource_ref",
+        "production_basis_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "brine_resource_ref",
+          "production_basis_ref"
+        ]
+      },
+      "regional_limits": "Только у солёных источников/Старорусской зоны; не по всему региону. AUDIT_GUARD requires_context_refs=[\"brine_resource_ref\",\"production_basis_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_historic_england_salterns",
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "b70cc3ea4f2a71f4e37039c09bf82369067ac9a2b52ddbb26cc6e391340850ba",
+        "regional": "2b704bbdd3fe253f3df262bc9a4b1129e9e29de913015a832971f3376de2677e"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_clay_extraction",
+      "regional_id": "rlut_novgorod_clay_extraction",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "clay_resource_patch_ref",
+        "production_basis_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "clay_resource_patch_ref",
+          "production_basis_ref"
+        ]
+      },
+      "regional_limits": "Локально у гончарных/строительных мест; не G1-доминанта. AUDIT_GUARD requires_context_refs=[\"clay_resource_patch_ref\",\"production_basis_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_fao_lccs",
+        "src_historic_england_settlements",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "1bf950fce38d80f8021f94075e33d68306cc9a248adf3612c9041ace62b23afe",
+        "regional": "35594498fb8a5b72cb6000242f32afb021e3ecb353e18a22639bdc57bbd7387d"
+      }
+    },
+    {
+      "domain": "land_use",
+      "universal_id": "lu_bog_iron_extraction",
+      "regional_id": "rlut_novgorod_bog_iron_extraction",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "bog_iron_resource_ref",
+        "fuel_ref",
+        "production_basis_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "bog_iron_resource_ref",
+          "fuel_ref",
+          "production_basis_ref"
+        ]
+      },
+      "regional_limits": "Только в болотистой/лесной зоне с железоделанием; не каждое болото. AUDIT_GUARD requires_context_refs=[\"bog_iron_resource_ref\",\"fuel_ref\",\"production_basis_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "src_ramsar_wetlands",
+        "src_fao_lccs",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "fc6f098fee5a6f2a3ddf139d2fb021ccf39a2d33326e4401660c5d5fa4a1fa3e",
+        "regional": "67e16c4879a03dfc3ae82c8fbdbb01fcae943e9807d60a7180b880d753abe1d8"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_isolated_farmstead",
+      "regional_id": "rpt_novgorod_isolated_farmstead",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Одиночные дворы возможны в освоенных сельских участках; не заменяют деревню.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "e1ccca186418ede415c8adcfe4edfff4d2b6d50d44a2208fa3ef82894d40f14f",
+        "regional": "363f8fcf90ba42055ac0acb36faab111fa95775abaa5dade4c2aa8a4d583bebb"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_hamlet",
+      "regional_id": "rpt_novgorod_hamlet",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Малые сельские поселения особенно у озёр, рек и освоенных лугов.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "source_row_digests": {
+        "universal": "3f015e44b4bd8d2ab9722000db13d87fa669b6128025ac5009e8c3e5c41a9be5",
+        "regional": "9fc630e9d848fa77d1cc2a6ee0f02ee7a2aa1d6a030dea06158350e6e0e9cbac"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_village",
+      "regional_id": "rpt_novgorod_village",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Сельское поселение при пашне, лугах, воде или дороге.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "ad4a9e1ff9a3c2ef12000e87c12c6f291aab4c7e8b638128d956dee3e2327ec8",
+        "regional": "567f2d229b01a8965bc1d10fa79fa6cfc3a152d11697b8afdb4a73713c827c4e"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_nucleated_village",
+      "regional_id": "rpt_novgorod_nucleated_village",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Скученное поселение там, где есть устойчивый центр/дорога/погост.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "6b5a663ed7c403e6f4cec4713005dfdc7297c4832e095bba5cc038b3f83aa76c",
+        "regional": "b4f48fbc1343768655731dae13bff9d9b2f3cd6cc146b22e2bdde35583c8812f"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_dispersed_settlement_cluster",
+      "regional_id": "rpt_novgorod_dispersed_settlement_cluster",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Группа дворов/малых поселений в сельской округе.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "source_row_digests": {
+        "universal": "eb5cae809b4cec27b4706f7e29e379ca56230407ad19aef025a0a3429654e6dc",
+        "regional": "883e7a4d83776927d9e440a98659cdbc3d9d1eb6da2631c6e239a5184b181b2c"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_rural_church_center",
+      "regional_id": "rpt_novgorod_rural_church_center",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "religious_authority_ref",
+        "route_or_settlement_context_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "religious_authority_ref",
+          "route_or_settlement_context_ref"
+        ]
+      },
+      "regional_limits": "Только при церковной/общинной роли; не каждое село. AUDIT_GUARD requires_context_refs=[\"religious_authority_ref\",\"route_or_settlement_context_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "https://historicengland.org.uk/research/results/reports/7013/Cemeterieschurchyardsandburialgrounds_devisingandapplyingasignificanceframework",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "091e64f0fc5f2e4023160c4313d95256e60c3acb74233c4df995f497e1d849cd",
+        "regional": "8869422cd30054b9ed7e12de9c87b87773ee27a9e564414914a0b993600d2dc9"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_pogost_center",
+      "regional_id": "rpt_novgorod_pogost_center",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Регионально важен для Новгородской земли; требует административно-церковного смысла.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://vja.ruslang.ru/en/archive/2014-3/67-81",
+        "https://uchzap.petrsu.ru/journal/article_en.php?id=325",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "source_row_digests": {
+        "universal": "619a1a5ac772c56da6597f415ee487562d5ac2e7a1143356916a3b167c052cce",
+        "regional": "89479de753545e935a83cd060444f0c76b090beb11fa3c6fe9e145555e2931f8"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_estate_center",
+      "regional_id": "rpt_novgorod_estate_center",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Двор/усадебный центр боярина/владельца/власти; не делать массовым без феодального контекста.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "ccae9b548216fa92aa78ca0e7dd7fa523a71943cf9969cd5a0dfe60c65c4eec2",
+        "regional": "faf61be469a5b38a4130120b3aa81f14f5b57fa79bcdc1981d74dcacd81d5d64"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_monastic_grange",
+      "regional_id": "rpt_novgorod_monastic_grange",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "monastic_authority_ref",
+        "economic_context_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "monastic_authority_ref",
+          "economic_context_ref"
+        ]
+      },
+      "regional_limits": "Редко; только рядом с монастырским владением. AUDIT_GUARD requires_context_refs=[\"monastic_authority_ref\",\"economic_context_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://www.english-heritage.org.uk/learn/histories/abbeys-and-priories/",
+        "https://heritage-explorer.lincolnshire.gov.uk/Designation/DLI1579",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "f5cd4304598786dadab55e6a2ea451989316b638a9689624a6c18bee37846ecc",
+        "regional": "01312acaac56dbff6731582486bda141d09a6bd980b35bb1e10d0de99f1dfc5e"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_wintering_hut",
+      "regional_id": "rpt_novgorod_wintering_hut",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "В лесных/промысловых угодьях; сезонность обязательна.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "7aa9f30f2fa096bcda72813f62245f799031b4e14338d7cd5c3592ecb1ad4ea9",
+        "regional": "663cb96a1fa40147451e745afbe67e1738ae1d670f24bd8311657dcc24c2d26b"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_forest_work_camp",
+      "regional_id": "rpt_novgorod_forest_work_camp",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Для рубки, смолы, угля, лыка; не постоянная деревня.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "db8d15056d34d53986a739db7ff0de32209162ef768b164a81d9533f174cbc2c",
+        "regional": "558b9fb86b58966144d5a158a81080ff9270dc95442640d5fc042e93b31115e7"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_hunting_camp",
+      "regional_id": "rpt_novgorod_hunting_camp",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Сезонный/временный; не рядом с каждым лесом.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "ab73c2780eba43a8411eba9918d207712b43a6e4eb82b2a7b30a85503d7807b3",
+        "regional": "ecaf624de01fe6ad8fd66597e0f97372db2bf429f6cf981c26bb96574be99913"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_fishing_station",
+      "regional_id": "rpt_novgorod_fishing_station",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только при реке/озере и рыболовном использовании.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "https://heritage-explorer.lincolnshire.gov.uk/Designation/DLI1579",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "cb80189bef20c4131577c51622dc45c669ecd474094c6eedd7cff7a84cc63820",
+        "regional": "33c4c61684cc32195141230d39a225fbdf4be23a8b6d91325d1ad7b965491263"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_fish_weir_site",
+      "regional_id": "rpt_novgorod_fish_weir_site",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только при подходящем русле/протоке/малом водном ходе.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://heritage-explorer.lincolnshire.gov.uk/Designation/DLI1579",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "d31ba3105d99ba1ba561512b73844b465c29679d2dbafb1ac6cfe3ffd4ed0a95",
+        "regional": "b84b763cdf756def24617b9f8ad5ebc3c1eddf047f4803ced3fc30f70951e023"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_river_landing",
+      "regional_id": "rpt_novgorod_river_landing",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "route_edge_ref",
+        "access_authority_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
+      "regional_limits": "При судоходной/лодочной реке; не обязательно порт. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/",
+        "src_baltic_route",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "e5627c877ad8b15d0aab8274db5db24f3051a79dc402a0ed2a5c7bc3b9b2c3d2",
+        "regional": "6d80b493a1ffb5780ec575e2bd2f9c0acc3c84679abb3dec8dcd4eda8794280a"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_boat_landing",
+      "regional_id": "rpt_novgorod_boat_landing",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "route_edge_ref",
+        "access_authority_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
+      "regional_limits": "Малая лодочная стоянка на реках/озёрах. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/",
+        "src_novgorod_promysly",
+        "src_baltic_route"
+      ],
+      "source_row_digests": {
+        "universal": "fca20b5156c257b914c2256aa055ced6d76d8d0ce51bf69a642116e86846c4a4",
+        "regional": "10659c4f3242b587906e13cd1cff5e4c32ce993c4b8fc8e577186abab232acb2"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_market_place",
+      "regional_id": "rpt_novgorod_market_place",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Торг при городе, погосте, переправе или важном пути.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
+        "https://doc.ukdataservice.ac.uk/doc/4969/mrdoc/pdf/guide.pdf",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "cf84a08fe023f5f89e9cb077f4a953a2089da73d14e3062b483ef9ac6637097a",
+        "regional": "3ad00d3069f388982fe9ebdaf149c43eaa31bc5ebc59f61a5f701e265bb8d2a5"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_periodic_fairground",
+      "regional_id": "rpt_novgorod_periodic_fairground",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "market_authority_ref",
+        "route_context_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "market_authority_ref",
+          "route_context_ref"
+        ]
+      },
+      "regional_limits": "Только при календарном/церковном/торговом основании. AUDIT_GUARD requires_context_refs=[\"market_authority_ref\",\"route_context_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
+        "https://doc.ukdataservice.ac.uk/doc/4969/mrdoc/pdf/guide.pdf",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "faca5d0a4bd47a256a76d459cf56b5abe145c501a2c16cd41665fc89cea9c40a",
+        "regional": "303d25f47e4e666f20a7c749ad8dffb253298bf0c92e14b27a624eb4c2cf9a61"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_town",
+      "regional_id": "rpt_novgorod_town",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Для городских центров региона; конкретные города лучше заводить как places, не генерировать массово.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "bdc9f988b4cab697d978a9f368d46c330c367a8939dfb83db9e75a8ccf5cd23c",
+        "regional": "1187a738ad2748cdec99d0d89dc93fbbc320a355dd904c0727334c555d60845f"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_city_major_center",
+      "regional_id": "rpt_novgorod_city_major_center",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Практически только Великий Новгород как уникальный центр.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
+        "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "19caf9687f6c95b875a733bf78652bf350f6c0c3693d426c2a1a0638baff74e8",
+        "regional": "0bed1388a549d80be9a9d30bc96994cc1d175cac8942f4f97fb19467b82a8771"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_fortified_town",
+      "regional_id": "rpt_novgorod_fortified_town",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только для реального укреплённого города/центра.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://www.english-heritage.org.uk/learn/histories/medieval-castles/",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "f8209d36c84623f60d655347e50a2e4b61598bdaf3a11270c7c6bcedd0922779",
+        "regional": "1d11fe6a0ae1cd8de83a981d5cebd7706a980a1dcff344484021884f62f3039b"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_posad_suburb",
+      "regional_id": "rpt_novgorod_posad_suburb",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Только внутри/при городе; не отдельный сельский place.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "9d7bc3c10ac796f28a8d10aaac53acc2af0adac61fee0dec5613245641c41527",
+        "regional": "71c6d95bc93cbc090423e1120d61eafa0877a2d0002a743220f41c5b9712cbb3"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_crossroads",
+      "regional_id": "rpt_novgorod_crossroads",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Путевой узел только при graph_edges; не создавать поселение автоматически.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_route_he"
+      ],
+      "source_row_digests": {
+        "universal": "89882424c94186ac3b82e181df074e59a8dc0f933e323d266d8823de91881fd8",
+        "regional": "b67526e1869f99e1d7663e8ba8bba2ac80b048cffe6b7846b82462830a7f303c"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_ford_place",
+      "regional_id": "rpt_novgorod_ford_place",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "route_edge_ref",
+        "access_authority_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
+      "regional_limits": "Только на конкретной реке/ручье с water_body и route edge ford. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_ramsar_wetlands",
+        "src_route_he"
+      ],
+      "source_row_digests": {
+        "universal": "e7862309359b053fe49d2dcb59a5587b39952061aac247a687e1588dec567b6c",
+        "regional": "f788260ee718ebf94dc06e85077848c5973fbb2bd9c94a244a7c1aaaffe113b1"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_ferry_place",
+      "regional_id": "rpt_novgorod_ferry_place",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "route_edge_ref",
+        "access_authority_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
+      "regional_limits": "Только на значимой реке/озере с людьми/лодкой и доступом. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/",
+        "src_baltic_route",
+        "src_route_he"
+      ],
+      "source_row_digests": {
+        "universal": "0b83a229c63cb1afe4b9d518cb250a0d0a654f073ae476b3aed15d11622debe3",
+        "regional": "67f81d0f6a38430e69920b4f13d00fe765b1aacc5af578f01e09b9eb4a71d27b"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_bridge_place",
+      "regional_id": "rpt_novgorod_bridge_place",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "route_edge_ref",
+        "access_authority_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
+      "regional_limits": "Только при route edge bridge; для малых/средних вод чаще, чем для крупных рек. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_route_he"
+      ],
+      "source_row_digests": {
+        "universal": "2d1c8e86d6cac3c79ea67207657c6eff1ae2af429747db46b6d9a34dd45d930b",
+        "regional": "86a9043dad46faa15a675ca0f7b677ef2c9e6310f5535bc3e56cb2de12feff7e"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_portage_place",
+      "regional_id": "rpt_novgorod_portage_place",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "route_edge_ref",
+        "access_authority_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
+      "regional_limits": "Использовать на водоразделах/между водными системами; не для обычной тропы. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_baltic_route",
+        "src_iskos_poozerie"
+      ],
+      "source_row_digests": {
+        "universal": "e2a26b153eaf9908f6a786daf1cffb6d2d75d441efa0d5e386b5438552955143",
+        "regional": "a5420a837a4996ea612d5459dea325ecac41be4dab9d706a43b401088ae8b944"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_monastery",
+      "regional_id": "rpt_novgorod_monastery",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Монастырь требует конкретной исторической или региональной причины.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://www.english-heritage.org.uk/learn/histories/abbeys-and-priories/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "5fb187d5d917a7c55052c7589b4b54a53696a03c9230e32037237aeb46fab33d",
+        "regional": "26d98f39dcc7a15a48e389405bc8c5f900501a38d10918b4c7d154d7a83999fc"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_hermitage_skete",
+      "regional_id": "rpt_novgorod_hermitage_skete",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "historical_religious_anchor_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "historical_religious_anchor_ref"
+        ]
+      },
+      "regional_limits": "Редко; только с религиозным контекстом и удалённой средой. AUDIT_GUARD requires_context_refs=[\"historical_religious_anchor_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://www.english-heritage.org.uk/learn/histories/abbeys-and-priories/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "26a82c4b2a0e727cf409ac3a39add0645270a082baca3baf7a002850d8255f4c",
+        "regional": "64c3492dd829361654ccbaf6d249524901081e1c016b883d9605c4559bbce353"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_pilgrimage_shrine",
+      "regional_id": "rpt_novgorod_pilgrimage_shrine",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "historical_religious_anchor_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "historical_religious_anchor_ref"
+        ]
+      },
+      "regional_limits": "Только при святыне/церкви/местной памяти. AUDIT_GUARD requires_context_refs=[\"historical_religious_anchor_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://www.thebecketstory.org.uk/pilgrimage/destinations-england",
+        "https://historicengland.org.uk/research/results/reports/7013/Cemeterieschurchyardsandburialgrounds_devisingandapplyingasignificanceframework",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "6415ae5ca4d102735738f24018dbfcf028077d0c145a71d4d5876fa48b3667be",
+        "regional": "6c6d4df738b5b5b8f2ca7dc23bb8234fb6ebb7eac10eac209c5e9048f7966647"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_hillfort_gorodishche",
+      "regional_id": "rpt_novgorod_hillfort_gorodishche",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "Древнее/укреплённое место; не обязательно живой город.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://www.english-heritage.org.uk/learn/histories/medieval-castles/",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "source_row_digests": {
+        "universal": "de425d9632a798b2c7029b9a4a7edbf6a56ae0dc1d5d1fa9c89e328507e82ed0",
+        "regional": "df75ca44df260e1e316edefb59514fe5e03c660a0728039dd81ff4f1b4ddfece"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_watchpost_guard_post",
+      "regional_id": "rpt_novgorod_watchpost_guard_post",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "authority_ref",
+        "route_context_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "authority_ref",
+          "route_context_ref"
+        ]
+      },
+      "regional_limits": "Только на важном пути, переправе, границе или при угрозе. AUDIT_GUARD requires_context_refs=[\"authority_ref\",\"route_context_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://www.english-heritage.org.uk/learn/histories/medieval-castles/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "290c9bc8d8bedd2640135e90bed94d62a810418896184a3e9d0f0a27d97cce06",
+        "regional": "85fa3879c5c6151b66677d962cdc8ca89b2cc6e70cccc64420db189aa4c3084f"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_administrative_court",
+      "regional_id": "rpt_novgorod_administrative_court",
+      "audit_verdict": "APPROVE",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [],
+      "context_guard": null,
+      "regional_limits": "При городе, погосте, дворе власти; не самостоятельная деревня.",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+        "https://vja.ruslang.ru/en/archive/2014-3/67-81",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "63b69083e72de5a9273c0bdfe5ff0f312d78e781278003836450be9005db7fc7",
+        "regional": "eed5ac5f686e57710267482d88b3cd32de82d54ec82c5bfdcfd8ba104898efbe"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_toll_customs_post",
+      "regional_id": "rpt_novgorod_toll_customs_post",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "market_or_authority_ref",
+        "route_context_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "market_or_authority_ref",
+          "route_context_ref"
+        ]
+      },
+      "regional_limits": "Только при торговом пути, мосте, перевозе, торге. AUDIT_GUARD requires_context_refs=[\"market_or_authority_ref\",\"route_context_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
+        "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/",
+        "src_novgorod_wider_context",
+        "src_baltic_route"
+      ],
+      "source_row_digests": {
+        "universal": "f3494f86625813cf0c8375d5590ea4f56f6894a833dacc0598fa01c76fed8192",
+        "regional": "ad8c30558fac4013b70384d92a24f6cbfe8c14c29337b60dfc20cc2f18c8d4ce"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_saltworks",
+      "regional_id": "rpt_novgorod_saltworks",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "brine_resource_ref",
+        "authored_salt_locality_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "brine_resource_ref",
+          "authored_salt_locality_ref"
+        ]
+      },
+      "regional_limits": "Только солёные/рассольные места, прежде всего Старорусское направление; не весь регион. AUDIT_GUARD requires_context_refs=[\"brine_resource_ref\",\"authored_salt_locality_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-preindustrial-salterns/heag225-pre-industrial-salterns/",
+        "src_novgorod_wider_context"
+      ],
+      "source_row_digests": {
+        "universal": "c1dde55faf3294b93315368bcd0e8eeb6cf30558a7b1a2b1f14c840f7423fdb8",
+        "regional": "ab3780b84bd21932c663e3361de56c74a5d4ac9512b7b3545d3790a0cb88dd6d"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_clay_pit_pottery_site",
+      "regional_id": "rpt_novgorod_clay_pit_pottery_site",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "clay_resource_patch_ref",
+        "land_use_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "clay_resource_patch_ref",
+          "land_use_ref"
+        ]
+      },
+      "regional_limits": "Локально рядом с поселением/гончарным производством. AUDIT_GUARD requires_context_refs=[\"clay_resource_patch_ref\",\"land_use_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-preindustrial-mines-quarries/heag223-pre-industrial-mines-and-quarries/",
+        "src_novgorod_agriculture"
+      ],
+      "source_row_digests": {
+        "universal": "17b90d369d568ee335f8473df8b835eb3808d5fb237920c3fc661fe6b57f71cd",
+        "regional": "9f2f07a875f3b772160b506b03c87feec08b9af3f625cc458ecc4df56d26e533"
+      }
+    },
+    {
+      "domain": "place",
+      "universal_id": "pt_iron_smelting_site",
+      "regional_id": "rpt_novgorod_iron_smelting_site",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
+      "proposed_universal_status": "approved",
+      "proposed_regional_status": "approved",
+      "proposed_is_allowed": true,
+      "required_context_refs": [
+        "bog_iron_resource_ref",
+        "charcoal_resource_ref",
+        "production_basis_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "bog_iron_resource_ref",
+          "charcoal_resource_ref",
+          "production_basis_ref"
+        ]
+      },
+      "regional_limits": "Только при болотной руде/лесном топливе/кузнечном контексте. AUDIT_GUARD requires_context_refs=[\"bog_iron_resource_ref\",\"charcoal_resource_ref\",\"production_basis_ref\"].",
+      "source_refs": [
+        "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
+        "https://historicengland.org.uk/images-books/publications/iha-preindustrial-mines-quarries/heag223-pre-industrial-mines-and-quarries/",
+        "https://www.bergbaumuseum.de/fileadmin/forschung/zeitschriften/metalla/22.2/metalla-22-2-high-medieval-silver-mining-and-non-ferrous-metallurgy-zeiler-garner-golze.pdf",
+        "src_novgorod_promysly"
+      ],
+      "source_row_digests": {
+        "universal": "8ade36908059899db3a2444ed3c24aace613307602da8195920debda6da438e9",
+        "regional": "db44df570611beeab4b459edaba9111a3f4fa85f5d1890f2f6c3bd65e40d7f8a"
+      }
+    }
+  ],
+  "pending_new_place_review": {
+    "decision_requested": "independent_review_required",
+    "candidate_status": "pending_independent_review",
+    "universal_id": "pt_drying_storage_workspace",
+    "regional_id": "rpt_novgorod_drying_storage_workspace",
+    "source_refs": [
+      "data/world-catalogs/novgorod/world-knowledge/research/procedural-scene-family-authoring-v1.md#5. Семейство: старая сушильня / ремесленно-складское место",
+      "data/world-catalogs/novgorod/procedural-scene-v2/drying-storage-workspace-approval-attestation.json"
+    ],
+    "spatial_context_ref": {
+      "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+      "scene_template_id": "trace_ld_v1_tpl_old_drying_shed",
+      "scene_template_version": 1,
+      "scene_template_digest": "8e5019e07de39dc1eb3d07f996bca38f2af8ef25f927cc30a729bd3edd297679",
+      "g5_id": "trace_ld_v1_g5_old_drying_shed",
+      "g5_version": 1,
+      "g5_digest": "32b6e5db1bffb825d6d9da2a4805f9d045a766c9b04a33ab834d615ec0112832",
+      "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "parent_version": 4
+    }
+  },
+  "import_authorized": false,
+  "activation_authorized": false,
+  "production_authorized": false,
+  "default_authorized": false,
+  "rematerialization_authorized": false,
+  "request_digest": "cf56d748a391ad23bcc876c3cde9ef499e3a8a8e9e6ee9abd0a42326ce4ab74f"
+}

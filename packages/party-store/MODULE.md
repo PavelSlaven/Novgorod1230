@@ -14,6 +14,13 @@ Logical party persistence boundary: validates/adapts approved plans and delegate
 
 ## Public API и контракты
 
+Initial authored-start snapshots используют тот же normalized Phase 1A
+repository/readback contract. Historical Lower Dvina snapshot/projection schemas
+остаются допустимы; новый authored schema не меняет их интерпретацию.
+Current authored binding v3 rehydrates party-derived initial G6/journey rows;
+deprecated bindings v1/v2 читаются по собственным persisted binding revisions
+без latest inference или rematerialization.
+
 - `.`: `createPartyStore({ transact })`.
 - `./stage-25`: physical-plan adapter contract and fixed v2 schema mappings.
 - `./ordinary-materialization`: logical exact-scope load/CAS handoff for the
@@ -21,12 +28,25 @@ Logical party persistence boundary: validates/adapts approved plans and delegate
   and never owns SQL or a transaction.
 - `./spatial-v3`: `createSpatialV3Repository`, `createCombinedWritePlanCommitter`; `./spatial-v3-domain-integration`: placement integrator/mutation service.
 
+Spatial repository `loadExpansionState({party_id, g4_id})` reads the normalized
+G4 ledgers, sites, continuation chains, frontiers, reservations, scene topology,
+site connections, endpoint bindings and scene journey locations in one PostgreSQL statement. The result is immutable and scoped to
+one party and G4. The caller owns the transaction and P16 locks; the repository
+does not compute capacity, select templates or write expansion state.
+
 The target repository exposes explicit-column reads for perception replay,
 reaction consequence, knowledge merge result and target-only knowledge state.
 It never combines legacy rows with the `4.4.0-target.1` branch and remains
 read-only; all writes still pass through the game-server combined committer.
 
 Inputs are approved, idempotency-bound logical write plans plus explicit injected transaction/repository ports. A P23 semantic mutation additionally requires a caller-supplied, contract-valid `visible_package_persistence_envelope`; party-store never invents that projection. Outputs are committed-result semantics or typed failure; target ports fail closed when unavailable and never invoke v2 fallback. Unknown/v1 targets are rejected rather than mapped semantically.
+
+P23 NPC schedule readback keeps `current_endpoint_ref` null when the persisted
+position is null. `offstage_away` requires no endpoint and no placement.
+`location_gap` allows either no endpoint and no placement, or the exact endpoint
+matching the NPC's existing placement; both forms require the matching persisted
+routine marker. Snapshot checks revalidate these pairings and never infer a
+scene position from a missing endpoint.
 
 O1 uses the existing `./ordinary-materialization` closed aggregate only after
 `request_discovery` meaningful/code-first gates and model execution outside a

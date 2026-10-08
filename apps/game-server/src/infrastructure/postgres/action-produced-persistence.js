@@ -202,11 +202,12 @@ async function insertResult(client, partyId, result, changeSetId,
   const placement = result.placement_row;
   await client.query(
     `INSERT INTO party_runtime.party_item_placements
-      (party_id,item_id,anchor_id,container_id,holder_npc_id,
+      (party_id,item_id,anchor_id,scene_position_id,container_id,holder_npc_id,
        holder_character_id,physical_position,equipment_slot_category_id,
        attached_item_id)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-  [partyId, result.item_id, placement.anchor_id, placement.container_id,
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+  [partyId, result.item_id, placement.anchor_id,
+    placement.scene_position_id ?? null, placement.container_id,
     placement.holder_npc_id, placement.holder_character_id,
     placement.physical_position, placement.equipment_slot_category_id,
     placement.attached_item_id]);

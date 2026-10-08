@@ -1,0 +1,168 @@
+{
+  "schema": "time_events_history_candidate_event_proposals_v1",
+  "status": "candidate_for_time_owner_review_only",
+  "calendar": "Julian",
+  "note": "These are handoff proposals, not valid approved historical phase DTOs and not production registrations. The proposed start dates are conservative owner-authored game-time bounds for when outcome news may first reach Lower Dvina, not claimed historical delivery dates.",
+  "entries": [
+    {
+      "event_id": "nov_hist_news_batu_ryazan_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-batu-ryazan-1237",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "Зимой 1237 года татары с царём Батыем пришли на Рязанскую землю.",
+      "historical_outcome_date": "November–December 1237; month and day not exact",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1238-07-01",
+      "conservative_margin_rationale": "Owner-authored six-month conservative delay after the latest source month; game-time bound, not a historical claim.",
+      "earliest_news_arrival_year": 1238,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-batu-approach"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_torzhok_fall_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-torzhok-fall-1238",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "В начале марта 1238 года после долгой осады татары взяли Торжок.",
+      "historical_outcome_date": "Early March 1238; chronicle date of 5 March is disputed",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1238-10-01",
+      "conservative_margin_rationale": "Owner-authored seven-month conservative delay after early March; exact fall day is not asserted.",
+      "earliest_news_arrival_year": 1238,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-torzhok-chronicle",
+        "evidence:dated-events-1237-1250-v1-torzhok-date-discussion"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_neva_victory_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-neva-victory-1240",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "На Неве князь Александр с новгородцами и ладожанами победил шведов.",
+      "historical_outcome_date": "15 July 1240; Julian day and weekday confirmed by the cited chronicle wording",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1241-01-01",
+      "conservative_margin_rationale": "Owner-authored five-and-a-half-month conservative delay after the battle; travel/news interval is not source-dated.",
+      "earliest_news_arrival_year": 1241,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-neva-victory",
+        "evidence:dated-events-1237-1250-v1-neva-landing"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_peipus_victory_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-peipus-victory-1242",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "На Чудском озере князь Александр победил немцев, называвших себя божьими рыцарями.",
+      "historical_outcome_date": "5 April 1242; date is editorially dated, weekday comes from the source account",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1243-01-01",
+      "conservative_margin_rationale": "Owner-authored eight-month conservative delay after the dated battle; source does not date regional news.",
+      "earliest_news_arrival_year": 1243,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-ice-victory-life",
+        "evidence:dated-events-1237-1250-v1-ice-date-note",
+        "evidence:dated-events-1237-1250-v1-ice-date-chronology",
+        "evidence:dated-events-1237-1250-v1-ice-saturday-life"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_novgorod_german_peace_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-novgorod-german-peace-1242",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "После битвы 1242 года Новгород заключил мир с немцами; их притязания на Водь, Псков, Лугу и Латгалию были оставлены.",
+      "historical_outcome_date": "After the April 1242 battle; agreement is associated with 1242, exact day and season not established",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1244-01-01",
+      "conservative_margin_rationale": "Owner-authored conservative delay through the following year because agreement day and news transit are undated.",
+      "earliest_news_arrival_year": 1244,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-peace-1242",
+        "evidence:dated-events-1237-1250-v1-peace-chronicle-formula"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_yaroslav_batu_journey_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-yaroslav-batu-journey-1243",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "Великий князь Ярослав ездил к Батыю в 1243 году.",
+      "historical_outcome_date": "1243; source gives year only",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1244-07-01",
+      "conservative_margin_rationale": "Owner-authored eighteen-month margin from the earliest possible day of a year-only event.",
+      "earliest_news_arrival_year": 1244,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-yaroslav-journey"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_yaroslav_seniority_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-yaroslav-seniority-1243",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "Батый признал Ярослава старейшим среди русских князей.",
+      "historical_outcome_date": "1243; tied to the audience at Batu, exact day not established",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1244-07-01",
+      "conservative_margin_rationale": "Owner-authored eighteen-month margin from the earliest possible day of the year-only audience.",
+      "earliest_news_arrival_year": 1244,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-yaroslav-seniority-khrustalev",
+        "evidence:dated-events-1237-1250-v1-yaroslav-seniority-gorsky"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_yaroslav_death_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-yaroslav-death-1246",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "Великий князь Ярослав умер в Орде 30 сентября 1246 года.",
+      "historical_outcome_date": "30 September 1246; scholarly date, cause excluded",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1248-01-01",
+      "conservative_margin_rationale": "Owner-authored fifteen-month delay after the cited date for a report from the Horde.",
+      "earliest_news_arrival_year": 1248,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-yaroslav-death",
+        "evidence:dated-events-1237-1250-v1-yaroslav-death-journey-gorsky"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_princes_return_rus_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-princes-return-rus-1249-1250",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "Александр и Андрей вернулись из Каракорума на Русь на исходе 1249 года или зимой.",
+      "historical_outcome_date": "Late 1249 / winter 1249–1250; range, no exact day",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1252-01-01",
+      "conservative_margin_rationale": "Owner-authored delay through 1251 for a return from distant Karakorum to the remote region.",
+      "earliest_news_arrival_year": 1252,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-princes-return-kuchkin",
+        "evidence:dated-events-1237-1250-v1-princes-return-avdeenko"
+      ]
+    },
+    {
+      "event_id": "nov_hist_news_alexander_novgorod_lower_dvina",
+      "claim_ref": "claim:dated-events-1237-1250-v1-alexander-novgorod-1250",
+      "status": "candidate",
+      "scope_label": "Нижняя Двина (самый удалённый регион игры; canonical scope to be resolved by time owner)",
+      "event_world_summary": "Князь Александр пришёл из Орды в Новгород в 1250 году, и новгородцы радовались.",
+      "historical_outcome_date": "1250 annal year; day not established",
+      "first_phase_meaning": "outcome_news_reached_lower_dvina",
+      "proposed_first_phase_start_julian": "1252-01-01",
+      "conservative_margin_rationale": "Owner-authored two-year bound from the earliest possible day in 1250, allowing news to reach the remote region.",
+      "earliest_news_arrival_year": 1252,
+      "source_evidence_refs": [
+        "evidence:dated-events-1237-1250-v1-alexander-novgorod-arrival",
+        "evidence:dated-events-1237-1250-v1-alexander-novgorod-arrival-parallel"
+      ]
+    }
+  ]
+}

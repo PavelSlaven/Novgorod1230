@@ -1,0 +1,192 @@
+{
+  "schema": "rus.gate1_parent_world_revision_authoring_approval_attestation.v1",
+  "status": "approved_authoring_and_transactional_import_readback",
+  "decision": "approve_exact_authoring_promotions_and_transactional_import_readback",
+  "subject_commit_sha": "0974d1ea28006fdf2a09092921669c2c44f0356f",
+  "auditor_ref": "/root/m3_chain_auditor",
+  "independence_basis": "Independent audit separate from Gate1 request authoring; attestation added only after exact source, status, approval-chain and boundary review.",
+  "reviewed_at": "2026-09-21",
+  "parent_request_digest": "38ea4275130afc53a4bf0368c01cc0d18e2304c7373bb510432528a9765e1da3",
+  "activation_request_digest": "81435027867fdc0060c117c0afaa4b20ed6cb3650a4f6067855c15e299457f29",
+  "activation_request_status": "pending_independent_runtime_approval",
+  "approved_source_hashes": {
+    "archive_sha256": "c2aa107250d859d3c2a6f3a49f15f70598b0fc869c6aa416e5b3de6b95c117d9",
+    "g4_member_sha256": "d06ade60b43e9316767bafd54ead30a59319ad6699d20268126b3636f8ae7ee3",
+    "place_seed_sha256": "6b5dec7321a8c2aabcabe948200571658ed1495f6fccebc185541bc669f31b7c",
+    "place_member_sha256": "e9e098114e4d9dfcfe8951913b4481f6eb2beaf20e9496ea9895cd6826a4c340",
+    "region_profile_member_sha256": "c3403e41f5d3a346dda939042685e5f302bfe0bae446b8a13f9831f38ee51c66",
+    "region_place_member_sha256": "0fefcc2cdcc3be03ba7c45d1c0520460e9119332c5cde20e37aeec853161ec31",
+    "social_role_member_sha256": "1d33a4a06f2dd442d2383e903366e4c715b64016d4ba230fe09e344cbac5f96a",
+    "research_revision_sha256": "cddab5106c95839297003a306a9c578ac875b25d3a625a3650fd7e026695a831",
+    "baseline_manifest_sha256": "76288d9fee91c78ed29cee721228ea6d41710b10d2641d6f8888b1c5d52b23a1",
+    "g4_dependency_request_sha256": "1a583ba6be5c66b11baa9d8b799bed446e8d0b2a811d1d2d2573325f868d8350",
+    "final_approval_request_sha256": "c6099d801973dbd5f0e41ca2e8ba10f76d90daf5d5d9e959c9e594ac705df9ac",
+    "final_approval_attestation_sha256": "816509df226b1bab8a91a9b3d2b3afee251f925cb169a90633d5676daeb62859"
+  },
+  "approved_scope": {
+    "proposed_world_base_rows": [
+      {
+        "id": "novgorod_v6_legacy_baseline",
+        "source_status": "draft"
+      },
+      {
+        "id": "novgorod_1230_research_revision_001",
+        "source_status": "draft"
+      }
+    ],
+    "authoring_promotions": {
+      "world_revisions": [
+        {
+          "id": "novgorod_1230_research_revision_001",
+          "from_status": "draft",
+          "to_status": "approved"
+        }
+      ],
+      "regions": [
+        {
+          "id": "region_novgorod_land",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        }
+      ],
+      "place_templates": [
+        {
+          "id": "pt_administrative_court",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "pt_city_major_center",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "pt_market_place",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "pt_monastery",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "pt_posad_suburb",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "pt_river_landing",
+          "from_status": "draft",
+          "to_status": "approved"
+        }
+      ],
+      "region_place_templates": [
+        {
+          "id": "rpt_novgorod_administrative_court",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "rpt_novgorod_city_major_center",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "rpt_novgorod_market_place",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "rpt_novgorod_monastery",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "rpt_novgorod_posad_suburb",
+          "from_status": "draft",
+          "to_status": "approved"
+        },
+        {
+          "id": "rpt_novgorod_river_landing",
+          "from_status": "draft",
+          "to_status": "approved"
+        }
+      ],
+      "graph_nodes": [
+        {
+          "id": "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        },
+        {
+          "id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        },
+        {
+          "id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        },
+        {
+          "id": "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        },
+        {
+          "id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        },
+        {
+          "id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        },
+        {
+          "id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        },
+        {
+          "id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        },
+        {
+          "id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+          "from_status": "usable_with_caution",
+          "to_status": "approved"
+        }
+      ],
+      "requires_independent_authoring_approval": true,
+      "requires_transactional_import_and_readback": true,
+      "grants_runtime_activation": false
+    },
+    "unchanged_approved_dependencies": {
+      "region_social_roles": [
+        {
+          "id": "nov_role_guard",
+          "source_status": "approved",
+          "requested_status": "approved"
+        }
+      ]
+    }
+  },
+  "authority": {
+    "approval_attestation_present": true,
+    "authoring_promotions_authorized": true,
+    "import_authorized": true,
+    "transactional_import_readback_only": true,
+    "exact_readback_required": true,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false,
+    "authoring_only_functional_allocation_runtime_selection": false,
+    "runtime_item_creation_authorized": false
+  },
+  "limits": "Approval is limited to the exact request-bound source rows, listed status transitions, atomic import and exact PostgreSQL readback. It does not approve runtime activation, production activation, existing-party migration, old-save rematerialization, authoring-only allocation for runtime selection, or runtime item creation.",
+  "attestation_digest": "ab153b6e20c1bb9cac7e276e8dd8776b38d554a1cfbfa4d9b9d2f85350c05061"
+}

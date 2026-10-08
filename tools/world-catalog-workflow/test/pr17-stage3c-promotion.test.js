@@ -22,6 +22,11 @@ const targetRevision = { id: 'world_revision_novgorod_1230_item_container_approv
 const approvalRequestResult = buildPr17Stage3CApprovalRequest({ candidate_manifest: manifest, records_by_table: sourceRecords, editorial_readiness_report: readiness, g4_coverage_report: coverage, compilation_report: compilation, template_ids: requiredTemplateIds, target_revision: targetRevision });
 const approvalRequest = approvalRequestResult.request;
 const approval = { decision: 'approve_all_120', request_digest: approvalRequest.request_digest, candidate_digest: manifest.candidate_digest, readiness_report_digest: readiness.report_digest, activation_authorized: false, approved_by: 'test-editor', approved_at: '2026-07-23T12:00:00+03:00' };
+const reconciliationRoot = resolve(root, 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1');
+const reconciliationCandidate = readJson(resolve(reconciliationRoot, 'candidate.json'));
+const reconciliationAttestation = readJson(resolve(reconciliationRoot, 'authoring-approval-attestation.json'));
+const reconciledSourceRecords = readJson(resolve(reconciliationRoot, 'source-records-embedded.json'));
+const originalApprovalRequest = readJson(resolve(root, 'docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_REQUEST.json'));
 
 test('PR17 Stage 3C produces one exact digest-bound approval request only after technical readiness', () => {
   assert.equal(approvalRequestResult.status, 'ready_for_human_confirmation');
@@ -57,6 +62,45 @@ test('PR17 Stage 3C approval is bound to the exact candidate digest', () => {
   assert.ok(plan.errors.some((error) => error.code === 'PR17_APPROVAL_ATTESTATION_INVALID'));
   assert.deepEqual(plan.manifest.datasets, []);
   assert.deepEqual(plan.status_transitions ?? [], []);
+});
+
+test('PR17 Stage 3C accepts exact independently approved source reconciliation only', () => {
+  const originalBefore = structuredClone(approval);
+  const amendmentBefore = structuredClone(reconciliationAttestation);
+  const reconciledRecords = { ...sourceRecords,
+    source_records: reconciledSourceRecords };
+  const reconciledIds = { ...approvedIds,
+    source_records: reconciledSourceRecords.map(({ id }) => id) };
+  const input = {
+    approval_request:
+      reconciliationCandidate.amended_stage3c_approval_request,
+    original_approval_request: originalApprovalRequest,
+    approval_amendment_attestation: reconciliationAttestation,
+    candidate_manifest: reconciliationCandidate.amended_stage3c_manifest,
+    compilation_report: reconciliationCandidate.amended_compilation_report,
+    source_records_by_table: reconciledRecords,
+    approved_record_ids_by_table: reconciledIds,
+    external_approved_ids: { regions: new Set(['region_novgorod_land']),
+      region_social_roles: new Set(['nov_role_guard']),
+      source_records: new Set(['src_novgorod_agriculture',
+        'src_novgorod_promysly']) }
+  };
+  const plan = buildPlan(input);
+  assert.equal(plan.status, 'ready', JSON.stringify(plan.errors));
+  assert.equal(plan.candidate_digest,
+    reconciliationCandidate.amended_stage3c_manifest.candidate_digest);
+  assert.equal(plan.records_by_table.source_records.length, 17);
+  assert.deepEqual(approval, originalBefore);
+  assert.deepEqual(reconciliationAttestation, amendmentBefore);
+  assert.equal(plan.approval_attestation_digest, digestValue(approval));
+  assert.equal(plan.approval_amendment_attestation_digest,
+    digestValue(reconciliationAttestation));
+  const tampered = buildPlan({ ...input,
+    approval_amendment_attestation: { ...reconciliationAttestation,
+      amended_stage3c_candidate_digest: '0'.repeat(64) } });
+  assert.equal(tampered.status, 'blocked');
+  assert.ok(tampered.errors.some(({ code }) =>
+    code === 'PR17_APPROVAL_ATTESTATION_INVALID'));
 });
 
 test('PR17 approval request blocks a dataset that no longer matches the candidate manifest', () => {

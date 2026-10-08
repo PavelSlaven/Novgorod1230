@@ -1,0 +1,51 @@
+{
+  "schema": "rus.procedural_scene_authoring_bindings.v1",
+  "revision": 1,
+  "status": "approved",
+  "bindings": [
+    {
+      "schema": "rus.procedural_scene_authoring_binding.v1",
+      "status": "approved",
+      "binding_id": "novgorod_river_bank_v1",
+      "family": "river_bank",
+      "spatial_closure_ref": {"scene_template_id":"trace_ld_v1_tpl_wreck_shore","version":1},
+      "landscape_template_ref": "lt_low_alluvial_riverbank",
+      "water_body_template_ref": "wb_small_river",
+      "land_use_template_refs": [],
+      "place_template_ref": "pt_river_landing",
+      "item_profile_ref": null,
+      "npc_profile_set_ref": null,
+      "required_layers": ["surface","relief","vegetation","environment","water","place_function"]
+    },
+    {
+      "schema": "rus.procedural_scene_authoring_binding.v1",
+      "status": "blocked_data_gap",
+      "data_gap_codes": ["REQUIRED_FUNCTIONAL_ITEM_SET_MISSING","FULL_NPC_PROFILE_SET_MISSING"],
+      "binding_id": "novgorod_fishing_worksite_v1",
+      "family": "fishing_worksite",
+      "spatial_closure_ref": {"scene_template_id":"trace_ld_v1_tpl_fishing_camp","version":1},
+      "landscape_template_ref": "lt_low_alluvial_riverbank",
+      "water_body_template_ref": "wb_small_river",
+      "land_use_template_refs": ["lu_inland_capture_fishing"],
+      "place_template_ref": "pt_fishing_station",
+      "item_profile_ref": "profile_fishing_v3",
+      "npc_profile_set_ref": null,
+      "required_layers": ["surface","relief","vegetation","environment","water","work_zone","place_function","tool","storage","work_material","npc"]
+    },
+    {
+      "schema": "rus.procedural_scene_authoring_binding.v1",
+      "status": "blocked_data_gap",
+      "data_gap_codes": ["EXACT_PLACE_FUNCTION_BINDING_MISSING","REQUIRED_FUNCTIONAL_ITEM_SET_MISSING","FULL_NPC_PROFILE_SET_MISSING"],
+      "binding_id": "novgorod_human_workplace_v1",
+      "family": "human_workplace",
+      "spatial_closure_ref": {"scene_template_id":"trace_ld_v1_tpl_old_drying_shed","version":1},
+      "landscape_template_ref": "lt_dry_meadow",
+      "water_body_template_ref": null,
+      "land_use_template_refs": [],
+      "place_template_ref": "pt_forest_work_camp",
+      "item_profile_ref": "profile_craft_work_v3",
+      "npc_profile_set_ref": null,
+      "required_layers": ["surface","relief","vegetation","environment","place_function","tool","storage","work_material","npc"]
+    }
+  ]
+}

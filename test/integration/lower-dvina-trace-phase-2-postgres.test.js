@@ -7,6 +7,8 @@ import { canonicalDigest } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { projectActorPortraitSpecV1 } from '@rus/visibility-knowledge-memory';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { createCombatSession } from '@rus/turn';
+import { createGameHttpServer, listen } from '@rus/game-server';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import {
@@ -30,26 +32,24 @@ import {
 import {
   createLowerDvinaTracePhase2DurableNarrator
 } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
+import { createLowerDvinaTraceNarrationService } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-narration-llm.js';
 import {
   createSpatialV3PostgresCombinedAtomicCommitter
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import {
   firstPlayableCommitRecheck
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
-import {
-  loadLowerDvinaTraceMaterializationBundle
-} from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
 import { loadLowerDvinaTraceA1Profile } from
   '../../apps/game-server/src/internal/lower-dvina-trace-a1-profile.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
   '../../apps/game-server/src/runtime/releases/lower-dvina-trace-a1-production.js';
 import {
-  lowerDvinaTracePhase1ADomainPin
-} from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
-import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
+import { buildApprovedTemporalImportSql } from
+  '../../tools/temporal-v4/import-approved-data.mjs';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world,
   installLowerDvinaTraceV6World, lowerDvinaTraceV6World } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
@@ -73,7 +73,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=phase2',
-    '-e', 'POSTGRES_DB=phase2',
+    '-e', 'POSTGRES_DB=pr17_phase2',
     'postgres:16-alpine'
   ]);
   assert.equal(started.status, 0, started.stderr);
@@ -87,20 +87,12 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     port,
     user: 'phase2',
     password: 'local_only',
-    database: 'phase2',
+    database: 'pr17_phase2',
     max: 8
   });
   await installSchemas(pool);
-  await installLowerDvinaTraceV5World(pool);
-  const bundle = await loadLowerDvinaTraceMaterializationBundle();
-  const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
-  const runtimeCatalogPin = Object.freeze({
-    ...sourcePin,
-    compatible_world_revision_id: world.revision,
-    compatible_world_catalog_digest: world.digest,
-    compatible_world_pin_manifest_digest:
-      world.manifest
-  });
+  const { runtimeCatalogPin } = await installLowerDvinaTraceV5World(pool);
+  await pool.query(await buildApprovedTemporalImportSql());
   const release = Object.freeze({
     release_id: 'phase-2-postgres-release',
     world_revision_id: world.revision,
@@ -491,12 +483,13 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     raw_text:
       'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
   };
-  const pendingNarration = await retryRuntime.submitTurn(
+  const afterInRequestRetry = await retryRuntime.submitTurn(
     retryParty.party_id,
     retryInput
   );
-  assert.equal(pendingNarration.screen.screen_status,
-    'committed_presentation_pending');
+  assert.equal(afterInRequestRetry.screen.screen_status, 'ready');
+  assert.equal(afterInRequestRetry.option_id, 'inspect_wreck_in_detail');
+  assert.equal(narrationCalls, 2);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
@@ -574,7 +567,282 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     release,
     runtimeCatalogPin,
   });
+  await t.test('restrained movement returns HTTP 200 with committed blocked consequence',
+    () => assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }));
+  await t.test('marked narration rejection stays pending until explicit PostgreSQL replay',
+    () => assertMarkerRejectedThenExplicitRecovery({ pool, release, runtimeCatalogPin }));
 });
+
+async function assertMarkerRejectedThenExplicitRecovery({ pool, release,
+  runtimeCatalogPin }) {
+  const narrationRoleCalls = [];
+  const observedFlows = [];
+  let markerEnabled = true;
+  const productionNarrationService = createLowerDvinaTraceNarrationService({
+    roleRunner: {
+      async run(call) {
+        narrationRoleCalls.push(call.role_id);
+        const input = JSON.parse(call.messages[1].content);
+        if (call.role_id === 'gameplay_narrator') {
+          return { output: { prose: markerEnabled
+            ? 'INFERENCE: Вы осматриваете лодку и следы на берегу.'
+            : 'Вы осматриваете лодку и следы на берегу.' } };
+        }
+        if (call.role_id === 'gameplay_narrator_semantic_repair') {
+          return { output: { replacements: [{ prose: markerEnabled
+            ? 'INFERENCE: Вы осматриваете лодку и следы на берегу.'
+            : 'Вы осматриваете лодку и следы на берегу.' }] } };
+        }
+        if (call.role_id === 'gameplay_narrator_auditor') {
+          const segments = input.segments ?? [];
+          const choices = segments.length ? [segments[0].segment_id] : [];
+          const sources = [
+            ...(input.required_current_beat?.changes ?? []),
+            ...(input.required_current_beat?.uncertainties ?? [])
+          ];
+          return { output: {
+            reviewed_segments: segments.map(({ segment_id }) => segment_id),
+            source_reviews: sources.map(({ ref }) => ({ ref,
+              segment_choices: choices })),
+            unsupported: [], literary_failures: [],
+            evidence: ['Deterministic integration-test auditor PASS.']
+          } };
+        }
+        throw new Error(`Unexpected narration role ${call.role_id}`);
+      }
+    }
+  });
+  const narrationService = {
+    async run(...args) {
+      const flow = await productionNarrationService.run(...args);
+      observedFlows.push(flow);
+      return flow;
+    }
+  };
+  let semanticCalls = 0;
+  let rolls = 0;
+  const observers = { semanticObserver() { semanticCalls += 1; },
+    randomDrawObserver() { rolls += 1; } };
+  const setupRuntime = buildRuntime({ pool, release, runtimeCatalogPin,
+    narrationService, ...observers });
+  const opened = await setupRuntime.startNewGame({ scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'presentation-exhaust-party' });
+  await setupRuntime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'presentation-exhaust-ack' });
+  const input = {
+    request_id: 'presentation-exhaust-turn',
+    idempotency_key: 'presentation-exhaust-turn',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  };
+  const pending = await setupRuntime.submitTurn(opened.party_id, input);
+  assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(JSON.stringify(pending.screen).includes('INFERENCE:'), false);
+  assert.ok(observedFlows.some((flow) => flow?.status === 'blocked'
+    && flow.diagnostics?.phase === 'generated_prose_admission_failed'),
+  'the production narrator blocks the marker after its auditor pass');
+  assert.ok(observedFlows.some((flow) => flow?.audit_history?.some(({ value }) =>
+    value?.pass === true)), 'the marker rejection is independent of auditor PASS');
+  assert.ok(narrationRoleCalls.includes('gameplay_narrator_auditor'));
+  const pendingCalls = narrationRoleCalls.length;
+  const turnId = pending.screen.turn_id;
+  const commitBefore = await readPersistedPresentationCommit(pool,
+    opened.party_id, turnId);
+  assert.equal(commitBefore.command_idempotency_key, input.idempotency_key);
+  assert.equal(commitBefore.command_request_id, input.request_id);
+  assert.equal(commitBefore.command_status, 'committed');
+  assert.equal(commitBefore.command_result_change_set_id,
+    commitBefore.change_set_id);
+  const jobBefore = await pool.query(`SELECT status,
+      (SELECT count(*)::integer FROM party_runtime.party_narration_attempts attempts
+        WHERE attempts.job_id=jobs.job_id) AS attempts
+    FROM party_runtime.party_narration_jobs jobs
+    WHERE jobs.party_id=$1 AND jobs.package_id=$2`,
+  [opened.party_id, pending.screen.current_projection_anchor.package_id]);
+  assert.deepEqual(jobBefore.rows, [{ status: 'failed_retryable', attempts: 2 }]);
+  const checkCountBefore = await count(pool,
+    'party_runtime.party_check_resolutions', opened.party_id);
+  const semanticBeforeRestart = semanticCalls;
+  assert.equal(rolls, 1);
+  assert.equal(checkCountBefore, 1);
+
+  // Production GET is read-only: recovery must be requested through its separate API.
+  const pendingGet = await setupRuntime.getPartyScreen(opened.party_id);
+  assert.equal(pendingGet.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(narrationRoleCalls.length, pendingCalls);
+  assert.deepEqual(await readPersistedPresentationCommit(pool, opened.party_id,
+    turnId), commitBefore);
+
+  markerEnabled = false;
+  const restart = buildRuntime({ pool, release, runtimeCatalogPin, narrationService,
+    ...observers });
+  const recovered = await restart.recoverPendingPresentation(opened.party_id,
+    { request_id: input.request_id });
+  assert.equal(recovered.screen.screen_status, 'ready');
+  assert.ok(observedFlows.slice(-2).some((flow) => flow?.status === 'approved'),
+    'the explicit recovery replay obtains clean approved narration');
+  const recoveryCallCount = narrationRoleCalls.length;
+  assert.ok(recoveryCallCount > pendingCalls);
+  assert.deepEqual(await readPersistedPresentationCommit(pool, opened.party_id,
+    turnId), commitBefore);
+  assert.equal(recovered.turn_number, pending.turn_number);
+  assert.equal(recovered.screen.current_projection_anchor.package_id,
+    pending.screen.current_projection_anchor.package_id);
+  assert.equal(recovered.screen.current_projection_anchor.package_digest,
+    pending.screen.current_projection_anchor.package_digest);
+  assert.equal(recovered.screen.current_projection_anchor.committed_state_version,
+    pending.screen.current_projection_anchor.committed_state_version);
+  assert.equal(recovered.screen.turn_id, pending.screen.turn_id);
+  assert.equal(semanticCalls, semanticBeforeRestart);
+  assert.equal(rolls, 1);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
+    opened.party_id), checkCountBefore);
+
+  const readyGet = await restart.getPartyScreen(opened.party_id);
+  assert.deepEqual(readyGet.screen, recovered.screen);
+  const repeatedRecovery = await restart.recoverPendingPresentation(
+    opened.party_id, { request_id: input.request_id });
+  assert.deepEqual(repeatedRecovery.screen, recovered.screen);
+  const replayed = await restart.submitTurn(opened.party_id, input);
+  assert.deepEqual(replayed.screen, recovered.screen);
+  assert.equal(replayed.party_id, recovered.party_id);
+  assert.equal(replayed.turn_number, recovered.turn_number);
+  assert.equal(narrationRoleCalls.length, recoveryCallCount,
+    'ready GET, repeated recovery and idempotent replay perform no narration');
+  assert.deepEqual(await readPersistedPresentationCommit(pool, opened.party_id,
+    turnId), commitBefore);
+  const persisted = await pool.query(`SELECT jobs.status,
+      jobs.narration_output IS NOT NULL AS has_output,
+      jobs.output_digest IS NOT NULL AS has_output_digest,
+      (SELECT count(*)::integer FROM party_runtime.party_narration_attempts attempts
+        WHERE attempts.job_id=jobs.job_id) AS attempts,
+      (SELECT count(*)::integer FROM party_runtime.party_narration_attempts attempts
+        WHERE attempts.job_id=jobs.job_id AND attempts.outcome='delivered') AS delivered,
+      (SELECT count(*)::integer FROM party_runtime.party_narration_attempts attempts
+        WHERE attempts.job_id=jobs.job_id AND attempts.outcome='failed_retryable') AS failed
+    FROM party_runtime.party_narration_jobs jobs
+    WHERE jobs.party_id=$1 AND jobs.package_id=$2`,
+  [opened.party_id, pending.screen.current_projection_anchor.package_id]);
+  assert.deepEqual(persisted.rows, [{ status: 'delivered', has_output: true,
+    has_output_digest: true, attempts: 3, delivered: 1, failed: 2 }]);
+  const readySession = await pool.query(`SELECT turn_number,last_turn_id,
+      screen->>'screen_status' AS screen_status,
+      screen->'current_projection_anchor'->>'narration_output_digest'
+        AS narration_output_digest
+    FROM party_runtime.party_server_sessions WHERE party_id=$1`,
+  [opened.party_id]);
+  assert.deepEqual(readySession.rows, [{ turn_number: 1, last_turn_id: turnId,
+    screen_status: 'ready',
+    narration_output_digest: recovered.screen.current_projection_anchor
+      .narration_output_digest }]);
+  assert.equal(await count(pool, 'party_runtime.party_visible_packages',
+    opened.party_id), 1);
+}
+
+async function readPersistedPresentationCommit(pool, partyId, turnId) {
+  return (await pool.query(`SELECT package.package_id,package.turn_id,
+      package.committed_state_version,package.change_set_id,
+      package.package_digest,package.idempotency_record_id,
+      idem.idempotency_key AS command_idempotency_key,
+      idem.request_id AS command_request_id,
+      idem.status AS command_status,
+      idem.result_change_set_id AS command_result_change_set_id,
+      snapshot.state_digest,snapshot.state_payload
+    FROM party_runtime.party_visible_packages package
+    JOIN party_runtime.party_command_idempotency idem
+      ON idem.id=package.idempotency_record_id
+      AND idem.party_id=package.party_id
+    JOIN party_runtime.party_state_snapshots snapshot
+      ON snapshot.party_id=package.party_id
+      AND snapshot.state_version=package.committed_state_version
+    WHERE package.party_id=$1 AND package.turn_id=$2`,
+  [partyId, turnId])).rows[0];
+}
+
+async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }) {
+  const setupRuntime = buildRuntime({ pool, release, runtimeCatalogPin });
+  const runtime = buildRuntime({ pool, release, runtimeCatalogPin,
+    turnStepModel: (request) => ({
+      schema: 'turn_step_plan_v1', request_id: request.request_id,
+      committed_state_version: request.committed_state_version,
+      working_revision: request.working_revision, step_index: request.step_index,
+      interpretation: { player_goal: 'Иду по тропе',
+        grounded_attempt: 'Иду по тропе', adaptation: 'literal' },
+      resolution: 'direct', goal_result: 'not_achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      operations: [], check: null, continuation: null, clarification: null,
+      direct_result_kind: null, reason_code: 'actor_movement_blocked',
+      reason: 'Персонаж удерживается и не может идти.'
+    }),
+    narrationService: { async run(request) {
+      assert.deepEqual(request.context.outcome, {
+        movement_blocked: true,
+        movement_blocked_reason_code: 'actor_movement_blocked'
+      });
+      const narration = approvedNarration(request);
+      narration.approved_output.prose = 'Вы удерживаетесь на месте и не можете идти.';
+      return narration;
+    } }
+  });
+  const opened = await setupRuntime.startNewGame({ scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'restrained-http-party' });
+  await setupRuntime.acknowledgeOpening(opened.party_id, { client_ack_id: 'restrained-ack' });
+  await setupRuntime.submitTurn(opened.party_id, {
+    request_id: 'restrained-setup-turn', idempotency_key: 'restrained-setup-turn',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  });
+  const before = await phase2Repository(pool).loadPhase2State(opened.party_id);
+  const changeSetId = (await pool.query(`SELECT id FROM party_runtime.party_v3_change_sets
+    WHERE party_id=$1 ORDER BY id DESC LIMIT 1`, [opened.party_id])).rows[0].id;
+  const player = { entity_kind: 'player_character', entity_id: before.actor_id };
+  const npc = { entity_kind: 'npc', entity_id: before.npcs[0].instance_id };
+  const session = structuredClone(createCombatSession({ combat_id: 'combat:restrained-http',
+    started_at: before.clock, scope_ref: { entity_kind: 'location',
+      entity_id: before.position.location_ref }, participant_refs: [player, npc] }));
+  session.status = 'paused_for_player';
+  session.player_response_required = true;
+  session.participant_states[0].combat_status = 'restrained';
+  session.last_change_set_ref = { entity_kind: 'party_change_set', entity_id: changeSetId };
+  await pool.query(`INSERT INTO party_runtime.party_combat_sessions
+    (combat_id,party_id,state_version,status,started_at,scope_ref,
+     participant_refs,participant_states,exchange_ordinal,last_exchange_ref,
+     player_response_required,last_change_set_id,canonical_digest,session_schema)
+    VALUES($1,$2,1,$3,$4::jsonb,$5::jsonb,$6::jsonb,$7::jsonb,0,NULL,true,$8,$9,$10)`,
+  [session.combat_id, opened.party_id, session.status,
+    JSON.stringify(session.started_at), JSON.stringify(session.scope_ref),
+    JSON.stringify(session.participant_refs), JSON.stringify(session.participant_states),
+    changeSetId, canonicalDigest(session), session.schema]);
+  const snapshotRow = (await pool.query(`SELECT state_version,state_payload
+    FROM party_runtime.party_state_snapshots WHERE party_id=$1
+    ORDER BY state_version DESC LIMIT 1`, [opened.party_id])).rows[0];
+  const snapshot = snapshotRow.state_payload;
+  snapshot.combat_sessions = [session];
+  await pool.query(`UPDATE party_runtime.party_state_snapshots
+    SET state_payload=$2::jsonb,state_digest=$3 WHERE party_id=$1 AND state_version=$4`,
+  [opened.party_id, JSON.stringify(snapshot), canonicalDigest(snapshot),
+    snapshotRow.state_version]);
+  assert.equal((await phase2Repository(pool).loadPhase2State(opened.party_id))
+    .combat_sessions[0].participant_states[0].combat_status, 'restrained');
+  const server = createGameHttpServer({ root: runtime });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/api/v1/parties/${
+      encodeURIComponent(opened.party_id)}/turns`, { method: 'POST',
+      headers: { 'content-type': 'application/json' }, body: JSON.stringify({
+        request_id: 'restrained-http-turn', idempotency_key: 'restrained-http-turn',
+        raw_text: 'Иду по тропе.' }) });
+    assert.equal(response.status, 200);
+    const publicResult = await response.json();
+    assert.match(JSON.stringify(publicResult), /не можете идти/u);
+    const after = await phase2Repository(pool).loadPhase2State(opened.party_id);
+    assert.equal(after.last_turn.consequence.status, 'blocked');
+    assert.equal(after.last_turn.consequence.duration_minutes, 0);
+    assert.deepEqual(after.last_turn.consequence.state_changes, []);
+    assert.deepEqual(after.clock, before.clock);
+    assert.deepEqual(after.position, before.position);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+}
 
 test('active A1 partial authored result survives reload, retry and reuse',
   async (t) => {
@@ -591,7 +859,7 @@ test('active A1 partial authored result survives reload, retry and reuse',
     const started = docker([
       'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=a1',
-      '-e', 'POSTGRES_DB=a1', 'postgres:16-alpine'
+      '-e', 'POSTGRES_DB=pr17_a1', 'postgres:16-alpine'
     ]);
     assert.equal(started.status, 0, started.stderr);
     await waitForPostgres(name);
@@ -600,18 +868,10 @@ test('active A1 partial authored result survives reload, retry and reuse',
       docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
     );
     pool = new pg.Pool({ host: '127.0.0.1', port, user: 'a1',
-      password: 'local_only', database: 'a1', max: 8 });
+      password: 'local_only', database: 'pr17_a1', max: 8 });
     await installSchemas(pool);
-    await installLowerDvinaTraceV6World(pool);
-    const bundle = await loadLowerDvinaTraceMaterializationBundle({
-      scenarioDefinitionRevision: 32
-    });
-    const runtimeCatalogPin = Object.freeze({
-      ...lowerDvinaTracePhase1ADomainPin(bundle),
-      compatible_world_revision_id: lowerDvinaTraceV6World.revision,
-      compatible_world_catalog_digest: lowerDvinaTraceV6World.digest,
-      compatible_world_pin_manifest_digest: lowerDvinaTraceV6World.manifest
-    });
+    const { runtimeCatalogPin } = await installLowerDvinaTraceV6World(pool);
+    await pool.query(await buildApprovedTemporalImportSql());
     const release = Object.freeze({ release_id: 'a1-postgres-release',
       world_revision_id: lowerDvinaTraceV6World.revision,
       world_catalog_digest: lowerDvinaTraceV6World.digest,
@@ -1049,7 +1309,14 @@ async function assertGeneralLookAfterInspection({
     'берег крушения');
   assert.notEqual(lookContext.visible_scene,
     narrationRequests[0].visible_context.visible_scene);
-  assert.deepEqual(lookContext.sensory_details, []);
+  assert.deepEqual(lookContext.sensory_details, [
+    'Мокрый песок и ивняк тянутся вдоль берега реки.',
+    'У самой воды лежат разбитые доски и обрывки снастей.',
+    'У воды тянется полоса камыша и осоки; среди обломков лежат вынесенные течением ветви.',
+    'Над открытым берегом тянется низкое сырое небо.',
+    'Между мокрым песком и ивняком начинается приметная тропа; за кустами её продолжения не видно.',
+    'У самого берега слышен плеск воды.'
+  ]);
   assert.equal(JSON.stringify(lookContext).includes(
     'visible:road_bag_missing'), false);
   assert.equal(randomDraws, beforeLook.randomDraws);
@@ -1066,7 +1333,7 @@ async function assertGeneralLookAfterInspection({
     raw_text: 'Дойти до рыбацкого стана.'
   });
   assert.equal(narrationRequests[2].visible_context.visible_scene,
-    'Микула пришёл в рыбацкий стан.');
+    'рыбацкий стан');
   const beforeCampLook = {
     checks: await count(pool, 'party_runtime.party_check_resolutions',
       opened.party_id),
@@ -1082,14 +1349,20 @@ async function assertGeneralLookAfterInspection({
   });
   const campLookContext = narrationRequests[3].visible_context;
   assert.equal(campLooked.check, null);
-  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
   assert.notEqual(campLookContext.visible_scene,
     opened.screen.visible_context.place);
-  assert.notEqual(campLookContext.visible_scene,
-    narrationRequests[2].visible_context.visible_scene);
   assert.deepEqual(campLookContext.sensory_details, [
+    'На сухом берегу стоят навес и очаговая площадка.',
+    'Под навесом есть место укрыться от речной сырости.',
+    'От стана видна вода Нижней Двины.',
+    'Сухой песчаный берег тянется вдоль воды.',
+    'Сети развешены на кольях и между навесами.',
+    'Лодки стоят у воды.',
+    'Под навесом сложены свёрнутые снасти.',
+    'В воздухе держится речная сырость.',
     'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.'
   ]);
+  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
   assert.equal(randomDraws, beforeCampLook.randomDraws);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), beforeCampLook.checks);
@@ -1683,10 +1956,12 @@ async function assertPreparedSemanticBodyRecovery({ pool, release, runtimeCatalo
   await runtime.acknowledgeOpening(opened.party_id, { client_ack_id: 'prepared-body-recovery-ack' });
   const input = { request_id: 'prepared-body-recovery', idempotency_key: 'prepared-body-recovery',
     raw_text: 'Предупреждаю спутников. Проверяю устойчивость опоры.' };
-  const pending = await runtime.submitTurn(opened.party_id, input);
-  assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
-  assert.equal(pending.time_update.exact_elapsed.exact_minutes.numerator, '2');
-  assert.deepEqual(pending.body_update.proposal.exact_deltas, { health: 0, satiety: -1, energy: -2 });
+  const ready = await runtime.submitTurn(opened.party_id, input);
+  assert.equal(ready.screen.screen_status, 'ready');
+  assert.equal(ready.time_update.exact_elapsed.exact_minutes.numerator, '2');
+  assert.deepEqual(ready.body_update.proposal.exact_deltas, { health: 0, satiety: -1, energy: -2 });
+  assert.equal(narrations, 2);
+  assert.equal(planners, 2);
   const restarted = buildRuntime(options);
   const recovered = await restarted.submitTurn(opened.party_id, input);
   assert.equal(recovered.screen.screen_status, 'ready');

@@ -8,6 +8,29 @@ import { fixture, loadScenarioBundle } from
   './lower-dvina-trace-phase-2-fixture.js';
 import { richCommittedState } from
   './lower-dvina-trace-player-safe-state-fixture.js';
+import { naturalSceneFixture } from '../../../packages/presentation/test/natural-scene-fixture.js';
+
+test('arrival projection consumes current natural perception without persisting or exposing machine baseline', () => {
+  const state = richCommittedState();
+  state.position.position_id = 'position:inside';
+  const input = naturalSceneFixture();
+  input.observer.actor_id = state.actor_id;
+  input.observer.party_id = state.party_id;
+  input.scene.party_id = state.party_id;
+  for (const rows of [input.scene.positions, input.scene.g6, input.scene.acoustic_profiles]) {
+    for (const row of rows) row.party_id = state.party_id;
+  }
+  const before = structuredClone(state);
+  const projected = projectLowerDvinaTracePlayerSafeState({ committed_state: state,
+    actor_id: state.actor_id, natural_scene_perception_input: input }).player_safe_state;
+  assert.ok(projected.current_visible_context.sensory_details.includes('Под ногами влажный ил.'));
+  assert.equal(JSON.stringify(projected).includes('machine-only'), false);
+  assert.deepEqual(state, before);
+  input.observer.position_id = 'position:shore';
+  assert.throws(() => projectLowerDvinaTracePlayerSafeState({ committed_state: state,
+    actor_id: state.actor_id, natural_scene_perception_input: input }), {
+    code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+});
 
 test('canonical NPC names stay hidden without player-safe acquisition', () => {
   const state = richCommittedState();

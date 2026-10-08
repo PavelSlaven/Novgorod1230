@@ -1,0 +1,17 @@
+{
+  "schema": "rus.m2c_generated_property_context_approval.v1",
+  "decision": "APPROVE_M2C_GENERATED_PROPERTY_CONTEXT_AUTHORING_V1",
+  "candidate_ref": "novgorod_m2c_generated_property_context_v1@1",
+  "candidate_sha256": "7352d869d11fc1d903ba6a48b62f0a878500b3b54ece7f0c6b5336a11551f926",
+  "approval_scope": "generated_property_context_authoring_data_only",
+  "approved_by": "gpt-6-astra/high — independent reviewer /root/m2c_data_approval",
+  "approved_at": "2026-09-24",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "runtime_gates": [
+    "Verify all source pins and exact generated G5/G4/template/slot scope",
+    "Mandatory exact current party property lookup; missing or ambiguous lookup fails closed",
+    "Explicit rights override editorial default; deny preserves physical stock and blocks extraction",
+    "New applicable assignment or source revision invalidates completeness assertion"
+  ]
+}

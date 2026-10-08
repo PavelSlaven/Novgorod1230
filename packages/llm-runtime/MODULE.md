@@ -13,7 +13,9 @@
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
-Production `turn_runtime` использует Flash-first роли без heavy reasoning. Планировщик шага начинает с reasoning `off`; если provider завершился без финального ответа, тот же вызов один раз повторяется с `low`. Single structural repair также использует `low`, потому что он запускается только после невалидного исходного плана; остальные роли работают с reasoning `off`. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider. Общим safety deadline владеет game-server; transport принимает уже уменьшенный timeout позднего вызова.
+Production `turn_runtime` роли по умолчанию используют `qwen3.8-27b-uncensored-w4a16-tp2` без heavy reasoning. Планировщик шага начинает с reasoning `off`; если provider завершился без финального ответа, тот же вызов один раз повторяется с `low`. Single structural repair также использует `low`, потому что он запускается только после невалидного исходного плана; остальные роли работают с reasoning `off`. Явно настроенный custom OpenAI-compatible vLLM provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider. Общим safety deadline владеет game-server; transport принимает уже уменьшенный timeout позднего вызова.
+
+Deployment environment config uses `LLM_BASE_URL`, optional `LLM_API_KEY`, optional `LLM_MODEL` (default `qwen3.8-27b-uncensored-w4a16-tp2`) and `LLM_REQUEST_TIMEOUT_MS`. Calls fail closed when `LLM_BASE_URL` is empty or absent; provider/model aliases and fallback calls are not attempted.
 
 ## Production limits
 
@@ -21,7 +23,7 @@ Production `turn_runtime` использует Flash-first роли без heavy
 
 `world_knowledge_query_planner` — малая JSON-role для выбора только domains/refs/predicates/search hints. Она не определяет факты или gameplay outcome; request/response валидирует `@rus/world-knowledge`.
 
-Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and `gameplay_narrator_semantic_repair`; all are Flash JSON roles. Auditor returns `narration_audit`; semantic repair returns `narration_semantic_repair`. No fallback, Pro/router/senior role is configured.
+Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and `gameplay_narrator_semantic_repair`; all are JSON roles. Auditor returns `narration_audit`; semantic repair returns `narration_semantic_repair`. No fallback, Pro/router/senior role is configured.
 
 ## Не делает
 
@@ -32,9 +34,9 @@ Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narr
 
 ## Публичный API
 
-`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL. Role caller может передать `overrides.reasoningEffort` со значением `off`, `minimal`, `low`, `medium`, `high` или `xhigh`; transport применяет поддержанный провайдером уровень, а `off` явно восстанавливает `enable_thinking=false`. Выбор уровня по смысловой сложности принадлежит caller роли: transport не угадывает сложность и не повышает уровень автоматически. Пользовательский `play:local` передаёт managed Gemma как default override; low-level environment provider остаётся только явной deployment-конфигурацией. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
+`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL. Role caller может передать `overrides.reasoningEffort` со значением `off`, `minimal`, `low`, `medium`, `high` или `xhigh`; transport применяет поддержанный провайдером уровень, а `off` явно восстанавливает `enable_thinking=false`. Выбор уровня по смысловой сложности принадлежит caller роли: transport не угадывает сложность и не повышает уровень автоматически. Пользовательский `play:local` передаёт только явно сохранённый custom provider; default identity — exact `qwen3.8-27b-uncensored-w4a16-tp2`, а endpoint/key остаются user config. Unconfigured settings не создают override или fallback. Low-level environment provider остаётся только явной deployment-конфигурацией. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
 
-Игровой вызов через выбранный local/custom OpenAI-compatible provider по умолчанию получает `chat_template_kwargs.enable_thinking=false`. Планировщик начинает так же; только повтор после пустого ответа и structural repair передают `reasoning_effort=low` без конфликтующего `enable_thinking=false`. Это role policy и восстановление ответа той же модели, не смена model/provider.
+Игровой вызов через выбранный custom OpenAI-compatible provider по умолчанию получает `chat_template_kwargs.enable_thinking=false`. Планировщик начинает так же; только повтор после пустого ответа и structural repair передают `reasoning_effort=low` без конфликтующего `enable_thinking=false`. Это role policy и восстановление ответа той же модели, не смена model/provider.
 
 Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 
@@ -65,7 +67,7 @@ Foundation tests и production provider integration suite.
 ## Eval
 
 Frozen player-safe role corpus: `data/model-evals/llm-runtime/frozen-role-requests-v1.json`.
-Runner вызывает тот же `executeRoleLlmCall`; CLI требует `LLM_EVAL_MODE=default` для project-default DeepSeek config либо `LLM_EVAL_MODE=custom` с обеими `LLM_EVAL_BASE_URL` и `LLM_EVAL_MODEL`. Eval не запускается сам и не делает implicit network call. Для exported role validators runner вызывает owner-native validator; S1 остаётся boundary-owned без public validator, а world-process использует public `validateWorldProcessStepPlan` из `@rus/turn`.
+Runner вызывает тот же `executeRoleLlmCall`; CLI требует `LLM_EVAL_MODE=default` для project-default Qwen config либо `LLM_EVAL_MODE=custom` с обеими `LLM_EVAL_BASE_URL` и `LLM_EVAL_MODEL`. Eval не запускается сам и не делает implicit network call. Для exported role validators runner вызывает owner-native validator; S1 остаётся boundary-owned без public validator, а world-process использует public `validateWorldProcessStepPlan` из `@rus/turn`.
 
 ## Совместимость
 

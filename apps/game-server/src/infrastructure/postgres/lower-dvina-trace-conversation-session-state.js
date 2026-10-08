@@ -1,4 +1,5 @@
 import { buildConversationSession } from '@rus/npc-runtime';
+import { sceneLocationRef } from '../../runtime/lower-dvina-trace-scene-presence.js';
 import {
   compareText,
   fail,
@@ -26,7 +27,7 @@ export function projectConversationSession({ state, exchange, statements,
       ? ref('conversation_contribution', last.contribution_id)
       : existing?.last_contribution_ref ?? null;
   if (!lastContributionRef
-      || !text(state.position?.location_ref)
+      || sceneLocationRef(state) === null
       || !text(exchange.session_status)
       || !text(exchange.stop_reason)
       || (firstContribution == null && existing == null)) {
@@ -44,7 +45,7 @@ export function projectConversationSession({ state, exchange, statements,
       ?? (firstContribution?.schema === 'conversation_statement_event_v1'
         ? firstContribution.spoken_at : structuredClone(state.clock)),
     location_ref: existing?.location_ref
-      ?? ref('location', state.position.location_ref),
+      ?? ref('location', sceneLocationRef(state)),
     initiator_ref: existing?.initiator_ref ?? firstContribution?.speaker_ref,
     active_participant_refs: activeParticipantRefs,
     last_contribution_ref: lastContributionRef,

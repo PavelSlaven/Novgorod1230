@@ -72,6 +72,7 @@ test('S1 local movement reuses committed visible detail without model', async ()
     target_ref: committed.local_ref } });
   reverse.request.player_safe_state.visible_objects = structuredClone(
     request.request.player_safe_state.visible_objects);
+  reverse.request.player_safe_state.visible_objects[0].visible_status = 'внутри';
   const exited = await localMovementResolver({ committed,
     edge: { rowCount: 1, rows: [{ id: 'edge:out' }] } })(reverse);
   assert.equal(exited.consequence_fragment.position_transition.movement_edge_ref, 'edge:out');

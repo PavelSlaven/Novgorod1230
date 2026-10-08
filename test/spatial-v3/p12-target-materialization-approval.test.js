@@ -8,8 +8,9 @@ import { validateP12TargetMaterializationApproval } from '../../tools/spatial-v3
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const INDEX_RELATIVE = 'data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/index.json';
-async function copyIntakeRoot() {
+async function copyIntakeRoot(t) {
   const root = await mkdtemp(join(tmpdir(), 'p12-target-materialization-approval-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   const index = JSON.parse(await readFile(join(ROOT, INDEX_RELATIVE), 'utf8'));
   const indexPath = join(root, INDEX_RELATIVE);
   await mkdir(join(indexPath, '..'), { recursive: true });
@@ -51,8 +52,8 @@ test('P12 approval intake proves the POSIX/Windows manifest-order split and rema
   assert.equal(result.upstream_evidence.branch_binding.run.exit_code, 2);
   assert.equal(result.upstream_evidence.branch_binding.exact_branch_head_binding, false);
 });
-test('P12 approval intake fails on immutable ZIP replacement', async () => {
-  const fixture = await copyIntakeRoot();
+test('P12 approval intake fails on immutable ZIP replacement', async (t) => {
+  const fixture = await copyIntakeRoot(t);
   try {
     await writeFile(fixture.zipPath, 'replaced-approval');
     const result = await validateP12TargetMaterializationApproval({ root: fixture.root });
@@ -60,8 +61,8 @@ test('P12 approval intake fails on immutable ZIP replacement', async () => {
     assert.ok(result.errors.some((error) => error.code === 'P12_APPROVAL_DIGEST_MISMATCH'));
   } finally { await rm(fixture.root, { recursive: true, force: true }); }
 });
-test('P12 approval intake rejects an attempt to erase the manifest or branch blockers', async () => {
-  const fixture = await copyIntakeRoot();
+test('P12 approval intake rejects an attempt to erase the manifest or branch blockers', async (t) => {
+  const fixture = await copyIntakeRoot(t);
   try {
     const index = JSON.parse(await readFile(fixture.indexPath, 'utf8'));
     index.blockers = [];

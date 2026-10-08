@@ -1,0 +1,1454 @@
+{
+  "schema_version": "rus.m2c_world_route_wave_spec.v1",
+  "status": "candidate_unapproved",
+  "candidate": "m2c-world-routes-v1",
+  "source_ref": "cross_g4_01..24 from place-geo and m2c-line-names; profiles from m2c-lines-v1",
+  "decisions": {
+    "scope": "cross_g4_01..24 (24 reciprocal pairs, 48 directed routes)",
+    "boundary_rule": "Split only at consecutive trace-run changes in surface, waterbody_ref, movement_class, or movement_method_id, as A-routes-b2-01 authorizes; trace geometry bends and travel_band changes alone do not split.",
+    "minutes": "Each direction total equals place-geo proposed_minutes. Multi-segment totals allocated from unrounded trace duration weights using floor + largest fractional remainder; ties by stable group key.",
+    "waterbody_line_kind_mapping": {
+      "main": "river_channel",
+      "other": "side_channel",
+      "basis": "authored world-map waterbody classification; central_head_branch follows reviewer A-routes-b2-01 and wave-1 approval-attestation limit 7; editorial hypothesis for Opus."
+    },
+    "movement_method_map_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/line-kind-spec.json#/movement_method_map",
+    "segment_labels": "Reuse m2c-line-names world-route name on constituent segments; no segment invents a toponym.",
+    "known_source_mismatches": [
+      {
+        "pair_id": "cross_g4_04",
+        "source_line_kind": "river_channel",
+        "segment_kinds": [
+          "river_channel",
+          "side_channel"
+        ]
+      },
+      {
+        "pair_id": "cross_g4_05",
+        "source_line_kind": "river_channel",
+        "segment_kinds": [
+          "river_channel",
+          "side_channel"
+        ]
+      },
+      {
+        "pair_id": "cross_g4_06",
+        "source_line_kind": "river_channel",
+        "segment_kinds": [
+          "side_channel"
+        ]
+      },
+      {
+        "pair_id": "cross_g4_07",
+        "source_line_kind": "river_channel",
+        "segment_kinds": [
+          "side_channel"
+        ]
+      },
+      {
+        "pair_id": "cross_g4_08",
+        "source_line_kind": "river_channel",
+        "segment_kinds": [
+          "side_channel"
+        ]
+      }
+    ],
+    "assumptions_for_opus": [
+      "central_head_branch uses lkp__side_channel@1 by reviewer A-routes-b2-01 / wave-1 approval-attestation limit 7; line-names remains river_channel for cross_g4_06..08 and must be separately corrected by its owner.",
+      "All non-main authored waterbody refs map to side_channel; this is an editorial mapping in schematic place-geo geometry, not a historical claim about 1230.",
+      "Place-geo minutes are draft calibration values; cross_g4_10 (741 minutes each way) requires plausibility review.",
+      "Hazard swim_* refs have no underlying records; safe/passable is unresolved. Water routes lack winter ice data."
+    ],
+    "import_policy": "Candidate only. Import only together with the b2 runtime reader cutover. No bootstrap import."
+  },
+  "counts": {
+    "g4_pairs": 24,
+    "directed_routes": 48,
+    "directed_segments": 60,
+    "internal_boundaries": 6,
+    "directed_points": 108,
+    "endpoint_bindings": 96
+  },
+  "routes": [
+    {
+      "route_pair_id": "cross_g4_01",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_01",
+        "wrv3__g4dirv3r__cross_g4_01"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_01]",
+      "forward_line_name": "по спокойной воде меж берегов",
+      "reverse_line_name": "по спокойной воде меж берегов",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 2,
+          "line_kind": "river_channel",
+          "line_name": "по спокойной воде меж берегов",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 66,
+          "reverse_minutes": 106,
+          "trace_leg_indices": [
+            0,
+            1,
+            2
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 66,
+        "reverse": 106
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_01",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_01].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_01].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_02",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_02",
+        "wrv3__g4dirv3r__cross_g4_02"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_02]",
+      "forward_line_name": "между низкими берегами по струе",
+      "reverse_line_name": "между низкими берегами по струе",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 2,
+          "line_kind": "river_channel",
+          "line_name": "между низкими берегами по струе",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 77,
+          "reverse_minutes": 125,
+          "trace_leg_indices": [
+            0,
+            1,
+            2
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 77,
+        "reverse": 125
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_02",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_02].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_02].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_03",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_03",
+        "wrv3__g4dirv3r__cross_g4_03"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_03]",
+      "forward_line_name": "по речной воде меж берегов",
+      "reverse_line_name": "по речной воде меж берегов",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 2,
+          "line_kind": "river_channel",
+          "line_name": "по речной воде меж берегов",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 29,
+          "reverse_minutes": 47,
+          "trace_leg_indices": [
+            0,
+            1,
+            2
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 29,
+        "reverse": 47
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_03",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_03].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_03].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_04",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_04",
+        "wrv3__g4dirv3r__cross_g4_04"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_04]",
+      "forward_line_name": "вдоль заросшего берега",
+      "reverse_line_name": "вдоль заросшего берега",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 2,
+          "line_kind": "river_channel",
+          "line_name": "вдоль заросшего берега",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 92,
+          "reverse_minutes": 152,
+          "trace_leg_indices": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "trace_start_index": 3,
+          "trace_end_index": 5,
+          "line_kind": "side_channel",
+          "line_name": "вдоль заросшего берега",
+          "kind_basis": "waterbody_ref=west → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "west",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 116,
+          "reverse_minutes": 192,
+          "trace_leg_indices": [
+            3,
+            4,
+            5
+          ],
+          "boundary_before": {
+            "trace_vertex_index": 3,
+            "coordinate": {
+              "lat": 64.575,
+              "lon": 40.64
+            },
+            "changed_fields": [
+              "waterbody_ref"
+            ],
+            "from": {
+              "surface": "water",
+              "waterbody_ref": "main",
+              "movement_class": "river_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "to": {
+              "surface": "water",
+              "waterbody_ref": "west",
+              "movement_class": "river_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "point_kind": "waypoint",
+            "anchor_policy": "ordinary_transit",
+            "context_switch_phase": "outbound_dispatch",
+            "stable_label_id": null,
+            "toponym": null,
+            "evidence": "place-geo route_trace vertex; A-routes-b2-01 permits waterbody_ref/movement-class/method changes as boundaries"
+          }
+        }
+      ],
+      "direction_minutes": {
+        "forward": 208,
+        "reverse": 344
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_04",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_04].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_04].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_05",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_05",
+        "wrv3__g4dirv3r__cross_g4_05"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_05]",
+      "forward_line_name": "по широкой речной воде у травяного берега",
+      "reverse_line_name": "по широкой речной воде у травяного берега",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 2,
+          "line_kind": "river_channel",
+          "line_name": "по широкой речной воде у травяного берега",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 92,
+          "reverse_minutes": 152,
+          "trace_leg_indices": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "trace_start_index": 3,
+          "trace_end_index": 5,
+          "line_kind": "side_channel",
+          "line_name": "по широкой речной воде у травяного берега",
+          "kind_basis": "waterbody_ref=east → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "east",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 80,
+          "reverse_minutes": 130,
+          "trace_leg_indices": [
+            3,
+            4,
+            5
+          ],
+          "boundary_before": {
+            "trace_vertex_index": 3,
+            "coordinate": {
+              "lat": 64.575,
+              "lon": 40.64
+            },
+            "changed_fields": [
+              "waterbody_ref"
+            ],
+            "from": {
+              "surface": "water",
+              "waterbody_ref": "main",
+              "movement_class": "river_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "to": {
+              "surface": "water",
+              "waterbody_ref": "east",
+              "movement_class": "river_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "point_kind": "waypoint",
+            "anchor_policy": "ordinary_transit",
+            "context_switch_phase": "outbound_dispatch",
+            "stable_label_id": null,
+            "toponym": null,
+            "evidence": "place-geo route_trace vertex; A-routes-b2-01 permits waterbody_ref/movement-class/method changes as boundaries"
+          }
+        }
+      ],
+      "direction_minutes": {
+        "forward": 172,
+        "reverse": 282
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_05",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_05].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_05].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_06",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_06",
+        "wrv3__g4dirv3r__cross_g4_06"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_06]",
+      "forward_line_name": "по широкой воде между берегами",
+      "reverse_line_name": "по широкой воде между берегами",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 1,
+          "line_kind": "side_channel",
+          "line_name": "по широкой воде между берегами",
+          "kind_basis": "waterbody_ref=central_head_branch → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "central_head_branch",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 43,
+          "reverse_minutes": 43,
+          "trace_leg_indices": [
+            0,
+            1
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 43,
+        "reverse": 43
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_06",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_06].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_06].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_07",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_07",
+        "wrv3__g4dirv3r__cross_g4_07"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_07]",
+      "forward_line_name": "по широкой воде у низкой земли",
+      "reverse_line_name": "по широкой воде у низкой земли",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 1,
+          "line_kind": "side_channel",
+          "line_name": "по широкой воде у низкой земли",
+          "kind_basis": "waterbody_ref=west → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "west",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 226,
+          "reverse_minutes": 135,
+          "trace_leg_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_start_index": 2,
+          "trace_end_index": 3,
+          "line_kind": "side_channel",
+          "line_name": "по широкой воде у низкой земли",
+          "kind_basis": "waterbody_ref=central_head_branch → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "central_head_branch",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 42,
+          "reverse_minutes": 42,
+          "trace_leg_indices": [
+            2,
+            3
+          ],
+          "boundary_before": {
+            "trace_vertex_index": 2,
+            "coordinate": {
+              "lat": 64.575,
+              "lon": 40.64
+            },
+            "changed_fields": [
+              "waterbody_ref"
+            ],
+            "from": {
+              "surface": "water",
+              "waterbody_ref": "west",
+              "movement_class": "river_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "to": {
+              "surface": "water",
+              "waterbody_ref": "central_head_branch",
+              "movement_class": "river_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "point_kind": "waypoint",
+            "anchor_policy": "ordinary_transit",
+            "context_switch_phase": "outbound_dispatch",
+            "stable_label_id": null,
+            "toponym": null,
+            "evidence": "place-geo route_trace vertex; A-routes-b2-01 permits waterbody_ref/movement-class/method changes as boundaries"
+          }
+        }
+      ],
+      "direction_minutes": {
+        "forward": 268,
+        "reverse": 177
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_07",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_07].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_07].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_08",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_08",
+        "wrv3__g4dirv3r__cross_g4_08"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_08]",
+      "forward_line_name": "среди отмелей в речной воде",
+      "reverse_line_name": "среди отмелей в речной воде",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 1,
+          "line_kind": "side_channel",
+          "line_name": "среди отмелей в речной воде",
+          "kind_basis": "waterbody_ref=east → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "east",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 49,
+          "reverse_minutes": 29,
+          "trace_leg_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_start_index": 2,
+          "trace_end_index": 3,
+          "line_kind": "side_channel",
+          "line_name": "среди отмелей в речной воде",
+          "kind_basis": "waterbody_ref=central_head_branch → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "central_head_branch",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 42,
+          "reverse_minutes": 42,
+          "trace_leg_indices": [
+            2,
+            3
+          ],
+          "boundary_before": {
+            "trace_vertex_index": 2,
+            "coordinate": {
+              "lat": 64.575,
+              "lon": 40.64
+            },
+            "changed_fields": [
+              "waterbody_ref"
+            ],
+            "from": {
+              "surface": "water",
+              "waterbody_ref": "east",
+              "movement_class": "river_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "to": {
+              "surface": "water",
+              "waterbody_ref": "central_head_branch",
+              "movement_class": "river_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "point_kind": "waypoint",
+            "anchor_policy": "ordinary_transit",
+            "context_switch_phase": "outbound_dispatch",
+            "stable_label_id": null,
+            "toponym": null,
+            "evidence": "place-geo route_trace vertex; A-routes-b2-01 permits waterbody_ref/movement-class/method changes as boundaries"
+          }
+        }
+      ],
+      "direction_minutes": {
+        "forward": 91,
+        "reverse": 71
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_08",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_08].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_08].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_09",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_09",
+        "wrv3__g4dirv3r__cross_g4_09"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+      "source_line_kind": "shore",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_09]",
+      "forward_line_name": "береговым сходом по травяной земле",
+      "reverse_line_name": "береговым сходом по травяной земле",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 8,
+          "line_kind": "shore",
+          "line_name": "береговым сходом по травяной земле",
+          "kind_basis": "movement_class=shore on surface=land",
+          "geometry_mode": "trace",
+          "surface": "land",
+          "waterbody_ref": null,
+          "movement_class": "shore",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 108,
+          "reverse_minutes": 108,
+          "trace_leg_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 108,
+        "reverse": 108
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_09",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_09].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_09].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_10",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_10",
+        "wrv3__g4dirv3r__cross_g4_10"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+      "source_line_kind": "wetland_path",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_10]",
+      "forward_line_name": "тропой по мягкому мху и осоке",
+      "reverse_line_name": "тропой по мягкому мху и осоке",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 4,
+          "line_kind": "wetland_path",
+          "line_name": "тропой по мягкому мху и осоке",
+          "kind_basis": "movement_class=wetland_path on surface=land",
+          "geometry_mode": "trace",
+          "surface": "land",
+          "waterbody_ref": null,
+          "movement_class": "wetland_path",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 741,
+          "reverse_minutes": 741,
+          "trace_leg_indices": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 741,
+        "reverse": 741
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_10",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_10].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_10].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_11",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_11",
+        "wrv3__g4dirv3r__cross_g4_11"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach",
+      "source_line_kind": "offroad",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_11]",
+      "forward_line_name": "напрямик по вязкой земле",
+      "reverse_line_name": "напрямик по вязкой земле",
+      "geometry_mode": "chord_fallback",
+      "segments": [
+        {
+          "trace_start_index": null,
+          "trace_end_index": null,
+          "line_kind": "offroad",
+          "line_name": "напрямик по вязкой земле",
+          "kind_basis": "line-names movement_class offroad (chord fallback)",
+          "geometry_mode": "chord_fallback",
+          "surface": null,
+          "waterbody_ref": null,
+          "movement_class": "offroad",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 302,
+          "reverse_minutes": 302,
+          "trace_leg_indices": []
+        }
+      ],
+      "direction_minutes": {
+        "forward": 302,
+        "reverse": 302
+      },
+      "source_trace_ref": null,
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_11].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_11].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_12",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_12",
+        "wrv3__g4dirv3r__cross_g4_12"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_12]",
+      "forward_line_name": "между берегами у речных наносов",
+      "reverse_line_name": "между берегами у речных наносов",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 5,
+          "line_kind": "river_channel",
+          "line_name": "между берегами у речных наносов",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 233,
+          "reverse_minutes": 142,
+          "trace_leg_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 233,
+        "reverse": 142
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_12",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_12].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_12].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_13",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_13",
+        "wrv3__g4dirv3r__cross_g4_13"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_13]",
+      "forward_line_name": "по воде, несущей песок",
+      "reverse_line_name": "по воде, несущей песок",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 3,
+          "line_kind": "river_channel",
+          "line_name": "по воде, несущей песок",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 63,
+          "reverse_minutes": 41,
+          "trace_leg_indices": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 63,
+        "reverse": 41
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_13",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_13].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_13].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_14",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_14",
+        "wrv3__g4dirv3r__cross_g4_14"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+      "source_line_kind": "shore",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_14]",
+      "forward_line_name": "береговым переходом по мокрому прибрежью",
+      "reverse_line_name": "береговым переходом по мокрому прибрежью",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 21,
+          "line_kind": "shore",
+          "line_name": "береговым переходом по мокрому прибрежью",
+          "kind_basis": "movement_class=shore on surface=land",
+          "geometry_mode": "trace",
+          "surface": "land",
+          "waterbody_ref": null,
+          "movement_class": "shore",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 121,
+          "reverse_minutes": 121,
+          "trace_leg_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 121,
+        "reverse": 121
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_14",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_14].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_14].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_15",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_15",
+        "wrv3__g4dirv3r__cross_g4_15"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+      "source_line_kind": "path",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_15]",
+      "forward_line_name": "через травянистый склон",
+      "reverse_line_name": "через травянистый склон",
+      "geometry_mode": "chord_fallback",
+      "segments": [
+        {
+          "trace_start_index": null,
+          "trace_end_index": null,
+          "line_kind": "path",
+          "line_name": "через травянистый склон",
+          "kind_basis": "line-names movement_class path (chord fallback)",
+          "geometry_mode": "chord_fallback",
+          "surface": null,
+          "waterbody_ref": null,
+          "movement_class": "path",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 208,
+          "reverse_minutes": 208,
+          "trace_leg_indices": []
+        }
+      ],
+      "direction_minutes": {
+        "forward": 208,
+        "reverse": 208
+      },
+      "source_trace_ref": null,
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_15].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_15].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_16",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_16",
+        "wrv3__g4dirv3r__cross_g4_16"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+      "source_line_kind": "path",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_16]",
+      "forward_line_name": "тропой по мягкой пойменной траве",
+      "reverse_line_name": "тропой по мягкой пойменной траве",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 12,
+          "line_kind": "path",
+          "line_name": "тропой по мягкой пойменной траве",
+          "kind_basis": "movement_class=path on surface=land",
+          "geometry_mode": "trace",
+          "surface": "land",
+          "waterbody_ref": null,
+          "movement_class": "path",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 174,
+          "reverse_minutes": 174,
+          "trace_leg_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 174,
+        "reverse": 174
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_16",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_16].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_16].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_17",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_17",
+        "wrv3__g4dirv3r__cross_g4_17"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+      "source_line_kind": "path",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_17]",
+      "forward_line_name": "под редкими кронами",
+      "reverse_line_name": "под редкими кронами",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 1,
+          "line_kind": "path",
+          "line_name": "под редкими кронами",
+          "kind_basis": "movement_class=path on surface=land",
+          "geometry_mode": "trace",
+          "surface": "land",
+          "waterbody_ref": null,
+          "movement_class": "path",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 78,
+          "reverse_minutes": 78,
+          "trace_leg_indices": [
+            0,
+            1
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 78,
+        "reverse": 78
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_17",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_17].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_17].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_18",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_18",
+        "wrv3__g4dirv3r__cross_g4_18"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+      "source_line_kind": "forest_track",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_18]",
+      "forward_line_name": "сквозь чащу под густыми кронами",
+      "reverse_line_name": "сквозь чащу под густыми кронами",
+      "geometry_mode": "chord_fallback",
+      "segments": [
+        {
+          "trace_start_index": null,
+          "trace_end_index": null,
+          "line_kind": "forest_track",
+          "line_name": "сквозь чащу под густыми кронами",
+          "kind_basis": "line-names movement_class forest_track (chord fallback)",
+          "geometry_mode": "chord_fallback",
+          "surface": null,
+          "waterbody_ref": null,
+          "movement_class": "forest_track",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 268,
+          "reverse_minutes": 268,
+          "trace_leg_indices": []
+        }
+      ],
+      "direction_minutes": {
+        "forward": 268,
+        "reverse": 268
+      },
+      "source_trace_ref": null,
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_18].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_18].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_19",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_19",
+        "wrv3__g4dirv3r__cross_g4_19"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+      "source_line_kind": "forest_track",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_19]",
+      "forward_line_name": "сырым ходом по хвое",
+      "reverse_line_name": "сырым ходом по хвое",
+      "geometry_mode": "chord_fallback",
+      "segments": [
+        {
+          "trace_start_index": null,
+          "trace_end_index": null,
+          "line_kind": "forest_track",
+          "line_name": "сырым ходом по хвое",
+          "kind_basis": "line-names movement_class forest_track (chord fallback)",
+          "geometry_mode": "chord_fallback",
+          "surface": null,
+          "waterbody_ref": null,
+          "movement_class": "forest_track",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 175,
+          "reverse_minutes": 175,
+          "trace_leg_indices": []
+        }
+      ],
+      "direction_minutes": {
+        "forward": 175,
+        "reverse": 175
+      },
+      "source_trace_ref": null,
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_19].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_19].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_20",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_20",
+        "wrv3__g4dirv3r__cross_g4_20"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+      "source_line_kind": "forest_track",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_20]",
+      "forward_line_name": "по сухой хвойной земле",
+      "reverse_line_name": "по сухой хвойной земле",
+      "geometry_mode": "chord_fallback",
+      "segments": [
+        {
+          "trace_start_index": null,
+          "trace_end_index": null,
+          "line_kind": "forest_track",
+          "line_name": "по сухой хвойной земле",
+          "kind_basis": "line-names movement_class forest_track (chord fallback)",
+          "geometry_mode": "chord_fallback",
+          "surface": null,
+          "waterbody_ref": null,
+          "movement_class": "forest_track",
+          "movement_method_id": "movement.foot",
+          "forward_minutes": 48,
+          "reverse_minutes": 48,
+          "trace_leg_indices": []
+        }
+      ],
+      "direction_minutes": {
+        "forward": 48,
+        "reverse": 48
+      },
+      "source_trace_ref": null,
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_20].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_20].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_21",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_21",
+        "wrv3__g4dirv3r__cross_g4_21"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_21]",
+      "forward_line_name": "на широкой устьевой воде",
+      "reverse_line_name": "на широкой устьевой воде",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 4,
+          "line_kind": "river_channel",
+          "line_name": "на широкой устьевой воде",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 304,
+          "reverse_minutes": 184,
+          "trace_leg_indices": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 304,
+        "reverse": 184
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_21",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_21].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_21].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_22",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_22",
+        "wrv3__g4dirv3r__cross_g4_22"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+      "source_line_kind": "side_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_22]",
+      "forward_line_name": "по узкому водному ответвлению",
+      "reverse_line_name": "по узкому водному ответвлению",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 1,
+          "line_kind": "side_channel",
+          "line_name": "по узкому водному ответвлению",
+          "kind_basis": "waterbody_ref=backwater_mouth → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "backwater_mouth",
+          "movement_class": "side_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 68,
+          "reverse_minutes": 68,
+          "trace_leg_indices": [
+            0,
+            1
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 68,
+        "reverse": 68
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_22",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_22].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_22].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_23",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_23",
+        "wrv3__g4dirv3r__cross_g4_23"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+      "source_line_kind": "side_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_23]",
+      "forward_line_name": "по мелкому боковому ходу",
+      "reverse_line_name": "по мелкому боковому ходу",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 1,
+          "line_kind": "side_channel",
+          "line_name": "по мелкому боковому ходу",
+          "kind_basis": "waterbody_ref=east → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "east",
+          "movement_class": "side_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 49,
+          "reverse_minutes": 29,
+          "trace_leg_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "trace_start_index": 2,
+          "trace_end_index": 2,
+          "line_kind": "side_channel",
+          "line_name": "по мелкому боковому ходу",
+          "kind_basis": "waterbody_ref=central_head_branch → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "central_head_branch",
+          "movement_class": "side_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 16,
+          "reverse_minutes": 17,
+          "trace_leg_indices": [
+            2
+          ],
+          "boundary_before": {
+            "trace_vertex_index": 2,
+            "coordinate": {
+              "lat": 64.575,
+              "lon": 40.64
+            },
+            "changed_fields": [
+              "waterbody_ref"
+            ],
+            "from": {
+              "surface": "water",
+              "waterbody_ref": "east",
+              "movement_class": "side_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "to": {
+              "surface": "water",
+              "waterbody_ref": "central_head_branch",
+              "movement_class": "side_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "point_kind": "waypoint",
+            "anchor_policy": "ordinary_transit",
+            "context_switch_phase": "outbound_dispatch",
+            "stable_label_id": null,
+            "toponym": null,
+            "evidence": "place-geo route_trace vertex; A-routes-b2-01 permits waterbody_ref/movement-class/method changes as boundaries"
+          }
+        },
+        {
+          "trace_start_index": 3,
+          "trace_end_index": 3,
+          "line_kind": "side_channel",
+          "line_name": "по мелкому боковому ходу",
+          "kind_basis": "waterbody_ref=dry_island_landing_cove → side_channel (editorial authored waterbody mapping; central_head_branch per A-routes-b2-01/limit7)",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "dry_island_landing_cove",
+          "movement_class": "side_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 12,
+          "reverse_minutes": 12,
+          "trace_leg_indices": [
+            3
+          ],
+          "boundary_before": {
+            "trace_vertex_index": 3,
+            "coordinate": {
+              "lat": 64.56889025180115,
+              "lon": 40.623478563808455
+            },
+            "changed_fields": [
+              "waterbody_ref"
+            ],
+            "from": {
+              "surface": "water",
+              "waterbody_ref": "central_head_branch",
+              "movement_class": "side_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "to": {
+              "surface": "water",
+              "waterbody_ref": "dry_island_landing_cove",
+              "movement_class": "side_channel",
+              "movement_method_id": "movement.small_river_craft"
+            },
+            "point_kind": "waypoint",
+            "anchor_policy": "ordinary_transit",
+            "context_switch_phase": "outbound_dispatch",
+            "stable_label_id": null,
+            "toponym": null,
+            "evidence": "place-geo route_trace vertex; A-routes-b2-01 permits waterbody_ref/movement-class/method changes as boundaries"
+          }
+        }
+      ],
+      "direction_minutes": {
+        "forward": 77,
+        "reverse": 58
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_23",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_23].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_23].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    },
+    {
+      "route_pair_id": "cross_g4_24",
+      "world_route_ids": [
+        "wrv3__g4dirv3f__cross_g4_24",
+        "wrv3__g4dirv3r__cross_g4_24"
+      ],
+      "from_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+      "to_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+      "source_line_kind": "river_channel",
+      "line_name_source": "data/world-catalogs/novgorod/m2c-line-names/candidate.json#world_routes[route_pair_id=cross_g4_24]",
+      "forward_line_name": "по воде вдоль песчаных мелей",
+      "reverse_line_name": "по воде вдоль песчаных мелей",
+      "geometry_mode": "trace",
+      "segments": [
+        {
+          "trace_start_index": 0,
+          "trace_end_index": 3,
+          "line_kind": "river_channel",
+          "line_name": "по воде вдоль песчаных мелей",
+          "kind_basis": "waterbody_ref=main → river_channel",
+          "geometry_mode": "trace",
+          "surface": "water",
+          "waterbody_ref": "main",
+          "movement_class": "river_channel",
+          "movement_method_id": "movement.small_river_craft",
+          "forward_minutes": 66,
+          "reverse_minutes": 42,
+          "trace_leg_indices": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "direction_minutes": {
+        "forward": 66,
+        "reverse": 42
+      },
+      "source_trace_ref": "data/world-catalogs/novgorod/m2c-place-coordinates/candidate.json#/route_traces/cross_g4_24",
+      "source_minutes_refs": [
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3f__cross_g4_24].proposed_minutes",
+        "data/world-catalogs/novgorod/m2c-place-coordinates/derived-report.json#/lines[id=wrv3__g4dirv3r__cross_g4_24].proposed_minutes"
+      ],
+      "trace_mirror_verified": true
+    }
+  ],
+  "source_hashes": {
+    "place_geo_candidate_sha256": "f47aa3c42f5ea22fb41c00dfc20b89fc5de6e3cdad5b53022f6cc8c4499c3acd",
+    "place_geo_derived_report_sha256": "cb9c87db6969ffa376893be2cb28ff748e4a0848605991ac0c2b987aeb9bd82c",
+    "line_names_candidate_sha256": "ffea92ed07f96b6a027d0bbd947318a9eb796bf7d93493bdff88fa8acd7e180f",
+    "wave1_line_kind_spec_sha256": "33a1d921e071389225fd0a05e1a143052992ef8c43f62c2ee5b21e91810dccfb"
+  }
+}

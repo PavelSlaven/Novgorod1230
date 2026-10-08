@@ -225,6 +225,12 @@ function normalizePlacement(value, state, entities, actorId) {
     if (!text(anchorId)) unresolvedPlacement(placement);
     return { anchor_id: anchorId };
   }
+  if (placement.scene_position_id) {
+    if (placement.scene_position_id !== state.position?.position_id) {
+      unresolvedPlacement(placement);
+    }
+    return placement;
+  }
   if (placement.container_id) {
     if (!(state.containers ?? []).some((container) =>
       container.container_id === placement.container_id)) {

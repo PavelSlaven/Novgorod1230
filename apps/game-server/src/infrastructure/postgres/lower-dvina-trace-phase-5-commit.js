@@ -23,7 +23,8 @@ import { bindOrdinaryPlanToCombinedInput } from
   './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
-  inputDigest, phase5Contracts, loadState, committer }) {
+  inputDigest, phase5Contracts, loadState, committer,
+  onLabelGapsOmitted = null }) {
   const factual = writePlan.write_targets.find(
     ({ target }) => target === 'party_state'
   )?.value;
@@ -47,7 +48,7 @@ export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
   if (!visibleContext) fail('TRACE_PHASE_5_VISIBLE_CONTEXT_MISSING');
   const visibleEnvelope = phase5VisibleEnvelope({
     partyId, nextVersion, turnNumber, changeSetId, idemId, factual,
-    visibleContext, contracts: phase5Contracts
+    visibleContext, contracts: phase5Contracts, onLabelGapsOmitted
   });
   next.last_turn.visible_package = {
     package_id: visibleEnvelope.package_id,

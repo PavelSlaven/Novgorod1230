@@ -1,0 +1,16 @@
+{
+  "schema": "rus.m2c_finite_only_ordinary_base_mapping.v1",
+  "version": 1,
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "source_candidate_sha256": "fcd2b47ff318b79031dc309193c159afd71909418beab1f77e9a455c4160bacd",
+  "dataset": {
+    "path": "m2c-finite-only-ordinary-base-approved.json",
+    "sha256": "465e6626ec976805a3234422a768cf53482ecfaaa714e7c6a1363ff37ab0edcf"
+  },
+  "authority": {
+    "data_mapping_only": true,
+    "import_authorized": false,
+    "activation_authorized": false,
+    "existing_party_migration_authorized": false
+  }
+}

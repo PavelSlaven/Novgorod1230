@@ -1,5 +1,6 @@
 import { isDeepStrictEqual } from 'node:util';
 import { createRuntimeInstanceMechanicsSnapshot,
+  projectCommittedInventoryMechanicsProfile,
   resolveInventoryMechanicsProfile } from '@rus/items-property';
 import { resolveActionProducedAllocationMechanics } from
   '@rus/items-property/action-produced-transition';
@@ -70,7 +71,7 @@ export function actionProducedConsumedMass(entry, pin) {
   return consumed;
 }
 
-function committedMechanics(item) {
+export function committedMechanics(item) {
   if (item == null) fail('ACTION_PRODUCED_RESULT_INVALID');
   const templateId = item.template_id;
   const instance = templateId === null
@@ -83,8 +84,11 @@ function committedMechanics(item) {
   }];
   const resolved = resolveInventoryMechanicsProfile({ instance, profiles });
   if (!resolved.pass) fail('ACTION_PRODUCED_RESULT_INVALID');
+  // v5 item inventory profiles (v17 clothing) omit packing/quantity/container.
   const { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
-    quantity, container } = resolved.profile;
+    quantity, container } = projectCommittedInventoryMechanicsProfile(
+      resolved.profile
+    );
   return { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
     quantity: structuredClone(quantity), container };
 }

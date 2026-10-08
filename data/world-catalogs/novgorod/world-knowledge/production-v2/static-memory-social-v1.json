@@ -1,0 +1,301 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-openstax-memory",
+      "title": "Psychology 2e — 8.3 Problems with Memory",
+      "authors": [
+        "Rose M. Spielman",
+        "William J. Jenkins",
+        "Marilyn D. Lovett"
+      ],
+      "publication": "OpenStax, Rice University, 2020",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/psychology-2e/pages/8-3-problems-with-memory",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-openstax-group-work",
+      "title": "Psychology 2e — 12.4 Conformity, Compliance, and Obedience",
+      "authors": [
+        "Rose M. Spielman",
+        "William J. Jenkins",
+        "Marilyn D. Lovett"
+      ],
+      "publication": "OpenStax, Rice University, 2020",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/psychology-2e/pages/12-4-conformity-compliance-and-obedience",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-memory-source-misattribution",
+      "source_ref": "source:research-openstax-memory",
+      "anchor": {
+        "section": "Memory Errors — misattribution"
+      },
+      "note": "Qualitative textbook relation only; no inference about a particular actor or historical prevalence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-memory-postevent-misinformation",
+      "source_ref": "source:research-openstax-memory",
+      "anchor": {
+        "section": "Misinformation Effect"
+      },
+      "note": "Qualitative textbook relation only; no inference about a particular actor or historical prevalence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-pooled-work-social-loafing",
+      "source_ref": "source:research-openstax-group-work",
+      "anchor": {
+        "section": "Social Loafing"
+      },
+      "note": "Qualitative textbook relation only; no inference about a particular actor or historical prevalence.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:research-memory-source-misattribution",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:research-memory-postevent-misinformation",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:research-pooled-work-social-loafing",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-memory-source-misattribution",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:research-memory-source-misattribution",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "recollection_can_confuse_the_source_of_information"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-memory-source-misattribution"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-memory-postevent-misinformation",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:research-memory-postevent-misinformation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "postevent_misinformation_can_distort_later_recollection"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-memory-postevent-misinformation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-pooled-work-social-loafing",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:research-pooled-work-social-loafing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pooled_contributions_without_individual_evaluation_can_reduce_individual_work_output"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-pooled-work-social-loafing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:research-memory-source-misattribution",
+      "locale": "ru",
+      "labels": [
+        "Ошибка атрибуции источника"
+      ],
+      "short_definition": "Ограниченная качественная предпосылка; не состояние конкретного actor.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:research-memory-source-misattribution",
+      "locale": "en",
+      "labels": [
+        "Source misattribution"
+      ],
+      "short_definition": "Bounded qualitative premise, not a concrete actor's state.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:research-memory-postevent-misinformation",
+      "locale": "ru",
+      "labels": [
+        "Дезинформация после события"
+      ],
+      "short_definition": "Ограниченная качественная предпосылка; не состояние конкретного actor.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:research-memory-postevent-misinformation",
+      "locale": "en",
+      "labels": [
+        "Post-event misinformation"
+      ],
+      "short_definition": "Bounded qualitative premise, not a concrete actor's state.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:research-pooled-work-social-loafing",
+      "locale": "ru",
+      "labels": [
+        "Снижение личной отдачи в совместной работе"
+      ],
+      "short_definition": "Ограниченная качественная предпосылка; не состояние конкретного actor.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:research-pooled-work-social-loafing",
+      "locale": "en",
+      "labels": [
+        "Social loafing in pooled work"
+      ],
+      "short_definition": "Bounded qualitative premise, not a concrete actor's state.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-memory-source-misattribution",
+      "locale": "ru",
+      "runtime_text": "При воспоминании человек может путать источник информации. Это не устанавливает, что actor видел, помнит или считает истинным, правдивость показаний либо намеренный обман.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-memory-source-misattribution",
+      "locale": "en",
+      "runtime_text": "Recollection can confuse the source of information. This does not establish what an actor witnessed, remembers, believes, or whether testimony is true or deliberately deceptive.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-memory-postevent-misinformation",
+      "locale": "ru",
+      "runtime_text": "Вводящая в заблуждение информация после события может искажать последующее воспоминание о нём. Это не устанавливает получение информации, изменение памяти, знания actor, вероятность ошибки, оценку показаний или возможность внедрить конкретное воспоминание.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-memory-postevent-misinformation",
+      "locale": "en",
+      "runtime_text": "Misleading information received after an event can distort later recollection of it. This establishes no exposure, changed memory, actor knowledge, error probability, testimony verdict, or ability to implant a particular memory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-pooled-work-social-loafing",
+      "locale": "ru",
+      "runtime_text": "Объединение вкладов без индивидуальной оценки может снижать личную отдачу в работе; это не неизбежный эффект. Это не задаёт распространённость в Средневековье, мотив работника, необходимый штат, темп труда, распределение работ, подчинение или решение NPC.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-pooled-work-social-loafing",
+      "locale": "en",
+      "runtime_text": "Pooling contributions without individual evaluation can reduce individual work output; this is conditional, not inevitable. This provides no medieval prevalence, worker motive, staffing requirement, labour rate, allocation, compliance, or forced NPC decision.",
+      "search_aliases": []
+    }
+  ]
+}

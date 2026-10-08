@@ -6,8 +6,10 @@ import { startLowerDvinaProductionAcceptanceEnv } from
 import { createCanonicalPhase11LlmResponder, PHASE11_CANONICAL_TURNS } from
   '../helpers/lower-dvina-phase-11-llm.js';
 
+// ponytail: baseline 162a86b9 wall time ~266s; limit headroom, not CR regression.
 test('revision 35 survives production restart and exact replay through Phase 10',
-  { timeout: 300_000 }, async (context) => {
+  { timeout: 450_000,
+    skip: 'D97: прохождение старого сценария (ревизии 34/35) не поддерживается; тест удаляется после переноса сюжета в старт v17 и полного прогона (D101)' }, async (context) => {
     const environment = await startLowerDvinaProductionAcceptanceEnv({
       llmRespond: createCanonicalPhase11LlmResponder()
     });
@@ -107,7 +109,8 @@ test('revision 35 survives production restart and exact replay through Phase 10'
   });
 
 test('production revision 34 admits independent Ratsha, Eremey and Zhdanko alternatives',
-  { timeout: 600_000 }, async (context) => {
+  { timeout: 600_000,
+    skip: 'D97: прохождение старого сценария (ревизии 34/35) не поддерживается; тест удаляется после переноса сюжета в старт v17 и полного прогона (D101)' }, async (context) => {
     let responder = createCanonicalPhase11LlmResponder();
     const environment = await startLowerDvinaProductionAcceptanceEnv({
       llmRespond: (request) => responder(request)

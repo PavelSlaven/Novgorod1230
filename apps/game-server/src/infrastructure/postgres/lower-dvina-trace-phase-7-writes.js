@@ -1,3 +1,4 @@
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { canonicalDigest } from '@rus/materialization';
@@ -18,18 +19,23 @@ import { appendKnowledge } from
   './lower-dvina-trace-phase-3-conversation-writes.js';
 import { appendPhase7ConversationWrites } from
   './lower-dvina-trace-phase-7-conversation-writes.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function phase7VisibleEnvelope({ partyId, nextVersion, turnNumber,
-  changeSetId, idemId, factual, visibleContext, phase7Contracts }) {
+  changeSetId, idemId, factual, visibleContext, phase7Contracts,
+  onLabelGapsOmitted = null }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const payload = {
     schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details,
-    visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects,
-    known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties,
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details,
+    visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects,
+    known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties,
     hypotheses: [],
     player_safe_interruption: null,
     allowed_action_affordances: []
@@ -100,6 +106,10 @@ export function phase7PendingScreen({ state, factual, visibleEnvelope,
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    ...(state.last_turn?.exact_npc_utterances?.length ? {
+      exact_npc_utterances: structuredClone(
+        state.last_turn.exact_npc_utterances)
+    } : {}),
     main_prose:
       'Факты хода сохранены; повествование ожидает повторной доставки.'
   };
@@ -117,8 +127,8 @@ export function phase7Writes({ partyId, state, next, factual, turnNumber,
     `${partyId}:${next.party_state.state_version}`, {
       party_id: partyId,
       state_version: next.party_state.state_version,
-      state_payload: next,
-      state_digest: canonicalDigest(next)
+      state_payload: withoutSceneNpcs(next),
+      state_digest: canonicalDigest(withoutSceneNpcs(next))
     })];
   const updates = [
     row('parties', partyId, { party_id: partyId, status: 'active' }),

@@ -1,9 +1,13 @@
 import { resolvePhysicalItemCondition } from '@rus/items-property';
+import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
+import { playerSafeAppearanceSummary } from
+  './lower-dvina-trace-player-safe-appearance.js';
+import { resolveVisibleItemLabel } from './lower-dvina-trace-visible-item-label.js';
 const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках', other: 'при вас' });
 const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
 
 export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
-  body = {}) {
+  body = {}, currentScene = null) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
   const directPlans = plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
@@ -15,8 +19,7 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
     ...(directPlans.some((plan) => plan.direct_result_kind === 'player_safe_observation'
         && plan.assessment == null)
       ? ['Вы внимательно изучили обстановку.',
-        ...lowerDvinaTraceObservedSceneChanges(
-          input?.retrieved_state?.current_visible_context)] : []),
+        ...lowerDvinaTraceObservedSceneChanges(currentScene)] : []),
     ...(kinds.has('player_safe_item_observation')
       ? carriedItemObservationChanges(sceneItems) : []),
     ...(kinds.has('player_safe_body_observation')
@@ -38,27 +41,25 @@ export function lowerDvinaTraceObservedSceneChanges(scene) {
         npc.observable_cues?.ordinary_remainder?.ordinary_activity]
         .filter(text).map((fact) => `${npc.display_label}: ${fact}`)
     ]),
-    ...(scene?.visible_objects ?? []).filter((object) =>
-      !carriedVisibleStatus(object.visible_status)).flatMap(observedEntityChanges)
+    ...(scene?.visible_objects ?? []).filter((object) => !isMovementVisibleObject(object)
+      && !carriedVisibleStatus(object.visible_status)).flatMap(observedEntityChanges)
   ])];
 }
 
 export function distinctNpcLabels(npcs) {
-  const normalized = npcs.map((npc) => npc?.recognition === 'unrecognized'
-      && / \(\d+\)$/u.test(npc.display_label)
+  const normalized = npcs.map((npc) => / \(\d+\)$/u.test(npc?.display_label)
     ? { ...npc, display_label: npc.display_label.replace(/ \(\d+\)$/u, '') }
     : npc);
   const totals = new Map();
   for (const { display_label: label } of normalized) {
     if (text(label)) totals.set(label, (totals.get(label) ?? 0) + 1);
   }
-  const seen = new Map();
   return normalized.map((npc) => {
     const label = npc?.display_label;
     if (!text(label) || totals.get(label) < 2) return npc;
-    const ordinal = (seen.get(label) ?? 0) + 1;
-    seen.set(label, ordinal);
-    return { ...npc, display_label: `${label} (${ordinal})` };
+    const appearance = playerSafeAppearanceSummary(npc);
+    return appearance == null ? npc
+      : { ...npc, display_label: `${label}, ${appearance}` };
   });
 }
 
@@ -84,24 +85,44 @@ function bodyObservationChanges(body) {
   ];
 }
 
-export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {
+export function lowerDvinaTraceVisibleSceneItems(items, position, actorId,
+  itemLabels = {}) {
   return (items ?? []).flatMap((item) => {
     const placement = item?.placement ?? {};
-    const coLocated = placement.location_ref === position?.location_ref
-      || [position?.g5_anchor_id, position?.anchor_id]
-        .includes(placement.g5_anchor_id ?? placement.anchor_id);
-    const held = placement.holder_character_id === actorId;
+    const location = placement.location_ref;
+    const anchor = placement.g5_anchor_id ?? placement.anchor_id;
+    const coLocated = text(location)
+        && location === position?.location_ref
+      || text(anchor) && [position?.g5_anchor_id, position?.anchor_id]
+        .filter(text).includes(anchor);
+    const held = isLowerDvinaTraceItemHeldBy(item, actorId);
     const itemId = item?.item_id ?? item?.instance_id;
     if ((!coLocated && !held) || !text(itemId)) return [];
+    const label = resolveVisibleItemLabel(item, itemLabels);
     return [{ physicalFacts: item.physical_facts ?? [], held,
       condition: resolvePhysicalItemCondition(item), visibleObject: {
       entity_ref: { entity_kind: 'item', entity_id: itemId },
-      display_label: visibleItemLabel(item), recognition: 'recognized',
+      ...(label.kind === 'labeled'
+        ? { display_label: label.label, recognition: 'recognized' }
+        : { label_gap: { code: label.code } }),
       visible_status: held
         ? placement.physical_position === 'hands'
           ? CARRIED_VISIBLE_STATUSES.hands : CARRIED_VISIBLE_STATUSES.other
         : 'available' } }];
   });
+}
+
+export function lowerDvinaTraceCarriedItemIds(items, actorId) {
+  return new Set((items ?? []).flatMap((item) => {
+    if (!isLowerDvinaTraceItemHeldBy(item, actorId)) return [];
+    const itemId = item?.item_id ?? item?.instance_id;
+    return text(itemId) ? [itemId] : [];
+  }));
+}
+
+function isLowerDvinaTraceItemHeldBy(item, actorId) {
+  return typeof actorId === 'string' && actorId.length > 0
+    && item?.placement?.holder_character_id === actorId;
 }
 
 export function lowerDvinaTraceCarriedItemObservations(items, visibleObjects) {
@@ -119,7 +140,8 @@ export function lowerDvinaTraceCarriedItemObservations(items, visibleObjects) {
 }
 
 function carriedItemObservationChanges(sceneItems) {
-  const carried = sceneItems.filter(({ held }) => held);
+  const carried = sceneItems.filter(({ held, visibleObject }) =>
+    held && text(visibleObject?.display_label));
   if (carried.length === 0) {
     return ['Осмотр не дал подтверждённых сведений о состоянии вещей при вас.'];
   }
@@ -143,8 +165,10 @@ function carriedItemObservationChanges(sceneItems) {
   return changes;
 }
 
-export function existingItemObservationChanges(item, actorId) {
-  const label = visibleItemLabel(item);
+export function existingItemObservationChanges(item, actorId, itemLabels = {}) {
+  const resolved = resolveVisibleItemLabel(item, itemLabels);
+  if (resolved.kind === 'gap') return [];
+  const label = resolved.label;
   const placement = item.placement ?? {};
   const carried = placement.holder_character_id === actorId;
   const position = carried ? {
@@ -178,13 +202,8 @@ export function uniqueLowerDvinaTraceVisibleObjects(values) {
 }
 
 export function visibleItemLabel(item) {
-  if (text(item?.name)) return item.name;
-  const slot = item?.visual_profile_snapshot?.equipment_slot
-    ?? item?.placement?.equipment_slot_category_id;
-  if (['base_garment', 'base'].includes(slot)) return 'нижняя одежда';
-  if (['outer_garment', 'outer'].includes(slot)) return 'верхняя одежда';
-  if (slot === 'headwear') return 'головной убор';
-  return 'предмет снаряжения';
+  const resolved = resolveVisibleItemLabel(item);
+  return resolved.kind === 'labeled' ? resolved.label : null;
 }
 
 function text(value) {

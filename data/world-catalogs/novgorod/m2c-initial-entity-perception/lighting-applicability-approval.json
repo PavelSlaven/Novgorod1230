@@ -1,0 +1,36 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "novgorod_m2c_same_g6_entity_light_weather_applicability_v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/approve_entity_light_scope",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "independence_basis": "Independent data applicability review; did not author the natural placement, entity perception candidate or production code."
+  },
+  "reviewed_checkout_head": "7f3cc3283de8100ea6a833c710b899847fadfd88",
+  "source_pins": {
+    "natural_placement_candidate_sha256": "71de9afaeb73825fd32db2e57cf9ad7c5390b427c6b6c7892e81777740429099",
+    "natural_placement_data_approval_sha256": "f9715b568647aab7c0e9062f0339f8f2cb38f7a1600d5b31db682f30afd4f33f",
+    "initial_entity_perception_candidate_v2_sha256": "5c8ec5864343d38f7e3f9a9e3f7645f50b10eea4f88bf1d2f1b8c22faa151730",
+    "initial_entity_perception_approval_v2_sha256": "377c48d732900db734094a6045313c7d98dd57d269d356831915586a1328f7a2",
+    "spatial_visibility_contract_sha256": "2f4d7b3c8359061a203224620e39f6709891833c8e08c6255507630a82bfc52a",
+    "g6_template_slots_sha256": "6f63f52c3be0293e8d365f66fc0ee996b0edced2b468fc40d22d449c36f7708e"
+  },
+  "source_paths": {
+    "natural_placement_candidate": "data/world-catalogs/novgorod/m2c-natural-placement/candidate.json",
+    "natural_placement_data_approval": "data/world-catalogs/novgorod/m2c-sol-data-approval.json",
+    "initial_entity_perception_candidate_v2": "data/world-catalogs/novgorod/m2c-initial-entity-perception/candidate-v2.json",
+    "initial_entity_perception_approval_v2": "data/world-catalogs/novgorod/m2c-initial-entity-perception/approval-v2.json",
+    "spatial_visibility_contract": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+    "g6_template_slots": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json"
+  },
+  "scope": "The approved natural placement policy m2c_natural_current_perception_conditions@1 lighting_by_light_state and weather_by_visibility may provide current ambient lighting and weather contributions for NPCs, committed ground items and committed exit targets in the exact same current G6 as a matching natural placement. This applies only when the placement's exact scene_physical_pins match the committed G6, the target position is in that G6, and current Temporal light and weather resolve the policy keys. No new authored per-entity lighting or weather data is required for this shared ambient contribution.",
+  "conditions": "Use current committed positions and the complete current visibility modifier set. Resolve each target through Spatial visibility geometry, portal state and its current stable cover, dynamic occlusion and concealment. Missing current facts, unknown policy keys, a mismatched G6 or different physical exposure are typed gaps; this approval supplies neither a default observation nor an entity identity.",
+  "other_g6": "Fail closed with entity_lighting_policy_required; no transfer of the natural placement policy across G6 boundaries.",
+  "evidence": "All 160 approved natural placement rows reference the same condition policy and match their G6 template physical pins. Every row has overhead_cover_id=none and intra_g6_visibility_mode=default_clear. Spatial §7.1 combines target lighting and weather with current geometry and target conditions; the existing natural perception reader already checks exact placement, committed G6 pins and current Temporal policy values.",
+  "excludes": "Per-entity observation, entity creation or recognition, target-specific light sources without current authority, incomplete modifier state, other G6, import, runtime activation and release approval.",
+  "import_authorized": false,
+  "runtime_activation_authorized": false,
+  "reviewed_on": "2026-09-24"
+}

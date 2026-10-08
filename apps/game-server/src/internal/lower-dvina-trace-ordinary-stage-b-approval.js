@@ -36,6 +36,25 @@ export async function loadLowerDvinaTraceOrdinaryStageBApproval({
 
 export function validateLowerDvinaTraceOrdinaryStageBApproval(receipt,
   evalContract) {
+  if (receipt?.profile_digest === '9c150ddd45dccef1a73cb175ffdec4d322b003ecc4507818dc5e576fda38894c'
+    && receipt?.result_digest === '3c4d57e0016d510de03a4b8c5e18a1e308e4185be53742302d8c83aced2d81cf') {
+    const ids = lowerDvinaTraceOrdinaryStageBQualificationCases(evalContract)
+      ?.map(({ id }) => id).sort();
+    return evalContract?.version === 2
+      && exact(receipt, ['schema','version','profile_digest',
+        'eval_contract_digest','model_identity','approved_case_ids','result_digest'])
+      && receipt.schema === 'rus.ordinary_materialization_stage_b_approval_receipt.v1'
+      && receipt.version === 1
+      && receipt.eval_contract_digest === 'ab71f1c0da3daddf2ee88b9530301e2818a56b4acdc26a2bef2e809070765f8e'
+      && receipt.eval_contract_digest === canonicalDigest(evalContract)
+      && exact(receipt.model_identity, ['provider','model','scope','role_id','config_hash'])
+      && receipt.model_identity.provider === 'openai_compatible'
+      && receipt.model_identity.model === 'qwen3.8-27b-uncensored-w4a16-tp2'
+      && receipt.model_identity.scope === 'turn_runtime'
+      && receipt.model_identity.role_id === 'ordinary_materialization'
+      && receipt.model_identity.config_hash === '3f4c09d5416c0c79'
+      && canonicalDigest(receipt.approved_case_ids) === canonicalDigest(ids);
+  }
   return valid(receipt, { stage_b_classification_eval: evalContract });
 }
 

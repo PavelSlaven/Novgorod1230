@@ -1,0 +1,16 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "novgorod_natural_source_stable_cover_v1",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-candidate.json",
+  "candidate_sha256": "5b2fc71f25042e64ea5de8b3256caa33f264baeac4712af49207982a7f1ae41b",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewed_head": "7d41b70dcf23a3d0712b6aaa8df27e259fd1f298",
+  "reviewed_on": "2026-09-24",
+  "auditor_ref": "/root/approve_cover_landscape",
+  "independence_basis": "Independent gpt-6-sol/high review; did not author or modify candidate bytes. Recomputed candidate and source archive SHA-256, checked all seven referenced XLSX rows, exact 32 G4 seed and approved natural-candidate coverage, editorial mapping, initial coniferous landscape, and active Spatial visibility boundary.",
+  "scope": "Seven landscape_template_id rows provide stable natural-source cover for the 32 approved G4 landscapes. The openness-to-cover mapping is editorial; openness values and template identities are sourced. No G6-slot-specific cover is approved.",
+  "limits": "No current source presence, entity-specific cover, observer perception, dynamic occlusion, concealment, turn, weather, scene function, import, or runtime activation is approved.",
+  "import_authorized": false,
+  "runtime_activation_authorized": false,
+  "release_activation_authorized": false
+}

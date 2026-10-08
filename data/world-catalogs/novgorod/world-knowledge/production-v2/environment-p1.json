@@ -1,0 +1,936 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:maltby-2017-nw-russia",
+      "title": "From bovid to beaver: mammal exploitation in Medieval northwest Russia",
+      "authors": [
+        "Maltby, Mark"
+      ],
+      "publication": "Oxford Handbook of Zooarchaeology (2017)",
+      "source_kind": "scholarship",
+      "citation": "https://academic.oup.com/edited-volume/34661/chapter-abstract/295340039",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:hamilton-dyer-2002-birds",
+      "title": "The Bird Resources of Medieval Novgorod, Russia",
+      "authors": [
+        "Hamilton-Dyer, Sheila"
+      ],
+      "publication": "Acta Zoologica Cracoviensia 45 (2002)",
+      "source_kind": "scholarship",
+      "citation": "https://www.researchgate.net/publication/242121278_The_Bird_Resources_of_Medieval_Novgorod_Russia",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:dolgikh-alexandrovskiy-2010-soils",
+      "title": "Soils and Cultural Layers in Velikii Novgorod",
+      "authors": [
+        "Dolgikh, Andrey",
+        "Alexandrovskiy, Alexander"
+      ],
+      "publication": "Eurasian Soil Science 43 (2010), 477–487",
+      "source_kind": "scholarship",
+      "citation": "https://www.researchgate.net/publication/225440532_Soils_and_Cultural_Layers_in_Velikii_Novgorod",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:spiridonova-aleshinskaya-palynology-2012",
+      "title": "Results of Palynological Investigations of the Archaeological Sites in the Lake Ilmen and Lake Kubenskoye Study Areas",
+      "authors": [
+        "E. A. Spiridonova",
+        "A. S. Aleshinskaya"
+      ],
+      "publication": "The Archaeology of Medieval Novgorod in Context (2012), pp. 10–42",
+      "source_kind": "scholarship",
+      "citation": "https://dokumen.pub/the-archaeology-of-medieval-novgorod-in-context-studies-of-centre-periphery-relations-9781842172780-2011050182.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:p1-domestic",
+      "source_ref": "source:maltby-2017-nw-russia",
+      "anchor": {
+        "section": "Abstract"
+      },
+      "note": "Regional zooarchaeological synthesis; no 1230 census or present stock.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:p1-birds",
+      "source_ref": "source:hamilton-dyer-2002-birds",
+      "anchor": {
+        "section": "Abstract; recovery methods; seasonal wild-bird discussion"
+      },
+      "note": "Bird-bone record carries recovery bias; no current birds/catch.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:p1-soils",
+      "source_ref": "source:dolgikh-alexandrovskiy-2010-soils",
+      "anchor": {
+        "section": "Abstract"
+      },
+      "note": "Excavated urban/buried soil context, not general terrain prediction.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:novgorod-wetland-pollen",
+      "source_ref": "source:spiridonova-aleshinskaya-palynology-2012",
+      "anchor": {
+        "page": "21",
+        "section": "Change in the vegetation in the environs of Ryurik Gorodishche around Lake Ilmen; beginning of the thirteenth century"
+      },
+      "note": "Independent verification/verification-wetland-stems.md WLS01. Pollen-inferred regional low-ground waterlogging; sphagnum remains moss, source Spirea (Filipendula) spelling retained. Not reed presence, usable stock, gathering or an action recipe.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:domestic-cattle",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:sheep-goat",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:domestic-pig",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:horse-use",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:bird-utilization",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:seasonal-wildfowl",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:buried-soil",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:waterlogged-cultural-layer",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:novgorod-wetland-vegetation-context",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-cattle",
+      "domain": "environment",
+      "subject_ref": "wk:environment:domestic-cattle",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "cattle_dominant_in_medieval_faunal_assemblages"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-domestic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-sheep-goat",
+      "domain": "environment",
+      "subject_ref": "wk:environment:sheep-goat",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "sheep_goat_less_represented_in_studied_assemblages"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-domestic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-pig",
+      "domain": "environment",
+      "subject_ref": "wk:environment:domestic-pig",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "pig_remains_attested_in_medieval_assemblages"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-domestic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-horse-transport",
+      "domain": "environment",
+      "subject_ref": "wk:environment:horse-use",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "horses_valued_principally_for_transport"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-domestic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-horse-meat",
+      "domain": "environment",
+      "subject_ref": "wk:environment:horse-use",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "horsemeat_consumption_attested"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-domestic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-bird-taxa",
+      "domain": "environment",
+      "subject_ref": "wk:environment:bird-utilization",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "chicken_and_duck_common_in_identified_bird_remains"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-birds"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-wildfowl-season",
+      "domain": "environment",
+      "subject_ref": "wk:environment:seasonal-wildfowl",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "wild_bird_hunting_largely_seasonal_with_poultry_mallard_exceptions"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-birds"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-buried-soil",
+      "domain": "environment",
+      "subject_ref": "wk:environment:buried-soil",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "buried_soddy_podzolic_soils_show_cultivation_or_meadow_formation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-soils"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:environment-p1-waterlogged-layer",
+      "domain": "environment",
+      "subject_ref": "wk:environment:waterlogged-cultural-layer",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "lower_organic_layers_waterlogged_peatlike_with_preserved_wood"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:p1-soils"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:novgorod-wetland-pollen-context",
+      "domain": "environment",
+      "subject_ref": "wk:environment:novgorod-wetland-vegetation-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "early_thirteenth_century_ryurik_gorodishche_low_ground_waterlogging_inferred_from_sphagnum_horsetail_spirea_filipendula_pollen_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:novgorod-wetland-pollen"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:domestic-cattle",
+      "locale": "ru",
+      "labels": [
+        "Крупный рогатый скот в средневековых находках"
+      ],
+      "short_definition": "Крупный рогатый скот в средневековых находках",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:domestic-cattle",
+      "locale": "en",
+      "labels": [
+        "Cattle in medieval assemblages"
+      ],
+      "short_definition": "Cattle in medieval assemblages",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:sheep-goat",
+      "locale": "ru",
+      "labels": [
+        "Овцы и козы в средневековых находках"
+      ],
+      "short_definition": "Овцы и козы в средневековых находках",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:sheep-goat",
+      "locale": "en",
+      "labels": [
+        "Sheep/goat in medieval assemblages"
+      ],
+      "short_definition": "Sheep/goat in medieval assemblages",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:domestic-pig",
+      "locale": "ru",
+      "labels": [
+        "Свиньи в средневековых находках"
+      ],
+      "short_definition": "Свиньи в средневековых находках",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:domestic-pig",
+      "locale": "en",
+      "labels": [
+        "Pigs in medieval assemblages"
+      ],
+      "short_definition": "Pigs in medieval assemblages",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:horse-use",
+      "locale": "ru",
+      "labels": [
+        "Средневековое использование лошадей"
+      ],
+      "short_definition": "Средневековое использование лошадей",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:horse-use",
+      "locale": "en",
+      "labels": [
+        "Medieval horse use"
+      ],
+      "short_definition": "Medieval horse use",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:bird-utilization",
+      "locale": "ru",
+      "labels": [
+        "Средневековое использование птиц"
+      ],
+      "short_definition": "Средневековое использование птиц",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:bird-utilization",
+      "locale": "en",
+      "labels": [
+        "Medieval bird utilization"
+      ],
+      "short_definition": "Medieval bird utilization",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:seasonal-wildfowl",
+      "locale": "ru",
+      "labels": [
+        "Сезонная доступность диких птиц"
+      ],
+      "short_definition": "Сезонная доступность диких птиц",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:seasonal-wildfowl",
+      "locale": "en",
+      "labels": [
+        "Seasonal wildfowl availability"
+      ],
+      "short_definition": "Seasonal wildfowl availability",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:buried-soil",
+      "locale": "ru",
+      "labels": [
+        "Древняя погребённая почва Новгорода"
+      ],
+      "short_definition": "Древняя погребённая почва Новгорода",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:buried-soil",
+      "locale": "en",
+      "labels": [
+        "Novgorod buried soil"
+      ],
+      "short_definition": "Novgorod buried soil",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:waterlogged-cultural-layer",
+      "locale": "ru",
+      "labels": [
+        "Водонасыщенный культурный слой"
+      ],
+      "short_definition": "Водонасыщенный культурный слой",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:waterlogged-cultural-layer",
+      "locale": "en",
+      "labels": [
+        "Waterlogged cultural layer"
+      ],
+      "short_definition": "Waterlogged cultural layer",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:novgorod-wetland-vegetation-context",
+      "locale": "ru",
+      "labels": [
+        "Новгородский контекст низинной растительности"
+      ],
+      "short_definition": "Палинологическая реконструкция переувлажнённых низин у Рюрикова городища",
+      "search_aliases": [
+        "Растительность низин Ильменя",
+        "Хвощ сфагновые мхи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:novgorod-wetland-vegetation-context",
+      "locale": "en",
+      "labels": [
+        "Novgorod low-ground vegetation context"
+      ],
+      "short_definition": "Palynological reconstruction of waterlogged lower ground near Ryurik Gorodishche",
+      "search_aliases": [
+        "Lake Ilmen low-ground vegetation",
+        "Horsetail sphagnum mosses"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-cattle",
+      "locale": "ru",
+      "runtime_text": "В исследованных средневековых костных комплексах Новгорода преобладает крупный рогатый скот. Ручной сбор мог усиливать представленность крупных костей; это не перепись стад и не наличное мясо или молоко.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-cattle",
+      "locale": "en",
+      "runtime_text": "Cattle dominate the studied medieval Novgorod faunal assemblages. Hand collection may favour larger bones; this is not a herd census or an available meat/milk stock.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-sheep-goat",
+      "locale": "ru",
+      "runtime_text": "Овцы и козы представлены в изученных средневековых комплексах, но обычно слабее крупного рогатого скота. Группировка овца/коза не задаёт вид и число животных конкретного места.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-sheep-goat",
+      "locale": "en",
+      "runtime_text": "Sheep and goats occur in the studied medieval assemblages, usually less prominently than cattle. The sheep/goat grouping establishes no species or animal count in a particular place.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-pig",
+      "locale": "ru",
+      "runtime_text": "Остатки свиней известны в изученных средневековых комплексах Новгорода и округи. Из отмеченного авторами изменения их роли в поздние периоды нельзя выводить поголовье или спад именно в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-pig",
+      "locale": "en",
+      "runtime_text": "Pig remains occur in the studied medieval Novgorod and hinterland assemblages. A reported later change in importance establishes neither a herd count nor a decline specifically in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-horse-transport",
+      "locale": "ru",
+      "runtime_text": "В обзоре средневекового хозяйства региона лошади рассматриваются прежде всего как транспортные животные. Это совместимость использования, не готовая лошадь, упряжь или маршрут.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-horse-transport",
+      "locale": "en",
+      "runtime_text": "The regional medieval review identifies transport as a principal value of horses. This supports a use context, not an available horse, harness or route.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-horse-meat",
+      "locale": "ru",
+      "runtime_text": "Для средневекового региона засвидетельствовано употребление конины; это не универсальная пищевая норма, рацион NPC или запас мяса.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-horse-meat",
+      "locale": "en",
+      "runtime_text": "Horsemeat consumption is attested in the medieval region; this is not a universal dietary norm, an NPC diet or a meat stock.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-bird-taxa",
+      "locale": "ru",
+      "runtime_text": "Среди определённых птичьих остатков Новгорода и Рюрикова городища наиболее часты куры и утки. Просеивание показывает смещение выборки против мелких костей; кости кряквы не всегда отделимы от домашней утки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-bird-taxa",
+      "locale": "en",
+      "runtime_text": "Chicken and duck dominate identified bird remains from Novgorod and Ryurik Gorodishche. Sieving exposes bias against small bones; mallard bones are not always distinguishable from domestic duck.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-wildfowl-season",
+      "locale": "ru",
+      "runtime_text": "По исследованию диких птиц их добыча во многом зависела от сезонных прилётов; домашняя птица и кряква могли быть доступны круглый год. Это не календарь прилёта и не гарантированная добыча.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-wildfowl-season",
+      "locale": "en",
+      "runtime_text": "The bird study interprets much wild-bird hunting as seasonal, while domestic poultry and mallard could be available year-round. This is neither an arrival calendar nor a guaranteed catch.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-buried-soil",
+      "locale": "ru",
+      "runtime_text": "В двух новгородских раскопах под культурными слоями X–XI веков исследованы дерново-подзолистые почвы со следами возделывания либо лугового формирования. Это локальная почвенная история, не описание любого нынешнего поля.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-buried-soil",
+      "locale": "en",
+      "runtime_text": "Two Novgorod excavations exposed soddy-podzolic soils beneath cultural layers beginning in the tenth–eleventh centuries, showing cultivation or meadow formation. This is local soil history, not a description of every current field.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-waterlogged-layer",
+      "locale": "ru",
+      "runtime_text": "Нижние органические культурные слои изученных новгородских раскопов были водонасыщенными, торфоподобными и сохраняли древесные остатки. Из этого не следует доступный торфяной топливный источник или пригодный строительный лес.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:environment-p1-waterlogged-layer",
+      "locale": "en",
+      "runtime_text": "Lower organic layers in the studied Novgorod excavations were waterlogged, peatlike and preserved wood remains. This establishes neither a peat-fuel source nor usable construction timber.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:novgorod-wetland-pollen-context",
+      "locale": "ru",
+      "runtime_text": "В палинологической реконструкции окрестностей Рюрикова городища для начала XIII века переувлажнение, особенно низин, выводится по постоянному присутствию сфагновых мхов и хвоща, а также Spirea (Filipendula) среди травянистых растений. Это косвенный региональный контекст для 1100–1300 годов, не доказательство тростника, осоки, живого заросшего участка, пригодности стеблей или доступного запаса в сцене.",
+      "search_aliases": [
+        "Растительность низин Ильменя",
+        "Хвощ сфагновые мхи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:novgorod-wetland-pollen-context",
+      "locale": "en",
+      "runtime_text": "In the palynological reconstruction of the Ryurik Gorodishche environs for the beginning of the thirteenth century, waterlogging, especially on lower ground, is inferred from constant sphagnum mosses and horsetail, with Spirea (Filipendula) among herbaceous plants. This is inferred regional context for 1100–1300, not proof of reeds, sedges, a current stand, usable stems or available scene stock.",
+      "search_aliases": [
+        "Lake Ilmen low-ground vegetation",
+        "Horsetail sphagnum mosses"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:static-ecology-relations-v1-sickness-behaviour","claim_ref":"claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour","claim_digest":"8c69826083e5fad1ddb3363374a5343118a35c6b61a427201fe671ec76888cf2","candidate_ref":"git:fd555608709bc9e11647a85383f8d4bf10e825f1:data/world-catalogs/novgorod/world-knowledge/production-v1/static-ecology-relations-v1.json#claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour","auditor_ref":"/root/smoke_source_verifier","independence_basis":"Independent direct PubMed abstract review.","evidence_checked":["evidence:research-vertebrate-infection-sickness-behaviour"],"review_ref":"verification/static-ecology-relations-v1.md","verdict":"APPROVE","limits":"Conditional association only; no infection, cause, diagnosis, particular behaviour, transmission, intent, mortality, or treatment."}
+  ]
+}

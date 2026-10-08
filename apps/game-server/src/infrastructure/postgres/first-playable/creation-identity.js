@@ -50,10 +50,12 @@ export function assertNewGameCreationIdentity({
 }
 
 function legacyScenarioCreationIdentity(partyId, statePayload) {
-  if (statePayload?.schema ===
-      'rus.lower_dvina_trace_initial_party_snapshot.v2') {
+  if (['rus.lower_dvina_trace_initial_party_snapshot.v2',
+    'rus.authored_start_initial_party_snapshot.v1',
+    'rus.authored_start_initial_party_snapshot.v3']
+    .includes(statePayload?.schema)) {
     const request = statePayload.request_identity;
-    if (request?.scenario_id !== 'lower_dvina_trace_v1'
+    if (typeof request?.scenario_id !== 'string' || !request.scenario_id
       || request.party_id !== partyId) return null;
     const prefix = `new-game:${request.scenario_id}:`;
     if (!String(request.idempotency_key ?? '').startsWith(prefix)) {

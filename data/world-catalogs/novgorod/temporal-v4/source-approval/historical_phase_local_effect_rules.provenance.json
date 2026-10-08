@@ -14,5 +14,22 @@
     "decision_id": "decision:historical_phase_local_effect_rules:2026-07-24-reaudit-2",
     "method": "contract audit against the handoff requirements, canonical repository snapshot, exact source bytes, controlled vocabularies, and explicitly labeled bounded reconstruction authorized by the user",
     "notes": "The rule binds a concrete cited 1230 Novgorod famine record at its source precision, represents the year as an exact calendar interval without inventing a narrower date, keeps numerical magnitudes unauthored, and preserves hidden-phase/knowledge separation."
+  },
+  {
+    "provenance_id": "provenance:historical_phase_local_effect_rules:novgorod_v2",
+    "status": "approved",
+    "source_ids": [
+      "source:historical_phase_local_effect_rules:book_667380_svod_letopisnyh_izvestiy",
+      "source:historical_phase_local_effect_rules:canonical_historical_policy",
+      "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+      "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+      "source:historical_phase_local_effect_rules:user_reconstruction_authorization"
+    ],
+    "approved_by": "Claude Opus 5.5, independent approval pass",
+    "approver_role": "independent external data authoring auditor",
+    "approved_at": "2026-09-26T21:29:41+03:00",
+    "decision_id": "decision:historical_phase_local_effect_rules:2026-09-26-reaudit-3",
+    "method": "independent approval pass (separate from the authoring pass): re-verified excerpt bytes and sha256 (90ec964e...eca19) of book_667380 against Novgorod-game-base books-evidence-v1/history-events-knowledge.csv rows book_id 667380 para_no 486 and 487 (each quote one sentence, byte-exact); recomputed formal_range and formal_game_timestamp_range against owner decisions D19 and D22 and the novgorod_julian_lmst_1230_1233_v2 epoch (Julian common years 1230 and 1231; 256*1440=368640; 730*1440=1051200); checked that source_precision and range_semantics state a day-exact start and a year-level end without overclaiming; checked that no price, population, inventory or mortality magnitude is inferred; checked prior-decision snapshot sha256 equals the previously approved decision bytes; checked the diff touches only this family's files.",
+    "notes": "Reissue: adds source book_667380 (¶486 frost on Воздвижение 1230-09-14, ¶487 arrival of German bread during 1231) alongside the existing four sources; narrows formal_range.start_inclusive to day precision (1230-09-14 local_day_start, owner decision D19) and sets formal_range.end_exclusive to 1232-01-01 local_day_start at year precision (owner decision D22); formal_game_timestamp_range updated to whole_minutes 368640..1051200 accordingly. Authored by the data-authoring pass; approved by a separate independent approval pass."
   }
 ]

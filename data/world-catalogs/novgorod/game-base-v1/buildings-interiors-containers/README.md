@@ -13,12 +13,15 @@
 
 ## Как пересобрать и проверить
 
+Для standalone-сборки после изменения overlay сначала из корня `game-base-v1` выполните `python3 scripts/build-master-material-view.py`. Он строит узкое представление из неизменённого `sources/master-archive-v1` и `source-overlays/master-material-materials.csv` в `generated/master-material-material-view.json`; `generated-freshness.test.mjs` запускает producer автоматически перед сборщиками.
+
 ```
-python scripts/build.py      # пишет все CSV/JSON и scripts/build_counts.json
-python scripts/validate.py   # приёмочные проверки 6 доменов; код 1 при ошибке
+python3 scripts/build.py              # пишет все CSV/JSON и scripts/build_counts.json
+python3 scripts/build.py --check      # сравнивает ожидаемые байты без записи в checkout
+python3 scripts/validate.py           # приёмочные проверки 6 доменов; код 1 при ошибке
 ```
 
-Авторские данные лежат в `scripts/src/*.py` (правка только там). Внешние входы вне репозитория задаются переменными `MATCULT_DIR`, `MASTER_DIR`, `NOV1230_DB` (по умолчанию — распакованные архивы в scratchpad и `Downloads/novgorod_1230(1) (1).sqlite`). Для офлайн-проверки build пишет снимок всех упомянутых предметов matcult (`interiors/matcult_item_refs.csv`).
+Авторские данные лежат в `scripts/src/*.py` (правка только там). Входы закреплены в `data/world-catalogs/novgorod/sources/`: `bic-reproducible-inputs-v1` содержит snapshots каталога и anti-patterns material-culture, а реестр источников берётся из общего `material-culture-scenes-v1/data/sources.csv`; там же хранится единственная курированная SQLite, общая для BIC и items. Стандартный `master-archive-v1` содержит `material_entities.csv`, `state_variants.csv` и `spawn_profiles.csv`; если в нём нет `workshop_profiles.csv`, по умолчанию берётся BIC snapshot. `MASTER_DIR` задаёт полный корень `.../data` альтернативного MASTER snapshot и должен включать все четыре таблицы; при явном override fallback не используется. Альтернативы остальных входов задаются через `MATCULT_DIR` и `NOV1230_DB`. Отсутствующий или несовместимый вход завершает build до записи выходов. Для офлайн-проверки build пишет снимок всех упомянутых предметов matcult (`interiors/matcult_item_refs.csv`).
 
 ## Очередь `needs_check.csv`
 

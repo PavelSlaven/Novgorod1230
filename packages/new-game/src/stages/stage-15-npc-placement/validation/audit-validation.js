@@ -28,6 +28,9 @@ export function buildStage15NpcPlacementCodePrecheck(draft, input) {
   if ((input?.npc_candidate_set?.npc_candidates ?? []).some((candidate) => candidate?.require_complete_actor_appearance === true)) {
     checks.actor_base_appearance_valid = !hasAny(codes, ['NPC_PLACEMENT_ACTOR_APPEARANCE_INCOMPLETE', 'NPC_PLACEMENT_ACTOR_APPEARANCE_AUTHORED_VALUE_CHANGED']);
   }
+  if ((draft?.npc_instances ?? []).some((npc) => npc?.attribute_generation_gate === 'active')) {
+    checks.actor_base_attributes_valid = !codes.has('NPC_PLACEMENT_ACTOR_ATTRIBUTES_INCOMPLETE');
+  }
   return {
     version: 1,
     schema: STAGE15_PRECHECK_SCHEMA,

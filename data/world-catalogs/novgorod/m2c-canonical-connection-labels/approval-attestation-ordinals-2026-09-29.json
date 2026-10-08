@@ -1,0 +1,17 @@
+{
+  "schema": "rus.m2c_canonical_connection_labels_authoring_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "candidate_ref": "novgorod_m2c_canonical_connection_labels_v1@1",
+  "candidate_sha256": "a52aa3471050c92f38347a28dd5fe311c598228aa0f0204c811c4facb459bb42",
+  "reviewer": "claude-opus-5.5 — reviewer; not the candidate author (author: rt-walk executor, Claude Sonnet 5.5)",
+  "reviewed_on": "2026-09-29",
+  "source_issue": "PavelSlaven/Novgorod1230#133 (D49)",
+  "scope": "Exact 454 approved canonical G5 connection binding ids (m2c-g4-expansion-v1, both versions share id and label); DATA_ONLY neutral per-source-position choice ordinals 'Проход N' numbered after the local edge ordinals.",
+  "source_pins": {
+    "m2c_g4_expansion_import_manifest_sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133"
+  },
+  "checks": "Mechanical rule, checked deterministically by the reviewer: derive.mjs output equals candidate.json byte-for-byte in content (454 rows); source dataset sha matches the approved import manifest; 454 unique label ids, one per approved binding id, 0 missing bindings; 195 source positions (from_canonical_g5_id + departure slot) with 0 duplicate labels per position; numbering starts after the largest local edge ordinal, so no collision with local edge labels; candidate.test.mjs 3 pass, 1 skipped pending this attestation.",
+  "limits": "Approval asserts no destination, bearing, distance, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission remains mandatory. Superseded per connection by an approved D1-C phrase (task walk-labels) when available.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

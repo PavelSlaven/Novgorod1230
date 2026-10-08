@@ -1,12 +1,14 @@
-# Архитектура кодовой материализации мира
+# Специализация Spatial v3: архитектура кодовой материализации мира
+
+> H1 / Приоритет: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.10.
 
 **Статус:** active production normative после завершённого
 `versioned production activation cutover`; historical P28 evidence само
 runtime не активировало.
 **Версия target:** spatial v3 / G0–G6 v4.2.0.
-**Приоритет:** высший норматив границы authoring data, кода, LLM, `world_base` и `party_runtime`.
+**Приоритет:** ACTIVE SPECIALIZATION Spatial v3 поверх общего [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md); детали хода и NPC — в [`turn_step_llm_contract.md`](turn_step_llm_contract.md), NPC-контрактах и `code_driven`. Не претендует на «высший норматив» всего корпуса и не задаёт закрытый список ролей LLM. Источник: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.10.
 
-**Temporal amendment:** active target normative
+**Temporal amendment:** действующий норматив (формулировка «целевой»→«действующий»: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.11)
 `temporal_world_and_interruptible_activities.md`,
 current `temporal-world-v1.1` / Spatial DTO `4.4.0-target.1`, сохраняя
 immutable `temporal-world-v1` / `4.3.0-target.1`. Production activation
@@ -55,7 +57,7 @@ Generated G5 ограничен утверждённым profile, frontier, temp
 
 Preparation обязана завершить required target/transfer G5 and G6 bindings до activation executable plan. `party_route_plan` immutable; изменение endpoint, carrier, method, static dependency или recovery target создаёт новый plan/execution. Время, progress и results не переписываются.
 
-LLM допускается только для bounded decision, разрешённой конкретизации, аудита, player character и prose from approved visible context. LLM не пишет SQL, DB state или произвольный patch/write plan.
+В Spatial v3 LLM участвует в bounded decision, разрешённой конкретизации, аудите, player character и prose from approved visible context; роли хода и NPC задают [`turn_step_llm_contract.md`](turn_step_llm_contract.md) и NPC-контракты. LLM не пишет SQL, DB state или произвольный patch/write plan. Источник расширения списка ролей: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.10 (REVIEW-028 F4).
 
 ## 5. Bounded decision
 

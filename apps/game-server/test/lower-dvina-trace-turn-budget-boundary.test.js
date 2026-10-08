@@ -197,6 +197,28 @@ test('initial public session read uses its gameplay deadline', async () => {
   assert.equal(queries[2], 'RESET statement_timeout');
 });
 
+test('initial public session read without an active deadline uses the pool directly', async () => {
+  let poolReads = 0, connections = 0;
+  const pool = {
+    async query(query) {
+      poolReads += 1;
+      assert.match(typeof query === 'string' ? query : query.text,
+        /party_server_sessions/u);
+      return { rows: [{
+        request_id: 'request', stage26_result: {}, delivery_attempt: {},
+        delivery_ack_result: null, screen: {}, turn_number: 0,
+        last_turn_id: null, state_version: 1, updated_at: null
+      }] };
+    },
+    connect() { connections += 1; throw new Error('unexpected connection'); }
+  };
+  await loadSession(pool, 'party', {
+    turnBudget: { remaining: () => ({}) }
+  });
+  assert.equal(poolReads, 1);
+  assert.equal(connections, 0);
+});
+
 test('late Postgres acquisition releases without query', async () => {
   let released = 0;
   let queries = 0;
@@ -264,6 +286,48 @@ test('deadline transaction rolls back when timeout setup reaches deadline', asyn
     (tx) => tx.query('SELECT mutation')), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
   assert.equal(queries.includes('SELECT mutation'), false);
   assert.equal(queries.includes('ROLLBACK'), true);
+});
+
+test('deadline transaction uses read-only repeatable-read BEGIN without late SET TRANSACTION', async () => {
+  const queries = [];
+  const turnBudget = { assertWithinDeadline() {},
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
+  const client = {
+    async query(query) { queries.push(query); return {}; },
+    release() {}
+  };
+  const pool = { connect(callback) { callback(null, client); } };
+  await withTurnDeadlineTransaction(pool, turnBudget,
+    (tx) => tx.query('SELECT observations'),
+    { beginMode: 'repeatable_read_read_only' });
+  assert.equal(queries[0], 'SET statement_timeout = 1000');
+  assert.equal(queries[1], 'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+  assert.equal(queries.includes('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY'), false);
+  assert.equal(queries.at(-2), 'COMMIT');
+  assert.equal(queries.at(-1), 'RESET statement_timeout');
+});
+
+test('deadline transaction keeps the default timeout and begin order', async () => {
+  const queries = [];
+  const turnBudget = { assertWithinDeadline() {},
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
+  const client = {
+    async query(query) { queries.push(query); return {}; },
+    release() {}
+  };
+  const pool = { connect(callback) { callback(null, client); } };
+  await withTurnDeadlineTransaction(pool, turnBudget, async () => 'done');
+  assert.deepEqual(queries.slice(0, 2), ['SET statement_timeout = 1000', 'BEGIN']);
+});
+
+test('deadline transaction rejects an unknown begin mode before acquiring a client', async () => {
+  let connections = 0;
+  const pool = { connect() { connections += 1; throw new Error('unexpected connection'); } };
+  await assert.rejects(withTurnDeadlineTransaction(pool, {
+    assertWithinDeadline() {},
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 })
+  }, async () => {}, { beginMode: 'arbitrary SQL' }), /Unsupported transaction begin mode/u);
+  assert.equal(connections, 0);
 });
 
 test('deadline transaction returns after an atomic commit without rollback', async () => {

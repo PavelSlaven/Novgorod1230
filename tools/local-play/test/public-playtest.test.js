@@ -1,8 +1,17 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { DETERMINISTIC_PROOFS, IMPOSSIBLE_PROBE, PUBLIC_PLAYTEST_MANIFEST, manifestDigest, preflightPublicPlaytestSeed, releaseCombatBranch, roleGate, runPublicPlaytest, sanitizeReport, stopOwnedServer } from '../public-playtest.mjs';
+import { DETERMINISTIC_PROOFS, IMPOSSIBLE_PROBE, PUBLIC_PLAYTEST_MANIFEST, assertCurrentCatalog, manifestDigest, preflightPublicPlaytestSeed, releaseCombatBranch, roleGate, runPublicPlaytest, sanitizeReport, stopOwnedServer } from '../public-playtest.mjs';
 
 test('public playtest manifest is stable 20–30 named turns', () => { assert.equal(PUBLIC_PLAYTEST_MANIFEST.length, 25); assert.equal(new Set(PUBLIC_PLAYTEST_MANIFEST.map((turn) => turn.id)).size, 25); assert.match(manifestDigest(), /^[a-f0-9]{64}$/u); });
+test('public playtest selects Lower Dvina inside the neutral multi-start catalog', () => {
+  assert.doesNotThrow(() => assertCurrentCatalog({ scenarios: [
+    { scenario_id: 'vikhtuy_fishing_camp_v1', available: true },
+    { scenario_id: 'lower_dvina_trace_v1', available: true }
+  ] }));
+  assert.throws(() => assertCurrentCatalog({ scenarios: [
+    { scenario_id: 'lower_dvina_trace_v1', available: false }
+  ] }), { code: 'PUBLIC_CATALOG_INVALID' });
+});
 test('default seed passes deterministic causal preflight and branch 0 fails before server start', async () => {
   let starts = 0;
   await assert.rejects(() => runPublicPlaytest({ branch: 0, git: cleanGit,

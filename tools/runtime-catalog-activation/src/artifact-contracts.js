@@ -122,6 +122,7 @@ export function buildBaseWorldCompatibilityManifest({
   compatibleWorldCatalogDigest,
   sourceRuntimeConfigurationDigest,
   sourceArtifactPaths,
+  sourceArtifactDigests,
   sourceCommitSha,
   validationContractVersion
 }) {
@@ -130,6 +131,23 @@ export function buildBaseWorldCompatibilityManifest({
       || sourceArtifactPaths.some((value) => !String(value ?? '').trim())
       || !/^[a-f0-9]{40}$/u.test(String(sourceCommitSha ?? ''))) {
     throw new TypeError('Exact source paths and source commit SHA are required.');
+  }
+  if (sourceArtifactDigests !== undefined) {
+    if (!Array.isArray(sourceArtifactDigests)
+        || sourceArtifactDigests.length !== new Set(sourceArtifactPaths).size
+        || new Set(sourceArtifactDigests.map(({ path }) => path)).size !== sourceArtifactDigests.length
+        || sourceArtifactDigests.some(({ path, sha256 }) =>
+          !sourceArtifactPaths.includes(path) || !/^[a-f0-9]{64}$/u.test(sha256))) {
+      throw new TypeError('Exact source artifact digests are required.');
+    }
+    return withDigest({
+      schema: 'rus.base_world_compatibility_manifest.v2',
+      compatible_world_revision_id: requiredText(compatibleWorldRevisionId, 'compatibleWorldRevisionId'),
+      compatible_world_catalog_digest: requireDigest(compatibleWorldCatalogDigest, 'compatibleWorldCatalogDigest'),
+      source_runtime_configuration_digest: requireDigest(sourceRuntimeConfigurationDigest, 'sourceRuntimeConfigurationDigest'),
+      source_artifact_digests: [...sourceArtifactDigests].sort((a, b) => a.path.localeCompare(b.path)),
+      validation_contract_version: requiredText(validationContractVersion, 'validationContractVersion')
+    }, 'compatible_world_pin_manifest_digest');
   }
   return withDigest({
     schema: 'rus.base_world_compatibility_manifest.v1',
@@ -153,11 +171,12 @@ export function verifyDecisionAttestation({
   requestDigestField,
   expectedRequestDigest,
   expectedDecision,
+  decisionField = 'decision',
   expectedBindings = {}
 }) {
   if (attestation?.schema !== expectedSchema
       || attestation?.[requestDigestField] !== expectedRequestDigest
-      || attestation?.decision !== expectedDecision
+      || attestation?.[decisionField] !== expectedDecision
       || Object.entries(expectedBindings).some(
         ([field, expected]) => canonicalStringify(attestation?.[field])
           !== canonicalStringify(expected)
@@ -330,6 +349,34 @@ export function buildPartyPreflight({
   return deepFreeze({ ...payload, party_preflight_digest: digest(semantic) });
 }
 
+export function buildDevelopmentPartyPreflight({ partyCount,
+  pinnedPartyCount, missingDomainPinCount, inflightStage24Stage25Count,
+  runtimeReleaseId, runtimeContractDigest, checkedAt = null }) {
+  const payload = {
+    schema: 'rus.runtime_catalog_party_preflight.v2',
+    catalog_scope: 'item_container_materialization_v2',
+    party_count: nonnegative(partyCount, 'partyCount'),
+    pinned_party_count: nonnegative(pinnedPartyCount, 'pinnedPartyCount'),
+    missing_domain_pin_count: nonnegative(missingDomainPinCount,
+      'missingDomainPinCount'),
+    inflight_stage24_stage25_count: nonnegative(inflightStage24Stage25Count,
+      'inflightStage24Stage25Count'),
+    runtime_release_id: requireDigest(runtimeReleaseId, 'runtimeReleaseId'),
+    runtime_contract_digest: requireDigest(runtimeContractDigest,
+      'runtimeContractDigest'),
+    checked_at: checkedAt
+  };
+  if (payload.pinned_party_count !== payload.party_count
+      || payload.missing_domain_pin_count !== 0
+      || payload.inflight_stage24_stage25_count !== 0) {
+    fail('ACTIVATION_PARTY_PREFLIGHT_BLOCKED',
+      'Development cutover requires every existing party to retain its exact pin.',
+      payload);
+  }
+  const { checked_at: ignored, ...semantic } = payload;
+  return deepFreeze({ ...payload, party_preflight_digest: digest(semantic) });
+}
+
 export function buildActivationRequest({ fields, partyPreflight }) {
   if (fields.runtime_release_id !== partyPreflight.runtime_release_id
       || fields.runtime_contract_digest !== partyPreflight.runtime_contract_digest) {
@@ -343,6 +390,9 @@ export function buildActivationRequest({ fields, partyPreflight }) {
   return withDigest({
     schema: 'rus.runtime_catalog_activation_request.v2',
     catalog_scope: 'item_container_materialization_v2',
+    ...(fields.activation_scope == null ? {} : {
+      activation_scope: requireActivationScope(fields.activation_scope)
+    }),
     parent_revision_id: requiredText(fields.parent_revision_id, 'parentRevisionId'),
     parent_catalog_digest:
       requireDigest(fields.parent_catalog_digest, 'parentCatalogDigest'),
@@ -383,12 +433,31 @@ export function buildActivationRequest({ fields, partyPreflight }) {
   }, 'activation_request_digest');
 }
 
+export function buildActivationPartyPreflight({ activationScope =
+  'initial_empty_party_database', ...fields }) {
+  requireActivationScope(activationScope);
+  return activationScope === 'initial_empty_party_database'
+    ? buildPartyPreflight(fields) : buildDevelopmentPartyPreflight(fields);
+}
+
+function requireActivationScope(scope) {
+  if (!['initial_empty_party_database', 'new_development_parties_only',
+    'new_production_parties_only'].includes(scope)) {
+    fail('ACTIVATION_SCOPE_INVALID', 'Unknown catalog activation scope.');
+  }
+  return scope;
+}
+
 export function buildActivationEvent({
   request,
   attestation,
   previousEvent,
   operatorPrincipal
 }) {
+  const { activation_request_digest: claimed, ...payload } = request ?? {};
+  if (claimed !== digestEnvelope(payload)) {
+    fail('ACTIVATION_REQUEST_DIGEST_INVALID', 'Activation request changed after approval.');
+  }
   verifyDecisionAttestation({
     attestation,
     expectedSchema: 'rus.runtime_catalog_activation_attestation.v2',
@@ -425,6 +494,44 @@ export function buildActivationEvent({
     compatible_world_pin_manifest_digest: request.compatible_world_pin_manifest_digest,
     request_digest: request.activation_request_digest,
     attestation_digest: attestation.attestation_digest,
+    expected_previous_event_id: expectedPrevious,
+    runtime_release_id: request.runtime_release_id,
+    operator_principal: requiredText(operatorPrincipal, 'operatorPrincipal')
+  };
+  const eventDigest = digest(eventEnvelope);
+  return deepFreeze({
+    ...eventEnvelope,
+    event_id: `runtime_catalog_activation_${eventDigest.slice(0, 32)}`,
+    event_digest: eventDigest
+  });
+}
+
+export function buildActivationEventFromVerifiedAttestation({
+  request,
+  attestationDigest,
+  previousEvent,
+  operatorPrincipal
+}) {
+  const expectedPrevious = previousEvent?.event_id ?? null;
+  if ((request.expected_previous_event_id ?? null) !== expectedPrevious) {
+    fail('ACTIVATION_PREVIOUS_EVENT_STALE', 'Activation compare-and-swap predecessor is stale.');
+  }
+  const eventEnvelope = {
+    schema: 'rus.runtime_catalog_activation_event.v2',
+    event_sequence: Number(previousEvent?.event_sequence ?? 0) + 1,
+    event_type: 'activate',
+    catalog_scope: request.catalog_scope,
+    catalog_revision_id: request.target_revision_id,
+    catalog_digest: request.target_catalog_digest,
+    import_id: request.import_id,
+    import_audit_digest: request.import_audit_digest,
+    record_registry_digest: request.record_registry_digest,
+    runtime_contract_digest: request.runtime_contract_digest,
+    compatible_world_revision_id: request.compatible_world_revision_id,
+    compatible_world_catalog_digest: request.compatible_world_catalog_digest,
+    compatible_world_pin_manifest_digest: request.compatible_world_pin_manifest_digest,
+    request_digest: request.activation_request_digest,
+    attestation_digest: requireDigest(attestationDigest, 'attestationDigest'),
     expected_previous_event_id: expectedPrevious,
     runtime_release_id: request.runtime_release_id,
     operator_principal: requiredText(operatorPrincipal, 'operatorPrincipal')

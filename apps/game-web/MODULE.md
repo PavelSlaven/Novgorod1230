@@ -11,20 +11,26 @@ Browser-клиент, который получает только versioned pub
 ## Владеет
 
 - HTTP API client `/api/v1`;
+- отображением безопасного error message; структурный error code не добавляется
+  в текст экрана ни при каком developerMode;
 - валидацией публичных API envelopes и screen contracts;
 - UI-only store;
+- persisted pending new-game request identity reused after timeout/reload until
+  the same committed party opening succeeds; success clears it;
 - постоянным указанием управляемого персонажа в header из уже публичных
   `panels.character.data.name/role`; другие люди не становятся этим персонажем;
 - отображением готового `presentation_context` в header; календарь, место и
   exact длительность последнего committed хода вычисляет server из committed
   state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen/FactualTurnDeliveryScreen;
+- проверкой optional `exact_npc_utterances` на ready/pending TurnScreen и `FactualTurnDeliveryScreen v1`; принимает только публичный leaf `{ speaker_ref: { entity_kind: 'npc', entity_id }, utterance_text }` без server provenance и отображает точные NPC слова с атрибуцией, не повторяя их в prose slot;
 - проверкой и rendering `FactualTurnDeliveryScreen v1`: degraded recovery
   переиспользует обычные context, navigation, scene, task, checks, actions и
   overlays, заменяя только prose slot factual block; сохраняет `intent_not_fact`
   input, не показывает `main_prose`/`prose`, narrator output, digest,
   audit/provider/retry diagnostics или новую causal фразу;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
+- кнопками подписей ходов из `panels.route.data.movement.options`: клик подставляет точную подпись в черновик и поле ввода (`app/movement-draft.js`), ничего не отправляет и контракт сервера не меняет;
 - чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome
   виден сразу, полная формула и signed modifiers доступны через `<details>`;
 - Character отображает уже безопасные предысторию, память и известные сведения;
@@ -45,8 +51,9 @@ Browser-клиент, который получает только versioned pub
   факт commit без ETA/percent либо private role/provider/trace. Polling optional:
   ошибка или null не прерывает authoritative turn/recovery, после их завершения
   polling останавливается; reload продолжает тот же сохранённый request ID.
-- компактным LLM settings overlay для default, локального Gemma preset и
-  произвольного OpenAI-compatible endpoint: browser вызывает только game-server
+- компактным LLM settings overlay для unconfigured/default Qwen identity и
+  пользовательского OpenAI-compatible vLLM endpoint: без настроенного endpoint игра
+  остаётся unconfigured и новые вызовы недоступны; browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в
   browser storage, logs или telemetry. Server возвращает сохранённые non-secret
   поля после reload; gameplay provider и transport UI не выбирает сам.

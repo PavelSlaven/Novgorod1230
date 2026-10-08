@@ -5,7 +5,10 @@ import {
   buildPhase2ReadyScreen,
   rebuildPhase2HistoricalScreen
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
-import { projectLowerDvinaTraceScreenPanels } from
+import {
+  projectLowerDvinaTraceRoutePanel,
+  projectLowerDvinaTraceScreenPanels
+} from
   '../src/infrastructure/postgres/lower-dvina-trace-screen-panels.js';
 import { buildLowerDvinaTracePendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-presentation.js';
@@ -41,6 +44,13 @@ function payload(overrides = {}) {
     current_visible_context: visibleContext(),
     last_turn: {
       received_at: '2026-08-14T12:00:00.000Z',
+      exact_npc_utterances: [{
+        speaker_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+        utterance_text: 'Берег доступен.',
+        provenance: { source: 'phase3_statement_receipt',
+          player_receipt: 'full',
+          precommit_service_marker_check: 'passed' }
+      }],
       visible_package: {
         package_id: 'visible-1', package_digest: 'sha256:visible'
       }
@@ -83,6 +93,20 @@ function narration() {
   };
 }
 
+test('route panel keeps identical observed passage descriptions without ordinal suffixes', () => {
+  const panel = projectLowerDvinaTraceRoutePanel({ currentPlace: 'У берега',
+    projection: { position: { location_ref: 'shore' } },
+    visibleContext: { visible_objects: [1, 2].map((ordinal) => ({
+      entity_ref: { entity_kind: 'g5_site_connection', entity_id: `connection:${ordinal}` },
+      display_label: `к руслу (${ordinal})`
+    })) } });
+
+  assert.deepEqual(panel.data.movement.options, [
+    { label: 'к руслу', knowledge_state: 'known' },
+    { label: 'к руслу', knowledge_state: 'known' }
+  ]);
+});
+
 test('post-commit and historical screens share the active people projection', () => {
   const state = payload();
   const postCommit = buildPhase2ReadyScreen({
@@ -107,6 +131,8 @@ test('post-commit and historical screens share the active people projection', ()
     narrationOutputDigest: 'sha256:narration'
   });
   assert.deepEqual(postCommit.panels.people, historical.panels.people);
+  assert.deepEqual(postCommit.exact_npc_utterances,
+    state.last_turn.exact_npc_utterances);
   assert.deepEqual(postCommit.panels.people.data.active_interlocutor, {
     entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
     display_label: 'Еремей'
@@ -207,6 +233,8 @@ test('combat presentation replay preserves authoritative public combat state', (
     visibleEnvelope: { package_id: 'visible-1',
       package_digest: 'sha256:visible', visible_payload: visiblePayload },
     turnConsequence: { combat } });
+  assert.equal(pending.main_prose,
+    'Факты хода сохранены; повествование ожидает повторной доставки.');
   const replay = () => rebuildPhase2HistoricalScreen({ payload: state,
     turnId: 'turn-2', visiblePayload, narrationOutput: {
       package_digest: 'sha256:visible', flow_result: narration()
@@ -300,6 +328,46 @@ test('nearby NPC is listed without becoming an interlocutor', () => {
     projected.panels.people.data, 'active_interlocutor'), false);
 });
 
+test('player-safe visible context admits a scene NPC without legacy location scope', () => {
+  const context = visibleContext();
+  const state = payload({
+    position: { location_ref: 'camp', position_id: 'player-position',
+      g6_instance_id: 'g6-1' },
+    scene_position_g6: { 'player-position': 'g6-1', 'npc-position': 'g6-1' },
+    npcs: [{ instance_id: 'npc-eremey', location_ref: 'another-location',
+      position_id: 'npc-position', g6_instance_id: 'g6-1',
+      runtime_source: 'party_db_scene_read',
+      identity_state: { canonical_name: 'Еремей' } }]
+  });
+  const projected = projectLowerDvinaTraceScreenPanels({ payload: state,
+    screen: { panels: { people: { visible: false, data: {} } },
+      visible_context: context } });
+  assert.equal(projected.panels.people.visible, true);
+  assert.deepEqual(projected.panels.people.data.visible_npcs, [
+    { display_label: 'Еремей' }
+  ]);
+  assert.equal(projected.panels.people.data.active_interlocutor.display_label,
+    'Еремей');
+});
+
+test('player-safe state keeps a scene NPC outside the player G6 out of People', () => {
+  const context = visibleContext();
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: payload({
+      position: { location_ref: 'camp', position_id: 'player-position',
+        g6_instance_id: 'g6-1' },
+      scene_position_g6: { 'player-position': 'g6-1', 'npc-position': 'g6-2' },
+      conversation_sessions: [],
+      npcs: [{ instance_id: 'npc-eremey', location_ref: 'another-location',
+        position_id: 'npc-position', g6_instance_id: 'g6-2',
+        runtime_source: 'party_db_scene_read',
+        identity_state: { canonical_name: 'Еремей' } }]
+    }),
+    screen: { panels: {}, visible_context: context }
+  });
+  assert.equal(projected.panels.people, undefined);
+});
+
 test('people panel distinguishes repeated player-safe NPC labels', () => {
   const context = { ...visibleContext(), visible_npc: [
     { entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
@@ -319,10 +387,10 @@ test('people panel distinguishes repeated player-safe NPC labels', () => {
   });
   assert.deepEqual(projected.panels.people.data.visible_npcs.map(
     ({ display_label: label }) => label), [
-    'человек (1)', 'человек (2)', 'человек (3)'
+    'человек', 'человек', 'человек'
   ]);
   assert.equal(projected.panels.people.data.active_interlocutor.display_label,
-    'человек (1)');
+    'человек');
 });
 
 test('active session without a visible NPC label exposes no interlocutor', () => {

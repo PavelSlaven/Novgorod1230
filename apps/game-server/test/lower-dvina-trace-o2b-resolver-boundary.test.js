@@ -43,6 +43,24 @@ test('mismatch, throw, duplicate, collision and invalid second child do not reve
     [context(), good([child('chest')]), 'TRACE_TURN_STEP_CONTAINER_ORDINARY_CHILD_COLLISION']
   ]) { const f = setup(async () => result, ctx); await assert.rejects(() => open(f), { code }); assert.equal(f.projection.items.length, 1); }
   const f = setup(async () => { throw new Error('x'); }); await assert.rejects(() => open(f), { code: 'TRACE_TURN_STEP_CONTAINER_ORDINARY_RESOLUTION_FAILED' }); assert.equal(f.projection.items.length, 1);
+  for (const actor of ['actor', 'npc-actor']) {
+    const execution = { plan: {}, request: { root_turn_id: 'turn',
+      step_index: 1, actor: { actor_id: actor } },
+      operation: { ...op, actor_ref: actor }, check_result: null,
+      working_projection: { actor_id: actor, position: { location_ref: 'shore' },
+        items: [{ item_id: 'chest' }], inventory: { items: [],
+          total_weight: { grams: 0 }, load_category: 'light',
+          occupied_hands: 0 }, knowledge: [] } };
+    await assert.rejects(() => createContainerAccessHandler(
+      initializeRuntimeState({ actor_id: actor,
+        items: [{ item_id: 'chest', template_id: 'chest-template',
+          mechanics_profile_ref: 'mechanics', commit_state: 'committed',
+          visible: true, open_state: 'closed', contents_state: 'contents_hidden',
+          placement: { location_ref: 'shore' }, ordinary_contents_context: context() }] }),
+      { ordinaryContainerContentsResolver: async () => { throw Object.assign(
+        new Error('blocked'), { code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED' }); }
+      })(execution), { code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED' });
+  }
 });
 
 test('hostile result/child descriptors read no getters and authoritative path calls no resolver', async () => {

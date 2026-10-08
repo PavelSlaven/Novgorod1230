@@ -48,7 +48,7 @@ try {
   sqliteKeys = {};
   for (const [t, c] of Object.entries(keyCol)) sqliteKeys[t] = new Set(db.prepare(`SELECT "${c}" AS k FROM "${t}"`).all().map(r => String(r.k)));
   db.close();
-} catch (e) { warn('sqlite not readable, sqlite: refs not resolved: ' + e.message); }
+} catch { warn('sqlite database unavailable, sqlite: refs not resolved'); }
 const eqIds = new Set(eq.map(r => r.profile_id)), wpIds = new Set(wp.map(r => r.wp_id));
 
 function resolve(ref) {
@@ -61,7 +61,7 @@ function resolve(ref) {
   if ((m = ref.match(/^tsv:role:([^#]+)#(.+)$/))) return !roleById[m[1]] ? 'role missing' : !(m[2] in roleById[m[1]]) ? 'role field missing' : null;
   if ((m = ref.match(/^tsv:occ:([^#]+)#(.+)$/))) return !occById[m[1]] ? 'occupation missing' : !(m[2] in occById[m[1]]) ? 'occupation field missing' : null;
   if ((m = ref.match(/^timeline:(.+)$/))) return tlIds.has(m[1]) ? null : 'timeline event missing';
-  if ((m = ref.match(/^sqlite:([^:]+):(.+)$/))) { if (!sqliteKeys) return null; const s = sqliteKeys[m[1]]; return !s ? 'sqlite table not indexed' : s.has(m[2]) ? null : 'sqlite key missing'; }
+  if ((m = ref.match(/^sqlite:([^:]+):(.+)$/))) { if (!sqliteKeys) return 'sqlite database unavailable'; const s = sqliteKeys[m[1]]; return !s ? 'sqlite table not indexed' : s.has(m[2]) ? null : 'sqlite key missing'; }
   if ((m = ref.match(/^lit:(.+)$/))) return lit.has(m[1]) ? null : 'literature id missing';
   if (ref.startsWith('statusrules:')) return statusRuleIds.has(ref) ? null : 'status rule missing';
   if ((m = ref.match(/^bible:§\d+ (.+)$/))) { const t = m[1].replace(/\s*\(.*\)\s*$/, ''); return bible.includes(t) ? null : 'bible heading/text not found'; }
@@ -320,9 +320,14 @@ const checkerPath = path.join(NOV, 'game-base-v1', 'scripts', 'check-archive-own
 const writeReport = () => {
   Object.assign(stats, { weapons_armour: wp.length, status_access_rows: acc.length, equipment_entries: eq.length, equipment_profiles: eqIds.size, crosswalk: cw.length, denylist: dn.length, security: sec.length, events: ev.length, combat_roles: cl.length, refs: refStats });
   const report = { ok: errors.length === 0, stats, errors, warnings };
-  fs.writeFileSync(path.join(ROOT, 'validation_report.json'), JSON.stringify(report, null, 2) + '\n');
-  console.log(JSON.stringify({ ok: report.ok, stats, errors: errors.length, warnings: warnings.length }, null, 1));
+  const reportPath = path.join(ROOT, 'validation_report.json');
+  const reportText = JSON.stringify(report, null, 2) + '\n';
+  const checkOnly = process.argv.includes('--check');
+  const stale = checkOnly && (!fs.existsSync(reportPath) || fs.readFileSync(reportPath, 'utf8') !== reportText);
+  if (!checkOnly) fs.writeFileSync(reportPath, reportText);
+  console.log(JSON.stringify({ ok: report.ok, stats, errors: errors.length, warnings: warnings.length, stale }, null, 1));
   if (errors.length) { console.log(errors.slice(0, 60).join('\n')); process.exitCode = 1; }
+  if (stale) { console.log('validation_report.json is stale; run scripts/validate.cjs to regenerate it'); process.exitCode = 1; }
 };
 import(pathToFileURL(checkerPath).href).then(({ checkArchiveOwnership }) => {
   const checker = checkArchiveOwnership(path.join(NOV, 'game-base-v1'));

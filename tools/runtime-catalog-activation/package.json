@@ -9,7 +9,10 @@
     "./forward-migrations": "./src/forward-migrations.js",
     "./artifact-contracts": "./src/artifact-contracts.js",
     "./semantic-equivalence": "./src/semantic-equivalence.js",
-    "./operator-executors": "./src/operator-executors.js"
+    "./operator-executors": "./src/operator-executors.js",
+    "./actor-base-attributes-import": "./src/actor-base-attributes-import.js",
+    "./actor-base-attributes-activation": "./src/actor-base-attributes-activation.js",
+    "./procedural-v6-import": "./src/procedural-v6-import.js"
   },
   "dependencies": {
     "@rus/runtime-catalog": "0.1.0",

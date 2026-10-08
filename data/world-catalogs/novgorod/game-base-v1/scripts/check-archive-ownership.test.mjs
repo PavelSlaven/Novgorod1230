@@ -4,45 +4,54 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { archiveIds, checkArchiveOwnership, checkArchiveOwnershipRegistry, normalizeSemanticRoot, parseCsv } from './check-archive-ownership.mjs';
+import { archiveIds, checkArchiveOwnership as checkArchiveOwnershipRaw, checkArchiveOwnershipRegistry, normalizeSemanticRoot, parseCsv } from './check-archive-ownership.mjs';
 
 const gameBase = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
+function checkArchiveOwnership(root) {
+  return checkArchiveOwnershipRaw(root, { allowSyntheticRootSourceMismatch: true });
+}
+
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'archive-ownership-'));
-  const files = [
-    'crafts-tools-processes/materials_registry/material_entities.csv',
-    'buildings-interiors-containers/interiors/material_entities.csv',
-    'clothing-appearance/garments/material_entities.csv',
-    'clothing-appearance/outfits_by_role/outfits.csv',
-    'items-weapons-armour/items/weapons_armour.csv',
-    'crafts-tools-processes/archive_inclusion_ledger.csv',
-    'buildings-interiors-containers/archive_inclusion_ledger.csv',
-    'clothing-appearance/reports/archive_inclusion_ledger.csv',
-    'items-weapons-armour/items/archive_inclusion_ledger.csv',
-    'items-household-personal/items/item_place_frequency.csv',
-    'items-household-personal/items/household.csv',
-    'items-household-personal/items/personal.csv',
-    'nature-materials-weather/natural_materials_soils/natural_materials.csv',
-    'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv',
-    'crafts-tools-processes/sources/crosswalk.csv',
-  ];
-  for (const file of files) fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
-  for (const file of files.filter(file => file.endsWith('.csv'))) fs.writeFileSync(path.join(root, file), '');
-  const entityHeader = 'item_id,name_ru,family_key,source_refs\n';
-  for (const file of files.filter(file => file.endsWith('material_entities.csv'))) fs.writeFileSync(path.join(root, file), entityHeader);
-  fs.writeFileSync(path.join(root, 'items-weapons-armour/items/weapons_armour.csv'), 'wp_id,name_ru,source_refs,archive_ref,archive_refs\n');
-  fs.writeFileSync(path.join(root, 'clothing-appearance/outfits_by_role/outfits.csv'), 'of_id,class_name_ru\n');
-  for (const file of files.filter(file => file.endsWith('archive_inclusion_ledger.csv'))) {
-    fs.writeFileSync(path.join(root, file), 'archive_ref,archive_name,disposition,game_base_ref,family_key,period,generation_policy,decision,reason,record_type,source_action,target_group,target_ref,status,semantic_result\n');
+  try {
+    const files = [
+      'crafts-tools-processes/materials_registry/material_entities.csv',
+      'buildings-interiors-containers/interiors/material_entities.csv',
+      'clothing-appearance/garments/material_entities.csv',
+      'clothing-appearance/outfits_by_role/outfits.csv',
+      'items-weapons-armour/items/weapons_armour.csv',
+      'crafts-tools-processes/archive_inclusion_ledger.csv',
+      'buildings-interiors-containers/archive_inclusion_ledger.csv',
+      'clothing-appearance/reports/archive_inclusion_ledger.csv',
+      'items-weapons-armour/items/archive_inclusion_ledger.csv',
+      'items-household-personal/items/item_place_frequency.csv',
+      'items-household-personal/items/household.csv',
+      'items-household-personal/items/personal.csv',
+      'nature-materials-weather/natural_materials_soils/natural_materials.csv',
+      'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv',
+      'crafts-tools-processes/sources/crosswalk.csv',
+    ];
+    for (const file of files) fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
+    for (const file of files.filter(file => file.endsWith('.csv'))) fs.writeFileSync(path.join(root, file), '');
+    const entityHeader = 'item_id,name_ru,family_key,source_refs\n';
+    for (const file of files.filter(file => file.endsWith('material_entities.csv'))) fs.writeFileSync(path.join(root, file), entityHeader);
+    fs.writeFileSync(path.join(root, 'items-weapons-armour/items/weapons_armour.csv'), 'wp_id,name_ru,source_refs,archive_ref,archive_refs\n');
+    fs.writeFileSync(path.join(root, 'clothing-appearance/outfits_by_role/outfits.csv'), 'of_id,class_name_ru\n');
+    for (const file of files.filter(file => file.endsWith('archive_inclusion_ledger.csv'))) {
+      fs.writeFileSync(path.join(root, file), 'archive_ref,archive_name,disposition,game_base_ref,family_key,period,generation_policy,decision,reason,record_type,source_action,target_group,target_ref,status,semantic_result\n');
+    }
+    fs.writeFileSync(path.join(root, 'items-household-personal/items/item_place_frequency.csv'), 'ipf_id,item_or_category_ref,ref_kind\n');
+    for (const file of ['household.csv', 'personal.csv']) {
+      fs.writeFileSync(path.join(root, `items-household-personal/items/${file}`), 'it_id,name_ru,technique,quantity_unit,master_refs,source_refs,note\n');
+    }
+    fs.writeFileSync(path.join(root, 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'), 'item_id,name_ru,category\nOMI00007,Ложка,small_household_personal\nOMI00008,Другая вещь,small_household_personal\n');
+    fs.writeFileSync(path.join(root, 'nature-materials-weather/natural_materials_soils/natural_materials.csv'), 'nm_id,name_ru,source_refs\n');
+    return root;
+  } catch (error) {
+    fs.rmSync(root, { recursive: true, force: true });
+    throw error;
   }
-  fs.writeFileSync(path.join(root, 'items-household-personal/items/item_place_frequency.csv'), 'ipf_id,item_or_category_ref,ref_kind\n');
-  for (const file of ['household.csv', 'personal.csv']) {
-    fs.writeFileSync(path.join(root, `items-household-personal/items/${file}`), 'it_id,name_ru,technique,quantity_unit,master_refs,source_refs,note\n');
-  }
-  fs.writeFileSync(path.join(root, 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'), 'item_id,name_ru,category\nOMI00007,Ложка,small_household_personal\nOMI00008,Другая вещь,small_household_personal\n');
-  fs.writeFileSync(path.join(root, 'nature-materials-weather/natural_materials_soils/natural_materials.csv'), 'nm_id,name_ru,source_refs\n');
-  return root;
 }
 
 function append(root, relative, line) {
@@ -51,14 +60,19 @@ function append(root, relative, line) {
 
 function gameBaseCopy() {
   const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'archive-ownership-live-'));
-  const root = path.join(parent, 'game-base-v1');
-  fs.cpSync(gameBase, root, { recursive: true });
-  const masterRelative = 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv';
-  const source = path.resolve(gameBase, '../', masterRelative);
-  const target = path.join(parent, masterRelative);
-  fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.copyFileSync(source, target);
-  return { parent, root };
+  try {
+    const root = path.join(parent, 'game-base-v1');
+    fs.cpSync(gameBase, root, { recursive: true });
+    const masterRelative = 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv';
+    const source = path.resolve(gameBase, '../', masterRelative);
+    const target = path.join(parent, masterRelative);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.copyFileSync(source, target);
+    return { parent, root };
+  } catch (error) {
+    fs.rmSync(parent, { recursive: true, force: true });
+    throw error;
+  }
 }
 
 function updateLedger(root, id, field, value, ledgerPath, lastMatch = false) {
@@ -291,6 +305,40 @@ test('unmapped archive material gets its own stable code', () => {
     append(root, 'crafts-tools-processes/archive_inclusion_ledger.csv', 'OMI00008,Неизвестный материал,variant,crafts-tools-processes/materials_registry/materials.csv#mt_flax,tool,1180–1260,,variant,Mixed material is not comparable.');
     assert.equal(checkArchiveOwnership(root).errors.some(error => error.startsWith('OMI00008:') && /material/.test(error)), false);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test('external root still rejects a changed material overlay', () => {
+  const { parent, root } = gameBaseCopy();
+  try {
+    const overlay = path.join(root, 'source-overlays/master-material-materials.csv');
+    fs.appendFileSync(overlay, '\n');
+    assert.throws(
+      () => checkArchiveOwnershipRaw(root, {
+        materialViewPath: path.join(root, 'generated/master-material-material-view.json'),
+        materialOverlayPath: overlay,
+      }),
+      error => error.code === 'MATERIAL_VIEW_OVERLAY_STALE',
+    );
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('external root rejects a changed overlay when source and overlay are both stale', () => {
+  const { parent, root } = gameBaseCopy();
+  try {
+    const source = path.join(parent, 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv');
+    const overlay = path.join(root, 'source-overlays/master-material-materials.csv');
+    fs.appendFileSync(source, '\n');
+    fs.appendFileSync(overlay, '\n');
+
+    assert.throws(
+      () => checkArchiveOwnershipRaw(root, {
+        allowSyntheticRootSourceMismatch: true,
+        materialViewPath: path.join(root, 'generated/master-material-material-view.json'),
+        materialOverlayPath: overlay,
+      }),
+      error => error.code === 'MATERIAL_VIEW_OVERLAY_STALE',
+    );
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
 });
 
 test('terminal references resolve a stable target without requiring a new entity row', () => {

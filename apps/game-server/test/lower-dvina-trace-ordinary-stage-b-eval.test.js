@@ -347,7 +347,7 @@ test('grounded common Stage B does not treat WK facts as a positive whitelist',
     const prompt = buildOrdinaryMaterializationMessages(grounded)[0].content;
     assert.match(prompt, /not an inventory of every ordinary thing/u);
     assert.match(prompt, /Exact positive evidence for every mundane object is not required/u);
-    assert.doesNotMatch(prompt, /Do not add a historical, scientific, social, craft, material-property, or other factual premise from model memory/u);
+    assert.doesNotMatch(prompt, /Не добавляй из памяти модели исторические, научные, социальные, ремесленные, относящиеся к свойствам материалов или иные фактические предпосылки/u);
     const semantic = { resolution: 'materialize',
       semantic_materialization_kind: 'standalone_item',
       semantic_admission_class: 'common_mundane', reason_code: 'found',
@@ -377,7 +377,10 @@ test('grounded common Stage B does not treat WK facts as a positive whitelist',
       stageBApprovalReceipt: approval,
       worldKnowledgeGrounder: { async ground(input, purpose, authoritative) {
         assert.equal(purpose, 'materialization_support');
-        assert.deepEqual(authoritative, { semantic_context: semanticContext });
+        assert.deepEqual(authoritative, {
+          semantic_context: semanticContext,
+          clock: null
+        });
         return { ...input, world_knowledge: grounded.world_knowledge };
       } },
       roleRunner: { async run(input) {

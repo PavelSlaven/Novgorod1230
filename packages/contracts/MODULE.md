@@ -14,9 +14,24 @@ Canonical machine-readable contract/typed-error registry shared by packages and 
 
 ## Public API и контракты
 
-Exports `.` plus documented subpaths for JSON, stages, approvals, digests, schema names, handoffs, `./ordinary-materialization-v1`, `./portrait-spec-v1`, `./combat-v1` and `./spatial-v3/{registry,compatibility,ports,state-machines}`. `./ordinary-materialization-v1` owns the strict request/plan JSON Schemas, closed vocabulary and getter-free validators for the proposed ordinary semantic boundary. This foundation surface is shadow-only: it defines data grammar but performs no model call, admission, persistence or O1 activation. `./portrait-spec-v1` owns the strict JSON Schema, enum vocabulary and browser/server-safe `assertPortraitSpecV1`/validator used by both the read projection and experimental Portrait Lab. Its required clothing grammar is `neckline / sleeve / outer / fabric / trim / main_color / secondary_color / headwear`; the superseded `base` field and named `caftan / cloak / sheepskin` values are rejected without migration fallback. `./combat-v1` owns six strict combat DTO validators only, including participant status `restrained` and the intent lifecycle `active / completed / blocked / invalidated / no_progress`. `SPATIAL_V3_CONTRACT_VERSION` is `4.4.0-target.1` (baselines `4.2.0-target.1` and immutable accepted Temporal `4.3.0-target.1`); the current generated registry contains exactly 213 contracts and 82 typed errors while retaining byte-identical 160/58 and 188/82 historical snapshots. Principal target APIs are canonicalization/digest, `validateSpatialV3Contract`, `validatePlayerSafeVisiblePayload`, controlled-vocabulary validation and `createSpatialV3TypedError`; ports expose fail-closed `target_stub` results.
+Exports `.` plus documented subpaths for JSON, stages, approvals, digests, schema names, handoffs, `./ordinary-materialization-v1`, `./portrait-spec-v1`, `./combat-v1` and `./spatial-v3/{registry,compatibility,ports,state-machines}`. `./ordinary-materialization-v1` owns the strict request/plan JSON Schemas, closed vocabulary and getter-free validators for the proposed ordinary semantic boundary. This foundation surface is shadow-only: it defines data grammar but performs no model call, admission, persistence or O1 activation. `./portrait-spec-v1` owns the strict JSON Schema, enum vocabulary and browser/server-safe `assertPortraitSpecV1`/validator used by both the read projection and experimental Portrait Lab. Its required clothing grammar is `neckline / sleeve / outer / fabric / trim / main_color / secondary_color / headwear`; the superseded `base` field and named `caftan / cloak / sheepskin` values are rejected without migration fallback. `./combat-v1` owns six strict combat DTO validators only, including participant status `restrained` and the intent lifecycle `active / completed / blocked / invalidated / no_progress`. `SPATIAL_V3_CONTRACT_VERSION` is `4.7.0-target.1` (baselines `4.2.0-target.1` and immutable accepted Temporal `4.3.0-target.1`); the current generated registry contains exactly 228 contracts and 86 typed errors while retaining byte-identical 160/58 and 188/82 historical snapshots. Principal target APIs are canonicalization/digest, `validateSpatialV3Contract`, `validatePlayerSafeVisiblePayload`, controlled-vocabulary validation and `createSpatialV3TypedError`; ports expose fail-closed `target_stub` results.
 
 ## Ошибки, зависимости и effects
+
+Spatial controlled vocabulary revision 4 adds the technical authoring entity
+kinds `expansion_rule_set` and `g6_acoustic_baseline` so M2c can retain exact
+typed dependency pins. Revisions 1–3 remain immutable and validate through the
+same registry validator. `tools/spatial-v3/generate-expansion-vocabularies.mjs`
+reproduces revision 4; unknown entity kinds still fail closed. This registry
+extension does not approve acoustic data or activate a production release.
+
+Spatial controlled vocabulary revision 5 (`controlled-vocabularies.v5.json`,
+Spatial standard amendment 4.7.0) adds the line-kind and duration-band
+vocabularies, three direction values, the `improvised_float` movement method and
+the authoring entity kinds of the line contracts. `tools/spatial-v3/generate-line-vocabularies.mjs`
+reproduces revision 5. The validator accepts it, but `controlled-vocabularies.js`
+still loads revision 4 as the working registry until the code stage switches the
+import; revisions 1–4 remain immutable.
 
 Validators return structured validation errors or typed-error DTO; malformed canonical input may throw type/range errors. Missing vocabulary, schema mismatch and target port availability never degrade to inferred data. Depends only on `@rus/kernel`; no I/O, DB, network, LLM, persistence or side effects.
 

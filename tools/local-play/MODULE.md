@@ -7,20 +7,35 @@
 
 ## Владеет
 
-- проверкой Node.js, Windows x64, NVIDIA GPU/VRAM, RAM и свободного места;
-- resumable/checksummed provisioning pinned Gemma Q4_K_P, CUDA `llama.cpp`,
-  managed Python/Giga и embedded PostgreSQL в platform user-data/cache;
-- owned lifecycle inference, Giga worker, PostgreSQL и game-server, включая
-  readiness, один restart inference и graceful shutdown;
-- default local Gemma provider для всех gameplay LLM roles и диагностикой до
-  партии; сохранённый custom OpenAI-compatible provider читается до provisioning
-  и не запускает ненужный managed Gemma process;
+- проверкой Node.js и launcher prerequisites;
+- resumable/checksummed provisioning managed Python/Giga и embedded PostgreSQL
+  в platform user-data/cache;
+- owned lifecycle Giga worker, PostgreSQL и game-server, включая readiness и
+  graceful shutdown;
+- честным `unconfigured` состоянием до настройки exact default Qwen model через
+  пользовательский OpenAI-compatible vLLM endpoint; gameplay model launcher не
+  скачивает и не запускает;
 - загрузкой current runtime-catalog pin, server env и HTTP readiness production server (`/api/v1/health`, `/api/v1/scenarios`).
 
-Gameplay не зависит от engine API: launcher поднимает pinned `llama.cpp`, а
-единый `@rus/llm-runtime` видит только OpenAI-compatible `chat/completions`.
-Никакого fallback на DeepSeek нет. Подробности:
+## Разрешённые зависимости
+
+```architecture-tool-app-dependencies
+[
+  {"source":"*","target":"apps/game-server","reason":"local-play owns the production game-server lifecycle and readiness"}
+]
+```
+
+Gameplay не зависит от engine API: единый `@rus/llm-runtime` видит только
+OpenAI-compatible `chat/completions` настроенного vLLM endpoint.
+Ошибки endpoint/provider завершают вызов без fallback. Подробности:
 [`docs/setup/LLM_PROVIDERS.md`](../../docs/setup/LLM_PROVIDERS.md).
+
+`RUS_RUNTIME_SETUP=spatial-v3-m3-development-v14` включает только явный
+development setup для новой БД без партий. Он активирует approved v14 release,
+применяет versioned actor owner migrations, replay-проверяет approved
+`actor_base_attributes_v1` import/activation и передаёт active exact binding
+обычному new-game path. Default/production setup не меняется; существующие
+parties и old saves этот режим отклоняет.
 
 `gameplay-gap-campaign.mjs` — development-only HTTP driver реальных production
 HTTP turns для отдельно назначаемой gameplay-testing фазы (World Knowledge
@@ -35,8 +50,8 @@ structured model output и owner commit/rejection. Driver
 `replayGapIdsByTurn`: использует существующую тестовую партию через HTTP,
 не создаёт новую и не меняет БД напрямую. Такая кампания не допускается
 в acceptance mode; исходный player-safe screen сохраняется в trace.
-`local-gemma-acceptance.mjs` — единственный финальный browser-only runner:
-по умолчанию поднимает тот же managed Gemma runtime, запускает настоящий Chromium, передаёт PLAYER
+`local-provider-acceptance.mjs` — единственный финальный browser-only runner:
+требует exact Qwen provider metadata, запускает настоящий Chromium, передаёт PLAYER
 только фактический DOM, вводит намерения через UI и сохраняет private traces.
 Перед выбором намерения runner открывает доступные игровые панели обычными
 кликами и передаёт PLAYER их видимый текст. Диагностика и настройки исключены;
@@ -75,12 +90,38 @@ Continue использует обычный browser recovery. Proposal без r
 `RUS_ACCEPTANCE_LLM_BACKEND`, `RUS_ACCEPTANCE_LLM_BACKEND_VERSION`,
 `RUS_ACCEPTANCE_LLM_RUNTIME_METADATA` и `RUS_ACCEPTANCE_LLM_HARDWARE_METADATA`;
 они описывают назначенный endpoint, а не текущий ПК. Ключ не передаётся через
-CLI, и локальная Gemma в этом режиме не запускается.
+CLI; gameplay inference process runner не запускает.
 Private terminal observer читает committed Phase 10 state и ready presentation
 через PostgreSQL owners только после хода; PLAYER по-прежнему получает лишь DOM.
 120 секунд ограничивают отдельный LLM transport call; browser runner ждёт весь
 составной ход до 20 минут, потому что он включает несколько последовательных
-production roles.
+production roles. Authored new-game opening после scenario selection ждёт тот
+же composed 20-minute bound для последовательных Stage 22/23 roles; это не
+увеличивает timeout отдельного model call.
+
+`v17-slice-run.mjs` (`npm run play:v17-slice`) — development-only живой прогон
+среза D49 на Linux, без браузера: свежая пара v17 в Docker PostgreSQL
+(`bootstrapV17PresenceE2e` тестовой фикстуры, фикстурные attestation, только
+одноразовые БД), production composition root с реальной LLM из файла
+`RUS_LLM_SETTINGS_PATH` (файл только читается), `createGameHttpServer` на
+127.0.0.1 и скриптовые ноги по публичному HTTP API: start → walk out → meet →
+talk → take → make. После каждого хода — SQL-снимок (позиция, размещения в G6
+игрока, предметы, `party_resource_nodes`, реплики NPC). Developer GET
+`llm-turn-reports` даёт снимок каждой попытки new-game (проза writer, Stage 23,
+repair, `pre_repair` после semantic repair) в `opening.opening_attempts` и
+таблице playtest; при `committed_presentation_pending` драйвер вызывает тот же
+`POST presentation-recovery`, что веб-клиент, агрегат `presentation_recovery` и
+исход по ходу попадают в `report.json`/Markdown; неудачная доставка сохраняет
+ход с `delivery_failed` до остановки ноги. Итог ноги — `pass`, `fail` или
+`blocked` с причиной; выходы: `report.json` и Markdown-заготовка отчёта
+`docs/playtests/` (WR §24.1, дословный экран по ходам, секреты вырезаются).
+World Knowledge энкодер по умолчанию — заглушка (нулевые векторы), это
+помечается в отчёте; `--wk-encoder giga` требует `RUS_WORLD_KNOWLEDGE_PYTHON`.
+На общей машине запускать под слотом: `pg-slot node tools/local-play/v17-slice-run.mjs`.
+Уборка (сервер, root, пулы, `docker rm -fv`) выполняется всегда, включая сигнал и
+дедлайн игрового окна (`--deadline-min`, по умолчанию 26 мин после bootstrap). Выход: 0 все ноги pass, 1 нога fail
+или blocked, 2 аргументы, 3 preflight, 4 сбой стенда. Windows-раннеры выше не
+затрагиваются и остаются на сценарии v16.
 
 ## Не владеет
 

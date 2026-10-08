@@ -19,10 +19,20 @@ const payload = { schema: 'temporal_visible_package.v1',
   player_safe_interruption: null, allowed_action_affordances: [{
     action_id: 'inspect_shore', label: 'Осмотреть берег',
     command_kind: 'immediate_action' }] };
+const exactUtterances = [{ speaker_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+  utterance_text: 'Сеть я отложил.', provenance: {
+    source: 'phase3_statement_receipt', player_receipt: 'full',
+    precommit_service_marker_check: true,
+    statement_ref: { entity_kind: 'conversation_statement',
+      entity_id: 'statement-1' },
+    listener_ref: { entity_kind: 'player_character', entity_id: 'actor' },
+    receipt_utterance_text: 'Сеть я отложил.'
+  } }];
 const snapshotPayload = { party_id: 'party', actor_id: 'actor',
     party_state: { turn_number: 7, state_version: 39 },
     opening_identity: { opening_screen_digest: 'opening' },
     last_turn: { received_at: '2026-01-01T00:00:00.000Z',
+      exact_npc_utterances: exactUtterances,
       check_result: { check_id: 'check:1', roll: 12, difficulty: 10,
         modifiers: { attribute: 1, skill: 2, state: 0, equipment: 0, circumstances: 0 },
         total: 15, outcome: { band: 'success', margin: 5, success: true,
@@ -49,6 +59,7 @@ function factualScreen(overrides = {}) {
     uncertainties: payload.uncertainties, actionPanel: { suggested_actions: [] },
     actions: [], checks: [], panels: {},
     inputPanel: { free_text_enabled: true, input_contract: 'intent_not_fact' },
+    exactNpcUtterances: exactUtterances,
     scenarioId: 'lower_dvina_trace_v1', screenKind: 'trace_turn',
     deliveryState: { ready: true, generated_at: '2026-01-01T00:00:00.000Z' },
     openingScreenDigest: 'opening', currentProjectionAnchor: {
@@ -64,11 +75,12 @@ function genericFactualScreen() {
     uncertainties: payload.uncertainties, panels: {} });
 }
 
-function narrator({ flow, store, calls = { run: 0 } }) {
+function narrator({ flow, store, calls = { run: 0 }, recordDiagnosticFailure = null }) {
   const client = { async query() { return { rows: [envelope] }; }, release() {} };
   return { calls, service: createLowerDvinaTracePhase2DurableNarrator({
     partyPool: { query: client.query.bind(client), connect(callback) { callback(null, client, () => {}); } },
-    narrationService: { async run() { calls.run += 1; return flow; } }, presentationStore: store
+    narrationService: { async run() { calls.run += 1; return flow; } },
+    presentationStore: store, recordDiagnosticFailure
   }) };
 }
 
@@ -90,11 +102,11 @@ const rejected = { version: 1, schema: 'narration_flow_result', request_id: 'tur
   diagnostics: { phase: 'final_audit_failed', errors: [concern], repairs_used: 1 } };
 
 test('final audited policy rejection terminally delivers one factual screen', async () => {
-  const finalized = [];
+  const finalized = [], diagnostics = [];
   const { service } = narrator({ flow: rejected, store: {
     async claimPresentationAttempt() { return { ok: true, disposition: 'claimed', attempt_id: 'a', claim_token: 'c' }; },
     async finalizeFactualPresentationAttempt(input) { finalized.push(input); return { ok: true, presentation_status: 'factual_delivered' }; }
-  } });
+  }, recordDiagnosticFailure: (failure) => diagnostics.push(failure) });
   const result = await service.run(request);
   assert.equal(result.factual_delivery.schema, 'factual_turn_delivery_screen');
   assert.deepEqual(result.factual_delivery.visible_changes, payload.perceived_changes);
@@ -107,6 +119,17 @@ test('final audited policy rejection terminally delivers one factual screen', as
   assert.equal(result.factual_delivery.panels.route?.data.current_place, 'Берег.');
   assert.equal(finalized.length, 1);
   assert.equal(finalized[0].factual_screen.input_panel.input_contract, 'intent_not_fact');
+  assert.equal(diagnostics.length, 1);
+  assert.equal(diagnostics[0].code, 'TRACE_PHASE_2_NARRATION_REJECTED');
+  assert.deepEqual(diagnostics[0].details.audit_attempts.map(({ ordinal,
+    failed_checks: failedChecks }) => ({ ordinal, failedChecks })), [
+    { ordinal: 1, failedChecks: ['policy'] },
+    { ordinal: 2, failedChecks: ['policy'] }
+  ]);
+  assert.deepEqual(diagnostics[0].details.audit_attempts[1].coverage_refs, [
+    { kind: 'visible_changes', source_index: 0, covered: true },
+    { kind: 'uncertainties', source_index: 0, covered: true }
+  ]);
 });
 
 test('stale delivery turn cannot finalize a factual screen', async () => {
@@ -129,6 +152,7 @@ test('factual terminal replay does not call the narrator and rejects leaks', asy
   } });
   assert.deepEqual((await service.run(request)).factual_delivery, factual);
   assert.equal(calls.run, 0);
+  assert.deepEqual(factual.exact_npc_utterances, exactUtterances);
   const leaking = { ...factual, main_prose: 'forbidden' };
   const invalid = narrator({ flow: rejected, store: {
     async claimPresentationAttempt() { return { ok: true, disposition: 'factual_delivered', factual_screen: leaking }; }
@@ -148,7 +172,8 @@ test('factual admission binds its package identity and full visible projection',
     { ...factual, turn_number: 8 },
     { ...factual, visible_context: { ...visible, visible_scene: 'Другое место.' } },
     { ...factual, visible_changes: [] },
-    { ...factual, uncertainties: [] }
+    { ...factual, uncertainties: [] },
+    { ...factual, exact_npc_utterances: [] }
   ]) assert.equal(validFactualTurnDelivery(changed, envelope), false);
 });
 
@@ -167,8 +192,8 @@ test('factual session read binds party, visible turn and current state', () => {
     current_projection_package_id: 'package',
     current_projection_package_digest: envelope.package_digest,
     current_projection_state_version: '39', current_projection_payload: payload,
-    current_party_snapshot_payload: { party_state: { turn_number: 7 } },
-    current_party_snapshot_digest: canonicalDigest({ party_state: { turn_number: 7 } }),
+    current_party_snapshot_payload: snapshotPayload,
+    current_party_snapshot_digest: canonicalDigest(snapshotPayload),
     current_narration_status: 'delivered',
     current_narration_delivery_mode: 'factual', current_narration_output: null,
     current_narration_output_digest: null,
@@ -275,4 +300,40 @@ test('non-terminal and provider failures remain retryable', async () => {
   } });
   await assert.rejects(service.run(request), { code: 'TRACE_PHASE_2_NARRATION_REJECTED' });
   assert.equal(attempts[0].presentation_status, 'failed_retryable');
+});
+
+test('exhausted generated-prose admission stays pending and retryable without prose diagnostics', async () => {
+  const markedText = 'Вы идёте через Проход 2.';
+  const blockedAdmission = { ...rejected,
+    generation_history: [{ role: 'writer', value: { ...output, prose: markedText } }],
+    diagnostics: { phase: 'generated_prose_admission_failed',
+      errors: ['Generated prose did not pass deterministic output admission.'], repairs_used: 1 } };
+  const attempts = [], diagnostics = [];
+  let claims = 0, persisted = 0, factualFinalized = 0;
+  const { service, calls } = narrator({ flow: blockedAdmission, store: {
+    async claimPresentationAttempt() {
+      claims += 1;
+      return { ok: true, disposition: 'claimed', attempt_id: `a${claims}`, claim_token: `c${claims}` };
+    },
+    async finalizePresentationAttempt(input) { attempts.push(input); return { ok: true }; },
+    async persistNarrationOutput() { persisted += 1; return { ok: true }; },
+    async finalizeFactualPresentationAttempt() { factualFinalized += 1; return { ok: true }; }
+  }, recordDiagnosticFailure: (failure) => diagnostics.push(failure) });
+
+  for (let retry = 0; retry < 2; retry += 1) {
+    await assert.rejects(service.run(request), (error) => {
+      assert.equal(error.code, 'TRACE_PHASE_2_NARRATION_REJECTED');
+      assert.equal(JSON.stringify(error.details).includes(markedText), false);
+      return true;
+    });
+  }
+
+  assert.equal(claims, 2);
+  assert.equal(calls.run, 2);
+  assert.deepEqual(attempts.map(({ presentation_status }) => presentation_status),
+    ['failed_retryable', 'failed_retryable']);
+  assert.equal(persisted, 0);
+  assert.equal(factualFinalized, 0);
+  assert.equal(diagnostics.length, 2);
+  assert.equal(JSON.stringify(diagnostics).includes(markedText), false);
 });

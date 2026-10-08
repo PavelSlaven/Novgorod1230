@@ -1,0 +1,441 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-birch-letter-authors-across-strata",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-literacy-present-not-universal",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-funeral-sled-and-roof-custom",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-funeral-memorial-feast",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g2-birch-letter-authors-wide-range",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "БЕРЕСТЯНЫЕ ГРАМОТЫ > КОММЕНТАРИЙ",
+        "record_id": "book:641351"
+      },
+      "note": "«В переписке на бересте принимали участие женщины»; авторы грамот — «домовладельцы, купцы, старосты, ключники, ремесленники, воины» — переписка на бересте велась людьми самых разных занятий, включая женщин.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g2-literacy-notable-but-not-universal",
+      "source_ref": "source:book-624953",
+      "anchor": {
+        "section": "Глава 7 Новгородские берестяные грамоты В.Л. Янин",
+        "record_id": "book:624953"
+      },
+      "note": "«Грамотные люди имелись в Новгороде в заметном числе»; но, добавляет то же место, грамотность «была далеко не всеобщей» — грамотных в городе много, но не всякий горожанин читает и пишет.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g2-body-carried-on-sled-any-season",
+      "source_ref": "source:book-641342",
+      "anchor": {
+        "section": "[notes] > 505",
+        "record_id": "book:641342"
+      },
+      "note": "«Вынос тела через разобранную крышу и перевозка покойника на санях (в любое время года) — элементы древнерусского похоронного обряда» — так покойного несут из дома и везут к месту погребения, независимо от того, лето это или зима.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g2-feasts-at-funerals-weddings-tonsures",
+      "source_ref": "source:book-678341",
+      "anchor": {
+        "section": "Часть первая ЖИЗНЬ ДРЕВНИХ СЛАВЯН ОТ КОЛЫБЕЛИ ДО МОГИЛЫ > V. ПИЩА И НАПИТКИ",
+        "record_id": "book:678341"
+      },
+      "note": "«Званые угощения были обычны при семейных событиях, как-то: свадьбах, постригах или похоронах» — после похорон, как и после свадьбы или пострига, устраивают угощение для родни и соседей.",
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g2-birch-letters-written-across-strata-incl-women",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:v2-g2-birch-letter-authors-across-strata",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "birch_letter_authors_span_households_merchants_craftsmen_soldiers_and_women"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g2-birch-letter-authors-wide-range"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g2-literacy-present-but-not-universal",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:v2-g2-literacy-present-not-universal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "many_literate_in_city_but_not_every_person_can_read_or_write"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g2-literacy-notable-but-not-universal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g2-funeral-body-carried-through-broken-roof-on-sled",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:v2-g2-funeral-sled-and-roof-custom",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "deceased_carried_out_through_disassembled_roof_and_conveyed_on_sled_year_round"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g2-body-carried-on-sled-any-season"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g2-funeral-followed-by-memorial-feast",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:v2-g2-funeral-memorial-feast",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "memorial_feast_held_after_funeral_like_after_wedding_or_tonsure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g2-feasts-at-funerals-weddings-tonsures"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-birch-letter-authors-across-strata",
+      "locale": "ru",
+      "labels": [
+        "кто пишет грамоты на бересте"
+      ],
+      "short_definition": "Круг людей, что пишут берестяные грамоты: не только клирики, но и домовладельцы, купцы, старосты, ключники, ремесленники, воины, и даже женщины.",
+      "search_aliases": [
+        "кто пишет грамоты",
+        "женщины писали грамоты"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-birch-letter-authors-across-strata",
+      "locale": "en",
+      "labels": [
+        "who writes birch-bark letters"
+      ],
+      "short_definition": "The range of people who write birch-bark letters: not only clergy but also householders, merchants, elders, stewards, craftsmen, soldiers, and even women.",
+      "search_aliases": [
+        "who writes letters",
+        "women wrote letters"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-literacy-present-not-universal",
+      "locale": "ru",
+      "labels": [
+        "грамотность не у всех"
+      ],
+      "short_definition": "Письменные орудия и грамоты встречаются в городе часто, но грамотность далеко не у каждого — она заметна, но не повсеместна.",
+      "search_aliases": [
+        "не все грамотны",
+        "многие не умеют писать"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-literacy-present-not-universal",
+      "locale": "en",
+      "labels": [
+        "literacy is not universal"
+      ],
+      "short_definition": "Writing tools and letters are common finds in the city, but literacy is far from universal — it is notable, but not everywhere.",
+      "search_aliases": [
+        "not everyone literate",
+        "many cannot write"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-funeral-sled-and-roof-custom",
+      "locale": "ru",
+      "labels": [
+        "вынос через кровлю и сани"
+      ],
+      "short_definition": "Погребальный обычай: тело покойного выносят не в дверь, а через разобранную кровлю, и везут на санях в любое время года.",
+      "search_aliases": [
+        "вынос через кровлю",
+        "сани для покойника"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-funeral-sled-and-roof-custom",
+      "locale": "en",
+      "labels": [
+        "carrying the dead out through the roof and on a sled"
+      ],
+      "short_definition": "A funeral custom: the deceased is carried out not through the door but through a disassembled roof, and is taken on a sled in any season.",
+      "search_aliases": [
+        "carried through roof",
+        "sled for the dead"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-funeral-memorial-feast",
+      "locale": "ru",
+      "labels": [
+        "поминальный пир"
+      ],
+      "short_definition": "После похорон устраивают званую трапезу — поминальный пир, как при свадьбах и постригах.",
+      "search_aliases": [
+        "поминальный пир",
+        "трапеза после похорон"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g2-funeral-memorial-feast",
+      "locale": "en",
+      "labels": [
+        "the memorial feast"
+      ],
+      "short_definition": "After a funeral, a hosted meal is held — a memorial feast, just as at weddings and monastic tonsures.",
+      "search_aliases": [
+        "memorial feast",
+        "meal after funeral"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g2-birch-letters-written-across-strata-incl-women",
+      "locale": "ru",
+      "runtime_text": "Грамоты на бересте пишут не только церковные люди: пишут домовладельцы, купцы, старосты, ключники, ремесленники, воины — и не только мужчины, женщины тоже сами пишут письма.",
+      "search_aliases": [
+        "кто умеет писать грамоты",
+        "женщины пишут бересту",
+        "грамотный люд разный"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g2-birch-letters-written-across-strata-incl-women",
+      "locale": "en",
+      "runtime_text": "Birch-bark letters are written not only by church people: householders, merchants, elders, stewards, craftsmen, and soldiers write them — and not only men; women write letters themselves too.",
+      "search_aliases": [
+        "who writes birch letters",
+        "women write letters"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g2-literacy-present-but-not-universal",
+      "locale": "ru",
+      "runtime_text": "В городе грамотных людей немало — есть кому и написать, и прочесть; но грамота не у каждого: не все умеют читать и писать, это не редкость среди горожан, но и не повсеместное дело.",
+      "search_aliases": [
+        "все ли грамотны",
+        "не каждый умеет читать",
+        "много грамотных в городе"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g2-literacy-present-but-not-universal",
+      "locale": "en",
+      "runtime_text": "There are quite a few literate people in the city — someone can always be found to write or read; but not everyone is literate: many cannot read or write, it is not rare among townspeople, but it is not universal either.",
+      "search_aliases": [
+        "not everyone can read",
+        "literacy in city"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g2-funeral-body-carried-through-broken-roof-on-sled",
+      "locale": "ru",
+      "runtime_text": "Покойного из избы выносят не в дверь, а через разобранную кровлю, а к погосту везут на санях — хоть летом, хоть зимой, таков давний обряд.",
+      "search_aliases": [
+        "покойника через крышу",
+        "сани для похорон летом",
+        "вынос тела обряд"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g2-funeral-body-carried-through-broken-roof-on-sled",
+      "locale": "en",
+      "runtime_text": "The deceased is carried out of the house not through the door but through a disassembled part of the roof, and is taken to the churchyard on a sled — summer or winter alike, such is the old custom.",
+      "search_aliases": [
+        "dead carried through roof",
+        "sled for funeral in summer"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g2-funeral-followed-by-memorial-feast",
+      "locale": "ru",
+      "runtime_text": "После похорон родня и соседи не сразу расходятся — устраивают поминальный пир, угощение за упокой, как это принято и после свадьбы или пострига.",
+      "search_aliases": [
+        "поминки после похорон",
+        "угощение за упокой",
+        "пир после похорон"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g2-funeral-followed-by-memorial-feast",
+      "locale": "en",
+      "runtime_text": "After a funeral, kin and neighbors do not simply disperse — a memorial feast is held, a meal in remembrance of the departed, just as is customary after a wedding or a monastic tonsure.",
+      "search_aliases": [
+        "wake after funeral",
+        "meal for the departed"
+      ]
+    }
+  ]
+}

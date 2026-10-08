@@ -11,12 +11,13 @@ adornment: every appearance value is in ACTOR_BASE_APPEARANCE_VOCABULARY, else n
 """
 import csv, json, re, shutil, subprocess, sys
 from pathlib import Path
-from build import HAIR_COVERAGE_EVIDENCE, HEAD_SLOTS, build_archive_inclusion_ledger, build_material_entities, normalized_name
+from build import (HAIR_COVERAGE_EVIDENCE, HEAD_SLOTS, build_archive_inclusion_ledger,
+                   build_material_entities, load_actor_age_categories, normalized_name)
+from material_view import apply_material_overrides
 
 ROOT = Path(__file__).resolve().parents[1]
 NOV = ROOT.parents[1]
 REPO = ROOT.parents[4]
-ACTORS_JS = Path('C:/Users/Slaven/Documents/Novgorod-runtime/packages/actors/src/index.js')
 SEASONS = ['summer', 'spring', 'spring_rasputitsa', 'autumn', 'winter']
 FREQ = {'ubiquitous': 8, 'common': 4, 'contextual': 2, 'rare': 1}
 fails, info = [], []
@@ -107,14 +108,18 @@ def group_has_decision(group, archive_ref):
     group_root = NOV / 'game-base-v1' / group
     wanted = archive_ref.rsplit(':', 1)[-1].upper()
     ledger_path = group_root / 'archive_inclusion_ledger.csv'
-    if ledger_path.is_file() and any(
-            archive_id(row) == wanted and row.get('inclusion_result') not in ('', 'routed', 'needs_check')
-            for row in rd(ledger_path)):
-        return True
+    if ledger_path.is_file():
+        for row in rd(ledger_path):
+            if archive_id(row) != wanted:
+                continue
+            if row.get('inclusion_result') not in (None, '', 'routed', 'needs_check'):
+                return True
+            if row.get('record_type') in ('new', 'variant'):
+                return True
     manifest_path = group_root / 'authoring/archive_inclusion_manifest.json'
     if manifest_path.is_file():
         records = json.loads(manifest_path.read_text(encoding='utf-8')).get('records', [])
-        return any(archive_id(row) == wanted and row.get('expected_result') not in ('', 'routed', 'needs_check')
+        return any(archive_id(row) == wanted and row.get('expected_result') not in (None, '', 'routed', 'needs_check')
                    for row in records)
     return False
 
@@ -161,20 +166,16 @@ def validate_archive_decisions(manifest, ledger):
 
 
 def vocab():
-    if ACTORS_JS.exists():
-        txt = ACTORS_JS.read_text(encoding='utf-8')
-        block = re.search(r'ACTOR_BASE_APPEARANCE_VOCABULARY = deepFreeze\(\{(.*?)\}\);', txt, re.S).group(1)
-        out = {k: re.findall(r"'([a-z_]+)'", v) for k, v in re.findall(r'(\w+):\s*\[([^\]]*)\]', block)}
-        info.append(f'vocabulary read from {ACTORS_JS}')
-        return out
-    info.append('vocabulary: actors package not found, using embedded copy (2026-09-26)')
-    return {'sex_category': ['male', 'female'], 'age_category': ['young_adult', 'adult', 'middle_aged', 'old'],
-            'build': ['slim', 'average', 'stocky'], 'skin_tone': ['pale', 'light', 'warm', 'brown'],
-            'face_shape': ['oval', 'round', 'broad', 'angular', 'long'],
-            'hair_color': ['blond', 'light_brown', 'dark_brown', 'black', 'auburn', 'gray', 'white'],
-            'hair_length': ['bald', 'short', 'medium', 'long'], 'hair_style': ['straight', 'wavy', 'loose', 'braided'],
-            'facial_hair': ['none', 'moustache', 'short_beard', 'full_beard'],
-            'eye_color': ['blue', 'gray', 'green', 'brown', 'dark']}
+    info.append('vocabulary: non-age facets use embedded values; age_category reads packages/actors/src/actor-age-categories.json')
+    out = {'sex_category': ['male', 'female'],
+           'build': ['slim', 'average', 'stocky'], 'skin_tone': ['pale', 'light', 'warm', 'brown'],
+           'face_shape': ['oval', 'round', 'broad', 'angular', 'long'],
+           'hair_color': ['blond', 'light_brown', 'dark_brown', 'black', 'auburn', 'gray', 'white'],
+           'hair_length': ['bald', 'short', 'medium', 'long'], 'hair_style': ['straight', 'wavy', 'loose', 'braided'],
+           'facial_hair': ['none', 'moustache', 'short_beard', 'full_beard'],
+           'eye_color': ['blue', 'gray', 'green', 'brown', 'dark']}
+    out['age_category'] = load_actor_age_categories()
+    return out
 
 
 def main():
@@ -195,7 +196,8 @@ def main():
     # ---- archive ownership ledger
     manifest = json.loads((ROOT / 'authoring/archive_inclusion_manifest.json').read_text(encoding='utf-8'))['records']
     ledger = rd(ROOT / 'reports/archive_inclusion_ledger.csv')
-    master_items = {r['item_id']: r for r in rd(NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv')}
+    master_path = NOV / 'sources/master-archive-v1/data/normalized_source_tables/material_entities/material_entities.csv'
+    master_items = {r['item_id']: r for r in apply_material_overrides(rd(master_path), master_path)}
     costume_items = {r['item_id']: r for r in costume}
     costume_combinations = {r['combo_id']: r for r in rd(NOV / 'sources/costume-dataset-v1/data/combinations.csv')}
     validate_archive_decisions(manifest, ledger)

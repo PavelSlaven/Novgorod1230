@@ -8,7 +8,7 @@ import { createPostgresSessionStore } from '../../apps/game-server/src/infrastru
 import { createPostgresWorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/world-base.js';
 import { createPostgresStage25Ports } from '../../apps/game-server/src/infrastructure/postgres/stage25.js';
 import { createPostgresPartyStore } from '../../apps/game-server/src/infrastructure/postgres/party-store.js';
-import { createProductionLlmRoleRunner } from '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+import { createProductionLlmRoleRunner } from '../../apps/game-server/src/infrastructure/provider/openai-compatible.js';
 import { buildPartyRuntimeV2WritePlan } from '@rus/new-game/stages/stage-24/compat';
 import { materializeStage25PhysicalPlan } from '@rus/new-game/stages/stage-25/compat';
 import { canonicalDigest, issueBoundedDecisionRequest, materializeWorldInstances, repairWorldInstances, validateBoundedDecisionResult } from '@rus/materialization';
@@ -110,7 +110,7 @@ test('production PostgreSQL adapters persist sessions, enforce world read-only, 
 test('production provider adapter uses role runtime transport and exact HTTP payload', async (t) => {
   const provider = await createProviderServer(t);
   const runner = createProductionLlmRoleRunner({
-    env: { DEEPSEEK_API_KEY: 'test-key', DEEPSEEK_BASE_URL: provider.baseUrl, TURN_INTENT_ROUTER_MODEL: 'fixture-model' }
+    env: { LLM_API_KEY: 'test-key', LLM_BASE_URL: provider.baseUrl, TURN_INTENT_ROUTER_MODEL: 'fixture-model' }
   });
   const result = await runner.run({
     scope: 'turn_runtime', role_id: 'intent_router', messages: [{ role: 'user', content: 'route' }], overrides: { maxTokens: 64 }

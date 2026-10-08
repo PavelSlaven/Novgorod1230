@@ -4,6 +4,59 @@ import test from 'node:test';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { fixture } from './lower-dvina-trace-phase-2-fixture.js';
 
+test('narration failure retries presentation in the same turn request', async () => {
+  let narrationAttempts = 0;
+  const diagnostics = createLlmDiagnostics();
+  const f = fixture({
+    llmDiagnostics: diagnostics,
+    narrationFails: true
+  });
+  const originalRun = f.repository.replayPhase2Turn.bind(f.repository);
+  f.repository.replayPhase2Turn = async (input) => {
+    narrationAttempts += 1;
+    f.setNarrationFails(false);
+    return originalRun(input);
+  };
+  const input = {
+    request_id: 'phase2-same-request-recovery',
+    idempotency_key: 'phase2-same-request-recovery',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  };
+  const result = await f.runtime.submitTurn({ partyId: f.partyId, input });
+  assert.equal(result.screen.screen_status, 'ready');
+  assert.equal(f.commitCount(), 1);
+  assert.equal(narrationAttempts, 1);
+});
+
+test('two failed narrator passes in one request leave the committed turn pending', async () => {
+  let replayCalls = 0;
+  const f = fixture({ llmDiagnostics: createLlmDiagnostics(), narrationFails: true });
+  const originalRun = f.repository.replayPhase2Turn.bind(f.repository);
+  f.repository.replayPhase2Turn = async (input) => {
+    replayCalls += 1;
+    return originalRun(input);
+  };
+  const result = await f.runtime.submitTurn({ partyId: f.partyId, input: {
+    request_id: 'phase2-two-passes', idempotency_key: 'phase2-two-passes',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.' } });
+  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(f.commitCount(), 1);
+  assert.equal(replayCalls, 1, 'workflow pass + one replay = two narrator passes');
+});
+
+test('an unexpected error during the in-request retry leaves the committed turn pending, not a 500', async () => {
+  const diagnostics = createLlmDiagnostics();
+  const f = fixture({ llmDiagnostics: diagnostics, narrationFails: true });
+  f.repository.replayPhase2Turn = async () => {
+    throw Object.assign(new Error('database unavailable'), { code: 'DATABASE_UNAVAILABLE' });
+  };
+  const result = await f.runtime.submitTurn({ partyId: f.partyId, input: {
+    request_id: 'phase2-retry-unexpected', idempotency_key: 'phase2-retry-unexpected',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.' } });
+  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(f.commitCount(), 1);
+});
+
 test('narration-stage failure records one partial workflow trace and replays pending result', async () => {
   const diagnostics = createLlmDiagnostics({ developerMode: true });
   const f = fixture({ narrationFails: true, llmDiagnostics: diagnostics });

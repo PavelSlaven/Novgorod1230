@@ -62,6 +62,85 @@ test('approves one generated prose output after deterministic visible-only valid
   assert.equal(validateNarrationFlowResult(result).ok, true);
 });
 
+test('admission marker forces one bounded semantic repair despite auditor pass', async () => {
+  let auditCalls = 0;
+  let repairCalls = 0;
+  const service = createNarrationService(ports({
+    writer: { async generate() { return output('Вы идёте через Проход 2.'); } },
+    auditor: { async audit() {
+      auditCalls += 1;
+      return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass',
+        technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] },
+        pass: true, concerns: [], evidence: ['Grounded.'] };
+    } },
+    semanticRepairer: { async repair(input) {
+      repairCalls += 1;
+      assert.equal(input.concerns.some(({ kind }) => kind === 'generated_prose_admission'), true);
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1', prose: 'Вы идёте по тропе.' }] };
+    } }
+  }));
+  const result = await service.run(request(), {
+    outputAdmission: (prose) => /Проход\s+\d+/iu.test(prose)
+      ? { category: 'ordinal_placeholder' } : null
+  });
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, 'Вы идёте по тропе.');
+  assert.equal(auditCalls, 2);
+  assert.equal(repairCalls, 1);
+});
+
+test('admission also repairs calibration and code markers after auditor pass', async () => {
+  for (const [marker, category] of [
+    ['INFERENCE: Берёза видна у ворот.', 'calibration_marker'],
+    ['runtime_text', 'data_status']
+  ]) {
+    let repairCalls = 0;
+    const service = createNarrationService(ports({
+      writer: { async generate() { return output(marker); } },
+      semanticRepairer: { async repair(input) {
+        repairCalls += 1;
+        assert.equal(input.concerns.some(({ kind, reason }) =>
+          kind === 'generated_prose_admission' && reason.includes(category)), true);
+        return { version: 1, schema: 'narration_semantic_repair',
+          replacements: [{ segment_id: 's1', prose: 'Берёза видна у ворот.' }] };
+      } }
+    }));
+    const result = await service.run(request(), {
+      outputAdmission: (prose) => prose.includes(marker)
+        ? { category } : null
+    });
+    assert.equal(result.status, 'approved');
+    assert.equal(repairCalls, 1);
+  }
+});
+
+test('blocks prose marker that survives the single admission repair', async () => {
+  let auditCalls = 0;
+  let repairCalls = 0;
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return output('Вы идёте через Выход 3.'); } },
+    auditor: { async audit() {
+      auditCalls += 1;
+      return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass',
+        technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] },
+        pass: true, concerns: [], evidence: ['Grounded.'] };
+    } },
+    semanticRepairer: { async repair() {
+      repairCalls += 1;
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1', prose: 'Вы идёте через Выход 4.' }] };
+    } }
+  }), { outputAdmission: (prose) => /Выход\s+\d+/iu.test(prose)
+    ? { category: 'ordinal_placeholder' } : null });
+  assert.equal(result.status, 'blocked');
+  assert.equal(result.diagnostics.phase, 'generated_prose_admission_failed');
+  assert.equal(result.approved_output, null);
+  assert.equal(auditCalls, 1);
+  assert.equal(repairCalls, 1);
+  assert.equal(JSON.stringify(result.diagnostics).includes('Выход'), false);
+});
+
 test('native flow rejects first_game before any model call', async () => {
   let calls = 0;
   await assert.rejects(() => runNarrationFlow(request({ surface: 'first_game' }), ports({

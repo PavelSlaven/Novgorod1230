@@ -1,0 +1,86 @@
+{
+  "schema": "rus.regional_environment_drying_enablement_attestation.v1",
+  "attestation_id": "novgorod_drying_storage_workspace_regional_enablement_001",
+  "subject_commit_sha": "e53f911677fef38863897b5ea25c6aa0cb3fc138",
+  "revision_id": "novgorod_regional_environment_1230_1250_v1",
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a",
+  "approval_request_digest": "cf56d748a391ad23bcc876c3cde9ef499e3a8a8e9e6ee9abd0a42326ce4ab74f",
+  "manifest_digest": "05acb07d066ff349a5b5ff965a73e325b730c5e14e5c6b018f4e882fbacbf2ed",
+  "design_attestation_digest": "27102271dda24d214e86387ce22b7284cc2af304b6db2575e851173edbc0e180",
+  "pending_bundle_digest": "7b9e1bd9116e70cd654c4864e92beb82e6a4b9e926b4dbed8eaf221c78c32b6a",
+  "evidence_attestation_digest": "965995aae64b72a6329ac97e33b09700733e69c609a247d2d76716d5d68333c3",
+  "region_id": "region_novgorod_land",
+  "period": {
+    "from_year": 1230,
+    "to_year": 1250
+  },
+  "universal_row": {
+    "id": "pt_drying_storage_workspace",
+    "digest": "8f0bc0dde9529a3d80b6f0f76f1376ac45d1a959dbae72593330f395c8637714",
+    "status_transition": {
+      "from": "needs_review",
+      "to": "approved"
+    }
+  },
+  "regional_row": {
+    "id": "rpt_novgorod_drying_storage_workspace",
+    "digest": "d08329ea1ac95f6b855fa314873fb901132c9037dac1d1fe121d611b6c016cdb",
+    "status_transition": {
+      "from": "needs_review",
+      "to": "approved"
+    },
+    "is_allowed_transition": {
+      "from": false,
+      "to": true
+    },
+    "generation_weight": 0
+  },
+  "approval_scope": "authoring_and_exact_regional_enablement_only",
+  "authoring_approved": true,
+  "regional_enablement_approved": true,
+  "applicability_guard": {
+    "mode": "exact_spatial_context_only",
+    "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+    "scene_template_id": "trace_ld_v1_tpl_old_drying_shed",
+    "scene_template_version": 1,
+    "scene_template_digest": "8e5019e07de39dc1eb3d07f996bca38f2af8ef25f927cc30a729bd3edd297679",
+    "g5_id": "trace_ld_v1_g5_old_drying_shed",
+    "g5_version": 1,
+    "g5_digest": "32b6e5db1bffb825d6d9da2a4805f9d045a766c9b04a33ab834d615ec0112832",
+    "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "parent_version": 4,
+    "reject_if_context_mismatch": true
+  },
+  "generic_regional_generation_authorized": false,
+  "process_state_contract": {
+    "owner": "process",
+    "states": [
+      "dormant",
+      "active"
+    ],
+    "row_asserts_current_state": false
+  },
+  "forbidden_implications": [
+    "generic_regional_generation",
+    "mandatory_water",
+    "route",
+    "fire",
+    "heat",
+    "fuel",
+    "material",
+    "container",
+    "tool",
+    "npc",
+    "process",
+    "pt_forest_work_camp_substitution"
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "production_authorized": false,
+  "default_authorized": false,
+  "rematerialization_authorized": false,
+  "activation_request": null,
+  "auditor": "independent_contract_auditor",
+  "audit_date": "2026-09-21",
+  "attestation_digest": "2ead91157c3efc214c7431bd47cb79acfd1e334f814d74dc9c45ea96a7ecd550"
+}

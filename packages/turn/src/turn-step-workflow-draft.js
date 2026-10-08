@@ -90,12 +90,15 @@ export function buildTurnStepPreparedDomainConsequence(draft) {
 export function buildTurnStepDraftConsequence(draft) {
   const fragments = draft?.loop_result?.consequence_fragments ?? [];
   const status = draft.loop_result.status === 'resolved'
-    ? 'resolved'
+    ? draft.loop_result.blocked_plan === true ? 'blocked' : 'resolved'
     : 'partial';
   const consequence = {
     version: 1,
     schema: 'turn_consequence_package',
     status,
+    ...(status === 'blocked' && draft.loop_result.blocked_plan_reason_code
+      ? { movement_blocked_reason_code: draft.loop_result.blocked_plan_reason_code }
+      : {}),
     duration_minutes: 0,
     visible_seed: {
       completed_steps: structuredClone(draft.loop_result.completed_steps),
@@ -220,16 +223,81 @@ function mergeRecord(left, right, field) {
   }
   const merged = structuredClone(left ?? {});
   for (const [key, value] of Object.entries(right ?? {})) {
-    if (Object.hasOwn(merged, key) && sha256(merged[key]) !== sha256(value)) {
+    if (Object.hasOwn(merged, key) && sha256(merged[key]) !== sha256(value)
+        && !(key === 'turn_step_post_applied_perception_window'
+          && field.includes('visible_seed'))) {
       throw turnFailure(
         'TURN_STEP_CONSEQUENCE_CONFLICT',
         `Semantic draft and domain command conflict on ${field}.${key}.`,
         { field, key }
       );
     }
-    merged[key] = structuredClone(value);
+    merged[key] = key === 'turn_step_post_applied_perception_window'
+      && field.includes('visible_seed') && Object.hasOwn(merged, key)
+      ? mergePostAppliedPerceptionWindows(merged[key], value, field)
+      : structuredClone(value);
   }
   return merged;
+}
+
+function mergePostAppliedPerceptionWindows(left, right, field) {
+  if (![left, right].every((window) => plain(window)
+      && window.kind === 'post_applied_perception_window'
+      && Array.isArray(window.observable_response_event_refs)
+      && (window.pending_npc_decision_refs == null
+        || Array.isArray(window.pending_npc_decision_refs))
+      && Array.isArray(window.moments))) {
+    throw turnFailure('TURN_STEP_CONSEQUENCE_FRAGMENT_INVALID',
+      `${field}.turn_step_post_applied_perception_window is invalid.`,
+      { field });
+  }
+  const moments = new Map();
+  for (const moment of [...left.moments, ...right.moments]) {
+    if (!plain(moment) || !plain(moment.occurred_at)
+        || !Array.isArray(moment.event_refs)
+        || !Array.isArray(moment.pending_npc_decision_refs)) {
+      throw turnFailure('TURN_STEP_CONSEQUENCE_FRAGMENT_INVALID',
+        `${field}.turn_step_post_applied_perception_window.moments is invalid.`,
+        { field });
+    }
+    const key = sha256(moment.occurred_at);
+    const current = moments.get(key) ?? {
+      occurred_at: structuredClone(moment.occurred_at),
+      event_refs: [], pending_npc_decision_refs: []
+    };
+    current.event_refs = uniqueValues([
+      ...current.event_refs, ...moment.event_refs
+    ]);
+    current.pending_npc_decision_refs = uniqueValues([
+      ...current.pending_npc_decision_refs,
+      ...moment.pending_npc_decision_refs
+    ]);
+    moments.set(key, current);
+  }
+  const pending = uniqueValues([
+    ...(left.pending_npc_decision_refs ?? []),
+    ...(right.pending_npc_decision_refs ?? [])
+  ]).sort();
+  return {
+    kind: 'post_applied_perception_window',
+    status: pending.length === 0 ? 'completed' : 'pending_npc_decision',
+    observable_response_event_refs: uniqueValues([
+      ...left.observable_response_event_refs,
+      ...right.observable_response_event_refs
+    ]),
+    moments: [...moments.values()],
+    ...(pending.length === 0 ? {} : { pending_npc_decision_refs: pending })
+  };
+}
+
+function uniqueValues(values) {
+  const seen = new Set();
+  return values.filter((value) => {
+    const key = sha256(value);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).map((value) => structuredClone(value));
 }
 
 function validateConsequenceFragment(fragment, index) {

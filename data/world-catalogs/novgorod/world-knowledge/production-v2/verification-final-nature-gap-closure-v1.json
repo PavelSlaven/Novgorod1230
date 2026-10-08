@@ -1,0 +1,50 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-nature-07",
+      "claim_ref": "claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
+      "claim_digest": "d292e7a4a0dfbb82616035563e5f78fd6bbb496f3e00f53c4327642f30138a16",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
+      "auditor_ref": "/root/trade_economy_replay",
+      "independence_basis": "Independent source and scope review.",
+      "evidence_checked": [
+        "evidence:final-nature-basswood"
+      ],
+      "review_ref": "verification/final-nature-gap-closure-v1.md",
+      "verdict": "APPROVE",
+      "limits": "American basswood only; no Novgorod tree."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-nature-08",
+      "claim_ref": "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+      "claim_digest": "28b3816684d806386cee52a02c9dc89e2fad686b62a48c75401c9c7b4b7545fd",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+      "auditor_ref": "/root/trade_economy_replay",
+      "independence_basis": "Independent source and scope review.",
+      "evidence_checked": [
+        "evidence:final-nature-basswood"
+      ],
+      "review_ref": "verification/final-nature-gap-closure-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Analogical American-basswood comparator only."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-nature-18",
+      "claim_ref": "claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark",
+      "claim_digest": "ae5a7999aca313747093ae0dc4ad78ca76773c309f62bf40616c325356ef2fca",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark",
+      "auditor_ref": "/root/trade_economy_replay",
+      "independence_basis": "Independent source and scope review.",
+      "evidence_checked": [
+        "evidence:final-nature-basswood"
+      ],
+      "review_ref": "verification/final-nature-gap-closure-v1.md",
+      "verdict": "APPROVE",
+      "limits": "American basswood comparator; no unidentified-bark inference."
+    }
+  ]
+}

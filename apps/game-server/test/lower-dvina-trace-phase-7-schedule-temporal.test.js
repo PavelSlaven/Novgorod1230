@@ -147,6 +147,27 @@ test('uninterrupted schedule advance still requires completed T+30 path', () => 
   assert.equal(ok.elapsed_after_decision, 5);
 });
 
+test('decision-time rest limit does not report fire-rest completion', () => {
+  const advanced = resolveTracePhase7ScheduleTemporalAdvance({
+    state: { party_id: 'party-1',
+      party_state: { turn_number: 7, state_version: 7 },
+      clock: at(100), temporal_boundary_candidates: [] },
+    temporal: baseTemporal(),
+    actorStep: baseActorStep(),
+    restLimitTimestamp: at(125),
+    temporalAdvanceOwner: { advance: ({ request }) => ({
+      result: { temporal_status: 'completed', clock_before: at(125),
+        clock_after: at(125), trace: { processed_boundary_ids: [] } },
+      state_projection: { ...structuredClone(request.relevant_state_projection),
+        cumulative_elapsed_minutes: 25 }
+    }) },
+    commandIdempotencyKey: 'idem-deferred-rest'
+  });
+  assert.equal(advanced.rest_completed, false);
+  assert.equal(advanced.result.temporal_status, 'completed');
+  assert.equal(advanced.elapsed_after_decision, 0);
+});
+
 test('NPC affect replaces the committed fire candidate before remaining advance',
   ()=>{
     const start=firePlan({action:'start',process:null,item:'fuel-old',step:1});

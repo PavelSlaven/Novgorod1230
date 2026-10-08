@@ -1,6 +1,6 @@
 # Граничные случаи и ошибки
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-25, commit 59c1a33c.
 
 Это карта: какие сбои бывают, кто их обрабатывает и где их коды. Нормы здесь не повторяются — они в
 [AGENTS.md](../../AGENTS.md) (указаны §) и в профильных контрактах ([CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)).
@@ -35,9 +35,9 @@
 ## 3. Реестр typed errors (spatial/temporal)
 
 [typed-error-specifications.json](../../packages/contracts/src/spatial-v3/typed-error-specifications.json) —
-82 записи `{error_code, meaning, required_reaction[, retryability]}`, `source_version` `4.5.0-target.1`.
+86 записей `{error_code, meaning, required_reaction[, retryability]}`, `source_version` `4.7.0-target.1`.
 Файл **generated**: его собирает [generate-typed-error-specifications.mjs](../../tools/spatial-v3/generate-typed-error-specifications.mjs)
-из приложения C [spatial_architecture_standard_g0_g6.md](../../data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md)
+из приложения C и таблицы F.2 (Приложение F, amendment 4.7.0) [spatial_architecture_standard_g0_g6.md](../../data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md)
 и приложения B [temporal_world_and_interruptible_activities.md](../../data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md).
 JSON руками не правят: меняют источник, затем запускают генератор. Реакцию на ошибку смотрят в поле
 `required_reaction`; здесь реестр не копируется.
@@ -61,7 +61,10 @@ JSON руками не правят: меняют источник, затем �
 
 Маскирование: при статусе ≥500, при `public_exposure: 'internal'` и для `TURN_ORDINARY_DISCOVERY_UNRESOLVED`
 (отдаётся как 409) игрок видит только `TEMPORARY_ACTION_UNAVAILABLE` и общий текст. Сервер логирует такие
-ошибки ([handler.js](../../apps/game-server/src/http/handler.js)). Карта маршрутов —
+ошибки ([handler.js](../../apps/game-server/src/http/handler.js)). Исключение — два известных отказа хода
+с `turn_commit_status: not_started` (409): `TURN_STEP_PLAN_INVALID` → `TURN_NOT_SAVED`,
+`M2C_TARGET_A1_APPLICABILITY_DATA_GAP` → `WORLD_ACTION_UNAVAILABLE`; текст «Ход не сохранён…», без внутренних
+кодов и деталей ([contracts.js](../../apps/game-server/src/http/contracts.js)). Карта маршрутов —
 [GAME_SERVER_WEB_CONTRACT_MAP.md](../../docs/migration/contracts/GAME_SERVER_WEB_CONTRACT_MAP.md). ⚠ В ней
 перечислено 5 маршрутов; в `handler.js` их больше (`/scenarios`, `/llm-settings*`, `/portrait-spec`,
 `/turns/:requestId/progress`, `/presentation-recovery`, developer-отчёт).
@@ -83,8 +86,9 @@ JSON руками не правят: меняют источник, затем �
   reasoning `low`. Смена модели при этом не допускается — [llm-runtime MODULE.md](../../packages/llm-runtime/MODULE.md),
   [turn MODULE.md](../../packages/turn/MODULE.md).
 - Вызов модели делают вне физической DB-транзакции; перед commit данные перечитываются — AGENTS §14.
-- ⚠ PR #98 меняет: provider по умолчанию для `play:local` (правка в `packages/llm-runtime/MODULE.md`).
-  В документах ссылаться на владельца, а не на значение.
+- Provider/model для `play:local` и gameplay на этой ветке — у владельцев
+  ([LLM_PROVIDERS.md](../setup/LLM_PROVIDERS.md), [llm-settings.js](../../apps/game-server/src/runtime/llm-settings.js),
+  LW-020); в карте значение не копируется.
 
 ## 6. DB, CAS и idempotency
 
@@ -149,6 +153,25 @@ partial, waste или нерабочая конструкция, и он ком�
 
 - ошибки из этого документа — сбой **системы** (данные, provider, конфликт, утечка), мир не меняется;
 - неудачная попытка — нормальный **игровой** исход, мир меняется.
+
+## 10.1. Действия игрока — примеры для проверок (не список handlers)
+
+Затравки для unseen-equivalent / regression; handlers из них не выводят.
+Нормы: [PC §9.1](../governance/PRODUCT_CONSTITUTION.md), [AI §10.1](../governance/ARCHITECTURE_INVARIANTS.md) /
+[AI §10.3](../governance/ARCHITECTURE_INVARIANTS.md), A1 в
+[`items_and_property.txt`](../../data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt);
+решения владельца — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133).
+Каждая строка — затравка для unseen-equivalent варианта (WR §24).
+
+| Класс проверки | Пример намерения | Норма / ориентир |
+|---|---|---|
+| Осмотр места (первый) | «смотрю вокруг» | PC §9.1; presence без reroll |
+| Открытие контейнера (первый) | «открываю сундук» | PC §9.1; container scope |
+| Поиск / умение | «ищу ягоды» | PC §9.1 (умение → поиск, не presence) |
+| Копание / изъятие природного | «копаю глину» | AI §10.3 — конечные или практически непрерывные запасы; рукотворное только при причине |
+| Изготовление (A1) | «делаю копьё», «подделываю грамоту» | A1 в `items_and_property.txt` |
+| Ограниченный класс | «ищу меч в лесу» | PC §9.1; typed gap — только уникальное/квестовое |
+| Technical gap | действие без механики | AI §10.1 (+ LW-030 как известный дефект показа) |
 
 ## 11. Требования к тестам
 

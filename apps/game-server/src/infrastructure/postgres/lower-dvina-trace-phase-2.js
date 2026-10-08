@@ -7,11 +7,14 @@ import { phase2PublicResult, phase2ScreenDigest, publicCombatStateFromConsequenc
 import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery, factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
 import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
 import { phase2InitialCurrentVisibleContext, withPhase2CurrentVisibleContext,
+  withPhase2CurrentLocalEdges,
   withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
 import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
 import { replayLowerDvinaTracePhase2Presentation } from './lower-dvina-trace-phase-2-presentation-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { hydrateNpcRoutineState } from '../../runtime/npc-routine-temporal.js';
+import { withLowerDvinaTraceCurrentScene } from
+  '../../runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
 import { assertPhase3NormalizedRows, hydrateSemanticDecisionReplay } from './lower-dvina-trace-phase-3-read.js';
 import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
@@ -27,12 +30,22 @@ import { withCommittedRuntimeContainers } from './lower-dvina-trace-phase-2-comm
 import { loadPhase2JourneyLocation, withJourneyLocation } from './lower-dvina-trace-phase-2-journey-location.js';
 import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-context.js';
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
+import { withSceneNpcs, withoutSceneNpcs } from './scene-npcs-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
+import { serverError } from '../../errors.js';
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
-import { loadLowerDvinaTraceScenePresentation } from '../../internal/lower-dvina-trace-scene-presentation.js'; import { withLowerDvinaTracePostActionKnowledge } from './lower-dvina-trace-post-action-knowledge.js';
+import { withLowerDvinaTracePostActionKnowledge } from './lower-dvina-trace-post-action-knowledge.js';
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
-  committer } = {}) {
+  committer, authoredRuntimeBindingResolver = null,
+  trustedBodyNeedsBindingPin = null,
+  trustedBodyNeedsProfile = null,
+  loadInitialNaturalScenePerceptionInput = null,
+  projectCurrentSpatialContext = null,
+  readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
+  readCurrentConnectionDisclosure = null,
+  readCurrentVisibleContext = null,
+  projectEnvironmentAtClock = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -41,7 +54,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   }
   async function loadPhase2State(
     partyId,
-    { presentationIdempotencyKey = null, turnBudget = null } = {}
+    { presentationIdempotencyKey = null, turnBudget = null,
+      includeCurrentVisibleContext = true } = {}
   ) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
     const phase1A = createLowerDvinaTracePhase1ARepository({
@@ -89,6 +103,29 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       );
     }
     if (Number(row.party_state_version) === 0) {
+      const resolvedBinding = typeof authoredRuntimeBindingResolver === 'function'
+        ? authoredRuntimeBindingResolver(row.stage26_result?.runtime_binding)
+        : null;
+      const authoredInitialState = row.state_payload?.schema === 'rus.authored_start_initial_party_snapshot.v3';
+      const naturalPin = resolvedBinding?.initial_natural_perception_rule_pin;
+      const canonicalInitialState = naturalPin != null
+        || row.state_payload?.initial_spatial_v3?.canonical_scene_proposal != null;
+      if (authoredInitialState && resolvedBinding?.snapshot_schema !== row.state_payload.schema) {
+        throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
+          'Canonical initial turn runtime binding is unavailable.', { status: 409 });
+      }
+      if (canonicalInitialState && (!authoredInitialState || (naturalPin != null
+        && (!Array.isArray(row.state_payload.policy_profile_pins)
+        || row.state_payload.policy_profile_pins.filter((pin) => pin.key === naturalPin.key
+          && pin.revision === naturalPin.revision && pin.digest === naturalPin.digest).length !== 1)))) {
+        throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
+          'Canonical initial turn perception rule pin is unavailable.', { status: 409 });
+      }
+      if (includeCurrentVisibleContext && canonicalInitialState
+        && typeof loadInitialNaturalScenePerceptionInput !== 'function') {
+        throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
+          'Canonical initial turn perception loader is unavailable.', { status: 409 });
+      }
       const temporalSourceProof =
         await loadTracePhase2TemporalSourceProof(readPool, partyId);
       const initial = await loadInitialTracePhase2State({
@@ -96,25 +133,43 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         row,
         phase1A,
         partyPool: readPool,
-        temporalSourceProof
+        temporalSourceProof,
+        runtimeBinding: resolvedBinding
       });
-      const visible = withPhase2CurrentVisibleContext(
+      const naturalScenePerceptionInput = includeCurrentVisibleContext && canonicalInitialState
+        ? await loadInitialNaturalScenePerceptionInput({ partyId,
+          actorId: initial.actor_id, initialState: initial }) : null;
+      const screenPresentation = canonicalInitialState ? null
+        : await loadLowerDvinaTraceScreenPresentation(initial);
+      const visible = !includeCurrentVisibleContext ? initial : withPhase2CurrentVisibleContext(
         initial,
         phase2InitialCurrentVisibleContext({
           screen: row.screen,
           openingScreenDigest: row.stage26_result.opening_screen_digest,
           initialState: initial,
-          scenePresentation: await loadLowerDvinaTraceScenePresentation({
-            scenarioDefinitionRevision: initial.materialization_trace?.seed_context
-              ?.scenario_definition_revision
-          })
+          canonicalInitialState,
+          initialNaturalPerceptionRulePin: naturalPin,
+          naturalScenePerceptionInput,
+          scenePresentation: screenPresentation?.scenePresentation ?? null,
+          itemLabels: screenPresentation?.itemLabels ?? {}
         })
       );
       const journeyLocation = await loadPhase2JourneyLocation(
         readPool, partyId, initial.actor_id);
-      return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, hydrateNpcRoutineState({ ...withJourneyLocation(visible, journeyLocation),
+      const current = await withPhase2CurrentLocalEdges(
+        withJourneyLocation(visible, journeyLocation),
+        includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
+      const hydrated = await withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, hydrateNpcRoutineState({ ...current,
         npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime) })));
+      return includeCurrentVisibleContext
+        ? { ...hydrated,
+          current_spatial_context: structuredClone(hydrated.current_visible_context),
+          current_spatial_context_is_fresh: true,
+          current_spatial_context_filters_entities: canonicalInitialState }
+        : hydrated;
     }
     const payload = row.state_payload;
     if (!validPhase2Snapshot(payload, row, partyId)) {
@@ -137,7 +192,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       await assertPhase5NormalizedRows(readPool, payload, row);
       await assertPhase6NormalizedRows(readPool, payload, row);
       await assertPhase7NormalizedRows(readPool, payload, row);
-      await assertTurnStepNormalizedRows(readPool, payload, row);
+      await assertTurnStepNormalizedRows(readPool, payload, row,
+        trustedBodyNeedsBindingPin, trustedBodyNeedsProfile);
       await assertCombatSessionRows(readPool, payload);
       await assertPhase9NormalizedRows(readPool, payload);
       await assertPhase10NormalizedRows(readPool, payload, row);
@@ -145,17 +201,34 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       await assertPhase2NormalizedRows(readPool, payload, row);
     }
     const loadedPayload = structuredClone(payload);
+    loadedPayload.scenario_id ??= row.stage26_result?.scenario_id ?? null;
     const journeyLocation = await loadPhase2JourneyLocation(
       readPool, partyId, loadedPayload.actor_id);
     withJourneyLocation(loadedPayload, journeyLocation);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    const loadedWithCurrentVisible = withPhase2CurrentVisibleContext(
+    const priorVisibleContext = includeCurrentVisibleContext
+        && typeof projectCurrentSpatialContext === 'function'
+        && Number(row.party_state_version) > 0
+      ? await loadPhase2VisibleContext(partyPool, {
+        commit: loadedPayload.last_turn.visible_package, turnBudget
+      }) : null;
+    const loadedWithCurrentVisible = !includeCurrentVisibleContext
+      || typeof projectCurrentSpatialContext === 'function' ? loadedPayload : withPhase2CurrentVisibleContext(
       loadedPayload, await loadPhase2VisibleContext(partyPool, {
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));
-    return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, hydrateNpcRoutineState({
-      ...loadedWithCurrentVisible,
+    const sceneInput = typeof projectCurrentSpatialContext === 'function'
+      ? { ...loadedWithCurrentVisible,
+        ...(priorVisibleContext == null ? {} : {
+          prior_perceived_visible_npcs: priorVisibleContext.visible_npc
+        }) }
+      : await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
+        includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
+    const loadedWithSceneNpcs = await withSceneNpcs(readPool, partyId, {
+      ...sceneInput,
       world_identity: {
         world_revision_id: row.world_revision_id,
         world_catalog_digest: row.world_catalog_digest
@@ -164,8 +237,34 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         structuredClone(temporalSourceProof.candidates),
       temporal_source_proof: structuredClone(temporalSourceProof),
       npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
-        local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
-      }))));
+      local_fire_runtime: structuredClone(temporalSourceProof.local_fire_runtime)
+    });
+    const hydratedNpcState = hydrateNpcRoutineState(loadedWithSceneNpcs);
+    const containers = await withCommittedRuntimeContainers(readPool, partyId,
+      hydratedNpcState);
+    const visible = includeCurrentVisibleContext
+        && typeof projectCurrentSpatialContext !== 'function'
+      ? await refreshCurrentSpatialNpcs(containers, turnBudget) : containers;
+    const currentState = typeof projectCurrentSpatialContext === 'function'
+      ? visible : await withPhase2CurrentLocalEdges(visible,
+        includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
+    const hydrated = await withLowerDvinaTracePostActionKnowledge(readPool, partyId,
+      await withSpatialSemanticCommittedState(readPool, partyId, currentState));
+    if (!includeCurrentVisibleContext || typeof projectCurrentSpatialContext !== 'function') {
+      return hydrated;
+    }
+    const currentSpatialContext = await projectCurrentSpatialContext({ partyId,
+      actorId: hydrated.actor_id, state: hydrated, turnBudget });
+    const spatial = { ...withPhase2CurrentVisibleContext(hydrated,
+      currentSpatialContext), current_spatial_context: currentSpatialContext,
+      current_spatial_context_is_fresh: true,
+      current_spatial_context_filters_entities: true };
+    const disclosed = await withPhase2CurrentLocalEdges(spatial, readLocalEdgeDisclosure,
+      readCurrentExitDisclosure, readCurrentConnectionDisclosure);
+    return { ...disclosed,
+      current_spatial_context: structuredClone(disclosed.current_visible_context) };
   }
   async function loadPhase2Replay({ partyId, idempotencyKey, turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
@@ -174,21 +273,77 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       loadState: (id, options) => loadPhase2State(id, { ...options, turnBudget })
     });
   }
+  async function loadPreparedMovementScene({ partyId, state, clock = null,
+    turnBudget = null }) {
+    const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
+    const clockPreparedState = clock == null ? state : {
+      ...state,
+      clock: structuredClone(clock),
+      clock_weather_light: {
+        ...structuredClone(state.clock_weather_light ?? {}),
+        clock: structuredClone(clock)
+      }
+    };
+    const { prepared_destination_visible_context: preparedDestinationVisibleContext,
+      ...sceneInput } = clockPreparedState;
+    const scene = await withSceneNpcs(readPool, partyId,
+      withoutSceneNpcs(sceneInput));
+    return refreshCurrentSpatialNpcs(scene, turnBudget,
+      preparedDestinationVisibleContext, clock);
+  }
+  async function refreshCurrentSpatialNpcs(state, turnBudget,
+    preparedDestinationVisibleContext = null, clock = null) {
+    if (typeof state?.position?.position_id !== 'string'
+        || typeof state?.actor_id !== 'string') return state;
+    const visibleContext = preparedDestinationVisibleContext
+      ?? (typeof readCurrentVisibleContext === 'function'
+        ? await readCurrentVisibleContext({ partyId: state.party_id,
+          actorId: state.actor_id, positionId: state.position.position_id,
+          state, turnBudget, clock }) : null);
+    return visibleContext == null ? state
+      : withPhase2CurrentVisibleContext(state, visibleContext);
+  }
   async function replayPhase2Turn({ partyId, replay, narrator, turnBudget = null }) {
     return replayLowerDvinaTracePhase2Presentation({ partyPool, partyId, replay,
       narrator, turnBudget, persistPhase2Screen });
   }
   async function commitPhase2Turn(input) {
-    return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget) });
+    const commitState = { p16CommitCalls: 0 };
+    try {
+      return await commitLowerDvinaTracePhase2({ ...input,
+        ...commitPorts(input.turnBudget, commitState), projectEnvironmentAtClock });
+    } catch (cause) {
+      if (cause?.code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP'
+          && commitState.p16CommitCalls === 0
+          && cause.turn_commit_status == null) {
+        cause.turn_commit_status = 'not_started';
+      }
+      throw cause;
+    }
   }
-  function commitPorts(turnBudget = null) {
+  function commitPorts(turnBudget = null, commitState = null) {
     const loadState = turnBudget == null ? loadCommittablePhase2State :
       (partyId, options = {}) => loadCommittablePhase2State(
         partyId, { ...options, turnBudget });
     return { loadState, committer: {
       async commit(input) {
         turnBudget?.assertCanCommit();
-        return committer.commit({ ...input, turnBudget });
+        if (commitState != null) commitState.p16CommitCalls += 1;
+        const result = await committer.commit({ ...input, turnBudget });
+        if (result?.ok !== false
+            || result.error?.code !== 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP') {
+          return result;
+        }
+        const reason = result.error.diagnostics?.reason;
+        const failure = serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
+          'Complete player-visible scene data is required.', {
+            status: 409,
+            details: typeof reason === 'string' ? { reason } : null
+          });
+        if (result.error.diagnostics?.turn_commit_status === 'not_started') {
+          failure.turn_commit_status = 'not_started';
+        }
+        throw failure;
       }
     } };
   }
@@ -254,11 +409,32 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       narration.presentation?.output_digest
       ?? canonicalDigest(narration.approved_output);
     const combatState = publicCombatStateFromConsequence(payload.last_turn?.consequence);
+    const screenPayload = await withSceneNpcs(
+      withTurnDeadlineQueryPool(partyPool, turnBudget), partyId,
+      withoutSceneNpcs(payload));
+    const refreshedScene = typeof projectCurrentSpatialContext === 'function'
+      ? await loadPhase2State(partyId, {
+        includeCurrentVisibleContext: true, turnBudget
+      }) : null;
+    const presentation = await loadLowerDvinaTraceScreenPresentation(screenPayload);
+    const currentVisibleContext = refreshedScene == null ? null
+      : withLowerDvinaTraceCurrentScene({
+        committedState: refreshedScene,
+        scenePresentation: presentation?.scenePresentation ?? null,
+        itemLabels: presentation?.itemLabels ?? {}
+      }).current_visible_context;
     const screen = projectLowerDvinaTraceScreenPanels({
-      payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
+      payload: screenPayload,
+      currentVisibleContext,
+      presentation,
       screen: {
         ...structuredClone(result.screen),
-        schema: 'lower_dvina_trace_turn_screen',
+        ...(Array.isArray(payload.last_turn?.exact_npc_utterances)
+            && payload.last_turn.exact_npc_utterances.length
+          ? { exact_npc_utterances: structuredClone(
+              payload.last_turn.exact_npc_utterances) } : {}),
+        schema: payload.scenario_id === 'lower_dvina_trace_v1'
+          ? 'lower_dvina_trace_turn_screen' : 'turn_screen',
         screen_status: 'ready',
         ...(combatState == null ? {} : { combat_state: combatState }),
         current_projection_anchor: {
@@ -281,6 +457,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   }
   return Object.freeze({
     loadPhase2State,
+    loadPreparedMovementScene,
+    projectEnvironmentAtClock,
     loadPhase2StateVersion: (partyId, options) =>
       loadPhase2StateVersion(partyPool, partyId, options),
     loadPhase2Replay,

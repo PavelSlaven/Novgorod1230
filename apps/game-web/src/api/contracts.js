@@ -55,6 +55,11 @@ export function validatePublicScreen(screen) {
     throw webError('SCREEN_SCHEMA_UNSUPPORTED', 'Unsupported screen schema.');
   }
   if (screen.screen_status !== 'ready') throw webError('SCREEN_NOT_READY', 'Screen must be ready.');
+  if (Object.hasOwn(screen, 'exact_npc_utterances')
+      && !validExactNpcUtterances(screen.exact_npc_utterances)) {
+    throw webError('SCREEN_EXACT_SPEECH_INVALID',
+      'Exact NPC speech must use verified statement provenance.');
+  }
   if (!text(screen.party_id)) throw webError('SCREEN_PARTY_ID_REQUIRED', 'party_id is required.');
   if (screen.schema === 'factual_turn_delivery_screen') {
     validateFactualTurnDeliveryScreen(screen);
@@ -72,6 +77,19 @@ export function validatePublicScreen(screen) {
   return screen;
 }
 
+function validExactNpcUtterances(value) {
+  const exactKeys = (record, keys) => plain(record)
+    && Object.keys(record).length === keys.length
+    && keys.every((key) => Object.hasOwn(record, key));
+  const nonempty = (item) => typeof item === 'string' && item.trim();
+  return Array.isArray(value) && value.every((entry) =>
+    exactKeys(entry, ['speaker_ref', 'utterance_text'])
+    && exactKeys(entry.speaker_ref, ['entity_kind', 'entity_id'])
+    && entry.speaker_ref.entity_kind === 'npc'
+    && nonempty(entry.speaker_ref.entity_id)
+    && nonempty(entry.utterance_text));
+}
+
 function validateFactualTurnDeliveryScreen(screen) {
   const allowed = new Set([
     'version', 'schema', 'screen_status', 'party_id', 'turn_id', 'turn_number',
@@ -79,7 +97,7 @@ function validateFactualTurnDeliveryScreen(screen) {
     'uncertainties', 'presentation_quality', 'scenario_id', 'screen_kind',
     'action_panel', 'actions', 'checks', 'panels', 'input_panel', 'delivery_state',
     'opening_screen_digest', 'current_projection_anchor', 'presentation_context',
-    'scene_asset_id', 'combat_state'
+    'scene_asset_id', 'combat_state', 'exact_npc_utterances'
   ]);
   if (Object.keys(screen).some((key) => !allowed.has(key))
     || !text(screen.turn_id) || !Number.isInteger(screen.turn_number)
@@ -87,7 +105,8 @@ function validateFactualTurnDeliveryScreen(screen) {
     || !text(screen.committed_state_version) || !plain(screen.visible_context)
     || !textArray(screen.visible_changes) || !textArray(screen.uncertainties)
     || screen.presentation_quality !== 'degraded'
-    || screen.scenario_id !== 'lower_dvina_trace_v1' || screen.screen_kind !== 'trace_turn'
+    || !text(screen.scenario_id)
+    || !['trace_turn', 'live_world_turn'].includes(screen.screen_kind)
     || !plain(screen.presentation_context)
     || !plain(screen.action_panel) || !Array.isArray(screen.action_panel.suggested_actions)
     || !Array.isArray(screen.actions)

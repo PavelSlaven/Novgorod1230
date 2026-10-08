@@ -1,0 +1,93 @@
+{
+  "schema": "npc_body_initialization_profile_approval_v1",
+  "who": "Claude Opus 5.5 — независимый утверждающий ap-combat-body-init по D67/D84; не автор профиля",
+  "when": "2026-10-05T10:09:33Z",
+  "reviewer_request": "NOTE-combat-min-body-init-ap | 2026-10-05T10:06:02Z; TASK ap-combat-body-init",
+  "repository": "PavelSlaven/Novgorod1230",
+  "branch": "fleet/combat-min",
+  "code_basis_commit": "152cc755403dc0c0b097943b0b2be4526de5f167",
+  "path": "data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/body-init-profile-source.json",
+  "commit": "d7642a13a405c2a9862db1a6a7f5c0d76c9364f9",
+  "candidate_source": "/srv/novgorod-work/fleet/tasks/combat-min/out/body-init-candidate-20261005/profile.candidate.json",
+  "candidate_sha256": "208672c3b1faa36def01470e81dd517cc3417eec1c87f850ece8b321c2f361bf",
+  "sha256_purpose": "Утверждены ровно эти байты; при коммите ведущий сверяет blob с этим хэшем. Любое изменение байт снимает утверждение до нового прохода.",
+  "target_schema": "rus.body_state.initialization_profile.v1",
+  "profile_id": "combat-min-materialized-npc-default-v1",
+  "version": 1,
+  "verdict": "APPROVE_WITH_LIMITS",
+  "approval_granted": true,
+  "approval_scope": "Только данные этого профиля: одна D71-калибровка health=100, satiety=70, energy=80 как единый начальный profile для любого материализованного NPC, у которого авторитетный readback подтвердил отсутствие строки party_actor_body_states. Утверждены значения, отсутствие вариантов, правило выбора (selection_rule) и пределы calibration.limits. Не утверждены код инициализации, readback, запись P16, импорт, активация и игровой баланс.",
+  "production_authorized": true,
+  "production_authorized_applies_only_to": "profile id/version + candidate_sha256 этой записи и approved_use; это разрешение данных для будущего owner-пути, а не активация кода или пакета combat-min-data-v1",
+  "activation_authorized": false,
+  "import_authorized": false,
+  "bundle_production_authorized": false,
+  "approved_use": {
+    "subject": "Любой материализованный NPC; без списков и классов actor; ничего не выводится из атрибутов, identity, occupation, profile_level, имени или внешности.",
+    "trigger": "Авторитетный readback того же NPC подтвердил: строки тела нет.",
+    "persisted_row": "Существующая строка главнее: не перезаписывать, не переинициализировать.",
+    "readback_error": "Typed gap для этого NPC; никогда не считать отсутствием строки.",
+    "owner_dto": "Механическое преобразование без новых значений: {schema: target_schema, status: 'approved', profile_ref: profile_ref (как в кандидате), initial_state: initial_state_proposal}. Проверено скриптом: initializeBodyState → ok, body_state {health:100, satiety:70, energy:80}. calibration, selection_rule и approval_state в DTO не входят.",
+    "model_visible": "Только качественные фразы approval-7 через projectCombatBodyStateDescriptions; при 100/70/80 — три фразы верхней полосы. Числа, profile id/ref, D71, calibration, status — внутренние.",
+    "player_visible": "Ничего из этого профиля.",
+    "meaning": "Обычное ничем не отмеченное состояние тела на момент появления строки; не историческое, не медицинское, не утверждение о прошлом NPC (что он ел, спал ли)."
+  },
+  "excluded": [
+    "Варианты по атрибутам, identity, занятию, возрасту, времени суток, сезону, погоде — любой будущий вариант только отдельным утверждением общего правила по утверждённым полям владельца.",
+    "Использование body_profile_ref / rus.body_state.profile.v1 как селектора или источника initial_state без отдельно утверждённого owner mapping.",
+    "Перезапись существующей строки тела, замена ошибки readback на default, подстановка при отсутствии readback.",
+    "Игрок, player-facing narration, показ чисел или служебных меток.",
+    "Начальные active_conditions/body_parts: профиль задаёт только три метрики.",
+    "Остальные данные combat-min-data-v1, длительности, harm/weapon, import/activation/cutover."
+  ],
+  "conditions_for_code_delivery": [
+    "C1: если у NPC без строки тела в записи материализации есть утверждённый rus.body_state.profile.v1 со значениями или condition_bindings, отличными от этого профиля, — typed gap, а не default (сейчас таких нет: все утверждённые профили тела в data = 100/80/70, conditions []). Детерминированный тест на это расхождение.",
+    "C2: profile_ref, записанный в body_profile_ref строки, и calibration не попадают во вход decider/repair и в player-safe проекцию; тест на primary и repair payload через buildProviderRequestPayload.",
+    "C3: DTO строится только из утверждённых байт по owner_dto; тест сверяет sha256 источника и результат initializeBodyState.",
+    "C4: отличие «строки нет» от ошибки readback, неперезапись строки, P16 replay без второго тела — тесты владельцев; Contract Auditor на коммит кода."
+  ],
+  "data_checks": {
+    "script": "out/check.mjs",
+    "script_exit": 0,
+    "candidate_sha256_match": true,
+    "initializer_raw_candidate": "body_state_profile_gap (ожидаемо: candidate)",
+    "initializer_status_flip_only": "body_state_profile_gap — не хватает schema, status, initial_state (есть target_schema, initial_state_proposal)",
+    "initializer_owner_dto": "ok; calibration в выходе нет",
+    "source_refs_resolved": "3/3; значения по указателям сверены",
+    "existing_body_profiles": "2 различных профиля во всём data (first-playable candidate и approved m2c_npc_body_ready_traveller_v1), оба 100/80/70",
+    "payload_parity_rerun": "12/12, 48 payloads, вывод побайтно равен payload-parity.log",
+    "leak_probe": "model messages: 0 запрещённых меток, 0 вхождений 100/70/80; player-safe NPC: тела нет",
+    "candidate_files_unchanged": true
+  },
+  "nonblocking_findings": [
+    {
+      "id": "N01",
+      "severity": "P3",
+      "summary": "В source_refs не указан самый сильный прецедент: утверждённый runtime-профиль m2c_npc_body_ready_traveller_v1 (data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json, status approved, 100/80/70), на который ссылаются все NPC bindings m2c и из которого stage-24 уже пишет строки тела. Ссылка добавлена в эту запись как evidence; данные не меняются."
+    },
+    {
+      "id": "N02",
+      "severity": "P3",
+      "summary": "satiety=70 лежит ровно на границе полос approval-7 [70,100]: первое же уменьшение сытости переводит описание в среднюю полосу. Допустимо; пересмотреть при плейтесте."
+    },
+    {
+      "id": "N03",
+      "severity": "P3",
+      "summary": "payload-parity сравнивает проекцию равных метрик (обе ветки body_state_persisted=true); подтверждает совместимость формы выхода initializer с проекцией, но не путь «строки нет → инициализация → запись»."
+    }
+  ],
+  "limits": [
+    "D71 proposed_unbenchmarked: утверждено как игровая калибровка по аналогии, без подтверждения баланса; пересмотр по плейтесту.",
+    "Сытость и бодрость одинаковы при любом времени суток и сезоне — объявленное упрощение. В текущем runtime тело NPC со временем не меняется (calculateBodyTimeEffectProposal не вызывается из apps; полнота не проверена). Когда у мира появится владелец потребностей/распорядка NPC, этот default уступает ему.",
+    "Код, readback, P16, replay и live end-to-end не проверялись; это approval данных.",
+    "Изменение утверждённых байт снимает утверждение до нового прохода."
+  ],
+  "evidence": [
+    "report-ap-combat-body-init.md",
+    "check.mjs",
+    "check-result.json",
+    "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json#/0 (m2c_npc_body_ready_traveller_v1, approved)",
+    "data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/body-bands-production-approval-7.json"
+  ],
+  "record_placement": "Только own out для размещения ведущим рядом с данными; прежние записи и рабочие копии не изменены."
+}

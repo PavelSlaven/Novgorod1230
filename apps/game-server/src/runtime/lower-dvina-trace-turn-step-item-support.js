@@ -17,6 +17,7 @@ import {
   hydrateAuthoredContainers,
   projectCurrentCommittedContainers
 } from './lower-dvina-trace-turn-step-authored-containers.js';
+import { visibleItemName } from './lower-dvina-trace-visible-item-label.js';
 export function initializeRuntimeState(committedState) {
   const state = {
     aliases: new Map(),
@@ -65,7 +66,7 @@ export function initializeRuntimeState(committedState) {
       snapshot: resolved.snapshot,
       semantic_type: text(item.category_id
         ?? item.state?.ordinary_metadata?.semantic_type) || null,
-      name: text(item.name ?? item.state?.ordinary_metadata?.name) || null,
+      name: visibleItemName(item),
       origin_kind: resolved.snapshot.provenance.origin_kind
         ?? resolved.snapshot.provenance.source_kind,
       source_refs: [...resolved.snapshot.provenance.source_refs]
@@ -130,6 +131,7 @@ export function normalizePlacement({ placement, projection, state, entityRef,
     placement,
     actor_id: projection.actor_id,
     current_location_ref: projection.position?.location_ref,
+    current_position_ref: projection.position?.position_id,
     entity_ref: entityRef,
     visible_items: projection.items,
     incoming_mechanics: incomingMechanics,

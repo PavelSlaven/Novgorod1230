@@ -2,9 +2,38 @@ import { reviewedNarration } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
+import { projectDirectSeedChanges } from '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { createPorts, execution, preparedOrdinary, semanticOwners } from './lower-dvina-trace-turn-step-runtime-ports-fixture.js';
 import { createActionProductionVisibleConsequence } from '../src/runtime/releases/lower-dvina-trace-a1-production.js';
+
+test('local movement without a confirmed visible delta adds no generic current beat', async () => {
+  const base = committedState().current_visible_context;
+  const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => structuredClone(base) }
+  }).project({ retrieved_state: committedState(), consequence: {
+    position_transition: { owner: '@rus/movement-routes' }, visible_seed: {}
+  }, mode_resolution: { decision_trace: { remaining_intent: null,
+    step_traces: [{ step_index: 1, applied: true, approved_plan: {
+      resolution: 'domain_request', operations: [{ op: 'request_movement',
+        actor_ref: 'mikula', target_ref: 'local:shelter',
+        movement_kind: 'local' }] } }] } } });
+  assert.equal(visible.visible_changes.includes(
+    'Вы переместились в пределах текущего места.'), false);
+});
+
+test('technical ordinal local-movement labels cannot become confirmed position changes', () => {
+  assert.throws(() => projectDirectSeedChanges({ input: { consequence: { visible_seed: {
+    turn_step_local_movement_signature: { kind: 'local_movement_signature',
+      display_label: 'Проход 1' }
+  } } }, directSeedKeys: ['turn_step_local_movement_signature'] }),
+  { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID' });
+  assert.throws(() => projectDirectSeedChanges({ input: { consequence: {
+    visible_seed: { turn_step_local_movement_signature: {
+      kind: 'local_movement_signature', display_label: ''
+    } } } }, directSeedKeys: ['turn_step_local_movement_signature'] }),
+  { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID' });
+});
 
 for (const [query, name, spoken, pending] of [
   ['доска', 'длинная доска', 'Постойте у берега.', false],
@@ -46,7 +75,7 @@ for (const [query, name, spoken, pending] of [
       step(2, { resolution: 'domain_request', operations: [operation] }),
       { ...step(3, { resolution: 'domain_request', operations: [{ op: 'request_item_use' }] }), applied: !pending } ] } } });
   const expected = [`Вы произнесли: «${spoken}»`,
-    `Обнаружено: «${name}».`, ...(pending ? [] : [physical])];
+    `Вы нашли предмет — ${name}.`, ...(pending ? [] : [physical])];
   assert.deepEqual(projected.visible_changes, expected);
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     const wire = JSON.parse(call.messages[1].content);
@@ -54,7 +83,8 @@ for (const [query, name, spoken, pending] of [
     assert.deepEqual(wire.required_current_beat.changes.map(({ ref }) => ref), expected.map((_, index) => `visible_change_${index + 1}`));
     assert.deepEqual(wire.required_current_beat.uncertainties, []);
     assert.match(call.messages[0].content, /Turn duration is code-owned UI metadata/u);
-    assert.deepEqual(wire.optional_support, { visible_scene: projected.visible_scene, sensory_details: projected.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: projected.visible_scene });
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: `Вы произнесли: «${spoken}» Поиск принёс находку — ${name}. ${pending ? '' : physical + ' '}Можно продолжить задуманное или выбрать другое действие.`,
       action_options: [], used_references: [] } };
@@ -189,7 +219,7 @@ for (const domainFallback of [false, true]) test(`materialized O1 precedes physi
   const state = committedState();
   state.current_visible_context.sensory_details = ['У воды лежат доски.'];
   const physical = 'На конце жерди видны свежие срезы.';
-  const found = 'Обнаружено: «короткая жердь».';
+  const found = 'Вы нашли предмет — короткая жердь.';
   const projector = createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
     project: async () => ({ ...state.current_visible_context, visible_changes: [physical] }) } });
   const visible = await projector.project({ retrieved_state: state, consequence: {
@@ -207,7 +237,8 @@ for (const domainFallback of [false, true]) test(`materialized O1 precedes physi
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visible.visible_scene });
     const changes = wire.required_current_beat.changes.map(({ text }) => text);
     assert.ok(changes.includes(found)); assert.ok(changes.includes(physical));
     return { output: call.role_id === 'gameplay_narrator'
@@ -264,10 +295,15 @@ for (const fire of [false, true]) {
 }
 
 function committedState() {
-  return { current_visible_context: { version: 1, schema: 'visible_context_package',
+  const currentSpatialContext = { version: 1, schema: 'visible_context_package',
     visible_scene: 'Берег.', visible_changes: [], sensory_details: [], visible_npc: [],
     visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: [],
-    do_not_imply: [] } };
+    do_not_imply: [] };
+  return { actor_id: 'mikula', position: { location_ref: 'shore' },
+    current_visible_context: currentSpatialContext,
+    current_spatial_context: currentSpatialContext,
+    current_spatial_context_is_fresh: true,
+    items: [] };
 }
 
 for (const [scene, detail, query] of [
@@ -279,6 +315,8 @@ for (const [scene, detail, query] of [
     Object.assign(state.current_visible_context, { visible_scene: scene,
       sensory_details: [detail], visible_objects: [{ display_label: 'деревянная полка',
         entity_ref: { entity_kind: 'item', entity_id: 'shelf' } }] });
+    state.items = [{ item_id: 'shelf', name: 'деревянная полка',
+      placement: { location_ref: 'shore' } }];
     const original = structuredClone(state);
     const projector = createLowerDvinaTraceTurnStepVisibleProjector({
       fallback: { project: async () => assert.fail('no domain-native projection') }
@@ -294,7 +332,11 @@ for (const [scene, detail, query] of [
             goal_result: 'pending', operations: [{ op: 'request_discovery' }], check: null } }] } } });
       assert.equal(visible.visible_scene, scene);
       assert.deepEqual(visible.sensory_details, [detail]);
-      assert.deepEqual(visible.visible_objects, state.current_visible_context.visible_objects);
+      assert.deepEqual(visible.visible_objects, [{
+        entity_ref: { entity_kind: 'item', entity_id: 'shelf' },
+        display_label: 'деревянная полка', recognition: 'recognized',
+        visible_status: 'available'
+      }]);
       assert.equal(visible.visible_changes.some(value => value.includes('15 минут')), false);
       assert.ok(visible[resolution === 'absent' ? 'visible_changes' : 'uncertainties']
         .some(value => value.includes(`«${query}»`)));

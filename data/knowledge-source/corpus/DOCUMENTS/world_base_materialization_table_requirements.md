@@ -116,6 +116,8 @@ Generic registry для доменов, не имеющих собственно
 
 ## 5. Региональные NPC-профили
 
+Линия production NPC authoring для Spatial v3 — `spatial_v3_npc_*` (v3-спецификация). Таблицы `region_npc_*` ниже — legacy/migration слой и не отменяют v3-спецификацию.
+
 Сохраняются и постепенно нормализуются `region_social_roles`, `region_occupations`, `region_npc_generation_rules`, `region_npc_knowledge` и `region_material_culture`.
 
 Новые таблицы:
@@ -126,7 +128,7 @@ Generic registry для доменов, не имеющих собственно
 | `region_demographic_profiles` | Profile допустимых demographic choices | region; legacy single option nullable для entry-based profile |
 | `region_demographic_profile_entries` | Нормализованные sex/age choices | profile, facet, approved regional option, weight, applicability, status |
 | `region_name_pools` | Региональный/культурный pool для периода | region, period, sources |
-| `region_name_pool_entries` | Конкретные разрешённые формы имён и weights | name pool |
+| `region_name_pool_entries` | Формы личных имён и weights; одна строка на `(pool, name_form, sex_category, people_ref)`; runtime выбирает только `selection_class = ordinary` и `status = approved` | name pool, sex_category, people_ref, selection_class, provenance |
 | `region_appearance_profiles` | Choice sets базовой внешности | region; legacy single option nullable для entry-based profile |
 | `region_appearance_profile_entries` | Нормализованные appearance facets | profile, facet, approved regional option, weight, applicability, status |
 | `region_clothing_profiles` | Согласованные garment slots и ограничения | region, item templates/categories |
@@ -140,6 +142,16 @@ Generic registry для доменов, не имеющих собственно
 | `region_npc_profile_sets` | Profile: одна совместимая композиция компонентов | archetype и все component profiles |
 
 Для всех plural choices создаются нормализованные entry/binding tables. Fallback schedule может ссылаться только на явно перечисленные place/route/activity варианты.
+
+Для v17 (D49) имя и характер NPC задаёт код материализации по seed из трёх таблиц:
+
+| Таблица | Уровень и назначение | Обязательные связи |
+|---|---|---|
+| `npc_regional_context_name_bindings` | Какой пул и народ дают имена NPC регионального контекста v3; без строки NPC без имени | world revision, status, provenance, name pool, people |
+| `npc_psychology_scale_entries` | Закрытый словарь темперамента и ценностей (D29, игровое допущение), `label_ru`, weight | world revision, status, provenance |
+| `occupation_character_items` | Кандидаты целей и страхов по занятию; код выбирает 1–2 цели и 1 страх по seed | world revision, status, provenance, occupation |
+
+Выбор делает код материализации по seed; LLM эти значения не задаёт. Физические колонки — DDL `schema/29.sql` и `SCHEMA_REFERENCE.md`.
 
 Applicability demographic/appearance entry хранит ограничения sex, age и
 hair-length в данных, не в materializer code. Required actor vocabulary:
@@ -187,11 +199,49 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 
 ## 8. G4-specific materialization rules
 
+Разделы `g4_*_materialization_rules` ниже — v2 rollback-источник. Они не являются носителем presence/limit уровня типа места для M2c (ключ v2 — конкретный `graph_node_id`).
+
 - `g4_npc_materialization_rules` связывает G4/profile с допустимыми NPC profile sets, количеством, временем, причиной присутствия и ресурсом/маршрутом.
 - `g4_item_materialization_rules` связывает slots с item profile sets, количеством, economic basis, ownership и NPC dependency.
 - `g4_container_materialization_rules` связывает slots с container/content/property profiles и access/controller conditions.
 
 Любая ссылка на G4, profile, template или category нормализуется. Conditions могут быть JSONB только как versioned expression, не содержащий скрытых ID.
+
+### 8.1. Таблица правил наличия (M2c authoring)
+
+§8.1 — действующее требование M2c к authoring `world_base` (C-006 / ACTIVE specialization Spatial v3 table-purpose). Физическая таблица — `world_base.presence_rules` (`infra/world-base/schema/27.sql`, CR #158).
+
+Требуется тонкая authoring-таблица у materialization owner со столбцами:
+
+| Поле | Смысл |
+|---|---|
+| `rule_id` | стабильный id правила (`pr_id` authoring); в исходе броска хранится как `rule_id@rule_version` (§3A.1) |
+| `world_revision_id` | ревизия authoring |
+| `scope_kind` | для M2c presence/routines/water/slots — `place_family`; для контейнеров — `container_template` |
+| `scope_ref` | `pf_id` или id контейнерного шаблона |
+| `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |
+| `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |
+| `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |
+| `category_id` | заполняется только при `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); при `social_role` / `occupation` поле не заполняется (предмет правила — `subject_ref`) |
+| `item_ref` | при `subject_kind=category` — выбранная подкатегория или вещь правила; NULL только если `variants` пуст; иначе обязателен (DDL CHECK) |
+| `variants` | JSON-массив объектов с обязательным `item_ref` (optional provenance); альтернативные вещи той же категории; пул выбора и равномерный draw — §3A.4 |
+| `presence_probability_ppm` | целое 0…1_000_000 |
+| `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |
+| `allowed_seasons` | закрытый словарь сезонов календаря |
+| `allowed_times` | authoring provenance; для людей **не импортировать** (время суток решают распорядки, §3A.5); для природы/вещей — хранить, не исполнять как гейт часа прихода |
+| `guards` | text[] provenance; **не исполнять** (словаря evaluator нет; LW) |
+| `entry_visible_if` / `search_only_if` | режимы обнаружения (exposed / concealed); без колонки `visibility_class` |
+| `entry_exposed_weight` / `search_concealed_weight` | INT NULL; веса weighted draw; пустые веса при обоих режимах = 1/1 (редакционное правило + LW) |
+| `wild_arrival_cause` | TEXT NULL; класс причины появления в дикой местности (например `prior_visitor_loss_or_discard`); **не гейтит** presence-бросок (§3A.6) |
+| `refresh_class` | `none` (default) или `by_year_season` |
+| `confidence` | словарь соседей `unknown \| low \| medium_low \| medium \| medium_high \| high`; при импорте authoring `A→high`, `B→medium`, `C→low`, пусто/`no_source`→`unknown` |
+| `authoring_payload` | JSONB object; исходный authoring payload правила |
+| `provenance_ref` | ссылка на `source_records` |
+| `rule_version` / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |
+
+**Импорт и исход (C12 / NOTE-rule-cause).** Семантика ключа `rule_id@rule_version`, глобальная неизменность и правила импорта (идемпотентный пропуск / fail-closed при ином содержании) — `code_driven_world_materialization_architecture.md` §3A.1. Импортёр R-1 реализует сравнение содержания; до R-1 DDL удерживает PK `(rule_id, rule_version)`.
+
+Семантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.
 
 ## 9. Bounded decision data
 
@@ -373,6 +423,6 @@ Runtime loader восстанавливает только membership данно
 все record/table/root digests и compatible world tuple. Live authoring rows и
 текущий active event не могут подменить historical catalog существующей партии.
 
-## 15. Критерий повышения в active
+## 15. Статус документа
 
-Технический норматив повышается вместе с основным архитектурным документом только после синхронизации DDL, generated schema reference, schemas/contracts, importer/readiness checks, party persistence и PASS отдельного критика.
+Этот документ уже `ACTIVE` (общий authoring/readiness слой; production table-purpose — Spatial v3 specialization, см. C-006). Устаревший «критерий повышения в active» удалён: повышение статуса не повторяется. Новые таблицы presence-правил входят через DDL/importer CR реализации M2c и Contract Auditor (CR #146 шаг 1).

@@ -5,7 +5,7 @@ import { relative, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { canonicalJsonBytes, manifestDigest, validateCanonicalEntries } from './p12-canonical-manifest.mjs';
-// Windows: Git/MSYS GNU tar treats `C:\...` as a remote host and cannot read .zip; System32 bsdtar handles both.
+// System32 bsdtar reads ZIP on Windows; GNU tar on Linux does not.
 const TAR = process.platform === 'win32' ? `${process.env.SystemRoot ?? 'C:/Windows'}/System32/tar.exe` : 'tar';
 
 const ROOT = resolve(import.meta.dirname, '../..');
@@ -46,13 +46,17 @@ const sha = (value) => typeof value === 'string' && /^[0-9a-f]{40}$/.test(value)
 const safeRepositoryPath = (value) => typeof value === 'string' && value.length > 0 && !value.startsWith('/') && !value.includes('\\') && !value.split('/').some((part) => !part || part === '.' || part === '..' || part.includes(':'));
 
 async function zipText(zip, member) {
-  const { stdout } = await execFile(TAR, ['-xOf', zip, member], { encoding: 'buffer', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+  const command = process.platform === 'win32' ? TAR : 'unzip';
+  const args = process.platform === 'win32' ? ['-xOf', zip, member] : ['-p', zip, member];
+  const { stdout } = await execFile(command, args, { encoding: 'buffer', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
   return Buffer.from(stdout);
 }
 
 async function verifyCanonicalZipPackage(zip, packageName, expectedManifestDigest) {
   const prefix = `${packageName}/`;
-  const { stdout } = await execFile(TAR, ['-tf', zip], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+  const command = process.platform === 'win32' ? TAR : 'unzip';
+  const args = process.platform === 'win32' ? ['-tf', zip] : ['-Z', '-1', zip];
+  const { stdout } = await execFile(command, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
   const members = stdout.split(/\r?\n/u).filter(Boolean);
   const seen = new Set();
   for (const member of members) {

@@ -1,0 +1,20 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+      "claim_ref": "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+      "claim_digest": "cab0c6c5891fdc2e9ad93078a2f323e4a60cb25731d6e2d7ae2440bc4eb06175",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-fat-storm-b10.json#claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-fat-storm-b10-substantial-building-option"
+      ],
+      "review_ref": "verification/static-fat-storm-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "A reachable substantial building can be a lightning-shelter option, while small or open structures are not. This establishes no building, access, construction, complete safety, or concrete-scene outcome. Modern care or analogy does not create historical availability or actor knowledge."
+    }
+  ]
+}

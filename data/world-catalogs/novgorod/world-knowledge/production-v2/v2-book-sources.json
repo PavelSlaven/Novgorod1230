@@ -1,0 +1,453 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-177850",
+      "title": "Денежно-весовые системы домонгольской Руси и очерки истории денежной системы средневекового Новгорода",
+      "authors": [
+        "Янин Валентин Лаврентьевич"
+      ],
+      "publication": "Денежно-весовые системы домонгольской Руси и очерки истории денежной системы средневекового Новгорода, 2009",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 177850, 2009; ссылка на строку: book:177850 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-301539",
+      "title": "Древняя русская история до монгольского ига. Том 2",
+      "authors": [
+        "Погодин Михаил Петрович"
+      ],
+      "publication": "Древняя русская история до монгольского ига. Том 2, 1999",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 301539, 1999; ссылка на строку: book:301539 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-315166",
+      "title": "Археология и естественнонаучные методы. Сб. статей",
+      "authors": [
+        "Завьялов Владимир Игоревич; Розанова Людмила Семёновна; Терехова Наталья Николаевна; Антипина Екатерина Евстафьевна; Черных Евгений Николаевич; Гайдуков Пётр Григорьевич; Черных Наталья Борисовна; Шиятов Степан Григорьевич; Хантемиров Рашит Мигатович; Горячев Владимир Михайлович; Агафонов Леонид Иванович; Гурская Марина Анатольевна; Мартинес Наваррете Мария Исабель; Карпухин Алексей Александрович; Тарабардина Ольга Альбертовна; Вознесенская Галина Алексеевна; Рындина Наталия Вадимовна; Гошек Иржи; Конькова Людмила Викторовна; Лебедева Елена Юрьевна; Спиридонова Елена Александровна; Алешинская Анна Сергеевна; Кочанова Мария Дмитриевна"
+      ],
+      "publication": "Археология и естественнонаучные методы. Сб. статей, 2005",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 315166, 2005; ссылка на строку: book:315166 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-333580",
+      "title": "Лечение растениями. Энциклопедический справочник",
+      "authors": [
+        "Непокойчицкий Геннадий"
+      ],
+      "publication": "Лечение растениями. Энциклопедический справочник",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 333580; ссылка на строку: book:333580 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-356156",
+      "title": "Вспомогательные исторические дисциплины",
+      "authors": [
+        "Леонтьева Галина Александровна; Кобрин Владимир Борисович; Шорин Павел Александрович"
+      ],
+      "publication": "Вспомогательные исторические дисциплины, 2009",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 356156, 2009; ссылка на строку: book:356156 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-392896",
+      "title": "Новгород и Ганза",
+      "authors": [
+        "Рыбина Елена Александровна"
+      ],
+      "publication": "Новгород и Ганза, 2009",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 392896, 2009; ссылка на строку: book:392896 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-455907",
+      "title": "Рыбный промысел в Древней Руси",
+      "authors": [
+        "Куза Андрей Васильевич"
+      ],
+      "publication": "Рыбный промысел в Древней Руси, 2016",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 455907, 2016; ссылка на строку: book:455907 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-472733",
+      "title": "Аптека на болоте",
+      "authors": [
+        "Елина Галина Андреевна"
+      ],
+      "publication": "Аптека на болоте, 1993",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 472733, 1993; ссылка на строку: book:472733 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-474912",
+      "title": "Домострой",
+      "authors": [
+        "Сильвестр"
+      ],
+      "publication": "Домострой",
+      "source_kind": "primary_text",
+      "citation": "fb2-библиотека владельца, book 474912; ссылка на строку: book:474912 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-556930",
+      "title": "Великий князь Александр Невский",
+      "authors": [
+        "Карпов Алексей Юрьевич"
+      ],
+      "publication": "Великий князь Александр Невский, 2010",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 556930, 2010; ссылка на строку: book:556930 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-586734",
+      "title": "Весна в жизни леса",
+      "authors": [
+        "Петров Владимир Владимирович"
+      ],
+      "publication": "Весна в жизни леса, 1981",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 586734, 1981; ссылка на строку: book:586734 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-616519",
+      "title": "Женщины Древней Руси",
+      "authors": [
+        "Пушкарёва Наталья Львовна"
+      ],
+      "publication": "Женщины Древней Руси, 1989",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 616519, 1989; ссылка на строку: book:616519 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-618717",
+      "title": "Русь, Византия и Западная Европа: Из истории внешнеполитических и культурных связей XII—XIII вв.",
+      "authors": [
+        "Майоров Александр Вячеславович"
+      ],
+      "publication": "Русь, Византия и Западная Европа: Из истории внешнеполитических и культурных связей XII—XIII вв., 2011",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 618717, 2011; ссылка на строку: book:618717 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-622242",
+      "title": "Древняя Русь. Город, замок, село",
+      "authors": [
+        "Рыбаков Борис Александрович; Даркевич Владислав Петрович; Янин Валентин Лаврентьевич; Раппопорт Павел Александрович; Кирпичников Анатолий Николаевич; Медведев Александр Филиппович; Куза Андрей Васильевич; Колчин Борис Александрович; Чернецов Алексей Владимирович; Борисевич Г. В.; Кирьянова Наталья Алексеевна"
+      ],
+      "publication": "Древняя Русь. Город, замок, село, 1985",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 622242, 1985; ссылка на строку: book:622242 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-624953",
+      "title": "Древняя Русь. Быт и культура",
+      "authors": [
+        "Янин Валентин Лаврентьевич; Вагнер Георгий Карлович; Рыбина Елена Александровна; Макарова Татьяна Ивановна; Хорошев Александр Степанович; Розенфельдт Ростислав Леонидович; Щапова Юлия Леонидовна; Седова Мария Владимировна; Мурашова Вероника Владиславовна; Сабурова Мария Андреевна; Медынцева Альбина Александровна; Голубева Леонилла Анатольевна; Николаева Татьяна Васильевна; Недошивина Наталья Германовна; Поветкин Владимир Иванович; Воробьева Елена Владимировна; Чернецов Алексей Владимирович; Полубояринова Марина Дмитриевна; Беленькая Доротея Алексеевна"
+      ],
+      "publication": "Древняя Русь. Быт и культура, 1997",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 624953, 1997; ссылка на строку: book:624953 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-641342",
+      "title": "Том 1 (XI-XII века)",
+      "authors": [
+        "Коллектив авторов"
+      ],
+      "publication": "Том 1 (XI-XII века), 1997",
+      "source_kind": "primary_text",
+      "citation": "fb2-библиотека владельца, book 641342, 1997; ссылка на строку: book:641342 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-641351",
+      "title": "Том 4 (XII век, литература эпохи «Слова о полку Игореве»)",
+      "authors": [
+        "Коллектив авторов"
+      ],
+      "publication": "Том 4 (XII век, литература эпохи «Слова о полку Игореве»), 2004",
+      "source_kind": "primary_text",
+      "citation": "fb2-библиотека владельца, book 641351, 2004; ссылка на строку: book:641351 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-641352",
+      "title": "Том 5 (XIII век, литература трагического века)",
+      "authors": [
+        "Коллектив авторов"
+      ],
+      "publication": "Том 5 (XIII век, литература трагического века), 1997",
+      "source_kind": "primary_text",
+      "citation": "fb2-библиотека владельца, book 641352, 1997; ссылка на строку: book:641352 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-667380",
+      "title": "Великие князья Владимирские и Владимиро-Московские. Великие и удельные князья Северной Руси в татарский период с 1238 по 1505 г.",
+      "authors": [
+        "Экземплярский Андрей Васильевич"
+      ],
+      "publication": "Великие князья Владимирские и Владимиро-Московские. Великие и удельные князья Северной Руси в татарский период с 1238 по 1505 г., 2019",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 667380, 2019; ссылка на строку: book:667380 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-678341",
+      "title": "Быт и культура древних славян",
+      "authors": [
+        "Нидерле Любор"
+      ],
+      "publication": "Быт и культура древних славян, 2013",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 678341, 2013; ссылка на строку: book:678341 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-709382",
+      "title": "Новгород, открытый археологами",
+      "authors": [
+        "Засурцев Петр Иванович"
+      ],
+      "publication": "Новгород, открытый археологами",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 709382; ссылка на строку: book:709382 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-728823",
+      "title": "Медицина Древней Руси (сборник)",
+      "authors": [
+        "Мирский Марк Борисович; Богоявленский Николай Алексеевич"
+      ],
+      "publication": "Медицина Древней Руси (сборник), 2018",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 728823, 2018; ссылка на строку: book:728823 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-756195",
+      "title": "Птицы России. Наглядный карманный определитель",
+      "authors": [
+        "Митителло Ксения Борисовна"
+      ],
+      "publication": "Птицы России. Наглядный карманный определитель, 2018",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 756195, 2018; ссылка на строку: book:756195 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-804838",
+      "title": "Эпоха викингов в Северной Европе и на Руси",
+      "authors": [
+        "Лебедев Глеб Сергеевич"
+      ],
+      "publication": "Эпоха викингов в Северной Европе и на Руси, 2023",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 804838, 2023; ссылка на строку: book:804838 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-814112",
+      "title": "Культура Древней и Средневековой Руси",
+      "authors": [
+        "Якеменко Борис Григорьевич"
+      ],
+      "publication": "Культура Древней и Средневековой Руси, 2024",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 814112, 2024; ссылка на строку: book:814112 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-410676",
+      "title": "История артиллерии. Вооружение. Тактика. Крупнейшие сражения. Начало XIV века — начало XX",
+      "authors": [
+        "Хогг Оливер"
+      ],
+      "publication": "История артиллерии. Вооружение. Тактика. Крупнейшие сражения. Начало XIV века — начало XX, 2014",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 410676, 2014; ссылка на строку: book:410676 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-188839",
+      "title": "Русское кузнечное ремесло в золотоордынский период и эпоху Московского государства",
+      "authors": [
+        "Завьялов Владимир Игоревич; Розанова Людмила Семёновна; Терехова Наталья Николаевна"
+      ],
+      "publication": "Русское кузнечное ремесло в золотоордынский период и эпоху Московского государства",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 188839; ссылка на строку: book:188839 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-254935",
+      "title": "Берестяная почта столетий",
+      "authors": [
+        "Янин Валентин Лаврентьевич"
+      ],
+      "publication": "Берестяная почта столетий, 1979",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 254935, 1979; ссылка на строку: book:254935 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    }
+  ]
+}

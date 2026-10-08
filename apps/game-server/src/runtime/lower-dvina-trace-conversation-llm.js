@@ -13,11 +13,25 @@ import { auditFreshNpcSpeech } from
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { findUnsafePlayerText } from '../public-boundary.js';
 
-export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}) {
+export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
+  worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
   return async function interpretPlayerConversation(request, context = {}) {
     const repair = context.repair ?? null;
+    // D16: interpreter uses semantic_resolution (same family as turn-step parsers).
+    const historicalEvents = Array.isArray(context.historical_events)
+      ? context.historical_events : [];
+    const grounded = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'semantic_resolution', {
+        clock: context.clock
+          ?? request.player_safe_context?.current_game_timestamp
+          ?? null,
+        historical_events: historicalEvents,
+        actor_facets: context.actor_facets ?? {}
+      });
+    const modelRequest = grounded;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -26,35 +40,97 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: playerConversationInstructions(repair, request)
+        content: [playerConversationInstructions(repair, grounded),
+          ...worldKnowledgeFactualClosure(grounded)].join(' ')
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
-          request,
-          original_output: repair.original_output,
-          validation_errors: repair.validation_errors
-        } : request)
+          request: modelRequest,
+          original_output: repair.original_output ?? null,
+          validation_errors: repair.validation_errors ?? []
+        } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
-    return assemblePlayerConversationPlan(response.output, request);
+    const plan = assemblePlayerConversationPlan(response.output, request);
+    // F5: intent_paraphrase must not commit WK fact text as player speech.
+    rejectIntentParaphraseWorldKnowledgeLeak(plan, grounded?.world_knowledge);
+    return plan;
   };
 }
 
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
   worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
+  const semanticRepairDecisions = new WeakMap();
+  const groundedRequestsByRequest = new WeakMap();
+  const prepareRequest = async (request, context = {}) => {
+    const cached = groundedRequestsByRequest.get(request);
+    if (cached) return cached;
+    const historicalEvents = Array.isArray(context.historical_events)
+      ? context.historical_events : [];
+    const grounded = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'conversation', {
+        clock: request.requested_at
+          ?? request.player_safe_state?.clock
+          ?? null,
+        historical_events: historicalEvents
+      });
+    const slice = grounded.world_knowledge;
+    const claimRefs = [...(slice?.hard_constraints ?? []),
+      ...(slice?.facts ?? [])].flatMap(({ claim_ref: claimRef }) =>
+      typeof claimRef === 'string' && claimRef.trim() === claimRef
+        && claimRef.length > 0
+        ? [{ entity_kind: 'knowledge_record', entity_id: claimRef }]
+        : []);
+    const knowledgeRefs = new Map([
+      ...(request.allowed_references?.knowledge_refs ?? []),
+      ...claimRefs
+    ].map((reference) => [
+      `${reference.entity_kind}\u0000${reference.entity_id}`,
+      structuredClone(reference)
+    ]));
+    const preparedRequest = {
+      ...request,
+      allowed_references: {
+        ...request.allowed_references,
+        knowledge_refs: [...knowledgeRefs.values()].sort((left, right) =>
+          `${left.entity_kind}\u0000${left.entity_id}`
+            < `${right.entity_kind}\u0000${right.entity_id}` ? -1
+            : `${left.entity_kind}\u0000${left.entity_id}`
+              > `${right.entity_kind}\u0000${right.entity_id}` ? 1 : 0)
+      }
+    };
+    const promptRequest = { ...grounded,
+      allowed_references: preparedRequest.allowed_references };
+    const preparedContext = { grounded_request: promptRequest,
+      audit_request: promptRequest };
+    const prepared = { request: preparedRequest, context: preparedContext };
+    groundedRequestsByRequest.set(request, prepared);
+    groundedRequestsByRequest.set(preparedRequest, prepared);
+    return prepared;
+  };
   const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
     const semanticRepair = repair?.validation_errors?.some(
       ({ category }) => category === 'semantic_grounding'
     ) === true;
-    if (semanticRepair && npcConversationCandidates(request).some(
+    const repairServiceText = repair?.validation_errors?.some(
+      ({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT') === true;
+    if (semanticRepair && !repairServiceText
+        && npcConversationCandidates(request).some(
       (candidate) => candidate.contribution_kind === 'speech'
         && candidate.supporting_operations.length === 0
-    )) return semanticGroundingFallback(repair.original_output, request);
-    const modelRequest = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'conversation');
+    )) {
+      return semanticGroundingFallback(repair.original_output, request);
+    }
+    const prepared = context.prepared_request_context
+      ? { request, context: context.prepared_request_context }
+      : await prepareRequest(request, context);
+    const requestForPlan = prepared.request;
+    const { grounded_request: promptRequest,
+      audit_request: modelRequest } =
+      prepared.context;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -63,27 +139,109 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: [npcConversationInstructions(repair, modelRequest),
-          ...worldKnowledgeFactualClosure(modelRequest)].join(' ')
+        content: [npcConversationInstructions(repair, promptRequest),
+          ...worldKnowledgeFactualClosure(promptRequest)].join(' ')
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
           request: modelRequest,
           ...(semanticRepair ? {} : {
-            original_output: repair.original_output
+            original_output: repair.original_output ?? null
           }),
-          validation_errors: repair.validation_errors
+          validation_errors: semanticRepair
+            ? npcRepairErrorsForModel(repair.validation_errors)
+            : repair.validation_errors ?? []
         } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
-    return assembleNpcConversationPlan(response.output, request);
+    const resolvedOutput = resolveNpcClaimReferenceIds(response.output,
+      requestForPlan);
+    const assembled = assembleNpcConversationPlan(resolvedOutput, requestForPlan);
+    const retryingServiceText = semanticRepair && repair.validation_errors
+      .some(({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT');
+    if (retryingServiceText && repair.original_output != null) {
+      semanticRepairDecisions.set(assembled, {
+        contribution_kind: repair.original_output.contribution_kind,
+        dominant_act: repair.original_output.speech?.dominant_act
+      });
+    }
+    return assembled;
   };
-  model.validateFreshPlan = async (plan, request) => {
+  model.prepareRequest = prepareRequest;
+  model.validateFreshPlan = async (plan, request, context = {}) => {
+    const marker = plan?.contribution_kind === 'speech'
+      ? findUnsafePlayerText(plan.speech?.utterance_text, {
+        label: true, generatedProse: true }) : null;
+    if (marker != null) return {
+      pass: false,
+      errors: [{
+        code: 'TRACE_NPC_SPEECH_SERVICE_TEXT',
+        category: 'semantic_grounding', retryable: true,
+        concern_kinds: ['service_text_marker'],
+        message: 'Rewrite the reply without service labels or technical markers.'
+      }]
+    };
+    const originalDecision = plan != null && typeof plan === 'object'
+      ? semanticRepairDecisions.get(plan) : null;
+    if (originalDecision != null
+        && (plan.contribution_kind !== originalDecision.contribution_kind
+          || plan.speech?.dominant_act !== originalDecision.dominant_act)) {
+      return {
+        pass: false,
+        errors: [{
+          code: 'TURN_NPC_PLAN_NOT_APPLICABLE', category: 'applicability',
+          retryable: false,
+          message: 'Semantic repair must preserve the original contribution and speech act.'
+        }]
+      };
+    }
     const presentation = validateRequiredNpcPresentation(plan, request);
-    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan, request });
+    const preparedContext = context.prepared_request_context
+      ?? groundedRequestsByRequest.get(request);
+    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan,
+      request: preparedContext?.audit_request
+        ?? preparedContext?.context?.audit_request ?? request });
   };
   return model;
+}
+
+function npcRepairErrorsForModel(errors) {
+  return (errors ?? []).map((error) => error?.category === 'semantic_grounding'
+    ? { category: 'semantic_grounding',
+      message: 'Rewrite the response using only supported meaning and natural in-world speech.' }
+    : { category: 'format',
+      message: 'Return the required response shape using only values from the request.' });
+}
+
+function resolveNpcClaimReferenceIds(output, request) {
+  const referencesById = new Map();
+  for (const reference of request.allowed_references?.knowledge_refs ?? []) {
+    if (typeof reference?.entity_id !== 'string') continue;
+    const matches = referencesById.get(reference.entity_id) ?? [];
+    matches.push(reference);
+    referencesById.set(reference.entity_id, matches);
+  }
+  const resolved = structuredClone(output);
+  const claims = resolved?.speech?.claims;
+  if (!Array.isArray(claims)) return resolved;
+  for (const claim of claims) {
+    if (claim === null || typeof claim !== 'object' || Array.isArray(claim)) {
+      continue;
+    }
+    if (!Array.isArray(claim.source_knowledge_refs)) {
+      claim.source_knowledge_refs = [null];
+      continue;
+    }
+    claim.source_knowledge_refs = claim.source_knowledge_refs.map((wireRef) => {
+      const id = typeof wireRef === 'string' ? wireRef
+        : typeof wireRef?.entity_id === 'string' ? wireRef.entity_id : null;
+      if (id === null) return wireRef;
+      const matches = referencesById.get(id) ?? [];
+      return matches.length === 1 ? structuredClone(matches[0]) : id;
+    });
+  }
+  return resolved;
 }
 
 function semanticGroundingFallback(original, request) {
@@ -94,12 +252,22 @@ function semanticGroundingFallback(original, request) {
     for (const reference of claim?.source_knowledge_refs ?? []) {
       const observation = reference?.entity_kind === 'perception_result'
         ? observations.get(reference.entity_id) : null;
-      if (observation) retained.set(reference.entity_id, observation);
+      if (observation
+          && findUnsafePlayerText(observation.fact_text, { label: true, generatedProse: true }) == null) {
+        retained.set(reference.entity_id, observation);
+      }
     }
   }
   const facts = [...retained.values()];
-  const introducedName = requiredFirstContactName(request)
-    ?? playerSafeSelfIntroductionName(original?.speech?.utterance_text);
+  const originalUtterance = original?.speech?.utterance_text;
+  const originalUtteranceIsSafe = findUnsafePlayerText(originalUtterance, {
+    label: true, generatedProse: true
+  }) == null;
+  const requiredName = requiredFirstContactName(request);
+  const introducedName = requiredName
+      && findUnsafePlayerText(requiredName, { label: true }) == null
+    ? requiredName : originalUtteranceIsSafe
+      ? playerSafeSelfIntroductionName(originalUtterance) : null;
   const introduction = introducedName ? `Я ${introducedName}.` : null;
   const requiredTag = request.social_context?.npc_behavior
     ?.required_interaction_tag;
@@ -199,4 +367,32 @@ function requireRoleRunner(roleRunner) {
 
 function dependencyError(message) {
   return serverError('TRACE_PHASE_2_DEPENDENCY_MISSING', message, { status: 503 });
+}
+
+/** F5: reject intent_paraphrase that copies WK fact text into committed speech. */
+export function rejectIntentParaphraseWorldKnowledgeLeak(plan, slice) {
+  if (plan?.input_mode !== 'intent_paraphrase') return;
+  const utterance = plan?.speech?.utterance_text;
+  if (typeof utterance !== 'string' || !utterance.trim() || slice == null) return;
+  const normalized = normalizeLeakText(utterance);
+  for (const fact of [...(slice.facts ?? []), ...(slice.hard_constraints ?? [])]) {
+    const text = normalizeLeakText(fact?.runtime_text);
+    if (text.length >= 12 && normalized.includes(text)) {
+      throw serverError(
+        'PLAYER_CONVERSATION_WK_UTTERANCE_LEAK',
+        'intent_paraphrase utterance must not copy World Knowledge fact text.',
+        { status: 422, details: { claim_ref: fact?.claim_ref ?? null } }
+      );
+    }
+  }
+}
+
+function normalizeLeakText(value) {
+  // N5: ignore punctuation and ё/е so lightly disguised WK copy still fails.
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/ё/gu, 'е')
+    .replace(/[^\p{L}\p{N}\s]+/gu, ' ')
+    .replace(/\s+/gu, ' ')
+    .trim();
 }

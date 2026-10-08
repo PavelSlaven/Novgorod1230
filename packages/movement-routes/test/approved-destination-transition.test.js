@@ -83,6 +83,20 @@ test('plans an exact persisted action edge at zero time', () => {
       { ...sceneEdge(), destination_occupancy: 1 } }).pass, true);
 });
 
+test('open reciprocal edge admits movement with an NPC at focus, while capacity still applies', () => {
+  const destination = { entity_ref: ref('scene_position', 'focus'),
+    location_ref: 'storehouse', zone_ref: 'inside' };
+  const plan = (edge) => planApprovedActorDestinationTransition({
+    state_version: 4, expected_state_version: 4, actor, destination,
+    persisted_scene_movement_edge: edge });
+  assert.equal(plan({ ...sceneEdge(), edge_capacity: null,
+    destination_capacity: 7, destination_occupancy: 1 }).pass, true);
+  assert.equal(plan({ ...sceneEdge(), edge_capacity: null,
+    destination_capacity: 1, destination_occupancy: 1 }).pass, false);
+  assert.equal(plan({ ...sceneEdge(), edge_capacity: 1,
+    transition_footprint_units: 2 }).pass, false);
+});
+
 test('fails closed for absent versions and non-admitted movement refs', () => {
   const destination = { entity_ref: ref('container', 'road-bag'),
     location_ref: 'storehouse', zone_ref: 'river', anchor_id: null };

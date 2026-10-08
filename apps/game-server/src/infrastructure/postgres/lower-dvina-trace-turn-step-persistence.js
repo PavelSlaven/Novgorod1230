@@ -36,7 +36,8 @@ export { mergeLowerDvinaTraceTurnStepWrites };
 export function prepareLowerDvinaTraceTurnStepPersistence({
   partyId, writePlan, state, snapshot, factual, changeSetId, idemId,
   phase3Contracts = null, phase4Contracts = null, preparedFactual = factual,
-  turnStepApprovedOwners = null, turnStepAmbientPortionProfileRef = null
+  turnStepApprovedOwners = null, turnStepAmbientPortionProfileRef = null,
+  preparedMovementState = null
 }) {
   const committedSnapshot = attachTurnStepCommit({ snapshot,
     envelope: writePlan?.turn_step_commit, idemId });
@@ -48,10 +49,15 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       envelope: writePlan?.turn_step_commit,
       factual,
       state, phase3Contracts, phase4Contracts, turnStepApprovedOwners,
+      preparedMovementState,
       localFirePlans: writePlan
         ?.local_fire_atomic_write_plans ?? []
     });
-    validateNoBatchFactualCommit({ writePlan, factual, state, preparedEffect });
+    validateNoBatchFactualCommit({ writePlan, factual, state, preparedEffect,
+      trustedBodyNeedsBindingPin:
+        turnStepApprovedOwners?.bodyNeedsBindingPin ?? null,
+      trustedBodyNeedsProfile:
+        turnStepApprovedOwners?.trustedBodyNeedsProfile ?? null });
     return emptyTurnStepPersistence(committedSnapshot);
   }
   if (targets.length !== 1) fail('TRACE_TURN_STEP_OPERATION_BATCH_INVALID', {
@@ -74,6 +80,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     envelope: commit,
     factual: preparedFactual,
     state, phase3Contracts, phase4Contracts, turnStepApprovedOwners,
+    preparedMovementState,
     localFirePlans: writePlan?.local_fire_atomic_write_plans ?? []
   });
   const next = structuredClone(committedSnapshot);
@@ -105,7 +112,9 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     prevalidateFragment({ fragment, index, batch, commit, state, context });
   }
   if (!preparedEffect.prepared) {
-    validateBodyComponentOrder(batch, commit, state);
+    validateBodyComponentOrder(batch, commit, state,
+      turnStepApprovedOwners?.bodyNeedsBindingPin ?? null,
+      turnStepApprovedOwners?.trustedBodyNeedsProfile ?? null);
   }
   const hasActivityFragments = batch.operations.some(({ target }) =>
     target === 'party_events');
@@ -168,8 +177,12 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     factual: commit, batch, bodySlices
   });
   context.bodyHistory = preparedEffect.prepared && bodySlices.length === 0 ? null
-    : prepareTurnStepBodyHistory({
-        partyId, state, ...bodyHistoryInput, changeSetId, idemId
+      : prepareTurnStepBodyHistory({
+        partyId, state, ...bodyHistoryInput, changeSetId, idemId,
+        trustedBodyNeedsBindingPin:
+          turnStepApprovedOwners?.bodyNeedsBindingPin ?? null,
+        trustedBodyNeedsProfile:
+          turnStepApprovedOwners?.trustedBodyNeedsProfile ?? null
       });
   if (context.bodyHistory != null) {
     next.turn_step_body_history = [

@@ -9,6 +9,143 @@ import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
 import { output, request } from
   './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
+test('explicit duration is removed from performed prose before narration',
+  async () => {
+    const intent = 'Сижу здесь двадцать минут.';
+    const input = request({ root_player_action: intent,
+      remaining_intent: intent });
+    const roles = [];
+    const roleRunner = { async run(call) {
+      roles.push(call.role_id);
+      if (call.role_id === 'turn_step_planner') return { output: {
+        ...output(), interpretation: { player_goal: intent,
+          grounded_attempt: intent, adaptation: 'literal' },
+        goal_result: 'achieved', activity: { owner: 'semantic',
+          duration_class: 'extended', effort: 'none',
+          requested_duration_minutes: 20 }
+      } };
+      if (call.role_id === 'turn_step_planner_repair') {
+        assert.match(call.messages[0].content,
+          /Обязательное исправление привязки прошедшего времени:[\s\S]*UI, управляемый кодом/u);
+        return { output: { ...output(), interpretation: {
+          player_goal: intent, grounded_attempt: 'Сижу здесь.',
+          adaptation: 'literal' }, goal_result: 'achieved',
+          activity: { owner: 'semantic', duration_class: 'extended',
+            effort: 'none', requested_duration_minutes: 20 } } };
+      }
+      assert.equal(call.role_id, 'turn_step_grounding_auditor');
+      return { output: { pass: true, concerns: [] } };
+    } };
+    const turnStepModel = createLowerDvinaTraceTurnStepModel({ roleRunner });
+    const semanticPlanValidator =
+      createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner });
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel, semanticPlanValidator });
+    assert.equal(result.repaired, true);
+    assert.equal(result.plan.interpretation.grounded_attempt, 'Сижу здесь.');
+    assert.equal(result.plan.activity.requested_duration_minutes, 20);
+    assert.deepEqual(roles, ['turn_step_planner',
+      'turn_step_planner_repair', 'turn_step_grounding_auditor']);
+  });
+
+test('repeated reality-limited no-op bypasses production semantic audit',
+  async () => {
+    const intent = 'Делаю меч из рубахи';
+    const cases = [
+      { name: 'null kind with brief activity', kind: null,
+        activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } },
+      { name: 'invalid kind with brief activity', kind: 'bad_kind',
+        activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } },
+      { name: 'body observation without supplied body',
+        kind: 'player_safe_body_observation',
+        activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } },
+      { name: 'unfaithful player utterance', kind: 'player_utterance',
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+        utterance: { speaker_ref: 'actor_mikula', utterance_text: intent,
+          input_mode: 'intent_paraphrase',
+          delivery: { loudness: 2, duration_class: 'instant' } } }
+    ];
+    for (const [index, fixture] of cases.entries()) {
+      const input = request({ request_id: `noop-pre-audit:${index}`,
+        root_player_action: intent, remaining_intent: intent });
+      const candidate = { ...output(), interpretation: {
+        player_goal: intent, grounded_attempt: 'Пробую изготовить меч.',
+        adaptation: 'reality_limited' }, goal_result: 'achieved',
+        activity: fixture.activity, direct_result_kind: fixture.kind,
+        ...(fixture.utterance == null ? {} : { utterance: fixture.utterance }) };
+      const roles = [];
+      const roleRunner = { async run(call) {
+        roles.push(call.role_id);
+        if (call.role_id === 'turn_step_planner'
+            || call.role_id === 'turn_step_planner_repair') {
+          return { output: candidate };
+        }
+        if (call.role_id === 'turn_step_speech_auditor') {
+          return { output: { speech_faithful: false,
+            required_input_mode: 'verbatim', unexecuted_intent: intent } };
+        }
+        return { output: { pass: false,
+          concerns: [{ kind: 'operation_semantic_grounding' }] } };
+      } };
+      const result = await requestTurnStepPlanWithRepair({ request: input,
+        turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+        semanticPlanValidator:
+          createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner })
+      });
+      assert.equal(result.repaired, true, fixture.name);
+      assert.equal(result.plan.goal_result, 'not_achieved', fixture.name);
+      assert.equal(result.plan.direct_result_kind, null, fixture.name);
+      assert.deepEqual(roles, ['turn_step_planner',
+        'turn_step_planner_repair'], fixture.name);
+      assert.ok(result.canonicalizations.every(({ attempt }) => attempt === 2),
+        fixture.name);
+    }
+  });
+
+test('repair adapter merges not_achieved choice and cleanup removes retained fields',
+  async () => {
+    const intent = 'Делаю меч из рубахи';
+    const input = request({ request_id: 'noop-adapter-merge',
+      root_player_action: intent, remaining_intent: intent });
+    const original = { ...output(), interpretation: { player_goal: intent,
+      grounded_attempt: 'Пробую изготовить меч.', adaptation: 'reality_limited' },
+      goal_result: 'achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      direct_result_kind: 'player_utterance',
+      utterance: { speaker_ref: 'actor_mikula', utterance_text: intent,
+        input_mode: 'verbatim',
+        delivery: { loudness: 2, duration_class: 'brief' } } };
+    const roles = [];
+    let repairPayload;
+    const roleRunner = { async run(call) {
+      roles.push(call.role_id);
+      if (call.role_id === 'turn_step_planner') return { output: original };
+      if (call.role_id === 'turn_step_planner_repair') {
+        repairPayload = JSON.parse(call.messages[1].content);
+        return { output: { goal_result: 'not_achieved',
+          direct_result_kind: 'player_utterance' } };
+      }
+      assert.fail(`unexpected semantic audit role ${call.role_id}`);
+    } };
+    const semanticPlanValidator = async () => {
+      assert.fail('cleanup must skip semantic audit');
+    };
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+      semanticPlanValidator });
+    assert.deepEqual(roles, ['turn_step_planner', 'turn_step_planner_repair']);
+    assert.equal(repairPayload.original_output.utterance.utterance_text,
+      original.utterance.utterance_text);
+    assert.equal(result.plan.goal_result, 'not_achieved');
+    assert.equal(result.plan.direct_result_kind, null);
+    assert.equal(Object.hasOwn(result.plan, 'assessment'), false);
+    assert.deepEqual(result.canonicalizations, [
+      { attempt: 2, path: '$.direct_result_kind',
+        old_value: 'player_utterance', new_value: null },
+      { attempt: 2, path: '$.utterance', removed_fields: ['utterance'] }
+    ]);
+  });
+
 test('copied authored discovery is semantically rejected before its one repair',
   async () => {
     const intent = 'Осмотреть лёд в поисках безопасного места для саней.';
@@ -36,7 +173,7 @@ test('copied authored discovery is semantically rejected before its one repair',
         assert.equal(payload.structural_errors.some(({ code }) =>
           code === 'operation_semantic_grounding'), true);
         assert.match(call.messages[0].content,
-          /Code-owned exact operation choices are:\n\[\]/u);
+          /operation_choice — ровно одна переданная строка choice_id или null/u);
         return { output: { ...output(), resolution: 'domain_request',
           operation_choice: null, operations: [ordinary]
         } };
@@ -83,7 +220,7 @@ test('lossy discovery wording gets one lossless split repair',
         } };
         assert.equal(call.role_id, 'turn_step_planner_repair');
         assert.match(call.messages[0].content,
-          /Required ordinary discovery repair:[\s\S]*standalone focused discovery losslessly[\s\S]*exact earliest discovery prefix[\s\S]*exact uncovered suffix/u);
+          /Обязательное исправление запроса ordinary discovery:[\s\S]*без потерь сохрани самостоятельный focused discovery[\s\S]*точному самому раннему фрагменту discovery[\s\S]*точному непокрытому остатку/u);
         return { output: {
           ...output(), resolution: 'domain_request', operations: [{
             op: 'request_discovery', actor_ref: 'actor_mikula',
@@ -152,8 +289,8 @@ test('material prerequisite repair restores full intent and is revalidated',
           assert.deepEqual(payload.structural_errors.map(({ path }) => path), [
             '$.operations.0.query', '$.continuation.remaining_intent'
           ]);
-          assert.match(call.messages[0].content,
-            /If discovery is a material prerequisite[\s\S]*query names only that needed referent, material, or physically connected group[\s\S]*continuation is exactly[\s\S]*Do not invent refs, outcomes, or execute the later action/u);
+        assert.match(call.messages[0].content,
+          /Если discovery — необходимое условие[\s\S]*запрос называет только нужный объект, материал или физически связанную группу[\s\S]*continuation в точности равен[\s\S]*Не выдумывай refs или результаты и не выполняй последующее действие/u);
           return { output: { ...output(), resolution: 'domain_request',
             operations: [operation], continuation: {
               remaining_intent: entry.intent, depends_on_refs: []

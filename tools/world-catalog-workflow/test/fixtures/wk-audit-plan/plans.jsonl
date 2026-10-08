@@ -1,0 +1,5 @@
+{"id":"plan-access-dio","query_locale":"ru","domains":["craft_technology"],"focus_refs":["claim:ordinary-life-smith-anvil-hammer-tongs"],"search_hints":["наковальня"]}
+{"id":"plan-access-role","query_locale":"ru","domains":["craft_technology"],"focus_refs":["claim:population-bark-bast"],"search_hints":["лыко"]}
+{"id":"plan-semantic-ok","query_locale":"ru","domains":["craft_technology"],"focus_refs":["claim:ordinary-life-smith-anvil-hammer-tongs"],"search_hints":["наковальня","кузнец"]}
+{"id":"plan-future-date","query_locale":"ru","domains":["social_law_economy"],"focus_refs":["claim:candidate-gramota199-onfim-instructional-text"],"search_hints":["онфим"]}
+{"id":"plan-npc-dio","query_locale":"ru","domains":["craft_technology"],"focus_refs":["claim:ordinary-life-smith-anvil-hammer-tongs"],"search_hints":["наковальня"]}

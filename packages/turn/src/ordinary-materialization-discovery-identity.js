@@ -36,6 +36,20 @@ export function knownMaterializedItemName({ request, partyId, scopeRef,
   return typeof name === 'string' && name.trim() ? name : null;
 }
 
+export function equivalentVisibleItem(request, proposed) {
+  const descriptor = proposed?.semantic_descriptor;
+  const name = normalizeVisibleText(descriptor?.name);
+  const semanticType = normalizeVisibleText(descriptor?.semantic_type);
+  if (name == null || semanticType == null) return null;
+  const items = request?.request?.player_safe_state?.items;
+  if (!Array.isArray(items)) return null;
+  const matches = items.filter((item) =>
+    normalizeVisibleText(item?.name ?? item?.state?.display_name) === name
+    && normalizeVisibleText(item?.semantic_type
+      ?? item?.state?.ordinary_metadata?.semantic_type) === semanticType);
+  return matches.length === 1 ? matches[0] : null;
+}
+
 function normalizeQuery(value) {
   if (typeof value !== 'string') return null;
   const normalized = value.normalize('NFKC').trim().replace(/\s+/gu, ' ')
@@ -49,4 +63,10 @@ function normalizeQuantity(value) {
     && Number.isSafeInteger(value.value) && value.value >= 1 && value.value <= 16
     && value.unit === 'item'
     ? { value: value.value, unit: value.unit } : undefined;
+}
+function normalizeVisibleText(value) {
+  if (typeof value !== 'string') return null;
+  const normalized = value.normalize('NFKC').trim().replace(/\s+/gu, ' ')
+    .toLocaleLowerCase('ru-RU');
+  return normalized || null;
 }

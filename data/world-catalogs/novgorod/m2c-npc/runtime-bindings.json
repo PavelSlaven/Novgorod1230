@@ -1,0 +1,4309 @@
+{
+  "artifact_type": "npc_runtime_binding_authoring_candidate",
+  "candidate_id": "novgorod_m2c_npc_runtime_bindings_v1",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "candidate_ref": "novgorod_m2c_npc_baseline_g4_v1",
+  "target_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "target_binding_status": "unbound",
+  "placement_policy": {
+    "id": "m2c_npc_scene_positions_v1",
+    "version": 1,
+    "status": "candidate_approval_pending",
+    "position_slot_order": ["focus", "departure"],
+    "reserved_position_slots": ["arrival"],
+    "allowed_physical_class_ids": ["spatial.g6.open"],
+    "empty_context_rules": [{
+      "physical_class_id": "spatial.g6.water",
+      "condition": "no_existing_carrier_supported_position",
+      "count": 0,
+      "carrier_creation": "forbidden"
+    }],
+    "count_over_capacity": "data_gap",
+    "unsupported_placement_context": "data_gap",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "explicit_user_authorized_gameplay_authoring",
+    "confidence": "high",
+    "historical_claim": false,
+    "source_refs": [
+      "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+      "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+    ],
+    "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+  },
+  "source_bindings": [
+    {
+      "path": "data/world-catalogs/novgorod/first-playable-v1/catalog.json",
+      "status": "approved",
+      "uses": [
+        "body_ready_traveller_v1",
+        "activity_assist_fishing_net_v1",
+        "item_tpl_nov_linen_shirt_v1",
+        "item_tpl_nov_wool_outer_garment_v1"
+      ]
+    },
+    {
+      "path": "data/world-catalogs/novgorod/temporal-v4/datasets/activity_categories_profiles.json",
+      "status": "approved",
+      "uses": [
+        "record:activity_categories_profiles:manual_labor_segment_v1",
+        "record:activity_categories_profiles:wait_exact_v2 (ordinary intensity binding only)"
+      ]
+    },
+    {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m21-content/initial-npc-schedule-profile.json",
+      "status": "approved",
+      "uses": [
+        "ordinary_day_work_routine_v1",
+        "trace_ld_v1_schedule_eremey_net_work_v1",
+        "trace_ld_v1_schedule_background_fisher_net_work_v1"
+      ]
+    },
+    {
+      "path": "data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/authoring-rows.json",
+      "status": "authoring_candidate",
+      "uses": [
+        "novgorod_commoner_male_basic_clothing_v1",
+        "novgorod_fishing_water_equipment_v1",
+        "novgorod_transport_guiding_equipment_v1"
+      ]
+    },
+    {
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_templates.json",
+      "status": "referenced_by_approved_first_playable_catalog; source-table-row-status-not-used_as_runtime_approval",
+      "uses": [
+        "item_tpl_nov_linen_shirt_v1",
+        "item_tpl_nov_wool_outer_garment_v1",
+        "item_tpl_nov_trousers_v1",
+        "item_tpl_nov_low_leather_shoes_v1"
+      ]
+    },
+    {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
+      "status": "authoring_approved_pending_import_authorization",
+      "uses": [
+        "male_and_female_demographic_options",
+        "adult_young_adult_middle_aged_and_old_options"
+      ]
+    },
+    {
+      "note": "Optional candidate entries; no source weights transferred.",
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_profile_entries.json",
+      "uses": [
+        "linen shirt",
+        "trousers",
+        "low leather shoes",
+        "wool outer garment"
+      ],
+      "status": "source_candidate_rows"
+    },
+    {
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_quantity_profiles.json",
+      "uses": [
+        "explicit one-piece quantities for clothing and fishing net"
+      ],
+      "status": "source_candidate_rows"
+    },
+    {
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_category_bindings.json",
+      "uses": [
+        "clothing object and material evidence; no long-silhouette facet for shirt or outer garment"
+      ],
+      "status": "source_candidate_rows"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/first-playable-v2/catalog.json#/item_visual_profiles",
+      "status": "approved",
+      "uses": [
+        "first_playable_visual_profile_base_shirt",
+        "first_playable_visual_profile_outer_brown"
+      ]
+    },
+    {
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_inventory_profiles.json",
+      "status": "source_candidate_rows",
+      "uses": [
+        "inventory_item_tpl_nov_linen_shirt_v1",
+        "inventory_item_tpl_nov_trousers_v1",
+        "inventory_item_tpl_nov_low_leather_shoes_v1",
+        "inventory_item_tpl_nov_wool_outer_garment_v1",
+        "inventory_item_tpl_nov_fishing_net_v1"
+      ]
+    }
+  ],
+  "transfer_rules": {
+    "body": {
+      "profile_ref": "body_ready_traveller_v1",
+      "metrics": {
+        "health": 100,
+        "energy": 80,
+        "satiety": 70
+      },
+      "active_conditions": [],
+      "directness": "explicit_gameplay_transfer_from_approved_first_playable_candidate",
+      "confidence": "medium",
+      "scope": "Starting gameplay state only; not demographic or historical evidence."
+    },
+    "routine": {
+      "profile_ref": "ordinary_day_work_routine_v1@1",
+      "directness": "analogical_transfer_from_approved_npc_routine",
+      "confidence": "medium_low",
+      "schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "scope": "Generic work/rest/sleep cadence; occupation-specific tasks below are editorial descriptions. No season-specific task or location is inferred."
+    },
+    "clothing": {
+      "directness": "analogical_candidate_transfer",
+      "confidence": "low",
+      "candidate_item_template_refs": [
+        "item_tpl_nov_linen_shirt_v1",
+        "item_tpl_nov_wool_outer_garment_v1"
+      ],
+      "source_profile_ref": "novgorod_commoner_male_basic_clothing_v1",
+      "scope": "Existing clothing authoring profile applies only to adult male free commoners in low-middle status band. It is not a complete binding for any profile until selected demographic, social status, season, actor inventory and property rows are resolved. Boots are excluded; source marks them as a higher-status item."
+    }
+  },
+  "demographic_clothing_gaps": [
+    {
+      "code": "M2C_NPC_CLOTHING_STATUS_COMPATIBILITY_PENDING",
+      "applies_to": "profiles without an individually selected free-commoner low-middle status",
+      "required": "Resolve person-level legal/social status before applying commoner clothing source. Occupation alone does not establish status or property."
+    }
+  ],
+  "profiles": [
+    {
+      "profile_id": "m2c_npc_boatman_v1",
+      "role_ref": "nov_role_boatman",
+      "occupation_ref": "nov_occ_boatman",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_boatman_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_boatman_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": null,
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [],
+        "routine_phase_binding": "ordinary_routine_work_v1"
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_novgorod_land_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_fisher_v1",
+      "role_ref": "nov_role_fisher",
+      "occupation_ref": "nov_occ_fisher",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_fisher_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_fisher_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": [
+          {
+            "quantity_profile_ref": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+            "equipment_candidate_id": "m2c_npc_fisher_net_v1",
+            "item_template_ref": "item_tpl_nov_fishing_net_v1",
+            "holder_ref": "generated_actor_ref",
+            "quantity": 1,
+            "controller_ref": "generated_actor_ref",
+            "owner_ref": "generated_actor_ref",
+            "creation_scope": "same_npc_materialization_transaction",
+            "inventory_profile_ref": "inventory_item_tpl_nov_fishing_net_v1",
+            "status": "candidate_approval_pending",
+            "visual_profile_ref": null
+          }
+        ],
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [
+          "trace_ld_v1_schedule_eremey_net_work_v1",
+          "trace_ld_v1_schedule_background_fisher_net_work_v1"
+        ],
+        "routine_phase_binding": "ordinary_routine_work_v1",
+        "task_focus": "Inspects one fishing net authored in the same NPC materialization transaction; descriptive mending only, with no net-condition change, fishing, catch, fish stock, or yield."
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_novgorod_land_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_guide_v1",
+      "role_ref": "nov_role_guide",
+      "occupation_ref": "nov_occ_route_guide",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_guide_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_guide_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": null,
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [],
+        "routine_phase_binding": "ordinary_routine_work_v1"
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_novgorod_land_v1"
+          },
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_karelian_traveler_v1"
+          },
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_ingrian_traveler_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_hunter_v1",
+      "role_ref": "nov_role_hunter",
+      "occupation_ref": "nov_occ_hunter_trapper",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_hunter_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_hunter_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": null,
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [],
+        "routine_phase_binding": "ordinary_routine_work_v1"
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_novgorod_land_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_forest_worker_v1",
+      "role_ref": "nov_role_forest_promyslovik",
+      "occupation_ref": "nov_occ_forest_worker",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_forest_worker_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_forest_worker_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": null,
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [],
+        "routine_phase_binding": "ordinary_routine_work_v1"
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_novgorod_land_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_local_trader_v1",
+      "role_ref": "nov_role_trader",
+      "occupation_ref": "nov_occ_local_trader",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_local_trader_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_local_trader_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": null,
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [],
+        "routine_phase_binding": "ordinary_routine_work_v1"
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_novgorod_land_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_visiting_merchant_v1",
+      "role_ref": "nov_role_merchant_guest",
+      "occupation_ref": "nov_occ_long_distance_merchant",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_visiting_merchant_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_visiting_merchant_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": null,
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [],
+        "routine_phase_binding": "ordinary_routine_work_v1"
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_novgorod_land_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_foreign_merchant_v1",
+      "role_ref": "nov_role_foreign_guest",
+      "occupation_ref": "nov_occ_long_distance_merchant",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_foreign_merchant_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_foreign_merchant_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": null,
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [],
+        "routine_phase_binding": "ordinary_routine_work_v1"
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_gotland_guest_v1"
+          },
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_german_baltic_guest_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_household_servant_v1",
+      "role_ref": "nov_role_servant",
+      "occupation_ref": "nov_occ_household_servant",
+      "body_binding": {
+        "profile_ref": "body_ready_traveller_v1",
+        "status": "proposed"
+      },
+      "routine_binding": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "activity": {
+        "activity_profile_ref": "activity_m2c_npc_household_servant_initial_work_v1",
+        "status": "candidate_approval_pending",
+        "record_ref": "record:activity_categories_profiles:m2c_npc_household_servant_initial_work_v1",
+        "no_goods_or_world_outputs": true,
+        "required_resources": null,
+        "directness": "explicit_user_authorized_gameplay_reconstruction",
+        "source_schedule_refs": [],
+        "routine_phase_binding": "ordinary_routine_work_v1"
+      },
+      "clothing_binding": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "property_binding": {
+        "controller_ref": "generated_actor_ref",
+        "status": "authoring_candidate",
+        "property_profile_source_ref": "property_context_household_personal_v1",
+        "owner_ref": "generated_actor_ref",
+        "runtime_actor_id": "resolved_by_materializer",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+        "holder_ref": "generated_actor_ref",
+        "no_shared_or_unowned_items": true
+      },
+      "typed_gaps": [],
+      "clothing_profile_ref": {
+        "id": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1
+      },
+      "regional_context_binding": {
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "origin_directness": "analogical_not_inferred_from_appearance_or_language",
+        "selection_policy": "deterministic_seeded_from_explicit_equal_gameplay_weights",
+        "required": true,
+        "eligible_regional_context_refs": [
+          {
+            "version": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency",
+            "gameplay_weight": 1,
+            "id": "m2c_npc_regional_novgorod_land_v1"
+          }
+        ],
+        "fallback": "forbidden"
+      },
+      "required_clothing_variant_requirements": [
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "seasons": [
+            "summer"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_summer_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ]
+    }
+  ],
+  "global_typed_gaps": [
+    "M2C_NPC_TARGET_RUNTIME_PIN_MISSING",
+    "M2C_NPC_TROUSERS_AND_SHOES_VISUAL_PROFILE_APPROVAL_PENDING"
+  ],
+  "activity_profile_drafts": [
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_boatman_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_boatman_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_boatman_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "mode": "intrinsic_none",
+          "scope": "bounded intrinsic inspection only",
+          "scope_note": "Inspects the visible mooring place and approach from the current location; no vessel, fittings, gear, travel, propulsion, or cargo is assumed."
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Inspects the visible mooring place and approach from the current location; no vessel, fittings, gear, travel, propulsion, or cargo is assumed."
+        }
+      }
+    },
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_fisher_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_fisher_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_fisher_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "required_items": [
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+              "equipment_candidate_id": "m2c_npc_fisher_net_v1",
+              "inventory_profile_ref": "inventory_item_tpl_nov_fishing_net_v1",
+              "quantity": 1,
+              "item_template_ref": "item_tpl_nov_fishing_net_v1",
+              "holder_ref": "generated_actor_ref",
+              "owner_ref": "generated_actor_ref",
+              "controller_ref": "generated_actor_ref"
+            }
+          ],
+          "scope": "manual inspection and descriptive mending of exactly one authored net; no fishing or output",
+          "scope_note": "Net template and explicit quantity authored in same NPC materialization transaction; owner, holder, controller resolve to generated actor ref. Descriptive mending causes no net-condition change.",
+          "mode": "required_actor_inventory_item"
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Inspects one fishing net authored in the same NPC materialization transaction; descriptive mending only, with no net-condition change, fishing, catch, fish stock, or yield."
+        }
+      }
+    },
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_guide_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_guide_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_guide_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "mode": "intrinsic_none",
+          "scope": "bounded intrinsic inspection only",
+          "scope_note": "Checks visible landmarks and the immediate route approach from the current place; does not traverse or assert unseen route knowledge."
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Checks visible landmarks and the immediate route approach from the current place; does not traverse or assert unseen route knowledge."
+        }
+      }
+    },
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_hunter_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_hunter_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_hunter_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "mode": "intrinsic_none",
+          "scope": "bounded intrinsic inspection only",
+          "scope_note": "Inspects visible ground and animal signs from the current place; no trap, weapon, hunt, animal, or yield is assumed."
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Inspects visible ground and animal signs from the current place; no trap, weapon, hunt, animal, or yield is assumed."
+        }
+      }
+    },
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_forest_worker_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_forest_worker_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_forest_worker_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "mode": "intrinsic_none",
+          "scope": "bounded intrinsic inspection only",
+          "scope_note": "Inspects visible trees and work conditions from the current place; no tools, felling, timber stock, or wood output is assumed."
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Inspects visible trees and work conditions from the current place; no tools, felling, timber stock, or wood output is assumed."
+        }
+      }
+    },
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_local_trader_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_local_trader_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_local_trader_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "mode": "intrinsic_none",
+          "scope": "bounded intrinsic inspection only",
+          "scope_note": "Prepares for exchange by checking the immediate surroundings; no wares, stock, prices, sales, or proceeds are created."
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Prepares for exchange by checking the immediate surroundings; no wares, stock, prices, sales, or proceeds are created."
+        }
+      }
+    },
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_visiting_merchant_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_visiting_merchant_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_visiting_merchant_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "mode": "intrinsic_none",
+          "scope": "bounded intrinsic inspection only",
+          "scope_note": "Prepares for exchange by checking the immediate surroundings; no wares, cargo, stock, prices, sales, or proceeds are created."
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Prepares for exchange by checking the immediate surroundings; no wares, cargo, stock, prices, sales, or proceeds are created."
+        }
+      }
+    },
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_foreign_merchant_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_foreign_merchant_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_foreign_merchant_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "mode": "intrinsic_none",
+          "scope": "bounded intrinsic inspection only",
+          "scope_note": "Prepares for exchange by checking the immediate surroundings; no wares, cargo, stock, prices, sales, or proceeds are created. No language competence is asserted."
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Prepares for exchange by checking the immediate surroundings; no wares, cargo, stock, prices, sales, or proceeds are created. No language competence is asserted."
+        }
+      }
+    },
+    {
+      "record_id": "record:activity_categories_profiles:m2c_npc_household_servant_initial_work_v1",
+      "family_id": "activity_categories_profiles",
+      "record_kind": "activity_profile",
+      "status": "candidate_approval_pending",
+      "version": "1",
+      "applicability": [
+        "novgorod"
+      ],
+      "provenance_refs": [
+        "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1"
+      ],
+      "normalized_reference_ids": [
+        "reference:activity_categories_profiles:m2c_npc_household_servant_initial_work_v1"
+      ],
+      "source_history_refs": [
+        "source:activity_categories_profiles:activity_reconstruction_decisions",
+        "source:activity_categories_profiles:controlled_vocabularies",
+        "source:activity_categories_profiles:temporal_world_v4_normative",
+        "source:activity_categories_profiles:user_reconstruction_authorization"
+      ],
+      "payload": {
+        "activity_category_id": "manual_labor",
+        "activity_profile_id": "activity_m2c_npc_household_servant_initial_work_v1",
+        "completion_model_id": "fixed_exact",
+        "completion_model_binding": {
+          "registry_id": "temporal.activity_completion_model",
+          "registry_version": "2.0.0",
+          "registry_digest": "769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d",
+          "value_id": "fixed_exact",
+          "source_id": "source:activity_categories_profiles:controlled_vocabularies"
+        },
+        "fixed_duration_or_progress_contract": {
+          "mode": "fixed_exact",
+          "duration_source": "difference between two pinned exact schedule boundaries",
+          "progress_unit": "elapsed_exact_minutes",
+          "partial_progress_persists": true,
+          "runtime_default_duration": "forbidden"
+        },
+        "allowed_intensity_ids": [
+          "rest_or_ordinary_activity"
+        ],
+        "participant_requirements": {
+          "minimum": "1",
+          "maximum": "1",
+          "simultaneous_required": true,
+          "participant_ref_required": true
+        },
+        "resource_requirements": {
+          "mode": "intrinsic_none",
+          "scope": "bounded intrinsic inspection only",
+          "scope_note": "Inspects the assigned household work area from the current place; no specific household objects, tools, production, or goods are assumed."
+        },
+        "precondition_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "actor_available"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "assigned_work_area_accessible"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "boundary_policy_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "schedule_segment_end"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_interruption"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_body_threshold"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "condition_set",
+              "entity_id": "next_world_event"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "execution_policy_set_ref": {
+          "entity_ref": {
+            "entity_kind": "activity_execution_policy_set",
+            "entity_id": "activity_execution_exact_interruptible_v2"
+          },
+          "authoring_version": "1",
+          "source_ids": [
+            "source:activity_execution_policies:temporal_world_v4_normative",
+            "source:activity_execution_policies:user_reconstruction_authorization"
+          ],
+          "applicability": [
+            "novgorod"
+          ]
+        },
+        "reference_rule": "every reference is authoring-version/source/applicability bound; missing required binding is activity_profile_gap",
+        "allowed_intensity_bindings": [
+          {
+            "entity_ref": {
+              "entity_kind": "activity_intensity",
+              "entity_id": "rest_or_ordinary_activity"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:activity_categories_profiles:activity_reconstruction_decisions",
+              "source:activity_categories_profiles:controlled_vocabularies",
+              "source:activity_categories_profiles:temporal_world_v4_normative",
+              "source:activity_categories_profiles:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "participant_departure_disposition": "pause and preserve committed elapsed/progress/resources/body effects; resume requires a new validated attempt",
+        "body_effect_profile_refs": [
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "satiety_hourly_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "starvation_health_harm_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          },
+          {
+            "entity_ref": {
+              "entity_kind": "body_effect_profile",
+              "entity_id": "energy_awake_spend_v2"
+            },
+            "authoring_version": "1",
+            "source_ids": [
+              "source:body_time_effect_profiles_thresholds:character_parameters_body_rules",
+              "source:body_time_effect_profiles_thresholds:sleep_recovery_reconstruction",
+              "source:body_time_effect_profiles_thresholds:temporal_world_v4_normative",
+              "source:body_time_effect_profiles_thresholds:user_reconstruction_authorization"
+            ],
+            "applicability": [
+              "novgorod"
+            ]
+          }
+        ],
+        "editorial_reconstruction": {
+          "historical_fact_claim": false,
+          "task_location": "current committed actor location only",
+          "world_output": "none",
+          "directness": "explicit_user_authorized_gameplay_reconstruction",
+          "production_or_trade_effect": "none",
+          "task_focus": "Inspects the assigned household work area from the current place; no specific household objects, tools, production, or goods are assumed."
+        }
+      }
+    }
+  ],
+  "property_rule_draft": {
+    "controller_ref": "generated_actor_ref",
+    "controller_kind": "generated_actor",
+    "owner_ref": "generated_actor_ref",
+    "basis": "Each listed garment/tool is exclusively assigned to the materialized NPC. Resolve concrete actor id during the same materialization transaction.",
+    "status": "authoring_candidate",
+    "property_rule_id": "m2c_npc_actor_personal_property_v1",
+    "holder_kind": "generated_actor",
+    "owner_kind": "generated_actor",
+    "holder_ref": "generated_actor_ref"
+  },
+  "visual_reconstruction_limits": {
+    "directness": "editorial_gameplay_visual_reconstruction",
+    "historical_claims": false,
+    "rule": "Source-backed template identity and material labels may be reused; unspecified cut, silhouette, or color choices are gameplay presentation decisions. Female long-shirt outer_form is low-confidence editorial reconstruction."
+  },
+  "authoring_provenance": {
+    "direct_inputs": [
+      "body_ready_traveller_v1 metrics as explicit gameplay transfer",
+      "ordinary_day_work_routine_v1 as analogical cadence",
+      "approved candidate item and schedule rows"
+    ],
+    "approval": "pending independent review; this artifact does not approve its own content",
+    "reconstructed_values": [
+      "task focus and initial work profiles",
+      "shared garment slot assignment across sex and adult age variants",
+      "actor-bound personal property rule"
+    ],
+    "directness": "mixed",
+    "authorization": "data/world-catalogs/novgorod/temporal-v4/sources/activity_categories_profiles/USER_RECONSTRUCTION_AUTHORIZATION.txt",
+    "constraints": [
+      "no language inference",
+      "no ethnic inference",
+      "no population-frequency inference",
+      "no simulated fish, cargo, market stock, sales, or goods output"
+    ]
+  },
+  "provenance_draft": {
+    "scope": "Nine initial NPC work activity profiles authored as gameplay reconstructions from occupation contexts; no claim of measured medieval task durations or effects.",
+    "provenance_id": "provenance:activity_categories_profiles:m2c_npc_runtime_bindings_v1",
+    "author": "M2c NPC runtime binding draft",
+    "status": "candidate_approval_pending",
+    "approval": "pending independent review",
+    "external_source_paths": [
+      "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m21-content/initial-npc-schedule-profile.json",
+      "data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/authoring-rows.json",
+      "data/world-catalogs/novgorod/first-playable-v1/catalog.json"
+    ],
+    "source_ids": [
+      "source:activity_categories_profiles:activity_reconstruction_decisions",
+      "source:activity_categories_profiles:controlled_vocabularies",
+      "source:activity_categories_profiles:temporal_world_v4_normative",
+      "source:activity_categories_profiles:user_reconstruction_authorization"
+    ]
+  },
+  "clothing_profiles": [
+    {
+      "source_directness": "authoring_candidate_rows_only",
+      "allowed_occupation_refs": [
+        "nov_occ_boatman",
+        "nov_occ_fisher",
+        "nov_occ_route_guide",
+        "nov_occ_hunter_trapper",
+        "nov_occ_forest_worker",
+        "nov_occ_local_trader",
+        "nov_occ_long_distance_merchant",
+        "nov_occ_household_servant"
+      ],
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "directness": "explicit_user_authorized_gameplay_visual_reconstruction",
+      "allowed_role_refs": [
+        "nov_role_boatman",
+        "nov_role_fisher",
+        "nov_role_guide",
+        "nov_role_hunter",
+        "nov_role_forest_promyslovik",
+        "nov_role_trader",
+        "nov_role_merchant_guest",
+        "nov_role_foreign_guest",
+        "nov_role_servant"
+      ],
+      "version": 1,
+      "property_binding": {
+        "holder": "actor",
+        "owner": "actor",
+        "actor_id_binding": "generated_actor_ref",
+        "source_ref": "rule_property_context_household_personal_v1",
+        "controller": "actor",
+        "property_rule_ref": "m2c_npc_actor_personal_property_v1"
+      },
+      "variants": [
+        {
+          "seasons": [
+            "summer"
+          ],
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear"
+          ],
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "id": "m2c_npc_clothing_male_summer_v1",
+          "equipment_templates": [
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_linen_shirt_v1",
+              "equipment_slot_category_id": "base_garment",
+              "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+              "status": "candidate_approval_pending"
+            },
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_trousers_v1",
+              "equipment_slot_category_id": "lower_garment",
+              "item_template_ref": "item_tpl_nov_trousers_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+              "status": "candidate_approval_pending"
+            },
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+              "equipment_slot_category_id": "footwear",
+              "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+              "status": "candidate_approval_pending"
+            }
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "lower_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "id": "m2c_npc_clothing_male_cool_seasons_v1",
+          "equipment_templates": [
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_linen_shirt_v1",
+              "equipment_slot_category_id": "base_garment",
+              "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+              "status": "candidate_approval_pending"
+            },
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_trousers_v1",
+              "equipment_slot_category_id": "lower_garment",
+              "item_template_ref": "item_tpl_nov_trousers_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+              "status": "candidate_approval_pending"
+            },
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+              "equipment_slot_category_id": "footwear",
+              "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+              "status": "candidate_approval_pending"
+            },
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_wool_outer_v1",
+              "equipment_slot_category_id": "outer_garment",
+              "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "first_playable_visual_profile_outer_brown",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+              "status": "candidate_approval_pending"
+            }
+          ],
+          "sex_categories": [
+            "male"
+          ]
+        },
+        {
+          "seasons": [
+            "summer"
+          ],
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear"
+          ],
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "id": "m2c_npc_clothing_female_summer_v1",
+          "equipment_templates": [
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_female_long_linen_shirt_v1",
+              "equipment_slot_category_id": "base_garment",
+              "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "m2c_visual_female_long_linen_shirt_v1",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+              "status": "candidate_approval_pending"
+            },
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+              "equipment_slot_category_id": "footwear",
+              "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+              "status": "candidate_approval_pending"
+            }
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        },
+        {
+          "seasons": [
+            "spring",
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ],
+          "required_clothing_slot_refs": [
+            "base_garment",
+            "footwear",
+            "outer_garment"
+          ],
+          "age_categories": [
+            "adult",
+            "young_adult",
+            "middle_aged",
+            "old"
+          ],
+          "id": "m2c_npc_clothing_female_cool_seasons_v1",
+          "equipment_templates": [
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_female_long_linen_shirt_v1",
+              "equipment_slot_category_id": "base_garment",
+              "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "m2c_visual_female_long_linen_shirt_v1",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+              "status": "candidate_approval_pending"
+            },
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+              "equipment_slot_category_id": "footwear",
+              "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+              "status": "candidate_approval_pending"
+            },
+            {
+              "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+              "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+              "equipment_candidate_id": "m2c_npc_clothing_wool_outer_v1",
+              "equipment_slot_category_id": "outer_garment",
+              "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+              "claim_state": "established",
+              "legal_status": "owned",
+              "visual_profile_ref": "first_playable_visual_profile_outer_brown",
+              "physical_position": "equipped",
+              "condition_state": "serviceable",
+              "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+              "status": "candidate_approval_pending"
+            }
+          ],
+          "sex_categories": [
+            "female"
+          ]
+        }
+      ],
+      "source_item_profile_ref": "profile_household_personal_v3",
+      "id": "m2c_npc_ordinary_personal_clothing_v1",
+      "weights_and_frequencies": "not_transferred",
+      "status": "candidate_approval_pending"
+    }
+  ],
+  "item_visual_profiles": [
+    {
+      "visual_profile_id": "first_playable_visual_profile_base_shirt",
+      "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "base_garment",
+        "equipment_slot": "base_garment",
+        "neckline": "slit_round",
+        "sleeve_form": "narrow",
+        "outer_form": "none",
+        "visible_fabric": "light_linen",
+        "trim": "none",
+        "main_visible_color": "undyed_linen",
+        "secondary_visible_color": "undyed_linen",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "first_playable_visual_profile_outer_brown",
+      "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "outer_garment",
+        "equipment_slot": "outer_garment",
+        "neckline": "high_closed",
+        "sleeve_form": "narrow",
+        "outer_form": "front_open",
+        "visible_fabric": "wool",
+        "trim": "none",
+        "main_visible_color": "brown",
+        "secondary_visible_color": "brown",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "m2c_visual_item_tpl_nov_trousers_v1",
+      "directness": "gameplay_visual_reconstruction",
+      "source_item_rows": [
+        "cat_item_object_trousers_v1",
+        "inventory_item_tpl_nov_trousers_v1",
+        "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1"
+      ],
+      "item_template_ref": "item_tpl_nov_trousers_v1",
+      "status": "candidate_approval_pending",
+      "unresolved_facets": [],
+      "visual_profile_snapshot": {
+        "visible_fabric": "undyed_linen",
+        "trim": "none",
+        "headwear_kind": "none",
+        "outer_form": "straight_lower_garment",
+        "main_visible_color": "undyed_linen",
+        "version": 1,
+        "equipment_slot": "lower_garment",
+        "schema": "item_visual_profile_snapshot_v1",
+        "sleeve_form": "not_applicable",
+        "neckline": "not_applicable",
+        "secondary_visible_color": "undyed_linen",
+        "garment_kind": "lower_garment"
+      },
+      "confidence": "low",
+      "historical_claim": false,
+      "reconstruction_note": "Gameplay visual reconstruction from the trousers item identity only; cut, fabric, and colors are editorial, not recovered historical detail."
+    },
+    {
+      "visual_profile_id": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+      "directness": "gameplay_visual_reconstruction",
+      "source_item_rows": [
+        "cat_item_object_low_leather_shoes_v1",
+        "inventory_item_tpl_nov_low_leather_shoes_v1",
+        "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1"
+      ],
+      "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+      "status": "candidate_approval_pending",
+      "unresolved_facets": [],
+      "visual_profile_snapshot": {
+        "visible_fabric": "leather",
+        "trim": "none",
+        "headwear_kind": "none",
+        "outer_form": "low_leather_shoe",
+        "main_visible_color": "brown",
+        "version": 1,
+        "equipment_slot": "footwear",
+        "schema": "item_visual_profile_snapshot_v1",
+        "sleeve_form": "not_applicable",
+        "neckline": "not_applicable",
+        "secondary_visible_color": "brown",
+        "garment_kind": "footwear"
+      },
+      "confidence": "low",
+      "historical_claim": false,
+      "reconstruction_note": "Gameplay visual reconstruction from the low-leather-shoes item identity only; form and colors are editorial, not recovered historical detail."
+    },
+    {
+      "visual_profile_id": "m2c_visual_female_long_linen_shirt_v1",
+      "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+      "source_visual_profile_ref": "first_playable_visual_profile_base_shirt",
+      "directness": "editorial_gameplay_visual_reconstruction",
+      "confidence": "low",
+      "historical_claim": false,
+      "reconstruction_note": "Female gameplay silhouette uses long lower-body-covering garment outer_form on generic linen-shirt visual. Explicit low-confidence editorial reconstruction; no source-backed female garment length or historical claim.",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "base_garment",
+        "equipment_slot": "base_garment",
+        "neckline": "slit_round",
+        "sleeve_form": "narrow",
+        "outer_form": "long lower-body-covering garment",
+        "visible_fabric": "light_linen",
+        "trim": "none",
+        "main_visible_color": "undyed_linen",
+        "secondary_visible_color": "undyed_linen",
+        "headwear_kind": "none"
+      },
+      "status": "candidate_approval_pending"
+    }
+  ]
+}

@@ -2,6 +2,8 @@ import { requestPlayerConversationContribution, runConversationExchange } from
   '@rus/turn';
 import { buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
+import { withPartyHistoricalEvents, withPlayerWorldKnowledgeAuthoritative } from
+  './world-knowledge-request-context.js';
 import { buildNpcResponseBoundaryBatch } from
   './lower-dvina-trace-m2-conversation-boundaries.js';
 import {
@@ -29,6 +31,8 @@ import {
 } from './lower-dvina-trace-m2-conversation-exchange-setup.js';
 import { conversationNpcContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
+import { compareSceneLocus, sceneLocationRef, sceneLocus } from
+  './lower-dvina-trace-scene-presence.js';
 import {
   revalidatePendingNpcContribution,
   workingConversationContext
@@ -55,8 +59,7 @@ export function createM2ConversationContext(input) {
       || !input.state.party_id.trim()
       || typeof input.state.actor_id !== 'string'
       || !input.state.actor_id.trim()
-      || typeof input.state.position?.location_ref !== 'string'
-      || !input.state.position.location_ref.trim()) {
+      || sceneLocationRef(input.state) === null) {
     fail(
       'TRACE_M2_CONVERSATION_STATE_INVALID',
       'Conversation requires one exact committed state version and clock.'
@@ -64,7 +67,7 @@ export function createM2ConversationContext(input) {
   }
   const targetRef = npcRef(input.targetActor.instance_id);
   const presentNpcIds = new Set(canonicalActors(input.state.npcs)
-    .filter((npc) => npcAtPlayerPosition(npc, input.state.position))
+    .filter((npc) => npcAtPlayerPosition(input.state, npc))
     .map(({ instance_id: instanceId }) => instanceId));
   const suppliedNpcActors = canonicalActors(input.actualNpcActors);
   const resuming = input.state.pending_npc_conversation_execution != null
@@ -132,13 +135,19 @@ export function createM2ConversationContext(input) {
       )
   };
 }
-function npcAtPlayerPosition(npc, position) {
-  return typeof npc?.instance_id === 'string'
-    && ((typeof npc.location_profile_ref === 'string'
-        && npc.location_profile_ref === position?.location_ref)
-      || (typeof npc.anchor_id === 'string'
-        && npc.anchor_id === position?.g5_anchor_id));
+function npcAtPlayerPosition(state, npc) {
+  if (typeof npc?.instance_id !== 'string') return false;
+  return compareSceneLocus(sceneLocus(state, npc),
+    sceneLocus(state, state.position)) === true
+    || (typeof npc.location_profile_ref === 'string'
+      && npc.location_profile_ref === state.position?.location_ref);
 }
+/** Player conversation model with committed-state WK ports (A1). */
+export function m2PlayerConversationModel(context) {
+  return withPlayerWorldKnowledgeAuthoritative(
+    context.playerConversationModel, () => context.state);
+}
+
 export async function executeM2ConversationExchange(context, {
   initialNpcDecision = null
 } = {}) {
@@ -153,7 +162,8 @@ export async function executeM2ConversationExchange(context, {
   let resumedOutcome = null;
   const exchange = await runConversationExchange(exchangeInput, {
     conversationModel: context.playerPlan ? async () =>
-      structuredClone(context.playerPlan) : context.playerConversationModel,
+      structuredClone(context.playerPlan)
+      : m2PlayerConversationModel(context),
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     applyPlayerContribution: ({ working_state: working, plan }) =>
       applyPlayerPlan(workingConversationContext(context, working), working, plan),
@@ -197,7 +207,13 @@ export async function executeM2ConversationExchange(context, {
       decisions.set(decision.request.request_id, decision);
       return decision;
     },
-    npcSemanticModel: context.npcSemanticModel,
+    npcSemanticModel: withPartyHistoricalEvents(
+      context.npcSemanticModel,
+      // F5: exchange context.state is party state at exchange start (committed).
+      // workingConversationContext merges working overlay for NPC positions;
+      // historical_events live on party state root and are not working-only.
+      () => context.state
+    ),
     ...(context.validateNpcPlan === undefined ? {} : {
       validateNpcPlan: context.validateNpcPlan
     }),
@@ -292,7 +308,7 @@ export async function executeM2ConversationExchange(context, {
 export async function prepareM2PlayerConversationPlan(context) {
   const decision = await requestPlayerConversationContribution({
     request: buildPlayerRequest(context),
-    conversationModel: context.playerConversationModel,
+    conversationModel: m2PlayerConversationModel(context),
     revalidateStateVersion: context.revalidateStateVersion
   });
   return decision.plan;

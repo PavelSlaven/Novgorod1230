@@ -1,3 +1,4 @@
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { canonicalDigest } from '@rus/materialization';
@@ -12,19 +13,24 @@ import { appendNpcSemanticConversationWrites,
 import { phase2ScreenDigest, phase2VisibleContextFromPayload,
   publicCombatStateFromConsequence } from
   './lower-dvina-trace-phase-2-projection.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function phase8VisibleEnvelope({ partyId, factual, visibleContext,
-  nextVersion, turnNumber, changeSetId, idemId }) {
+  nextVersion, turnNumber, changeSetId, idemId,
+  onLabelGapsOmitted = null }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const initialization = factual.consequence.accusation?.combat_initialization
     ?? factual.consequence.combat_initialization ?? null;
   const payload = { schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details,
-    visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects,
-    known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties, hypotheses: [],
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details,
+    visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects,
+    known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties, hypotheses: [],
     player_safe_interruption: initialization == null ? null
       : 'Требуется решение в бою.',
     allowed_action_affordances: initialization == null ? [] : [{ action_id: 'request_combat',
@@ -70,8 +76,8 @@ export function phase8AccusationWrites({ partyId, state, next, factual,
   const semantic = accusation?.semantic_exchange ?? null;
   const inserts = [row('party_state_snapshots',
     `${partyId}:${next.party_state.state_version}`, { party_id: partyId,
-      state_version: next.party_state.state_version, state_payload: next,
-      state_digest: canonicalDigest(next) })];
+      state_version: next.party_state.state_version, state_payload: withoutSceneNpcs(next),
+      state_digest: canonicalDigest(withoutSceneNpcs(next)) })];
   const updates = [row('parties', partyId, { party_id: partyId,
     status: 'active' }), row('party_server_sessions', partyId, {
       party_id: partyId, turn_number: turnNumber,

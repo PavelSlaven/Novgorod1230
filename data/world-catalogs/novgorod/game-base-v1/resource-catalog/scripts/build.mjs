@@ -186,8 +186,8 @@ track('invertebrates_herps.csv', rows.invertebrates, 'fa_id', 'category_ref', (r
     ? { code: 'physically_impossible', note: BAIT_EXCLUSIONS.get(r.fa_id) }
   : `group=${r.group}; uses=${r.uses || 'empty'}: no extraction role in catalog P1`);
 
-bindings.sort((a, b) => `${a.source_table}\0${a.species_ref}\0${a.family_id}`.localeCompare(`${b.source_table}\0${b.species_ref}\0${b.family_id}`));
-unbound.sort((a, b) => `${a.source_table}\0${a.species_ref}`.localeCompare(`${b.source_table}\0${b.species_ref}`));
+bindings.sort((a, b) => `${a.source_table}\0${a.species_ref}\0${a.family_id}`.localeCompare(`${b.source_table}\0${b.species_ref}\0${b.family_id}`, 'en'));
+unbound.sort((a, b) => `${a.source_table}\0${a.species_ref}`.localeCompare(`${b.source_table}\0${b.species_ref}`, 'en'));
 
 const materialFamily = (m) => {
   if (['nm_deadwood', 'nm_dry_brushwood', 'nm_driftwood'].includes(m.nm_id)) return 'F01';
@@ -262,7 +262,7 @@ for (const r of rows.trees.filter((x) => ['fl_ts_corylus_avellana', 'fl_ts_querc
   patchProfiles.push(patch(r.fl_id, 'F09', monthList(r.fruit_months), isOak ? 10000 : 2000, isOak ? 30000 : 8000,
     isOak ? 4000 : 1000, isOak ? 'acorn' : 'hazelnut', '', r.source_refs));
 }
-patchProfiles.sort((a, b) => a.species_ref.localeCompare(b.species_ref));
+patchProfiles.sort((a, b) => a.species_ref.localeCompare(b.species_ref, 'en'));
 
 const counts = {
   resource_families: writeCsv(path.join(DIR, 'resource_families.csv'), resourceFamilies),

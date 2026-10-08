@@ -1,0 +1,12 @@
+[
+  {
+    "entity_kind": "scene_selection_rule",
+    "id": "scene_selection_single_candidate_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "rule_kind": "single_candidate",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "28445b3734e611c5063aeeedca03e88adf1b991ab2f23ad437bec7a24fe05da1"
+  }
+]

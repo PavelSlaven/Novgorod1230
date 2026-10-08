@@ -1,0 +1,178 @@
+{
+  "schema": "rus.live_world_runtime.finite_stage_b_qualification_report.v1",
+  "status": "FAIL",
+  "model_identity": {
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "scope": "turn_runtime",
+    "role_id": "ordinary_materialization",
+    "request_timeout_ms": 120000,
+    "config_hash": "c43b0590a85401c2"
+  },
+  "case_count": 13,
+  "failed_case_ids": [
+    "deadwood",
+    "deadwood-khvorost",
+    "deadwood-sushnyak",
+    "driftwood",
+    "exhausted-source",
+    "exhausted-synonym",
+    "owned-wood",
+    "reeds",
+    "reeds-kamysh",
+    "standing-wood",
+    "stone-absent"
+  ],
+  "observation_sha256": "69f7880ee5f5d810c7cd7b7af8d6aca81a9ca6a8ee37ed8e3c8e0b6550a9d45e",
+  "observations": [
+    {
+      "id": "reeds",
+      "resolution": "materialize",
+      "semantic_type": "reed_stem",
+      "mechanics_proposal": {
+        "mass_grams": 120,
+        "external_hand_cost": 1,
+        "carry_form": "long",
+        "packing_slot_cost": 1,
+        "quantity": {
+          "value": 1,
+          "unit": "item"
+        },
+        "container": null
+      }
+    },
+    {
+      "id": "reeds-kamysh",
+      "resolution": "materialize",
+      "semantic_type": "reed_stem",
+      "mechanics_proposal": {
+        "mass_grams": 120,
+        "external_hand_cost": 1,
+        "carry_form": "long",
+        "packing_slot_cost": 1,
+        "quantity": {
+          "value": 1,
+          "unit": "item"
+        },
+        "container": null
+      }
+    },
+    {
+      "id": "deadwood",
+      "resolution": "materialize",
+      "semantic_type": "deadwood_material_portion",
+      "mechanics_proposal": {
+        "mass_grams": 3000,
+        "external_hand_cost": 2,
+        "carry_form": "long",
+        "packing_slot_cost": 4,
+        "quantity": {
+          "value": 1,
+          "unit": "item"
+        },
+        "container": null
+      }
+    },
+    {
+      "id": "deadwood-khvorost",
+      "resolution": "materialize",
+      "semantic_type": "deadwood_material_portion",
+      "mechanics_proposal": {
+        "mass_grams": 800,
+        "external_hand_cost": 1,
+        "carry_form": "regular",
+        "packing_slot_cost": 1,
+        "quantity": {
+          "value": 1,
+          "unit": "item"
+        },
+        "container": null
+      }
+    },
+    {
+      "id": "deadwood-sushnyak",
+      "resolution": "materialize",
+      "semantic_type": "deadwood_material_portion",
+      "mechanics_proposal": {
+        "mass_grams": 800,
+        "external_hand_cost": 1,
+        "carry_form": "regular",
+        "packing_slot_cost": 1,
+        "quantity": {
+          "value": 1,
+          "unit": "item"
+        },
+        "container": null
+      }
+    },
+    {
+      "id": "driftwood",
+      "resolution": "materialize",
+      "semantic_type": "driftwood_material_portion",
+      "mechanics_proposal": {
+        "mass_grams": 800,
+        "external_hand_cost": 1,
+        "carry_form": "regular",
+        "packing_slot_cost": 1,
+        "quantity": {
+          "value": 1,
+          "unit": "item"
+        },
+        "container": null
+      }
+    },
+    {
+      "id": "standing-wood",
+      "resolution": "materialize",
+      "semantic_type": "fresh_wood_portion",
+      "mechanics_proposal": {
+        "mass_grams": 1500,
+        "external_hand_cost": 1,
+        "carry_form": "regular",
+        "packing_slot_cost": 1,
+        "quantity": {
+          "value": 1,
+          "unit": "item"
+        },
+        "container": null
+      }
+    },
+    {
+      "id": "berries-absent",
+      "resolution": "absent",
+      "semantic_type": null,
+      "mechanics_proposal": null
+    },
+    {
+      "id": "fungi-absent",
+      "resolution": "absent",
+      "semantic_type": null,
+      "mechanics_proposal": null
+    },
+    {
+      "id": "stone-absent",
+      "resolution": "no_change",
+      "semantic_type": null,
+      "mechanics_proposal": null
+    },
+    {
+      "id": "exhausted-source",
+      "resolution": "no_change",
+      "semantic_type": null,
+      "mechanics_proposal": null
+    },
+    {
+      "id": "exhausted-synonym",
+      "resolution": "no_change",
+      "semantic_type": null,
+      "mechanics_proposal": null
+    },
+    {
+      "id": "owned-wood",
+      "resolution": "no_change",
+      "semantic_type": null,
+      "mechanics_proposal": null
+    }
+  ],
+  "candidate_sha256": "9c150ddd45dccef1a73cb175ffdec4d322b003ecc4507818dc5e576fda38894c"
+}

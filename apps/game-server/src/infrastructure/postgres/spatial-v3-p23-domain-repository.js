@@ -43,7 +43,14 @@ export function createSpatialV3P23DomainRepository({ pool } = {}) {
       ? await query.query("SELECT s.id,s.root_execution_id,s.root_travel_state_id,s.change_set_id,e.state_version AS root_execution_state_version,t.state_version AS root_travel_state_version,c.write_plan_digest, r.result_kind AS root_result_kind,e.journey_scope AS root_journey_scope,e.journey_owner_ref,t.movement_carrier_ref,t.status AS root_travel_status FROM party_runtime.party_synchronized_time_slices s JOIN party_runtime.party_route_plan_executions e ON e.id=s.root_execution_id JOIN party_runtime.traveller_travel_states t ON t.id=s.root_travel_state_id JOIN party_runtime.party_v3_change_sets c ON c.id=s.change_set_id LEFT JOIN party_runtime.party_synchronized_time_slice_results r ON r.slice_id=s.id AND r.participant_execution_id=s.root_execution_id WHERE s.party_id=$1 AND s.id=$2 ORDER BY s.id", [party_id, carrier_local.slice_id])
       : { rows: [] };
     const controlRows = controls.rows.map((row) => Object.freeze({ entity_ref: ref(row.entity_kind, row.entity_id), owner_ref: row.owner_ref, holder_ref: row.holder_ref, controller_ref: row.controller_ref, access_profile_ref: row.access_profile_ref, capacity_units: row.capacity_units }));
-    const scheduleRows = schedules.rows.map((row) => Object.freeze({ npc_ref: ref('npc', row.npc_id), active: true, current_endpoint_ref: Object.freeze({ endpoint_kind: 'scene_position', endpoint_id: row.current_position_node_id }), schedule_profile_ref: row.schedule_profile_ref, dependency_pins: row.dependency_pins, causal_state_ref: row.causal_state_ref }));
+    const scheduleRows = schedules.rows.map((row) => Object.freeze({
+      npc_ref: ref('npc', row.npc_id), active: true,
+      current_endpoint_ref: row.current_position_node_id == null ? null
+        : Object.freeze({ endpoint_kind: 'scene_position', endpoint_id: row.current_position_node_id }),
+      presence_state: row.causal_state_ref?.routine_state?.presence_state ?? null,
+      schedule_profile_ref: row.schedule_profile_ref, dependency_pins: row.dependency_pins,
+      causal_state_ref: row.causal_state_ref
+    }));
     let carrier = null;
     if (attached.rows.length) {
       const row = attached.rows[0]; const chain = attachments.rows.filter((edge) => edge.carrier_kind === 'transport' && edge.carrier_id === row.transport_id).map((edge) => Object.freeze({ subject_ref: ref(edge.subject_kind, edge.subject_id), carrier_ref: ref(edge.carrier_kind, edge.carrier_id) }));

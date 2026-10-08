@@ -1,0 +1,18 @@
+{
+  "schema": "rus.m2c_directional_exit_presentation_authoring_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "candidate_ref": "novgorod_m2c_directional_exit_labels_v1@1",
+  "candidate_sha256": "7e1ec1f6f7d5cda906b3fbb5666624e4769a26c84b4bc3c046fb950e461fff26",
+  "reviewer": "gpt-6-sol/high — independent reviewer; not the candidate author",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "Exact 86 directional exit presentation labels across 32 G4; DATA_ONLY editorial orientation-family labels and per-G4 choice ordinals.",
+  "source_pins": {
+    "spatial_v3_g4_directional_exits_sha256": "bafdf1e15fcc3ff8b605bd9dc1605ead9263aee44ea34bd0aeef82cee08e355c",
+    "spatial_v3_topological_direction_contexts_sha256": "aff8bd31f9526f30848b778a081cdc210718ffc3b4458e6138843f748ec5996f"
+  },
+  "checks": "All 86 candidate exit refs, versions and canonical digests match the approved source rows; context refs, source citations, G4 and canonical G5 bindings, orientation profiles and world revision match. Candidate exit set equals the 86 approved world_route_exit rows. All 32 G4 have unique contiguous local ordinals and distinct labels. Labels contain only the supported orientation family and ordinal; provenance marks editorial directness with medium confidence. Source dataset hashes match the approved import manifest.",
+  "limits": "Labels convey no destination, compass bearing, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Current authoritative visible-or-known exit projection remains mandatory.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

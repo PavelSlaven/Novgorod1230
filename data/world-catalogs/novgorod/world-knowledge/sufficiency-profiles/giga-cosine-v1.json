@@ -1,0 +1,11 @@
+{
+  "schema": "world_knowledge_sufficiency_profile_v1",
+  "sufficiency_profile_ref": "wk-sufficiency:giga-cosine:v1",
+  "relevance_source": "giga_cosine",
+  "min_hint_relevance": 0.28,
+  "sufficient_enabled": false,
+  "reranker_gate_passed": false,
+  "calibrated_at": "2026-09-27",
+  "calibration_basis": "REVIEW-049: live×3 (360) at floor 0.28 → SUFFICIENT 158 with 127/158 (0.80) missing must-need; best false-SUFFICIENT share 0.76 at threshold 0.45 (38 SUFFICIENT); no threshold reaches ≤0.10. Plan (120): 0.10 only at 0.52 with 1 SUFFICIENT. Joined-hint cosine is identical across hints in 188/360 live rows — keep sufficient_enabled=false until per-hint relevance exists (LW-054).",
+  "status": "provisional"
+}

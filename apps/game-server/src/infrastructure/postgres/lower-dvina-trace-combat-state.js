@@ -48,7 +48,7 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
         combat_terminal_status: terminalNpcStatuses.get(npc.instance_id)
       } : {}),
       ...(body == null ? {} : { body_condition: {
-        ...npc.machine_state?.body_condition, health: body.health,
+        ...npc.machine_state?.body_condition,
         combat_conditions: structuredClone(body.active_conditions ?? [])
       } })
     } };

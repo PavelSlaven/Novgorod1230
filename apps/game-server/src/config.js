@@ -1,7 +1,10 @@
 import { serverError } from './errors.js';
+import { fileURLToPath } from 'node:url';
 import {
-  SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
+  SPATIAL_V3_PRODUCTION_BINDINGS_MODULE, SPATIAL_V3_TARGET_BINDINGS_MODULE
 } from './runtime/load-spatial-v3-bindings.js';
+
+export const GAME_SERVER_PROJECT_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 
 const MODULAR_FLAGS = Object.freeze([
   'modulesEnabled',
@@ -26,6 +29,7 @@ export function readServerConfig(env = process.env) {
   const runtimeRoute = route(env.RUS_RUNTIME_ROUTE, bool(env.RUS_LEGACY_RUNTIME_ENABLED, false) ? 'legacy' : 'modular');
   const modularDefault = runtimeRoute === 'modular';
   const config = {
+    rootDir: GAME_SERVER_PROJECT_ROOT,
     host,
     port,
     maxBodyBytes,
@@ -58,6 +62,7 @@ export function readServerConfig(env = process.env) {
     runtimeCatalogPinManifestDigest: digestText(
       env.RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST
     ),
+    targetCatalogActivationApprovalsPath: text(env.RUS_SPATIAL_V3_TARGET_ACTIVATION_APPROVALS_PATH) || null,
     probeProvider: bool(env.RUS_PROBE_LLM_PROVIDER_ON_STARTUP, false),
     developerMode: bool(env.RUS_DEVELOPER_MODE, false)
   };
@@ -85,11 +90,11 @@ export function assertModularStartupConfig(config) {
       { status: 500 }
     );
   }
-  if (config.spatialV3BindingsModule
-      !== SPATIAL_V3_PRODUCTION_BINDINGS_MODULE) {
+  if (![SPATIAL_V3_PRODUCTION_BINDINGS_MODULE, SPATIAL_V3_TARGET_BINDINGS_MODULE]
+      .includes(config.spatialV3BindingsModule)) {
     throw serverError(
       'RUNTIME_BINDINGS_MODULE_INACTIVE',
-      'Only the production-v16 spatial-v3 runtime binding may be selected.',
+      'Only a release-pinned built-in spatial-v3 runtime binding may be selected.',
       { status: 500 }
     );
   }

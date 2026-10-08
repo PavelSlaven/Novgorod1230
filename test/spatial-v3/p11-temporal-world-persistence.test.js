@@ -82,7 +82,7 @@ test('P11 temporal-world migration persists the bounded temporal runtime model',
 test('P11 target migration loader starts the complete ordered chain', async () => {
   const source = await readFile(loaderPath, 'utf8');
   assert.match(source, /const files = \['001_party_runtime\.sql'/u);
-  assert.match(source, /'033_party_runtime_initial_semantic_decision\.sql'\]/u);
+  assert.match(source, /'035_party_runtime_nonportal_availability\.sql'\]/u);
 });
 
 test('initial committed state may own a semantic NPC decision', async () => {

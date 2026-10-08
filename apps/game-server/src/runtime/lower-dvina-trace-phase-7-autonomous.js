@@ -2,7 +2,10 @@ import {
   buildNpcActionDecisionRequestFromSnapshots
 } from '@rus/npc-runtime';
 import { requestNpcSemanticDecision } from '@rus/turn';
+import { prepareNpcDecisionForActorStep } from
+  '@rus/turn/temporal-advance';
 import { validateTracePhase7Plan } from './lower-dvina-trace-phase-7-plan-validation.js';
+import { withPartyHistoricalEvents } from './world-knowledge-request-context.js';
 
 export async function resolveTracePhase7AutonomousDecision({
   state,
@@ -12,7 +15,9 @@ export async function resolveTracePhase7AutonomousDecision({
   operationContract,
   npcAutonomousModel,
   revalidateStateVersion,
-  rootTurnId
+  rootTurnId,
+  assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null
 }) {
   const boundary = signalBatch?.boundary;
   if (!boundary) fail('TRACE_PHASE_7_AUTONOMOUS_BOUNDARY_MISSING');
@@ -27,7 +32,7 @@ export async function resolveTracePhase7AutonomousDecision({
   const proposal = await requestNpcSemanticDecision({
     boundary,
     request,
-    semanticModel: npcAutonomousModel,
+    semanticModel: withPartyHistoricalEvents(npcAutonomousModel, () => state),
     persistedTrace,
     persistedInput,
     orderedSignals,
@@ -57,7 +62,7 @@ export async function resolveTracePhase7AutonomousDecision({
     fail('TRACE_PHASE_7_CAUSAL_SIGNAL_INVALID');
   }
   const signal = causalSignals[0];
-  return Object.freeze({
+  const autonomous = Object.freeze({
     signal,
     boundary: resolvedBoundary,
     request: resolvedRequest,
@@ -73,6 +78,8 @@ export async function resolveTracePhase7AutonomousDecision({
       proposal
     }] : []
   });
+  return prepareNpcDecisionForActorStep({ autonomous,
+    committedState: state, assertNeedsCheckAllowed, recordNeedsCheckFilter });
 }
 
 export function buildTracePhase7NpcActionDecisionRequest({ state, contracts, boundary,

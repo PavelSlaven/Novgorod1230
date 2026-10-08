@@ -1,0 +1,12 @@
+[
+  {
+    "entity_kind": "scene_applicability_rule",
+    "id": "scene_applicability_exact_source_ref_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "rule_kind": "exact_source_ref",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "6e38720e0d8e97fa362e03cbf167f4b876b380d303841883f028d8e2785cbc6d"
+  }
+]

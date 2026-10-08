@@ -197,7 +197,8 @@ export async function advanceTemporalNpcDecisionBoundary({
       }
       if (!domainRejected) {
         hadSuccessfulActorStep = true;
-      } else {
+      }
+      if (domainRejected) {
         hadUnresolvedDomainRejection = true;
         unresolvedDomainRejection ??= {
           decision,

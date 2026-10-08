@@ -23,7 +23,7 @@ export function currentSceneVisibilityModifiers(rows, scene) {
   });
 }
 
-/** Target conditions from the verified current scene and approved natural cover. */
+/** Target conditions from the verified current scene; natural-source cover is separate. */
 export async function readCurrentTargetConditions({ partyId, actorId, scene, natural, target } = {}) {
   const location = scene?.location;
   const modifiers = scene?.modifier_set;
@@ -53,7 +53,7 @@ export async function readCurrentTargetConditions({ partyId, actorId, scene, nat
       gap('current_target_conditions_required');
     }
   } else gap('current_target_conditions_required');
-  return { stable_cover: natural.ambient_visibility.stable_cover,
+  return { stable_cover: 'clear',
     dynamic_occlusion: 'clear', concealment: 'clear' };
 }
 

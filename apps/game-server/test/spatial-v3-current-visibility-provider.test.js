@@ -16,6 +16,7 @@ import { approvedNaturalStableCover } from
   '../src/infrastructure/postgres/g4-natural-perception-reader.js';
 import { readCommittedEntityExterior, readCurrentTargetConditions } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
+import { visibleCurrentTargets } from '../src/runtime/spatial-v3-current-visibility.js';
 import { withPhase2CurrentLocalEdges } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
@@ -336,13 +337,25 @@ test('an exit discloses its slot pass-target text; a slot the catalog only recor
       (error) => error.details?.reason === 'approved_pass_target_label_required');
   });
 
-test('a partially visible exit still shows its pass-target description (partial cover does not block identification of a nearby passage)',
+test('a partially visible exit still shows its pass-target description in partial weather',
   async () => {
-    const { natural, provider } = fixture();
-    natural.ambient_visibility.stable_cover = 'partial';
+    const { scene, natural, provider } = fixture();
+    natural.ambient_visibility.weather = 'partial';
     const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
       canonical_digest: label.directional_exit_ref.canonical_digest,
       direction_context_id: label.direction_context_ref.id };
+    const target = { target_id: exit.id, position_id: 'a', entity_kind: 'directional_exit' };
+    assert.deepEqual(visibleCurrentTargets({
+      observer_position_id: natural.observer.position_id,
+      observer_visual_capability: natural.observer.visual_capability,
+      positions: scene.positions, g6: scene.g6, visibility_links: scene.visibility_links,
+      portals: natural.scene.portals,
+      targets: [{ ...target, lighting: natural.ambient_visibility.lighting,
+        weather: natural.ambient_visibility.weather,
+        ...await readCurrentTargetConditions({
+          partyId: 'party', actorId: 'actor', scene, natural, target }) }],
+      modifier_set: scene.modifier_set
+    }), [{ target_id: exit.id, visibility: 'partial' }]);
     const disclosed = await provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
       position: { id: 'a' }, site: { parent_g4_id: g4 }, directional_exits: [exit],
       slotByExit: new Map([[exit.id, passTargetSlot]]) });

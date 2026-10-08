@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(spatial): keep landscape natural-source cover separate from entity visibility; preserve explicit barriers and current conditions (#594)
 - fix(materialization): retain NPC name choice trace for filtered and exhausted pools using the original draw and existing run snapshots (#601)
 - fix(npc): exclude occupied scene name forms with the existing deterministic draw; exhausted pools retain a name with diagnostic provenance (#284); LW-108 closed
 - fix(game-server): project saved-screen entity refs as stable public keys; keep local-play diagnostics on public keys and visible evidence (#330)

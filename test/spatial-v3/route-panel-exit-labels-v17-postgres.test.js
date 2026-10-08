@@ -8,6 +8,10 @@ import { turnStepOperationChoices } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { loadTargetBodyNeedsProfile } from
+  '../../apps/game-server/src/internal/target-runtime-profiles.js';
+import { deriveTrustedBodyNeedsBindingPin } from
+  '../../apps/game-server/src/runtime/body-needs-temporal.js';
 import { withLowerDvinaTraceCurrentScene } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { playerSafeOrdinalLabel } from '../../apps/game-server/src/public-boundary.js';
@@ -59,6 +63,14 @@ test('v17 production submitTurn uses approved, non-ordinal G4 exit labels',
     });
     t.after(() => runtime.close());
     const partyId = await publicStartScenario(runtime, 'novgorod_reed_backwater_entrance_v1');
+    const { rows: partyRows } = await env.partyPool.query(
+      'SELECT world_revision_id FROM party_runtime.parties WHERE party_id=$1', [partyId]);
+    assert.equal(partyRows.length, 1, 'party has one pinned world revision');
+    const trustedBodyNeedsProfile = await loadTargetBodyNeedsProfile({
+      rootDir: env.rootDir, worldRevisionId: partyRows[0].world_revision_id,
+    });
+    const trustedBodyNeedsBindingPin = deriveTrustedBodyNeedsBindingPin(
+      trustedBodyNeedsProfile);
     let step = 0;
     const turn = (raw_text) => runtime.submitTurn(partyId, { raw_text, request_id: `panel-${partyId}-${step++}` });
     // A shown connection may be bound by its approach operation ("<label> — подход").
@@ -112,6 +124,8 @@ test('v17 production submitTurn uses approved, non-ordinal G4 exit labels',
     await probe('start');
     assert.equal(typeof productionSpatialProjector, 'function');
     const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: env.partyPool,
+      trustedBodyNeedsProfile,
+      trustedBodyNeedsBindingPin,
       readCurrentVisibleContext,
       projectCurrentSpatialContext: productionSpatialProjector,
       readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,

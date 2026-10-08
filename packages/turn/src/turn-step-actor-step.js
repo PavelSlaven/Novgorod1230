@@ -304,14 +304,17 @@ function advanceChainContext(context, applied) {
     return buildTurnStepPreparedChainContext({
       priorEffectCount: (context?.prior_effect_count ?? 0) + 1,
       currentClock: applied.prepared_effect.time_update.clock_after,
-      currentBodyState: applied.prepared_effect.body_update.state_after
+      currentBodyState: applied.prepared_effect.body_update.state_after,
+      bodyTimeReplay: applied.prepared_body_time_replay
+        ?? context?.body_time_replay ?? null
     });
   }
   if (context != null && applied?.body_state_after != null) {
     return buildTurnStepPreparedChainContext({
       priorEffectCount: context.prior_effect_count,
       currentClock: context.current_clock,
-      currentBodyState: applied.body_state_after
+      currentBodyState: applied.body_state_after,
+      bodyTimeReplay: context.body_time_replay ?? null
     });
   }
   return context;

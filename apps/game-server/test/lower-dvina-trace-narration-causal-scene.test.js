@@ -344,8 +344,8 @@ test('compound direct speech and failed later action preserve results without el
       { applied: true, approved_plan: { resolution: 'direct', goal_result: 'not_achieved',
         operations: [], check: null, interpretation: { player_goal: goal } } }] }
     } });
-  assert.deepEqual(visible.visible_changes, [
-    `Вы произнесли: «${speech}»`, `Цель «${goal}» не достигнута.`]);
+  assert.deepEqual(visible.visible_changes, [`Вы произнесли: «${speech}»`]);
+  assert.doesNotMatch(visible.visible_changes.join(' '), /Цель .*не достигнута/u);
   assert.deepEqual(visible.uncertainties, []);
 });
 

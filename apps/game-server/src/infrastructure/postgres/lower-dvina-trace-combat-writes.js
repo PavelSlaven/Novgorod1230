@@ -18,7 +18,7 @@ export function combatVisibleEnvelope({ partyId, factual, visibleContext,
   nextVersion, turnNumber, changeSetId, idemId,
   onLabelGapsOmitted = null }) {
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted });
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const session = factual.consequence.combat.session_after;
   const combatEnded = session.status === 'ended';
   const payload = { schema: 'temporal_visible_package.v1',

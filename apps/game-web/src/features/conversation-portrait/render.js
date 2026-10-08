@@ -20,8 +20,8 @@ export function renderConversationPortrait(screen) {
   return `<aside class="conversation-portrait${
     authored || procedural
       ? ' conversation-portrait--procedural' : ''
-  }" data-conversation-portrait data-interlocutor-id="${
-    escapeHtml(interlocutor.entity_ref.entity_id)
+  }" data-conversation-portrait data-interlocutor-key="${
+    escapeHtml(interlocutor.entity_ref.public_key)
   }" aria-label="Собеседник: ${
     escapeHtml(interlocutor.display_label.trim())
   }">${visual}<div><strong>${

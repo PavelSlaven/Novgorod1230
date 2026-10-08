@@ -129,7 +129,8 @@ test('target current-owner start does not require a historical initial perceptio
 
 test('target catalog lists and selects each exact loaded start', async () => {
   const makeRuntime = (id) => ({ profile: {
-    scenario_id: id, manifest_digest: id, public_metadata: { title: id }, actor_catalog: {},
+    scenario_id: id, manifest_digest: id,
+    public_metadata: { title: id, description: `service description for ${id}` }, actor_catalog: {},
     canonical_start: { policy_profile_pins: [{ key: 'rule', revision: 1, digest: id }],
       start: { candidate_id: id, world_pin: { world_revision_id: 'world', world_catalog_digest: 'digest' },
         initial_perception_rule: { id: 'rule', version: 1 },
@@ -144,6 +145,10 @@ test('target catalog lists and selects each exact loaded start', async () => {
     world_catalog_digest: 'digest', production_activation: true,
     runtime_selectable_in_canonical_production: true } });
   assert.deepEqual(catalog.listPublic().map(({ scenario_id }) => scenario_id), ['forest', 'river']);
+  assert.equal(Object.hasOwn(catalog.listPublic()[0], 'description'), false);
+  assert.equal(Object.hasOwn((await catalog.loadPublication('forest')).public_projection.public_metadata,
+    'description'), false);
+  assert.equal(starts[0].profile.public_metadata.description, 'service description for forest');
   assert.equal(catalog.hasScenario('river'), true);
   assert.equal((await catalog.loadPublication('river')).binding.scenario_id, 'river');
   assert.equal((await catalog.loadPublication('river')).binding.runtime_binding.revision, 2);

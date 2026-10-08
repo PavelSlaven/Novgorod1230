@@ -122,14 +122,9 @@
 | 135 | `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json` | семь `player_inputs` задают роль, занятие и имя «Микула», вопреки D111; долг реализации #109 | [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109) |
 | 136 | `npc_family_household_contract.md`, `packages/actors/MODULE.md`, household data/import | нет утверждённых и импортированных данных дворов, необходимых для полноты мира | [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338) |
 | 137 | `combat-min-data-v1/typed-gaps.json` (`G-RETREAT-MOVEMENT`), меню выбора NPC в бою | метрика D65 body-effect некорректна в сценах с пересекающимися предпочтениями; реального отхода в меню нет | [#426](https://github.com/PavelSlaven/Novgorod1230/issues/426) |
-| 138 | `@rus/movement-routes`, правила среды `world_base` | время пути пока не зависит от погоды и света до загрузки правил среды | [#321](https://github.com/PavelSlaven/Novgorod1230/issues/321) |
-
-
-
-
-
-
-
+| 138 | `packages/environment-state`, `apps/game-server/src/runtime/body-needs-temporal.js` | утверждённый body time-effect набор не задаёт факторов холода или сырости | [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315) |
+| 140 | `lower-dvina-trace-phase-4-state.js`, `phase-4-write-projection.js`, `test/integration/lower-dvina-trace-phase-4-postgres.test.js` | LD revision 25 после маршрута не имеет SQL-позиции; strict scene reader возвращает 409, старый путь не поддерживается по D97 | [#570](https://github.com/PavelSlaven/Novgorod1230/issues/570) |
+| 141 | `@rus/movement-routes`, правила среды `world_base` | время пути пока не зависит от погоды и света до загрузки правил среды | [#321](https://github.com/PavelSlaven/Novgorod1230/issues/321) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -611,12 +606,6 @@
 - **Как жить.** Решение владельца D51: у иноземных народов будут отдельные пулы (потом это новые регионы), запасной вариант с русским пулом не делаем. Авторинг этих пулов — отдельная задача данных; после неё — строки привязки, статус `approved` по паре «пул + народ» и переутверждение запроса стадии `npc_identity_import`.
 - **Issue.** —
 
-### LW-108 — имена двух NPC одной сцены могут совпасть (rt-names)
-- **Где.** `packages/materialization/src/npc-identity.js` (`pickNpcName`), `packages/materialization/src/generated-npc-bindings.js`.
-- **Что.** Имя выбирается по seed каждого NPC отдельно, материализатор не знает других NPC сцены. Пул Новгорода: 204 мужских и 62 женских ordinary-строки, вероятность совпадения пары порядка 1/200 (мужские) и 1/60 (женские).
-- **Как жить.** Не считать имя уникальным ключом сцены. Исключение уже выбранных имён — в задаче rt-people, где создаются группы людей на месте (передать занятые имена в `compileGeneratedNpcBindings`).
-- **Issue.** —
-
 ### LW-109 — характер только при полных данных занятия; срок пула не проверяется (rt-names)
 - **Где.** `packages/materialization/src/npc-identity.js` (`pickNpcCharacter`), `packages/runtime-catalog/src/procedural-scene-records.js` (`readNpcIdentityCatalog`), `infra/world-base/schema/29.sql`.
 - **Что.** `semantic_state.character` пишется целиком или не пишется: у занятия без цели или без страха (например `nov_occ_court_clerk_service`, `nov_occ_healer_herbal_helper` без страхов) поля нет, и разговор идёт без `npc_behavior`. Читатель не сверяет `valid_from`/`valid_to` пула и дату старта.
@@ -707,6 +696,18 @@
 - **Как жить.** Не добавлять непроверенную проекцию в production; модель продолжает получать pre-P DTO. Закрывать долг только после отдельного стенда с принятым качеством опоры.
 - **Issue.** —
 
+### LW-134 — исходный заголовок v17 старта нельзя выводить из `public_metadata.title` (start-titles-fix)
+- **Где.** `apps/game-server/src/internal/target-authored-start-catalog.js`; natural-scene read model в `packages/presentation`.
+- **Что.** Заголовок из metadata может быть топонимом, которого персонаж не знает, и раньше напрямую попадал в меню, открытие, маршрут и вход рассказчика. Семь утверждённых подписей D107 теперь выбираются по точной ссылке canonical G5 из `m2c-place-labels`; природная сцена использует тот же selector. Для новых мест без строки остаётся прежняя подпись природной сцены; новый toponym в title не добавлять без решения о знании места.
+- **Как жить.** Не возвращать `public_metadata.title` в экранный/model-facing путь v17 и не выводить сырые G4/G5 имена как подпись. Новые подписи добавлять через отдельную аттестацию в общий каталог.
+- **Issue.** —
+
+### LW-137 — D65 body-effect не измеряет влияние тела на выбор во всех сценах (combat-min)
+- **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/typed-gaps.json` (`G-RETREAT-MOVEMENT`); меню выбора NPC в бою `apps/game-server/src/runtime/lower-dvina-trace-combat-llm.js`. Стенды D65 (RESULT ids ниже) — артефакты моста флота, не в репозитории.
+- **Что.** Baseline `RESULT 20261005T014614.534569Z-1` и one-sentence follow-up `RESULT 20261005T063228.683049Z-1` оба дали 0/4 сцен по метрике. В сценах 2–4 здоровый уже набирает 2/2: классы допустимых предпочтений пересекаются и требуют больше hit rate, чем потолок, поэтому сравнение `wounded/exhausted > healthy` там некорректно. Сцена 1 остаётся содержательной: NPC ранен/измотан при угрозе на расстоянии удара, но меню не даёт физически выполнимого отхода; сдача или прекращение враждебности при продолжающейся угрозе не задают очевидно лучшего выбора. Судьи v4 отдельно отметили причины без упоминания тела. Результаты не доказывают отсутствия влияния тела; body-фраза эффекта не показала и в production prompt не принята.
+- **Как жить.** Не трактовать 0/4 как общий вывод о влиянии тела и не менять постоянные цели профиля или проекцию. Повторить проверку после появления реального варианта отхода; сравнивать выбор между действиями одного и того же класса предпочтений при разных телесных состояниях.
+- **Issue.** —
+
 ### LW-130 — безымянные шаблоны Lower Dvina ждут утверждённых подписей (prompt-rev-turn)
 - **Где.** `data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/item-container-set.json` (`placement_slot_ref`), resolver `apps/game-server/src/runtime/lower-dvina-trace-visible-item-label.js`, current-visible/WK/narrator/screen projections.
 - **Что.** `trace_ld_v1_item_blue_wool_fragment`, `trace_ld_v1_item_cut_bag_fastening`, `trace_ld_v1_item_persistent_debris`, `trace_ld_v1_item_broken_oar`, `trace_ld_v1_item_side_collision_trace`, `trace_ld_v1_item_hidden_trunk_trace`, `trace_ld_v1_item_carry_poles` и `trace_ld_v1_container_road_bag` пока не имеют утверждённой подписи для всех путей показа. Сценовые наблюдения не являются стабильными подписями вещей.
@@ -742,13 +743,26 @@
 - **Как жить.** Считать полноту обязательным требованием нормы, а не подтверждённым свойством текущих данных или runtime. Не объявлять исходный мир полным до отдельного утверждения и импорта данных дворов с проверкой состава и связей.
 - **Issue.** [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338)
 
-### LW-137 — D65 body-effect не измеряет влияние тела на выбор во всех сценах (combat-min)
-- **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/typed-gaps.json` (`G-RETREAT-MOVEMENT`); меню выбора NPC в бою `apps/game-server/src/runtime/lower-dvina-trace-combat-llm.js`. Стенды D65 (RESULT ids ниже) — артефакты моста флота, не в репозитории.
-- **Что.** Baseline `RESULT 20261005T014614.534569Z-1` и one-sentence follow-up `RESULT 20261005T063228.683049Z-1` оба дали 0/4 сцен по метрике. В сценах 2–4 здоровый уже набирает 2/2: классы допустимых предпочтений пересекаются и требуют больше hit rate, чем потолок, поэтому сравнение `wounded/exhausted > healthy` там некорректно. Сцена 1 остаётся содержательной: NPC ранен/измотан при угрозе на расстоянии удара, но меню не даёт физически выполнимого отхода; сдача или прекращение враждебности при продолжающейся угрозе не задают очевидно лучшего выбора. Судьи v4 отдельно отметили причины без упоминания тела. Результаты не доказывают отсутствия влияния тела; body-фраза эффекта не показала и в production prompt не принята.
-- **Как жить.** Не трактовать 0/4 как общий вывод о влиянии тела и не менять постоянные цели профиля или проекцию. Повторить проверку после появления реального варианта отхода; сравнивать выбор между действиями одного и того же класса предпочтений при разных телесных состояниях.
-- **Issue.** —
+### LW-138 — влияние холода и сырости на тело не утверждено (body-needs-bind, #315)
+- **Где.** `packages/environment-state` формирует body snapshot; `apps/game-server/src/runtime/body-needs-temporal.js` передаёт его в `@rus/body-state`.
+- **Что.** Утверждённый body time-effect набор не задаёт факторов холода или сырости, поэтому v17 не меняет телесные эффекты по этим условиям. Это отсутствие утверждённых правил, а не вывод о том, что погода исторически не влияла на человека.
+- **Как жить.** Не выводить температурное воздействие из погоды, сезона, одежды или помещения. До отдельного утверждённого профиля `body_factor_ids` остаётся пустым.
+- **Issue.** [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315)
 
-### LW-138 — время пути пока не зависит от погоды и света до загрузки правил среды (movement-routes)
+### LW-139 — норма прозы D158 опережает промпты (corpus-d158)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-narration-llm.js`, `lower-dvina-trace-narration-audit.js` (+ `-values.js`: `unsupported_sensory`), `authored-opening-narration.js`, `canonical-opening-context.js:80` и `lower-dvina-trace-opening.js:161` (`style_constraints` second_person), промпт ответчика NPC.
+- **Что.** `situational_prose_requirements.md` после D158 требует третье лицо, прошедшее время, имя героя и свободу рассказа (мир из данных). Production-промпты писателя, аудитора и repair пока во втором лице и с запретами рассказа; вход хода ещё без имени и пола героя.
+- **Как жить.** Расхождение ожидаемое: не считать его дефектом правки нормы и не править промпты попутно. Промпты меняют ролевые задачи D158 по одной (вступление, ход, ответчик NPC) с D81, ревью помощника по прозе, облачной пробой и тестом «страж свободы».
+- **Issue.** [#593](https://github.com/PavelSlaven/Novgorod1230/issues/593), [#600](https://github.com/PavelSlaven/Novgorod1230/issues/600)
+
+### LW-140 — LD revision 25 после маршрута не имеет позиции для strict scene readback (#570)
+- **Где.** `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js:67`, `lower-dvina-trace-phase-4-write-projection.js:61`, `world-route-journey.js:5`; `scene-npcs-readback.js:21`; `test/integration/lower-dvina-trace-phase-4-postgres.test.js:57` (выполняемые маршрутные секции сняты, initial inventory проверка сохранена).
+- **Что.** Старый маршрут LD revision 25 удаляет `position_id` и actor scene journey. Strict reader #570 требует подтверждённую active same-party SQL-позицию и отвечает `SCENE_NPC_READBACK_DATA_GAP` (409). Это подтверждено PG-прогоном army-570: route screen persistence падает до surrender/restart. По D97 старое прохождение LD не поддерживается; исключение legacy и fallback к snapshot site запрещены решением ведущего A-army-570-03.
+- **Как жить.** Не возвращать silent skip или compatibility adapter. Снимать только маршрутно-зависимые LD25 проверки по решению ведущего; весь obsolete файл удалять/архивировать только по D74. По A-army-570-03 снят выполняемый маршрутный хвост единственного test-блока; сохранена независимая initial inventory mass проверка, используемая общим владельцем живого screen inventory. Старые private route helpers остаются невызванной fixture-историей; это не поддержка старого прохождения. Закрыть запись после снятия/архивации старых маршрутных проверок либо переноса сценария в утверждённый старт v17 с authoritative позицией по D98.
+- **Снятый child.** `test/integration/lower-dvina-trace-phase-2-postgres.test.js:555` (исходная до снятия строка), `real Ratsha caftan survives common transition, commit, reload and portrait projection` — снят по D97/A-07; спецификация переноса item/portrait assertions в v17 у ведущего в #556.
+- **Issue.** [#570](https://github.com/PavelSlaven/Novgorod1230/issues/570).
+
+### LW-141 — время пути пока не зависит от погоды и света до загрузки правил среды (movement-routes)
 - **Где.** `@rus/movement-routes`; правила погоды и света в `world_base`.
 - **Что.** До загрузки правил среды в `world_base` время пути не зависит от погоды и света (#321).
 - **Как жить.** Не считать рассчитанное время пути учитывающим погоду или свет до загрузки правил среды в `world_base` и подключения их к расчёту.

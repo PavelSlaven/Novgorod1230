@@ -13,6 +13,8 @@ import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2
 import { replayLowerDvinaTracePhase2Presentation } from './lower-dvina-trace-phase-2-presentation-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { hydrateNpcRoutineState } from '../../runtime/npc-routine-temporal.js';
+import { withLowerDvinaTraceCurrentScene } from
+  '../../runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
 import { assertPhase3NormalizedRows, hydrateSemanticDecisionReplay } from './lower-dvina-trace-phase-3-read.js';
 import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
@@ -67,6 +69,8 @@ async function readPhase2Head(query, partyId) {
 
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
+  trustedBodyNeedsBindingPin = null,
+  trustedBodyNeedsProfile = null,
   loadInitialNaturalScenePerceptionInput = null,
   projectCurrentSpatialContext = null,
   readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
@@ -202,7 +206,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       await assertPhase5NormalizedRows(readPool, payload, row);
       await assertPhase6NormalizedRows(readPool, payload, row);
       await assertPhase7NormalizedRows(readPool, payload, row);
-      await assertTurnStepNormalizedRows(readPool, payload, row);
+      await assertTurnStepNormalizedRows(readPool, payload, row,
+        trustedBodyNeedsBindingPin, trustedBodyNeedsProfile);
       await assertCombatSessionRows(readPool, payload);
       await assertPhase9NormalizedRows(readPool, payload);
       await assertPhase10NormalizedRows(readPool, payload, row);
@@ -436,17 +441,42 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       narrator, turnBudget, persistPhase2Screen });
   }
   async function commitPhase2Turn(input) {
-    return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget),
-      projectEnvironmentAtClock });
+    const commitState = { p16CommitCalls: 0 };
+    try {
+      return await commitLowerDvinaTracePhase2({ ...input,
+        ...commitPorts(input.turnBudget, commitState), projectEnvironmentAtClock });
+    } catch (cause) {
+      if (cause?.code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP'
+          && commitState.p16CommitCalls === 0
+          && cause.turn_commit_status == null) {
+        cause.turn_commit_status = 'not_started';
+      }
+      throw cause;
+    }
   }
-  function commitPorts(turnBudget = null) {
+  function commitPorts(turnBudget = null, commitState = null) {
     const loadState = turnBudget == null ? loadCommittablePhase2State :
       (partyId, options = {}) => loadCommittablePhase2State(
         partyId, { ...options, turnBudget });
     return { loadState, committer: {
       async commit(input) {
         turnBudget?.assertCanCommit();
-        return committer.commit({ ...input, turnBudget });
+        if (commitState != null) commitState.p16CommitCalls += 1;
+        const result = await committer.commit({ ...input, turnBudget });
+        if (result?.ok !== false
+            || result.error?.code !== 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP') {
+          return result;
+        }
+        const reason = result.error.diagnostics?.reason;
+        const failure = serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
+          'Complete player-visible scene data is required.', {
+            status: 409,
+            details: typeof reason === 'string' ? { reason } : null
+          });
+        if (result.error.diagnostics?.turn_commit_status === 'not_started') {
+          failure.turn_commit_status = 'not_started';
+        }
+        throw failure;
       }
     } };
   }
@@ -519,10 +549,17 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       ? await loadPhase2State(partyId, {
         includeCurrentVisibleContext: true, turnBudget
       }) : null;
+    const presentation = await loadLowerDvinaTraceScreenPresentation(screenPayload);
+    const currentVisibleContext = refreshedScene == null ? null
+      : withLowerDvinaTraceCurrentScene({
+        committedState: refreshedScene,
+        scenePresentation: presentation?.scenePresentation ?? null,
+        itemLabels: presentation?.itemLabels ?? {}
+      }).current_visible_context;
     const screen = projectLowerDvinaTraceScreenPanels({
       payload: screenPayload,
-      currentVisibleContext: refreshedScene?.current_visible_context ?? null,
-      presentation: await loadLowerDvinaTraceScreenPresentation(screenPayload),
+      currentVisibleContext,
+      presentation,
       screen: {
         ...structuredClone(result.screen),
         ...(Array.isArray(payload.last_turn?.exact_npc_utterances)

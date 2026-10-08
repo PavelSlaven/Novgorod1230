@@ -148,6 +148,9 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
     if (!graphNode || graphNode.region_id !== profile.region_id || !property) fail('RUNTIME_ITEM_CONTEXT_NOT_APPROVED', entry.id);
     const bindings = itemBindings.get(template.id) ?? [];
     const materials = bindings.filter((binding) => binding.binding_kind === 'material').map((binding) => binding.category_id).sort();
+    const materialSelection = selectApprovedItemMaterial({
+      item_template_id: template.id, bindings
+    });
     const constructions = bindings.filter((binding) => binding.binding_kind === 'manufacturing_technique').map((binding) => binding.category_id).sort();
     const condition = singleCategory(bindings, 'condition', template.id);
     const sizeBinding = singleBinding(bindings, 'size_band', template.id);
@@ -170,13 +173,13 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
       visibility_state: { visibility: 'visible_if_accessible', visible_to_player: false },
       access_state: { access: 'context_policy', policy: structuredClone(property.access_model) },
       risk_state: { legal_risk: 'context_dependent', social_risk: 'context_dependent' },
-      physical_state: { mass_grams_per_unit: positiveNumber(quantity.mass_grams_per_unit, 'RUNTIME_QUANTITY_UNIT_MASS_INVALID', quantity.id), external_hand_cost: inventory.external_hand_cost, carry_form: inventory.carry_form, condition, size_band: sizeBinding.category_id, material_category_id: materials[0], approved_material_category_ids: materials, approved_construction_category_ids: constructions },
+      physical_state: { mass_grams_per_unit: positiveNumber(quantity.mass_grams_per_unit, 'RUNTIME_QUANTITY_UNIT_MASS_INVALID', quantity.id), external_hand_cost: inventory.external_hand_cost, carry_form: inventory.carry_form, condition, size_band: sizeBinding.category_id, material_category_id: materialSelection.material_category_id, approved_material_category_ids: materials, approved_construction_category_ids: constructions },
       ...(visualProfileSnapshot == null ? {} : {
         visual_profile_snapshot: visualProfileSnapshot
       }),
       packing_slot_cost: sizeBinding.packing_slot_cost,
       packing_bundle_size: sizeBinding.packing_bundle_size,
-      variant_selection: { mode: 'deterministic_from_approved_bindings', selected_material_category_id: materials[0], candidate_material_category_ids: materials },
+      variant_selection: { mode: materialSelection.mode, selected_material_category_id: materialSelection.material_category_id, candidate_material_category_ids: materials, ...(materialSelection.data_gap ? { data_gap: materialSelection.data_gap } : {}) },
       context_graph_node_ids: [materializationRule.graph_node_id],
       place_template_ids: graphNode.place_template_id ? [graphNode.place_template_id] : [],
       causal_basis: { causal_basis_type: materializationRule.causal_basis_type, causal_basis_id: materializationRule.causal_basis_id },
@@ -252,6 +255,24 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
   }).sort(byRuntimeId);
   const core = { version: 1, schema: 'approved_item_catalog_snapshot', world_revision_id: worldRevisionId, source_catalog_digest: sourceCatalogDigest, item_profile_candidates: itemCandidates, container_profile_candidates: containerCandidates, equipment_candidates: equipmentCandidates, quantity_requirements: quantityRequirements.sort(byRuntimeId), property_rule_candidates: propertyCandidates };
   return deepFreeze({ ...core, catalog_digest: digestValue(core) });
+}
+
+export function selectApprovedItemMaterial({ item_template_id: itemTemplateId, bindings = [] } = {}) {
+  const materialCategories = bindings.filter((binding) => binding?.status === 'approved'
+      && binding.binding_kind === 'material' && binding.item_template_id === itemTemplateId
+      && typeof binding.category_id === 'string' && binding.category_id.length > 0)
+    .map(({ category_id: categoryId }) => categoryId).sort();
+  if (materialCategories.length > 0) {
+    return {
+      material_category_id: materialCategories[0],
+      mode: 'deterministic_from_approved_bindings'
+    };
+  }
+  return {
+    material_category_id: null,
+    mode: 'unknown',
+    data_gap: { code: 'ITEM_MATERIAL_BINDING_MISSING', item_template_id: itemTemplateId }
+  };
 }
 
 export function buildAllowedG5TemplateSet({ records_by_table: records = {}, graph_node_id: graphNodeId, world_revision_id: worldRevisionId, selected_g4_type_id: selectedG4TypeId = null, source_catalog_digest: sourceCatalogDigest } = {}) {

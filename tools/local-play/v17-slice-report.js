@@ -57,6 +57,11 @@ const fence = (value) => `\`\`\`\n${value}\n\`\`\``;
 const quote = (value) => String(value ?? '').split('\n').map((line) => `> ${line}`).join('\n');
 const json = (value) => JSON.stringify(value);
 
+function visibilityConditionsLines(label, conditions) {
+  if (conditions == null) return [`- Условия видимости (${label}): нет снимка.`];
+  return [`- Условия видимости (${label}): \`${json(conditions)}\`.`];
+}
+
 /** What a turn changed, from the two SQL snapshots. */
 export function describeDelta(before, after) {
   if (before == null || after == null || before.error || after.error) {
@@ -101,6 +106,8 @@ function turnSection(turn) {
     ...(turn.server_errors?.length > 0 ? [`- Причина на сервере (внутренняя, только в логе; в HTTP — публичная категория или маскировка): ${turn.server_errors.map((e) => `${e.code}: ${e.message}${e.validation ? ` [${e.validation.join('; ')}]` : ''}`).join(' | ')}`] : []),
     `- Вызовов LLM за ход: ${turn.llm_calls} · ${Math.round(turn.ms / 1000)} с`, '',
     ...(turn.people_panel ? [`- Снимок панели людей: \`${json(turn.people_panel)}\``] : []),
+    ...Object.entries(turn.visibility_conditions ?? {}).flatMap(([phase, conditions]) =>
+      visibilityConditionsLines(`ход ${turn.n}, ${phase}`, conditions)),
     ...(turn.error ? ['Что увидел игрок:', '', quote(turn.error.message ?? turn.error.code ?? 'ошибка без текста')] : delivery)];
   if (turn.route_labels?.length > 0) lines.push('', `Проходы на экране: ${turn.route_labels.map((label) => `«${label}»`).join(', ')}`);
   if (turn.people_labels?.length > 0) lines.push('', `Люди на экране: ${turn.people_labels.map((label) => `«${label}»`).join(', ')}`);
@@ -143,6 +150,8 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
     if (attemptsTable) out.push('Попытки вступления (new-game):', '', attemptsTable, '');
     out.push('Что увидел игрок (дословно):', '', opening.prose ? quote(opening.prose) : '> (текста нет)', '');
     out.push(`Проходы на первом экране: ${opening.route_labels?.length > 0 ? opening.route_labels.map((label) => `«${label}»`).join(', ') : '(нет)'}`, '');
+    out.push(...visibilityConditionsLines('открытие', opening.visibility_conditions_initial),
+      ...visibilityConditionsLines('после подтверждения открытия', opening.visibility_conditions_after_ack), '');
   }
   for (const turn of turns) out.push(turnSection(turn), '');
   if (transportErrors.length > 0) {

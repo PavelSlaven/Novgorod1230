@@ -12,7 +12,8 @@
     "./approved-record-snapshots": "./src/approved-record-snapshots.js",
     "./g4-materialization-binding": "./src/g4-materialization-binding.js",
     "./snapshot-digest": "./src/snapshot-digest.js",
-    "./schema-fingerprint": "./src/schema-fingerprint.js"
+    "./schema-fingerprint": "./src/schema-fingerprint.js",
+    "./active-pin": "./src/active-pin.js"
   },
   "dependencies": {
     "@rus/items-property": "0.13.0",

@@ -293,7 +293,7 @@
 | [`scripts/build.py`](households-psychology-speech/scripts/build.py) | [approve](households-psychology-speech/VERIFICATION.md#независимая-проверка-npc-goals-claude-opus-55-2026-09-29) |
 | [`scripts/check.py`](households-psychology-speech/scripts/check.py) | [approve](households-psychology-speech/VERIFICATION.md#независимая-проверка-npc-goals-claude-opus-55-2026-09-29) |
 | [`social_norms_honour_hospitality/norms.csv`](households-psychology-speech/social_norms_honour_hospitality/norms.csv) | [approve](households-psychology-speech/VERIFICATION.md#независимая-проверка-d46-imp-people-claude-opus-55-2026-09-29) |
-| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [approve](households-psychology-speech/VERIFICATION.md#независимая-проверка-d53-claude-opus-55-2026-09-30) |
+| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [approve](households-psychology-speech/VERIFICATION.md#перенос-адресных-форм-510--2026-10-07) |
 | [`speech_address/speech_registers.csv`](households-psychology-speech/speech_address/speech_registers.csv) | [approve](households-psychology-speech/VERIFICATION.md#speech_addressspeech_registerscsv--approve-c007c2) |
 
 ### items-household-personal

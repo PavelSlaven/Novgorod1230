@@ -46,8 +46,11 @@ export function materializeNpcRelationshipRules({ rules = [], compositions = [],
           state: { source_rule_ref: { id: rule.rule_id, version: rule.rule_version },
             source_composition_ref: structuredClone(ref),
             source_groups: { from: fromGroup, to: toGroup } } });
-        addRelationship(left, right.instance_id, rule.relationship_kind);
-        if (rule.direction === 'symmetric') addRelationship(right, left.instance_id, rule.relationship_kind);
+        const sourceRuleRef = { id: rule.rule_id, version: rule.rule_version };
+        addRelationship(left, right.instance_id, rule.relationship_kind, sourceRuleRef);
+        if (rule.direction === 'symmetric') {
+          addRelationship(right, left.instance_id, rule.relationship_kind, sourceRuleRef);
+        }
       }
     }
   }
@@ -81,14 +84,15 @@ function sameRef(left, right) {
     && String(left.version) === String(right.version)
     && left?.world_revision_id === right?.world_revision_id;
 }
-function addRelationship(npc, target, kind) {
+function addRelationship(npc, target, kind, sourceRuleRef) {
   for (const key of ['relationships', 'semantic_state']) {
     const holder = key === 'relationships' ? npc : npc.semantic_state;
     if (!holder) continue;
     const field = key === 'relationships' ? 'relationships' : 'relationships';
     const list = holder[field] ?? (holder[field] = []);
     if (!list.some((row) => row?.target_actor_id === target && row?.kind === kind)) {
-      list.push({ target_actor_id: target, kind });
+      list.push({ target_actor_id: target, kind,
+        source_rule_ref: structuredClone(sourceRuleRef) });
     }
   }
 }

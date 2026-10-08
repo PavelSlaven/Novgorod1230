@@ -132,9 +132,20 @@ test('Phase 7 pending screen keeps only current fully received NPC speech', asyn
   assert.equal(screen.exact_npc_utterances.some(({ utterance_text }) =>
     utterance_text === oldSpeech[0].utterance_text), false);
   const published = publicScreen(screen);
-  assert.deepEqual(published.exact_npc_utterances.map(({ speaker_ref,
-    utterance_text }) => ({ speaker_ref, utterance_text })), expected.map(({
-    speaker_ref, utterance_text }) => ({ speaker_ref, utterance_text })));
+  assert.equal(published.exact_npc_utterances.length, expected.length);
+  assert.deepEqual(published.exact_npc_utterances.map(({ utterance_text }) =>
+    utterance_text), expected.map(({ utterance_text }) => utterance_text));
+  const speakerProjection = publicScreen({ ...screen,
+    speaker_ref: { entity_kind: 'npc', entity_id: speaker.instance_id } });
+  assert.deepEqual(speakerProjection.exact_npc_utterances,
+    published.exact_npc_utterances);
+  for (const leaf of published.exact_npc_utterances) {
+    assert.deepEqual(leaf.speaker_ref, speakerProjection.speaker_ref);
+    assert.deepEqual(Object.keys(leaf.speaker_ref).sort(),
+      ['entity_kind', 'public_key']);
+    assert.match(leaf.speaker_ref.public_key, /^e[1-9]\d*$/u);
+    assert.equal(Object.hasOwn(leaf.speaker_ref, 'entity_id'), false);
+  }
   for (const leaf of published.exact_npc_utterances) {
     assert.deepEqual(Object.keys(leaf).sort(), ['speaker_ref', 'utterance_text']);
   }

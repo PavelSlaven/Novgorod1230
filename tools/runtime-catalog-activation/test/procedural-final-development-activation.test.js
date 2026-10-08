@@ -20,7 +20,7 @@ import { digestEnvelope } from '../src/artifact-contracts.js';
 import { buildPartyCatalogPinRecord } from
   '../../../packages/new-game/src/stages/stage-24-party-db-write-plan/code/runtime-catalog-pins.js';
 import { loadActiveRuntimeCatalogPin } from
-  '../../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
+  '@rus/runtime-catalog/active-pin';
 import { WORLD_RUNTIME_CATALOG_MIGRATION,
   WORLD_RUNTIME_CATALOG_MIGRATION_V3 } from '../src/forward-migrations.js';
 import { resolveProceduralFinalActivationChain } from

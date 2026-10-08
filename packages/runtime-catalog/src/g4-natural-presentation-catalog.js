@@ -1,10 +1,13 @@
 import { createHash } from 'node:crypto';
 import { canonicalStringify } from './canonical-records.js';
 import { loadApprovedG4NaturalCatalog } from './g4-natural-catalog.js';
+import { cacheG4NaturalCatalog, getCachedG4NaturalCatalog } from './g4-natural-catalog-cache.js';
 import { deepFreeze, fail } from './shared.js';
 
 /** Descriptor membership is verified by the existing activated catalog owner. */
 export function loadApprovedG4NaturalPresentationCatalog({ verifiedCatalog, pin } = {}) {
+  const cached = getCachedG4NaturalCatalog(verifiedCatalog, pin, 'presentation');
+  if (cached) return cached;
   const natural = loadApprovedG4NaturalCatalog({ verifiedCatalog, pin });
   const rows = verifiedCatalog.records_by_table?.procedural_scene_compiled_records ?? [];
   const placement = rows.filter((row) => row.payload?.schema === 'rus.g4_natural_placement_catalog.v1');
@@ -36,8 +39,10 @@ export function loadApprovedG4NaturalPresentationCatalog({ verifiedCatalog, pin 
     seen.add(`${profile.id}@${profile.version}`);
     return { ...structuredClone(profile), status: 'approved' };
   });
-  return deepFreeze({ schema: 'rus.verified_g4_natural_presentation_catalog.v1',
-    verified: true, pin: structuredClone(pin), profiles });
+  return cacheG4NaturalCatalog(verifiedCatalog, pin, 'presentation', deepFreeze({
+    schema: 'rus.verified_g4_natural_presentation_catalog.v1',
+    verified: true, pin: structuredClone(pin), profiles,
+  }));
 }
 
 function validDescriptor(layer) {

@@ -28,3 +28,13 @@
 ## Инварианты
 
 Шаги идут строго 1-13. Каждый шаг обязан пройти smoke, shadow, DB dry-run, diagnostics и rollback. Modular default допустим только после шага game-web. Любой failed gate или import в `legacy/` блокирует cutover. Legacy остаётся явным rollback route до финализации.
+
+## Разрешённые зависимости
+
+```architecture-tool-app-dependencies
+[
+  {"source":"src/import-graph.js","target":"apps/game-server","reason":"Cutover proof reads runtime entry points and source files as text to verify the import graph"},
+  {"source":"src/import-graph.js","target":"apps/game-web","reason":"Cutover proof reads runtime entry points and source files as text to verify the import graph"},
+  {"source":"src/runner.js","target":"apps/game-server","reason":"Запуск теста приложения отдельным процессом для проверки выпуска"}
+]
+```

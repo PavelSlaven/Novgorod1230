@@ -4,7 +4,7 @@ import { prepareSpatialV3SiteConnectionTraversal } from '@rus/turn/spatial-v3-ex
 import { addElapsedTime, addRationalMinutes } from '@rus/time-events-history';
 import { planExactTraversalIntervals } from '@rus/movement-routes';
 import { serverError } from '../errors.js';
-import { readSiteTraversalDestinationOccupancy } from
+import { readSiteTraversalDestinationOccupancy, readSiteTraversalOpenExecutions } from
   '../infrastructure/postgres/spatial-v3-site-traversal-occupancy.js';
 import { recheckSiteConnectionTraversal } from
   '../infrastructure/postgres/first-playable/recheck-site-connection-traversal.js';
@@ -360,14 +360,8 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
 
 async function loadWaitingExecutionPredecessor({ pool, partyId, journeyOwnerRef,
   successorExecutionId }) {
-  const result = await pool.query(`SELECT to_jsonb(p) AS plan, to_jsonb(e) AS execution
-    FROM party_runtime.party_route_plan_executions e
-    JOIN party_runtime.party_route_plans p ON p.id=e.route_plan_id
-    WHERE e.party_id=$1 AND e.journey_owner_ref=$2::jsonb
-      AND e.journey_scope='world_travel'
-      AND e.status NOT IN ('completed','aborted','superseded')
-      AND e.id<>$3
-    ORDER BY e.id`, [partyId, JSON.stringify(journeyOwnerRef), successorExecutionId]);
+  const result = await readSiteTraversalOpenExecutions({ pool, partyId,
+    journeyOwnerRef, successorExecutionId });
   if (!Array.isArray(result?.rows) || result.rows.length > 1) {
     gap('site_traversal_multiple_open_executions');
   }

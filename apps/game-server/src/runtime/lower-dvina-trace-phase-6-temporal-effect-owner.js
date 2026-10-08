@@ -17,6 +17,9 @@ import {
 export const PHASE6_PROGRESS_EFFECT_REF = versioned(
   'temporal_effect', 'activity-progress', '1'
 );
+export const PHASE2_PROGRESS_EFFECT_REF = versioned(
+  'temporal_effect', 'lower-dvina-trace-phase-2-exact-progress', '1'
+);
 export const PHASE6_REBIND_EFFECT_REF = versioned(
   'temporal_effect', 'lower-dvina-trace-carrier-rebind', '1'
 );
@@ -24,9 +27,27 @@ export const PHASE6_REBIND_EFFECT_REF = versioned(
 export function lowerDvinaTracePhase6TemporalEffectRegistrations() {
   return [{ effect_ref: PHASE6_PROGRESS_EFFECT_REF,
     resolve: resolveProgress }, {
+    effect_ref: PHASE2_PROGRESS_EFFECT_REF,
+    resolve: resolvePhase2ExactProgress }, {
     effect_ref: PHASE6_REBIND_EFFECT_REF,
     resolve: resolveCarrierRebinding
   }];
+}
+
+function resolvePhase2ExactProgress({ slice, context }) {
+  return {
+    proposals: [{
+      proposal_id: `${slice.slice_id}:phase2-exact-progress`,
+      write_target: `activity-progress:${slice.slice_id}`
+    }],
+    state_projection: {
+      ...context.projection,
+      cumulative_elapsed_minutes: addRationalMinutes(
+        context.projection.cumulative_elapsed_minutes,
+        subtractGameTimestamp(slice.to_timestamp, slice.from_timestamp)
+      )
+    }
+  };
 }
 
 function resolveProgress({ slice, context }) {

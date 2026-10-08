@@ -16,16 +16,22 @@ const row = (id, extra = {}) => ({ npc_id: id, run_id: 'run', profile_set_id: 'p
   profile_level: 'background', anchor_id: null,
   identity_state: { public_role_label: 'рыбак' }, machine_state: { status: 'active' },
   semantic_state: { participant_slot_ref: `slot:${id}`, location_profile_ref: 'loc' },
-  role_ref: 'role_fisher', occupation_ref: 'occ_fisher',
+  role_ref: { id: 'role_fisher', source: 'approved_social_roles' },
+  occupation_ref: { id: 'occ_fisher', source: 'approved_occupations' },
   skill_profile_snapshot: { approved_defaults: [] }, knowledge_profile_snapshot: { local: 'x' },
   attribute_profile_snapshot: { strength: 3 }, profile_candidate_set_digest: 'digest',
   body_profile_ref: { id: 'body:npc', schema: 'body-profile-v1', revision: 2 },
   health: '73', energy: '61', satiety: '49', body_state_version: '4',
   position_id: `pos:${id}`, g6_instance_id: 'g6:main', ...extra });
 const pool = (rows, positions = [{ id: 'pos:me', g6_instance_id: 'g6:main' }],
-  bodyRows = [], participantRows = []) => {
+  bodyRows = [], participantRows = [], siteRows = [{ host_kind: 'g5_site',
+    host_id: 'site:1', site_id: 'site:1' }]) => {
   const calls = []; return { calls, async query(text, values) {
     calls.push({ text, values });
+    if (/SELECT g6\.host_kind/u.test(text)) {
+      if (siteRows instanceof Error) throw siteRows;
+      return { rows: siteRows };
+    }
     if (/FROM party_runtime.party_actor_body_states/u.test(text)) {
       return { rows: bodyRows.filter(({ actor_id: id }) =>
         values[1].includes(id)) };
@@ -42,7 +48,16 @@ const base = (extra = {}) => ({ position: { site_id: 'site:1', position_id: 'pos
 test('scene NPCs are read from the database for the current site with the G6', async () => {
   const p = pool([row('npc_gen')]);
   const state = await withSceneNpcs(p, 'party', base());
-  assert.deepEqual(p.calls.map(({ values }) => values), [['party', 'site:1'], ['party', 'site:1']]);
+  assert.deepEqual(p.calls.map(({ values }) => values), [
+    ['party', 'pos:me'], ['party', 'site:1'], ['party', 'site:1']
+  ]);
+  assert.match(p.calls[0].text, /SELECT g6\.host_kind,g6\.host_id,site\.id AS site_id/u);
+  assert.match(p.calls[0].text, /g6\.party_id=pos\.party_id AND g6\.id=pos\.g6_instance_id/u);
+  assert.match(p.calls[0].text, /g6\.status='active'/u);
+  assert.match(p.calls[0].text, /site\.party_id=g6\.party_id AND site\.id=g6\.host_id/u);
+  assert.match(p.calls[0].text, /site\.status='active'/u);
+  assert.match(p.calls[0].text, /pos\.party_id=\$1 AND pos\.id=\$2 AND pos\.status='active'/u);
+  assert.doesNotMatch(p.calls[0].text, /g6\.host_id=\$2/u);
   assert.deepEqual(state.scene_position_g6, { 'pos:me': 'g6:main' });
   const loaded = state.npcs.find(({ instance_id: id }) => id === 'npc_gen');
   assert.equal(loaded.g6_instance_id, 'g6:main');
@@ -61,6 +76,74 @@ test('scene NPCs are read from the database for the current site with the G6', a
   assert.equal(loaded.runtime_source, SCENE_NPC_SOURCE);
   assert.equal(state.npcs.length, 2);
 });
+
+// D102: real persisted ref shapes, both consumers of the shared NPC snapshot.
+// No legacy conversion, registry lookup, model call or database mutation.
+function profileReadbackFixture(mode, npcRow) {
+  if (mode === 'scene') return { reader: pool([npcRow]), state: base({ npcs: [] }) };
+  const body = { actor_id: npcRow.npc_id, body_profile_ref: npcRow.body_profile_ref,
+    health: npcRow.health, energy: npcRow.energy, satiety: npcRow.satiety,
+    body_state_version: npcRow.body_state_version };
+  return { reader: pool([], [], [body], [npcRow]), state: base({
+    position: { position_id: 'pos:elsewhere' }, npcs: [],
+    combat_sessions: [{ status: 'paused_for_player', participant_refs: [
+      { entity_kind: 'npc', entity_id: npcRow.npc_id }
+    ] }] }) };
+}
+
+for (const mode of ['scene', 'missing combat participant']) {
+  test(`D102 profile refs: ${mode} preserves exact objects, source and metadata`, async () => {
+    const npcRow = row('npc_profile_refs', {
+      role_ref: { id: 'role_fisher', source: 'approved_scenario_profile', test_metadata: 'role fixture' },
+      occupation_ref: { id: 'occ_fisher', source: 'approved_occupations', test_metadata: 'occupation fixture' }
+    });
+    const { reader, state } = profileReadbackFixture(mode, npcRow);
+    const beforeRow = structuredClone(npcRow);
+    const beforeState = structuredClone(state);
+    const loaded = await withSceneNpcs(reader, 'party', state);
+    const npc = loaded.npcs.find(({ instance_id }) => instance_id === npcRow.npc_id);
+    assert.ok(npc);
+    assert.deepEqual(npc.role_ref, npcRow.role_ref);
+    assert.deepEqual(npc.occupation_ref, npcRow.occupation_ref);
+    assert.deepEqual(npcRow, beforeRow, 'readback must not mutate the database row');
+    assert.deepEqual(state, beforeState, 'readback must not mutate the input snapshot');
+  });
+}
+
+const invalidProfileRefs = [
+  ['string', 'TEST:RAW_REF'],
+  ['null', null],
+  ['array', [{ id: 'TEST:RAW_REF', source: 'TEST:RAW_SOURCE' }]],
+  ['empty object', {}],
+  ['nested id', { id: { id: 'TEST:RAW_REF' }, source: 'TEST:RAW_SOURCE' }],
+  ['empty id', { id: '', source: 'TEST:RAW_SOURCE' }],
+  ['missing source', { id: 'TEST:RAW_REF' }],
+  ['empty source', { id: 'TEST:RAW_REF', source: '' }],
+  ['first-playable entity ref', { entity_kind: 'role', entity_id: 'TEST:RAW_REF', version: 1 }]
+];
+for (const mode of ['scene', 'missing combat participant']) {
+  for (const field of ['role_ref', 'occupation_ref']) {
+    for (const [label, value] of invalidProfileRefs) {
+      test(`D102 profile refs: ${mode} rejects ${field} ${label} with an internal diagnostic`, async () => {
+        const npcRow = row('npc_invalid_profile_ref', { [field]: structuredClone(value) });
+        const { reader, state } = profileReadbackFixture(mode, npcRow);
+        const beforeRow = structuredClone(npcRow);
+        const beforeState = structuredClone(state);
+        await assert.rejects(withSceneNpcs(reader, 'party', state), (error) => {
+          assert.equal(error.code, 'TRACE_SCENE_NPC_PROFILE_REF_INVALID');
+          assert.equal(error.status, 409);
+          assert.equal(error.public_exposure, 'internal');
+          assert.deepEqual(error.details, { field });
+          assert.doesNotMatch(error.message + JSON.stringify(error.details), /TEST:RAW_REF|TEST:RAW_SOURCE/u,
+            'invalid persisted values must not appear in the diagnostic');
+          return true;
+        });
+        assert.deepEqual(npcRow, beforeRow);
+        assert.deepEqual(state, beforeState);
+      });
+    }
+  }
+}
 
 test('scene body readback refreshes existing NPC instead of duplicating it', async () => {
   const npc = { instance_id: 'npc_start', body_profile_ref: { id: 'body:old' },
@@ -111,14 +194,16 @@ test('prepared destination readback exposes scene NPCs on arrival and next-turn 
   const destinationPool = pool([row('npc_destination', {
     position_id: 'pos:destination', g6_instance_id: 'g6:destination' })], [
     { id: 'pos:destination', g6_instance_id: 'g6:destination' }
-  ]);
+  ], [], [], [{ host_kind: 'g5_site', host_id: 'site:destination',
+    site_id: 'site:destination' }]);
   const arrival = await withSceneNpcs(destinationPool, 'party', destination);
   const npc = arrival.npcs.find(({ instance_id: id }) =>
     id === 'npc_destination');
   assert.equal(npc.runtime_source, SCENE_NPC_SOURCE);
   assert.equal(npc.g6_instance_id, 'g6:destination');
   assert.deepEqual(destinationPool.calls.map(({ values }) => values), [
-    ['party', 'site:destination'], ['party', 'site:destination']
+    ['party', 'pos:destination'], ['party', 'site:destination'],
+    ['party', 'site:destination']
   ]);
 
   const nextTurn = await withSceneNpcs(destinationPool, 'party',
@@ -127,9 +212,14 @@ test('prepared destination readback exposes scene NPCs on arrival and next-turn 
     id === 'npc_destination'), true);
   assert.equal(nextTurn.scene_position_g6['pos:destination'],
     'g6:destination');
+  assert.deepEqual(destinationPool.calls.map(({ values }) => values), [
+    ['party', 'pos:destination'], ['party', 'site:destination'],
+    ['party', 'site:destination'], ['party', 'pos:destination'],
+    ['party', 'site:destination'], ['party', 'site:destination']
+  ]);
 });
 
-test('existing records win by instance_id; no site or no rows leaves the state alone', async () => {
+test('existing records win by instance_id; resolved site comes from saved position', async () => {
   const kept = await withSceneNpcs(pool([row('npc_start')]), 'party', base());
   assert.equal(kept.npcs.length, 1);
   assert.equal(kept.npcs[0].anchor_id, 'a');
@@ -139,10 +229,107 @@ test('existing records win by instance_id; no site or no rows leaves the state a
   assert.deepEqual(kept.scene_position_g6, { 'pos:me': 'g6:main' });
   const p = pool([row('npc_gen')]);
   const noSite = base({ position: { position_id: 'pos:me' } });
-  assert.equal(await withSceneNpcs(p, 'party', noSite), noSite);
-  assert.equal(p.calls.length, 0);
+  const resolved = await withSceneNpcs(p, 'party', noSite);
+  assert.deepEqual(resolved.position, noSite.position);
+  assert.equal(resolved.position.site_id, undefined);
+  assert.ok(resolved.npcs.some(({ instance_id }) => instance_id === 'npc_gen'));
+  assert.deepEqual(p.calls.map(({ values }) => values), [
+    ['party', 'pos:me'], ['party', 'site:1'], ['party', 'site:1']
+  ]);
   const empty = base();
   assert.deepEqual((await withSceneNpcs(pool([]), 'party', empty)).npcs, empty.npcs);
+});
+
+test('missing or empty position skips scene-site resolution', async () => {
+  for (const position of [{}, { position_id: null }, { position_id: '' },
+    { position_id: '   ' }]) {
+    const p = pool([row('npc_gen')]);
+    const state = base({ position });
+    await assert.rejects(withSceneNpcs(p, 'party', state), {
+      code: 'SCENE_NPC_READBACK_DATA_GAP', status: 409
+    });
+    assert.deepEqual(p.calls, []);
+  }
+});
+
+test('scene-site resolution fails closed on zero or multiple rows', async () => {
+  for (const siteRows of [[], [
+    { host_kind: 'g5_site', host_id: 'site:1', site_id: 'site:1' },
+    { host_kind: 'g5_site', host_id: 'site:1', site_id: 'site:1' }
+  ]]) {
+    const p = pool([row('npc_gen')], undefined, [], [], siteRows);
+    await assert.rejects(withSceneNpcs(p, 'party', base()), {
+      code: 'SCENE_NPC_READBACK_DATA_GAP', status: 409
+    });
+    assert.equal(p.calls.length, 1);
+    assert.deepEqual(p.calls[0].values, ['party', 'pos:me']);
+  }
+});
+
+test('missing or inactive G5 resolves to null site and fails closed',
+  async () => {
+    const p = pool([row('npc_gen')], undefined, [], [], [{
+      host_kind: 'g5_site', host_id: 'site:missing', site_id: null
+    }]);
+    const state = base({ position: { position_id: 'pos:me' } });
+    await assert.rejects(withSceneNpcs(p, 'party', state),
+      { code: 'SCENE_NPC_READBACK_DATA_GAP', status: 409 });
+    assert.deepEqual(p.calls.map(({ values }) => values), [['party', 'pos:me']]);
+  });
+
+test('malformed host and conflicting snapshot site fail closed', async () => {
+  for (const host of [
+    { host_kind: 'g5_site', host_id: '', site_id: 'site:1' },
+    { host_kind: 'unknown', host_id: 'site:1', site_id: null }
+  ]) {
+    const malformed = pool([row('npc_gen')], undefined, [], [], [host]);
+    await assert.rejects(withSceneNpcs(malformed, 'party', base()),
+      { code: 'SCENE_NPC_READBACK_DATA_GAP', status: 409 });
+    assert.equal(malformed.calls.length, 1);
+  }
+
+  const conflict = pool([row('npc_gen')], undefined, [], [], [{
+    host_kind: 'g5_site', host_id: 'site:resolved', site_id: 'site:resolved'
+  }]);
+  const snapshot = base();
+  const priorPosition = structuredClone(snapshot.position);
+  await assert.rejects(withSceneNpcs(conflict, 'party', snapshot), {
+    code: 'SCENE_NPC_READBACK_DATA_GAP', status: 409
+  });
+  assert.deepEqual(snapshot.position, priorPosition);
+  assert.equal(conflict.calls.length, 1);
+});
+
+test('site resolver SQL errors propagate without site readback', async () => {
+  const error = new Error('site resolution failed');
+  const p = pool([row('npc_gen')], undefined, [], [], error);
+  await assert.rejects(withSceneNpcs(p, 'party', base()), error);
+  assert.equal(p.calls.length, 1);
+});
+
+test('valid transport and route-anchor hosts preserve body without site queries',
+  async () => {
+  for (const [host_kind, host_id] of [
+    ['transport', 'boat:1'], ['route_anchor_identity', 'route:anchor:1']
+  ]) {
+    const body = { health: 80, energy: 70, satiety: 60 };
+    const refreshedBody = { health: 81, energy: 72, satiety: 63 };
+    const snapshot = base({ position: { position_id: 'pos:me' },
+      npcs: [{ instance_id: 'npc_start', body_state: body }] });
+    snapshot.combat_sessions = [{ status: 'paused_for_player',
+      participant_refs: [{ entity_kind: 'npc', entity_id: 'npc_start' }] }];
+    const p = pool([row('npc_gen')], undefined, [{ actor_id: 'npc_start',
+      body_profile_ref: { id: 'body:current' }, health: '81', energy: '72',
+      satiety: '63', body_state_version: '5' }], [], [{
+      host_kind, host_id, site_id: null
+    }]);
+    const result = await withSceneNpcs(p, 'party', snapshot);
+    assert.deepEqual(result.npcs[0].body_state, refreshedBody);
+    assert.equal(result.npcs[0].body_state_version, 5);
+    assert.deepEqual(p.calls.map(({ values }) => values), [
+      ['party', ['npc_start']], ['party', 'pos:me']
+    ]);
+  }
 });
 
 test('combat participant body reloads by actor ref without site or placement', async () => {
@@ -155,10 +342,11 @@ test('combat participant body reloads by actor ref without site or placement', a
     ] }], npcs: [{ instance_id: 'npc_start', body_state_profile: profile,
       body_state: { health: 72, energy: 61, satiety: 49 },
       body_state_persisted: false }] });
-  const p = pool([], [], [body]);
+  const p = pool([], [], [body], [], [{ host_kind: 'route_anchor_identity',
+    host_id: 'route:anchor:1', site_id: null }]);
   const loaded = await withSceneNpcs(p, 'party', snapshot);
   assert.deepEqual(p.calls.map(({ values }) => values), [
-    ['party', ['npc_start']]
+    ['party', ['npc_start']], ['party', 'pos:me']
   ]);
   assert.match(p.calls[0].text, /FROM party_runtime\.party_actor_body_states/u);
   assert.doesNotMatch(p.calls[0].text,
@@ -190,7 +378,8 @@ test('active combat participant reloads from party records after leaving player 
     position_id: 'pos:player', g6_instance_id: 'g6:elsewhere' },
   combat_sessions: [session], npcs: [] });
   const p = pool([], [{ id: 'pos:player', g6_instance_id: 'g6:elsewhere' }],
-    [], [npc]);
+    [], [npc], [{ host_kind: 'g5_site', host_id: 'site:elsewhere',
+      site_id: 'site:elsewhere' }]);
 
   const loaded = await withSceneNpcs(p, 'party', snapshot);
   const participant = loaded.npcs.find(({ instance_id: id }) => id === npc.npc_id);

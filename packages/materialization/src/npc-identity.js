@@ -6,17 +6,23 @@ import { weightedCandidate } from './world-validation.js';
  * identity catalog (`bundle.npc_identity`). Each domain has its own seed stream derived from the
  * actor seed, so the appearance stream is untouched. A missing catalog leaves the NPC as before.
  */
-export function pickNpcName({ catalog, regionalContextId, sexCategory, parentSeedDigest, actorSlotRef }) {
+export function pickNpcName({ catalog, regionalContextId, sexCategory, parentSeedDigest, actorSlotRef,
+  occupiedNames = [] }) {
   if (!catalog) return {};
   const bound = catalog.name_bindings.find((row) => row.regional_context_id === regionalContextId);
   if (!bound) return nameless('no_pool_binding');
-  const candidates = catalog.name_entries.filter((row) => row.name_pool_id === bound.name_pool_id
+  const pool = catalog.name_entries.filter((row) => row.name_pool_id === bound.name_pool_id
     && row.people_ref === bound.people_ref && row.sex_category === sexCategory)
     .sort((a, b) => a.id.localeCompare(b.id));
-  if (!candidates.length) return nameless('no_candidates');
-  const picked = weightedCandidate(candidates, streamFor(parentSeedDigest, actorSlotRef, 'name').nextUint32());
+  if (!pool.length) return nameless('no_candidates');
+  const excluded = new Set(occupiedNames);
+  const candidates = pool.filter((row) => !excluded.has(row.name_form));
+  const draw = streamFor(parentSeedDigest, actorSlotRef, 'name').nextUint32();
+  const exhausted = candidates.length === 0;
+  const picked = weightedCandidate(exhausted ? pool : candidates, draw);
   return { canonical_name: picked.name_form,
-    name_provenance: { pool_id: picked.name_pool_id, entry_id: picked.id, people_ref: picked.people_ref } };
+    name_provenance: { pool_id: picked.name_pool_id, entry_id: picked.id, people_ref: picked.people_ref,
+      ...(exhausted ? { reason: 'scene_pool_exhausted' } : {}) } };
 }
 
 /** 1 temperament, 2 values, 1-2 goals and 1 fear of the occupation; undefined when data are incomplete. */

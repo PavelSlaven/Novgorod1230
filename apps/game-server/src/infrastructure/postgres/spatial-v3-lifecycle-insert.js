@@ -167,7 +167,9 @@ async function insertActivityExecution(tx, terminal) {
   await insertRecord(tx, 'party_timed_activity_executions', {
     ...terminal,
     cumulative_elapsed_numerator: 0,
+    cumulative_elapsed_denominator: 1,
     remaining_time_numerator: elapsed,
+    remaining_time_denominator: 1,
     next_attempt_ordinal: 0,
     status: 'active',
     state_version: 1,
@@ -205,7 +207,9 @@ async function insertActivityExecution(tx, terminal) {
          next_boundary_at_subminute_numerator=$13,
          next_boundary_at_subminute_denominator=$14,
          terminal_reason_code=$15,
-         progress=$16
+         progress=$16,
+         cumulative_elapsed_denominator=$17,
+         remaining_time_denominator=$18
      WHERE id=$1 AND status='active' AND state_version=1`,
       [
         terminal.id,
@@ -223,7 +227,9 @@ async function insertActivityExecution(tx, terminal) {
         terminal.next_boundary_at_subminute_numerator,
         terminal.next_boundary_at_subminute_denominator,
         terminal.terminal_reason_code,
-        terminal.progress
+        terminal.progress,
+        terminal.cumulative_elapsed_denominator,
+        terminal.remaining_time_denominator
       ]
     );
     if (result.rowCount !== 1) {

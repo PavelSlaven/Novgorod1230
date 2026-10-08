@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { request as httpRequest } from 'node:http';
 import test from 'node:test';
 import { createGameHttpServer, listen } from '../src/index.js';
+import { projectPublicPayload } from '../src/public-boundary.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import {
@@ -40,9 +41,14 @@ function postTurn(address, partyId, rawText, key) {
   });
 }
 
+function npcPublicKey(screen, id) {
+  return projectPublicPayload({ ...screen,
+    subject_ref: { entity_kind: 'npc', entity_id: id } }).subject_ref.public_key;
+}
+
 function npcInContext(context, id) {
   const matches = (context?.visible_npc ?? []).filter(({ entity_ref: ref }) =>
-    ref?.entity_kind === 'npc' && ref.entity_id === id);
+    ref?.entity_kind === 'npc' && (ref.entity_id ?? ref.public_key) === id);
   assert.equal(matches.length, 1, 'the same destination NPC appears once in the current scene');
   assert.ok(matches[0].display_label?.trim(), 'the NPC has a player-visible label');
   return matches[0];
@@ -123,15 +129,19 @@ test('first free line arrival and the next turn read the same first-entry NPC an
     [partyId, locations[0].site_id]);
     const newNpcs = destinationNpcs.filter(({ npc_id }) => !beforeNpcIds.has(npc_id));
     assert.ok(newNpcs.length > 0, 'first entry creates a destination NPC after the start snapshot');
-    const visibleIds = new Set((arrival.screen.visible_context?.visible_npc ?? [])
-      .map(({ entity_ref: ref }) => ref?.entity_id));
-    const visibleNewNpcs = newNpcs.filter(({ npc_id }) => visibleIds.has(npc_id));
+    // #330 keys belong to this saved screen; HTTP must still contain the NPC.
+    const arrivalScreen = (await runtime.getPartyScreen(partyId)).screen;
+    const visibleKeys = new Set((arrival.screen.visible_context?.visible_npc ?? [])
+      .map(({ entity_ref: ref }) => ref?.public_key));
+    const visibleNewNpcs = newNpcs.filter(({ npc_id }) =>
+      visibleKeys.has(npcPublicKey(arrivalScreen, npc_id)));
     assert.ok(visibleNewNpcs.length > 0, 'the first arrival already shows the new destination NPC');
     const labels = new Map();
     for (const npc of visibleNewNpcs) {
       assert.equal(npc.run_kind, 'expansion', 'the NPC belongs to the first-entry materialization run');
       assert.ok(npc.equipment_count > 0, 'the same run persists the destination NPC equipment');
-      const visible = npcInContext(arrival.screen.visible_context, npc.npc_id);
+      const visible = npcInContext(arrival.screen.visible_context,
+        npcPublicKey(arrivalScreen, npc.npc_id));
       labels.set(npc.npc_id, peopleSignature(arrival.screen, visible.display_label));
     }
 
@@ -151,7 +161,9 @@ test('first free line arrival and the next turn read the same first-entry NPC an
     assert.equal(nextResponse.body.ok, true);
     assert.equal(nextResponse.body.data.turn_number, arrival.turn_number + 1);
     assert.ok(nextPlannerContexts.length > 0, 'the next planner reads the current destination scene');
-    for (const [id, signature] of labels) {
+    const nextScreen = (await runtime.getPartyScreen(partyId)).screen;
+    for (const [instanceId, signature] of labels) {
+      const id = npcPublicKey(nextScreen, instanceId);
       assert.equal(npcInContext(nextResponse.body.data.screen.visible_context, id).display_label,
         signature.display_label, 'the next turn keeps the same NPC identity and label');
       assert.deepEqual(peopleSignature(nextResponse.body.data.screen, signature.display_label), signature,

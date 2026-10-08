@@ -13,7 +13,7 @@ import { projectVisibleContextForPlayerPackage } from
   '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 export function phase9VisibleEnvelope({ partyId, factual, visibleContext, nextVersion, turnNumber, changeSetId, idemId, onLabelGapsOmitted = null }) {
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted });
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const payload = {
     schema: 'temporal_visible_package.v1',
     perceived_scene: playerContext.visible_scene,

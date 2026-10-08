@@ -1,5 +1,6 @@
 import { sha256 } from '@rus/kernel';
 import { validateNarrationFlowResult } from '@rus/narration';
+import { normalizeElapsedTime } from '@rus/time-events-history';
 import {
   AVAILABILITY_STATUSES,
   TURN_ALLOWED_CHECKS,
@@ -73,6 +74,22 @@ export function validateConsequencePackage(value) {
   enumValue(errors, value.status, TURN_STATUSES, 'status');
   const duration = Number(value.duration_minutes ?? 0);
   if (!Number.isFinite(duration) || duration < 0) errors.push('duration_minutes must be non-negative');
+  const hasPreparedDigest = Object.hasOwn(value,
+    'prepared_effect_ledger_digest');
+  const hasPreparedElapsed = Object.hasOwn(value, 'prepared_effect_elapsed');
+  if (hasPreparedDigest !== hasPreparedElapsed) {
+    errors.push('prepared effect ledger digest and exact elapsed must be provided together');
+  } else if (hasPreparedDigest) {
+    if (typeof value.prepared_effect_ledger_digest !== 'string'
+        || !/^[a-f0-9]{64}$/u.test(value.prepared_effect_ledger_digest)) {
+      errors.push('prepared_effect_ledger_digest must be a SHA-256 digest');
+    }
+    try {
+      normalizeElapsedTime(value.prepared_effect_elapsed);
+    } catch {
+      errors.push('prepared_effect_elapsed must contain exact rational minutes');
+    }
+  }
   if (!plain(value.visible_seed)) errors.push('visible_seed must be an object');
   if (!plain(value.hidden_update)) errors.push('hidden_update must be an object');
   if (!Array.isArray(value.state_changes)) errors.push('state_changes must be an array');

@@ -1,9 +1,12 @@
 import { createHash } from 'node:crypto';
 import { canonicalStringify } from './canonical-records.js';
 import { loadApprovedG4NaturalPresentationCatalog } from './g4-natural-presentation-catalog.js';
+import { cacheG4NaturalCatalog, getCachedG4NaturalCatalog } from './g4-natural-catalog-cache.js';
 import { deepFreeze, fail } from './shared.js';
 
 export function loadApprovedG4NaturalPlacementCatalog({ verifiedCatalog, pin } = {}) {
+  const cached = getCachedG4NaturalCatalog(verifiedCatalog, pin, 'placement');
+  if (cached) return cached;
   const presentation = loadApprovedG4NaturalPresentationCatalog({ verifiedCatalog, pin });
   const rows = verifiedCatalog.records_by_table.procedural_scene_compiled_records
     .filter((row) => row.payload?.schema === 'rus.g4_natural_placement_catalog.v1');
@@ -59,8 +62,10 @@ export function loadApprovedG4NaturalPlacementCatalog({ verifiedCatalog, pin } =
         : !(descriptor.channel === 'acoustic' ? placement.acoustic_layers : placement.unprojected_layers).includes(descriptor.layer))) invalid('layer_channels');
     seen.add(key);
   }
-  return deepFreeze({ ...structuredClone(payload), schema: 'rus.verified_g4_natural_placement_catalog.v1',
-    verified: true, pin: structuredClone(pin) });
+  return cacheG4NaturalCatalog(verifiedCatalog, pin, 'placement', deepFreeze({
+    ...structuredClone(payload), schema: 'rus.verified_g4_natural_placement_catalog.v1',
+    verified: true, pin: structuredClone(pin),
+  }));
 }
 function exact(row, ref) { return row.id === ref?.id && row.version === ref?.version; }
 function versioned(row) { return typeof row?.id === 'string' && row.id.length > 0

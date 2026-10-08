@@ -5,7 +5,7 @@ const REASONING_EFFORTS = new Set(['minimal', 'low', 'medium', 'high', 'xhigh'])
 export const LLM_MAX_OUTPUT_TOKENS = 20_000;
 export const LLM_REQUEST_TIMEOUT_MS = 120_000;
 const JSON_FORMAT_INSTRUCTION = Object.freeze({
-  role: 'system', content: 'Return a valid json object.'
+  role: 'system', content: 'Верните корректный объект JSON.'
 });
 
 export function resolveRuntimeProviderOverride(override) {

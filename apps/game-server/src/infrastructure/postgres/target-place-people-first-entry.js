@@ -35,7 +35,8 @@ function ruleOutcomes(aggregate, rules) {
  * factual context is unusable.
  */
 export async function prepareCanonicalPlacePeople({ context, site, presenceContext, presenceAggregate = null, worldBaseReader,
-  readFactualContext, approvedActorTemporalBundle, actorProfile, itemPin } = {}) {
+  readFactualContext, approvedActorTemporalBundle, actorProfile, itemPin,
+  selectItemMaterial } = {}) {
   const info = presenceContext?.people;
   if (!info) return null;
   const { request, proposal, change_set_id: changeSetId } = context;
@@ -113,7 +114,8 @@ export async function prepareCanonicalPlacePeople({ context, site, presenceConte
       world_revision_id: request.g4.world_revision_id, g4_ref: request.g4, canonical_g5_ref: canonical, scene,
       npc_relationship_materialization_rules: relationshipRules,
       relationship_compositions: info.compositions ?? [],
-      ...compiled, started_at: factual.started_at, calendar_profile: factual.calendar_profile });
+      ...compiled, started_at: factual.started_at, calendar_profile: factual.calendar_profile,
+      selectItemMaterial });
     return { created_count: npc.validation_report.created_count, write_set: npc.write_set,
       expected_state_versions: factual.expected_state_versions ?? [], commit_rechecks: factual.commit_rechecks ?? [],
       recheck: factual.recheck, choices: npc.choices, attribute_traces: npc.attribute_traces,

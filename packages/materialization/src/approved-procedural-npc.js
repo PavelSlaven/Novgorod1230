@@ -7,8 +7,11 @@ import { deterministicInstanceId, MaterializationError } from './core.js';
 import { pickNpcCharacter, pickNpcName } from './npc-identity.js';
 
 export function materializeApprovedProceduralNpc({ party_id: partyId,
-  run_id: runId, binding, approved_bundle: bundle, environment, random } = {}) {
+  run_id: runId, binding, approved_bundle: bundle, environment, random,
+  occupied_names: occupiedNames = [] } = {}) {
   if (!text(partyId) || !text(runId)
+      || !Array.isArray(occupiedNames)
+      || occupiedNames.some((name) => typeof name !== 'string')
       || binding?.schema !== 'rus.approved_procedural_npc_binding.v1'
       || binding.status !== 'approved'
       || !['background','scene','key'].includes(binding.profile_level)
@@ -124,7 +127,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
   const identity = { ...structuredClone(appearance.identity),
     public_role_label: publicLabel,
     ...pickNpcName({ catalog, regionalContextId: binding.regional_context_ref?.id,
-      sexCategory: appearance.identity.sex_category, ...seed }) };
+      sexCategory: appearance.identity.sex_category, occupiedNames, ...seed }) };
   const npc = {
     instance_id: npcId, participant_slot_ref: binding.actor_slot_ref,
     profile_id: binding.source_binding?.npc_binding_ref.id ?? binding.actor_profile_rule_ref,

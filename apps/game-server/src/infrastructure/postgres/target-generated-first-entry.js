@@ -4,6 +4,7 @@ import {
   compileGeneratedNpcBindings,
 } from '@rus/materialization';
 import { createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
+import { selectApprovedItemMaterial } from '@rus/runtime-catalog';
 import { applyResolvedPresenceRulesFirstArrival } from './ordinary-materialization-presence-first-arrival.js';
 import { prepareGeneratedNpcFirstEntry } from './generated-npc-first-entry.js';
 import { canonicalFiniteProfilesFor } from './ordinary-materialization-canonical-natural.js';
@@ -79,7 +80,10 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
         }) : null;
       const presenceAggregate = presenceResult?.aggregate ?? null;
       const people = await prepareCanonicalPlacePeople({ context, site, presenceContext, presenceAggregate, worldBaseReader,
-        readFactualContext, approvedActorTemporalBundle, actorProfile, itemPin });
+        readFactualContext, approvedActorTemporalBundle, actorProfile, itemPin,
+        selectItemMaterial: ({ item_template_id: itemTemplateId }) =>
+          selectApprovedItemMaterial({ item_template_id: itemTemplateId,
+            bindings: verifiedItemCatalog.records_by_table.item_template_category_bindings }) });
       if (people?.failure !== undefined) return people.failure ?? gap('target_first_entry_factual_context_required');
       const peopleSets = people?.write_set ? [people.write_set] : [];
       const chain = (second) => (people?.recheck ? async (recheckContext) => {
@@ -158,7 +162,11 @@ export function createTargetGeneratedFirstEntry({ worldBaseReader, verifiedItemC
     const npc = compiled.npc_inputs.length === 0 ? null : prepareGeneratedNpcFirstEntry({
       party_id: request.party_id, run_id: runId, change_set_id: changeSetId,
       world_revision_id: request.g4.world_revision_id, g4_ref: request.g4, generation_template_ref: template,
-      scene, ...compiled, started_at: factual.started_at, calendar_profile: factual.calendar_profile });
+      scene, ...compiled, started_at: factual.started_at,
+      calendar_profile: factual.calendar_profile,
+      selectItemMaterial: ({ item_template_id: itemTemplateId }) =>
+        selectApprovedItemMaterial({ item_template_id: itemTemplateId,
+          bindings: verifiedItemCatalog.records_by_table.item_template_category_bindings }) });
     const natural = await prepareNaturalFirstEntry(context);
     if (!natural?.ok) return natural?.error ? natural : gap('target_first_entry_natural_proposal_required');
     if (!Array.isArray(natural.approved_write_sets) || typeof natural.recheck !== 'function') {

@@ -1,0 +1,13 @@
+{
+  "schema": "rus.live_world_runtime_v17_body_needs_binding_approval.v1",
+  "verdict": "APPROVE",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/body-needs-binding.v1.json",
+  "candidate_sha256": "dff07688e26736dd4a924a8fb7602c1a5a91c1a43fa97d5c6739c1096c8c548b",
+  "approved": true,
+  "import_authorized": true,
+  "activation_authorized": true,
+  "auditor_ref": "test:body-needs-binding-approval-fixture",
+  "independence_basis": "Test fixture only; this value does not represent a production review.",
+  "reviewed_repository_head": "test:fixture-head",
+  "approval": "Test fixture only; not a production approval or attestation."
+}

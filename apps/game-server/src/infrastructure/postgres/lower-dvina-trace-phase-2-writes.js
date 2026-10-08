@@ -148,7 +148,7 @@ export function buildPhase2VisibleEnvelope({
   onLabelGapsOmitted = null
 }) {
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(context, { onLabelGapsOmitted });
+    projectVisibleContextForPlayerPackage(context, { onLabelGapsOmitted, requireScene: true });
   const payload = {
     schema: 'temporal_visible_package.v1',
     perceived_scene: playerContext.visible_scene,

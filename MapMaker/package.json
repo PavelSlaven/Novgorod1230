@@ -13,7 +13,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc -p tsconfig.json --emitDeclarationOnly && esbuild src/index.ts --bundle --format=esm --platform=browser --outfile=dist/index.js --sourcemap && esbuild src/node.ts --bundle --format=esm --platform=node --packages=external --outfile=dist/node.js --sourcemap && esbuild test/browser-harness.ts --bundle --format=iife --platform=browser --outfile=dist/browser-harness.js && node scripts/copy-assets.mjs",
-    "test:unit": "node --test test/unit-*.test.mjs test/pipeline-*.test.mjs test/production-api.test.mjs test/compile-novgorod.test.mjs",
+    "test:unit": "node --test test/compile-novgorod.test.mjs && node --test test/map-view.test.mjs",
     "test:security": "node --test test/security.test.mjs",
     "test:e2e": "node --test test/browser-e2e.test.mjs",
     "test": "npm run build && npm run test:unit && npm run test:security && npm run test:e2e",

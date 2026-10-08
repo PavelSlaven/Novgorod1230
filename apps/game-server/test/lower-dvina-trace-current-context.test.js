@@ -57,7 +57,10 @@ test('simultaneous routine changes preserve equal labels without ordinal prose',
   const projected = enrichLowerDvinaTraceVisibleNpcCues({
     visibleContext: current, committedState, temporalResults
   });
-  assert.deepEqual(projected.visible_changes, []);
+  assert.equal(projected.visible_changes.length, 1);
+  assert.match(projected.visible_changes[0], /рыбак/iu);
+  assert.match(projected.visible_changes[0], /короткого отдыха/iu);
+  assert.doesNotMatch(projected.visible_changes[0], /npc:|рыбак\s*\(\d+\)/iu);
   assert.deepEqual(projected.visible_npc.map(({ visible_status }) => visible_status), [
     'Прерывает работу для короткого отдыха.',
     'Прерывает работу для короткого отдыха.'

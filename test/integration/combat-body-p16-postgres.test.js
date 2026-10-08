@@ -373,11 +373,47 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
     energy: String(afterFirstExchange.energy),
     satiety: String(afterFirstExchange.satiety), state_version: '1'
   });
+  const ownerNpcId = `combat-body-owner-npc-${suffix}`;
+  const sceneSiteId = `combat-body-owner-site-${suffix}`;
+  const sceneBaselineId = `combat-body-owner-baseline-${suffix}`;
+  const g6Id = `combat-body-owner-g6-${suffix}`;
+  const scenePositionId = `combat-body-owner-position-${suffix}`;
+  const sceneChangeSetId = `combat-body-change-${suffix}-1`;
+  await client.query(`INSERT INTO party_runtime.party_g5_sites
+    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,'canonical','fixture-g4',$3::jsonb,'active',1,$4,$4)`,
+  [sceneSiteId, partyId,
+    JSON.stringify({ entity_kind: 'g5_site', entity_id: sceneSiteId }),
+    sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.party_scene_baselines
+    (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
+     materialization_trace_id,materializer_version,catalog_digest,status,
+     state_version,created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,'g5_site',$3,'canonical_template','{}','fixture-trace',
+      'fixture','fixture','active',1,$4,$4)`,
+  [sceneBaselineId, partyId, sceneSiteId, sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.party_g6_instances
+    (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
+     host_kind,host_id,physical_class_id,primary_scene_role_id,
+     vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,
+     default_visibility_distance_band,acoustic_uniformity,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,$3,'{}','fixture-slot','g5_site',$4,'open','role','surface',
+      'none','default_clear','near','uniform','active',1,$5,$5)`,
+  [g6Id, partyId, sceneBaselineId, sceneSiteId, sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.scene_position_nodes
+    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
+     template_instance_ordinal,capacity,access_class_id,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,$3,'standing','fixture-slot',0,4,'public','active',1,$4,$4)`,
+  [scenePositionId, partyId, g6Id, sceneChangeSetId]);
   const participantRef = { entity_kind: 'npc', entity_id: npcId };
   const reloadSnapshot = () => ({ combat_sessions: [{ status: 'paused_for_player',
     participant_refs: [participantRef] }], npcs: [{ instance_id: npcId,
     body_state_profile: { schema: 'fixture-profile' },
-    body_state_persisted: false }] });
+    body_state_persisted: false }],
+    position: { site_id: sceneSiteId, position_id: scenePositionId } });
   const afterInsert = await withSceneNpcs(pool, partyId, reloadSnapshot());
   assert.deepEqual(afterInsert.npcs[0].body_state,
     bodyMetrics(afterFirstExchange));
@@ -419,44 +455,11 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
      skill_profile_snapshot,name_profile_snapshot,language_profile_snapshot,
      knowledge_profile_snapshot,profile_candidate_set_digest,
      created_change_set_id,updated_change_set_id)
-    VALUES ($1,'npc',$2,'{}','{}','{}','{}','{}','{}','fixture-digest',$3,$3)`,
+    VALUES ($1,'npc',$2,'{"id":"nov_role_fisher","source":"approved_social_roles"}',
+      '{"id":"nov_occ_fisher","source":"approved_occupations"}',
+      '{}','{}','{}','{}','fixture-digest',$3,$3)`,
   [partyId, npcId, `combat-body-change-${suffix}-1`]);
 
-  const ownerNpcId = `combat-body-owner-npc-${suffix}`;
-  const sceneSiteId = `combat-body-owner-site-${suffix}`;
-  const sceneBaselineId = `combat-body-owner-baseline-${suffix}`;
-  const g6Id = `combat-body-owner-g6-${suffix}`;
-  const scenePositionId = `combat-body-owner-position-${suffix}`;
-  const sceneChangeSetId = `combat-body-change-${suffix}-1`;
-  await client.query(`INSERT INTO party_runtime.party_g5_sites
-    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
-     created_change_set_id,updated_change_set_id)
-    VALUES ($1,$2,'canonical','fixture-g4',$3::jsonb,'active',1,$4,$4)`,
-  [sceneSiteId, partyId,
-    JSON.stringify({ entity_kind: 'g5_site', entity_id: sceneSiteId }),
-    sceneChangeSetId]);
-  await client.query(`INSERT INTO party_runtime.party_scene_baselines
-    (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
-     materialization_trace_id,materializer_version,catalog_digest,status,
-     state_version,created_change_set_id,updated_change_set_id)
-    VALUES ($1,$2,'g5_site',$3,'canonical_template','{}','fixture-trace',
-      'fixture','fixture','active',1,$4,$4)`,
-  [sceneBaselineId, partyId, sceneSiteId, sceneChangeSetId]);
-  await client.query(`INSERT INTO party_runtime.party_g6_instances
-    (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
-     host_kind,host_id,physical_class_id,primary_scene_role_id,
-     vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,
-     default_visibility_distance_band,acoustic_uniformity,status,state_version,
-     created_change_set_id,updated_change_set_id)
-    VALUES ($1,$2,$3,'{}','fixture-slot','g5_site',$4,'open','role','surface',
-      'none','default_clear','near','uniform','active',1,$5,$5)`,
-  [g6Id, partyId, sceneBaselineId, sceneSiteId, sceneChangeSetId]);
-  await client.query(`INSERT INTO party_runtime.scene_position_nodes
-    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
-     template_instance_ordinal,capacity,access_class_id,status,state_version,
-     created_change_set_id,updated_change_set_id)
-    VALUES ($1,$2,$3,'standing','fixture-slot',0,4,'public','active',1,$4,$4)`,
-  [scenePositionId, partyId, g6Id, sceneChangeSetId]);
   await client.query(`INSERT INTO party_runtime.party_npcs
     (party_id,npc_id,run_id,profile_set_id,profile_level,machine_state)
     VALUES ($1,$2,'run:1','npc-profile','scene',$3::jsonb)`,
@@ -466,7 +469,9 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
      skill_profile_snapshot,name_profile_snapshot,language_profile_snapshot,
      knowledge_profile_snapshot,profile_candidate_set_digest,
      created_change_set_id,updated_change_set_id)
-    VALUES ($1,'npc',$2,'{}','{}','{}','{}','{}','{}','fixture-digest',$3,$3)`,
+    VALUES ($1,'npc',$2,'{"id":"nov_role_fisher","source":"approved_social_roles"}',
+      '{"id":"nov_occ_fisher","source":"approved_occupations"}',
+      '{}','{}','{}','{}','fixture-digest',$3,$3)`,
   [partyId, ownerNpcId, sceneChangeSetId]);
   await client.query(`INSERT INTO party_runtime.entity_placements
     (party_id,entity_kind,entity_id,placement_kind,position_node_id,
@@ -476,7 +481,8 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
 
   const ownerSceneSeed = { party_id: partyId, actor_id: 'player-1',
     body_state: { health: 100, energy: 100, satiety: 100 },
-    position: { site_id: sceneSiteId }, combat_sessions: [], npcs: [] };
+    position: { site_id: sceneSiteId, position_id: scenePositionId },
+    combat_sessions: [], npcs: [] };
   const ownerSceneBefore = await withSceneNpcs(pool, partyId,
     structuredClone(ownerSceneSeed));
   const ownerNpcBefore = ownerSceneBefore.npcs.find(({ instance_id: id }) =>
@@ -623,9 +629,43 @@ test('combat NPC body P16 insert/update rolls back atomically and replays idempo
       actor_ref: participantRef, combat_status: 'active', current_intent: null,
       next_action_boundary_ref: null
     }] };
+  const offSceneSiteId = `combat-body-off-scene-site-${suffix}`;
+  const offSceneBaselineId = `combat-body-off-scene-baseline-${suffix}`;
+  const offSceneG6Id = `combat-body-off-scene-g6-${suffix}`;
+  const offScenePositionId = `combat-body-off-scene-position-${suffix}`;
+  await client.query(`INSERT INTO party_runtime.party_g5_sites
+    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,'canonical','fixture-g4',$3::jsonb,'active',1,$4,$4)`,
+  [offSceneSiteId, partyId,
+    JSON.stringify({ entity_kind: 'g5_site', entity_id: offSceneSiteId }),
+    sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.party_scene_baselines
+    (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
+     materialization_trace_id,materializer_version,catalog_digest,status,
+     state_version,created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,'g5_site',$3,'canonical_template','{}','fixture-trace',
+      'fixture','fixture','active',1,$4,$4)`,
+  [offSceneBaselineId, partyId, offSceneSiteId, sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.party_g6_instances
+    (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
+     host_kind,host_id,physical_class_id,primary_scene_role_id,
+     vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,
+     default_visibility_distance_band,acoustic_uniformity,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,$3,'{}','fixture-slot','g5_site',$4,'open','role','surface',
+      'none','default_clear','near','uniform','active',1,$5,$5)`,
+  [offSceneG6Id, partyId, offSceneBaselineId, offSceneSiteId,
+    sceneChangeSetId]);
+  await client.query(`INSERT INTO party_runtime.scene_position_nodes
+    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
+     template_instance_ordinal,capacity,access_class_id,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,$3,'standing','fixture-slot',0,4,'public','active',1,$4,$4)`,
+  [offScenePositionId, partyId, offSceneG6Id, sceneChangeSetId]);
   const offScene = await withSceneNpcs(pool, partyId, {
     actor_id: 'player', body_state: { health: 90 },
-    position: { site_id: `site:other-${suffix}` },
+    position: { site_id: offSceneSiteId, position_id: offScenePositionId },
     combat_sessions: [activeSession], npcs: []
   });
   assert.equal(offScene.npcs.length, 1);

@@ -131,6 +131,38 @@ test('error envelope masks service text in messages that would otherwise be publ
   assert.doesNotMatch(JSON.stringify(response), /INFERENCE|claim:/u);
 });
 
+for (const [code, message, publicMessage] of [
+  ['TRACE_PHASE_2_IDEMPOTENCY_CONFLICT',
+    'The idempotency identity is already bound to another input.',
+    'Этот ход уже отправлен с другим текстом.'],
+  ['TURN_IDEMPOTENCY_CONFLICT',
+    'Idempotency key is already bound to another turn payload or write plan.',
+    'Этот ход уже отправлен с другим текстом.'],
+  ['TURN_IDEMPOTENCY_IN_PROGRESS',
+    'The same turn commit is already in progress.',
+    'Этот ход ещё обрабатывается. Попробуйте чуть позже.']
+]) {
+  test(`idempotency error ${code} keeps HTTP 409 and a Russian message`, () => {
+    const response = errorEnvelope(Object.assign(new Error(message), {
+      code, status: 409
+    }));
+    assert.equal(response.status, 409);
+    assert.equal(response.body.error.code, code);
+    assert.equal(response.body.error.message, publicMessage);
+    for (const fields of [{ status: 500 },
+      { status: 409, public_exposure: 'internal' }]) {
+      const internal = errorEnvelope(Object.assign(new Error(message), {
+        code, ...fields
+      }));
+      assert.equal(internal.status, fields.status);
+      assert.deepEqual(internal.body.error, {
+        code: 'TEMPORARY_ACTION_UNAVAILABLE',
+        message: 'Действие временно недоступно. Попробуйте ещё раз.'
+      });
+    }
+  });
+}
+
 test('immutable blocker catalog failures are permanent and player-safe', () => {
   for (const code of ['NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED',
     'NEEDS_CHECK_BLOCKER_CATALOG_INVALID']) {

@@ -370,7 +370,16 @@ test('post-commit movement readback refreshes complete current context through S
           appearance: { build: 'average' } }, equipment: []
       } }] };
   const repository = createLowerDvinaTracePhase2PostgresRepository({
-    partyPool: { async query() { return { rows: [] }; }, async connect() {} },
+    partyPool: { async query(sql) {
+      if (sql.includes('SELECT g6.host_kind,g6.host_id,site.id AS site_id')) {
+        return { rows: [{ host_kind: 'g5_site', host_id: 'site:1',
+          site_id: 'site:1' }] };
+      }
+      if (sql.includes('SELECT pos.id,pos.g6_instance_id')) {
+        return { rows: [{ id: 'position:1', g6_instance_id: 'g6:1' }] };
+      }
+      return { rows: [] };
+    }, async connect() {} },
     committer: { async commit() {} },
     readCurrentVisibleContext: async (input) => {
       calls.push(input);

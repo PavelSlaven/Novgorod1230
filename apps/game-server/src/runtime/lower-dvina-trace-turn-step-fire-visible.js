@@ -6,6 +6,7 @@ import {
   enrichLowerDvinaTraceVisibleNpcCues,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
+  projectPerceivedPeopleAbsence,
   projectDirectSeedChanges
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
@@ -27,7 +28,8 @@ import { ordinaryPresenceResolution, ordinarySceneDetails,
 export function createLowerDvinaTraceTurnStepVisibleProjector({
   fallback, calendarProfile = null, locationProfiles = null,
   scenePresentation = null, partyId = null,
-  loadPreparedMovementScene = null, projectCurrentScene = null
+  loadPreparedMovementScene = null, projectCurrentScene = null,
+  recordProjectionGap = null
 } = {}) {
   if (typeof fallback?.project !== 'function') {
     throw new TypeError('fallback visibleProjector.project is required');
@@ -124,7 +126,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             ?? input?.retrieved_state?.location_profiles ?? null,
           scenePresentation: scenePresentation
             ?? input?.retrieved_state?.scene_presentation ?? null
-        }), input, calendarProfile);
+        }), input, calendarProfile, recordProjectionGap);
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
@@ -144,11 +146,11 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           });
       return finishVisibleProjection(overlayFireVisible(overlayOrdinaryPresence(
           overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence), fireVisible),
-        input, calendarProfile);
+        input, calendarProfile, recordProjectionGap);
     }
   });
 }
-function finishVisibleProjection(base, input, calendarProfile) {
+function finishVisibleProjection(base, input, calendarProfile, recordProjectionGap) {
   let enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
     committedState: input.retrieved_state, calendarProfile,
     bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after,
@@ -165,12 +167,12 @@ function finishVisibleProjection(base, input, calendarProfile) {
     enriched = { ...enriched,
       sensory_details: lowerDvinaTraceObservedSceneChanges(enriched) };
   }
-  return overlayTurnStepResults(enriched, input);
+  return overlayTurnStepResults(enriched, input, recordProjectionGap);
 }
 function arrivalChange(fact) {
   return `Вы прибыли. ${fact}${/[.!?…]$/u.test(fact) ? '' : '.'}`;
 }
-function overlayTurnStepResults(base, input) {
+function overlayTurnStepResults(base, input, recordProjectionGap) {
   const itemInspections = Object.values(input?.consequence?.visible_seed ?? {})
     .filter(seed => seed?.kind === 'existing_item_inspection')
     .map(existingItemInspectionVisibleResult);
@@ -218,17 +220,34 @@ function overlayTurnStepResults(base, input) {
       components.add(text(plan.assessment?.text)
         ? plan.assessment.text : 'Вы внимательно изучили обстановку.');
     }
-    if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') changes.push(
-      text(plan.interpretation?.player_goal) ? `Цель «${plan.interpretation.player_goal}» не достигнута.` : 'Цель попытки не достигнута.');
+    if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') {
+      const obstacle = orderedKeys.some(key => seeds[key]?.change === 'move_blocked'
+        && ['hands_full', 'load_limit'].includes(seeds[key].reason));
+      if (!obstacle) {
+        const absence = projectPerceivedPeopleAbsence({ currentVisibleContext: base,
+          currentSpatialContextIsFresh: input.retrieved_state?.current_spatial_context_is_fresh === true
+            && input.retrieved_state.current_spatial_context != null,
+          currentSpatialContextFiltersEntities: input.retrieved_state?.current_spatial_context_filters_entities });
+        if (absence != null) changes.push(absence);
+        // Perception confirms absence here, but does not classify the failed intent's cause.
+        try { recordProjectionGap?.({ event: 'turn_step_not_achieved_projection_gap',
+          code: 'failure_cause_not_grounded', step_index: step,
+          source: 'turn_step_visible_projection' }); }
+        catch { /* Diagnostics must not affect gameplay. */ }
+      }
+    }
     changes.forEach(change => components.add(change));
     return changes;
   });
   projectDirectSeedChanges({ input, directSeedKeys: [...usedKeys] }).forEach(change => components.add(change));
-  if (!text(remaining) && orderedChanges.length === 0 && inspection == null && itemInspections.length === 0) return base;
+  if (!text(remaining) && orderedChanges.length === 0 && inspection == null && itemInspections.length === 0
+      && !directPlans.some(plan => plan.goal_result === 'not_achieved')) return base;
   return deepFreeze({ ...structuredClone(base),
-    visible_changes: unique([...orderedChanges,
+    visible_changes: [...orderedChanges,
       ...base.visible_changes.filter(change => !components.has(change)),
-      ...itemInspections.flatMap(result => result.changes).filter(change => !components.has(change))]),
+      ...itemInspections.flatMap(result => result.changes)
+        .filter(change => !components.has(change)
+          && !base.visible_changes.includes(change))],
     uncertainties: unique([...base.uncertainties,
       ...itemInspections.map(result => result.uncertainty),
       ...(pendingNpcResponse ? [
@@ -336,10 +355,10 @@ function overlayFireVisible(base, fireVisible) {
     ...structuredClone(base),
     visible_scene: [base.visible_scene, fireVisible.scene]
       .filter(Boolean).join(' '),
-    visible_changes: unique([
+    visible_changes: [
       ...base.visible_changes,
       ...fireVisible.changes.values()
-    ])
+    ]
   });
 }
 function directSeedKeys(entries) {

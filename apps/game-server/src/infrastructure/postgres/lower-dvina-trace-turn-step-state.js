@@ -20,7 +20,7 @@ export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
 }) {
   const context = envelope.visible_context;
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(context, { onLabelGapsOmitted });
+    projectVisibleContextForPlayerPackage(context, { onLabelGapsOmitted, requireScene: true });
   const visiblePayload = {
     schema: 'temporal_visible_package.v1',
     perceived_scene: playerContext.visible_scene,

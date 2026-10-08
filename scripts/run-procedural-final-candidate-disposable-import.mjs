@@ -53,8 +53,7 @@ import { buildProceduralFinalV2DevelopmentActivation,
   buildProceduralFinalCurrentSchemaV2DevelopmentActivation,
   applyProceduralFinalCurrentSchemaV2DevelopmentActivation } from
   '../tools/runtime-catalog-activation/src/procedural-final-v2-development-activation.js';
-import { loadActiveRuntimeCatalogPin } from
-  '../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
+import { loadActiveRuntimeCatalogPin } from '@rus/runtime-catalog/active-pin';
 
 const OUTPUT = 'data/world-catalogs/novgorod/procedural-scene-v2/'
   + 'final-candidate-pack-v2/current-schema-successor-disposable-import-result.json';

@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import {
   errorEnvelope,
+  operationalEnvelope,
   successEnvelope,
   validateLlmSettingsProbeRequest,
   validateLlmSettingsRequest,
@@ -29,13 +30,16 @@ export function createHttpHandler({
         const data = await executeRoute(route, {
           request, root, portraitNormalizer, maxBodyBytes, developerMode
         });
-        return sendJson(response, route.status ?? 200, successEnvelope(data, { requestId }));
+        const envelope = ['health', 'llm_turn_report'].includes(route.id)
+          ? operationalEnvelope(data, { requestId })
+          : successEnvelope(data, { requestId });
+        return sendJson(response, route.status ?? 200, envelope);
       }
       if (request.method === 'GET') {
         const asset = await staticAssets?.read(url.pathname);
         if (asset) return sendText(response, 200, asset.body, asset.contentType);
       }
-      return sendJson(response, 404, errorEnvelope({ code: 'ROUTE_NOT_FOUND', message: 'Route not found.', status: 404 }, { requestId }).body);
+      return sendJson(response, 404, errorEnvelope({ code: 'ROUTE_NOT_FOUND', message: 'Адрес не найден.', status: 404 }, { requestId }).body);
     } catch (error) {
       const failure = errorEnvelope(error, { requestId, developerMode });
       if (failure.body.error.code === 'TEMPORARY_ACTION_UNAVAILABLE'
@@ -56,19 +60,28 @@ export function matchApiRoute(method, pathname) {
   if (method === 'POST' && pathname === '/api/v1/llm-settings/test') return { id: 'llm_settings_probe', status: 200 };
   if (method === 'POST' && pathname === '/api/v1/portrait-spec') return { id: 'portrait_spec', status: 200 };
   const report = pathname.match(/^\/api\/v1\/developer\/llm-turn-reports\/([^/]+)(?:\/([^/]+))?$/u);
-  if (method === 'GET' && report) return { id: 'llm_turn_report', partyId: decodeURIComponent(report[1]), requestId: report[2] == null ? null : decodeURIComponent(report[2]), status: 200 };
+  if (method === 'GET' && report) return { id: 'llm_turn_report', partyId: decodeRouteSegment(report[1]), requestId: report[2] == null ? null : decodeRouteSegment(report[2]), status: 200 };
   if (method === 'POST' && pathname === '/api/v1/new-games') return { id: 'new_game', status: 201 };
   const screen = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/screen$/u);
-  if (method === 'GET' && screen) return { id: 'party_screen', partyId: decodeURIComponent(screen[1]), status: 200 };
+  if (method === 'GET' && screen) return { id: 'party_screen', partyId: decodeRouteSegment(screen[1]), status: 200 };
   const progress = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/turns\/([^/]+)\/progress$/u);
-  if (method === 'GET' && progress) return { id: 'turn_progress', partyId: decodeURIComponent(progress[1]), requestId: decodeURIComponent(progress[2]), status: 200 };
+  if (method === 'GET' && progress) return { id: 'turn_progress', partyId: decodeRouteSegment(progress[1]), requestId: decodeRouteSegment(progress[2]), status: 200 };
   const ack = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/opening-ack$/u);
-  if (method === 'POST' && ack) return { id: 'opening_ack', partyId: decodeURIComponent(ack[1]), status: 200 };
+  if (method === 'POST' && ack) return { id: 'opening_ack', partyId: decodeRouteSegment(ack[1]), status: 200 };
   const turn = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/turns$/u);
-  if (method === 'POST' && turn) return { id: 'turn', partyId: decodeURIComponent(turn[1]), status: 200 };
+  if (method === 'POST' && turn) return { id: 'turn', partyId: decodeRouteSegment(turn[1]), status: 200 };
   const recovery = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/presentation-recovery$/u);
-  if (method === 'POST' && recovery) return { id: 'presentation_recovery', partyId: decodeURIComponent(recovery[1]), status: 200 };
+  if (method === 'POST' && recovery) return { id: 'presentation_recovery', partyId: decodeRouteSegment(recovery[1]), status: 200 };
   return null;
+}
+
+function decodeRouteSegment(segment) {
+  try {
+    return decodeURIComponent(segment);
+  } catch (error) {
+    if (!(error instanceof URIError)) throw error;
+    throw Object.assign(new Error('Адрес не найден.'), { code: 'ROUTE_NOT_FOUND', status: 404 });
+  }
 }
 
 async function executeRoute(route, context) {
@@ -77,7 +90,7 @@ async function executeRoute(route, context) {
   if (route.id === 'llm_settings') return context.root.getLlmSettings();
   if (route.id === 'llm_turn_report') {
     if (context.developerMode !== true || typeof context.root.getLlmTurnReport !== 'function') {
-      throw Object.assign(new Error('Route not found.'), { code: 'ROUTE_NOT_FOUND', status: 404 });
+      throw Object.assign(new Error('Адрес не найден.'), { code: 'ROUTE_NOT_FOUND', status: 404 });
     }
     const report = context.root.getLlmTurnReport({ party_id: route.partyId, request_id: route.requestId });
     if (report == null) throw Object.assign(new Error('LLM turn report not found.'), { code: 'LLM_TURN_REPORT_NOT_FOUND', status: 404 });

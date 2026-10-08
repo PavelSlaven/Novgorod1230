@@ -313,7 +313,7 @@ function formalExchange() {
 
 function terminalProjection(envelope) {
   const factual = { ...envelope, mode_resolution: { turn_id: 'turn:party-1:1' } };
-  const visibleContext = { visible_scene: [], visible_changes: [],
+  const visibleContext = { visible_scene: 'Схватка закончилась.', visible_changes: [],
     sensory_details: [], visible_npc: [], visible_objects: [], known_context: [],
     uncertainties: [] };
   const projection = combatVisibleEnvelope({ partyId: 'party-1', factual,

@@ -78,4 +78,25 @@ test('calendar digest compatibility checks values calculated with the supplied p
     assert.equal(matches(HISTORICAL_TIME_CALENDAR_DIGESTS[0], changedProjection), false);
     assert.equal(changedProjection.day, '19');
   });
+  await t.test('resolver and projector follow the selected profile when input date advances', () => {
+    const nextDayInput = { ...input, day: '21' };
+    const changedStartTimestamp = resolveGameTimestampFromCalendarDate(input, changedProfile);
+    const originalNextTimestamp = resolveGameTimestampFromCalendarDate(nextDayInput, originalProfile);
+    const changedNextTimestamp = resolveGameTimestampFromCalendarDate(nextDayInput, changedProfile);
+    assert.equal(originalNextTimestamp.whole_minutes, '334500');
+    assert.equal(changedNextTimestamp.whole_minutes, '335940');
+    assert.equal(BigInt(originalNextTimestamp.whole_minutes) - BigInt(timestamp.whole_minutes), 1440n);
+    assert.equal(BigInt(changedNextTimestamp.whole_minutes) - BigInt(changedStartTimestamp.whole_minutes), 1440n);
+
+    const originalNextProjection = projectCalendar(originalNextTimestamp, originalProfile);
+    const changedNextProjection = projectCalendar(changedNextTimestamp, changedProfile);
+    assert.equal(originalNextProjection.day, '21');
+    assert.equal(changedNextProjection.day, '21');
+    for (const digest of [currentDigest, HISTORICAL_TIME_CALENDAR_DIGESTS[0]]) {
+      assert.equal(matches(digest, originalNextProjection, { ...expected, day: '21' }), true);
+      assert.equal(matches(digest, changedNextProjection, { ...expected, day: '21' }), true);
+      assert.equal(matches(digest, projectCalendar(changedNextTimestamp, originalProfile),
+        { ...expected, day: '21' }), false);
+    }
+  });
 });

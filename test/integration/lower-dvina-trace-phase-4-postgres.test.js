@@ -54,7 +54,9 @@ const docker = (args) => spawnSync(
   'docker', args, { encoding: 'utf8', timeout: 45_000 }
 );
 
-test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tampering', async (t) => {
+// D97: the unsupported LD25 route and its dependent Phase 4 flows are removed.
+// Keep the committed initial inventory check shared with live screen inventory.
+test('authored-start PostgreSQL inventory passes mass validation before the LD25 route', async (t) => {
   if (docker(['version']).status !== 0) {
     t.skip('Docker is required for isolated Phase 4 PostgreSQL integration');
     return;
@@ -112,118 +114,6 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   });
   assert.equal(initialInventory.mass.pass, true,
     JSON.stringify(initialInventory.mass.errors));
-  await advanceToCampWithRouteKnowledge(runtime, party.party_id, 'success');
-  const routeInput = turn('phase-4-route', 'Пройти известной тропой к старой сушильне.');
-  const routed = await runtime.submitTurn(party.party_id, routeInput);
-  assert.equal(routed.option_id, 'follow_known_route_to_drying_shed');
-  assert.equal(
-    routed.time_update.exact_elapsed.exact_minutes.numerator,
-    '12'
-  );
-  assert.equal((await position(pool, party.party_id)).g5_anchor_id != null, true);
-  assert.equal(await phase4RouteCount(pool, party.party_id), 1);
-  const routedSnapshot = await latestSnapshot(pool, party.party_id);
-  assert.equal(routedSnapshot.route_knowledge.includes(
-    'trace_ld_v1_route_shed_to_camp'), true);
-  assert.deepEqual((await pool.query(
-    `SELECT knowledge_state,evidence
-       FROM party_runtime.party_character_knowledge
-      WHERE party_id=$1 AND character_id=$2
-        AND fact_id='trace_ld_v1_route_shed_to_camp'`,
-    [party.party_id, routedSnapshot.actor_id]
-  )).rows, [{
-    knowledge_state: 'known_from_committed_traversal',
-    evidence: [
-      routedSnapshot.last_turn.consequence.movement.traversal.ids.execution_id
-    ]
-  }]);
-  const restarted = buildRuntime({ pool, release, runtimeCatalogPin });
-  assert.deepEqual(await restarted.submitTurn(party.party_id, routeInput), routed);
-  assert.equal(await phase4RouteCount(pool, party.party_id), 1);
-  assert.equal((await latestSnapshot(pool, party.party_id)).route_knowledge
-    .includes('trace_ld_v1_route_shed_to_camp'), true);
-
-  const surrenderInput = turn('phase-4-surrender',
-    'Предложить Ратше условную защиту и потребовать сдачи.');
-  const surrendered = await restarted.submitTurn(party.party_id, surrenderInput);
-  assert.equal(surrendered.option_id,
-    'offer_conditional_protection_and_seek_surrender');
-  assert.equal(surrendered.screen.checks.length, 1);
-  assert.equal(surrendered.screen.checks[0].consequence_label,
-    'Итог проверки: успех.');
-  assert.deepEqual(surrendered.conversation.semantic_exchange, {
-    response_kind: 'surrender',
-    npc_utterance: 'Сдаюсь. Нож отдам.',
-    disclosed_route_ref: null
-  });
-  assert.deepEqual((await pool.query(
-    `SELECT result_kind
-       FROM party_runtime.party_check_resolutions
-      WHERE party_id=$1
-        AND check_policy_ref->>'entity_id' =
-          'trace_ld_v1_check_ratsha_surrender_attempt'`,
-    [party.party_id]
-  )).rows, [{ result_kind: 'success' }]);
-  await assertSuccessRows(pool, party.party_id);
-  const restartedAfterSurrender = buildRuntime({ pool, release, runtimeCatalogPin });
-  const replayedSurrender = await restartedAfterSurrender.submitTurn(
-    party.party_id, surrenderInput);
-  assert.deepEqual(replayedSurrender, surrendered);
-  assert.deepEqual(replayedSurrender.screen.checks, surrendered.screen.checks);
-  await assertSuccessRows(pool, party.party_id);
-
-  await assertTamperRejected(pool, restartedAfterSurrender, party.party_id,
-    `UPDATE party_runtime.party_item_placements p
-        SET physical_position='worn'
-       FROM party_runtime.party_items i
-      WHERE p.party_id=i.party_id AND p.item_id=i.item_id
-        AND p.party_id=$1 AND i.template_id='trace_ld_v1_item_ratsha_knife'`);
-  await assertTamperRejected(pool, restartedAfterSurrender, party.party_id,
-    `UPDATE party_runtime.party_items
-        SET state=jsonb_set(state, '{property_state,accessibility}',
-          '"quick"'::jsonb, true)
-      WHERE party_id=$1 AND template_id='trace_ld_v1_item_ratsha_knife'`);
-  await assertTamperRejected(pool, restartedAfterSurrender, party.party_id,
-    `UPDATE party_runtime.party_ownership o
-        SET owner_npc_id=o.controller_npc_id
-       FROM party_runtime.party_items i
-      WHERE o.party_id=i.party_id AND o.item_id=i.item_id
-        AND o.party_id=$1 AND i.template_id='trace_ld_v1_item_ratsha_knife'`);
-  await assertPhase4SemanticTamperingRejected(
-    pool,
-    restartedAfterSurrender,
-    party.party_id
-  );
-
-  await runBargainPath({ pool, release, runtimeCatalogPin });
-  await runCombatHandoffPath({ pool, release, runtimeCatalogPin });
-  await assertInterruptedSurrenderRestart({
-    pool, release, runtimeCatalogPin
-  });
-
-  const rollbackParty = await createParty(runtime, 'phase-4-rollback');
-  await advanceToCampWithRouteKnowledge(runtime, rollbackParty.party_id,
-    'rollback');
-  await runtime.submitTurn(rollbackParty.party_id,
-    turn('phase-4-rollback-route', 'Пройти известной тропой к старой сушильне.'));
-  await pool.query(
-    `ALTER TABLE party_runtime.party_obligations
-       ADD CONSTRAINT phase4_rollback_probe
-       CHECK (current_state <> 'active') NOT VALID`
-  );
-  try {
-    await assert.rejects(
-      () => runtime.submitTurn(rollbackParty.party_id, turn(
-        'phase-4-rollback-surrender',
-        'Предложить Ратше условную защиту и потребовать сдачи.')),
-      { code: 'TRACE_PHASE_4_COMMIT_FAILED' }
-    );
-  } finally {
-    await pool.query(
-      'ALTER TABLE party_runtime.party_obligations DROP CONSTRAINT phase4_rollback_probe'
-    );
-  }
-  await assertRollbackRows(pool, rollbackParty.party_id);
 });
 
 function turn(request_id, raw_text) {

@@ -26,7 +26,7 @@ export function phase5VisibleEnvelope({ partyId, nextVersion, turnNumber,
   changeSetId, idemId, factual, visibleContext, contracts,
   onLabelGapsOmitted = null }) {
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted });
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const payload = {
     schema: 'temporal_visible_package.v1',
     perceived_scene: playerContext.visible_scene,

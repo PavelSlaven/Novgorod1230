@@ -69,7 +69,8 @@ export async function projectSpatialV3ProposedVisiblePackage({ transaction, snap
   const visible_context = projectSpatialV3CurrentVisibleContext(sources);
   if (!validateVisibleContext(visible_context).ok || detectHiddenLeaks(visible_context).length) fail();
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(visible_context, { onLabelGapsOmitted });
+    projectVisibleContextForPlayerPackage(visible_context,
+      { onLabelGapsOmitted, requireScene: true });
   const visible_payload = { schema: 'temporal_visible_package.v1',
     perceived_scene: playerContext.visible_scene,
     perceived_changes: playerContext.visible_changes ?? [],

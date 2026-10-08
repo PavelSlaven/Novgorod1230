@@ -2,6 +2,7 @@ import { SCENE_NPC_SOURCE, withoutSceneNpcs } from
   '../../runtime/lower-dvina-trace-scene-presence.js';
 import { loadApprovedMaterializedNpcBodyInitializationProfile } from
   '../../runtime/combat-min-data.js';
+import { serverError } from '../../errors.js';
 
 export { SCENE_NPC_SOURCE, withoutSceneNpcs };
 
@@ -18,8 +19,42 @@ export async function withSceneNpcs(pool, partyId, state, {
 } = {}) {
   state = await withCombatParticipantBodies(pool, partyId, state,
     loadBodyInitializationProfile);
-  const siteId = state?.position?.site_id;
-  if (typeof siteId !== 'string' || siteId === '') return state;
+  const positionId = state?.position?.position_id;
+  if (typeof positionId !== 'string' || positionId.trim() === '') {
+    throw sceneNpcReadbackDataGap('The current scene position is missing.');
+  }
+  const { rows: positionRows } = await pool.query(
+    `SELECT g6.host_kind,g6.host_id,site.id AS site_id
+       FROM party_runtime.scene_position_nodes pos
+       JOIN party_runtime.party_g6_instances g6
+         ON g6.party_id=pos.party_id AND g6.id=pos.g6_instance_id
+        AND g6.status='active'
+       LEFT JOIN party_runtime.party_g5_sites site
+         ON site.party_id=g6.party_id AND site.id=g6.host_id
+        AND site.status='active' AND g6.host_kind='g5_site'
+      WHERE pos.party_id=$1 AND pos.id=$2 AND pos.status='active'`,
+    [partyId, positionId]);
+  if (positionRows.length !== 1) {
+    throw sceneNpcReadbackDataGap(
+      'The current scene position does not resolve to exactly one active location.');
+  }
+  const { host_kind: hostKind, host_id: hostId, site_id: siteId } =
+    positionRows[0];
+  if (typeof hostId !== 'string' || hostId.trim() === '') {
+    throw sceneNpcReadbackDataGap(
+      'The current scene position has no active host identity.');
+  }
+  if (!['g5_site', 'transport', 'route_anchor_identity'].includes(hostKind)) {
+    throw sceneNpcReadbackDataGap(
+      'The current scene position has an unsupported host kind.');
+  }
+  const snapshotSiteId = state?.position?.site_id;
+  if ((hostKind === 'g5_site' && siteId !== hostId)
+      || (snapshotSiteId != null && snapshotSiteId !== siteId)) {
+    throw sceneNpcReadbackDataGap(
+      'The current scene position conflicts with its stored site identity.');
+  }
+  if (hostKind !== 'g5_site') return state;
   const { rows } = await pool.query(
     `SELECT n.npc_id,n.run_id,n.profile_set_id,n.profile_level,n.anchor_id,
             n.identity_state,n.machine_state,n.semantic_state,
@@ -159,8 +194,8 @@ function sceneNpcSnapshot(row, initializationProfile = null,
     anchor_id: row.anchor_id,
     location_profile_ref: row.semantic_state?.location_profile_ref,
     zone_ref: row.semantic_state?.zone_ref,
-    role_ref: { id: row.role_ref, source: 'approved_social_roles' },
-    occupation_ref: { id: row.occupation_ref, source: 'approved_occupations' },
+    role_ref: sceneNpcProfileRef(row.role_ref, 'role_ref'),
+    occupation_ref: sceneNpcProfileRef(row.occupation_ref, 'occupation_ref'),
     identity_state: row.identity_state,
     machine_state: row.machine_state,
     semantic_state: row.semantic_state,
@@ -178,6 +213,16 @@ function sceneNpcSnapshot(row, initializationProfile = null,
     }),
     runtime_source: SCENE_NPC_SOURCE
   };
+}
+
+function sceneNpcProfileRef(value, field) {
+  if (value !== null && typeof value === 'object' && !Array.isArray(value)
+      && typeof value.id === 'string' && value.id.trim() !== ''
+      && typeof value.source === 'string' && value.source.trim() !== '') return value;
+  throw serverError('TRACE_SCENE_NPC_PROFILE_REF_INVALID',
+    'The persisted NPC profile reference has an unsupported shape.', {
+      status: 409, public_exposure: 'internal', details: { field }
+    });
 }
 
 function sceneNpcBodyState(row, existingProfile = null) {
@@ -199,4 +244,8 @@ function bodyMetric(value) {
   const numeric = Number(value);
   return Number.isFinite(numeric) && numeric >= 0 && numeric <= 100
     ? numeric : null;
+}
+
+function sceneNpcReadbackDataGap(message) {
+  return serverError('SCENE_NPC_READBACK_DATA_GAP', message, { status: 409 });
 }

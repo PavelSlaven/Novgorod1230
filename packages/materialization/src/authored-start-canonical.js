@@ -13,7 +13,8 @@ import { materializeApprovedActorEquipment } from './approved-actor-equipment.js
 import { materializeNpcRelationshipRules } from './npc-relationship-materialization.js';
 
 /** Canonical branch of the existing authored-start owner; all outputs are proposals. */
-export function materializeCanonicalAuthoredStart({ input, profile, admission, identity }) {
+export function materializeCanonicalAuthoredStart({ input, profile, admission, identity,
+  selectItemMaterial }) {
   const source = profile.canonical_start;
   const transfer = source.player_transfer; const basis = source.player_basis;
   const start = source.start; const placement = start?.initial_placement;
@@ -89,9 +90,14 @@ export function materializeCanonicalAuthoredStart({ input, profile, admission, i
     actor_base_attributes_runtime_profile: input.actor_base_attributes_runtime_profile,
     equipment_activation: input.actor_equipment_activation, world_catalog_digest: input.world_catalog_digest,
     equipment_catalog_digest: input.domain_catalog_pin.catalog_digest });
+  const occupiedNames = new Set(npcPlan.npc_inputs[0]?.occupied_names ?? []);
   const npcResults = npcPlan.npc_inputs.map((npcInput) => {
-    const result = materializeApprovedProceduralNpc({ ...npcInput, party_id: input.party_id, run_id: runId });
+    const result = materializeApprovedProceduralNpc({ ...npcInput, occupied_names: [...occupiedNames],
+      party_id: input.party_id, run_id: runId });
     const npc = structuredClone(result.npc);
+    if (typeof npc.identity_state.canonical_name === 'string' && npc.identity_state.canonical_name.length > 0) {
+      occupiedNames.add(npc.identity_state.canonical_name);
+    }
     npc.position_id = npcInput.position_id;
     npc.routine_state = createNpcRoutineState({ profile: npcInput.routine_profile,
       calendar_profile: input.calendar_profile, started_at: environmentInput.game_timestamp,
@@ -123,6 +129,9 @@ export function materializeCanonicalAuthoredStart({ input, profile, admission, i
       actor_kind: 'player_character' }, ...npcResults.flatMap((row) => row.actor_candidate_instance_map)],
     initial_equipment_candidates: [...playerEquipment,
       ...npcResults.flatMap((row) => row.initial_equipment_candidates)],
+    item_template_category_bindings:
+      input.domain_catalog?.records_by_table?.item_template_category_bindings ?? [],
+    select_item_material: selectItemMaterial,
     item_templates: equipmentRows('item_template'), item_inventory_profiles: equipmentRows('item_inventory'),
     item_visual_profiles: equipmentRows('item_visual') });
   const body = { profile_id: transfer.body_transfer.profile_id, schema: 'rus.body_state.profile.v1',

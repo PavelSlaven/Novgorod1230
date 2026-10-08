@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const PROFILE_REL = 'data/world-catalogs/novgorod/world-knowledge/embedding-profiles/bge-reranker-v2-m3-v1.json';
 const DEFAULT_WORKER = fileURLToPath(new URL(
-  '../../../../tools/world-catalog-workflow/src/bge-reranker.py', import.meta.url));
+  '../infrastructure/embedding/bge-reranker-worker.py', import.meta.url));
 
 /** D21 production gate: reranker stays off until audit miss/noise improve and
  *  p95 ≤ 150 ms on the owner server. Numbers from model-bench REPORT.md. */

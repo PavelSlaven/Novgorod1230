@@ -17,6 +17,14 @@
   скачивает и не запускает;
 - загрузкой current runtime-catalog pin, server env и HTTP readiness production server (`/api/v1/health`, `/api/v1/scenarios`).
 
+## Разрешённые зависимости
+
+```architecture-tool-app-dependencies
+[
+  {"source":"*","target":"apps/game-server","reason":"local-play owns the production game-server lifecycle and readiness"}
+]
+```
+
 Gameplay не зависит от engine API: единый `@rus/llm-runtime` видит только
 OpenAI-compatible `chat/completions` настроенного vLLM endpoint.
 Ошибки endpoint/provider завершают вызов без fallback. Подробности:
@@ -114,6 +122,10 @@ World Knowledge энкодер по умолчанию — заглушка (н�
 дедлайн игрового окна (`--deadline-min`, по умолчанию 26 мин после bootstrap). Выход: 0 все ноги pass, 1 нога fail
 или blocked, 2 аргументы, 3 preflight, 4 сбой стенда. Windows-раннеры выше не
 затрагиваются и остаются на сценарии v16.
+
+Public visible-context diagnostics use `entity_ref.public_key`; SQL placement IDs
+remain private snapshot evidence and are reported separately. The Lower Dvina
+`blue_wool_found` predicate checks the visible label `клочок синей шерсти`.
 
 ## Не владеет
 

@@ -25,7 +25,7 @@ const NUMERIC_SCHEDULE_COLUMNS = new Set(['state_version',
 export const NPC_ROUTINE_SCHEDULE_PROJECTION_SELECT =
   `SELECT ${[...NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS, 'candidate_profile_refs'].join(',')}
      FROM party_runtime.party_npc_spatial_schedules
-    WHERE party_id=$1
+    WHERE party_id=$1 AND npc_id=ANY($2::text[])
     ORDER BY id`;
 
 /** Narrows committed schedule rows to the approved projection columns. */

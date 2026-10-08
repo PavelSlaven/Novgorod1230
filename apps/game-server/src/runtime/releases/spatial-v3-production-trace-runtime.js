@@ -336,7 +336,8 @@ export function createTraceTurnRuntime({
 export function createCurrentSpatialContextProjector({ partyPool,
   readCurrentSources, onProjected = null } = {}) {
   if (typeof readCurrentSources !== 'function') return null;
-  return async ({ partyId, actorId, state, turnBudget = null }) => {
+  return async ({ partyId, actorId, state, turnBudget = null,
+    transaction: suppliedTransaction = null }) => {
     const positionId = state?.position?.position_id
       ?? state?.journey_location?.scene_position_id;
     if (typeof positionId !== 'string' || positionId.length === 0) {
@@ -349,7 +350,9 @@ export function createCurrentSpatialContextProjector({ partyPool,
       readCurrentSources, state, directionalExits: []
     });
     let visible;
-    if (hasActiveTurnDeadline(turnBudget)) {
+    if (typeof suppliedTransaction?.query === 'function') {
+      visible = await project(suppliedTransaction);
+    } else if (hasActiveTurnDeadline(turnBudget)) {
       visible = await withTurnDeadlineTransaction(partyPool, turnBudget,
         project, { beginMode: 'repeatable_read_read_only' });
     } else {

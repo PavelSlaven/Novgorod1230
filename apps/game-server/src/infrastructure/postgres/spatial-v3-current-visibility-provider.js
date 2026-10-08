@@ -48,14 +48,14 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
   const legacyExitLabels = readLegacyExitLabels();
   const connectionLabels = readConnectionLabels();
   async function withCurrent(partyId, actorId, project, suppliedTransaction,
-    observedPositionId = null, clock = null) {
+    observedPositionId = null, clock = null, validateSceneRows = null) {
     const transaction = suppliedTransaction ?? await pool.connect();
     const owned = suppliedTransaction == null;
     try {
       if (owned) await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
       const args = { transaction, partyId, actorId, verifiedCatalog, pin,
         worldBaseReader, readCurrentSourceState, readCurrentEnvironment, clock,
-        observedPositionId };
+        observedPositionId, validateSceneRows };
       const scene = await readScene(args);
       const natural = await readNatural(args);
       if (scene.baseline.id !== natural.scene.baseline_id
@@ -93,7 +93,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       portals: natural.scene.portals, targets: resolved, modifier_set: scene.modifier_set });
   }
   async function localDisclosure({ partyId, actorId, state, transaction,
-    observedPositionId, clock = null } = {}) {
+    observedPositionId, clock = null, validateSceneRows = null } = {}) {
     return withCurrent(partyId, actorId, async (current) => {
       if (state?.party_id !== partyId || state.actor_id !== actorId
         || state.journey_location?.scene_position_id !== current.scene.location.scene_position_id) {
@@ -155,7 +155,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         return [{ edge_id: edge.id, display_label: safeLabel,
           ...(destinationStatus !== undefined ? { destination_status: destinationStatus } : {}) }];
       });
-    }, transaction, observedPositionId, clock);
+    }, transaction, observedPositionId, clock, validateSceneRows);
   }
   async function discloseConnections(current, connections) {
     const here = current.scene.location.scene_position_id;

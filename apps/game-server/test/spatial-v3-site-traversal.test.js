@@ -17,6 +17,10 @@ import { createSpatialV3SiteTraversalRuntime } from
   '../src/runtime/spatial-v3-site-traversal-runtime.js';
 import { applySiteTraversalTransition, siteTraversalWrites } from
   '../src/infrastructure/postgres/spatial-v3-site-traversal-commit.js';
+import { projectPreparedDomainState } from
+  '../src/runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
+import { createLowerDvinaTracePreparedDomainEffect } from
+  '../src/runtime/lower-dvina-trace-turn-step-prepared-effects.js';
 import { applyS1LocalPositionTransition } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-commit-projections.js';
 import { createSpatialV3CurrentMovementCapability } from
@@ -223,11 +227,44 @@ for (const conditionRef of [connection.availability_condition_set_ref, null]) te
   traversal.result = last.result;
   traversal.final_travel_state = { ...traversal.final_travel_state,
     status: 'closed', closed_result: 'returned_to_departure', mirrored: true };
+  const persisted = structuredClone(state);
+  assert.equal(applySiteTraversalTransition({ snapshot: persisted, state,
+    consequence: returned }), true);
+  const preparedState = projectPreparedDomainState(state, {
+    consequence: returned,
+    time_update: { clock_after: state.clock, temporal_results: [] },
+    body_update: { state_after: state.body_state }
+  });
+  assert.equal(preparedState.position.position_id,
+    persisted.position.position_id,
+    'prepared projection must use the same endpoint as persistence on return');
+  const followingEffectState = projectPreparedDomainState(preparedState, {
+    consequence: {}, time_update: { clock_after: state.clock,
+      temporal_results: [] }, body_update: { state_after: state.body_state }
+  });
+  assert.equal(followingEffectState.position.position_id,
+    persisted.position.position_id,
+    'the next prepared effect must start from the returned endpoint');
+  const prepared = await createLowerDvinaTracePreparedDomainEffect({
+    committedState: state
+  }).apply({ command_id: 'lower_dvina_trace.follow_admitted_known_route:line',
+    operation: { op: 'request_movement' }, consequence: returned,
+    duration_minutes: returned.duration_minutes,
+    working_projection: state, availability: {},
+    prepared_chain_context: { prior_effect_count: 0 } });
+  assert.equal(prepared.working_projection.position.position_id,
+    persisted.position.position_id,
+    'the prepared route projection must keep the returned actor at departure');
+  assert.equal(prepared.working_projection.route_history.at(-1).status,
+    'waiting_at_anchor');
   const returnedWrites = siteTraversalWrites({ partyId: party_id,
     envelope: { consequence: returned }, changeSetId: 'change:party:turn-step:1',
     idemId: last.result.idempotency_record_id, turnNumber: 1 });
   const returnedExecution = returnedWrites.writes.inserts.find((write) =>
     write.target_table === 'party_route_plan_executions').record;
+  assert.equal(preparedState.route_history.at(-1).status,
+    returnedExecution.status,
+    'prepared route history must use the persistence outcome status');
   assert.equal(returnedExecution.status, 'waiting_at_anchor');
   assert.equal(returnedExecution.current_step_ordinal, 0);
   assert.equal(returnedExecution.terminal_at_turn, null);

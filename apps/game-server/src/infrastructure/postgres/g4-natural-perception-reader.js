@@ -96,8 +96,33 @@ export async function readCurrentEntityVisibilityScene(args = {}) {
       || !positions.includes(row.from_position_id) || !positions.includes(row.to_position_id))) {
     gap('complete_current_visibility_required');
   }
+  if (typeof args.validateSceneRows === 'function') {
+    await args.validateSceneRows({ snapshot, rows: [
+      ...sceneRows('party_g5_sites', [snapshot.site]),
+      ...sceneRows('party_scene_baselines', [snapshot.baseline]),
+      ...sceneRows('party_g6_instances', snapshot.g6),
+      ...sceneRows('scene_position_nodes', snapshot.positions),
+      ...sceneRows('visibility_links', snapshot.visibility_links),
+      ...sceneRows('entity_placements', placements),
+      ...sceneRows('scene_movement_edges', movement_edges),
+      ...sceneRows('visibility_modifiers', modifiers)
+    ] });
+  }
   return { ...snapshot, placements, movement_edges, modifier_set: { complete: true,
     rows: currentSceneVisibilityModifiers(modifiers, snapshot) } };
+}
+
+function sceneRows(table, rows) {
+  if (!Array.isArray(rows)) gap('complete_current_visibility_required');
+  return rows.map((row) => {
+    const id = row?.id ?? (table === 'entity_placements'
+      ? `${row?.entity_kind}:${row?.entity_id}` : row?.entity_id);
+    const changeSetId = row?.created_change_set_id ?? row?.updated_change_set_id;
+    return { table, row: { party_id: row?.party_id, id,
+      created_change_set_id: table === 'visibility_modifiers'
+        ? (row?.created_change_set_id ?? null) : changeSetId,
+      updated_change_set_id: row?.updated_change_set_id ?? changeSetId } };
+  });
 }
 
 /** Read inside the caller's consistent read transaction. Temporal/actor/source

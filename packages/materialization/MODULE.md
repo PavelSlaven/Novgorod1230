@@ -352,10 +352,7 @@ party-scoped aggregate, что и O1, но записи различаются �
 `derivePresenceRuleSeedContext` в `presence-rules-first-arrival.js` (партия,
 scope, subject, для `by_year_season` — `encodePresenceRulePeriodNumber`
 (`year * 4 + season_index`, сезоны `winter|spring|summer|autumn`) и текущий
-сезон календаря). Стартовое место (`state_version === 0`) — `readInitialEnvironment`
-(календарь коммита старта). Первое прибытие в новый G5 при `state_version ≥ 1` —
-`readCurrentEnvironment` в транзакции прибытия (закоммиченное время партии в транзакции
-прибытия, не снимок первого хода). Регион для
+сезон календаря). Стартовое место до появления строки `party_server_sessions` при `state_version === 0` использует `readInitialEnvironment` (календарь коммита старта); иначе `readCurrentEnvironment` в транзакции прибытия берёт закоммиченное время партии, не снимок первого хода. Регион для
 `pickRegionalPresenceRule` — строгое совпадение с G0-предком того же узла, чьи
 place-family bindings читаются: закреплённого G4 для generated G5, самого
 canonical G5 для canonical G5; не эвристика по данным. `seed_scope` может идти после presence-only preamble;

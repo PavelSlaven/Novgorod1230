@@ -10,7 +10,7 @@ Logical party persistence boundary: validates/adapts approved plans and delegate
 
 ## Не владеет
 
-Не владеет SQL, DB driver/pool, transaction ownership, world-base reads, materialization, factual formulae, write-plan creation, presentation projection or narration.
+Не владеет DB driver/pool, физической transaction ownership, world-base reads, materialization, factual formulae, write-plan creation, presentation projection or narration. Scoped Phase 1A readback remains an injected-query repository concern.
 
 ## Public API и контракты
 
@@ -20,6 +20,12 @@ repository/readback contract. Historical Lower Dvina snapshot/projection schemas
 Current authored binding v3 rehydrates party-derived initial G6/journey rows;
 deprecated bindings v1/v2 читаются по собственным persisted binding revisions
 без latest inference или rematerialization.
+Phase 1A baseline rehydration scopes run-owned rows to the snapshot's exact
+materialization run; its private injected-query item reader is shared by the
+Phase 2 late-expansion read and never owns a transaction.
+The Phase 1A `loadSceneRefs` read maps its legacy `{domain, instance_id}` refs
+to exact physical authored-start scene row refs and reads the site's creation
+change set; callers keep transaction ownership.
 
 - `.`: `createPartyStore({ transact })`.
 - `./stage-25`: physical-plan adapter contract and fixed v2 schema mappings.

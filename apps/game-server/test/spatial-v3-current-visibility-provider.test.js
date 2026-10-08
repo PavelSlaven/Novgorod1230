@@ -52,6 +52,7 @@ test('canonical exit reader requires approved authoring at exact G4 revision and
 });
 function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   readNatural: suppliedReadNatural = null,
+  readScene: suppliedReadScene = null,
   readLocalMovementAdmission, itemDisplayName = null, itemTemplateId = null,
   itemLabels = {}, itemStateRow = null, readEntityExterior: suppliedReadEntityExterior = null,
   readTargetConditions = readCurrentTargetConditions } = {}) {
@@ -61,7 +62,8 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
     positions: [{ id: 'a', template_slot_key: 'arrival', g6_instance_id: 'g6' },
       { id: 'b', template_slot_key: 'focus', g6_instance_id: 'g6' }],
     g6: [{ id: 'g6', intra_g6_visibility_mode: mode }], visibility_links: [],
-    movement_edges: [{ id: 'edge', from_position_id: 'a', to_position_id: 'b',
+    movement_edges: [{ party_id: 'party', id: 'edge', from_position_id: 'a', to_position_id: 'b',
+      created_change_set_id: 'change:edge', updated_change_set_id: 'change:edge',
       source_scene_template_ref: { entity_id: localLabel.scene_template_ref.id,
         authoring_version: localLabel.scene_template_ref.version },
       source_edge_slot_key: localLabel.edge_slot_key }],
@@ -83,7 +85,12 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   const provider = createSpatialV3CurrentVisibilityProvider({ pool,
     itemLabels,
     worldBaseReader,
-    readScene: async () => scene, readNatural: suppliedReadNatural ?? (async () => natural),
+    readScene: suppliedReadScene ?? (async ({ validateSceneRows }) => {
+      if (typeof validateSceneRows === 'function') {
+        await validateSceneRows({ snapshot: scene, rows: scene.movement_edges });
+      }
+      return scene;
+    }), readNatural: suppliedReadNatural ?? (async () => natural),
     readTargetConditions,
     readEntityExterior: suppliedReadEntityExterior ?? (async ({ placement }) => ({
       visible_clothing: placement.entity_id,
@@ -124,6 +131,59 @@ test('visible items retain identity with a typed gap when no safe display name e
   assert.deepEqual(invalidObservation[0].label_gap,
     { code: 'player_safe_item_label_required' });
   assert.equal(Object.hasOwn(invalidObservation[0], 'display_label'), false);
+});
+
+test('Phase2 local-edge read passes its transaction and private provenance callback', async () => {
+  const transaction = { query() {} };
+  const edge = { party_id: 'party', id: 'edge:late',
+    created_change_set_id: 'change:late', updated_change_set_id: 'change:late' };
+  const checked = [];
+  const context = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'место', visible_changes: [], sensory_details: [],
+    visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: [] };
+  const state = { party_id: 'party', actor_id: 'actor',
+    journey_location: { scene_position_id: 'position' },
+    current_visible_context: context };
+  const result = await withPhase2CurrentLocalEdges(state,
+    async (input) => {
+      assert.equal(input.transaction, transaction);
+      await input.validateSceneRows({ snapshot: {}, rows: [edge] });
+      return [{ edge_id: 'edge:late', display_label: 'проход' }];
+    }, null, null, { transaction, validateSceneRows: ({ rows }) =>
+      checked.push(...rows) });
+  assert.deepEqual(checked, [edge]);
+  assert.deepEqual(result.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge:late' },
+    display_label: 'проход', recognition: 'known'
+  }]);
+  assert.equal(JSON.stringify(result).includes('created_change_set_id'), false);
+});
+
+test('local visibility provider forwards transaction to scene provenance owner', async () => {
+  const checked = [];
+  let receivedTransaction;
+  const transaction = { query() {} };
+  const current = fixture({ readTargetConditions: async () => ({
+    lighting: 'clear', weather: 'clear', stable_cover: 'clear',
+    dynamic_occlusion: 'clear', concealment: 'clear' }),
+    readScene: async (input) => {
+      receivedTransaction = input.transaction;
+      await input.validateSceneRows({ snapshot: inputSnapshot,
+        rows: inputSnapshot.movement_edges });
+      return inputSnapshot;
+    } });
+  const inputSnapshot = current.scene;
+  const disclosure = await current.provider.readLocalEdgeDisclosure({
+    partyId: 'party', actorId: 'actor', transaction,
+    state: { party_id: 'party', actor_id: 'actor',
+      journey_location: { scene_position_id: 'a' } },
+    validateSceneRows: ({ rows }) => checked.push(...rows)
+  });
+  assert.equal(receivedTransaction, transaction);
+  assert.deepEqual(checked, inputSnapshot.movement_edges);
+  assert.equal(disclosure[0].edge_id, 'edge');
+  assert.equal(Object.hasOwn(disclosure[0], 'created_change_set_id'), false);
 });
 
 test('current item visibility uses an approved template label when committed state has no name', async () => {

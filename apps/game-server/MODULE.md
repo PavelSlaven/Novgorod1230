@@ -172,8 +172,7 @@ Presence at first arrival (O1, §3A) has one resolver,
 later first arrival. Bindings come from the site node: canonical G5 reads its
 own node, generated G5 reads its parent G4; the region is the G0 ancestor of
 that node. The calendar comes from `readTargetPartyPresenceCalendar` after the
-bindings are found: `readInitialEnvironment` at `state_version 0` (start),
-`readCurrentEnvironment` inside the arrival transaction later. A node without
+bindings are found: `readInitialEnvironment` only at `state_version 0` before a `party_server_sessions` row exists; otherwise `readCurrentEnvironment` runs inside the arrival transaction. A node without
 bindings or rules is a legal empty presence: the resolver returns a typed
 `presence_gap` for diagnostics only, nothing is stored and nothing reaches the
 player or LLM. Wrong inputs (missing site, G4 pin, node version, region,
@@ -1165,6 +1164,12 @@ initial-state owner accepts an absent session only when a LEFT JOIN confirms
 its absence and every committed snapshot/body/clock/history/scene guard still
 passes. An existing session must match the scenario, have no turn and retain
 its valid version; missing session data is not replaced with default values.
+Phase 2 treats v0 as initial only before session creation. With a server session,
+authored-start v3 reads the exact Phase 1A baseline plus lineage-validated
+committed expansion state in one repeatable-read, read-only transaction.
+Phase 2 scene disclosure validates baseline physical refs through the Phase 1A
+owner and late rows through committed expansion provenance. Repository scan found
+no production writer for `visibility_modifiers`; an unowned modifier row fails closed.
 
 Canonical opening carries the verified initial source binding privately through
 `prepareG4NaturalScenePerceptionInput`. `startLowerDvinaTrace` selects

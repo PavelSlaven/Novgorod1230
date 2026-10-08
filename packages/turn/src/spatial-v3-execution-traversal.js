@@ -30,6 +30,31 @@ import {
   zero
 } from './spatial-v3-execution-support.js';
 
+export function spatialV3TraversalOutcomeProjection(result, step) {
+  let endpoint = null;
+  let routeStatus = 'active';
+  if (result?.result_kind === 'segment_completed') {
+    endpoint = step?.arrival_endpoint_snapshot ?? null;
+    routeStatus = 'completed';
+  } else if (result?.result_kind === 'returned_to_departure') {
+    endpoint = step?.departure_endpoint_snapshot ?? null;
+    routeStatus = 'waiting_at_anchor';
+  } else if (result?.result_kind === 'interrupted_at_anchor') {
+    endpoint = [step?.departure_endpoint_snapshot, step?.arrival_endpoint_snapshot]
+      .find((candidate) => {
+        const ref = candidate?.endpoint_ref;
+        return ref?.entity_id === result.interruption_anchor_id
+          || ref?.endpoint_id === result.interruption_anchor_id
+          || candidate?.resolved_position_id === result.interruption_anchor_id;
+      }) ?? null;
+    routeStatus = Number(result.actual_progress_after_ppm) > 0
+      ? 'suspended_at_scene' : 'aborted';
+  } else if (result?.result_kind === 'stranded') {
+    routeStatus = 'stranded_in_transit';
+  }
+  return { endpoint, route_status: routeStatus };
+}
+
 function intervalOutcome(signals, actualAfter, mirroredAfter) {
   // A prepared terminal endpoint wins over co-occurring control signals.  A data
   // gap can strand only a still in-transit state; it must never manufacture a

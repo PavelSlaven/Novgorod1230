@@ -1,6 +1,8 @@
 import { serverError } from '../errors.js';
 import { deepFreeze } from
   './lower-dvina-trace-turn-step-runtime-common.js';
+import { projectPreparedSiteLineState } from
+  './lower-dvina-trace-turn-step-prepared-state-projection.js';
 import { buildLowerDvinaTracePreparedRouteWorkingProjection,
   projectPreparedDomainState } from
   './lower-dvina-trace-turn-step-prepared-state-projection.js';
@@ -228,8 +230,8 @@ async function applyPreparedPhase3Route({
     fail('TRACE_TURN_STEP_PREPARED_ROUTE_INVALID');
   }
   const projection = siteLine
-    ? buildPreparedSiteLineProjection(input.working_projection,
-      consequence.position_transition)
+    ? projectPreparedSiteLineState(input.working_projection,
+      consequence.position_transition, consequence.spatial_v3_traversal)
     : buildLowerDvinaTracePreparedRouteWorkingProjection({
       projection: input.working_projection, movement, committedState });
   return deepFreeze({
@@ -245,35 +247,6 @@ async function applyPreparedPhase3Route({
       consequence: structuredClone(consequence)
     }
   });
-}
-
-function buildPreparedSiteLineProjection(projection, transition) {
-  const next = structuredClone(projection);
-  next.position = {
-    ...structuredClone(next.position ?? {}),
-    position_id: transition.to_position_ref,
-    location_ref: transition.destination_site_id,
-    site_id: transition.destination_site_id,
-    g4_id: transition.destination_g4_id,
-    g6_id: transition.destination_g6_instance_id
-  };
-  if (next.journey_location != null) {
-    next.journey_location = {
-      ...next.journey_location,
-      location_kind: 'scene',
-      scene_position_id: transition.to_position_ref,
-      transit_anchor_id: null,
-      travel_state_id: null,
-      g6_instance_id: transition.destination_g6_instance_id,
-      state_version: Number(next.journey_location.state_version) + 1
-    };
-  }
-  next.route_history = [...(next.route_history ?? []), {
-    from_ref: transition.source_site_id,
-    to_ref: transition.destination_site_id,
-    status: 'completed'
-  }];
-  return next;
 }
 
 function validPreparedMovementDuration(consequence, duration) {

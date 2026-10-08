@@ -7,6 +7,7 @@ import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
 import { withLowerDvinaTraceCurrentScene } from
   './lower-dvina-trace-turn-step-current-scene.js';
+import { spatialV3TraversalOutcomeProjection } from '@rus/turn/spatial-v3-execution';
 
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
@@ -15,30 +16,8 @@ export function projectPreparedDomainState(state, effect) {
     && effect.consequence?.movement?.cost_kind === 'time';
   if (siteLine) {
     const transition = effect.consequence.position_transition;
-    next.position = {
-      ...structuredClone(next.position ?? {}),
-      position_id: transition.to_position_ref,
-      location_ref: transition.destination_site_id,
-      site_id: transition.destination_site_id,
-      g4_id: transition.destination_g4_id,
-      g6_id: transition.destination_g6_instance_id
-    };
-    if (next.journey_location != null) {
-      next.journey_location = {
-        ...next.journey_location,
-        location_kind: 'scene',
-        scene_position_id: transition.to_position_ref,
-        transit_anchor_id: null,
-        travel_state_id: null,
-        g6_instance_id: transition.destination_g6_instance_id,
-        state_version: Number(next.journey_location.state_version) + 1
-      };
-    }
-    next.route_history = [...(next.route_history ?? []), {
-      from_ref: transition.source_site_id,
-      to_ref: transition.destination_site_id,
-      status: 'completed'
-    }];
+    next = projectPreparedSiteLineState(next, transition,
+      effect.consequence.spatial_v3_traversal);
   }
   if (effect.consequence?.movement?.destination?.location_ref != null) {
     const movement = effect.consequence.movement;
@@ -172,6 +151,56 @@ export function projectPreparedDomainState(state, effect) {
     next.player_response_boundary = { kind: 'combat', combat_id:
       effect.consequence.combat_initialization.session.combat_id };
   }
+  return next;
+}
+
+export function projectPreparedSiteLineState(state, transition, traversal) {
+  const next = structuredClone(state);
+  const { endpoint, route_status: routeStatus } = spatialV3TraversalOutcomeProjection(
+    traversal?.result, traversal?.plan?.steps?.[0]);
+  const positionId = endpoint?.resolved_position_id;
+  const atSource = positionId === transition.from_position_ref;
+  const atDestination = positionId === transition.to_position_ref;
+  if (endpoint && (atSource || atDestination)) {
+    const source = atSource;
+    next.position = {
+      ...structuredClone(next.position ?? {}),
+      position_id: positionId,
+      location_ref: source ? transition.source_site_id : transition.destination_site_id,
+      site_id: source ? transition.source_site_id : transition.destination_site_id,
+      g4_id: source ? transition.source_g4_id : transition.destination_g4_id,
+      g6_id: source ? transition.source_g6_instance_id
+        : transition.destination_g6_instance_id
+    };
+    if (next.journey_location != null) {
+      next.journey_location = {
+        ...next.journey_location,
+        location_kind: 'scene',
+        scene_position_id: positionId,
+        transit_anchor_id: null,
+        travel_state_id: null,
+        g6_instance_id: source ? transition.source_g6_instance_id
+          : transition.destination_g6_instance_id,
+        state_version: Number(next.journey_location.state_version) + 1
+      };
+    }
+  } else {
+    if (next.journey_location != null) {
+      next.journey_location = {
+        ...next.journey_location,
+        location_kind: 'in_transit',
+        scene_position_id: null,
+        transit_anchor_id: null,
+        travel_state_id: traversal?.final_travel_state?.id ?? null,
+        state_version: Number(next.journey_location.state_version) + 1
+      };
+    }
+  }
+  next.route_history = [...(next.route_history ?? []), {
+    from_ref: transition.source_site_id,
+    to_ref: transition.destination_site_id,
+    status: routeStatus
+  }];
   return next;
 }
 

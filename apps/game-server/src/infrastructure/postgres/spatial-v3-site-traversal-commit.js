@@ -1,6 +1,7 @@
 import { row, sealedCheck } from './first-playable/plan-shared.js';
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { serverError } from '../../errors.js';
+import { spatialV3TraversalOutcomeProjection } from '@rus/turn/spatial-v3-execution';
 
 export const SITE_TRAVERSAL_OWNER = '@rus/turn/spatial-v3-site-connection-traversal';
 
@@ -122,11 +123,7 @@ export function siteTraversalWrites({ partyId, envelope, changeSetId, idemId, tu
   const suspended = interrupted && travel.progress_ppm > 0;
   const abortedAtAnchor = interrupted && !suspended;
   if (interrupted && !terminalEndpoint) fail();
-  const routeStatus = result.result_kind === 'segment_completed' ? 'completed'
-    : abortedAtAnchor ? 'aborted'
-      : returned ? 'waiting_at_anchor'
-      : suspended ? 'suspended_at_scene'
-    : stranded ? 'stranded_in_transit' : 'active';
+  const routeStatus = spatialV3TraversalOutcomeProjection(result, step).route_status;
   const currentEndpoint = returned ? step.departure_endpoint_snapshot
     : interrupted ? endpointById(step, result.interruption_anchor_id)?.endpoint
       ?? step.departure_endpoint_snapshot : null;
@@ -325,11 +322,7 @@ function legacySiteTraversalWrites({ partyId, envelope, changeSetId, idemId, tur
 }
 
 function endpointForResult(result, step, snapshot) {
-  let endpoint;
-  if (result.result_kind === 'segment_completed') endpoint = step.arrival_endpoint_snapshot;
-  else if (result.result_kind === 'returned_to_departure') endpoint = step.departure_endpoint_snapshot;
-  else if (result.result_kind === 'interrupted_at_anchor') endpoint = endpointById(step,
-    result.interruption_anchor_id)?.endpoint;
+  const endpoint = spatialV3TraversalOutcomeProjection(result, step).endpoint;
   if (!endpoint) return null;
   const positionId = endpoint.resolved_position_id;
   const position = snapshot?.scene_positions?.find((row) => row.id === positionId) ?? null;

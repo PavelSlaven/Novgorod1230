@@ -1,10 +1,11 @@
 import { encodePresenceRulePeriodNumber } from '@rus/materialization';
 import { serverError } from '../../errors.js';
+import { isInitialPartyState } from './party-state-lifecycle.js';
 
 /**
  * Calendar for presence rules at a G5 site.
- * Start placement (state_version 0): committed initial environment at authorship.
- * Later first arrivals (state_version ≥ 1): current party clock in the arrival transaction.
+ * Before a server session at state_version 0: committed initial environment at authorship.
+ * Otherwise: current party clock in the arrival transaction.
  */
 export async function readTargetPartyPresenceCalendar({
   transaction,
@@ -12,12 +13,13 @@ export async function readTargetPartyPresenceCalendar({
   factualContext,
 }) {
   const lifecycle = await transaction.query(
-    `SELECT state_version FROM party_runtime.parties WHERE party_id=$1`,
+    `SELECT p.state_version,s.party_id AS session_party_id
+       FROM party_runtime.parties p LEFT JOIN party_runtime.party_server_sessions s
+         ON s.party_id=p.party_id WHERE p.party_id=$1`,
     [partyId],
   );
-  const stateVersion = Number(lifecycle.rows[0]?.state_version);
   let environment;
-  if (stateVersion === 0) {
+  if (isInitialPartyState(lifecycle.rows[0])) {
     const player = await transaction.query(
       `SELECT character_id FROM party_runtime.party_player_characters WHERE party_id=$1`,
       [partyId],

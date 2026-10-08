@@ -4,6 +4,7 @@ import { createLowerDvinaTracePhase2PostgresRepository } from './lower-dvina-tra
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { serverError } from '../../errors.js';
 import { readCurrentEntityVisibilityScene } from './g4-natural-perception-reader.js';
+import { isInitialPartyState } from './party-state-lifecycle.js';
 
 /** Reuse the normalized committed-state owner inside the caller's transaction. */
 export function createTargetCurrentFactualContext({ partyPool, committer, runtime,
@@ -14,7 +15,8 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
   async function read({ transaction, partyId, clock = null }) {
     if (typeof transaction?.query !== 'function' || !calendarProfile || !Array.isArray(records)) gap();
     const repository = createLowerDvinaTracePhase2PostgresRepository({
-      partyPool: { query: transaction.query.bind(transaction), connect: partyPool.connect.bind(partyPool) },
+      partyPool: { query: transaction.query.bind(transaction),
+        connect: partyPool.connect.bind(partyPool), readTransaction: transaction },
       committer, authoredRuntimeBindingResolver });
     const state = await repository.loadPhase2State(partyId, { includeCurrentVisibleContext: false });
     if (state.world_identity?.world_revision_id !== runtime.itemPin.compatible_world_revision_id
@@ -49,8 +51,8 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
       const lifecycle = await transaction.query(`SELECT p.state_version,s.party_id AS session_party_id
         FROM party_runtime.parties p LEFT JOIN party_runtime.party_server_sessions s
           ON s.party_id=p.party_id WHERE p.party_id=$1`, [partyId]);
-      if (lifecycle.rows.length !== 1 || Number(lifecycle.rows[0].state_version) !== 0
-        || lifecycle.rows[0].session_party_id != null) gap();
+      if (lifecycle.rows.length !== 1
+          || !isInitialPartyState(lifecycle.rows[0])) gap();
       const state = await createLowerDvinaTracePhase1ARepository({
         query: transaction.query.bind(transaction) }).loadInternal(partyId);
       if (state?.request_identity?.party_id !== partyId || state.player?.instance_id !== actorId

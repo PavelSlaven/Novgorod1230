@@ -206,7 +206,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     loadInternal: (partyId) => repository.loadInternal(partyId),
     loadVisible: (partyId) => repository.loadVisible(partyId),
     ...(targetStartRuntime == null ? {} : {
-      async loadNaturalScenePerceptionInput({ partyId, actorId, internal, initialState }) {
+      async loadNaturalScenePerceptionInput({ partyId, actorId, internal,
+        initialState, transaction: suppliedTransaction = null }) {
         const committedScenarioId = internal?.request_identity?.scenario_id ?? initialState?.scenario_id;
         if ((internal != null && internal.request_identity?.party_id !== partyId)
           || (initialState != null && (initialState.party_id !== partyId
@@ -216,9 +217,12 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         const selectedStart = targetStarts.find(({ profile }) =>
           profile.scenario_id === committedScenarioId);
         if (!selectedStart) fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Committed target start is not loaded.');
-        const transaction = await partyPool.connect();
+        const transaction = suppliedTransaction ?? await partyPool.connect();
+        const ownsTransaction = suppliedTransaction == null;
         try {
-          await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          if (ownsTransaction) {
+            await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          }
           const { domain_catalog: verifiedCatalog } = selectedStart.materialization_inputs;
           const factualContext = selectedStart.initialRule == null
             ? createTargetCurrentFactualContext({ partyPool, committer, runtime: selectedStart,
@@ -243,13 +247,13 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             partyId, actorId });
           const siteConnections = await visibility.readCurrentConnectionDisclosure({ transaction,
             partyId, actorId });
-          await transaction.query('COMMIT');
+          if (ownsTransaction) await transaction.query('COMMIT');
           return { ...input, entity_observations: entityObservations,
             site_connections: siteConnections };
         } catch (error) {
-          await transaction.query('ROLLBACK');
+          if (ownsTransaction) await transaction.query('ROLLBACK');
           throw error;
-        } finally { transaction.release(); }
+        } finally { if (ownsTransaction) transaction.release(); }
       }
     })
   });

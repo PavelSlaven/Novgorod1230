@@ -628,7 +628,7 @@
   },
   "speech_address": {
     "speech_registers.csv": 139,
-    "address_forms.csv": 84,
+    "address_forms.csv": 89,
     "register_counts": {
       "role": {
         "formal_literate": 22,
@@ -641,7 +641,7 @@
         "everyday_oral": 20
       }
     },
-    "no_source_rows": 64,
+    "no_source_rows": 21,
     "start_directed_pairs": 58,
     "start_directed_node_season_contexts": 1334
   },

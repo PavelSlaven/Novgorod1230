@@ -46,12 +46,14 @@ export function validatePreparedEffectCommit({
   } catch (cause) {
     preparedEffectFail('ledger contract or digest is invalid', cause);
   }
-  validatePreparedEnvelopeAggregate({ ledger, envelope, factual });
+  validatePreparedEnvelopeAggregate({ ledger, envelope, factual,
+    bodyStateBefore: state?.body_state });
   const slices = ledger.slices;
   const traces = envelope.loop_trace?.step_traces;
   if (slices.every((slice) => slice.effect_kind === 'semantic_activity')) {
     const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
-    const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+    const expectedBody = buildTurnStepPreparedBodyUpdate(
+      ledger, state?.body_state);
     if (ledger.root_turn_id !== batch?.root_turn_id
         || ledger.committed_state_version !== batch?.committed_state_version
         || !samePreparedValue(expectedBody, envelope.body_update)
@@ -59,6 +61,7 @@ export function validatePreparedEffectCommit({
         || envelope.consequence?.prepared_effect_ledger_digest !== ledger.ledger_digest
         || Number(envelope.consequence?.duration_minutes)
           !== Number(expectedTime.exact_elapsed.exact_minutes.numerator)
+            / Number(expectedTime.exact_elapsed.exact_minutes.denominator)
         || ['consequence', 'time_update', 'body_update',
           'player_input', 'mode_resolution'].some((key) =>
           !samePreparedValue(envelope[key], factual?.[key]))) {
@@ -173,7 +176,8 @@ export function validatePreparedEffectCommit({
       'prepared working state differs from approved requests');
   }
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
-  const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  const expectedBody = buildTurnStepPreparedBodyUpdate(
+    ledger, state?.body_state);
   if (!samePreparedValue(envelope.consequence, factual?.consequence)
       || !samePreparedValue(envelope.time_update, factual?.time_update)
       || !samePreparedValue(envelope.body_update, factual?.body_update)

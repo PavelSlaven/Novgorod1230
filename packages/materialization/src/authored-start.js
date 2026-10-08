@@ -12,13 +12,15 @@ import { compileProceduralScenePartyPackages } from
 import { attachActorBaseAttributesToNpcs } from './actor-base-attributes.js';
 import { materializeCanonicalAuthoredStart } from './authored-start-canonical.js';
 
-export function materializeAuthoredStartPartyInstance(input) {
+export function materializeAuthoredStartPartyInstance(input, { selectItemMaterial } = {}) {
   const profile = input?.scenario_bundle;
   assertInput(input, profile);
   const admission = resolveAuthoritativeAdmission(input, profile);
   const identity = requestIdentity(input);
   if (profile.canonical_start != null) {
-    return materializeCanonicalAuthoredStart({ input, profile, admission, identity });
+    return materializeCanonicalAuthoredStart({
+      input, profile, admission, identity, selectItemMaterial
+    });
   }
   const seed = deriveSeed(identity);
   const runId = `authored_${seed.digest.slice(0, 24)}`;

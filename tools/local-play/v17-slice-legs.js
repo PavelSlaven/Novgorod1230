@@ -43,6 +43,27 @@ const peopleOf = (screen) => {
   const data = panel.data ?? {};
   return (data.people ?? data.visible_npcs ?? data.npcs ?? []).map(labelOf).filter(Boolean);
 };
+export function captureVisibilityConditions(screen) {
+  const admitted = screen?.visible_context?.visible_npc;
+  const panel = screen?.panels?.people;
+  const panelPeople = peopleOf(screen);
+  // Factual delivery may omit visible_npc but retain the owner's projected panel.
+  // An explicit empty admission list never falls back to panel or SQL presence.
+  const source = Array.isArray(admitted) ? 'visible_context'
+    : panel?.visible ? 'people_panel' : 'unknown';
+  return {
+    admission_source: source,
+    admitted_npcs_count: source === 'visible_context' ? admitted.length
+      : source === 'people_panel' ? panelPeople.length : null,
+    admitted_npc_ids: source === 'visible_context'
+      ? admitted.map((row) => row?.entity_ref?.entity_id).filter((id) => id != null) : null,
+    panel_exists: panel != null,
+    panel_visible: panel?.visible ?? null,
+    panel_people_count: panelPeople.length,
+    current_light_phase: screen?.visible_context?.current_light_phase ?? 'unknown',
+    weather: 'unknown', local_light: 'unknown', visibility_factors: 'unknown'
+  };
+}
 const siteKey = (snap) => String(snap?.position?.site_id ?? '?');
 export const positionProgressed = (before, after) => {
   const left = before?.position;
@@ -133,6 +154,7 @@ export async function runLegs({
     const before = last?.snap ?? await sql.snapshot(partyId);
     const visibleContextBefore = structuredClone(
       last?.screen?.visible_context ?? null);
+    const visibilityConditionsBefore = captureVisibilityConditions(last?.screen);
     const started = now();
     const calls = llm.count();
     const roleCalls = llm.roleCalls?.length ?? 0;
@@ -246,6 +268,11 @@ export async function runLegs({
         llm_calls: llm.count() - calls,
         llm_role_calls: (llm.roleCalls ?? []).slice(roleCalls).map(({ role_id, ms, status }) => ({ role_id, ms, status })),
         people_panel: capturePeoplePanel(view.screen, view.snap),
+        visibility_conditions: {
+          before: visibilityConditionsBefore,
+          response: captureVisibilityConditions(response.data?.screen),
+          after: captureVisibilityConditions(view.screen)
+        },
         current_visible_context: {
           before: visibleContextBefore,
           response: structuredClone(response.data?.screen?.visible_context ?? null),
@@ -291,7 +318,8 @@ export async function runLegs({
     }
     state.opening = { attempts, rejections, opening_attempts: openingAttempts,
       party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '',
-      route_labels: routeLabels(opening?.screen), people_panel_initial: capturePeoplePanel(opening?.screen) };
+      route_labels: routeLabels(opening?.screen), people_panel_initial: capturePeoplePanel(opening?.screen),
+      visibility_conditions_initial: captureVisibilityConditions(opening?.screen) };
     if (opening == null) throw new Error(`${OPENING_REJECTED} ×${rejections}`);
     partyId = opening.party_id;
     state.party_id = partyId;
@@ -300,6 +328,7 @@ export async function runLegs({
     if (!ack.ok) throw new Error(`opening-ack: ${ack.error?.code ?? ack.status}`);
     await refresh('screen_after_ack', 'start');
     state.opening.people_panel_after_ack = capturePeoplePanel(last.screen, last.snap);
+    state.opening.visibility_conditions_after_ack = captureVisibilityConditions(last.screen);
     const prose = String(last.screen?.main_prose ?? state.opening.prose ?? '').trim();
     if (!prose) set('start', 'fail', 'после открытия на экране нет текста');
     else if (!last.snap?.position?.canonical_g5) set('start', 'fail', `позиция не прочитана из SQL (${last.snap?.error ?? 'нет position'})`);
@@ -317,7 +346,7 @@ export async function runLegs({
   const tried = new Map(); // site_id -> Map(label -> count)
   const progressedLabels = new Map(); // site_id -> Set(label) that ever moved slot or site
   const looked = new Map(); // site_id -> looks done; a second look is cheap and shows whether the first was a fluke
-  const seen = { npc: null, hiddenNpc: null };
+  const seen = { npc: null, missingPanelNpc: null };
   const placesAfterTalk = new Map();
   let stuck = 0;
   let walksAtSite = 0;
@@ -334,11 +363,12 @@ export async function runLegs({
     if (!walkedOut) return;
     const people = npcsHere(snap);
     const visiblePeople = peopleOf(last.screen);
-    if (seen.npc == null && visiblePeople.length > 0) {
+    const visibility = captureVisibilityConditions(last.screen);
+    if (seen.npc == null && visibility.admitted_npcs_count > 0 && visiblePeople.length > 0) {
       seen.npc = { place: placeName(snap), site_id: snap.position.site_id, labels: visiblePeople, sql_npcs: people.map((row) => row.entity_id) };
     }
-    if (seen.hiddenNpc == null && visiblePeople.length === 0 && people.length > 0)
-      seen.hiddenNpc = { place: placeName(snap), count: people.length };
+    if (seen.missingPanelNpc == null && visibility.admitted_npcs_count > 0 && visiblePeople.length === 0)
+      seen.missingPanelNpc = { place: placeName(snap), count: visibility.admitted_npcs_count };
     if (legs.talk.status === 'pass' && snap?.position?.site_id) {
       placesAfterTalk.set(snap.position.site_id, placeName(snap));
     }
@@ -495,9 +525,11 @@ export async function runLegs({
   else set('walk', 'blocked', exploreEnd.reason ?? 'ходов движения не было');
   if (seen.npc) set('meet', 'pass', `на месте ${seen.npc.place}: ${seen.npc.labels.join(', ')}`,
     `на экране: ${seen.npc.labels.map((label) => `«${label}»`).join(', ') || 'панель людей пуста'}; NPC в G6 игрока по SQL: ${seen.npc.sql_npcs.length}`);
-  else if (seen.hiddenNpc) set('meet', 'fail', `на месте ${seen.hiddenNpc.place} SQL видит NPC, но панель людей пуста`,
-    `NPC-размещений по SQL: ${seen.hiddenNpc.count}; на экране: панель людей пуста`);
-  else set('meet', 'blocked', `ни одного видимого NPC на местах: ${places.join(', ') || '—'} (${exploreEnd.reason ?? 'бюджет ходов'})`,
+  else if (seen.missingPanelNpc) set('meet', 'fail', `на месте ${seen.missingPanelNpc.place} восприятие допускает NPC, но панель людей пуста`,
+    `Допущенных NPC: ${seen.missingPanelNpc.count}; на экране: панель людей пуста`);
+  else if (legs.walk.status !== 'pass') set('meet', 'blocked', 'зависимость walk не выполнена', legs.walk.reason);
+  else set('meet', 'blocked', `${captureVisibilityConditions(last?.screen).admission_source === 'unknown'
+    ? 'допуск восприятия неизвестен' : 'восприятие не допускает NPC при текущих условиях'} на местах: ${places.join(', ') || '—'} (${exploreEnd.reason ?? 'бюджет ходов'})`,
     `NPC-размещений во всей партии по SQL: ${last?.snap?.npc_placements_all?.length ?? '?'}`);
   if (!done('talk')) set('talk', 'blocked', seen.npc ? `собеседник виден, но разговор не начат (${exploreEnd.reason})`
     : `нет видимого NPC: meet не пройден (${exploreEnd.reason ?? 'поиск завершён'})`);

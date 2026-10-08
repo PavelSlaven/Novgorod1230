@@ -30,6 +30,14 @@ Error envelope проверяет динамический message незави�
 и структурного кода; поле и служебная диагностика игроку не отражаются.
 Pass-target projection сохраняет одинаковые наблюдаемые подписи без номеров;
 разные action refs сохраняются. Различимые описания — пробел данных, не UI fallback.
+NPC-реплика получает в `social_context.interlocutor_speech` установленную связь,
+обращение и регистр по-русски. Обращение выбирается только из утверждённых
+устных форм вида известной связи, а без связи — из форм `unspecified`. Роль
+адресата задана всегда, роль говорящего может быть пустой; точность стороны:
+занятие > роль > пустая роль. Форма, которую другая не уступает на обеих
+сторонах и превосходит хотя бы на одной, исключается; обращение передаётся
+только при одном оставшемся кандидате. Конечный суффикс `; only for <rule_id>`
+в `situation` допускает форму лишь для ребра связи с этим `source_rule_ref`.
 
 Development-only gameplay gap tracing использует существующий private party
 log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
@@ -43,9 +51,12 @@ Gap Auditor работает отдельно в authoring workflow; в runtime 
 
 Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3
 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`,
-runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade и post-commit
-presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
+runtime-catalog pins, World Knowledge loader/encoder and D17 reranker worker, turn/public runtime facade и post-commit
+presentation delivery. Shared startup resolves its project root from the module location and accepts an explicit root override.
+На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
+
+For the v17 target composition, the pinned `C007c2` speech-register source is a startup requirement: missing, unreadable, pin-mismatched or unparsable data refuses startup with `SPATIAL_V3_TARGET_NPC_SPEECH_REGISTERS_REQUIRED` before listen. Other profiles keep the direct runtime-catalog reader fail-soft; an unavailable source yields no rows and one sanitized diagnostic.
 
 Committed v5 inventory mechanics defaults принадлежат `@rus/items-property`;
 game-server сохраняет границы validation своих adapters и делегирует им только
@@ -84,6 +95,11 @@ Temporal, equipment and routine inputs. NPC schedules bind the generated
 position directly and retain the existing `@rus/npc-runtime` transition state.
 Every generated NPC requires exact regional and clothing profile bindings;
 clothing belonging to another NPC cannot satisfy its requirements.
+The first-entry NPC loop starts with the compiled inputs' `occupied_names`
+and adds each selected name to a local scene list before materializing the next
+NPC. Name exclusion and weighted selection remain owned by `@rus/materialization`;
+the writer does not reroll names or reserve them across scenes. Pool exhaustion
+keeps a selected pool name with `name_provenance.reason = scene_pool_exhausted`.
 
 The optional target-release natural baseline boundary
 `prepareG4NaturalBaseline` validates exact catalog/G4/scene/Temporal
@@ -391,7 +407,7 @@ and adds no second transaction owner.
   recovery, не factual delivery. Factual replay возвращает тот же validated
   screen без narrator или gameplay execution; terminal mode не upgrade-ится в prose.
 
-Каждый applied direct `not_achieved`, в том числе после achieved speech, передаёт через общий turn-step result overlay недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и failed results выводятся в порядке step traces; unapplied plans не проецируются как результаты.
+Applied direct `not_achieved` сохраняет подтверждённые факты владельцев и препятствия, без статуса цели и сырого `grounded_attempt` завершённой semantic activity. Полное свежее восприятие без людей даёт локальный факт «В поле зрения никого нет.», не подтверждение контакта или молчания. Неизвестная причина отмечается `turn_step_not_achieved_projection_gap` только в private gameplay trace developer mode; model reason/reason_code на провод не идут. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и подтверждённые факты выводятся в порядке step traces; unapplied plans не проецируются как результаты.
 
 Revision 33 production temporal registration читает canonical NPC schedules,
 применяет approved routine transitions в текущем рабочем состоянии и сохраняет
@@ -430,6 +446,17 @@ slice сохраняет original/planned duration отдельно от actual 
 времени; paused execution и paused attempt используют существующие activity rows,
 а terminal completion operations не входят в прерванный commit.
 Domain-command ledger contracts сохраняются.
+
+Continuous body-time replay использует trusted profile, загруженный через
+`loadTargetBodyNeedsProfile` и переданный composition root; профиль не выбирается
+из prepared envelope. История сверяет fixed proposals с body-компонентами в их
+порядке, заново проверяет continuous proposals по профилю и exact elapsed, затем
+переигрывает цепочку от исходного состояния через `accumulateBodyTimeEffects`
+в `@rus/body-state`. Readback получает исходное состояние из
+`party_runtime.party_state_snapshots` по `party_id` и `base_state_version` и
+проверяет его digest и идентичность. Без trusted profile, исходного снимка или
+валидных replay-входов readback отклоняет запись; текущий округлённый scalar не
+используется как запасная точка начала.
 
 ## Не владеет
 
@@ -795,7 +822,7 @@ outcome воды вне SQL transaction.
 
 ## Ошибки, зависимости и effects
 
-Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Публичные категории отказа хода (HTTP 409, `src/http/contracts.js`): `TURN_NOT_SAVED` (`TURN_STEP_PLAN_INVALID`) и `WORLD_ACTION_UNAVAILABLE` (`M2C_TARGET_A1_APPLICABILITY_DATA_GAP`) — только при `turn_commit_status: not_started`, с безопасным текстом «Ход не сохранён…»; остальные 5xx маскируются `TEMPORARY_ACTION_UNAVAILABLE`, внутренняя причина — в server log. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
+Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider/filesystem calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. Публичные категории отказа хода (HTTP 409, `src/http/contracts.js`): `TURN_NOT_SAVED` (`TURN_STEP_PLAN_INVALID`) и `WORLD_ACTION_UNAVAILABLE` (`M2C_TARGET_A1_APPLICABILITY_DATA_GAP` или `SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP`; последний также при нехватке сцены сгенерированного перехода) — только при `turn_commit_status: not_started`, с безопасным текстом «Ход не сохранён…»; остальные 5xx маскируются `TEMPORARY_ACTION_UNAVAILABLE`, внутренняя причина — в server log. Party JSONL logging is best-effort diagnostics: a filesystem failure is reported to stderr but cannot turn an already committed gameplay operation into a client failure. A terminal narration rejection retained in the private party log exposes only its allowlisted failure code, failed audit checks and structural coverage references; prompts, prose, hidden DTOs and provider credentials/endpoints are excluded from that projection. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
 
 ## Production activation и тесты
 

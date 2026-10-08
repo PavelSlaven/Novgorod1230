@@ -91,7 +91,7 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
   if (elapsedLabel != null) visibleContext.turn_elapsed_label = elapsedLabel;
   if (place) {
     panels.route = projectLowerDvinaTraceRoutePanel({ currentPlace: place,
-      projection, visibleContext: screen.visible_context });
+      projection, visibleContext: currentVisibleScene });
   }
   const projected = {
     ...screen,

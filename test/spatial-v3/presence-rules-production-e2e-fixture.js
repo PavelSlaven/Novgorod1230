@@ -275,7 +275,7 @@ export function installPresenceProductionE2eFetch({
     assert.equal(String(url), 'https://target-acceptance.invalid/chat/completions');
     const call = JSON.parse(init.body);
     const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
-    const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+    const system = call.messages[0].content.replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
     const role = identifyLlmTestRole(call);
     requestLog?.push({ system, user: modelInput });
     let output;

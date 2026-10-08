@@ -50,7 +50,7 @@ test('v17 dense-fog start offers first-action movement with committed retry',
     let visibilityCheckError = null;
     globalThis.fetch = async (url, init) => {
       const call = JSON.parse(init.body);
-      const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+      const system = call.messages[0].content.replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
       const plannerCall = system.startsWith(
         'Верни только один JSON-объект с семантическим выбором для одного шага хода.');
       let movementChoices = null;

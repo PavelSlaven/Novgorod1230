@@ -39,6 +39,7 @@ import { createProductionLlmRoleRunner } from
   '../../infrastructure/provider/openai-compatible.js';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
+import { compareGameTimestamp } from '@rus/time-events-history';
 import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
   '@rus/turn/temporal-advance';
 import { calculatePackingSlots } from '@rus/items-property';
@@ -74,6 +75,7 @@ import { createNeedsCheckRegionResolver } from
 import { createPostgresWorldBaseReader } from
   '../../infrastructure/postgres/world-base.js';
 import { createRuntimeCatalogCoordinator } from '../runtime-catalog.js';
+import { createBodyNeedsTemporalAdapter } from '../body-needs-temporal.js';
 import { readAndProjectSpatialV3CurrentVisibleContext } from
   '../spatial-v3-current-visible-context.js';
 
@@ -84,6 +86,7 @@ export function createTraceTurnRuntime({
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
   authoredTurnProfile,
+  bodyNeedsProfile = null,
   postActionPerceptionProfile = null,
   authoredSpatialSemanticProfile = null,
   authoredNpcSemanticRemainderProfile = null,
@@ -211,9 +214,19 @@ export function createTraceTurnRuntime({
     createSpatialSemanticResolver: spatialSemanticResolverFactory,
     createModeOwnerCapabilities: createLowerDvinaTraceNpcActorStepModeOwnerCapabilities
   });
+  const bodyNeedsEnabled = bodyNeedsProfile?.approved === true
+    && bodyNeedsProfile?.import_authorized === true
+    && bodyNeedsProfile?.activation_authorized === true;
+  const bodyTimeEffectAdapter = bodyNeedsEnabled
+    ? createBodyNeedsTemporalAdapter({ body_needs_profile: bodyNeedsProfile })
+    : null;
+  const bodyNeedsSources = bodyNeedsEnabled
+    ? bodyNeedsTemporalSourceRegistrations(bodyNeedsProfile)
+    : [];
   const temporalAdvanceOwner = createTemporalAdvanceOwner({
     source_registrations: lowerDvinaTraceTemporalSourceRegistrations([
       ...(config.temporalBoundaryRegistrations ?? []),
+      ...bodyNeedsSources,
       npcRoutineTemporalRegistration(),
       ...(localFireProfile?.profile?.status==='approved'
         ?[lowerDvinaTraceLocalFireTemporalRegistration(
@@ -228,7 +241,9 @@ export function createTraceTurnRuntime({
     ]
   });
   const npcRuntimePorts = createNpcRuntimePorts({ roleRunner,
-    worldKnowledgeGrounder });
+    worldKnowledgeGrounder,
+    npcSpeechAddressForms: materializationInputs?.npc_speech_address_forms ?? [],
+    npcSpeechRegisters: materializationInputs?.npc_speech_registers ?? [] });
   const projectCurrentSpatialContext = createCurrentSpatialContextProjector({
     partyPool, readCurrentSources,
     onProjected: config.onCurrentSpatialContextProjection ?? null
@@ -239,12 +254,19 @@ export function createTraceTurnRuntime({
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
+      trustedBodyNeedsBindingPin: bodyTimeEffectAdapter?.trustedBindingPin ?? null,
+      trustedBodyNeedsProfile: bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null,
       projectCurrentSpatialContext,
       readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,
       readCurrentVisibleContext,
       projectEnvironmentAtClock: targetStartRuntime == null ? null
         : createTargetCurrentFactualContext({ partyPool, committer,
-          runtime: targetStartRuntime, authoredRuntimeBindingResolver }).projectEnvironmentAtClock
+          runtime: targetStartRuntime, authoredRuntimeBindingResolver,
+          trustedBodyNeedsBindingPin:
+            bodyTimeEffectAdapter?.trustedBindingPin ?? null,
+          trustedBodyNeedsProfile:
+            bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null
+        }).projectEnvironmentAtClock
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
@@ -319,6 +341,7 @@ export function createTraceTurnRuntime({
     }),
     randomSourceFactory: createTraceRandomSourceFactory({ env }),
     temporalAdvanceOwner,
+    bodyTimeEffectAdapter,
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret,
     llmTurnBudget: turnBudget,
@@ -331,6 +354,76 @@ export function createTraceTurnRuntime({
   });
   return Object.freeze({ ...runtime, llmDiagnostics,
     authoredOpeningNarration });
+}
+
+function bodyNeedsTemporalSourceRegistrations(profile) {
+  const sourceProfiles = Object.values(profile.profiles ?? {});
+  return sourceProfiles.map((source) => {
+    const profileId = source.payload.body_effect_profile_id;
+    const version = String(source.version);
+    const ruleRef = versionedRef('body_effect', profileId, version);
+    const policyRef = versionedRef('condition_set',
+      `${profileId}:threshold-boundary`, version);
+    return {
+      rule_ref: ruleRef,
+      policy_ref: policyRef,
+      resolve(candidate, context) {
+        if (candidate.boundary_kind !== 'body_threshold'
+            || candidate.rule_ref?.entity_ref?.entity_kind !== 'body_effect'
+            || candidate.rule_ref?.entity_ref?.entity_id !== profileId
+            || candidate.policy_ref?.entity_ref?.entity_kind !== 'condition_set'
+            || candidate.policy_ref?.entity_ref?.entity_id
+              !== `${profileId}:threshold-boundary`) {
+          throw Object.assign(new Error('BODY_NEEDS_THRESHOLD_BINDING_MISMATCH'), {
+            code: 'BODY_NEEDS_THRESHOLD_BINDING_MISMATCH'
+          });
+        }
+        const threshold = context.projection.body_threshold_descriptors?.find(
+          (entry) => entry.boundary_id === candidate.boundary_id
+            && entry.candidate_digest === canonicalDigest(candidate));
+        const expectedMetric = BODY_THRESHOLD_PROFILE_METRICS[profileId];
+        if (!threshold || threshold.metric !== expectedMetric
+            || !threshold.threshold_value
+            || threshold.threshold_value.denominator !== '1'
+            || !['0', '20', '50'].includes(threshold.threshold_value.numerator)
+            || threshold.critical !== (threshold.threshold_value.numerator === '0')) {
+          throw Object.assign(new Error('TRACE_BODY_THRESHOLD_TEMPORAL_SOURCE_PROJECTION_INVALID'), {
+            code: 'TRACE_BODY_THRESHOLD_TEMPORAL_SOURCE_PROJECTION_INVALID'
+          });
+        }
+        const critical = threshold.threshold_value.numerator === '0';
+        const stop = threshold.metric === 'energy' && critical
+          && compareGameTimestamp(candidate.scheduled_at,
+          context.request.inclusive_limit_timestamp) < 0;
+        const sourceEvent = { entity_kind: 'temporal_boundary_candidate',
+          entity_id: candidate.boundary_id };
+        const proposal = {
+          boundary_kind: 'body_threshold',
+          boundary_id: candidate.boundary_id,
+          candidate_digest: threshold.candidate_digest,
+          source_event_ref: sourceEvent,
+          subject_ref: candidate.primary_subject_ref,
+          scope_ref: candidate.scope_ref,
+          threshold: { metric: threshold.metric,
+            value: threshold.threshold_value },
+          ...(stop ? { reason_code: 'event_effect_gap' } : {})
+        };
+        return { disposition: 'execute', proposals: [proposal],
+          stop_after_current_batch: stop };
+      }
+    };
+  });
+}
+
+const BODY_THRESHOLD_PROFILE_METRICS = Object.freeze({
+  satiety_hourly_spend_v2: 'satiety',
+  energy_awake_spend_v2: 'energy',
+  starvation_health_harm_v2: 'health'
+});
+
+function versionedRef(entityKind, entityId, authoringVersion) {
+  return { entity_ref: { entity_kind: entityKind, entity_id: entityId },
+    authoring_version: authoringVersion };
 }
 
 export function createCurrentSpatialContextProjector({ partyPool,

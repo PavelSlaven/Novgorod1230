@@ -9,12 +9,14 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
   generation_template_ref: template, canonical_g5_ref: canonical,
   scene, npc_inputs: inputs, equipment_catalog: equipment,
   npc_relationship_materialization_rules: relationshipRules = [], relationship_compositions = [],
-  started_at: startedAt, calendar_profile: calendarProfile } = {}) {
+  started_at: startedAt, calendar_profile: calendarProfile,
+  selectItemMaterial } = {}) {
   if (![partyId, runId, changeSetId, worldRevisionId, scene?.site_id].every(text)
       || scene.party_id !== partyId || !Array.isArray(scene.rows)
       || !Array.isArray(inputs) || inputs.length === 0) gap('NPC_FIRST_ENTRY_INPUT_GAP');
   const positions = new Map(scene.rows.filter((row) => row.target_table === 'scene_position_nodes')
     .map(({ id, record }) => [id, record]));
+  const occupiedNames = new Set(inputs[0]?.occupied_names ?? []);
   const slots = new Set();
   const counts = new Map();
   const results = inputs.map((input) => {
@@ -39,8 +41,12 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
       counts.set(positionId, (counts.get(positionId) ?? 0) + 1);
       if (counts.get(positionId) > position.capacity) gap('NPC_FIRST_ENTRY_CAPACITY_GAP');
     }
-    const result = materializeApprovedProceduralNpc({ ...input, party_id: partyId, run_id: runId });
+    const result = materializeApprovedProceduralNpc({ ...input, occupied_names: [...occupiedNames],
+      party_id: partyId, run_id: runId });
     const npc = structuredClone(result.npc);
+    if (typeof npc.identity_state.canonical_name === 'string' && npc.identity_state.canonical_name.length > 0) {
+      occupiedNames.add(npc.identity_state.canonical_name);
+    }
     npc.position_id = offstage ? null : positionId;
     npc.routine_state = structuredClone(createNpcRoutineState({ profile: input.routine_profile,
       calendar_profile: calendarProfile, started_at: startedAt,
@@ -70,6 +76,8 @@ export function prepareGeneratedNpcFirstEntry({ party_id: partyId, run_id: runId
     request_id: changeSetId, world_revision_id: worldRevisionId, g4_id: g4.id,
     actor_candidate_instance_map: results.flatMap((result) => result.actor_candidate_instance_map),
     initial_equipment_candidates: candidates, catalog_digest: equipment.catalog_digest,
+    item_template_category_bindings: equipment.item_template_category_bindings ?? [],
+    select_item_material: selectItemMaterial,
     item_templates: equipment.item_templates, item_inventory_profiles: equipment.item_inventory_profiles,
     item_visual_profiles: equipment.item_visual_profiles });
   const items = equipmentResult.item_instances;

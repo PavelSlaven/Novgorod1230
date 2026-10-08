@@ -71,10 +71,13 @@ export function createTracePhase9VisibleProjector({ fallback, contracts }) {
   } });
 }
 export function createTracePhase9BodyEffect({ fallback }) {
-  return Object.freeze({ apply(input) {
-    if (input.consequence?.phase9_kind == null) return fallback.apply(input);
-    return { owner: '@rus/body-state', applied: false, proposal: null,
-      state_after: structuredClone(input.committed_state.body_state) };
-  } });
+  return Object.freeze({
+    supportsBodyTimeEffects: fallback?.supportsBodyTimeEffects === true,
+    apply(input) {
+      if (input.consequence?.phase9_kind == null) return fallback.apply(input);
+      return { owner: '@rus/body-state', applied: false, proposal: null,
+        state_after: structuredClone(input.committed_state.body_state) };
+    }
+  });
 }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

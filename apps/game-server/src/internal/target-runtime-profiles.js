@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { readApprovedCanonicalFiniteApplicability } from
   '../infrastructure/postgres/ordinary-materialization-canonical-natural.js';
 import { createHash } from 'node:crypto';
@@ -58,10 +58,12 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
   const postActionPerceptionProfile = await loadTargetPostActionPerceptionProfile({
     rootDir, worldRevisionId
   });
+  const bodyNeedsProfile = await loadTargetBodyNeedsProfile({ rootDir, worldRevisionId });
   return freeze({ schema: 'rus.live_world_runtime.target_runtime_profiles_loaded.v1',
     world_revision_id: worldRevisionId, candidate_sha256: manifest.source_candidate_sha256,
     manifest_sha256: pin.manifest_sha256,
     post_action_perception_profile: postActionPerceptionProfile,
+    body_needs_profile: bodyNeedsProfile,
     finite_first_entry: finiteFirstEntry,
     // Supplied only after the release-selected mapped approval has been checked.
     turn_profile: Object.freeze({ profile: turn, pin: turnPin, selected_profile_pin: { ...turnPin } }),
@@ -78,6 +80,163 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
     capability_gaps: [...data.capability_gaps, ...data.consumer_gaps.filter((entry) =>
       !['M2C_TARGET_A1_PROFILE_CONSUMER_GAP', 'M2C_TARGET_N1_PROFILE_BINDING_CONSUMER_GAP'].includes(entry.code))],
     applicability: data.applicability });
+}
+
+const BODY_NEEDS_BINDING_PATH =
+  'data/world-catalogs/novgorod/live-world-runtime-v17/body-needs-binding.v1.json';
+const BODY_NEEDS_DATASET_PATH =
+  'data/world-catalogs/novgorod/temporal-v4/datasets/body_time_effect_profiles_thresholds.json';
+const BODY_NEEDS_APPROVAL_PATH =
+  'data/world-catalogs/novgorod/temporal-v4/approvals/body_time_effect_profiles_thresholds.json';
+const BODY_NEEDS_APPROVAL_ATTESTATION_DIRECTORY =
+  'data/world-catalogs/novgorod/live-world-runtime-v17';
+const BODY_NEEDS_APPROVAL_ATTESTATION_PATTERN =
+  /^body-needs-binding\.v1\.approval-attestation.*\.json$/u;
+const BODY_NEEDS_APPROVAL_ATTESTATION_SCHEMA =
+  'rus.live_world_runtime_v17_body_needs_binding_approval.v1';
+const BODY_NEEDS_PROFILE_IDS = [
+  'satiety_hourly_spend_v2', 'energy_awake_spend_v2', 'starvation_health_harm_v2'
+];
+const BODY_NEEDS_SLEEP_ID = 'energy_sleep_recovery_v1';
+
+/** Loads approved source profiles while preserving the separate binding candidate's pending status. */
+export async function loadTargetBodyNeedsProfile({ rootDir = process.cwd(), worldRevisionId } = {}) {
+  try {
+    const [bindingBytes, datasetBytes, approvalBytes] = await Promise.all([
+      readFile(resolve(rootDir, BODY_NEEDS_BINDING_PATH)),
+      readFile(resolve(rootDir, BODY_NEEDS_DATASET_PATH)),
+      readFile(resolve(rootDir, BODY_NEEDS_APPROVAL_PATH)),
+    ]);
+    const binding = JSON.parse(bindingBytes);
+    const dataset = JSON.parse(datasetBytes);
+    const approval = JSON.parse(approvalBytes);
+    const datasetSha = hash(datasetBytes);
+    const approvalSha = hash(approvalBytes);
+    if (binding.schema !== 'rus.live_world_runtime_v17.body_needs_binding_candidate.v1'
+      || binding.version !== 1 || binding.status !== 'candidate_only_pending_review'
+      || binding.approved !== false || binding.import_authorized !== false
+      || binding.activation_authorized !== false
+      || binding.target?.world_revision_id !== worldRevisionId
+      || binding.source_artifacts?.dataset?.path !== BODY_NEEDS_DATASET_PATH
+      || binding.source_artifacts?.dataset?.sha256 !== datasetSha
+      || binding.source_artifacts?.approval?.path !== BODY_NEEDS_APPROVAL_PATH
+      || binding.source_artifacts?.approval?.sha256 !== approvalSha
+      || approval.schema !== 'rus.temporal-world-v4.data-family-approval.v1'
+      || approval.family_id !== 'body_time_effect_profiles_thresholds'
+      || approval.status !== 'approved' || !Array.isArray(approval.record_ids)
+      || approval.artifacts?.dataset?.sha256 !== datasetSha
+      || JSON.stringify([...approval.record_ids].sort()) !== JSON.stringify([
+        'record:body_time_effect_profiles_thresholds:energy_awake_spend_v2',
+        'record:body_time_effect_profiles_thresholds:energy_sleep_recovery_v1',
+        'record:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2',
+        'record:body_time_effect_profiles_thresholds:starvation_health_harm_v2'
+      ])
+      || !Array.isArray(dataset) || dataset.length !== 4
+      || !Array.isArray(binding.effort_bindings) || binding.effort_bindings.length !== 5) bodyNeedsGap();
+    const byId = new Map(dataset.map((record) => [record.record_id, record]));
+    const candidateSha = hash(bindingBytes);
+    const approvalAttestation = await loadBodyNeedsApprovalAttestation({
+      rootDir, candidateSha
+    });
+    const bindingsByEffort = new Map(binding.effort_bindings.map((entry) => [entry.effort_id, entry.activity_intensity_id]));
+    if (bindingsByEffort.size !== 5
+      || ['none', 'light', 'moderate'].some((effort) => bindingsByEffort.get(effort) !== 'rest_or_ordinary_activity')
+      || ['heavy', 'extreme'].some((effort) => bindingsByEffort.get(effort) !== 'heavy_activity')) bodyNeedsGap();
+    const expected = BODY_NEEDS_PROFILE_IDS.map((id) => `record:body_time_effect_profiles_thresholds:${id}`);
+    if (binding.profiles?.filter((entry) => entry.binding_candidate === true).length !== 3
+      || BODY_NEEDS_PROFILE_IDS.some((id) => {
+        const record = byId.get(`record:body_time_effect_profiles_thresholds:${id}`);
+        return !record || record.status !== 'approved' || record.record_kind !== 'body_time_effect_profile'
+          || record.family_id !== 'body_time_effect_profiles_thresholds'
+          || record.payload?.body_effect_profile_id !== id;
+      })
+      || binding.profiles.some((entry) => entry.payload_id === BODY_NEEDS_SLEEP_ID && entry.binding_candidate !== false)
+      || expected.some((recordId) => !binding.profiles.some((entry) => entry.record_id === recordId
+        && entry.binding_candidate === true
+        && Array.isArray(entry.source_refs) && entry.source_refs.length > 0
+        && entry.source_refs.every((ref) => ref.path === BODY_NEEDS_DATASET_PATH
+          && /^\d+-\d+$/u.test(ref.lines) && typeof ref.use === 'string' && ref.use.length > 0)))) bodyNeedsGap();
+    return freeze({ schema: 'rus.live_world_runtime.body_needs_profile_candidate.v1',
+      status: binding.status,
+      approved: approvalAttestation?.attestation.approved ?? false,
+      import_authorized: approvalAttestation?.attestation.import_authorized ?? false,
+      activation_authorized: approvalAttestation?.attestation.activation_authorized ?? false,
+      world_revision_id: worldRevisionId, candidate_path: BODY_NEEDS_BINDING_PATH,
+      candidate_sha256: candidateSha, approval_attestation: approvalAttestation == null ? null : {
+        path: approvalAttestation.path, sha256: approvalAttestation.sha256,
+        verdict: approvalAttestation.attestation.verdict
+      }, dataset_path: BODY_NEEDS_DATASET_PATH,
+      dataset_sha256: datasetSha, source_approval_path: BODY_NEEDS_APPROVAL_PATH,
+      source_approval_sha256: approvalSha,
+      effort_bindings: binding.effort_bindings,
+      profiles: Object.fromEntries(BODY_NEEDS_PROFILE_IDS.map((id) => [id,
+        (() => {
+          const record = byId.get(`record:body_time_effect_profiles_thresholds:${id}`);
+          return { record_id: record.record_id, version: String(record.version),
+            source_digest: canonicalDigest({ record_id: record.record_id,
+              family_id: record.family_id, record_kind: record.record_kind,
+              record_version: record.version, applicability: record.applicability,
+              status: record.status, provenance_refs: record.provenance_refs,
+              normalized_reference_ids: record.normalized_reference_ids,
+              source_history_refs: record.source_history_refs, payload: record.payload }),
+            payload: record.payload };
+        })()])) });
+  } catch (error) {
+    if (['SPATIAL_V3_TARGET_BODY_NEEDS_PROFILE_REQUIRED',
+      'SPATIAL_V3_TARGET_BODY_NEEDS_APPROVAL_ATTESTATION_INVALID',
+      'SPATIAL_V3_TARGET_BODY_NEEDS_APPROVAL_ATTESTATION_AMBIGUOUS'].includes(error?.code)) throw error;
+    bodyNeedsGap();
+  }
+}
+
+async function loadBodyNeedsApprovalAttestation({ rootDir, candidateSha }) {
+  const directory = resolve(rootDir, BODY_NEEDS_APPROVAL_ATTESTATION_DIRECTORY);
+  let names;
+  try { names = await readdir(directory); }
+  catch (error) {
+    if (error?.code === 'ENOENT') return null;
+    throw error;
+  }
+  const matches = [];
+  for (const name of names) {
+    if (!BODY_NEEDS_APPROVAL_ATTESTATION_PATTERN.test(name)) continue;
+    const path = `${BODY_NEEDS_APPROVAL_ATTESTATION_DIRECTORY}/${name}`;
+    let attestation;
+    let bytes;
+    try {
+      bytes = await readFile(resolve(rootDir, path));
+      attestation = JSON.parse(bytes);
+    } catch {
+      bodyNeedsAttestationInvalid();
+    }
+    // Other candidates in the same directory do not attest this binding.
+    if (attestation?.candidate_path !== BODY_NEEDS_BINDING_PATH) continue;
+    if (attestation.candidate_sha256 !== candidateSha
+      || attestation.schema !== BODY_NEEDS_APPROVAL_ATTESTATION_SCHEMA
+      || !['APPROVE', 'APPROVE_CONDITIONAL'].includes(attestation.verdict)
+      || typeof attestation.approved !== 'boolean'
+      || typeof attestation.import_authorized !== 'boolean'
+      || typeof attestation.activation_authorized !== 'boolean'
+      || !nonempty(attestation.auditor_ref)
+      || !nonempty(attestation.independence_basis)
+      || !nonempty(attestation.reviewed_repository_head)
+      || !nonempty(attestation.approval)) bodyNeedsAttestationInvalid();
+    matches.push({ path, sha256: hash(bytes), attestation });
+  }
+  if (matches.length > 1) bodyNeedsAttestationAmbiguous();
+  return matches[0] ?? null;
+}
+
+function nonempty(value) { return typeof value === 'string' && value.trim().length > 0; }
+function bodyNeedsAttestationInvalid() {
+  throw serverError('SPATIAL_V3_TARGET_BODY_NEEDS_APPROVAL_ATTESTATION_INVALID',
+    'The body-needs approval attestation must exactly identify and approve the pending candidate.',
+    { status: 503, details: { severity: 'hard_block' } });
+}
+function bodyNeedsAttestationAmbiguous() {
+  throw serverError('SPATIAL_V3_TARGET_BODY_NEEDS_APPROVAL_ATTESTATION_AMBIGUOUS',
+    'More than one body-needs approval attestation matches the pending candidate.',
+    { status: 503, details: { severity: 'hard_block' } });
 }
 
 export function isUniqueTargetO1Applicability(applicability) {
@@ -308,6 +467,12 @@ async function loadTargetFiniteStageB({ read, worldRevisionId, baseProfile }) {
 
 function finiteGap() { throw serverError('SPATIAL_V3_TARGET_FINITE_PROFILE_APPROVAL_REQUIRED',
   'Exact separately approved finite-only policy and source authoring are required.', { status: 503 }); }
+
+function bodyNeedsGap() {
+  throw serverError('SPATIAL_V3_TARGET_BODY_NEEDS_PROFILE_REQUIRED',
+    'Exact pending body-needs binding candidate and approved Temporal source profiles are required.',
+    { status: 503 });
+}
 
 function perceptionProfileGap() {
   throw serverError('SPATIAL_V3_TARGET_POST_ACTION_PERCEPTION_PROFILE_INVALID',

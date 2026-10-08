@@ -1,11 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { validateInventoryArchetypes } from '@rus/items-property';
 
 export const INVENTORY_ARCHETYPE_LOOKUP_PATH =
   'data/world-catalogs/common/inventory-archetypes.json';
 
 const cache = new Map();
+const PROJECT_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 
 export class CommonCatalogLookupError extends Error {
   constructor(code, message, details = {}) {
@@ -17,7 +19,7 @@ export class CommonCatalogLookupError extends Error {
 }
 
 export async function loadCommonCatalogLookupRecords({
-  rootDir = process.cwd()
+  rootDir = PROJECT_ROOT
 } = {}) {
   const path = resolve(rootDir, INVENTORY_ARCHETYPE_LOOKUP_PATH);
   if (!cache.has(path)) {

@@ -1,15 +1,24 @@
 import { canonicalDigest } from '@rus/materialization';
+import { accumulateBodyTimeEffects, applyApprovedFixedBodyEffect } from
+  '@rus/body-state';
+import { createBodyNeedsTemporalAdapter } from
+  '../../runtime/body-needs-temporal.js';
+import { addRationalMinutes, compareRationalMinutes,
+  normalizeRationalMinutes } from '@rus/time-events-history';
 import { row } from './first-playable/plan-shared.js';
 import { exactShape, fail, plain, text } from
   './lower-dvina-trace-turn-step-persistence-support.js';
 
 const BODY_METRICS = ['health', 'satiety', 'energy'];
+const BODY_HISTORY_SLICES = Symbol('body_history_slices');
 
 export function prepareTurnStepBodyHistory({
-  partyId, state, factual, batch, changeSetId, idemId
+  partyId, state, factual, batch, changeSetId, idemId,
+  trustedBodyNeedsBindingPin = null, trustedBodyNeedsProfile = null
 }) {
   if (factual.body_update?.applied !== true) return null;
-  const effectRef = buildTurnStepBodyEffectRef({ factual, batch });
+  const effectRef = buildTurnStepBodyEffectRef({ factual, batch, state,
+    trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
   const occurredAt = factual.time_update?.clock_after;
   if (!gameTimestamp(occurredAt)) bodyHistoryFail('clock_after is unavailable');
   const bodyEvent = batch.operations?.find(({ target, value }) =>
@@ -39,8 +48,7 @@ export function preparedBodyHistoryInput({ factual, batch, bodySlices = [] }) {
   if (bodySlices.length === 0) return { factual, batch };
   const activityIds = new Set(bodySlices.map(
     ({ operation_ref: ref }) => ref));
-  return {
-    factual: bodySlices.length === 1 ? {
+  const preparedFactual = bodySlices.length === 1 ? {
       ...factual,
       consequence: bodySlices[0].consequence,
       body_update: bodySlices[0].body_update
@@ -49,18 +57,28 @@ export function preparedBodyHistoryInput({ factual, batch, bodySlices = [] }) {
       consequence: { ...factual.consequence,
         state_changes: bodySlices.flatMap(
           ({ consequence }) => consequence.state_changes ?? []) }
-    },
+    };
+  Object.defineProperty(preparedFactual, BODY_HISTORY_SLICES, {
+    value: structuredClone(bodySlices)
+  });
+  return {
+    factual: preparedFactual,
     batch: { ...batch, operations: batch.operations.filter(
       ({ target, value }) => target === 'party_events'
         && activityIds.has(value.activity_id)) }
   };
 }
 
-export function buildTurnStepBodyEffectRef({ factual, batch }) {
+export function buildTurnStepBodyEffectRef({ factual, batch, state = null,
+  trustedBodyNeedsBindingPin = null, trustedBodyNeedsProfile = null }) {
   const proposal = factual.body_update.proposal;
   const consequenceRef = factual.consequence?.body_effect_ref ?? null;
   const components = (factual.consequence?.state_changes ?? []).filter(
     ({ kind }) => ['semantic_activity', 'direct_body_event'].includes(kind));
+  if (proposal?.proposal_kind === 'body_time_effect_composite') {
+    return buildBodyTimeEffectRef({ factual, batch, proposal, components, state,
+      trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
+  }
   const proposals = proposal?.component_proposals;
   if (!exactShape(proposal, [
         'schema', 'profile_ref', 'profile_pin', 'component_proposals',
@@ -135,6 +153,566 @@ export function buildTurnStepBodyEffectRef({ factual, batch }) {
     component_effects: componentEffects,
     state_after_digest: canonicalDigest(factual.body_update.state_after)
   };
+}
+
+export function validateTurnStepBodyTimeProposal({ factual, batch, state,
+  trustedBodyNeedsBindingPin = null, trustedBodyNeedsProfile = null }) {
+  const proposal = factual?.body_update?.proposal;
+  if (proposal?.proposal_kind !== 'body_time_effect_composite') {
+    bodyHistoryFail('continuous body-time composite owner is invalid');
+  }
+  return buildBodyTimeEffectRef({ factual, batch, proposal,
+    components: (factual.consequence?.state_changes ?? []).filter(
+      ({ kind }) => ['semantic_activity', 'direct_body_event'].includes(kind)),
+    state, trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
+}
+
+function buildBodyTimeEffectRef({ factual, batch, proposal, components, state,
+  trustedBodyNeedsBindingPin, trustedBodyNeedsProfile }) {
+  const proposals = proposal.component_proposals;
+  const proposalKeys = plain(proposal)
+    ? Object.keys(proposal).sort() : null;
+  if (!exactShape(proposal, ['proposal_kind', 'fixed_effect_proposals',
+    'component_proposals', 'exact_changes'])) {
+    bodyHistoryFail('continuous body-time composite owner is invalid', {
+      failed_condition: 'shape_keys', keys: proposalKeys
+    });
+  }
+  if (!Array.isArray(proposals) || proposals.length === 0) {
+    bodyHistoryFail('continuous body-time composite owner is invalid', {
+      failed_condition: 'component_proposals'
+    });
+  }
+  if (!Array.isArray(proposal.fixed_effect_proposals)) {
+    bodyHistoryFail('continuous body-time composite owner is invalid', {
+      failed_condition: 'fixed_effect_proposals'
+    });
+  }
+  if (components.length === 0) {
+    const stateChanges = factual.consequence?.state_changes;
+    const stateChangeKinds = stateChanges === undefined ? null
+      : Array.isArray(stateChanges)
+        ? [...new Set(stateChanges.map(({ kind }) => kind))].sort()
+        : null;
+    bodyHistoryFail('continuous body-time composite owner is invalid', {
+      failed_condition: 'components_empty',
+      state_change_kinds: stateChangeKinds
+    });
+  }
+  const activityById = new Map();
+  for (const component of components) {
+    if (component.kind === 'semantic_activity') {
+      if (!text(component.activity_id)) {
+        bodyHistoryFail('continuous body effect activity identity is invalid');
+      }
+    } else if (component.kind !== 'direct_body_event'
+        || !text(component.operation_id)) {
+      bodyHistoryFail('continuous body effect component identity is invalid');
+    }
+    if (component.kind !== 'semantic_activity') continue;
+    const effort = component.effort ?? component.body_effect_context?.effort;
+    if (!text(effort) || activityById.has(component.activity_id)) {
+      bodyHistoryFail('continuous activity identity or effort is invalid');
+    }
+    activityById.set(component.activity_id, { component, effort, profiles: [] });
+  }
+  let bindingPin = null;
+  const allProfilePins = new Map();
+  const groupedProposals = new Map();
+  for (const [index, ownerProposal] of proposals.entries()) {
+    const activityId = ownerProposal?.activity_id;
+    const activity = activityById.get(activityId);
+    if (!activity || !exactBodyTimeProposal(ownerProposal)
+        || ownerProposal.effort !== activity.effort
+        || !bodyTimeProfileMatchesMetric(ownerProposal)) {
+      bodyHistoryFail('continuous ordered component owner is invalid', { index });
+    }
+    if (bindingPin == null) bindingPin = structuredClone(ownerProposal.binding_pin);
+    else if (canonicalDigest(bindingPin)
+        !== canonicalDigest(ownerProposal.binding_pin)) {
+      bodyHistoryFail('body-time binding pin differs across proposals', { index });
+    }
+    const profileKey = canonicalDigest(ownerProposal.profile_pin);
+    allProfilePins.set(profileKey, structuredClone(ownerProposal.profile_pin));
+    const group = groupedProposals.get(activityId) ?? [];
+    group.push(ownerProposal);
+    groupedProposals.set(activityId, group);
+  }
+  if (!validBindingPin(trustedBodyNeedsBindingPin)) {
+    bodyHistoryFail('continuous proposals lack trusted body binding approval', {
+      failed_condition: 'trusted_pin_invalid'
+    });
+  }
+  if (trustedBodyNeedsProfile?.approved !== true) {
+    bodyHistoryFail('continuous proposals lack a trusted body needs profile', {
+      failed_condition: 'trusted_body_profile_missing'
+    });
+  }
+  if (!validBindingPin(bindingPin)) {
+    bodyHistoryFail('continuous proposals lack trusted body binding approval', {
+      failed_condition: 'proposal_pin_invalid'
+    });
+  }
+  if (!sameBindingApproval(bindingPin, trustedBodyNeedsBindingPin)) {
+    bodyHistoryFail('continuous proposals lack trusted body binding approval', {
+      failed_condition: 'binding_approval_mismatch'
+    });
+  }
+  if (groupedProposals.size !== activityById.size) {
+    bodyHistoryFail('continuous proposals lack trusted body binding approval', {
+      failed_condition: 'activity_group_count',
+      proposal_group_count: groupedProposals.size,
+      activity_count: activityById.size
+    });
+  }
+  let elapsed = normalizeRationalMinutes({ numerator: '0', denominator: '1' });
+  const activityEffects = [];
+  for (const [activityId, activity] of activityById) {
+    const activityProposals = groupedProposals.get(activityId) ?? [];
+    const metrics = activityProposals.flatMap(({ metric_changes: changes }) =>
+      changes.map(({ metric }) => metric));
+    const satietyProposal = activityProposals.find(({ metric_changes }) =>
+      metric_changes[0]?.metric === 'satiety');
+    const energyProposal = activityProposals.find(({ metric_changes }) =>
+      metric_changes[0]?.metric === 'energy');
+    const healthProposal = activityProposals.find(({ metric_changes }) =>
+      metric_changes[0]?.metric === 'health');
+    const elapsedForActivity = normalizeElapsed(satietyProposal?.exact_elapsed);
+    if (new Set(metrics).size !== metrics.length
+        || metrics.some((metric) => !['satiety', 'energy', 'health'].includes(metric))
+        || !validPositiveElapsed(elapsedForActivity)
+        || !sameRational(energyProposal?.exact_elapsed, elapsedForActivity)
+        || (healthProposal != null
+          && (!validPositiveElapsed(healthProposal.exact_elapsed)
+            || compareRationalMinutes(
+              normalizeElapsed(healthProposal.exact_elapsed),
+              elapsedForActivity) > 0))) {
+      bodyHistoryFail('continuous activity profile set or elapsed is invalid', {
+        activity_id: activityId
+      });
+    }
+    try {
+      elapsed = addRationalMinutes(elapsed, elapsedForActivity);
+    } catch (cause) {
+      bodyHistoryFail('continuous component elapsed is invalid', {
+        activity_id: activityId, cause: cause.message
+      });
+    }
+    activityEffects.push({
+      kind: 'semantic_activity',
+      component_ref: activityId,
+      effort: activity.effort,
+      exact_elapsed: structuredClone(elapsedForActivity),
+      profile_effects: activityProposals.map((ownerProposal) => ({
+        profile_ref: structuredClone(ownerProposal.profile_ref),
+        time_effect_policy_ref: structuredClone(ownerProposal.time_effect_policy_ref),
+        profile_pin: structuredClone(ownerProposal.profile_pin),
+        proposal_digest: canonicalDigest(ownerProposal)
+      })),
+      fixed_effect: fixedEffectForActivity(proposal.fixed_effect_proposals,
+        components, activityId)
+    });
+  }
+  let committedElapsed;
+  try {
+    committedElapsed = normalizeRationalMinutes(
+      factual.time_update?.exact_elapsed?.exact_minutes);
+  } catch (cause) {
+    bodyHistoryFail('committed body-time elapsed is invalid', {
+      cause: cause.message
+    });
+  }
+  if (compareRationalMinutes(elapsed, committedElapsed) !== 0) {
+    bodyHistoryFail('continuous body elapsed differs from committed time');
+  }
+  const bodyEvent = batch.operations?.find(({ target, value }) =>
+    target === 'party_state' && value?.operation_kind === 'apply_body_event');
+  const actor = bodyEvent?.value?.payload?.actor_ref ?? state?.actor_id;
+  if (state == null) {
+    bodyHistoryFail('continuous body history lacks its root baseline', {
+      failed_condition: 'root_body_baseline_missing'
+    });
+  }
+  {
+    const scalarBodyBefore = actor === state.actor_id ? state.body_state
+      : state.npcs?.find(({ instance_id }) => instance_id === actor)
+        ?.check_body_state;
+    const bodyBefore = actor === state.actor_id
+      ? state.body_time_exact_state ?? scalarBodyBefore : scalarBodyBefore;
+    const slices = factual[BODY_HISTORY_SLICES];
+    const replay = replayTrustedBodyTime({ bodyBefore, scalarBodyBefore,
+      components, proposal,
+      proposals, factual, batch, state, slices, trustedBodyNeedsProfile });
+    if (!sameBodyReplay(replay, proposal, factual.body_update.state_after)) {
+      bodyHistoryFail('continuous body state differs from owner replay');
+    }
+  }
+  return {
+    schema: 'rus.turn_step.composite_body_time_effect_history.v1',
+    entity_kind: 'body_effect',
+    entity_id: bindingPin.artifact_id,
+    root_turn_id: batch.root_turn_id,
+    profile_ref: bindingPin.artifact_id,
+    binding_pin: structuredClone(bindingPin),
+    profile_pins: [...allProfilePins.values(),
+      ...proposal.fixed_effect_proposals.map(({ profile_pin }) => profile_pin)],
+    proposal_digest: canonicalDigest(proposal),
+    exact_changes_digest: canonicalDigest(proposal.exact_changes),
+    component_effects: [...activityEffects,
+      ...fixedDirectEffectHistory(proposal.fixed_effect_proposals, components)],
+    state_after_digest: canonicalDigest(factual.body_update.state_after)
+  };
+}
+
+function exactBodyTimeProposal(value) {
+  const allowed = ['proposal_kind', 'profile_ref', 'time_effect_policy_ref',
+    'exact_elapsed', 'metric_changes', 'profile_pin', 'binding_pin',
+    'activity_id', 'effort'];
+  return plain(value) && allowed.every((key) => Object.hasOwn(value, key))
+    && Object.keys(value).every((key) => allowed.includes(key))
+    && value.proposal_kind === 'body_time_effect'
+    && versionedProfileRef(value.profile_ref)
+    && versionedPolicyRef(value.time_effect_policy_ref, value.profile_ref)
+    && profilePin(value.profile_pin) && validBindingPin(value.binding_pin)
+    && text(value.activity_id) && text(value.effort)
+    && validElapsed(value.exact_elapsed)
+    && Array.isArray(value.metric_changes) && value.metric_changes.length === 1
+    && ['satiety', 'energy', 'health'].includes(value.metric_changes[0]?.metric)
+    && value.metric_changes[0]?.direction === 'decrease'
+    && validRational(value.metric_changes[0]?.amount);
+}
+
+function bodyTimeProfileMatchesMetric(proposal) {
+  const metric = proposal.metric_changes[0].metric;
+  const profileId = {
+    satiety: 'satiety_hourly_spend_v2',
+    energy: 'energy_awake_spend_v2',
+    health: 'starvation_health_harm_v2'
+  }[metric];
+  const expectedArtifactId = `record:body_time_effect_profiles_thresholds:${profileId}`;
+  return proposal.profile_pin.artifact_id === expectedArtifactId
+    && proposal.profile_ref.entity_ref.entity_id === profileId;
+}
+
+function fixedEffectForActivity(proposals, components, activityId) {
+  const index = components.findIndex((component) =>
+    component.kind === 'semantic_activity'
+      && component.activity_id === activityId);
+  const proposal = proposals[index];
+  return proposal == null ? null : {
+    profile_ref: proposal.profile_ref,
+    profile_pin: structuredClone(proposal.profile_pin),
+    proposal_digest: canonicalDigest(proposal)
+  };
+}
+
+function fixedDirectEffectHistory(proposals, components) {
+  return components.flatMap((component, index) => {
+    if (component.kind !== 'direct_body_event') return [];
+    const proposal = proposals[index];
+    return [{ kind: 'direct_body_event',
+      component_ref: component.operation_id,
+      profile_ref: proposal.profile_ref,
+      profile_pin: structuredClone(proposal.profile_pin),
+      proposal_digest: canonicalDigest(proposal) }];
+  });
+}
+
+function replayFixedEffects(bodyBefore, components, proposals) {
+  if (!Array.isArray(proposals) || proposals.length !== components.length
+      || components.length === 0) {
+    bodyHistoryFail('fixed body effects do not cover ordered components');
+  }
+  let stateAfter = bodyBefore == null ? null : structuredClone(bodyBefore);
+  for (const [index, proposal] of proposals.entries()) {
+    const component = components[index];
+    const componentRef = component.kind === 'semantic_activity'
+      ? component.activity_id : component.operation_id;
+    if (!exactShape(proposal, ['schema', 'profile_ref', 'profile_pin',
+          'selected_context', 'exact_deltas', 'condition_transitions',
+          'selection_policy', 'rng_consumption', 'state_after'])
+        || proposal.schema
+          !== 'rus.body_state.fixed_approved_effect_proposal.v1'
+        || proposal.profile_ref !== component.body_effect_profile_ref
+        || !profilePin(proposal.profile_pin)
+        || !same(proposal.profile_pin, component.profile_pin)
+        || !same(proposal.selected_context, component.body_effect_context)
+        || proposal.selection_policy !== 'fixed_approved_effect'
+        || proposal.rng_consumption !== 'forbidden'
+        || !text(componentRef) || !plain(proposal.state_after)) {
+      bodyHistoryFail('fixed body effect does not match its ordered component', {
+        index
+      });
+    }
+    if (stateAfter == null) continue;
+    const replay = applyApprovedFixedBodyEffect({ body_state: stateAfter,
+      body_effect_profile: {
+        schema: 'rus.body_state.fixed_approved_effect.v1',
+        profile_ref: proposal.profile_ref,
+        profile_pin: proposal.profile_pin,
+        status: 'approved',
+        applicability: proposal.selected_context,
+        exact_deltas: proposal.exact_deltas,
+        condition_outcomes: proposal.condition_transitions,
+        selection_policy: proposal.selection_policy,
+        rng_consumption: proposal.rng_consumption
+      }, selected_context: proposal.selected_context });
+    if (replay?.ok !== true || !same(replay.state_after, proposal.state_after)) {
+      bodyHistoryFail('fixed body effect replay differs from its proposal', {
+        index
+      });
+    }
+    stateAfter = replay.state_after;
+  }
+  return { ok: true, state_after: stateAfter };
+}
+
+function replayTrustedBodyTime({ bodyBefore, scalarBodyBefore, components, proposal, proposals,
+  factual, batch, state, slices, trustedBodyNeedsProfile }) {
+  if (!plain(bodyBefore)) bodyHistoryFail(
+    'continuous body history lacks its root baseline', {
+      failed_condition: 'root_body_baseline_missing'
+    });
+  let adapter;
+  try {
+    adapter = createBodyNeedsTemporalAdapter({
+      body_needs_profile: trustedBodyNeedsProfile
+    });
+  } catch (cause) {
+    bodyHistoryFail('trusted body needs profile is invalid', {
+      failed_condition: 'trusted_body_profile_invalid',
+      cause: cause?.code ?? cause?.message
+    });
+  }
+  const bodySlices = slices == null ? [{
+    time_update: factual.time_update,
+    body_update: factual.body_update,
+    consequence: factual.consequence,
+    components,
+    fixed_effect_proposals: proposal.fixed_effect_proposals,
+    component_proposals: proposals
+  }] : slices.map((slice) => ({
+    ...slice,
+    components: (slice.consequence?.state_changes ?? []).filter(({ kind }) =>
+      ['semantic_activity', 'direct_body_event'].includes(kind)),
+    fixed_effect_proposals: slice.body_update?.proposal?.fixed_effect_proposals,
+    component_proposals: slice.body_update?.proposal?.component_proposals
+  }));
+  const fixedProposals = bodySlices.flatMap((slice) =>
+    slice.fixed_effect_proposals ?? []);
+  const timeProposals = bodySlices.flatMap((slice) =>
+    slice.component_proposals ?? []);
+  const exactSlices = [];
+  let scalarBefore = scalarBodyBefore ?? bodyBefore;
+  for (const [index, slice] of bodySlices.entries()) {
+    if (slices != null && (slice.body_update?.applied !== true
+        || slice.body_update?.proposal?.proposal_kind
+          !== 'body_time_effect_composite'
+        || !Array.isArray(slice.fixed_effect_proposals)
+        || !Array.isArray(slice.component_proposals))) {
+      bodyHistoryFail('causal body-time slice owner is invalid', { index });
+    }
+    const fixed = slice.fixed_effect_proposals ?? [];
+    const time = slice.component_proposals ?? [];
+    const fixedReplay = replayFixedEffects(scalarBefore, slice.components, fixed);
+    if (fixedReplay?.ok !== true) return fixedReplay;
+
+    const exactElapsed = slice.time_update?.exact_elapsed;
+    const observedAt = slice.time_update?.clock_before;
+    const fixedForProposal = fixed.length === 0 ? [] : fixed;
+    const beforeContinuous = accumulateBodyTimeEffects({
+      body_state_before: bodyBefore,
+      slices: [...exactSlices, {
+        exact_elapsed: { numerator: '0', denominator: '1' },
+        fixed_effect_proposals: fixedForProposal,
+        component_proposals: []
+      }]
+    });
+    if (beforeContinuous?.ok !== true
+        || !plain(beforeContinuous.exact_state_after)) {
+      bodyHistoryFail('continuous body exact prefix replay failed', {
+        failed_condition: 'exact_prefix'
+      });
+    }
+    const activityComponents = slice.components.filter(({ kind }) =>
+      kind === 'semantic_activity');
+    if (activityComponents.length !== 1) bodyHistoryFail(
+      'continuous body slice must have one semantic activity', {
+        failed_condition: 'activity_count', index
+      });
+    const activity = activityComponents[0];
+    const effort = activity.effort ?? activity.body_effect_context?.effort;
+    const actorId = bodySubjectId(batch, state);
+    const context = bodyTimeContext(state, beforeContinuous.exact_state_after,
+      actorId, observedAt);
+    const calculated = adapter.calculateProposals({ effort,
+      exact_elapsed: exactElapsed?.exact_minutes ?? exactElapsed, ...context });
+    if (calculated?.ok !== true || !Array.isArray(calculated.proposals)) {
+      bodyHistoryFail('trusted body profile could not derive proposals', {
+        failed_condition: 'trusted_proposal_calculation',
+        code: calculated?.error?.code ?? calculated?.code ?? null
+      });
+    }
+    const expected = calculated.proposals.map((item) => ({
+      ...structuredClone(item), activity_id: activity.activity_id, effort
+    }));
+    if (!same(expected, time)) {
+      bodyHistoryFail('continuous proposals differ from trusted profile rates', {
+        failed_condition: 'trusted_proposal_mismatch', index
+      });
+    }
+    exactSlices.push({ exact_elapsed: exactElapsed,
+      fixed_effect_proposals: fixed,
+      component_proposals: expected });
+    const replay = accumulateBodyTimeEffects({
+      body_state_before: bodyBefore, slices: exactSlices
+    });
+    if (replay?.ok !== true || !plain(replay.state_after)
+        || slices != null
+          && !same(replay.state_after, slice.body_update.state_after)) {
+      bodyHistoryFail('causal body-time slice differs from exact owner replay', {
+        failed_condition: 'slice_replay', index
+      });
+    }
+    scalarBefore = slice.body_update?.state_after ?? replay.state_after;
+  }
+  if (!same(fixedProposals, proposal.fixed_effect_proposals)
+      || !same(timeProposals, proposal.component_proposals)
+      || slices != null && !same(components, slices.flatMap(({ consequence }) =>
+        (consequence?.state_changes ?? []).filter(({ kind }) =>
+          ['semantic_activity', 'direct_body_event'].includes(kind))))) {
+    bodyHistoryFail('causal body-time slices differ from composite proposal');
+  }
+  const replay = accumulateBodyTimeEffects({
+    body_state_before: bodyBefore, slices: exactSlices
+  });
+  if (replay?.ok !== true || !same(replay.exact_changes, proposal.exact_changes)
+      || !same(replay.state_after, factual.body_update.state_after)) {
+    bodyHistoryFail('continuous body state differs from exact owner replay', {
+      failed_condition: 'root_replay'
+    });
+  }
+  return replay;
+}
+
+function bodySubjectId(batch, state) {
+  return batch.operations?.find(({ target, value }) =>
+    target === 'party_state' && value?.operation_kind === 'apply_body_event')
+    ?.value?.payload?.actor_ref ?? state.actor_id;
+}
+
+function bodyTimeContext(state, exactBody, actorId, observedAt) {
+  const metrics = Object.fromEntries(BODY_METRICS.map((metric) =>
+    [metric, exactBody[metric]]));
+  return {
+    body_state: metrics,
+    body_state_ref: { entity_kind: 'body_state', entity_id: actorId },
+    scope_ref: { entity_kind: 'party', entity_id: state.party_id },
+    environment_fact: state.environment_snapshot,
+    party_id: state.party_id,
+    state_version: state.party_state?.state_version,
+    observed_at: observedAt,
+    active_conditions: (exactBody.active_conditions ?? [])
+      .map(({ id }) => id).filter(text)
+  };
+}
+
+function same(left, right) {
+  return canonicalDigest(left) === canonicalDigest(right);
+}
+
+function versionedProfileRef(value) {
+  const version = value?.authoring_version;
+  return plain(value) && plain(value.entity_ref)
+    && value.entity_ref.entity_kind === 'body_effect'
+    && text(value.entity_ref.entity_id)
+    && ((Number.isSafeInteger(version) && version > 0)
+      || (typeof version === 'string' && /^[1-9]\d*$/u.test(version)
+        && Number.isSafeInteger(Number(version))));
+}
+
+function versionedPolicyRef(value, profileRef) {
+  return plain(value) && plain(value.entity_ref)
+    && value.entity_ref.entity_kind === 'body_effect'
+    && value.entity_ref.entity_id
+      === `${profileRef.entity_ref.entity_id}:time-policy`
+    && value.authoring_version === profileRef.authoring_version;
+}
+
+function validBindingPin(value) {
+  return plain(value) && text(value.artifact_id)
+    && Number.isSafeInteger(value.revision) && value.revision > 0
+    && typeof value.digest === 'string' && /^[a-f0-9]{64}$/u.test(value.digest)
+    && typeof value.dataset_sha256 === 'string'
+    && /^[a-f0-9]{64}$/u.test(value.dataset_sha256)
+    && typeof value.source_approval_sha256 === 'string'
+    && /^[a-f0-9]{64}$/u.test(value.source_approval_sha256)
+    && typeof value.candidate_path === 'string'
+    && value.candidate_path.length > 0
+    && typeof value.candidate_sha256 === 'string'
+    && /^[a-f0-9]{64}$/u.test(value.candidate_sha256)
+    && typeof value.approval_attestation_path === 'string'
+    && value.approval_attestation_path.length > 0
+    && typeof value.approval_attestation_sha256 === 'string'
+    && /^[a-f0-9]{64}$/u.test(value.approval_attestation_sha256)
+    && ['APPROVE', 'APPROVE_CONDITIONAL'].includes(value.verdict)
+    && value.status === 'approved_by_attestation'
+    && value.approved === true;
+}
+
+function sameBindingApproval(proposalPin, trustedPin) {
+  return canonicalDigest(proposalPin) === canonicalDigest(trustedPin);
+}
+
+function normalizeElapsed(value) {
+  try {
+    return normalizeRationalMinutes(value);
+  } catch (cause) {
+    bodyHistoryFail('continuous component elapsed is invalid', {
+      cause: cause.message
+    });
+  }
+}
+
+function validElapsed(value) {
+  try {
+    return BigInt(normalizeRationalMinutes(value).numerator) >= 0n;
+  } catch {
+    return false;
+  }
+}
+
+function validPositiveElapsed(value) {
+  try {
+    return BigInt(normalizeRationalMinutes(value).numerator) > 0n;
+  } catch {
+    return false;
+  }
+}
+
+function validRational(value) {
+  try {
+    const normalized = normalizeRationalMinutes(value);
+    return BigInt(normalized.numerator) >= 0n;
+  } catch {
+    return false;
+  }
+}
+
+function sameRational(left, right) {
+  try {
+    return compareRationalMinutes(normalizeRationalMinutes(left),
+      normalizeRationalMinutes(right)) === 0;
+  } catch {
+    return false;
+  }
+}
+
+function sameBodyReplay(replay, proposal, stateAfter) {
+  return replay?.ok === true
+    && canonicalDigest(replay.exact_changes)
+      === canonicalDigest(proposal.exact_changes)
+    && canonicalDigest(replay.state_after) === canonicalDigest(stateAfter);
 }
 
 function gameTimestamp(value) {

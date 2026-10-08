@@ -17,6 +17,14 @@
   скачивает и не запускает;
 - загрузкой current runtime-catalog pin, server env и HTTP readiness production server (`/api/v1/health`, `/api/v1/scenarios`).
 
+## Разрешённые зависимости
+
+```architecture-tool-app-dependencies
+[
+  {"source":"*","target":"apps/game-server","reason":"local-play owns the production game-server lifecycle and readiness"}
+]
+```
+
 Gameplay не зависит от engine API: единый `@rus/llm-runtime` видит только
 OpenAI-compatible `chat/completions` настроенного vLLM endpoint.
 Ошибки endpoint/provider завершают вызов без fallback. Подробности:

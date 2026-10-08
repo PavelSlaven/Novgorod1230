@@ -43,6 +43,8 @@ Temporal write integration может составить несколько orde
 с предыдущим фактическим record; base и resulting persisted version общие для
 одного commit. Append-only causal transitions сохраняются по отдельности.
 
+Prepared body-time proposals across ordered semantic slices are aggregated as exact rationals and applied once to the original body state through `@rus/body-state`.
+
 `selectTemporaryDispositionOptions` проверяет выбранные из raw intent ровно
 по одному option id на измерение из закрытого набора, построенного domain
 owner. Applicability и typed temporary-disposition proposal принадлежат

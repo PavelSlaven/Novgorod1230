@@ -216,6 +216,7 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
     preparedEffectFail('semantic slices must cover every activity from committed time');
   }
   let body = state.body_state;
+  let bodyTimeExact = state.body_state;
   for (const [index, slice] of ledger.slices.entries()) {
     const fragment = activities[index];
     const activity = fragment.value;
@@ -229,6 +230,22 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
           ? {} : { requested_duration_minutes:
             trace.approved_plan.activity.requested_duration_minutes }) },
       actor: { body: structuredClone(body) } });
+    const continuousBodyEffect = slice.effect_kind === 'semantic_activity'
+      && turnStepApprovedOwners?.bodyEffect?.supportsBodyTimeEffects === true;
+    let approvedBodyEffect = null;
+    if (continuousBodyEffect) {
+      try {
+        approvedBodyEffect = turnStepApprovedOwners.bodyEffect.apply({
+          committed_state: { ...structuredClone(state),
+            body_state: structuredClone(body),
+            body_time_exact_state: structuredClone(bodyTimeExact) },
+          consequence: structuredClone(slice.consequence),
+          time_update: structuredClone(slice.time_update)
+        });
+      } catch (cause) {
+        preparedEffectFail('approved continuous body effect could not be replayed', cause);
+      }
+    }
     if (trace?.applied !== true || activity.step_index !== slice.step_index
         || activity.activity_id !== slice.operation_ref
         || activity.profile_ref !== slice.owner_ref
@@ -239,14 +256,30 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
         || binding.body_effect_profile_ref !== approved?.body_effect_profile_ref
         || !samePreparedValue(trace.plan_request?.player_safe_state?.clock,
           slice.time_update.clock_before)
-        || !samePreparedValue(slice.body_update.state_after, approved?.body_state_after)
+        || !samePreparedValue(slice.body_update.state_after,
+          continuousBodyEffect ? approvedBodyEffect?.state_after
+            : approved?.body_state_after)
+        || continuousBodyEffect
+          && !samePreparedValue(slice.body_update.proposal,
+            approvedBodyEffect?.proposal)
         || (slice.consequence.body_effect_ref ?? null) !== approved?.body_effect_ref
-        || (slice.body_update.applied === true) !== (approved?.body_effect_ref != null)) {
+        || (slice.body_update.applied === true) !== (continuousBodyEffect
+          ? approvedBodyEffect?.applied === true
+          : approved?.body_effect_ref != null)) {
       preparedEffectFail('semantic slice differs from its approved owner and current trace');
     }
     validateBodyComponentOrder({ ...batch, operations: [fragment] }, {
-      consequence: slice.consequence, body_update: slice.body_update
-    }, { ...state, body_state: body });
+      consequence: slice.consequence, time_update: slice.time_update,
+      body_update: slice.body_update
+    }, { ...state, body_state: body,
+      body_time_exact_state: structuredClone(bodyTimeExact) },
+    turnStepApprovedOwners?.bodyNeedsBindingPin,
+    turnStepApprovedOwners?.trustedBodyNeedsProfile);
     body = slice.body_update.state_after;
+    if (continuousBodyEffect) {
+      bodyTimeExact = structuredClone(approvedBodyEffect.exact_state_after);
+    } else {
+      bodyTimeExact = structuredClone(body);
+    }
   }
 }

@@ -738,8 +738,10 @@ async function markedLiveWorldFixture({ turnStepModel }) {
       identity_state: npc.identity_state ?? {},
       machine_state: npc.machine_state ?? { status: 'active' },
       semantic_state: npc.semantic_state ?? {},
-      role_ref: npc.role_ref?.id ?? 'fixture-role',
-      occupation_ref: npc.occupation_ref?.id ?? 'fixture-occupation',
+      role_ref: structuredClone(npc.role_ref
+        ?? { id: 'fixture-role', source: 'approved_social_roles' }),
+      occupation_ref: structuredClone(npc.occupation_ref
+        ?? { id: 'fixture-occupation', source: 'approved_occupations' }),
       skill_profile_snapshot: npc.skill_profile_snapshot ?? {},
       knowledge_profile_snapshot: npc.knowledge_profile_snapshot ?? {},
       attribute_profile_snapshot: npc.base_attributes ?? {},

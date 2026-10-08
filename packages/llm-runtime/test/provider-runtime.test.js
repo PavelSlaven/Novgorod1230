@@ -26,7 +26,7 @@ test('JSON mode adds its required format-only instruction', () => {
   const messages = [{ role: 'user', content: 'Choose one option.' }];
   const payload = providerPayload('openai_compatible', messages);
   assert.deepEqual(payload.messages, [
-    { role: 'system', content: 'Return a valid json object.' },
+    { role: 'system', content: 'Верните корректный объект JSON.' },
     ...messages
   ]);
   assert.deepEqual(messages, [{ role: 'user', content: 'Choose one option.' }]);
@@ -40,13 +40,13 @@ test('JSON mode adds its instruction to the existing first system message withou
     ]);
     const payload = providerPayload(compatibility, messages);
     assert.deepEqual(payload.messages, [
-      { role: 'system', content: 'Return a valid json object.\n\nReturn one semantic choice.' },
+      { role: 'system', content: 'Верните корректный объект JSON.\n\nReturn one semantic choice.' },
       messages[1]
     ]);
     assert.equal(messages[0].content, 'Return one semantic choice.');
     assert.equal(payload.messages[1], messages[1]);
     assert.deepEqual(providerPayload(compatibility, [messages[1]]).messages, [
-      { role: 'system', content: 'Return a valid json object.' }, messages[1]
+      { role: 'system', content: 'Верните корректный объект JSON.' }, messages[1]
     ]);
   }
 });

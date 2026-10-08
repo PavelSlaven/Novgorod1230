@@ -122,7 +122,8 @@
 | 135 | `data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/*.start.json` | семь `player_inputs` задают роль, занятие и имя «Микула», вопреки D111; долг реализации #109 | [#109](https://github.com/PavelSlaven/Novgorod1230/issues/109) |
 | 136 | `npc_family_household_contract.md`, `packages/actors/MODULE.md`, household data/import | нет утверждённых и импортированных данных дворов, необходимых для полноты мира | [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338) |
 | 137 | `combat-min-data-v1/typed-gaps.json` (`G-RETREAT-MOVEMENT`), меню выбора NPC в бою | метрика D65 body-effect некорректна в сценах с пересекающимися предпочтениями; реального отхода в меню нет | [#426](https://github.com/PavelSlaven/Novgorod1230/issues/426) |
-| 138 | `lower-dvina-trace-phase-4-state.js`, `phase-4-write-projection.js`, `test/integration/lower-dvina-trace-phase-4-postgres.test.js` | LD revision 25 после маршрута не имеет SQL-позиции; strict scene reader возвращает 409, старый путь не поддерживается по D97 | [#570](https://github.com/PavelSlaven/Novgorod1230/issues/570) |
+| 138 | `packages/environment-state`, `apps/game-server/src/runtime/body-needs-temporal.js` | утверждённый body time-effect набор не задаёт факторов холода или сырости | [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315) |
+| 140 | `lower-dvina-trace-phase-4-state.js`, `phase-4-write-projection.js`, `test/integration/lower-dvina-trace-phase-4-postgres.test.js` | LD revision 25 после маршрута не имеет SQL-позиции; strict scene reader возвращает 409, старый путь не поддерживается по D97 | [#570](https://github.com/PavelSlaven/Novgorod1230/issues/570) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -604,12 +605,6 @@
 - **Как жить.** Решение владельца D51: у иноземных народов будут отдельные пулы (потом это новые регионы), запасной вариант с русским пулом не делаем. Авторинг этих пулов — отдельная задача данных; после неё — строки привязки, статус `approved` по паре «пул + народ» и переутверждение запроса стадии `npc_identity_import`.
 - **Issue.** —
 
-### LW-108 — имена двух NPC одной сцены могут совпасть (rt-names)
-- **Где.** `packages/materialization/src/npc-identity.js` (`pickNpcName`), `packages/materialization/src/generated-npc-bindings.js`.
-- **Что.** Имя выбирается по seed каждого NPC отдельно, материализатор не знает других NPC сцены. Пул Новгорода: 204 мужских и 62 женских ordinary-строки, вероятность совпадения пары порядка 1/200 (мужские) и 1/60 (женские).
-- **Как жить.** Не считать имя уникальным ключом сцены. Исключение уже выбранных имён — в задаче rt-people, где создаются группы людей на месте (передать занятые имена в `compileGeneratedNpcBindings`).
-- **Issue.** —
-
 ### LW-109 — характер только при полных данных занятия; срок пула не проверяется (rt-names)
 - **Где.** `packages/materialization/src/npc-identity.js` (`pickNpcCharacter`), `packages/runtime-catalog/src/procedural-scene-records.js` (`readNpcIdentityCatalog`), `infra/world-base/schema/29.sql`.
 - **Что.** `semantic_state.character` пишется целиком или не пишется: у занятия без цели или без страха (например `nov_occ_court_clerk_service`, `nov_occ_healer_herbal_helper` без страхов) поля нет, и разговор идёт без `npc_behavior`. Читатель не сверяет `valid_from`/`valid_to` пула и дату старта.
@@ -747,7 +742,13 @@
 - **Как жить.** Считать полноту обязательным требованием нормы, а не подтверждённым свойством текущих данных или runtime. Не объявлять исходный мир полным до отдельного утверждения и импорта данных дворов с проверкой состава и связей.
 - **Issue.** [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338)
 
-### LW-138 — LD revision 25 после маршрута не имеет позиции для strict scene readback (#570)
+### LW-138 — влияние холода и сырости на тело не утверждено (body-needs-bind, #315)
+- **Где.** `packages/environment-state` формирует body snapshot; `apps/game-server/src/runtime/body-needs-temporal.js` передаёт его в `@rus/body-state`.
+- **Что.** Утверждённый body time-effect набор не задаёт факторов холода или сырости, поэтому v17 не меняет телесные эффекты по этим условиям. Это отсутствие утверждённых правил, а не вывод о том, что погода исторически не влияла на человека.
+- **Как жить.** Не выводить температурное воздействие из погоды, сезона, одежды или помещения. До отдельного утверждённого профиля `body_factor_ids` остаётся пустым.
+- **Issue.** [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315)
+
+### LW-140 — LD revision 25 после маршрута не имеет позиции для strict scene readback (#570)
 - **Где.** `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js:67`, `lower-dvina-trace-phase-4-write-projection.js:61`, `world-route-journey.js:5`; `scene-npcs-readback.js:21`; `test/integration/lower-dvina-trace-phase-4-postgres.test.js:57` (выполняемые маршрутные секции сняты, initial inventory проверка сохранена).
 - **Что.** Старый маршрут LD revision 25 удаляет `position_id` и actor scene journey. Strict reader #570 требует подтверждённую active same-party SQL-позицию и отвечает `SCENE_NPC_READBACK_DATA_GAP` (409). Это подтверждено PG-прогоном army-570: route screen persistence падает до surrender/restart. По D97 старое прохождение LD не поддерживается; исключение legacy и fallback к snapshot site запрещены решением ведущего A-army-570-03.
 - **Как жить.** Не возвращать silent skip или compatibility adapter. Снимать только маршрутно-зависимые LD25 проверки по решению ведущего; весь obsolete файл удалять/архивировать только по D74. По A-army-570-03 снят выполняемый маршрутный хвост единственного test-блока; сохранена независимая initial inventory mass проверка, используемая общим владельцем живого screen inventory. Старые private route helpers остаются невызванной fixture-историей; это не поддержка старого прохождения. Закрыть запись после снятия/архивации старых маршрутных проверок либо переноса сценария в утверждённый старт v17 с authoritative позицией по D98.

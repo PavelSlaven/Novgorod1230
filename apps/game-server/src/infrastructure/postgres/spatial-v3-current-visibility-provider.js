@@ -320,7 +320,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         actorId, state, observedPositionId, clock });
       const exits = await provider.readExitDisclosure({ transaction, partyId, actorId,
         position: { id: positionId }, site: current.scene.site,
-        directional_exits: directionalExits, observedPositionId, clock });
+        directional_exits: directionalExits.filter((row) =>
+          row.exit_canonical_g5_id === current.scene.site.canonical_g5_ref?.entity_id),
+        observedPositionId, clock });
       const siteConnections = await provider.readCurrentConnectionDisclosure({ transaction,
         partyId, actorId, observedPositionId, clock });
       return { naturalInput, entityObservations, localEdges,

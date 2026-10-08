@@ -12,6 +12,13 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans
 - immutable mechanics snapshots for template-less ordinary direct-action and
   admitted O1/O2a instances
+- ownership of the future normalized contract for item properties and immutable
+  instance property snapshots; Stage 16 material selection currently arrives
+  from `@rus/runtime-catalog` in `state.material_selection`. A1 material
+  composition handoff is deferred to the separately accepted follow-up; a
+  missing material basis must remain unknown and cannot produce a material
+  result. This snapshot does not replace the existing mechanics or ownership
+  owners.
 - approved property/container transitions that independently preserve owner,
   holder/controller, access, seal and document-content boundaries
 

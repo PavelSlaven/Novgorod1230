@@ -679,7 +679,7 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/combat-health', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/ordinary-materialization-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
+      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/combat-health', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/ordinary-materialization-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/environment-state', '@rus/knowledge-source', '@rus/llm-runtime',
       '@rus/items-property', '@rus/items-property/action-produced-result',
       '@rus/items-property/action-produced-transition',
       '@rus/items-property/finite-resource-transition', '@rus/materialization', '@rus/materialization/spatial-v3-materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a', '@rus/materialization/internal/lower-dvina-trace-s1',
@@ -688,7 +688,7 @@ for (const appSpec of [
       '@rus/new-game/stages/stage-24',
       '@rus/new-game/stages/stage-24/internal/lower-dvina-trace-phase-1a', '@rus/new-game/stages/stage-25', '@rus/narration',
       '@rus/party-store', '@rus/party-store/spatial-v3', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/party-store/ordinary-materialization', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/presentation/spatial-v3-projection', '@rus/turn', '@rus/turn/action-produced-result', '@rus/turn/spatial-v3-execution', '@rus/turn/spatial-v3-target-composition', '@rus/turn/spatial-v3-temporal-write-integration', '@rus/turn/temporal-advance',
-      '@rus/runtime-catalog', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/runtime-catalog/schema-fingerprint', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
+      '@rus/runtime-catalog', '@rus/runtime-catalog/active-pin', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/runtime-catalog/schema-fingerprint', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
       '@rus/time-events-history/temporal-boundaries',
       '@rus/visibility-knowledge-memory',
       '@rus/visibility-knowledge-memory/ordinary-resolution-capability',

@@ -17,7 +17,7 @@ import { createLlmSettingsFileStore } from
 
 const here = dirname(fileURLToPath(import.meta.url));
 const config = assertModularStartupConfig(readServerConfig());
-const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile();
+const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({ rootDir: config.rootDir });
 const qualificationRunner = createProductionLlmRoleRunner({ env: process.env });
 const llmSettingsStore = createLlmSettingsFileStore({
   ...(config.llmSettingsPath ? { filePath: config.llmSettingsPath } : {})

@@ -171,6 +171,14 @@ export async function loadNpcSpeechAddressForms({
      ORDER BY form_id, form_version`,
     [spatialWorldPin.world_revision_id],
   ));
+  const versions = new Set();
+  for (const row of rows) {
+    if (versions.has(row.form_id)) {
+      fail('M2C_NPC_SPEECH_ADDRESS_FORM_VERSION_AMBIGUOUS',
+        'At most one approved speech-address form version per id is allowed.');
+    }
+    versions.add(row.form_id);
+  }
   return rows.map((row) => deepFreeze({ ...row, payload: structuredClone(row.payload ?? {}) }));
 }
 

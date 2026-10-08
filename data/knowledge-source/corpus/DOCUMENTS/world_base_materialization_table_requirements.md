@@ -154,10 +154,16 @@ Generic registry для доменов, не имеющих собственно
 Выбор делает код материализации по seed; LLM эти значения не задаёт. Физические колонки — DDL `schema/29.sql` и `SCHEMA_REFERENCE.md`.
 
 Applicability demographic/appearance entry хранит ограничения sex, age и
-hair-length в данных, не в materializer code. Required actor vocabulary:
-sex/age, build, skin tone, face shape, hair color/length/style/facial hair и
-eye color. Все начальные weights явны; отсутствие required approved option
-блокирует materialization.
+hair-length в данных, не в materializer code, и проверяется относительно
+конкретного actor и уже выбранных prerequisite facets. Для appearance
+materialization сначала выбирается hair length; hair color и hair style могут
+быть applicable и требуются только при length, отличном от `bald`. Для `bald`
+оба поля отсутствуют, а выбор не выполняет для них draw. Required actor
+vocabulary включает sex/age, build, skin tone, face shape, hair
+length/facial hair и eye color, а hair color/style — условно для non-bald.
+Все начальные weights явны; отсутствие required approved option блокирует
+materialization. Частоты вариантов задаются данными утверждённого профиля, а
+не общей нормой этого документа.
 
 `item_template_category_bindings` поддерживает необходимые visual kinds:
 garment kind, equipment slot, neckline, sleeve form, outer form, visible

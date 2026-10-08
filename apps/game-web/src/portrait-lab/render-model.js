@@ -10,6 +10,7 @@ const HAIR = Object.freeze({
   blond: '#b69a62', light_brown: '#806447', dark_brown: '#49362d',
   black: '#292725', auburn: '#744737', gray: '#77756f', white: '#c8c3b9'
 });
+const NEUTRAL_HAIR_INK = '#302c27';
 const EYES = Object.freeze({
   blue: '#4f7d91', gray: '#6f7a78', green: '#55715a',
   brown: '#72513a', dark: '#302824'
@@ -103,7 +104,8 @@ export function buildRenderModel(spec) {
     }),
     skin: colorRamp(SKIN[spec.person.skin_tone]),
     hair: Object.freeze({
-      ...colorRamp(HAIR[spec.hair.color], .17),
+      ...colorRamp(spec.hair.color === undefined
+        ? NEUTRAL_HAIR_INK : HAIR[spec.hair.color], .17),
       gray: spec.hair.color === 'white' ? '#e7e1d5' : '#aaa79f',
       grayMix: age.grayMix
     }),

@@ -122,6 +122,8 @@ bundle size and size-band ref; missing or ambiguous bindings fail before plan.
 
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
 
+Actor appearance selection uses `@rus/actors.isActorBaseAppearancePathApplicable` as its single physical-path applicability owner. Hair length precedes color/style; bald skips those two facets without a choice or RNG draw, while facial hair and all other required facets remain independent. Contradictory authored bald color/style is rejected during preflight before RNG; missing applicable required candidates remain typed data gaps.
+
 `profileFromVerifiedRuntimeRecord`, `materializeActorBaseAttributes` и
 `materializeOrPreserveActorBaseAttributes` принимают exact
 `rus.actor_base_attributes_runtime_profile.v1`: active catalog revision,
@@ -309,11 +311,14 @@ trace; `Math.random` запрещён. Для runtime-catalog materialization
 `trace.catalog_bundle_digest` — digest конкретной immutable projection.
 Explicit authored appearance сохраняется без draw; только отсутствующие поля
 выбираются из approved/applicable entries, отсортированных по stable ID. Эти
-draws идут после прежнего deterministic prefix, а пустой required facet
-возвращает typed data gap. Applicability authored dependent-полей заранее
-ограничивает prerequisite draws: например, authored `braided` требует
-совместимую длину волос, а facial hair — совместимые sex/age. Противоречивый
-authored набор отклоняется до первого RNG draw.
+draws идут после прежнего deterministic prefix, а пустой физически допустимый
+required facet возвращает typed data gap. При оценке prospective completion
+materialization использует actor-owned
+`isActorBaseAppearancePathApplicable`: authored dependent-поля заранее
+ограничивают prerequisite draws. Например, authored hair color/style исключают
+`bald`, authored `braided` требует совместимую длину волос, а facial hair —
+совместимые sex/age. Противоречивый authored набор отклоняется до первого RNG
+draw.
 Ordinary aggregate transition также детерминирован и CAS-bound; legacy
 `identity_budget`, `remaining_identity_budget` и `resolution_record_cap`
 сохраняются как compatibility fields, но не ограничивают суммарную

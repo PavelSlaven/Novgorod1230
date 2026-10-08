@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(actors): omit inapplicable bald hair color/style before materialization draws and portrait projection; keep committed legacy bald readable and filter incompatible authored prerequisite choices before RNG; add an inactive D152 appearance candidate with 15% baldness for eligible men (#536)
 - fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - fix(npc): require source knowledge before occupation-based address selection (#526)
 - test(npc): permanent PG regressions for NPC body readback without a site and return without a route (#352, #394)

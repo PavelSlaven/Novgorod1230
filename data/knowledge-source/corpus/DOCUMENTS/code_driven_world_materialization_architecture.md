@@ -451,6 +451,16 @@ profile entries, отсортированных по stable ID. Appearance draws
 порядке slot/instance keys. Пустой required facet — typed data gap. Runtime LLM
 не выбирает внешность NPC. Historical actors не дополняются автоматически.
 
+Для нового actor applicability вариантов внешности проверяется относительно
+его собственных sex/age и уже выбранных prerequisite facets. Сначала
+материализуется hair length, затем — только если length не `bald` — hair color
+и hair style. У `bald` hair color и hair style отсутствуют; для них не
+выполняется draw и они не требуются. Общая норма не задаёт частоту `bald`:
+калибровка живёт в отдельно утверждённой версии candidate-профиля. Чтение
+ранее committed identity, включая legacy identity, не запускает повторную
+генерацию, заполнение или нормализацию внешности; исправление требует отдельной
+явной versioned-процедуры.
+
 Повышение профиля использует отдельный deterministic expansion seed, заполняет только отсутствующие поля и не меняет ранее выбранные значения.
 
 ## 9. Предметы, контейнеры и имущество

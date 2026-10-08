@@ -71,6 +71,7 @@ Browser-клиент, который получает только versioned pub
   asset выбирает authored portrait; неизвестный сохраняет DTO compatibility и
   идёт в procedural/SVG fallback по `AUTHORED_PORTRAIT_CONTRACT.md`;
 - отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и Canvas 2D renderer без portrait-specific RNG/hash;
+- рендерингом физически лысого портрета без `hair.color` и `hair.style`: геометрия волос головы отсутствует, борода и брови используют нейтральные чернила представления, а сама спецификация не дополняется цветом или укладкой;
 - скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`;
 - semantic geometry branches, включая отдельную процедурную конструкцию косы для `hair.style: "braided"`;
 - единым внутренним владельцем процедурной одежды `buildClothingGeometry(model, bodyGeometry)`: neckline, anchored arm/sleeve boundaries (либо armholes для sleeveless overlayer), outer construction, fabric-driven folds/texture и trim строятся от общих body anchors, а `body.torsoPatch` остаётся только envelope;

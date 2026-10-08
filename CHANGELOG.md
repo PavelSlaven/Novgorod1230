@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(game-server): return a client 404 for malformed party/request path encoding across all six HTTP routes without logging a server failure (#520)
 - fix(llm-runtime): use a Russian JSON-mode instruction on the provider wire (#563)
 - fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - fix(npc): require source knowledge before occupation-based address selection (#526)

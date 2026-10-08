@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(npc): require source knowledge before occupation-based address selection (#526)
 - fix: Phase 1B neutral and HTTP turns use the approved authored-start scene title in their test repository; preserve S1/N1 checks and snapshot digests without persisting test presentation; preserve public idempotency error codes and provide Russian messages at the HTTP boundary (#98, D89)
 - fix(runtime-catalog): cache successful G4 projections and approved place-label validation (#527, #513)
 - fix(body-state): bind approved satiety and awake-energy profiles to elapsed v17 activity time (#244)

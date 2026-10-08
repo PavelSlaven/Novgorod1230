@@ -74,7 +74,8 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         clock: request.requested_at
           ?? request.player_safe_state?.clock
           ?? null,
-        historical_events: historicalEvents
+        historical_events: historicalEvents,
+        actor_facets: context.actor_facets ?? {}
       });
     const slice = grounded.world_knowledge;
     const claimRefs = [...(slice?.hard_constraints ?? []),

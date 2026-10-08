@@ -34,13 +34,53 @@ export function withPartyHistoricalEvents(model, stateOf) {
   return wrapped;
 }
 
+/** Committed speaker occupation → conversation WK, outside the prose request. */
+export function withNpcWorldKnowledgeAuthoritative(model, stateOf) {
+  if (typeof model !== 'function') return model;
+  const withAuthoritative = (request, callContext = {}) => {
+    const state = typeof stateOf === 'function' ? stateOf() : stateOf;
+    const npcRef = request?.npc_ref;
+    const npc = request?.schema === 'npc_conversation_response_request_v1'
+      && npcRef?.entity_kind === 'npc' && typeof npcRef.entity_id === 'string'
+      && Array.isArray(state?.npcs)
+      ? state.npcs.find(({ instance_id }) => instance_id === npcRef.entity_id)
+      : null;
+    const storedOccupation = npc?.occupation_ref;
+    const occupationRef = typeof storedOccupation === 'string'
+      ? storedOccupation
+      : storedOccupation != null && typeof storedOccupation === 'object'
+        && !Array.isArray(storedOccupation) ? storedOccupation.id : null;
+    return {
+      ...callContext,
+      historical_events: Array.isArray(callContext?.historical_events)
+        ? callContext.historical_events : partyHistoricalEventsOf(state),
+      actor_facets: typeof occupationRef === 'string' && occupationRef.trim()
+        ? { occupation_ref: occupationRef } : {}
+    };
+  };
+  const wrapped = async (request, callContext = {}) =>
+    model(request, withAuthoritative(request, callContext));
+  if (typeof model.prepareRequest === 'function') {
+    wrapped.prepareRequest = (request, callContext = {}) =>
+      model.prepareRequest(request, withAuthoritative(request, callContext));
+  }
+  if (typeof model.validateFreshPlan === 'function') {
+    wrapped.validateFreshPlan = (...args) => model.validateFreshPlan(...args);
+  }
+  return wrapped;
+}
+
 export function actorFacetsOf(request, authoritative) {
   const exactNpc = request?.schema === 'npc_action_decision_request_v1';
   const conversationNpc = request?.schema === 'npc_conversation_response_request_v1';
   if (exactNpc || conversationNpc) {
     const roleRef = request.npc?.social_role?.role_ref;
-    return typeof roleRef === 'string' && roleRef
+    const result = typeof roleRef === 'string' && roleRef
       ? { role_ref: roleRef } : {};
+    const occupationRef = authoritative?.actor_facets?.occupation_ref;
+    if (conversationNpc && typeof occupationRef === 'string'
+        && occupationRef.trim()) result.occupation_ref = occupationRef;
+    return result;
   }
   const source = request.npc_safe_state ?? request.player_safe_state
     ?? request.player_safe_context ?? {};

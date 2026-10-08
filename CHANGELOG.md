@@ -1,7 +1,7 @@
 # Changelog
 
 ## Unreleased
-- docs(narration): adopt D158 world/story boundaries and third-person past narration; extend required scene context while preserving CR #158 thresholds; runtime changes follow separately
+- docs(narration): adopt D158 world/story boundaries and third-person past narration; extend required scene context while preserving CR #158 thresholds; D162 excludes unexecuted intent from prose and keeps perceived blockers; runtime changes follow separately
 - fix(llm-runtime): use a Russian JSON-mode instruction on the provider wire (#563)
 - fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - fix(npc): require source knowledge before occupation-based address selection (#526)

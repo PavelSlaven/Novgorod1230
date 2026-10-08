@@ -48,8 +48,9 @@ not `final_audit_failed` or eligibility for factual terminal delivery.
 §2.0). Проза идёт в третьем лице, по имени героя (род — по сведениям о нём; имя и пол героя
 входят во вход писателя), в прошедшем времени — это форма повествования, а не свобода
 рассказа над тем, сколько прошло времени в мире. Даже короткий ход пишется сценой через
-восприятие и переживание героя, а не отчётом; невыполненное продолжение подаётся как ещё
-не сделанный следующий шаг героя, исход которого неизвестен. Аудитор оценивает цельность
+восприятие и переживание героя, а не отчётом; невыполненный шаг замысла не изображается
+выполненным и не описывается отчётом о несделанном, а причина, по которой шаг не мог
+состояться, показывается через воспринятое героем (D162). Аудитор оценивает цельность
 всей сцены, затем фактическую точность по той же границе; структурные тесты не заменяют
 model acceptance.
 Первый приход во время игры идёт тем же turn-путем (`surface: turn` / Strategy B),
@@ -82,7 +83,7 @@ fallback запрещён.
 ## Инварианты
 
 - writer и format repair получают confirmed outcome в исходном request; auditor и semantic repair получают его отдельным evidence-полем `confirmed_outcome`; auditor отдельно получает optional player-safe `action_intent_context` с `evidence_scope: intent_only_non_evidence_of_execution_or_success`: это только заявленное намерение, не доказательство начала или продолжения действия, совершённой попытки, произнесённой речи либо успеха. Исполнение требует отдельного confirmed source; явно переданный остаток намерения ещё не исполнен, включая формулировки настоящего длительного действия;
-- committed transient-attempt required change подтверждает физическое handling/contact; неизвестен только observation/discovery result. Проза конкретно изображает выполненное движение без attempt/status/time metadata. Только явно неисполненный continuation остаётся неначатым; pending goal не отменяет applied operation;
+- committed transient-attempt required change подтверждает физическое handling/contact; неизвестен только observation/discovery result. Проза конкретно изображает выполненное движение без attempt/status/time metadata. Невыполненный шаг замысла не изображается выполненным, и проза о нём не сообщает (D162); pending goal не отменяет applied operation;
 - semantic failure не превращается в deterministic prose fallback;
 - format repair и semantic repair независимы: каждый максимум один раз;
 - initial malformed public audit допускает единственный whole-prose semantic repair только при явном `pass:false` и непустом содержательном `concern.reason`; repair получает только reasons и code-owned whole-prose segment, без доверия malformed coverage/checks/aliases. Production private auditor не возвращает public verdict/concerns: malformed private report Adapter преобразует в невалидный audit, поэтому flow блокируется fail-closed без синтеза concern;

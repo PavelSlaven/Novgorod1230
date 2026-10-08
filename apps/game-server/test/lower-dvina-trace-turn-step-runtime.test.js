@@ -748,12 +748,21 @@ async function markedLiveWorldFixture({ turnStepModel }) {
       body_state_version: null, position_id: positionId,
       g6_instance_id: state.position.g6_instance_id };
   });
-  const pool = { async query(text) {
+  const pool = { async query(text, params) {
+    if (/SELECT g6\.host_kind,g6\.host_id,site\.id AS site_id/u.test(text)) {
+      assert.deepEqual(params, [f.partyId, state.position.position_id]);
+      return { rows: [{ host_kind: 'g5_site',
+        host_id: state.position.site_id, site_id: state.position.site_id }] };
+    }
     if (/FROM party_runtime\.party_actor_body_states/u.test(text)) {
       return { rows: [] };
     }
-    if (/SELECT pos\.id,/u.test(text)) return { rows: positions };
-    return { rows: sceneRows };
+    if (/SELECT pos\.id,/u.test(text)) {
+      assert.deepEqual(params, [f.partyId, state.position.site_id]);
+      return { rows: positions };
+    }
+    if (/SELECT n\.npc_id,/u.test(text)) return { rows: sceneRows };
+    assert.fail(`unexpected scene NPC readback query: ${text}`);
   } };
   const load = f.repository.loadPhase2State.bind(f.repository);
   let readbackCount = 0;

@@ -22,7 +22,7 @@ function payload(overrides = {}) {
     party_id: 'party-1',
     actor_id: 'player-1',
     party_state: { state_version: 3, turn_number: 2 },
-    position: { location_ref: 'camp' },
+    position: { location_ref: 'camp', position_id: 'position-1' },
     npcs: [{
       instance_id: 'npc-eremey',
       location_ref: 'camp',
@@ -169,8 +169,24 @@ test('direct presentation persistence keeps only public combat state',
           if (statement.includes('SELECT state_payload')) {
             return { rowCount: 1, rows: [{ state_payload: state }] };
           }
-          persistedScreen = JSON.parse(values[1]);
-          return { rowCount: 1, rows: [] };
+          if (statement.includes(
+            'SELECT g6.host_kind,g6.host_id,site.id AS site_id')) {
+            return { rowCount: 1, rows: [{ host_kind: 'g5_site',
+              host_id: 'site-1', site_id: 'site-1' }] };
+          }
+          if (statement.includes('FROM party_runtime.party_npcs n')) {
+            return { rowCount: 0, rows: [] };
+          }
+          if (statement.includes('SELECT pos.id,pos.g6_instance_id')) {
+            return { rowCount: 1, rows: [{ id: 'position-1',
+              g6_instance_id: 'g6-1' }] };
+          }
+          if (statement.includes(
+            'UPDATE party_runtime.party_server_sessions')) {
+            persistedScreen = JSON.parse(values[1]);
+            return { rowCount: 1, rows: [] };
+          }
+          throw new Error('unexpected query');
         },
         connect() { throw new Error('unexpected connection'); }
       },

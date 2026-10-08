@@ -116,10 +116,25 @@ test('combat first P16 persists participant body and updates persisted body row'
 
   const profileRef = factual.consequence.combat.working_state_after.npcs[0]
     .body_profile_ref;
-  const reloaded = await withSceneNpcs({ query: async () => ({ rows: [{
-    actor_id: npc.entity_id, body_profile_ref: profileRef,
-    health: '80', energy: '70', satiety: '60', body_state_version: '1'
-  }] }) }, 'party-1', { npcs: [{ instance_id: npc.entity_id,
+  const partyId = 'party-1';
+  const positionId = 'position:inside';
+  const siteId = 'site:inside';
+  const reloaded = await withSceneNpcs({ query: async (sql, params) => {
+    if (/SELECT g6\.host_kind,g6\.host_id,site\.id AS site_id/u.test(sql)) {
+      assert.deepEqual(params, [partyId, positionId]);
+      return { rows: [{ host_kind: 'g5_site', host_id: siteId,
+        site_id: siteId }] };
+    }
+    if (/FROM party_runtime\.party_actor_body_states/u.test(sql)) {
+      return { rows: [{ actor_id: npc.entity_id,
+        body_profile_ref: profileRef, health: '80', energy: '70',
+        satiety: '60', body_state_version: '1' }] };
+    }
+    if (/SELECT n\.npc_id,/u.test(sql)) return { rows: [] };
+    if (/SELECT pos\.id,/u.test(sql)) return { rows: [] };
+    assert.fail(`unexpected scene NPC readback query: ${sql}`);
+  } }, partyId, { position: { position_id: positionId, site_id: siteId },
+    npcs: [{ instance_id: npc.entity_id,
     machine_state: {},
     body_state_profile: { schema: 'test-profile' },
     body_state_persisted: false }],

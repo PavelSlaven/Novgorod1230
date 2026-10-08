@@ -15,6 +15,8 @@
 - test(spatial): a failing optional CR178 readback report no longer masks the test assertion; the write error is logged next to it (#568)
 - test(spatial): the Lower Dvina boundary compile test uses the pinned exact head instead of CI GITHUB_SHA, so it no longer rewrites the committed production-v3 candidate and breaks the activation boundary check (#98, D89)
 - docs(prose): закрепить D153 — субъективный контекст прозовых ролей, содержание людей в пределах восприятия, согласованная WK prose-проекция и требования проверки фактического провода; реализация входов ролей — отдельные задачи (#565)
+- fix(scene-npcs): resolve scene NPC readback from the committed SQL position; fail with a typed 409 on missing or conflicting location; record the unsupported LD revision 25 route (D97, LW-138 added; #570)
+- test: снят `test/integration/lower-dvina-trace-phase-2-postgres.test.js:555` — `real Ratsha caftan survives common transition, commit, reload and portrait projection`; спецификация переноса item/portrait assertions в v17 — #556 (D97/A-07)
 - ci: the full-profile suites get 75 minutes; the sequential fast suite exceeded 45 minutes after the latest merges and was cancelled (#98, D89)
 - fix(mapmaker): test:unit lists the existing unit tests explicitly; the old globs matched no files (#457)
 - test(spatial): the perception reload regression creates prior NPC perceptions with a real turn and real recognition, so the persisted body history stays consistent; the saved name is kept per NPC against a generic fresh label (#377, D84)

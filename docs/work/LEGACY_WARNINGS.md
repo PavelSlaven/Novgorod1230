@@ -123,6 +123,7 @@
 | 136 | `npc_family_household_contract.md`, `packages/actors/MODULE.md`, household data/import | нет утверждённых и импортированных данных дворов, необходимых для полноты мира | [#259](https://github.com/PavelSlaven/Novgorod1230/issues/259), [#338](https://github.com/PavelSlaven/Novgorod1230/issues/338) |
 | 137 | `combat-min-data-v1/typed-gaps.json` (`G-RETREAT-MOVEMENT`), меню выбора NPC в бою | метрика D65 body-effect некорректна в сценах с пересекающимися предпочтениями; реального отхода в меню нет | [#426](https://github.com/PavelSlaven/Novgorod1230/issues/426) |
 | 138 | `packages/environment-state`, `apps/game-server/src/runtime/body-needs-temporal.js` | утверждённый body time-effect набор не задаёт факторов холода или сырости | [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315) |
+| 140 | `lower-dvina-trace-phase-4-state.js`, `phase-4-write-projection.js`, `test/integration/lower-dvina-trace-phase-4-postgres.test.js` | LD revision 25 после маршрута не имеет SQL-позиции; strict scene reader возвращает 409, старый путь не поддерживается по D97 | [#570](https://github.com/PavelSlaven/Novgorod1230/issues/570) |
 
 ### Сводка LW-069…073 (CR #158 M2c)
 
@@ -746,3 +747,10 @@
 - **Что.** Утверждённый body time-effect набор не задаёт факторов холода или сырости, поэтому v17 не меняет телесные эффекты по этим условиям. Это отсутствие утверждённых правил, а не вывод о том, что погода исторически не влияла на человека.
 - **Как жить.** Не выводить температурное воздействие из погоды, сезона, одежды или помещения. До отдельного утверждённого профиля `body_factor_ids` остаётся пустым.
 - **Issue.** [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315)
+
+### LW-140 — LD revision 25 после маршрута не имеет позиции для strict scene readback (#570)
+- **Где.** `apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js:67`, `lower-dvina-trace-phase-4-write-projection.js:61`, `world-route-journey.js:5`; `scene-npcs-readback.js:21`; `test/integration/lower-dvina-trace-phase-4-postgres.test.js:57` (выполняемые маршрутные секции сняты, initial inventory проверка сохранена).
+- **Что.** Старый маршрут LD revision 25 удаляет `position_id` и actor scene journey. Strict reader #570 требует подтверждённую active same-party SQL-позицию и отвечает `SCENE_NPC_READBACK_DATA_GAP` (409). Это подтверждено PG-прогоном army-570: route screen persistence падает до surrender/restart. По D97 старое прохождение LD не поддерживается; исключение legacy и fallback к snapshot site запрещены решением ведущего A-army-570-03.
+- **Как жить.** Не возвращать silent skip или compatibility adapter. Снимать только маршрутно-зависимые LD25 проверки по решению ведущего; весь obsolete файл удалять/архивировать только по D74. По A-army-570-03 снят выполняемый маршрутный хвост единственного test-блока; сохранена независимая initial inventory mass проверка, используемая общим владельцем живого screen inventory. Старые private route helpers остаются невызванной fixture-историей; это не поддержка старого прохождения. Закрыть запись после снятия/архивации старых маршрутных проверок либо переноса сценария в утверждённый старт v17 с authoritative позицией по D98.
+- **Снятый child.** `test/integration/lower-dvina-trace-phase-2-postgres.test.js:555` (исходная до снятия строка), `real Ratsha caftan survives common transition, commit, reload and portrait projection` — снят по D97/A-07; спецификация переноса item/portrait assertions в v17 у ведущего в #556.
+- **Issue.** [#570](https://github.com/PavelSlaven/Novgorod1230/issues/570).

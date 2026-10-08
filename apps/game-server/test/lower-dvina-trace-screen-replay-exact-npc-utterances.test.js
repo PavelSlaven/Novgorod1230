@@ -60,6 +60,17 @@ test('phase 2 screen replay preserves verified exact NPC speech and public attri
             return { rowCount: 1, rows: [{ state_payload: state,
               state_digest: canonicalDigest(state) }] };
           }
+          if (sql.includes('SELECT g6.host_kind,g6.host_id,site.id AS site_id')) {
+            return { rowCount: 1, rows: [{ host_kind: 'g5_site',
+              host_id: 'site-screen-replay', site_id: 'site-screen-replay' }] };
+          }
+          if (sql.includes('SELECT pos.id,pos.g6_instance_id')) {
+            return { rowCount: 1, rows: [{ id: 'position-screen-replay',
+              g6_instance_id: 'g6-screen-replay' }] };
+          }
+          if (sql.includes('FROM party_runtime.party_npcs n')) {
+            return { rowCount: 0, rows: [] };
+          }
           if (sql.includes('UPDATE party_runtime.party_server_sessions')) {
             persistedScreen = JSON.parse(values[1]);
             return { rowCount: 1, rows: [] };
@@ -187,7 +198,8 @@ function stateWithUtterances(utterances) {
     actor_id: 'player-1',
     scenario_id: 'lower_dvina_trace_v1',
     party_state: { state_version: 3, turn_number: 2 },
-    position: { location_ref: 'camp' },
+    position: { location_ref: 'camp', position_id: 'position-screen-replay',
+      site_id: 'site-screen-replay' },
     npcs: [
       { instance_id: 'npc-eremey', location_ref: 'camp',
         identity_state: { canonical_name: 'Еремей' } },

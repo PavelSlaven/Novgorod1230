@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(actors): omit inapplicable bald hair color/style before materialization draws and portrait projection; keep committed legacy bald readable and filter incompatible authored prerequisite choices before RNG; add an inactive D152 appearance candidate with 15% baldness for eligible men (#536)
 - fix(wk): pass the committed speaking NPC's occupation to conversation retrieval through the server port, without exposing occupation refs in prose requests (#615)
 - fix(spatial): keep landscape natural-source cover separate from entity visibility; preserve explicit barriers and current conditions (#594)
 - fix(materialization): retain NPC name choice trace for filtered and exhausted pools using the original draw and existing run snapshots (#601)

@@ -36,6 +36,7 @@
   сохраняет structured backlog из реальных traces и независимого premise audit;
   невалидный audit даёт blocked report и ненулевой exit code. Это development
   authoring, без runtime auditor, research, fact approval или corpus mutation.
+- внутренний детерминированный генератор авторинга внешности персонажа v2: проверяет закреплённые байты источников v4, применяет overlay D152, создаёт версионного кандидата и поддерживает read-only `--check`; не утверждает, не импортирует и не активирует данные и не влияет на runtime;
 - internal deterministic WK audit **plan-mode** harness
   (`src/wk-audit-plan-harness.js` + fixtures under `test/fixtures/wk-audit-plan`):
   applies fixture plans through Core without LLM/encoder; acceptance is

@@ -1,4 +1,7 @@
-import { validateActorBaseAppearance } from '@rus/actors';
+import {
+  isActorBaseAppearancePathApplicable,
+  validateActorBaseAppearance
+} from '@rus/actors';
 import {
   assertPortraitSpecV1,
   PORTRAIT_SPEC_V1_ENUMS
@@ -13,7 +16,8 @@ export function projectActorPortraitSpecV1({
   visible_equipment: visibleEquipment = [],
   presentation = {}
 } = {}) {
-  if (!validateActorBaseAppearance(identity, { requireComplete: true }).ok || !Array.isArray(visibleEquipment)) return null;
+  const portraitIdentity = projectPhysicalIdentity(identity);
+  if (!validateActorBaseAppearance(portraitIdentity, { requireComplete: true }).ok || !Array.isArray(visibleEquipment)) return null;
   const slots = { base: [], outer: [], headwear: [] };
   for (const item of visibleEquipment) {
     if (!['worn', 'equipped'].includes(item?.physical_position ?? item?.placement?.physical_position)) continue;
@@ -36,20 +40,22 @@ export function projectActorPortraitSpecV1({
   const spec = {
     schema: 'portrait_spec_v1',
     person: {
-      sex: identity.sex_category,
-      age: AGE[identity.age_category],
-      build: identity.appearance.build,
-      skin_tone: identity.appearance.skin_tone,
-      face_shape: identity.appearance.face_shape
+      sex: portraitIdentity.sex_category,
+      age: AGE[portraitIdentity.age_category],
+      build: portraitIdentity.appearance.build,
+      skin_tone: portraitIdentity.appearance.skin_tone,
+      face_shape: portraitIdentity.appearance.face_shape
     },
     hair: {
-      color: identity.appearance.hair.color,
-      length: identity.appearance.hair.length,
-      style: identity.appearance.hair.style,
-      facial_hair: identity.appearance.hair.facial_hair
+      ...(isActorBaseAppearancePathApplicable(identity, 'appearance.hair.color')
+        ? { color: portraitIdentity.appearance.hair.color } : {}),
+      length: portraitIdentity.appearance.hair.length,
+      ...(isActorBaseAppearancePathApplicable(identity, 'appearance.hair.style')
+        ? { style: portraitIdentity.appearance.hair.style } : {}),
+      facial_hair: portraitIdentity.appearance.hair.facial_hair
     },
     eyes: {
-      color: identity.appearance.eyes.color,
+      color: portraitIdentity.appearance.eyes.color,
       gaze: presentationValue(presentation.gaze, PORTRAIT_SPEC_V1_ENUMS.eyes.gaze, 'viewer')
     },
     expression: {
@@ -83,6 +89,16 @@ export function projectActorPortraitSpecV1({
 function requiredGarmentSemanticsPresent(clothing) {
   return ['neckline', 'sleeve', 'outer', 'fabric', 'trim', 'main_color', 'secondary_color', 'headwear']
     .every((key) => typeof clothing[key] === 'string' && clothing[key].length > 0);
+}
+
+function projectPhysicalIdentity(identity) {
+  if (isActorBaseAppearancePathApplicable(identity, 'appearance.hair.color')
+      && isActorBaseAppearancePathApplicable(identity, 'appearance.hair.style')) return identity;
+  const hair = { ...identity.appearance.hair };
+  for (const path of ['appearance.hair.color', 'appearance.hair.style']) {
+    if (!isActorBaseAppearancePathApplicable(identity, path)) delete hair[path.split('.').at(-1)];
+  }
+  return { ...identity, appearance: { ...identity.appearance, hair } };
 }
 
 function presentationValue(value, allowed, fallback) {

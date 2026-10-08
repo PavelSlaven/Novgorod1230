@@ -1,4 +1,4 @@
-import { validateActorBaseAppearance } from '@rus/actors';
+import { isActorBaseAppearancePathApplicable, validateActorBaseAppearance } from '@rus/actors';
 import { PORTRAIT_SPEC_V1_ENUMS } from '@rus/contracts';
 import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { validateNpcOrdinarySemanticRemainder } from '@rus/npc-runtime';
@@ -117,7 +117,9 @@ function safeOrdinaryRemainder(value) {
 }
 
 function safeConversationIdentity(value, displayName) {
-  if (!validateActorBaseAppearance(value, { requireComplete: true }).ok) {
+  if (!validateActorBaseAppearance(value, {
+    requireComplete: true, allowLegacyBaldMetadata: true
+  }).ok) {
     return { display_name: displayName };
   }
   return {
@@ -130,9 +132,11 @@ function safeConversationIdentity(value, displayName) {
       skin_tone: safeText(value?.appearance?.skin_tone),
       face_shape: safeText(value?.appearance?.face_shape),
       hair: {
-        color: safeText(value?.appearance?.hair?.color),
+        ...(isActorBaseAppearancePathApplicable(value, 'appearance.hair.color')
+          ? { color: safeText(value?.appearance?.hair?.color) } : {}),
         length: safeText(value?.appearance?.hair?.length),
-        style: safeText(value?.appearance?.hair?.style),
+        ...(isActorBaseAppearancePathApplicable(value, 'appearance.hair.style')
+          ? { style: safeText(value?.appearance?.hair?.style) } : {}),
         facial_hair: safeText(value?.appearance?.hair?.facial_hair)
       },
       eyes: { color: safeText(value?.appearance?.eyes?.color) }

@@ -1,5 +1,5 @@
 import { serverError } from '../../errors.js';
-import { validateActorBaseAppearance } from '@rus/actors';
+import { isActorBaseAppearancePathApplicable, validateActorBaseAppearance } from '@rus/actors';
 import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { playerSafeHeardNpcIntroduction, safeVisualProfile } from
   '../../runtime/lower-dvina-trace-player-safe-npc-details.js';
@@ -67,8 +67,17 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
       WHERE party_id=$1 AND npc_id=$2`, [partyId, placement.entity_id]);
     if (result.rows.length !== 1) gap('committed_entity_exterior_required');
     const identity = result.rows[0].identity_state;
-    if (!validateActorBaseAppearance(identity, { requireComplete: true }).ok) {
+    if (!validateActorBaseAppearance(identity, {
+      requireComplete: true, allowLegacyBaldMetadata: true
+    }).ok) {
       gap('committed_entity_exterior_required');
+    }
+    const appearance = structuredClone(identity.appearance);
+    for (const field of ['color', 'style']) {
+      const path = `appearance.hair.${field}`;
+      if (!isActorBaseAppearancePathApplicable(identity, path)) {
+        delete appearance.hair[field];
+      }
     }
     const gear = await transaction.query(`SELECT i.state,i.condition_state,
         p.physical_position,p.equipment_slot_category_id
@@ -88,7 +97,7 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
         visual_profile_snapshot });
     }
     return { sex_category: identity.sex_category, age_category: identity.age_category,
-      appearance: structuredClone(identity.appearance), visible_equipment };
+      appearance, visible_equipment };
   }
   if (placement.entity_kind === 'item') {
     const result = await transaction.query(`SELECT i.state,i.condition_state,i.template_id,

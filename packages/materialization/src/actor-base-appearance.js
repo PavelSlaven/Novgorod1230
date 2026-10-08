@@ -2,6 +2,7 @@ import {
   ACTOR_BASE_APPEARANCE_PATHS,
   ACTOR_BASE_APPEARANCE_VOCABULARY,
   completeActorBaseAppearance,
+  isActorBaseAppearancePathApplicable,
   validateActorBaseAppearance
 } from '@rus/actors';
 import { canonicalDigest, MaterializationError } from './core.js';
@@ -76,13 +77,16 @@ export function materializeActorBaseAppearance({
   const completion = {};
   const choices = [];
   for (const path of ACTOR_BASE_APPEARANCE_PATHS) {
-    const facet = FACET_BY_PATH[path];
     const workingIdentity = mergeIdentity(identity, completion);
+    if (!isActorBaseAppearancePathApplicable(workingIdentity, path)) continue;
+    const facet = FACET_BY_PATH[path];
     const suppliedForFacet = approvedEntries.filter((entry) => entry?.facet === facet);
     const eligible = suppliedForFacet
       .filter((entry) => entry.status === 'approved'
         && entry.applicable !== false
         && appliesTo(entry.applicability, workingIdentity)
+        && isPhysicallyAdmissible(
+          entry, path, workingIdentity, authoredRequirements)
         && preservesAuthoredRequirements(
           entry, path, workingIdentity, authoredRequirements))
       .map(normalizeEntry)
@@ -131,6 +135,8 @@ export function materializeActorBaseAppearance({
           entry?.status === 'approved'
           && (entry.applicable === false
             || !appliesTo(entry.applicability, workingIdentity)
+            || !isPhysicallyAdmissible(
+              entry, path, workingIdentity, authoredRequirements)
             || !preservesAuthoredRequirements(
               entry, path, workingIdentity, authoredRequirements))).length
       }
@@ -218,6 +224,7 @@ function appliesTo(applicability, identity) {
 function collectAuthoredRequirements(identity, approvedEntries) {
   const requirements = [];
   for (const path of ACTOR_BASE_APPEARANCE_PATHS) {
+    if (!isActorBaseAppearancePathApplicable(identity, path)) continue;
     const authoredValue = readPath(identity, path);
     if (authoredValue == null || authoredValue === '') continue;
     const facet = FACET_BY_PATH[path];
@@ -246,6 +253,7 @@ function assertAuthoredCompletionPossible(
   identity, approvedEntries, authoredRequirements
 ) {
   for (const path of ACTOR_BASE_APPEARANCE_PATHS) {
+    if (!isActorBaseAppearancePathApplicable(identity, path)) continue;
     if (readPath(identity, path) != null
         && readPath(identity, path) !== '') continue;
     const facet = FACET_BY_PATH[path];
@@ -260,7 +268,16 @@ function assertAuthoredCompletionPossible(
         { path, facet }
       );
     }
-    const possible = supplied.some((entry) =>
+    const physicallyAdmissible = supplied.filter((entry) =>
+      isPhysicallyAdmissible(entry, path, identity, authoredRequirements));
+    if (physicallyAdmissible.length === 0) {
+      throw new MaterializationError(
+        'ACTOR_APPEARANCE_DATA_GAP',
+        `Required actor appearance candidate set is empty for ${path}.`,
+        { path, facet }
+      );
+    }
+    const possible = physicallyAdmissible.some((entry) =>
       applicabilityCompatible(entry.applicability, identity)
       && preservesAuthoredRequirements(
         entry, path, identity, authoredRequirements));
@@ -284,6 +301,16 @@ function preservesAuthoredRequirements(
     alternatives.some((alternative) =>
       applicabilityCompatible(
         alternative.applicability, prospectiveIdentity)));
+}
+
+function isPhysicallyAdmissible(
+  entry, path, identity, authoredRequirements
+) {
+  const prospectiveIdentity = structuredClone(identity);
+  writePath(prospectiveIdentity, path,
+    String(entry?.option_value ?? entry?.value ?? '').trim());
+  return authoredRequirements.every(({ path: authoredPath }) =>
+    isActorBaseAppearancePathApplicable(prospectiveIdentity, authoredPath));
 }
 
 function applicabilityCompatible(applicability, identity) {

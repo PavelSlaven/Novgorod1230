@@ -30,8 +30,11 @@ provenance-validated committed inputs; `projectPlayerSafeCompletionOutcome`
 `projectActorPortraitSpecV1({ identity, visible_equipment, presentation })`
 принимает только committed, server-sanitized data, разрешает ровно один visible
 base/outer/headwear item на slot и завершает `assertPortraitSpecV1`. Для
-historical/incomplete/ambiguous state возвращается `null`; projection не делает
-draw, не исправляет и не сохраняет state.
+нового bald portrait не передаются hair color/style; legacy bald metadata
+снимаются только в отдельной физической проекции для портрета и остаются в
+canonical identity. Bald допускает отсутствующие color/style, non-bald требует
+оба поля. Для historical/incomplete/ambiguous state возвращается `null`;
+projection не делает draw, не исправляет и не сохраняет state.
 
 `projectPlayerSafeOrdinaryResolutionCapability` доступен через узкий subpath
 `@rus/visibility-knowledge-memory/ordinary-resolution-capability`, принимает

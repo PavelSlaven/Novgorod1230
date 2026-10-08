@@ -138,7 +138,7 @@ test('capture production v17 speech payloads for all seeded NPCs', {
     assert.equal(String(url), 'https://target-acceptance.invalid/chat/completions');
     const call = JSON.parse(init.body);
     const input = JSON.parse(call.messages.find(({ role }) => role === 'user').content);
-    const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+    const system = call.messages[0].content.replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
     const role = speechRole(input, system);
     if (activeTurn && role != null) {
       const parameters = Object.fromEntries(Object.entries(call)

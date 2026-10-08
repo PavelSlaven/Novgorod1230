@@ -263,7 +263,15 @@ test('P2-2: public omission diagnoses new gaps, preserves named items and tolera
   assert.equal(published.omitted_label_gap_count, 1);
   assert.deepEqual(counts, [1]);
   assert.deepEqual(published.visible_context.visible_objects, [namedItem()]);
-  assert.deepEqual(successEnvelope(published.visible_context).data.visible_objects, [namedItem()]);
+  const publicObjects = successEnvelope(published.visible_context).data.visible_objects;
+  assert.equal(publicObjects.length, 1);
+  assert.deepEqual(publicObjects, [{
+    entity_ref: { entity_kind: namedItem().entity_ref.entity_kind,
+      public_key: publicObjects[0].entity_ref.public_key },
+    display_label: namedItem().display_label
+  }]);
+  assert.match(publicObjects[0].entity_ref.public_key, /^e[1-9]\d*$/u);
+  assert.equal(Object.hasOwn(publicObjects[0].entity_ref, 'entity_id'), false);
   assert.deepEqual(raw, original);
   const failingDiagnostic = projectVisibleContextForPlayerPackage(raw, {
     onLabelGapsOmitted: () => { throw new Error('diagnostic callback failed'); }

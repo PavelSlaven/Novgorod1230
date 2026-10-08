@@ -13,5 +13,5 @@ export function renderExactNpcUtterances(screen) {
 function speakerLabel(screen, speakerRef) {
   return screen.visible_context?.visible_npc?.find(({ entity_ref: ref }) =>
     ref?.entity_kind === speakerRef?.entity_kind
-      && ref.entity_id === speakerRef?.entity_id)?.display_label ?? 'Собеседник';
+      && ref.public_key === speakerRef?.public_key)?.display_label ?? 'Собеседник';
 }

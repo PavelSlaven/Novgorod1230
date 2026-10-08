@@ -21,7 +21,7 @@ function screen(active_interlocutor) {
 
 test('conversation portrait selects authored, procedural and SVG visuals from explicit fields', () => {
   const active = {
-    entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+    entity_ref: { entity_kind: 'npc', public_key: 'e1' },
     display_label: 'Еремей',
     portrait_spec_v1: SAMPLE_PORTRAIT_SPEC
   };

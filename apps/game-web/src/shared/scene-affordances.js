@@ -3,7 +3,7 @@ import { validatePortraitSpecV1 } from '../portrait-lab/contract.js';
 const INTERLOCUTOR_KEYS = new Set([
   'entity_ref', 'display_label', 'role_label', 'portrait_asset_id', 'portrait_spec_v1'
 ]);
-const ENTITY_REF_KEYS = new Set(['entity_kind', 'entity_id']);
+const ENTITY_REF_KEYS = new Set(['entity_kind', 'public_key']);
 export const LANDSCAPE_ENVIRONMENT_PROFILES = Object.freeze([
   'env.local_variable',
   'env.main_river_channel',
@@ -111,7 +111,8 @@ function exactNpcRef(value) {
     && Object.keys(value).length === ENTITY_REF_KEYS.size
     && Object.keys(value).every((key) => ENTITY_REF_KEYS.has(key))
     && value.entity_kind === 'npc'
-    && nonEmptyText(value.entity_id);
+    && typeof value.public_key === 'string'
+    && /^e[1-9]\d*$/u.test(value.public_key);
 }
 
 function nonEmptyText(value) {

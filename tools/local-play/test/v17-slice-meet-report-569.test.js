@@ -4,7 +4,7 @@ import test from 'node:test';
 import { captureVisibilityConditions, runLegs } from '../v17-slice-legs.js';
 import { renderPlaytestMarkdown } from '../v17-slice-report.js';
 
-const admittedNpc = { entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' }, display_label: 'человек' };
+const admittedNpc = { entity_ref: { entity_kind: 'npc', public_key: 'e1' }, display_label: 'человек' };
 const panelPerson = { display_label: 'человек' };
 const response = (data = {}) => ({ status: 200, ok: true, data, error: null });
 
@@ -114,14 +114,14 @@ test('meet 569: captures before/response/after and renders known phase with unav
   assert.deepEqual(Object.keys(turn.visibility_conditions), ['before', 'response', 'after']);
   assert.equal(turn.visibility_conditions.before.admission_source, 'visible_context');
   assert.equal(turn.visibility_conditions.before.admitted_npcs_count, 0);
-  assert.deepEqual(turn.visibility_conditions.before.admitted_npc_ids, []);
+  assert.deepEqual(turn.visibility_conditions.before.admitted_npc_keys, []);
   assert.equal(turn.visibility_conditions.before.current_light_phase, 'unknown');
   assert.equal(turn.visibility_conditions.response.admission_source, 'visible_context');
   assert.equal(turn.visibility_conditions.response.admitted_npcs_count, 1);
-  assert.deepEqual(turn.visibility_conditions.response.admitted_npc_ids, ['npc-1']);
+  assert.deepEqual(turn.visibility_conditions.response.admitted_npc_keys, [admittedNpc.entity_ref.public_key]);
   assert.equal(turn.visibility_conditions.response.current_light_phase, 'civil_dusk');
   assert.equal(turn.visibility_conditions.after.admitted_npcs_count, 1);
-  assert.deepEqual(turn.visibility_conditions.after.admitted_npc_ids, ['npc-1']);
+  assert.deepEqual(turn.visibility_conditions.after.admitted_npc_keys, [admittedNpc.entity_ref.public_key]);
   assert.equal(turn.visibility_conditions.after.current_light_phase, 'civil_dusk');
   assert.equal(result.opening.visibility_conditions_initial.current_light_phase, 'unknown');
   assert.equal(result.opening.visibility_conditions_after_ack.current_light_phase, 'unknown');

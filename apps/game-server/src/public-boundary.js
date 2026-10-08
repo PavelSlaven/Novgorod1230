@@ -1,5 +1,6 @@
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
 import { serverError } from './errors.js';
+import { projectPublicScreenReferences } from './public-screen-references.js';
 
 const PLAYER_TEXT_FIELDS = new Set([
   'action_label', 'actor_label', 'allowed_tensions', 'biography', 'content',
@@ -182,7 +183,7 @@ function validExactNpcUtterances(value) {
 export function projectPublicPayload(value) {
   const output = structuredClone(value);
   stripExactNpcUtteranceProvenance(output);
-  return output;
+  return projectPublicScreenReferences(output);
 }
 
 function stripExactNpcUtteranceProvenance(value, seen = new Set()) {

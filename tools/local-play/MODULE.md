@@ -123,6 +123,10 @@ World Knowledge энкодер по умолчанию — заглушка (н�
 или blocked, 2 аргументы, 3 preflight, 4 сбой стенда. Windows-раннеры выше не
 затрагиваются и остаются на сценарии v16.
 
+Public visible-context diagnostics use `entity_ref.public_key`; SQL placement IDs
+remain private snapshot evidence and are reported separately. The Lower Dvina
+`blue_wool_found` predicate checks the visible label `клочок синей шерсти`.
+
 ## Не владеет
 
 Не владеет game-server composition, gameplay, migrations как публичным

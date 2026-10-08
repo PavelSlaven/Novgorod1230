@@ -5,12 +5,21 @@ const VERSION = 'm2c_npc_composition_v1';
 const text = (value) => typeof value === 'string' && value.trim().length > 0;
 const same = (a, b) => a?.id === b?.id && a?.version === b?.version;
 const gap = (code) => { throw new MaterializationError(code, 'Exact approved generated NPC data is required.'); };
+function immutableOccupiedNames(value) {
+  if (!Array.isArray(value) || value.some((name) => typeof name !== 'string')) {
+    throw new MaterializationError('NPC_COMPOSITION_OCCUPIED_NAMES_INVALID',
+      'Occupied NPC names must be an array of strings.');
+  }
+  return Object.freeze([...value]);
+}
 
 /** Compile imported P12 composition into existing NPC/Stage 16 inputs. No persistence. */
 export function compileGeneratedNpcBindings({ party_id: partyId, run_id: runId,
   scene, closure, approved_bundle: approvedBundle, environment,
   actor_base_attributes_runtime_profile: actorProfile, equipment_activation: activation,
-  equipment_catalog_digest: equipmentDigest, world_catalog_digest: worldDigest } = {}) {
+  equipment_catalog_digest: equipmentDigest, world_catalog_digest: worldDigest,
+  occupied_names: suppliedOccupiedNames = [] } = {}) {
+  const occupiedNames = immutableOccupiedNames(suppliedOccupiedNames);
   const world = closure?.world_revision_id;
   const composition = closure?.composition;
   const canonical = closure?.canonical_g5_ref;
@@ -72,6 +81,7 @@ export function compileGeneratedNpcBindings({ party_id: partyId, run_id: runId,
   const usedRows = new Map();
   const ctx = { closure, scene, composition, runtimeRows, regionalRows, world, worldDigest, actorProfile,
     activation, approvedBundle, environment, seed, canonical, template, positionResult, usedRows, candidates,
+    occupiedNames,
     applicable: (profile) => applicable(profile, closure) };
   for (let ordinal = 0; ordinal < count; ordinal += 1) {
     const selected = select(profiles, `npc_profile:${ordinal}`, (entry) => entry.row.id).row;
@@ -92,7 +102,9 @@ const PEOPLE_VERSION = 'place_people_compile_v1';
 export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, scene, closure, people,
   placement_state_by_identity: placementStates,
   approved_bundle: approvedBundle, environment, actor_base_attributes_runtime_profile: actorProfile,
-  equipment_activation: activation, equipment_catalog_digest: equipmentDigest, world_catalog_digest: worldDigest } = {}) {
+  equipment_activation: activation, equipment_catalog_digest: equipmentDigest, world_catalog_digest: worldDigest,
+  occupied_names: suppliedOccupiedNames = [] } = {}) {
+  const occupiedNames = immutableOccupiedNames(suppliedOccupiedNames);
   const world = closure?.world_revision_id;
   const canonical = closure?.canonical_g5_ref;
   if (closure?.schema !== 'rus.place_people_binding_bundle.v1'
@@ -129,7 +141,8 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
   const g4 = closure.g4_ref;
   const ctx = { closure: { ...closure, canonical_g5_ref: canonical }, scene, composition: { id: null, version: null, payload: {} },
     runtimeRows, regionalRows, world, worldDigest, actorProfile, activation,
-    approvedBundle, environment, seed, canonical, template: null, positionResult, usedRows, regionalApplicability: 'g4',
+    approvedBundle, environment, seed, canonical, template: null, positionResult, usedRows, occupiedNames,
+    regionalApplicability: 'g4',
     applicable: (profile) => Array.isArray(profile.applicability) && profile.applicability.some((entry) =>
       same(entry.g4_ref, g4) && entry.canonical_g5_ref == null && entry.generation_template_ref == null) };
   let positionOrdinal = 0;
@@ -171,7 +184,8 @@ function equipmentCatalog(usedRows, activation, equipmentDigest) {
 /** One approved NPC binding from an already chosen npc_binding row; `select` draws the regional context. */
 function buildNpcInput(ctx, selected, ordinal, select, origin = null) {
   const { closure, scene, composition, runtimeRows, regionalRows, world, worldDigest, actorProfile, activation,
-    approvedBundle, environment, seed, canonical, template, positionResult, usedRows, candidates } = ctx;
+    approvedBundle, environment, seed, canonical, template, positionResult, usedRows, candidates,
+    occupiedNames } = ctx;
   const payload = selected.payload;
   if (!Array.isArray(payload.runtime_profile_refs) || !payload.runtime_profile_refs.length
     || !Array.isArray(payload.regional_context_refs) || !payload.regional_context_refs.length) gap('NPC_COMPOSITION_DEPENDENCY_GAP');
@@ -208,6 +222,7 @@ function buildNpcInput(ctx, selected, ordinal, select, origin = null) {
   if (existing.length > 1 || (existing.length === 1 && canonicalDigest(existing[0]) !== canonicalDigest(activity))) gap('NPC_COMPOSITION_ACTIVITY_CONFLICT');
   if (!existing.length) temporal.push(activity);
   return { position_id: position?.id ?? null, environment,
+    ...(occupiedNames.length ? { occupied_names: occupiedNames } : {}),
     random: createRandomSource({ seed: actorSeed.uint32 }), routine_profile: routine,
     approved_bundle: { ...approvedBundle, temporal_records: temporal,
       clothing_profiles: [clothing], regional_context_profiles: [region.payload] },

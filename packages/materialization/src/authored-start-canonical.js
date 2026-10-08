@@ -90,9 +90,14 @@ export function materializeCanonicalAuthoredStart({ input, profile, admission, i
     actor_base_attributes_runtime_profile: input.actor_base_attributes_runtime_profile,
     equipment_activation: input.actor_equipment_activation, world_catalog_digest: input.world_catalog_digest,
     equipment_catalog_digest: input.domain_catalog_pin.catalog_digest });
+  const occupiedNames = new Set(npcPlan.npc_inputs[0]?.occupied_names ?? []);
   const npcResults = npcPlan.npc_inputs.map((npcInput) => {
-    const result = materializeApprovedProceduralNpc({ ...npcInput, party_id: input.party_id, run_id: runId });
+    const result = materializeApprovedProceduralNpc({ ...npcInput, occupied_names: [...occupiedNames],
+      party_id: input.party_id, run_id: runId });
     const npc = structuredClone(result.npc);
+    if (typeof npc.identity_state.canonical_name === 'string' && npc.identity_state.canonical_name.length > 0) {
+      occupiedNames.add(npc.identity_state.canonical_name);
+    }
     npc.position_id = npcInput.position_id;
     npc.routine_state = createNpcRoutineState({ profile: npcInput.routine_profile,
       calendar_profile: input.calendar_profile, started_at: environmentInput.game_timestamp,

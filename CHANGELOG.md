@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(llm-runtime): use a Russian JSON-mode instruction on the provider wire (#563)
 - fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - fix(npc): require source knowledge before occupation-based address selection (#526)
 - test(npc): permanent PG regressions for NPC body readback without a site and return without a route (#352, #394)

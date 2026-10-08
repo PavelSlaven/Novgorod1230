@@ -5,6 +5,10 @@ import { canonicalDigest } from '@rus/materialization';
 import { validateActorBaseAppearance } from '@rus/actors';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { loadTargetBodyNeedsProfile } from
+  '../../apps/game-server/src/internal/target-runtime-profiles.js';
+import { deriveTrustedBodyNeedsBindingPin } from
+  '../../apps/game-server/src/runtime/body-needs-temporal.js';
 import { withSceneNpcs } from
   '../../apps/game-server/src/infrastructure/postgres/scene-npcs-readback.js';
 import { bootstrapV17PresenceE2e, createPresenceProductionRoot,
@@ -117,9 +121,15 @@ test('authored-start scene NPC reload (ожидаемо красный, issue #5
     const site = await siteAtPosition(env.partyPool, partyId, state.position.position_id);
     assert.deepEqual(site, initialSite, 'observation leaves the player at the authored start');
     assert.equal(typeof spatialProjector, 'function');
+    const { rows: partyRows } = await env.partyPool.query(
+      'SELECT world_revision_id FROM party_runtime.parties WHERE party_id=$1', [partyId]);
+    const trustedBodyNeedsProfile = await loadTargetBodyNeedsProfile({
+      rootDir: env.rootDir, worldRevisionId: partyRows[0].world_revision_id });
     const repository = createLowerDvinaTracePhase2PostgresRepository({
       partyPool: env.partyPool,
       projectCurrentSpatialContext: spatialProjector,
+      trustedBodyNeedsProfile,
+      trustedBodyNeedsBindingPin: deriveTrustedBodyNeedsBindingPin(trustedBodyNeedsProfile),
       readCurrentVisibleContext: root.readCurrentVisibleContext,
       committer: { async commit() { throw new Error('read-only regression'); } }
     });

@@ -81,7 +81,10 @@ test('name and character do not consume the appearance random stream', () => {
   const plain = materializeApprovedProceduralNpc({ party_id: 'party', run_id: 'run', binding, environment,
     approved_bundle: bundle, random: createRandomSource({ seed: 42 }) });
   const named = run();
-  assert.deepEqual(named.choices, plain.choices);
+  assert.deepEqual(named.choices.filter((choice) => choice.slot_key !== 'name'), plain.choices);
+  const nameChoices = named.choices.filter((choice) => choice.slot_key === 'name');
+  assert.equal(nameChoices.length, 1);
+  assert.equal(nameChoices[0].selected_id, named.npc.identity_state.name_provenance.entry_id);
   for (const key of ['sex_category', 'age_category', 'appearance']) {
     assert.deepEqual(named.npc.identity_state[key], plain.npc.identity_state[key]);
   }

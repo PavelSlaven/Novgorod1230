@@ -124,10 +124,11 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
   const catalog = bundle.npc_identity;
   const seed = { parentSeedDigest: binding.parent_seed_digest, actorSlotRef: binding.actor_slot_ref };
   const character = pickNpcCharacter({ catalog, occupationId: occupation.occupation_id, ...seed });
+  const { choice: nameChoice, ...nameIdentity } = pickNpcName({ catalog,
+    regionalContextId: binding.regional_context_ref?.id,
+    sexCategory: appearance.identity.sex_category, occupiedNames, ...seed });
   const identity = { ...structuredClone(appearance.identity),
-    public_role_label: publicLabel,
-    ...pickNpcName({ catalog, regionalContextId: binding.regional_context_ref?.id,
-      sexCategory: appearance.identity.sex_category, occupiedNames, ...seed }) };
+    public_role_label: publicLabel, ...nameIdentity };
   const npc = {
     instance_id: npcId, participant_slot_ref: binding.actor_slot_ref,
     profile_id: binding.source_binding?.npc_binding_ref.id ?? binding.actor_profile_rule_ref,
@@ -181,8 +182,8 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     profile_record_digest: binding.profile_record_digest
   };
   return deepFreeze({ schema: 'rus.approved_procedural_npc_result.v1',
-    version: 1, npc, choices: appearance.choices.map((choice) =>
-      structuredClone(choice)),
+    version: 1, npc, choices: [...appearance.choices.map((choice) => structuredClone(choice)),
+      ...(nameChoice ? [{ ...nameChoice, choice_ordinal: appearance.choices.length }] : [])],
     attribute_trace: structuredClone(attributes.trace),
     environment: structuredClone(environment),
     actor_candidate_instance_map: [{ actor_candidate_id: binding.actor_slot_ref,

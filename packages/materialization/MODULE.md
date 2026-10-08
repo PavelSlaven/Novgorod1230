@@ -183,6 +183,32 @@ A bundle without `npc_identity` keeps the unnamed result.
 `scene_pool_exhausted`. Отсутствующий binding или исходно пустой пул сохраняют
 прежние `no_pool_binding` / `no_candidates` и `canonical_name: null`.
 
+Каждый состоявшийся выбор имени добавляет в materializer `choices` отдельную
+запись `npc:<actorSlotRef>:name`: `choice_key`, `candidate_digest`, `selected_id`,
+`rng_counter`, `selected_weight`, `rejection_summary`. Digest вычисляется из
+отсортированных ID фактического пула выбора: после исключения занятых форм,
+а при `scene_pool_exhausted` — из восстановленного полного применимого пула.
+`rng_draw` и `rng_counter` описывают тот же единственный draw собственного
+name stream; `selected_weight` — его действующий вес. Запись также содержит
+`candidate_set_digest`, `candidate_ids`, `slot_key: name` и `choice_ordinal`
+для существующей проекции choices. Прежние appearance choices не меняются.
+
+В `rejection_summary` счётчики относятся к записям загруженного каталога:
+`inapplicable_count` — вне выбранных pool/people/sex; `occupied_name_count` —
+применимые записи с занятой точной формой, включая дубликаты; `rejected_count` —
+окончательно исключённые из фактического пула. При exhaustion записи с занятой
+формой возвращены в выбор, `reason: scene_pool_exhausted` объясняет это;
+счётчики попытки исключения и окончательного исключения тогда не складываются.
+Отсутствие каталога, binding или исходных кандидатов не создаёт name choice
+и не расходует RNG.
+
+Trace не входит в `identity_state`, `name_provenance` или `name_profile_snapshot`.
+Generated first-entry переносит choices в
+`party_materialization_runs.trace.first_entry.choices`; canonical start собирает
+их в полном run trace, сохраняемом Stage24. Существующая SQL-проекция choices
+использует прежние поля; полный trace хранит все поля D-007 без новой DDL.
+Reload/replay возвращает committed имя и trace, не выполняя новый выбор.
+
 An exact `clothing_profile_ref` resolves one approved sex/age/season variant
 after the existing appearance draw. Its required slots and explicit personal
 property binding produce actor-bound garment candidates for Stage 16. Missing

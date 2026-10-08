@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { basename, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import test from 'node:test';
 
 import {
@@ -131,9 +131,7 @@ test('D72/D92/D99/D106: all seven pinned v17 starts and their first look expose 
     assert.equal(manifest.activation_authorized, true);
     assert.equal(manifest.starts.length, 7);
     const out = process.env.RUS_START_VISIBILITY_OUT_DIR
-      ?? (ROOT.startsWith('/srv/novgorod-work/worktrees/')
-        ? resolve(ROOT, '../../fleet/tasks', basename(ROOT), 'out')
-        : await mkdtemp(join(tmpdir(), 'novgorod-start-visibility-')));
+      ?? await mkdtemp(join(tmpdir(), 'novgorod-start-visibility-'));
     await mkdir(join(out, 'visible'), { recursive: true });
     const records = [];
     const env = await bootstrapV17PresenceE2e(t, { postgresProfile: 'canonical-acceptance' });

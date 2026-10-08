@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "0642b186f986c6e11b9ecc1e100a44922d672f4d06eecffc4214698e4efd52ae",
-  "chunk_count": 2972,
+  "corpus_hash": "47150202f8e8a87369b5314f254afefb994dc4e503a0baf6c78bfd93f7d47f64",
+  "chunk_count": 2973,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -15390,8 +15390,8 @@
       "section": "8. Свободное действие, craft и смешанный незавершённый intent",
       "line_start": 306,
       "line_end": 319,
-      "text": "## situational_prose_requirements.md — 8. Свободное действие, craft и смешанный незавершённый intent\n## 8. Свободное действие, craft и смешанный незавершённый intent\n\n**Необходимый контекст.** Grounded attempt; используемые source/tool refs; фактический порядок подшагов; checks; elapsed; source transitions; outputs/waste/nonworking result; item/body/place changes; player-safe semantic remaining intent и player-response boundary.\n\n**Обязательный смысл.** Показать ближайшую реальную попытку и фактический результат. Для craft ясны преобразованный материал, самостоятельный результат, остаток/отход и практическое состояние. Для mixed intent проза показывает только реально совершённое; то, до чего действие не дошло, не изображается ни выполненным, ни проваленным, и о несделанном проза не сообщает. Если следующий шаг не мог состояться, проза показывает причину через воспринятое героем (D162). Точный persisted remaining intent остаётся у владельца хода: писателю он не передаётся, аудитору — только как evidence, что он не изображён выполненным.",
-      "char_count": 1051
+      "text": "## situational_prose_requirements.md — 8. Свободное действие, craft и смешанный незавершённый intent\n## 8. Свободное действие, craft и смешанный незавершённый intent\n\n**Необходимый контекст.** Grounded attempt; используемые source/tool refs; фактический порядок подшагов; checks; elapsed; source transitions; outputs/waste/nonworking result; item/body/place changes; воспринимаемая героем причина, если следующий шаг замысла не мог состояться (D162), и player-response boundary; remaining intent писателю не передаётся.\n\n**Обязательный смысл.** Показать ближайшую реальную попытку и фактический результат. Для craft ясны преобразованный материал, самостоятельный результат, остаток/отход и практическое состояние. Для mixed intent проза показывает только реально совершённое; то, до чего действие не дошло, не изображается ни выполненным, ни проваленным, и о несделанном проза не сообщает. Если следующий шаг не мог состояться, проза показывает причину через воспринятое героем (D162). Точный persisted remaining intent остаётся у владельца хода: писателю он не передаётся, аудитору — только как evidence, что он не изображён выполненным.",
+      "char_count": 1138
     },
     {
       "id": "situational_prose_requirements.md:8. Свободное действие, craft и смешанный незавершённый intent:1",
@@ -15552,11 +15552,20 @@
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
       "line_end": 595,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:\n\n1. **Grounding:** каждое утверждение о мире (§2.0), в том числе о подтверждённых изменениях, точной речи и неопределённости, имеет точный player-safe source; ощущения, мысли, чувства героя, мелкие движения и связки source не требуют, если не нарушают границы рассказа (§2.0, п. 1–5); intent и правдоподобие не служат evidence.\n2. **Coverage:** все существенные воспринимаемые confirmed changes, exact speech, material uncertainty и смысл незавершённого остатка переданы по смыслу один раз; технический перечень не требуется.\n3. **Causality:** порядок, actor/object identity, before/after и boundary сохранены.\n4. **Orientation:** когда ситуация требует, читатель понимает near/far, exits/barriers, действующих NPC и следующее пространство выбора.\n5. **Literary scene:** текст имеет центр, связные beats, конкретные образы и уместный объём; не является ledger, справкой, протоколом или перечнем фактов без переживания героя.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.",
-      "char_count": 1280
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:",
+      "char_count": 235
     },
     {
       "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:1",
+      "file": "situational_prose_requirements.md",
+      "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
+      "line_start": 418,
+      "line_end": 595,
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:\n\n1. **Grounding:** каждое утверждение о мире (§2.0), в том числе о подтверждённых изменениях, точной речи и неопределённости, имеет точный player-safe source; ощущения, мысли, чувства героя, мелкие движения и связки source не требуют, если не нарушают границы рассказа (§2.0, п. 1–5); intent и правдоподобие не служат evidence.\n2. **Coverage:** все существенные воспринимаемые confirmed changes, exact speech и material uncertainty — в том числе неизвестный результат реально выполненной попытки — переданы по смыслу один раз; невыполненный остаток замысла не передаётся и не описывается, а воспринимаемая причина, по которой следующий шаг не мог состояться, если она передана, — передана (D162); технический перечень не требуется.\n3. **Causality:** порядок, actor/object identity, before/after и boundary сохранены.\n4. **Orientation:** когда ситуация требует, читатель понимает near/far, exits/barriers, действующих NPC и следующее пространство выбора.\n5. **Literary scene:** текст имеет центр, связные beats, конкретные образы и уместный объём; не является ledger, справкой, протоколом или перечнем фактов без переживания героя.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.",
+      "char_count": 1486
+    },
+    {
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:2",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15565,7 +15574,7 @@
       "char_count": 1235
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:2",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:3",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15574,7 +15583,7 @@
       "char_count": 1625
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:3",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:4",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15583,7 +15592,7 @@
       "char_count": 3614
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:4",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:5",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15592,7 +15601,7 @@
       "char_count": 770
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:5",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:6",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15601,7 +15610,7 @@
       "char_count": 1146
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:6",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:7",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15610,7 +15619,7 @@
       "char_count": 1157
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:7",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:8",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15619,7 +15628,7 @@
       "char_count": 2174
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:8",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:9",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15628,7 +15637,7 @@
       "char_count": 1286
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:9",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:10",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
@@ -15637,7 +15646,7 @@
       "char_count": 1162
     },
     {
-      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:10",
+      "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:11",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,

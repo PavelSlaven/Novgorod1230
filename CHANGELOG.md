@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(llm-runtime): use a Russian JSON-mode instruction on the provider wire (#563)
 - test(spatial): the Lower Dvina boundary compile test uses the pinned exact head instead of CI GITHUB_SHA, so it no longer rewrites the committed production-v3 candidate and breaks the activation boundary check (#98, D89)
 - ci: the full-profile suites get 75 minutes; the sequential fast suite exceeded 45 minutes after the latest merges and was cancelled (#98, D89)
 - fix: Phase 1B neutral and HTTP turns use the approved authored-start scene title in their test repository; preserve S1/N1 checks and snapshot digests without persisting test presentation; preserve public idempotency error codes and provide Russian messages at the HTTP boundary (#98, D89)

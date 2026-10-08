@@ -12,7 +12,7 @@ function screen(interlocutor = null) {
 
 function interlocutor(overrides = {}) {
   return {
-    entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+    entity_ref: { entity_kind: 'npc', public_key: 'e1' },
     display_label: 'Еремей',
     ...overrides
   };

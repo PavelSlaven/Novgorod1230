@@ -40,17 +40,17 @@ test('movement shortcuts render every route option label as a click target', () 
 test('exact committed NPC speech is rendered as escaped typed text', () => {
   const html = renderProse({ main_prose: 'Еремей отвечает.',
     visible_context: { visible_npc: [{ entity_ref: {
-      entity_kind: 'npc', entity_id: 'npc-1'
+      entity_kind: 'npc', public_key: 'e1'
     }, display_label: 'Еремей' }] },
     exact_npc_utterances: [{ speaker_ref: {
-      entity_kind: 'npc', entity_id: 'npc-1'
+      entity_kind: 'npc', public_key: 'e1'
     }, utterance_text: '<говорит>' }] });
   assert.match(html, /Еремей/u);
   assert.match(html, /&lt;говорит&gt;/u);
   assert.doesNotMatch(html, /<p><говорит><\/p>/u);
   const repeated = renderProse({ main_prose: 'Еремей говорит: «До вечера.»',
     exact_npc_utterances: [{ speaker_ref: {
-      entity_kind: 'npc', entity_id: 'npc-1'
+      entity_kind: 'npc', public_key: 'e1'
     }, utterance_text: 'До вечера.' }] });
   assert.equal((repeated.match(/До вечера\./gu) ?? []).length, 2);
   assert.match(repeated, /<blockquote><strong>Собеседник<\/strong><p>До вечера\.<\/p><\/blockquote>/u);

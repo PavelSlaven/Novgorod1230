@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(game-server): project saved-screen entity refs as stable public keys; keep local-play diagnostics on public keys and visible evidence (#330)
 - fix(npc): exclude occupied scene name forms with the existing deterministic draw; exhausted pools retain a name with diagnostic provenance (#284); LW-108 closed
 - fix(turn): project failed goals as confirmed perception and owner facts; omit goal status and raw failed intent, record unknown causes only in private developer traces (#573, D153)
 - fix(game-server): return a client 404 for malformed party/request path encoding across all six HTTP routes without logging a server failure (#520)

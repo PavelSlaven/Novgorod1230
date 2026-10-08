@@ -25,7 +25,7 @@ function factual(overrides = {}) {
     visible_context: { visible_scene: 'У телеги мокрая ось.' },
     visible_changes: ['Верёвка снята с телеги.'],
     exact_npc_utterances: [{ speaker_ref: { entity_kind: 'npc',
-      entity_id: 'npc-1' }, utterance_text: 'Я отложил сеть.' }],
+      public_key: 'e1' }, utterance_text: 'Я отложил сеть.' }],
     uncertainties: ['Прочность оси ещё не установлена.'],
     presentation_quality: 'degraded', scenario_id: 'lower_dvina_trace_v1',
     screen_kind: 'trace_turn', presentation_context: {},
@@ -70,7 +70,7 @@ test('factual delivery renders starting scene and NPC facts without service labe
     visible_context: { visible_scene: 'У берега стоит женщина в сером платке.' },
     visible_changes: ['Женщина чинит рыболовную сеть.'],
     panels: { people: { visible: true, data: { visible_npcs: [{
-      entity_ref: { entity_kind: 'npc', entity_id: 'npc-instance-start-1' },
+      entity_ref: { entity_kind: 'npc', public_key: 'e1' },
       display_label: 'женщина', appearance: 'седые волосы, серый платок',
       status: 'чинит сети'
     }] } } }

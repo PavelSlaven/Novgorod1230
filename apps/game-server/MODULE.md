@@ -58,6 +58,10 @@ presentation delivery. Shared startup resolves its project root from the module 
 
 For the v17 target composition, the pinned `C007c2` speech-register source is a startup requirement: missing, unreadable, pin-mismatched or unparsable data refuses startup with `SPATIAL_V3_TARGET_NPC_SPEECH_REGISTERS_REQUIRED` before listen. Other profiles keep the direct runtime-catalog reader fail-soft; an unavailable source yields no rows and one sanitized diagnostic.
 
+`src/public-screen-references.js` is the single owner of public visible-entity
+references. It projects API copies to `{ entity_kind, public_key }` for each saved
+screen; internal refs remain available to server mechanics.
+
 Committed v5 inventory mechanics defaults принадлежат `@rus/items-property`;
 game-server сохраняет границы validation своих adapters и делегирует им только
 чистую проекцию профиля.

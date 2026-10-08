@@ -64,11 +64,11 @@ test('public screen contract accepts versioned read models and rejects hidden fi
   assert.throws(() => assertNoHiddenFields({ nested: { private_motives: [] } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
   assert.doesNotThrow(() => validatePublicScreen({ ...firstScreen(),
     exact_npc_utterances: [{ speaker_ref: {
-      entity_kind: 'npc', entity_id: 'npc-1'
+      entity_kind: 'npc', public_key: 'e1'
     }, utterance_text: 'Я видел лодку.' }] }));
   assert.throws(() => validatePublicScreen({ ...firstScreen(),
     exact_npc_utterances: [{ speaker_ref: { entity_kind: 'npc',
-      entity_id: 'npc-1' }, utterance_text: 'Я видел лодку.',
+      public_key: 'e1' }, utterance_text: 'Я видел лодку.',
       extra: 'unexpected' }] }), {
     code: 'SCREEN_EXACT_SPEECH_INVALID'
   });
@@ -85,7 +85,7 @@ test('public screen validates exact optional scene affordances', () => {
         visible: true,
         data: {
           active_interlocutor: {
-            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            entity_ref: { entity_kind: 'npc', public_key: 'e1' },
             display_label: 'Еремей', role_label: 'рыбак'
           }
         }
@@ -338,7 +338,7 @@ test('game shell has factual context, neutral viewport, independent input and no
         visible: true,
         data: {
           active_interlocutor: {
-            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            entity_ref: { entity_kind: 'npc', public_key: 'e1' },
             display_label: 'Еремей',
             portrait_asset_id: 'lower-dvina-eremey'
           }
@@ -496,7 +496,7 @@ test('conversation portrait uses only the canonical interlocutor field', () => {
         visible: true,
         data: {
           active_interlocutor: {
-            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            entity_ref: { entity_kind: 'npc', public_key: 'e1' },
             display_label: '<b>Еремей</b>', role_label: 'рыбак'
           },
           nearby_people: [{ display_label: 'Ратша' }]

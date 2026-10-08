@@ -137,16 +137,26 @@ test('phase 2 screen replay preserves verified exact NPC speech and public attri
       assert.deepEqual(firstDelivery.screen.exact_npc_utterances, utterances);
       const published = successEnvelope({ screen: firstDelivery.screen }).data.screen;
       assert.doesNotThrow(() => validatePublicScreen(published));
-      assert.deepEqual(published.exact_npc_utterances.map(({ speaker_ref,
-        utterance_text, ...extra }) => ({ speaker_ref, utterance_text, extra })),
-      utterances.map(({ speaker_ref, utterance_text }) => ({
-        speaker_ref, utterance_text, extra: {}
-      })));
+      assert.equal(published.exact_npc_utterances.length, utterances.length);
+      assert.deepEqual(published.exact_npc_utterances.map(({ utterance_text,
+        ...extra }) => ({ utterance_text, fields: Object.keys(extra) })),
+      utterances.map(({ utterance_text }) => ({ utterance_text, fields: ['speaker_ref'] })));
+      for (const [index, leaf] of published.exact_npc_utterances.entries()) {
+        const privateSpeaker = utterances[index].speaker_ref;
+        const npcIndex = firstDelivery.screen.visible_context.visible_npc.findIndex(
+          ({ entity_ref }) => entity_ref.entity_kind === privateSpeaker.entity_kind
+            && entity_ref.entity_id === privateSpeaker.entity_id);
+        assert.ok(npcIndex >= 0, 'every utterance must match its visible NPC');
+        assert.deepEqual(leaf.speaker_ref,
+          published.visible_context.visible_npc[npcIndex].entity_ref);
+        assert.match(leaf.speaker_ref.public_key, /^e[1-9]\d*$/u);
+        assert.equal(Object.hasOwn(leaf.speaker_ref, 'entity_id'), false);
+      }
       for (const leaf of published.exact_npc_utterances) {
         assert.deepEqual(Object.keys(leaf).sort(), ['speaker_ref',
           'utterance_text']);
         assert.deepEqual(Object.keys(leaf.speaker_ref).sort(),
-          ['entity_id', 'entity_kind']);
+          ['entity_kind', 'public_key']);
         assert.equal(JSON.stringify(leaf).includes('provenance'), false);
         assert.equal(JSON.stringify(leaf).includes('statement_ref'), false);
         assert.equal(JSON.stringify(leaf).includes('listener_ref'), false);

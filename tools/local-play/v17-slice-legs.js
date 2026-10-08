@@ -33,8 +33,8 @@ export function capturePeoplePanel(screen, snap = null) {
     active_interlocutor_exists: data.active_interlocutor != null,
     placement_npc_ids: (snap?.placements_here ?? []).filter((row) => row.entity_kind === 'npc')
       .map((row) => row.entity_id).filter((id) => id != null),
-    visible_context_npc_ids: (screen?.visible_context?.visible_npc ?? [])
-      .map((row) => row?.entity_ref?.entity_id).filter((id) => id != null)
+    visible_context_npc_keys: (screen?.visible_context?.visible_npc ?? [])
+      .map((row) => row?.entity_ref?.public_key).filter((key) => key != null)
   };
 }
 const peopleOf = (screen) => {
@@ -55,8 +55,8 @@ export function captureVisibilityConditions(screen) {
     admission_source: source,
     admitted_npcs_count: source === 'visible_context' ? admitted.length
       : source === 'people_panel' ? panelPeople.length : null,
-    admitted_npc_ids: source === 'visible_context'
-      ? admitted.map((row) => row?.entity_ref?.entity_id).filter((id) => id != null) : null,
+    admitted_npc_keys: source === 'visible_context'
+      ? admitted.map((row) => row?.entity_ref?.public_key).filter((key) => key != null) : null,
     panel_exists: panel != null,
     panel_visible: panel?.visible ?? null,
     panel_people_count: panelPeople.length,

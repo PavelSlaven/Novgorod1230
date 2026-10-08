@@ -43,3 +43,23 @@ Retry/reload/Continue повторяют точный unresolved request; усп
 снимает pending. Transport/unknown/presentation failures сохраняют identity.
 Новая осознанная попытка после завершения получает новый key, включая тот же
 текст. Восстановление прежнего хода явно обозначено в UI и сохраняет новый draft.
+
+## Public screen references
+
+The leaves `screen.visible_context.visible_objects[*].entity_ref`,
+`screen.visible_context.visible_npc[*].entity_ref`,
+`screen.panels.people.data.active_interlocutor.entity_ref`, and
+`screen.exact_npc_utterances[*].speaker_ref` use `{ entity_kind, public_key }`.
+`public_key` is an opaque `e1`, `e2`, … key assigned by the game-server
+public-screen projection. This owner projects the saved `screen` branch of an
+HTTP result; unrelated result metadata retains its existing owner contract.
+Keys follow the saved screen's visible entity order and repeat for every leaf that
+references the same entity, including visible NPCs, active interlocutor, and
+speech speaker refs. Equal labels do not merge entities. A key is stable only for
+that saved screen, including turn response, replay, GET/reload, and projection in a
+new process. Object properties are traversed canonically, with the saved screen
+and its visible context first; JSONB property order and other response metadata
+do not change its keys. It carries no identity outside that saved screen.
+Unsupported internal reference shapes fail projection; the
+public screen does not silently drop the referenced entity. No `screen_key` or
+action target selector is part of this contract.

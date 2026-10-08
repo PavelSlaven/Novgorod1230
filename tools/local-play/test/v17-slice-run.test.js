@@ -672,13 +672,13 @@ test('meter: counts LLM calls by role without content and turns the masked serve
 test('people panel capture keeps raw visibility, counts and NPC ids only', () => {
   const capture = capturePeoplePanel({ panels: { people: { visible: false, data: {
     visible_npcs: [{ label: 'person' }, { label: 'second' }], people: [{ label: 'person' }, { label: 'second' }],
-    active_interlocutor: { entity_id: 'npc-2' }
-  } } }, visible_context: { visible_npc: [{ entity_ref: { entity_id: 'npc-2' } }] } },
+    active_interlocutor: { entity_ref: { entity_kind: 'npc', public_key: 'e2' } }
+  } } }, visible_context: { visible_npc: [{ entity_ref: { entity_kind: 'npc', public_key: 'e2' } }] } },
   { placements_here: [{ entity_kind: 'npc', entity_id: 'npc-2' }, { entity_kind: 'player_character', entity_id: 'pc' }] });
   assert.deepEqual(capture, { panel_exists: true, visible: false, visible_npcs_count: 2, people_count: 2,
-    active_interlocutor_exists: true, placement_npc_ids: ['npc-2'], visible_context_npc_ids: ['npc-2'] });
+    active_interlocutor_exists: true, placement_npc_ids: ['npc-2'], visible_context_npc_keys: ['e2'] });
   assert.deepEqual(capturePeoplePanel(null), { panel_exists: false, visible: null, visible_npcs_count: 0,
-    people_count: 0, active_interlocutor_exists: false, placement_npc_ids: [], visible_context_npc_ids: [] });
+    people_count: 0, active_interlocutor_exists: false, placement_npc_ids: [], visible_context_npc_keys: [] });
 });
 
 test('LLM timing summary groups by canonical role_id and measures share of turn time', () => {

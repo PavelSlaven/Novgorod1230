@@ -258,20 +258,29 @@ export function interlocutorSpeechProjection(context, contribution,
   const interlocutorKeys = speakerRef.entity_kind === 'player_character'
     ? playerSpeechKeys(context.state?.player_profile)
     : actorSpeechKeys(interlocutor);
-  const relationship = (context.targetActor?.semantic_state?.relationships ?? [])
-    .find((edge) => edge?.target_actor_id === speakerRef.entity_id
-      && filled(edge?.kind));
+  const interlocutorRelationships = (
+    context.targetActor?.semantic_state?.relationships ?? []
+  ).filter((edge) => edge?.target_actor_id === speakerRef.entity_id
+    && filled(edge?.kind));
+  const relationship = interlocutorRelationships[0];
+  const occupationKnowledge = interlocutorRelationships.find((edge) =>
+    edge.kind === relationship?.kind
+    && filled(edge.source_rule_ref?.id)
+    && positiveVersion(edge.source_rule_ref?.version));
   const relation = typeof RELATION_RU[relationship?.kind] === 'string'
     ? RELATION_RU[relationship.kind] : undefined;
   const address = selectSpeechAddress(
     context.npcSpeechAddressForms
       ?? context.npcSemanticModel?.npcSpeechAddressForms ?? [], {
     targetKeys,
-    interlocutorKeys,
+    interlocutorKeys: occupationKnowledge
+      ? interlocutorKeys
+      : { ...interlocutorKeys, occupation: undefined },
     speakerRef: context.targetRef,
     addresseeRef: speakerRef,
     relationshipKind: relationship?.kind,
-    sourceRuleRef: relationship?.source_rule_ref
+    sourceRuleRef: occupationKnowledge?.source_rule_ref
+      ?? relationship?.source_rule_ref
   });
   const register = speechRegister(
     context.npcSpeechRegisters

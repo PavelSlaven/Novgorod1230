@@ -183,7 +183,6 @@ const ar = 'nov_role_smerd_householder';
 const occ = 'nov_occ_fisher';
 const f = (id, speakerKey, addresseeKey, text, extra) => testForm(id, speakerKey, addresseeKey, text, extra);
 const precisionCases = [
-  ['addressee occupation dominates role', [f('role', null, ar, 'Хозяин'), f('occupation', null, occ, 'Рыбак')], 'Рыбак'],
   ['addressee role fallback', [f('role', null, ar, 'Хозяин')], 'Хозяин'],
   ['equal addressee specificity is ambiguous', [f('one', null, occ, 'Рыбак'), f('two', null, occ, 'Добрый рыбак')], undefined],
   ['speaker occupation dominates role', [f('role', sr, ar, 'Хозяин'), f('occupation', occ, ar, 'Добрый хозяин')], 'Добрый хозяин'],
@@ -192,10 +191,6 @@ const precisionCases = [
   ['speaker occupation dominates empty-string wildcard', [f('any', '', ar, 'Хозяин'), f('occupation', occ, ar, 'Добрый хозяин')], 'Добрый хозяин'],
   ['equal speaker specificity is ambiguous', [f('one', occ, ar, 'Хозяин'), f('two', occ, ar, 'Добрый хозяин')], undefined],
   ['empty addressee constraint is forbidden', [f('empty', sr, null, 'Хозяин')], undefined],
-  ['crossed speaker/addressee specificity is incomparable',
-    [f('speaker', occ, ar, 'Хозяин'), f('addressee', sr, occ, 'Рыбак')], undefined],
-  ['both occupations dominate crossed candidates',
-    [f('speaker', occ, ar, 'Хозяин'), f('addressee', sr, occ, 'Рыбак'), f('both', occ, occ, 'Добрый рыбак')], 'Добрый рыбак'],
   ['speaker ref is filtered before precision',
     [f('wrong', occ, occ, 'Рыбак', { speaker_ref: ref('different') }), f('right', sr, ar, 'Хозяин')], 'Хозяин'],
   ['addressee ref is filtered before precision',
@@ -205,6 +200,39 @@ for (const [name, rows, expected] of precisionCases) test(`D102 P: ${name}`, () 
   for (const ordered of [rows, [...rows].reverse()]) {
     assert.equal(project(actor('speaker', sr, occ), actor('recipient', ar, occ), ordered)?.address, expected,
       'selection must not depend on catalog row order');
+  }
+});
+
+// A-army-526-03: only these three P cases change. Синтетические формы, не каталог.
+const linkedPrecisionCases = [
+  ['addressee occupation dominates role',
+    [f('role', null, rule.subject_role_ref, 'Хозяин'), f('occupation', null, occ, 'Рыбак')], 'Рыбак'],
+  ['crossed speaker/addressee specificity is incomparable',
+    [f('speaker', occ, rule.subject_role_ref, 'Хозяин'),
+      f('addressee', rule.object_role_ref, occ, 'Рыбак')], undefined],
+  ['both occupations dominate crossed candidates',
+    [f('speaker', occ, rule.subject_role_ref, 'Хозяин'),
+      f('addressee', rule.object_role_ref, occ, 'Рыбак'),
+      f('both', occ, occ, 'Добрый рыбак')], 'Добрый рыбак']
+];
+for (const [name, candidates, expected] of linkedPrecisionCases) test(`D102 P: ${name}`, () => {
+  // Парный контроль без собственного source ожидаемо красный, issue #526.
+  const { npcs } = materializeNpcRelationshipRules(materializationInput());
+  const wife = npcs.find((npc) => npc.instance_id === 'wife');
+  const husband = npcs.find((npc) => npc.instance_id === 'husband');
+  wife.occupation_ref = { id: occ };
+  husband.occupation_ref = { id: occ };
+  assert.deepEqual(wife.semantic_state.relationships[0].source_rule_ref, ruleRef);
+  const withoutSource = structuredClone(wife);
+  for (const edges of [withoutSource.relationships, withoutSource.semantic_state.relationships]) {
+    for (const edge of edges) delete edge.source_rule_ref;
+  }
+  const rows = candidates.map((row) => ({ ...row, relationship_kind: 'spouse' }));
+  for (const ordered of [rows, [...rows].reverse()]) {
+    assert.equal(project(wife, husband, ordered)?.address, expected,
+      'D-2 source retains P specificity independently of row order');
+    assert.equal(project(withoutSource, husband, ordered)?.address, 'Хозяин',
+      'without own source, only addressee role and speaker occupation remain');
   }
 });
 

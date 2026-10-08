@@ -182,13 +182,36 @@ test('D102-2 TEST role-only form uses code-assigned player role without inventin
   assertNoAddress(scenario.build());
 });
 
-test('D102-2 occupation keys and required speaker keys match assigned refs, not labels', () => {
-  const form = roleForm({ addresseeRole: 'nov_occ_boatman' });
-  const scenario = conversation({ addressForms: [form], assignedPlayerRole: 'nov_role_boatman',
+test('D102-2 no-source occupation falls back to assigned role; speaker ref stays required', () => {
+  // Ожидаемо красный, issue #526; синтетическая форма, не каталог.
+  const form = { ...roleForm({ addresseeRole: 'nov_occ_boatman' }),
+    form_id: 'fixture:occupation-address', form_ru: 'Добрый перевозчик' };
+  const role = roleForm({ addresseeRole: 'nov_role_boatman' });
+  const scenario = conversation({ addressForms: [form, role], assignedPlayerRole: 'nov_role_boatman',
     assignedPlayerOccupation: 'nov_occ_boatman' });
-  assert.equal(speech(scenario.build())?.address, form.form_ru);
+  assert.equal(speech(scenario.build())?.address, role.form_ru);
   scenario.context.targetActor.role_ref.id = 'fixture:unknown-speaker-role';
   assertNoAddress(scenario.build());
+});
+
+test('D102-2 sourced occupation and required speaker keys match assigned refs, not labels', () => {
+  const [husband, wife] = materializedSpouses();
+  husband.occupation_ref = { id: 'nov_occ_boatman' };
+  husband.identity_state.public_role_label = 'перевозчик';
+  // Синтетические формы, не каталог; source остаётся результатом D-2 materializer.
+  const role = { ...roleForm({ speakerRole: wife.role_ref.id,
+    addresseeRole: husband.role_ref.id }), relationship_kind: 'spouse' };
+  const occupation = { ...role, form_id: 'fixture:sourced-occupation-address',
+    addressee_role_ref: husband.occupation_ref.id, form_ru: 'Добрый перевозчик' };
+  const scenario = conversation({ target: wife, other: husband, addressForms: [role, occupation] });
+  assert.equal(speech(scenario.build())?.address, occupation.form_ru);
+  husband.occupation_ref.id = 'nov_occ_fisher';
+  assert.equal(husband.identity_state.public_role_label, 'перевозчик');
+  assert.equal(speech(scenario.build())?.address, role.form_ru, 'labels do not match occupation refs');
+  wife.role_ref.id = 'fixture:unknown-speaker-role';
+  const value = speech(scenario.build());
+  assert.equal(value?.address, undefined, 'the required speaker ref must still match');
+  assert.match(value.relation, /супруг|муж/u);
 });
 
 test('D102-3 no relationship, applicable form or known register omits the whole block', () => {

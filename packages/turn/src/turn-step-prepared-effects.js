@@ -314,6 +314,27 @@ export function buildTurnStepPreparedTimeUpdate(value) {
     prepared_effect_ledger: structuredClone(ledger)
   });
 }
+export function resolveTurnStepPreparedConsequenceTime(value, ledgerValue) {
+  const consequence = requireObject(value, 'consequence');
+  const ledger = requireTurnStepPreparedEffectLedger(ledgerValue);
+  const prepared = buildTurnStepPreparedTimeUpdate(ledger);
+  let elapsed;
+  try {
+    elapsed = normalizeElapsedTime(consequence.prepared_effect_elapsed);
+  } catch {
+    invalid('Prepared consequence exact elapsed is invalid.');
+  }
+  if (consequence.prepared_effect_ledger_digest !== ledger.ledger_digest
+      || compareRationalMinutes(elapsed.exact_minutes,
+        prepared.exact_elapsed.exact_minutes) !== 0
+      || typeof consequence.duration_minutes !== 'number'
+      || !Number.isFinite(consequence.duration_minutes)
+      || consequence.duration_minutes
+        !== rationalAsNumber(prepared.exact_elapsed.exact_minutes)) {
+    invalid('Prepared effect ledger differs from the consequence duration.');
+  }
+  return prepared;
+}
 export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
   const ledger = requireTurnStepPreparedEffectLedger(value);
   const applied = ledger.slices.filter(
@@ -426,6 +447,7 @@ export function buildTurnStepPreparedBodyUpdate(value, bodyStateBefore) {
 export function bindTurnStepPreparedConsequence(value, ledgerValue) {
   const ledger = requireTurnStepPreparedEffectLedger(ledgerValue);
   const consequence = structuredClone(requireObject(value, 'consequence'));
+  const prepared = buildTurnStepPreparedTimeUpdate(ledger);
   for (const slice of ledger.slices) {
     if (slice.effect_kind !== 'semantic_activity') continue;
     for (const [key, seed] of Object.entries(slice.consequence.visible_seed ?? {})) {
@@ -437,9 +459,8 @@ export function bindTurnStepPreparedConsequence(value, ledgerValue) {
   }
   return deepFreeze({
     ...consequence,
-    duration_minutes: rationalAsNumber(
-      buildTurnStepPreparedTimeUpdate(ledger).exact_elapsed.exact_minutes
-    ),
+    duration_minutes: rationalAsNumber(prepared.exact_elapsed.exact_minutes),
+    prepared_effect_elapsed: structuredClone(prepared.exact_elapsed),
     prepared_effect_ledger_digest: ledger.ledger_digest
   });
 }

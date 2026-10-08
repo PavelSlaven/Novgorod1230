@@ -26,7 +26,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   const save = () => writeFile(reportPath, JSON.stringify(report, null, 2));
   if (realProvider) globalThis.fetch = async (url, init) => {
     const call = JSON.parse(init.body);
-    const system = (call.messages?.[0]?.content ?? '').replace(/^Return a valid json object\.\s*/u, '');
+    const system = (call.messages?.[0]?.content ?? '').replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
     const role = identifyLlmTestRole(call);
     if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
       const response = await provider(url, init);
@@ -51,7 +51,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   };
   if (!realProvider) globalThis.fetch = async (url, init) => {
     const call = JSON.parse(init.body);
-    const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
+    const system = call.messages[0].content.replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
     const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
     const role = identifyLlmTestRole(call);
     const started = performance.now();

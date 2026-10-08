@@ -752,3 +752,9 @@
 - **Что.** Утверждённый body time-effect набор не задаёт факторов холода или сырости, поэтому v17 не меняет телесные эффекты по этим условиям. Это отсутствие утверждённых правил, а не вывод о том, что погода исторически не влияла на человека.
 - **Как жить.** Не выводить температурное воздействие из погоды, сезона, одежды или помещения. До отдельного утверждённого профиля `body_factor_ids` остаётся пустым.
 - **Issue.** [#315](https://github.com/PavelSlaven/Novgorod1230/issues/315)
+
+### LW-139 — норма прозы D158 опережает промпты (corpus-d158)
+- **Где.** `apps/game-server/src/runtime/lower-dvina-trace-narration-llm.js`, `lower-dvina-trace-narration-audit.js` (+ `-values.js`: `unsupported_sensory`), `authored-opening-narration.js`, `canonical-opening-context.js:80` и `lower-dvina-trace-opening.js:161` (`style_constraints` second_person), промпт ответчика NPC.
+- **Что.** `situational_prose_requirements.md` после D158 требует третье лицо, прошедшее время, имя героя и свободу рассказа (мир из данных). Production-промпты писателя, аудитора и repair пока во втором лице и с запретами рассказа; вход хода ещё без имени и пола героя.
+- **Как жить.** Расхождение ожидаемое: не считать его дефектом правки нормы и не править промпты попутно. Промпты меняют ролевые задачи D158 по одной (вступление, ход, ответчик NPC) с D81, ревью помощника по прозе, облачной пробой и тестом «страж свободы».
+- **Issue.** [#593](https://github.com/PavelSlaven/Novgorod1230/issues/593), [#600](https://github.com/PavelSlaven/Novgorod1230/issues/600)

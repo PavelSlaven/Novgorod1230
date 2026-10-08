@@ -55,6 +55,10 @@ runtime-catalog pins, World Knowledge loader/encoder and D17 reranker worker, tu
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
 `src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
+`src/public-screen-references.js` is the single owner of public visible-entity
+references. It projects API copies to `{ entity_kind, public_key }` for each saved
+screen; internal refs remain available to server mechanics.
+
 Committed v5 inventory mechanics defaults принадлежат `@rus/items-property`;
 game-server сохраняет границы validation своих adapters и делегирует им только
 чистую проекцию профиля.

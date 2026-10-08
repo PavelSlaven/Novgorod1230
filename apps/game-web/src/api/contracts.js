@@ -84,9 +84,10 @@ function validExactNpcUtterances(value) {
   const nonempty = (item) => typeof item === 'string' && item.trim();
   return Array.isArray(value) && value.every((entry) =>
     exactKeys(entry, ['speaker_ref', 'utterance_text'])
-    && exactKeys(entry.speaker_ref, ['entity_kind', 'entity_id'])
+    && exactKeys(entry.speaker_ref, ['entity_kind', 'public_key'])
     && entry.speaker_ref.entity_kind === 'npc'
-    && nonempty(entry.speaker_ref.entity_id)
+    && typeof entry.speaker_ref.public_key === 'string'
+    && /^e[1-9]\d*$/u.test(entry.speaker_ref.public_key)
     && nonempty(entry.utterance_text));
 }
 

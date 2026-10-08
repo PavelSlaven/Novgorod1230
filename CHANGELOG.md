@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(spatial): keep landscape natural-source cover separate from entity visibility; preserve explicit barriers and current conditions (#594)
 - fix(llm-runtime): use a Russian JSON-mode instruction on the provider wire (#563)
 - fix(local-play): meet uses admitted NPCs rather than SQL placements, blocks unseen encounters and records public visibility conditions in slice reports (#569)
 - fix(npc): require source knowledge before occupation-based address selection (#526)

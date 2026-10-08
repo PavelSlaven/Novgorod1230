@@ -11,7 +11,7 @@ test('target conditions use exact committed targets and approved cover with comp
     movement_edges: [{ id: 'edge', from_position_id: 'a', to_position_id: 'b' }] };
   const natural = { ambient_visibility: { stable_cover: 'partial' } };
   const args = { partyId: 'party', actorId: 'actor', scene, natural };
-  const expected = { stable_cover: 'partial', dynamic_occlusion: 'clear', concealment: 'clear' };
+  const expected = { stable_cover: 'clear', dynamic_occlusion: 'clear', concealment: 'clear' };
   assert.deepEqual(await readCurrentTargetConditions({ ...args,
     target: { target_id: 'npc:npc', entity_kind: 'npc', entity_id: 'npc', position_id: 'b' } }), expected);
   assert.deepEqual(await readCurrentTargetConditions({ ...args,

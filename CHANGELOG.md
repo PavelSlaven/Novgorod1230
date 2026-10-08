@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- docs(prose): уточнить границу выдумок рассказчика — факты мира из данных, ощущения, мысли, чувства героя и связки свободны без новых зацепок и противоречий (D158 п.4, D159)
 - docs(narration): adopt D158 world/story boundaries and third-person past narration; extend required scene context while preserving CR #158 thresholds; D162 excludes unexecuted intent from prose and keeps perceived blockers; runtime changes follow separately
 - fix(turn): preserve exact fractional elapsed in prepared consequence bindings and normalized rational pairs throughout activity lifecycle writes (#597)
 - fix(game-server): project saved-screen entity refs as stable public keys; keep local-play diagnostics on public keys and visible evidence (#330)

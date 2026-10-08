@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(materialization): retain NPC name choice trace for filtered and exhausted pools using the original draw and existing run snapshots (#601)
 - fix(npc): exclude occupied scene name forms with the existing deterministic draw; exhausted pools retain a name with diagnostic provenance (#284); LW-108 closed
 - fix(spatial): destination visibility uses exits anchored to the observed G5; route panels use the current Spatial scene (#533)
 - fix(runtime-catalog): resolve speech-register and common lookup roots from the module; v17 startup requires the pinned C007c2 registers (#548)

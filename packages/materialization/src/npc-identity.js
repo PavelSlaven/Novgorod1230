@@ -1,5 +1,5 @@
-import { createRandomSource, deriveSeed } from './core.js';
-import { weightedCandidate } from './world-validation.js';
+import { canonicalDigest, createRandomSource, deriveSeed } from './core.js';
+import { approvedWeight, weightedCandidate } from './world-validation.js';
 
 /**
  * Personal name and character of one generated NPC, chosen by code from the approved world_base
@@ -17,12 +17,24 @@ export function pickNpcName({ catalog, regionalContextId, sexCategory, parentSee
   if (!pool.length) return nameless('no_candidates');
   const excluded = new Set(occupiedNames);
   const candidates = pool.filter((row) => !excluded.has(row.name_form));
-  const draw = streamFor(parentSeedDigest, actorSlotRef, 'name').nextUint32();
+  const random = streamFor(parentSeedDigest, actorSlotRef, 'name');
+  const draw = random.nextUint32();
   const exhausted = candidates.length === 0;
-  const picked = weightedCandidate(exhausted ? pool : candidates, draw);
+  const selectionPool = exhausted ? pool : candidates;
+  const picked = weightedCandidate(selectionPool, draw);
+  const candidateIds = selectionPool.map((row) => row.id);
+  const candidateDigest = canonicalDigest(candidateIds);
   return { canonical_name: picked.name_form,
     name_provenance: { pool_id: picked.name_pool_id, entry_id: picked.id, people_ref: picked.people_ref,
-      ...(exhausted ? { reason: 'scene_pool_exhausted' } : {}) } };
+      ...(exhausted ? { reason: 'scene_pool_exhausted' } : {}) },
+    choice: { choice_key: `npc:${actorSlotRef}:name`, slot_key: 'name',
+      candidate_digest: candidateDigest, candidate_set_digest: candidateDigest,
+      candidate_ids: candidateIds, selected_id: picked.id, selected_weight: approvedWeight(picked),
+      rng_draw: draw, rng_counter: random.drawCount,
+      rejection_summary: { rejected_count: catalog.name_entries.length - selectionPool.length,
+        inapplicable_count: catalog.name_entries.length - pool.length,
+        occupied_name_count: pool.length - candidates.length,
+        ...(exhausted ? { reason: 'scene_pool_exhausted' } : {}) } } };
 }
 
 /** 1 temperament, 2 values, 1-2 goals and 1 fear of the occupation; undefined when data are incomplete. */

@@ -57,7 +57,16 @@ test('pool exhaustion reuses the single weighted draw and marks provenance witho
   assert.equal(exhausted.npc.identity_state.canonical_name, plain.npc.identity_state.canonical_name);
   assert.deepEqual(exhausted.npc.identity_state.name_provenance,
     { ...plain.npc.identity_state.name_provenance, reason: 'scene_pool_exhausted' });
-  assert.deepEqual(exhausted.choices, plain.choices);
+  assert.deepEqual(exhausted.choices.filter((choice) => choice.slot_key !== 'name'),
+    plain.choices.filter((choice) => choice.slot_key !== 'name'));
+  const plainNames = plain.choices.filter((choice) => choice.slot_key === 'name');
+  const exhaustedNames = exhausted.choices.filter((choice) => choice.slot_key === 'name');
+  assert.equal(plainNames.length, 1);
+  assert.equal(exhaustedNames.length, 1);
+  assert.equal(plainNames[0].selected_id, plain.npc.identity_state.name_provenance.entry_id);
+  assert.equal(exhaustedNames[0].selected_id, exhausted.npc.identity_state.name_provenance.entry_id);
+  assert.equal(exhaustedNames[0].rng_draw, plainNames[0].rng_draw);
+  assert.equal(exhaustedNames[0].rejection_summary.reason, 'scene_pool_exhausted');
   for (const facet of ['sex_category', 'age_category', 'appearance']) {
     assert.deepEqual(exhausted.npc.identity_state[facet], plain.npc.identity_state[facet]);
   }

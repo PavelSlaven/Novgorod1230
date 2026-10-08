@@ -53,7 +53,10 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       localFirePlans: writePlan
         ?.local_fire_atomic_write_plans ?? []
     });
-    validateNoBatchFactualCommit({ writePlan, factual, state, preparedEffect,
+    const delegatedFactual = writePlan.write_targets.find(({ target }) =>
+      target === 'party_state')?.value;
+    validateNoBatchFactualCommit({ writePlan,
+      factual: delegatedFactual ?? factual, state, preparedEffect,
       trustedBodyNeedsBindingPin:
         turnStepApprovedOwners?.bodyNeedsBindingPin ?? null,
       trustedBodyNeedsProfile:

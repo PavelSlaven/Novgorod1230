@@ -175,11 +175,16 @@ export function withPhase2CurrentVisibleContext(state, currentVisibleContext) {
 }
 
 export async function withPhase2CurrentLocalEdges(state, readLocalEdgeDisclosure,
-  readCurrentExitDisclosure = null, readCurrentConnectionDisclosure = null) {
+  readCurrentExitDisclosure = null, readCurrentConnectionDisclosure = null,
+  { transaction = null, validateSceneRows = null } = {}) {
   if (typeof readLocalEdgeDisclosure !== 'function'
     && typeof readCurrentExitDisclosure !== 'function'
     && typeof readCurrentConnectionDisclosure !== 'function') return state;
-  const input = { partyId: state.party_id, actorId: state.actor_id, state };
+  const input = { partyId: state.party_id, actorId: state.actor_id, state,
+    ...(transaction == null ? {} : { transaction }),
+    ...(typeof validateSceneRows !== 'function' ? {} : {
+      validateSceneRows
+    }) };
   const disclosed = typeof readLocalEdgeDisclosure === 'function'
     ? await readLocalEdgeDisclosure(input) : [];
   const exits = typeof readCurrentExitDisclosure === 'function'

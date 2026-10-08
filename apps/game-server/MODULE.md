@@ -139,9 +139,10 @@ only one of them).
 `eligibleCanonicalConnections` offers them at the departure position the binding
 names; away from it the first local hop toward that position is the approach
 (same rule as exits: only an edge the local-scene owner offers). Disclosure is the
-exit visibility rule (no sight, no passage) with the label from the attested
-`m2c-canonical-connection-labels` catalog by binding id; a revealed connection
-without an approved label is a typed data gap. `prepareCanonicalConnection` of the
+exit visibility rule (no sight, no passage) with `line_name` and optional
+`line_discriminator` from the `world_base` binding; both runtime projections use
+the shared line-label formatter. A revealed connection without a valid label is a
+typed data gap. `prepareCanonicalConnection` of the
 generated expansion adapter shares the terminal preparation and the plan tail
 with frontier resolution (first entry of a created place goes through the same
 `prepareFirstEntry`, i.e. the R-2a presence resolver) and commits
@@ -150,6 +151,14 @@ traversal itself is the shared `prepareSiteTraversal`. Arrival gives the narrato
 the destination's own scene text as `visible_changes` (turn-step visible projector,
 for every site connection). Entering a never-visited place needs its approved G6
 ambient baseline (the walk-acoustics data covers every connection target).
+
+For an intra-G4 canonical connection, the selected binding names both endpoint
+slots. The adapter resolves `from_scene_endpoint_slot_key` in the committed source
+scene and checks its exact position, then resolves `to_scene_endpoint_slot_key` in
+the target scene; reciprocal travel uses the reverse binding's own keys. These exact
+lookups ignore endpoint role so they can honor the binding. Runtime eligibility for
+directional exits and frontier expansion still uses `departure`/`both` source slots,
+and an unbound frontier terminal still requires its unique `arrival`/`both` target.
 
 Availability of a traversed connection is evaluated by `assessAvailability` of the current
 movement capability (traversal admission and its commit recheck share it and both require
@@ -183,8 +192,7 @@ Presence at first arrival (O1, §3A) has one resolver,
 later first arrival. Bindings come from the site node: canonical G5 reads its
 own node, generated G5 reads its parent G4; the region is the G0 ancestor of
 that node. The calendar comes from `readTargetPartyPresenceCalendar` after the
-bindings are found: `readInitialEnvironment` at `state_version 0` (start),
-`readCurrentEnvironment` inside the arrival transaction later. A node without
+bindings are found: `readInitialEnvironment` only at `state_version 0` before a `party_server_sessions` row exists; otherwise `readCurrentEnvironment` runs inside the arrival transaction. A node without
 bindings or rules is a legal empty presence: the resolver returns a typed
 `presence_gap` for diagnostics only, nothing is stored and nothing reaches the
 player or LLM. Wrong inputs (missing site, G4 pin, node version, region,
@@ -966,6 +974,7 @@ intensity. Opening time and initial bodily prose are not timeless knowledge.
 Prepared destination visibility after movement receives the prepared effect's
 exact `time_update.clock_after`; standalone phase-2 readback uses the persisted
 party clock.
+Site-line movement is not supported by `PreparedDomainEffect.supports()` inside a prepared chain.
 
 Committed authored conversations expose only their player-facing `journal_text`
 and actual speaker through the existing safe interaction projection. Private NPC
@@ -1004,15 +1013,17 @@ restrained actor is refused the same way and its continuation is dropped. This i
 while restraint blocks the actor's actions in practice; the test
 `a restrained actor's non-movement not_achieved plan is refused too` pins it.
 
-Approach to an exit. When the actor is not yet at a departure position, the exit is
-offered as a plain local `request_movement` to the first step of a path to it. The
-first step is only an edge that `listLocalOptions` lists now (visible, eligible,
-admitted) and carries that edge's own status; the local-scene owner applies the hop.
-`route_ref` (the exit id) on this local operation is not read by the movement owner:
-it only keeps the approach structurally distinct from the plain local operation for
-the same edge, because binding `matches()` compares structure and ignores
-`description` (without it two commands claim one operation,
-`TURN_STEP_DOMAIN_BINDING_AMBIGUOUS`). The way-of-going wording is approved data
+Following an exit or canonical G5 connection. When the actor is not yet at a
+departure position, each is offered as one route `request_movement`, named by its
+approved label (`follow_directional_exit` or `follow_canonical_connection`). Any
+ordered path through hidden positions stays inside the command. The path's first
+edge must be among the edges currently listed by `listLocalOptions`; the local-scene
+owner rechecks admission and occupancy for the whole path and returns its proof to
+the route preparation and traversal owners. An occupied first edge is refused by
+that owner before route preparation or traversal; it is not a separate local move
+or a label-based refusal. Repeated ids between direct and approach options are a
+typed data gap. Player-visible choices contain one route operation, not an
+additional command for the first local edge. The way-of-going wording is approved data
 (`m2c-pass-target-labels` `passage_phrases`), not text composed in code.
 Exit labels are selected by `spatial-v3-exit-label-policy.js`: a unique approved
 pass-target description at the current place, then the exact exit row in the
@@ -1185,6 +1196,12 @@ initial-state owner accepts an absent session only when a LEFT JOIN confirms
 its absence and every committed snapshot/body/clock/history/scene guard still
 passes. An existing session must match the scenario, have no turn and retain
 its valid version; missing session data is not replaced with default values.
+Phase 2 treats v0 as initial only before session creation. With a server session,
+authored-start v3 reads the exact Phase 1A baseline plus lineage-validated
+committed expansion state in one repeatable-read, read-only transaction.
+Phase 2 scene disclosure validates baseline physical refs through the Phase 1A
+owner and late rows through committed expansion provenance. Repository scan found
+no production writer for `visibility_modifiers`; an unowned modifier row fails closed.
 
 Canonical opening carries the verified initial source binding privately through
 `prepareG4NaturalScenePerceptionInput`. `startLowerDvinaTrace` selects

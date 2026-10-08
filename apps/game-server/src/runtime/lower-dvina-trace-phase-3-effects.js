@@ -22,6 +22,53 @@ export function createTracePhase3TemporalAdvance({ phase2Advance }) {
     }
     if (input.consequence?.phase3_kind === 'movement') {
       if (input.consequence.position_transition != null) {
+        const traversal = input.consequence.spatial_v3_traversal;
+        if (input.consequence.position_transition.owner
+              === '@rus/turn/spatial-v3-site-connection-traversal'
+          && (input.consequence.movement?.cost_kind === 'time'
+            || traversal?.clock_update != null)) {
+          const elapsed = traversal?.clock_update?.actual_elapsed;
+          if (!elapsed || elapsed.numerator !== input.exact_elapsed?.exact_minutes?.numerator
+            || elapsed.denominator !== input.exact_elapsed?.exact_minutes?.denominator
+            || traversal.clock_update.world_time_before?.whole_minutes !== input.clock_before.whole_minutes
+            || traversal.clock_update.world_time_before?.subminute_numerator
+              !== input.clock_before.subminute_numerator
+            || traversal.clock_update.world_time_before?.subminute_denominator
+              !== input.clock_before.subminute_denominator) {
+            throw Object.assign(new Error(
+              `Timed line clock proof does not match the root turn: ${JSON.stringify({
+                duration_minutes: input.consequence.duration_minutes ?? null,
+                root_elapsed: input.exact_elapsed?.exact_minutes ?? null,
+                traversal_elapsed: elapsed ?? null,
+                root_clock_before: input.clock_before ?? null,
+                traversal_clock_before: traversal?.clock_update?.world_time_before ?? null
+              })}`),
+              { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' });
+          }
+          const advanced = await phase2Advance(input);
+          if (advanced.clock_after?.whole_minutes
+                !== traversal.clock_update.world_time_after?.whole_minutes
+            || advanced.clock_after?.subminute_numerator
+                !== traversal.clock_update.world_time_after?.subminute_numerator
+            || advanced.clock_after?.subminute_denominator
+                !== traversal.clock_update.world_time_after?.subminute_denominator
+            || advanced.exact_elapsed?.exact_minutes?.numerator !== elapsed.numerator
+            || advanced.exact_elapsed?.exact_minutes?.denominator !== elapsed.denominator) {
+            throw Object.assign(new Error(
+              `Temporal advance diverged from timed line slices: ${JSON.stringify({
+                duration_minutes: input.consequence.duration_minutes ?? null,
+                root_elapsed: input.exact_elapsed?.exact_minutes ?? null,
+                traversal_elapsed: elapsed,
+                root_clock_before: input.clock_before ?? null,
+                traversal_clock_before: traversal?.clock_update?.world_time_before ?? null,
+                traversal_clock_after: traversal?.clock_update?.world_time_after ?? null,
+                advanced_elapsed: advanced.exact_elapsed?.exact_minutes ?? null,
+                advanced_clock_after: advanced.clock_after ?? null
+              })}`),
+              { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' });
+          }
+          return advanced;
+        }
         if (!['@rus/movement-routes',
           '@rus/turn/spatial-v3-site-connection-traversal']
           .includes(input.consequence.position_transition.owner)

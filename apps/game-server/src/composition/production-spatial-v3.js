@@ -77,7 +77,7 @@ import { readCurrentNaturalSourceState } from
   '../infrastructure/postgres/g4-current-natural-source-state.js';
 import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKnowledge } from
   '../infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
-import { createTargetCurrentFactualContext } from
+import { createTargetCurrentFactualContext, requestCurrentPositionId } from
   '../infrastructure/postgres/target-current-factual-context.js';
 import { deriveTrustedBodyNeedsBindingPin } from '../runtime/body-needs-temporal.js';
 import { createTargetAuthoredStartCatalog } from '../internal/target-authored-start-catalog.js';
@@ -100,8 +100,13 @@ export async function createSpatialV3ProductionCompositionRoot({
   pools: suppliedPools = null,
   bindingsFactory = null,
   worldKnowledgeEncoderFactory = undefined,
+  testOnlyProjectEnvironmentAtClock = null,
   targetRootFactory = createSpatialV3ProductionComposition
 } = {}) {
+  if (testOnlyProjectEnvironmentAtClock != null
+    && typeof testOnlyProjectEnvironmentAtClock !== 'function') {
+    throw new TypeError('testOnlyProjectEnvironmentAtClock must be a function');
+  }
   config = { ...config, rootDir: config.rootDir ?? GAME_SERVER_PROJECT_ROOT };
   const pools = suppliedPools ?? createPostgresPools({ env, PoolClass });
   let worldKnowledgeEncoder = null;
@@ -286,7 +291,9 @@ export async function createSpatialV3ProductionCompositionRoot({
         readExitDisclosure: currentVisibility.readExitDisclosure,
         readConnectionDisclosure: currentVisibility.readConnectionDisclosure,
         prepareSiteTraversal: createSpatialV3SiteTraversalRuntime({
-          pool: pools.partyPool, ...siteTraversalCapability, projectDestination }),
+          pool: pools.partyPool, ...siteTraversalCapability, projectDestination,
+          projectEnvironmentAtClock: testOnlyProjectEnvironmentAtClock
+            ?? factualContext.projectEnvironmentAtClock }),
         materializerVersion: targetStartPublication.binding.execution_identity.materializer_version,
         generatedExpansionAdapter: createSpatialV3GeneratedExpansionAdapter({
           worldBaseReader: targetContext.runtime.worldBaseReader,
@@ -553,7 +560,7 @@ export async function readDestinationDirectionalExits({ context, current, worldB
 export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transaction, request,
   closure, envelopeInput, readCurrentSources, onLabelGapsOmitted = null } = {}) {
   const partyId = request.party_id; const actorId = request.actor_id;
-  const positionId = request.source_position_id;
+  const positionId = requestCurrentPositionId(request);
   const sources = await readCurrentSources({ transaction, partyId, actorId, positionId,
     state: { party_id: partyId, actor_id: actorId,
       journey_location: { scene_position_id: positionId } },

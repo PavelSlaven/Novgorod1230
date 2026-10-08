@@ -52,15 +52,18 @@ test('canonical exit reader requires approved authoring at exact G4 revision and
 });
 function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   readNatural: suppliedReadNatural = null,
+  readScene: suppliedReadScene = null,
   readLocalMovementAdmission, itemDisplayName = null, itemTemplateId = null,
   itemLabels = {}, itemStateRow = null, readEntityExterior: suppliedReadEntityExterior = null,
   readTargetConditions = readCurrentTargetConditions } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
     site: { parent_g4_id: g4 }, baseline: { id: 'baseline' },
-    positions: [{ id: 'a', g6_instance_id: 'g6' }, { id: 'b', g6_instance_id: 'g6' }],
+    positions: [{ id: 'a', template_slot_key: 'arrival', g6_instance_id: 'g6' },
+      { id: 'b', template_slot_key: 'focus', g6_instance_id: 'g6' }],
     g6: [{ id: 'g6', intra_g6_visibility_mode: mode }], visibility_links: [],
-    movement_edges: [{ id: 'edge', from_position_id: 'a', to_position_id: 'b',
+    movement_edges: [{ party_id: 'party', id: 'edge', from_position_id: 'a', to_position_id: 'b',
+      created_change_set_id: 'change:edge', updated_change_set_id: 'change:edge',
       source_scene_template_ref: { entity_id: localLabel.scene_template_ref.id,
         authoring_version: localLabel.scene_template_ref.version },
       source_edge_slot_key: localLabel.edge_slot_key }],
@@ -82,7 +85,12 @@ function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader,
   const provider = createSpatialV3CurrentVisibilityProvider({ pool,
     itemLabels,
     worldBaseReader,
-    readScene: async () => scene, readNatural: suppliedReadNatural ?? (async () => natural),
+    readScene: suppliedReadScene ?? (async ({ validateSceneRows }) => {
+      if (typeof validateSceneRows === 'function') {
+        await validateSceneRows({ snapshot: scene, rows: scene.movement_edges });
+      }
+      return scene;
+    }), readNatural: suppliedReadNatural ?? (async () => natural),
     readTargetConditions,
     readEntityExterior: suppliedReadEntityExterior ?? (async ({ placement }) => ({
       visible_clothing: placement.entity_id,
@@ -123,6 +131,59 @@ test('visible items retain identity with a typed gap when no safe display name e
   assert.deepEqual(invalidObservation[0].label_gap,
     { code: 'player_safe_item_label_required' });
   assert.equal(Object.hasOwn(invalidObservation[0], 'display_label'), false);
+});
+
+test('Phase2 local-edge read passes its transaction and private provenance callback', async () => {
+  const transaction = { query() {} };
+  const edge = { party_id: 'party', id: 'edge:late',
+    created_change_set_id: 'change:late', updated_change_set_id: 'change:late' };
+  const checked = [];
+  const context = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'место', visible_changes: [], sensory_details: [],
+    visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: [] };
+  const state = { party_id: 'party', actor_id: 'actor',
+    journey_location: { scene_position_id: 'position' },
+    current_visible_context: context };
+  const result = await withPhase2CurrentLocalEdges(state,
+    async (input) => {
+      assert.equal(input.transaction, transaction);
+      await input.validateSceneRows({ snapshot: {}, rows: [edge] });
+      return [{ edge_id: 'edge:late', display_label: 'проход' }];
+    }, null, null, { transaction, validateSceneRows: ({ rows }) =>
+      checked.push(...rows) });
+  assert.deepEqual(checked, [edge]);
+  assert.deepEqual(result.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge:late' },
+    display_label: 'проход', recognition: 'known'
+  }]);
+  assert.equal(JSON.stringify(result).includes('created_change_set_id'), false);
+});
+
+test('local visibility provider forwards transaction to scene provenance owner', async () => {
+  const checked = [];
+  let receivedTransaction;
+  const transaction = { query() {} };
+  const current = fixture({ readTargetConditions: async () => ({
+    lighting: 'clear', weather: 'clear', stable_cover: 'clear',
+    dynamic_occlusion: 'clear', concealment: 'clear' }),
+    readScene: async (input) => {
+      receivedTransaction = input.transaction;
+      await input.validateSceneRows({ snapshot: inputSnapshot,
+        rows: inputSnapshot.movement_edges });
+      return inputSnapshot;
+    } });
+  const inputSnapshot = current.scene;
+  const disclosure = await current.provider.readLocalEdgeDisclosure({
+    partyId: 'party', actorId: 'actor', transaction,
+    state: { party_id: 'party', actor_id: 'actor',
+      journey_location: { scene_position_id: 'a' } },
+    validateSceneRows: ({ rows }) => checked.push(...rows)
+  });
+  assert.equal(receivedTransaction, transaction);
+  assert.deepEqual(checked, inputSnapshot.movement_edges);
+  assert.equal(disclosure[0].edge_id, 'edge');
+  assert.equal(Object.hasOwn(disclosure[0], 'created_change_set_id'), false);
 });
 
 test('current item visibility uses an approved template label when committed state has no name', async () => {
@@ -196,7 +257,7 @@ test('current snapshot selects an approved exit label through the F3 policy', as
     state: { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' } } }), ['edge']);
   assert.deepEqual(await provider.readLocalEdgeDisclosure({ partyId: 'party', actorId: 'actor',
     state: { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' } } }),
-  [{ edge_id: 'edge', display_label: localLabel.display_label }]);
+  [{ edge_id: 'edge', display_label: 'Дальше' }]);
   const exit = { id: label.directional_exit_ref.id, version: label.directional_exit_ref.version,
     canonical_digest: label.directional_exit_ref.canonical_digest,
     direction_context_id: label.direction_context_ref.id };
@@ -311,7 +372,7 @@ test('current snapshot discloses the mechanically repinned version 2 edge label'
   scene.movement_edges[0].source_scene_template_ref.authoring_version = 2;
   const disclosed = await provider.readLocalEdgeDisclosure({ partyId: 'party', actorId: 'actor',
     state: { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' } } });
-  assert.deepEqual(disclosed, [{ edge_id: 'edge', display_label: localLabel.display_label }]);
+  assert.deepEqual(disclosed, [{ edge_id: 'edge', display_label: 'Дальше' }]);
 });
 
 test('P12 pine arrival discloses its approved G4 exit before local topology exists', async () => {
@@ -395,7 +456,7 @@ test('current approved local edge reaches the turn visible context', async () =>
     provider.readLocalEdgeDisclosure);
   assert.deepEqual(current.current_visible_context.visible_objects, [{
     entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
-    display_label: localLabel.display_label, recognition: 'known' }]);
+    display_label: 'Дальше', recognition: 'known' }]);
   scene.movement_edges = [];
   const changed = await withPhase2CurrentLocalEdges(current,
     provider.readLocalEdgeDisclosure);
@@ -408,7 +469,7 @@ test('a visible edge the admission owner has no row for is disclosed without a s
   const { provider } = fixture({ readLocalMovementAdmission: async () => [] });
   const disclosed = await provider.readLocalEdgeDisclosure({ partyId: 'party', actorId: 'actor',
     state: { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' } } });
-  assert.deepEqual(disclosed, [{ edge_id: 'edge', display_label: localLabel.display_label }]);
+  assert.deepEqual(disclosed, [{ edge_id: 'edge', display_label: 'Дальше' }]);
 });
 
 const localState = { party_id: 'party', actor_id: 'actor',
@@ -452,7 +513,7 @@ test('the perceived occupied status reaches the visible context as visible_statu
   const current = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure);
   assert.deepEqual(current.current_visible_context.visible_objects, [{
     entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
-    display_label: localLabel.display_label, recognition: 'known', visible_status: 'проход занят' }]);
+    display_label: 'Дальше', recognition: 'known', visible_status: 'проход занят' }]);
 });
 
 test('explicit geometry hides unlinked targets; modifiers and missing ambient fail closed', async () => {
@@ -501,18 +562,35 @@ test('local movement recheck uses commit transaction and current source position
   assert.deepEqual(queries, []);
 });
 
-const connectionLabels = JSON.parse(readFileSync(new URL(
-  '../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/candidate.json', import.meta.url))).labels;
-const connectionAt = (row) => ({ binding: { id: row.binding_ref.id } });
+test('intrascene movement label follows template role direction without ordinals', async () => {
+  const { provider, scene, natural } = fixture();
+  scene.movement_edges.push({ ...scene.movement_edges[0], id: 'edge-back',
+    from_position_id: 'b', to_position_id: 'a', source_edge_slot_key: 'reverse' });
+  scene.location.scene_position_id = 'b';
+  natural.observer.position_id = 'b';
+  assert.deepEqual(await provider.readLocalEdgeDisclosure({ partyId: 'party', actorId: 'actor',
+    state: { party_id: 'party', actor_id: 'actor',
+      journey_location: { scene_position_id: 'b' } } }), [
+    { edge_id: 'edge-back', display_label: 'Обратно' }
+  ]);
+});
 
-test('a canonical connection is disclosed with its approved label, also without sight (§7.1.1); a concealed one is not', async () => {
+const connectionLabels = [
+  { binding_ref: { id: 'binding:one' }, line_name: 'тропой вдоль ручья', line_discriminator: null },
+  { binding_ref: { id: 'binding:two' }, line_name: 'тропой вдоль ручья', line_discriminator: 'у старого дуба' }
+];
+const connectionAt = (row) => ({ binding: { id: row.binding_ref.id,
+  line_name: row.line_name, line_discriminator: row.line_discriminator } });
+
+test('a canonical line is disclosed with its line identity, also without sight (§7.1.1); a concealed one is not', async () => {
   const { provider, natural } = fixture();
   const [first, second] = connectionLabels;
   const input = { partyId: 'party', actorId: 'actor', position: { id: 'a' },
     connections: [connectionAt(first), connectionAt(second)] };
   assert.deepEqual(await provider.readConnectionDisclosure(input), [first, second].map((row) => ({
     connection_binding_id: row.binding_ref.id, knowledge_state: 'visible',
-    display_label: row.display_label, editorial_choice_ordinal: row.editorial_choice_ordinal })));
+    display_label: row.line_discriminator == null ? row.line_name
+      : `${row.line_name} · ${row.line_discriminator}` })));
   natural.observer.visual_capability = 'none';
   assert.equal((await provider.readConnectionDisclosure(input)).length, 2, 'no sight still offers the passage');
   const hidden = fixture({ readTargetConditions: concealed });
@@ -541,8 +619,8 @@ test('the canonical connections of the current place reach the visible context, 
   scene.site = { id: 'site', origin: 'canonical', parent_g4_id: g4,
     canonical_g5_ref: { entity_id: 'g5', authoring_version: '1' } };
   const expected = [first, second].map((row) => ({ connection_binding_id: row.binding_ref.id,
-    knowledge_state: 'visible', display_label: row.display_label,
-    editorial_choice_ordinal: row.editorial_choice_ordinal }));
+    knowledge_state: 'visible', display_label: row.line_discriminator == null ? row.line_name
+      : `${row.line_name} · ${row.line_discriminator}` }));
   assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), expected);
   assert.deepEqual(asked, [{ g4: { id: g4, version: 1 }, canonical_g5: { id: 'g5', version: 1 } }]);
   const state = { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' },
@@ -552,8 +630,9 @@ test('the canonical connections of the current place reach the visible context, 
   const current = await withPhase2CurrentLocalEdges(state, provider.readLocalEdgeDisclosure, null,
     provider.readCurrentConnectionDisclosure);
   assert.deepEqual(current.current_visible_context.visible_objects.map((row) => [row.entity_ref.entity_kind,
-    row.display_label]), [['scene_movement_edge', localLabel.display_label],
-    ['g5_site_connection', first.display_label], ['g5_site_connection', second.display_label]]);
+    row.display_label]), [['scene_movement_edge', 'Дальше'],
+    ['g5_site_connection', first.line_name],
+    ['g5_site_connection', `${second.line_name} · ${second.line_discriminator}`]]);
   scene.site.origin = 'generated';
   assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
   scene.site.origin = 'canonical'; natural.observer.visual_capability = 'none';
@@ -562,4 +641,34 @@ test('the canonical connections of the current place reach the visible context, 
   const hidden = fixture({ worldBaseReader, readTargetConditions: concealed });
   hidden.scene.site = scene.site;
   assert.deepEqual(await hidden.provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), []);
+});
+
+test('an approved local line uses its world_base line_name as the player label', async () => {
+  const line = { binding: { id: 'cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4',
+    line_name: 'травяным проходом', line_discriminator: null } };
+  const worldBaseReader = {
+    async readG4ExpansionBinding() { return { ok: true, value: { g4: { id: g4, version: 1 } } }; },
+    async readApprovedCanonicalG5Connections() { return { ok: true, value: [line] }; } };
+  const { provider, scene } = fixture({ worldBaseReader });
+  scene.site = { id: 'site', origin: 'canonical', parent_g4_id: g4,
+    canonical_g5_ref: { entity_id: 'g5', authoring_version: '1' } };
+
+  assert.deepEqual(await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' }), [{
+    connection_binding_id: line.binding.id, knowledge_state: 'visible', display_label: line.binding.line_name,
+  }]);
+});
+
+test('a local line label includes its world_base discriminator without ordinal or exit wording', async () => {
+  const line = { binding: { id: 'cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4',
+    line_name: 'травяным проходом', line_discriminator: 'у старого дуба' } };
+  const worldBaseReader = {
+    async readG4ExpansionBinding() { return { ok: true, value: { g4: { id: g4, version: 1 } } }; },
+    async readApprovedCanonicalG5Connections() { return { ok: true, value: [line] }; } };
+  const { provider, scene } = fixture({ worldBaseReader });
+  scene.site = { id: 'site', origin: 'canonical', parent_g4_id: g4,
+    canonical_g5_ref: { entity_id: 'g5', authoring_version: '1' } };
+
+  const [disclosed] = await provider.readCurrentConnectionDisclosure({ partyId: 'party', actorId: 'actor' });
+  assert.equal(disclosed.display_label, 'травяным проходом · у старого дуба');
+  assert.doesNotMatch(disclosed.display_label, /\d|проход\s+\d+|выход\s+\d+/iu);
 });

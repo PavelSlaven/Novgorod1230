@@ -1,5 +1,9 @@
-import { addRationalMinutes, subtractGameTimestamp } from
-  '@rus/time-events-history';
+import {
+  addRationalMinutes,
+  compareRationalMinutes,
+  normalizeRationalMinutes,
+  subtractGameTimestamp
+} from '@rus/time-events-history';
 import { carrierInventoryAdmission } from
   './lower-dvina-trace-phase-6-carry-inventory.js';
 import {
@@ -21,10 +25,10 @@ export const PHASE6_REBIND_EFFECT_REF = versioned(
 );
 
 export function lowerDvinaTracePhase6TemporalEffectRegistrations() {
-  return [{ effect_ref: PHASE2_PROGRESS_EFFECT_REF,
-    resolve: resolvePhase2ExactProgress }, {
-    effect_ref: PHASE6_PROGRESS_EFFECT_REF,
+  return [{ effect_ref: PHASE6_PROGRESS_EFFECT_REF,
     resolve: resolveProgress }, {
+    effect_ref: PHASE2_PROGRESS_EFFECT_REF,
+    resolve: resolvePhase2ExactProgress }, {
     effect_ref: PHASE6_REBIND_EFFECT_REF,
     resolve: resolveCarrierRebinding
   }];
@@ -47,6 +51,8 @@ function resolvePhase2ExactProgress({ slice, context }) {
 }
 
 function resolveProgress({ slice, context }) {
+  const elapsed = subtractGameTimestamp(slice.to_timestamp,
+    slice.from_timestamp);
   return {
     proposals: [{
       proposal_id: `${slice.slice_id}:phase6-progress`,
@@ -54,9 +60,10 @@ function resolveProgress({ slice, context }) {
     }],
     state_projection: {
       ...context.projection,
-      cumulative_elapsed_minutes:
-        context.projection.cumulative_elapsed_minutes
-        + integerElapsed(slice.from_timestamp, slice.to_timestamp)
+      cumulative_elapsed_minutes: addRationalMinutes(
+        rationalMinutes(context.projection.cumulative_elapsed_minutes ?? 0),
+        elapsed
+      )
     }
   };
 }
@@ -64,8 +71,10 @@ function resolveProgress({ slice, context }) {
 function resolveCarrierRebinding({ candidate, context, descriptor }) {
   const projection = context.projection;
   const state = projection.phase6_state;
-  if (projection.cumulative_elapsed_minutes
-      < descriptor.boundary.elapsed_minutes) {
+  if (compareRationalMinutes(
+    rationalMinutes(projection.cumulative_elapsed_minutes),
+    rationalMinutes(descriptor.boundary.elapsed_minutes)
+  ) < 0) {
     fail('TRACE_PHASE_6_INTERNAL_BOUNDARY_EARLY');
   }
   const bodyDue = descriptor.body_effect_already_committed !== true;
@@ -123,16 +132,10 @@ function resolveCarrierRebinding({ candidate, context, descriptor }) {
   }
 }
 
-function integerElapsed(from, to) {
-  const exact = subtractGameTimestamp(to, from);
-  if (exact.denominator !== '1') {
-    fail('TRACE_PHASE_6_TEMPORAL_FRACTION_GAP');
-  }
-  const value = Number(exact.numerator);
-  if (!Number.isSafeInteger(value) || value < 0) {
-    fail('TRACE_PHASE_6_TEMPORAL_INTERVAL_INVALID');
-  }
-  return value;
+function rationalMinutes(value) {
+  return normalizeRationalMinutes(typeof value === 'number'
+    ? { numerator: String(value), denominator: '1' }
+    : value);
 }
 
 function versioned(entityKind, entityId, authoringVersion) {

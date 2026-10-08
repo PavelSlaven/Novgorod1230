@@ -1,8 +1,90 @@
 import { deepFreeze } from '@rus/kernel';
+import {
+  addRationalMinutes,
+  compareRationalMinutes,
+  normalizeRationalMinutes,
+  subtractRationalMinutes
+} from '@rus/time-events-history';
 export { createMovementPlanner, createRoutePlanActivationValidator } from './spatial-v3.js';
 export { planApprovedLocalZoneTransition } from './local-zone-transition.js';
 export { planApprovedActorDestinationTransition } from
   './approved-destination-transition.js';
+
+/** Split exact traversal time at policy boundaries without rounding elapsed time. */
+export function planExactTraversalIntervals({ total_time, base_minutes, factors = [],
+  fixed_time_interval, distance_remaining = { numerator: '1', denominator: '1' } } = {}) {
+  let total;
+  let formulaTime;
+  let interval;
+  let remainingDistance;
+  try {
+    formulaTime = total_time == null ? normalizeRationalMinutes(base_minutes) : null;
+    if (total_time == null) {
+      if (!Array.isArray(factors) || !factors.length) throw traversalIntervalDurationError();
+      for (const factor of factors) formulaTime = multiplyRationalMinutes(formulaTime,
+        normalizeRationalMinutes(factor));
+    }
+    interval = normalizeRationalMinutes(fixed_time_interval);
+    remainingDistance = normalizeRationalMinutes(distance_remaining);
+    total = total_time == null ? multiplyRationalMinutes(formulaTime, remainingDistance)
+      : normalizeRationalMinutes(total_time);
+  } catch {
+    throw traversalIntervalDurationError();
+  }
+  if (total.numerator === '0' || interval.numerator === '0'
+    || remainingDistance.numerator === '0'
+    || compareRationalMinutes(remainingDistance, { numerator: '1', denominator: '1' }) > 0) {
+    throw traversalIntervalDurationError();
+  }
+
+  const intervals = [];
+  let elapsed = { numerator: '0', denominator: '1' };
+  let remainingTime = total;
+  while (compareRationalMinutes(elapsed, total) < 0) {
+    const plannedTime = compareRationalMinutes(remainingTime, interval) <= 0 ? remainingTime : interval;
+    const distanceBefore = remainingDistance;
+    remainingDistance = multiplyRationalMinutes(distanceBefore,
+      divideRationalMinutes(subtractRationalMinutes(remainingTime, plannedTime), remainingTime));
+    remainingTime = subtractRationalMinutes(remainingTime, plannedTime);
+    elapsed = addRationalMinutes(elapsed, plannedTime);
+    const terminal = compareRationalMinutes(elapsed, total) === 0;
+    const progressBefore = progressFromRemaining(distanceBefore);
+    const progressAfter = terminal ? 1_000_000 : progressFromRemaining(remainingDistance);
+    intervals.push(deepFreeze({ interval_ordinal: intervals.length,
+      planned_time: plannedTime, cumulative_progress_before_ppm: progressBefore,
+      cumulative_progress_after_ppm: progressAfter, distance_remaining_after: remainingDistance }));
+  }
+  return deepFreeze({ intervals });
+}
+
+function multiplyRationalMinutes(left, right) {
+  return normalizeRationalMinutes({
+    numerator: String(BigInt(left.numerator) * BigInt(right.numerator)),
+    denominator: String(BigInt(left.denominator) * BigInt(right.denominator))
+  });
+}
+
+function divideRationalMinutes(left, right) {
+  return normalizeRationalMinutes({
+    numerator: String(BigInt(left.numerator) * BigInt(right.denominator)),
+    denominator: String(BigInt(left.denominator) * BigInt(right.numerator))
+  });
+}
+
+function floorPpm(value) {
+  return Number((BigInt(value.numerator) * 1_000_000n) / BigInt(value.denominator));
+}
+
+function progressFromRemaining(value) {
+  return floorPpm({ numerator: String(BigInt(value.denominator) - BigInt(value.numerator)),
+    denominator: value.denominator });
+}
+
+function traversalIntervalDurationError() {
+  return Object.assign(new TypeError('traversal total and fixed interval must be positive rational minutes'), {
+    code: 'TRAVERSAL_INTERVAL_DURATION_INVALID'
+  });
+}
 
 export const TRAVEL_CONDITION_MULTIPLIERS = deepFreeze({ normal:1, poor:1.5, bad:2, severe:3 });
 export const TRAVEL_LOAD_MULTIPLIERS = deepFreeze({ light:1, moderate:1.25, heavy:1.5, overloaded:2 });

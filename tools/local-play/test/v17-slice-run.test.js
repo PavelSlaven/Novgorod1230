@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -12,6 +13,10 @@ import { createRedactor, d49MinimumOf, exitCodeOf, renderPlaytestMarkdown, verdi
 
 const SECRET_KEY = 'sk-test-secret-key-0123456789';
 const SECRET_URL = 'https://llm.internal.example:8443/v1';
+const LOCAL_LINE = JSON.parse(readFileSync(new URL(
+  '../../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json',
+  import.meta.url))).find(({ id }) => id === 'cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4');
+assert.ok(LOCAL_LINE, 'the Vikhtuy work-storage line exists in the approved candidate data');
 
 // ---------- argument parsing and exit ----------
 
@@ -175,7 +180,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     if (w.site === 'A' && (walkLocalLabels.length > 0 || walkExits != null || walkSlotSteps)) {
       return [...walkLocalLabels, ...Object.keys(walkExits ?? walkSlotSteps ?? { 'Тропа': 'B' })];
     }
-    if (w.site === 'A') return ['Тропа'];
+    if (w.site === 'A') return [LOCAL_LINE.line_name];
     if (w.site === 'B' && routeThroughC) return ['Дальше'];
     return hideReturnPassage ? [] : ['Назад'];
   };
@@ -247,6 +252,7 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
         w.site = walkExits[text]; w.sv += 1;
         w.prose = w.site === 'B' ? 'Лесная тропа.' : w.site === 'C' ? 'У реки.' : 'Дальше.';
       }
+      else if (text === LOCAL_LINE.line_name) { w.site = 'B'; w.sv += 1; w.prose = 'Лесная тропа.'; }
       else if (text === 'Тропа') {
         if (w.turns.filter((turn) => turn === 'Тропа').length > samePlaceWalks) w.site = routeThroughC && w.site === 'B' ? 'C' : 'B';
         w.sv += 1; w.prose = w.site === 'B' ? 'Лесная тропа.' : 'Тропа всё ещё впереди.';
@@ -284,10 +290,12 @@ test('legs: a working world passes every leg with the exact phrases of the plan'
   const world = fakeWorld();
   const result = await runFake(world);
   assert.deepEqual(statusOf(result), { start: 'pass', walk: 'pass', meet: 'pass', talk: 'pass', take: 'pass', make: 'pass' });
-  assert.deepEqual(world.w.turns, ['Тропа', 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Беру валежник.', 'Оторву полосу от подола рубахи.']);
-  assert.ok(world.w.turns.indexOf('Тропа') < world.w.turns.findIndex((text) => /^Здоров/u.test(text)));
+  assert.deepEqual(world.w.turns, [LOCAL_LINE.line_name, 'Здороваюсь с человеком и спрашиваю, как его зовут.', 'Беру валежник.', 'Оторву полосу от подола рубахи.']);
+  assert.equal(result.turns[0].input, LOCAL_LINE.line_name, 'the harness chooses the actual approved line name');
+  assert.doesNotMatch(result.turns[0].input, /Проход\s+\d|выход\s+\d|\b(?:первый|второй|третий)\b/iu);
+  assert.ok(world.w.turns.indexOf(LOCAL_LINE.line_name) < world.w.turns.findIndex((text) => /^Здоров/u.test(text)));
   assert.equal(result.turns.every(({ ms }) => Number.isFinite(ms)), true);
-  const movement = result.turns.find(({ input }) => input === 'Тропа');
+  const movement = result.turns.find(({ input }) => input === LOCAL_LINE.line_name);
   assert.deepEqual(movement.current_visible_context.before.visible_npc, []);
   assert.equal(movement.current_visible_context.after.visible_npc[0]
     .entity_ref.entity_id, 'npc1');
@@ -368,7 +376,7 @@ test('legs: a person visible only at start does not count as a meeting or permit
   assert.equal(statusOf(result).meet, 'blocked');
   assert.equal(statusOf(result).talk, 'blocked');
   assert.equal(world.w.turns.some((text) => /^Здоров|^Здравств/u.test(text)), false);
-  assert.ok(world.w.turns.indexOf('Тропа') === 0, 'the player leaves start before later legs can run');
+  assert.ok(world.w.turns.indexOf(LOCAL_LINE.line_name) === 0, 'the player leaves start before later legs can run');
 });
 
 test('legs: a visible person on a previously visited place can be met after returning there', async () => {
@@ -377,7 +385,7 @@ test('legs: a visible person on a previously visited place can be met after retu
   assert.equal(statusOf(result).walk, 'pass');
   assert.equal(statusOf(result).meet, 'pass');
   assert.equal(statusOf(result).talk, 'pass');
-  assert.ok(world.w.turns.indexOf('Назад') > world.w.turns.indexOf('Тропа'));
+  assert.ok(world.w.turns.indexOf('Назад') > world.w.turns.indexOf(LOCAL_LINE.line_name));
   assert.ok(world.w.turns.findIndex((text) => /^Здоров/u.test(text)) > world.w.turns.indexOf('Назад'));
 });
 
@@ -387,7 +395,7 @@ test('legs: a resource found before NPC is only taken after a later talk PASS', 
   const talkPass = result.turns.find(({ leg, pass }) => leg === 'talk' && pass)?.n;
   const takePass = result.turns.find(({ leg, pass }) => leg === 'take' && pass)?.n;
   assert.ok(talkPass != null && takePass > talkPass);
-  assert.ok(world.w.turns.indexOf('Назад') > world.w.turns.indexOf('Тропа'));
+  assert.ok(world.w.turns.indexOf('Назад') > world.w.turns.indexOf(LOCAL_LINE.line_name));
   assert.deepEqual(d49MinimumOf(result.legs, result.turns), { status: 'PASS', item_leg: 'take' });
 });
 

@@ -303,7 +303,19 @@ reservation and never moves a traveller. The P16 owner commits it as
 `resolve_frontier:canconn:<party>:<binding_id>`; a frontier key is
 `resolve_frontier:` plus a digest and cannot collide with it. The way back is the
 reverse binding's own connection, prepared when the traveller first stands at the
-target's departure.
+target. Under the paired-slot rule, its `from` is the exact slot named by the forward
+binding's `to`, which may have `endpoint_role: arrival`; the endpoint owner resolves
+it by exact `slot_key` and validates the canonical place, binding key and committed
+position.
+
+`resolveSpatialV3CanonicalEndpointSlot` resolves exactly one endpoint in the approved
+scene closure by its authored `slot_key`; missing and duplicate keys return distinct
+lookup failures, which the runtime and adapter expose as typed data gaps.
+The lookup is deliberately independent of `endpoint_role`: a reciprocal canonical
+binding can name an `arrival` slot as its source and a `departure` slot as its target.
+Its caller still checks the exact canonical place, binding key and committed position.
+This helper does not change role-based endpoint selection for directional exits or
+frontier expansion.
 
 Принимает `world_materialization_request_v2` либо stage-specific approved bundle. Authoring candidates ссылаются на будущие экземпляры через однозначные `slot_key`, которые код разрешает после deterministic selection. Generic result содержит стартовую позицию и исполняемый, но не записанный materializer-ом `proposed_write_set` для нормализованных таблиц `party_runtime`. Profile/layout/slot/template refs, capacities, access, visibility, quantity, condition, legal status, causal basis и property policy обязательны; пропуск завершает операцию typed failure.
 
@@ -359,10 +371,7 @@ party-scoped aggregate, что и O1, но записи различаются �
 `derivePresenceRuleSeedContext` в `presence-rules-first-arrival.js` (партия,
 scope, subject, для `by_year_season` — `encodePresenceRulePeriodNumber`
 (`year * 4 + season_index`, сезоны `winter|spring|summer|autumn`) и текущий
-сезон календаря). Стартовое место (`state_version === 0`) — `readInitialEnvironment`
-(календарь коммита старта). Первое прибытие в новый G5 при `state_version ≥ 1` —
-`readCurrentEnvironment` в транзакции прибытия (закоммиченное время партии в транзакции
-прибытия, не снимок первого хода). Регион для
+сезон календаря). Стартовое место до появления строки `party_server_sessions` при `state_version === 0` использует `readInitialEnvironment` (календарь коммита старта); иначе `readCurrentEnvironment` в транзакции прибытия берёт закоммиченное время партии, не снимок первого хода. Регион для
 `pickRegionalPresenceRule` — строгое совпадение с G0-предком того же узла, чьи
 place-family bindings читаются: закреплённого G4 для generated G5, самого
 canonical G5 для canonical G5; не эвристика по данным. `seed_scope` может идти после presence-only preamble;

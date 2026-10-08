@@ -4,7 +4,10 @@ import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } f
 import { serverError } from '../../errors.js';
 import { resolveVisibleItemLabel } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
+import { spatialV3LocalEdgeLabel } from '../../runtime/spatial-v3-local-edge-label.js';
+import { spatialV3LineLabel } from '../../runtime/spatial-v3-line-label.js';
 import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
+import { withPassTargetDisambiguation } from '../../../../../data/world-catalogs/novgorod/m2c-pass-target-labels/approved-labels.mjs';
 import { passTargetDisclosureForExit, slotByExitOf } from '../../runtime/spatial-v3-pass-target-disclosure.js';
 import { loadApprovedConnectionLabels } from '../../../../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/approved-labels.mjs';
 import { loadApprovedExitLineLabels, resolveSpatialV3ExitLabels,
@@ -12,6 +15,7 @@ import { loadApprovedExitLineLabels, resolveSpatialV3ExitLabels,
 const localLabels = loadApprovedLocalEdgeLabels();
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
+const text = (value) => typeof value === 'string' && value.trim() === value && value.length > 0;
 
 /** Titles come from the already pin-verified item catalog, never category labels. */
 export function approvedSpatialItemLabels(verifiedCatalog) {
@@ -42,15 +46,16 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
   const exitLabels = readExitLabels();
   const legacyExitLabels = readLegacyExitLabels();
+  const connectionLabels = readConnectionLabels();
   async function withCurrent(partyId, actorId, project, suppliedTransaction,
-    observedPositionId = null, clock = null) {
+    observedPositionId = null, clock = null, validateSceneRows = null) {
     const transaction = suppliedTransaction ?? await pool.connect();
     const owned = suppliedTransaction == null;
     try {
       if (owned) await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
       const args = { transaction, partyId, actorId, verifiedCatalog, pin,
         worldBaseReader, readCurrentSourceState, readCurrentEnvironment, clock,
-        observedPositionId };
+        observedPositionId, validateSceneRows };
       const scene = await readScene(args);
       const natural = await readNatural(args);
       if (scene.baseline.id !== natural.scene.baseline_id
@@ -88,7 +93,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       portals: natural.scene.portals, targets: resolved, modifier_set: scene.modifier_set });
   }
   async function localDisclosure({ partyId, actorId, state, transaction,
-    observedPositionId, clock = null } = {}) {
+    observedPositionId, clock = null, validateSceneRows = null } = {}) {
     return withCurrent(partyId, actorId, async (current) => {
       if (state?.party_id !== partyId || state.actor_id !== actorId
         || state.journey_location?.scene_position_id !== current.scene.location.scene_position_id) {
@@ -130,12 +135,16 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           ? 'open' : 'occupied']));
       return edges.flatMap((edge) => {
         if (!visible.has(edge.id)) return [];
-        const labels = localLabels.filter((row) =>
+        const displayLabel = spatialV3LocalEdgeLabel(current.scene.positions,
+          edge.from_position_id, edge.to_position_id);
+        const approvedLabel = localLabels.filter((row) =>
           row.scene_template_ref.id === (edge.source_scene_template_ref?.entity_id
             ?? edge.source_scene_template_ref?.entity_ref?.entity_id)
           && row.scene_template_ref.version === Number(edge.source_scene_template_ref?.authoring_version)
           && row.edge_slot_key === edge.source_edge_slot_key);
-        if (labels.length !== 1) gap('approved_local_edge_label_required');
+        const safeLabel = displayLabel ?? (approvedLabel.length === 1
+          ? approvedLabel[0].display_label : null);
+        if (safeLabel == null) gap('approved_local_edge_label_required');
         // The admission owner answers only for the actor's committed position; an edge it
         // has no row for (destination projection before commit, or an edge it does not
         // admit) is disclosed without a status - never guessed and never a data gap.
@@ -143,26 +152,29 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         if (destinationStatus !== undefined && !['open', 'occupied'].includes(destinationStatus)) {
           gap('current_local_edge_admission_required');
         }
-        return [{ edge_id: edge.id, display_label: labels[0].display_label,
+        return [{ edge_id: edge.id, display_label: safeLabel,
           ...(destinationStatus !== undefined ? { destination_status: destinationStatus } : {}) }];
       });
-    }, transaction, observedPositionId, clock);
+    }, transaction, observedPositionId, clock, validateSceneRows);
   }
-  let connectionLabels = null;
-  const labelsOfConnections = () => {
-    try { return connectionLabels ??= readConnectionLabels(); } catch { gap('approved_connection_label_required'); }
-  };
   async function discloseConnections(current, connections) {
     const here = current.scene.location.scene_position_id;
     const admitted = await admit(current, connections.map(({ binding }) => ({
       target_id: binding.id, position_id: here, entity_kind: 'site_connection' })));
     const revealed = new Set(admitted.map((row) => row.target_id));
-    return connections.flatMap(({ binding }) => {
+    return connections.flatMap((connection) => {
+      const { binding } = connection;
       if (!revealed.has(binding.id)) return [];
-      const label = labelsOfConnections().get(binding.id);
-      if (label == null) gap('approved_connection_label_required');
+      const lineLabel = spatialV3LineLabel(binding.line_name, binding.line_discriminator);
+      const approvedLabel = connectionLabels?.get(binding.id);
+      const display_label = lineLabel ?? approvedLabel?.display_label;
+      if (!display_label) {
+        gap('approved_connection_label_required');
+      }
       return [{ connection_binding_id: binding.id, knowledge_state: 'visible',
-        display_label: label.display_label, editorial_choice_ordinal: label.editorial_choice_ordinal }];
+        display_label,
+        ...(lineLabel == null && Number.isInteger(approvedLabel?.editorial_choice_ordinal)
+          ? { editorial_choice_ordinal: approvedLabel.editorial_choice_ordinal } : {}) }];
     });
   }
   const provider = Object.freeze({

@@ -1,6 +1,6 @@
 # Карта баз данных
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-25, commit 59c1a33c.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-10-07, commit ac229303.
 
 Это карта: где лежит схема, кто ей владеет и где проверять. Нормы здесь не повторяются.
 Правила записи, причинности, атомарности и replay — [AGENTS.md §14](../governance/ARCHITECTURE_INVARIANTS.md) (сохранение
@@ -14,8 +14,8 @@
 
 | Схема | Назначение | Где лежит DDL | Кто пишет |
 |---|---|---|---|
-| `world_base` | утверждённые справочные данные мира, read-only для runtime | [schema.sql](../../infra/world-base/schema.sql) + части `infra/world-base/schema/01.sql`–`26.sql` | только утверждённый импорт (`world-db:import:*`), не runtime |
-| `party_runtime` | состояние конкретной партии | `schemas/party-db/` 001–038; [справочник](../../infra/party-db/SCHEMA_REFERENCE.md) | единственный physical transaction owner — `@rus/game-server` |
+| `world_base` | утверждённые справочные данные мира, read-only для runtime | [schema.sql](../../infra/world-base/schema.sql) + части `infra/world-base/schema/01.sql`–`30.sql` | только утверждённый импорт (`world-db:import:*`), не runtime |
+| `party_runtime` | состояние конкретной партии | `schemas/party-db/` 001–040; [справочник](../../infra/party-db/SCHEMA_REFERENCE.md) | единственный physical transaction owner — `@rus/game-server` |
 | `operator_control` | append-only журнал событий operator cutover | [001_lower_dvina_v3_cutover_events.sql](../../infra/operator-control/001_lower_dvina_v3_cutover_events.sql) | только operator tooling |
 
 Подключение: `RUS_WORLD_DATABASE_URL` (или `DATABASE_URL`) и `RUS_PARTY_DATABASE_URL` (или `PARTY_DATABASE_URL`),
@@ -34,7 +34,7 @@ migration/rollback source.
 | MSIX / packaged apps | в процессах из MSIX (Codex, Claude Desktop) `%LOCALAPPDATA%` перенаправлен в LocalCache пакета: пара БД, созданная оттуда, не видна `play:local` из обычного терминала, и тот молча берёт v16 (LW-033). Bootstrap и play — из обычного терминала | LW-033; [`tools/local-play/local-postgres.js`](../../tools/local-play/local-postgres.js) |
 | Выбор релиза `play:local` | обе БД v17 есть → release 17; ни одной → 16 (`novgorod_world`/`novgorod_party`); ровно одна → `LOCAL_POSTGRES_V17_PAIR_INCOMPLETE` | `selectLocalRelease` в том же файле; LW-033 |
 | Bootstrap | `node scripts/bootstrap-live-world-v17.mjs` (npm-скрипта нет); входы — каталоги `data/world-catalogs/novgorod/live-world-runtime-v17`, `m2c-*`, runtime-catalog gate1 и др.; этапы: схема → Gate1 → P12 → temporal-v4 → **m2c NPC wave (D27)** → capacity/appearance/nature → item/actor каталоги | сам скрипт; LW-035, LW-076 |
-| Аттестации `--run` | `V17_BOOTSTRAP_ATTESTATION_DIR` содержит **7 файлов** `<стадия>.json`: `item_baseline`, `item_import`, `item_activation`, `actor_import`, `actor_activation` и **`m2c_npc_wave_import`** (`schema: rus.m2c_npc_wave_v17_import_approval.v1`, `verdict` APPROVE/APPROVE_CONDITIONAL, `request_digest` = `request_digest` из `m2c-npc-wave/v1/v17-import-request.json`, непустые `attested_by` и `independence_basis`); и **`npc_identity_import`** (`schema: rus.npc_identity_v17_import_approval.v1`, `request_digest` из `npc-identity-v17/v1/import-request.json`; имена, шкалы психологии, цели и страхи, rt-names); без файла стадии bootstrap останавливается до commit | `scripts/bootstrap-live-world-v17.mjs` (`--run`), `scripts/v17-m2c-npc-wave-stage.mjs`, `scripts/v17-npc-identity-stage.mjs` |
+| Аттестации `--run` | `V17_BOOTSTRAP_ATTESTATION_DIR` поддерживает **8 файлов** `<стадия>.json`: обязательные `item_baseline`, `item_import`, `item_activation`, `actor_import`, `actor_activation`, **`m2c_npc_wave_import`** (`schema: rus.m2c_npc_wave_v17_import_approval.v1`, `verdict` APPROVE/APPROVE_CONDITIONAL, `request_digest` = `request_digest` из `m2c-npc-wave/v1/v17-import-request.json`, непустые `attested_by` и `independence_basis`) и **`npc_identity_import`** (`schema: rus.npc_identity_v17_import_approval.v1`, `request_digest` из `npc-identity-v17/v1/import-request.json`; имена, шкалы психологии, цели и страхи, rt-names); необязательный **`m2c_lines_import`** (`schema: rus.m2c_lines_v1_v17_import_approval.v1`, `decision: APPROVE`, `request_digest` = digest запроса стадии, непустые `attested_by` и `independence_basis`, `import_authorized: true`, `database_mutated: false`); без обязательного файла стадии bootstrap останавливается до commit | `scripts/bootstrap-live-world-v17.mjs` (`--run`), `scripts/v17-m2c-lines-import-stage.mjs`, `scripts/v17-m2c-npc-wave-stage.mjs`, `scripts/v17-npc-identity-stage.mjs` |
 | Default binding сервера | без env — `builtin:spatial-v3-production-v16`; v17 — через `RUS_SPATIAL_V3_BINDINGS_MODULE` | [load-spatial-v3-bindings.js](../../apps/game-server/src/runtime/load-spatial-v3-bindings.js) |
 
 Генераторы процедурных сцен (authoring, не runtime write): npm `procedural-scenes:generate`, `procedural-scenes:v6-overlay`, `procedural-scenes:v6-overlay-check`, `procedural-scenes:import-pack`, `procedural-scenes:import-pack-check` — [package.json](../../package.json).
@@ -56,8 +56,8 @@ migration/rollback source.
   [tools/db-tools/MODULE.md](../../tools/db-tools/MODULE.md).
 - **Описания полей:** только из [field-descriptions.js](../../infra/world-base/field-descriptions.js);
   справочник генерируется, вручную его не правят.
-- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/world-base/SCHEMA_REFERENCE.md) — 217 заголовков `### `,
-  22 группы `## ` (скрипт на HEAD). Текст `infra/world-base/README.md` ещё пишет «201 таблиц» — расхождение,
+- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/world-base/SCHEMA_REFERENCE.md) — 224 заголовка `### `,
+  23 группы `## ` (скрипт на HEAD). Текст `infra/world-base/README.md` ещё пишет «201 таблиц» — расхождение,
   не источник счёта (см. LEGACY_WARNINGS, LW-040).
 
 ### Поиск по SCHEMA_REFERENCE
@@ -73,19 +73,20 @@ Generated-файл (`npm run world-db:schema-doc`, проверка — `world-d
 ## 3. `party_runtime`
 
 - **Файлы:** `schemas/party-db/` — от [001_party_runtime.sql](../../schemas/party-db/001_party_runtime.sql)
-  до `038_party_runtime_npc_seasonal_presence.sql` (**38** SQL-файлов на диске).
+  до `040_party_runtime_visible_package_initial_state.sql` (**40** SQL-файлов на диске).
 - **Порядок и состав цепочки** задаёт массив `files` в
   [spatial-v3-target-migrations.js](../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js).
-  `SPATIAL_V3_TARGET_MIGRATION_FILES.length === 38`; хвост `033`–`038`:
-  `033_party_runtime_initial_semantic_decision.sql`,
-  `034_party_runtime_actor_base_attributes.sql`,
+  `SPATIAL_V3_TARGET_MIGRATION_FILES.length === 40`; хвост `035`–`040`:
   `035_party_runtime_nonportal_availability.sql`,
   `036_party_runtime_visibility_modifiers.sql`,
   `037_party_runtime_m2c_presence_routines.sql`,
-  `038_party_runtime_npc_seasonal_presence.sql`.
+  `038_party_runtime_npc_seasonal_presence.sql`,
+  `039_party_runtime_local_lines.sql`,
+  `040_party_runtime_visible_package_initial_state.sql`.
   Digest цепочки — `SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST`.
-- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/party-db/SCHEMA_REFERENCE.md) — «001–038», **133** таблицы
-  (generated header на HEAD).
+- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/party-db/SCHEMA_REFERENCE.md) — «001–040», **133** таблицы
+  (generated header; проверить после генерации).
+
 - **Когда применяется.** При каждом старте production composition
   ([production-spatial-v3.js](../../apps/game-server/src/composition/production-spatial-v3.js)). Если в
   `party_runtime.schema_migrations` уже есть запись catalog-миграции release, первые 11 файлов
@@ -97,7 +98,7 @@ Generated-файл (`npm run world-db:schema-doc`, проверка — `world-d
 - **Логическая граница записи:** [packages/party-store/MODULE.md](../../packages/party-store/MODULE.md).
   SQL и физическая транзакция — `apps/game-server/src/infrastructure/postgres/`.
 - **Стейл-тест:** [first-playable-party-migration.test.js](../../test/spatial-v3/first-playable-party-migration.test.js)
-  ожидает `SPATIAL_V3_TARGET_MIGRATIONS.length === 35` при фактических 36 — не чинить в этой задаче (LW-041 / #145).
+  ожидает `SPATIAL_V3_TARGET_MIGRATIONS.length === 35` при фактических 40 — не чинить в этой задаче (LW-041 / #145).
 
 ## 4. `operator_control`
 
@@ -107,7 +108,7 @@ Runtime игры её не использует.
 
 ## 5. Как добавить миграцию party_runtime
 
-1. Новый файл `schemas/party-db/NNN_party_runtime_<смысл>.sql` со следующим номером после `036`.
+1. Новый файл `schemas/party-db/NNN_party_runtime_<смысл>.sql` со следующим номером после `040`.
 2. Имя — **в конец** массива `files` в `spatial-v3-target-migrations.js`.
 3. SQL идемпотентен (`IF NOT EXISTS` …): хвост цепочки переисполняется при старте.
 4. Обновить тест порядка цепочки (сейчас стейл на 35 — чинить вместе с CR реализации).

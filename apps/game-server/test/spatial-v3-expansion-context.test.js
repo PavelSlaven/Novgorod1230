@@ -53,6 +53,37 @@ test('commit recheck without prepared context reads approved directional exits o
   assert.deepEqual(calls, ['binding', 'exits']);
 });
 
+test('in-transit expansion fails closed with the persisted traversal identity instead of pretending the actor has a scene position', async () => {
+  const queries = [];
+  const worldBaseReader = { readPinnedSceneTemplateClosure: async () => ({ ok: true, value: {} }),
+    readG4ExpansionBinding: async () => ({ ok: true, value: {} }) };
+  await assert.rejects(readSpatialV3ExpansionContext({
+    worldBaseReader, release, partyId: 'party', actorId: 'actor',
+    transaction: { query: async (sql) => {
+      queries.push(sql);
+      return queries.length === 1 ? { rows: [] } : { rows: [{
+        journey_location_id: 'journey', location_kind: 'in_transit',
+        travel_state_id: 'travel', travel_status: 'paused_in_transit',
+        segment_progress_ppm: 400_000, mirrored: false,
+        next_interval_ordinal: 2, execution_id: 'execution',
+        execution_status: 'active', active_travel_state_id: 'travel',
+        departure_endpoint_snapshot: { resolved_position_id: 'departure' },
+        arrival_endpoint_snapshot: { resolved_position_id: 'arrival' },
+        traversal_snapshot: { physical_segment_ref: { segment_ref: {
+          segment_kind: 'site_connection', segment_id: 'connection' } } }
+      }] };
+    } }
+  }), (error) => error.code === 'LIVE_WORLD_EXPANSION_CONTEXT_GAP'
+    && error.details.reason === 'in_transit_selected_traversal_owner_missing'
+    && error.details.cause.travel_state_id === 'travel'
+    && error.details.cause.execution_id === 'execution'
+    && error.details.cause.departure_position_id === 'departure'
+    && error.details.cause.arrival_position_id === 'arrival'
+    && error.details.cause.connection_id === 'connection');
+  assert.match(queries[1], /traveller_travel_states/u);
+  assert.match(queries[1], /party_route_plan_steps/u);
+});
+
 test('a canonical place carries the approved connections of its own G5; a generated one carries none', async () => {
   const connections = [{ binding: { id: 'b1' }, profile: { id: 'prof' } }];
   const asked = [];

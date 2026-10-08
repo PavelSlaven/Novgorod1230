@@ -18,7 +18,47 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     JOIN party_runtime.party_scene_baselines baseline ON baseline.party_id=loc.party_id AND baseline.id=g6.scene_baseline_id AND baseline.status='active'
     JOIN party_runtime.party_g5_sites site ON site.party_id=loc.party_id AND baseline.host_kind='g5_site' AND site.id=baseline.host_id AND site.status='active'
     WHERE loc.party_id=$1 AND loc.owner_kind='actor' AND loc.owner_id=$2 AND loc.location_kind='scene'`, [partyId, actorId]);
-  if (result.rows.length !== 1) gap('committed_actor_scene_required');
+  if (result.rows.length !== 1) {
+    const transit = await transaction.query(`SELECT loc.id AS journey_location_id,
+        loc.location_kind,loc.travel_state_id,travel.status AS travel_status,
+        travel.segment_progress_ppm,travel.mirrored,travel.next_interval_ordinal,
+        execution.id AS execution_id,execution.status AS execution_status,
+        execution.active_travel_state_id,step.departure_endpoint_snapshot,
+        step.arrival_endpoint_snapshot,
+        step.static_contract_snapshot->'traversal_snapshot' AS traversal_snapshot
+      FROM party_runtime.party_journey_locations loc
+      LEFT JOIN party_runtime.traveller_travel_states travel
+        ON travel.party_id=loc.party_id AND travel.id=loc.travel_state_id
+      LEFT JOIN party_runtime.party_route_plan_executions execution
+        ON execution.party_id=loc.party_id
+       AND execution.active_travel_state_id=travel.id
+      LEFT JOIN party_runtime.party_route_plan_steps step
+        ON step.route_plan_id=execution.route_plan_id
+       AND step.ordinal=execution.current_step_ordinal
+      WHERE loc.party_id=$1 AND loc.owner_kind='actor' AND loc.owner_id=$2
+        AND loc.location_kind='in_transit'`, [partyId, actorId]);
+    const transitRow = transit.rows.length === 1 ? transit.rows[0] : null;
+    if (transitRow?.travel_status != null
+      && ['active', 'paused_in_transit'].includes(transitRow.travel_status)
+      && transitRow.execution_status === 'active'
+      && transitRow.active_travel_state_id === transitRow.travel_state_id
+      && transitRow.traversal_snapshot?.physical_segment_ref?.segment_ref?.segment_kind
+        === 'site_connection'
+      && transitRow.traversal_snapshot?.physical_segment_ref?.segment_ref?.segment_id
+      && transitRow.departure_endpoint_snapshot?.resolved_position_id
+      && transitRow.arrival_endpoint_snapshot?.resolved_position_id) {
+      gap('in_transit_selected_traversal_owner_missing', {
+        journey_location_id: transitRow.journey_location_id,
+        travel_state_id: transitRow.travel_state_id,
+        travel_status: transitRow.travel_status,
+        execution_id: transitRow.execution_id,
+        departure_position_id: transitRow.departure_endpoint_snapshot.resolved_position_id,
+        arrival_position_id: transitRow.arrival_endpoint_snapshot.resolved_position_id,
+        connection_id: transitRow.traversal_snapshot.physical_segment_ref.segment_ref.segment_id
+      });
+    }
+    gap('committed_actor_scene_required');
+  }
   const current = result.rows[0];
   if (current.world_revision_id !== release?.world_revision_id
     || current.world_catalog_digest !== release?.world_catalog_digest) gap('active_release_pin_mismatch');
@@ -38,17 +78,14 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     [partyId, current.position.g6_instance_id, current.baseline.id]);
   const sceneWithLocalTopology = { ...scene.value,
     positions: local.rows[0]?.positions ?? [], movement_edges: local.rows[0]?.movement_edges ?? [] };
-  if (findReachableDeparturePosition({ position: current.position, scene: sceneWithLocalTopology }) == null) {
+  const departureReachable = findReachableDeparturePosition({
+    position: current.position, scene: sceneWithLocalTopology }) != null;
+  if (!departureReachable && current.site.origin !== 'canonical') {
     return { ...current, scene: sceneWithLocalTopology, partyId, actorId };
   }
   const binding = await worldBaseReader.readG4ExpansionBinding({ g4_id: current.site.parent_g4_id,
     world_revision_id: current.world_revision_id });
   if (!binding?.ok) gap('approved_g4_expansion_binding_required', binding?.error);
-  const closure = await worldBaseReader.readPinnedG4ExpansionClosure(binding.value);
-  if (!closure?.ok) gap('approved_g4_expansion_closure_required', closure?.error);
-  const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({
-    party_id: partyId, g4_id: current.site.parent_g4_id });
-  if (!loaded.ok) gap('committed_expansion_snapshot_required', loaded.error);
   let canonical_connections = [];
   let canonical_connection_gaps = [];
   if (current.site.origin === 'canonical') {
@@ -59,6 +96,21 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
     canonical_connections = connections.value;
     canonical_connection_gaps = connections.gaps ?? [];
   }
+  const canonicalSourceSlots = canonical_connections.flatMap(({ binding: row }) =>
+    sceneWithLocalTopology.endpoint_slots?.filter((slot) =>
+      slot.slot_key === row.from_scene_endpoint_slot_key) ?? []);
+  const canonicalSourceReachable = canonicalSourceSlots.length > 0
+    && findReachableDeparturePosition({ position: current.position,
+      scene: { ...sceneWithLocalTopology,
+        endpoint_slots: canonicalSourceSlots.map((slot) => ({ ...slot, endpoint_role: 'departure' })) } }) != null;
+  if (!departureReachable && !canonicalSourceReachable) {
+    return { ...current, scene: sceneWithLocalTopology, partyId, actorId };
+  }
+  const closure = await worldBaseReader.readPinnedG4ExpansionClosure(binding.value);
+  if (!closure?.ok) gap('approved_g4_expansion_closure_required', closure?.error);
+  const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({
+    party_id: partyId, g4_id: current.site.parent_g4_id });
+  if (!loaded.ok) gap('committed_expansion_snapshot_required', loaded.error);
   return { ...current, ...binding.value, closure: closure.value, snapshot: loaded.snapshot,
     canonical_connections, canonical_connection_gaps, scene: sceneWithLocalTopology, partyId, actorId };
 }

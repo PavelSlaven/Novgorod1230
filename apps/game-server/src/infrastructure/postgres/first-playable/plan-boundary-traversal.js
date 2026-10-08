@@ -208,6 +208,7 @@ export function boundaryTraversalWrites({
       intervals,
       partyId,
       executionId,
+      travelStateId,
       stepOrdinal: ordinal,
       suffix,
       segment,

@@ -1,0 +1,61 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "claude-opus-5.5-lead-reviewer-2026-10-01-schema-v7",
+  "independence_basis": "Issued by the lead reviewer (Claude Opus 5.5), who did not author the request, the generator, schemas/party-db/038_party_runtime_local_lines.sql or any lines-b1 commit (author: Codex gpt-6-luna, fleet task lines-b1). The reviewer's own Contract Auditor pass on the cutover (REVIEW-lines-b1-4) returned FAIL with blockers B1/B2 and the 038 finding M1 (preflight blocked any later chain rerun on a database with game data); the executor fixed M1 by running the preflight only while 038 is not applied (no travel_state_id column), with a chain-rerun regression test. All checks below are deterministic scripts and the project's PostgreSQL tests run by the reviewer in throwaway containers through pg-slot; no project database was touched.",
+  "reviewed_repository_head": "20a0978bb1d3375250898cea838fb62b9b149482",
+  "source_commit": "1114da73aaa60b1b0d941a20d28bca9b004a3476",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+  "request_digest": "cc76fa8b0e1a4c05faccf697cb58ee139e9ee9ba284f010653e541bad542f6db",
+  "request_bytes": 16171,
+  "review_request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md",
+  "supersedes": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v6.json",
+    "sha256_at_reviewed_head": "64d318f0cefef707e5309d074c0452706176cd7f53531160e047aae863647b55",
+    "request_digest": "9ceaa9fb49f36d8756d0e511fe508110ce51d6a32ef646b2781fb103b2cb70e1",
+    "reason": "Request changed after v6: party migration schemas/party-db/038_party_runtime_local_lines.sql added (lines-b1 cutover, 12632 B / 3cae28e5...: nullable/ordinal columns on traveller_travel_states, party_traversal_interval_results and g5_site_connections, recreated CHECK constraints, three unique indexes, v3_event_causal_integrity replaced, a preflight that raises PARTY_DATABASE_REBUILD_REQUIRED only while 038 is not applied and travel or interval rows exist); owner migration module rehashed; party chain 37 -> 38 migrations, chain digest 872412c5... -> 2945088e...; world schema parts 01-30 unchanged; source_commit 854881d7 -> 1114da73. v6 does not match the current request digest, authorizes nothing for it and stays in the catalog as history."
+  },
+  "scope": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "party_database": "novgorod_party_v17",
+    "party_owner": "party_operator",
+    "world_schema": "infra/world-base/schema.sql (649 bytes, sha256 a98f19ac4bd4b1e1d6d2057859d797bf0a6ac81b5fc7232b75887bcf2683eb18) and its ordered 01.sql-30.sql parts exactly as hashed in the request (30.sql: 7675 bytes, sha256 b6986ec63233e6c028cf02840a34b34bb47b321a5d6881581dc982da6e4f46e7; 29.sql unchanged 3885 bytes e46386ab...; 09.sql unchanged 16933 bytes 544ca153...)",
+    "party_schema": "runSpatialV3TargetMigrations and its ordered 001-038 SQL files, exactly as hashed in the request",
+    "party_chain_digest": "2945088ee52a94fef28dd40b5009d64d0eff5f16a49dfee0e1d06d4d37759d02",
+    "expected_world_base_tables": 224,
+    "expected_party_runtime_tables": 133,
+    "expected_party_migrations_applied": 38
+  },
+  "verified_by_approver": {
+    "request_digest_recomputed": "cc76fa8b0e1a4c05faccf697cb58ee139e9ee9ba284f010653e541bad542f6db (sha256 of the raw 16171-byte request; HEAD blob equals the working-tree file)",
+    "source_commit_is_ancestor_of_reviewed_head": true,
+    "schema_inputs_unchanged_source_commit_to_reviewed_head": true,
+    "ordered_parts_and_migrations": "verify_fresh_v7.py: world entrypoint and 30 parts, the party owner module and all 38 migrations match their request sha256 and byte length at HEAD, in the working tree and at source_commit (mismatches [])",
+    "request_unchanged_vs_v6_except": "party migrations (038 added), owner module hash, party chain digest, expected party migrations and source_commit; world schema bytes identical to the v6 request",
+    "generator_rebuild": "test/spatial-v3/fresh-schema-request-rebuild.test.js 3/3 at the reviewed head",
+    "migration_038_statements": "only ALTER TABLE on party_runtime.traveller_travel_states, party_traversal_interval_results and g5_site_connections (ADD COLUMN, DROP/ADD CONSTRAINT), three CREATE UNIQUE INDEX IF NOT EXISTS, CREATE OR REPLACE FUNCTION party_runtime.v3_event_causal_integrity and a DO preflight that only reads counts and raises; no CREATE TABLE, DML, GRANT/REVOKE, role or extension; party_runtime keeps 133 tables",
+    "postgres_tests": "reviewer runs through pg-slot in throwaway containers at the reviewed head: test/integration/m2c-lines-party-ddl-postgres.test.js 1/1 (038 applied fresh, preflight blocks only before 038 with travel/interval rows, chain rerun after 038 passes); test/spatial-v3/p14-party-planning-postgres.test.js 1/1 (chain re-applicable, planning/history boundaries); test/spatial-v3/first-playable-party-migration-postgres.test.js 4/4 twice (one earlier run had an ECONNRESET in one subtest under host load, not reproduced); request rebuild 3/3",
+    "existing_rows": "no backfill (D51): an existing party DB with travel or interval rows is recreated; on a database where 038 is applied the preflight is skipped, so later migrations can rerun the chain"
+  },
+  "approval": "Fresh creation of the v17 pair novgorod_world_v17 / novgorod_party_v17 in the existing managed local-play cluster and application of exactly the hashed world entrypoint and parts 01-30 and party migrations 001-038 of this request (digest cc76fa8b...), only after the currently existing v17 pair has been renamed (never dropped) and after all execution preconditions pass. No existing database may be dropped, reused, or modified other than that rename. The recreation is executed only on the owner's explicit command (owner approved the one-time recreation after rt-names on 2026-09-30, D51 p.4).",
+  "execution_preconditions": [
+    "This v7 file is committed byte-identically into data/world-catalogs/novgorod/live-world-runtime-v17/ as fresh-schema-approval-attestation-v7.json; v1-v6 stay unchanged as history. At the execution head checkV17BootstrapInputs selects exactly this file by request_path and request_digest cc76fa8b... and test/integration/v17-bootstrap-fresh-schema-gate.test.js (prepared for v7) is green.",
+    "The execution head carries byte-identical schema inputs: request_digest cc76fa8b..., all request source hashes, 30.sql b6986ec6..., schema.sql a98f19ac..., party chain digest 2945088e....",
+    "The npc_identity_import stage has its own current attestation (npc_identity_import.json, schema rus.npc_identity_v17_import_approval.v1) for the exact import request digest at the execution head; every other bootstrap import stage keeps its own current approval.",
+    "Verify the PostgreSQL cluster identity (system_identifier), server version 16.14, the list of existing databases with owners, a fresh current backup of the existing v17 pair taken after its last write (with a readback check), and per-table row counts of every existing Novgorod database; record them before any write.",
+    "Stop every game-server, tool or session connected to the existing v17 pair; rename (never drop) novgorod_world_v17 and novgorod_party_v17 to bak names that do not exist yet, by explicit ALTER DATABASE ... RENAME TO ... from the postgres maintenance database; read back pg_database; confirm the new pair names are free.",
+    "Create both databases with the requested owners, prove both empty, apply the world parts in one transaction with stop-on-error and the party chain through runSpatialV3TargetMigrations (the standard scripts/bootstrap-live-world-v17.mjs path).",
+    "Read back 222 world_base tables (including the three 29.sql tables with their constraints), world_reader USAGE on world_base and SELECT on all 222 tables, 133 party_runtime tables, 37 applied party migrations with chain digest 2945088e..., zero parties, and unchanged row counts in the bak databases; record results in a separate execution attestation that references this v5."
+  ],
+  "excludes": [
+    "any data import (every bootstrap import stage needs its own current approval)",
+    "catalog registration or activation",
+    "runtime or default startup cutover",
+    "migration or mutation of existing databases other than the rename",
+    "dropping the bak pair (the owner does this later manually)",
+    "the m2c-lines-v1 line wave import (approved APPROVE_WITH_LIMITS in its own attestation; its bootstrap import stage needs its own current import approval)"
+  ],
+  "database_mutated_by_review": false
+}

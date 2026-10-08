@@ -1,6 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { materializeSpatialV3CanonicalConnection, materializeSpatialV3Expansion,
-  materializeSpatialV3GeneratedScene, selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
+  materializeSpatialV3GeneratedScene, resolveSpatialV3CanonicalEndpointSlot,
+  selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
 import { createSpatialV3Repository } from '@rus/party-store/spatial-v3';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { computeSpatialV3CanonicalDigest as digest,
@@ -57,11 +58,11 @@ function createPinBook(g4, profile) {
   };
 }
 
-/** The committed canonical site of `canonical_g5` and its arrival endpoint, or the rows that prepare
- * them from the exact scene binding and acoustic closure (first arrival). Shared by the terminal of
- * an expansion and by an intra-G4 connection. */
+/** The committed canonical site of `canonical_g5` and its endpoint, or the rows that prepare them
+ * from the exact scene binding and acoustic closure. Expansion terminals require a unique arrival;
+ * canonical connections resolve the binding's exact target slot regardless of role. */
 async function prepareCanonicalTarget({ worldBaseReader, snapshot, party_id, g4, canonical_g5,
-  change_set_id, materializer_version, book, authoring_refs }) {
+  change_set_id, materializer_version, book, authoring_refs, endpoint_slot_key = null }) {
   const { id: g5Id, version: g5Version } = canonical_g5;
   let target = snapshot.sites.find((row) => row.origin === 'canonical' && row.status === 'active'
     && row.canonical_g5_ref?.entity_id === g5Id && String(row.canonical_g5_ref.authoring_version) === String(g5Version));
@@ -111,15 +112,23 @@ async function prepareCanonicalTarget({ worldBaseReader, snapshot, party_id, g4,
     id: baseline.scene_template_ref.entity_id, version: Number(baseline.scene_template_ref.authoring_version),
     world_revision_id: g4.world_revision_id });
   if (!targetRead.ok) return targetRead;
-  const arrivals = targetRead.value.endpoint_slots.filter((row) => ['arrival', 'both'].includes(row.endpoint_role));
-  const arrival = arrivals[0];
+  let arrival;
+  if (endpoint_slot_key == null) {
+    const arrivals = targetRead.value.endpoint_slots.filter((row) => ['arrival', 'both'].includes(row.endpoint_role));
+    if (arrivals.length !== 1) return book.reject('canonical_terminal_endpoint_required', 'terminal_target_gap');
+    arrival = arrivals[0];
+  } else {
+    const resolved = resolveSpatialV3CanonicalEndpointSlot(targetRead.value.endpoint_slots, endpoint_slot_key);
+    if (!resolved.ok) return book.reject(`canonical_target_${resolved.reason}`, 'terminal_target_gap');
+    arrival = resolved.endpoint;
+  }
   const targetG6 = [...snapshot.g6_instances, ...terminal_writes.filter((row) => row.target_table === 'party_g6_instances').map((row) => row.record)]
     .filter((row) => row.scene_baseline_id === baseline.id && row.status === 'active');
   const positions = [...snapshot.scene_positions, ...terminal_writes.filter((row) => row.target_table === 'scene_position_nodes').map((row) => row.record)]
     .filter((row) => targetG6.some((g6) => g6.id === row.g6_instance_id)
     && row.template_slot_key === arrival?.required_position_slot_key
     && row.template_instance_ordinal === arrival?.required_position_instance_ordinal && row.status === 'active');
-  if (arrivals.length !== 1 || positions.length !== 1) return book.reject('canonical_terminal_endpoint_required', 'terminal_target_gap');
+  if (positions.length !== 1) return book.reject('canonical_terminal_endpoint_required', 'terminal_target_gap');
   return { ok: true, terminal_writes, terminal_target: { canonical_g5_id: g5Id, canonical_g5_version: g5Version,
     site_id: target.id, position_id: positions[0].id, slot_key: arrival.slot_key } };
 }
@@ -228,8 +237,10 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       created_at_turn: admitted.created_at_turn } : built;
   }
 
-  /** The exact departure endpoint of the committed source position, from its scene template. */
-  async function readSourceDeparture({ snapshot, source_site_id, source_position_id, world_revision_id }) {
+  /** Canonical connections use the exact binding slot regardless of role; frontier expansion
+   * keeps its unique departure/both endpoint check at the committed source position. */
+  async function readSourceDeparture({ snapshot, source_site_id, source_position_id, world_revision_id,
+    endpoint_slot_key = null }) {
     const sourceSite = snapshot.sites.find((row) => row.id === source_site_id);
     const sourceBaseline = snapshot.scene_baselines.find((row) => row.host_kind === 'g5_site'
       && row.host_id === source_site_id && row.status === 'active');
@@ -239,6 +250,17 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       version: Number(sourceBaseline.scene_template_ref?.authoring_version), world_revision_id });
     if (!sourceRead.ok) return { read: sourceRead };
     const sourcePosition = snapshot.scene_positions.find((row) => row.id === source_position_id);
+    if (endpoint_slot_key != null) {
+      const resolved = resolveSpatialV3CanonicalEndpointSlot(sourceRead.value.endpoint_slots, endpoint_slot_key);
+      if (!resolved.ok) return { failure: `canonical_source_${resolved.reason}` };
+      const selected = resolved.endpoint;
+      if (sourcePosition?.status !== 'active'
+        || selected.required_position_slot_key !== sourcePosition.template_slot_key
+        || selected.required_position_instance_ordinal !== sourcePosition.template_instance_ordinal) {
+        return { failure: 'canonical_source_endpoint_position_mismatch' };
+      }
+      return { departure: selected };
+    }
     const departure = sourceRead.value.endpoint_slots.filter((row) => ['departure', 'both'].includes(row.endpoint_role)
       && row.required_position_slot_key === sourcePosition?.template_slot_key
       && row.required_position_instance_ordinal === sourcePosition?.template_instance_ordinal);
@@ -247,11 +269,19 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
 
   async function prepareExpansion(request, { onLabelGapsOmitted = null } = {}) {
     const { party_id, g4, profile, slot_ref, directional_exit, candidate_ordinal,
-      source_site_id, source_position_id, entry_binding, materializer_version } = request ?? {};
+      source_site_id, source_position_id, approach_origin_position_id,
+      ordered_local_edge_path = [], local_edge_path_proofs = [], entry_binding, materializer_version } = request ?? {};
     const book = createPinBook(g4, profile);
     const reject = book.reject;
     if (![party_id, source_site_id, source_position_id, materializer_version].every((s) => typeof s === 'string' && s.trim())
       || !Number.isSafeInteger(candidate_ordinal) || candidate_ordinal < 0
+      || !Array.isArray(ordered_local_edge_path)
+      || !Array.isArray(local_edge_path_proofs)
+      || (ordered_local_edge_path.length > 0 && (typeof approach_origin_position_id !== 'string'
+        || !approach_origin_position_id.trim()
+        || local_edge_path_proofs.length !== ordered_local_edge_path.length))
+      || (ordered_local_edge_path.length === 0 && (approach_origin_position_id != null
+        || local_edge_path_proofs.length > 0))
       || !g4 || !profile || !slot_ref || !directional_exit) return reject('exact_expansion_request_required');
     if (typeof committer?.prepareExpansion !== 'function'
       || typeof admitGeneration !== 'function' || typeof projectVisible !== 'function') {
@@ -270,7 +300,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
       expansion_slot_key: `${slot_ref.id}@${slot_ref.version}`, candidate_ordinal };
     const idempotency_key = `resolve_frontier:${canonicalDigest(identity)}`;
     const canonical_input_digest = digest({ ...identity, g4, profile, directional_exit,
-      source_site_id, source_position_id, entry_binding: entry_binding ?? null, materializer_version });
+      source_site_id, source_position_id, approach_origin_position_id: approach_origin_position_id ?? null,
+      ordered_local_edge_path, entry_binding: entry_binding ?? null, materializer_version });
     const change_set_id = `expansion:${canonicalDigest(identity)}`;
     const suffix = digest({ party_id, profile: ref(profile.id, profile.version),
       slot: ref(slot_ref.id, slot_ref.version) }).slice(7);
@@ -407,14 +438,14 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         const approved = connections.value.find((row) => row.binding.id === binding_id);
         if (!approved) return reject(connections.gaps?.find((gap) => gap.binding_id === binding_id)?.reason
           ?? 'approved_canonical_connection_required');
-        const { binding, profile: connectionProfile } = approved;
+        const { binding, profile: connectionProfile, line_binding } = approved;
         // The pin vocabulary has no connection kinds: the source place is pinned, the binding and its
         // profile are traced (their catalog is the one pinned world revision).
         book.append('canonical_spatial_node', [{ id: binding.from_canonical_g5_id, version: binding.from_canonical_g5_version }]);
         authoring_refs.push({ entity_kind: 'canonical_g5_connection_binding', id: binding.id, version: binding.version },
           { entity_kind: 'canonical_g5_connection_profile', id: connectionProfile.id, version: connectionProfile.version });
         const source = await readSourceDeparture({ snapshot, source_site_id, source_position_id,
-          world_revision_id: g4.world_revision_id });
+          world_revision_id: g4.world_revision_id, endpoint_slot_key: binding.from_scene_endpoint_slot_key });
         if (source.failure) return reject(source.failure);
         if (source.read) return source.read;
         const selection = { status: 'canonical_connection', choices: [],
@@ -427,10 +458,11 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         if (!admitted.validation_report || !Array.isArray(admitted.commit_rechecks)
           || typeof admitted.recheck !== 'function') return reject('generation_commit_rechecks_required');
         const target = await prepareCanonicalTarget({ worldBaseReader, snapshot, party_id, g4,
-          canonical_g5: selection.target_canonical_g5, change_set_id, materializer_version, book, authoring_refs });
+          canonical_g5: selection.target_canonical_g5, change_set_id, materializer_version, book, authoring_refs,
+          endpoint_slot_key: binding.to_scene_endpoint_slot_key });
         if (!target.ok) return target;
         const prepared = materializeSpatialV3CanonicalConnection({ party_id, change_set_id, snapshot,
-          binding, profile: connectionProfile, terminal_target: target.terminal_target,
+          binding, profile: connectionProfile, line_binding, terminal_target: target.terminal_target,
           terminal_writes: target.terminal_writes, dependency_pins: book.pins(),
           materialization_trace_id: `trace:${change_set_id}`,
           source: { site_id: source_site_id, position_id: source_position_id,

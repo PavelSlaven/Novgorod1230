@@ -94,7 +94,10 @@ export const TABLES = Object.freeze({
     key: ['party_id', 'container_id'],
     version: true
   },
-  party_route_plans: { modes: ['insert'], key: ['id'] },
+  party_route_plans: {
+    modes: ['insert', 'update'], key: ['id'], version: true,
+    version_column: 'lifecycle_state_version'
+  },
   party_route_plan_steps: { modes: ['insert'], key: ['route_plan_id', 'ordinal'] },
   party_transit_anchors: { modes: ['insert', 'update'], key: ['id'], version: true },
   preparation_claims: { modes: ['insert', 'update'], key: ['id'], version: true },

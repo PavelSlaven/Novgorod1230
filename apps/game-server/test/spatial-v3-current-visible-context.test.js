@@ -49,6 +49,27 @@ test('production current-scene adapter reads and projects only current source ob
   assert.ok(projected.sensory_details.length > 0);
 });
 
+test('production current-scene adapter reuses caller transaction for session snapshot',
+  async () => {
+    const { perception } = await approvedNaturalPerceptionFixture();
+    const transaction = { query() {} };
+    let connectCount = 0;
+    const project = createCurrentSpatialContextProjector({
+      partyPool: { async connect() { connectCount += 1; throw new Error('unexpected connect'); } },
+      readCurrentSources: async (input) => {
+        assert.equal(input.transaction, transaction);
+        return { partyId: input.partyId, actorId: input.actorId,
+          naturalInput: perception, entityObservations: [], localEdges: [],
+          directionalExits: [], siteConnections: [] };
+      }
+    });
+
+    await project({ partyId: 'party:1', actorId: 'player:1',
+      state: { position: { position_id: 'position:inside' } }, transaction });
+
+    assert.equal(connectCount, 0);
+  });
+
 test('production current-scene adapter applies the active turn deadline to its read transaction',
   async () => {
     const { perception } = await approvedNaturalPerceptionFixture();

@@ -15,9 +15,9 @@ const { scenario_binding_id, scenario_profile_exact_pins,
 
 export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   ...sharedReleaseContract,
-  // v17 bootstrap applies catalog + actor party owner DDL before first production root.
+  // Measured after the merged 001-040 party chain and catalog migrations.
   party_runtime_catalog_target_fingerprint:
-    '629b54dc2d0cd0309706ef312a553395e40d028f0ec5a012c02e389516482a84',
+    '3d376bf1ff96b44755afbcc70b7171ff332d51c478f6916a6b05d5950dc33e81',
   release_id: 'spatial-v3-production-v17',
   activation_scope: 'new_production_parties_only',
   world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001',

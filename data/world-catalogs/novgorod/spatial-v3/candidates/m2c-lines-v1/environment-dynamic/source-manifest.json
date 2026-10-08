@@ -1,0 +1,49 @@
+{
+  "schema": "rus.m2c_lines_v1.environment_dynamic_source_manifest.v1",
+  "status": "candidate_pending_authoring_attestation",
+  "source_package": "/srv/novgorod-work/fleet/tasks/env-dynamic/out",
+  "source_package_manifest_sha256": "0f3eb04f7d0b9f7723e891b7c74cde79cd0a77519d1e6b73368760fceb78dff0",
+  "source_package_digest": "ac311478d111d6fcd4ede09791301beced3fb884624a450da65900a5af96e38b",
+  "source_package_manifest_status": "candidate_not_approved",
+  "source_pins_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/environment-dynamic/source-pins.json",
+  "source_pins_sha256": "7709010288425d0971205fad91b7146a5b1377522edb13237391aef57f0a1034",
+  "source_artifact_count": 16,
+  "transferred_artifact_count": 4,
+  "artifacts": [
+    {
+      "source_path": "candidate/datasets/dynamic_environment_rule_sets.candidate.json",
+      "target_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/environment-dynamic/datasets/dynamic_environment_rule_sets.candidate.json",
+      "source_sha256": "dd83b475a7b3ffed738c87249d1abf5ad83a02e9762e77ee4d569318c0eb105e",
+      "bytes": 107171
+    },
+    {
+      "source_path": "candidate/datasets/spatial_v3_transition_environment_profiles_v2.candidate.json",
+      "target_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/environment-dynamic/datasets/spatial_v3_transition_environment_profiles_v2.candidate.json",
+      "source_sha256": "42f1029af6c0a346853f98a8ac33e2f0d80b1df926874bd381378ff604633ced",
+      "bytes": 7907
+    },
+    {
+      "source_path": "candidate/datasets/dynamic_environment_rule_set_storage_refs.json",
+      "target_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/environment-dynamic/datasets/dynamic_environment_rule_set_storage_refs.json",
+      "source_sha256": "e9028953c47dfeeb18bd0f89d0bd1e1fffcb6eae6763faf842e5d95400870a87",
+      "bytes": 5969
+    },
+    {
+      "source_path": "candidate/datasets/environment_class_and_permanent_basis_candidates.json",
+      "target_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/environment-dynamic/datasets/environment_class_and_permanent_basis_candidates.json",
+      "source_sha256": "80c00b56c27e115a1ca88d90478ff9c985d74b9aafb357fe10b49d515ac2bec7",
+      "bytes": 2405
+    }
+  ],
+  "data_approval": {
+    "decision": "APPROVE_WITH_LIMITS",
+    "reviewer_response": "A-lines-b1-3c-29",
+    "import_authorized": false,
+    "activation_authorized": false
+  },
+  "constraints": {
+    "light_effect": "metadata_only",
+    "hazard_gap_activation": "active_unresolved_applicable_condition_only",
+    "terrain_selector_execution": "not_proven"
+  }
+}

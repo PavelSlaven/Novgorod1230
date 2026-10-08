@@ -7,9 +7,18 @@ import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
 import { withLowerDvinaTraceCurrentScene } from
   './lower-dvina-trace-turn-step-current-scene.js';
+import { spatialV3TraversalOutcomeProjection } from '@rus/turn/spatial-v3-execution';
 
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
+  const siteLine = effect.consequence?.position_transition?.owner
+      === '@rus/turn/spatial-v3-site-connection-traversal'
+    && effect.consequence?.movement?.cost_kind === 'time';
+  if (siteLine) {
+    const transition = effect.consequence.position_transition;
+    next = projectPreparedSiteLineState(next, transition,
+      effect.consequence.spatial_v3_traversal);
+  }
   if (effect.consequence?.movement?.destination?.location_ref != null) {
     const movement = effect.consequence.movement;
     const transition = effect.consequence.position_transition;
@@ -142,6 +151,65 @@ export function projectPreparedDomainState(state, effect) {
     next.player_response_boundary = { kind: 'combat', combat_id:
       effect.consequence.combat_initialization.session.combat_id };
   }
+  return next;
+}
+
+export function projectPreparedSiteLineState(state, transition, traversal) {
+  const next = structuredClone(state);
+  const { endpoint, route_status: routeStatus } = spatialV3TraversalOutcomeProjection(
+    traversal?.result, traversal?.plan?.steps?.[0]);
+  const positionId = endpoint?.resolved_position_id;
+  const atSource = positionId === transition.from_position_ref;
+  const atDestination = positionId === transition.to_position_ref;
+  if (endpoint && (atSource || atDestination)) {
+    const source = atSource;
+    const endpointChanged = positionId !== next.position?.position_id;
+    const g6InstanceId = source ? transition.source_g6_instance_id
+      : transition.destination_g6_instance_id;
+    next.position = {
+      ...structuredClone(next.position ?? {}),
+      position_id: positionId,
+      location_ref: source ? transition.source_site_id : transition.destination_site_id,
+      site_id: source ? transition.source_site_id : transition.destination_site_id,
+      g4_id: source ? transition.source_g4_id : transition.destination_g4_id,
+      g6_id: g6InstanceId,
+      g6_instance_id: g6InstanceId
+    };
+    if (next.journey_location != null) {
+      next.journey_location = {
+        ...next.journey_location,
+        location_kind: 'scene',
+        scene_position_id: positionId,
+        transit_anchor_id: null,
+        travel_state_id: null,
+        g6_instance_id: source ? transition.source_g6_instance_id
+          : transition.destination_g6_instance_id,
+        state_version: Number(next.journey_location.state_version) + 1
+      };
+    }
+    if (endpointChanged) {
+      for (const key of ['visible_context', 'visible_context_package',
+        'current_visible_context', 'current_spatial_context',
+        'current_spatial_context_is_fresh',
+        'current_spatial_context_filters_entities']) delete next[key];
+    }
+  } else {
+    if (next.journey_location != null) {
+      next.journey_location = {
+        ...next.journey_location,
+        location_kind: 'in_transit',
+        scene_position_id: null,
+        transit_anchor_id: null,
+        travel_state_id: traversal?.final_travel_state?.id ?? null,
+        state_version: Number(next.journey_location.state_version) + 1
+      };
+    }
+  }
+  next.route_history = [...(next.route_history ?? []), {
+    from_ref: transition.source_site_id,
+    to_ref: transition.destination_site_id,
+    status: routeStatus
+  }];
   return next;
 }
 

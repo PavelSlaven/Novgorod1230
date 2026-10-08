@@ -159,7 +159,7 @@ test('v17 bootstrap owner migration rejects another schema fingerprint', () => {
   }), { code: 'MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN' });
 });
 
-test('v17 bootstrap forward migrations pin chain matches the 30-part world schema checkpoint (rt-lines 30.sql)', () => {
+test('v17 bootstrap forward migrations pin world and party schema checkpoints', () => {
   const bootstrapFailureWorldPre =
     '34fb081a453053175c95900ac6cdb239f74bfcaf35184d5614eda93ea8638849';
   assert.equal(
@@ -172,11 +172,23 @@ test('v17 bootstrap forward migrations pin chain matches the 30-part world schem
   );
   assert.equal(
     PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
-    'ea4f0b3f9a69228975931bd850b568f919ed489c8dc6658c43caa15470ec6536'
+    'ec03c537f70470ef503b69f6354e17ab8ae5efac34b497088a438fc5c9aa0944'
+  );
+  assert.equal(
+    PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.target_schema_fingerprint,
+    '30c9bced614255d8287cd8a32975b526e74f33e65ee4fbd2e4c8f758a065f209'
   );
   assert.equal(
     ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
     PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP.target_schema_fingerprint
+  );
+  assert.equal(
+    ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP.source_schema_fingerprint,
+    '30c9bced614255d8287cd8a32975b526e74f33e65ee4fbd2e4c8f758a065f209'
+  );
+  assert.equal(
+    ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP.target_schema_fingerprint,
+    '3d376bf1ff96b44755afbcc70b7171ff332d51c478f6916a6b05d5950dc33e81'
   );
   for (const entry of [
     WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,

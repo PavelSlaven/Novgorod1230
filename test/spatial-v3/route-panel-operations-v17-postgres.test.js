@@ -14,16 +14,16 @@ import {
 } from './presence-rules-production-e2e-fixture.js';
 
 const routeLabelIsBound = (label, visibleObjects, operations) => operations.some((op) => {
-  const suffix = op.label.endsWith(' — подход') ? ' — подход' : '';
-  const base = suffix ? op.label.slice(0, -suffix.length) : op.label;
   const entityKind = visibleObjects.find(({ entity_ref: ref }) =>
     ref?.entity_id === (op.route ?? op.target))?.entity_ref?.entity_kind;
-  const projectedLabel = `${playerSafeOrdinalLabel(base, entityKind)}${suffix}`;
-  return projectedLabel === label || projectedLabel === `${label} — подход`;
+  if (op.route != null && (op.kind !== 'route' || op.target !== op.route)) return false;
+  if (['g5_site_connection', 'g4_directional_exit'].includes(entityKind)
+    && op.kind !== 'route') return false;
+  return playerSafeOrdinalLabel(op.label, entityKind) === label;
 });
 
 const foreignLocalEdgeIds = (shownEdges, operations) => shownEdges.filter((id) =>
-  !operations.some((op) => op.kind === 'local' && op.target === id));
+  !operations.some((op) => op.kind === 'local' && op.route == null && op.target === id));
 
 test('route-panel ordinal labels still require operations bound to their edge ids', () => {
   const visibleObjects = [
@@ -35,13 +35,19 @@ test('route-panel ordinal labels still require operations bound to their edge id
   const operations = [
     { label: 'Проход 1', kind: 'local', target: 'edge-a' },
     { label: 'Проход 2', kind: 'local', target: 'edge-b' },
-    { label: 'Проход 1 — подход', kind: 'local', target: 'edge-b', route: 'route-a' },
+    { label: 'Проход 1', kind: 'route', target: 'route-a', route: 'route-a' },
   ];
 
   assert.equal(routeLabelIsBound('проход', visibleObjects, [operations[0]]), true);
   assert.equal(routeLabelIsBound('проход', visibleObjects, [operations[1]]), true);
   assert.equal(routeLabelIsBound('переход', visibleObjects, operations), true);
   assert.equal(routeLabelIsBound('ход', visibleObjects, operations), false);
+  const namedLine = { label: 'тропа', kind: 'route', target: 'route-a', route: 'route-a' };
+  assert.equal(routeLabelIsBound('тропа', visibleObjects, [namedLine]), true);
+  assert.equal(routeLabelIsBound('тропа', visibleObjects, [{ ...namedLine, route: 'other-route' }]), false);
+  assert.equal(routeLabelIsBound('тропа', visibleObjects, [{ ...namedLine, kind: 'local' }]), false);
+  assert.equal(routeLabelIsBound('тропа', visibleObjects, [{ ...namedLine, route: null, kind: 'local' }]), false);
+  assert.equal(routeLabelIsBound('тропа', visibleObjects, [{ ...namedLine, label: 'тропа — подход' }]), false);
   assert.deepEqual(foreignLocalEdgeIds(shownEdges, operations), []);
   assert.deepEqual(foreignLocalEdgeIds(shownEdges, [
     { ...operations[0], target: 'foreign-edge' }, operations[1], operations[2],
@@ -76,7 +82,7 @@ test('v17 production walk: every passage label of the route panel is a planner m
     const partyId = await publicStartScenario(runtime, 'novgorod_vikhtuy_household_cluster_v1');
     let step = 0;
     const turn = (raw_text) => runtime.submitTurn(partyId, { raw_text, request_id: `panel-${partyId}-${step++}` });
-    // A shown connection may be bound by its approach operation ("<label> — подход").
+    // A shown connection is bound by one route operation with the same disclosed label.
     const bound = (label, visibleObjects) => routeLabelIsBound(label, visibleObjects, offered ?? []);
     const probe = async (context) => {
       const { screen } = await runtime.getPartyScreen(partyId);

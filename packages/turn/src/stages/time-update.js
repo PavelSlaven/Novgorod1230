@@ -6,6 +6,8 @@ import { resolveTurnStepSemanticActivityTime } from
 import {
   resolveTurnStepPreparedConsequenceTime
 } from '../turn-step-prepared-effects.js';
+import { exactElapsedForConsequence } from
+  '../turn-step-prepared-effect-validation.js';
 
 export async function buildTimeUpdateStage({
   retrievedState,
@@ -44,15 +46,12 @@ export async function buildTimeUpdateStage({
       ...(semantic ?? {})
     }, postAppliedTemporalResults));
   };
+  const exactElapsed = { exact_minutes:
+    exactElapsedForConsequence(consequence) };
   if (typeof temporalAdvance === 'function') {
     const result = await temporalAdvance({
       clock_before: structuredClone(clock),
-      exact_elapsed: {
-        exact_minutes: {
-          numerator: String(duration),
-          denominator: '1'
-        }
-      },
+      exact_elapsed: exactElapsed,
       relevant_state: structuredClone(retrievedState),
       consequence: structuredClone(consequence)
     });
@@ -74,18 +73,8 @@ export async function buildTimeUpdateStage({
       schema: 'turn_time_update',
       owner: '@rus/time-events-history',
       clock_before: structuredClone(clock),
-      clock_after: addElapsedTime(clock, {
-        exact_minutes: {
-          numerator: String(duration),
-          denominator: '1'
-        }
-      }),
-      exact_elapsed: {
-        exact_minutes: {
-          numerator: String(duration),
-          denominator: '1'
-        }
-      },
+      clock_after: addElapsedTime(clock, exactElapsed),
+      exact_elapsed: exactElapsed,
       nearest_boundary: null
     });
   }

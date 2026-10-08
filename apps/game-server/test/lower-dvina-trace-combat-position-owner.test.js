@@ -60,9 +60,11 @@ test('route combat movement consumes a completed traversal-owner result', () => 
   ]);
   assert.equal(appends.some(({ target_table: table }) =>
     table === 'party_traversal_interval_results'), true);
-  assert.deepEqual(appends.find(({ target_table: table }) =>
-    table === 'party_traversal_interval_results').record
-    .dynamic_snapshot.inventory_load,
+  const interval = appends.find(({ target_table: table }) =>
+    table === 'party_traversal_interval_results').record;
+  assert.equal(interval.travel_state_id,
+    result.movement_result.traversal.ids.travel_state_id);
+  assert.deepEqual(interval.dynamic_snapshot.inventory_load,
   { total_mass_grams: 350, hands_used: 1, load_category: null });
 });
 

@@ -6,8 +6,10 @@ import {
   createPresenceProductionRoot,
   installPresenceProductionE2eFetch,
   publicStartScenario,
+  submitObserveTurn,
 } from './presence-rules-production-e2e-fixture.js';
 import { createRouteWalker, peopleAt } from './route-people-helpers.js';
+import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
 /**
  * D49: every place of the Vikhtuy slice route after the start has at least one person, made from approved data
@@ -32,12 +34,14 @@ const ROUTE = [
 test('route of Vikhtuy: the start may be empty, every other place has at least one person from approved data',
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
-    const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs: { exactMovement: true } });
+    const movementPrefs = { exactMovement: true };
+    const restoreFetch = installPresenceProductionE2eFetch({ movementPrefs });
     t.after(() => restoreFetch());
     let root = await createPresenceProductionRoot(env);
     t.after(() => root.runtime.close());
     const partyId = await publicStartScenario(root.runtime, 'novgorod_vikhtuy_work_storage_v1');
-    const walker = createRouteWalker({ env, runtimeRef: () => root, partyId });
+    await submitObserveTurn(root.runtime, partyId, TARGET_SMOKE_INPUT);
+    const walker = createRouteWalker({ env, runtimeRef: () => root, partyId, movementPrefs });
     const start = await walker.where();
     assert.equal(start.name, 'work_storage');
     const startPeople = await peopleAt(env, partyId, start.site_id);

@@ -65,7 +65,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
             `${JSON.stringify(request, null, 2)}\n`);
         }
       },
-      attest: ({ stage, request }) => {
+      attest: async ({ stage, request }) => {
         if (stage === 'item_baseline') return fixtureApproval(stage, {
           schema: 'rus.baseline_registration_attestation.v2',
           registration_request_digest: request.registration_request_digest,
@@ -118,6 +118,9 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
             production_authorized: true, existing_party_migration_authorized: false,
             old_save_rematerialization_authorized: false }
         });
+        if (stage === 'm2c_lines_import') return JSON.parse(await readFile(
+          'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/v17-import-attestation.json',
+          'utf8'));
         if (stage === 'm2c_npc_wave_import') return fixtureApproval(stage, {
           schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
           independence_basis: 'Test-only approval fixture', database_mutated: false });
@@ -127,6 +130,8 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
     assert.equal(result.schema.world_tables, 224);
+    // смена ожидания: цепочка 001–040, attestation v12 (ac229303), spatial-v3-target-migrations.js:4
+    assert.equal(SPATIAL_V3_TARGET_MIGRATION_FILES.length, 40);
     assert.equal(result.schema.party_migrations, SPATIAL_V3_TARGET_MIGRATION_FILES.length);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     // Distinct across five bundles; independent of the request field the bootstrap returns.
@@ -137,6 +142,8 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     assert.equal(result.p12.inserted_rows, distinctPinnedRows);
     assert.deepEqual(result.additional_start_owners,
       { npc: 6, acoustic: 4, authoring: 10, rollback: 'pass', readback: 'exact' });
+    assert.equal(result.m2c_lines.readback, 'exact');
+    assert.equal(result.m2c_lines.added_rows, 2351);
     assert.equal(result.appearance_v3.inserted_rows, 129);
     assert.equal(result.capacity_v2.manifest_sha256,
       '1e7afc2255a28e4c40c6e34901ea4f87ee24537f9621b8bcc3e74c6366f28dd2');

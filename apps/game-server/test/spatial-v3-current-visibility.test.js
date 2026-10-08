@@ -79,28 +79,75 @@ test('missing complete read never means clear or empty modifiers', () => {
   assert.throws(() => visibleCurrentTargets(input), { code: 'SPATIAL_V3_VISIBILITY_DATA_GAP' });
 });
 
-test('current scene reader retains two placements at one position and complete empty modifiers', async () => {
+test('current scene reader retains two placements and projects modifier candidates before provenance admission', async () => {
   const queries = [];
   const modifiers = [];
+  const movementEdge = { party_id: 'party', id: 'edge:late',
+    from_position_id: 'a', to_position_id: 'b',
+    created_change_set_id: 'change:late', updated_change_set_id: 'change:late' };
+  const visibilityLink = { party_id: 'party', id: 'link:late',
+    from_position_id: 'a', to_position_id: 'b',
+    created_change_set_id: 'change:late', updated_change_set_id: 'change:late' };
+  const position = { party_id: 'party', id: 'a',
+    created_change_set_id: 'change:late', updated_change_set_id: 'change:late' };
+  const g6 = { party_id: 'party', id: 'g6:late',
+    created_change_set_id: 'change:late', updated_change_set_id: 'change:late' };
+  const placement = { party_id: 'party', entity_kind: 'npc', entity_id: 'one',
+    position_node_id: 'b', updated_change_set_id: 'change:late' };
+  const modifier = { party_id: 'party', id: 'modifier:late',
+    affected_scope_ref: { spatial_kind: 'scene_position', spatial_id: 'b' },
+    updated_change_set_id: 'change:late' };
+  modifiers.push(modifier);
+  const provenanceReads = [];
   const transaction = { async query(sql, params) {
     queries.push({ sql, params });
     if (queries.length % 2 === 1) return { rows: [{ world_revision_id: 'world',
       world_catalog_digest: 'digest', baseline: { id: 'baseline' }, site: { id: 'site' },
-      positions: [{ id: 'a' }, { id: 'b' }], g6: [], location: { scene_position_id: 'a' },
+      positions: [position, { id: 'b', party_id: 'party',
+        created_change_set_id: 'change:late', updated_change_set_id: 'change:late' }],
+      g6: [g6], visibility_links: [visibilityLink], location: { scene_position_id: 'a' },
       endpoint_bindings: [] }] };
     return { rows: [{ placements: [
-      { party_id: 'party', entity_kind: 'npc', entity_id: 'one', position_node_id: 'b' },
-      { party_id: 'party', entity_kind: 'npc', entity_id: 'two', position_node_id: 'b' }],
-    movement_edges: [], modifiers }] };
+      placement,
+      { party_id: 'party', entity_kind: 'npc', entity_id: 'two', position_node_id: 'b',
+        updated_change_set_id: 'change:late' }],
+    movement_edges: [movementEdge], modifiers }] };
   } };
   const args = { transaction, partyId: 'party', actorId: 'actor',
-    pin: { compatible_world_revision_id: 'world', compatible_world_catalog_digest: 'digest' } };
+    pin: { compatible_world_revision_id: 'world', compatible_world_catalog_digest: 'digest' },
+    validateSceneRows: async ({ snapshot, rows }) => provenanceReads.push({
+      snapshot, rows
+    }) };
   const first = await readCurrentEntityVisibilityScene(args);
   assert.deepEqual(first.placements.map((row) => row.entity_id), ['one', 'two']);
-  assert.deepEqual(first.modifier_set, { complete: true, rows: [] });
+  assert.deepEqual(first.modifier_set, { complete: true, rows: [modifier] });
   assert.deepEqual(queries[1].params, ['party', ['a', 'b'], 'baseline']);
+  assert.equal(provenanceReads[0].snapshot.baseline.id, 'baseline');
+  assert.deepEqual(provenanceReads[0].rows, [
+    { table: 'party_g5_sites', row: { party_id: undefined, id: 'site',
+      created_change_set_id: undefined, updated_change_set_id: undefined } },
+    { table: 'party_scene_baselines', row: { party_id: undefined, id: 'baseline',
+      created_change_set_id: undefined, updated_change_set_id: undefined } },
+    { table: 'party_g6_instances', row: { party_id: 'party', id: 'g6:late',
+      created_change_set_id: 'change:late', updated_change_set_id: 'change:late' } },
+    { table: 'scene_position_nodes', row: { party_id: 'party', id: 'a',
+      created_change_set_id: 'change:late', updated_change_set_id: 'change:late' } },
+    { table: 'scene_position_nodes', row: { id: 'b', party_id: 'party',
+      created_change_set_id: 'change:late', updated_change_set_id: 'change:late' } },
+    { table: 'visibility_links', row: { party_id: 'party', id: 'link:late',
+      created_change_set_id: 'change:late', updated_change_set_id: 'change:late' } },
+    { table: 'entity_placements', row: { party_id: 'party', id: 'npc:one',
+      created_change_set_id: 'change:late', updated_change_set_id: 'change:late' } },
+    { table: 'entity_placements', row: { party_id: 'party', id: 'npc:two',
+      created_change_set_id: 'change:late', updated_change_set_id: 'change:late' } },
+    { table: 'scene_movement_edges', row: { party_id: 'party', id: 'edge:late',
+      created_change_set_id: 'change:late', updated_change_set_id: 'change:late' } },
+    { table: 'visibility_modifiers', row: { party_id: 'party', id: 'modifier:late',
+      created_change_set_id: null, updated_change_set_id: 'change:late' } },
+  ]);
   const replay = await readCurrentEntityVisibilityScene(args);
   assert.deepEqual(replay.placements, first.placements);
+  modifiers.splice(0);
   modifiers.push({ id: 'remote', affected_scope_ref: {
     spatial_kind: 'scene_position', spatial_id: 'remote-position' } });
   assert.deepEqual((await readCurrentEntityVisibilityScene(args)).modifier_set.rows, []);

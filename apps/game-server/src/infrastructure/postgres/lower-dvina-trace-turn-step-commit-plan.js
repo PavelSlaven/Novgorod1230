@@ -133,7 +133,11 @@ function expectedVersions(state, writes) {
   return writes.updates
     .filter(({ target_table: table }) => TABLES[table]?.version === true)
     .map((write) => expected(write.target_table, write.id,
-      turnStepCurrentVersion(state, write)));
+      write.target_table === 'party_route_plans'
+        ? Number(write.record.lifecycle_state_version) - 1
+        : write.target_table === 'party_route_plan_executions'
+          ? Number(write.record.state_version) - 1
+        : turnStepCurrentVersion(state, write)));
 }
 
 export function turnStepCurrentVersion(state, write) {

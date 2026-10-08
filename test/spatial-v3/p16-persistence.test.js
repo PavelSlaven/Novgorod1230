@@ -780,6 +780,27 @@ test('P16 idempotency replay compares input and expected-version digests', async
   assert.equal((await committer.commit({ plan: built.plan })).error.code, 'idempotency_conflict');
 });
 
+test('P16 expansion preparation retains typed admission cause diagnostics', async () => {
+  const committer = createSpatialV3CombinedAtomicCommitter({
+    withTransaction: async (work) => work({ query: async () => ({ rows: [] }) })
+  });
+  const admissionCause = Object.assign(new Error('Generation admission is unavailable.'), {
+    code: 'LIVE_WORLD_GENERATION_ADMISSION_GAP',
+    details: { reason: 'exact_terminal_scene_required', cause: {
+      code: 'LIVE_WORLD_CANONICAL_SCENE_GAP', details: { reason: 'approved_scene_binding_required' }
+    } }
+  });
+  const result = await committer.prepareExpansion({ party_id: 'party-1', g4_id: 'g4-1',
+    idempotency_key: 'resolve_frontier:test', canonical_input_digest: digest,
+    prepare: async () => { throw admissionCause; } });
+  assert.equal(result.ok, false);
+  assert.equal(result.error.diagnostics.reason, 'Generation admission is unavailable.');
+  assert.deepEqual(result.error.diagnostics.cause, {
+    code: 'LIVE_WORLD_GENERATION_ADMISSION_GAP', reason: 'exact_terminal_scene_required',
+    cause: { code: 'LIVE_WORLD_CANONICAL_SCENE_GAP', reason: 'approved_scene_binding_required' }
+  });
+});
+
 test('P16 sole-writer architecture forbids direct target-v3 party mutations outside CombinedAtomicCommitter', async () => {
   const source = await readFile(new URL('../../apps/game-server/src/infrastructure/postgres/spatial-v3-p23-domain-repository.js', import.meta.url), 'utf8');
   assert.doesNotMatch(source, /\b(?:INSERT|UPDATE|DELETE)\s+INTO?\s+party_runtime\.|\bUPDATE\s+party_runtime\./iu);

@@ -1,0 +1,182 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "codex-gpt-6.1-sol-ap-fresh-v10-2026-10-06",
+  "independence_basis": "Independent approval session ap-fresh-v10 under WR §21.1. This session did not author the lines-b1 changes, request, generator or migration 039 and did not communicate with their author. Three gpt-6-luna helpers implemented read-only bytes/rebuild, history/delta/digest and DDL/log checks. The primary approver read their scripts and scoped source, corrected a checkpoint-extraction defect in the audit script, ran the four focused checks, reviewed their evidence and issued this verdict. Author PostgreSQL evidence was read, not independently rerun. The repository and databases were not modified; only task output artifacts and append-only bridge entries were written. Final acceptance and integration remain with the lead.",
+  "reviewed_repository_head": "3ee25bddfe9871c85635c9b8ba740b257768e9c9",
+  "source_commit": "9ffee5eda34404578a3e2107b6a90782523ba367",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+  "request_digest": "88ebd34856884c009ed45b4cd4be161c7113446fea306bbc82a809d0c08bbd30",
+  "request_bytes": 16377,
+  "review_request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md",
+  "supersedes": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v9.json",
+    "sha256_at_reviewed_head": "298bb01114a235d6f1731bcf4302bb61b1a64ad7de43791cccd9085b6cb975db",
+    "request_digest": "1e9e220476ac97fe47f8d6ce0de62e62a073eff429b1d7289b4ffc3423bb945a",
+    "reason": "v9 binds a different 38-migration generation. v10 appends 039_party_runtime_local_lines.sql; seasonal presence 038 and existing 001–038 bytes are unchanged. Local-line DDL is byte-identical to the former 038 in branch commit 6d28d386b6acafc414c68db25bbfae4aec6647aa. Only source_commit, owner-module bytes/hash, appended migration/list length, chain digest, expected count and execution text 001-037 to 001-039 differ between the v9-bound and current requests. v9 remains historical and does not approve this new request digest."
+  },
+  "scope": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "party_database": "novgorod_party_v17",
+    "party_owner": "party_operator",
+    "world_schema": "Exact hashed infra/world-base/schema.sql and ordered 01.sql–30.sql inputs in the request; byte-identical to the v9-bound world inputs.",
+    "party_schema": "Exact hashed runSpatialV3TargetMigrations owner module and ordered 001–039 inputs in the request, including seasonal presence 038 and local lines 039.",
+    "party_chain_digest": "9995faff3fe4fafcf43d572e4d79b862a4195c46a48d2318bde77a233946b51a",
+    "expected_world_base_tables": 224,
+    "expected_party_runtime_tables": 133,
+    "expected_party_migrations_applied": 39
+  },
+  "verified_by_approver": {
+    "request_digest_recomputed": "88ebd34856884c009ed45b4cd4be161c7113446fea306bbc82a809d0c08bbd30; 16377 raw bytes; fixed HEAD blob equals working copy. Review MD: 2166 bytes, sha256 51fa367158f94f58fa19c6d5a12c61bead0ab3879b7b10f641aeee7f9fa58e94, also HEAD-identical.",
+    "source_commit_is_ancestor_of_reviewed_head": true,
+    "schema_inputs_unchanged_source_commit_to_reviewed_head": true,
+    "ordered_parts_and_migrations": "verify-bytes.py PASS: 71 unique inputs (entrypoint, 30 world parts, owner module, 39 party migrations) match declared bytes/SHA-256 at source, reviewed HEAD and working copy. Source-to-HEAD input diff is empty.",
+    "request_unchanged_vs_v9_except": [
+      {
+        "field": "execution_order[3]",
+        "old": "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-037 inside one transaction.",
+        "new": "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-039 inside one transaction."
+      },
+      {
+        "field": "expected_readback.party_migrations_applied",
+        "old": 38,
+        "new": 39
+      },
+      {
+        "field": "party_schema.chain_digest",
+        "old": "39913e1bc00ccb70ef8330734d6ef75ce1245e2e2eb3d00333789486e1fc7993",
+        "new": "9995faff3fe4fafcf43d572e4d79b862a4195c46a48d2318bde77a233946b51a"
+      },
+      {
+        "field": "party_schema.ordered_migrations.length",
+        "old": 38,
+        "new": 39
+      },
+      {
+        "field": "party_schema.ordered_migrations[38]",
+        "old": "<absent>",
+        "new": {
+          "path": "schemas/party-db/039_party_runtime_local_lines.sql",
+          "bytes": 12763,
+          "sha256": "6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007"
+        }
+      },
+      {
+        "field": "party_schema.owner_migration_module.bytes",
+        "old": 5455,
+        "new": 5492
+      },
+      {
+        "field": "party_schema.owner_migration_module.sha256",
+        "old": "8807b53ec8dc0b0f13d9dadf47491c2d695296adf652ee20c2fd9ee15b588454",
+        "new": "23452151976724d2a55b2bd9f14f505d7986db4bb1b1d547806acd5039818146"
+      },
+      {
+        "field": "source_commit",
+        "old": "77ce16ed90c6d00a372271d49da6cfbbd965c478",
+        "new": "9ffee5eda34404578a3e2107b6a90782523ba367"
+      }
+    ],
+    "generator_rebuild": "verify-generator.mjs PASS: explicit source_commit and exported build/render functions reproduce request and review MD in memory byte-for-byte; generator CLI not invoked. Template fields are checked separately by recursive v9 delta.",
+    "migration_039_statements": "verify-ddl-logs.py PASS plus primary static read: exact byte identity to the latest historical local-line 038 (12763 bytes, sha256 6a7e55e48d0e6328136f73a19c6bc2135444dfd221dffd8c65a8921b2dd0f007). ADD COLUMN/INDEX IF NOT EXISTS, named DROP CONSTRAINT IF EXISTS plus replacement, scoped pg_constraint drop loops, and CREATE OR REPLACE FUNCTION preserve repeat-applicability. No CREATE/DROP TRIGGER occurs in 039; existing v3_event_causal_integrity function is replaced. Static checks do not prove SQL syntax/runtime.",
+    "local_line_guard_scope": "Legacy traversal without travel_state_id is rejected with PARTY_DATABASE_REBUILD_REQUIRED if either legacy history table is populated. Line bindings require positive integral time costs and profile pins; partial unique indexes scope open travel state and intervals; same travel-state/execution/step FK is retained. Terminal/mirrored/paused progress and turn-back outcomes remain constrained. Causal function validates typed result, execution/step scope, change-set/idempotency and event outcome. None changed through renumbering.",
+    "postgres_tests": {
+      "fingerprint": {
+        "file": "/srv/novgorod-work/fleet/tasks/lines-b1/pg/res-20261006T145100.685713Z-1.log",
+        "sha256": "1929a48749e8bbb11ac07ca722bfcfdafb312d1f4d5f351488c42e8ad021a937",
+        "bytes": 730,
+        "test_count_reported_by_author": 1,
+        "pass_count_reported_by_author": 1,
+        "fail_count_reported_by_author": 0,
+        "skipped_count_reported_by_author": 0,
+        "evidence_owner": "author; not rerun by this reviewer",
+        "passed_test_titles": [
+          "measure exact v17 party schema fingerprint checkpoints (3923.173553ms)"
+        ]
+      },
+      "chain_ledger": {
+        "file": "/srv/novgorod-work/fleet/tasks/lines-b1/pg/res-20261006T145645.866424Z-1.log",
+        "sha256": "769ba82efcc7eaba44afea9fd9d2d56bd89db5b29e0993c0f969a335f0941f16",
+        "bytes": 555,
+        "test_count_reported_by_author": 3,
+        "pass_count_reported_by_author": 3,
+        "fail_count_reported_by_author": 0,
+        "skipped_count_reported_by_author": 0,
+        "evidence_owner": "author; not rerun by this reviewer",
+        "passed_test_titles": [
+          "production restart skip emits no DDL when chain ledger matches head (4051.836176ms)",
+          "chain ledger full run records row when chain row is missing (3826.144065ms)",
+          "chain ledger rejects conflicting persisted digest (3809.591328ms)"
+        ]
+      },
+      "ddl_039": {
+        "file": "/srv/novgorod-work/fleet/tasks/lines-b1/pg/res-20261006T145836.243441Z-1.log",
+        "sha256": "56f265677956060f0ea58d78d32b40f92135a9390600bcee14f8c637b5fc8613",
+        "bytes": 433,
+        "test_count_reported_by_author": 1,
+        "pass_count_reported_by_author": 1,
+        "fail_count_reported_by_author": 0,
+        "skipped_count_reported_by_author": 0,
+        "evidence_owner": "author; not rerun by this reviewer",
+        "passed_test_titles": [
+          "038 local-line party schema preflights legacy history and reapplies through the production chain (4327.964932ms)"
+        ]
+      }
+    },
+    "author_forward_migration_checkpoints": {
+      "migration_count": 39,
+      "last_migration": "039_party_runtime_local_lines.sql",
+      "after_target_chain": "6db6a1cd190c7a406df65b9f382ee8c4f6fce0a661ecc94905a8581cf97a517a",
+      "after_party_catalog": "e9776dc3c4574e9fb28845bcc12c47c2926481b6adb12233b008dffc27208043",
+      "after_actor_base": "5102437c6175f17e900e144a75f3be02998823c26b14d1e7729587b6915bba81"
+    },
+    "fresh_schema_gate": {
+      "checked": false,
+      "reason": "Not in the approved audit scope; selection of v10 and post-integration gate tests are execution preconditions, not results of this review."
+    },
+    "documentation_notes": "133 party tables is an expected documented count from infra/party-db/SCHEMA_REFERENCE.md:5, not a live measurement; 039 adds no table. World 224 and migration 39 are expected request readbacks. The old DDL log title says 038; at source_commit its test already reads the 039 file, and the final HEAD fixes the title. Logs lack a full tested-HEAD pin, so exact-HEAD runtime validation is not claimed.",
+    "limitations": [
+      "Author PostgreSQL logs are evidence supplied by author, not an independent PG run; their headers do not pin tested HEAD.",
+      "Static DDL text/regex checks do not prove SQL execution or every guard branch.",
+      "Generator reuses existing request as template; noncomputed fields are covered by recursive v9 delta.",
+      "No bootstrap, gate execution, integration, database identity, live readback, backups, full test suite, import, activation or runtime cutover checked.",
+      "codebase-memory MCP is not exposed; scoped owners established through direct reading and rg."
+    ]
+  },
+  "approval": "Conditional approval of only the exact fresh world/party DDL definitions bound to request SHA-256 88ebd34856884c009ed45b4cd4be161c7113446fea306bbc82a809d0c08bbd30 at reviewed HEAD 3ee25bddfe9871c85635c9b8ba740b257768e9c9. No database creation, rename, schema execution, data import, activation or runtime cutover is authorized by this artifact.",
+  "execution_preconditions": [
+    "The lead accepts and integrates this v10 artifact byte-identically beside the request, preserving v9 history. At the authorized execution head, the selector must choose exactly v10 for the full request path/digest and the current gate suite must pass; neither integration nor gate tests were performed here.",
+    "At the separately authorized execution head, verify all 71 pinned source lengths/hashes, ordered world parts 01–30, ordered party migrations 001–039, request 88ebd34856884c009ed45b4cd4be161c7113446fea306bbc82a809d0c08bbd30, review MD 51fa367158f94f58fa19c6d5a12c61bead0ab3879b7b10f641aeee7f9fa58e94 and chain 9995faff3fe4fafcf43d572e4d79b862a4195c46a48d2318bde77a233946b51a; stop on any mismatch.",
+    "Obtain a separate explicit owner command for every database creation/rename or schema write. Verify managed cluster identity, PostgreSQL version, target names/owners, backups and protected existing per-table row counts before any such action. Existing databases are not targets of this fresh-schema approval.",
+    "Both requested v17 names must be absent before separately authorized creation; stop if either exists, without dropping, reusing or overwriting it. Prove each created target empty and owned by its requested operator role. Apply the complete world entrypoint with stop-on-error in one transaction and standard party owner chain 001–039 in its transaction.",
+    "Each import or activation stage requires its own current independent approval. v10 substitutes for none of them.",
+    "After authorized schema execution, independently record actual target identity, verified hashes, 224 world tables, world_reader grants, documented expected 133 party tables, 39 applied migrations with the exact chain, empty data/parties and unchanged protected old-database counts in a new execution attestation referencing v10. These numbers are requirements, not measurements by this approver."
+  ],
+  "excludes": [
+    "database creation, rename, drop, reuse or overwrite",
+    "any data import",
+    "catalog registration or activation",
+    "runtime/default startup cutover",
+    "migration or mutation of existing databases or saves",
+    "live readback, execution attestation or full lines-b1 gameplay/LLM acceptance"
+  ],
+  "database_mutated_by_review": false,
+  "found_problems_outside_task": [
+    {
+      "problem": "Инструкция нумерации новой party-миграции устарела: предлагает следующий номер после 036 при цепочке 001–039.",
+      "source": "/srv/novgorod-work/worktrees/lines-b1/docs/context/DB_SCHEMA.md:111",
+      "confirmed_by": "Тот же документ :76–85 перечисляет 39 миграций; owner manifest :4 заканчивается 039; script chain проверил последовательность 001–039.",
+      "known_issue": null,
+      "action": "Передать ведущему для отдельного issue; не исправлено."
+    },
+    {
+      "problem": "Известное расхождение поколения v9 request и execution attestation (#268).",
+      "source": "/srv/novgorod-work/fleet/tasks/ap-fresh-v10/TASK.md:15",
+      "confirmed_by": "Задано ведущим как известная проблема вне scope; независимо в этом аудите не перепроверялось.",
+      "known_issue": "#268",
+      "action": "Исключено из текущего утверждения."
+    }
+  ]
+}

@@ -346,18 +346,19 @@ export async function assertTargetCanonicalStartPostgres({
     assert.equal(look.screen.scenario_id, scenarioId);
     assert.equal(canonicalDigest(look.screen), digest);
   }
+  const factualReader = createTargetCurrentFactualContext({ partyPool: party, runtime,
+    committer: { async commit() { throw new Error('factual reader must not commit'); } },
+    authoredRuntimeBindingResolver: catalog.resolveRuntimeBinding });
   const phase2 = createLowerDvinaTracePhase2PostgresRepository({ partyPool: party,
     committer: { async commit() { throw new Error('read acceptance must not commit a turn'); } },
     authoredRuntimeBindingResolver: catalog.resolveRuntimeBinding,
-    loadInitialNaturalScenePerceptionInput: adapter.loadNaturalScenePerceptionInput });
+    loadInitialNaturalScenePerceptionInput: adapter.loadNaturalScenePerceptionInput,
+    projectEnvironmentAtClock: factualReader.projectEnvironmentAtClock });
   const initialTurn = await phase2.loadPhase2State(opening.party_id);
   assert.equal(initialTurn.scenario_id, profile.scenario_id);
   assert.notEqual(initialTurn.position.location_ref, 'trace_ld_v1_loc_wreck_shore');
   assert.equal(initialTurn.current_visible_context.visible_npc.length, 0,
     'first-turn bootstrap preserves the P22 entity boundary');
-  const factualReader = createTargetCurrentFactualContext({ partyPool: party, runtime,
-    committer: { async commit() { throw new Error('factual reader must not commit'); } },
-    authoredRuntimeBindingResolver: catalog.resolveRuntimeBinding });
   const factualTransaction = await party.connect();
   try {
     await factualTransaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ');

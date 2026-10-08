@@ -13,17 +13,21 @@ import {
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
   installPresenceProductionE2eFetch,
+  publicStartScenario,
+  submitObserveTurn,
   routeMovementLabels,
 } from './presence-rules-production-e2e-fixture.js';
+import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
 const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url)));
-const bindings = read('../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json');
-const labels = read('../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/candidate.json').labels;
+const bindings = read('../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json');
 const g5 = (name) => `cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_${name}`;
-/** The approved neutral label of the passage between two places of Vikhtuy (the player names it). */
+/** The approved line name of the passage between two places of Vikhtuy (the player names it). */
 const passage = (from, to) => {
   const binding = bindings.find((row) => row.from_canonical_g5_id === g5(from) && row.to_canonical_g5_id === g5(to));
-  return labels.find((row) => row.binding_ref.id === binding.id).display_label;
+  assert.ok(binding, `${from} -> ${to} must use an approved m2c-lines-v1 binding`);
+  return binding.line_discriminator == null || binding.line_discriminator === ''
+    ? binding.line_name : `${binding.line_name} · ${binding.line_discriminator}`;
 };
 
 async function whereIs(partyPool, partyId) {
@@ -37,6 +41,13 @@ async function whereIs(partyPool, partyId) {
        JOIN party_runtime.party_g5_sites site ON site.party_id=base.party_id AND site.id=base.host_id
       WHERE loc.party_id=$1 AND loc.owner_kind='actor'`, [partyId])).rows[0];
   return { ...row, name: row.g5.replace(g5(''), '') };
+}
+
+async function journeyVersion(partyPool, partyId) {
+  const row = (await partyPool.query(
+    `SELECT state_version FROM party_runtime.party_journey_locations
+      WHERE party_id=$1 AND owner_kind='actor'`, [partyId])).rows[0];
+  return Number(row.state_version);
 }
 
 test('work_storage -> water_access -> forest_path -> meeting_area and back, across process restarts',
@@ -59,37 +70,35 @@ test('work_storage -> water_access -> forest_path -> meeting_area and back, acro
     t.after(() => runtime.close());
     const restart = async () => { await runtime.close();
       ({ runtime, readCurrentVisibleContext } = await createPresenceProductionRoot(env)); };
-    const opening = await runtime.startNewGame({
-      scenario_id: 'novgorod_vikhtuy_work_storage_v1',
-      request_id: 'slice-20261003T105907Z-cc80771c-start',
-    });
-    assert.equal(opening.screen.schema, 'first_game_screen');
-    partyId = opening.party_id;
-    await runtime.acknowledgeOpening(partyId, {
-      client_ack_id: 'slice-20261003T105907Z-cc80771c-ack',
-    });
+    partyId = await publicStartScenario(runtime, 'novgorod_vikhtuy_work_storage_v1');
+    await submitObserveTurn(runtime, partyId, TARGET_SMOKE_INPUT);
     let step = 0;
-    const turn = (raw_text) => {
-      const request_id = `walk-${partyId}-${step++}`;
-      return runtime.submitTurn(partyId, { raw_text,
-        request_id });
-    };
+    const turn = (raw_text, requestId = `walk-${partyId}-${step++}`) => runtime.submitTurn(partyId,
+      { raw_text, request_id: requestId });
     const count = async (sql) => Number((await env.partyPool.query(sql, [partyId])).rows[0].count);
 
-    /** Walk to the departure position of the current place, then take the named passage. */
+    /** A named line implicitly composes any local approach and crossing in one production turn. */
     async function walkTo(to) {
       const from = (await whereIs(env.partyPool, partyId)).name;
       const named = passage(from, to);
-      let result = null;
-      for (let attempt = 0; attempt < 4; attempt += 1) {
+      const journeyBefore = await journeyVersion(env.partyPool, partyId);
+      const requestId = `walk-${partyId}-${step++}`;
+      narrationLog.length = 0;
+      let result = await turn(named, requestId);
+      let arrived = await whereIs(env.partyPool, partyId);
+      let movementTurns = 1;
+      for (let attempt = 0; arrived.name === from && attempt < 3; attempt += 1) {
         const at = await whereIs(env.partyPool, partyId);
-        if (at.name !== from) break;
         narrationLog.length = 0;
         result = await turn(at.slot === 'departure' ? named : `${named} — подход`);
+        movementTurns += 1;
+        arrived = await whereIs(env.partyPool, partyId);
       }
-      const arrived = await whereIs(env.partyPool, partyId);
       assert.equal(arrived.name, to, `${from} -> ${to} via "${named}"`);
       assert.equal(arrived.slot, 'arrival', 'the traveller stands at the arrival endpoint of the new place');
+      assert.equal(await journeyVersion(env.partyPool, partyId), journeyBefore + movementTurns,
+        'each production movement turn writes journey location once');
+      assert.ok(narrationLog.at(-1)?.changes.length > 0, 'the arrival turn gives the narrator a committed change');
       assert.ok(result?.screen?.turn_id, 'the arrival turn returns its committed screen');
       const exitLabels = (result.screen.visible_context?.visible_objects ?? [])
         .filter((item) => item.entity_ref?.entity_kind === 'g4_directional_exit')
@@ -97,11 +106,19 @@ test('work_storage -> water_access -> forest_path -> meeting_area and back, acro
       const menuLabels = routeMovementLabels(result.screen);
       assert.ok(exitLabels.every((label) => menuLabels.includes(label)),
         `${from} -> ${to}: committed submitTurn screen keeps every visible G4 exit label in the route panel`);
+      if (movementTurns === 1) {
+        const replay = await turn(named, requestId);
+        assert.equal(replay.state_version, result.state_version, 'same-key line turn replays the committed result');
+        assert.equal(replay.turn_number, result.turn_number);
+        assert.equal(await journeyVersion(env.partyPool, partyId), journeyBefore + 1,
+          'same-key replay does not write journey a second time');
+      }
       return result;
     }
 
     const start = await whereIs(env.partyPool, partyId);
     assert.equal(start.name, 'work_storage');
+    assert.equal(start.slot, 'arrival', 'the approved start begins away from the canonical connection departure endpoint');
     assert.equal(await count(`SELECT count(*) FROM party_runtime.g5_site_connections WHERE party_id=$1`), 0);
 
     await walkTo('water_access');

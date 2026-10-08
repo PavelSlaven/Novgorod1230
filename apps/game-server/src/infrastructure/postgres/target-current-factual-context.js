@@ -4,6 +4,7 @@ import { createLowerDvinaTracePhase2PostgresRepository } from './lower-dvina-tra
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { serverError } from '../../errors.js';
 import { readCurrentEntityVisibilityScene } from './g4-natural-perception-reader.js';
+import { isInitialPartyState } from './party-state-lifecycle.js';
 
 /** Reuse the normalized committed-state owner inside the caller's transaction. */
 export function createTargetCurrentFactualContext({ partyPool, committer, runtime,
@@ -15,7 +16,8 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
   async function read({ transaction, partyId, clock = null }) {
     if (typeof transaction?.query !== 'function' || !calendarProfile || !Array.isArray(records)) gap();
     const repository = createLowerDvinaTracePhase2PostgresRepository({
-      partyPool: { query: transaction.query.bind(transaction), connect: partyPool.connect.bind(partyPool) },
+      partyPool: { query: transaction.query.bind(transaction),
+        connect: partyPool.connect.bind(partyPool), readTransaction: transaction },
       committer, authoredRuntimeBindingResolver,
       trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
     const state = await repository.loadPhase2State(partyId, { includeCurrentVisibleContext: false });
@@ -36,10 +38,12 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
     const projected = projectCalendar(clock, calendarProfile);
     const minute = Number(BigInt(projected.local_time_of_day.numerator)
       / BigInt(projected.local_time_of_day.denominator));
-    return projectApprovedCurrentEnvironment({ calendar_record: calendar,
+    const environmentProjection = projectApprovedCurrentEnvironment({ calendar_record: calendar,
       weather_record: weather, current_environment: environment,
       calendar_date: { year: Number(projected.year), month: Number(projected.month), day: Number(projected.day) },
       local_minute_of_day: minute });
+    return Object.freeze({ ...environmentProjection, effects: Object.freeze({ ...environmentProjection.effects,
+      movement_factor: Object.freeze({ numerator: '1', denominator: '1' }) }) });
   }
   return Object.freeze({
     projectEnvironmentAtClock: ({ state, clock }) => projectEnvironment(state, clock),
@@ -49,8 +53,8 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
       const lifecycle = await transaction.query(`SELECT p.state_version,s.party_id AS session_party_id
         FROM party_runtime.parties p LEFT JOIN party_runtime.party_server_sessions s
           ON s.party_id=p.party_id WHERE p.party_id=$1`, [partyId]);
-      if (lifecycle.rows.length !== 1 || Number(lifecycle.rows[0].state_version) !== 0
-        || lifecycle.rows[0].session_party_id != null) gap();
+      if (lifecycle.rows.length !== 1
+          || !isInitialPartyState(lifecycle.rows[0])) gap();
       const state = await createLowerDvinaTracePhase1ARepository({
         query: transaction.query.bind(transaction) }).loadInternal(partyId);
       if (state?.request_identity?.party_id !== partyId || state.player?.instance_id !== actorId
@@ -70,8 +74,7 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
     async readFactualContext({ transaction, request }) {
       const args = { transaction, partyId: request.party_id };
       const current = await read(args);
-      if (current.state.actor_id !== request.actor_id
-        || current.state.position?.position_id !== request.source_position_id) gap();
+      if (!factualContextMatchesRequestOrigin(current.state, request)) gap();
       const digest = canonicalDigest(current);
       return { ok: true, party_id: request.party_id,
         world_revision_id: current.state.world_identity.world_revision_id,
@@ -83,6 +86,21 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
         } };
     }
   });
+}
+
+export function factualContextMatchesRequestOrigin(state, request) {
+  const expectedPositionId = requestCurrentPositionId(request);
+  if (expectedPositionId == null) return false;
+  return state?.actor_id === request.actor_id
+    && state.position?.position_id === expectedPositionId;
+}
+
+export function requestCurrentPositionId(request) {
+  const path = request?.ordered_local_edge_path ?? [];
+  if (!Array.isArray(path) || (path.length === 0 && request?.approach_origin_position_id != null)) return null;
+  const positionId = path.length > 0
+    ? request.approach_origin_position_id : request.source_position_id;
+  return typeof positionId === 'string' && positionId.trim() ? positionId : null;
 }
 
 function gap() { throw serverError('TARGET_CURRENT_FACTUAL_CONTEXT_DATA_GAP',

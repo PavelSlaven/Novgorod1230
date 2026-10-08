@@ -73,18 +73,15 @@ test('v17 production submitTurn uses approved, non-ordinal G4 exit labels',
       trustedBodyNeedsProfile);
     let step = 0;
     const turn = (raw_text) => runtime.submitTurn(partyId, { raw_text, request_id: `panel-${partyId}-${step++}` });
-    // A shown connection may be bound by its approach operation ("<label> — подход").
+    // A shown connection is bound by one route operation with the same disclosed label.
     const bound = (label, visibleObjects) => (offered ?? []).some((op) => {
-      const approachSuffix = ' — подход';
-      const hasApproachSuffix = op.label.endsWith(approachSuffix);
-      const base = hasApproachSuffix
-        ? op.label.slice(0, -approachSuffix.length) : op.label;
       const entityId = op.route ?? op.target;
       const entityKind = visibleObjects.find(({ entity_ref: ref }) =>
         ref?.entity_id === entityId)?.entity_ref?.entity_kind;
-      const projectedLabel = `${playerSafeOrdinalLabel(base, entityKind)}`
-        + (hasApproachSuffix ? approachSuffix : '');
-      return projectedLabel === label || projectedLabel === `${label} — подход`;
+      if (op.route != null && (op.kind !== 'route' || op.target !== op.route)) return false;
+      if (['g5_site_connection', 'g4_directional_exit'].includes(entityKind)
+        && op.kind !== 'route') return false;
+      return playerSafeOrdinalLabel(op.label, entityKind) === label;
     });
     const probe = async (context) => {
       offered = null;
@@ -112,7 +109,8 @@ test('v17 production submitTurn uses approved, non-ordinal G4 exit labels',
       const shownEdges = (screen.visible_context?.visible_objects ?? [])
         .filter((row) => row.entity_ref.entity_kind === 'scene_movement_edge').map((row) => row.entity_ref.entity_id);
       // Ordinal labels repeat between positions ("Проход 1"), so local edges are also compared by id.
-      const foreign = shownEdges.filter((id) => !offered.some((op) => op.kind === 'local' && op.target === id));
+      const foreign = shownEdges.filter((id) => !offered.some((op) =>
+        op.kind === 'local' && op.route == null && op.target === id));
       assert.deepEqual(foreign, [], `${context}: the screen shows local edges of another position`);
       const dead = shown.filter((label) => !bound(label,
         screen.visible_context?.visible_objects ?? [])

@@ -14,7 +14,8 @@ export { SCENE_NPC_SOURCE, withoutSceneNpcs };
  */
 export async function withSceneNpcs(pool, partyId, state, {
   loadBodyInitializationProfile =
-    loadApprovedMaterializedNpcBodyInitializationProfile
+    loadApprovedMaterializedNpcBodyInitializationProfile,
+  validateRows = null
 } = {}) {
   state = await withCombatParticipantBodies(pool, partyId, state,
     loadBodyInitializationProfile);
@@ -55,11 +56,15 @@ export async function withSceneNpcs(pool, partyId, state, {
   }
   if (hostKind !== 'g5_site') return state;
   const { rows } = await pool.query(
-    `SELECT n.npc_id,n.profile_set_id,n.profile_level,n.anchor_id,
+    `SELECT n.npc_id,n.run_id,n.profile_set_id,n.profile_level,n.anchor_id,
             n.identity_state,n.machine_state,n.semantic_state,
             apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
             apb.knowledge_profile_snapshot,apb.attribute_profile_snapshot,
             apb.profile_candidate_set_digest,
+            apb.created_change_set_id AS profile_created_change_set_id,
+            apb.updated_change_set_id AS profile_updated_change_set_id,
+            to_jsonb(placement)->>'created_change_set_id' AS placement_created_change_set_id,
+            to_jsonb(placement)->>'updated_change_set_id' AS placement_updated_change_set_id,
             body.body_profile_ref,body.health,body.energy,body.satiety,
             body.state_version AS body_state_version,
             placement.position_node_id AS position_id,pos.g6_instance_id
@@ -79,6 +84,7 @@ export async function withSceneNpcs(pool, partyId, state, {
       WHERE n.party_id=$1 AND g6.host_id=$2 AND g6.host_kind='g5_site' AND pos.status='active' AND g6.status='active'
       ORDER BY n.npc_id`,
     [partyId, siteId]);
+  if (typeof validateRows === 'function') await validateRows(rows);
   const positions = await pool.query(
     `SELECT pos.id,pos.g6_instance_id
        FROM party_runtime.scene_position_nodes pos

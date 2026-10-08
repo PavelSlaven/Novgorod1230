@@ -8,7 +8,7 @@ import { SPATIAL_V3_TARGET_MIGRATIONS } from
 import { createSpatialV3CurrentMovementCapability, readCurrentActorBodyCapability } from
   '../src/infrastructure/postgres/spatial-v3-current-movement-capability.js';
 
-test('current body and combat state grant pinned action movement', async () => {
+test('current body and combat state grant the controlled walking method', async () => {
   const row = { health: '100', energy: '80', state_version: '3' };
   const conditions = [];
   const sessions = [];
@@ -27,7 +27,7 @@ test('current body and combat state grant pinned action movement', async () => {
   const input = { partyId: 'party', actorId: 'actor' };
   const first = await owner.assessMovementCapability(input);
   assert.equal(validCapabilityContext(first.capability_context), true);
-  assert.deepEqual(first.capability_context.allowed_movement_methods, ['movement.foot@1']);
+  assert.deepEqual(first.capability_context.allowed_movement_methods, ['movement_method.walk']);
   assert.deepEqual(first.capability_context.allowed_pace_modes, []);
   assert.equal(first.capability_context.dependency_pins.pins[0].version_pin.state_version, 3);
   row.state_version = '4';
@@ -75,7 +75,7 @@ test('current body and combat state grant pinned action movement', async () => {
     sessions[0].participant_states[0].combat_status = status;
     const current = await readCurrentActorBodyCapability({ transaction: pool,
       ...input, purpose: 'perception' });
-    assert.deepEqual(current.allowed_movement_methods, ['movement.foot@1']);
+    assert.deepEqual(current.allowed_movement_methods, ['movement_method.walk']);
   }
   for (const status of [undefined, null, 'unknown']) {
     if (status === undefined) delete sessions[0].participant_states[0].combat_status;

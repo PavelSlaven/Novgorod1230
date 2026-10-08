@@ -356,7 +356,7 @@ test('world_base schema files + current party chain apply on fresh DBs; historic
       exactAppliedMigration: ledger
     });
     assert.equal(restart.execution_mode, 'extended_existing');
-    assert.equal(restart.newly_applied, SPATIAL_V3_TARGET_MIGRATION_FILES.length - 11);
+      assert.equal(restart.newly_applied, SPATIAL_V3_TARGET_MIGRATION_FILES.length - 11);
     assert.equal((await pool.query(
       `SELECT count(*)::int AS n FROM party_runtime.party_npc_spatial_schedules`
     )).rows[0].n, 1);

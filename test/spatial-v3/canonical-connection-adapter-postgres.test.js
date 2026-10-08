@@ -77,15 +77,27 @@ const sceneInput = { party_id: 'p', site_id: 'site', baseline_id: 'baseline', ch
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const connectionProfile = { id: 'connection-profile', version: 2, world_revision_id: 'world', profile_scope: 'site_connection',
   status: 'approved', passage_type_id: 'path', transition_environment_profile_id: 'environment', transition_environment_profile_version: 1,
-  movement_orientation_profile_id: 'orientation', movement_orientation_profile_version: 1, cost_kind: 'action', action_units: 1,
-  baseline_movement_method_id: null, movement_method_cost_profile_id: null, movement_method_cost_profile_version: null,
-  base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null, capacity: null,
+  movement_orientation_profile_id: null, movement_orientation_profile_version: null,
+  movement_orientation_profile_ref: { entity_id: 'orientation.land', authoring_version: '1' },
+  cost_kind: 'time', action_units: null, line_kind_id: 'line.path',
+  line_kind_profile_ref: { entity_id: 'line.path.profile', authoring_version: '1' },
+  baseline_movement_method_id: 'movement.walk', movement_method_cost_profile_id: 'cost.path', movement_method_cost_profile_version: 1,
+  movement_method_cost_profile_ref: { entity_id: 'cost.path', authoring_version: '1' },
+  base_minutes: 24, dynamic_recheck_policy_id: 'recheck.land_30m', dynamic_recheck_policy_version: 1,
+  dynamic_recheck_policy_ref: { entity_id: 'recheck.land_30m', authoring_version: '1' }, capacity: null,
   capacity_semantics_ref: 'capacity.no_static_limit@1', risk_profile_ref: 'risk.local_conditional@1', availability_condition_set_ref: null };
 const bindingRow = (id, from, to) => ({ binding: { id, version: 2, parent_g4_id: 'g4', parent_g4_version: 1,
   from_canonical_g5_id: from, from_canonical_g5_version: 1, to_canonical_g5_id: to, to_canonical_g5_version: 1,
   connection_profile_id: connectionProfile.id, connection_profile_version: 2,
+  canonical_digest: hash, line_kind_profile_id: 'line.path.profile', line_kind_profile_version: 1,
+  line_kind_id: 'line.path', line_name: 'лесной тропой', line_discriminator: null,
+  line_direction_id: 'east', line_toponym: 'Вихтуй', base_minutes: 24,
   from_scene_endpoint_slot_key: 'departure', to_scene_endpoint_slot_key: 'arrival', status: 'approved' },
-  profile: connectionProfile });
+  profile: connectionProfile,
+  line_binding: { site_connection_id: id, authoring_version: 2, canonical_digest: hash,
+    line_name: 'лесной тропой', line_discriminator: null, line_kind_profile_ref: 'line.path.profile@1',
+    base_minutes: 24, movement_method_id: 'movement.walk', method_factor: { numerator: '1', denominator: '1' },
+    environment_factor: { numerator: '1', denominator: '1' } } });
 const bindings = { 'canonical-source': [bindingRow('bind-out', 'canonical-source', 'canonical-terminal')],
   'canonical-terminal': [bindingRow('bind-back', 'canonical-terminal', 'canonical-source')] };
 

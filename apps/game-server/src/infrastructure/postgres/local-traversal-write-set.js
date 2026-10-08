@@ -138,6 +138,7 @@ export function buildLocalTraversalWriteSet({
         sourceEndpoint, changeSetId, idempotencyRecordId, turnNumber),
       row('party_traversal_interval_results', ids.intervalId, {
         id: ids.intervalId,
+        travel_state_id: ids.travelStateId,
         route_plan_execution_id: ids.executionId,
         plan_step_ordinal: 0,
         interval_ordinal: 0,

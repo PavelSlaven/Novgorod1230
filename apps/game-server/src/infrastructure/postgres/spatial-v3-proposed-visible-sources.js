@@ -2,6 +2,7 @@ import { loadApprovedG4NaturalCatalog, loadApprovedG4NaturalPlacementCatalog } f
 import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibility.js';
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
+import { spatialV3LocalEdgeLabel } from '../../runtime/spatial-v3-local-edge-label.js';
 import { readCurrentNaturalSourceState } from './g4-current-natural-source-state.js';
 import { approvedNaturalStableCover } from './g4-natural-perception-reader.js';
 import { currentSceneVisibilityModifiers, readCommittedEntityExterior, readPlayerKnowledge } from
@@ -163,12 +164,16 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
             || (target.placement.entity_kind === 'npc' ? 'человек' : 'предмет'),
           ...(displayName ? { display_name: displayName } : {}) });
       } else if (target.edge) {
-        const matches = localLabels.filter((label) => label.scene_template_ref.id
+        const displayLabel = spatialV3LocalEdgeLabel(positions,
+          target.edge.from_position_id, target.edge.to_position_id);
+        const approvedLabels = localLabels.filter((label) => label.scene_template_ref.id
           === target.edge.source_scene_template_ref?.entity_id
           && label.scene_template_ref.version === Number(target.edge.source_scene_template_ref?.authoring_version)
           && label.edge_slot_key === target.edge.source_edge_slot_key);
-        if (matches.length !== 1) gap();
-        localEdges.push({ edge_id: target.edge.id, display_label: matches[0].display_label });
+        const safeLabel = displayLabel ?? (approvedLabels.length === 1
+          ? approvedLabels[0].display_label : null);
+        if (safeLabel == null) gap();
+        localEdges.push({ edge_id: target.edge.id, display_label: safeLabel });
       } else {
         const exit = target.exit;
         visibleExits.push({ directional_exit_id: exit.id,

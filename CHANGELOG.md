@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(turn): project failed goals as confirmed perception and owner facts; omit goal status and raw failed intent, record unknown causes only in private developer traces (#573, D153)
 - fix(game-server): return a client 404 for malformed party/request path encoding across all six HTTP routes without logging a server failure (#520)
 - fix(spatial): destination visibility uses exits anchored to the observed G5; route panels use the current Spatial scene (#533)
 - fix(runtime-catalog): resolve speech-register and common lookup roots from the module; v17 startup requires the pinned C007c2 registers (#548)

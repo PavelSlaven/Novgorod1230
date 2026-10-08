@@ -17,6 +17,14 @@ import { failCurrentScene, validCurrentScene, visibleNpc } from
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
 export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
+export function projectPerceivedPeopleAbsence({ currentVisibleContext,
+  currentSpatialContextIsFresh, currentSpatialContextFiltersEntities }) {
+  if (currentSpatialContextIsFresh !== true
+      || currentSpatialContextFiltersEntities !== true
+      || !validCurrentScene(currentVisibleContext)
+      || currentVisibleContext.visible_npc.length !== 0) return null;
+  return 'В поле зрения никого нет.';
+}
 export function withLowerDvinaTraceCurrentScene({ committedState,
   locationProfiles = committedState?.location_profiles ?? null,
   scenePresentation = committedState?.scene_presentation ?? null,
@@ -255,6 +263,7 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
   const activityCompleted = input?.time_update?.semantic_activity_resolutions
     ?.some(({ execution }) => execution?.status === 'completed') === true;
   const directActivity = appliedPlan?.resolution === 'direct'
+    && appliedPlan.goal_result !== 'not_achieved'
     && appliedPlan.direct_result_kind == null
     && activityCompleted
     && values.some((value) => value?.kind === 'semantic_activity')
@@ -262,6 +271,12 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
   const attempts = values.filter(value => value?.kind === 'transient_item_use'
     && Object.keys(value).length === 2 && text(value.description));
   const changes = values.flatMap((value) => {
+    if (value?.kind === 'semantic_activity' && appliedPlan?.resolution === 'direct'
+        && appliedPlan.goal_result === 'not_achieved') {
+      // A discovery authority gap is not a confirmed search result.
+      return activityCompleted && value.discovery_result?.resolution !== 'authority_required'
+        ? directSeedChange(value) : null;
+    }
     if (appliedPlan != null && (
         (value?.kind === 'semantic_activity'
           && (appliedPlan.resolution === 'direct'

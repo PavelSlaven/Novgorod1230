@@ -118,7 +118,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       phase7Contracts, turn10Contracts, phase8Contracts, phase9Contracts,
       temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation,
       bodyTimeEffectAdapter,
-      partyId, loadPreparedMovementScene, projectCurrentScene
+      partyId, loadPreparedMovementScene, projectCurrentScene, recordProjectionGap: trace
     });
   const turnStepPorts = createLowerDvinaTraceTurnStepRuntimePorts({
     bodyEffect,

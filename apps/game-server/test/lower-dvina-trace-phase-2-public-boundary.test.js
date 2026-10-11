@@ -354,6 +354,75 @@ test('canonical initial turn cannot fall back when its binding or perception cal
   }
 });
 
+test('canonical v0 rejects missing perception dependencies before either session read path', async (t) => {
+  const schema = 'rus.authored_start_initial_party_snapshot.v3';
+  const pin = { key: 'initial-natural-rule', revision: 1, digest: 'a'.repeat(64) };
+  for (const session_party_id of [null, 'party:1']) {
+    for (const reason of ['binding', 'pin', 'loader']) {
+      await t.test(`${session_party_id === null ? 'initial' : 'current'}/${reason}`, async () => {
+        let reads = 0;
+        let connects = 0;
+        let writes = 0;
+        const repository = createLowerDvinaTracePhase2PostgresRepository({
+          partyPool: {
+            async connect() { connects += 1; throw new Error('unexpected transaction'); },
+            async query() {
+              reads += 1;
+              return { rowCount: 1, rows: [{
+                delivery_ack_result: { pass: true }, party_state_version: 0,
+                session_party_id,
+                state_payload: { schema, initial_spatial_v3: { canonical_scene_proposal: {} },
+                  policy_profile_pins: reason === 'pin' ? [] : [pin] },
+                stage26_result: {}
+              }] };
+            }
+          },
+          committer: { async commit() { writes += 1; throw new Error('unexpected write'); } },
+          authoredRuntimeBindingResolver: reason === 'binding' ? null
+            : () => ({ snapshot_schema: schema, initial_natural_perception_rule_pin: pin }),
+          loadInitialNaturalScenePerceptionInput: reason === 'loader' ? null : async () => {
+            throw new Error('unexpected perception read');
+          }
+        });
+        await assert.rejects(repository.loadPhase2State('party:1'),
+          { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+        assert.equal(reads, 1);
+        assert.equal(connects, 0);
+        assert.equal(writes, 0);
+      });
+    }
+  }
+});
+
+test('canonical current v0 without visible context still checks pins and permits an absent loader', async () => {
+  const schema = 'rus.authored_start_initial_party_snapshot.v3';
+  const pin = { key: 'initial-natural-rule', revision: 1, digest: 'a'.repeat(64) };
+  for (const validPin of [false, true]) {
+    let connects = 0;
+    const transactionMarker = new Error('current read reached the transaction');
+    const repository = createLowerDvinaTracePhase2PostgresRepository({
+      partyPool: {
+        async connect() { connects += 1; throw transactionMarker; },
+        async query() {
+          return { rowCount: 1, rows: [{
+            delivery_ack_result: { pass: true }, party_state_version: 0,
+            session_party_id: 'party:1',
+            state_payload: { schema, initial_spatial_v3: { canonical_scene_proposal: {} },
+              policy_profile_pins: validPin ? [pin] : [] }, stage26_result: {}
+          }] };
+        }
+      },
+      committer: { async commit() { throw new Error('unexpected write'); } },
+      authoredRuntimeBindingResolver: () => ({ snapshot_schema: schema,
+        initial_natural_perception_rule_pin: pin })
+    });
+    await assert.rejects(repository.loadPhase2State('party:1',
+      { includeCurrentVisibleContext: false }), (error) => validPin
+      ? error === transactionMarker : error.code === 'NATURAL_SCENE_PERCEPTION_DATA_GAP');
+    assert.equal(connects, validPin ? 1 : 0);
+  }
+});
+
 test('post-commit movement readback refreshes complete current context through Spatial admission', async () => {
   const calls = [];
   const initialVisibleContext = { version: 1, schema: 'visible_context_package',

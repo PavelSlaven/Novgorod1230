@@ -120,14 +120,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
           'Canonical initial turn runtime binding is unavailable.', { status: 409 });
       }
-      if (authoredInitialState && !isInitialPartyState({
-        state_version: row.party_state_version,
-        session_party_id: row.session_party_id
-      })) {
-        return loadAuthoredStartV0Session({ partyId, row,
-          authoredRuntimeBindingResolver, includeCurrentVisibleContext,
-          turnBudget });
-      }
       if (canonicalInitialState && (!authoredInitialState || (naturalPin != null
         && (!Array.isArray(row.state_payload.policy_profile_pins)
         || row.state_payload.policy_profile_pins.filter((pin) => pin.key === naturalPin.key
@@ -139,6 +131,14 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         && typeof loadInitialNaturalScenePerceptionInput !== 'function') {
         throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
           'Canonical initial turn perception loader is unavailable.', { status: 409 });
+      }
+      if (authoredInitialState && !isInitialPartyState({
+        state_version: row.party_state_version,
+        session_party_id: row.session_party_id
+      })) {
+        return loadAuthoredStartV0Session({ partyId, row,
+          authoredRuntimeBindingResolver, includeCurrentVisibleContext,
+          turnBudget });
       }
       const temporalSourceProof =
         await loadTracePhase2TemporalSourceProof(readPool, partyId);

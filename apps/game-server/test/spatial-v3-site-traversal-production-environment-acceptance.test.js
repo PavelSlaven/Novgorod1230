@@ -286,8 +286,9 @@ test('A20: production uses no environment test hook or candidate data', { timeou
         assert.equal(environment.weather_state.weather_state_id, initial.weather_state.weather_state_id);
         assert.equal(environment.light_state, light, 'actual production projection uses the approved daylight boundary');
         const prepare = createSpatialV3SiteTraversalRuntime({
-          pool: { query: async (sql) => ({ rowCount: 1,
-            rows: [sql.includes('FOR UPDATE OF l,c') ? recheckRow() : { units: 0 }] }) },
+          pool: { query: async (sql) => sql.includes('FROM party_runtime.party_route_plan_executions e')
+            ? { rowCount: 0, rows: [] }
+            : { rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c') ? recheckRow() : { units: 0 }] } },
           assessAvailability: async () => ({ ok: true, status: 'open', connection_id: connection.id,
             condition_set_ref: 'availability.local_state_conditional@1' }),
           assessMovementCapability: async () => ({ ok: true, actor_id: 'actor', capability_context: capability }),

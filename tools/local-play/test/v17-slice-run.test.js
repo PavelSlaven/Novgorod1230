@@ -252,9 +252,8 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
         w.site = walkExits[text]; w.sv += 1;
         w.prose = w.site === 'B' ? 'Лесная тропа.' : w.site === 'C' ? 'У реки.' : 'Дальше.';
       }
-      else if (text === LOCAL_LINE.line_name) { w.site = 'B'; w.sv += 1; w.prose = 'Лесная тропа.'; }
-      else if (text === 'Тропа') {
-        if (w.turns.filter((turn) => turn === 'Тропа').length > samePlaceWalks) w.site = routeThroughC && w.site === 'B' ? 'C' : 'B';
+      else if (text === LOCAL_LINE.line_name || text === 'Тропа') {
+        if (w.turns.filter((turn) => turn === text).length > samePlaceWalks) w.site = routeThroughC && w.site === 'B' ? 'C' : 'B';
         w.sv += 1; w.prose = w.site === 'B' ? 'Лесная тропа.' : 'Тропа всё ещё впереди.';
       }
       else if (text === 'Дальше') { w.site = 'C'; w.sv += 1; }

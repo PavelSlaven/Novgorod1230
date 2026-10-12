@@ -2,6 +2,8 @@ import { resolvePhysicalItemCondition } from '@rus/items-property';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 import { playerSafeAppearanceSummary } from
   './lower-dvina-trace-player-safe-appearance.js';
+import { playerSafeAppearanceDistinguishingParts } from
+  './player-safe-appearance-summary.js';
 import { resolveVisibleItemLabel } from './lower-dvina-trace-visible-item-label.js';
 const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках', other: 'при вас' });
 const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
@@ -54,12 +56,36 @@ export function distinctNpcLabels(npcs) {
   for (const { display_label: label } of normalized) {
     if (text(label)) totals.set(label, (totals.get(label) ?? 0) + 1);
   }
-  return normalized.map((npc) => {
-    const label = npc?.display_label;
-    if (!text(label) || totals.get(label) < 2) return npc;
+  const rows = normalized.map((npc) => {
     const appearance = playerSafeAppearanceSummary(npc);
-    return appearance == null ? npc
-      : { ...npc, display_label: `${label}, ${appearance}` };
+    const label = npc?.display_label;
+    return { npc, appearance,
+      label: appearance && label?.endsWith(`, ${appearance}`)
+        ? label.slice(0, -appearance.length - 2) : label,
+      parts: playerSafeAppearanceDistinguishingParts(npc) };
+  });
+  for (let partIndex = 0; partIndex < 3; partIndex += 1) {
+    const groups = new Map();
+    for (const row of rows) {
+      if (!text(row.label) || totals.get(row.npc?.display_label) < 2) continue;
+      const group = groups.get(row.label) ?? [];
+      group.push(row);
+      groups.set(row.label, group);
+    }
+    for (const group of groups.values()) {
+      const values = new Set(group.map(({ parts }) => parts[partIndex]).filter(Boolean));
+      if (group.length < 2 || values.size < 2) continue;
+      for (const row of group) {
+        const part = row.parts[partIndex];
+        if (part) row.label = `${row.label}, ${part}`;
+      }
+    }
+  }
+  return rows.map(({ npc, label, appearance }) => {
+    if (!text(npc?.display_label) || totals.get(npc.display_label) < 2) return npc;
+    const displayLabel = appearance ? `${label}, ${appearance}` : label;
+    return displayLabel === npc.display_label ? npc
+      : { ...npc, display_label: displayLabel };
   });
 }
 

@@ -8,6 +8,7 @@ import { playerSafeHeardNpcIntroduction } from
 import { deepFreeze, plain } from './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
 import { lowerDvinaTraceDirectResultChanges,
+  distinctNpcLabels,
   lowerDvinaTraceVisibleSceneItems,
   uniqueLowerDvinaTraceVisibleObjects } from
   './lower-dvina-trace-visible-scene-items.js';
@@ -48,7 +49,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const initial = committedState.current_visible_context;
   if (Number(committedState?.party_state?.state_version) === 0
       && validCurrentScene(initial)) {
-    const current = enrichLowerDvinaTraceVisibleNpcCues({
+    const observed = enrichLowerDvinaTraceVisibleNpcCues({
       visibleContext: {
         ...initial,
         known_context: unique([...initial.known_context, ...selfKnowledge]),
@@ -63,6 +64,8 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       },
       committedState: projectionSource
     });
+    const current = { ...observed,
+      visible_npc: distinctNpcLabels(observed.visible_npc) };
     if (!validCurrentScene(current)) failCurrentScene();
     return { ...withoutCurrentSpatialContext(committedState),
       current_visible_context: deepFreeze(current) };
@@ -146,7 +149,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const currentUncertainties = currentSpatial?.uncertainties
     ?? committedState.current_visible_context?.uncertainties
     ?? playerSafe.current_visible_context?.uncertainties ?? [];
-  const current = projectCampFireState(enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
+  const observed = projectCampFireState(enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
     version: 1,
     schema: 'visible_context_package',
     visible_scene: profile.display_name,
@@ -165,6 +168,8 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
   }, committedState: projectionSource }), projectionSource, playerSafe.position);
+  const current = { ...observed,
+    visible_npc: distinctNpcLabels(observed.visible_npc) };
   if (!validCurrentScene(current)) failCurrentScene();
   const { current_spatial_context: _currentSpatialContext,
     current_spatial_context_is_fresh: _currentSpatialContextIsFresh,

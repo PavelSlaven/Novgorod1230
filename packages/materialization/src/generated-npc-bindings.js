@@ -1,3 +1,4 @@
+import { ACTOR_BASE_APPEARANCE_VOCABULARY } from '@rus/actors';
 import { canonicalDigest, createRandomSource, deriveSeed, MaterializationError,
   RNG_VERSION } from './core.js';
 
@@ -156,6 +157,7 @@ export function compilePlacePeopleBindings({ party_id: partyId, run_id: runId, s
     location: person.place_family_id,
     placementState,
     positionIndex,
+    sex: person.sex,
     source: { ...(person.place_population_composition_ref
       ? { place_population_composition_ref: { ...person.place_population_composition_ref } }
       : { presence_rule_ref: { ...person.presence_rule_ref } }),
@@ -187,6 +189,8 @@ function buildNpcInput(ctx, selected, ordinal, select, origin = null) {
     approvedBundle, environment, seed, canonical, template, positionResult, usedRows, candidates,
     occupiedNames } = ctx;
   const payload = selected.payload;
+  const sexApplicability = composeSexApplicability(origin?.sex,
+    payload.actor_applicability?.sex_category);
   if (!Array.isArray(payload.runtime_profile_refs) || !payload.runtime_profile_refs.length
     || !Array.isArray(payload.regional_context_refs) || !payload.regional_context_refs.length) gap('NPC_COMPOSITION_DEPENDENCY_GAP');
   const shared = new Map(payload.runtime_profile_refs.map((ref) => {
@@ -249,10 +253,21 @@ function buildNpcInput(ctx, selected, ordinal, select, origin = null) {
       ...(canonical && composition.payload.canonical_initial_snapshot_only === true
         ? { canonical_source_generation_template_ref:
           composition.payload.canonical_source_generation_template_ref } : {}),
-      ...(Array.isArray(payload.actor_applicability?.sex_category)
-        ? { sex_category_applicability: [...payload.actor_applicability.sex_category] } : {}),
+      ...(sexApplicability ? { sex_category_applicability: sexApplicability } : {}),
       ...(ctx.regionalApplicability ? { regional_applicability: ctx.regionalApplicability } : {}),
       ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) } };
+}
+
+function composeSexApplicability(slotSex, profileSex) {
+  if (slotSex == null) return Array.isArray(profileSex) ? [...profileSex] : undefined;
+  const slotWord = ACTOR_BASE_APPEARANCE_VOCABULARY.sex_category.find((word) =>
+    slotSex === word || slotSex === `nov_1200_1250_sex_category_${word}`);
+  if (!slotWord) gap('PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP');
+  if (!Array.isArray(profileSex)) return [slotSex];
+  const profileValue = profileSex.find((entry) => entry === slotWord
+    || entry === `nov_1200_1250_sex_category_${slotWord}`);
+  if (!profileValue) gap('PROCEDURAL_NPC_SEX_APPLICABILITY_DATA_GAP');
+  return [profileValue];
 }
 
 function validPlacementState(entry, person) {

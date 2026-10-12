@@ -288,6 +288,66 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   assert.match(result.original_stage23_audit.evidence[0], /opening:/u);
 });
 
+test('opening does not repeat clothing summary after item facts', async () => {
+  const item = (slot, fabric, color, extra = {}) => ({
+    equipment_slot_category_id: slot,
+    visual_profile_snapshot: { equipment_slot: slot, visible_fabric: fabric,
+      main_visible_color: color, ...extra }
+  });
+  const readWriterFacts = async (cues) => {
+    const pkg = structuredClone(openingPackage());
+    pkg.visible_npcs[0].observable_cues = cues;
+    const calls = [];
+    const prose = pkg.visible_scene_dossier.must_include.map(({ text }) => text)
+      .join(' ');
+    const service = createAuthoredOpeningNarrationService({ roleRunner: {
+      async run(call) {
+        calls.push(call);
+        if (call.role_id === 'gameplay_narrator') return { output: { prose } };
+        return { output: { pass: true, failed_checks: [], concerns: [],
+          evidence: ['Видимые детали даны.'] } };
+      }
+    } });
+    await service.run({ requestId: pkg.request_id, visibleContextPackage: pkg,
+      visibleContextApproval: openingApproval(pkg) });
+    const writer = calls.find(({ role_id }) => role_id === 'gameplay_narrator');
+    const person = JSON.parse(writer.messages[1].content).сцена.персонажи
+      .find(({ имя }) => имя === pkg.visible_npcs[0].label);
+    assert.ok(person, 'the visible NPC is in the writer payload');
+    return person.факты;
+  };
+
+  const clothingFacts = await readWriterFacts({
+    identity: { appearance: { hair: { length: 'short', color: 'auburn',
+      style: 'wavy', facial_hair: 'full_beard' } } },
+    equipment: [
+      item('base_garment', 'light_linen', 'undyed_linen'),
+      item('outer_garment', 'wool', 'dark_blue'),
+      item('headwear', 'wool', 'madder_red', { headwear_kind: 'fur_hat' })
+    ]
+  });
+  for (const slot of ['Нижняя одежда:', 'Верхняя одежда:', 'Головной убор:']) {
+    assert.equal(clothingFacts.filter((fact) => fact.startsWith(slot)).length, 1,
+      `${slot} is described once from its item facts`);
+  }
+  assert.equal(clothingFacts.some((fact) => /неокрашенная льняная одежда|тёмно-синяя одежда|нижняя одежда из льна|верхняя одежда из шерсти|головной убор из шерсти/u.test(fact)), false,
+    'the compact clothing summary does not repeat facts for equipped items');
+  assert.equal(clothingFacts.join(' ').match(/короткие рыжие волнистые/giu)?.length ?? 0, 1,
+    'hair is described once');
+  assert.equal(clothingFacts.join(' ').match(/густая борода/giu)?.length ?? 0, 1,
+    'beard is described once');
+
+  const withoutEquipmentFacts = await readWriterFacts({
+    identity: { appearance: { hair: { length: 'short', color: 'auburn',
+      style: 'wavy', facial_hair: 'full_beard' } } },
+    equipment: []
+  });
+  assert.equal(withoutEquipmentFacts.join(' ').match(/короткие рыжие волнистые/giu)?.length ?? 0, 1,
+    'hair remains when no equipment facts are present');
+  assert.equal(withoutEquipmentFacts.join(' ').match(/густая борода/giu)?.length ?? 0, 1,
+    'beard remains when no equipment facts are present');
+});
+
 test('opening fails closed on an unknown authored item condition', async () => {
   const pkg = structuredClone(openingPackage());
   pkg.visible_items[0].condition = 'unrecognized-condition';

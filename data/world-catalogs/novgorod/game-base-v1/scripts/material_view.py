@@ -14,6 +14,29 @@ OVERLAY_REF = "data/world-catalogs/novgorod/game-base-v1/source-overlays/master-
 FIELDS = {"item_id", "primary_material", "materials"}
 
 
+def _overlay_item_ids(path):
+    with open(path, encoding="utf-8-sig", newline="") as stream:
+        reader = csv.DictReader(stream)
+        if "item_id" not in (reader.fieldnames or []):
+            raise ValueError("material overlay lacks item_id column")
+        ids = set()
+        for row in reader:
+            item_id = row.get("item_id", "")
+            if not item_id or item_id in ids:
+                raise ValueError(f"material overlay has missing or duplicate item_id: {item_id}")
+            ids.add(item_id)
+    return ids
+
+
+def _incomplete_view_error(missing, extra):
+    error = ValueError(
+        f"material view is incomplete; missing item_ids: {json.dumps(missing)}; "
+        f"extra item_ids: {json.dumps(extra)}"
+    )
+    error.code = "MATERIAL_VIEW_INCOMPLETE"
+    return error
+
+
 @lru_cache(maxsize=4)
 def load_material_overrides(source_path):
     source_path = Path(source_path)
@@ -22,11 +45,19 @@ def load_material_overrides(source_path):
     overlay_sha = hashlib.sha256(OVERLAY_PATH.read_bytes()).hexdigest()
     if view.get("source_sha256") != source_sha or view.get("overlay_sha256") != overlay_sha:
         raise ValueError("material view is stale for the normalized master source or overlay")
+    overlay_ids = _overlay_item_ids(OVERLAY_PATH)
+    rows = view.get("rows")
+    if not isinstance(rows, list):
+        raise _incomplete_view_error(sorted(overlay_ids), [])
     result = {}
-    for row in view.get("rows", []):
+    for row in rows:
         if set(row) != FIELDS or not row.get("item_id") or row["item_id"] in result:
             raise ValueError("material view has invalid or duplicate projected row")
         result[row["item_id"]] = row
+    missing = sorted(overlay_ids - result.keys())
+    extra = sorted(result.keys() - overlay_ids)
+    if missing or extra:
+        raise _incomplete_view_error(missing, extra)
     return result
 
 

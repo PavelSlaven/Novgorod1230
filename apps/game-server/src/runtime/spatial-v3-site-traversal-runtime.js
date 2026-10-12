@@ -540,7 +540,8 @@ async function prepareLegacyGeneratedTraversal({ pool, assessAvailability,
     spatial_v3_traversal: { plan: prepared.plan, result: prepared.result,
       expected_state_versions: prepared.expected_state_versions },
     movement: { status: 'completed', cost_kind: 'action', action_units: connection.action_units } }),
-  visible_seed: { destination_visible_context: projected.visible_context } };
+  visible_seed: { destination_site_origin: destinationSite.origin,
+    destination_visible_context: projected.visible_context } };
 }
 
 function legacyRefMatches(row, field, profile, name) {

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -54,6 +55,9 @@ const testEnvironmentPin = (dependency_role, value) => ({
   entity_ref: value.entity_ref,
   version_pin: { pin_kind: 'authoring_version', authoring_version: value.authoring_version }
 });
+const legacyConnectionLabels = JSON.parse(readFileSync(new URL(
+  '../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/candidate.json',
+  import.meta.url), 'utf8')).labels;
 
 /** Test-only approved environment-state input for the local-line route PG fixture. */
 export function projectTestOnlyLineEnvironmentAtClock({ clock } = {}) {
@@ -350,14 +354,38 @@ export function pickMovementChoice(request, localHopVisits, { exactMovement = fa
     operation.op === 'request_movement'
     && ['local', 'route'].includes(operation.movement_kind));
   if (exactMovement) {
-    if (expectedRouteRef != null) {
+    const chooseRouteByRef = (expectedRouteRef) => {
       const matches = movementChoices.filter(({ operation }) =>
         operation.op === 'request_movement' && operation.movement_kind === 'route'
         && operation.target_ref === expectedRouteRef && operation.route_ref === expectedRouteRef);
       assert.equal(matches.length, 1, `expected one route operation for ${expectedRouteRef}`);
       return matches[0];
+    };
+    if (expectedRouteRef != null) return chooseRouteByRef(expectedRouteRef);
+    const requestedLabel = request.root_player_action;
+    const exactMenuMatches = movementChoices.filter(({ operation }) =>
+      operation.description === requestedLabel);
+    if (exactMenuMatches.length > 0) {
+      assert.equal(exactMenuMatches.length, 1,
+        `expected one exact current-menu movement for ${requestedLabel}`);
+      return exactMenuMatches[0];
     }
-    return movementChoices.find(({ operation }) => operation.description === request.root_player_action);
+    const legacyLookupLabel = typeof requestedLabel === 'string'
+      && requestedLabel.endsWith(' — подход')
+      ? requestedLabel.slice(0, -' — подход'.length) : requestedLabel;
+    const legacyRouteRefs = new Set(legacyConnectionLabels
+      .filter(({ display_label: label }) => label === legacyLookupLabel)
+      .map(({ binding_ref }) => binding_ref?.id)
+      .filter((id) => typeof id === 'string' && id.length > 0));
+    if (legacyRouteRefs.size === 0) return undefined;
+    const currentRouteRefs = new Set(movementChoices.filter(({ operation }) =>
+      operation.op === 'request_movement' && operation.movement_kind === 'route'
+      && operation.target_ref === operation.route_ref
+      && legacyRouteRefs.has(operation.route_ref))
+      .map(({ operation }) => operation.route_ref));
+    assert.equal(currentRouteRefs.size, 1,
+      `expected one current route for legacy connection label ${requestedLabel}`);
+    return chooseRouteByRef([...currentRouteRefs][0]);
   }
   const decisive = movementChoices.find(({ operation }) => operation.movement_kind === 'route')
     ?? movementChoices.find(({ operation }) => operation.route_ref != null);

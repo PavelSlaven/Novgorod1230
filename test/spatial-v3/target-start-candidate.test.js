@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
+import { isActorBaseAppearancePathApplicable } from '@rus/actors';
 import { canonicalDigest, createRandomSource, deriveApprovedInitialEnvironment,
   materializeActorBaseAppearance } from '@rus/materialization';
 import { compileApprovedActorAppearanceEntries } from '@rus/materialization';
@@ -163,7 +164,13 @@ test('player basis pins source appearance sets and completes an adult male throu
     approved_entries: entries, random: createRandomSource({ seed: 73 }), choice_key_prefix: 'player:player' });
   assert.equal(actor.identity.sex_category, 'male');
   assert.equal(actor.identity.age_category, 'adult');
-  assert.ok(actor.identity.appearance.hair.color);
+  const hair = actor.identity.appearance.hair;
+  assert.ok(hair.length);
+  for (const [key, path] of [['color', 'appearance.hair.color'], ['style', 'appearance.hair.style']]) {
+    const applicable = isActorBaseAppearancePathApplicable(actor.identity, path);
+    assert.equal(Object.hasOwn(hair, key), applicable, `hair.${key} applicability`);
+    if (applicable) assert.ok(hair[key], `hair.${key} is present for ${hair.length} hair`);
+  }
   assert.ok(actor.identity.appearance.eyes.color);
   for (const sex_category of ['male', 'female']) for (const age_category of entries.filter((row) => row.facet === 'age_category').map((row) => row.option_value)) {
     const sampled = materializeActorBaseAppearance({ identity: { sex_category, age_category },

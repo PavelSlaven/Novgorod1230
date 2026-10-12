@@ -20,10 +20,10 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   const template = { entity_id: scene.scene_template_ref.id, authoring_version: String(scene.scene_template_ref.version) };
   await pool.query(`INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ('party:1',2,$1,$2,'1','1','commands','profiles')`, [scene.g4_ref.world_revision_id, input.pin.compatible_world_catalog_digest]);
-  await pool.query(`INSERT INTO party_runtime.party_g5_sites(id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES ('site','party:1','canonical',$1,'{"entity_id":"site","authoring_version":"1"}','active',1,'change','change')`, [scene.g4_ref.id]);
+  await pool.query(`INSERT INTO party_runtime.party_g5_sites(id,party_id,origin,parent_g4_id,canonical_g5_ref,generated_template_ref,expansion_slot_ref,source_frontier_id,generation_ordinal,status,state_version,created_change_set_id,updated_change_set_id)
+    VALUES ('site','party:1','generated',$1,NULL,'{}','{}','frontier',0,'active',1,'change','change')`, [scene.g4_ref.id]);
   await pool.query(`INSERT INTO party_runtime.party_scene_baselines(id,party_id,host_kind,host_id,source_kind,scene_template_ref,materialization_trace_id,materializer_version,catalog_digest,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES ('baseline','party:1','g5_site','site','canonical_template',$1,'trace','1','digest','active',1,'change','change')`, [template]);
+    VALUES ('baseline','party:1','g5_site','site','generated_template',$1,'trace','1','digest','active',1,'change','change')`, [template]);
   await pool.query(`INSERT INTO party_runtime.party_g6_instances(id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,host_kind,host_id,physical_class_id,primary_scene_role_id,vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,acoustic_uniformity,status,state_version,created_change_set_id,updated_change_set_id)
     VALUES ('g6:inside','party:1','baseline',$1,'main','g5_site','site','spatial.g6.open','outside','level','none','default_clear','local','uniform','active',1,'change','change')`, [template]);
   for (const position of scene.positions) await pool.query(`INSERT INTO party_runtime.scene_position_nodes(id,party_id,g6_instance_id,position_type_id,template_slot_key,template_instance_ordinal,capacity,access_class_id,status,state_version,created_change_set_id,updated_change_set_id)
@@ -39,6 +39,15 @@ test('natural reader uses committed actor/scene/portal state with real approved 
     worldBaseReader: { async readPinnedSceneTemplateClosure(ref) {
       assert.deepEqual(ref, { ...scene.scene_template_ref, world_revision_id: scene.g4_ref.world_revision_id });
       return { ok: true, value: sceneClosure };
+    }, async readPinnedCanonicalG5SceneBinding(ref) {
+      assert.deepEqual(ref, { id: 'site', version: 1,
+        world_revision_id: scene.g4_ref.world_revision_id,
+        scene_template_ref: scene.scene_template_ref });
+      return { ok: true, value: { id: 'site', version: 1,
+        world_revision_id: scene.g4_ref.world_revision_id, parent_id: scene.g4_ref.id,
+        parent_version: scene.g4_ref.version,
+        scene_template_id: scene.scene_template_ref.id,
+        scene_template_version: scene.scene_template_ref.version } };
     } }, readCurrentSourceState: async ({ snapshot }) => {
       assert.equal(snapshot.location.scene_position_id, 'position:inside'); return conditions;
     } };
@@ -73,9 +82,10 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   await pool.query(`DELETE FROM party_runtime.party_site_connection_endpoint_bindings WHERE party_id='party:1'`);
   await pool.query(`DELETE FROM party_runtime.portal_entities WHERE party_id='party:1'`);
   await pool.query(`UPDATE party_runtime.parties SET world_catalog_digest=$1 WHERE party_id='party:1'`, [canonical.initialRule.world_pin.world_catalog_digest]);
-  await pool.query(`UPDATE party_runtime.party_g5_sites SET parent_g4_id=$1,canonical_g5_ref=$2 WHERE id='site'`,
+  await pool.query(`UPDATE party_runtime.party_g5_sites SET origin='canonical',parent_g4_id=$1,canonical_g5_ref=$2,generated_template_ref=NULL,expansion_slot_ref=NULL,source_frontier_id=NULL,generation_ordinal=NULL WHERE id='site'`,
     [canonical.initialRule.rule.g4_ref.id, { entity_id: canonical.initialRule.rule.canonical_g5_ref.id,
       authoring_version: String(canonical.initialRule.rule.canonical_g5_ref.version) }]);
+  await pool.query(`UPDATE party_runtime.party_scene_baselines SET source_kind='canonical_template' WHERE id='baseline'`);
   await pool.query(`UPDATE party_runtime.party_journey_locations SET scene_position_id='position:shore' WHERE id='location'`);
   const canonicalArgs = { ...args, verifiedCatalog: canonical.input.verifiedCatalog, pin: canonical.input.pin,
     worldBaseReader: { async readPinnedSceneTemplateClosure() { return { ok: true, value: canonical.sceneClosure }; },
@@ -97,6 +107,16 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   assert.equal(currentCanonical.canonical_source_binding.schema, 'rus.verified_canonical_scene_natural_source.v1');
   assert.equal(prepareG4NaturalScenePerceptionInput({ ...canonical.input,
     currentFacts: currentCanonical }).observer.position_id, 'position:shore');
+  await t.test('canonical с неверным endpoint → reject', async () => {
+    await pool.query(`INSERT INTO party_runtime.party_site_connection_endpoint_bindings(id,party_id,site_connection_id,endpoint_role,g5_site_id,position_id,source_slot_key,status,state_version,activated_change_set_id)
+      VALUES ('canonical-wrong-endpoint','party:1','connection','to','site','position:inside','arrival','active',1,'change')`);
+    try {
+      await assert.rejects(readCurrentNaturalPerceptionFacts(currentCanonicalArgs),
+        { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+    } finally {
+      await pool.query(`DELETE FROM party_runtime.party_site_connection_endpoint_bindings WHERE id='canonical-wrong-endpoint' AND party_id='party:1'`);
+    }
+  });
   await assert.rejects(readCurrentNaturalPerceptionFacts({ ...currentCanonicalArgs,
     worldBaseReader: { ...currentCanonicalArgs.worldBaseReader,
       readPinnedCanonicalG5SceneBinding: async () => ({ ok: false }) } }),

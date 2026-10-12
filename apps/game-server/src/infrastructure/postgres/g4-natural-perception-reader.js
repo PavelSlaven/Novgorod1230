@@ -194,8 +194,7 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
       || closure.value.header.canonical_digest !== rule.scene_template_ref.canonical_digest) gap('canonical_initial_authoring_binding_required');
     canonical_source_binding = { schema: 'rus.verified_canonical_initial_natural_source.v1',
       ...structuredClone(initial), g5_site_id: snapshot.site.id, baseline_id: snapshot.baseline.id };
-  } else if (snapshot.site.origin === 'canonical'
-    && !snapshot.endpoint_bindings.some((row) => row.source_slot_key === endpoint[0].slot_key)) {
+  } else if (snapshot.site.origin === 'canonical') {
     const ref = snapshot.site.canonical_g5_ref;
     if (typeof worldBaseReader.readPinnedCanonicalG5SceneBinding !== 'function'
       || !ref?.entity_id || !Number.isInteger(Number(ref.authoring_version))) {
@@ -208,6 +207,7 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
       || canonical.value.version !== Number(ref.authoring_version)
       || canonical.value.world_revision_id !== snapshot.world_revision_id
       || canonical.value.parent_id !== snapshot.site.parent_g4_id
+      || canonical.value.parent_version !== profiles[0].payload.g4_ref.version
       || canonical.value.scene_template_id !== scene_template_ref.id
       || canonical.value.scene_template_version !== scene_template_ref.version) {
       gap('canonical_scene_source_binding_required');
@@ -256,6 +256,11 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
   canonical_source_binding,
   current_environment: conditions?.current_environment,
   layer_admissions: conditions?.layer_admissions };
+  if (canonical_source_binding?.schema === 'rus.verified_canonical_scene_natural_source.v1'
+    && currentFacts.source_bindings.length > 0) {
+    prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin,
+      currentFacts: { ...currentFacts, canonical_source_binding: null } });
+  }
   prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, currentFacts });
   const placementCatalog = loadApprovedG4NaturalPlacementCatalog({ verifiedCatalog, pin });
   const placements = placementCatalog.placements.filter((row) =>

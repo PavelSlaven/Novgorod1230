@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(spatial): retain generated traversal origin and verified canonical perception with endpoint checks; align P18, appearance and route test fixtures with active contracts (#98)
 - fix(game-server): validate canonical perception pins and loader before the authored v0 session read; retain typed data gaps and current-state transactions (#98)
 - fix(actors): omit inapplicable bald hair color/style before materialization draws and portrait projection; keep committed legacy bald readable and filter incompatible authored prerequisite choices before RNG; add an inactive D152 appearance candidate with 15% baldness for eligible men (#536)
 - fix(wk): pass the committed speaking NPC's occupation to conversation retrieval through the server port, without exposing occupation refs in prose requests (#615)

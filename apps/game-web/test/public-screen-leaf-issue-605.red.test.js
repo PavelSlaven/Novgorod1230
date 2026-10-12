@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validatePublicScreen } from '../src/api/contracts.js';
-import { renderProse } from '../src/features/prose/render.js';
+import { renderExactNpcUtterances, renderProse } from
+  '../src/features/prose/render.js';
 
 function publicScreen() {
   return {
@@ -39,9 +40,13 @@ test('issue #605: valid turn screen accepts public_key NPC and item leaves', () 
 test('issue #605: exact speech joins a named visible NPC by public_key', () => {
   const screen = publicScreen();
   assert.equal(validatePublicScreen(screen), screen);
-  assert.match(renderProse(screen),
+  assert.match(renderExactNpcUtterances(screen),
     /<strong>Еремей<\/strong><p>Мешок оставь у ворот\.<\/p>/u);
-  assert.doesNotMatch(renderProse(screen), /<strong>Собеседник<\/strong>/u);
+  const prose = renderProse({ ...screen,
+    main_prose: 'Еремей сказал: «Мешок оставь у ворот.»' });
+  assert.equal((prose.match(/Мешок оставь у ворот\./gu) ?? []).length, 1);
+  assert.doesNotMatch(prose, /<blockquote>/u);
+  assert.doesNotMatch(prose, /Собеседник/u);
 });
 
 // game-server/MODULE.md:61–63: HTTP visible refs use entity_kind/public_key.

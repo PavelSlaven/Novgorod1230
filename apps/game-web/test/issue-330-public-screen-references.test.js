@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validatePublicScreen } from '../src/api/contracts.js';
-import { renderProse } from '../src/features/prose/render.js';
+import { renderExactNpcUtterances } from '../src/features/prose/render.js';
 import { renderConversationPortrait } from
   '../src/features/conversation-portrait/render.js';
 
@@ -35,7 +35,7 @@ test('public speech and active interlocutor accept exact short public refs', () 
   });
 
   assert.equal(validatePublicScreen(value), value);
-  assert.match(renderProse(value), /Еремей/u);
+  assert.match(renderExactNpcUtterances(value), /Еремей/u);
   assert.match(renderConversationPortrait(value),
     /data-interlocutor-key="e1"/u);
   assert.doesNotMatch(renderConversationPortrait(value),
@@ -43,7 +43,7 @@ test('public speech and active interlocutor accept exact short public refs', () 
 });
 
 test('public speech joins its speaker by key, not by a matching label', () => {
-  const html = renderProse({
+  const html = renderExactNpcUtterances({
     visible_context: { visible_npc: [npc('e1', 'Первый'), npc('e2', 'Второй')] },
     exact_npc_utterances: [{
       speaker_ref: { entity_kind: 'npc', public_key: 'e2' },
@@ -56,7 +56,7 @@ test('public speech joins its speaker by key, not by a matching label', () => {
 });
 
 test('equal labels with different keys remain separate visible speakers', () => {
-  const html = renderProse({
+  const html = renderExactNpcUtterances({
     visible_context: { visible_npc: [npc('e1', 'Свидетель'), npc('e2', 'Свидетель')] },
     exact_npc_utterances: [
       { speaker_ref: { entity_kind: 'npc', public_key: 'e1' }, utterance_text: 'Первое.' },
@@ -68,6 +68,7 @@ test('equal labels with different keys remain separate visible speakers', () => 
   assert.equal((html.match(/<strong>Свидетель<\/strong>/gu) ?? []).length, 2);
   assert.match(html, /Первое\./u);
   assert.match(html, /Второе\./u);
+  assert.ok(html.indexOf('Первое.') < html.indexOf('Второе.'));
 });
 
 test('legacy entity_id refs are rejected for speech and active interlocutor', () => {

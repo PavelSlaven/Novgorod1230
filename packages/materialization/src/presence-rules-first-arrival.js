@@ -33,15 +33,21 @@ export function pickRegionalPresenceRule(rules, regionId) {
 
 export { ruleAllowedInSeason };
 
+function ruleMatchesSubregionScope(rule, subregionScope) {
+  const ruleScope = rule.authoring_payload?.subregion_scope;
+  return ruleScope == null || ruleScope === '' || ruleScope === subregionScope;
+}
+
 export function mergePlaceFamilyPresenceRules({
   primaryRules = [],
   secondaryRules = [],
   regionId = null,
+  subregionScope = null,
   season,
 } = {}) {
   const primaryMap = new Map();
   for (const rule of primaryRules) {
-    if (!ruleAllowedInSeason(rule, season)) continue;
+    if (!ruleAllowedInSeason(rule, season) || !ruleMatchesSubregionScope(rule, subregionScope)) continue;
     const key = presenceRuleSubjectKey(rule);
     const bucket = primaryMap.get(key) ?? [];
     bucket.push(rule);
@@ -55,7 +61,7 @@ export function mergePlaceFamilyPresenceRules({
   const primaryKeys = new Set(merged.map(presenceRuleSubjectKey));
   const secondaryMap = new Map();
   for (const rule of secondaryRules) {
-    if (!ruleAllowedInSeason(rule, season)) continue;
+    if (!ruleAllowedInSeason(rule, season) || !ruleMatchesSubregionScope(rule, subregionScope)) continue;
     const key = presenceRuleSubjectKey(rule);
     if (primaryKeys.has(key)) continue;
     const bucket = secondaryMap.get(key) ?? [];

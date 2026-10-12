@@ -454,6 +454,7 @@ export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
       source_refs: row.source_refs ?? '',
       pool_confidence: row.pool_confidence ?? '',
       csv_status: row.status ?? '',
+      ...(blank(row.subregion_scope) == null ? {} : { subregion_scope: blank(row.subregion_scope) }),
     },
   };
 }

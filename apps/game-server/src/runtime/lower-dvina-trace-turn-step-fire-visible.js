@@ -1,4 +1,6 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
+import { canonicalDigest } from '@rus/materialization';
+import { spatialV3TraversalOutcomeProjection } from '@rus/turn/spatial-v3-execution';
 import { lowerDvinaTraceCarriedItemIds,
   lowerDvinaTraceObservedSceneChanges } from './lower-dvina-trace-visible-scene-items.js';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
@@ -39,7 +41,34 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const consequence = input?.consequence;
       if (consequence?.position_transition?.owner
           === '@rus/turn/spatial-v3-site-connection-traversal') {
-        const destination = structuredClone(consequence.visible_seed?.destination_visible_context);
+        const rawDestination = consequence.visible_seed?.destination_visible_context;
+        const transition = consequence.position_transition;
+        const traversal = consequence.spatial_v3_traversal;
+        const traversalStep = traversal?.plan?.steps?.[0];
+        const traversalOutcome = spatialV3TraversalOutcomeProjection(
+          traversal?.result, traversalStep);
+        const timedDestinationCompletion = consequence.movement?.cost_kind === 'time'
+          && traversal?.result?.result_kind === 'segment_completed'
+          && traversalOutcome.endpoint != null
+          && traversalOutcome.endpoint?.resolved_position_id === transition.to_position_ref;
+        const arrivalEndpoint = traversalStep?.arrival_endpoint_snapshot;
+        const legacyDestinationCompletion = consequence.movement?.cost_kind === 'action'
+          && traversal?.result?.result_kind === 'completed'
+          && plain(arrivalEndpoint)
+          && traversal?.result?.endpoint_after?.endpoint_id
+            === arrivalEndpoint?.endpoint_ref?.endpoint_id
+          && arrivalEndpoint?.resolved_position_id === transition.to_position_ref;
+        const destinationCompletion = timedDestinationCompletion
+          || legacyDestinationCompletion;
+        const destinationDigest = transition.destination_visible_digest;
+        const destinationDigestMatches = typeof destinationDigest === 'string'
+          && plain(rawDestination)
+          && destinationDigest === canonicalDigest(rawDestination);
+        if (destinationCompletion && destinationDigest != null
+            && !destinationDigestMatches) {
+          ownerFail('TRACE_SITE_TRAVERSAL_DESTINATION_PERCEPTION_INVALID');
+        }
+        const destination = structuredClone(rawDestination);
         if (!plain(destination)
             || destination.sensory_details != null
               && !Array.isArray(destination.sensory_details)) {
@@ -47,7 +76,6 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
         }
         destination.sensory_details ??= [];
         const fact = destination.sensory_details.find(text);
-        const transition = consequence.position_transition;
         const destinationOrigin = consequence.visible_seed?.destination_site_origin;
         if (!['canonical', 'generated'].includes(destinationOrigin)) {
           ownerFail('TRACE_SITE_TRAVERSAL_DESTINATION_ORIGIN_INVALID');
@@ -55,18 +83,26 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
         const clock = input.time_update?.clock_after
           ?? input.retrieved_state?.clock_weather_light?.clock
           ?? input.retrieved_state?.clock ?? null;
+        const sourceEndpoint = traversalOutcome.endpoint != null
+          && traversalOutcome.endpoint.resolved_position_id === transition.from_position_ref;
+        const targetPositionId = sourceEndpoint
+          ? transition.from_position_ref : transition.to_position_ref;
+        const targetSiteId = sourceEndpoint
+          ? transition.source_site_id : transition.destination_site_id;
+        const targetG6InstanceId = sourceEndpoint
+          ? transition.source_g6_instance_id : transition.destination_g6_instance_id;
         const targetState = {
           ...structuredClone(input.retrieved_state ?? {}),
           position: {
             ...structuredClone(input.retrieved_state?.position ?? {}),
-            site_id: transition.destination_site_id,
-            position_id: transition.to_position_ref,
-            g6_id: transition.destination_g6_instance_id,
-            g6_instance_id: transition.destination_g6_instance_id
+            site_id: targetSiteId,
+            position_id: targetPositionId,
+            g6_id: targetG6InstanceId,
+            g6_instance_id: targetG6InstanceId
           },
           journey_location: {
             ...structuredClone(input.retrieved_state?.journey_location ?? {}),
-            scene_position_id: transition.to_position_ref
+            scene_position_id: targetPositionId
           },
           current_spatial_context: destination,
           current_spatial_context_is_fresh: true,
@@ -75,7 +111,17 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
         };
         delete targetState.current_visible_context;
         const committedDestination = destinationOrigin === 'canonical';
-        if (committedDestination) {
+        const reusePreparedDestination = destinationCompletion
+          && destinationDigestMatches;
+        // Reuse keeps the traversal owner's digest-backed final destination seed.
+        if (committedDestination && !reusePreparedDestination) {
+          if (destinationDigest == null && !sourceEndpoint) {
+            if (Object.hasOwn(targetState.position, 'location_ref')) {
+              targetState.position.location_ref = transition.destination_site_id;
+            }
+            delete targetState.position.g5_anchor_id;
+            delete targetState.position.anchor_id;
+          }
           if (typeof loadPreparedMovementScene !== 'function'
               || typeof projectCurrentScene !== 'function') {
             ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
@@ -92,7 +138,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
           }
           Object.assign(destination, structuredClone(projectedDestination));
-        } else {
+        } else if (!committedDestination) {
           if (plain(input.retrieved_state)) {
             if (typeof projectCurrentScene !== 'function') {
               ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');

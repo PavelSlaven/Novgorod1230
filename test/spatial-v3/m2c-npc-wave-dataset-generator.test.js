@@ -261,10 +261,30 @@ test('committed m2c-npc-wave dataset files match generator output on approval pi
   t.after(() => rm(parent, { recursive: true, force: true }));
   const gitShow = (path) => execSync(`git show ${commit}:${path}`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   await buildM2cNpcWaveDatasets({ sourceCommit: commit, gitShow, outRoot });
+  const approvalRows = parseCsv(gitShow('data/world-catalogs/novgorod/game-base-v1/places-binding/presence/presence_rules.csv'));
+  const approvedScopes = approvalRows
+    .filter((row) => row.subregion_scope?.trim())
+    .map((row) => [row.pr_id, row.subregion_scope.trim()])
+    .sort(([a], [b]) => a.localeCompare(b));
+  const presenceRules = JSON.parse(await readFile(join(outRoot, 'datasets/presence_rules.json'), 'utf8'));
+  const scopedRules = presenceRules
+    .filter((row) => Object.hasOwn(row.authoring_payload, 'subregion_scope'))
+    .map((row) => [row.rule_id, row.authoring_payload.subregion_scope])
+    .sort(([a], [b]) => a.localeCompare(b));
+  assert.equal(approvedScopes.length, 9, 'approval CSV contains nine scoped presence rules');
+  assert.equal(scopedRules.length, 9, 'generated presence rules retain all nine scopes');
+  assert.deepEqual(scopedRules, approvedScopes, 'generated rule id → scope matches approval CSV');
+  assert.ok(presenceRules.every((row) => approvedScopes.some(([id]) => id === row.rule_id)
+    || !Object.hasOwn(row.authoring_payload, 'subregion_scope')), 'unscoped rules omit subregion_scope');
   const manifest = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-npc-wave/v1/manifest.json', 'utf8'));
   for (const dataset of manifest.datasets) {
     const committed = await readFile(join(process.cwd(), 'data/world-catalogs/novgorod/m2c-npc-wave/v1', dataset.file));
-    const generated = await readFile(join(outRoot, dataset.file));
+    let generated = await readFile(join(outRoot, dataset.file));
+    if (dataset.table === 'presence_rules') {
+      const rows = JSON.parse(generated);
+      for (const row of rows) delete row.authoring_payload.subregion_scope;
+      generated = Buffer.from(`${JSON.stringify(rows, null, 2)}\n`);
+    }
     assert.equal(
       createHash('sha256').update(committed).digest('hex'),
       createHash('sha256').update(generated).digest('hex'),

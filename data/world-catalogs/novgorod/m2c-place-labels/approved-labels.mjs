@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { stableStringify } from '@rus/kernel';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url));
@@ -18,6 +18,7 @@ const APPROVED_NATURAL_CANDIDATE_ID = 'novgorod_m2c_natural_baseline_g4_v1';
 const APPROVED_NATURAL_SUCCESSOR_ID = 'novgorod_m2c_natural_baseline_g4_v2';
 let successorDiagnosticLogged = false;
 let approvedLabelsCache = null;
+let approvedLabelsSnapshotCache = null;
 const LABEL_FILES = [
   ['./candidate.json', true],
   ['./approval-attestation.json', true],
@@ -98,6 +99,27 @@ export function loadApprovedPlaceLabels() {
     if (error.code === 'ENOENT' || error instanceof SyntaxError) return null;
     throw error;
   }
+}
+
+export function loadApprovedPlaceLabelsSnapshot() {
+  let metadata;
+  try {
+    metadata = JSON.stringify(LABEL_FILES.map(([path]) => {
+      const stat = statSync(new URL(path, import.meta.url), { bigint: true });
+      return [stat.dev, stat.ino, stat.size, stat.mtimeNs, stat.ctimeNs].map(String);
+    }));
+  } catch {
+    approvedLabelsSnapshotCache = null;
+    return loadApprovedPlaceLabels();
+  }
+  if (approvedLabelsSnapshotCache?.metadata === metadata) {
+    return copyLabels(approvedLabelsSnapshotCache.labels);
+  }
+  approvedLabelsSnapshotCache = null;
+  const labels = loadApprovedPlaceLabels();
+  if (!(labels instanceof Map)) return null;
+  approvedLabelsSnapshotCache = { metadata, labels };
+  return copyLabels(labels);
 }
 
 export function approvedPlaceLabelsWithNaturalSuccessors(candidateBytes, approval,

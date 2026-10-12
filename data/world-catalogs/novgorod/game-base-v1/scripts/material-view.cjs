@@ -14,30 +14,51 @@ function sha256(bytes) {
   return crypto.createHash('sha256').update(bytes).digest('hex');
 }
 
-function readOverlayItemIds(overlayPath) {
-  const text = fs.readFileSync(overlayPath, 'utf8').replace(/^\uFEFF/u, '');
-  const lines = text.split(/\r?\n/u);
-  const firstCsvCell = line => {
-    if (!line.startsWith('"')) return line.split(',', 1)[0];
-    let value = '';
-    for (let index = 1; index < line.length; index += 1) {
-      if (line[index] !== '"') {
-        value += line[index];
-      } else if (line[index + 1] === '"') {
-        value += '"';
-        index += 1;
+function parseCsvRows(text) {
+  text = text.replace(/^\uFEFF/u, '');
+  const rows = [];
+  let row = [];
+  let field = '';
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (quoted) {
+      if (character === '"') {
+        if (text[index + 1] === '"') {
+          field += '"';
+          index += 1;
+        } else {
+          quoted = false;
+        }
       } else {
-        if (line[index + 1] && line[index + 1] !== ',') throw new Error('invalid material overlay CSV item_id');
-        return value;
+        field += character;
       }
+    } else if (character === '"') {
+      quoted = true;
+    } else if (character === ',') {
+      row.push(field);
+      field = '';
+    } else if (character === '\n') {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = '';
+    } else if (character !== '\r') {
+      field += character;
     }
-    throw new Error('invalid material overlay CSV item_id');
-  };
-  if (firstCsvCell(lines[0] || '') !== 'item_id') throw new Error('material overlay lacks item_id column');
+  }
+  if (field !== '' || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
+  return rows.filter(record => record.length > 1 || record[0] !== '');
+}
 
-  const rows = lines.slice(1);
-  if (rows.at(-1) === '') rows.pop();
-  const ids = rows.map(firstCsvCell);
+function readOverlayItemIds(overlayPath) {
+  const [header = [], ...rows] = parseCsvRows(fs.readFileSync(overlayPath, 'utf8'));
+  const itemIdColumn = header.indexOf('item_id');
+  if (itemIdColumn < 0) throw new Error('material overlay lacks item_id column');
+  const ids = rows.map(row => row[itemIdColumn] || '');
   const seen = new Set();
   for (const itemId of ids) {
     if (!itemId || seen.has(itemId)) throw new Error(`material overlay has missing or duplicate item_id: ${itemId}`);

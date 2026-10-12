@@ -1,7 +1,9 @@
+import { createRequestId } from '../shared/request-id.js';
+
 const KEY = 'rus.pending_new_game';
 
 export function newGameRequest(storage, input, createId = () =>
-  globalThis.crypto.randomUUID()) {
+  createRequestId()) {
   const normalized = Object.fromEntries(['scenario_id', 'start_text']
     .filter((key) => typeof input?.[key] === 'string' && input[key].trim())
     .map((key) => [key, input[key].trim()]));

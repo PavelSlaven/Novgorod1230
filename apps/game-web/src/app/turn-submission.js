@@ -1,9 +1,9 @@
 import { removePendingTurn, storedPendingTurn, storePendingTurn } from './pending-turn.js';
 import { validatePublicScreen } from '../api/contracts.js';
+import { createRequestId } from '../shared/request-id.js';
 
 export function createTurnRequest(input) {
-  const requestId = `web:turn:${globalThis.crypto?.randomUUID?.()
-    ?? crypto.randomUUID()}`;
+  const requestId = `web:turn:${createRequestId()}`;
   return Object.freeze({ ...input, request_id: requestId, idempotency_key: requestId });
 }
 

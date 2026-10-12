@@ -42,7 +42,7 @@ const pythonBuildCode = [
   'm.build_and_write(sys.argv[2],sys.argv[3],sys.argv[4],expected_source_sha=sys.argv[5])',
 ].join('\n');
 const pythonOverlayRewriteCode = [
-  'import csv,json,sys',
+  'import csv,io,json,sys',
   'with open(sys.argv[1],encoding="utf-8",newline="") as f:',
   '    reader=csv.DictReader(f); fields=reader.fieldnames; rows=list(reader)',
   'if sys.argv[3]=="multiline":',
@@ -50,8 +50,13 @@ const pythonOverlayRewriteCode = [
   '    rows[0]["materials"]=json.dumps(values,ensure_ascii=False,indent=2)',
   '    assert json.loads(rows[0]["materials"])[-1]==\'parity, "quoted"\'',
   'elif sys.argv[3]=="duplicate": rows.append(dict(rows[0]))',
-  'with open(sys.argv[2],"w",encoding="utf-8",newline="") as f:',
-  '    writer=csv.DictWriter(f,fieldnames=fields); writer.writeheader(); writer.writerows(rows); f.write("\\r\\n")',
+  'elif sys.argv[3] in ("empty-id-lf","empty-id-no-lf"): pass',
+  'output=io.StringIO(newline=""); writer=csv.DictWriter(output,fieldnames=fields); writer.writeheader(); writer.writerows(rows)',
+  'data=output.getvalue()',
+  'if sys.argv[3].startswith("empty-id-"):',
+  '    data += chr(34)+chr(34)+("\\n" if sys.argv[3]=="empty-id-lf" else "")',
+  'elif sys.argv[3] in ("multiline","duplicate"): data += "\\r\\n"',
+  'with open(sys.argv[2],"w",encoding="utf-8",newline="") as f: f.write(data)',
 ].join('\n');
 
 function sha256(bytes) {
@@ -195,6 +200,27 @@ test('material-view readers match Python CSV parsing for multiline quoted record
       assert.equal(result.status, 0, result.stderr);
       assert.match(JSON.parse(result.stdout).message, /missing or duplicate item_id/u);
     });
+
+    for (const mode of ['empty-id-lf', 'empty-id-no-lf']) {
+      await t.test(`both readers reject quoted empty item_id (${mode})`, () => {
+        const rewrittenEmpty = rewriteOverlay(OVERLAY_FIXTURE, overlay, mode);
+        assert.equal(rewrittenEmpty.error, undefined, rewrittenEmpty.error?.message);
+        assert.equal(rewrittenEmpty.status, 0, rewrittenEmpty.stderr);
+        const overlayText = fs.readFileSync(overlay, 'utf8');
+        if (mode === 'empty-id-lf') assert.match(overlayText, /\r\n""\n$/u);
+        else assert.match(overlayText, /\r\n""$/u);
+
+        generated.overlay_sha256 = sha256(fs.readFileSync(overlay));
+        generated.rows = originalRows;
+        fs.writeFileSync(view, JSON.stringify(generated));
+        assert.throws(() => applyMaterialOverrides([], source, { viewPath: view, overlayPath: overlay }),
+          /missing or duplicate item_id/u);
+        const result = runPythonReader(source, overlay, view);
+        assert.equal(result.error, undefined, result.error?.message);
+        assert.equal(result.status, 0, result.stderr);
+        assert.match(JSON.parse(result.stdout).message, /missing or duplicate item_id/u);
+      });
+    }
   } finally {
     fs.rmSync(runtimeRoot, { recursive: true, force: true });
   }

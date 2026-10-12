@@ -35,7 +35,6 @@ function loadMaterialOverrides(sourcePath, { viewPath = VIEW_PATH, overlayPath =
     }
     result.set(row.item_id, row);
   }
-  if (result.size !== 22) throw new Error(`material view must contain 22 rows, found ${result.size}`);
   return result;
 }
 

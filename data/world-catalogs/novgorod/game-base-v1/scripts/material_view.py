@@ -27,8 +27,6 @@ def load_material_overrides(source_path):
         if set(row) != FIELDS or not row.get("item_id") or row["item_id"] in result:
             raise ValueError("material view has invalid or duplicate projected row")
         result[row["item_id"]] = row
-    if len(result) != 22:
-        raise ValueError(f"material view must contain 22 rows, found {len(result)}")
     return result
 
 

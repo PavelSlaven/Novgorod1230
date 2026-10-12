@@ -76,8 +76,8 @@ let bookVerifiedCount = 0;
 const correctedEvents = {
   nov_hist_1230_004: { title: 'Расправа в Новгороде, отъезд в Торжок и возвращение Ярослава', chronicle: 'По одному летописному свидетельству, Водовик и Ростислав уехали в Торжок 8 декабря; другое датирует их отъезд 9 декабря. Разночтение дат отъезда не разрешено. 9 декабря в Новгороде убит Семён Борисович; 30 декабря вернулся Ярослав' },
   nov_hist_1243_001: { title: 'Смерть Варлаама (Вячеслава Прокшинича) и погребение на Хутыни', chronicle: '4 мая 1243 умер Варлаам, в миру Вячеслав Прокшинич, погребён на Хутыни', source: 'book:667380 §Приложение 2 ¶499' },
-  nov_hist_1242_002: { title: 'Поездка Ярослава к Батыю в 1243 году', chronicle: 'В 1243 году Батый вручил Ярославу ярлык на старшинство', source: 'book:220871 §Новгород во времена Александра Невского ¶393' },
-  nov_hist_1245_001: { title: 'Казнь Михаила Черниговского в 1246 году', chronicle: 'В 1246 году казнён Михаил Черниговский', source: 'book:378072 §Домонгольская Русь > Русские князья и междоусобные войны > Черниговские, новгород-северские, полоцкие князья ¶274' },
+  nov_hist_1242_002: { year: 1243, title: 'Поездка Ярослава к Батыю в 1243 году', chronicle: 'В 1243 году Батый вручил Ярославу ярлык на старшинство', source: 'book:220871 §Новгород во времена Александра Невского ¶393' },
+  nov_hist_1245_001: { year: 1246, title: 'Казнь Михаила Черниговского в 1246 году', chronicle: 'В 1246 году казнён Михаил Черниговский', source: 'book:378072 §Домонгольская Русь > Русские князья и междоусобные войны > Черниговские, новгород-северские, полоцкие князья ¶274' },
 };
 const phaseOrder = ['background', 'omens', 'escalation', 'impact', 'aftermath'];
 
@@ -131,11 +131,11 @@ for (const p of d.timeline) {
     seasonRange = 'autumn';
   }
   if (p.event_id === 'nov_hist_1242_002') {
-    dateRange = '1243';
+    dateRange = String(corrected.year);
     seasonRange = '';
   }
   if (p.event_id === 'nov_hist_1245_001') {
-    dateRange = p.phase === 'impact' ? '1246-09-20' : '1246';
+    dateRange = p.phase === 'impact' ? `${corrected.year}-09-20` : String(corrected.year);
     seasonRange = p.phase === 'impact' ? 'autumn' : '';
   }
   if (p.event_id === 'nov_hist_1230_003' && p.phase === 'background') {
@@ -222,7 +222,7 @@ if (famineAftermath) {
 
 const eventRows = [...eventMap.values()].map(e => ({
   ev_id: e.ev_id,
-  year: e.year,
+  year: correctedEvents[e.ev_id]?.year ?? e.year,
   event_type: e.event_type,
   event_title: e.ev_id === 'nov_hist_1230_004' ? correctedEvents[e.ev_id].title : e.event_title,
   first_phase_id: e.first_phase_id,

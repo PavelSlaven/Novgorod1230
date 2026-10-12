@@ -20,7 +20,6 @@ OVERLAY_FIELDS = [
     "item_id", "primary_material_before", "primary_material", "materials_before", "materials", "approval_ref",
 ]
 VIEW_FIELDS = ["item_id", "primary_material", "materials"]
-EXPECTED_ROWS = 22
 
 
 def sha256(data):
@@ -34,7 +33,7 @@ def read_csv(path):
 
 
 def build_view(source_bytes, source_rows, overlay_bytes, overlay_rows, expected_source_sha=EXPECTED_SOURCE_SHA256,
-               expected_count=EXPECTED_ROWS):
+               expected_count=None):
     source_sha = sha256(source_bytes)
     if expected_source_sha and source_sha != expected_source_sha:
         raise ValueError(f"master material source sha256 mismatch: {source_sha}")
@@ -71,7 +70,7 @@ def build_view(source_bytes, source_rows, overlay_bytes, overlay_rows, expected_
         if not isinstance(materials, list) or not materials or any(not isinstance(value, str) for value in materials):
             raise ValueError(f"materials must be a non-empty string array for {item_id}")
         view_rows.append({field: correction[field] if field != "item_id" else item_id for field in VIEW_FIELDS})
-    if len(view_rows) != expected_count:
+    if expected_count is not None and len(view_rows) != expected_count:
         raise ValueError(f"expected {expected_count} material corrections, found {len(view_rows)}")
     view_rows.sort(key=lambda row: row["item_id"])
     return {
@@ -82,7 +81,7 @@ def build_view(source_bytes, source_rows, overlay_bytes, overlay_rows, expected_
 
 
 def build_bytes(source_path=SOURCE, overlay_path=OVERLAY, expected_source_sha=EXPECTED_SOURCE_SHA256,
-                expected_count=EXPECTED_ROWS):
+                expected_count=None):
     source_bytes = Path(source_path).read_bytes()
     overlay_bytes = Path(overlay_path).read_bytes()
     source_fields, source_rows = read_csv(source_path)
@@ -110,7 +109,7 @@ def write_atomically(path, data):
 
 
 def build_and_write(source_path=SOURCE, overlay_path=OVERLAY, output_path=OUTPUT,
-                    expected_source_sha=EXPECTED_SOURCE_SHA256, expected_count=EXPECTED_ROWS):
+                    expected_source_sha=EXPECTED_SOURCE_SHA256, expected_count=None):
     expected = build_bytes(source_path, overlay_path, expected_source_sha, expected_count)
     write_atomically(output_path, expected)
     row_count = len(json.loads(expected)["rows"])

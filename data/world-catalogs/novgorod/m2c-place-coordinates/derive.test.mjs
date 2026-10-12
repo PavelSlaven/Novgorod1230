@@ -8,7 +8,7 @@ import { createLandRouter, endpointAccess } from './land-route-search.mjs';
 const here = new URL('./', import.meta.url);
 const staging = new URL('../staging/cells/gn_nov_g1_xp017_yp026/content_revision_002/', here);
 const inventoryUrl = new URL('../spatial-v3/source-approval/p12_novgorod_source_approval_001/data/canonical-g5-inventory.json', here);
-const lineNamesUrl = new URL('file:///srv/novgorod-work/worktrees/line-names/data/world-catalogs/novgorod/m2c-line-names/candidate.json');
+const lineNamesUrl = new URL('../m2c-line-names/candidate.json', here);
 const json = async url => JSON.parse(await readFile(url, 'utf8'));
 const compass = new Set(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']);
 

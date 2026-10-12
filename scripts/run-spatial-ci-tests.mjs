@@ -21,7 +21,16 @@ const m2cFiles = (await readdir(resolve(root, 'scripts')))
 const llmEvalFiles = (await readdir(resolve(root, 'tools/llm-runtime-eval/test')))
   .filter((name) => name.endsWith('.test.mjs'))
   .map((name) => `tools/llm-runtime-eval/test/${name}`);
-const discovered = [...spatialFiles, ...m2cFiles, ...llmEvalFiles].sort();
+const m2cDataRoot = resolve(root, 'data/world-catalogs/novgorod');
+const m2cDataFiles = [];
+for (const directory of await readdir(m2cDataRoot, { withFileTypes: true })) {
+  if (!directory.isDirectory() || !directory.name.startsWith('m2c-')) continue;
+  const files = (await readdir(resolve(m2cDataRoot, directory.name)))
+    .filter((name) => name.endsWith('.test.mjs'))
+    .map((name) => `data/world-catalogs/novgorod/${directory.name}/${name}`);
+  m2cDataFiles.push(...files);
+}
+const discovered = [...spatialFiles, ...m2cFiles, ...m2cDataFiles, ...llmEvalFiles].sort();
 
 const excluded = new Map();
 for (const entry of exclusions.exceptions) {

@@ -10,6 +10,9 @@ import { serverError } from '../errors.js';
 import { GAMEPLAY_LLM_CALL_TIMEOUT_MS } from './llm-turn-budget.js';
 import { buildOpeningRejectionSnapshot } from './opening-rejection-snapshot.js';
 import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
+import { playerSafeAppearanceSummary, PLAYER_SAFE_AGE,
+  PLAYER_SAFE_AGE_FEMALE, PLAYER_SAFE_BUILDS, PLAYER_SAFE_EYE_COLORS } from
+  './player-safe-appearance-summary.js';
 
 const WRITER = `Верните только {"prose":"<полное вступление>"}. Напишите 2–4 связанных
 абзаца сдержанной литературной прозы на русском языке во втором лице. Используйте только
@@ -37,17 +40,14 @@ const OPENING_ITEM_CONDITIONS = Object.freeze({
 
 const NPC_TRANSLATIONS = Object.freeze({
   sex: { male: 'мужчина', female: 'женщина' },
-  age: { young: 'молодой', young_adult: 'молодой', adult: 'взрослый',
-    middle_aged: 'средних лет', old: 'пожилой' },
-  age_female: { young: 'молодая', young_adult: 'молодая', adult: 'взрослая',
-    middle_aged: 'средних лет', old: 'пожилая' },
-  build: { slim: 'стройное', lean: 'стройное', average: 'обычное', stocky: 'крепкое' },
+  age: PLAYER_SAFE_AGE,
+  age_female: PLAYER_SAFE_AGE_FEMALE,
+  build: PLAYER_SAFE_BUILDS,
   skin_tone: { pale: 'бледная', light: 'светлая', warm: 'смуглая',
     brown: 'коричневая' },
   face_shape: { oval: 'овальные', round: 'круглые', broad: 'широкие',
     angular: 'угловатые', long: 'вытянутые' },
-  eye_color: { blue: 'голубые', gray: 'серые', green: 'зелёные',
-    brown: 'карие', dark: 'тёмные' },
+  eye_color: PLAYER_SAFE_EYE_COLORS,
   hair_color: { blond: 'русые', light_brown: 'светло-каштановые',
     dark_brown: 'тёмно-каштановые', black: 'чёрные', auburn: 'рыжие',
     gray: 'седые', white: 'белые' },
@@ -440,9 +440,13 @@ function projectNpcCueFacts(cues) {
       NPC_TRANSLATIONS.facial_hair, 'identity.appearance.hair.facial_hair');
     if (facialHair) facts.push(`${facialHair[0].toLocaleUpperCase('ru')}${facialHair.slice(1)}.`);
   }
+  const equipmentWithoutFacts = [];
   for (const item of Array.isArray(cues.equipment) ? cues.equipment : []) {
     const visual = item?.visual_profile_snapshot;
-    if (!visual || typeof visual !== 'object') continue;
+    if (!visual || typeof visual !== 'object') {
+      equipmentWithoutFacts.push(item);
+      continue;
+    }
     const slot = translateOpeningValue(item.equipment_slot_category_id
       ?? visual.equipment_slot, NPC_TRANSLATIONS.slot,
       'equipment.equipment_slot_category_id');
@@ -465,7 +469,17 @@ function projectNpcCueFacts(cues) {
         'equipment.visual_profile_snapshot.headwear_kind')
     ].filter(Boolean))];
     if (details.length) facts.push(`${slot ?? 'Снаряжение'}: ${details.join(', ')}.`);
+    else equipmentWithoutFacts.push(item);
   }
+  const summaryIdentity = identity && { ...identity };
+  if (summaryIdentity?.appearance) {
+    summaryIdentity.appearance = { ...summaryIdentity.appearance };
+    delete summaryIdentity.appearance.hair;
+  }
+  const summary = playerSafeAppearanceSummary({ observable_cues: {
+    ...cues, identity: summaryIdentity, equipment: equipmentWithoutFacts
+  } });
+  if (summary != null) facts.push(summary);
   return facts;
 }
 

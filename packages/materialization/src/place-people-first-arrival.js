@@ -44,6 +44,7 @@ export function wantPlacePeople({ party_id: partyId, scope_instance_ref: scopeRe
       const subject = weighted(group.weighted_subjects, random.nextUint32());
       wanted.push({ origin: 'composition', group_id: group.group_id, subject_kind: subject.subject_kind,
         subject_ref: subject.subject_ref, profile_id: subject.profile_ref ?? null, place_family_id: placeFamilyId,
+        ...(subject.sex != null ? { sex: subject.sex } : {}),
         place_population_composition_ref: { id: compositionRef.id, version: compositionRef.version,
           world_revision_id: compositionRef.world_revision_id } });
     }

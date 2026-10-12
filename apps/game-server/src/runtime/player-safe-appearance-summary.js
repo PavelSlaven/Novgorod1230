@@ -20,8 +20,28 @@ const CLOTHING_FABRICS = Object.freeze({
   light_linen: 'льна', wool: 'шерсти', coarse_wool: 'грубой шерсти',
   furred: 'меха'
 });
+export const PLAYER_SAFE_AGE = Object.freeze({ young: 'молодой',
+  young_adult: 'молодой', adult: 'взрослый', middle_aged: 'средних лет',
+  old: 'пожилой' });
+export const PLAYER_SAFE_AGE_FEMALE = Object.freeze({ young: 'молодая',
+  young_adult: 'молодая', adult: 'взрослая', middle_aged: 'средних лет',
+  old: 'пожилая' });
+export const PLAYER_SAFE_BUILDS = Object.freeze({ slim: 'стройное',
+  lean: 'стройное', average: 'обычное', stocky: 'крепкое' });
+export const PLAYER_SAFE_EYE_COLORS = Object.freeze({ blue: 'голубые',
+  gray: 'серые', green: 'зелёные', brown: 'карие', dark: 'тёмные' });
+const PLAYER_SAFE_EYE_COLORS_INSTRUMENTAL = Object.freeze({ blue: 'голубыми',
+  gray: 'серыми', green: 'зелёными', brown: 'карими', dark: 'тёмными' });
+const PLAYER_SAFE_BUILDS_GENITIVE = Object.freeze({ slim: 'стройного сложения',
+  lean: 'стройного сложения', average: 'обычного сложения',
+  stocky: 'крепкого сложения' });
 
 export function playerSafeAppearanceSummary(npc) {
+  const details = playerSafeAppearanceParts(npc);
+  return details.length > 0 ? details.join(', ') : null;
+}
+
+export function playerSafeAppearanceParts(npc) {
   const appearance = npc?.observable_cues?.identity?.appearance;
   const hair = appearance?.hair;
   const details = [];
@@ -42,13 +62,14 @@ export function playerSafeAppearanceSummary(npc) {
   if (FACIAL_HAIR[hair?.facial_hair]) {
     details.push(FACIAL_HAIR[hair.facial_hair]);
   }
-  const garment = (npc?.observable_cues?.equipment ?? []).find(({ visual_profile_snapshot: visual }) =>
-    ['outer_garment', 'outer'].includes(visual?.equipment_slot))
-    ?? npc?.observable_cues?.equipment?.[0];
+  const equipment = npc?.observable_cues?.equipment ?? [];
+  const garment = equipment.find((item) => ['outer_garment', 'outer'].includes(
+    item?.visual_profile_snapshot?.equipment_slot ?? item?.equipment_slot_category_id))
+    ?? equipment.find((item) => ['base_garment', 'base'].includes(
+      item?.visual_profile_snapshot?.equipment_slot ?? item?.equipment_slot_category_id));
   const garmentColor = CLOTHING_COLORS[
     garment?.visual_profile_snapshot?.main_visible_color];
   if (garmentColor != null) details.push(`${garmentColor} одежда`);
-  const equipment = npc?.observable_cues?.equipment ?? [];
   for (const item of equipment) {
     const visual = item?.visual_profile_snapshot;
     const fabric = CLOTHING_FABRICS[visual?.visible_fabric];
@@ -60,5 +81,15 @@ export function playerSafeAppearanceSummary(npc) {
           : 'видимая вещь';
     details.push(`${label} из ${fabric}`);
   }
-  return details.length > 0 ? details.join(', ') : null;
+  return details;
+}
+
+export function playerSafeAppearanceDistinguishingParts(npc) {
+  const identity = npc?.observable_cues?.identity;
+  const appearance = identity?.appearance;
+  const age = (identity?.sex_category === 'female'
+    ? PLAYER_SAFE_AGE_FEMALE : PLAYER_SAFE_AGE)[identity?.age_category];
+  const eyes = PLAYER_SAFE_EYE_COLORS_INSTRUMENTAL[appearance?.eyes?.color];
+  const build = PLAYER_SAFE_BUILDS_GENITIVE[appearance?.build];
+  return [age ?? null, eyes ? `с ${eyes} глазами` : null, build ?? null];
 }

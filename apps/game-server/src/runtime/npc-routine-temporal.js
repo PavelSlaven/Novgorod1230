@@ -169,7 +169,6 @@ export function npcRoutineTemporalRegistration() {
         completed_at: movement.completed_at
       };
     }
-    const placementWrites = routinePlacementWrites(row, currentPositionNodeId, changeSetId);
     const persistedRows = worlds(context.projection).map((projection) =>
       projection?.temporal_source_proof?.npc_schedule_runtime)
       .find(Array.isArray);
@@ -181,10 +180,13 @@ export function npcRoutineTemporalRegistration() {
     if (!Number.isSafeInteger(persistedStateVersion) || persistedStateVersion < 0) {
       fail('temporal_candidate_stale');
     }
+    const placementWrites = routinePlacementWrites(row, currentPositionNodeId,
+      changeSetId, persistedRow.npc_placement);
     after.npc_placement = placementWrites.deletes.length ? null
       : placementWrites.updates.length ? { ...row.npc_placement,
         position_node_id: currentPositionNodeId,
-        state_version: Number(row.npc_placement.state_version) + 1 }
+        state_version: placementWrites.updates[placementWrites.updates.length - 1]
+          .record.state_version }
         : row.npc_placement;
     const transition = { boundary_id: candidate.boundary_id, schedule_id: row.id, npc_id: row.npc_id,
       before: structuredClone(row), after, occurred_at: candidate.scheduled_at,
@@ -416,7 +418,7 @@ function approvedLocationBindings(positionNodeId, row) {
   return (row.approved_location_bindings ?? []).filter((binding) =>
     binding.position_node_id === positionNodeId);
 }
-function routinePlacementWrites(row, positionNodeId, changeSetId) {
+function routinePlacementWrites(row, positionNodeId, changeSetId, persistedPlacement) {
   const placement = row.npc_placement;
   if (!placement) {
     if (positionNodeId != null) fail('npc_schedule_gap');
@@ -425,10 +427,16 @@ function routinePlacementWrites(row, positionNodeId, changeSetId) {
   if (placement.entity_id !== row.npc_id || placement.entity_kind !== 'npc'
       || placement.position_node_id !== row.current_position_node_id
       || !Number.isSafeInteger(Number(placement.state_version))) fail('npc_schedule_gap');
+  if (!persistedPlacement || persistedPlacement.entity_id !== row.npc_id
+      || persistedPlacement.entity_kind !== 'npc'
+      || !Number.isSafeInteger(Number(persistedPlacement.state_version))) {
+    fail('npc_schedule_gap');
+  }
   const id = `npc:${row.npc_id}`;
   const physicalKey = `party_runtime.entity_placements:${id}`;
+  const baseStateVersion = Number(persistedPlacement.state_version);
   const expected = [{ target_table: 'entity_placements', id,
-    state_version: Number(placement.state_version) }];
+    state_version: baseStateVersion }];
   if (positionNodeId == null) return { updates: [], deletes: [{
     ...write('entity_placements', id, { party_id: row.party_id,
       entity_kind: 'npc', entity_id: row.npc_id }),
@@ -440,7 +448,7 @@ function routinePlacementWrites(row, positionNodeId, changeSetId) {
   }
   const record = { party_id: row.party_id, entity_kind: 'npc', entity_id: row.npc_id,
     placement_kind: 'scene_position', position_node_id: positionNodeId,
-    occupies_capacity_units: 1, state_version: Number(placement.state_version) + 1,
+    occupies_capacity_units: 1, state_version: baseStateVersion + 1,
     updated_change_set_id: changeSetId };
   return { updates: [{ ...write('entity_placements', id, record),
     previous_record: { position_node_id: placement.position_node_id,

@@ -1,6 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import { selectSpatialV3PlaceLabel } from '@rus/presentation/spatial-v3-projection';
-import { loadApprovedPlaceLabels } from '../../../../data/world-catalogs/novgorod/m2c-place-labels/approved-labels.mjs';
+import { loadApprovedPlaceLabelsSnapshot } from '../../../../data/world-catalogs/novgorod/m2c-place-labels/approved-labels.mjs';
 import { serverError } from '../errors.js';
 
 export const TARGET_START_CATALOG_ID = 'novgorod_live_world_runtime_v17';
@@ -44,7 +44,7 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
       profile.canonical_start.policy_profile_pins.find((pin) =>
         pin.key === start.initial_perception_rule.id && pin.revision === start.initial_perception_rule.version) }) });
   const startPlaceRef = start.initial_placement?.canonical_g5_ref;
-  const placeLabel = selectSpatialV3PlaceLabel(startPlaceRef, loadApprovedPlaceLabels());
+  const placeLabel = selectSpatialV3PlaceLabel(startPlaceRef, loadApprovedPlaceLabelsSnapshot());
   const displayMetadata = Object.freeze({ ...profile.public_metadata, title: placeLabel,
     available: release.production_activation === true
       && release.runtime_selectable_in_canonical_production === true });

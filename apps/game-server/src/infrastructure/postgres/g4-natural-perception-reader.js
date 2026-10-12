@@ -1,6 +1,6 @@
 import { loadApprovedG4NaturalCatalog, loadApprovedG4NaturalPlacementCatalog,
   loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
-import { loadApprovedPlaceLabels } from '../../../../../data/world-catalogs/novgorod/m2c-place-labels/approved-labels.mjs';
+import { loadApprovedPlaceLabelsSnapshot } from '../../../../../data/world-catalogs/novgorod/m2c-place-labels/approved-labels.mjs';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { serverError } from '../../errors.js';
@@ -12,12 +12,24 @@ import { currentSceneVisibilityModifiers } from './spatial-v3-current-visibility
 const coverCandidateBytes = readFileSync(new URL('../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-candidate.json', import.meta.url));
 const coverCandidate = JSON.parse(coverCandidateBytes);
 const coverApproval = JSON.parse(readFileSync(new URL('../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-approval.json', import.meta.url)));
+let coverActivation = null;
+try {
+  coverActivation = JSON.parse(readFileSync(new URL('../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-runtime-activation-approval.json', import.meta.url)));
+} catch {
+  // Missing or unreadable authority remains a typed gap at the helper boundary.
+}
 const naturalCandidate = JSON.parse(readFileSync(new URL('../../../../../data/world-catalogs/novgorod/m2c-natural/candidate.json', import.meta.url)));
 
 export function approvedNaturalStableCover(profile) {
-  if (coverApproval.decision !== 'APPROVE_DATA_ONLY'
+  const candidateSha = createHash('sha256').update(coverCandidateBytes).digest('hex');
+  if (coverActivation?.schema !== 'rus.live_world_runtime.natural_source_stable_cover_runtime_activation_approval.v1'
+    || coverActivation.decision !== 'ACTIVATE'
+    || coverActivation.runtime_activation_authorized !== true
+    || coverActivation.subject !== coverCandidate.candidate_id
+    || coverActivation.candidate_sha256 !== candidateSha
+    || coverApproval.decision !== 'APPROVE_DATA_ONLY'
     || coverApproval.subject !== coverCandidate.candidate_id
-    || coverApproval.candidate_sha256 !== createHash('sha256').update(coverCandidateBytes).digest('hex')
+    || coverApproval.candidate_sha256 !== candidateSha
     || profile?.g4_ref?.world_revision_id !== coverCandidate.world_revision_id) {
     gap('approved_natural_stable_cover_required');
   }
@@ -237,7 +249,7 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
     canonical_g5_ref: snapshot.site.canonical_g5_ref ? {
       id: snapshot.site.canonical_g5_ref.entity_id,
       version: Number(snapshot.site.canonical_g5_ref.authoring_version) } : null,
-    approved_place_labels: loadApprovedPlaceLabels(),
+    approved_place_labels: loadApprovedPlaceLabelsSnapshot(),
     natural_profile_ref: { id: profiles[0].payload.profile_id,
       version: profiles[0].payload.profile_version },
     g4_ref: profiles[0].payload.g4_ref, scene_template_ref,

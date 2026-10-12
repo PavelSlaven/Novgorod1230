@@ -11,6 +11,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const GAME_BASE = path.join(ROOT, 'data/world-catalogs/novgorod/game-base-v1');
 const JS_READER = path.join(GAME_BASE, 'scripts/material-view.cjs');
 const PY_READER = path.join(GAME_BASE, 'scripts/material_view.py');
+const PRODUCER = path.join(GAME_BASE, 'scripts/build-master-material-view.py');
+const OVERLAY_FIXTURE = path.join(ROOT, 'test/fixtures/issue-465/overlay-22.csv');
+const SOURCE_FIXTURE = path.join(ROOT, 'test/fixtures/issue-465/source-synthetic.csv');
 const RUNTIME_PARENT = process.env.FLEET_DIR
   ? path.join(process.env.FLEET_DIR, 'out/mutants/465-review-04')
   : path.join(ROOT, 'test/fixtures/material-view-completeness/scratch');
@@ -24,11 +27,31 @@ const pythonReaderCode = [
   'm.OVERLAY_PATH=pathlib.Path(sys.argv[3])',
   'm.load_material_overrides.cache_clear()',
   'try:',
-  '    m.load_material_overrides(sys.argv[4])',
+  '    r=m.load_material_overrides(sys.argv[4])',
   'except Exception as e:',
   '    print(json.dumps({"code":getattr(e,"code",""),"message":str(e)}))',
   'else:',
-  '    print(json.dumps({"code":"ACCEPT","message":""}))',
+  '    print(json.dumps({"code":"ACCEPT","message":"","rows":[r[key] for key in sorted(r)]}))',
+].join('\n');
+const pythonBuildCode = [
+  'import importlib.util,pathlib,sys',
+  'p=pathlib.Path(sys.argv[1])',
+  's=importlib.util.spec_from_file_location("build_material_view",p)',
+  'm=importlib.util.module_from_spec(s)',
+  's.loader.exec_module(m)',
+  'm.build_and_write(sys.argv[2],sys.argv[3],sys.argv[4],expected_source_sha=sys.argv[5])',
+].join('\n');
+const pythonOverlayRewriteCode = [
+  'import csv,json,sys',
+  'with open(sys.argv[1],encoding="utf-8",newline="") as f:',
+  '    reader=csv.DictReader(f); fields=reader.fieldnames; rows=list(reader)',
+  'if sys.argv[3]=="multiline":',
+  '    values=json.loads(rows[0]["materials"]); values.append(\'parity, "quoted"\')',
+  '    rows[0]["materials"]=json.dumps(values,ensure_ascii=False,indent=2)',
+  '    assert json.loads(rows[0]["materials"])[-1]==\'parity, "quoted"\'',
+  'elif sys.argv[3]=="duplicate": rows.append(dict(rows[0]))',
+  'with open(sys.argv[2],"w",encoding="utf-8",newline="") as f:',
+  '    writer=csv.DictWriter(f,fieldnames=fields); writer.writeheader(); writer.writerows(rows); f.write("\\r\\n")',
 ].join('\n');
 
 function sha256(bytes) {
@@ -37,6 +60,16 @@ function sha256(bytes) {
 
 function runPythonReader(source, overlay, view) {
   return spawnSync('python3', ['-B', '-c', pythonReaderCode, PY_READER, view, overlay, source],
+    { encoding: 'utf8', timeout: 30_000 });
+}
+
+function runProducer(source, overlay, view) {
+  return spawnSync('python3', ['-B', '-c', pythonBuildCode, PRODUCER, source, overlay, view,
+    sha256(fs.readFileSync(source))], { encoding: 'utf8', timeout: 30_000 });
+}
+
+function rewriteOverlay(input, output, mode) {
+  return spawnSync('python3', ['-B', '-c', pythonOverlayRewriteCode, input, output, mode],
     { encoding: 'utf8', timeout: 30_000 });
 }
 
@@ -97,6 +130,71 @@ test('both material-view readers reject missing and extra overlay item IDs', asy
         for (const itemId of variant.extra) assert.match(result.message, new RegExp(itemId, 'u'));
       });
     }
+  } finally {
+    fs.rmSync(runtimeRoot, { recursive: true, force: true });
+  }
+});
+
+test('material-view readers match Python CSV parsing for multiline quoted records', async t => {
+  fs.mkdirSync(RUNTIME_PARENT, { recursive: true });
+  const runtimeRoot = fs.mkdtempSync(path.join(RUNTIME_PARENT, 'csv-parity-'));
+  try {
+    const source = path.join(runtimeRoot, 'source.csv');
+    const overlay = path.join(runtimeRoot, 'overlay.csv');
+    const view = path.join(runtimeRoot, 'view.json');
+    fs.copyFileSync(SOURCE_FIXTURE, source);
+    const rewritten = rewriteOverlay(OVERLAY_FIXTURE, overlay, 'multiline');
+    assert.equal(rewritten.error, undefined, rewritten.error?.message);
+    assert.equal(rewritten.status, 0, rewritten.stderr);
+    const overlayBytes = fs.readFileSync(overlay);
+    assert.match(overlayBytes.toString('utf8'), /parity/u, 'overlay must contain the quoted test value');
+    assert.match(overlayBytes.toString('utf8'), /\r\n\r\n$/u, 'overlay ends with an empty CSV record');
+
+    const built = runProducer(source, overlay, view);
+    assert.equal(built.error, undefined, built.error?.message);
+    assert.equal(built.status, 0, built.stderr);
+    const generated = JSON.parse(fs.readFileSync(view, 'utf8'));
+    const originalRows = generated.rows;
+    const expectedIds = generated.rows.map(row => row.item_id).sort();
+    const inputRows = expectedIds.map(item_id => ({ item_id, primary_material: 'source', materials: '[]' }));
+    const { applyMaterialOverrides } = createRequire(JS_READER)(JS_READER);
+    const jsRows = applyMaterialOverrides(inputRows, source, { viewPath: view, overlayPath: overlay })
+      .map(({ item_id, primary_material, materials }) => ({ item_id, primary_material, materials }))
+      .sort((a, b) => a.item_id.localeCompare(b.item_id));
+    const python = runPythonReader(source, overlay, view);
+    assert.equal(python.error, undefined, `Python reader spawn failed: ${python.error?.message}`);
+    assert.equal(python.status, 0, python.stderr);
+    const pythonResult = JSON.parse(python.stdout);
+    assert.equal(pythonResult.code, 'ACCEPT', pythonResult.message);
+    assert.deepEqual(jsRows.map(row => row.item_id), expectedIds);
+    assert.deepEqual(pythonResult.rows.map(row => row.item_id), expectedIds);
+    assert.deepEqual(jsRows, pythonResult.rows);
+
+    await t.test('both readers reject a missing overlay item', () => {
+      generated.rows = originalRows.slice(0, -1);
+      fs.writeFileSync(view, JSON.stringify(generated));
+      assert.throws(() => applyMaterialOverrides([], source, { viewPath: view, overlayPath: overlay }),
+        { code: 'MATERIAL_VIEW_INCOMPLETE' });
+      const result = runPythonReader(source, overlay, view);
+      assert.equal(result.error, undefined, result.error?.message);
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(JSON.parse(result.stdout).code, 'MATERIAL_VIEW_INCOMPLETE');
+    });
+
+    await t.test('both readers reject duplicate overlay IDs', () => {
+      const duplicate = rewriteOverlay(OVERLAY_FIXTURE, overlay, 'duplicate');
+      assert.equal(duplicate.error, undefined, duplicate.error?.message);
+      assert.equal(duplicate.status, 0, duplicate.stderr);
+      generated.overlay_sha256 = sha256(fs.readFileSync(overlay));
+      generated.rows = originalRows;
+      fs.writeFileSync(view, JSON.stringify(generated));
+      assert.throws(() => applyMaterialOverrides([], source, { viewPath: view, overlayPath: overlay }),
+        /missing or duplicate item_id/u);
+      const result = runPythonReader(source, overlay, view);
+      assert.equal(result.error, undefined, result.error?.message);
+      assert.equal(result.status, 0, result.stderr);
+      assert.match(JSON.parse(result.stdout).message, /missing or duplicate item_id/u);
+    });
   } finally {
     fs.rmSync(runtimeRoot, { recursive: true, force: true });
   }

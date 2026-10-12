@@ -2,6 +2,7 @@ import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import { canonicalDigest } from '@rus/materialization';
 import { spatialV3TraversalOutcomeProjection } from '@rus/turn/spatial-v3-execution';
 import { lowerDvinaTraceCarriedItemIds,
+  uniqueLowerDvinaTraceVisibleObjects,
   lowerDvinaTraceObservedSceneChanges } from './lower-dvina-trace-visible-scene-items.js';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
 import {
@@ -114,6 +115,26 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
         const reusePreparedDestination = destinationCompletion
           && destinationDigestMatches;
         // Reuse keeps the traversal owner's digest-backed final destination seed.
+        if (reusePreparedDestination && plain(input.retrieved_state)) {
+          const carriedItemIds = lowerDvinaTraceCarriedItemIds(
+            targetState.items, targetState.actor_id);
+          if (carriedItemIds.size > 0) {
+            if (typeof projectCurrentScene !== 'function') {
+              ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+            }
+            const projectedCurrent = projectCurrentScene(targetState)
+              ?.current_visible_context;
+            if (!plain(projectedCurrent)) {
+              ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+            }
+            const carriedItems = (projectedCurrent.visible_objects ?? [])
+              .filter(({ entity_ref: ref }) => ref?.entity_kind === 'item'
+                && carriedItemIds.has(ref.entity_id));
+            destination.visible_objects = uniqueLowerDvinaTraceVisibleObjects([
+              ...carriedItems, ...(destination.visible_objects ?? [])
+            ]);
+          }
+        }
         if (committedDestination && !reusePreparedDestination) {
           if (destinationDigest == null && !sourceEndpoint) {
             if (Object.hasOwn(targetState.position, 'location_ref')) {

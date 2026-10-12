@@ -29,6 +29,11 @@ import { backgroundNpc, body, fixture, semanticActivity } from
   './lower-dvina-trace-turn-step-commit-fixture.js';
 import { SCENE_NPC_SOURCE } from
   '../src/runtime/lower-dvina-trace-scene-presence.js';
+import { canonicalDigest } from '@rus/materialization';
+import { lowerDvinaTraceVisibleSceneItems } from
+  '../src/runtime/lower-dvina-trace-visible-scene-items.js';
+import { createLowerDvinaTraceTurnStepVisibleProjector } from
+  '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
 
 test('route turn keeps normalized party position with snapshot', () => {
   const writes = buildLowerDvinaTraceTurnStepRootWrites({
@@ -128,6 +133,110 @@ test('commit keeps open-one-space S1 resolution visible at formal destination',
       visible_status: 'внутри'
     });
   });
+
+for (const costKind of ['action', 'time']) {
+  test(`prepared destination projection retains only carried items (${costKind})`,
+    async () => {
+      const destination = { version: 1, schema: 'visible_context_package',
+        visible_scene: 'Двор.', visible_changes: [], sensory_details: [],
+        visible_npc: [], visible_objects: [], known_context: [],
+        uncertainties: [], allowed_tensions: [], do_not_imply: [] };
+      const transition = { owner: '@rus/turn/spatial-v3-site-connection-traversal',
+        from_position_ref: 'position:origin', to_position_ref: 'position:destination',
+        source_site_id: 'site:origin', destination_site_id: 'site:destination',
+        source_g6_instance_id: 'g6:origin', destination_g6_instance_id: 'g6:destination',
+        destination_visible_digest: canonicalDigest(destination) };
+      const endpoint = { endpoint_ref: { endpoint_id: 'endpoint:destination' },
+        resolved_position_id: 'position:destination' };
+      let sceneLoads = 0;
+      const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+        fallback: { project: async () => assert.fail('prepared arrival is self-projected') },
+        loadPreparedMovementScene: async () => {
+          sceneLoads += 1;
+          assert.fail('prepared arrival must reuse its destination seed');
+        },
+        projectCurrentScene: (state) => ({ current_visible_context: {
+          ...destination,
+          visible_objects: [
+            ...lowerDvinaTraceVisibleSceneItems(state.items,
+              state.position, state.actor_id)
+              .map(({ visibleObject }) => visibleObject),
+            { entity_ref: { entity_kind: 'item',
+              entity_id: 'item:origin-ground' },
+              display_label: 'полено', visible_status: 'available' }
+          ]
+        } })
+      });
+      const result = await projector.project({
+        consequence: { position_transition: transition,
+          movement: { cost_kind: costKind },
+          spatial_v3_traversal: { plan: { steps: [{
+            arrival_endpoint_snapshot: endpoint
+          }] }, result: costKind === 'time'
+            ? { result_kind: 'segment_completed' }
+            : { result_kind: 'completed', endpoint_after: {
+              endpoint_id: 'endpoint:destination' } } },
+          visible_seed: { destination_site_origin: 'canonical',
+            destination_visible_context: destination } },
+        retrieved_state: { actor_id: 'actor-1',
+          position: { site_id: 'site:origin', position_id: 'position:origin',
+            location_ref: 'site:origin', g5_anchor_id: 'anchor:origin' },
+          items: [
+            { item_id: 'item:held', name: 'нож', placement: {
+              holder_character_id: 'actor-1', physical_position: 'hands' } },
+            { item_id: 'item:origin-ground', name: 'полено', placement: {
+              anchor_id: 'anchor:origin', physical_position: 'ground' } }
+          ] }
+      });
+
+      assert.deepEqual(result.visible_objects.map(({ entity_ref: ref }) =>
+        ref.entity_id), ['item:held']);
+      assert.equal(sceneLoads, 0,
+        'carried-item projection does not reload the prepared scene');
+
+      const envelope = commitEnvelope({ clarification: false, check: false });
+      envelope.visible_context = result;
+      envelope.consequence.position_transition = {
+        owner: '@rus/movement-routes', actor_id: 'actor-1',
+        from_position_ref: 'position:origin',
+        to_position_ref: 'position:destination'
+      };
+      envelope.consequence.visible_seed.destination_visible_context = destination;
+      const f = fixture({ direct: true, envelopeOverride: envelope,
+        stateOverride: {
+          actor_id: 'actor-1',
+          position: { site_id: 'site:origin', position_id: 'position:origin',
+            location_ref: 'site:origin', g5_anchor_id: 'anchor:origin' },
+          journey_location: { id: 'journey',
+            scene_position_id: 'position:origin', state_version: 3 },
+          items: [{ item_id: 'item:held', template_id: 'template:held',
+            profile_id: 'profile:held', category_id: 'weapon', quantity: 1,
+            condition_state: 'sound', legal_status: 'party_owned',
+            state: {}, name: 'нож', inventory_profile: { mass_grams: 100,
+              external_hand_cost: 0, carry_form: 'compact',
+              packing_slot_cost: 1, packing_bundle_size: 1 }, placement: {
+              holder_character_id: 'actor-1', physical_position: 'hands' } },
+            { item_id: 'item:origin-ground', template_id: 'template:ground',
+              profile_id: 'profile:ground', category_id: 'material', quantity: 1,
+              condition_state: 'sound', legal_status: 'party_owned',
+              state: {}, name: 'полено', inventory_profile: { mass_grams: 100,
+                external_hand_cost: 0, carry_form: 'compact',
+                packing_slot_cost: 1, packing_bundle_size: 1 }, placement: {
+              anchor_id: 'anchor:origin' } }]
+        },
+        turnStepApprovedOwners: { async loadPreparedMovementScene({ state }) {
+          return { ...state, current_visible_context: destination };
+        } } });
+
+      await f.commit();
+
+      const payload = f.plans[0].appends.find(({ target_table: table }) =>
+        table === 'party_visible_packages').record.visible_payload;
+      assert.deepEqual(payload.visible_objects
+        .filter(({ entity_ref: ref }) => ref?.entity_kind === 'item')
+        .map(({ entity_ref: ref }) => ref.entity_id), ['item:held']);
+    });
+}
 
 for (const capacityLeft of [true, false]) {
   test(`destination commit keeps the S1 planner marker out of visible context (capacity left: ${capacityLeft})`,

@@ -17,6 +17,8 @@ import { failCurrentScene, validCurrentScene, visibleNpc } from
   './lower-dvina-trace-turn-step-current-scene-validation.js';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
+import { playerSafeAppearanceSummary } from
+  './lower-dvina-trace-player-safe-appearance.js';
 export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 export function projectPerceivedPeopleAbsence({ currentVisibleContext,
   currentSpatialContextIsFresh, currentSpatialContextFiltersEntities }) {
@@ -94,6 +96,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     .filter((npc) => npc?.entity_ref?.entity_kind === 'npc'
       && text(npc.entity_ref.entity_id))
     .map((npc) => [npc.entity_ref.entity_id, npc]));
+  const refreshedAppearanceNpcIds = new Set();
   const sceneNpcs = committedState.current_spatial_context_filters_entities === true
     ? (currentSpatial?.visible_npc ?? []).map((npc) => {
       const id = npc?.entity_ref?.entity_id;
@@ -109,12 +112,27 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       const currentKnownName = text(knownName) ? knownName
         : npc?.recognition === 'recognized' && text(currentLabel)
           && currentLabel !== 'человек' ? currentLabel : null;
+      const priorAppearance = text(currentKnownName)
+          || perceived?.recognition === 'recognized'
+        ? null : playerSafeAppearanceSummary(perceived);
+      const priorAppearanceSuffix = text(priorAppearance)
+          && text(perceived?.display_label)
+          && perceived.display_label.endsWith(`, ${priorAppearance}`)
+        ? `, ${priorAppearance}` : null;
+      if (!text(currentKnownName) && priorAppearanceSuffix != null
+          && npc?.observable_cues != null) {
+        refreshedAppearanceNpcIds.add(id);
+      }
+      const priorDisplayLabel = priorAppearanceSuffix != null
+          && npc?.observable_cues != null
+        ? perceived.display_label.slice(0, -priorAppearanceSuffix.length)
+        : perceived?.display_label;
       return {
         ...structuredClone(npc),
         ...(text(currentKnownName) ? {
           display_label: currentKnownName, recognition: 'recognized'
         } : perceived == null ? {} : {
-          display_label: perceived.display_label,
+          display_label: priorDisplayLabel,
           recognition: perceived.recognition ?? npc?.recognition
         }),
         ...(npc?.observable_cues == null && perceived?.observable_cues != null ? {
@@ -169,7 +187,14 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
   }, committedState: projectionSource }), projectionSource, playerSafe.position);
   const current = { ...observed,
-    visible_npc: distinctNpcLabels(observed.visible_npc) };
+    visible_npc: distinctNpcLabels(observed.visible_npc).map((npc) => {
+      if (!refreshedAppearanceNpcIds.has(npc?.entity_ref?.entity_id)) return npc;
+      const appearance = playerSafeAppearanceSummary(npc);
+      if (!text(appearance) || npc.display_label?.endsWith(`, ${appearance}`)) {
+        return npc;
+      }
+      return { ...npc, display_label: `${npc.display_label}, ${appearance}` };
+    }) };
   if (!validCurrentScene(current)) failCurrentScene();
   const { current_spatial_context: _currentSpatialContext,
     current_spatial_context_is_fresh: _currentSpatialContextIsFresh,

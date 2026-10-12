@@ -20,9 +20,11 @@ function parseCsvRows(text) {
   let row = [];
   let field = '';
   let quoted = false;
+  let recordPresent = false;
   for (let index = 0; index < text.length; index += 1) {
     const character = text[index];
     if (quoted) {
+      recordPresent = true;
       if (character === '"') {
         if (text[index + 1] === '"') {
           field += '"';
@@ -35,23 +37,29 @@ function parseCsvRows(text) {
       }
     } else if (character === '"') {
       quoted = true;
+      recordPresent = true;
     } else if (character === ',') {
+      recordPresent = true;
       row.push(field);
       field = '';
     } else if (character === '\n') {
-      row.push(field);
-      rows.push(row);
+      if (recordPresent || row.length) {
+        row.push(field);
+        rows.push(row);
+      }
       row = [];
       field = '';
+      recordPresent = false;
     } else if (character !== '\r') {
       field += character;
+      recordPresent = true;
     }
   }
-  if (field !== '' || row.length) {
+  if (recordPresent || row.length) {
     row.push(field);
     rows.push(row);
   }
-  return rows.filter(record => record.length > 1 || record[0] !== '');
+  return rows;
 }
 
 function readOverlayItemIds(overlayPath) {

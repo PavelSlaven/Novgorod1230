@@ -5,11 +5,11 @@ import { serverError } from '../../errors.js';
 
 /** Production v17 NPC/player semantic ports (A2). Exported for direct wire tests. */
 export function createSpatialV3ProductionV17NpcRuntimePorts({
-  roleRunner, worldKnowledgeGrounder, combatBodyBandContext = null,
+  roleRunner, telemetry = null, worldKnowledgeGrounder, combatBodyBandContext = null,
   npcSpeechAddressForms = [], npcSpeechRegisters = []
 } = {}) {
   const npcSemanticModel = Object.assign(createLowerDvinaTraceNpcSemanticModel({
-    roleRunner, worldKnowledgeGrounder
+    roleRunner, worldKnowledgeGrounder, telemetry
   }), { npcSpeechAddressForms, npcSpeechRegisters });
   return {
     playerConversationModel: createLowerDvinaTracePlayerConversationModel({

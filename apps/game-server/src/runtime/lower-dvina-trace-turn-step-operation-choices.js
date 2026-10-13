@@ -59,6 +59,17 @@ function operationChoiceGrounding(operation, request) {
         reference?.entity_kind === 'npc'
           && reference.entity_id === operation.target_actor_refs[0]);
     if (target != null) grounding.target_actor = structuredClone(target);
+  } else if (operation?.op === 'emit_interaction'
+      && operation.target_actor_refs?.length > 1) {
+    const visibleTargets = request.player_safe_state?.current_visible_context
+      ?.visible_npc ?? [];
+    const targets = operation.target_actor_refs.map((targetId) =>
+      visibleTargets.filter(({ entity_ref: reference }) =>
+        reference?.entity_kind === 'npc' && reference.entity_id === targetId));
+    if (targets.every((matches) => matches.length === 1)) {
+      grounding.target_actors = targets.map(([target]) =>
+        structuredClone(target));
+    }
   }
   return Object.keys(grounding).length === 0 ? {} : {
     player_safe_grounding: grounding

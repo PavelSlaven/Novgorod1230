@@ -17,6 +17,7 @@ export {
   buildConversationSession,
   buildConversationStatementEvent,
   diagnoseConversationPlanDominantAct,
+  diagnoseConversationPlanMixedScript,
   buildNpcConversationResponseRequest,
   buildPlayerConversationContributionPlan,
   buildPlayerConversationInput,

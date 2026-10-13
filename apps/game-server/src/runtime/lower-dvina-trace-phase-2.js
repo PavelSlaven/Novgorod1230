@@ -471,8 +471,9 @@ export function liveWorldConversationCommands({ state, inputDigest,
   temporalAdvanceOwner, revalidateStateVersion }) {
   if (typeof playerConversationModel !== 'function'
       || typeof npcSemanticModel !== 'function') return [];
-  return liveWorldConversationContractEntries({ state,
-    authoredTurnProfile }).map(({ npc, contracts }) => {
+  const entries = liveWorldConversationContractEntries({ state,
+    authoredTurnProfile });
+  const commands = entries.map(({ npc, contracts }) => {
     const command = createSemanticConversationCommand({ contracts,
       inputDigest, evidence: false, playerConversationModel,
       npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion });
@@ -499,6 +500,28 @@ export function liveWorldConversationCommands({ state, inputDigest,
       }
     };
   });
+  if (entries.length < 2) return commands;
+  const targets = entries.map(({ npc }) => npc.instance_id);
+  const primary = commands[0];
+  const groupOperations = primary.semantic_binding.operation_dtos.map(
+    (operation) => ({ ...operation, target_actor_refs: [...targets],
+      content: 'Обратиться к видимым людям' }));
+  return [...commands, {
+    ...primary,
+    command_id: `live_world.conversation.group:${entries[0].npc.instance_id}`,
+    option_id: `live_world_conversation_group_${entries[0].npc.instance_id}`,
+    label: 'Обратиться к видимым людям',
+    semantic_binding: {
+      binding_id: `live_world_conversation:group:${entries[0].npc.instance_id}`,
+      operation: 'emit_interaction', operation_dtos: groupOperations,
+      matches: ({ operation }) => groupOperations.some((candidate) =>
+        candidate.actor_ref === operation?.actor_ref
+        && candidate.interaction_kind === operation.interaction_kind
+        && Array.isArray(operation.target_actor_refs)
+        && operation.target_actor_refs.length === targets.length
+        && targets.every((id) => operation.target_actor_refs.includes(id)))
+    }
+  }];
 }
 
 function liveWorldConversationContractEntries({ state,

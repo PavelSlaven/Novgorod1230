@@ -60,7 +60,7 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
 }
 
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
-  worldKnowledgeGrounder = null } = {}) {
+  worldKnowledgeGrounder = null, telemetry = null } = {}) {
   requireRoleRunner(roleRunner);
   const semanticRepairDecisions = new WeakMap();
   const groundedRequestsByRequest = new WeakMap();
@@ -158,7 +158,20 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     });
     const resolvedOutput = resolveNpcClaimReferenceIds(response.output,
       requestForPlan);
-    const assembled = assembleNpcConversationPlan(resolvedOutput, requestForPlan);
+    const normalized = normalizeNpcConversationSpeech(resolvedOutput);
+    try {
+      telemetry?.onDetail?.({
+        event: 'npc_conversation_speech_normalization',
+        scope: 'turn_runtime',
+        role_id: repair
+          ? 'npc_conversation_responder_format_repair'
+          : 'npc_conversation_responder',
+        request_identity: request.request_id,
+        replaced_character_count: normalized.diagnostics.replaced_character_count
+      });
+    } catch { /* diagnostics must not affect gameplay */ }
+    const assembled = assembleNpcConversationPlan(normalized.output,
+      requestForPlan);
     const retryingServiceText = semanticRepair && repair.validation_errors
       .some(({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT');
     if (retryingServiceText && repair.original_output != null) {
@@ -205,6 +218,48 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         ?? preparedContext?.context?.audit_request ?? request });
   };
   return model;
+}
+
+const NPC_SPEECH_LATIN_CONFUSABLES = Object.freeze({
+  a: 'а', e: 'е', o: 'о', p: 'р', c: 'с', x: 'х', y: 'у',
+  A: 'А', B: 'В', E: 'Е', K: 'К', M: 'М', H: 'Н', O: 'О',
+  P: 'Р', C: 'С', T: 'Т', X: 'Х', Y: 'У'
+});
+
+export function normalizeNpcConversationSpeech(output) {
+  const utterance = output?.speech?.utterance_text;
+  if (typeof utterance !== 'string') return {
+    output,
+    diagnostics: { replaced_character_count: 0 }
+  };
+
+  let replacedCharacterCount = 0;
+  const normalizedUtterance = utterance.replace(/[\p{L}\p{M}]+/gu, (token) => {
+    const characters = [...token];
+    const latin = characters.filter((character) =>
+      /\p{Script=Latin}/u.test(character));
+    if (latin.length === 0
+        || !characters.some((character) =>
+          /\p{Script=Cyrillic}/u.test(character))
+        || latin.some((character) =>
+          !Object.hasOwn(NPC_SPEECH_LATIN_CONFUSABLES, character))) {
+      return token;
+    }
+    return characters.map((character) => {
+      const replacement = NPC_SPEECH_LATIN_CONFUSABLES[character];
+      if (replacement === undefined) return character;
+      replacedCharacterCount += 1;
+      return replacement;
+    }).join('');
+  });
+
+  return {
+    output: replacedCharacterCount === 0 ? output : {
+      ...output,
+      speech: { ...output.speech, utterance_text: normalizedUtterance }
+    },
+    diagnostics: { replaced_character_count: replacedCharacterCount }
+  };
 }
 
 function npcRepairErrorsForModel(errors) {

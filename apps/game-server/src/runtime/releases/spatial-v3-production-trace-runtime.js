@@ -241,6 +241,7 @@ export function createTraceTurnRuntime({
     ]
   });
   const npcRuntimePorts = createNpcRuntimePorts({ roleRunner,
+    telemetry: llmDiagnostics.telemetry,
     worldKnowledgeGrounder,
     npcSpeechAddressForms: materializationInputs?.npc_speech_address_forms ?? [],
     npcSpeechRegisters: materializationInputs?.npc_speech_registers ?? [] });

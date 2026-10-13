@@ -195,6 +195,7 @@ export function validateConversationContributionPlan(value, request = null) {
     || !stateVersion(value.state_version)
     || !contractEntityRef(value.speaker_ref, 'npc')
     || !validateContributionBody(value)
+    || findMixedLatinCyrillicToken(value.speech?.utterance_text) !== null
     || !nonEmptyText(value.reason)
     || !jsonSafe(value)) {
     return false;
@@ -219,6 +220,23 @@ export function buildConversationContributionPlan(value, request = null) {
     (plan) => validateConversationContributionPlan(plan, request),
     'conversation_contribution_plan_v1'
   );
+}
+
+export function diagnoseConversationPlanMixedScript(value) {
+  if (value?.contribution_kind !== 'speech') return [];
+  const word = findMixedLatinCyrillicToken(value.speech?.utterance_text);
+  return word === null ? [] : freeze([{
+    code: 'utterance_mixed_script',
+    path: '$.speech.utterance_text',
+    word,
+    message: `Speech contains a mixed Latin/Cyrillic word: ${word}.`
+  }]);
+}
+
+function findMixedLatinCyrillicToken(value) {
+  if (typeof value !== 'string') return null;
+  return value.match(/[\p{L}\p{M}]+/gu)?.find((word) =>
+    /\p{Script=Latin}/u.test(word) && /\p{Script=Cyrillic}/u.test(word)) ?? null;
 }
 
 export function orderNpcConversationDecisionRequests(requests, directAddresseeRefs = []) {

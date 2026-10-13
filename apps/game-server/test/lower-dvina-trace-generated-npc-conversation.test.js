@@ -3,8 +3,9 @@ import test from 'node:test';
 import { FAR, commandsFor, conversationRun, generatedState } from
   './lower-dvina-trace-generated-npc-fixture.js';
 
-const targets = (commands) => commands.map(({ command_id: id }) =>
-  id.replace('live_world.conversation.', ''));
+const targets = (commands) => [...new Set(commands.flatMap(
+  ({ semantic_binding }) => semantic_binding.operation_dtos.flatMap(
+    ({ target_actor_refs }) => target_actor_refs)))];
 
 function sceneState(mutate) {
   const state = generatedState(mutate);

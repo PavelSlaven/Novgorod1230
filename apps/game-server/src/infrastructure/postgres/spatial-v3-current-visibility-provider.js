@@ -338,7 +338,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         const ambientLight = visualFactors.find(({ conditions }) =>
           conditions.lighting != null)?.conditions.lighting ?? 'unknown';
         try {
-          onCurrentVisibilityDiagnostics({
+          const diagnosticResult = onCurrentVisibilityDiagnostics({
             party_id: naturalInput.observer.party_id,
             position_id: naturalInput.observer.position_id,
             weather: typeof weather?.weather_state_id === 'string'
@@ -349,6 +349,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
               visibility: ambientLight },
             visibility_factors: visualFactors
           });
+          if (typeof diagnosticResult?.then === 'function') {
+            Promise.resolve(diagnosticResult).catch(() => {});
+          }
         } catch { /* Opt-in harness diagnostics must never affect gameplay. */ }
       }
       const entityObservations = await provider.readEntityObservations({ transaction, partyId,

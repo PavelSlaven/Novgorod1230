@@ -1,4 +1,4 @@
-import { deepFreeze } from '@rus/kernel';
+import { deepFreeze, normalizeMixedScriptHomoglyphs } from '@rus/kernel';
 import { detectHiddenLeaks, validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { NARRATION_FLOW_RESULT_SCHEMA } from './contracts.js';
 import { validateNarrationPorts } from './ports.js';
@@ -15,11 +15,11 @@ export async function runNarrationFlow(request, ports, options = {}) {
   const generationHistory = [], repairHistory = [], auditHistory = [];
   const writerRequest = clone(request);
   if (writerRequest.context != null) delete writerRequest.context.attempt;
-  let draft = await ports.writer.generate(writerRequest);
+  let draft = normalizeOutputProse(await ports.writer.generate(writerRequest));
   generationHistory.push(record('writer', draft));
   let errors = outputErrors(draft, request.request_id);
   if (errors.length && maxFormatRepairs > 0) {
-    draft = await ports.formatRepairer.repair({ version: 1, schema: 'narration_format_repair_request', request: clone(writerRequest), invalid_output: clone(draft), validation_errors: errors, attempt: 1 });
+    draft = normalizeOutputProse(await ports.formatRepairer.repair({ version: 1, schema: 'narration_format_repair_request', request: clone(writerRequest), invalid_output: clone(draft), validation_errors: errors, attempt: 1 }));
     repairHistory.push(record('format_repair', draft));
     generationHistory.push(record('format_repairer', draft));
     errors = outputErrors(draft, request.request_id);
@@ -54,7 +54,7 @@ export async function runNarrationFlow(request, ports, options = {}) {
     segment_id: repairSegment.segment_id
   }));
   const confirmedOutcome = confirmedOutcomeContext(request);
-  const repair = await ports.semanticRepairer.repair({
+  const repair = normalizeSemanticRepairProse(await ports.semanticRepairer.repair({
     version: 1,
     schema: 'narration_semantic_repair_request',
     request_id: request.request_id,
@@ -64,7 +64,7 @@ export async function runNarrationFlow(request, ports, options = {}) {
     concerns: repairConcerns,
     segments: [repairSegment],
     source_segments: clone(segments)
-  });
+  }));
   generationHistory.push(record('semantic_repairer', repair));
   repairHistory.push(record('semantic_repair', repair));
   const repairErrors = validateNarrationSemanticRepair(
@@ -160,4 +160,15 @@ function outputErrors(value, requestId) {
   return errors;
 }
 function record(role, value) { return { role, value: clone(value) }; }
+function normalizeOutputProse(value) {
+  if (value == null || typeof value !== 'object' || typeof value.prose !== 'string') return value;
+  return { ...value, prose: normalizeMixedScriptHomoglyphs(value.prose).text };
+}
+function normalizeSemanticRepairProse(value) {
+  if (value == null || typeof value !== 'object' || !Array.isArray(value.replacements)) return value;
+  return { ...value, replacements: value.replacements.map((replacement) =>
+    replacement != null && typeof replacement.prose === 'string'
+      ? { ...replacement, prose: normalizeMixedScriptHomoglyphs(replacement.prose).text }
+      : replacement) };
+}
 function clone(value) { return value == null ? value : structuredClone(value); }

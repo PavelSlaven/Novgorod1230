@@ -8,6 +8,7 @@
         "@rus/contracts",
         "@rus/environment-state",
         "@rus/items-property",
+        "@rus/kernel",
         "@rus/knowledge-source",
         "@rus/llm-runtime",
         "@rus/materialization",
@@ -241,7 +242,8 @@
         "`Result`-подобным контрактом `ok`/`err` и `KernelError`",
         "детерминированной сериализацией данных",
         "вычислением технических digest",
-        "глубоким замораживанием утверждённых структур"
+        "глубоким замораживанием утверждённых структур",
+        "технические примитивы Unicode-строк: распознавание смешанного латинско-кириллического слова, нормализация гомоглифов по закрытой таблице письменности"
       ],
       "path": "packages/kernel",
       "public_entry": "./src/index.js",

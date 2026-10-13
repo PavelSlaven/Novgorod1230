@@ -68,7 +68,7 @@ function ports(writerProse, counts) {
   };
 }
 
-for (const mixedWord of ['протoku', 'дeрево']) {
+for (const mixedWord of ['протoku']) {
   test(`routes mixed-script word ${mixedWord} through format repair`, async () => {
     const counts = { format: 0, semantic: 0, audit: 0 };
     const result = await runNarrationFlow(request(), ports(`У ворот было ${mixedWord}.`, counts));
@@ -81,6 +81,35 @@ for (const mixedWord of ['протoku', 'дeрево']) {
     assert.equal(result.approved_output.prose, 'У ворот стоит телега.');
   });
 }
+
+test('normalizes homoglyph-only mixed word дeрево in code without format repair', async () => {
+  const counts = { format: 0, semantic: 0, audit: 0 };
+  const calls = [];
+  const testPorts = ports('У ворот было дeрево.', counts);
+  for (const [role, method] of [
+    ['formatRepairer', 'repair'], ['auditor', 'audit'], ['semanticRepairer', 'repair']
+  ]) {
+    const original = testPorts[role][method];
+    testPorts[role][method] = async (input) => {
+      calls.push({ role, input: structuredClone(input) });
+      return original(input);
+    };
+  }
+  const result = await runNarrationFlow(request(), testPorts);
+
+  assert.equal(counts.format, 0);
+  assert.equal(counts.semantic, 0);
+  assert.equal(counts.audit, 1);
+  assert.equal(result.status, 'approved');
+  assert.deepEqual(result.repair_history, []);
+  assert.equal(result.approved_output.prose, 'У ворот было дерево.');
+  assert.match(result.approved_output.prose, /дерево/u);
+  assert.doesNotMatch(result.approved_output.prose, /дeрево/u);
+  assert.deepEqual(calls.map((call) => call.role), ['auditor']);
+  assert.equal(calls[0].input.output.prose, 'У ворот было дерево.');
+  assert.ok(calls.every((call) => !JSON.stringify(call.input).includes('дeрево')),
+    'the mixed-script word must not reach any port after the writer');
+});
 
 test('does not repair clean Russian prose or schema-allowed Latin words', async () => {
   for (const prose of ['У ворот неподвижно стоит телега.', 'У ворот стоит Erik.']) {

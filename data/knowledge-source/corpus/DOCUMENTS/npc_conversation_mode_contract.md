@@ -1899,7 +1899,7 @@ Narrator:
 1. исходный factual state не меняется;
 2. вызывается repair prompt;
 3. repair получает исходный request, исходный output и validation errors;
-4. repair может исправить только форму, refs и enum values;
+4. repair может исправить только форму, refs и enum values; исключение — при ошибке `utterance_mixed_script` исправить написание слова, названного в ошибке `utterance_mixed_script` (поле `word`), заменив буквы так, чтобы слово стало русским; остальные слова и их порядок, смысл, refs, enum values и operations не меняются, новых фактов нет;
 5. repair не может заменить смысл решения другим.
 
 После второй ошибки возвращается typed LLM contract failure.
@@ -1983,7 +1983,7 @@ Repair возвращает один JSON требуемой schema (`player_con
 
 ### Инварианты
 
-1. Исправляются только структура, refs и enum values.
+1. Исправляются только структура, refs и enum values; исключение — при ошибке `utterance_mixed_script` исправить написание слова, названного в ошибке `utterance_mixed_script` (поле `word`), заменив буквы так, чтобы слово стало русским; остальные слова и их порядок, смысл, refs, enum values и operations не меняются, новых фактов нет.
 2. Смысл вклада сохраняется.
 3. Новые факты, refs или operations не создаются.
 

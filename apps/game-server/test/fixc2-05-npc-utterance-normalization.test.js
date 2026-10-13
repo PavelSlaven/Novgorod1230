@@ -1,66 +1,48 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { normalizeMixedScriptHomoglyphs } from '@rus/kernel';
 import { buildNpcDecisionBoundary } from '@rus/npc-runtime';
 import { requestNpcSemanticDecision } from '@rus/turn';
-import { normalizeNpcConversationSpeech } from
-  '../src/runtime/lower-dvina-trace-conversation-llm.js';
 import { createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
 const confusables = [
-  ['a', 'а'], ['e', 'е'], ['o', 'о'], ['p', 'р'], ['c', 'с'],
-  ['x', 'х'], ['y', 'у'], ['A', 'А'], ['B', 'В'], ['E', 'Е'],
-  ['K', 'К'], ['M', 'М'], ['H', 'Н'], ['O', 'О'], ['P', 'Р'],
-  ['C', 'С'], ['T', 'Т'], ['X', 'Х'], ['Y', 'У']
+  ['a', 'а'], ['c', 'с'], ['e', 'е'], ['o', 'о'], ['p', 'р'],
+  ['x', 'х'], ['y', 'у'], ['A', 'А'], ['B', 'В'], ['C', 'С'],
+  ['E', 'Е'], ['H', 'Н'], ['K', 'К'], ['M', 'М'], ['O', 'О'],
+  ['P', 'Р'], ['T', 'Т'], ['X', 'Х']
 ];
 
 test('normalizes every approved Latin/Cyrillic homoglyph with case preserved', () => {
   for (const [latin, cyrillic] of confusables) {
     const prefix = latin === latin.toUpperCase() ? 'Д' : 'д';
-    const { output, diagnostics } = normalizeNpcConversationSpeech({
-      speech: { utterance_text: `${prefix}${latin}рево`, claims: [] },
-      reason: 'unchanged'
-    });
-
-    assert.equal(output.speech.utterance_text,
-      `${prefix}${cyrillic}рево`, `mapping for ${latin}`);
-    assert.deepEqual(diagnostics, { replaced_character_count: 1 });
+    assert.deepEqual(normalizeMixedScriptHomoglyphs(
+      `${prefix}${latin}рево`), {
+      text: `${prefix}${cyrillic}рево`, replacedCharacterCount: 1
+    }, `mapping for ${latin}`);
   }
 });
 
 test('leaves a token unchanged when any Latin letter has no approved pair', () => {
-  const original = { speech: { utterance_text: 'По протoku.', claims: [] } };
-  const result = normalizeNpcConversationSpeech(original);
-
-  assert.equal(result.output, original);
-  assert.deepEqual(result.diagnostics, { replaced_character_count: 0 });
+  assert.deepEqual(normalizeMixedScriptHomoglyphs('По протoku.'), {
+    text: 'По протoku.', replacedCharacterCount: 0
+  });
 });
 
 test('leaves wholly Latin words unchanged', () => {
-  const original = { speech: { utterance_text: 'okay', claims: [] } };
-  const result = normalizeNpcConversationSpeech(original);
-
-  assert.equal(result.output, original);
-  assert.deepEqual(result.diagnostics, { replaced_character_count: 0 });
+  assert.deepEqual(normalizeMixedScriptHomoglyphs('okay'), {
+    text: 'okay', replacedCharacterCount: 0
+  });
 });
 
-test('changes only the NPC utterance and keeps diagnostics text-free', () => {
-  const claims = [{ content_summary: 'сказано' }];
-  const topicRefs = ['topic:river'];
-  const interpretation = { intent: 'ответить', adaptation: 'literal' };
-  const original = {
-    speech: { utterance_text: 'За дeревом.', claims, topic_refs: topicRefs },
-    reason: 'answer', interpretation
-  };
-  const result = normalizeNpcConversationSpeech(original);
-
-  assert.equal(result.output.speech.utterance_text, 'За деревом.');
-  assert.equal(result.output.speech.claims, claims);
-  assert.equal(result.output.speech.topic_refs, topicRefs);
-  assert.equal(result.output.reason, 'answer');
-  assert.equal(result.output.interpretation, interpretation);
-  assert.deepEqual(result.diagnostics, { replaced_character_count: 1 });
-  assert.equal(JSON.stringify(result.diagnostics).includes('деревом'), false);
+test('is idempotent for normalized text', () => {
+  const normalized = normalizeMixedScriptHomoglyphs('За дeревом.');
+  assert.deepEqual(normalized, {
+    text: 'За деревом.', replacedCharacterCount: 1
+  });
+  assert.deepEqual(normalizeMixedScriptHomoglyphs(normalized.text), {
+    text: 'За деревом.', replacedCharacterCount: 0
+  });
 });
 
 test('normalizes NPC speech at the adapter before plan validation', async () => {

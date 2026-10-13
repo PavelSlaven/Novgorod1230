@@ -124,7 +124,7 @@ export function npcConversationInstructions(repair, request = null) {
     ...(semanticRepair ? [
       'MANDATORY SEMANTIC REPAIR: rewrite the complete response. Remove or recast every unsupported factual assertion named by validation_errors; do not preserve unsupported meaning. If memory.records has no exact record for a requested earlier observation, explicitly say the NPC cannot confirm whether it happened. Never repeat a prior unsupported positive or negative answer from public history. A current_observation permits only its exact fact_text with its exact source ref, with no nearby possible state or required next action.'
     ] : repair ? [
-      'MANDATORY FORMAT REPAIR: repair only structure, refs, and enum values; preserve the response meaning.'
+      'MANDATORY FORMAT REPAIR: repair only structure, refs, and enum values; при ошибке `utterance_mixed_script` исправить написание слова, названного в ошибке `utterance_mixed_script` (поле `word`), заменив буквы так, чтобы слово стало русским; остальные слова и их порядок, смысл, refs, enum values и operations не менять, новых фактов не добавлять.'
     ] : []),
     'Return only one plain JSON object with the semantic conversation contribution.',
     'Do not return request, boundary, conversation, exchange, state, speaker identity, or schema; the server assembles them.',

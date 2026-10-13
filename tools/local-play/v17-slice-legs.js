@@ -43,7 +43,7 @@ const peopleOf = (screen) => {
   const data = panel.data ?? {};
   return (data.people ?? data.visible_npcs ?? data.npcs ?? []).map(labelOf).filter(Boolean);
 };
-export function captureVisibilityConditions(screen) {
+export function captureVisibilityConditions(screen, diagnostic = null) {
   const admitted = screen?.visible_context?.visible_npc;
   const panel = screen?.panels?.people;
   const panelPeople = peopleOf(screen);
@@ -61,7 +61,9 @@ export function captureVisibilityConditions(screen) {
     panel_visible: panel?.visible ?? null,
     panel_people_count: panelPeople.length,
     current_light_phase: screen?.visible_context?.current_light_phase ?? 'unknown',
-    weather: 'unknown', local_light: 'unknown', visibility_factors: 'unknown'
+    weather: diagnostic?.weather ?? 'unknown',
+    local_light: diagnostic?.local_light ?? 'unknown',
+    visibility_factors: diagnostic?.visibility_factors ?? 'unknown'
   };
 }
 const siteKey = (snap) => String(snap?.position?.site_id ?? '?');
@@ -89,8 +91,8 @@ const placeName = (snap) => snap?.position?.canonical_g5?.replace(/^.*_r2_/u, ''
  */
 export async function runLegs({
   api, sql, routeLabels, llm, scenarioId, runId, maxTurns = 24, reserveMake = RESERVE_MAKE_TURNS,
-  deadlineAt = Infinity, now = Date.now, persist = () => {},
-  sceneProjectionDiagnostics = () => []
+  deadlineAt = Infinity, now = Date.now, persist = () => {}, startRequestId = null,
+  sceneProjectionDiagnostics = () => [], visibilityDiagnostics = () => []
 }) {
   const legs = Object.fromEntries(['start', 'walk', 'meet', 'talk', 'take', 'make'].map((id) => [id,
     { id, status: 'blocked', reason: 'не достигнута', detail: null }]));
@@ -103,7 +105,13 @@ export async function runLegs({
   };
   const result = () => ({ ...state, legs: Object.values(legs) });
   let partyId = null;
-  let last = null; // { screen, snap }
+  let last = null; // { screen, snap, visibility_diagnostic }
+  const currentVisibilityDiagnostic = (snap, expectedPartyId = partyId) => {
+    const positionId = snap?.position?.position_id;
+    return [...visibilityDiagnostics()].reverse().find((event) =>
+      event?.party_id === expectedPartyId
+      && (positionId == null || event.position_id === positionId)) ?? null;
+  };
   let turnNo = 0;
   let presentationDeliveryFailure = null;
   const apiCall = async (method, phase, leg, ...args) => {
@@ -121,7 +129,8 @@ export async function runLegs({
   async function refresh(phase = 'screen_refresh', leg = null) {
     const screen = await apiCall('screen', phase, leg, partyId);
     const snap = await sql.snapshot(partyId);
-    last = { screen: screen.data?.screen ?? null, snap };
+    last = { screen: screen.data?.screen ?? null, snap,
+      visibility_diagnostic: currentVisibilityDiagnostic(snap) };
     state.final_snapshot = snap;
     return last;
   }
@@ -154,7 +163,8 @@ export async function runLegs({
     const before = last?.snap ?? await sql.snapshot(partyId);
     const visibleContextBefore = structuredClone(
       last?.screen?.visible_context ?? null);
-    const visibilityConditionsBefore = captureVisibilityConditions(last?.screen);
+    const visibilityConditionsBefore = captureVisibilityConditions(last?.screen,
+      last?.visibility_diagnostic);
     const started = now();
     const calls = llm.count();
     const roleCalls = llm.roleCalls?.length ?? 0;
@@ -270,8 +280,9 @@ export async function runLegs({
         people_panel: capturePeoplePanel(view.screen, view.snap),
         visibility_conditions: {
           before: visibilityConditionsBefore,
-          response: captureVisibilityConditions(response.data?.screen),
-          after: captureVisibilityConditions(view.screen)
+          response: captureVisibilityConditions(response.data?.screen,
+            currentVisibilityDiagnostic(view.snap)),
+          after: captureVisibilityConditions(view.screen, view.visibility_diagnostic)
         },
         current_visible_context: {
           before: visibleContextBefore,
@@ -295,7 +306,7 @@ export async function runLegs({
     let rejections = 0;
     let opening = null;
     const openingAttempts = [];
-    const requestId = `slice-${runId}-start`;
+    const requestId = startRequestId ?? `slice-${runId}-start`;
     while (attempts < 3 && opening == null) {
       attempts += 1;
       const response = await apiCall('newGame', 'new_game', 'start',
@@ -317,9 +328,11 @@ export async function runLegs({
         party_id: null, prose: '' }; throw new Error(response.error?.code ?? `HTTP ${response.status}`); }
     }
     state.opening = { attempts, rejections, opening_attempts: openingAttempts,
-      party_id: opening?.party_id ?? null, prose: opening?.screen?.main_prose ?? '',
+      party_id: opening?.party_id ?? null, request_id: requestId,
+      prose: opening?.screen?.main_prose ?? '',
       route_labels: routeLabels(opening?.screen), people_panel_initial: capturePeoplePanel(opening?.screen),
-      visibility_conditions_initial: captureVisibilityConditions(opening?.screen) };
+      visibility_conditions_initial: captureVisibilityConditions(opening?.screen,
+        currentVisibilityDiagnostic(null, opening?.party_id)) };
     if (opening == null) throw new Error(`${OPENING_REJECTED} ×${rejections}`);
     partyId = opening.party_id;
     state.party_id = partyId;
@@ -328,7 +341,8 @@ export async function runLegs({
     if (!ack.ok) throw new Error(`opening-ack: ${ack.error?.code ?? ack.status}`);
     await refresh('screen_after_ack', 'start');
     state.opening.people_panel_after_ack = capturePeoplePanel(last.screen, last.snap);
-    state.opening.visibility_conditions_after_ack = captureVisibilityConditions(last.screen);
+    state.opening.visibility_conditions_after_ack = captureVisibilityConditions(last.screen,
+      last.visibility_diagnostic);
     const prose = String(last.screen?.main_prose ?? state.opening.prose ?? '').trim();
     if (!prose) set('start', 'fail', 'после открытия на экране нет текста');
     else if (!last.snap?.position?.canonical_g5) set('start', 'fail', `позиция не прочитана из SQL (${last.snap?.error ?? 'нет position'})`);

@@ -124,6 +124,7 @@ export function renderPlaytestMarkdown(report, redact = (text) => text) {
   out.push('## Identity', '',
     `- Ветка \`${identity.branch}\`, HEAD \`${identity.head}\`${identity.dirty ? ' (рабочее дерево с незакоммиченными правками)' : ''}.`,
     `- Прогон \`${identity.run_id}\`: ${identity.started_at} — ${identity.ended_at} (${Math.round(identity.duration_ms / 1000)} с).`,
+    `- Request ID открытия: \`${identity.start_request_id ?? opening?.request_id ?? '—'}\`.`,
     `- Сценарий \`${identity.scenario_id}\`; драйвер \`tools/local-play/v17-slice-run.mjs\`; ходы идут по публичному HTTP-API (\`createGameHttpServer\` на loopback).`,
     `- Модель: \`${identity.model}\` через OpenAI-совместимый шлюз локальной Qwen; файл настроек \`${identity.llm_settings_path}\` (содержимое, URL и ключ не публикуются).`, '');
   out.push('## Preconditions', '',

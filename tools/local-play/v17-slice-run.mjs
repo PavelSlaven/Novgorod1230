@@ -22,11 +22,12 @@ export class PreflightError extends Error {}
 
 const USAGE = `Usage: v17-slice-run.mjs [--scenario <id|work_storage|household_cluster>] [--out-dir <dir>]
   [--playtest-dir <dir>] [--max-turns <n>] [--deadline-min <n>] [--wk-encoder stub|giga] [--run-id <id>]
+  [--start-request-id <id>]
 Env: RUS_LLM_SETTINGS_PATH (required); RUS_WORLD_KNOWLEDGE_PYTHON [+ RUS_WORLD_KNOWLEDGE_MODEL_PATH] for --wk-encoder giga.`;
 
 export function parseArgs(argv, env = process.env) {
   const options = { scenario: DEFAULT_SCENARIO, outDir: null, playtestDir: null, maxTurns: 24, deadlineMin: 26,
-    wkEncoder: 'stub', runId: null, help: false };
+    wkEncoder: 'stub', runId: null, startRequestId: null, help: false };
   const integer = (flag, value, min) => {
     const number = Number(value);
     if (!/^\d+$/u.test(String(value)) || number < min) throw new UsageError(`${flag} expects an integer >= ${min}, got "${value}"`);
@@ -44,6 +45,7 @@ export function parseArgs(argv, env = process.env) {
     else if (flag === '--max-turns') options.maxTurns = integer(flag, value, 0);
     else if (flag === '--deadline-min') options.deadlineMin = integer(flag, value, 1);
     else if (flag === '--run-id') options.runId = value;
+    else if (flag === '--start-request-id') options.startRequestId = value;
     else if (flag === '--wk-encoder') {
       if (!['stub', 'giga'].includes(value)) throw new UsageError(`--wk-encoder expects stub|giga, got "${value}"`);
       options.wkEncoder = value;
@@ -51,6 +53,9 @@ export function parseArgs(argv, env = process.env) {
   }
   options.runId ??= new Date().toISOString().replace(/\D/gu, '').slice(0, 14);
   if (!/^[\w-]+$/u.test(options.runId)) throw new UsageError('--run-id may contain only letters, digits, _ and -');
+  if (options.startRequestId != null && !/^[\w-]+$/u.test(options.startRequestId)) {
+    throw new UsageError('--start-request-id may contain only letters, digits, _ and -');
+  }
   options.outDir ??= join(tmpdir(), `v17-slice-${options.runId}`);
   if (!options.help && options.wkEncoder === 'giga' && !env.RUS_WORLD_KNOWLEDGE_PYTHON) {
     throw new PreflightError('--wk-encoder giga needs RUS_WORLD_KNOWLEDGE_PYTHON');
@@ -308,9 +313,10 @@ export async function createDefaultDeps({ options, env = process.env, repoRoot }
       return owner;
     },
     createRoot: ({ bootstrapEnv, llmSettings, telemetry,
-      onNpcSceneProjection }) => fixture.createPresenceProductionRoot({
+      onNpcSceneProjection, onCurrentVisibilityDiagnostics }) => fixture.createPresenceProductionRoot({
       ...bootstrapEnv, llmSettings,
-      extraConfig: { telemetry, onNpcSceneProjection, developerMode: true },
+      extraConfig: { telemetry, onNpcSceneProjection,
+        onCurrentVisibilityDiagnostics, developerMode: true },
       env: options.wkEncoder === 'giga'
         ? { RUS_WORLD_KNOWLEDGE_PYTHON: env.RUS_WORLD_KNOWLEDGE_PYTHON,
             ...(env.RUS_WORLD_KNOWLEDGE_MODEL_PATH ? { RUS_WORLD_KNOWLEDGE_MODEL_PATH: env.RUS_WORLD_KNOWLEDGE_MODEL_PATH } : {}),
@@ -341,6 +347,7 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
   let redact = createRedactor([]);
   let meter = null;
   const sceneProjectionDiagnostics = [];
+  const visibilityDiagnostics = [];
   let code = EXIT.LEGS;
   let queue = Promise.resolve();
   const write = async () => {
@@ -354,7 +361,9 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
     const settingsPath = env.RUS_LLM_SETTINGS_PATH;
     const record = await deps.loadSettings(settingsPath);
     redact = createRedactor(secretsOfLlmSettings(record));
-    report.identity = { run_id: options.runId, scenario_id: options.scenario, branch: git.branch, head: git.head, dirty: git.dirty,
+    report.identity = { run_id: options.runId,
+      start_request_id: options.startRequestId ?? `slice-${options.runId}-start`,
+      scenario_id: options.scenario, branch: git.branch, head: git.head, dirty: git.dirty,
       started_at: startedAt, ended_at: null, duration_ms: 0, model: record.settings.model, llm_settings_path: settingsPath };
     report.preconditions = { postgres_image: deps.postgresImage, wk_encoder: options.wkEncoder, max_turns: options.maxTurns,
       reserve_make: RESERVE_MAKE_TURNS, deadline_min: options.deadlineMin, qualification: 'не выполнена' };
@@ -368,7 +377,8 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
     report.preconditions.qualification = `выполнена, ${meter.count()} вызовов LLM`;
     const { runtime } = await deps.createRoot({ bootstrapEnv, llmSettings,
       telemetry: meter.telemetry,
-      onNpcSceneProjection: (event) => sceneProjectionDiagnostics.push(event) });
+      onNpcSceneProjection: (event) => sceneProjectionDiagnostics.push(event),
+      onCurrentVisibilityDiagnostics: (event) => visibilityDiagnostics.push(event) });
     finalizers.add('composition root', () => runtime.close());
     const served = await deps.startServer(runtime);
     finalizers.add('http server', () => served.close());
@@ -385,8 +395,10 @@ export async function runHarness(options, deps, { env = process.env, finalizers 
     const sql = (deps.createSql ?? createSnapshotReader)(bootstrapEnv.partyPool);
     const result = await runLegs({
       api, sql, routeLabels: deps.routeLabels, llm: meter, scenarioId: options.scenario, runId: options.runId,
+      startRequestId: options.startRequestId,
       maxTurns: options.maxTurns, deadlineAt: now() + options.deadlineMin * 60_000, now, // the play window starts after bootstrap and qualification
       sceneProjectionDiagnostics: () => sceneProjectionDiagnostics,
+      visibilityDiagnostics: () => visibilityDiagnostics,
       persist: (state) => { Object.assign(report, { legs: state.legs, turns: state.turns,
         opening: state.opening, transport_errors: state.transport_errors,
         presentation_recovery: state.presentation_recovery }); persist().catch(() => {}); }

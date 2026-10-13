@@ -108,7 +108,7 @@ test('meet 569: explicit empty admission cannot be replaced by a populated panel
   assert.equal(result.turns.some(({ leg }) => leg === 'talk'), false);
 });
 
-test('meet 569: captures before/response/after and renders known phase with unavailable factors', async () => {
+test('meet 569: captures visibility facts from owner diagnostics and renders fallback as unknown', async () => {
   const result = await run({ admission: [admittedNpc], panel: [panelPerson], sqlNpc: true });
   const turn = result.turns[0];
   assert.deepEqual(Object.keys(turn.visibility_conditions), ['before', 'response', 'after']);
@@ -132,6 +132,18 @@ test('meet 569: captures before/response/after and renders known phase with unav
   assert.equal(unknown.local_light, 'unknown');
   assert.equal(unknown.visibility_factors, 'unknown');
 
+  const ownerFacts = captureVisibilityConditions(scene({ admission: [admittedNpc] }), {
+    weather: { state_id: 'dense_fog', visibility: 'poor' },
+    local_light: { state: 'daylight', visibility: 'clear' },
+    visibility_factors: [{ layer: 'tree_canopy', active: true,
+      conditions: { lighting: 'clear', weather: 'none', stable_cover: 'clear' } }]
+  });
+  assert.deepEqual(ownerFacts.weather, { state_id: 'dense_fog', visibility: 'poor' });
+  assert.deepEqual(ownerFacts.local_light, { state: 'daylight', visibility: 'clear' });
+  assert.deepEqual(ownerFacts.visibility_factors[0].conditions,
+    { lighting: 'clear', weather: 'none', stable_cover: 'clear' });
+  turn.visibility_conditions.response = ownerFacts;
+
   const markdown = renderPlaytestMarkdown({
     identity: { scenario_id: 'test', branch: 'fleet/army-569', head: 'abc', dirty: true,
       run_id: 'r', started_at: 'start', ended_at: 'end', duration_ms: 1, model: 'none', llm_settings_path: '—' },
@@ -147,9 +159,9 @@ test('meet 569: captures before/response/after and renders known phase with unav
   assert.match(markdown, /Условия видимости \(ход 1, after\)/u);
   assert.match(markdown, /civil_dusk/u);
   assert.match(markdown, /current_light_phase/u);
-  assert.match(markdown, /"weather":"unknown"/u);
-  assert.match(markdown, /"local_light":"unknown"/u);
-  assert.match(markdown, /"visibility_factors":"unknown"/u);
+  assert.match(markdown, /"weather":\{"state_id":"dense_fog","visibility":"poor"\}/u);
+  assert.match(markdown, /"local_light":\{"state":"daylight","visibility":"clear"\}/u);
+  assert.match(markdown, /"visibility_factors":\[\{"layer":"tree_canopy"/u);
 });
 
 test('meet 569: walk dependency blocks meet when opening already admits a person', async () => {

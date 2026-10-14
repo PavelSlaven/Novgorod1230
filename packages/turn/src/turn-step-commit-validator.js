@@ -203,7 +203,7 @@ function validCanonicalizations(canonicalizations, plan, repaired, request) {
     return false;
   }
   const actorRefChanges = canonicalizations.filter((entry) =>
-    entry?.path?.endsWith('.actor_ref'));
+    typeof entry?.path === 'string' && entry.path.endsWith('.actor_ref'));
   const realitySet = new Set([...realityChanges, ...actorRefChanges]);
   const descriptions = canonicalizations.filter((entry) =>
     !realitySet.has(entry));

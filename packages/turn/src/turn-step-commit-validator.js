@@ -3,6 +3,10 @@ import {
   validateTurnStepPlan,
   validateTurnStepRequest
 } from './turn-step-contracts.js';
+import { collectKnownRefs, createTurnStepPlanTrace } from
+  './turn-step-contracts/validation.js';
+import { isExecutorActorRefOperation, turnStepPlanOperationEntries } from
+  './turn-step-contracts/plan-schema.js';
 import { requireFactualEvents } from './post-applied-actor-step.js';
 
 export function validateTurnStepCommitChecks(errors, checks) {
@@ -127,7 +131,7 @@ function validateStepTraces(errors, traces, envelope) {
     ]);
     const canonicalizationsValid = !Object.hasOwn(trace ?? {},
       'canonicalizations') || validCanonicalizations(trace.canonicalizations,
-      trace.approved_plan, trace.repaired);
+      trace.approved_plan, trace.repaired, trace.plan_request);
     const generic = trace?.resolution === 'generic_check';
     const binding = trace?.check_binding;
     const plan = trace?.approved_plan;
@@ -186,7 +190,7 @@ function validateStepTraces(errors, traces, envelope) {
   }
 }
 
-function validCanonicalizations(canonicalizations, plan, repaired) {
+function validCanonicalizations(canonicalizations, plan, repaired, request) {
   if (!Array.isArray(canonicalizations) || canonicalizations.length === 0) {
     return false;
   }
@@ -198,10 +202,13 @@ function validCanonicalizations(canonicalizations, plan, repaired) {
         || !validRealityLimitedNoOpCanonicalizations(realityChanges, plan))) {
     return false;
   }
-  const realitySet = new Set(realityChanges);
+  const actorRefChanges = canonicalizations.filter((entry) =>
+    entry?.path?.endsWith('.actor_ref'));
+  const realitySet = new Set([...realityChanges, ...actorRefChanges]);
   const descriptions = canonicalizations.filter((entry) =>
     !realitySet.has(entry));
-  return descriptions.every((entry) => {
+  return actorRefChanges.every((entry) => validActorRefCanonicalization(
+    entry, plan, repaired, request)) && descriptions.every((entry) => {
     if (!hasExact(entry, ['attempt', 'path', 'removed_fields'])
         || entry.attempt !== (repaired === true ? 2 : 1)
         || !Array.isArray(entry.removed_fields)
@@ -214,10 +221,25 @@ function validCanonicalizations(canonicalizations, plan, repaired) {
     return operation?.op === 'request_item_use'
       && operation.action_production != null
       && !Object.hasOwn(operation, 'description');
-  }) && (descriptions.length > 0 || realityChanges.length > 0)
-    && new Set(canonicalizations.map(({ attempt }) => attempt)).size === 1
-    && new Set(canonicalizations.map(({ path }) => path)).size
+  }) && (descriptions.length > 0 || realityChanges.length > 0
+    || actorRefChanges.length > 0)
+    && new Set(canonicalizations.map((entry) => entry?.attempt)).size === 1
+    && new Set(canonicalizations.map((entry) => entry?.path)).size
       === canonicalizations.length;
+}
+
+function validActorRefCanonicalization(entry, plan, repaired, request) {
+  if (!hasExact(entry, ['attempt', 'path', 'old_value', 'new_value'])
+      || entry.attempt !== (repaired === true ? 2 : 1)
+      || typeof entry.old_value !== 'string' || !entry.old_value.trim()
+      || entry.old_value === entry.new_value) return false;
+  const operation = turnStepPlanOperationEntries(plan).find(({ path }) =>
+    `${path}.actor_ref` === entry.path)?.operation;
+  const actorRef = createTurnStepPlanTrace(request).actorRef;
+  return isExecutorActorRefOperation(operation)
+    && typeof actorRef === 'string' && actorRef.trim().length > 0
+    && entry.new_value === actorRef && operation.actor_ref === actorRef
+    && !collectKnownRefs(request).has(entry.old_value);
 }
 
 function validRealityLimitedNoOpCanonicalizations(entries, plan) {

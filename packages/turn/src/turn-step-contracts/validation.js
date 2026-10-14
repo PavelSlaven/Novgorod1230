@@ -23,6 +23,18 @@ export function collectKnownRefs(request) {
   return found;
 }
 
+export function createTurnStepPlanTrace(request) {
+  return {
+    knownRefs: collectKnownRefs(request),
+    actorRef: request?.actor?.actor_id ?? request?.actor?.actor_ref ?? null,
+    tempRefs: new Set(),
+    allTempRefs: new Set(),
+    retired: new Set(),
+    placements: new Map(),
+    inside: new Map()
+  };
+}
+
 export function knownRef(value, path, errors, trace) {
   requiredText(value, path, errors);
   if (typeof value !== 'string' || !value.trim() || !trace) return;

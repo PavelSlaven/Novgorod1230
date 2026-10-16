@@ -53,7 +53,7 @@ test('ordered approach visibility uses the committed origin and rejects a differ
   const request = { party_id: 'party:1', actor_id: 'player:1',
     source_position_id: departure, approach_origin_position_id: origin,
     ordered_local_edge_path: [{ edge_id: 'edge:1', from_position_id: origin, to_position_id: departure }] };
-  const project = async (committedPositionId) => {
+  const project = async (committedPositionId, onCurrentVisibilityDiagnostics = null) => {
     const transaction = { async query() { return { rows: [] }; } };
     const facts = structuredClone(input.currentFacts);
     facts.observer.position_id = committedPositionId;
@@ -74,7 +74,8 @@ test('ordered approach visibility uses the committed origin and rejects a differ
       pin: input.pin, readCurrentEnvironment: async () => ({}),
       readTargetConditions: async () => ({ stable_cover: 'clear',
         dynamic_occlusion: 'clear', concealment: 'clear' }),
-      readScene: async () => scene, readNatural: async () => natural });
+      readScene: async () => scene, readNatural: async () => natural,
+      onCurrentVisibilityDiagnostics });
     let received;
     const result = await projectSpatialV3GeneratedExpansionVisiblePackage({
       transaction, request, closure: { directional_exits: [] },
@@ -95,4 +96,19 @@ test('ordered approach visibility uses the committed origin and rejects a differ
   assert.deepEqual(positive.received, { positionId: origin, journeyPositionId: origin });
   await assert.rejects(project(departure),
     (error) => error.details?.reason === 'current_position_required');
+
+  const unhandledRejections = [];
+  const onUnhandledRejection = (reason) => unhandledRejections.push(reason);
+  process.on('unhandledRejection', onUnhandledRejection);
+  try {
+    const withRejectedDiagnostic = await project(origin,
+      () => Promise.reject(new Error('diagnostic failed')));
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(withRejectedDiagnostic.result, positive.result,
+      'a rejected opt-in diagnostic must not change provider results');
+    assert.deepEqual(unhandledRejections, [],
+      'a rejected opt-in diagnostic must not become an unhandled rejection');
+  } finally {
+    process.off('unhandledRejection', onUnhandledRejection);
+  }
 });

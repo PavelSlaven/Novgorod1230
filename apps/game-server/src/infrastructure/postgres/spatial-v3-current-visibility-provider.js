@@ -42,7 +42,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
   readLegacyExitLabels = loadApprovedLegacyExitLabels,
   readConnectionLabels = loadApprovedConnectionLabels,
   readScene = readCurrentEntityVisibilityScene,
-  readNatural = readCurrentNaturalPerceptionFacts } = {}) {
+  readNatural = readCurrentNaturalPerceptionFacts,
+  onCurrentVisibilityDiagnostics = null } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
   const exitLabels = readExitLabels();
   const legacyExitLabels = readLegacyExitLabels();
@@ -326,6 +327,33 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         || siteId != null && siteId !== current.scene.site.id) gap('current_position_required');
       const naturalInput = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin,
         currentFacts: current.natural });
+      if (typeof onCurrentVisibilityDiagnostics === 'function') {
+        const environment = current.natural.current_environment;
+        const weather = environment?.weather_state;
+        const light = naturalInput.natural_baseline.layers.find(({ layer }) => layer === 'light')?.value;
+        const visualFactors = naturalInput.observations.filter(({ visual_conditions }) =>
+          visual_conditions != null).map(({ layer, active, visual_conditions }) => ({
+          layer, active, conditions: structuredClone(visual_conditions)
+        }));
+        const ambientLight = visualFactors.find(({ conditions }) =>
+          conditions.lighting != null)?.conditions.lighting ?? 'unknown';
+        try {
+          const diagnosticResult = onCurrentVisibilityDiagnostics({
+            party_id: naturalInput.observer.party_id,
+            position_id: naturalInput.observer.position_id,
+            weather: typeof weather?.weather_state_id === 'string'
+              && typeof weather?.visibility === 'string'
+              ? { state_id: weather.weather_state_id, visibility: weather.visibility }
+              : 'unknown',
+            local_light: { state: light?.current_light_state ?? 'unknown',
+              visibility: ambientLight },
+            visibility_factors: visualFactors
+          });
+          if (typeof diagnosticResult?.then === 'function') {
+            Promise.resolve(diagnosticResult).catch(() => {});
+          }
+        } catch { /* Opt-in harness diagnostics must never affect gameplay. */ }
+      }
       const entityObservations = await provider.readEntityObservations({ transaction, partyId,
         actorId, observedPositionId, clock });
       const localEdges = await provider.readLocalEdgeDisclosure({ transaction, partyId,

@@ -216,6 +216,7 @@ export async function createSpatialV3ProductionCompositionRoot({
         readCurrentEnvironment: factualContext.readCurrentEnvironment,
         readCurrentSourceState: (args) => readCurrentNaturalSourceState({
           ...args, readCurrentEnvironment: factualContext.readCurrentEnvironment }),
+        onCurrentVisibilityDiagnostics: config.onCurrentVisibilityDiagnostics ?? null,
         readTargetConditions: readCurrentTargetConditions,
         readEntityExterior: readCommittedEntityExterior,
         readPlayerKnowledge,

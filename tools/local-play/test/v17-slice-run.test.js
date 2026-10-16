@@ -26,19 +26,23 @@ test('parseArgs: defaults, aliases and overrides', () => {
   assert.equal(defaults.maxTurns, 24);
   assert.equal(defaults.deadlineMin, 26);
   assert.equal(defaults.wkEncoder, 'stub');
+  assert.equal(defaults.startRequestId, null);
   assert.match(defaults.runId, /^\d{14}$/u);
   assert.ok(defaults.outDir.includes(defaults.runId));
   const set = parseArgs(['--scenario', 'household_cluster', '--max-turns', '5', '--deadline-min', '60',
-    '--out-dir', '/tmp/x', '--playtest-dir', 'docs/playtests', '--run-id', 'r-1'], {});
+    '--out-dir', '/tmp/x', '--playtest-dir', 'docs/playtests', '--run-id', 'r-1',
+    '--start-request-id', 'clear-seed-1'], {});
   assert.deepEqual([set.scenario, set.maxTurns, set.deadlineMin, set.outDir, set.playtestDir, set.runId],
     ['novgorod_vikhtuy_household_cluster_v1', 5, 60, '/tmp/x', 'docs/playtests', 'r-1']);
+  assert.equal(set.startRequestId, 'clear-seed-1');
   assert.equal(parseArgs(['--scenario', 'novgorod_pine_ridge_approach_v1'], {}).scenario, 'novgorod_pine_ridge_approach_v1');
   assert.equal(parseArgs(['--help'], {}).help, true);
 });
 
 test('parseArgs: bad input is a usage error, giga without python is a preflight error', () => {
   for (const argv of [['--nope', '1'], ['--max-turns'], ['--max-turns', 'x'], ['--max-turns', '-1'], ['--deadline-min', '0'],
-    ['--wk-encoder', 'real'], ['stray'], ['--run-id', 'a b']]) {
+    ['--wk-encoder', 'real'], ['stray'], ['--run-id', 'a b'],
+    ['--start-request-id'], ['--start-request-id', 'bad id']]) {
     assert.throws(() => parseArgs(argv, {}), UsageError, JSON.stringify(argv));
   }
   assert.throws(() => parseArgs(['--wk-encoder', 'giga'], {}), PreflightError);
@@ -160,7 +164,8 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     statements: priorNpcReply ? [{
     statement_id: 'statement-old', speaker_ref: { entity_kind: 'npc', entity_id: 'npc1' }, dominant_act: 'answer',
     intended_addressee_refs: [{ entity_kind: 'player_character', entity_id: 'c' }], utterance_text: 'Я Милонег.'
-  }] : [], nodeQuantities: Object.fromEntries(resourceSites.map((site) => [site, 60])), held: [], made: [], turns: [], newGames: 0, recovered: 0, prose: 'Начало.' };
+  }] : [], nodeQuantities: Object.fromEntries(resourceSites.map((site) => [site, 60])), held: [], made: [], turns: [],
+    newGameRequestIds: [], openingDiagnosticIds: [], turnRequestIds: [], newGames: 0, recovered: 0, prose: 'Начало.' };
   const items = () => [{ item_id: 'shirt', holder: 'c', position: 'worn' }, ...w.held];
   const effectiveNpcSite = npcSite ?? (npcAtStart ? 'A' : npcAtDestination ? 'B' : null);
   const npcHere = () => w.site === effectiveNpcSite;
@@ -193,10 +198,11 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
     panels: { people: { visible: peoplePanelVisible, data: { people: npcHere() && !hidePanelPeople ? [{ display_label: 'человек (1)' }] : [] } } } });
   const env = (data) => ({ status: 200, ok: true, data, error: null });
   const api = {
-    async newGame() { w.newGames += 1; return w.newGames <= openingRejections
+    async newGame(input) { w.newGames += 1; w.newGameRequestIds.push(input.request_id); return w.newGames <= openingRejections
       ? { status: 409, ok: false, data: null, error: { code: 'AUTHORED_OPENING_AUDIT_REJECTED' } }
       : env({ party_id: 'p1', screen: { main_prose: 'Открытие.' } }); },
-    async llmTurnReport() {
+    async llmTurnReport(partyId, requestId) {
+      w.openingDiagnosticIds.push({ partyId, requestId });
       return env({ failure: {
         code: 'AUTHORED_OPENING_AUDIT_REJECTED',
         opening_rejection: {
@@ -226,7 +232,8 @@ function fakeWorld({ blindLooks = 0, talkWorks = true, talkRecipient = 'player',
       w.prose = 'Восстановлено.';
       return env({ screen: screen() });
     },
-    async turn(_id, { raw_text: text }) {
+    async turn(_id, { raw_text: text, request_id: requestId }) {
+      w.turnRequestIds.push(requestId);
       w.turns.push(text);
       if (w.pendingTurnOnce) {
         w.pendingTurnOnce = false;
@@ -538,6 +545,22 @@ test('legs: an opening rejected three times fails start and blocks the rest; two
   assert.equal(flaky.opening.rejections, 2);
   assert.equal(flaky.opening.opening_attempts.filter(({ outcome }) => outcome === 'rejected').length, 2);
   assert.equal(flaky.opening.opening_attempts[0].writer_prose, 'Черновик вступления.');
+});
+
+test('legs: start request ID override only replaces opening identity', async () => {
+  const defaultWorld = fakeWorld({ openingRejections: 2 });
+  const defaultRun = await runFake(defaultWorld);
+  assert.deepEqual(defaultWorld.w.newGameRequestIds, Array(3).fill('slice-r-start'));
+  assert.equal(defaultRun.opening.request_id, 'slice-r-start');
+  assert.ok(defaultWorld.w.openingDiagnosticIds.every(({ requestId }) => requestId === 'slice-r-start'));
+
+  const selectedWorld = fakeWorld({ openingRejections: 2 });
+  const selectedRun = await runFake(selectedWorld, { startRequestId: 'clear-seed-1' });
+  assert.deepEqual(selectedWorld.w.newGameRequestIds, Array(3).fill('clear-seed-1'));
+  assert.equal(selectedRun.opening.request_id, 'clear-seed-1');
+  assert.ok(selectedWorld.w.openingDiagnosticIds.every(({ requestId }) => requestId === 'clear-seed-1'));
+  assert.ok(selectedWorld.w.turnRequestIds.length > 0);
+  assert.ok(selectedWorld.w.turnRequestIds.every((requestId) => /^slice-r-\d+$/u.test(requestId)));
 });
 
 test('legs: a failed opening diagnostics fetch does not block later new-game retries', async () => {

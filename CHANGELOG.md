@@ -2,6 +2,9 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(narration): preserve applied speech, duplicate occurrences and causal order across site traversal, commit and visible-package readback (#586).
+- fix(narration): describe perceived body condition through the existing body summary instead of exposing raw health, satiety and energy values; align the owner documentation with the current scene wire (#654).
+- test(ci): capture current Russian narration inputs and use the shared isolated PostgreSQL backend for finite-occurrence tests without relaxing assertions (#98, #730).
 - fix(conversation): restore omitted source whitespace between exact speech audit fragments and require evidence for categorical NPC knowledge bounds in speech and private reasoning (#247).
 
 - fix(narration): carry a completed return to departure and an anchored interruption into the visible scene and all prose roles (#586).

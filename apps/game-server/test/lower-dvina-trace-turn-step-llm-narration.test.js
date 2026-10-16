@@ -141,7 +141,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       version: 1, schema: 'visible_context_package', visible_scene: 'The clearing is quiet.',
       visible_changes: ['A snapped branch lies nearby.', 'Fresh footprints cross the mud.'],
       sensory_details: [], visible_npc: [], visible_objects: [],
-      known_context: ['A marked path leads toward the settlement.', 'health:5'],
+      known_context: ['A marked path leads toward the settlement.', 'Тяжёлые ранения; сил почти не осталось; ощущается голод.'],
       uncertainties: [question], allowed_tensions: [], do_not_imply: []
     }, context: {
       attempt: { text: 'Постучать в закрытую дверь.' },

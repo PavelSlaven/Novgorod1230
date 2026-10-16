@@ -1,4 +1,5 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
+import { bodyStateSummary } from './lower-dvina-trace-opening.js';
 import { canonicalDigest } from '@rus/materialization';
 import { spatialV3TraversalOutcomeProjection } from '@rus/turn/spatial-v3-execution';
 import { lowerDvinaTraceCarriedItemIds,
@@ -204,7 +205,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
         } else {
           destination.visible_changes = [];
         }
-        return destination;
+        return overlayTurnStepResults(destination, input, recordProjectionGap);
       }
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
@@ -418,9 +419,8 @@ async function projectWithoutFire({ input, consequence, seedEntries,
       directSeedKeys: directSeeds.map(([key]) => key) }),
     sensory_details: [], visible_npc: [], visible_objects: [],
     known_context: [
-      ...(Number.isFinite(body.health) ? [`health:${body.health}`] : []),
-      ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
-      ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
+      ...([body.health, body.satiety, body.energy].every(Number.isFinite)
+        ? [bodyStateSummary(body)] : [])
     ],
     uncertainties: [
       ...(consequence.visible_seed.clarification

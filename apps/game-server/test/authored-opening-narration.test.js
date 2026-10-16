@@ -219,6 +219,11 @@ test('opening repairs unsupported negative prose once and blocks hard findings',
   };
   const repairable = run('repairable');
   const result = await repairable.result;
+  for (const call of repairable.calls.slice(0, 3)) {
+    const roleInput = JSON.parse(call.messages[1].content);
+    assert.deepEqual(roleInput.сцена.обязательный_смысл,
+      pkg.visible_scene_dossier.must_include.map(({ text }) => text));
+  }
   assert.equal(result.prose, 'Любава стоит у берега рядом с братом.');
   assert.match(repairable.calls[0].messages[0].content,
     /^Верните только \{"prose":"<полное вступление>"\}/u);
@@ -244,7 +249,7 @@ test('opening repairs unsupported negative prose once and blocks hard findings',
   assert.doesNotMatch(JSON.stringify(repairInput),
     /"code"|"severity"|NARRATOR_PROSE|npc:brother|npc:fisher/u);
   assert.match(repairable.calls[1].messages[0].content,
-    /Проверяйте вступление по visible_context_package, а не по правдоподобию/u);
+    /Проверяйте вступление по переданной сцене, а не по правдоподобию/u);
   assert.doesNotMatch(repairable.calls[1].messages[0].content,
     /Каждое утверждение должно опираться на такой факт/u);
   assert.equal(result.original_stage23_audit.pass, false);
@@ -309,7 +314,7 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   assert.match(writerPrompt, /Рассказ — то, как герой переживает этот мир/u);
   assert.match(writerPrompt, /фоновые звуки/u);
   assert.match(writerPrompt, /мелкие движения тела героя/u);
-  assert.match(auditorPrompt, /Проверяйте вступление по visible_context_package, а не по правдоподобию/u);
+  assert.match(auditorPrompt, /Проверяйте вступление по переданной сцене, а не по правдоподобию/u);
   assert.doesNotMatch(writerPrompt, /сохраняй связность и художественную форму/u);
   assert.doesNotMatch(writerPrompt, /Каждое утверждение должно опираться на переданный факт/u);
   assert.doesNotMatch(auditorPrompt, /Каждое утверждение должно опираться на такой факт/u);
@@ -317,6 +322,11 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   const auditorInput = JSON.parse(calls[1].messages[1].content);
   assert.deepEqual(Object.keys(writerInput), ['сцена']);
   assert.deepEqual(Object.keys(auditorInput), ['сцена', 'проверяемая_проза']);
+  const required = pkg.visible_scene_dossier.must_include.map(({ text }) => text);
+  assert.deepEqual(writerInput.сцена.обязательный_смысл, required);
+  assert.deepEqual(auditorInput.сцена.обязательный_смысл, required);
+  assert.match(calls[0].messages[0].content, /группы обязательный_смысл/u);
+  assert.match(calls[1].messages[0].content, /группы обязательный_смысл/u);
   for (const modelInput of [writerInput, auditorInput]) {
     const serialized = JSON.stringify(modelInput);
     assert.doesNotMatch(serialized,
@@ -358,8 +368,9 @@ test('opening sends one readable Russian fact projection to writer and auditor',
     /serviceable|held_by_player/u.test(текст)), false);
   assert.equal(new Set(auditorFacts.map(({ ключ }) => ключ)).size,
     auditorFacts.length);
-  assert.deepEqual(new Set(auditorInput.сцена.обязательные_ключи),
-    new Set(auditorFacts.map(({ ключ }) => ключ)));
+  assert.equal(auditorInput.сцена.обязательные_ключи, undefined);
+  assert.ok(auditorFacts.length > required.length,
+    'supporting scene material remains available without becoming required');
   assert.match(result.original_stage23_audit.evidence[0], /opening:/u);
 });
 

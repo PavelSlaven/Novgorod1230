@@ -586,16 +586,14 @@ async function assertMarkerRejectedThenExplicitRecovery({ pool, release,
             : 'Вы осматриваете лодку и следы на берегу.' }] } };
         }
         if (call.role_id === 'gameplay_narrator_auditor') {
-          const segments = input.segments ?? [];
+          const segments = input['Отрывки прозы'] ?? [];
           const choices = segments.length ? [segments[0].segment_id] : [];
-          const sources = [
-            ...(input.required_current_beat?.changes ?? []),
-            ...(input.required_current_beat?.uncertainties ?? [])
-          ];
+          const sources = input['Обязательные положения текущего эпизода'] ?? [];
           return { output: {
             reviewed_segments: segments.map(({ segment_id }) => segment_id),
-            source_reviews: sources.map(({ ref }) => ({ ref,
-              segment_choices: choices })),
+            source_reviews: sources.map((source) => ({
+              ref: source.split(':', 1)[0], segment_choices: choices
+            })),
             unsupported: [], literary_failures: [],
             evidence: ['Deterministic integration-test auditor PASS.']
           } };
@@ -631,7 +629,12 @@ async function assertMarkerRejectedThenExplicitRecovery({ pool, release,
   assert.equal(JSON.stringify(pending.screen).includes('INFERENCE:'), false);
   assert.ok(observedFlows.some((flow) => flow?.status === 'blocked'
     && flow.diagnostics?.phase === 'generated_prose_admission_failed'),
-  'the production narrator blocks the marker after its auditor pass');
+  `marker rejection flow summary: ${JSON.stringify(observedFlows.map(
+    ({ status, diagnostics, audit_history, repair_history }) => ({
+      status, phase: diagnostics?.phase,
+      audit_passes: audit_history?.map(({ value }) => value?.pass),
+      repair_roles: repair_history?.map(({ role }) => role)
+    }))) }`);
   assert.ok(observedFlows.some((flow) => flow?.audit_history?.some(({ value }) =>
     value?.pass === true)), 'the marker rejection is independent of auditor PASS');
   assert.ok(narrationRoleCalls.includes('gameplay_narrator_auditor'));

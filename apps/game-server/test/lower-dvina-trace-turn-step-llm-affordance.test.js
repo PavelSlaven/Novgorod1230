@@ -263,7 +263,7 @@ test('ownerless speech prompt preserves its step before the later domain action'
       onPrompt: (value) => { prompt = value; }
     })(input);
     assert.match(prompt,
-      /Короткий оклик, крик или другая реплика без подходящего переданного владельца взаимодействия[\s\S]*отдельный шаг direct player_utterance[\s\S]*сохрани их точный непокрытый остаток в continuation[\s\S]*intent_paraphrase/u);
+      /Короткий оклик, крик или другая реплика без подходящего переданного владельца взаимодействия[\s\S]*отдельный шаг direct player_utterance[\s\S]*Если произнесение слов — единственное действие игрока в remaining_intent, установи goal_result achieved и continuation null[\s\S]*Устанавливай goal_result pending и сохраняй точный непокрытый остаток в continuation только для последующего самостоятельного действия игрока[\s\S]*intent_paraphrase/u);
   });
 
 test('travel prompt prioritizes supplied movement over unrelated inspection', async () => {

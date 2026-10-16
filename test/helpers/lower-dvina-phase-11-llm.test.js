@@ -334,7 +334,8 @@ test('canonical narration fixture satisfies the current raw adapter contract and
     if (call.role_id === 'gameplay_narrator_auditor') {
       assert.deepEqual(Object.keys(output), ['reviewed_segments',
         'source_reviews', 'unsupported', 'literary_failures', 'evidence']);
-      assert.deepEqual(output.reviewed_segments, input.segments.map(({ segment_id }) => segment_id));
+      assert.deepEqual(output.reviewed_segments,
+        input['Отрывки прозы'].map(({ segment_id }) => segment_id));
       assert.deepEqual(output.source_reviews.map(({ ref }) => ref),
         ['visible_change_1', 'visible_change_2', 'uncertainty_1']);
       for (const review of output.source_reviews) {

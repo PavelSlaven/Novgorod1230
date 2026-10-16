@@ -357,6 +357,32 @@ for (const marker of [false, true]) {
   }
 }
 
+test('marker repair retains a sourced answer and typed act while adding the required tag', async () => {
+  const input = request('semantic-marker-sourced-answer-and-tag');
+  const seen = observation(input);
+  input.social_context = { npc_behavior: { required_interaction_tag: 'withhold' } };
+  const original = plan(input, `${seen.fact_text} INFERENCE: npc_private.`);
+  original.speech.claims = [claim('observed-fire', seen.fact_text,
+    [seen.observation_ref])];
+  const corrected = plan(input, `${seen.fact_text} О вчерашнем судить не берусь.`);
+  corrected.speech.claims = structuredClone(original.speech.claims);
+  corrected.speech.interaction_tags = ['withhold'];
+
+  const scenario = await runConversation(input, original, corrected, { audit: approved });
+  const retry = singleRepair(scenario);
+  const repairInput = payload(retry);
+  assert.deepEqual(repairInput.marker_safe_decision.speech.dominant_act, 'answer');
+  assert.equal(repairInput.request.social_context.npc_behavior.required_interaction_tag,
+    'withhold');
+  assert.deepEqual(repairInput.request.memory.current_observations, [seen]);
+  assert.equal(Object.hasOwn(repairInput, 'original_speech'), false);
+  assert.doesNotMatch(JSON.stringify(retry.messages), /INFERENCE:|npc_private/u);
+  assert.match(retry.messages[0].content, /Preserve speech\.dominant_act from marker_safe_decision/u);
+  assert.match(retry.messages[0].content, /without changing the act/u);
+  assert.match(retry.messages[0].content, /applicable exact facts supplied by the request with matching sourced claims/u);
+  exactModelReply(scenario, corrected);
+});
+
 test('repair preserves refusal and introduction while marker repair keeps a separate clean wire', async () => {
   const input = request('semantic-refusal-and-marker-pair');
   input.npc = { identity_state: { canonical_name: 'Еремей' } };

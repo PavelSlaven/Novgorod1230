@@ -439,3 +439,16 @@ test('observation stays before later speech while duration stays out of prose', 
   assert.equal(visible.visible_changes.includes(
     'Наблюдение завершено по уже доступным вам признакам.'), false);
 });
+
+test('synthetic visible fallback summarizes body without numeric state', async () => {
+  const state = committedState();
+  state.body_state = { health: 48, satiety: 22, energy: 15 };
+  const projected = await createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => assert.fail('unexpected fallback') }
+  }).project({ retrieved_state: state,
+    consequence: { status: 'resolved', visible_seed: { completed_steps: [] } } });
+  assert.deepEqual(projected.known_context,
+    ['Ощущается боль; сил почти не осталось; ощущается голод.']);
+  assert.doesNotMatch(JSON.stringify(projected), /(?:health|satiety|energy):/u);
+  assert.deepEqual(state.body_state, { health: 48, satiety: 22, energy: 15 });
+});

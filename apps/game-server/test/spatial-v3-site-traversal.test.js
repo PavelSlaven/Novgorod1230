@@ -12,6 +12,8 @@ import { createTracePhase3TemporalAdvance } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   '../src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
+import { createLowerDvinaTraceTurnStepVisibleProjector } from
+  '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
 import { createSpatialV3SiteTraversalRuntime } from
   '../src/runtime/spatial-v3-site-traversal-runtime.js';
@@ -618,6 +620,22 @@ test('fractional site line reaches prepared time and P16 commit with exact elaps
     const envelope = commitEnvelope({ clarification: false, check: false });
     envelope.mode_resolution.decision_trace.selected_option_id = 'approved-line-option';
     envelope.consequence = structuredClone(consequence);
+    const spoken = 'Подождите у тропы.';
+    const projected = await createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project: async () => assert.fail('unexpected fallback') }
+    }).project({ consequence: envelope.consequence, retrieved_state: currentState,
+      time_update: preparedTimeUpdate, mode_resolution: { decision_trace: {
+        remaining_intent: null, step_traces: [...[1, 2].map((step_index) => ({
+          step_index, applied: true, approved_plan: { resolution: 'direct',
+            direct_result_kind: 'player_utterance',
+            utterance: { utterance_text: spoken } } })),
+          { step_index: 3, applied: true, approved_plan: {
+            resolution: 'domain_request', operations: [{ op: 'request_movement' }] } }
+        ]
+      } } });
+    assert.deepEqual(projected.visible_changes.slice(0, 2), [
+      `Герой произнёс: «${spoken}»`, `Герой произнёс: «${spoken}»`]);
+    assert.ok(projected.visible_changes.some((change) => change.startsWith('Вы прибыли.')));
     envelope.time_update = structuredClone(preparedTimeUpdate);
     envelope.body_update.state_after = structuredClone(currentState.body_state);
     assert.deepEqual(nonStrictJsonPaths(envelope), []);

@@ -10,7 +10,7 @@ import {
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
   projectPerceivedPeopleAbsence,
-  projectDirectSeedChanges
+  projectDirectSeedChanges, currentEnvironmentChanges
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
@@ -180,8 +180,20 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           }
           destination.visible_npc = [];
         }
-        destination.visible_changes = [fact == null
-          ? 'Вы прибыли.' : arrivalChange(fact)];
+        if (destinationCompletion) {
+          const route = text(transition.line_name)
+            ? 'Пройденный путь: ' + transition.line_name + '.' : null;
+          destination.visible_changes = [route,
+            fact == null ? 'Вы прибыли.' : arrivalChange(fact)].filter(Boolean);
+          if (input.time_update?.nearest_boundary == null) {
+            destination.sensory_details = [...new Set([
+              ...destination.sensory_details,
+              ...currentEnvironmentChanges(targetState)
+            ])];
+          }
+        } else {
+          destination.visible_changes = [];
+        }
         return destination;
       }
       const seedEntries = plain(consequence?.visible_seed)

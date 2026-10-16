@@ -2,6 +2,8 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+
+- fix(narration): retain the confirmed traversal line and player-safe current weather in arrival prose context; pass descriptive visible routes to all prose roles.
 - fix(conversation): resolve allowed source IDs before matching repaired NPC claims to their original identities; keep changed, unknown and reused claims rejected (#247, D49).
 - fix(conversation): restore unchanged NPC claims after service-marker repair despite regenerated claim IDs; pass initial audit feedback to final audit as diagnostic context (#247, D49).
 - fix(conversation): require complete private NPC speech audit fragments linked to existing claims; fail closed on unclaimed factual text without changing one-repair budget (#247, D49).
@@ -768,6 +770,8 @@
 # Changelog
 
 ## Unreleased
+
+- fix(narration): retain the confirmed traversal line and player-safe current weather in arrival prose context; pass descriptive visible routes to all prose roles.
 - fix(narration): restore direct coverage of every required episode fact after the rejected composition trial while retaining clear names for known people.
 
 - feat(npc): select pinned D-1 routines on first entry; preserve identity through typed offstage/location gaps without invented placement; LW-125 added (first-entry context gap), LW-126 added (month-boundary applicability remains deferred after calendar-leap fix), LW-127 added (multi-movement placement CAS latent) (#227)

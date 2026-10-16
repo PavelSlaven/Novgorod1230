@@ -240,9 +240,12 @@ export function narrationWire(request, { roleId } = {}) {
       'visible_context.visible_npc'),
     'Предметы и ориентиры': narrationVisibleDescriptions(
       (visible.visible_objects ?? []).filter((row) =>
-        !isMovementVisibleObject(row)
-          && !(row?.entity_ref?.entity_kind === 'item'
-            && row.label_gap?.code === 'player_safe_item_label_required')),
+        !(row?.entity_ref?.entity_kind === 'item'
+            && row.label_gap?.code === 'player_safe_item_label_required')
+          && (!isMovementVisibleObject(row)
+            || row.entity_ref.entity_kind !== 'scene_movement_edge'
+              && findUnsafePlayerText(row.display_label,
+                { label: true, generatedProse: true }) == null)),
       'visible_context.visible_objects')
   };
   const worldKnowledge = request?.world_knowledge ?? original?.world_knowledge;

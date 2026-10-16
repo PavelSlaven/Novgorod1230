@@ -351,3 +351,33 @@ test('finite discovery keeps proven denial and depletion visible', async () => {
     assert.match(visible.uncertainties.join(' '), expected);
   }
 });
+
+test('current body reaches prose as felt condition without raw metrics', () => {
+  const state = committedState();
+  const body = { health: 48, satiety: 22, energy: 15,
+    active_conditions: [{ id: 'hand_soreness', label: 'болезненность кисти' }] };
+  state.body_state = structuredClone(body);
+  state.items.push({ item_id: 'cloak', name: 'плащ',
+    placement: { holder_character_id: state.actor_id, physical_position: 'worn' } });
+  const input = { retrieved_state: state, consequence: { status: 'resolved',
+    visible_seed: {} }, mode_resolution: { decision_trace: {
+      step_traces: [{ applied: true, approved_plan: {
+        resolution: 'direct', goal_result: 'achieved', operations: [],
+        check: null, direct_result_kind: 'player_safe_body_observation'
+      } }] } } };
+  for (const visible of [
+    projectCurrentSceneForVisibleOverlay({ input, directSeedKeys: [], body }),
+    projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body })
+  ]) {
+    const known = visible.known_context.join(' ');
+    assert.match(known, /Ощущается боль; сил почти не осталось; ощущается голод\./u);
+    assert.doesNotMatch(known, /(?:health|satiety|energy):/u);
+    const wire = narrationWire({ visible_context: visible }, { roleId: 'gameplay_narrator' });
+    assert.match(wire['Переданные сведения об обстановке']['Известное герою'].join(' '),
+      /Ощущается боль; сил почти не осталось; ощущается голод\./u);
+    assert.doesNotMatch(JSON.stringify(wire), /(?:health|satiety|energy):/u);
+    assert.ok(visible.visible_objects.some((item) => item.display_label === 'плащ'));
+    assert.ok(visible.visible_changes.some((line) => line.includes('болезненность кисти')));
+  }
+  assert.deepEqual(state.body_state, body);
+});

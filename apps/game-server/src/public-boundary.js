@@ -116,8 +116,9 @@ export function findUnsafePublishedText(value, field = '') {
 function findPublishedText(value, path = '$', field = '', seen = new Set(), permitted = [], remaining = null) {
   if (typeof value === 'string') {
     if (!PLAYER_TEXT_FIELDS.has(field)) return null;
-    if (remaining?.has(value)) {
-      remaining.delete(value);
+    const allowedIndex = remaining?.indexOf(value) ?? -1;
+    if (allowedIndex >= 0) {
+      remaining.splice(allowedIndex, 1);
       return null;
     }
     const finding = findUnsafePlayerText(value, {
@@ -134,7 +135,7 @@ function findPublishedText(value, path = '$', field = '', seen = new Set(), perm
     const nestedField = PLAYER_TEXT_FIELDS.has(key) ? key : field;
     const finding = findPublishedText(nested, `${path}.${key}`, nestedField, seen,
       permitted, key === 'visible_changes' && Array.isArray(nested)
-        ? new Set(permitted) : remaining);
+        ? permitted.slice() : remaining);
     if (finding != null) return finding;
   }
   seen.delete(value);

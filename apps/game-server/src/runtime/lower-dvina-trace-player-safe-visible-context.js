@@ -53,10 +53,11 @@ export function projectVisibleContextForPlayerPackage(value, {
     path: 'visible_context'
   });
   if (Array.isArray(value?.visible_changes) && committedSpeechChanges.length > 0) {
-    const remaining = new Set(committedSpeechChanges);
+    const remaining = committedSpeechChanges.slice();
     playerSafeContext.visible_changes = value.visible_changes.flatMap((change, index) => {
-      if (remaining.has(change)) {
-        remaining.delete(change);
+      const allowedIndex = remaining.indexOf(change);
+      if (allowedIndex >= 0) {
+        remaining.splice(allowedIndex, 1);
         return [change];
       }
       const safe = optionalVisibleText(change, {

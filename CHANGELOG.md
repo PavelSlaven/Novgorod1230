@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
 - fix(narration): restore direct coverage of every required episode fact after the rejected composition trial while retaining clear names for known people.
 - fix(game-server): authorize exact player speech in public text only from the committed turn trace; preserve it through visible-package and screen readback without admitting forged system markers (#364, D49).

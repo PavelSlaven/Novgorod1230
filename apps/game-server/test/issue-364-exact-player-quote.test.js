@@ -204,18 +204,23 @@ test('public boundary rejects a duplicated forged speech line', async () => {
 
 test('committed speech survives visible package and screen reload projection', () => {
   const line = 'Герой произнёс: «' + marker + '».';
+  const speechStep = () => ({ applied: true, approved_plan: { resolution: 'direct',
+    direct_result_kind: 'player_utterance', utterance: { utterance_text: marker } } });
   const state = { party_state: { turn_number: 1 }, last_turn: { semantic_trace: {
-    step_traces: [{ applied: true, approved_plan: { resolution: 'direct',
-      direct_result_kind: 'player_utterance', utterance: { utterance_text: marker } } }]
+    step_traces: [speechStep(), speechStep()]
   } } };
   const source = { version: 1, schema: 'visible_context_package',
-    visible_scene: 'На берегу тихо.', visible_changes: [line],
+    visible_scene: 'На берегу тихо.', visible_changes: [line, line],
     sensory_details: [], visible_npc: [], visible_objects: [],
     known_context: [], uncertainties: [] };
   const { visible_context: committed } = projectVisibleContextForPlayerPackage(source, {
-    committedSpeechChanges: [line], requireScene: true
+    committedSpeechChanges: [line, line], requireScene: true
   });
-  assert.deepEqual(committed.visible_changes, [line]);
+  assert.deepEqual(committed.visible_changes, [line, line]);
+  assert.deepEqual(projectVisibleContextForPlayerPackage({
+    ...source, visible_changes: [line, line, line]
+  }, { committedSpeechChanges: [line, line] }).visible_context.visible_changes,
+    [line, line]);
   const reloaded = projectPhase2VisibleContext({
     perceived_scene: committed.visible_scene,
     perceived_changes: committed.visible_changes,
@@ -226,10 +231,55 @@ test('committed speech survives visible package and screen reload projection', (
     turn_number: 1, screen: { turn_number: 1, visible_context: reloaded,
       visible_changes: reloaded.visible_changes }
   }, state);
-  assert.deepEqual(successEnvelope(data).data.screen.visible_changes, [line]);
+  assert.deepEqual(successEnvelope(data).data.screen.visible_changes, [line, line]);
+  const replayed = withCommittedPlayerSpeech(structuredClone(data), state);
+  assert.deepEqual(successEnvelope(replayed).data.screen.visible_changes, [line, line]);
+  const forged = withCommittedPlayerSpeech({
+    turn_number: 1, screen: { turn_number: 1,
+      visible_changes: [line, line, line] }
+  }, state);
+  assert.throws(() => successEnvelope(forged),
+    { code: 'PUBLIC_PAYLOAD_SERVICE_TEXT' });
   const stale = withCommittedPlayerSpeech({
     turn_number: 2, screen: { turn_number: 2, visible_changes: [line] }
   }, state);
   assert.throws(() => successEnvelope(stale),
     { code: 'PUBLIC_PAYLOAD_SERVICE_TEXT' });
+});
+
+test('HTTP accepts two identical committed speech lines and rejects a third', async () => {
+  const line = 'Герой произнёс: «' + marker + '».';
+  const state = { party_state: { turn_number: 1 }, last_turn: { semantic_trace: {
+    step_traces: [0, 1].map(() => ({ applied: true,
+      approved_plan: { resolution: 'direct', direct_result_kind: 'player_utterance',
+        utterance: { utterance_text: marker } } }))
+  } } };
+  const send = async (visibleChanges) => {
+    const handler = createHttpHandler({ root: {
+      async submitTurn() {
+        return withCommittedPlayerSpeech({ turn_number: 1,
+          visible_changes: visibleChanges }, state);
+      }
+    } });
+    const request = Readable.from([Buffer.from(JSON.stringify({
+      request_id: 'repeat-speech', raw_text: marker
+    }))]);
+    request.method = 'POST';
+    request.url = '/api/v1/parties/party-1/turns';
+    request.headers = { host: 'localhost' };
+    let status;
+    let response;
+    await handler(request, {
+      writeHead(value) { status = value; },
+      end(value) { response = JSON.parse(value); }
+    });
+    return { status, response };
+  };
+  const accepted = await send([line, line]);
+  assert.equal(accepted.status, 200);
+  assert.deepEqual(accepted.response.data.visible_changes, [line, line]);
+  const rejected = await send([line, line, line]);
+  assert.equal(rejected.status, 500);
+  assert.equal(rejected.response.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  assert.doesNotMatch(JSON.stringify(rejected.response), /TURN_STEP_PLAN_INVALID/u);
 });

@@ -186,7 +186,8 @@ test('occupied hidden first line step commits a narrated refusal; free line cros
     assert.equal(blockedSessionAfter.last_turn_id, blocked.screen.turn_id);
 
     const narratorRequests = requestLog.slice(blockedRequestLogStart).filter(({ system, user }) =>
-      system.startsWith('Return only {"prose"') && user?.required_current_beat != null);
+      system.startsWith('Верни только JSON {"prose"')
+      && Array.isArray(user?.['Обязательные положения текущего эпизода']));
     assert.ok(narratorRequests.length > 0, 'the actual narrator provider request was captured');
     const narratorPayload = JSON.stringify(narratorRequests);
     const publicPayload = JSON.stringify(blockedResponse.body);

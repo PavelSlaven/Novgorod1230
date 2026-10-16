@@ -56,7 +56,7 @@ for (const resolution of ['absent', 'no_change', 'authority_required']) {
     assert.deepEqual(projectDirectSeedChanges({ input: { consequence: applied.consequence_fragment },
       directSeedKeys: Object.entries(applied.consequence_fragment.visible_seed)
         .filter(([, value]) => value.kind === 'semantic_activity').map(([key]) => key) }),
-      resolution === 'absent' ? ['Вы завершили поиск.'] : [
+      resolution === 'absent' ? ['Поиск завершён.'] : [
         `Поиск по вопросу «${input.operation.query}» не дал подтверждённой находки.`]);
     assert.equal(applied.duration_minutes, 15);
     assert.equal(applied.consequence_fragment.duration_minutes, 15);

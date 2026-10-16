@@ -316,7 +316,7 @@ test('D102-6 responder, auditor and both model repair paths share the Russian pr
     russianBlock(speech(wireRequest));
     assert.equal(call.messages[0].content.includes(commonRule), true, 'writer/auditor/repair apply the approved rule word for word');
     assert.equal(call.overrides.temperature, 0);
-    assert.equal(call.overrides.maxTokens, call.role_id === 'npc_conversation_grounding_auditor' ? 256 : 1000);
+    assert.equal(call.overrides.maxTokens, 20_000);
   }
 });
 

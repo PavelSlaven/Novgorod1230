@@ -206,7 +206,7 @@ test('generic composition preserves domain body and handles direct visible',
     });
     assert.equal(projected.visible_scene, 'Заявленное действие завершено.');
     assert.deepEqual(projected.visible_changes,
-      ['Вы ощутили перемену в своём состоянии.']);
+      ['Герой ощутил перемену в своём состоянии.']);
 
     const physical = await visible.project({
       consequence: { visible_seed: { completed_steps: [],
@@ -220,7 +220,7 @@ test('generic composition preserves domain body and handles direct visible',
       body_update: { state_after: body() }
     });
     assert.deepEqual(physical.visible_changes, [
-      'Вы взяли в руки длинную доску.',
+      'Герой взял в руки длинную доску.',
       'Доска с обрывком снасти приспособлена как опора для плеча.'
     ]);
 

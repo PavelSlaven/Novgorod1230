@@ -208,8 +208,8 @@ test('unapplied and achieved direct plans produce neither failed facts nor proje
 
 test('confirmed movement limits and preceding speech survive without an invented cause', async () => {
   for (const [blockedReason, expectedFact] of [
-    ['hands_full', 'Вы не смогли взять кусок верёвки: руки заняты.'],
-    ['load_limit', 'Вы не смогли взять кусок верёвки: ноша слишком тяжела.']
+    ['hands_full', 'Герой не смог взять кусок верёвки: руки заняты.'],
+    ['load_limit', 'Герой не смог взять кусок верёвки: ноша слишком тяжела.']
   ]) {
     const seed = {
       turn_step_speech: { kind: 'semantic_activity', duration_minutes: 1 },
@@ -230,7 +230,7 @@ test('confirmed movement limits and preceding speech survive without an invented
       } } }
     ] } } });
 
-    assert.ok(visible.visible_changes.includes('Вы произнесли: «Здороваюсь с человеком.»'),
+    assert.ok(visible.visible_changes.includes('Герой произнёс: «Здороваюсь с человеком.»'),
       blockedReason);
     assert.ok(visible.visible_changes.includes(expectedFact), blockedReason);
     assert.deepEqual(gaps, [], blockedReason);
@@ -251,7 +251,7 @@ test('a failing private gap sink cannot alter projected perception facts', async
 });
 
 test('failed semantic activity keeps completed owner facts and drops an unconfirmed generic search', async () => {
-  const completedSearch = 'Вы завершили поиск.';
+  const completedSearch = 'Поиск завершён.';
   const semanticSeed = { kind: 'semantic_activity', duration_minutes: 15,
     discovery_kind: 'search' };
   const timeUpdate = { semantic_activity_resolutions: [{

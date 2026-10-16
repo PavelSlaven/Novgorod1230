@@ -10,7 +10,7 @@ import { resolveCommittedPhase2PresentationAfterFailure } from
 // Real role runner + real turn budget (real claimRepair): the same request_identity is
 // used by every narrator pass of one request, so the semantic repair is claimable once.
 const visibleContext = { version: 1, schema: 'visible_context_package',
-  visible_scene: 'Опушка', visible_changes: ['Вы рассмотрели деревья.'],
+  visible_scene: 'Опушка', visible_changes: ['Герой рассмотрел деревья.'],
   sensory_details: ['Различимы очертания деревьев.'], visible_npc: [],
   visible_objects: [], known_context: [], uncertainties: [],
   allowed_tensions: [], do_not_imply: [], current_light_phase: 'daylight' };
@@ -33,18 +33,18 @@ function harness({ goodWriterFromCall }) {
     if (roleId === 'gameplay_narrator') {
       writerCalls += 1;
       parsed = { prose: writerCalls >= goodWriterFromCall
-        ? 'Вы рассмотрели деревья и различили их очертания.'
-        : 'В полумраке вы различаете очертания деревьев.' };
+        ? 'Герой рассмотрел деревья и различил их очертания.'
+        : 'В полумраке герой различил очертания деревьев.' };
     } else if (roleId === 'gameplay_narrator_auditor') {
-      const segment = request.segments[0].segment_id;
-      const bad = request.output.prose.includes('полумраке');
+      const segment = request['Отрывки прозы'][0].segment_id;
+      const bad = request['Проверяемая проза'].includes('полумраке');
       parsed = { reviewed_segments: [segment],
         source_reviews: [{ ref: 'visible_change_1', segment_choices: bad ? [] : [segment] }],
         unsupported: bad ? [{ segment_choice: segment,
-          kind: 'unsupported_sensory', reason: 'No supplied local dimness.' }] : [],
+          kind: 'unsupported_world_state', reason: 'Переданные сведения не подтверждают местный полумрак.' }] : [],
         literary_failures: [], evidence: bad ? [] : ['Grounded prose.'] };
     } else if (roleId === 'gameplay_narrator_semantic_repair') {
-      parsed = { replacements: [{ prose: 'В полумраке вы снова различаете деревья.' }] };
+      parsed = { replacements: [{ prose: 'В полумраке герой снова различил деревья.' }] };
     } else throw new Error(`Unexpected role ${roleId}`);
     return { status: 'ok', parsed_json: parsed, provider: 'test', model: 'test',
       scope: 'turn_runtime', role_id: roleId, tier_id: null, durationMs: 1, config_hash: 'x' };

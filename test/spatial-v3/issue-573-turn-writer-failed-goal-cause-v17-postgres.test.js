@@ -74,10 +74,12 @@ test('ожидаемо красный, issue #573: v17 greeting without a visibl
     assert.deepEqual(scene.visible_npc, [], 'precondition: no visible greeting target');
     assert.ok(narrationLog.length > 0, 'precondition: production turn reaches writer');
     assert.equal(Number(result.screen.turn_number), 1, 'precondition: turn commits and delivers');
-    const writer = requestLog.find(({ system, user }) =>
-      system.startsWith('Return only {"prose"') && user.required_current_beat);
+    const writer = requestLog.find(({ user }) =>
+      Array.isArray(user['Обязательные положения текущего эпизода'])
+      && !Object.hasOwn(user, 'Отрывки прозы')
+      && !Object.hasOwn(user, 'Отклонённая проза'));
     assert.ok(writer, 'precondition: actual provider request contains turn writer beat');
-    const changes = writer.user.required_current_beat.changes.map(({ text }) => text);
+    const changes = writer.user['Обязательные положения текущего эпизода'];
     t.diagnostic(`issue573: ${JSON.stringify({ release: runtime.health().release_id,
       scenario_id: SCENARIO, start_request_id: START_REQUEST_ID,
       seed_digest: seeds[0].seed_digest,

@@ -63,9 +63,10 @@ test('issue #533: v17 route freshness on movement/replay/recovery — ожида
     globalThis.fetch = async (url, init) => {
       const call = JSON.parse(init.body);
       const input = JSON.parse(call.messages.find(({ role }) => role === 'user').content);
-      const system = call.messages[0].content.replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
-      if (rejectNarration && input.required_current_beat
-          && system.startsWith('Return only {"prose"')) {
+      if (rejectNarration
+          && Array.isArray(input['Обязательные положения текущего эпизода'])
+          && !Object.hasOwn(input, 'Отрывки прозы')
+          && !Object.hasOwn(input, 'Отклонённая проза')) {
         rejectedCalls += 1;
         throw new Error('issue #533: deterministic turn narrator outage');
       }

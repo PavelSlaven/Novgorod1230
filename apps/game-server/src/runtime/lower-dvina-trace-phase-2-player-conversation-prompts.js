@@ -23,6 +23,11 @@ export function playerConversationInstructions(repair, request = null,
     .replaceAll('<copy required_check.skill_ref from request>', '<скопируй required_check.skill_ref из запроса>')
     .replaceAll('<copy required_check.difficulty_band from request>', '<скопируй required_check.difficulty_band из запроса>')
     .replaceAll('<copy required_supporting_operation exactly once>', '<скопируй required_supporting_operation ровно один раз>');
+  if (/<[A-Za-z][^<>]*>/u.test(translatedMappings)) {
+    throw Object.assign(new Error('Player conversation prompt mapping is incomplete.'), {
+      code: 'PLAYER_CONVERSATION_PROMPT_MAPPING_INCOMPLETE'
+    });
+  }
   return [
     'Возвращай только один обычный JSON-объект с семантическим вкладом в разговор.',
     'Не возвращай request_id, conversation_id, state_version, speaker_ref или schema: сервер добавит их сам.',

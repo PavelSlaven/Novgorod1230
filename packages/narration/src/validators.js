@@ -1,3 +1,4 @@
+import { findMixedLatinCyrillicWord } from '@rus/kernel';
 import {
   NARRATION_AUDIT_SCHEMA,
   NARRATION_FLOW_RESULT_SCHEMA,
@@ -34,6 +35,8 @@ export function validateNarrationOutput(value) {
   if (value.version !== 1 || value.schema !== NARRATION_OUTPUT_SCHEMA) errors.push(`expected ${NARRATION_OUTPUT_SCHEMA} version 1`);
   requiredText(errors, value.output_id, 'output_id');
   requiredText(errors, value.prose, 'prose');
+  const mixedWord = findMixedLatinCyrillicWord(value.prose);
+  if (mixedWord !== null) errors.push(`$.prose contains a mixed Latin/Cyrillic word: ${mixedWord}`);
   if (!Array.isArray(value.action_options)) errors.push('action_options must be an array');
   if (!Array.isArray(value.used_references)) errors.push('used_references must be an array');
   if (!plain(value.self_check)) errors.push('self_check must be an object');

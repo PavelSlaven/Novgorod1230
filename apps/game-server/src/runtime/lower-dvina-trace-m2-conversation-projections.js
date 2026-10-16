@@ -177,6 +177,18 @@ export function allowedNpcContributionReferences(context, {
       && knowledgeScopeId.trim() === knowledgeScopeId
       && knowledgeScopeId.length > 0
     ? [ref('knowledge_scope', knowledgeScopeId)] : [];
+  const targetActor = context.targetActor;
+  const ownIdentityRef = plainRecord(targetActor?.identity_state)
+      && isEntityRef(context.targetRef)
+      && context.targetRef?.entity_kind === 'npc'
+      && context.targetRef.entity_id === targetActor.instance_id
+    ? [context.targetRef] : [];
+  const currentActivity = targetActor?.machine_state?.current_activity;
+  const ownActiveActivityRef = plainRecord(targetActor?.machine_state)
+      && plainRecord(currentActivity)
+      && currentActivity.status === 'active'
+      && isEntityRef(ref('activity_profile', currentActivity.activity_ref))
+    ? [ref('activity_profile', currentActivity.activity_ref)] : [];
   const canonical = (references) => [...new Map(references.map((reference) => [
     refKey(reference), structuredClone(reference)
   ])).values()].sort(compareRefs);
@@ -193,6 +205,8 @@ export function allowedNpcContributionReferences(context, {
     knowledge_refs: canonical([
       ...(policy.knowledge_refs ?? []),
       ...ownKnowledgeScope,
+      ...ownIdentityRef,
+      ...ownActiveActivityRef,
       ...knowledgeRefs
     ]),
     combat_target_refs: canonical(policy.combat_target_refs ?? [])

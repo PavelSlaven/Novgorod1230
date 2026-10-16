@@ -28,8 +28,8 @@ const PUBLIC_CLIENT_ERROR_CODES = new Set([
   'ROUTE_NOT_FOUND'
 ]);
 
-export function successEnvelope(data, { requestId = null } = {}) {
-  assertPublicPayload(data);
+export function successEnvelope(data, { requestId = null, playerQuote = null } = {}) {
+  assertPublicPayload(data, { playerQuote });
   return Object.freeze({
     version: HTTP_API_VERSION,
     schema: API_SUCCESS_SCHEMA,
@@ -118,6 +118,10 @@ function publicTurnFailureFor(error) {
   if (code === 'TURN_STEP_PLAN_INVALID') return {
     code: 'TURN_NOT_SAVED',
     message: 'Ход не сохранён. Попробуйте сформулировать действие иначе.'
+  };
+  if (code === 'TURN_NPC_PLAN_INVALID') return {
+    code: 'TURN_NOT_SAVED',
+    message: 'Ход не сохранён. Попробуйте ещё раз.'
   };
   if (code === 'M2C_TARGET_A1_APPLICABILITY_DATA_GAP'
     || code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP') return {

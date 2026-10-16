@@ -89,9 +89,13 @@ export function findUnsafePublishedText(value, field = '') {
   return findPublishedText(value, '$', field);
 }
 
-function findPublishedText(value, path = '$', field = '', seen = new Set()) {
+function findPublishedText(value, path = '$', field = '', seen = new Set(), quote = null, changeLeaf = false) {
   if (typeof value === 'string') {
     if (!PLAYER_TEXT_FIELDS.has(field)) return null;
+    if (changeLeaf && quote?.change === value && !quote.used) {
+      quote.used = true;
+      return null;
+    }
     const finding = findUnsafePlayerText(value, {
       label: ['display_label', 'label', 'route_labels', 'people_labels'].includes(field),
       generatedProse: ['prose', 'main_prose'].includes(field),
@@ -104,17 +108,25 @@ function findPublishedText(value, path = '$', field = '', seen = new Set()) {
   seen.add(value);
   for (const [key, nested] of Object.entries(value)) {
     const nestedField = PLAYER_TEXT_FIELDS.has(key) ? key : field;
-    const finding = findPublishedText(nested, `${path}.${key}`, nestedField, seen);
+    const finding = findPublishedText(nested, `${path}.${key}`, nestedField, seen,
+      quote, Array.isArray(value) && path.endsWith('.visible_changes'));
     if (finding != null) return finding;
   }
   seen.delete(value);
   return null;
 }
 
-export function assertPublicPayload(value) {
+export function playerSpeechVisibleChange(value) {
+  return `Вы произнесли: «${value}»${/[.!?…]$/u.test(value) ? '' : '.'}`;
+}
+
+export function assertPublicPayload(value, { playerQuote = null } = {}) {
   validateExactNpcUtteranceFields(value);
   assertNoHiddenLeaks(value);
-  const finding = findPublishedText(value);
+  const quote = typeof playerQuote === 'string' && playerQuote.length > 0
+    ? { change: playerSpeechVisibleChange(playerQuote), used: false }
+    : null;
+  const finding = findPublishedText(value, '$', '', new Set(), quote);
   if (finding != null) {
     throw serverError('PUBLIC_PAYLOAD_SERVICE_TEXT',
       'Public API payload contains service text.', {

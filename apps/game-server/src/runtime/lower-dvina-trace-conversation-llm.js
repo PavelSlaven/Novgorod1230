@@ -1,3 +1,4 @@
+import { normalizeMixedScriptHomoglyphs } from '@rus/kernel';
 import { serverError } from '../errors.js';
 import {
   npcConversationCandidates,
@@ -60,7 +61,7 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
 }
 
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
-  worldKnowledgeGrounder = null } = {}) {
+  worldKnowledgeGrounder = null, telemetry = null } = {}) {
   requireRoleRunner(roleRunner);
   const semanticRepairDecisions = new WeakMap();
   const groundedRequestsByRequest = new WeakMap();
@@ -158,7 +159,27 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     });
     const resolvedOutput = resolveNpcClaimReferenceIds(response.output,
       requestForPlan);
-    const assembled = assembleNpcConversationPlan(resolvedOutput, requestForPlan);
+    const normalizedSpeech = normalizeMixedScriptHomoglyphs(
+      resolvedOutput?.speech?.utterance_text);
+    const normalizedOutput = normalizedSpeech.replacedCharacterCount === 0
+      ? resolvedOutput : {
+        ...resolvedOutput,
+        speech: { ...resolvedOutput.speech,
+          utterance_text: normalizedSpeech.text }
+      };
+    try {
+      telemetry?.onDetail?.({
+        event: 'npc_conversation_speech_normalization',
+        scope: 'turn_runtime',
+        role_id: repair
+          ? 'npc_conversation_responder_format_repair'
+          : 'npc_conversation_responder',
+        request_identity: request.request_id,
+        replaced_character_count: normalizedSpeech.replacedCharacterCount
+      });
+    } catch { /* diagnostics must not affect gameplay */ }
+    const assembled = assembleNpcConversationPlan(normalizedOutput,
+      requestForPlan);
     const retryingServiceText = semanticRepair && repair.validation_errors
       .some(({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT');
     if (retryingServiceText && repair.original_output != null) {

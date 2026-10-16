@@ -8,9 +8,9 @@ export function withPhase3Conversation({ input, contracts, movement }) {
   const conversation = phase3ConversationProjection(input, contracts, movement);
   return {
     ...conversation,
-    visible_changes: unique([
-      ...movement.visible_changes, ...conversation.visible_changes
-    ]),
+    visible_changes: [
+      ...unique(movement.visible_changes), ...conversation.visible_changes
+    ],
     sensory_details: unique([
       ...movement.sensory_details, ...conversation.sensory_details
     ]),
@@ -145,6 +145,9 @@ export function playerSafeNpc(actor, visibleStatus = null,
     },
     display_label: identity.display_label,
     recognition: identity.recognition,
+    ...(identity.observable_cues == null ? {} : {
+      observable_cues: identity.observable_cues
+    }),
     ...(visibleStatus == null ? {} : { visible_status: visibleStatus })
   };
 }

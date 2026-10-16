@@ -4,6 +4,7 @@ import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest } from '@rus/materialization';
 import {
   diagnoseConversationPlanDominantAct,
+  diagnoseConversationPlanMixedScript,
   diagnoseNpcStepPlan,
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
@@ -298,8 +299,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       const semanticAfterStructural = semanticRepair
         && structuralRepairUsed && !semanticRepairUsed;
       if (repairAlreadyUsed || (repair !== null && !semanticAfterStructural)) {
-        const reportedErrors = structuralErrors.length > 0
-          ? structuralErrors : repairContext(rawPlan).validation_errors;
+        const reportedErrors = domainResult?.errors ?? (structuralErrors.length > 0
+          ? structuralErrors : repairContext(rawPlan).validation_errors);
         fail(
           'TURN_NPC_PLAN_INVALID',
           'NPC semantic response and its format repair must match the request',
@@ -322,7 +323,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
 function structuralPlanErrors(plan, request, mode) {
   if (mode === 'combat') return diagnoseNpcCombatIntentPlan(plan, request);
   if (mode === 'conversation') {
-    return diagnoseConversationPlanDominantAct(plan);
+    return [...diagnoseConversationPlanDominantAct(plan),
+      ...diagnoseConversationPlanMixedScript(plan)];
   }
   return diagnoseNpcStepPlan(plan, request);
 }

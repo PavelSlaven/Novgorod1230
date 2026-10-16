@@ -167,6 +167,8 @@ test('group conversation keeps exact replies without synthetic speaker numbers',
   assert.equal(visible.visible_scene, 'стан');
   assert.deepEqual(visible.visible_changes, [
     'Вы пришли в стан.',
+    'человек говорит: «Одинаковый ответ.»',
+    'человек говорит: «Одинаковый ответ.»',
     'человек говорит: «Одинаковый ответ.»'
   ]);
   assert.deepEqual(visible.visible_npc.map(({ entity_ref }) =>

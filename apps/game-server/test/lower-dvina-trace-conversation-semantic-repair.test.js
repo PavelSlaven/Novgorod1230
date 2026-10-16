@@ -635,7 +635,11 @@ test('speech grounding separates event content from personal experience and pres
   const firstAudit = scenario.calls.find(({ role_id }) => role_id === auditor);
   assert.deepEqual(payload(firstAudit), { request: input, plan: unsupported });
   assert.match(firstAudit.messages[0].content, /не личное наблюдение или участие NPC/u);
+  assert.match(firstAudit.messages[0].content, /ему нужна соответствующая запись в speech\.claims/u);
+  assert.match(firstAudit.messages[0].content, /факт подтверждён источником, но отсутствует в claims, верни pass:false/u);
   assert.match(firstAudit.messages[0].content, /не его установившуюся привычку/u);
+  assert.match(retry.messages[0].content, /matching retained original claim/u);
+  assert.match(retry.messages[0].content, /Remove unsupported expansions; never add a claim or fact/u);
   assert.match(retry.messages[0].content, /does not prove NPC personal observation, participation or established habit/u);
   assert.match(retry.messages[0].content, /even when claim content_summary states only the event/u);
   exactModelReply(scenario, corrected);

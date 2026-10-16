@@ -51,12 +51,31 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
           validation_errors: repair.validation_errors ?? []
         } : modelRequest)
       }],
-      overrides: { temperature: 0, maxTokens: 1_000 }
+      overrides: { temperature: 0, maxTokens: 20_000 }
     });
     const plan = assemblePlayerConversationPlan(response.output, request);
     // F5: intent_paraphrase must not commit WK fact text as player speech.
     rejectIntentParaphraseWorldKnowledgeLeak(plan, grounded?.world_knowledge);
     return plan;
+  };
+}
+
+function npcModelMemoryTimeProjection(request) {
+  const projectMemory = (memory) => {
+    if (!Array.isArray(memory?.records)) return memory;
+    return { ...memory, records: memory.records.map((record) => {
+      if (!Object.hasOwn(record, 'observed_at')) return record;
+      const { observed_at: recordTimeReference, ...fact } = record;
+      return { ...fact, record_time_reference: recordTimeReference };
+    }) };
+  };
+  return {
+    ...request,
+    memory: projectMemory(request.memory),
+    knowledge: request.knowledge?.memory == null ? request.knowledge : {
+      ...request.knowledge,
+      memory: projectMemory(request.knowledge.memory)
+    }
   };
 }
 
@@ -107,8 +126,8 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
               > `${right.entity_kind}\u0000${right.entity_id}` ? 1 : 0)
       }
     };
-    const promptRequest = { ...grounded,
-      allowed_references: preparedRequest.allowed_references };
+    const promptRequest = npcModelMemoryTimeProjection({ ...grounded,
+      allowed_references: preparedRequest.allowed_references });
     const preparedContext = { grounded_request: promptRequest,
       audit_request: promptRequest };
     const prepared = { request: preparedRequest, context: preparedContext };
@@ -149,24 +168,34 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         role: 'user',
         content: JSON.stringify(repair ? {
           request: modelRequest,
-          ...(semanticRepair && repairServiceText ? {
+          ...(semanticRepair ? repairServiceText ? {
             marker_safe_decision: decisionForRepair(repair.original_output,
               requestForPlan, savedDecision)
           } : {
-            original_output: repair.original_output ?? null,
-            ...(semanticRepair ? {
-              typed_decision: decisionForRepair(repair.original_output,
-                requestForPlan, savedDecision)
-            } : {})
+            original_speech: originalRepairPlan?.speech ?? null,
+            preserved_decision: decisionForRepair(repair.original_output,
+              requestForPlan, savedDecision)
+          } : {
+            original_output: repair.original_output ?? null
           }),
           validation_errors: semanticRepair
             ? npcRepairErrorsForModel(repair.validation_errors)
             : repair.validation_errors ?? []
         } : modelRequest)
       }],
-      overrides: { temperature: 0, maxTokens: 1_000 }
+      overrides: { temperature: 0, maxTokens: 20_000 }
     });
-    const resolvedOutput = resolveNpcClaimReferenceIds(response.output,
+    const compactRepair = originalRepairPlan != null && !repairServiceText;
+    const repairOutput = compactRepair
+      ? applyNpcSemanticRepair(originalRepairPlan, response.output,
+        requestForPlan, repair.validation_errors)
+      : response.output;
+    if (compactRepair && repairOutput === null) {
+      const rejectedPlan = structuredClone(repair.original_output);
+      nonApplicableRepairPlans.add(rejectedPlan);
+      return rejectedPlan;
+    }
+    const resolvedOutput = resolveNpcClaimReferenceIds(repairOutput,
       requestForPlan);
     const normalizedSpeech = normalizeMixedScriptHomoglyphs(
       resolvedOutput?.speech?.utterance_text);
@@ -297,9 +326,55 @@ function npcRepairErrorsForModel(errors) {
   return (errors ?? []).map((error) => error?.category === 'semantic_grounding'
     ? { category: 'semantic_grounding', concern_kinds:
       Array.isArray(error.concern_kinds)
-        ? error.concern_kinds.filter((kind) => typeof kind === 'string') : [] }
+        ? error.concern_kinds.filter((kind) => typeof kind === 'string') : [],
+      ...(Array.isArray(error.audit_feedback) && error.audit_feedback.length > 0
+        ? { audit_feedback: error.audit_feedback.map(({ kind, reason, quote }) =>
+          ({ kind, reason, quote })) } : {}) }
     : { category: 'format',
       message: 'Return the required response shape using only values from the request.' });
+}
+
+function applyNpcSemanticRepair(original, output, request, errors) {
+  if (original?.interpretation == null
+      || typeof original.interpretation !== 'object') return null;
+  const speech = original.speech != null;
+  const keys = speech
+    ? ['utterance_text', 'claims', 'interpretation', 'reason']
+    : ['interpretation', 'reason'];
+  if (!hasExactKeys(output, keys)
+      || !hasExactKeys(output.interpretation,
+        ['intent', 'grounded_contribution'])
+      || typeof output.interpretation.intent !== 'string'
+      || typeof output.interpretation.grounded_contribution !== 'string'
+      || typeof output.reason !== 'string'
+      || (speech && (typeof output.utterance_text !== 'string'
+        || !Array.isArray(output.claims)))) return null;
+  const repaired = structuredClone(original);
+  repaired.interpretation.intent = output.interpretation.intent;
+  repaired.interpretation.grounded_contribution =
+    output.interpretation.grounded_contribution;
+  repaired.reason = output.reason;
+  if (speech) {
+    repaired.speech.utterance_text = output.utterance_text;
+    repaired.speech.claims = structuredClone(output.claims);
+    const requiredTag = request.social_context?.npc_behavior
+      ?.required_interaction_tag;
+    if (typeof requiredTag === 'string' && requiredTag.length > 0
+        && errors.some(({ concern_kinds: kinds }) =>
+          Array.isArray(kinds)
+            && kinds.includes('required_npc_behavior_missing'))
+        && !repaired.speech.interaction_tags.includes(requiredTag)) {
+      repaired.speech.interaction_tags.push(requiredTag);
+    }
+  }
+  return repaired;
+}
+
+function hasExactKeys(value, keys) {
+  return value !== null && typeof value === 'object'
+    && !Array.isArray(value)
+    && Object.keys(value).length === keys.length
+    && keys.every((key) => Object.hasOwn(value, key));
 }
 
 function npcTypedDecisionProjection(plan, request, includeBindingIdentity = false) {

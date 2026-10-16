@@ -14,7 +14,8 @@ const responder = 'npc_conversation_responder';
 const repairRole = 'npc_conversation_responder_format_repair';
 const auditor = 'npc_conversation_grounding_auditor';
 const approved = () => ({ pass: true, concerns: [] });
-const rejected = (kind) => ({ pass: false, concerns: [{ kind }] });
+const rejected = (kind) => ({ pass: false, concerns: [{ kind,
+  reason: 'No exact supporting evidence.', quote: '' }] });
 const payload = (call) => JSON.parse(call.messages[1].content);
 
 function boundary(input) {
@@ -100,7 +101,7 @@ function observation(input) {
 async function runConversation(input, original, corrected, {
   audit = (_call, number) => number === 1
     ? rejected('unsupported_qualifier') : approved(),
-  worldKnowledgeGrounder = null
+  worldKnowledgeGrounder = null, repairOutput = null
 } = {}) {
   // Validate fixtures before exercising production; schema defects are not
   // evidence of a semantic-repair regression.
@@ -118,7 +119,8 @@ async function runConversation(input, original, corrected, {
     if (call.role_id === auditor) return { output: audit(call, ++auditCount) };
     assert.ok([responder, repairRole].includes(call.role_id), call.role_id);
     return { output: structuredClone(call.role_id === responder
-      ? original : corrected) };
+      ? original : Object.hasOwn(payload(call), 'marker_safe_decision')
+        ? corrected : repairOutput ?? privateRepair(corrected)) };
   } };
   const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     worldKnowledgeGrounder });
@@ -137,6 +139,34 @@ async function runConversation(input, original, corrected, {
   return { calls, result, error };
 }
 
+function privateRepair(corrected) {
+  return {
+    ...(corrected.speech == null ? {} : {
+      utterance_text: corrected.speech.utterance_text,
+      claims: corrected.speech.claims
+    }),
+    interpretation: {
+      intent: corrected.interpretation.intent,
+      grounded_contribution: corrected.interpretation.grounded_contribution
+    },
+    reason: corrected.reason
+  };
+}
+
+function assertOrdinaryRepairInput(call, original) {
+  const input = payload(call);
+  assert.deepEqual(input.original_speech, original.speech);
+  assert.equal(Object.hasOwn(input, 'original_output'), false);
+  assert.equal(Object.hasOwn(input, 'original_interpretation'), false);
+  assert.equal(Object.hasOwn(input, 'original_reason'), false);
+  assert.equal(input.preserved_decision.contribution_kind,
+    original.contribution_kind);
+  assert.deepEqual(input.preserved_decision.supporting_operations,
+    original.supporting_operations);
+  assert.deepEqual(input.preserved_decision.speech?.response_expectation,
+    original.speech?.response_expectation);
+}
+
 function singleRepair(scenario) {
   const repairs = scenario.calls.filter(({ role_id }) => role_id === repairRole);
   assert.equal(repairs.length, 1, 'semantic grounding must call the model once for repair');
@@ -153,7 +183,7 @@ function exactModelReply(scenario, corrected) {
   assert.doesNotMatch(JSON.stringify(scenario.result), /ничего подтвердить не могу/u);
 }
 
-test('grounding rejection calls one model repair with full output and concrete concerns', async () => {
+test('grounding rejection calls one model repair with complete original speech, decision and concerns', async () => {
   const probes = [];
   for (const withOperations of [false, true]) {
     const input = request(`semantic-output-and-concerns-${withOperations ? 'operations' : 'no-operations'}`);
@@ -197,15 +227,21 @@ test('grounding rejection calls one model repair with full output and concrete c
   assert.deepEqual(probes.map(({ withOperations, scenario }) => {
     const repairs = scenario.calls.filter(({ role_id }) => role_id === repairRole);
     return { withOperations, repair_calls: repairs.length,
-      original_output_present: repairs.length > 0
-        && Object.hasOwn(payload(repairs[0]), 'original_output'),
+      original_speech_present: repairs.length > 0
+        && Object.hasOwn(payload(repairs[0]), 'original_speech'),
       concern_kinds: repairs.length > 0
         ? payload(repairs[0]).validation_errors[0].concern_kinds ?? [] : [] };
   }), [false, true].map((withOperations) => ({ withOperations, repair_calls: 1,
-    original_output_present: true, concern_kinds: ['unsupported_qualifier'] })));
+    original_speech_present: true, concern_kinds: ['unsupported_qualifier'] })));
   for (const { original, corrected, scenario } of probes) {
     const retry = singleRepair(scenario);
-    assert.deepEqual(payload(retry).original_output, original);
+    assert.match(retry.messages[0].content,
+      /Grounding takes priority over wording/u);
+    assert.match(retry.messages[0].content,
+      /Reconstruct interpretation and reason/u);
+    assert.match(retry.messages[0].content,
+      /Missing memory records do not prove the NPC lacks knowledge/u);
+    assertOrdinaryRepairInput(retry, original);
     assert.deepEqual(scenario.calls.map(({ role_id }) => role_id),
       [responder, auditor, repairRole, auditor]);
     exactModelReply(scenario, corrected);
@@ -222,7 +258,7 @@ test('first-contact identity and guarded behavior are repaired by the model with
   corrected.speech.interaction_tags = ['withhold'];
   const scenario = await runConversation(input, original, corrected, { audit: approved });
   const retry = singleRepair(scenario);
-  assert.deepEqual(payload(retry).original_output, original);
+  assertOrdinaryRepairInput(retry, original);
   assert.deepEqual(payload(retry).validation_errors.flatMap(
     ({ concern_kinds }) => concern_kinds),
   ['first_contact_introduction_missing', 'required_npc_behavior_missing']);
@@ -256,9 +292,13 @@ test('presentation repair preserves the original typed addressee decision', asyn
     ];
     output.speech.interaction_tags = ['inform'];
   }
-  const scenario = await runConversation(input, original, changed, { audit: approved });
+  const scenario = await runConversation(input, original, changed, {
+    audit: approved,
+    repairOutput: { ...privateRepair(changed),
+      primary_addressee_ref: changed.primary_addressee_ref }
+  });
   const retry = singleRepair(scenario);
-  assert.deepEqual(payload(retry).typed_decision.primary_addressee_ref, otherAddressee);
+  assertOrdinaryRepairInput(retry, original);
   assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
   assert.equal(scenario.result, undefined);
 });
@@ -288,8 +328,7 @@ test('repair preserves refusal and introduction while marker repair keeps a sepa
   const original = plan(input, 'Я Еремей. Не пущу тебя: вчера лодки не было.', 'refuse');
   const scenario = await runConversation(input, original, corrected);
   const retry = singleRepair(scenario);
-  assert.deepEqual(payload(retry).original_output, original,
-    'ordinary grounding repair retains the complete original response');
+  assertOrdinaryRepairInput(retry, original);
   exactModelReply(scenario, corrected);
 
   const marked = structuredClone(original);
@@ -350,12 +389,54 @@ test('semantic repair cannot change speech into a different contribution kind', 
   const changed = { ...structuredClone(original), contribution_kind: 'silence',
     primary_addressee_ref: null, intended_addressee_refs: [], speech: null };
   const scenario = await runConversation(input, original, changed);
-  assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE',
-    'a schema-valid change of contribution is not a repair of the original decision');
+  assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
   singleRepair(scenario);
   assert.equal(scenario.result, undefined);
   assert.deepEqual(scenario.calls.map(({ role_id }) => role_id),
     [responder, auditor, repairRole]);
+});
+
+test('non-speech semantic repair uses only interpretation and reason', async () => {
+  const input = request('semantic-silence');
+  input.decision_scope.allowed_contribution_kinds = ['speech', 'silence'];
+  const original = { ...plan(input), contribution_kind: 'silence',
+    primary_addressee_ref: null, intended_addressee_refs: [], speech: null };
+  const corrected = structuredClone(original);
+  corrected.interpretation.intent = 'промолчать после вопроса';
+  corrected.interpretation.grounded_contribution = 'не произносить реплику';
+  corrected.reason = 'NPC сохраняет молчание.';
+  assert.equal(validateConversationContributionPlan(original, input), true);
+  const calls = [];
+  const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner: {
+    async run(call) {
+      calls.push(call);
+      return { output: privateRepair(corrected) };
+    }
+  } });
+  const result = await model(input, { repair: { original_output: original,
+    validation_errors: [{ category: 'semantic_grounding',
+      concern_kinds: ['unsupported_reason'] }] } });
+  assert.deepEqual(Object.keys(privateRepair(corrected)).sort(),
+    ['interpretation', 'reason']);
+  assert.deepEqual(result, corrected);
+  assertOrdinaryRepairInput(calls[0], original);
+  assert.match(calls[0].messages[0].content,
+    /private repair shape: \{"interpretation"/u);
+});
+
+test('ordinary repair does not expose rejected private interpretation or reason', async () => {
+  const input = request('semantic-private-source');
+  const original = plan(input, 'Не берусь судить.');
+  original.interpretation.intent = 'UNTRUSTED_PRIVATE_INTENT';
+  original.interpretation.grounded_contribution = 'UNTRUSTED_PRIVATE_MEMORY';
+  original.reason = 'UNTRUSTED_PRIVATE_REASON';
+  const corrected = plan(input, 'Я пока не знаю.');
+  const scenario = await runConversation(input, original, corrected);
+  const retry = singleRepair(scenario);
+  assertOrdinaryRepairInput(retry, original);
+  assert.doesNotMatch(retry.messages[1].content,
+    /UNTRUSTED_PRIVATE_(INTENT|MEMORY|REASON)/u);
+  exactModelReply(scenario, corrected);
 });
 
 test('semantic repair cannot change the original dominant speech act', async () => {
@@ -363,12 +444,13 @@ test('semantic repair cannot change the original dominant speech act', async () 
   const original = plan(input, 'Не пущу тебя: вчера лодки не было.', 'refuse');
   const changed = plan(input, 'Не берусь судить.', 'answer');
   const scenario = await runConversation(input, original, changed);
-  assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE',
-    'a grounded answer cannot replace the NPC refusal during semantic repair');
+  assert.equal(scenario.error, undefined);
   singleRepair(scenario);
-  assert.equal(scenario.result, undefined);
+  assert.equal(scenario.result.plan.speech.dominant_act, 'refuse');
+  assert.equal(scenario.result.plan.speech.utterance_text,
+    changed.speech.utterance_text);
   assert.deepEqual(scenario.calls.map(({ role_id }) => role_id),
-    [responder, auditor, repairRole]);
+    [responder, auditor, repairRole, auditor]);
 });
 
 test('semantic repair preserves persisted topic references', async () => {
@@ -378,9 +460,9 @@ test('semantic repair preserves persisted topic references', async () => {
   const changed = plan(input, 'Не берусь судить.');
   changed.speech.topic_refs = ['route-two'];
   const scenario = await runConversation(input, original, changed);
-  assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
+  assert.equal(scenario.error, undefined);
   singleRepair(scenario);
-  assert.equal(scenario.result, undefined);
+  assert.deepEqual(scenario.result.plan.speech.topic_refs, ['route-one']);
 });
 
 test('semantic repair preserves the check purpose', async () => {
@@ -400,7 +482,9 @@ test('semantic repair preserves the check purpose', async () => {
   const changed = structuredClone(original);
   changed.speech.utterance_text = 'Не берусь судить.';
   changed.check.purpose = 'получить согласие на поездку';
-  const scenario = await runConversation(input, original, changed);
+  const scenario = await runConversation(input, original, changed, {
+    repairOutput: { ...privateRepair(changed), check: changed.check }
+  });
   assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
   singleRepair(scenario);
   assert.equal(scenario.result, undefined);
@@ -421,11 +505,11 @@ test('semantic repair preserves the approved execution binding', async () => {
   changed.supporting_operations = [{ op: 'commit_route_participation',
     ...second }];
   const scenario = await runConversation(input, original, changed);
-  assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
+  assert.equal(scenario.error, undefined);
   singleRepair(scenario);
-  assert.equal(scenario.result, undefined);
-  assert.doesNotMatch(JSON.stringify(payload(singleRepair(scenario)).typed_decision),
-    /execution-one|execution-two/u);
+  assert.deepEqual(scenario.result.plan.supporting_operations,
+    original.supporting_operations);
+  assert.equal(Object.hasOwn(payload(singleRepair(scenario)), 'typed_decision'), false);
 });
 
 test('a second grounding failure ends in typed failure without synthetic speech or another repair', async () => {
@@ -457,8 +541,93 @@ test('an unseen grounding concern uses the same model repair and preserves its c
   });
   const retry = singleRepair(scenario);
   assert.deepEqual(payload(retry).validation_errors[0].concern_kinds, [unseenKind]);
-  assert.deepEqual(payload(retry).original_output, original);
+  assertOrdinaryRepairInput(retry, original);
   assert.deepEqual(scenario.calls.map(({ role_id }) => role_id),
     [responder, auditor, repairRole, auditor]);
   exactModelReply(scenario, corrected);
+});
+
+test('model memory time is unambiguous in responder, repair, and audit payloads', async () => {
+  const input = request('memory-record-time');
+  const seen = observation(input);
+  const memoryRef = ref('knowledge_record', 'water-level');
+  const fact = { fact_ref: memoryRef, source_type: 'exact_memory',
+    observed_at: { whole_minutes: '17', subminute_numerator: '1',
+      subminute_denominator: '2' },
+    fact_text: 'Вода у переправы поднялась выше метки.' };
+  input.memory.records = [structuredClone(fact)];
+  input.knowledge.memory = { records: [structuredClone(fact)],
+    received_messages: [] };
+  input.allowed_references.knowledge_refs.unshift(memoryRef);
+  const original = plan(input, 'Я видел, как вода поднялась выше метки.');
+  original.speech.claims = [claim('water', fact.fact_text, [memoryRef])];
+  const corrected = plan(input, fact.fact_text);
+  corrected.speech.claims = [claim('water', fact.fact_text, [memoryRef])];
+  const scenario = await runConversation(input, original, corrected);
+  exactModelReply(scenario, corrected);
+  assert.deepEqual(scenario.calls.map(({ role_id }) => role_id),
+    [responder, auditor, repairRole, auditor]);
+  const expected = { fact_ref: memoryRef, source_type: fact.source_type,
+    fact_text: fact.fact_text, record_time_reference: fact.observed_at };
+  for (const call of scenario.calls) {
+    const modelRequest = payload(call).request ?? payload(call);
+    assert.deepEqual(modelRequest.memory.records, [expected]);
+    assert.deepEqual(modelRequest.knowledge.memory.records, [expected]);
+    assert.deepEqual(modelRequest.memory.current_observations, [seen]);
+    assert.equal(Object.hasOwn(modelRequest.memory.records[0], 'observed_at'), false);
+  }
+  assertOrdinaryRepairInput(singleRepair(scenario), original);
+  assert.deepEqual(input.memory.records, [fact]);
+  assert.deepEqual(input.knowledge.memory.records, [fact]);
+});
+
+test('speech grounding separates event content from personal experience and present choice', async () => {
+  const input = request('speech-source-scope');
+  const seen = observation(input);
+  seen.fact_text = 'Вода у переправы поднялась выше метки; переправляться опасно.';
+  const fact = claim('water', seen.fact_text, [seen.observation_ref]);
+  const unsupported = plan(input,
+    'Я видел, как вода поднялась выше метки; переправляться опасно. Я туда обычно не суюсь.');
+  unsupported.speech.claims = [fact];
+  const corrected = plan(input,
+    'Вода поднялась выше метки; переправляться опасно. Сейчас я туда не пойду.');
+  corrected.speech.claims = [fact];
+  const scenario = await runConversation(input, unsupported, corrected, {
+    audit: (_call, number) => number === 1
+      ? rejected('unsupported_personal_experience') : approved()
+  });
+  const retry = singleRepair(scenario);
+  const firstAudit = scenario.calls.find(({ role_id }) => role_id === auditor);
+  assert.deepEqual(payload(firstAudit), { request: input, plan: unsupported });
+  assert.match(firstAudit.messages[0].content, /не личное наблюдение или участие NPC/u);
+  assert.match(firstAudit.messages[0].content, /не его установившуюся привычку/u);
+  assert.match(retry.messages[0].content, /does not prove NPC personal observation, participation or established habit/u);
+  assert.match(retry.messages[0].content, /even when claim content_summary states only the event/u);
+  exactModelReply(scenario, corrected);
+
+  const personalInput = request('speech-supported-personal');
+  const personalFact = 'Я видел, как вода поднялась выше метки.';
+  const personalRef = ref('knowledge_record', 'personal-observation-1');
+  personalInput.memory = { records: [{ fact_ref: personalRef,
+    source_type: 'exact_memory', observed_at: personalInput.requested_at,
+    fact_text: personalFact }], received_messages: [], current_observations: [] };
+  personalInput.allowed_references.knowledge_refs.push(personalRef);
+  const personal = plan(personalInput, personalFact);
+  personal.speech.claims = [claim('personal', personalFact, [personalRef])];
+  const supported = await runConversation(personalInput, personal, personal,
+    { audit: approved });
+  assert.equal(supported.error, undefined);
+  assert.deepEqual(supported.calls.map(({ role_id }) => role_id),
+    [responder, auditor]);
+  for (const call of supported.calls) {
+    const memory = (payload(call).request ?? payload(call)).memory.records[0];
+    assert.equal(memory.fact_text, personalFact);
+    assert.deepEqual(memory.record_time_reference, personalInput.requested_at);
+  }
+
+  const choice = plan(input, 'Сейчас я туда не пойду.', 'refuse');
+  const chosen = await runConversation(input, choice, choice, { audit: approved });
+  assert.equal(chosen.error, undefined);
+  assert.deepEqual(chosen.calls.map(({ role_id }) => role_id),
+    [responder, auditor]);
 });

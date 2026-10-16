@@ -50,6 +50,15 @@ function runner(reply) {
   const calls = [];
   return { calls, roleRunner: { async run(call) { calls.push(structuredClone(call)); return { output: await reply(call) }; } } };
 }
+function privateSemanticWire(output) {
+  return { ...(output.speech == null ? {} : {
+    utterance_text: output.speech.utterance_text,
+    claims: output.speech.claims
+  }), interpretation: {
+    intent: output.interpretation.intent,
+    grounded_contribution: output.interpretation.grounded_contribution
+  }, reason: output.reason };
+}
 async function requestNpcProposal(input, model) {
   const boundary = buildNpcDecisionBoundary({
     decision_mode: 'conversation', scheduled_at: input.requested_at,
@@ -71,7 +80,7 @@ async function requestNpcProposal(input, model) {
 async function runNpcConversationTurn({ batchId, responder, audit = () => ({
   pass: true, concerns: []
 }), addAmbiguousRef = () => {}, addObservation = false,
-configureInput = () => {} }) {
+configureInput = () => {}, rawRepair = false }) {
   const input = request();
   configureInput(input);
   input.state_version = 2;
@@ -105,7 +114,13 @@ configureInput = () => {} }) {
       return { output: await audit(call) };
     }
     const payload = JSON.parse(call.messages[1].content);
-    return { output: await responder(call, payload.request ?? payload) };
+    const output = await responder(call, payload.request ?? payload);
+    const compact = !rawRepair
+      && call.role_id === 'npc_conversation_responder_format_repair'
+      && !Object.hasOwn(payload, 'marker_safe_decision')
+      && payload.validation_errors?.some((error) =>
+        error.category === 'semantic_grounding');
+    return { output: compact ? privateSemanticWire(output) : output };
   } };
   const semanticModel = createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     worldKnowledgeGrounder: { async ground(currentRequest) {
@@ -437,8 +452,7 @@ test('speech audit rejects invented past work from a current schedule',
       'На рассвете я был у реки и проверял сети.';
     unsupported.speech.dominant_act = 'inform';
     const fixture = runner(() => ({ pass: false, concerns: [{
-      kind: 'unsupported_past_activity'
-    }] }));
+      kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] }));
     const result = await createLowerDvinaTraceNpcSemanticModel(
       fixture).validateFreshPlan(unsupported, input);
 
@@ -463,7 +477,7 @@ test('speech audit rejects invented past work from a current schedule',
       /memory\.current_observations подтверждает только свой точный настоящий fact_text/u);
     assert.match(fixture.calls[0].messages[0].content,
       /Обязательный отказ: если в memory\.records нет точной подтверждающей записи/u);
-    assert.equal(fixture.calls[0].overrides.maxTokens, 256);
+    assert.equal(fixture.calls[0].overrides.maxTokens, 20_000);
   });
 
 test('speech audit applies to another NPC, place, and earlier time', async () => {
@@ -476,14 +490,34 @@ test('speech audit applies to another NPC, place, and earlier time', async () =>
   unsupported.speech.utterance_text =
     'Вчера до твоего прихода я видел людей у переправы.';
   const fixture = runner(() => ({ pass: false, concerns: [{
-    kind: 'unsupported_past_observation'
-  }] }));
+    kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] }));
 
   const result = await createLowerDvinaTraceNpcSemanticModel(
     fixture).validateFreshPlan(unsupported, input);
   assert.equal(result.pass, false);
   assert.deepEqual(result.errors[0].concern_kinds,
     ['unsupported_past_observation']);
+});
+
+test('speech audit preserves precise feedback and rejects invented quotes', async () => {
+  const input = request();
+  const proposal = plan(input);
+  proposal.speech.utterance_text = 'Вчера я видел людей у переправы.';
+  const concern = { kind: 'unsupported_past_observation',
+    reason: 'No memory record supports the claimed personal sighting.',
+    quote: 'я видел людей' };
+  const accepted = runner(() => ({ pass: false, concerns: [concern] }));
+  const result = await createLowerDvinaTraceNpcSemanticModel(
+    accepted).validateFreshPlan(proposal, input);
+  assert.deepEqual(result.errors[0].audit_feedback, [concern]);
+
+  const invalid = runner(() => ({ pass: false, concerns: [{
+    ...concern, quote: 'я видел волков'
+  }] }));
+  await assert.rejects(() => createLowerDvinaTraceNpcSemanticModel(
+    invalid).validateFreshPlan(proposal, input), {
+    code: 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID'
+  });
 });
 
 test('source-free NPC claims fail before the semantic auditor call', async () => {
@@ -680,43 +714,37 @@ test('semantic grounding repair receives original output and concrete concerns',
     let originalOutput;
     const repaired = await runNpcConversationTurn({
       batchId: 'semantic-repair-preserves-refusal',
+      rawRepair: true,
       responder(call, input) {
         if (call.role_id === 'npc_conversation_responder_format_repair') {
           const payload = JSON.parse(call.messages[1].content);
-          assert.deepEqual(payload.original_output, originalOutput);
-          assert.deepEqual(payload.typed_decision, {
-            contribution_kind: 'speech',
-            primary_addressee_ref: ref('player_character', 'player-1'),
-            intended_addressee_refs: [ref('player_character', 'player-1')],
-            affected_actor_refs: [],
-            speech: {
-              dominant_act: 'refuse', interaction_tags: [],
-              response_expectation: { kind: 'none', target_refs: [] }
-            },
-            resolution: 'automatic',
-            activity: { duration_class: 'domain_owned', effort: 'none' },
-            supporting_operations: [], check: null, handoff: null
-          });
+          assert.deepEqual(payload.original_speech, originalOutput.speech);
+          assert.equal(payload.preserved_decision.contribution_kind,
+            originalOutput.contribution_kind);
+          assert.equal(payload.preserved_decision.speech.dominant_act, 'refuse');
           assert.deepEqual(Object.keys(payload).sort(), [
-            'original_output', 'request', 'typed_decision', 'validation_errors'
+            'original_speech', 'preserved_decision', 'request', 'validation_errors'
           ]);
+          assert.equal(payload.original_output, undefined);
           assert.deepEqual(payload.validation_errors, [{
             category: 'semantic_grounding',
-            concern_kinds: ['unsupported_past_activity']
+            concern_kinds: ['unsupported_past_activity'],
+            audit_feedback: [{ kind: 'unsupported_past_activity',
+              reason: 'No exact supporting evidence.',
+              quote: 'Вчера я видел купца' }]
           }]);
           assert.match(call.messages[0].content,
-            /smallest changes needed to resolve each concrete concern_kinds item/u);
+            /Repair unsupported assertions across the whole original_speech/u);
           assert.match(call.messages[0].content,
-            /original_output as editable source text, not evidence/u);
+            /original_speech as/u);
           assert.match(call.messages[0].content,
-            /exact supporting evidence from request/u);
+            /Reconstruct interpretation and reason/u);
           assert.doesNotMatch(call.messages[0].content,
             /rewrite the complete response|rewrite the response/u);
-          return { ...payload.original_output, speech: {
-            ...payload.original_output.speech,
-            utterance_text: 'Не стану об этом говорить.',
-            claims: []
-          } };
+          return { utterance_text: 'Не стану об этом говорить.',
+            claims: [], interpretation: { intent: 'отказать',
+              grounded_contribution: 'сохранить отказ' },
+            reason: 'NPC отказался отвечать.' };
         }
         originalOutput = plan(input);
         originalOutput.speech.dominant_act = 'refuse';
@@ -727,7 +755,7 @@ test('semantic grounding repair receives original output and concrete concerns',
       audit() {
         auditCount += 1;
         return auditCount === 1
-          ? { pass: false, concerns: [{ kind: 'unsupported_past_activity' }] }
+          ? { pass: false, concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: 'Вчера я видел купца' }] }
           : { pass: true, concerns: [] };
       }
     });
@@ -754,10 +782,15 @@ test('repeated semantic grounding failure is typed after one model repair',
     let auditCount = 0;
     const scenario = await runNpcConversationTurn({
       batchId: 'semantic-repair-exhausted',
+      rawRepair: true,
       responder(call, input) {
-        const output = call.role_id === 'npc_conversation_responder_format_repair'
-          ? JSON.parse(call.messages[1].content).original_output
-          : plan(input);
+        if (call.role_id === 'npc_conversation_responder_format_repair') {
+          return { utterance_text: 'Я видел то, чего не было.', claims: [],
+            interpretation: { intent: 'отказать',
+              grounded_contribution: 'сохранить отказ' },
+            reason: 'NPC отказался отвечать.' };
+        }
+        const output = plan(input);
         output.speech.dominant_act = 'refuse';
         output.speech.utterance_text = 'Я видел то, чего не было.';
         return output;
@@ -765,7 +798,7 @@ test('repeated semantic grounding failure is typed after one model repair',
       audit() {
         auditCount += 1;
         return { pass: false,
-          concerns: [{ kind: 'unsupported_past_activity' }] };
+          concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] };
       }
     });
 
@@ -844,7 +877,7 @@ test('marker repair also resolves a missing required tag from combined concerns'
       /INFERENCE: marker-only-secret|secret-claim|secret-ref/u);
   });
 
-test('semantic grounding repair cannot change a typed activity choice',
+test('semantic grounding repair preserves the original typed activity choice',
   async () => {
     let auditCount = 0;
     let original;
@@ -868,21 +901,24 @@ test('semantic grounding repair cannot change a typed activity choice',
         auditCount += 1;
         return auditCount === 1
           ? { pass: false,
-            concerns: [{ kind: 'unsupported_past_activity' }] }
+            concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] }
           : { pass: true, concerns: [] };
       }
     });
 
-    assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
-    assert.equal(auditCount, 1);
+    assert.equal(scenario.error, undefined);
+    const initialPlan = JSON.parse(scenario.calls.find(({ role_id }) =>
+      role_id === 'npc_conversation_grounding_auditor').messages[1].content).plan;
+    assert.deepEqual(scenario.result.plan.activity, initialPlan.activity);
+    assert.equal(auditCount, 2);
     assert.deepEqual(scenario.calls.map(({ role_id }) => role_id), [
       'npc_conversation_responder', 'npc_conversation_grounding_auditor',
-      'npc_conversation_responder_format_repair'
+      'npc_conversation_responder_format_repair',
+      'npc_conversation_grounding_auditor'
     ]);
-    assert.equal(scenario.result, undefined);
   });
 
-test('semantic grounding repair rejects an extra interaction tag beside the required tag',
+test('semantic grounding repair retains original tags and adds only the required tag',
   async () => {
     const scenario = await runNpcConversationTurn({
       batchId: 'semantic-repair-extra-interaction-tag',
@@ -900,15 +936,17 @@ test('semantic grounding repair rejects an extra interaction tag beside the requ
       }
     });
 
-    assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
-    assert.equal(scenario.result, undefined);
+    assert.equal(scenario.error, undefined);
+    assert.deepEqual(scenario.result.plan.speech.interaction_tags,
+      ['inform', 'withhold']);
     assert.deepEqual(scenario.calls.map(({ role_id }) => role_id), [
       'npc_conversation_responder',
-      'npc_conversation_responder_format_repair'
+      'npc_conversation_responder_format_repair',
+      'npc_conversation_grounding_auditor'
     ]);
   });
 
-test('semantic grounding repair rejects removal of an original interaction tag',
+test('semantic grounding repair retains all original interaction tags',
   async () => {
     const scenario = await runNpcConversationTurn({
       batchId: 'semantic-repair-removed-interaction-tag',
@@ -926,8 +964,9 @@ test('semantic grounding repair rejects removal of an original interaction tag',
       }
     });
 
-    assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
-    assert.equal(scenario.result, undefined);
+    assert.equal(scenario.error, undefined);
+    assert.deepEqual(scenario.result.plan.speech.interaction_tags,
+      ['inform', 'keep', 'withhold']);
   });
 
 test('semantic grounding repair rejects required tag absent from repair concerns',
@@ -937,9 +976,7 @@ test('semantic grounding repair rejects required tag absent from repair concerns
       required_interaction_tag: 'withhold'
     };
     const original = plan(input);
-    const repaired = structuredClone(original);
-    repaired.speech.interaction_tags = ['withhold'];
-    const fixture = runner(() => repaired);
+    const fixture = runner(() => privateSemanticWire(original));
     const model = createLowerDvinaTraceNpcSemanticModel(fixture);
     const repairPlan = await model(input, { repair: {
       original_output: original,
@@ -950,7 +987,8 @@ test('semantic grounding repair rejects required tag absent from repair concerns
     const result = await model.validateFreshPlan(repairPlan, input);
 
     assert.equal(result.pass, false);
-    assert.equal(result.errors[0].code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
+    assert.deepEqual(repairPlan.speech.interaction_tags, []);
+    assert.equal(result.errors[0].code, 'TRACE_NPC_REQUIRED_PRESENTATION_MISSING');
     assert.equal(fixture.calls.length, 1);
   });
 
@@ -975,7 +1013,7 @@ test('semantic grounding repair compares interaction tags as an unordered set',
         auditCount += 1;
         return auditCount === 1
           ? { pass: false,
-            concerns: [{ kind: 'unsupported_past_activity' }] }
+            concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] }
           : { pass: true, concerns: [] };
       }
     });
@@ -983,7 +1021,7 @@ test('semantic grounding repair compares interaction tags as an unordered set',
     assert.equal(scenario.result?.status, 'planned',
       JSON.stringify(scenario.error));
     assert.deepEqual(scenario.result.plan.speech.interaction_tags,
-      ['withhold', 'inform']);
+      ['inform', 'withhold']);
     assert.equal(auditCount, 2);
   });
 
@@ -1001,6 +1039,7 @@ for (const difference of rawTypedDifferenceCases) {
       let auditCount = 0;
       const scenario = await runNpcConversationTurn({
         batchId: `semantic-repair-raw-difference-${difference.name}`,
+        rawRepair: true,
         configureInput: difference.configureInput,
         responder(call, input) {
           const output = plan(input);
@@ -1011,13 +1050,16 @@ for (const difference of rawTypedDifferenceCases) {
           : 'Вчера я видел лодку.';
         output.speech.dominant_act = 'answer';
         (repairing ? difference.repaired : difference.original)(output);
-          return output;
+          return repairing
+            ? { ...privateSemanticWire(output),
+              dominant_act: output.speech.dominant_act }
+            : output;
         },
         audit() {
           auditCount += 1;
           return auditCount === 1
             ? { pass: false,
-              concerns: [{ kind: 'unsupported_past_observation' }] }
+              concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] }
             : { pass: true, concerns: [] };
         }
       });
@@ -1050,7 +1092,7 @@ test('semantic grounding repair rejects adding a claim', async () => {
       return output;
     },
     audit: (_call) => ({ pass: false,
-      concerns: [{ kind: 'unsupported_past_observation' }] })
+      concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] })
   });
 
   assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
@@ -1075,7 +1117,7 @@ test('semantic grounding repair rejects changing a claim', async () => {
       return output;
     },
     audit: (_call) => ({ pass: false,
-      concerns: [{ kind: 'unsupported_past_observation' }] })
+      concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] })
   });
 
   assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
@@ -1105,7 +1147,7 @@ test('semantic grounding repair may remove a claim while revising the utterance'
         auditCount += 1;
         return auditCount === 1
           ? { pass: false,
-            concerns: [{ kind: 'unsupported_past_observation' }] }
+            concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] }
           : { pass: true, concerns: [] };
       }
     });
@@ -1382,7 +1424,7 @@ test('semantic repair allows changed interpretation and reason prose', async () 
       auditCount += 1;
       return auditCount === 1
         ? { pass: false,
-          concerns: [{ kind: 'unsupported_past_observation' }] }
+          concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] }
         : { pass: true, concerns: [] };
     }
   });
@@ -1395,5 +1437,6 @@ test('semantic repair allows changed interpretation and reason prose', async () 
     originalOutput.contribution_kind);
   assert.equal(scenario.result.plan.speech.dominant_act,
     originalOutput.speech.dominant_act);
+  assert.equal(scenario.result.plan.interpretation.adaptation, 'literal');
   assert.equal(auditCount, 2);
 });

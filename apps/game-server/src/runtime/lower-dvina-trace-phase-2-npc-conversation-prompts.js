@@ -265,8 +265,11 @@ export function npcConversationInstructions(repair, request = null) {
     'The NPC reason is internal and must not appear in speech or narration.',
     'Never infer a current object, condition, resource, amenity, availability,',
     'or permission from a plausible place or social situation; exact supplied',
-    'subjective evidence is required. Missing or empty memory is not evidence',
-    'that the NPC did not previously see or experience something.',
+    'subjective evidence is required. Supplied memory records establish only',
+    'their stated facts; they do not prove these are all the NPC remembers, knows,',
+    'has seen, or can report. Check any such limit in utterance_text,',
+    'interpretation, and reason; if mentioning it without exact evidence,',
+    'express uncertainty instead.',
     ...(semanticRepair ? [
       'When evidence is incomplete, express uncertainty naturally without inventing a negative observation.'
     ] : [

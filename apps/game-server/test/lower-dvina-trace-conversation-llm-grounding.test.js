@@ -452,7 +452,11 @@ test('speech audit rejects invented past work from a current schedule',
     assert.match(fixture.calls[0].messages[0].content,
       /прошлой деятельности или наблюдения от первого лица нужна\s+точная запись памяти/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Пустая или отсутствующая память никогда не доказывает отрицательное\s+прошлое наблюдение/u);
+      /Переданные записи памяти подтверждают только изложенные в них факты/u);
+    assert.match(fixture.calls[0].messages[0].content,
+      /не доказывают, что это всё, что NPC помнит, знает, видел или может сообщить/u);
+    assert.match(fixture.calls[0].messages[0].content,
+      /utterance_text, interpretation и reason;\s+если говоришь о таком пределе без точного свидетельства, выражай неуверенность/u);
     assert.match(fixture.calls[0].messages[0].content,
       /даже если это правдоподобно для\s+места или социальной ситуации/u);
     assert.match(fixture.calls[0].messages[0].content,
@@ -1264,7 +1268,11 @@ test('conversation production model receives planner-selected role, material, an
   assert.match(instructions, /do not recite or apply a conditional historical rule whose stated trigger is not established/u);
   assert.match(instructions, /preserve the limit without inferring a procedure or prohibition/u);
   assert.match(instructions,
-    /Missing or empty memory is not evidence|Отсутствующая или пустая память не доказывает/u);
+    /Supplied memory records establish only their stated facts/u);
+  assert.match(instructions,
+    /do not prove these are all the NPC remembers, knows, has seen, or can report/u);
+  assert.match(instructions,
+    /utterance_text, interpretation, and reason; if mentioning it without exact evidence, express uncertainty instead/u);
   assert.match(instructions,
       /Never infer a current object, condition, resource, amenity|Никогда не выводи наличие текущего предмета, состояния, ресурса, удобства/u);
   assert.match(instructions, /A missing personal field means unknown|Отсутствующее личное поле означает/u);

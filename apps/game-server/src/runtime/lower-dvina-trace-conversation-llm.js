@@ -186,10 +186,18 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       overrides: { temperature: 0, maxTokens: 20_000 }
     });
     const compactRepair = originalRepairPlan != null && !repairServiceText;
+    const markerRepairOutput = originalRepairPlan != null && repairServiceText
+      ? restoreMarkerRepairClaimIds(response.output, originalRepairPlan)
+      : response.output;
+    if (markerRepairOutput === null) {
+      const rejectedPlan = structuredClone(repair.original_output);
+      nonApplicableRepairPlans.add(rejectedPlan);
+      return rejectedPlan;
+    }
     const repairOutput = compactRepair
       ? applyNpcSemanticRepair(originalRepairPlan, response.output,
         requestForPlan, repair.validation_errors)
-      : response.output;
+      : markerRepairOutput;
     if (compactRepair && repairOutput === null) {
       const rejectedPlan = structuredClone(repair.original_output);
       nonApplicableRepairPlans.add(rejectedPlan);
@@ -237,7 +245,11 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     if (originalRepairPlan != null) {
       semanticRepairDecisions.set(assembled, {
         original: originalRepairPlan,
-        concernKinds: repairConcernKinds
+        concernKinds: repairConcernKinds,
+        initialAuditFeedback: (repair.validation_errors ?? []).flatMap(
+          ({ audit_feedback: feedback }) => Array.isArray(feedback)
+            ? feedback.map(({ kind, reason, quote }) =>
+              ({ kind, reason, quote })) : [])
       });
     }
     return assembled;
@@ -280,6 +292,7 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     }
     const audit = await auditFreshNpcSpeech({ roleRunner, plan,
       originalSpeech: originalDecision?.original?.speech,
+      initialAuditFeedback: originalDecision?.initialAuditFeedback,
       request: preparedContext?.audit_request
         ?? preparedContext?.context?.audit_request ?? request });
     if (audit?.errors?.some(({ category }) => category === 'semantic_grounding')) {
@@ -321,6 +334,24 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     }
   }
   return model;
+}
+
+function restoreMarkerRepairClaimIds(output, original) {
+  if (output?.speech == null || !Array.isArray(output.speech.claims)
+      || !Array.isArray(original?.speech?.claims)) return output;
+  const used = new Set();
+  const claims = [];
+  for (const claim of output.speech.claims) {
+    if (claim == null || typeof claim !== 'object'
+        || Array.isArray(claim)) return null;
+    const matches = original.speech.claims.filter((originalClaim) =>
+      isDeepStrictEqual({ ...claim, claim_id: originalClaim.claim_id },
+        originalClaim));
+    if (matches.length !== 1 || used.has(matches[0].claim_id)) return null;
+    used.add(matches[0].claim_id);
+    claims.push(structuredClone(matches[0]));
+  }
+  return { ...output, speech: { ...output.speech, claims } };
 }
 
 function npcRepairErrorsForModel(errors) {

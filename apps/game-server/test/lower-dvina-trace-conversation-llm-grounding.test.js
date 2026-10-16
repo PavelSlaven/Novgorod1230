@@ -777,6 +777,15 @@ test('semantic grounding repair receives original output and concrete concerns',
     assert.equal(repaired.result.plan.speech.utterance_text,
       'Не стану об этом говорить.');
     assert.equal(auditCount, 2);
+    const finalAudit = repaired.calls.filter(({ role_id }) =>
+      role_id === 'npc_conversation_grounding_auditor')[1];
+    const finalPayload = JSON.parse(finalAudit.messages[1].content);
+    assert.deepEqual(finalPayload.initial_audit_feedback, [{
+      kind: 'unsupported_past_activity',
+      reason: 'No exact supporting evidence.', quote: 'Вчера я видел купца'
+    }]);
+    assert.equal(finalAudit.request_identity, repaired.input.request_id);
+    assert.match(finalAudit.messages[0].content, /диагностические указатели/u);
     assert.deepEqual(repaired.calls.map(({ role_id }) => role_id), [
       'npc_conversation_responder',
       'npc_conversation_grounding_auditor',
@@ -884,6 +893,73 @@ test('marker repair also resolves a missing required tag from combined concerns'
     assert.doesNotMatch(JSON.stringify(repairPayload),
       /INFERENCE: marker-only-secret|secret-claim|secret-ref/u);
   });
+
+test('marker repair restores an unchanged claim with regenerated id before audit',
+  async () => {
+    let originalClaim;
+    const scenario = await runNpcConversationTurn({
+      batchId: 'marker-claim-id-restored',
+      responder(call, input) {
+        const output = plan(input);
+        const repairing = call.role_id
+          === 'npc_conversation_responder_format_repair';
+        output.speech.utterance_text = repairing
+          ? 'Рыбацкая работа связана с сетями.'
+          : 'INFERENCE: Рыбацкая работа связана с сетями.';
+        originalClaim = originalClaim ?? { claim_id: 'claim_dry_logs_unloaded',
+          content_summary: 'Рыбацкая работа связана с сетями.',
+          form: 'assertion', speaker_posture: 'believed_true',
+          source_knowledge_refs: [ref('knowledge_record', 'claim:fish-net')],
+          mentioned_entity_refs: [] };
+        output.speech.claims = [{ ...originalClaim,
+          claim_id: repairing ? 'c1' : originalClaim.claim_id }];
+        return output;
+      },
+      audit(call) {
+        const payload = JSON.parse(call.messages[1].content);
+        assert.deepEqual(payload.plan.speech.claims, [originalClaim]);
+        assert.deepEqual(payload.original_speech.claims, [originalClaim]);
+        return npcAuditReport(call);
+      }
+    });
+    assert.equal(scenario.result?.status, 'planned',
+      JSON.stringify(scenario.error));
+    assert.deepEqual(scenario.result.plan.speech.claims, [originalClaim]);
+  });
+
+test('marker repair rejects changed or ambiguous claims before audit', async () => {
+  for (const variant of ['changed', 'ambiguous', 'duplicate']) {
+    const scenario = await runNpcConversationTurn({
+      batchId: `marker-claim-${variant}`,
+      responder(call, input) {
+        const output = plan(input);
+        const repairing = call.role_id
+          === 'npc_conversation_responder_format_repair';
+        output.speech.utterance_text = repairing ? 'Отвечу.'
+          : 'INFERENCE: Отвечу.';
+        const claim = { claim_id: 'original', content_summary: 'Отвечу.',
+          form: 'assertion', speaker_posture: 'believed_true',
+          source_knowledge_refs: [ref('knowledge_record', 'claim:fish-net')],
+          mentioned_entity_refs: [] };
+        output.speech.claims = repairing
+          ? variant === 'duplicate'
+            ? [{ ...claim, claim_id: 'c1' }, { ...claim, claim_id: 'c2' }]
+            : [{ ...claim, claim_id: 'c1',
+              ...(variant === 'changed' ? { content_summary: 'Иное.' } : {}) }]
+          : variant === 'ambiguous'
+            ? [claim, { ...claim, claim_id: 'other' }] : [claim];
+        return output;
+      },
+      audit() { assert.fail('rejected marker claim reached final audit'); }
+    });
+    assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE',
+      variant);
+    assert.deepEqual(scenario.calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder',
+      'npc_conversation_responder_format_repair'
+    ], variant);
+  }
+});
 
 test('semantic grounding repair preserves the original typed activity choice',
   async () => {

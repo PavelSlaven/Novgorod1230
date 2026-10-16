@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(conversation): restore unchanged NPC claims after service-marker repair despite regenerated claim IDs; pass initial audit feedback to final audit as diagnostic context (#247, D49).
 - fix(conversation): require complete private NPC speech audit fragments linked to existing claims; fail closed on unclaimed factual text without changing one-repair budget (#247, D49).
 - fix(conversation): accept full exact NPC auditor quotes in semantic repair feedback without a 160-character cutoff; continue rejecting quotes absent from the utterance (#247, D49).
 - fix(turn): mark a performed standalone utterance complete while leaving audience and response unconfirmed; keep continuation for later player actions.

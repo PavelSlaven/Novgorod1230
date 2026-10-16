@@ -542,7 +542,7 @@ export function installPresenceProductionE2eFetch({
 
 function presenceOpeningRole(input) {
   const scene = input?.сцена;
-  if (!scene || typeof scene !== 'object' || typeof scene.граница !== 'string'
+  if (!scene || typeof scene !== 'object' || !Array.isArray(scene.обязательный_смысл)
       || (scene.факты != null && !Array.isArray(scene.факты))
       || (scene.персонажи != null && !Array.isArray(scene.персонажи))) return null;
   if (Object.hasOwn(input, 'отклонённая_проза')) return 'gameplay_narrator_semantic_repair';

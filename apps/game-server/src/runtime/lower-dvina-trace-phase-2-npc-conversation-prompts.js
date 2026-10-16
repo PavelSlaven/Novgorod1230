@@ -120,9 +120,12 @@ export function npcConversationInstructions(repair, request = null) {
   const semanticRepair = repair?.validation_errors?.some(
     ({ category }) => category === 'semantic_grounding'
   ) === true;
+  const repairServiceText = repair?.validation_errors?.some(
+    ({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT'
+  ) === true;
   return [
     ...(semanticRepair ? [
-      'MANDATORY SEMANTIC REPAIR: rewrite the complete response. Remove or recast every unsupported factual assertion named by validation_errors; do not preserve unsupported meaning. If memory.records has no exact record for a requested earlier observation, explicitly say the NPC cannot confirm whether it happened. Never repeat a prior unsupported positive or negative answer from public history. A current_observation permits only its exact fact_text with its exact source ref, with no nearby possible state or required next action.'
+      `MANDATORY SEMANTIC REPAIR: make the smallest changes needed to resolve each concrete concern_kinds item. Keep all parts outside those concerns unchanged. Treat original_output as editable source text, not evidence; use only exact supporting evidence from request for factual claims. Preserve its supported meaning and all typed decision values from the supplied typed decision projection. Keep every supported claim from original_output unchanged, including its claim_id; add no claims. Express uncertainty naturally when evidence is incomplete. Never repeat a prior unsupported positive or negative answer from public history. A current_observation permits only its exact fact_text with its exact source ref, with no nearby possible state or required next action.`
     ] : repair ? [
       'MANDATORY FORMAT REPAIR: repair only structure, refs, and enum values; при ошибке `utterance_mixed_script` исправить написание слова, названного в ошибке `utterance_mixed_script` (поле `word`), заменив буквы так, чтобы слово стало русским; остальные слова и их порядок, смысл, refs, enum values и operations не менять, новых фактов не добавлять.'
     ] : []),
@@ -263,8 +266,12 @@ export function npcConversationInstructions(repair, request = null) {
     'Never infer a current object, condition, resource, amenity, availability,',
     'or permission from a plausible place or social situation; exact supplied',
     'subjective evidence is required. Missing or empty memory is not evidence',
-    'that the NPC did not previously see or experience something. Say that the',
-    'NPC cannot confirm it instead of inventing a negative observation.',
+    'that the NPC did not previously see or experience something.',
+    ...(semanticRepair ? [
+      'When evidence is incomplete, express uncertainty naturally without inventing a negative observation.'
+    ] : [
+      'Say that the NPC cannot confirm it instead of inventing a negative observation.'
+    ]),
     ...(requiredCandidate === null ? [] : [
       'Required conversation candidate: the server binds every non-placeholder value; replace only semantic placeholders.',
       JSON.stringify(stripNpcEnvelope(requiredCandidate))

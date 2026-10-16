@@ -1,7 +1,7 @@
 import { normalizeMixedScriptHomoglyphs } from '@rus/kernel';
+import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 import {
-  npcConversationCandidates,
   npcConversationInstructions,
   playerConversationInstructions
 } from './lower-dvina-trace-phase-2-llm-prompts.js';
@@ -63,7 +63,11 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
   worldKnowledgeGrounder = null, telemetry = null } = {}) {
   requireRoleRunner(roleRunner);
+  const typedDecisionsByPlan = new WeakMap();
+  const modelPlansByAssembledPlan = new WeakMap();
   const semanticRepairDecisions = new WeakMap();
+  const nonApplicableRepairPlans = new WeakSet();
+  const repairDecisionsByRequest = new WeakMap();
   const groundedRequestsByRequest = new WeakMap();
   const prepareRequest = async (request, context = {}) => {
     const cached = groundedRequestsByRequest.get(request);
@@ -119,17 +123,15 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     ) === true;
     const repairServiceText = repair?.validation_errors?.some(
       ({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT') === true;
-    if (semanticRepair && !repairServiceText
-        && npcConversationCandidates(request).some(
-      (candidate) => candidate.contribution_kind === 'speech'
-        && candidate.supporting_operations.length === 0
-    )) {
-      return semanticGroundingFallback(repair.original_output, request);
-    }
     const prepared = context.prepared_request_context
       ? { request, context: context.prepared_request_context }
       : await prepareRequest(request, context);
     const requestForPlan = prepared.request;
+    const savedDecision = repair?.original_output != null
+      ? repairDecisionsByRequest.get(requestForPlan) : null;
+    repairDecisionsByRequest.delete(requestForPlan);
+    const originalRepairPlan = semanticRepair && repair.original_output != null
+      ? originalPlanForRepair(repair.original_output, savedDecision) : null;
     const { grounded_request: promptRequest,
       audit_request: modelRequest } =
       prepared.context;
@@ -147,8 +149,15 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         role: 'user',
         content: JSON.stringify(repair ? {
           request: modelRequest,
-          ...(semanticRepair ? {} : {
-            original_output: repair.original_output ?? null
+          ...(semanticRepair && repairServiceText ? {
+            marker_safe_decision: decisionForRepair(repair.original_output,
+              requestForPlan, savedDecision)
+          } : {
+            original_output: repair.original_output ?? null,
+            ...(semanticRepair ? {
+              typed_decision: decisionForRepair(repair.original_output,
+                requestForPlan, savedDecision)
+            } : {})
           }),
           validation_errors: semanticRepair
             ? npcRepairErrorsForModel(repair.validation_errors)
@@ -178,62 +187,349 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         replaced_character_count: normalizedSpeech.replacedCharacterCount
       });
     } catch { /* diagnostics must not affect gameplay */ }
+    const repairConcernKinds = semanticRepair
+      ? (repair.validation_errors ?? []).flatMap(({ concern_kinds: kinds }) =>
+        Array.isArray(kinds) ? kinds.filter((kind) => typeof kind === 'string') : [])
+      : [];
+    const typedDecision = npcTypedDecisionProjection(normalizedOutput,
+      requestForPlan);
     const assembled = assembleNpcConversationPlan(normalizedOutput,
       requestForPlan);
-    const retryingServiceText = semanticRepair && repair.validation_errors
-      .some(({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT');
-    if (retryingServiceText && repair.original_output != null) {
+    const modelPlan = npcPlanWithCodeEnvelope(normalizedOutput, assembled);
+    if (originalRepairPlan != null
+        && !preservesSemanticRepairDecision(originalRepairPlan, modelPlan,
+          requestForPlan, repairConcernKinds)) {
+      const rejectedPlan = structuredClone(repair.original_output);
+      nonApplicableRepairPlans.add(rejectedPlan);
+      return rejectedPlan;
+    }
+    modelPlansByAssembledPlan.set(assembled, modelPlan);
+    typedDecisionsByPlan.set(assembled, typedDecision);
+    if (originalRepairPlan != null) {
       semanticRepairDecisions.set(assembled, {
-        contribution_kind: repair.original_output.contribution_kind,
-        dominant_act: repair.original_output.speech?.dominant_act
+        original: originalRepairPlan,
+        concernKinds: repairConcernKinds
       });
     }
     return assembled;
   };
   model.prepareRequest = prepareRequest;
   model.validateFreshPlan = async (plan, request, context = {}) => {
+    if (plan != null && typeof plan === 'object'
+        && nonApplicableRepairPlans.has(plan)) {
+      return semanticRepairNotApplicable();
+    }
+    const presentation = validateRequiredNpcPresentation(plan, request);
     const marker = plan?.contribution_kind === 'speech'
       ? findUnsafePlayerText(plan.speech?.utterance_text, {
         label: true, generatedProse: true }) : null;
-    if (marker != null) return {
-      pass: false,
-      errors: [{
+    if (marker != null) {
+      if (!semanticRepairDecisions.has(plan)) {
+        rememberRepairDecision(plan, request, typedDecisionsByPlan.get(plan));
+      }
+      return { pass: false, errors: [{
         code: 'TRACE_NPC_SPEECH_SERVICE_TEXT',
         category: 'semantic_grounding', retryable: true,
         concern_kinds: ['service_text_marker'],
         message: 'Rewrite the reply without service labels or technical markers.'
-      }]
-    };
+      }, ...(presentation?.errors ?? [])] };
+    }
     const originalDecision = plan != null && typeof plan === 'object'
       ? semanticRepairDecisions.get(plan) : null;
+    const repairedDecision = plan != null && typeof plan === 'object'
+      ? modelPlansByAssembledPlan.get(plan) ?? plan : null;
     if (originalDecision != null
-        && (plan.contribution_kind !== originalDecision.contribution_kind
-          || plan.speech?.dominant_act !== originalDecision.dominant_act)) {
-      return {
-        pass: false,
-        errors: [{
-          code: 'TURN_NPC_PLAN_NOT_APPLICABLE', category: 'applicability',
-          retryable: false,
-          message: 'Semantic repair must preserve the original contribution and speech act.'
-        }]
-      };
+        && !preservesSemanticRepairDecision(originalDecision.original,
+          repairedDecision, request, originalDecision.concernKinds)) {
+      return semanticRepairNotApplicable();
     }
-    const presentation = validateRequiredNpcPresentation(plan, request);
     const preparedContext = context.prepared_request_context
       ?? groundedRequestsByRequest.get(request);
-    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan,
+    if (presentation != null) {
+      rememberRepairDecision(plan, request, typedDecisionsByPlan.get(plan));
+      return presentation;
+    }
+    const audit = await auditFreshNpcSpeech({ roleRunner, plan,
       request: preparedContext?.audit_request
         ?? preparedContext?.context?.audit_request ?? request });
+    if (audit?.errors?.some(({ category }) => category === 'semantic_grounding')) {
+      if (!semanticRepairDecisions.has(plan)) {
+        rememberRepairDecision(plan, request, typedDecisionsByPlan.get(plan));
+      }
+    }
+    return audit;
   };
+  function decisionForRepair(originalOutput, request, savedDecision) {
+    if (originalOutput != null && typeof originalOutput === 'object') {
+      if (savedDecision?.markerSafeDecision !== undefined) {
+        return structuredClone(savedDecision.markerSafeDecision);
+      }
+      const byIdentity = semanticRepairDecisions.get(originalOutput);
+      if (byIdentity !== undefined) {
+        return npcTypedDecisionProjection(byIdentity.original, request);
+      }
+    }
+    return npcTypedDecisionProjection(originalOutput, request);
+  }
+  function originalPlanForRepair(originalOutput, savedDecision) {
+    if (originalOutput != null && typeof originalOutput === 'object') {
+      if (savedDecision?.originalPlan !== undefined) {
+        return structuredClone(savedDecision.originalPlan);
+      }
+      const byIdentity = semanticRepairDecisions.get(originalOutput);
+      if (byIdentity !== undefined) return structuredClone(byIdentity.original);
+      return structuredClone(originalOutput);
+    }
+    return originalOutput;
+  }
+  function rememberRepairDecision(plan, request, decision) {
+    if (plan != null && typeof plan === 'object' && decision != null) {
+      repairDecisionsByRequest.set(request, {
+        markerSafeDecision: structuredClone(decision),
+        originalPlan: structuredClone(modelPlansByAssembledPlan.get(plan) ?? plan)
+      });
+    }
+  }
   return model;
 }
 
 function npcRepairErrorsForModel(errors) {
   return (errors ?? []).map((error) => error?.category === 'semantic_grounding'
-    ? { category: 'semantic_grounding',
-      message: 'Rewrite the response using only supported meaning and natural in-world speech.' }
+    ? { category: 'semantic_grounding', concern_kinds:
+      Array.isArray(error.concern_kinds)
+        ? error.concern_kinds.filter((kind) => typeof kind === 'string') : [] }
     : { category: 'format',
       message: 'Return the required response shape using only values from the request.' });
+}
+
+function npcTypedDecisionProjection(plan, request, includeBindingIdentity = false) {
+  if (plan == null || typeof plan !== 'object') return null;
+  const allowedRefs = new Set([
+    ...(request.allowed_references?.actor_refs ?? []),
+    ...(request.allowed_references?.entity_refs ?? []),
+    ...(request.allowed_references?.combat_target_refs ?? [])
+  ].filter((reference) => typeof reference?.entity_kind === 'string'
+    && typeof reference.entity_id === 'string')
+    .map((reference) => `${reference.entity_kind}\u0000${reference.entity_id}`));
+  const projectRef = (reference) => reference != null
+      && allowedRefs.has(`${reference.entity_kind}\u0000${reference.entity_id}`)
+    ? structuredClone(reference) : null;
+  const projectRefs = (references) => (Array.isArray(references)
+    ? references : []).map(projectRef).filter(Boolean);
+  const speech = plan.speech;
+  const speechDecision = speech == null ? null : {
+    dominant_act: speech.dominant_act,
+    interaction_tags: [...new Set(Array.isArray(speech.interaction_tags)
+      ? speech.interaction_tags : [])].sort(),
+    ...(includeBindingIdentity ? { topic_refs: [...new Set(
+      Array.isArray(speech.topic_refs) ? speech.topic_refs : [])].sort() } : {}),
+    response_expectation: speech.response_expectation == null ? null : {
+      kind: speech.response_expectation.kind,
+      target_refs: projectRefs(speech.response_expectation.target_refs)
+    },
+  };
+  const projection = {
+    contribution_kind: plan.contribution_kind,
+    primary_addressee_ref: projectRef(plan.primary_addressee_ref),
+    intended_addressee_refs: projectRefs(plan.intended_addressee_refs),
+    affected_actor_refs: projectRefs(plan.affected_actor_refs),
+    speech: speechDecision,
+    resolution: plan.resolution,
+    activity: plan.activity == null ? null : {
+      duration_class: plan.activity.duration_class,
+      effort: plan.activity.effort
+    },
+    supporting_operations: projectSupportingOperations(plan.supporting_operations,
+      request, projectRef, includeBindingIdentity),
+    check: projectTypedCheck(plan.check,
+      request.decision_scope ?? {}, includeBindingIdentity),
+    handoff: plan.handoff == null ? null : {
+      kind: plan.handoff.kind,
+      target_actor_refs: projectRefs(plan.handoff.target_actor_refs)
+    }
+  };
+  return projection;
+}
+
+const conversationRelationSetKeys = new Set([
+  'affected_actor_refs', 'claims', 'interaction_tags', 'intended_addressee_refs',
+  'mentioned_entity_refs', 'observable_effects', 'supporting_operations',
+  'target_refs', 'topic_refs'
+]);
+
+function preservesSemanticRepairDecision(original, repaired, request,
+  concernKinds) {
+  const originalDecision = npcTypedDecisionProjection(original, request, true);
+  const repairedDecision = npcTypedDecisionProjection(repaired, request, true);
+  if (originalDecision == null || repairedDecision == null) {
+    return deepEqualConversationValues(repairedDecision, originalDecision);
+  }
+  if (originalDecision.speech == null || repairedDecision.speech == null) {
+    return deepEqualConversationValues(repairedDecision, originalDecision);
+  }
+  const originalClaims = original?.speech?.claims;
+  const repairedClaims = repaired?.speech?.claims;
+  if (!Array.isArray(originalClaims) || !Array.isArray(repairedClaims)
+      || !isRelationSetSubset(repairedClaims, originalClaims)) return false;
+  const originalTags = new Set(originalDecision.speech.interaction_tags);
+  const repairedTags = new Set(repairedDecision.speech.interaction_tags);
+  const requiredTag = request.social_context?.npc_behavior
+    ?.required_interaction_tag;
+  const mayAddRequiredTag = typeof requiredTag === 'string'
+    && requiredTag.length > 0
+    && !originalTags.has(requiredTag)
+    && concernKinds.includes('required_npc_behavior_missing');
+  const onlyRequiredTagAdded = mayAddRequiredTag
+    && repairedTags.size === originalTags.size + 1
+    && repairedTags.has(requiredTag)
+    && [...originalTags].every((tag) => repairedTags.has(tag));
+  const sameTags = onlyRequiredTagAdded
+    || (originalTags.size === repairedTags.size
+      && [...originalTags].every((tag) => repairedTags.has(tag)));
+  if (!sameTags) return false;
+  if (onlyRequiredTagAdded) {
+    repairedDecision.speech.interaction_tags =
+      originalDecision.speech.interaction_tags;
+  }
+  return deepEqualConversationValues(repairedDecision, originalDecision);
+}
+
+function isRelationSetSubset(subset, superset) {
+  const values = new Set(superset.map((value) => stableConversationValue(
+    normalizeConversationRelationSets(value))));
+  return subset.every((value) => values.has(stableConversationValue(
+    normalizeConversationRelationSets(value))));
+}
+
+function npcPlanWithCodeEnvelope(modelOutput, assembledPlan) {
+  return {
+    ...structuredClone(modelOutput),
+    schema: assembledPlan.schema,
+    request_id: assembledPlan.request_id,
+    boundary_id: assembledPlan.boundary_id,
+    conversation_id: assembledPlan.conversation_id,
+    exchange_id: assembledPlan.exchange_id,
+    state_version: assembledPlan.state_version,
+    speaker_ref: structuredClone(assembledPlan.speaker_ref)
+  };
+}
+
+function semanticRepairNotApplicable() {
+  return {
+    pass: false,
+    errors: [{
+      code: 'TURN_NPC_PLAN_NOT_APPLICABLE', category: 'applicability',
+      retryable: false,
+      message: 'Semantic repair must preserve the original typed contribution decision.'
+    }]
+  };
+}
+
+function deepEqualConversationValues(left, right) {
+  return isDeepStrictEqual(normalizeConversationRelationSets(left),
+    normalizeConversationRelationSets(right));
+}
+
+function normalizeConversationRelationSets(value, key = null) {
+  if (Array.isArray(value)) {
+    const normalized = value.map((item) => normalizeConversationRelationSets(item));
+    return key != null && (conversationRelationSetKeys.has(key)
+      || key.endsWith('_refs'))
+      ? normalized.sort((left, right) => {
+        const leftKey = stableConversationValue(left);
+        const rightKey = stableConversationValue(right);
+        return leftKey < rightKey ? -1 : leftKey > rightKey ? 1 : 0;
+      })
+      : normalized;
+  }
+  if (value == null || typeof value !== 'object') return value;
+  return Object.fromEntries(Object.entries(value).map(([childKey, child]) =>
+    [childKey, normalizeConversationRelationSets(child, childKey)]));
+}
+
+function stableConversationValue(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map(stableConversationValue).join(',')}]`;
+  }
+  if (value == null || typeof value !== 'object') return JSON.stringify(value);
+  return `{${Object.keys(value).sort().map((key) =>
+    `${JSON.stringify(key)}:${stableConversationValue(value[key])}`).join(',')}}`;
+}
+
+function projectSupportingOperations(operations, request, projectRef,
+  includeBindingIdentity) {
+  if (!Array.isArray(operations)) return [];
+  const operationContract = request.decision_scope?.operation_contract ?? {};
+  const allowedReferenceIds = new Set(Object.values(
+    request.allowed_references ?? {}).flatMap((references) => Array.isArray(references)
+    ? references.map(({ entity_id: id }) => id).filter((id) => typeof id === 'string')
+    : []));
+  const referenceField = (key) => key.endsWith('_ref') || key.endsWith('_refs');
+  const enumFields = new Set(['kind', 'interaction_kind', 'operation_kind',
+    'relation', 'mode', 'status', 'resolution', 'action', 'role',
+    'protected_actor_slot']);
+  return operations.flatMap((operation) => {
+    if (operation == null || typeof operation !== 'object'
+        || typeof operation.op !== 'string'
+        || !Object.hasOwn(operationContract, operation.op)) return [];
+    const projected = { op: operation.op };
+    const requiredOperation = request.decision_scope
+      ?.required_supporting_operation;
+    const exactRequired = requiredOperation?.op === operation.op
+      && isDeepStrictEqual(operation, requiredOperation);
+    const binding = (operationContract[operation.op]?.allowed_bindings ?? [])
+      .find((candidate) => {
+        if (candidate == null || typeof candidate !== 'object') return false;
+        const expected = { op: operation.op, ...candidate };
+        return isDeepStrictEqual(operation, expected);
+      });
+    const approvedBinding = exactRequired || binding !== undefined;
+    if (includeBindingIdentity && approvedBinding
+        && typeof operation.execution_binding_ref === 'string') {
+      projected.execution_binding_ref = operation.execution_binding_ref;
+    }
+    for (const [key, value] of Object.entries(operation)) {
+      if (key === 'op') continue;
+      if (referenceField(key)) {
+        if (Array.isArray(value)) projected[key] = value.map(projectRef)
+          .filter(Boolean);
+        else if (typeof value === 'string'
+            && allowedReferenceIds.has(value)) projected[key] = value;
+        else {
+          const reference = projectRef(value);
+          if (reference !== null) projected[key] = reference;
+        }
+      } else if (enumFields.has(key)
+          && (typeof value === 'string' || typeof value === 'number'
+            || typeof value === 'boolean')
+          && (approvedBinding || typeof value === 'string'
+            && !['role', 'protected_actor_slot'].includes(key))) {
+        projected[key] = value;
+      }
+    }
+    return [projected];
+  });
+}
+
+function projectTypedCheck(check, decisionScope, includeBindingIdentity) {
+  if (check == null) return null;
+  const attributes = decisionScope.allowed_attribute_refs ?? [];
+  const skills = decisionScope.allowed_skill_refs ?? [];
+  const projectAllowed = (value, allowed) => typeof value === 'string'
+      && allowed.includes(value) ? value : null;
+  return {
+    ...(includeBindingIdentity ? { purpose: check.purpose } : {}),
+    attribute_ref: projectAllowed(check.attribute_ref, attributes),
+    skill_ref: projectAllowed(check.skill_ref, skills),
+    difficulty_band: check.difficulty_band,
+    outcomes: check.outcomes == null ? null : Object.fromEntries(
+      Object.entries(check.outcomes).map(([key, outcome]) => [key, {
+        delivery_quality: outcome?.delivery_quality,
+        observable_effects: Array.isArray(outcome?.observable_effects)
+          ? [...outcome.observable_effects] : []
+      }])
+    )
+  };
 }
 
 function resolveNpcClaimReferenceIds(output, request) {
@@ -264,67 +560,6 @@ function resolveNpcClaimReferenceIds(output, request) {
     });
   }
   return resolved;
-}
-
-function semanticGroundingFallback(original, request) {
-  const observations = new Map((request.memory?.current_observations ?? [])
-    .map((entry) => [entry.observation_ref?.entity_id, entry]));
-  const retained = new Map();
-  for (const claim of original?.speech?.claims ?? []) {
-    for (const reference of claim?.source_knowledge_refs ?? []) {
-      const observation = reference?.entity_kind === 'perception_result'
-        ? observations.get(reference.entity_id) : null;
-      if (observation
-          && findUnsafePlayerText(observation.fact_text, { label: true, generatedProse: true }) == null) {
-        retained.set(reference.entity_id, observation);
-      }
-    }
-  }
-  const facts = [...retained.values()];
-  const originalUtterance = original?.speech?.utterance_text;
-  const originalUtteranceIsSafe = findUnsafePlayerText(originalUtterance, {
-    label: true, generatedProse: true
-  }) == null;
-  const requiredName = requiredFirstContactName(request);
-  const introducedName = requiredName
-      && findUnsafePlayerText(requiredName, { label: true }) == null
-    ? requiredName : originalUtteranceIsSafe
-      ? playerSafeSelfIntroductionName(originalUtterance) : null;
-  const introduction = introducedName ? `Я ${introducedName}.` : null;
-  const requiredTag = request.social_context?.npc_behavior
-    ?.required_interaction_tag;
-  const uncertainty = facts.length === 0
-    ? 'Об этом я ничего подтвердить не могу.'
-    : 'Остального я подтвердить не могу.';
-  const utterance = [introduction, ...facts.map(({ fact_text }) => fact_text),
-    uncertainty].filter(Boolean).join(' ');
-  return assembleNpcConversationPlan({
-    contribution_kind: 'speech',
-    speech: {
-      utterance_text: utterance,
-      dominant_act: 'answer',
-      interaction_tags: typeof requiredTag === 'string' && requiredTag
-        ? [requiredTag] : [],
-      topic_refs: [],
-      claims: facts.map((entry, index) => ({
-        claim_id: `fallback-current-observation-${index + 1}`,
-        content_summary: entry.fact_text, form: 'assertion',
-        speaker_posture: 'believed_true',
-        source_knowledge_refs: [structuredClone(entry.observation_ref)],
-        mentioned_entity_refs: []
-      })),
-      response_expectation: { kind: 'none', target_refs: [] }
-    },
-    interpretation: {
-      intent: 'Ответить только по подтверждённым сведениям.',
-      grounded_contribution: utterance,
-      adaptation: 'literal'
-    },
-    resolution: 'automatic',
-    activity: { duration_class: 'domain_owned', effort: 'none' },
-    supporting_operations: [], check: null, handoff: null,
-    reason: 'Ответ ограничен точными текущими наблюдениями.'
-  }, request);
 }
 
 function validateRequiredNpcPresentation(plan, request) {

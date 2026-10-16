@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(conversation): repair unsupported NPC speech without replacing supported knowledge; preserve typed decisions and request-scoped repair provenance (#247)
 - fix(materialization): identify finite extractions by root turn and step; replay the same portion, allow the next portion while stock remains, and refuse known exhausted sources without activity or duplicate depletion (#730).
 - fix(turn): canonicalize unknown executor actor refs to the request actor before strict plan validation, preserving known foreign refs and targets (#586).
 - fix(ci): run the nine fast npm checks in four parallel, time-bounded jobs while keeping the full merge gate and streaming failing logs (#98).

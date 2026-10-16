@@ -489,34 +489,30 @@ export function installPresenceProductionE2eFetch({
         pass: true, failed_checks: [], concerns: [],
         evidence: ['Тестовая проверка использует факты из переданной сцены.'],
       };
-    } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
-      const sources = [...modelInput.required_current_beat.changes,
-        ...modelInput.required_current_beat.uncertainties];
-      narrationLog?.push({ changes: modelInput.required_current_beat.changes.map(({ text }) => text) });
-      // Temporary: a turn without required beats (arrival on a new site) still needs non-empty prose,
-      // so fall back to the visible scene the request itself supplies. Remove once the empty beat
-      // at a transition is fixed (tasks rt-narr / rt-walk, NOTE-02).
-      const support = modelInput.optional_support;
-      const fallback = [support?.visible_scene, ...(support?.sensory_details ?? [])].filter(Boolean);
-      output = { prose: (sources.length > 0 ? sources.map(({ text }) => text) : fallback).join('\n\n') };
-    } else if (system.startsWith('You are a strict evidence auditor of Russian game prose.')) {
-      const ids = modelInput.segments.map(({ segment_id }) => segment_id);
-      const sources = [...modelInput.required_current_beat.changes,
-        ...modelInput.required_current_beat.uncertainties];
-      output = {
-        reviewed_segments: ids,
-        source_reviews: sources.map(({ ref }) => ({ ref, segment_choices: ids })),
-        unsupported: [], literary_failures: [],
-        evidence: ['Deterministic test source-copy.'],
-      };
-    } else if (system.startsWith('Return only {"prose"')) {
-      const facts = modelInput.visible_context_package.visible_scene_dossier.must_include
-        .map((entry) => entry.text);
-      const split = Math.ceil(facts.length / 2);
-      output = {
-        prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
-          .filter(Boolean).join('\n\n'),
-      };
+    } else if (Array.isArray(modelInput['Обязательные положения текущего эпизода'])) {
+      const required = modelInput['Обязательные положения текущего эпизода'];
+      const support = modelInput['Переданные сведения об обстановке'];
+      if (Array.isArray(modelInput['Отрывки прозы'])) {
+        const ids = modelInput['Отрывки прозы'].map(({ segment_id }) => segment_id);
+        output = {
+          reviewed_segments: ids,
+          source_reviews: required.map((line) => ({
+            ref: /^(visible_change|uncertainty)_[0-9]+:/u.exec(line)?.[0].slice(0, -1),
+            segment_choices: ids,
+          })),
+          unsupported: [], literary_failures: [],
+          evidence: ['Тестовая проверка использует переданные сведения.'],
+        };
+      } else if (Object.hasOwn(modelInput, 'Отклонённая проза')) {
+        output = { replacements: [{ prose: required.join('\n\n')
+          || [support?.['Место'], ...(support?.['Ощущения'] ?? [])]
+            .filter(Boolean).join('\n\n') }] };
+      } else {
+        narrationLog?.push({ changes: required });
+        output = { prose: required.join('\n\n')
+          || [support?.['Место'], ...(support?.['Ощущения'] ?? [])]
+            .filter(Boolean).join('\n\n') };
+      }
     } else if (system.startsWith('Return only JSON with exactly mode.')) {
       output = { mode: 'independent_action' };
     } else if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {

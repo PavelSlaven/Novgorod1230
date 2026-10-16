@@ -142,7 +142,8 @@ export function collectPlayerVisibility(screen, {
     for (const [index, fact] of openingFacts.entries()) {
       const text = typeof fact === 'string' ? fact : fact?.текст;
       if (typeof text !== 'string') continue;
-      const carried = text.match(/^При вас:\s*(.+?)\.?$/iu);
+      const carried = text.match(/^(?:У героя:|При вас:)\s*(.+?)\.?$/iu)
+        ?? text.match(/^(.+?) у героя(?:; состояние — .+)?\.$/iu);
       if (carried) {
         addEntity(view.carried_items, 'opening_input', `сцена.факты[${index}]`,
           'item', carried[1], ['label']);

@@ -124,6 +124,20 @@ test('visibility oracle rejects leaks and placeholders without accepting synthet
   assert.equal(sanitizeVisibility(view).carried_items[0].label, '[служебный текст скрыт]');
 });
 
+test('visibility oracle collects carried items from delivered opening facts', () => {
+  const view = collectPlayerVisibility({}, { openingInput: { сцена: { факты: [
+    'У героя: верёвка.',
+    { текст: 'При вас: деревянная ложка.' },
+    'Кафтан у героя.',
+    { текст: 'Сапоги у героя; состояние — изношены.' },
+    'На берегу лежит камень.',
+  ] } } });
+  assert.deepEqual(view.carried_items.map(({ label }) => label),
+    ['верёвка', 'деревянная ложка', 'Кафтан', 'Сапоги']);
+  assert.deepEqual(view.scene_facts.map(({ text }) => text),
+    ['На берегу лежит камень.']);
+});
+
 test('D72/D92/D99/D106: all seven pinned v17 starts and their first look expose named player-safe facts',
   { timeout: 1_800_000 }, async (t) => {
     const manifest = await json(MANIFEST);

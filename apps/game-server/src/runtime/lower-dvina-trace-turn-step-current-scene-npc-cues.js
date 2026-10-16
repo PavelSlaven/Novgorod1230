@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-state.js';
 import { deepFreeze, plain } from
@@ -7,11 +8,12 @@ import { projectCalendar } from '@rus/time-events-history/calendar';
 import { projectActor, projectBodyState, projectInteractions } from './lower-dvina-trace-player-safe-entities.js';
 import { projectKnowledge, projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
 import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
-import { distinctNpcLabels } from './lower-dvina-trace-visible-scene-items.js';
+import { bodyConditionLabels, distinctNpcLabels } from './lower-dvina-trace-visible-scene-items.js';
 
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
   'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
 const BODY_CHANGE_CONTEXT = 'Изменение состояния тела: ';
+const BODY_CURRENT_CONTEXT = 'Текущие состояния тела героя: ';
 
 export function enrichLowerDvinaTraceVisibleNpcCues({
   visibleContext, committedState, bodyAfter = null, clockAfter = null,
@@ -52,19 +54,26 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
   const beforeConditions = projectBodyState(committedState?.body_state)?.active_conditions ?? [];
   const afterConditions = projectBodyState(bodyAfter)?.active_conditions ?? [];
   const removed = beforeConditions.filter(condition =>
-    !afterConditions.some(after => JSON.stringify(condition) === JSON.stringify(after)));
+    !afterConditions.some(after => isDeepStrictEqual(condition, after)));
   const added = afterConditions.filter(condition =>
-    !beforeConditions.some(before => JSON.stringify(condition) === JSON.stringify(before)));
-  const conditionChanges = bodyAfter == null
-    || removed.length + added.length === 0 ? [] : [
-      `${BODY_CHANGE_CONTEXT}${JSON.stringify({ before: removed, after: added })}`];
+    !beforeConditions.some(before => isDeepStrictEqual(condition, before)));
+  const removedLabels = bodyConditionLabels(removed);
+  const addedLabels = bodyConditionLabels(added);
+  const conditionChanges = bodyAfter == null ? [] : [
+    ...(removedLabels.length
+      ? [`${BODY_CHANGE_CONTEXT}прежние состояния: ${removedLabels.join(', ')}.`] : []),
+    ...(addedLabels.length
+      ? [`${BODY_CHANGE_CONTEXT}новые состояния: ${addedLabels.join(', ')}.`] : [])
+  ];
   return deepFreeze({
     ...structuredClone(visibleContext),
     visible_changes: [...new Set(visibleContext.visible_changes),
       ...observedChangeCues,
-      ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])],
+      ...(bodyAfter != null && removed.length + added.length > 0
+        ? ['Состояние тела героя изменилось.'] : [])],
     known_context: [...new Set([...visibleContext.known_context.filter(value =>
-      !beforeContext.includes(value) && !value.startsWith(BODY_CHANGE_CONTEXT)),
+      !beforeContext.includes(value) && !value.startsWith(BODY_CHANGE_CONTEXT)
+        && !value.startsWith(BODY_CURRENT_CONTEXT)),
       ...afterContext, ...conditionChanges,
       ...projectKnownContext(projectActor({ profile: committedState?.player_profile,
         actorId: committedState?.actor_id }), projectKnowledge([
@@ -151,10 +160,23 @@ function peopleForm(count) {
   return last >= 2 && last <= 4 ? 'человека' : 'человек';
 }
 
+export function projectLowerDvinaTraceSelfKnownContext({
+  committedState, bodyAfter = null
+}) {
+  const actor = projectActor({ profile: committedState?.player_profile,
+    actorId: committedState?.actor_id });
+  return [
+    ...currentActorContext(bodyAfter ?? committedState?.body_state),
+    ...projectKnownContext({ name: actor.name, sex_category: actor.sex_category,
+      role: actor.role })
+  ];
+}
+
 function currentActorContext(body, clock, calendarProfile) {
   const conditions = projectBodyState(body)?.active_conditions ?? [];
-  const result = conditions.length === 0 ? [] : [
-    `Текущие состояния вашего тела: ${JSON.stringify(conditions)}`];
+  const labels = bodyConditionLabels(conditions);
+  const result = labels.length === 0 ? [] : [
+    `${BODY_CURRENT_CONTEXT}${labels.join(', ')}.`];
   if (clock != null && calendarProfile != null) {
     const calendar = projectCalendar(clock, calendarProfile);
     const minutes = BigInt(calendar.local_time_of_day.numerator)

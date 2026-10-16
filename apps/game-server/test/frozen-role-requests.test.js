@@ -1,4 +1,4 @@
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -214,7 +214,7 @@ async function narrationMessages(fixture) {
     if (target === 'gameplay_narrator_auditor') {
       return { output: fixture.expected_output };
     }
-    const wire = JSON.parse(next.messages[1].content);
+    const wire = compatNarrationWire(JSON.parse(next.messages[1].content));
     const first = wire.segments[0]?.segment_id;
     const coverage = Object.fromEntries([
       ...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties

@@ -3,6 +3,7 @@ import test from 'node:test';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { classifyPlannerEvalFailure, runFrozenRoleEval } from '../src/runner.mjs';
+import { buildFrozenRoleMessages } from '../src/frozen-role-messages.mjs';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-world-process-llm.js';
 import { assembleTurnStepPlan } from
@@ -48,6 +49,24 @@ function providerOutput(fixture) {
     activity: { duration_class: output.activity.duration_class,
       effort: output.activity.effort }, operations: output.operations };
 }
+
+test('frozen role fixture overrides reach provider and reported config', async () => {
+  const base = corpus.fixtures.find(({ role_id }) => role_id === 'gameplay_narrator');
+  const fixture = { ...base, overrides: { temperature: 0.2, maxTokens: 1234 } };
+  const { report, requests } = await runFixtureResponses(fixture, [providerOutput(base)]);
+  assert.equal(requests[0].temperature, 0.2);
+  assert.equal(requests[0].max_tokens, 1234);
+  const policy = report.metadata.role_config_policy[0];
+  assert.deepEqual(policy.overrides, fixture.overrides);
+  assert.equal(policy.temperature, requests[0].temperature);
+  assert.equal(policy.max_tokens, requests[0].max_tokens);
+  assert.equal(policy.config_hash, report.results[0].config_hash);
+
+  const without = await runFixtureResponses(base, [providerOutput(base)]);
+  assert.equal(without.requests[0].temperature, 0);
+  assert.equal(without.requests[0].max_tokens, 20000);
+  assert.equal(Object.hasOwn(without.report.metadata.role_config_policy[0], 'overrides'), false);
+});
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
   assert.equal(corpus.corpus_version, 75);
@@ -624,7 +643,7 @@ test('negative narration audit fixture rejects an unsupported visible claim', ()
     id === 'gameplay-narrator-auditor-unsupported-fact');
   assert.deepEqual(fixture?.expected?.required_values, {
     pass: false, 'concerns.0.segment_id': 's1',
-    'concerns.0.kind': 'unsupported_sensory'
+    'concerns.0.kind': 'unsupported_world_state'
   });
 });
 
@@ -905,4 +924,14 @@ test('unscored and manual fixtures are not automated quality passes', async () =
     assert.equal(report.aggregates.total.automated_failed, 0);
     assert.equal(report.aggregates.total.quality_denominator, 1);
   } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('frozen narration semantic repair captures the exact rejected draft', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'gameplay-narrator-semantic-repair-whole-prose');
+  const messages = await buildFrozenRoleMessages(fixture);
+  const wire = JSON.parse(messages[1].content);
+  assert.equal(wire.segments[0].prose, fixture.request.segments[0].prose);
+  assert.deepEqual(wire.concerns.map(({ kind }) => kind),
+    fixture.request.concerns.map(({ kind }) => kind));
 });

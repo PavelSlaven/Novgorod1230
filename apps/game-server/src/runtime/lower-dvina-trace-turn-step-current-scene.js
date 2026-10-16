@@ -318,10 +318,12 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
   if (speech != null) return [speech, ...changes];
   if (text(directActivity)) return [sentence(directActivity), ...changes];
   if (observation) return [text(appliedPlan.assessment?.text)
-    ? appliedPlan.assessment.text : 'Вы внимательно изучили обстановку.',
+    ? appliedPlan.assessment.text : 'Обстановка внимательно изучена.',
   ...changes];
   if (appliedPlan != null && attempts.length === 1) return [
-    ...directSeedChange(attempts[0]), ...changes
+    ...directSeedChange(attempts[0]),
+    'Результат этой попытки пока не установлен.',
+    ...changes
   ];
   return changes;
 }
@@ -331,7 +333,7 @@ export function materializedOrdinaryPresenceChange(value) {
       || typeof value.display_name !== 'string' || !value.display_name.trim()) {
     ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
   }
-  return `Вы нашли предмет — ${value.display_name}.`;
+  return `Найден предмет — ${value.display_name}.`;
 }
 function directSeedChange(value) {
   if (value?.kind === 'local_movement_signature') {
@@ -341,11 +343,11 @@ function directSeedChange(value) {
     if (!plain(value) || Object.keys(value).length !== 4
         || !text(value.npc_ref) || !text(value.display_label)
         || !text(value.ordinary_descriptor)) failCurrentScene();
-    return `Вы рассмотрели ${value.display_label}: ${sentence(
+    return `Герой рассмотрел ${value.display_label}: ${sentence(
       value.ordinary_descriptor)}`;
   }
   if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
-    return [`Вы выполнили попытку: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`];
+    return [`Выполнена попытка: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`];
   if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);
   if (value?.kind === 'existing_item_inspection') {
     return existingItemInspectionVisibleResult(value).changes;
@@ -355,8 +357,8 @@ function directSeedChange(value) {
     if (!Number.isSafeInteger(duration) || duration <= 0) return null;
     const result = value.discovery_result;
     if (result == null) return value.discovery_kind === 'search'
-      ? 'Вы завершили поиск.'
-      : value.discovery_kind === 'inspect' ? 'Вы завершили осмотр.' : null;
+      ? 'Поиск завершён.'
+      : value.discovery_kind === 'inspect' ? 'Осмотр завершён.' : null;
     if (!['search', 'inspect'].includes(value.discovery_kind) || !plain(result)
         || ![2, 3].includes(Object.keys(result).length)
         || !['no_change', 'authority_required'].includes(result.resolution)
@@ -376,13 +378,13 @@ function directSeedChange(value) {
     return `${action} по вопросу «${result.query}» не дал подтверждённой находки.`;
   }
   if (value?.kind === 'body_event') {
-    return 'Вы ощутили перемену в своём состоянии.';
+    return 'Герой ощутил перемену в своём состоянии.';
   }
   if (value?.kind === 'post_applied_perception_window'
       && value.status === 'completed'
       && Array.isArray(value.observable_response_event_refs)
       && value.observable_response_event_refs.length === 0) {
-    return 'Непосредственного наблюдаемого отклика на ваше действие не последовало.';
+    return 'Непосредственного наблюдаемого отклика на действие героя не последовало.';
   }
   if (value?.kind === 'post_applied_perception_window'
       && value.status === 'pending_npc_decision'
@@ -394,21 +396,21 @@ function directSeedChange(value) {
     return null;
   }
   if (value?.change === 'created' && text(value.name)) {
-    return `Появился результат вашей работы: ${value.name}.`;
+    return `Появился результат работы героя: ${value.name}.`;
   }
   if (value?.change === 'moved') {
     if (value.relation === 'held_by' && text(value.display_label)) {
-      return `Вы взяли в руки ${value.display_label}.`;
+      return `Герой взял в руки ${value.display_label}.`;
     }
     return text(value.display_label)
-      ? `Вы переместили ${value.display_label}.`
-      : 'Вы переместили доступный предмет.';
+      ? `Герой переместил ${value.display_label}.`
+      : 'Герой переместил доступный предмет.';
   }
   if (value?.change === 'move_blocked' && text(value.display_label)) {
     return value.reason === 'hands_full'
-      ? `Вы не смогли взять ${value.display_label}: руки заняты.`
+      ? `Герой не смог взять ${value.display_label}: руки заняты.`
       : value.reason === 'load_limit'
-        ? `Вы не смогли взять ${value.display_label}: ноша слишком тяжела.`
+        ? `Герой не смог взять ${value.display_label}: ноша слишком тяжела.`
         : failCurrentScene();
   }
   if (value?.change === 'physical_change'
@@ -416,7 +418,7 @@ function directSeedChange(value) {
     return sentence(value.physical_description);
   }
   if (value?.change === 'container_accessed') {
-    return 'Вы изменили состояние доступного вместилища.';
+    return 'Герой изменил состояние доступного вместилища.';
   }
   if (['facts_changed', 'mechanics_changed'].includes(value?.change)) {
     return 'Доступный предмет изменился.';

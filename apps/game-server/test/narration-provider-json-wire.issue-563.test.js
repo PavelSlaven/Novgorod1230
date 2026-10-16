@@ -7,7 +7,7 @@ import { executeRoleLlmCall } from '@rus/llm-runtime';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-narration-llm.js';
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 
 test('ожидаемо красный, issue #563: narration JSON instruction on provider wire is Russian', async () => {
   const { visible_context, prose } = JSON.parse(await readFile(new URL(

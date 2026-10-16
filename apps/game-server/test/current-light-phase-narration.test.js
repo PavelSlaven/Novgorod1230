@@ -1,3 +1,4 @@
+import { compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validatePlayerSafeVisiblePayload } from '@rus/contracts/spatial-v3/registry';
@@ -81,7 +82,7 @@ test('narration repairs unsupported local dimness under daylight using persisted
   const calls = [];
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
     async run(call) {
-      const request = JSON.parse(call.messages[1].content);
+      const request = compatNarrationWire(JSON.parse(call.messages[1].content));
       calls.push([call.role_id, request.current_light_phase]);
       assert.equal(request.current_light_phase, 'daylight');
       assert.equal(request.optional_support?.current_light_phase, undefined);

@@ -44,6 +44,8 @@ const BODY_PART_KEYS = new Set([
 export function projectActor({ profile, body, actorId }) {
   return compact({
     actor_id: actorId,
+    sex_category: ['male', 'female'].includes(profile?.identity?.sex_category)
+      ? profile.identity.sex_category : undefined,
     name: optionalVisibleText(profile?.identity?.name, {
       path: 'actor.name', code: invalidCode()
     }),

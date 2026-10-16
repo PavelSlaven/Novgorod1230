@@ -65,6 +65,23 @@ test('degraded factual delivery reuses normal screen UI and replaces only prose'
   assert.match(renderScreen(screen, { activeOverlay: 'journal' }), /Осмотреть ось/u);
 });
 
+test('degraded delivery with no confirmed beat remains neutral', () => {
+  const screen = factual({ visible_changes: [], uncertainties: [],
+    exact_npc_utterances: [] });
+  assert.equal(validatePublicScreen(screen), screen);
+  const html = renderScreen(screen);
+  assert.match(html, /Ход сохранён\./u);
+  assert.doesNotMatch(html, /<h2>Изменения<\/h2>|<h2>Неясное<\/h2>/u);
+  assert.match(html, /У телеги мокрая ось\./u);
+});
+
+test('NPC speech remains visible without an empty beat claim', () => {
+  const screen = factual({ visible_changes: [], uncertainties: [] });
+  const html = renderScreen(screen);
+  assert.match(html, /Я отложил сеть\./u);
+  assert.doesNotMatch(html, /Ход сохранён\./u);
+});
+
 test('factual delivery renders starting scene and NPC facts without service labels', () => {
   const screen = factual({
     visible_context: { visible_scene: 'У берега стоит женщина в сером платке.' },

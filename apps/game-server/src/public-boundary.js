@@ -117,7 +117,7 @@ function findPublishedText(value, path = '$', field = '', seen = new Set(), quot
 }
 
 export function playerSpeechVisibleChange(value) {
-  return `Вы произнесли: «${value}»${/[.!?…]$/u.test(value) ? '' : '.'}`;
+  return `Герой произнёс: «${value}»${/[.!?…]$/u.test(value) ? '' : '.'}`;
 }
 
 export function assertPublicPayload(value, { playerQuote = null } = {}) {

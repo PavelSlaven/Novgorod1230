@@ -44,10 +44,24 @@ function providerPayload(call) {
 }
 
 function auditAll(wire, omit = () => false) {
-  return reviewedNarration(wire.segments, Object.fromEntries([
-    ...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties
+  return reviewedNarration(wire['Отрывки прозы'], Object.fromEntries([
+    ...requiredOf(wire).changes, ...requiredOf(wire).uncertainties
   ].map((source) => [source.ref,
-    omit(source) ? [] : [wire.segments[0].segment_id]])));
+    omit(source) ? [] : [wire['Отрывки прозы'][0].segment_id]])));
+}
+
+
+function requiredOf(wire) {
+  const lines = wire['Обязательные положения текущего эпизода'];
+  const changes = [], uncertainties = [];
+  for (const line of lines) {
+    const match = /^(visible_change|uncertainty)_([0-9]+): (.*)$/u.exec(line);
+    const field = match?.[1] === 'uncertainty' ? uncertainties : changes;
+    const prefix = field === changes ? 'visible_change' : 'uncertainty';
+    field.push({ ref: `${prefix}_${field.length + 1}`,
+      text: match ? match[3] : line });
+  }
+  return { changes, uncertainties };
 }
 
 test('P2-1: quoted and punctuated identifiers are rejected at the public envelope', async (t) => {
@@ -115,7 +129,7 @@ test('P2-1: label projection and NPC/narrator inputs remove quoted service text'
   const wire = narrationWire(narratorRequest(scene({
     visible_changes: ['Виден «npc:123».', 'Вы поправили пояс.']
   })));
-  assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text),
+  assert.deepEqual(requiredOf(wire).changes.map(({ text }) => text),
     ['Вы поправили пояс.']);
   assert.doesNotMatch(JSON.stringify(wire), /npc:123/u);
 });
@@ -391,10 +405,10 @@ test('P2-3: indistinguishable NPC actions reach the writer and remain mandatory 
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
     const wire = JSON.parse(providerPayload(call).messages[1].content);
-    assert.equal(wire.required_current_beat.changes.length, 2);
-    assert.equal(wire.required_current_beat.changes[0].text, 'Вы поправили пояс.');
-    assertNpcChange(wire.required_current_beat.changes[1].text, 2);
-    assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene });
+    assert.equal(requiredOf(wire).changes.length, 2);
+    assert.equal(requiredOf(wire).changes[0].text, 'Вы поправили пояс.');
+    assertNpcChange(requiredOf(wire).changes[1].text, 2);
+    assert.equal(wire['Переданные сведения об обстановке']['Место'], visible.visible_scene);
     assert.doesNotMatch(JSON.stringify(wire), /npc:observed|occurred_at|whole_minutes/u);
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: 'Вы поправили пояс, а двое рыбаков прервали работу для короткого отдыха.'
@@ -481,7 +495,7 @@ test('P2-3: different actions and chronological boundaries are not merged', asyn
     assertNpcChange(sequential.visible_changes[1], 2);
     assertNpcChange(sequential.visible_changes[2], 1);
     const wire = narrationWire(narratorRequest(sequential));
-    assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text),
+    assert.deepEqual(requiredOf(wire).changes.map(({ text }) => text),
       sequential.visible_changes);
     assert.doesNotMatch(JSON.stringify(wire), /occurred_at|whole_minutes|npc:observed/u);
   });

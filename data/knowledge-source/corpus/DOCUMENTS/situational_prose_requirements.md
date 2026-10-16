@@ -459,10 +459,12 @@ coverage, отсутствие factual/hidden/technical concerns и непуст
 или дополнительного каскада вызовов.
 
 Серверные записи сохраняют обязательные текущие факты в `required_current_beat`
-с changes `{ref,text}` и uncertainties `{ref,text,status:unperformed_result_unknown}`,
+с changes `{ref,text}` и uncertainties `{ref,text,status:result_unknown}`,
 `constraints` содержит do_not_imply/allowed_tensions/style_policy.
 Эти записи не передаются модели как сырой DTO: форма сообщений определяется
-§3.4. Неизвестность сохраняется содержательно, а ключи источников доступны
+§3.4. Статус `result_unknown` обозначает неизвестный результат выполненной попытки;
+невыполненный остаток намерения остаётся только evidence аудитора (§8).
+Неизвестность сохраняется содержательно, а ключи источников доступны
 только аудиту и исправлению для обратной связи. Атомарность и порядок источников
 сохраняются при проекции; ключи не требуются в ответе писателя.
 При любом change или uncertainty `optional_support` содержит `visible_scene` и

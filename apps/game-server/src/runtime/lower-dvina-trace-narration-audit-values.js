@@ -7,7 +7,7 @@ export const FAILURE_KINDS = {
 };
 const UNSUPPORTED_KINDS = new Set(['unsupported_attempt',
   'unsupported_success', 'unsupported_object_use', 'unsupported_result',
-  'unsupported_sensory', 'unsupported_event', 'unsupported_world_state',
+  'unsupported_event', 'unsupported_world_state',
   'unsupported_npc_state', 'unsupported_fact']);
 
 export function validNarrationAuditModelOutput(output, request) {

@@ -99,9 +99,9 @@ async function submitSpeech(words, systemText = null) {
 }
 
 for (const [words, expectedQuote] of [
-  [marker, `Вы произнесли: «${marker}».`],
-  [`${marker}!`, `Вы произнесли: «${marker}!»`],
-  ['Берегись!', 'Вы произнесли: «Берегись!»']
+  [marker, `Герой произнёс: «${marker}».`],
+  [`${marker}!`, `Герой произнёс: «${marker}!»`],
+  ['Берегись!', 'Герой произнёс: «Берегись!»']
 ]) test(`HTTP boundary preserves an exact committed player quote (${words})`, async () => {
   const { status, response, result, f, requests, audits, rawText, committed, projected } = await submitSpeech(words);
   assert.equal(requests.length, 1);
@@ -125,7 +125,7 @@ test('public boundary rejects a service marker authored by the system', () => {
 
 test('quotation marks alone do not authorize a system-authored service marker', () => {
   assert.throws(() => successEnvelope({
-    visible_changes: [`Вы произнесли: «${marker}».`]
+    visible_changes: [`Герой произнёс: «${marker}».`]
   }), { code: 'PUBLIC_PAYLOAD_SERVICE_TEXT' });
 });
 
@@ -140,7 +140,7 @@ test('the same real player input does not authorize a system-authored marker', a
 });
 
 test('ordinary player input does not authorize a forged service-code quote', async () => {
-  const { status, response, boundaryData } = await submitSpeech('Берегись!', `Вы произнесли: «${marker}».`);
+  const { status, response, boundaryData } = await submitSpeech('Берегись!', `Герой произнёс: «${marker}».`);
   assert.throws(() => successEnvelope(boundaryData), { code: 'PUBLIC_PAYLOAD_SERVICE_TEXT' });
   assert.equal(status, 500);
   assert.equal(response.ok, false);

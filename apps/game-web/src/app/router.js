@@ -43,7 +43,9 @@ function renderNarrativeSlot(screen) {
 }
 
 function renderFactualTurnDelivery(screen) {
-  return `<section class="factual-turn-delivery" aria-label="Восстановленное состояние после хода"><p class="eyebrow">Восстановленное состояние</p><h1>Текущий момент</h1><p>${escapeHtml(screen.visible_context.visible_scene ?? '')}</p>${renderExactNpcUtterances(screen)}${renderFactualList('Изменения', screen.visible_changes)}${renderFactualList('Неясное', screen.uncertainties)}</section>`;
+  const emptyBeat = screen.visible_changes.length === 0 && screen.uncertainties.length === 0
+    && screen.exact_npc_utterances.length === 0;
+  return `<section class="factual-turn-delivery" aria-label="Восстановленное состояние после хода"><p class="eyebrow">Восстановленное состояние</p><h1>Текущий момент</h1><p>${escapeHtml(screen.visible_context.visible_scene ?? '')}</p>${renderExactNpcUtterances(screen)}${emptyBeat ? '<p>Ход сохранён.</p>' : ''}${renderFactualList('Изменения', screen.visible_changes)}${renderFactualList('Неясное', screen.uncertainties)}</section>`;
 }
 
 function renderFactualList(title, items) {

@@ -1,4 +1,4 @@
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
@@ -74,21 +74,23 @@ for (const [query, name, spoken, pending] of [
       step(1, { resolution: 'direct', direct_result_kind: 'player_utterance', utterance: { utterance_text: spoken } }),
       step(2, { resolution: 'domain_request', operations: [operation] }),
       { ...step(3, { resolution: 'domain_request', operations: [{ op: 'request_item_use' }] }), applied: !pending } ] } } });
-  const expected = [`Вы произнесли: «${spoken}»`,
-    `Вы нашли предмет — ${name}.`, ...(pending ? [] : [physical])];
+  const expected = [`Герой произнёс: «${spoken}»`,
+    `Найден предмет — ${name}.`, ...(pending ? [] : [physical])];
   assert.deepEqual(projected.visible_changes, expected);
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
     assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), expected);
     assert.deepEqual(wire.required_current_beat.changes.map(({ ref }) => ref), expected.map((_, index) => `visible_change_${index + 1}`));
     assert.deepEqual(wire.required_current_beat.uncertainties, []);
-    assert.match(call.messages[0].content, /Turn duration is code-owned UI metadata/u);
-    assert.deepEqual(wire.optional_support,
-      { visible_scene: projected.visible_scene });
-    if (call.role_id === 'gameplay_narrator') return { output: {
+    assert.equal(wire.optional_support.visible_scene, projected.visible_scene);
+    assert.deepEqual(wire.optional_support.known_context, projected.known_context);
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(call.messages[0].content, /Сколько прошло времени и сколько заняло действие, не называй/u);
+      return { output: {
       prose: `Вы произнесли: «${spoken}» Поиск принёс находку — ${name}. ${pending ? '' : physical + ' '}Можно продолжить задуманное или выбрать другое действие.`,
       action_options: [], used_references: [] } };
-    assert.match(call.messages[0].content, /service-like time reporting/u);
+    }
+    assert.match(call.messages[0].content, /выдуманная длительность или сообщение о том, сколько прошло времени/u);
     return { output: { ...reviewedNarration(wire.segments,
       Object.fromEntries(wire.required_current_beat.changes
         .map(({ ref }) => [ref, wire.segments.map((_, index) => `s${index + 1}`)]))),
@@ -103,7 +105,7 @@ test('search duration stays out of narrator input', async () => {
   for (const duration of [1, 2, 5, 11, 21, 22, 111]) {
     const visible = await projector.project({ retrieved_state: committedState(), consequence: {
       visible_seed: { turn_step_search: { kind: 'semantic_activity', duration_minutes: duration, discovery_kind: 'search' } } } });
-    assert.deepEqual(visible.visible_changes, ['Вы завершили поиск.']);
+    assert.deepEqual(visible.visible_changes, ['Поиск завершён.']);
   }
 });
 
@@ -131,7 +133,7 @@ for (const discoveryKind of ['search', 'inspect']) test(
     assert.deepEqual(visible.uncertainties, []);
     const narrator = createLowerDvinaTraceNarrationService({ roleRunner: {
       async run(call) {
-        const wire = JSON.parse(call.messages[1].content);
+        const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
         assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), [expected]);
         if (call.role_id === 'gameplay_narrator') return { output: {
           prose: expected, action_options: [], used_references: [] } };
@@ -207,7 +209,7 @@ test('perceived speech remains pending instead of inventing final silence', asyn
   });
 
   assert.deepEqual(visible.visible_changes,
-    ['Вы произнесли: «Люди, вы меня слышите?»']);
+    ['Герой произнёс: «Люди, вы меня слышите?»']);
   assert.deepEqual(visible.uncertainties, [
     'Возможный отклик слушателей ещё не разрешён и не является подтверждённым молчанием.'
   ]);
@@ -219,7 +221,7 @@ for (const domainFallback of [false, true]) test(`materialized O1 precedes physi
   const state = committedState();
   state.current_visible_context.sensory_details = ['У воды лежат доски.'];
   const physical = 'На конце жерди видны свежие срезы.';
-  const found = 'Вы нашли предмет — короткая жердь.';
+  const found = 'Найден предмет — короткая жердь.';
   const projector = createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
     project: async () => ({ ...state.current_visible_context, visible_changes: [physical] }) } });
   const visible = await projector.project({ retrieved_state: state, consequence: {
@@ -236,9 +238,9 @@ for (const domainFallback of [false, true]) test(`materialized O1 precedes physi
   let calls = 0;
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
-    const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support,
-      { visible_scene: visible.visible_scene });
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
+    assert.equal(wire.optional_support.visible_scene, visible.visible_scene);
+    assert.deepEqual(wire.optional_support.sensory_details, visible.sensory_details);
     const changes = wire.required_current_beat.changes.map(({ text }) => text);
     assert.ok(changes.includes(found)); assert.ok(changes.includes(physical));
     return { output: call.role_id === 'gameplay_narrator'
@@ -284,7 +286,7 @@ for (const fire of [false, true]) {
           utterance: { speaker_ref: 'player', utterance_text: spoken }
         } }] } } });
     assert.ok(visible.visible_changes.includes('На доске видна зарубка.'));
-    assert.ok(visible.visible_changes.includes(`Вы произнесли: «${spoken}»`));
+    assert.ok(visible.visible_changes.includes(`Герой произнёс: «${spoken}»`));
     assert.deepEqual(visible.known_context, ['energy:83']);
     assert.equal(visible.uncertainties.some((value) =>
       value.includes('Проверить пространство под настилом.')), false);
@@ -341,7 +343,7 @@ for (const [scene, detail, query] of [
       assert.ok(visible[resolution === 'absent' ? 'visible_changes' : 'uncertainties']
         .some(value => value.includes(`«${query}»`)));
       if (resolution === 'absent') assert.equal(
-        visible.visible_changes.includes('Вы завершили поиск.'), false);
+        visible.visible_changes.includes('Поиск завершён.'), false);
       assert.equal(visible.uncertainties.some((value) =>
         value.includes(remaining)), false);
       assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
@@ -378,11 +380,34 @@ for (const sample of [
       { step_index: 2, applied: true, approved_plan: { resolution: 'domain_request', goal_result: 'pending',
         operations: [{ op: 'request_item_use', use_kind: 'other', description: sample.action }] } } ] } } });
   assert.deepEqual(visible.visible_changes, [
-    `Вы произнесли: «${sample.speech}»`,
-    `Вы выполнили попытку: «${sample.action}»`
+    `Герой произнёс: «${sample.speech}»`,
+    `Выполнена попытка: «${sample.action}»`,
+    'Результат этой попытки пока не установлен.'
   ]);
   assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_changes.some(change => /Прошл[ао]/u.test(change)), false);
+});
+
+test('applied item-use seed projects an unknown result regardless of goal status', () => {
+  const attempt = { kind: 'transient_item_use',
+    description: 'Касаюсь посохом воды.' };
+  const input = { consequence: { visible_seed: {
+    turn_step_item_use_1: attempt } } };
+  const pending = projectDirectSeedChanges({ input,
+    directSeedKeys: ['turn_step_item_use_1'],
+    appliedPlan: { resolution: 'domain_request', goal_result: 'pending' } });
+  assert.deepEqual(pending, [
+    'Выполнена попытка: «Касаюсь посохом воды.»',
+    'Результат этой попытки пока не установлен.'
+  ]);
+  assert.deepEqual(projectDirectSeedChanges({ input,
+    directSeedKeys: ['turn_step_item_use_1'],
+    appliedPlan: { resolution: 'domain_request', goal_result: 'achieved' } }),
+  ['Выполнена попытка: «Касаюсь посохом воды.»',
+    'Результат этой попытки пока не установлен.']);
+  assert.deepEqual(projectDirectSeedChanges({ input: { consequence: {
+    visible_seed: {} } }, directSeedKeys: [],
+    appliedPlan: { resolution: 'domain_request', goal_result: 'pending' } }), []);
 });
 
 test('observation stays before later speech while duration stays out of prose', async () => {
@@ -409,8 +434,8 @@ test('observation stays before later speech while duration stays out of prose', 
       ] } }
   });
   assert.deepEqual(visible.visible_changes.slice(0, 2), [
-    'Вы внимательно изучили обстановку.',
-    'Вы произнесли: «Онисим!»']);
+    'Обстановка внимательно изучена.',
+    'Герой произнёс: «Онисим!»']);
   assert.equal(visible.visible_changes.includes(
     'Наблюдение завершено по уже доступным вам признакам.'), false);
 });

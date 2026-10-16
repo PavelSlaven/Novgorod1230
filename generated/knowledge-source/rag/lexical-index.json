@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "4bb0a2301a437975ce84a655663d604828d514f6feb628b196e8f80e484810c4",
+  "corpus_hash": "a5d64472dc84985c0a3478b20995b5ec38884dcadca6dd02a7a608ba7f557366",
   "chunk_count": 2975,
   "chunks": [
     {
@@ -15560,7 +15560,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:",
       "char_count": 235
     },
@@ -15569,7 +15569,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:\n\n1. **Grounding:** каждое утверждение о мире (§2.0), в том числе о подтверждённых изменениях, точной речи и неопределённости, имеет точный player-safe source; ощущения, мысли, чувства героя, мелкие движения и связки source не требуют, если не нарушают границы рассказа (§2.0, п. 1–5); intent и правдоподобие не служат evidence.\n2. **Coverage:** все существенные воспринимаемые confirmed changes, exact speech и material uncertainty — в том числе неизвестный результат реально выполненной попытки — переданы по смыслу один раз; невыполненный остаток замысла не передаётся и не описывается, а воспринимаемая причина, по которой следующий шаг не мог состояться, если она передана, — передана (D162); технический перечень не требуется.\n3. **Causality:** порядок, actor/object identity, before/after и boundary сохранены.\n4. **Orientation:** когда ситуация требует, читатель понимает near/far, exits/barriers, действующих NPC и следующее пространство выбора.\n5. **Literary scene:** текст имеет центр, связные beats, конкретные образы и уместный объём; не является ledger, справкой, протоколом или перечнем фактов без переживания героя.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.",
       "char_count": 1486
     },
@@ -15578,7 +15578,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n фактов без переживания героя.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.\n\nПолный литературный `PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой, но может быть безопасно доставлен с `artistic_verdict: fail` для последующей оценки качества.\n\nОбычный approved `TurnScreen` доказывает фактическую и техническую пригодность доставки, но сам по себе не доказывает литературный `PASS` при `artistic_verdict: fail`.\nПоявление `FactualTurnDeliveryScreen` означает degraded presentation после\nterminal `final_audit_failed`: оно сохраняет доступность уже committed хода,\nно никогда не закрывает narration quality, blind-play, demo или TURN FORENSIC\nacceptance. Любой такой экран в этих прогонах автоматически создаёт blocking\nnarration finding; Contract Auditor не меняет эту норму, чтобы легализовать\nнепрошедший writer/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.",
       "char_count": 1235
     },
@@ -15587,7 +15587,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\niter/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.\n\nВ обычном ходе итоговый `narration_audit` содержит `coverage.visible_changes` и\n`coverage.uncertainties`: записи `{source_index, segment_ids}` с нулевым индексом\nисходного массива и ссылками на immutable сегменты проверяемой прозы. Для `PASS`\nкаждый исходный индекс указан ровно один раз, с хотя бы одним существующим\nсегментом; пустой исходный массив требует пустого coverage. Несколько исходных\nсмыслов могут ссылаться на один сегмент. Ссылки обозначают выраженный в прозе\nсмысл, а не наличие факта во входе. Пропущенные смыслы дают `FAIL` и concern;\nнеизвестные индексы, сегменты, дубли и malformed coverage не принимаются кодом.\nНезависимые `artistic_verdict` и `technical_verdict` имеют значения `pass|fail`;\n`fail` требует соответственно concern `literary_quality` или\n`technical_presentation`. Public `pass` означает допустимость доставки: полное\ncoverage, отсутствие factual/hidden/technical concerns и непустое evidence.\n`literary_quality` concern и `artistic_verdict: fail` не меняют delivery `pass`;\nполный литературный PASS дополнительно требует `artistic_verdict: pass` и отсутствие\nлитературных concerns. Public verdict и coverage\nсобирает Adapter детерминированно из private source reviews и failures; LLM их\nне назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.",
       "char_count": 1625
     },
@@ -15596,16 +15596,16 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nе назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.\n\nСерверные записи сохраняют обязательные текущие факты в `required_current_beat`\nс changes `{ref,text}` и uncertainties `{ref,text,status:unperformed_result_unknown}`,\n`constraints` содержит do_not_imply/allowed_tensions/style_policy.\nЭти записи не передаются модели как сырой DTO: форма сообщений определяется\n§3.4. Неизвестность сохраняется содержательно, а ключи источников доступны\nтолько аудиту и исправлению для обратной связи. Атомарность и порядок источников\nсохраняются при проекции; ключи не требуются в ответе писателя.\nПри любом change или uncertainty `optional_support` содержит `visible_scene` и\nматериал сцены для рассказа (D158): людей и животных с положением и занятиями,\nпути с их сторонами и направлением, рельеф, растительность и землю, свет и звуки\nпо времени суток и сезону, а о герое — имя, пол, характер, цель и откуда он пришёл.\nМатериал поступает writer/auditor/repair одним снимком (§3.2); это не пункты для\nпересказа: центр остаётся у текущего beat (§4.4), подробности неизменившейся\nобстановки писатель берёт, когда они нужны эпизоду, а статическая сводка вместо\nтекущего beat — `static_context_dump`.\nНовые изменения, относящиеся к текущему beat, должны приходить через\n`required_current_beat.visible_changes`. При отсутствии current beat scene-only wire\nсохраняет `visible_scene` и материал сцены.\nСырые static NPC/object/inventory/body arrays, known_context и snapshot metadata\nкак DTO не поступают writer/auditor/repair; их применимое к сцене содержание\nпоступает русскими предложениями по §3.4.\nНовые существенные факты должны приходить через visible_changes. Существующие\nprojection owners продвигают воспринимаемые признаки applied observation,\ndestination facts, видимых NPC и подтверждённый маршрут arrival, а также\nфакты текущего ordinary scene seed. Причинное основание задаёт результат owner,\nа не текст заявки или заголовок сцены; snapshot self-knowledge не продвигается.\nДополнять текущий\nрезультат полным пересказом static snapshot нельзя: из материала сцены писатель\nберёт литературно уместное (§3). Эти данные остаются authoritative\nи доступны профильным panels. Если оба source arrays пусты и сама сцена является\nрезультатом, descriptive support сохраняется для scene-only/perception prose.\nRaw visible_context не дублируется; used_references остаётся пустым.\nConfirmed_outcome/action_intent и role-specific output/segments/concerns/phase\nсохраняют существующую доступность. Uncertainty о вопросе не становится доказательством\nдействия; невыполненный шаг замысла не изображается выполненным, и проза о нём не сообщает (D162).\nCommitted transient attempt в required change подтверждает выполненное физическое\nобращение/contact. Открытым остаётся только observation/discovery\nresult или новый факт. Narrator изображает совершённое движение конкретно, без\nпересказа attempt/status metadata и без выдуманной новой находки. goal_result pending\nне отменяет applied operation: её нельзя объявлять неначатой; выбор продолжить или\nизменить действие проза не навязывает (D162).\nProjection transient attempt создаёт два соседних atomic current-beat source:\nпервый отдельно подтверждает выполненное обращение, второй отдельно\nсохраняет неизвестность observation result. Оба остаются changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.",
-      "char_count": 3614
+      "line_end": 597,
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nе назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.\n\nСерверные записи сохраняют обязательные текущие факты в `required_current_beat`\nс changes `{ref,text}` и uncertainties `{ref,text,status:result_unknown}`,\n`constraints` содержит do_not_imply/allowed_tensions/style_policy.\nЭти записи не передаются модели как сырой DTO: форма сообщений определяется\n§3.4. Статус `result_unknown` обозначает неизвестный результат выполненной попытки;\nневыполненный остаток намерения остаётся только evidence аудитора (§8).\nНеизвестность сохраняется содержательно, а ключи источников доступны\nтолько аудиту и исправлению для обратной связи. Атомарность и порядок источников\nсохраняются при проекции; ключи не требуются в ответе писателя.\nПри любом change или uncertainty `optional_support` содержит `visible_scene` и\nматериал сцены для рассказа (D158): людей и животных с положением и занятиями,\nпути с их сторонами и направлением, рельеф, растительность и землю, свет и звуки\nпо времени суток и сезону, а о герое — имя, пол, характер, цель и откуда он пришёл.\nМатериал поступает writer/auditor/repair одним снимком (§3.2); это не пункты для\nпересказа: центр остаётся у текущего beat (§4.4), подробности неизменившейся\nобстановки писатель берёт, когда они нужны эпизоду, а статическая сводка вместо\nтекущего beat — `static_context_dump`.\nНовые изменения, относящиеся к текущему beat, должны приходить через\n`required_current_beat.visible_changes`. При отсутствии current beat scene-only wire\nсохраняет `visible_scene` и материал сцены.\nСырые static NPC/object/inventory/body arrays, known_context и snapshot metadata\nкак DTO не поступают writer/auditor/repair; их применимое к сцене содержание\nпоступает русскими предложениями по §3.4.\nНовые существенные факты должны приходить через visible_changes. Существующие\nprojection owners продвигают воспринимаемые признаки applied observation,\ndestination facts, видимых NPC и подтверждённый маршрут arrival, а также\nфакты текущего ordinary scene seed. Причинное основание задаёт результат owner,\nа не текст заявки или заголовок сцены; snapshot self-knowledge не продвигается.\nДополнять текущий\nрезультат полным пересказом static snapshot нельзя: из материала сцены писатель\nберёт литературно уместное (§3). Эти данные остаются authoritative\nи доступны профильным panels. Если оба source arrays пусты и сама сцена является\nрезультатом, descriptive support сохраняется для scene-only/perception prose.\nRaw visible_context не дублируется; used_references остаётся пустым.\nConfirmed_outcome/action_intent и role-specific output/segments/concerns/phase\nсохраняют существующую доступность. Uncertainty о вопросе не становится доказательством\nдействия; невыполненный шаг замысла не изображается выполненным, и проза о нём не сообщает (D162).\nCommitted transient attempt в required change подтверждает выполненное физическое\nобращение/contact. Открытым остаётся только observation/discovery\nresult или новый факт. Narrator изображает совершённое движение конкретно, без\nпересказа attempt/status metadata и без выдуманной новой находки. goal_result pending\nне отменяет applied operation: её нельзя объявлять неначатой; выбор продолжить или\nизменить действие проза не навязывает (D162).\nProjection transient attempt создаёт два соседних atomic current-beat source:\nпервый отдельно подтверждает выполненное обращение, второй отдельно\nсохраняет неизвестность observation result. Оба остаются changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.",
+      "char_count": 3752
     },
     {
       "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:5",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nся changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.\n\nPrivate auditor возвращает только exact shape с `reviewed_segments`,\n`source_reviews`, `unsupported`, `literary_failures` и `evidence`.\n`reviewed_segments` содержит полный canonical ordered набор segment choices.\n`source_reviews` содержит ровно ordered refs из `required_current_beat`; каждая\nзапись `{ref,segment_choices}` получает choices только если все атомарные\npropositions source переданы с той же certainty. Частичное либо отсутствующее\nпокрытие обозначается `[]`. Разные sources могут ссылаться на один segment.",
       "char_count": 770
     },
@@ -15614,7 +15614,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\npositions source переданы с той же certainty. Частичное либо отсутствующее\nпокрытие обозначается `[]`. Разные sources могут ссылаться на один segment.\n\nПеред ответом модель проверяет каждую factual proposition, включая subordinate\nclauses, и сообщает только failures. Factual proposition — утверждение о мире по\n§2.0; ощущения, мысли, чувства героя, мелкие движения и связки такими proposition\nне являются и в `unsupported` не попадают, пока не нарушают границ рассказа\n(§2.0, п. 1–5: противоречие, зацепка, новый факт мира в мысли героя, поступок,\nкоторого игрок не выбирал, нагнетание угрозы сверх сведений). Semantic grounding failures находятся в\n`unsupported` как `{segment_choice,kind,reason}`. Художественные нарушения\nнаходятся в `literary_failures` как `{check,segment_choice,reason}` для пяти\nchecks: current_beat_buried, elapsed_as_service_report, static_context_dump,\nweak_literary_composition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.",
       "char_count": 1146
     },
@@ -15623,7 +15623,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nosition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.\n\nAdapter требует exact own-key set, literal source refs/order и canonical unique\nsegment IDs без positional/prose aliases,\nallowed semantic kinds/literary checks и непустые reasons. Затем код выводит\nsource_index по исходному порядку, собирает coverage, `missing_visible_change`\nс `segment_id: null` для непокрытого source (без alias на первый segment) и\nостальные concerns, artistic/technical verdict и delivery pass. Чистый отчёт\nтребует непустое evidence; при чисто литературном finding полные source reviews\nостаются фактическим контролем, а пояснительное evidence может быть пустым.\nЛюбой malformed private output преобразуется в невалидный audit и\nблокирует flow fail-closed; Adapter не синтезирует reviewed segments, evidence\nили repair concern. Согласованный code-assembled factual/technical FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.",
       "char_count": 1157
     },
@@ -15632,7 +15632,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nсованный code-assembled factual/technical FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.\n\nTemporal/aspectual overlap и persistence между фактами требуют явного основания:\nscene label не доказывает тишину и неизменность. Ambience и субъективный темп\nгероя — рассказ (§2.0). Длительность\nхода не передаётся narrator как evidence. Любая придуманная временная величина\nявляется unsupported fact, а служебная формулировка дополнительно получает\n`elapsed_as_service_report`. Точная реплика и все propositions сохраняются.\nГрамматическое подчинение раннего выполненного действия позднему допустимо, когда\nглагольный вид или явный маркер однозначно сохраняет смысл «завершено раньше». Запрещены\nreversal и подчинение со смыслом simultaneous/ongoing; обязательной словоформы\nили раздельных предложений нет.\n`weak_literary_composition` включает пересказ невыполненного остатка замысла —\nкак metadata, план или сообщение о несделанном (D162). Полный и\nфактически верный пересказ required sources по одному и в исходном порядке тоже\nостаётся `weak_literary_composition`, если действие или воспринятый результат не\nорганизует поддержанные пространственные детали в сцену. Один союз не делает\nнабор фактов художественной сценой; связки, переходы и ритм принадлежат рассказу\n(§2.0), но связка не выдаёт за факт причинную связь, которой нет в сведениях (§4.2).\nRepair concerns не являются\nисчерпывающим whitelist: все правила повторно применяются ко всей прозе,\nпри sparse support рассказ остаётся живым в границах §2.0 — ощущения, мысли героя\nи связки не считаются украшательством, — а недостающие факты мира не придумываются\nи фиксируются как upstream gap.\nПолный литературный PASS также требует двух pass verdicts, полной coverage,\nпустых concerns и непустого массива evidence. Delivery pass допускает только\nлитературные concerns. Повторный semantic repair запрещён. Private writer и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.",
       "char_count": 2174
     },
@@ -15641,7 +15641,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nriter и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.\n\nЦентр ответа — текущие confirmed changes и uncertainties. Невыполненный шаг замысла\nне изображается выполненным; о несделанном проза не сообщает, а если шаг не мог\nсостояться, показывает причину через воспринятое героем (D162).\nТочное произнесённое слово сохраняется. Более раннее время (прошлое героя и мира)\nвплетается в текущий эпизод: служебная временная заставка с последующей статической сводкой не проходит\nтехническую приёмку. Даже фактически верный пересказ берега, тела или инвентаря\nне проходит художественную приёмку, если вытесняет смысл текущего результата.\nПри малом количестве подтверждённого материала сцена остаётся живой за счёт рассказа (§2.0): ощущений, мыслей героя и связок; факты мира не добавляются.\nСамо произнесение не подтверждает слышимость, ответ или отсутствие ответа:\nдля реакции слушателя требуется отдельный confirmed perception/conversation fact.\nOpening сохраняет собственный утверждённый Stage 23 audit: turn coverage и\nхудожественный verdict не синтезируются задним числом для опубликованной сцены.",
       "char_count": 1286
     },
@@ -15650,7 +15650,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\ning сохраняет собственный утверждённый Stage 23 audit: turn coverage и\nхудожественный verdict не синтезируются задним числом для опубликованной сцены.\n\nПроверки не должны искать обязательные слова и конструкции. Рисковая карта полного qualification/acceptance покрытия для каждого класса включает:\n\n- один позитивный grounded case;\n- один factual trap: tempting, но unsupported detail;\n- один sparse-context case: проза остаётся живой за счёт рассказа (§2.0) без придуманных фактов мира, а нехватка фактов мира фиксируется как upstream gap;\n- один unseen-equivalent с другим местом, предметом, NPC и формулировкой;\n- один continuity case после следующего хода либо reload;\n- blind semantic/literary review реального model output, а не только snapshot system prompt.\n\nЭто целевая матрица покрытия, а не требование запускать новый массовый benchmark при каждой локальной правке. Принятие нормы и локальный change проверяют relevant focused subset и не означают соответствия всей игры. Полная матрица служит итоговым gate художественной приёмки и model qualification.",
       "char_count": 1162
     },
@@ -15659,7 +15659,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 418,
-      "line_end": 595,
+      "line_end": 597,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nверяют relevant focused subset и не означают соответствия всей игры. Полная матрица служит итоговым gate художественной приёмки и model qualification.\n\nНовый unseen case не должен требовать нового `situation_kind`, handler, enum, phrase rule или template. Если требует, решение заскриптовано.",
       "char_count": 390
     },
@@ -15667,8 +15667,8 @@
       "id": "situational_prose_requirements.md:16.1. Проверка фактического провода:0",
       "file": "situational_prose_requirements.md",
       "section": "16.1. Проверка фактического провода",
-      "line_start": 596,
-      "line_end": 618,
+      "line_start": 598,
+      "line_end": 620,
       "text": "## situational_prose_requirements.md — 16.1. Проверка фактического провода\n### 16.1. Проверка фактического провода\n\nКонтекст проверяется скриптом на фактическом проводе: результате\n`buildProviderRequestPayload`, включая полные messages и действующие параметры,\nв сопоставлении с исходным снимком и доступными субъекту фактами. Обязательны:",
       "char_count": 339
     },
@@ -15676,8 +15676,8 @@
       "id": "situational_prose_requirements.md:16.1. Проверка фактического провода:1",
       "file": "situational_prose_requirements.md",
       "section": "16.1. Проверка фактического провода",
-      "line_start": 596,
-      "line_end": 618,
+      "line_start": 598,
+      "line_end": 620,
       "text": "## situational_prose_requirements.md — 16.1. Проверка фактического провода\noviderRequestPayload`, включая полные messages и действующие параметры,\nв сопоставлении с исходным снимком и доступными субъекту фактами. Обязательны:\n\n- происхождение захвата и покрытие ожидаемых рук, случаев, ролей, фаз и порядковых вызовов; реконструкция запроса не выдаётся за захват, повторные вызовы не исчезают при дедупликации;\n- субъект, сохранность всех доступных применимых фактов, уверенности и неизвестности, отсутствие скрытых сведений;\n- покрытие каждого применимого вида данных (включая людей и животных и их занятия, пути и их стороны, рельеф, растительность и землю, свет и звуки по времени суток и сезону, а о герое — имя, пол, характер, цель и откуда он пришёл), его источник либо явный предел наблюдения; пустота не превращается в отрицание;\n- содержание людей по §3.3 и отсутствие известных форм пустых карточек, статусов и заглушек;\n- служебные утечки по согласованным точным полям и формам, отдельно от разрешённых ключей ответа, обратной связи и выбора;\n- раскладка system/user, согласованность response contract, validator, действующих параметров и дословно общей границы фактов (§2.0: те же категории мира и рассказа у писателя, аудитора, исправления и ответчика NPC);\n- полный body, согласованный бюджет с резервом ответа и отсутствие потерь при сокращении; завершённость ответа подтверждается только при наличии самого ответа;\n- дословные выписки каждого применимого вида с привязкой к фактическому запросу, субъекту и независимому решению ведущего по D81;\n- один снимок у писателя, аудитора и исправления; дополнительные аудиторские ключи и ошибки не меняют фактов.",
       "char_count": 1670
     },
@@ -15685,8 +15685,8 @@
       "id": "situational_prose_requirements.md:16.1. Проверка фактического провода:2",
       "file": "situational_prose_requirements.md",
       "section": "16.1. Проверка фактического провода",
-      "line_start": 596,
-      "line_end": 618,
+      "line_start": 598,
+      "line_end": 620,
       "text": "## situational_prose_requirements.md — 16.1. Проверка фактического провода\n и независимому решению ведущего по D81;\n- один снимок у писателя, аудитора и исправления; дополнительные аудиторские ключи и ошибки не меняют фактов.\n\nНеизвестная форма и неснятая ветвь не дают PASS по нулю находок. Скрипт не\nвычисляет восприятие и не доказывает смысловую достаточность или качество прозы:\nоснование задаёт владелец данных, содержание читает независимый проверяющий.\nРазбор провода перед BENCH-OK относится к D132, не к реконструкции данных D124.\nЭто требования к проверкам; их принятие не доказывает реализацию гейтов или\nсоответствие текущих входов ролей.",
       "char_count": 650
     },
@@ -15694,8 +15694,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:0",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 619,
-      "line_end": 666,
+      "line_start": 621,
+      "line_end": 668,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n## 17. Владельцы и связанные контракты\n\nГраницы ответственности определяются следующими владельцами:",
       "char_count": 175
     },
@@ -15703,8 +15703,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:1",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 619,
-      "line_end": 666,
+      "line_start": 621,
+      "line_end": 668,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n## 17. Владельцы и связанные контракты\n\nГраницы ответственности определяются следующими владельцами:\n\n- [`AGENTS.md`](../../../../AGENTS.md), §§3–14 — свободная причинная игра, authority и persistence;\n- [`CONTRACT_INDEX.md`](CONTRACT_INDEX.md), §§4, 8.1 — active contracts и Narration/UI scope;\n- [`packages/narration/MODULE.md`](../../../../packages/narration/MODULE.md) — workflow writer/audit/repair;\n- [`apps/game-server/MODULE.md`](../../../../apps/game-server/MODULE.md) — persisted safe projection и composition;\n- [`apps/game-web/MODULE.md`](../../../../apps/game-web/MODULE.md) — faithful UI rendering;\n- [`packages/materialization/MODULE.md`](../../../../packages/materialization/MODULE.md) — grounded detail и identity;\n- [`packages/presentation/MODULE.md`](../../../../packages/presentation/MODULE.md) — существующая проекция восприятия и пространственных опор;\n- [`packages/visibility-knowledge-memory/MODULE.md`](../../../../packages/visibility-knowledge-memory/MODULE.md) — доступность знания и безопасная проекция без расчёта восприятия;\n- [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md), §0.2, и [`packages/world-knowledge/MODULE.md`](../../../../packages/world-knowledge/MODULE.md) — исходные сведения, уверенность и согласованная prose-проекция; она переводит содержание, не создаёт состояние мира;\n- [`turn_step_llm_contract.md`](turn_step_llm_contract.md), §§6, 8–9 — completed steps и remaining intent;\n- [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md), §§18–19, 23, 29–31, 36 — exact speech, audience, causal order и narration;\n- [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md), §§3.5, 12–20 — time, processes, body и visible package;\n- [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md), §§21–29 — combat ordering, speech и terminal state;\n- [`combat_system.md`](combat_system.md), §§12–15, 27–29 — injury, death, aftermath и recovery.",
       "char_count": 2096
     },
@@ -15712,8 +15712,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:2",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 619,
-      "line_end": 666,
+      "line_start": 621,
+      "line_end": 668,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n), §§21–29 — combat ordering, speech и terminal state;\n- [`combat_system.md`](combat_system.md), §§12–15, 27–29 — injury, death, aftermath и recovery.\n\nСами MODULE должны ссылаться только на canonical документ и кратко указывать собственную ответственность. Не копировать туда весь packet: иначе быстро появятся расходящиеся нормы.",
       "char_count": 406
     },
@@ -15721,8 +15721,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:3",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 619,
-      "line_end": 666,
+      "line_start": 621,
+      "line_end": 668,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\nтолько на canonical документ и кратко указывать собственную ответственность. Не копировать туда весь packet: иначе быстро появятся расходящиеся нормы.\n\nPrivate narration auditor использует exact `request.segments[].segment_id` во всех\nreviewed_segments, source_reviews, unsupported и literary_failures. Positional\naliases и нормализация не допускаются; Adapter детерминированно собирает\ncoverage/verdict, а final audit строго проверяется по IDs\nповторно сегментированной approved prose. Длительность хода не входит в private\nprose wire: её вычисляет temporal owner и показывает server-owned UI projection.\nЛюбая придуманная narrator временная величина является unsupported fact, а\nслужебная формулировка дополнительно проваливает elapsed_as_service_report.\nПри current beat `optional_support` private wire содержит `visible_scene` и материал\nсцены для рассказа (§16, D158). Новые изменения, относящиеся к эпизоду, обязаны\nприходить через `required_current_beat.visible_changes`, а unrelated/all-facts\ndump вместо текущего beat остаётся static_context_dump. При отсутствии current beat\nscene-only wire сохраняет `visible_scene` и материал сцены.",
       "char_count": 1219
     },
@@ -15730,8 +15730,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:4",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 619,
-      "line_end": 666,
+      "line_start": 621,
+      "line_end": 668,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n-facts\ndump вместо текущего beat остаётся static_context_dump. При отсутствии current beat\nscene-only wire сохраняет `visible_scene` и материал сцены.\n\nTemporal/aspect grounding не позволяет выводить длительность из действия или\nsensory sky/weather/sound. Ощущения героя и связки (§2.0) связывают сцену и не требуют отдельного source. Source review требует все propositions каждого atomic\nrequired source; неизвестный результат нельзя опустить или заменить\nfailure/success. Речь передаётся естественно с дословным\nсодержанием и speaker, discovery — через подтверждённое восприятие без status report.\n\nApplied-step causal projection оставляет semantic_activity duration temporal owner;\nsingle transient_item_use получает два соседних atomic current-beat source:\nвыполненную попытку с exact description, затем отдельно неизвестный observation result.\nКаждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step\nудаляется перед финальной сборкой; search передаёт только выполненное действие и результат.\nNarrator переводит evidence wording в естественную речь и конкретное движение,\nне копирует служебные слова step/attempt и не добавляет минуты.",
       "char_count": 1262
     },

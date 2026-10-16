@@ -6,7 +6,7 @@ import { createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
   '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 
 const goal = 'поздороваться с человеком';
 const diagnosticReason = 'Диагностика: цель вне досягаемости.';
@@ -52,7 +52,7 @@ async function runWriter({ requestId, applied = true, goalResult = 'not_achieved
   const captureDir = process.env.ISSUE_573_CAPTURE_DIR;
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
     if (captureDir) {
       await mkdir(captureDir, { recursive: true });
       const fileName = `${requestId}-${call.role_id}`.replace(/[^a-zA-Z0-9_-]/gu, '_');

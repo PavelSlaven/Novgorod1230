@@ -58,6 +58,7 @@ export async function runNarrationFlow(request, ports, options = {}) {
     version: 1,
     schema: 'narration_semantic_repair_request',
     request_id: request.request_id,
+    request: clone(writerRequest),
     visible_context: clone(request.visible_context),
     ...(confirmedOutcome ? { confirmed_outcome: confirmedOutcome } : {}),
     style_policy: clone(request.style_policy ?? {}),

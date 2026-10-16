@@ -1,3 +1,4 @@
+import { playerSpeechVisibleChange } from '../public-boundary.js';
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
 import { projectCampFireState, projectLowerDvinaTracePlayerSafeState } from
@@ -287,7 +288,7 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
   const seed = input?.consequence?.visible_seed ?? {};
   const values = directSeedKeys.map((key) => seed[key]);
   const speech = appliedPlan?.resolution === 'direct' && appliedPlan.direct_result_kind === 'player_utterance'
-    ? spokenChange(appliedPlan.utterance.utterance_text) : null;
+    ? playerSpeechVisibleChange(appliedPlan.utterance.utterance_text) : null;
   const observation = appliedPlan?.resolution === 'direct'
     && appliedPlan.direct_result_kind === 'player_safe_observation';
   const activityCompleted = input?.time_update?.semantic_activity_resolutions
@@ -427,9 +428,6 @@ function directSeedChange(value) {
 }
 function sentence(value) {
   return /[.!?…]$/u.test(value) ? value : `${value}.`;
-}
-function spokenChange(value) {
-  return `Вы произнесли: «${value}»${/[.!?…]$/u.test(value) ? '' : '.'}`;
 }
 function directOutcomeConstraints(input) {
   const trace = input?.mode_resolution?.decision_trace;

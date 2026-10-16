@@ -116,11 +116,15 @@ function findPublishedText(value, path = '$', field = '', seen = new Set(), quot
   return null;
 }
 
+export function playerSpeechVisibleChange(value) {
+  return `Вы произнесли: «${value}»${/[.!?…]$/u.test(value) ? '' : '.'}`;
+}
+
 export function assertPublicPayload(value, { playerQuote = null } = {}) {
   validateExactNpcUtteranceFields(value);
   assertNoHiddenLeaks(value);
   const quote = typeof playerQuote === 'string' && playerQuote.length > 0
-    ? { change: `Вы произнесли: «${playerQuote}»${/[.!?…]$/u.test(playerQuote) ? '' : '.'}`, used: false }
+    ? { change: playerSpeechVisibleChange(playerQuote), used: false }
     : null;
   const finding = findPublishedText(value, '$', '', new Set(), quote);
   if (finding != null) {

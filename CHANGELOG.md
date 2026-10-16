@@ -11,6 +11,7 @@
 - fix(game-web): render approved speech once and retain exact factual speech without an unknown-speaker placeholder; bound submitTurn fetch to 120 seconds preserving pending retry identity; use UUID v4 request IDs without randomUUID (#600, #293 client only, #506).
 - fix(npc): select garment color from outer/base slots through one appearance summary; share stable visible labels with People and planner; honor D-2 sex intersected with profile applicability before RNG (#620, #261, #286); LW-114 closed
 - fix(spatial): reuse the prepared canonical arrival scene without origin ground items, coalesce D-1 placement CAS, require exact natural-cover runtime activation, share an invalidatable place-label snapshot, and preserve presence subregion restrictions (#260, #304, #607, #513; Refs #275)
+- refactor(game-server): share exact player speech formatting between visible projection and public text validation (#364, #654)
 - fix(conversation): admit selected subsets of visible group addressees without enumerating combinations; preserve single-address admission and reject hidden or repeated targets (#613)
 - fix(conversation): admit the visible group, retain separate attributed replies and typed retry errors, reject unknown prompt placeholders, preserve exact POST player quotes and route mixed-script prose through bounded format repair (#553, #462, #329, #409, #364, #613)
 - fix(npc): normalize approved Latin homoglyphs in NPC speech before strict mixed-script validation (#613)

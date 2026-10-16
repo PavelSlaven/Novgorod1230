@@ -139,6 +139,6 @@ function valid(value, utterance) {
       && concern.kind.length <= 80
       && typeof concern.reason === 'string' && concern.reason.trim().length > 0
       && concern.reason.length <= 240
-      && typeof concern.quote === 'string' && concern.quote.length <= 160
+      && typeof concern.quote === 'string'
       && (concern.quote === '' || utterance.includes(concern.quote)));
 }

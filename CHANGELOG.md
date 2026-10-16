@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(conversation): accept full exact NPC auditor quotes in semantic repair feedback without a 160-character cutoff; continue rejecting quotes absent from the utterance (#247, D49).
 - fix(turn): mark a performed standalone utterance complete while leaving audience and response unconfirmed; keep continuation for later player actions.
 - fix(conversation): require a matching retained claim for every sourced NPC speech fact during semantic repair, and reject sourced but unclaimed facts in the final grounding audit (#247).
 - test(game-server): replay finite-source initialization with the original root turn (#730).

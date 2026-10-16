@@ -511,6 +511,15 @@ test('speech audit preserves precise feedback and rejects invented quotes', asyn
     accepted).validateFreshPlan(proposal, input);
   assert.deepEqual(result.errors[0].audit_feedback, [concern]);
 
+  const longQuote = 'Вчера я долго стоял у переправы и ждал возвращения людей. '.repeat(3);
+  assert.ok(longQuote.length > 160);
+  proposal.speech.utterance_text = longQuote;
+  const longConcern = { ...concern, quote: longQuote };
+  const longReply = runner(() => ({ pass: false, concerns: [longConcern] }));
+  const longResult = await createLowerDvinaTraceNpcSemanticModel(
+    longReply).validateFreshPlan(proposal, input);
+  assert.deepEqual(longResult.errors[0].audit_feedback, [longConcern]);
+
   const invalid = runner(() => ({ pass: false, concerns: [{
     ...concern, quote: 'я видел волков'
   }] }));

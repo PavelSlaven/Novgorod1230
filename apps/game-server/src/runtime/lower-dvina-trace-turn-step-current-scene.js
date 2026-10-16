@@ -1,4 +1,5 @@
 import { playerSpeechVisibleChange } from '../public-boundary.js';
+import { bodyStateSummary } from './lower-dvina-trace-opening.js';
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
 import { projectCampFireState, projectLowerDvinaTracePlayerSafeState } from
@@ -249,9 +250,8 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
     ]),
     known_context: unique([
       ...current.known_context,
-      ...(Number.isFinite(body.health) ? [`health:${body.health}`] : []),
-      ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
-      ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
+      ...([body.health, body.satiety, body.energy].every(Number.isFinite)
+        ? [bodyStateSummary(body)] : [])
     ]),
     uncertainties: unique(current.uncertainties),
     do_not_imply: unique([

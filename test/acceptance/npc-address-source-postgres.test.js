@@ -196,8 +196,14 @@ test('D102: source ref survives real first-entry, P16, scene readback and replay
     }
   });
 
+  const { rows: [scenePlacement] } = await pool.query(`SELECT position_node_id
+    FROM party_runtime.entity_placements
+    WHERE party_id=$1 AND entity_kind='npc' AND entity_id=$2 AND placement_kind='scene_position'`,
+  [partyId, saved.npcs[0].npc_id]);
+  assert.ok(scenePlacement?.position_node_id, 'first-entry NPC must have a persisted scene position');
   const reload = () => withSceneNpcs(pool, partyId, {
-    position: { site_id: prepared.context.proposal.target_site_id }, npcs: [], combat_sessions: [] });
+    position: { position_id: scenePlacement.position_node_id, site_id: prepared.context.proposal.target_site_id },
+    npcs: [], combat_sessions: [] });
   const loaded = await reload();
   assert.equal(loaded.npcs.length, 2, 'fresh scene readback must resolve both actual participants');
   const beforeProjection = structuredClone(loaded);

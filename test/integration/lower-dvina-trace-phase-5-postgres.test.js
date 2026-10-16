@@ -16,7 +16,9 @@ import { createM2ConversationModels } from '../../apps/game-server/test/lower-dv
 import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
-import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
+import { TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-revision-26-publication.js';
+import { installLowerDvinaTraceV6World, lowerDvinaTraceV6World as world } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 import { createPostgresTestBackend } from
   '../fixtures/postgres-test-backend.js';
@@ -35,12 +37,12 @@ test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback a
     password: decodeURIComponent(databaseUrl.password),
     database: databaseUrl.pathname.slice(1), max: 8 });
   await installSchemas(pool);
-  const { runtimeCatalogPin } = await installLowerDvinaTraceV5World(pool);
+  const { runtimeCatalogPin } = await installLowerDvinaTraceV6World(pool);
   const pins = await runtimePins(runtimeCatalogPin);
 
   const counters = { rng: 0, now: 0 };
   const runtime = buildRuntime({ pool, ...pins, counters, randomValue: 0.99 });
-  const party = await readyParty(runtime, 'success');
+  const party = await readyParty(pool, runtime, 'success');
   await assertArrivalResources(pool, party.party_id);
   const input = turn('phase-5-treatment',
     'Оказать Онисиму первую помощь.');
@@ -72,7 +74,7 @@ test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback a
   const failureRuntime = buildRuntime({
     pool, ...pins, randomValue: 0.99, treatmentRandomValue: 0
   });
-  const failureParty = await readyParty(failureRuntime, 'failure');
+  const failureParty = await readyParty(pool, failureRuntime, 'failure');
   await completeTreatment(failureRuntime, failureParty.party_id, 'failure');
   await assertCompleted(pool, failureParty.party_id, 'injured_unable_to_walk');
   await assertAppliedTreatmentResources(pool, failureParty.party_id);
@@ -84,7 +86,7 @@ test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback a
   }
 
   const rollbackRuntime = buildRuntime({ pool, ...pins, randomValue: 0.99 });
-  const rollbackParty = await readyParty(rollbackRuntime, 'rollback');
+  const rollbackParty = await readyParty(pool, rollbackRuntime, 'rollback');
   const rollbackBefore = await snapshot(pool, rollbackParty.party_id);
   await pool.query(`ALTER TABLE party_runtime.party_item_placements ADD CONSTRAINT phase5_final_rollback_probe CHECK (physical_position <> 'worn') NOT VALID`);
   try {
@@ -126,13 +128,15 @@ function buildRuntime({ pool, release, runtimeCatalogPin, randomValue = 0.99,
         lowerDvinaTraceConversationTemporalEffectRegistrations()
     }),
     now: () => { if (counters) counters.now += 1; return '2026-07-30T08:00:00.000Z'; } });
-  return createLowerDvinaTracePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
+  return createLowerDvinaTracePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin,
+    activePhase1AManifestDigest: TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST,
+    activeScenarioDefinitionRevision: 26, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
 }
 
 function semanticOption(raw, options) { const text = raw.toLowerCase(); const id = text.includes('осмотр') ? 'inspect_wreck_in_detail' : text.includes('показ') ? 'show_clue_and_seek_eremey_cooperation' : text.includes('сушиль') ? 'follow_known_route_to_drying_shed' : text.includes('стан') ? 'follow_path_to_fishing_camp' : text.includes('помощ') || text.includes('лечени') ? 'attempt_risky_first_aid_onisim' : 'offer_conditional_protection_and_seek_surrender'; assert.ok(options.some(({ option_id }) => option_id === id), `${id}: ${options.map(({ option_id }) => option_id)}`); return id; }
 function roll(requestId, value) { const source = createSeededRandomSource(`phase-5:${requestId}`); return { next: () => value, snapshot: () => source.snapshot() }; }
 function turn(request_id, raw_text) { return { request_id, idempotency_key: request_id, raw_text }; }
-async function readyParty(runtime, id) {
+async function readyParty(pool, runtime, id) {
   const party = await runtime.startNewGame({
     scenario_id: 'lower_dvina_trace_v1', request_id: `phase-5-${id}`
   });
@@ -148,12 +152,26 @@ async function readyParty(runtime, id) {
   ]) {
     try {
       await runtime.submitTurn(party.party_id, turn(`${id}-${suffix}`, text));
+      if (suffix === 'route') await assertActiveRoutePosition(pool, party.party_id);
     } catch (error) {
       error.details = { ...(error.details ?? {}), phase5_setup_step: suffix };
       throw error;
     }
   }
   return party;
+}
+async function assertActiveRoutePosition(pool, partyId) {
+  const positionId = (await snapshot(pool, partyId)).position.position_id;
+  assert.equal(typeof positionId, 'string');
+  const { rows } = await pool.query(
+    `SELECT count(*)::int AS count
+       FROM party_runtime.scene_position_nodes pos
+       JOIN party_runtime.party_g6_instances g6
+         ON g6.party_id=pos.party_id AND g6.id=pos.g6_instance_id
+      WHERE pos.party_id=$1 AND pos.id=$2
+        AND pos.status='active' AND g6.status='active'`,
+    [partyId, positionId]);
+  assert.equal(rows[0].count, 1);
 }
 async function completeTreatment(runtime, partyId, prefix) {
   await runtime.submitTurn(partyId,
@@ -165,7 +183,7 @@ async function assertInterruptedTreatmentPath({ pool, pins, afterMinutes }) {
   const runtime = buildRuntime({
     pool, ...pins, counters, randomValue: 0.99
   });
-  const party = await readyParty(runtime, prefix);
+  const party = await readyParty(pool, runtime, prefix);
   const before = await snapshot(pool, party.party_id);
   const carrierId = participatingFisher(before).instance_id;
   await insertTreatmentBoundary(pool, before, afterMinutes);

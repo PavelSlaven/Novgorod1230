@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(ci): read the persisted NPC scene position in the address-source fixture and run treatment/carry PostgreSQL regressions on the existing V6/revision 26 first-entry path, preserving result, replay, restart, and rollback assertions (#98).
 - fix(ci): restore committed NPC journey readback, authored-start scene validation and S1 first-entry snapshots; compute conversation digests after removing scene readback; update PostgreSQL fixtures and the Node 22 child test invocation without weakening acceptance checks (#98, #631, #645).
 - fix(spatial): retain generated traversal origin and verified canonical perception with endpoint checks; align P18, appearance and route test fixtures with active contracts (#98)
 - fix(game-base): align source-backed event years with phases (#439), accept variable material correction counts (#465), and discover data/m2c tests in Spatial CI (#535)

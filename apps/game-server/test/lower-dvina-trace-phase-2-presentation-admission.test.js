@@ -14,7 +14,7 @@ import { recoverTracePendingPresentation } from
   '../src/runtime/lower-dvina-trace-presentation-recovery.js';
 import { reviewedNarration } from './narration-audit-fixture.js';
 
-const markedProse = 'Вы идёте через Проход 2.';
+const markedProse = 'Герой прошёл через Проход 2.';
 const visiblePayload = { schema: 'temporal_visible_package.v1',
   perceived_scene: 'Берег.', perceived_changes: [], sensory_details: [],
   visible_npcs: [], visible_objects: [], known_context: [], uncertainties: [],
@@ -45,7 +45,7 @@ function buildNarration(prose = markedProse) {
       } };
       if (call.role_id === 'gameplay_narrator_auditor') {
         return { output: reviewedNarration(
-          JSON.parse(call.messages[1].content).segments) };
+          JSON.parse(call.messages[1].content)['Отрывки прозы']) };
       }
       throw new Error(`Unexpected narration role ${call.role_id}`);
     }

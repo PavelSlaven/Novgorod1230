@@ -59,7 +59,7 @@ test('authored and fallback final scenes retain available self and knowledge tex
   for (const consequence of [{ phase4_kind: 'movement' }, {}]) {
     const result = await projector.project({ retrieved_state: committed, consequence });
     assert.equal(result.visible_scene, 'Новая мельница');
-    assert.ok(result.known_context.includes('Вас зовут Ульяна.'));
+    assert.ok(result.known_context.includes('Имя героя: Ульяна.'));
     assert.ok(result.known_context.includes(committed.player_profile.origin.biography));
     assert.ok(result.known_context.includes(committed.player_profile.memory.records[0].text));
     for (const fact of committed.knowledge.slice(0, 2)) assert.ok(result.known_context.includes(fact.text));

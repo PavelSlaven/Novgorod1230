@@ -47,13 +47,8 @@ test('narration audit keeps stable rules before dynamic shape and choices', asyn
       replacements: [{ prose: 'Впереди видны ворота. У них стоит телега.' }] } };
     const wire = JSON.parse(call.messages[1].content);
     prompts.push(call.messages[0].content);
-    const audit = { ...reviewedNarration(wire.segments),
+    const audit = { ...reviewedNarration(wire['Отрывки прозы']),
       evidence: ['Both scene facts retain their supplied certainty.'] };
-    if (wire.phase === 'initial') {
-      audit.literary_failures = [{ check: 'weak_literary_composition',
-        segment_choice: 's1', reason: 'The scene needs its supplied spatial anchor.' }];
-      audit.evidence = [];
-    }
     return { output: audit };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request',
@@ -66,7 +61,7 @@ test('narration audit keeps stable rules before dynamic shape and choices', asyn
   assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
   const marker = 'Shape:';
   const prefix = prompts[0].slice(0, prompts[0].indexOf(marker));
-  assert.match(prefix, /strict evidence auditor/u);
+  assert.match(prefix, /Ты — аудитор прозы/u);
   assert.match(prefix, /Output only failures/u);
   t.diagnostic(`Stable narration audit prefix: ${prefix.length} chars.`);
 });

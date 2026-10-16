@@ -17,7 +17,14 @@ const destinationFacts = [
 const destination = (overrides = {}) => ({ schema: 'visible_context_package', version: 1,
   visible_scene: 'Окрестности.', visible_changes: [], sensory_details: destinationFacts, visible_npc: [],
   visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [], ...overrides });
-const traversal = (context, origin = 'generated') => ({ position_transition: { owner: '@rus/turn/spatial-v3-site-connection-traversal' },
+const traversal = (context, origin = 'generated', positionId = 'position:target') => ({
+  position_transition: { owner: '@rus/turn/spatial-v3-site-connection-traversal',
+    to_position_ref: positionId },
+  movement: { cost_kind: 'action' },
+  spatial_v3_traversal: { plan: { steps: [{ arrival_endpoint_snapshot: {
+    endpoint_ref: { endpoint_id: 'endpoint:target' }, resolved_position_id: positionId
+  } }] }, result: { result_kind: 'completed',
+    endpoint_after: { endpoint_id: 'endpoint:target' } } },
   visible_seed: { destination_site_origin: origin,
     destination_visible_context: context } });
 
@@ -74,7 +81,7 @@ test('site arrival reports a grounded change with destination perception', async
       visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc:g5' } }],
       visible_objects: [{ entity_ref: {
         entity_kind: 'item', entity_id: 'item:g5' }, visible_status: 'available' }]
-    }), 'generated'), position_transition: { owner: '@rus/turn/spatial-v3-site-connection-traversal',
+    }), 'generated', 'position:generated'), position_transition: { owner: '@rus/turn/spatial-v3-site-connection-traversal',
       destination_site_id: 'site:generated', to_position_ref: 'position:generated',
       destination_g6_instance_id: 'g6:generated' } },
     retrieved_state: { actor_id: 'actor:test', items: [{ item_id: 'item:held',
@@ -111,7 +118,7 @@ test('site arrival reports a grounded change with destination perception', async
     consequence: { ...traversal(destination({
       visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc:stale' } }],
       visible_objects: [{ entity_ref: { entity_kind: 'item', entity_id: 'item:stale' } }]
-    }), 'canonical'), position_transition: { owner: '@rus/turn/spatial-v3-site-connection-traversal',
+    }), 'canonical', 'position:destination'), position_transition: { owner: '@rus/turn/spatial-v3-site-connection-traversal',
       destination_site_id: 'site:committed', to_position_ref: 'position:destination',
       destination_g6_instance_id: 'g6:destination' } },
     time_update: { clock_after: afterClock },

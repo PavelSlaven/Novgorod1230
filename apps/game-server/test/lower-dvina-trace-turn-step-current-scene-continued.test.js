@@ -6,6 +6,7 @@ import {
   projectCurrentSceneForVisibleOverlay
 } from
   '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
+import { narrationWire } from '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
@@ -53,6 +54,65 @@ test('generated arrival preserves carried items and current Spatial exits', asyn
     [ref.entity_kind, ref.entity_id]), [
     ['item', 'held'], ['g5_site_connection', 'exit']
   ]);
+});
+
+test('completed traversals to the same shore keep their own route and current fog', async () => {
+  const destination = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'У речного берега', visible_changes: [], sensory_details: [],
+    visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: [] };
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { async project() { assert.fail('prepared destination owns this projection'); } },
+    projectCurrentScene: () => ({ current_visible_context: destination })
+  });
+  const project = (line_name, result_kind = 'segment_completed') => projector.project({
+    retrieved_state: { actor_id: 'actor', position: { position_id: 'source' },
+      environment_snapshot: { schema: 'rus.approved_initial_environment.v1',
+        season: 'summer', day_part: 'daylight', light_state: 'daylight',
+        weather_state: { sky: 'obscured', visibility: 'poor',
+          precipitation: 'none', wind: 'calm_or_light' } } },
+    time_update: { nearest_boundary: null },
+    consequence: { position_transition: {
+      owner: '@rus/turn/spatial-v3-site-connection-traversal',
+      from_position_ref: 'source', to_position_ref: 'destination',
+      source_site_id: 'origin', destination_site_id: 'shore',
+      line_name
+    }, movement: { cost_kind: 'time' },
+    spatial_v3_traversal: { plan: { steps: [{
+      departure_endpoint_snapshot: { resolved_position_id: 'source' },
+      arrival_endpoint_snapshot: { resolved_position_id: 'destination' }
+    }] }, result: { result_kind, interruption_anchor_id: 'source' } },
+    visible_seed: { destination_site_origin: 'generated',
+      destination_visible_context: destination } }
+  });
+  const clay = await project('по глинистой тропе');
+  const floodplain = await project('по ровной пойменной земле');
+  assert.deepEqual(clay.visible_changes,
+    ['Пройденный путь: по глинистой тропе.', 'Вы прибыли.']);
+  assert.deepEqual(floodplain.visible_changes,
+    ['Пройденный путь: по ровной пойменной земле.', 'Вы прибыли.']);
+  for (const result of [clay, floodplain]) {
+    assert.equal(result.visible_scene, 'У речного берега');
+    assert.ok(result.sensory_details.includes('Небо не видно.'));
+    assert.ok(result.sensory_details.includes('Видимость плохая.'));
+  }
+  const returned = await project('по глинистой тропе', 'returned_to_departure');
+  assert.deepEqual(returned.visible_changes,
+    ['Пройденный путь: по глинистой тропе.', 'Вы вернулись к месту отправления.']);
+  assert.equal(returned.visible_changes.some((change) => change.includes('прибыли')), false);
+  for (const roleId of ['gameplay_narrator', 'gameplay_narrator_auditor',
+    'gameplay_narrator_semantic_repair']) {
+    const wire = narrationWire({ visible_context: returned }, { roleId });
+    assert.equal(wire['Обязательные положения текущего эпизода']
+      .some((change) => change.includes('вернулись к месту отправления')), true);
+    assert.equal(wire['Обязательные положения текущего эпизода']
+      .some((change) => change.includes('прибыли')), false);
+  }
+  const interrupted = await project('по глинистой тропе', 'interrupted_at_anchor');
+  assert.deepEqual(interrupted.visible_changes, ['Переход прервался у места отправления.']);
+  const unfinished = await project('по глинистой тропе', 'blocked_before_progress');
+  assert.deepEqual(unfinished.visible_changes, []);
+  assert.equal(unfinished.sensory_details.includes('Видимость плохая.'), false);
 });
 
 test('carried item observation exposes concrete player-safe belongings', () => {

@@ -268,7 +268,7 @@ function playerSafeSceneItems(state) {
     state?.actor_id);
 }
 
-function currentEnvironmentChanges(state) {
+export function currentEnvironmentChanges(state) {
   const environment = state?.environment_snapshot;
   if (environment?.schema !== 'rus.approved_initial_environment.v1') return [];
   return playerSafeWeatherLightFacts({ season: environment.season,

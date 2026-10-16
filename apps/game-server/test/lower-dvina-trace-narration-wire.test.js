@@ -91,6 +91,30 @@ test('all prose roles retain described NPC and admitted path without internal fi
   }
 });
 
+test('prose roles retain described routes and fog in the same player-safe snapshot', () => {
+  const visible_context = { visible_scene: 'У речного берега',
+    visible_changes: ['Пройденный путь: по глинистой тропе.', 'Вы прибыли.'],
+    sensory_details: ['Небо не видно.', 'Видимость плохая.'],
+    visible_npc: [], visible_objects: [{
+      entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'private-local-id' },
+      display_label: 'Дальше'
+    }, {
+      entity_ref: { entity_kind: 'g5_site_connection', entity_id: 'private-route-id' },
+      display_label: 'Тропа к берегу'
+    }], known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [] };
+  for (const roleId of ['gameplay_narrator', 'gameplay_narrator_auditor',
+    'gameplay_narrator_semantic_repair']) {
+    const wire = narrationWire({ visible_context }, { roleId });
+    assert.match(wire['Обязательные положения текущего эпизода'][0],
+      /Пройденный путь: по глинистой тропе/u);
+    assert.deepEqual(wire['Переданные сведения об обстановке']['Ощущения'],
+      ['Небо не видно.', 'Видимость плохая.']);
+    assert.deepEqual(wire['Переданные сведения об обстановке']['Предметы и ориентиры'],
+      ['Тропа к берегу']);
+    assert.doesNotMatch(JSON.stringify(wire), /private-route-id|private-local-id|entity_ref/u);
+  }
+});
+
 test('identity facts come from one actor snapshot for every prose role', () => {
   const visible_context = { visible_scene: 'Берег.', visible_changes: [],
     uncertainties: [], sensory_details: [], known_context: [],

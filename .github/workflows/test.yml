@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [fast, integration, p12, acceptance, browser-architecture]
+        suite: [fast, fast-apps, fast-tools, fast-rest, integration, p12, acceptance, browser-architecture]
     steps:
       - name: Checkout clean clone
         uses: actions/checkout@v4
@@ -64,12 +64,12 @@ jobs:
         run: npm ci
 
       - name: Use Python 3.12 for world_base importer
-        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'acceptance' || matrix.suite == 'browser-architecture')
+        if: steps.profile.outputs.profile == 'full' && (startsWith(matrix.suite, 'fast') || matrix.suite == 'acceptance' || matrix.suite == 'browser-architecture')
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Provision pinned World Knowledge encoder
-        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'acceptance' || matrix.suite == 'browser-architecture')
+        if: steps.profile.outputs.profile == 'full' && (startsWith(matrix.suite, 'fast') || matrix.suite == 'acceptance' || matrix.suite == 'browser-architecture')
         run: |
           python -m pip install -r tools/world-catalog-workflow/requirements-embeddings.txt
           python - <<'PY'
@@ -81,7 +81,7 @@ jobs:
           PY
           npm run world-knowledge:giga-readiness
       - name: Validate tracked world_base source bundle
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && startsWith(matrix.suite, 'fast')
         run: |
           python -m pip install -r tools/rus13-world-base-importer/requirements.txt
           export RUS13_BASE_INPUT_ROOT="$RUNNER_TEMP/rus13-base-staging"
@@ -89,10 +89,10 @@ jobs:
           npm run world-db:import:dry-run -- --report "$RUNNER_TEMP/world-base-import-dry-run.json"
           npm run world-db:fk-audit:staged -- --out-dir "$RUNNER_TEMP/world-base-fk-audit-staged"
       - name: Validate canonical world_base schema
-        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration' || matrix.suite == 'p12')
+        if: steps.profile.outputs.profile == 'full' && (startsWith(matrix.suite, 'fast') || matrix.suite == 'integration' || matrix.suite == 'p12')
         run: npm run world-db:schema-check && npm run world-db:schema-doc-check
       - name: Start PostgreSQL for full profile
-        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration' || matrix.suite == 'p12')
+        if: steps.profile.outputs.profile == 'full' && (startsWith(matrix.suite, 'fast') || matrix.suite == 'integration' || matrix.suite == 'p12')
         run: |
           for attempt in 1 2 3; do
             docker pull postgres:16 && break
@@ -106,7 +106,7 @@ jobs:
             --publish 5432:5432 postgres:16
 
       - name: Execute world_base DDL in PostgreSQL
-        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration' || matrix.suite == 'p12')
+        if: steps.profile.outputs.profile == 'full' && (startsWith(matrix.suite, 'fast') || matrix.suite == 'integration' || matrix.suite == 'p12')
         env:
           PGHOST: localhost
           PGPASSWORD: postgres
@@ -134,29 +134,29 @@ jobs:
           test "$select_grants" -eq "$table_count"
           test "$write_grants" -eq 0
       - name: Execute Stage 3B-1 supplemental PostgreSQL integration
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && startsWith(matrix.suite, 'fast')
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/world_base_ci
         run: npm run world-db:import:stage3b1:integration
       - name: Execute character appearance runtime-catalog PostgreSQL integration
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && startsWith(matrix.suite, 'fast')
         run: npm run character-appearance:test-world-v4-postgres
       - name: Validate canonical knowledge corpus
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && startsWith(matrix.suite, 'fast')
         run: npm run knowledge:check-corpus
       - name: Generate deterministic documentation and knowledge artifacts
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && startsWith(matrix.suite, 'fast')
         run: npm run docs:generate
       - name: Generate deterministic character appearance publication chain
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && startsWith(matrix.suite, 'fast')
         run: npm run character-appearance:generate
       - name: Verify generated files are reproducible
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && startsWith(matrix.suite, 'fast')
         run: |
           git diff --exit-code -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v15/ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v14/
           test -z "$(git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v15/ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v14/)"
 
-      - name: Run full npm test merge gate (fast suites)
+      - name: Run full npm test merge gate (modules and domain)
         if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
         env:
           PGHOST: localhost
@@ -164,11 +164,38 @@ jobs:
           PGPORT: 5432
           PGUSER: postgres
         run: |
-          set +e
-          { npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:spatial && npm run test:game-base && npm run test:shadow && npm run test:cutover && npm run docs:check; } > "$RUNNER_TEMP/npm-test.log" 2>&1
-          status=$?
-          cat "$RUNNER_TEMP/npm-test.log"
-          exit "$status"
+          set -o pipefail
+          { npm run test:modules && npm run test:domain; } 2>&1 | tee "$RUNNER_TEMP/npm-test.log"
+      - name: Run full npm test merge gate (apps)
+        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast-apps'
+        env:
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGPORT: 5432
+          PGUSER: postgres
+        run: |
+          set -o pipefail
+          { npm run test:apps; } 2>&1 | tee "$RUNNER_TEMP/npm-test.log"
+      - name: Run full npm test merge gate (tools)
+        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast-tools'
+        env:
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGPORT: 5432
+          PGUSER: postgres
+        run: |
+          set -o pipefail
+          { npm run test:tools; } 2>&1 | tee "$RUNNER_TEMP/npm-test.log"
+      - name: Run full npm test merge gate (spatial, game-base, shadow, cutover and docs)
+        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast-rest'
+        env:
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGPORT: 5432
+          PGUSER: postgres
+        run: |
+          set -o pipefail
+          { npm run test:spatial && npm run test:game-base && npm run test:shadow && npm run test:cutover && npm run docs:check; } 2>&1 | tee "$RUNNER_TEMP/npm-test.log"
       - name: Run spatial-v3 P12 postgres tests
         if: steps.profile.outputs.profile == 'full' && matrix.suite == 'p12'
         env:
@@ -192,17 +219,17 @@ jobs:
         if: steps.profile.outputs.profile == 'full' && matrix.suite == 'browser-architecture'
         run: npm run test:browser-e2e && npm run architecture:check
       - name: Upload generated evidence on failure
-        if: failure() && steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: failure() && steps.profile.outputs.profile == 'full' && startsWith(matrix.suite, 'fast')
         uses: actions/upload-artifact@v4
         with:
-          name: generated-and-test-evidence
+          name: ${{ matrix.suite == 'fast' && 'generated-and-test-evidence' || format('generated-and-test-evidence-{0}', matrix.suite) }}
           if-no-files-found: ignore
           path: |
             generated/
             MODULE_INDEX.md
             ${{ runner.temp }}/npm-test.log
       - name: Stop PostgreSQL
-        if: always() && steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration' || matrix.suite == 'p12')
+        if: always() && steps.profile.outputs.profile == 'full' && (startsWith(matrix.suite, 'fast') || matrix.suite == 'integration' || matrix.suite == 'p12')
         run: docker rm --force spatial-v3-ci-postgres || true
 
   evidence-only:
@@ -253,7 +280,7 @@ jobs:
           FULL_PROFILE_RESULT: ${{ needs.full-profile.result }}
           EVIDENCE_ONLY_RESULT: ${{ needs.evidence-only.result }}
         run: |
-          echo "full-profile (fast, integration, p12, acceptance, browser-architecture): $FULL_PROFILE_RESULT"
+          echo "full-profile (fast, fast-apps, fast-tools, fast-rest, integration, p12, acceptance, browser-architecture): $FULL_PROFILE_RESULT"
           echo "evidence-only: $EVIDENCE_ONLY_RESULT"
           test "$FULL_PROFILE_RESULT" = "success"
           test "$EVIDENCE_ONLY_RESULT" = "success"

@@ -6,6 +6,7 @@ import {
   projectCurrentSceneForVisibleOverlay
 } from
   '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
+import { narrationWire } from '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
@@ -78,8 +79,9 @@ test('completed traversals to the same shore keep their own route and current fo
       line_name
     }, movement: { cost_kind: 'time' },
     spatial_v3_traversal: { plan: { steps: [{
+      departure_endpoint_snapshot: { resolved_position_id: 'source' },
       arrival_endpoint_snapshot: { resolved_position_id: 'destination' }
-    }] }, result: { result_kind } },
+    }] }, result: { result_kind, interruption_anchor_id: 'source' } },
     visible_seed: { destination_site_origin: 'generated',
       destination_visible_context: destination } }
   });
@@ -94,6 +96,20 @@ test('completed traversals to the same shore keep their own route and current fo
     assert.ok(result.sensory_details.includes('Небо не видно.'));
     assert.ok(result.sensory_details.includes('Видимость плохая.'));
   }
+  const returned = await project('по глинистой тропе', 'returned_to_departure');
+  assert.deepEqual(returned.visible_changes,
+    ['Пройденный путь: по глинистой тропе.', 'Вы вернулись к месту отправления.']);
+  assert.equal(returned.visible_changes.some((change) => change.includes('прибыли')), false);
+  for (const roleId of ['gameplay_narrator', 'gameplay_narrator_auditor',
+    'gameplay_narrator_semantic_repair']) {
+    const wire = narrationWire({ visible_context: returned }, { roleId });
+    assert.equal(wire['Обязательные положения текущего эпизода']
+      .some((change) => change.includes('вернулись к месту отправления')), true);
+    assert.equal(wire['Обязательные положения текущего эпизода']
+      .some((change) => change.includes('прибыли')), false);
+  }
+  const interrupted = await project('по глинистой тропе', 'interrupted_at_anchor');
+  assert.deepEqual(interrupted.visible_changes, ['Переход прервался у места отправления.']);
   const unfinished = await project('по глинистой тропе', 'blocked_before_progress');
   assert.deepEqual(unfinished.visible_changes, []);
   assert.equal(unfinished.sensory_details.includes('Видимость плохая.'), false);

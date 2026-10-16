@@ -3,6 +3,7 @@
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
 
+- fix(narration): carry a completed return to departure and an anchored interruption into the visible scene and all prose roles (#586).
 - fix(narration): retain the confirmed traversal line and player-safe current weather in arrival prose context; pass descriptive visible routes to all prose roles.
 - fix(conversation): resolve allowed source IDs before matching repaired NPC claims to their original identities; keep changed, unknown and reused claims rejected (#247, D49).
 - fix(conversation): restore unchanged NPC claims after service-marker repair despite regenerated claim IDs; pass initial audit feedback to final audit as diagnostic context (#247, D49).

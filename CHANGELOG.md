@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(turn): canonicalize unknown executor actor refs to the request actor before strict plan validation, preserving known foreign refs and targets (#586).
 - fix(ci): run the nine fast npm checks in four parallel, time-bounded jobs while keeping the full merge gate and streaming failing logs (#98).
 - fix(ci): read the persisted NPC scene position in the address-source fixture and run treatment/carry PostgreSQL regressions on the existing V6/revision 26 first-entry path, preserving result, replay, restart, and rollback assertions (#98).
 - fix(ci): restore committed NPC journey readback, authored-start scene validation and S1 first-entry snapshots; compute conversation digests after removing scene readback; update PostgreSQL fixtures and the Node 22 child test invocation without weakening acceptance checks (#98, #631, #645).

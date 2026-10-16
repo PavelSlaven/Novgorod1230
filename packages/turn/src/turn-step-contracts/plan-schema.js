@@ -6,6 +6,30 @@ export const DIRECT_RESULT_KINDS = deepFreeze([
   'player_safe_body_observation', 'no_state_gesture', 'player_utterance'
 ]);
 
+export function isExecutorActorRefOperation(operation) {
+  return operation != null && typeof operation === 'object'
+    && !Array.isArray(operation) && operation.op !== 'apply_body_event'
+    && Object.hasOwn(operation, 'actor_ref');
+}
+
+export function turnStepPlanOperationEntries(plan) {
+  const entries = [];
+  appendOperations(entries, plan?.operations, '$.operations');
+  for (const band of OUTCOME_BANDS) {
+    appendOperations(entries, plan?.check?.outcomes?.[band]?.operations,
+      `$.check.outcomes.${band}.operations`);
+  }
+  return entries;
+}
+
+function appendOperations(entries, operations, path) {
+  if (!Array.isArray(operations)) return;
+  operations.forEach((operation, index) => entries.push({
+    operation,
+    path: `${path}[${index}]`
+  }));
+}
+
 const textSchema = { type: 'string', minLength: 1 };
 const refSchema = { type: 'string', minLength: 1 };
 const nullableRefSchema = { anyOf: [refSchema, { type: 'null' }] };

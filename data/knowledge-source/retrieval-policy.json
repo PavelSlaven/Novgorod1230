@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "8a011d03ac02c8b86fd2b65fe186d97c97ddbea8aa41c28f46e17dcff2c09bdc",
+  "baseline_manifest_sha256": "117e4c9af53bb0cabe83f6163a048f2a42e1b5612d8b372052a1aabf9ae17dcd",
   "default_statuses": [
     "active",
     "reference"

@@ -14,7 +14,7 @@ import { validateTurnStepRequest } from './request-validator.js';
 import {
   add,
   cloneTrace,
-  collectKnownRefs,
+  createTurnStepPlanTrace,
   constant,
   enumValue,
   integer,
@@ -50,16 +50,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
   validateActivity(value.activity, '$.activity', errors);
   requiredText(value.reason_code, '$.reason_code', errors);
   requiredText(value.reason, '$.reason', errors);
-  const knownRefs = collectKnownRefs(request);
-  const trace = {
-    knownRefs,
-    actorRef: request?.actor?.actor_id ?? request?.actor?.actor_ref ?? null,
-    tempRefs: new Set(),
-    allTempRefs: new Set(),
-    retired: new Set(),
-    placements: new Map(),
-    inside: new Map()
-  };
+  const trace = createTurnStepPlanTrace(request);
   const operationKinds = validateOperations(
     value.operations, '$.operations', errors, trace, { directOnly: false }
   );

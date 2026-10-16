@@ -838,24 +838,24 @@ function entityByTemplate(entities, templateId, idField) {
 
 function narrationOutput(request) {
   const input = request.request ?? request;
-  const sources = [...(input.required_current_beat?.changes ?? []),
-    ...(input.required_current_beat?.uncertainties ?? [])];
+  const sources = input['Обязательные положения текущего эпизода'] ?? [];
   return {
-    prose: sources.length ? sources.map(({ text }) => text).join('\n\n')
-      : input.optional_support?.visible_scene ?? ''
+    prose: sources.length ? sources.map((line) =>
+      line.replace(/^(?:visible_change_\d+: |uncertainty_\d+: )/u, '')).join('\n\n')
+      : input['Переданные сведения об обстановке']?.['Место'] ?? ''
   };
 }
 
-function narrationAudit(input) {
-  const ids = input.segments.map(({ segment_id }) => segment_id);
+function narrationAudit(request) {
+  const input = request.request ?? request;
+  const ids = (input['Отрывки прозы'] ?? []).map(({ segment_id }) => segment_id);
   return {
     reviewed_segments: ids,
-    source_reviews: [...input.required_current_beat.changes,
-      ...input.required_current_beat.uncertainties].map(({ ref }) => ({
-      ref, segment_choices: [...ids]
+    source_reviews: (input['Обязательные положения текущего эпизода'] ?? []).map((line) => ({
+      ref: line.split(': ', 1)[0], segment_choices: [...ids]
     })),
     unsupported: [],
     literary_failures: [],
-    evidence: ['Каждое обязательное изменение и открытый результат воспроизведены из required_current_beat; все переданные сегменты проверены без добавленных фактов.']
+    evidence: ['Каждое обязательное положение воспроизведено; все переданные сегменты проверены без добавленных фактов.']
   };
 }

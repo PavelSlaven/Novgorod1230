@@ -91,12 +91,9 @@ test('issue #533: repeated v17 screen finalization keeps current route and persi
         const userMessage = providerPayload.messages?.find(({ role }) => role === 'user');
         let modelInput = null;
         try { modelInput = JSON.parse(userMessage?.content ?? ''); } catch {}
-        const rawSystemPrompt = providerPayload.messages?.find(
-          ({ role }) => role === 'system')?.content ?? '';
-        const systemPrompt = rawSystemPrompt.replace(
-          /^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
-        if (systemPrompt.startsWith('Return only {"prose"')
-            && modelInput?.required_current_beat) {
+        if (Array.isArray(modelInput?.['Обязательные положения текущего эпизода'])
+            && !Object.hasOwn(modelInput, 'Отрывки прозы')
+            && !Object.hasOwn(modelInput, 'Отклонённая проза')) {
           const { model, messages, ...params } = providerPayload;
           capturedWriterPayload = {
             turn_index: activeTurnCapture.turn_index,

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { Pool } from 'pg';
+import { createPostgresTestBackend } from '../../fixtures/postgres-test-backend.js';
 import {
   applyOrdinaryAggregateTransition,
   canonicalDigest,
@@ -39,11 +40,11 @@ export function withIssue730Database(t) {
 }
 
 async function initializeDatabase(t) {
-  const connectionString = process.env.RUS_TEST_POSTGRES_ADMIN_URL;
-  assert.ok(connectionString, 'run this test through pg-slot');
-  const pool = new Pool({ connectionString, max: 6,
+  const backend = await createPostgresTestBackend('issue_730_occurrence');
+  assert.ok(backend, 'PostgreSQL test backend required');
+  const pool = new Pool({ connectionString: backend.partyUrl, max: 6,
     connectionTimeoutMillis: 5_000 });
-  t.after(async () => pool.end());
+  t.after(async () => { await pool.end(); await backend.close(); });
   for (const file of migrations) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }

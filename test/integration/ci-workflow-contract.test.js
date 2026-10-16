@@ -55,7 +55,15 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v14/',
     'git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md',
     'name: Run full npm test merge gate',
-    'npm test',
+    'npm run test:modules',
+    'npm run test:domain',
+    'npm run test:apps',
+    'npm run test:tools',
+    'npm run test:spatial',
+    'npm run test:game-base',
+    'npm run test:shadow',
+    'npm run test:cutover',
+    'npm run docs:check',
     'name: Run evidence-only checks',
     'npm run spatial-v3:p28-local-evidence'
   ];
@@ -97,7 +105,7 @@ test('full-npm-test gate job reports green only when every suite and evidence-on
   // Light PRs: the full-profile job itself must never be skipped, only its steps.
   assert.doesNotMatch(jobs.get('full-profile').split(/^    steps:$/mu)[0], /^    if:/mu);
   assert.doesNotMatch(jobs.get('evidence-only').split(/^    steps:$/mu)[0], /^    if:/mu);
-  // The matrix keeps all five suites, p12 included.
+  // The matrix keeps all fast shards and four other suites, p12 included.
   assert.match(jobs.get('full-profile'),
-    /suite: \[fast, integration, p12, acceptance, browser-architecture\]/u);
+    /suite: \[fast, fast-apps, fast-tools, fast-rest, integration, p12, acceptance, browser-architecture\]/u);
 });

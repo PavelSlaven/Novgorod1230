@@ -188,7 +188,7 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     const compactRepair = originalRepairPlan != null && !repairServiceText;
     const markerRepairOutput = originalRepairPlan != null && repairServiceText
       ? restoreMarkerRepairClaimIds(
-        resolveNpcClaimReferenceIds(response.output, requestForPlan),
+        resolveNpcClaimReferenceIds(response.output, requestForPlan, true),
         originalRepairPlan)
       : response.output;
     if (markerRepairOutput === null) {
@@ -641,7 +641,8 @@ function projectTypedCheck(check, decisionScope, includeBindingIdentity) {
   };
 }
 
-function resolveNpcClaimReferenceIds(output, request) {
+function resolveNpcClaimReferenceIds(output, request,
+  preserveObjectRefs = false) {
   const referencesById = new Map();
   for (const reference of request.allowed_references?.knowledge_refs ?? []) {
     if (typeof reference?.entity_id !== 'string') continue;
@@ -661,6 +662,7 @@ function resolveNpcClaimReferenceIds(output, request) {
       continue;
     }
     claim.source_knowledge_refs = claim.source_knowledge_refs.map((wireRef) => {
+      if (preserveObjectRefs && typeof wireRef !== 'string') return wireRef;
       const id = typeof wireRef === 'string' ? wireRef
         : typeof wireRef?.entity_id === 'string' ? wireRef.entity_id : null;
       if (id === null) return wireRef;

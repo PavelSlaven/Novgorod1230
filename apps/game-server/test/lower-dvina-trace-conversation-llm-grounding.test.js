@@ -896,41 +896,45 @@ test('marker repair also resolves a missing required tag from combined concerns'
 
 test('marker repair restores an unchanged claim from wire ref and regenerated id',
   async () => {
-    let originalClaim;
-    const scenario = await runNpcConversationTurn({
-      batchId: 'marker-claim-id-restored',
-      responder(call, input) {
-        const output = plan(input);
-        const repairing = call.role_id
-          === 'npc_conversation_responder_format_repair';
-        output.speech.utterance_text = repairing
-          ? 'Рыбацкая работа связана с сетями.'
-          : 'INFERENCE: Рыбацкая работа связана с сетями.';
-        originalClaim = originalClaim ?? { claim_id: 'claim_dry_logs_unloaded',
-          content_summary: 'Рыбацкая работа связана с сетями.',
-          form: 'assertion', speaker_posture: 'believed_true',
-          source_knowledge_refs: [ref('knowledge_record', 'claim:fish-net')],
-          mentioned_entity_refs: [] };
-        output.speech.claims = [{ ...originalClaim,
-          claim_id: repairing ? 'c1' : originalClaim.claim_id,
-          source_knowledge_refs: repairing ? ['claim:fish-net']
-            : originalClaim.source_knowledge_refs }];
-        return output;
-      },
-      audit(call) {
-        const payload = JSON.parse(call.messages[1].content);
-        assert.deepEqual(payload.plan.speech.claims, [originalClaim]);
-        assert.deepEqual(payload.original_speech.claims, [originalClaim]);
-        return npcAuditReport(call);
-      }
-    });
-    assert.equal(scenario.result?.status, 'planned',
-      JSON.stringify(scenario.error));
-    assert.deepEqual(scenario.result.plan.speech.claims, [originalClaim]);
+    for (const wireRef of ['claim:fish-net',
+      ref('knowledge_record', 'claim:fish-net')]) {
+      let originalClaim;
+      const scenario = await runNpcConversationTurn({
+        batchId: `marker-claim-id-restored-${typeof wireRef}`,
+        responder(call, input) {
+          const output = plan(input);
+          const repairing = call.role_id
+            === 'npc_conversation_responder_format_repair';
+          output.speech.utterance_text = repairing
+            ? 'Рыбацкая работа связана с сетями.'
+            : 'INFERENCE: Рыбацкая работа связана с сетями.';
+          originalClaim = originalClaim ?? { claim_id: 'claim_dry_logs_unloaded',
+            content_summary: 'Рыбацкая работа связана с сетями.',
+            form: 'assertion', speaker_posture: 'believed_true',
+            source_knowledge_refs: [ref('knowledge_record', 'claim:fish-net')],
+            mentioned_entity_refs: [] };
+          output.speech.claims = [{ ...originalClaim,
+            claim_id: repairing ? 'c1' : originalClaim.claim_id,
+            source_knowledge_refs: repairing ? [wireRef]
+              : originalClaim.source_knowledge_refs }];
+          return output;
+        },
+        audit(call) {
+          const payload = JSON.parse(call.messages[1].content);
+          assert.deepEqual(payload.plan.speech.claims, [originalClaim]);
+          assert.deepEqual(payload.original_speech.claims, [originalClaim]);
+          return npcAuditReport(call);
+        }
+      });
+      assert.equal(scenario.result?.status, 'planned',
+        JSON.stringify(scenario.error));
+      assert.deepEqual(scenario.result.plan.speech.claims, [originalClaim]);
+    }
   });
 
 test('marker repair rejects changed or ambiguous claims before audit', async () => {
-  for (const variant of ['changed', 'ambiguous', 'duplicate', 'missing_ref']) {
+  for (const variant of ['changed', 'ambiguous', 'duplicate',
+    'missing_ref', 'wrong_kind', 'extra_field']) {
     const scenario = await runNpcConversationTurn({
       batchId: `marker-claim-${variant}`,
       responder(call, input) {
@@ -951,7 +955,12 @@ test('marker repair rejects changed or ambiguous claims before audit', async () 
                 source_knowledge_refs: ['claim:fish-net'] }]
             : [{ ...claim, claim_id: 'c1',
               source_knowledge_refs: [variant === 'missing_ref'
-                ? 'missing' : 'claim:fish-net'],
+                ? 'missing' : variant === 'wrong_kind'
+                  ? ref('actor', 'claim:fish-net')
+                  : variant === 'extra_field'
+                    ? { ...ref('knowledge_record', 'claim:fish-net'),
+                      unexpected: true }
+                    : 'claim:fish-net'],
               ...(variant === 'changed' ? { content_summary: 'Иное.' } : {}) }]
           : variant === 'ambiguous'
             ? [claim, { ...claim, claim_id: 'other' }] : [claim];

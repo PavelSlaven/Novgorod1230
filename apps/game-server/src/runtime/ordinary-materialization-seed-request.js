@@ -71,10 +71,19 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
   const candidateKeys = ['normalized_candidate_ref', 'normalizer_version',
     'semantic_type', 'candidate_hint', 'functional_bucket', 'admission_class',
     'availability_class', 'coverage_kind', 'coverage_ref', 'policy_version'];
+  const hasOccurrence = Object.hasOwn(outer.candidate_context ?? {},
+    'occurrence_ref');
   const candidate = exactRecord(outer.candidate_context,
-    Object.hasOwn(outer.candidate_context ?? {}, 'source_ref')
-      ? [...candidateKeys, 'source_ref'] : candidateKeys,
+    [...candidateKeys,
+      ...(Object.hasOwn(outer.candidate_context ?? {}, 'source_ref')
+        ? ['source_ref'] : []),
+      ...(hasOccurrence ? ['occurrence_ref'] : [])],
     'ORDINARY_PRESENCE_REQUEST_CANDIDATE_INVALID');
+  if (hasOccurrence && candidate.occurrence_ref !== context.request_id) {
+    throw Object.assign(new TypeError('Finite occurrence must match the presence request.'), {
+      code: 'ORDINARY_PRESENCE_REQUEST_CANDIDATE_INVALID'
+    });
+  }
   const contextRefs = copyJson(context.context_refs,
     'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
   const scopeRef = copyJson(context.scope_ref,
@@ -145,7 +154,8 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     property_basis_ref: contextRefs.property_context_ref,
     property_placement_context_digest: propertyPlacementContextDigest,
     ...(candidate.source_ref == null ? {} : {
-      source_ref: candidate.source_ref }) });
+      source_ref: candidate.source_ref }),
+    ...(hasOccurrence ? { occurrence_ref: candidate.occurrence_ref } : {}) });
   const identity = copyJson({ candidate_key, coverage_key, category_key, context_version,
     normalized_candidate_ref: candidate.normalized_candidate_ref,
     normalizer_version: candidate.normalizer_version,
@@ -155,7 +165,8 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     admission_class: candidate.admission_class,
     availability_class: candidate.availability_class,
     ...(candidate.source_ref == null ? {} : {
-      source_ref: candidate.source_ref })
+      source_ref: candidate.source_ref }),
+    ...(hasOccurrence ? { occurrence_ref: candidate.occurrence_ref } : {})
   }, 'ORDINARY_PRESENCE_REQUEST_INPUT_INVALID');
   return freezeJson(copyJson({
     schema: 'ordinary_materialization_presence_envelope_v1', request, identity,

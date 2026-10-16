@@ -6,8 +6,12 @@ import { deepFreeze, plain } from
 
 const ORDINARY_PRESENCE_CHANGES = Object.freeze({
   absent: 'По этому вопросу отсутствие установлено',
-  no_change: 'Результат по этому вопросу не установлен',
+  no_change: 'По этому вопросу пока нет ясного результата проверки',
   authority_required: 'Имеющихся данных недостаточно для ответа'
+});
+const FINITE_SOURCE_REASONS = Object.freeze({
+  access_denied: 'Доступ к источнику закрыт',
+  source_depleted: 'Источник исчерпан'
 });
 export function ordinarySceneDetails(entries) {
   const seeds = entries.filter(([key]) => key === 'ordinary_scene_seed');
@@ -39,9 +43,12 @@ export function ordinaryPresenceResolution(entries) {
     return value;
   }
   if (!plain(value) || value.kind !== 'ordinary_presence_seed'
-      || Object.keys(value).length !== 3
+      || ![3, 4].includes(Object.keys(value).length)
       || typeof value.query !== 'string' || !value.query.trim()
-      || !Object.hasOwn(ORDINARY_PRESENCE_CHANGES, value.resolution)) {
+      || !Object.hasOwn(ORDINARY_PRESENCE_CHANGES, value.resolution)
+      || (Object.keys(value).length === 4
+        && (value.resolution !== 'authority_required'
+          || !Object.hasOwn(FINITE_SOURCE_REASONS, value.reason_code)))) {
     ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
   }
   return value;
@@ -53,7 +60,9 @@ export function overlayOrdinaryPresence(base, presence) {
   const field = positive || resolution === 'absent'
     ? 'visible_changes' : 'uncertainties';
   const change = positive ? materializedOrdinaryPresenceChange(presence)
-    : `${ORDINARY_PRESENCE_CHANGES[resolution]}: «${query}».`;
+    : `${presence.reason_code == null
+      ? ORDINARY_PRESENCE_CHANGES[resolution]
+      : FINITE_SOURCE_REASONS[presence.reason_code]}: «${query}».`;
   return deepFreeze({ ...structuredClone(base), [field]: unique([
     ...(positive && !base[field].includes(change)
       ? [change, ...base[field]] : [...base[field], change])

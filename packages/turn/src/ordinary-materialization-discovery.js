@@ -1,4 +1,4 @@
-import { ordinaryNoop, knownResolutionResult } from './ordinary-materialization-discovery-result.js';
+import { ordinaryNoop, knownResolutionResult, preflightRefusalResult } from './ordinary-materialization-discovery-result.js';
 import { candidateForDiscovery, equivalentVisibleItem,
   knownMaterializedItemName } from
   './ordinary-materialization-discovery-identity.js';
@@ -66,10 +66,15 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       structuredClone(enabled.ordinary_aggregate) });
     const transitions = [];
     let newBases = [];
+    const finiteExtraction = enabled.ordinary_authority?.finite_source_profile != null
+      || execution.finite_source_authority != null
+      || execution.constrained_natural_resource_profile != null;
+    const occurrenceRef = `${rootId}:ordinary:presence:step:${request.request.step_index}`;
     const candidateContext = candidateForDiscovery({
       candidateContext: execution.candidate_context,
       query: request.operation.query,
-      quantity: request.operation.quantity ?? null });
+      quantity: request.operation.quantity ?? null,
+      occurrenceRef: finiteExtraction ? occurrenceRef : null });
     let requestGuardedBeforeSeed = false;
     const playerActorRef = request.actor?.actor_id ?? request.actor?.actor_ref;
     const isPlayerRequest = requestSubject === 'player'
@@ -124,6 +129,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           displayName: knownMaterializedItemName({ request, partyId, scopeRef,
             knownResolution: early.known_resolution })
         });
+      }
+      if (enabled.code_owned_preflight_refusal === true) {
+        return preflightRefusalResult(request, enabled.code_owned_reason_code);
       }
     }
     if (candidateContext != null
@@ -236,7 +244,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       requiredQuantity: request.operation.quantity ?? null,
       committedState: request.committed_state,
       isEquivalentCandidate: (proposed) =>
-        equivalentVisibleItem(request, proposed) != null,
+        !finiteExtraction && equivalentVisibleItem(request, proposed) != null,
       partyClock,
       historicalEvents,
       ordinaryMaterializationModel: modelBudget.invoke,
@@ -309,7 +317,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       ?? null;
     if (presence.status === 'pending_items_property_admission') {
       const proposed = presence.pending_items_property_admission.proposed_item;
-      const equivalent = equivalentVisibleItem(request, proposed);
+      const equivalent = finiteExtraction ? null
+        : equivalentVisibleItem(request, proposed);
       if (equivalent != null) {
         return knownResolutionResult(request, { resolution: 'materialize' }, {
           displayName: equivalent.name
@@ -494,7 +503,10 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     } }),
     ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
       kind: 'ordinary_presence_seed', resolution: negativePresenceResolution,
-      query: request.operation.query
+      query: request.operation.query,
+      ...(negativePresenceResolution === 'authority_required'
+        && enabled.code_owned_reason_code != null
+        ? { reason_code: enabled.code_owned_reason_code } : {})
     } }),
     ...(visiblePresenceResolution == null ? {} : { ordinary_presence_seed: {
       kind: 'ordinary_presence_seed', resolution: visiblePresenceResolution,

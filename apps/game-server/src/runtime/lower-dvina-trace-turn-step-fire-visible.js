@@ -445,9 +445,10 @@ function uncoveredOrdinaryPresence(entries, presence) {
     && Number.isSafeInteger(Number(value.duration_minutes))
     && Number(value.duration_minutes) > 0
     && plain(value.discovery_result)
-    && Object.keys(value.discovery_result).length === 2
+    && [2, 3].includes(Object.keys(value.discovery_result).length)
     && value.discovery_result.resolution === presence.resolution
-    && value.discovery_result.query === presence.query);
+    && value.discovery_result.query === presence.query
+    && value.discovery_result.reason_code === presence.reason_code);
   return covered ? null : presence;
 }
 function hasVisibleDomainProjection(consequence) {

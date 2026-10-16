@@ -1,19 +1,23 @@
 import { canonicalDigest } from '@rus/materialization';
 
-export function candidateForDiscovery({ candidateContext, query, quantity }) {
+export function candidateForDiscovery({ candidateContext, query, quantity, occurrenceRef = null }) {
   const { target_ref: targetRef, candidate_ref_namespace: namespace,
     ...candidate } = candidateContext;
   const normalized = normalizeQuery(query);
   const requestedQuantity = normalizeQuantity(quantity);
   if (normalized == null || typeof targetRef !== 'string' || !targetRef
       || typeof namespace !== 'string' || !namespace
-      || requestedQuantity === undefined) return null;
+      || requestedQuantity === undefined
+      || (occurrenceRef != null && (typeof occurrenceRef !== 'string'
+        || !occurrenceRef || occurrenceRef.trim() !== occurrenceRef))) return null;
   return { ...candidate, normalized_candidate_ref:
     `${namespace}:${canonicalDigest({
       domain: 'rus.ordinary.discovery.query_candidate.v2',
       target_ref: targetRef, normalized_query: normalized,
-      requested_quantity: requestedQuantity
-    }).slice(0, 32)}`, candidate_hint: normalized };
+      requested_quantity: requestedQuantity,
+      ...(occurrenceRef == null ? {} : { occurrence_ref: occurrenceRef })
+    }).slice(0, 32)}`, candidate_hint: normalized,
+    ...(occurrenceRef == null ? {} : { occurrence_ref: occurrenceRef }) };
 }
 
 export function knownMaterializedItemName({ request, partyId, scopeRef,

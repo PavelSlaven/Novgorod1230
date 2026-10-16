@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { assembleNarrationAuditOutput, narrationAuditInstruction, WORLD_STORY_BOUNDARY } from '../src/runtime/lower-dvina-trace-narration-audit.js';
 import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvina-trace-narration-llm.js';
-import { WORLD_STORY_BOUNDARY } from '../src/runtime/lower-dvina-trace-narration-audit.js';
 import { projectActor } from '../src/runtime/lower-dvina-trace-player-safe-entities.js';
 import { reviewedNarration } from './narration-audit-fixture.js';
 
@@ -70,6 +70,7 @@ test('D102 turn prose roles receive one factual world and free-telling boundary'
       assert.doesNotMatch(wireText, /Потом Мирон мог бы уйти по тропе/u);
     }
     if (call.role_id === 'gameplay_narrator') {
+      assert.doesNotMatch(wireText, /visible_change_\d+|uncertainty_\d+|segment_id/u);
       assert.match(instruction, /имени/u);
       assert.match(instruction, /не сообщай о несделанном|не рассказывай о несделанном|несделанный шаг не рассказывай как событие/u);
       return { output: { prose: inventedProse } };
@@ -130,4 +131,18 @@ test('D102 format repair keeps the same world/story boundary without a prose exe
   assert.equal(result.status, 'approved');
   assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_format_repair',
     'gameplay_narrator_auditor']);
+});
+
+test('audit feedback is Russian while private source IDs remain intact', () => {
+  const request = { segments: [{ segment_id: 's1', prose: 'Мирон смотрел на воду.' }],
+    visible_context: { visible_changes: ['Мирон коснулся воды.'], uncertainties: [] } };
+  assert.match(narrationAuditInstruction(request), /reason.*по-русски/u);
+  const result = assembleNarrationAuditOutput({
+    reviewed_segments: ['s1'],
+    source_reviews: [{ ref: 'visible_change_1', segment_choices: [] }],
+    unsupported: [], literary_failures: [], evidence: []
+  }, request);
+  assert.deepEqual(result.concerns, [{ segment_id: null,
+    kind: 'missing_visible_change',
+    reason: 'Обязательное положение visible_change_1 передано не полностью.' }]);
 });

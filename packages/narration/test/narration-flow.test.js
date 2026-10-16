@@ -101,7 +101,8 @@ test('admission also repairs calibration and code markers after auditor pass', a
       semanticRepairer: { async repair(input) {
         repairCalls += 1;
         assert.equal(input.concerns.some(({ kind, reason }) =>
-          kind === 'generated_prose_admission' && reason.includes(category)), true);
+          kind === 'generated_prose_admission' && reason.includes(category)
+          && reason.startsWith('Убери служебный маркер ')), true);
         return { version: 1, schema: 'narration_semantic_repair',
           replacements: [{ segment_id: 's1', prose: 'Берёза видна у ворот.' }] };
       } }

@@ -102,7 +102,7 @@ function generatedProseAdmissionConcern(finding) {
   return {
     segment_id: 's1',
     kind: 'generated_prose_admission',
-    reason: `Remove the ${category} service marker from the passage while preserving supported meaning.`
+    reason: `Убери служебный маркер ${category} из прозы, сохрани подтверждённый смысл.`
   };
 }
 

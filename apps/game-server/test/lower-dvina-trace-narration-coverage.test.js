@@ -212,7 +212,7 @@ test('omitted atomic unresolved result becomes deterministic missing-visible-cha
   assert.equal(assembled.pass, false);
   assert.deepEqual(assembled.coverage.visible_changes[1].segment_ids, []);
   assert.deepEqual(assembled.concerns, [{ segment_id: null, kind: 'missing_visible_change',
-    reason: 'Required source visible_change_2 is not fully conveyed.' }]);
+    reason: 'Обязательное положение visible_change_2 передано не полностью.' }]);
   assert.equal(validateNarrationAudit(assembled, ['s1', 's2'],
     { visible_changes: 2, uncertainties: 0 }).ok, true);
 });

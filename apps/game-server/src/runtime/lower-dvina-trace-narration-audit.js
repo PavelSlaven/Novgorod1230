@@ -54,6 +54,7 @@ unsupported_world_state, unsupported_npc_state, unsupported_fact.
 literary_failures contains only {"check","segment_choice","reason"}.
 Every segment_choice field is one literal segment ID, never a comma-separated
 list or range; use separate findings when more than one segment fails.
+Пиши каждое пояснение reason по-русски; буквальные JSON-ключи, виды нарушений и ключи источников сохраняй.
 Output only failures, not supported proposition reviews. evidence is a concise
 nonempty list when there are no failures and may be empty otherwise. Shape:
 ${JSON.stringify(shape)}
@@ -78,7 +79,7 @@ export function assembleNarrationAuditOutput(output, request) {
       concerns.push({
         segment_id: null,
         kind: 'missing_visible_change',
-        reason: `Required source ${source.ref} is not fully conveyed.`
+        reason: `Обязательное положение ${source.ref} передано не полностью.`
       });
     }
   }

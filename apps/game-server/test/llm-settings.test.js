@@ -1,3 +1,4 @@
+import { compatNarrationWire } from './narration-audit-fixture.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
@@ -306,7 +307,7 @@ test('narration workflow qualification distinguishes split static clusters and r
       if (invalid === 'malformed' || invalid === 'empty') return { output: invalid === 'malformed' ? {} : {
         reviewed_segments: [], source_reviews: [], unsupported: [],
         literary_failures: [], evidence: [] }, provider_record: record };
-      const wire = JSON.parse(call.messages[1].content);
+      const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
       const sources = [...wire.required_current_beat.changes,
         ...wire.required_current_beat.uncertainties];
       const initial = wire.phase === 'initial';

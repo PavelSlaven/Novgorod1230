@@ -354,7 +354,7 @@ test('N1 visible seed makes the committed observation a required current beat', 
   assert.deepEqual(projectDirectSeedChanges({
     input: { consequence: { visible_seed: { [key]: seed } } },
     directSeedKeys: [key]
-  }), ['Вы рассмотрели незнакомого рыбака: Коренастый мужчина в мокрой рубахе.']);
+  }), ['Герой рассмотрел незнакомого рыбака: Коренастый мужчина в мокрой рубахе.']);
   assert.throws(() => projectDirectSeedChanges({
     input: { consequence: { visible_seed: { [key]: {
       ...seed, ordinary_descriptor: '' } } } }, directSeedKeys: [key]
@@ -795,7 +795,7 @@ test('a full pair of hands is narrated as a physical limit', () => {
   }, directSeedKeys: ['turn_step_1'], body: {} });
 
   assert.deepEqual(visible.visible_changes,
-    ['Вы не смогли взять кусок верёвки: руки заняты.']);
+    ['Герой не смог взять кусок верёвки: руки заняты.']);
 });
 
 test('direct player-safe observation does not replay previous-package sensory facts', () => {

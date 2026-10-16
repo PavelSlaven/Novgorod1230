@@ -391,7 +391,7 @@ function projectOpeningFacts(source) {
   return facts;
 }
 
-function projectNpcCueFacts(cues) {
+export function projectNpcCueFacts(cues) {
   if (Array.isArray(cues)) return cues.flatMap((cue) =>
     typeof cue?.text === 'string' ? [cue.text] : []);
   if (!cues || typeof cues !== 'object' || Array.isArray(cues)) return [];

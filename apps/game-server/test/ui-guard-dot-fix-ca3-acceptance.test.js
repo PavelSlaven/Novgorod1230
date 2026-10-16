@@ -11,6 +11,19 @@ import { errorEnvelope } from '../src/http/contracts.js';
 import { serverError } from '../src/errors.js';
 import { reviewedNarration } from './narration-audit-fixture.js';
 
+
+function requiredOf(wire) {
+  const lines = wire['Обязательные положения текущего эпизода'];
+  const changes = [], uncertainties = [];
+  for (const line of lines) {
+    const match = /^(visible_change|uncertainty)_([0-9]+): (.*)$/u.exec(line);
+    const field = match?.[1] === 'uncertainty' ? uncertainties : changes;
+    const prefix = field === changes ? 'visible_change' : 'uncertainty';
+    field.push({ ref: `${prefix}_${field.length + 1}`,
+      text: match ? match[3] : line });
+  }
+  return { changes, uncertainties };
+}
 // D102: authored on 07bac6ad before the CA3 production fixes; pin this file.
 const summary = 'Прерывает работу для короткого отдыха.';
 const npcIds = ['npc:ca3-fisher-1', 'npc:ca3-fisher-2'];
@@ -109,7 +122,7 @@ for (const mode of ['overlay', 'arrival']) {
     });
 
     await t.test('writer retains two texts with separate mandatory refs', () => {
-      const changes = narrationWire(request).required_current_beat.changes
+      const changes = requiredOf(narrationWire(request)).changes
         .filter(({ text }) => text.includes(summary));
       assert.equal(changes.length, 2);
       assert.equal(changes[0].text, changes[1].text);
@@ -156,7 +169,7 @@ for (const mode of ['overlay', 'arrival']) {
       assert.equal(cues.length, 1);
       assert.ok(cues[0].startsWith(`${count} `));
       const request = narratorRequest(projected);
-      assert.equal(narrationWire(request).required_current_beat.changes
+      assert.equal(requiredOf(narrationWire(request)).changes
         .filter(({ text }) => text.includes(summary)).length, 1);
       assert.equal(narrationSources(request)
         .filter(({ text }) => text.includes(summary)).length, 1);

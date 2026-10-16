@@ -1,3 +1,4 @@
+import { compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceNarrationService } from
@@ -13,18 +14,18 @@ test('non-dense literary finding is recorded without blocking delivery', async (
       const calls = [];
       const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
         calls.push(call.role_id);
-        const wire = JSON.parse(call.messages[1].content);
+        const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
         if (call.role_id === 'gameplay_narrator') {
-          assert.match(call.messages[0].content, /whether the current beat is dense or not/u);
+          assert.match(call.messages[0].content, /Сочини законченный эпизод/u);
           return { output: { prose: catalogue } };
         }
         if (call.role_id === 'gameplay_narrator_semantic_repair') {
-          assert.match(call.messages[0].content, /whether dense or not/u);
+          assert.match(call.messages[0].content, /Rebuild the whole scene/u);
           return { output: { replacements: [{ prose }] } };
         }
         assert.match(call.messages[0].content,
-          /inspection or perception across the whole[\s\S]*every supplied scene-observation cluster/u);
-        const initial = wire.phase === 'initial';
+          /weak_literary_composition[\s\S]*цельный эпизод через восприятие и переживание героя/u);
+        const initial = !calls.includes('gameplay_narrator_semantic_repair');
         return { output: review(wire, initial || !accepted) };
       } } });
       const result = await service.run({ version: 1, schema: 'narration_request',
@@ -50,13 +51,14 @@ test('exact shore catalogue keeps literary failure separate from factual deliver
   const repaired = 'Подробно осмотрев место крушения, вы заметили на берегу обломки разбитой лодки и в мокром песке — босые следы; рядом виден отдельный след сапога. Одежда осталась мокрой, а дрожь усилилась. Наблюдения сами по себе не устанавливают виновника или мотив.';
   for (const [prose, accepted] of [[former, false], [repaired, true]]) {
     await t.test(accepted ? 'focal inspection stays factual pass' : 'catalogue records artistic fail', async () => {
+      let auditCount = 0;
       const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
-        const wire = JSON.parse(call.messages[1].content);
+        const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
         if (call.role_id === 'gameplay_narrator') return { output: { prose: former } };
         if (call.role_id === 'gameplay_narrator_semantic_repair') {
           return { output: { replacements: [{ prose }] } };
         }
-        return { output: review(wire, wire.phase === 'initial' || !accepted) };
+        return { output: review(wire, auditCount++ === 0 || !accepted) };
       } } });
       const result = await service.run({ version: 1, schema: 'narration_request',
         request_id: `shore-inspection-${accepted}`, surface: 'turn', visible_context: {

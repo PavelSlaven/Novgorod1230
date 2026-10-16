@@ -17,8 +17,9 @@ export function assertCurrentSceneSelfIdentity({ committedState, locationProfile
     const current = withLowerDvinaTraceCurrentScene({ committedState: state,
       locationProfiles, scenePresentation });
     const visible = current.current_visible_context;
-    assert.ok(visible.known_context.includes('Вас зовут Ульяна.'));
-    assert.ok(visible.known_context.includes('Ваш род занятий: ткачиха.'));
+    assert.equal(visible.known_context.some((fact) =>
+      /Вас зовут Ульяна|Ваш род занятий/u.test(fact)), false);
+    assert.deepEqual(current.player_profile, state.player_profile);
     assert.equal(visible.visible_npc[0].entity_ref.entity_id, 'onisim');
     assert.equal(visible.visible_npc[0].display_label, 'Ульяна');
     assert.doesNotMatch(JSON.stringify(visible), /тайная биография|тайный замысел/u);
@@ -31,7 +32,6 @@ export function assertCurrentSceneSelfIdentity({ committedState, locationProfile
       committedState: reloadedState, locationProfiles, scenePresentation });
     assert.equal(reloaded.current_visible_context.visible_npc[0].display_label,
       'Ульяна');
-    assert.ok(reloaded.current_visible_context.known_context.includes(
-      'Вас зовут Ульяна.'));
+    assert.deepEqual(reloaded.player_profile, state.player_profile);
   }
 }

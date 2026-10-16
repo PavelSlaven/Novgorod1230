@@ -37,7 +37,7 @@ const narratorRequest = (visible_context) => ({
   surface: 'turn', visible_context, context: {}
 });
 function assertSceneOmitted(context) {
-  assert.equal(Object.hasOwn(context, 'visible_scene'), false, 'rejected scene must be absent');
+  assert.equal(Object.hasOwn(context, 'Место'), false, 'rejected scene must be absent');
   assert.doesNotMatch(JSON.stringify(context), /Обстановка не описана\.|INFERENCE:|FACT:|npc:123/u);
 }
 function phase2Payload(visible_scene) {
@@ -59,6 +59,20 @@ async function send(handler, method, url, body) {
     end(value) { this.body = JSON.parse(value); } };
   await handler(req, response);
   return response;
+}
+
+
+function requiredOf(wire) {
+  const lines = wire['Обязательные положения текущего эпизода'];
+  const changes = [], uncertainties = [];
+  for (const line of lines) {
+    const match = /^(visible_change|uncertainty)_([0-9]+): (.*)$/u.exec(line);
+    const field = match?.[1] === 'uncertainty' ? uncertainties : changes;
+    const prefix = field === changes ? 'visible_change' : 'uncertainty';
+    field.push({ ref: `${prefix}_${field.length + 1}`,
+      text: match ? match[3] : line });
+  }
+  return { changes, uncertainties };
 }
 
 test('CA-03: normal and strict player-safe projections omit rejected scenes without replacing other facts', async (t) => {
@@ -140,10 +154,10 @@ test('CA-03: narrationWire omits the rejected projected scene both with and with
     await t.test(visible_changes.length ? 'current beat' : 'support only', () => {
       const projected = projectVisibleContext(scene(markedScenes[0], { visible_changes }));
       const wire = narrationWire(narratorRequest(projected));
-      assertSceneOmitted(wire.optional_support);
-      assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), visible_changes);
+      assertSceneOmitted(wire['Переданные сведения об обстановке']);
+      assert.deepEqual(requiredOf(wire).changes.map(({ text }) => text), visible_changes);
       const safeWire = narrationWire(narratorRequest(projectVisibleContext(scene(validScene, { visible_changes }))));
-      assert.equal(safeWire.optional_support.visible_scene, validScene);
+      assert.equal(safeWire['Переданные сведения об обстановке']['Место'], validScene);
     });
   }
 });
@@ -435,16 +449,16 @@ test('CA-03: rejected scene fails before commit with a safe public gap; valid sc
       calls.push({ role: call.role_id, payload, wire });
       if (call.role_id === 'gameplay_narrator') return { output: { prose: 'Вы поправили пояс.' } };
       assert.equal(call.role_id, 'gameplay_narrator_auditor');
-      return { output: reviewedNarration(wire.segments, { visible_change_1: ['s1'] }) };
+      return { output: reviewedNarration(wire['Отрывки прозы'], { visible_change_1: ['s1'] }) };
     } } });
     const projected = projectVisibleContextForPlayerPackage(scene(visible_scene)).visible_context;
     const result = await service.run(narratorRequest(projected));
     assert.equal(result.status, 'approved');
     assert.deepEqual(calls.map(({ role }) => role), ['gameplay_narrator', 'gameplay_narrator_auditor']);
     for (const { wire, payload } of calls) {
-      if (visible_scene === validScene) assert.equal(wire.optional_support.visible_scene, validScene);
-      else assertSceneOmitted(wire.optional_support);
-      assert.deepEqual(wire.required_current_beat.changes, [{ ref: 'visible_change_1', text: 'Вы поправили пояс.' }]);
+      if (visible_scene === validScene) assert.equal(wire['Переданные сведения об обстановке']['Место'], validScene);
+      else assertSceneOmitted(wire['Переданные сведения об обстановке']);
+      assert.deepEqual(requiredOf(wire).changes, [{ ref: 'visible_change_1', text: 'Вы поправили пояс.' }]);
       assert.doesNotMatch(payload.messages[1].content, /Обстановка не описана\.|INFERENCE:/u);
       assert.equal(payload.messages[0].role, 'system');
       assert.equal(typeof payload.messages[0].content, 'string');

@@ -69,7 +69,8 @@ async function runFixture(fixture, execution) {
       || fixture.role_id !== 'turn_step_planner'
       || fixture.repair === true) {
     const call = await executeRoleLlmCall({ scope: fixture.scope,
-      roleId: fixture.role_id, messages: fixture.messages, ...execution });
+      roleId: fixture.role_id, messages: fixture.messages,
+      ...(fixture.overrides ? { overrides: fixture.overrides } : {}), ...execution });
     return scoreFixture(fixture, {
       ...call, raw_parsed_json: call.parsed_json,
       parsed_json: assembleFixtureOutput(fixture, call.parsed_json)
@@ -307,9 +308,10 @@ function missingCall(fixture, error) {
 }
 
 function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
-  return [...new Map(fixtures.map(({ scope, role_id }) => [`${scope}:${role_id}`, { scope, role_id }])).values()]
-    .map(({ scope, role_id }) => {
-      const overrides = roleOverrides(role_id);
+  return [...new Map(fixtures.map(({ scope, role_id, overrides }) =>
+    [`${scope}:${role_id}:${JSON.stringify(overrides ?? null)}`, { scope, role_id, overrides }])).values()]
+    .map(({ scope, role_id, overrides: fixtureOverrides }) => {
+      const overrides = fixtureOverrides ?? roleOverrides(role_id);
       const resolution = resolveLlmExecutionConfig({ scope, roleId: role_id,
         env, runtimeProviderOverride, overrides });
       if (!resolution.enabled) return { scope, role_id, status: 'unavailable', reason: resolution.reason };
@@ -320,7 +322,9 @@ function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
           runtimeProviderOverride, overrides }).config_hash,
         request_timeout_ms: config.requestTimeoutMs, thinking: config.thinking?.type ?? null,
         reasoning_effort: config.reasoningEffort ?? null, max_tokens: config.maxTokens,
-        context_budget: config.contextBudget
+        context_budget: config.contextBudget,
+        ...(fixtureOverrides ? { overrides: fixtureOverrides,
+          temperature: config.temperature, top_p: config.topP } : {})
       };
     });
 }

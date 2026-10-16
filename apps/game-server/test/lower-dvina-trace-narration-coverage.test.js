@@ -1,4 +1,4 @@
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateNarrationAudit } from '@rus/narration';
@@ -155,10 +155,10 @@ for (const sample of [
     const calls = [];
     const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
       calls.push(call.role_id);
-      const wire = JSON.parse(call.messages[1].content);
-      assert.deepEqual(wire.optional_support,
-        { visible_scene: visibleContext.visible_scene });
-      assert.match(call.messages[0].content, /candidate set, never a coverage target/u);
+      const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
+      assert.equal(wire.optional_support.visible_scene, visibleContext.visible_scene);
+      assert.deepEqual(wire.optional_support.sensory_details, sensory);
+      assert.match(call.messages[0].content, /Покажи важное через взгляд героя|static_context_dump/u);
       if (call.role_id === 'gameplay_narrator') return { output: { prose: panorama } };
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
         assert.fail('literary-only finding must not trigger semantic repair');
@@ -186,10 +186,10 @@ test('perception result may retain its compact action-governed sensory cluster',
   const visibleContext = { ...visible, visible_changes: ['Вы осмотрели мастерскую.'],
     sensory_details: sensory };
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
-    const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support,
-      { visible_scene: visibleContext.visible_scene });
-    assert.match(call.messages[0].content, /perception beat[\s\S]*may govern supplied details/u);
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
+    assert.equal(wire.optional_support.visible_scene, visibleContext.visible_scene);
+    assert.deepEqual(wire.optional_support.sensory_details, sensory);
+    assert.match(call.messages[0].content, /через восприятие, тело и мысли героя|Рассказ — то, как герой переживает этот мир/u);
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: 'Осматривая мастерскую, вы видите резец на верстаке и стружки под окном.' } };
     return { output: { ...reviewedNarration(wire.segments, {
@@ -219,7 +219,7 @@ test('omitted atomic unresolved result becomes deterministic missing-visible-cha
 
 test('semantic and literary findings map to canonical concerns and verdicts', () => {
   const raw = passAudit();
-  raw.unsupported = [{ segment_choice: 's1', kind: 'unsupported_sensory',
+  raw.unsupported = [{ segment_choice: 's1', kind: 'unsupported_fact',
     reason: 'The branch does not support a ringing sound.' }];
   raw.literary_failures = [
     { check: 'static_context_dump', segment_choice: 's2', reason: 'Static recap dominates.' },
@@ -232,7 +232,7 @@ test('semantic and literary findings map to canonical concerns and verdicts', ()
   assert.equal(assembled.artistic_verdict, 'fail');
   assert.equal(assembled.technical_verdict, 'fail');
   assert.deepEqual(assembled.concerns.map(({ kind }) => kind),
-    ['unsupported_sensory', 'literary_quality', 'technical_presentation']);
+    ['unsupported_fact', 'literary_quality', 'technical_presentation']);
   assert.equal(validateNarrationAudit(assembled, ['s1', 's2'],
     { visible_changes: 2, uncertainties: 0 }).ok, true);
 });
@@ -243,21 +243,19 @@ test('published omission forces one whole-prose repair and strict final audit', 
   const calls = [];
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: bad, action_options: [], used_references: [] } };
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
-      const missing = wire.concerns.find(({ kind }) => kind === 'missing_visible_change');
-      assert.deepEqual({ segment_id: missing.segment_id,
-        source_segment_ids: missing.source_segment_ids }, {
-        segment_id: 's1', source_segment_ids: []
-      });
+      assert.ok(wire['Замечания'].some((reason) =>
+        reason.includes('visible_change_2')));
       return { output: { replacements: [{ prose: good }] } };
     }
+    const initialAudit = calls.filter((role) => role === 'gameplay_narrator_auditor').length === 1;
     const raw = reviewedNarration(wire.segments, Object.fromEntries(
       wire.required_current_beat.changes.map(({ ref }, index) =>
-        [ref, wire.phase === 'initial' && index === 1 ? [] : ['s1']])));
-    raw.evidence = wire.phase === 'initial' ? [] : ['Action and unresolved result are explicit.'];
+        [ref, initialAudit && index === 1 ? [] : ['s1']])));
+    raw.evidence = initialAudit ? [] : ['Action and unresolved result are explicit.'];
     return { output: raw };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request',
@@ -272,14 +270,15 @@ test('malformed final audit blocks after the single allowed repair', async () =>
   const calls = [];
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: 'Служебный отчёт.', action_options: [], used_references: [] } };
     if (call.role_id === 'gameplay_narrator_semantic_repair') return { output: {
       replacements: [{ prose: 'Одну минуту вы прощупываете воду ветвью; результат пока неизвестен.' }] } };
     const raw = reviewedNarration(wire.segments, { visible_change_1: [], visible_change_2: [] });
     raw.evidence = [];
-    if (wire.phase === 'final') raw.source_reviews[0].segment_choices = ['s99'];
+    if (calls.filter((role) => role === 'gameplay_narrator_auditor').length === 2)
+      raw.source_reviews[0].segment_choices = ['s99'];
     return { output: raw };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request',
@@ -292,15 +291,17 @@ test('malformed final audit blocks after the single allowed repair', async () =>
 
 test('presentation recovery repairs prose without a second gameplay commit', async () => {
   let commits = 0;
+  let audits = 0;
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: 'Одну минуту вы прощупываете воду ветвью.', action_options: [], used_references: [] } };
     if (call.role_id === 'gameplay_narrator_semantic_repair') return { output: {
       replacements: [{ prose: 'Одну минуту вы прощупываете воду ветвью; результат пока неизвестен.' }] } };
+    audits += 1;
     const raw = reviewedNarration(wire.segments, { visible_change_1: ['s1'],
-      visible_change_2: wire.phase === 'initial' ? [] : ['s1'] });
-    raw.evidence = wire.phase === 'initial' ? [] : ['Both atomic sources are present.'];
+      visible_change_2: audits === 1 ? [] : ['s1'] });
+    raw.evidence = audits === 1 ? [] : ['Both atomic sources are present.'];
     return { output: raw };
   } } });
   const repository = {

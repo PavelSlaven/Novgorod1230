@@ -14,12 +14,16 @@ bounded workflow: marker rejection использует единственный
 остаётся retryable pending. Committed мир и identity хода сохраняются; admission
 failure не даёт factual terminal delivery и не становится поздним HTTP 500.
 
-Narration-specific WK projection опускает известные leading calibration prefixes
-из reviewed `runtime_text`, сохраняя adjacent qualifiers, evidence и claim refs;
-общий helper `@rus/turn` по-прежнему опускает дублирующий `context_text`.
-Writer, repair и auditor получают явное требование передать неопределённость,
-directness, confidence и предел typicality обычной речью возле соответствующего
-факта. Canonical WK bundle и wire других consumers не переписываются.
+Narration-specific WK projection keeps the structured slice, qualifiers and
+claim/evidence refs inside the server for checks. The four prose roles receive
+Russian factual sentences with directness, confidence and typicality expressed
+as ordinary qualifications beside each claim; service refs and qualifier keys
+do not enter their provider user messages. The shared `@rus/turn` helper still
+drops duplicate `context_text`; canonical WK and other consumers are unchanged.
+Turn narrator projects the same player-safe scene facts to writer, format repair,
+auditor and semantic repair. Only auditor and semantic repair receive short
+source keys needed for coverage, and repair receives rejected prose and concerns.
+
 Format repair разговора получает исходный request, полный original output и
 конкретные validation errors; marker-specific semantic retry остаётся отдельным.
 Marker-specific retry сохраняет исходный contribution и speech act; повторная
@@ -1146,9 +1150,11 @@ Narrator переводит evidence wording в естественную реч�
 (Spatial 4.7.0 §7.1.1): при плохой видимости линии (`local_edge`, `site_connection`, `directional_exit`) остаются в disclosure,
 их скрывает только concealment (`visibleCurrentTargets`). Экран локального хода показывает проходы места прибытия:
 `prepareLocalMovement` кладёт их в `visible_seed.destination_movement_objects`, проектор подменяет ими проходы прежней позиции.
-Проходы — выбор панели route, не объекты сцены: в прозу их метки не идут (источник «В поле зрения — Проход N» —
-`lowerDvinaTraceObservedSceneChanges`, плюс `narrationWire`; оба пропускают `scene_movement_edge`, `g4_directional_exit`,
-`g5_site_connection`). Линия при плохой видимости приходит из `visibleCurrentTargets` с `visibility: 'none'`.
+Три вида выбора панели route не становятся объектами сцены: `lowerDvinaTraceObservedSceneChanges` и
+`narrationWire` пропускают `scene_movement_edge`, `g4_directional_exit`, `g5_site_connection`.
+Допущенное видимое описание `passage` остаётся сведением для прозы без внутренних ссылок; оно само по себе
+не доказывает совершённый переход. Линия при плохой видимости приходит из `visibleCurrentTargets`
+с `visibility: 'none'`.
 
 Opening и arrival могут передать exact natural perception input действующему
 `@rus/presentation/spatial-v3-projection.projectSpatialV3NaturalScene` через

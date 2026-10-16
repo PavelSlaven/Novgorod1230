@@ -8,6 +8,19 @@ import { narrationSources } from
   '../src/runtime/lower-dvina-trace-narration-audit-values.js';
 import { reviewedNarration } from './narration-audit-fixture.js';
 
+
+function requiredOf(wire) {
+  const lines = wire['Обязательные положения текущего эпизода'];
+  const changes = [], uncertainties = [];
+  for (const line of lines) {
+    const match = /^(visible_change|uncertainty)_([0-9]+): (.*)$/u.exec(line);
+    const field = match?.[1] === 'uncertainty' ? uncertainties : changes;
+    const prefix = field === changes ? 'visible_change' : 'uncertainty';
+    field.push({ ref: `${prefix}_${field.length + 1}`,
+      text: match ? match[3] : line });
+  }
+  return { changes, uncertainties };
+}
 // D102: authored on 7cd3c93c before the CA-UI-01 production fix; pin this file.
 const playerChange = 'Вы поправили пояс.';
 const summary = 'Прерывает работу для короткого отдыха.';
@@ -69,9 +82,9 @@ test('CA-UI-01: equal NPC facts at different boundaries retain separate mandator
 
   await t.test('writer receives two equal texts with distinct source refs', () => {
     const wire = narrationWire(request);
-    assert.deepEqual(wire.required_current_beat.changes.map(({ ref }) => ref),
+    assert.deepEqual(requiredOf(wire).changes.map(({ ref }) => ref),
       sourceRefs);
-    assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text),
+    assert.deepEqual(requiredOf(wire).changes.map(({ text }) => text),
       projected.visible_changes);
     assert.doesNotMatch(JSON.stringify(wire),
       /npc:ca2|occurred_at|whole_minutes|subminute_numerator|subminute_denominator/u);
@@ -103,8 +116,7 @@ test('CA-UI-01: equal NPC facts at different boundaries retain separate mandator
     ]);
     assert.equal(duplicate.visible_changes.length, 2);
     assert.match(duplicate.visible_changes[1], /^1 человек(?:\s|$)/u);
-    assert.equal(narrationWire(narratorRequest(duplicate))
-      .required_current_beat.changes.length, 2);
+    assert.equal(requiredOf(narrationWire(narratorRequest(duplicate))).changes.length, 2);
     assert.equal(narrationSources(narratorRequest(duplicate)).length, 2);
   });
 });

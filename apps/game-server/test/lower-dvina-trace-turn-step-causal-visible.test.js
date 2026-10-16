@@ -1,4 +1,4 @@
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
@@ -78,7 +78,7 @@ for (const [query, name, spoken, pending] of [
     `Вы нашли предмет — ${name}.`, ...(pending ? [] : [physical])];
   assert.deepEqual(projected.visible_changes, expected);
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
     assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), expected);
     assert.deepEqual(wire.required_current_beat.changes.map(({ ref }) => ref), expected.map((_, index) => `visible_change_${index + 1}`));
     assert.deepEqual(wire.required_current_beat.uncertainties, []);
@@ -131,7 +131,7 @@ for (const discoveryKind of ['search', 'inspect']) test(
     assert.deepEqual(visible.uncertainties, []);
     const narrator = createLowerDvinaTraceNarrationService({ roleRunner: {
       async run(call) {
-        const wire = JSON.parse(call.messages[1].content);
+        const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
         assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), [expected]);
         if (call.role_id === 'gameplay_narrator') return { output: {
           prose: expected, action_options: [], used_references: [] } };
@@ -236,7 +236,7 @@ for (const domainFallback of [false, true]) test(`materialized O1 precedes physi
   let calls = 0;
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
-    const wire = JSON.parse(call.messages[1].content);
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
     assert.deepEqual(wire.optional_support,
       { visible_scene: visible.visible_scene });
     const changes = wire.required_current_beat.changes.map(({ text }) => text);

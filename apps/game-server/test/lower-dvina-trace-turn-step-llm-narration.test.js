@@ -1,4 +1,4 @@
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateNarrationOutput } from '@rus/narration';
@@ -37,7 +37,7 @@ test('writer metadata drift does not invoke narration format repair', async () =
       if (call.role_id === 'gameplay_narrator_format_repair') {
         throw new Error('format repair must not run');
       }
-      const input = JSON.parse(call.messages[1].content);
+      const input = compatNarrationWire(JSON.parse(call.messages[1].content));
       return { output: {
         ...reviewedNarration(input.segments), evidence: ['Visible scene supports prose.']
       } };
@@ -63,24 +63,27 @@ test('body delta reaches narration as grounded meaning without technical prose o
     visibleContext: { version: 1, schema: 'visible_context_package', visible_scene: 'У костра.',
       visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
       known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [] },
-    committedState: { body_state: { active_conditions: [{ id: 'wet' }, possibleCold] } },
-    bodyAfter: { active_conditions: [{ id: 'damp' }, possibleCold] }
+    committedState: { body_state: { active_conditions: [{ id: 'wet', label: 'мокрая одежда' }, possibleCold] } },
+    bodyAfter: { active_conditions: [{ id: 'damp', label: 'сырая одежда' }, possibleCold] }
   });
   const prose = 'Одежда стала менее мокрой, но остаётся сырой.';
   let auditCount = 0;
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
     async run(call) {
-      const input = JSON.parse(call.messages[1].content);
+      const input = compatNarrationWire(JSON.parse(call.messages[1].content));
       assert.deepEqual(input.required_current_beat.changes.map(({ text }) => text), visible.visible_changes);
       assert.equal(Object.hasOwn(input, 'visible_context'), false);
+      assert.match(JSON.stringify(input.optional_support.known_context), /сырая одежда/u);
+      assert.doesNotMatch(JSON.stringify(input.optional_support.known_context),
+        /cold_with_possible_shivering|before|after|""id""|wet|damp/u);
       if (call.role_id === 'gameplay_narrator') {
-        assert.match(call.messages[0].content, /Add no hidden fact, diagnosis/u);
+        assert.match(call.messages[0].content, /Ничего из этого не добавляй и не меняй/u);
         return { output: { prose: 'Вас трясёт. {"before":"wet","after":"damp"}',
           action_options: [], used_references: [], self_check: {} } };
       }
       if (call.role_id === 'gameplay_narrator_auditor') {
         auditCount += 1;
-        const segments = JSON.parse(call.messages[1].content).segments;
+        const segments = compatNarrationWire(JSON.parse(call.messages[1].content)).segments;
         return { output: auditCount === 1 ? {
           ...reviewedNarration(segments, { visible_change_1: [] }),
           unsupported: [{ segment_choice: 's1', kind: 'unsupported_fact',
@@ -117,11 +120,11 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
               used_references: [], self_check: {} }
           : call.roleId === 'gameplay_narrator_auditor'
             ? calls.filter(({ roleId }) => roleId === 'gameplay_narrator_auditor').length === 1
-              ? { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+              ? { ...reviewedNarration(compatNarrationWire(JSON.parse(call.messages[1].content)).segments,
                 { visible_change_1: [], visible_change_2: [], uncertainty_1: [] }),
                 unsupported: [{ segment_choice: 's1', kind: 'unsupported_fact',
                   reason: 'Не подтверждено.' }], evidence: [] }
-              : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+              : { ...reviewedNarration(compatNarrationWire(JSON.parse(call.messages[1].content)).segments,
                 { visible_change_1: ['s1'], visible_change_2: ['s1'], uncertainty_1: ['s1'] }),
                 evidence: ['Подтверждено.'] }
             : call.roleId === 'gameplay_narrator_semantic_repair'
@@ -153,41 +156,47 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   for (const call of calls) {
     assert.equal(call.overrides.temperature,
       call.roleId === 'gameplay_narrator_semantic_repair' ? 0.2 : 0);
-    const payload = JSON.parse(call.messages[1].content);
+    const payload = compatNarrationWire(JSON.parse(call.messages[1].content));
     assert.equal(Object.hasOwn(payload, 'visible_context'), false);
-    assert.deepEqual(payload.required_current_beat.uncertainties,
-      [{ ref: 'uncertainty_1', text: question, status: 'unperformed_result_unknown' }]);
-    assert.deepEqual(payload.optional_support,
-      { visible_scene: 'The clearing is quiet.' });
-    assert.deepEqual(payload.confirmed_outcome, {});
+    assert.deepEqual(payload['Обязательные положения текущего эпизода'].map((line) =>
+      line.replace(/^(?:visible_change|uncertainty)_\d+: /u, '')),
+    ['A snapped branch lies nearby.', 'Fresh footprints cross the mud.', question]);
+    assert.equal(payload['Обязательные положения текущего эпизода'][2],
+      ['gameplay_narrator_auditor', 'gameplay_narrator_semantic_repair'].includes(call.roleId)
+        ? 'uncertainty_1: ' + question : question);
+    assert.equal(payload.optional_support.visible_scene, 'The clearing is quiet.');
+    assert.ok(payload.optional_support.known_context.includes(
+      'A marked path leads toward the settlement.'));
+    assert.deepEqual(payload.confirmed_outcome, []);
     if (call.roleId === 'gameplay_narrator_auditor') {
-      assert.match(call.messages[0].content, /strict evidence auditor/u);
-      assert.match(call.messages[0].content, /embedded unknown result must remain unknown/u);
+      assert.match(call.messages[0].content, /Ты — аудитор прозы/u);
+      assert.match(call.messages[0].content, /Неизвестный результат должен остаться неизвестным/u);
     } else if (call.roleId === 'gameplay_narrator_semantic_repair') {
-      assert.match(call.messages[0].content, /every required proposition and certainty/iu);
+      assert.match(call.messages[0].content,
+        /Preserve every proposition from «Обязательные положения текущего эпизода» and its certainty once/u);
       assert.match(call.messages[0].content, /confirmed speech verbatim/u);
       assert.match(call.messages[0].content, /performed-action order/u);
-      assert.match(call.messages[0].content, /remove each unsupported claim/u);
+      assert.match(call.messages[0].content, /fix all concerns/u);
     } else {
-      assert.match(call.messages[0].content, /Preserve confirmed speech verbatim/u);
-      assert.match(call.messages[0].content, /preserve certainty/u);
-      assert.match(call.messages[0].content, /actor movement requires confirmed_outcome\.movement_committed=true/iu);
-      assert.match(call.messages[0].content, /Add no hidden fact, diagnosis/u);
+      assert.match(call.messages[0].content, /Подтверждённую речь цитируй дословно/u);
+      assert.match(call.messages[0].content, /Совершённое действие остаётся совершённым при неизвестном результате/u);
+      assert.match(call.messages[0].content, /Переход героя между местами подтверждают только сведения о переходе/u);
+      assert.match(call.messages[0].content, /Ничего из этого не добавляй и не меняй/u);
     }
   }
   const audit = JSON.parse(calls[2].messages[1].content);
-  assert.deepEqual(audit.action_intent, {
-    evidence_scope: 'intent_only_non_evidence_of_execution_or_success',
-    attempt: { text: 'Постучать в закрытую дверь.' }
-  });
-  assert.deepEqual(audit.output, repairedOutput);
-  assert.deepEqual(audit.segments, [{ segment_id: 's1', prose: repairedOutput.prose }]);
+  assert.equal(audit['Контекст намерения для проверки'], 'Постучать в закрытую дверь.');
+  assert.equal(audit['Проверяемая проза'], repairedOutput.prose);
+  assert.deepEqual(audit['Отрывки прозы'],
+    [{ segment_id: 's1', prose: repairedOutput.prose }]);
   for (const index of [0, 1, 3]) {
     assert.equal(Object.hasOwn(JSON.parse(calls[index].messages[1].content), 'action_intent'), false);
   }
   const repair = JSON.parse(calls[3].messages[1].content);
-  assert.deepEqual(repair.segments, [{ segment_id: 's1', prose: repairedOutput.prose, nearby_context: [] }]);
-  assert.match(calls[3].messages[0].content, /Rebuild the whole passage/);
+  assert.equal(repair['Отклонённая проза'], repairedOutput.prose);
+  assert.deepEqual(repair['Отрывки исходной прозы'],
+    [{ segment_id: 's1', prose: repairedOutput.prose }]);
+  assert.match(calls[3].messages[0].content, /Rebuild the whole scene/u);
   assert.equal(validateNarrationOutput(repairedOutput).ok, true);
 });
 
@@ -204,12 +213,12 @@ test('narration treats exact known context as visible evidence and still blocks 
           prose, action_options: [], used_references: [], self_check: {}
         } };
         if (call.role_id === 'gameplay_narrator_auditor') {
-          const supported = JSON.parse(call.messages[1].content).output.prose
+          const supported = compatNarrationWire(JSON.parse(call.messages[1].content)).output.prose
             .includes(known);
           return { output: supported
-            ? { ...reviewedNarration(JSON.parse(call.messages[1].content).segments),
+            ? { ...reviewedNarration(compatNarrationWire(JSON.parse(call.messages[1].content)).segments),
               evidence: ['known context'] }
-            : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments),
+            : { ...reviewedNarration(compatNarrationWire(JSON.parse(call.messages[1].content)).segments),
               unsupported: [{ segment_choice: 's1', kind: 'unsupported_world_state',
                 reason: 'not visible' }], evidence: [] } };
         }
@@ -227,11 +236,11 @@ test('narration treats exact known context as visible evidence and still blocks 
     assert.equal(result.status, expectedStatus);
     const auditInstruction = calls.find(
       ({ role_id: role }) => role === 'gameplay_narrator_auditor').messages[0].content;
-    assert.match(auditInstruction, /strict evidence auditor/u);
+    assert.match(auditInstruction, /Ты — аудитор прозы/u);
     assert.match(auditInstruction,
-      /performed attempt with no supplied result or uncertainty[\s\S]*unsupported_result/u);
+      /Выполненная попытка без переданного результата и без переданной неопределённости подтверждена сама по себе/u);
     assert.match(auditInstruction,
-      /attempt\s+alone without any outcome claim is supported and must not be flagged/u);
+      /слова «результат неизвестен» о ней — unsupported_result/u);
   });
 });
 
@@ -246,14 +255,14 @@ test('narration removes technical prose derived from a negative movement invaria
         } };
         if (call.role_id === 'gameplay_narrator_auditor') {
           auditCount += 1;
-          const input = JSON.parse(call.messages[1].content);
-          assert.equal(input.confirmed_outcome.position_changed, false);
+          const input = compatNarrationWire(JSON.parse(call.messages[1].content));
+          assert.deepEqual(input.confirmed_outcome, []);
           return { output: auditCount === 1 ? {
-            ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+            ...reviewedNarration(compatNarrationWire(JSON.parse(call.messages[1].content)).segments,
               { visible_change_1: [] }),
             literary_failures: [{ check: 'elapsed_as_service_report', segment_choice: 's1',
               reason: 'Negative movement invariant is not prose material.' }], evidence: [] }
-            : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+            : { ...reviewedNarration(compatNarrationWire(JSON.parse(call.messages[1].content)).segments,
               { visible_change_1: ['s1'] }), evidence: ['Visible change only.'] } };
         }
         return { output: { replacements: [{

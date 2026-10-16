@@ -96,10 +96,14 @@ function observedEntityChanges(entity) {
     && status !== 'available' ? `: ${status}` : ''}.`];
 }
 
+export function bodyConditionLabels(conditions) {
+  return (conditions ?? []).flatMap((condition) =>
+    text(condition?.label) ? [condition.label] : []);
+}
+
 function bodyObservationChanges(body) {
   const active = body?.active_conditions ?? [];
-  const labels = active.flatMap((condition) =>
-    text(condition?.label) ? [condition.label] : []);
+  const labels = bodyConditionLabels(active);
   if (active.length === 0) return [
     'Осмотр тела не подтвердил активных телесных состояний; новое повреждение или диагноз не установлены.'
   ];

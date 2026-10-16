@@ -14,23 +14,25 @@ const clock = minute => ({ whole_minutes: String(333060 + minute), subminute_num
 const bundle = await loadScenarioBundle(13);
 
 test('condition order is not a bodily event and unchanged symptoms stay supporting context', () => {
-  const wet = { id: 'wet', status: 'active' };
-  const headache = { id: 'headache', status: 'active' };
+  const wet = { id: 'wet', label: 'мокрая одежда', status: 'active' };
+  const headache = { id: 'headache', label: 'головная боль', status: 'active' };
   const committedState = { body_state: { active_conditions: [wet, headache] } };
   const unchanged = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: scene(), committedState,
-    bodyAfter: { active_conditions: [{ status: 'active', id: 'headache' }, wet] } });
+    bodyAfter: { active_conditions: [{ status: 'active', id: 'headache', label: 'головная боль' }, wet] } });
   assert.deepEqual(unchanged.visible_changes, []);
   const changed = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: scene(), committedState,
-    bodyAfter: { active_conditions: [headache, { id: 'damp', status: 'active' }] } });
-  assert.deepEqual(changed.visible_changes, ['Состояние вашего тела изменилось.']);
-  const delta = changed.known_context.find(value => value.startsWith('Изменение состояния тела:'));
-  assert.doesNotMatch(delta, /headache/u);
-  assert.match(delta, /before.*wet.*after.*damp/u);
-  assert.doesNotMatch(changed.visible_changes[0], /[{}]|before|after|wet|damp/u);
-  assert.ok(changed.known_context.some(value => value.includes('headache')));
+    bodyAfter: { active_conditions: [headache, { id: 'damp', label: 'сырая одежда', status: 'active' }] } });
+  assert.deepEqual(changed.visible_changes, ['Состояние тела героя изменилось.']);
+  const delta = changed.known_context.filter(value => value.startsWith('Изменение состояния тела:'));
+  assert.deepEqual(delta, [
+    'Изменение состояния тела: прежние состояния: мокрая одежда.',
+    'Изменение состояния тела: новые состояния: сырая одежда.'
+  ]);
+  assert.doesNotMatch(JSON.stringify(changed), /"id":|headache|wet|damp|before|after/u);
+  assert.ok(changed.known_context.includes('Текущие состояния тела героя: головная боль, сырая одежда.'));
   const next = enrichLowerDvinaTraceVisibleNpcCues({
     visibleContext: { ...scene(), known_context: changed.known_context },
-    committedState: { body_state: { active_conditions: [headache, { id: 'damp', status: 'active' }] } }
+    committedState: { body_state: { active_conditions: [headache, { id: 'damp', label: 'сырая одежда', status: 'active' }] } }
   });
   assert.ok(next.known_context.every(value => !value.startsWith('Изменение состояния тела:')));
   assert.deepEqual(next.visible_changes, []);
@@ -72,7 +74,7 @@ test('a remembered player utterance is not recast as received testimony', () => 
     { speaker_actor_id: 'player', content: 'Я не знаю дороги.' },
     { speaker_actor_id: 'other', content: 'Я видел лодку.' }
   ]);
-  assert.deepEqual(known, ['В прежнем разговоре вы сказали: Я не знаю дороги.',
+  assert.deepEqual(known, ['В прежнем разговоре герой сказал: Я не знаю дороги.',
     'Содержание сообщения из прежнего разговора: Я видел лодку.']);
 });
 
@@ -83,7 +85,7 @@ test('final current body and calendar replace their earlier context on authored 
   const before = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: scene(), committedState: state,
     calendarProfile: bundle.calendar_profile });
   assert.ok(before.known_context.some(value => value.includes('07:00')));
-  const bodyAfter = { active_conditions: [{ id: 'damp', status: 'active' }] };
+  const bodyAfter = { active_conditions: [{ id: 'damp', label: 'Сырая одежда', status: 'active' }] };
   for (const consequence of [{ phase4_kind: 'movement' }, {}]) {
     const projector = createLowerDvinaTraceTurnStepVisibleProjector({ calendarProfile: bundle.calendar_profile,
       fallback: { project: async () => before } });
@@ -93,9 +95,13 @@ test('final current body and calendar replace their earlier context on authored 
     const currentContext = output.known_context.filter(value => !value.startsWith('Изменение состояния тела:'));
     assert.doesNotMatch(JSON.stringify(currentContext), /07:00|wrist_discomfort|"wet"|PRIVATE_STORAGE/u);
     assert.doesNotMatch(JSON.stringify(output.known_context), /PRIVATE_STORAGE/u);
-    assert.ok(output.known_context.some(value => value.includes('damp')));
-    assert.ok(output.known_context.some(value => value.includes('wrist_discomfort') && value.includes('damp')));
-    assert.deepEqual(output.visible_changes, ['Состояние вашего тела изменилось.']);
+    assert.ok(output.known_context.includes('Текущие состояния тела героя: Сырая одежда.'));
+    assert.ok(output.known_context.includes(
+      'Изменение состояния тела: прежние состояния: Ноет запястье.'));
+    assert.ok(output.known_context.includes(
+      'Изменение состояния тела: новые состояния: Сырая одежда.'));
+    assert.doesNotMatch(JSON.stringify(output.known_context), /"id":|wrist_discomfort|damp/u);
+    assert.deepEqual(output.visible_changes, ['Состояние тела героя изменилось.']);
     assert.deepEqual(output.sensory_details, before.sensory_details);
     assert.equal(output.visible_scene, before.visible_scene);
   }
@@ -127,4 +133,11 @@ test('actual authored conversation snapshot delivers attributed player journal b
     assert.equal(JSON.stringify([safe, visible]).includes(memory.summary_text), false);
     assert.deepEqual(visible.visible_npc, []);
   }
+});
+
+test('known context names the hero’s sex in Russian', () => {
+  assert.ok(projectKnownContext({ sex_category: 'male' })
+    .includes('Пол героя: мужской.'));
+  assert.ok(projectKnownContext({ sex_category: 'female' })
+    .includes('Пол героя: женский.'));
 });

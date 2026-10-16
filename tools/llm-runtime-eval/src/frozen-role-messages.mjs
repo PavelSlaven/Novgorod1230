@@ -111,7 +111,8 @@ async function narrationMessages(fixture) {
   };
   const draft = target === 'gameplay_narrator_auditor' ? payload.output : {
     version: 1, schema: 'narration_output', output_id: request.request_id,
-    prose: 'Сначала видны ворота. Телега скрипит у ворот. Потом всё тихо.',
+    prose: target === 'gameplay_narrator_semantic_repair'
+      ? payload.segments?.[0]?.prose : 'Сначала видны ворота. Телега скрипит у ворот. Потом всё тихо.',
     action_options: [], used_references: [], self_check: {}
   };
   let call, auditCalls = 0;

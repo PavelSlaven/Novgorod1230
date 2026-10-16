@@ -48,6 +48,8 @@ import { applySiteTraversalTransition, siteTraversalWrites } from
   './spatial-v3-site-traversal-commit.js';
 import { projectPreparedDomainState } from
   '../../runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
+import { projectLowerDvinaTraceSelfKnownContext } from
+  '../../runtime/lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 import { lowerDvinaTraceCarriedItemIds, uniqueLowerDvinaTraceVisibleObjects } from
   '../../runtime/lower-dvina-trace-visible-scene-items.js';
 
@@ -167,9 +169,21 @@ export async function commitLowerDvinaTraceTurnStep({
         ...(envelope.visible_context.uncertainties ?? [])
       ])]
     };
-  const ordinaryVisibleContext = ordinaryPlan == null ? sourceVisibleContext
+  const playerVisibleContext = destinationVisibleContext == null
+    ? sourceVisibleContext : {
+      ...sourceVisibleContext,
+      known_context: [...new Set([
+        ...(sourceVisibleContext.known_context ?? []),
+        ...projectLowerDvinaTraceSelfKnownContext({
+          committedState: state,
+          bodyAfter: envelope.body_update.applied
+            ? envelope.body_update.state_after : null
+        })
+      ])]
+    };
+  const ordinaryVisibleContext = ordinaryPlan == null ? playerVisibleContext
     : applyOrdinaryMaterializationProjection({
-      next: structuredClone(state), visibleContext: sourceVisibleContext, ordinaryPlan
+      next: structuredClone(state), visibleContext: playerVisibleContext, ordinaryPlan
     });
   const currentPosition = envelope.consequence?.position_transition?.to_position_ref
     ?? state.position?.position_id

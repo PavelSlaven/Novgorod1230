@@ -184,13 +184,15 @@ export function projectKnowledge(records, { strict = false } = {}) {
 
 export function projectKnownContext(actor, knowledge = [], interactions = []) {
   const values = [
-    ...(text(actor?.name) ? [`Вас зовут ${actor.name}.`] : []),
-    ...(text(actor?.role) ? [`Ваш род занятий: ${actor.role}.`] : []),
+    ...(text(actor?.name) ? [`Имя героя: ${actor.name}.`] : []),
+    ...(actor?.sex_category === 'male' || actor?.sex_category === 'female'
+      ? [`Пол героя: ${actor.sex_category === 'male' ? 'мужской' : 'женский'}.`] : []),
+    ...(text(actor?.role) ? [`Род занятий героя: ${actor.role}.`] : []),
     text(actor?.biography),
     ...(actor?.memory ?? []), ...knowledge,
     ...interactions.filter(record => text(record.content)).map(record =>
       record.speaker_actor_id === actor?.actor_id && text(actor?.actor_id)
-        ? `В прежнем разговоре вы сказали: ${record.content}`
+        ? `В прежнем разговоре герой сказал: ${record.content}`
         : `Содержание сообщения из прежнего разговора: ${record.content}`)
   ].map(value => typeof value === 'string' ? value : value?.text)
     .filter(value => typeof value === 'string' && value.trim());

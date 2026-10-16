@@ -14,9 +14,8 @@ const request = (changes) => ({ visible_context: { visible_scene: 'Двор.', v
 test('narrator input: passages are route choices, not scene objects, with or without required changes', () => {
   for (const changes of [[], ['Вы осмотрелись.']]) {
     const wire = narrationWire(request(changes));
-    const shown = wire.optional_support.visible_objects;
-    if (changes.length === 0) assert.deepEqual(shown.map((row) => row.display_label), ['штаны']);
-    else assert.equal(shown, undefined, 'with required changes only visible_scene is supplied');
+    const shown = wire['Переданные сведения об обстановке']['Предметы и ориентиры'];
+    assert.deepEqual(shown, ['штаны']);
     assert.doesNotMatch(JSON.stringify(wire), /Проход|выход 1/u);
   }
 });
@@ -35,13 +34,10 @@ test('narrator input removes service markers from visible text and preserves cle
     do_not_imply: ['digest:0123456789abcdef'], allowed_tensions: [],
     visible_npc: [], visible_objects: []
   }, context: {} });
-  assert.equal(wire.optional_support.visible_scene, undefined);
-  assert.deepEqual(wire.required_current_beat.changes, [{
-    ref: 'visible_change_1', text: { change_kind: 'environment_state',
-      summary: 'Вода отступила.' }
-  }]);
-  assert.deepEqual(wire.required_current_beat.uncertainties, []);
-  assert.deepEqual(wire.constraints.do_not_imply, []);
+  assert.equal(wire['Переданные сведения об обстановке']['Место'], undefined);
+  assert.deepEqual(wire['Обязательные положения текущего эпизода'], ['Вода отступила.']);
+  assert.deepEqual(wire['Обязательные положения текущего эпизода'], ['Вода отступила.']);
+  assert.deepEqual(wire['Границы рассказа']['Не утверждать'], []);
 });
 
 test('narration WK prose removes calibration prefixes but keeps exact qualifiers and references', () => {
@@ -63,8 +59,11 @@ test('narration WK prose removes calibration prefixes but keeps exact qualifiers
   }
   assert.equal(projected.hard_constraints[0].runtime_text, 'Берёза растёт у воды.');
   assert.equal(projected.disputes[0].claims[0].runtime_text, 'Берёза растёт у воды.');
-  assert.deepEqual(narrationWire({ ...request([]), world_knowledge: slice }).world_knowledge, projected);
-  assert.match(NARRATION_WK_QUALIFIER_RULE, /ordinary Russian beside the factual proposition/u);
+  const proseFacts = narrationWire({ ...request([]), world_knowledge: slice })['Сведения о мире'];
+  assert.equal(proseFacts.length, 7);
+  assert.match(proseFacts[2], /По имеющимся сведениям можно предположить/u);
+  assert.doesNotMatch(JSON.stringify(proseFacts), /claim:|evidence:|directness|confidence|runtime_text/u);
+  assert.match(NARRATION_WK_QUALIFIER_RULE, /русскими фразами/u);
 });
 
 test('narration WK rejects contaminated factual text while leaving machine refs intact', () => {

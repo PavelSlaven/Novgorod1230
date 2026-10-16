@@ -1,3 +1,4 @@
+import { compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -568,7 +569,7 @@ test('B1 createTraceTurnRuntime wires grounder+telemetry into narration', async 
               return { output: { prose: 'Ты поднял сеть.' } };
             }
             if (call.role_id === 'gameplay_narrator_auditor') {
-              const body = JSON.parse(call.messages[1].content);
+              const body = compatNarrationWire(JSON.parse(call.messages[1].content));
               return {
                 output: {
                   reviewed_segments: body.segments.map((s) => s.segment_id),

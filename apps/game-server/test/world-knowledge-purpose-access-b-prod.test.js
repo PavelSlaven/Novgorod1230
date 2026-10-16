@@ -1,3 +1,4 @@
+import { compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -86,7 +87,7 @@ function makeProbeRunner() {
         const k = call.request_identity ?? 'x';
         const n = (auditCount.get(k) ?? 0) + 1;
         auditCount.set(k, n);
-        const wire = JSON.parse(call.messages[1].content);
+        const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
         const first = wire.segments[0]?.segment_id;
         const refs = [...wire.required_current_beat.changes,
           ...wire.required_current_beat.uncertainties].map(({ ref }) => ref);

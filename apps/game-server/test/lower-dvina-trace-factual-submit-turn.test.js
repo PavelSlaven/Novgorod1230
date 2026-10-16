@@ -13,7 +13,7 @@ import { createLowerDvinaTracePhase2DurableNarrator } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
 import { bundle, fixture, fixtureOpeningCurrentVisibleContext } from
   './lower-dvina-trace-phase-2-fixture.js';
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 
 test('submitTurn uses durable factual delivery after narrator rejection with a starting NPC', async () => {
   const f = fixture({ llmDiagnostics: createLlmDiagnostics(), narrationFails: true });
@@ -34,7 +34,7 @@ test('submitTurn uses durable factual delivery after narrator rejection with a s
   const productionNarrationService = createLowerDvinaTraceNarrationService({
     roleRunner: { async run(call) {
       roleCalls.push(structuredClone(call));
-      const wire = JSON.parse(call.messages[1].content);
+      const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
       if (call.role_id === 'gameplay_narrator') return { output: {
         prose: 'Вы осмотрели берег и увидели стоящего рядом человека.',
         action_options: [], used_references: []

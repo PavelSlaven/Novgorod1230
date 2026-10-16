@@ -25,6 +25,9 @@ import { commitEnvelope } from
   './lower-dvina-trace-turn-step-envelope-fixture.js';
 import { withPhase2CurrentVisibleContext } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { phase2VisibleContextFromPayload } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
+import { narrationWire } from '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { backgroundNpc, body, fixture, semanticActivity } from
   './lower-dvina-trace-turn-step-commit-fixture.js';
 import { SCENE_NPC_SOURCE } from
@@ -238,6 +241,49 @@ for (const costKind of ['action', 'time']) {
     });
 }
 
+test('destination commit retains self context in reloaded narrator wire', async () => {
+  const envelope = commitEnvelope({ clarification: false, check: false });
+  envelope.visible_context.known_context = ['Старый берег.', 'Имя героя: Микула.'];
+  const { canonical_digest: _digest, ...source } = envelope.visible_context;
+  const destination = { ...structuredClone(source),
+    visible_scene: 'Новый берег.', known_context: ['Новый берег.'] };
+  envelope.consequence.position_transition = {
+    owner: '@rus/movement-routes', actor_id: 'actor-1',
+    from_position_ref: 'position:source', to_position_ref: 'position:destination'
+  };
+  envelope.consequence.visible_seed.destination_visible_context = destination;
+  const f = fixture({ direct: true, envelopeOverride: envelope,
+    stateOverride: {
+      journey_location: { id: 'journey', scene_position_id: 'position:source',
+        state_version: 3 },
+      position: { site_id: 'site', position_id: 'position:source',
+        location_ref: 'site' }
+    }
+  });
+  f.state.player_profile.identity = { name: 'Микула', sex_category: 'male' };
+  f.state.body_state.active_conditions = [
+    { id: 'sore_hand', storage_condition_id: 'stored-sore-hand',
+      label: 'Болит кисть', status: 'active' }];
+  await f.commit();
+  const payload = f.plans[0].appends.find(({ target_table: table }) =>
+    table === 'party_visible_packages').record.visible_payload;
+  const reloaded = structuredClone(JSON.parse(JSON.stringify(payload)));
+  assert.equal(reloaded.perceived_scene, 'Новый берег.');
+  assert.ok(reloaded.known_context.includes('Имя героя: Микула.'));
+  assert.ok(reloaded.known_context.includes('Пол героя: мужской.'));
+  assert.ok(reloaded.known_context.includes('Текущие состояния тела героя: Болит кисть.'));
+  assert.ok(reloaded.known_context.includes('Новый берег.'));
+  assert.equal(reloaded.known_context.includes('Старый берег.'), false);
+  assert.doesNotMatch(JSON.stringify(reloaded), /sore_hand/u);
+  const wire = narrationWire({
+    visible_context: phase2VisibleContextFromPayload(reloaded)
+  });
+  const known = wire['Переданные сведения об обстановке']['Известное герою'];
+  assert.ok(known.includes('Имя героя: Микула.'));
+  assert.ok(known.includes('Пол героя: мужской.'));
+  assert.ok(known.includes('Текущие состояния тела героя: Болит кисть.'));
+  assert.equal(known.includes('Старый берег.'), false);
+});
 for (const capacityLeft of [true, false]) {
   test(`destination commit keeps the S1 planner marker out of visible context (capacity left: ${capacityLeft})`,
     async () => {

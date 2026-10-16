@@ -561,7 +561,7 @@ function playerSituationText(visible, actorRole = null, visibleItems = []) {
 
 function knownContextText(value) {
   if (typeof value !== 'string') return null;
-  const match = value.match(/^Текущие состояния вашего тела:\s*(\[[\s\S]*\])$/u);
+  const match = value.match(/^Текущие состояния (?:тела героя|вашего тела):\s*(\[[\s\S]*\])$/u);
   if (!match) return value;
   let conditions;
   try { conditions = JSON.parse(match[1]); } catch { return null; }

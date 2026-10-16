@@ -1,3 +1,4 @@
+import { compatNarrationWire } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createTracePhase3VisibleProjector } from '../src/runtime/lower-dvina-trace-phase-3-effects.js';
@@ -68,16 +69,21 @@ function currentSceneState(scene = currentScene(), items = []) {
     location_profiles: [{ location_profile_id: 'shore', display_name: 'Берег' }] };
 }
 
-async function assertCurrentWire(visible, required, omitted = []) {
+async function assertCurrentWire(visible, required, omittedFromBeat = [],
+  omittedFromWire = []) {
   let calls = 0;
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
-    const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support,
-      { visible_scene: visible.visible_scene });
+    const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
+    assert.equal(wire.optional_support.visible_scene, visible.visible_scene);
+    assert.deepEqual(wire.optional_support.sensory_details, visible.sensory_details);
+    assert.deepEqual(wire.optional_support.known_context, visible.known_context);
     const facts = wire.required_current_beat.changes.map(({ text }) => text);
     for (const fact of required) assert.ok(facts.includes(fact), fact);
-    for (const fact of omitted) assert.equal(call.messages[1].content.includes(fact), false, fact);
+    for (const fact of omittedFromBeat) assert.equal(facts.some(value =>
+      value.includes(fact)), false, fact);
+    for (const fact of omittedFromWire) assert.equal(
+      call.messages[1].content.includes(fact), false, fact);
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: 'Вы смотрите на берег.', action_options: [], used_references: [] } };
     return { output: {} };
@@ -238,7 +244,7 @@ test('ordinary seed keeps new observation and drops elapsed prose and old snapsh
         operations: [{ op: 'request_discovery' }], check: null } }] } }
   });
   await assertCurrentWire(visible, ['Под навесом видны свежие стружки.'],
-    ['Прошло 2 минуты.', 'При вас есть хозяйственный нож.']);
+    ['При вас есть хозяйственный нож.'], ['Прошло 2 минуты.']);
 });
 
 test('real observation promotes an object-only result and unseen safe sibling without metadata', async () => {
@@ -258,7 +264,7 @@ test('real observation promotes an object-only result and unseen safe sibling wi
     const visible = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
     await assertCurrentWire(visible,
       [`В поле зрения — ${label}.`],
-      ['НЕПОДТВЕРЖДЁННОЕ СОДЕРЖИМОЕ', 'unsupported_detail', 'unseen-object']);
+      [], ['НЕПОДТВЕРЖДЁННОЕ СОДЕРЖИМОЕ', 'unsupported_detail', 'unseen-object']);
     const canonicalItem = input.retrieved_state.items.find((item) =>
       item.item_id === 'unseen-object');
     canonicalItem.hidden_state = { contents: 'SECRET_SENTINEL' };
@@ -270,7 +276,7 @@ test('real observation promotes an object-only result and unseen safe sibling wi
     assert.equal(JSON.stringify(rebuilt).includes('SECRET_SENTINEL'), false,
       'the current-scene projection must remove unsupported hidden item state');
     await assertCurrentWire(rebuilt, ['В поле зрения — ' + label + '.'],
-      ['SECRET_SENTINEL', 'hidden_state', 'unseen-object']);
+      [], ['SECRET_SENTINEL', 'hidden_state', 'unseen-object']);
   }
 });
 
@@ -307,7 +313,7 @@ test('general scene observation excludes every native carried placement; explici
   }
 });
 
-test('real observation preserves entity-bound human N1 cues without translating portrait enums', async () => {
+test('real observation preserves entity-bound human N1 cues as prose without portrait enums', async () => {
   const scene = currentScene();
   scene.visible_npc[0].observable_cues = {
     ordinary_remainder: { ordinary_descriptor: 'На рукавах налипли стружки.',
@@ -324,7 +330,7 @@ test('real observation preserves entity-bound human N1 cues without translating 
   }, directSeedKeys: [], body: {} });
   await assertCurrentWire(visible, ['В поле зрения — рыбак.',
     'рыбак: На рукавах налипли стружки.', 'рыбак: Перебирает обрезки досок.'],
-  ['three_quarter', 'stocky', 'НЕПОДТВЕРЖДЁННЫЙ МОТИВ']);
+  [], ['three_quarter', 'stocky', 'НЕПОДТВЕРЖДЁННЫЙ МОТИВ']);
 });
 
 
@@ -344,7 +350,7 @@ test('compound direct speech and failed later action preserve results without el
       { applied: true, approved_plan: { resolution: 'direct', goal_result: 'not_achieved',
         operations: [], check: null, interpretation: { player_goal: goal } } }] }
     } });
-  assert.deepEqual(visible.visible_changes, [`Вы произнесли: «${speech}»`]);
+  assert.deepEqual(visible.visible_changes, [`Герой произнёс: «${speech}»`]);
   assert.doesNotMatch(visible.visible_changes.join(' '), /Цель .*не достигнута/u);
   assert.deepEqual(visible.uncertainties, []);
 });

@@ -77,7 +77,7 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
     position: { region_id: position.g4_id, place_id: position.g5_node_id, location_id: position.g5_node_id,
       minilocation_id: position.g6_instance_id, anchor_id: position.g5_anchor_id },
     narrator_scope: { allowed_surfaces: ['opening'], forbidden_surfaces: ['hidden_state'],
-      style_constraints: ['connected_literary_russian', 'second_person'],
+      style_constraints: ['connected_literary_russian', 'third_person'],
       knowledge_boundary: { player_safe_only: true } },
     visible_scene_dossier: { must_include: mustInclude,
       must_not_include: ['unprovided history or preceding journey', 'unprovided goal or obligation',

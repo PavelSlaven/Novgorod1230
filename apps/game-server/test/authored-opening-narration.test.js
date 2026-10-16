@@ -125,6 +125,56 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
   assert.doesNotMatch(JSON.stringify(result), /item_internal_o1_gap/u);
 });
 
+test('opening shares the world/story boundary across distinct scenes and repair', async () => {
+  for (const [setting, invented, allowed] of [
+    ['У воды растёт трава.', 'Любава оказалась в лесу.', 'Любава ощутила прохладу и поправила рукав.'],
+    ['У воды лежит песок.', 'Любава оказалась во дворе.', 'Любава ощутила тепло и повернула голову.']
+  ]) {
+    const pkg = structuredClone(openingPackage()), calls = [];
+    pkg.visible_scene_facts.push({ fact_id: 'opening:setting',
+      text: setting, source_refs: [] });
+    const service = createAuthoredOpeningNarrationService({ roleRunner: {
+      async run(call) {
+        calls.push(call);
+        if (call.role_id === 'gameplay_narrator') return { output: {
+          prose: invented } };
+        if (call.role_id === 'gameplay_narrator_semantic_repair') return {
+          output: { prose: allowed } };
+        return { output: calls.some(({ role_id }) =>
+          role_id === 'gameplay_narrator_semantic_repair')
+          ? { pass: true, failed_checks: [], concerns: [],
+            evidence: ['Мир из переданных фактов; ощущение и движение — рассказ.'] }
+          : { pass: false, failed_checks: ['must_not_include_check'],
+            concerns: [{ code: 'NARRATOR_PROSE_MUST_NOT_INCLUDE_VIOLATION',
+              severity: 'repairable',
+              message: 'Место изменено без источника.' }],
+            evidence: ['Место во входе другое.'] } };
+      }
+    } });
+    const result = await service.run({ requestId: 'opening:1',
+      visibleContextPackage: pkg, visibleContextApproval: openingApproval(pkg) });
+    assert.equal(result.prose, allowed);
+    assert.deepEqual(calls.map(({ role_id }) => role_id), [
+      'gameplay_narrator', 'gameplay_narrator_auditor',
+      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+    const boundary = JSON.parse(calls[0].messages[1].content).сцена.граница;
+    assert.match(boundary, /Рассказ — то, как герой переживает этот мир/u);
+    assert.match(boundary, /Герой не совершает поступков, которых игрок не выбирал/u);
+    for (const call of calls) {
+      assert.ok(call.messages[0].content.includes(boundary));
+      const scene = JSON.parse(call.messages[1].content).сцена;
+      assert.equal(scene.граница, boundary);
+      assert.match(JSON.stringify(scene), new RegExp(setting, 'u'));
+    }
+    assert.match(calls[1].messages[0].content,
+      /состояние тела и сил, свойства одежды и предметов, а также отрицания/u);
+    assert.equal(JSON.parse(calls[1].messages[1].content).проверяемая_проза,
+      invented);
+    assert.equal(JSON.parse(calls[2].messages[1].content).отклонённая_проза,
+      invented);
+  }
+});
+
 test('opening repairs unsupported negative prose once and blocks hard findings', async () => {
   const pkg = openingPackage(), approval = openingApproval(pkg);
   const run = (severity) => {
@@ -204,7 +254,7 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   pkg.frame = { ...pkg.frame, season: 'summer', light_profile: 'daylight',
     weather_state: {} };
   pkg.narrator_scope.style_constraints = ['connected_literary_russian',
-    'second_person', 'two_to_four_paragraphs'];
+    'third_person', 'two_to_four_paragraphs'];
   pkg.weather_light_context = [];
   const approval = openingApproval(pkg);
   const prose = pkg.visible_scene_dossier.must_include.map(({ text }) => text)
@@ -235,9 +285,11 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   const writerPrompt = calls[0].messages[0].content;
   const auditorPrompt = calls[1].messages[0].content;
   assert.match(writerPrompt, /Верните только \{"prose":"<полное вступление>"\}/u);
-  assert.match(writerPrompt, /Напишите 2–4 связанных\s+абзаца сдержанной литературной прозы/u);
-  assert.match(writerPrompt, /пустой список наблюдений не означает, что место пусто или тихо/u);
-  assert.match(writerPrompt, /Не упоминайте предметы, людей, маршруты, звуки, погоду, воспоминания или/u);
+  assert.match(writerPrompt, /в третьем лице и прошедшем времени/u);
+  assert.match(writerPrompt, /пустой список\s+наблюдений не означает, что место пусто или тихо/u);
+  assert.match(writerPrompt, /Рассказ — то, как герой переживает этот мир/u);
+  assert.match(writerPrompt, /фоновые звуки/u);
+  assert.match(writerPrompt, /мелкие движения тела героя/u);
   assert.match(auditorPrompt, /Проверяйте вступление по visible_context_package, а не по правдоподобию/u);
   assert.doesNotMatch(writerPrompt, /сохраняй связность и художественную форму/u);
   assert.doesNotMatch(writerPrompt, /Каждое утверждение должно опираться на переданный факт/u);
@@ -251,7 +303,8 @@ test('opening sends one readable Russian fact projection to writer and auditor',
     assert.doesNotMatch(serialized,
       /visible_context_package|frame|clock|whole_minutes|weather_light_context|must_include|source_refs|fact_id|summer|daylight|"[^"]*":\s*\[\s*\]/u);
     assert.doesNotMatch(serialized, /male|young|blue|auburn|stocky|low_leather_shoe/u);
-    assert.match(serialized, /Каждое утверждение должно иметь опору в фактах/u);
+    assert.match(serialized, /Мир сцены задан только сведениями/u);
+    assert.match(serialized, /Рассказ — то, как герой переживает этот мир/u);
   }
   const writerFacts = [
     ...(writerInput.сцена.факты ?? []),

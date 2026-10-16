@@ -28,8 +28,8 @@ const PUBLIC_CLIENT_ERROR_CODES = new Set([
   'ROUTE_NOT_FOUND'
 ]);
 
-export function successEnvelope(data, { requestId = null, playerQuote = null } = {}) {
-  assertPublicPayload(data, { playerQuote });
+export function successEnvelope(data, { requestId = null } = {}) {
+  assertPublicPayload(data);
   return Object.freeze({
     version: HTTP_API_VERSION,
     schema: API_SUCCESS_SCHEMA,

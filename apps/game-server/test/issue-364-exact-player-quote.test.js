@@ -4,6 +4,9 @@ import { Readable } from 'node:stream';
 import { requireTurnStepCommitEnvelope } from '@rus/turn';
 import { createHttpHandler } from '../src/http/handler.js';
 import { successEnvelope } from '../src/http/contracts.js';
+import { withCommittedPlayerSpeech } from '../src/public-boundary.js';
+import { projectPhase2VisibleContext, projectVisibleContextForPlayerPackage } from
+  '../src/runtime/lower-dvina-trace-player-safe-visible-context.js';
 import { projectDirectSeedChanges } from '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { auditFocusedSpeech } from '../src/runtime/lower-dvina-trace-turn-step-speech-audit.js';
 import { fixture, loadScenarioBundle } from './lower-dvina-trace-phase-2-fixture.js';
@@ -13,8 +16,7 @@ const bundle = await loadScenarioBundle(13);
 
 // This seam uses the real committed speech and formatter. The fixture narrator
 // is canned, so this is not a full production screen or PostgreSQL test.
-async function submitSpeech(words, systemText = null) {
-  const rawText = `Говорю: «${words}»`;
+async function submitSpeech(words, systemText = null, rawText = 'Говорю: «' + words + '»') {
   const requests = [];
   const audits = [];
   const f = fixture({ scenarioBundle: bundle, materializationBundle: bundle,
@@ -34,7 +36,8 @@ async function submitSpeech(words, systemText = null) {
         operations: [], check: null, continuation: null, clarification: null,
         direct_result_kind: 'player_utterance',
         utterance: { speaker_ref: request.actor.actor_id ?? request.actor.actor_ref,
-          input_mode: 'verbatim', utterance_text: 'Неточная модельная формулировка.',
+          input_mode: rawText.includes('«') ? 'verbatim' : 'intent_paraphrase',
+          utterance_text: rawText.includes('«') ? 'Неточная модельная формулировка.' : words,
           delivery: { loudness: 2, duration_class: 'instant' } },
         reason_code: 'player_speech', reason: 'Персонаж произносит заданную реплику.'
       };
@@ -45,11 +48,13 @@ async function submitSpeech(words, systemText = null) {
           audits.push(input);
           assert.equal(input.remaining_intent, rawText);
           return { output: { speech_faithful: true,
-            required_input_mode: 'verbatim', unexecuted_intent: null } };
+            required_input_mode: rawText.includes('«') ? 'verbatim' : 'intent_paraphrase',
+            unexecuted_intent: null } };
         } }
       });
-      assert.equal(audited.corrected_plan.utterance.utterance_text, words);
-      return audited.corrected_plan;
+      const approved = audited.corrected_plan ?? plan;
+      assert.equal(approved.utterance.utterance_text, words);
+      return approved;
     }
   });
   f.state.inventory = { items: [], load_category: 'light', occupied_hands: 0 };
@@ -73,7 +78,9 @@ async function submitSpeech(words, systemText = null) {
       projected = projectDirectSeedChanges({ input: committed, directSeedKeys: [],
         appliedPlan: trace.approved_plan });
       // No raw input or invented provenance field is added to the public DTO.
-      boundaryData = { visible_changes: systemText == null ? projected : [...projected, systemText] };
+      boundaryData = withCommittedPlayerSpeech({
+        visible_changes: systemText == null ? projected : [...projected, systemText]
+      }, { last_turn: { semantic_trace: committed.mode_resolution.decision_trace } });
       return boundaryData;
     }
   } });
@@ -147,4 +154,82 @@ test('ordinary player input does not authorize a forged service-code quote', asy
   assert.equal(response.data, undefined);
   assert.equal(response.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
   assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID/u);
+});
+
+test('HTTP rejects a forged first speech line without committed utterance', async () => {
+  const input = { request_id: 'forged-quote', raw_text: 'Говорю: «' + marker + '»' };
+  const handler = createHttpHandler({ root: {
+    async submitTurn() {
+      return withCommittedPlayerSpeech({
+        visible_changes: ['Герой произнёс: «' + marker + '».']
+      }, { last_turn: { semantic_trace: { step_traces: [{
+        applied: true, approved_plan: { resolution: 'direct',
+          direct_result_kind: 'no_state_gesture', utterance: null }
+      }] } } });
+    }
+  } });
+  const request = Readable.from([Buffer.from(JSON.stringify(input))]);
+  request.method = 'POST';
+  request.url = '/api/v1/parties/party-1/turns';
+  request.headers = { host: 'localhost' };
+  let status;
+  let response;
+  await handler(request, {
+    writeHead(value) { status = value; },
+    end(value) { response = JSON.parse(value); }
+  });
+  assert.equal(status, 500);
+  assert.equal(response.ok, false);
+  assert.equal(response.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID/u);
+});
+
+test('HTTP preserves unquoted direct committed speech exactly', async () => {
+  const rawText = 'Говорю ' + marker;
+  const { status, response, committed } = await submitSpeech(marker, null, rawText);
+  assert.equal(committed.mode_resolution.decision_trace.step_traces[0]
+    .approved_plan.utterance.utterance_text, marker);
+  assert.equal(status, 200);
+  assert.deepEqual(response.data.visible_changes,
+    ['Герой произнёс: «' + marker + '».']);
+});
+
+test('public boundary rejects a duplicated forged speech line', async () => {
+  const line = 'Герой произнёс: «' + marker + '».';
+  const { status, response } = await submitSpeech(marker, line);
+  assert.equal(status, 500);
+  assert.equal(response.ok, false);
+  assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID/u);
+});
+
+test('committed speech survives visible package and screen reload projection', () => {
+  const line = 'Герой произнёс: «' + marker + '».';
+  const state = { party_state: { turn_number: 1 }, last_turn: { semantic_trace: {
+    step_traces: [{ applied: true, approved_plan: { resolution: 'direct',
+      direct_result_kind: 'player_utterance', utterance: { utterance_text: marker } } }]
+  } } };
+  const source = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'На берегу тихо.', visible_changes: [line],
+    sensory_details: [], visible_npc: [], visible_objects: [],
+    known_context: [], uncertainties: [] };
+  const { visible_context: committed } = projectVisibleContextForPlayerPackage(source, {
+    committedSpeechChanges: [line], requireScene: true
+  });
+  assert.deepEqual(committed.visible_changes, [line]);
+  const reloaded = projectPhase2VisibleContext({
+    perceived_scene: committed.visible_scene,
+    perceived_changes: committed.visible_changes,
+    sensory_details: [], visible_npcs: [], visible_objects: [],
+    known_context: [], uncertainties: []
+  });
+  const data = withCommittedPlayerSpeech({
+    turn_number: 1, screen: { turn_number: 1, visible_context: reloaded,
+      visible_changes: reloaded.visible_changes }
+  }, state);
+  assert.deepEqual(successEnvelope(data).data.screen.visible_changes, [line]);
+  const stale = withCommittedPlayerSpeech({
+    turn_number: 2, screen: { turn_number: 2, visible_changes: [line] }
+  }, state);
+  assert.throws(() => successEnvelope(stale),
+    { code: 'PUBLIC_PAYLOAD_SERVICE_TEXT' });
 });

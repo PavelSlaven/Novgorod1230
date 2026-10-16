@@ -85,15 +85,39 @@ export function playerSafeCalibrationText(value) {
   return text;
 }
 
+// Keep committed speech evidence off the public DTO.
+const committedSpeech = new WeakMap();
+
+export function committedPlayerSpeechChanges(state) {
+  return state?.last_turn?.semantic_trace?.step_traces?.flatMap(
+    ({ applied, approved_plan: plan }) => applied === true
+      && plan?.resolution === 'direct'
+      && plan.direct_result_kind === 'player_utterance'
+      && typeof plan.utterance?.utterance_text === 'string'
+      && plan.utterance.utterance_text.length > 0
+      ? [playerSpeechVisibleChange(plan.utterance.utterance_text)] : []) ?? [];
+}
+
+export function withCommittedPlayerSpeech(value, state) {
+  const changes = committedPlayerSpeechChanges(state);
+  if (value?.turn_number != null && value.turn_number !== state?.party_state?.turn_number) return value;
+  if (value?.screen?.turn_number != null
+      && value.screen.turn_number !== state?.party_state?.turn_number) return value;
+  if (changes.length > 0 && value != null && typeof value === 'object') {
+    committedSpeech.set(value, changes);
+  }
+  return value;
+}
+
 export function findUnsafePublishedText(value, field = '') {
   return findPublishedText(value, '$', field);
 }
 
-function findPublishedText(value, path = '$', field = '', seen = new Set(), quote = null, changeLeaf = false) {
+function findPublishedText(value, path = '$', field = '', seen = new Set(), permitted = [], remaining = null) {
   if (typeof value === 'string') {
     if (!PLAYER_TEXT_FIELDS.has(field)) return null;
-    if (changeLeaf && quote?.change === value && !quote.used) {
-      quote.used = true;
+    if (remaining?.has(value)) {
+      remaining.delete(value);
       return null;
     }
     const finding = findUnsafePlayerText(value, {
@@ -109,7 +133,8 @@ function findPublishedText(value, path = '$', field = '', seen = new Set(), quot
   for (const [key, nested] of Object.entries(value)) {
     const nestedField = PLAYER_TEXT_FIELDS.has(key) ? key : field;
     const finding = findPublishedText(nested, `${path}.${key}`, nestedField, seen,
-      quote, Array.isArray(value) && path.endsWith('.visible_changes'));
+      permitted, key === 'visible_changes' && Array.isArray(nested)
+        ? new Set(permitted) : remaining);
     if (finding != null) return finding;
   }
   seen.delete(value);
@@ -120,13 +145,11 @@ export function playerSpeechVisibleChange(value) {
   return `Герой произнёс: «${value}»${/[.!?…]$/u.test(value) ? '' : '.'}`;
 }
 
-export function assertPublicPayload(value, { playerQuote = null } = {}) {
+export function assertPublicPayload(value) {
   validateExactNpcUtteranceFields(value);
   assertNoHiddenLeaks(value);
-  const quote = typeof playerQuote === 'string' && playerQuote.length > 0
-    ? { change: playerSpeechVisibleChange(playerQuote), used: false }
-    : null;
-  const finding = findPublishedText(value, '$', '', new Set(), quote);
+  const finding = findPublishedText(value, '$', '', new Set(),
+    committedSpeech.get(value) ?? []);
   if (finding != null) {
     throw serverError('PUBLIC_PAYLOAD_SERVICE_TEXT',
       'Public API payload contains service text.', {

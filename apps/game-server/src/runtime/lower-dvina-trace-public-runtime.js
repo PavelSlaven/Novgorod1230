@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { serverError } from '../errors.js';
+import { withCommittedPlayerSpeech } from '../public-boundary.js';
 import {
   createFirstPlayablePartyRepository
 } from '../infrastructure/postgres/first-playable/repository.js';
@@ -100,10 +101,13 @@ export function createLowerDvinaTracePublicRuntime({
       const session = await repository.loadSession(partyId);
       await validateSession({ partyId, session, authoredStartCatalog });
       if (Number(session.turn_number) > 0) {
-        await traceTurnRuntime?.validateSessionRead?.({
+        const state = await traceTurnRuntime?.validateSessionRead?.({
           partyId,
           session
         });
+        return withCommittedPlayerSpeech({
+          party_id: partyId, turn_number: session.turn_number, screen: session.screen
+        }, state);
       }
       return {
         party_id: partyId,
@@ -123,8 +127,10 @@ export function createLowerDvinaTracePublicRuntime({
       const recovered = await repository.loadSession(partyId);
       await validateSession({ partyId, session: recovered,
         authoredStartCatalog });
-      return { party_id: partyId, turn_number: recovered.turn_number,
-        screen: recovered.screen };
+      const state = Number(recovered.turn_number) > 0
+        ? await traceTurnRuntime?.validateSessionRead?.({ partyId, session: recovered }) : null;
+      return withCommittedPlayerSpeech({ party_id: partyId,
+        turn_number: recovered.turn_number, screen: recovered.screen }, state);
     },
     submitTurn: async (partyId, input) => {
       const requestId = String(input?.request_id ?? `turn:${idFactory()}`);

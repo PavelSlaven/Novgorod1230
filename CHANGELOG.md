@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(game-server): authorize exact player speech in public text only from the committed turn trace; preserve it through visible-package and screen readback without admitting forged system markers (#364, D49).
 - fix(conversation): give the final NPC speech auditor the rejected speech as a comparison candidate so repair cannot drop request-supported facts; keep service-marker text out of repair input (#247).
 - fix(narration): capture the initial qualification audit in the workflow owner without exposing its phase to the model; use a Russian JSON instruction and align frozen role builders and regression fixtures with the compact narration wire (#563, #654, D49).
 - fix(narration): use Russian repair feedback for omitted sources and rejected prose markers; require Russian auditor reasons while preserving private source keys.

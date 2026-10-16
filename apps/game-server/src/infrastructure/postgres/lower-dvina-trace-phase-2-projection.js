@@ -5,7 +5,7 @@ import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-p
 import { projectPlayerSafeChecks } from './lower-dvina-trace-check-projection.js';
 import { projectPhase2VisibleContext } from
   '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
-import { findUnsafePlayerText } from '../../public-boundary.js';
+import { findUnsafePlayerText, withCommittedPlayerSpeech } from '../../public-boundary.js';
 import { optionalVisibleText } from
   '../../runtime/lower-dvina-trace-player-safe-json.js';
 export { projectPlayerSafeChecks } from './lower-dvina-trace-check-projection.js';
@@ -15,7 +15,7 @@ const NON_SPEECH_RESPONSE_KINDS = new Set(['silence', 'leave_conversation', 'act
 
 export function phase2PublicResult({ payload, screen }) {
   const consequence = payload.last_turn.consequence;
-  return stripPublicInternals({
+  return withCommittedPlayerSpeech(stripPublicInternals({
     party_id: payload.party_id,
     turn_number: payload.party_state.turn_number,
     state_version: payload.party_state.state_version,
@@ -33,7 +33,7 @@ export function phase2PublicResult({ payload, screen }) {
         ?? semanticNegotiationCandidate(consequence.negotiation),
       payload
     })
-  });
+  }), payload);
 }
 
 export function committedPendingPhase2PublicResult({ payload, screen }) {

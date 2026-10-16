@@ -85,7 +85,7 @@ export function createLowerDvinaTracePhase2Runtime({
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
   const executeRequest = createTraceTurnRequestExecutor();
   return Object.freeze({ llmTurnBudget,
-    async validateSessionRead({ partyId, turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }) { await repository.loadPhase2State(partyId, { turnBudget }); return true; },
+    async validateSessionRead({ partyId, turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }) { return repository.loadPhase2State(partyId, { turnBudget }); },
     async recoverPendingPresentation({ partyId, session, requestId = null }) {
       return executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId,
         request_id: String(requestId ?? session?.screen?.turn_id ?? partyId) }, () => {

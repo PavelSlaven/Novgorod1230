@@ -5,6 +5,7 @@ import {
 } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
 import { serverError } from '../../errors.js';
+import { committedPlayerSpeechChanges } from '../../public-boundary.js';
 import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
 import { assertSharedSemanticSnapshotSafe } from
   './lower-dvina-trace-conversation-state.js';
@@ -20,7 +21,9 @@ export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
 }) {
   const context = envelope.visible_context;
   const { visible_context: playerContext } =
-    projectVisibleContextForPlayerPackage(context, { onLabelGapsOmitted, requireScene: true });
+    projectVisibleContextForPlayerPackage(context, { onLabelGapsOmitted, requireScene: true,
+      committedSpeechChanges: committedPlayerSpeechChanges({ last_turn: {
+        semantic_trace: envelope.mode_resolution?.decision_trace } }) });
   const visiblePayload = {
     schema: 'temporal_visible_package.v1',
     perceived_scene: playerContext.visible_scene,

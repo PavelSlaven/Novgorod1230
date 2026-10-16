@@ -12,7 +12,6 @@ import {
 } from './contracts.js';
 import { readJsonBody, sendJson, sendText } from './json.js';
 import { validatePortraitSpecRequest } from '../portrait-lab/request.js';
-import { findUnsafePlayerText } from '../public-boundary.js';
 
 export function createHttpHandler({
   root,
@@ -34,7 +33,7 @@ export function createHttpHandler({
         const data = await executeRoute(route, context);
         const envelope = ['health', 'llm_turn_report'].includes(route.id)
           ? operationalEnvelope(data, { requestId })
-          : successEnvelope(data, { requestId, playerQuote: context.playerQuote });
+          : successEnvelope(data, { requestId });
         return sendJson(response, route.status ?? 200, envelope);
       }
       if (request.method === 'GET') {
@@ -119,20 +118,8 @@ async function executeRoute(route, context) {
   if (route.id === 'presentation_recovery') return context.root.recoverPendingPresentation(route.partyId, validatePresentationRecoveryRequest(body));
   if (route.id === 'turn') {
     const input = validateTurnRequest(body);
-    const playerQuote = explicitPlayerQuote(input.raw_text);
     const data = await context.root.submitTurn(route.partyId, input);
-    context.playerQuote = playerQuote;
     return data;
   }
   throw new Error(`Unsupported route: ${route.id}`);
-}
-
-function explicitPlayerQuote(rawText) {
-  if (typeof rawText !== 'string') return null;
-  const matches = [...rawText.matchAll(/«([^«»“”„"]+)»|“([^«»“”„"]+)”|„([^«»“”„"]+)»|"([^«»“”„"]+)"/gu)];
-  if (matches.length !== 1) return null;
-  const match = matches[0];
-  const outside = rawText.slice(0, match.index) + rawText.slice(match.index + match[0].length);
-  if (/[«»“”„"]/u.test(outside) || findUnsafePlayerText(outside) != null) return null;
-  return match.slice(1).find((value) => value != null).trim() || null;
 }

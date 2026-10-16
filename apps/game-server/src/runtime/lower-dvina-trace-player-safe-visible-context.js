@@ -36,11 +36,9 @@ export function projectPhase2VisibleContext(payload) {
   }, { path: 'visible_context' });
   return {
     ...visibleContext,
+    // Commit projection checked these changes; preserve exact speech for the HTTP provenance gate.
     visible_changes: Array.isArray(payload.perceived_changes)
-      ? payload.perceived_changes.map((entry, index) => typeof entry === 'string'
-        ? optionalVisibleText(entry, { path: `visible_context.visible_changes[${index}]`,
-          code: invalidCode() })
-        : structuredClone(entry)).filter((entry) => entry != null) : [],
+      ? structuredClone(payload.perceived_changes) : [],
     allowed_tensions: [],
     do_not_imply: [],
     ...(payload.current_light_phase == null ? {} : {
@@ -49,11 +47,24 @@ export function projectPhase2VisibleContext(payload) {
 }
 
 export function projectVisibleContextForPlayerPackage(value, {
-  onLabelGapsOmitted = null, requireScene = false
+  onLabelGapsOmitted = null, requireScene = false, committedSpeechChanges = []
 } = {}) {
   const playerSafeContext = projectVisibleContext(value, {
     path: 'visible_context'
   });
+  if (Array.isArray(value?.visible_changes) && committedSpeechChanges.length > 0) {
+    const remaining = new Set(committedSpeechChanges);
+    playerSafeContext.visible_changes = value.visible_changes.flatMap((change, index) => {
+      if (remaining.has(change)) {
+        remaining.delete(change);
+        return [change];
+      }
+      const safe = optionalVisibleText(change, {
+        path: 'visible_context.visible_changes[' + index + ']', code: invalidCode()
+      });
+      return safe == null ? [] : [safe];
+    });
+  }
   if (requireScene && (typeof playerSafeContext?.visible_scene !== 'string'
     || !playerSafeContext.visible_scene.trim())) {
     throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',

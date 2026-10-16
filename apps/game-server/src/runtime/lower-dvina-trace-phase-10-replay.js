@@ -1,4 +1,5 @@
 import { serverError } from '../errors.js';
+import { withCommittedPlayerSpeech } from '../public-boundary.js';
 import { committedTraceScenarioDefinitionRevision } from
   './lower-dvina-trace-committed-revision.js';
 import { resolveTracePhase10Contracts, tracePhase10Pending } from
@@ -75,5 +76,5 @@ export function committedPendingReplayResult({ partyId, idempotencyKey,
       || result.screen?.current_projection_anchor?.package_digest !== anchor.package_digest) {
     return null;
   }
-  return structuredClone(result);
+  return withCommittedPlayerSpeech(structuredClone(result), state);
 }

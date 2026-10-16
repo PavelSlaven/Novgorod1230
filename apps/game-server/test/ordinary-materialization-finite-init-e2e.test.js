@@ -428,7 +428,7 @@ test("uninitialized generic finite source seals one bounded estimate, initializa
     }),
     aggregate: plan.next_aggregate,
   });
-  const replay = await resolver(request("turn:2"));
+  const replay = await resolver(request());
   assert.equal(
     calls,
     2,

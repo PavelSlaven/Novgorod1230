@@ -4,6 +4,7 @@
 ## Unreleased
 - fix(turn): mark a performed standalone utterance complete while leaving audience and response unconfirmed; keep continuation for later player actions.
 - fix(conversation): require a matching retained claim for every sourced NPC speech fact during semantic repair, and reject sourced but unclaimed facts in the final grounding audit (#247).
+- test(game-server): replay finite-source initialization with the original root turn (#730).
 - fix(narration): restore direct coverage of every required episode fact after the rejected composition trial while retaining clear names for known people.
 - fix(game-server): authorize exact player speech in public text only from the committed turn trace; preserve it through visible-package and screen readback without admitting forged system markers (#364, D49).
 - fix(conversation): give the final NPC speech auditor the rejected speech as a comparison candidate so repair cannot drop request-supported facts; keep service-marker text out of repair input (#247).

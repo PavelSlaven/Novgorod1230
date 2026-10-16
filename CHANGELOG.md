@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(conversation): guide service-marker repair to retain applicable sourced answers and typed speech acts while adding required interaction tags (#247, D49).
 - fix(narration): preserve applied speech, duplicate occurrences and causal order across site traversal, commit and visible-package readback (#586).
 - fix(narration): describe perceived body condition through the existing body summary instead of exposing raw health, satiety and energy values; align the owner documentation with the current scene wire (#654).
 - test(ci): capture current Russian narration inputs and use the shared isolated PostgreSQL backend for finite-occurrence tests without relaxing assertions (#98, #730).

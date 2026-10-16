@@ -122,7 +122,10 @@ function preflight(input, projection, bases, codeOwnedResolution) {
   const known = aggregate.presence_resolutions.find((r) => r.candidate_key === identity.candidate_key && r.coverage_key === identity.coverage_key && r.context_version === identity.context_version) ?? aggregate.closed_observation_scopes.find((r) => r.coverage_key === identity.coverage_key && r.category_key === identity.category_key && r.context_version === identity.context_version);
   if (known) return deepFreeze({ status: 'already_resolved', decision: null, pending_items_property_admission: null, known_resolution: known, working_projection: projection });
   if (!fresh(input, aggregate)) return outcome('no_change', projection, 'aggregate_not_current');
-  if (request.ordinary_state.closed_observation_scopes.includes(identity.coverage_key)) return outcome('no_change', projection, 'observation_closed');
+  if (!Object.hasOwn(identity, 'occurrence_ref')
+      && request.ordinary_state.closed_observation_scopes.includes(identity.coverage_key)) {
+    return outcome('no_change', projection, 'observation_closed');
+  }
   if (codeOwnedResolution !== null) return null;
   if (!propertyOK(input) || !input.property_placement_context.placement_catalog.some((v) => placementOK(v, request.scope_ref))) return outcome('no_change', projection, 'committed_property_or_placement_missing');
   if (!compatible(input, bases)) return outcome('authority_required', projection, 'supporting_basis_missing');
@@ -170,8 +173,10 @@ function envelopeOf(value) {
     'context_version','normalized_candidate_ref','normalizer_version',
     'semantic_type','coverage_kind','coverage_ref','policy_version',
     'functional_bucket','admission_class','availability_class'];
-  const i = record(e.identity, Object.hasOwn(e.identity ?? {}, 'source_ref')
-    ? [...identityKeys, 'source_ref'] : identityKeys);
+  const hasOccurrence = Object.hasOwn(e.identity ?? {}, 'occurrence_ref');
+  const i = record(e.identity, [...identityKeys,
+    ...(Object.hasOwn(e.identity ?? {}, 'source_ref') ? ['source_ref'] : []),
+    ...(hasOccurrence ? ['occurrence_ref'] : [])]);
   const p = propertyContext(e.property_placement_context);
   if (!i || !Object.values(i).every((entry) => typeof entry === 'string' && entry)
       || !Number.isSafeInteger(e.ordinary_state_version)
@@ -179,7 +184,8 @@ function envelopeOf(value) {
       || e.request.candidate_query.evidence_weight !== 0 || !p
       || !['man_made','natural_resource_portion'].includes(p.item_kind)
       || !scope(p.scope_ref,e.request.scope_ref)
-      || e.property_placement_context_digest !== propertyContextDigest(p)) {
+      || e.property_placement_context_digest !== propertyContextDigest(p)
+      || (hasOccurrence && i.occurrence_ref !== e.request.request_id)) {
     fail('TURN_ORDINARY_PRESENCE_ENVELOPE_INVALID');
   }
   try {
@@ -203,7 +209,8 @@ function envelopeOf(value) {
       ordinary_presence_policy_ref:e.request.policy_refs.ordinary_presence_policy_ref,
       property_basis_ref:e.request.context_refs.property_context_ref,
       property_placement_context_digest:e.property_placement_context_digest,
-      ...source});
+      ...source,
+      ...(hasOccurrence ? { occurrence_ref: i.occurrence_ref } : {})});
     const authority = e.request.authority_envelope;
     if (i.candidate_key !== candidate_key || i.coverage_key !== coverage_key
         || i.category_key !== category_key || i.context_version !== context_version

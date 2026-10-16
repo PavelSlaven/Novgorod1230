@@ -142,7 +142,7 @@ test('ordinary scene seed augments the current scene in the same turn', async ()
 
 for (const [resolution, change] of Object.entries({
   absent: 'По этому вопросу отсутствие установлено',
-  no_change: 'Результат по этому вопросу не установлен',
+  no_change: 'По этому вопросу пока нет ясного результата проверки',
   authority_required: 'Имеющихся данных недостаточно для ответа'
 })) {
   test(`persisted ordinary ${resolution} result is visible to the player`, async () => {
@@ -269,3 +269,25 @@ function committedState() {
     economic_basis: 'Рыбацкий стан.' }];
   return state;
 }
+
+test('finite discovery keeps proven denial and depletion visible', async () => {
+  for (const [reason, expected] of [
+    ['access_denied', /доступ|нельзя|невозможно/iu],
+    ['source_depleted', /источник.*(?:пуст|исчерп)|(?:пуст|исчерп).*источник/iu]
+  ]) {
+    const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project: async () => assert.fail('fallback not expected') }
+    });
+    const visible = await projector.project({
+      consequence: { status: 'resolved', visible_seed: {
+        ordinary_presence_seed: { kind: 'ordinary_presence_seed',
+          resolution: 'authority_required', query: 'валежник', reason_code: reason }
+      } },
+      retrieved_state: committedState(), body_update: { state_after: {} },
+      mode_resolution: { decision_trace: { remaining_intent: null,
+        step_traces: [{ approved_plan: { resolution: 'domain_request',
+          goal_result: 'pending', operations: [{ op: 'request_discovery' }], check: null } }] } }
+    });
+    assert.match(visible.uncertainties.join(' '), expected);
+  }
+});

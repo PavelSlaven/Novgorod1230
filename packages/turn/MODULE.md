@@ -286,7 +286,13 @@ trim, collapse whitespace, ru-RU lowercase), exact target и canonical
 identity и передаются model только как `candidate_hint`; это не noun/recipe
 allowlist и не authority. Exact retry сохраняет identity, другой normalized
 query или quantity получает другую identity. Unspecified quantity намеренно
-отличается от explicit quantity 1.
+отличается от explicit quantity 1. Для code-owned finite extraction root turn и step index
+дают occurrence identity в candidate и context: retry шага повторяет committed
+resolution без нового decrement, новый root к тому же положительному source
+создаёт новую identity даже при тех же target/query/quantity. Category/coverage
+остаются семантическими; negative closure другого шага не закрывает новую
+occurrence. Depleted source не создаёт materialization, а осмотр существующего
+item идёт прежним code-first путём.
 Опциональный `request_discovery.quantity` переносит явно заявленную конечную
 группу 1–16 как typed mechanics requirement; Stage B proposal обязан совпасть
 с ним точно, иначе используется единственный repair до любого commit.

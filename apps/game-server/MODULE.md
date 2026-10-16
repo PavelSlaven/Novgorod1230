@@ -66,6 +66,8 @@ Committed v5 inventory mechanics defaults принадлежат `@rus/items-pro
 game-server сохраняет границы validation своих adapters и делегирует им только
 чистую проекцию профиля.
 
+Finite-source O1 adapter пропускает persisted replay того же root/step до отказа depleted source; для нового root depleted source остаётся недоступным. Phase-6 request identity, CAS и source decrement остаются единственным atomic commit.
+
 Runtime `needs_check` filter is limited to O1, O2b and S1. Server gets
 `rus.needs_check_blockers.v2` only from verified immutable catalog snapshot for
 same turn pin; lookup is lazy. Guard uses year from committed clock and region

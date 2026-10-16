@@ -357,10 +357,21 @@ function directSeedChange(value) {
       ? 'Вы завершили поиск.'
       : value.discovery_kind === 'inspect' ? 'Вы завершили осмотр.' : null;
     if (!['search', 'inspect'].includes(value.discovery_kind) || !plain(result)
-        || Object.keys(result).length !== 2
+        || ![2, 3].includes(Object.keys(result).length)
         || !['no_change', 'authority_required'].includes(result.resolution)
-        || !text(result.query) || !result.query.trim()) failCurrentScene();
+        || !text(result.query) || !result.query.trim()
+        || (Object.keys(result).length === 3
+          && (result.resolution !== 'authority_required'
+            || !['access_denied', 'source_depleted'].includes(result.reason_code)))) {
+      failCurrentScene();
+    }
     const action = value.discovery_kind === 'search' ? 'Поиск' : 'Осмотр';
+    if (result.reason_code === 'access_denied') {
+      return `Доступ к источнику по вопросу «${result.query}» закрыт.`;
+    }
+    if (result.reason_code === 'source_depleted') {
+      return `Источник по вопросу «${result.query}» исчерпан.`;
+    }
     return `${action} по вопросу «${result.query}» не дал подтверждённой находки.`;
   }
   if (value?.kind === 'body_event') {

@@ -103,13 +103,42 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         authority: execution.finite_source_authority,
         committed_source: execution.committed_finite_source
       });
-      const codeOwnedResolution = execution.finite_source_access_decision != null
-          && execution.finite_source_access_decision !== 'allow' ? 'authority_required'
+      const restricted = execution.finite_source_access_decision != null
+        && execution.finite_source_access_decision !== 'allow';
+      const denied = execution.finite_source_access_decision === 'deny';
+      const source = execution.committed_finite_source;
+      const sourceId = execution.finite_source_authority?.finite_source
+        ?.source_resource_node_id
+        ?? execution.constrained_natural_resource_profile?.finite_source
+          ?.source_resource_node_id
+        ?? execution.context_bound_ordinary_profile?.finite_source
+          ?.source_resource_node_id;
+      const depleted = sourceId != null
+        && source?.source_resource_node_id === sourceId
+        && source.lifecycle_state === 'depleted'
+        && source.quantity?.numerator === 0;
+      const visibleSource = request?.request?.player_safe_state
+        ?.current_visible_context?.visible_objects?.some(({ entity_ref, visible_status }) =>
+          entity_ref?.entity_kind === 'ordinary_resource_source'
+          && entity_ref.entity_id === sourceId && visible_status === 'known') === true;
+      const codeOwnedReasonCode = !visibleSource ? null
+        : denied ? 'access_denied'
+        : depleted ? 'source_depleted' : null;
+      const codeOwnedResolution = restricted || depleted
+        ? 'authority_required'
         : contextBound.resolution
         ?? constrained.resolution
         ?? (execution.finite_source_authority != null && genericFinite == null
           ? 'absent' : null);
-      if (execution.finite_source_authority != null && codeOwnedResolution != null) return null;
+      if (execution.finite_source_authority != null && codeOwnedResolution != null) {
+        const requestIdentity = `${rootId}:ordinary:presence:step:${request.request.step_index}`;
+        const aggregate = enabled.ordinary_aggregate;
+        const replay = aggregate?.presence_resolutions?.some(
+          ({ request_identity: id }) => id === requestIdentity)
+          || aggregate?.closed_observation_scopes?.some(
+            ({ request_identity: id }) => id === requestIdentity);
+        if (!replay && codeOwnedReasonCode == null) return null;
+      }
       const finiteProfile = constrained.profile ?? genericFinite;
       const sourceRef = contextBound.profile?.source_basis_ref
         ?? constrained.profile?.source_basis_ref ?? null;
@@ -136,7 +165,9 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
           context_bound_profile: contextBound.profile,
           constrained_resource_profile: constrained.profile,
           finite_source_profile: finiteProfile
-        }, code_owned_resolution: codeOwnedResolution };
+        }, code_owned_resolution: codeOwnedResolution,
+        code_owned_reason_code: codeOwnedReasonCode,
+        code_owned_preflight_refusal: restricted || depleted };
     }
   });
 }
@@ -306,7 +337,8 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
   }, state, semanticActivityOwner);
   const presence = visiblePresence;
   const searchResult = ['no_change', 'authority_required'].includes(presence?.resolution)
-    ? { resolution: presence.resolution, query: presence.query } : null;
+    ? { resolution: presence.resolution, query: presence.query,
+        ...(presence.reason_code == null ? {} : { reason_code: presence.reason_code }) } : null;
   return { ...applied, ...timed, summary: applied.summary,
     player_response_boundary: applied.player_response_boundary === true
       || timed.player_response_boundary === true,

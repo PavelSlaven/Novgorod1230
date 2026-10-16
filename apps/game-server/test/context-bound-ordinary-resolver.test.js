@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalDigest, createOrdinaryAggregate } from '@rus/materialization';
 import { ordinaryWorldPropertyPlacementContextDigest } from '@rus/items-property';
-import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver,
+  prepareOrdinaryDiscoveryResult } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import bindO1 from './o1-binding.js';
 import { resolveContextBoundOrdinaryPolicy } from
@@ -491,5 +492,58 @@ test('entire loaded enablement is snapshotted before any getter can run', async 
     assert.equal(reads, 0);
     assert.equal(calls, 0);
     assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
+  }
+});
+
+test('finite refusal preserves proven visible cause without presence model call', async () => {
+  for (const [condition, reasonCode] of [
+    ['deny', 'access_denied'], ['depleted', 'source_depleted']
+  ]) {
+    const value = finiteFixture();
+    value.execution_context.scope_presence_enabled = false;
+    const selected = value.execution_context.context_bound_capabilities[1];
+    if (condition === 'deny') selected.access_decision = 'deny';
+    else {
+      const source = value.execution_context.committed_finite_sources[1];
+      source.lifecycle_state = 'depleted';
+      source.quantity.numerator = 0;
+    }
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'finite-refusal',
+      loadEnablement: async () => JSON.parse(JSON.stringify(value)),
+      ordinaryMaterializationModel: verifiedModel(async (input) => {
+        if (input.mode === 'seed_scope') return { schema: 'ordinary_materialization_plan_v1',
+          request_id: input.request_id, resolution: 'seeded',
+          density_band_proposal: 'ordinary', background_groups: [], entities: [],
+          presence_resolutions: [], reason_code: 'seed' };
+        assert.fail('committed finite refusal needs no presence model call');
+      })
+    });
+    const input = request();
+    input.operation = { op: 'request_discovery', discovery_kind: 'search',
+      target_refs: ['source-b'], query: 'stock-b' };
+    input.request.player_safe_state = { current_visible_context: {
+      visible_objects: [{ entity_ref: { entity_kind: 'ordinary_resource_source',
+        entity_id: 'source-b' }, display_label: 'stock-b', visible_status: 'known' }]
+    } };
+    const result = await resolver(input);
+    assert.equal(result.consequence_fragment?.visible_seed?.ordinary_presence_seed?.reason_code,
+      reasonCode, JSON.stringify(result));
+    assert.equal(result.ordinary_materialization_atomic_write_plan, undefined);
+    assert.equal(result.known_resolution, undefined);
+    let activityCalls = 0;
+    const prepared = await prepareOrdinaryDiscoveryResult({ applied: result,
+      execution: { operation: input.operation, request: input.request, plan: null },
+      state: null, semanticActivityOwner: { resolve() { activityCalls += 1; } },
+      workingProjectionAuthority: null });
+    assert.equal(prepared.duration_minutes, 0);
+    assert.equal(activityCalls, 0);
+    input.request.player_safe_state.current_visible_context
+      .visible_objects[0].visible_status = 'hidden';
+    const hidden = await resolver(input);
+    assert.equal(hidden.consequence_fragment?.visible_seed?.ordinary_presence_seed?.reason_code,
+      undefined, 'hidden source state stays outside the visible result');
+    assert.equal(hidden.ordinary_materialization_atomic_write_plan, undefined);
+    assert.equal(hidden.known_resolution, undefined);
   }
 });

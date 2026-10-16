@@ -340,17 +340,19 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
   } });
 }
 function spatialCommitFailure(cause, partyId, includeDiagnosticCause = false) {
-  const visibleContextGap = cause?.code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP';
+  const directCode = ['SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
+    'ORDINARY_PHASE6_FINITE_SOURCE_STALE'].includes(cause?.code)
+    ? cause.code : null;
   const diagnostic = includeDiagnosticCause ? diagnosticCause(cause) : null;
   const diagnostics = {
-    reason: visibleContextGap
+    reason: directCode != null
       ? cause.details?.reason ?? cause.message : cause.message,
     ...(diagnostic ? { cause: diagnostic } : {}),
     ...(cause?.transaction_rollback_confirmed === true
       ? { turn_commit_status: 'not_started' } : {})
   };
-  return visibleContextGap
-    ? Object.freeze({ code: cause.code, diagnostics: Object.freeze(diagnostics) })
+  return directCode != null
+    ? Object.freeze({ code: directCode, diagnostics: Object.freeze(diagnostics) })
     : error(cause.spatialCode ?? 'generated_schema_mismatch', partyId, diagnostics);
 }
 function rejectedBeforeCommit(code, partyId, diagnostics) { return Object.freeze({ ok: false, error: error(code, partyId, { ...diagnostics, turn_commit_status: 'not_started' }) }); }

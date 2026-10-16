@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(materialization): identify finite extractions by root turn and step; replay the same portion, allow the next portion while stock remains, and refuse known exhausted sources without activity or duplicate depletion (#730).
 - fix(turn): canonicalize unknown executor actor refs to the request actor before strict plan validation, preserving known foreign refs and targets (#586).
 - fix(ci): run the nine fast npm checks in four parallel, time-bounded jobs while keeping the full merge gate and streaming failing logs (#98).
 - fix(ci): read the persisted NPC scene position in the address-source fixture and run treatment/carry PostgreSQL regressions on the existing V6/revision 26 first-entry path, preserving result, replay, restart, and rollback assertions (#98).

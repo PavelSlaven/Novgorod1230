@@ -9,10 +9,16 @@ const runtimePath = process.env.ISSUE_553_RUNTIME_MODULE
   ?? '../src/runtime/lower-dvina-trace-phase-2.js';
 const { liveWorldTurnRegistry } = await import(runtimePath);
 const turnModulePath = process.env.ISSUE_553_TURN_MODULE ?? '@rus/turn';
-const { createTurnAvailableActionSet } = await import(turnModulePath);
+const { createTurnAvailableActionSet, validateTurnStepPlan } = await import(turnModulePath);
 const admissionPath = process.env.ISSUE_553_ADMISSION_MODULE
   ?? '../../../packages/turn/src/turn-step-admission.js';
 const { createTurnStepDomainOwnerPreflight } = await import(admissionPath);
+import { assembleTurnStepPlan } from
+  '../src/runtime/lower-dvina-trace-turn-step-plan-assembly.js';
+import { turnStepOperationChoices } from
+  '../src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
+import { request as turnStepRequest } from
+  './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
 async function conversationRegistry(state = generatedState()) {
   const models = createM2ConversationModels();
@@ -140,4 +146,57 @@ test('semantic admission keeps a valid single-target conversation', async () => 
   assert.equal(admission.owner.kind, 'binding');
   assert.deepEqual(admission.owner.bound_operation?.target_actor_refs,
     operation.target_actor_refs);
+});
+
+test('group semantic admission accepts two of three visible NPCs', async () => {
+  const state = generatedState((next) => {
+    next.npcs[2].g6_instance_id = next.position.g6_instance_id;
+    next.npcs[2].position_id = next.position.position_id;
+  });
+  const visibleIds = state.npcs.filter((npc) =>
+    npc.g6_instance_id === state.position.g6_instance_id)
+    .map(({ instance_id }) => instance_id);
+  assert.equal(visibleIds.length, 3);
+  state.current_visible_context.visible_npc = visibleIds.map((id, index) => ({
+    entity_ref: { entity_kind: 'npc', entity_id: id },
+    display_label: `Человек ${index + 1}`, recognition: 'recognized'
+  }));
+  const { registry, preflight } = await conversationRegistry(state);
+  const [group] = conversationCommands(registry)
+    .flatMap(({ semantic_binding }) => semantic_binding.operation_dtos)
+    .filter(({ target_actor_refs }) => target_actor_refs.length === 3);
+  assert.ok(group);
+  const subset = { ...group, target_actor_refs: [visibleIds[2], visibleIds[0]] };
+  const admission = preflightOperation(preflight, subset, [group]);
+  assert.equal(admission.owner.kind, 'binding');
+  assert.doesNotThrow(admission.validate);
+  const modelRequest = turnStepRequest({
+    actor: { actor_ref: state.actor_id },
+    root_player_action: 'Обращаюсь к двум людям.',
+    remaining_intent: 'Обращаюсь к двум людям.',
+    available_domain_operations: [group],
+    player_safe_state: { current_visible_context: state.current_visible_context }
+  });
+  const [choice] = turnStepOperationChoices(modelRequest);
+  assert.deepEqual(choice.player_safe_grounding.target_actors.map(
+    ({ entity_ref }) => entity_ref.entity_id), visibleIds);
+  const plan = assembleTurnStepPlan({
+    interpretation: { player_goal: modelRequest.remaining_intent,
+      grounded_attempt: modelRequest.remaining_intent, adaptation: 'literal' },
+    resolution: 'domain_request', operation_choice: null,
+    operations: [subset], check: null, continuation: null,
+    clarification: null, reason_code: 'visible_npc_conversation',
+    reason: 'Разговор с двумя видимыми людьми.'
+  }, modelRequest);
+  assert.deepEqual(plan.operations, [subset]);
+  assert.equal(validateTurnStepPlan(plan, { request: modelRequest }).ok, true);
+
+  for (const target_actor_refs of [
+    [], [visibleIds[0], visibleIds[0]],
+    [visibleIds[0], 'npc:invisible']
+  ]) {
+    const invalid = preflightOperation(preflight,
+      { ...group, target_actor_refs }, [group]);
+    assert.equal(invalid.owner.kind, 'missing');
+  }
 });

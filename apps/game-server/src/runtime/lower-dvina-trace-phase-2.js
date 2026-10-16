@@ -518,8 +518,9 @@ export function liveWorldConversationCommands({ state, inputDigest,
         candidate.actor_ref === operation?.actor_ref
         && candidate.interaction_kind === operation.interaction_kind
         && Array.isArray(operation.target_actor_refs)
-        && operation.target_actor_refs.length === targets.length
-        && targets.every((id) => operation.target_actor_refs.includes(id)))
+        && operation.target_actor_refs.length >= 2
+        && new Set(operation.target_actor_refs).size === operation.target_actor_refs.length
+        && operation.target_actor_refs.every((id) => targets.includes(id)))
     }
   }];
 }

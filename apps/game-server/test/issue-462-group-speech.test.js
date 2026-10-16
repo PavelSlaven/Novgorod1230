@@ -6,7 +6,7 @@ import { createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { withPhase3Conversation } from
   '../src/runtime/lower-dvina-trace-phase-3-visible.js';
-import { reviewedNarration } from './narration-audit-fixture.js';
+import { compatNarrationWire, reviewedNarration } from './narration-audit-fixture.js';
 
 const player = { entity_kind: 'player_character', entity_id: 'player' };
 const actors = ['npc-a', 'npc-b', 'npc-c'].map((instance_id) => ({
@@ -65,7 +65,7 @@ test('group speech reaches production writer payload with cues and repeated repl
       const narrator = createLowerDvinaTraceNarrationService({ roleRunner: {
         async run(call) {
           calls.push(call);
-          const wire = JSON.parse(call.messages[1].content);
+          const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
           if (call.role_id === 'gameplay_narrator') return { output: {
             prose: 'Люди ответили.', action_options: [], used_references: []
           } };
@@ -86,7 +86,7 @@ test('group speech reaches production writer payload with cues and repeated repl
         maxTokens: 20_000, responseFormat: { type: 'json_object' },
         compatibility: 'openai_compatible', thinking: { type: 'disabled' },
         temperature: 0, topP: 1 }, writer.messages);
-      const writerInput = JSON.parse(payload.messages[1].content);
+      const writerInput = compatNarrationWire(JSON.parse(payload.messages[1].content));
       assert.deepEqual(writerInput.required_current_beat.changes.map(
         ({ text }) => text), expected);
       assert.equal(writerInput.required_current_beat.changes.length, 3);

@@ -34,6 +34,7 @@ function assertLiteraryBoundary(instruction) {
   assert.match(instruction, /мысл[ьи]|чувств[ао]|впечатлени/iu);
   assert.match(instruction, /(?:мир[^.]{0,160}(?:сведени|факт)|Сведения задают мир(?: сцены)?)/iu);
   assert.doesNotMatch(instruction, /Ground every sensation|every sensation.*(?:supplied|ground)/iu);
+  assert.doesNotMatch(instruction, /Образец интонации|Воздух стоял тёплый и сухой/u);
 }
 
 test('D102 turn prose roles receive one factual world and free-telling boundary', async () => {
@@ -103,4 +104,30 @@ test('D102 turn prose roles receive one factual world and free-telling boundary'
   assert.equal(result.approved_output.prose, groundedProse);
   assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
     'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+});
+
+test('D102 format repair keeps the same world/story boundary without a prose exemplar', async () => {
+  const calls = [];
+  const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+    calls.push(call.role_id);
+    const instruction = call.messages[0].content;
+    assertLiteraryBoundary(instruction);
+    assert.equal(instruction.split(WORLD_STORY_BOUNDARY).length, 2);
+    if (call.role_id === 'gameplay_narrator') return { output: { prose: 3 } };
+    if (call.role_id === 'gameplay_narrator_format_repair') {
+      return { output: { prose: groundedProse } };
+    }
+    if (call.role_id === 'gameplay_narrator_auditor') {
+      const segments = JSON.parse(call.messages[1].content)['Отрывки прозы'];
+      return { output: reviewedNarration(segments,
+        { visible_change_1: ['s1'], visible_change_2: ['s1'] }) };
+    }
+    assert.fail(`Unexpected role ${call.role_id}`);
+  } } });
+  const result = await service.run({ version: 1, schema: 'narration_request',
+    request_id: 'd102-format-prose', surface: 'turn', actor,
+    visible_context: visibleContext });
+  assert.equal(result.status, 'approved');
+  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_format_repair',
+    'gameplay_narrator_auditor']);
 });

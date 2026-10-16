@@ -52,7 +52,8 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
     ...naturalFacts.map((fact, index) => ({ fact_id: `opening:natural:${index + 1}`,
       text: fact.text, source_refs: [fact.source_position_id] }))];
   const mustInclude = [{ category: 'identity', text: identity }, { category: 'body', text: body }];
-  if (naturalFacts.length) mustInclude.push({ category: 'surroundings', text: naturalFacts.map((fact) => fact.text).join(' ') });
+  if (naturalFacts.length) mustInclude.push({ category: 'surroundings',
+    text: 'Передайте главные воспринимаемые черты окружения, достаточные для ориентации героя.' });
   if (visibleNpcs.length) mustInclude.push({ category: 'people', text: visibleNpcs.map((npc) => npc.label).join('; ') });
   if (ownItems.length) mustInclude.push({ category: 'carried_items', text: ownItems.map((item) => item.name).join('; ') });
   const naturalRefs = facts.filter((fact) => fact.fact_id.startsWith('opening:natural:')).map((fact) => fact.fact_id);

@@ -1291,6 +1291,60 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
     visibility_state: 'concealed', state: { display_name: 'невидимый предмет' } });
   assert.equal(input.internal.player.dossier.identity.sex_category, 'female');
   const pkg = buildCanonicalOpeningVisibleContext(input);
+  const naturalTexts = input.naturalScenePerception.perceived_facts.map(({ text }) => text);
+  assert.ok(naturalTexts.length > 1);
+  const otherInput = structuredClone(input);
+  otherInput.naturalScenePerception.perceived_facts =
+    otherInput.naturalScenePerception.perceived_facts.slice(1);
+  for (const [opening, texts] of [
+    [pkg, naturalTexts],
+    [buildCanonicalOpeningVisibleContext(otherInput), naturalTexts.slice(1)]
+  ]) {
+    assert.match(opening.visible_scene_dossier.must_include
+      .find(({ category }) => category === 'surroundings').text,
+    /главные воспринимаемые черты окружения/u);
+    assert.deepEqual(opening.visible_scene_facts
+      .filter(({ fact_id }) => fact_id.startsWith('opening:natural:'))
+      .map(({ text }) => text), texts);
+    assert.deepEqual(opening.opening_reader_control.assessments
+      .find(({ question }) => question === 'surroundings').fact_refs,
+    texts.map((_, index) => `opening:natural:${index + 1}`));
+    for (const category of ['identity', 'body', 'carried_items']) {
+      assert.ok(opening.visible_scene_dossier.must_include
+        .some((entry) => entry.category === category));
+    }
+    const calls = [];
+    const narration = createAuthoredOpeningNarrationService({ roleRunner: {
+      async run(call) {
+        calls.push(call);
+        if (call.role_id === 'gameplay_narrator') return { output: {
+          prose: 'Любава оказалась в лесу.' } };
+        if (call.role_id === 'gameplay_narrator_semantic_repair') return { output: {
+          prose: 'Любава стояла на берегу.' } };
+        return { output: calls.some(({ role_id }) =>
+          role_id === 'gameplay_narrator_semantic_repair')
+          ? { pass: true, failed_checks: [], concerns: [], evidence: ['Место подтверждено.'] }
+          : { pass: false, failed_checks: ['must_not_include_check'],
+            concerns: [{ code: 'NARRATOR_PROSE_MUST_NOT_INCLUDE_VIOLATION',
+              severity: 'repairable', message: 'Место не подтверждено.' }],
+            evidence: ['Переданные факты описывают иное место.'] } };
+      }
+    } });
+    await narration.run({ requestId: opening.request_id,
+      visibleContextPackage: opening, visibleContextApproval: openingApproval(opening) });
+    assert.deepEqual(calls.map(({ role_id }) => role_id), [
+      'gameplay_narrator', 'gameplay_narrator_auditor',
+      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+    for (const call of calls) {
+      const scene = JSON.parse(call.messages[1].content).сцена;
+      const facts = scene.факты.map((fact) => typeof fact === 'string' ? fact : fact.текст);
+      for (const text of texts) assert.ok(facts.includes(text));
+      assert.ok(scene.обязательный_смысл.some((text) =>
+        /главные воспринимаемые черты окружения/u.test(text)));
+      assert.equal(scene.обязательный_смысл.some((text) =>
+        texts.every((fact) => text.includes(fact))), false);
+    }
+  }
   assert.equal(pkg.visible_scene_facts.find(({ fact_id }) =>
     fact_id === 'opening:sex').text, 'Пол героя: женский.');
   assert.doesNotMatch(pkg.touch_body_context[0].text,

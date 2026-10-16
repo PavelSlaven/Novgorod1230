@@ -1,0 +1,134 @@
+{
+  "schema": "rus.m2c_lines_v1_line_kind_spec.v1",
+  "status": "candidate_unapproved",
+  "note": "Authoring input of tools/spatial-v3/build-line-wave.mjs. Refs reuse the route-segment profiles of the active bundle by kind (cprofv3__world_route_segment__*); method ids are the registry v5 controlled_movement_method values (PLAN-OK-rt-lines-a D5). Values marked assumption or editorial have no source in the repository and wait for the Opus data pass. D56 (2026-09-30): there is no ceiling of 30 minutes per segment and no profile field for it; a line longer than 30 minutes has a recheck policy of its kind that slices it (fixed_time_interval or fixed_progress_slices, slice <= 30).",
+  "movement_method_map": {
+    "movement.foot": "movement_method.walk",
+    "movement.small_river_craft": "movement_method.boat_rowed",
+    "movement.shore_transfer": "movement_method.walk"
+  },
+  "kinds": {
+    "path": {
+      "environment": "env.land_path",
+      "orientation": "orientation.topological_route",
+      "method": "movement_method.walk",
+      "recheck": "recheck.land_30m",
+      "route_kind": "route.path",
+      "risk": "risk.land_path@1",
+      "cost_template": "cost.path_60m",
+      "alternatives": []
+    },
+    "forest_track": {
+      "environment": "env.forest_track",
+      "orientation": "orientation.topological_route",
+      "method": "movement_method.walk",
+      "recheck": "recheck.land_30m",
+      "route_kind": "route.forest_track",
+      "risk": "risk.forest_track@1",
+      "cost_template": "cost.forest_track_90m",
+      "alternatives": []
+    },
+    "wetland_path": {
+      "environment": "env.wetland",
+      "orientation": "orientation.topological_route",
+      "method": "movement_method.walk",
+      "recheck": "recheck.wetland_15m",
+      "route_kind": "route.wetland_path",
+      "risk": "risk.wetland@1",
+      "cost_template": "cost.wetland_path_90m",
+      "alternatives": []
+    },
+    "shore": {
+      "environment": "env.shore_transition",
+      "orientation": "orientation.shore_ordered",
+      "method": "movement_method.walk",
+      "recheck": "recheck.shore_15m",
+      "route_kind": "route.water_land_transition",
+      "risk": "risk.shore_transition@1",
+      "cost_template": "cost.shore_transfer_15m",
+      "alternatives": [],
+      "method_note": "movement.shore_transfer has no v5 equivalent; walk (D5)"
+    },
+    "yard": {
+      "environment": "env.local_variable",
+      "orientation": "orientation.topological_local",
+      "method": "movement_method.walk",
+      "recheck": "recheck.land_30m",
+      "route_kind": "route.local",
+      "risk": "risk.land_path@1",
+      "cost_template": "cost.local_route_60m",
+      "alternatives": [],
+      "assumption": "risk and route kind of a yard line follow the land path and local route kinds; no yard-specific record exists"
+    },
+    "river_channel": {
+      "environment": "env.main_river_channel",
+      "orientation": "orientation.channel_ordered",
+      "method": "movement_method.boat_rowed",
+      "recheck": "recheck.water_15m",
+      "route_kind": "route.river_channel",
+      "risk": "risk.river_variable@1",
+      "cost_template": "cost.river_channel_60m",
+      "alternatives": [
+        {
+          "method": "movement_method.swim",
+          "risk_class": "high",
+          "hazard_rule_ref": "hazard.swim_river_channel@1",
+          "factor": [
+            4,
+            1
+          ],
+          "basis": "editorial: no source in the repository for swimming pace; rowing 4.0 km/h (travel-calibration.json) against an assumed swim of about 1 km/h"
+        }
+      ]
+    },
+    "side_channel": {
+      "environment": "env.side_channel",
+      "orientation": "orientation.channel_ordered",
+      "method": "movement_method.boat_rowed",
+      "recheck": "recheck.water_15m",
+      "route_kind": "route.side_channel",
+      "risk": "risk.side_channel_variable@1",
+      "cost_template": "cost.side_channel_45m",
+      "alternatives": [
+        {
+          "method": "movement_method.swim",
+          "risk_class": "high",
+          "hazard_rule_ref": "hazard.swim_side_channel@1",
+          "factor": [
+            4,
+            1
+          ],
+          "basis": "editorial: same assumption as river_channel"
+        }
+      ]
+    },
+    "open_water": {
+      "environment": "env.open_water",
+      "new_environment_from": "env.main_river_channel",
+      "orientation": "orientation.channel_ordered",
+      "method": "movement_method.boat_rowed",
+      "recheck": "recheck.water_15m",
+      "route_kind": "route.river_channel",
+      "risk": "risk.river_variable@1",
+      "cost_template": "cost.river_channel_60m",
+      "alternatives": [
+        {
+          "method": "movement_method.swim",
+          "risk_class": "extreme",
+          "hazard_rule_ref": "hazard.swim_open_water@1",
+          "factor": [
+            4,
+            1
+          ],
+          "basis": "editorial: same assumption as river_channel; risk class extreme for open water"
+        }
+      ],
+      "assumption": "no open-water environment, orientation or route kind exists: env.open_water is authored here as a copy of env.main_river_channel; orientation, risk and route kind follow the river channel"
+    }
+  },
+  "binding_defaults": {
+    "capacity_semantics_ref": "capacity.no_static_limit@1",
+    "availability_condition_set_ref": null,
+    "availability_note": "null for a non-portal connection (PLAN-OK-rt-lines-a D3; the norm is corrected by CORPUS_EDIT in the cutover)"
+  }
+}

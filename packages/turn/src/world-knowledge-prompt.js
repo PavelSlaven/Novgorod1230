@@ -9,7 +9,10 @@ export function worldKnowledgePromptData(value) {
       || !Array.isArray(value.disputes) || !Array.isArray(value.gaps)) {
     throw new TypeError('World Knowledge prompt slice is invalid');
   }
-  return structuredClone(value);
+  const clone = structuredClone(value);
+  // Frozen slices may still carry the retired prose projection.
+  delete clone.context_text;
+  return clone;
 }
 
 export function worldKnowledgePromptInstructions(value) {

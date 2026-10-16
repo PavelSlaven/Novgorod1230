@@ -134,8 +134,7 @@ function queryOf(bundle, item, limit) {
     domains: item.domains, focus_refs: item.focus_refs ?? [],
     requested_predicates: [],
     search_hints: [item.query_text], context: item.context,
-    budget: { max_facts: limit, max_candidates: limit,
-      max_context_chars: 100_000 } };
+    budget: { max_facts: limit, max_candidates: limit } };
 }
 
 function refs(slice) {

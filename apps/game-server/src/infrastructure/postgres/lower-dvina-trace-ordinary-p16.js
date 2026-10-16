@@ -38,6 +38,9 @@ export function ordinaryPhysicalKeys(plan) {
     ...committedItemIds.flatMap((itemId) => [
       `party_runtime.party_ordinary_materialization_commit_items:${plan.party_id}:${plan.request_identity}:${itemId}`
     ]),
+    ...(plan.finite_resource_transition == null ? [] : [
+      `party_runtime.party_resource_nodes:${plan.party_id}:${plan.finite_resource_transition.source_resource_node_id}`
+    ]),
     `party_runtime.party_ordinary_materialization_basis_catalog:${scope}`,
     ...ledgerItemIds.flatMap((itemId) => [
       `party_runtime.party_ordinary_materialization_items:${plan.party_id}:${itemId}`,

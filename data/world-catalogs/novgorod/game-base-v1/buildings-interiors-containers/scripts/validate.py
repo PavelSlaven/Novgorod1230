@@ -55,22 +55,29 @@ sources = {r["ref"] for r in rd("sources.csv")}
 aps = {r["ap_id"] for r in rd("interiors/anti_patterns_ref.csv")}
 cp_ids = {r["cp_id"] for r in rd("containers/content_profiles.csv")}
 try:
-    mc_src = {r["source_id"] for r in build.read_csv(os.path.join(build.MATCULT_DIR, "sources.csv"))}
-except Exception:
+    mc_src = {r["source_id"] for r in build.read_csv(build.MATCULT_SOURCES_CSV)}
+except (OSError, KeyError, csv.Error) as e:
+    err("material-culture source snapshot unavailable; source-ID checks skipped: %s" % e)
     mc_src = None
 try:
     master_spawn = {r["profile_id"] for r in build.read_csv(os.path.join(build.MASTER_DIR, "normalized_source_tables/material_entities/spawn_profiles.csv"))}
-    master_ws = {r["id"] for r in build.read_csv(os.path.join(build.MASTER_DIR, "normalized_source_tables/technology_processes/workshop_profiles.csv"))}
-except Exception:
-    master_spawn = master_ws = None
+except (OSError, KeyError, csv.Error) as e:
+    err("MASTER spawn snapshot unavailable; spawn-ID checks skipped: %s" % e)
+    master_spawn = None
+try:
+    master_ws = {r["id"] for r in build.read_csv(build.MASTER_WORKSHOP_CSV)}
+except (OSError, KeyError, csv.Error) as e:
+    err("MASTER workshop snapshot unavailable; workshop-ID checks skipped: %s" % e)
+    master_ws = None
 try:
     import sqlite3
-    con = sqlite3.connect("file:" + build.NOV1230_DB + "?mode=ro", uri=True)
+    con = sqlite3.connect(build.sqlite_uri(build.NOV1230_DB), uri=True)
     nov_ids = set()
     for t in ("city_features", "ends", "streets", "institutions", "sources", "settlements", "territories", "persons_1230", "law"):
         nov_ids |= {r[0] for r in con.execute("select id from %s" % t)}
     nov_ids |= {"famine_prices"} | {"material_culture:" + r[0] for r in con.execute("select category from material_culture")} | {"material_culture:пояс"}
-except Exception:
+except (OSError, sqlite3.Error) as e:
+    err("curated SQLite source snapshot unavailable; nov1230db ID checks skipped: %s" % e)
     nov_ids = None
 
 tok_seen = collections.Counter()
@@ -444,7 +451,7 @@ deny_scan(amb, "ambience", "sat_id")
 # Archive D39/analogy/variant inclusion is a candidate provenance ledger only;
 # it does not add entity rows or alter runtime schemas.
 archive_ledger = rd("archive_inclusion_ledger.csv")
-archive_errors = archive_inclusions.validate_ledger(archive_ledger, REPO, build.MATCULT_DIR, build.read_csv)
+archive_errors = archive_inclusions.validate_ledger(archive_ledger, REPO, build.MATCULT_DIR, build.read_csv, master_dir=build.MASTER_DIR)
 ERR.extend(archive_errors)
 if "--self-test" in sys.argv:
     archive_decisions = {r["archive_ref"].rsplit(":", 1)[-1]: r for r in archive_ledger}
@@ -510,7 +517,7 @@ if "--self-test" in sys.argv:
         probe_ledger = [dict(row) for row in archive_ledger]
         probe = next(r for r in probe_ledger if r["archive_ref"].endswith(":OMI00023"))
         probe["game_base_ref"] = "buildings-interiors-containers/" + probe_target
-        probe_errors = archive_inclusions.validate_ledger(probe_ledger, REPO, build.MATCULT_DIR, build.read_csv)
+        probe_errors = archive_inclusions.validate_ledger(probe_ledger, REPO, build.MATCULT_DIR, build.read_csv, master_dir=build.MASTER_DIR)
         assert any(expected_error in e for e in probe_errors)
 
 common_checker = os.path.join(REPO, "data/world-catalogs/novgorod/game-base-v1/scripts/check-archive-ownership.mjs")

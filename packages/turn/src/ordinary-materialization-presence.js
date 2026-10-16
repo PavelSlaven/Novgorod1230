@@ -3,13 +3,13 @@ import { assertOrdinaryMaterializationRequestV1,
   ordinaryWorldPropertyPlacementContextDigest,
   validateOrdinaryMaterializationPlanV1 } from
   '@rus/contracts/ordinary-materialization-v1';
-import { applyOrdinaryAggregateTransition, createOrdinaryCandidateKey, createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey, createOrdinaryResolutionRef, validateSupportingBasisAdmission } from '@rus/materialization';
+import { applyOrdinaryAggregateTransition, createOrdinaryCandidateKey, createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey, createOrdinaryResolutionRef, isO1PresenceRecord, validateSupportingBasisAdmission } from '@rus/materialization';
 import { turnFailure } from './errors.js';
 import { applyOrdinaryAggregateToTurnWorkingProjection, assertAndNormalizeTurnOrdinaryWorkingProjection } from './turn-step-ordinary-working-projection.js';
 const RESTRICTED = new Set(['specialized_or_valuable','weapon_or_armament',
   'currency_or_precious','document_like','other_restricted']);
 
-export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true, codeOwnedResolution = null, mechanicsPolicy = null, semanticContext = null, requiredQuantity = null } = {}) {
+export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, committedState = null, isEquivalentCandidate = null, filterCandidateAllowed = null, assertCandidateAllowed = null, repairAvailable = () => true, codeOwnedResolution = null, mechanicsPolicy = null, semanticContext = null, requiredQuantity = null, partyClock = null, historicalEvents = undefined } = {}) {
   const input = envelopeOf(envelope), projection = projectionOf(input.request, workingProjection);
   const codeResolution = codeOwnedResolution ?? forbiddenAdmission(input);
   const early = preflight(input, projection, basisCatalog, codeResolution); if (early) return early;
@@ -36,11 +36,64 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
     ...(semanticContext == null ? {} : { semantic_context: semanticContext }),
     ...(requiredQuantity == null ? {} : {
       required_quantity: freeze(requiredQuantity)
-    }) };
+    }),
+    ...(partyClock == null ? {} : { clock: freeze(partyClock) }),
+    ...(Array.isArray(historicalEvents)
+      ? { historical_events: freeze(historicalEvents) } : {}) };
   const request = freeze(input.request); let raw = await invoke(ordinaryMaterializationModel, request, { ...modelContext, repair: null }, false);
   let errors = planErrors(raw, request, mechanics, requiredQuantity), repaired = false;
+  let filteredNeedsCheckMatches = [];
+  if (onlyEntityCountError(errors) && typeof filterCandidateAllowed === 'function') {
+    const eligible = [];
+    for (const entity of raw.entities) {
+      if (typeof isEquivalentCandidate === 'function'
+          && await isEquivalentCandidate(entity)) {
+        eligible.push(entity);
+        continue;
+      }
+      const matches = await filterCandidateAllowed({ committedState,
+        candidate: { ...entity.semantic_descriptor,
+          path: 'O1.proposed_entity.semantic_descriptor' } });
+      if (Array.isArray(matches) && matches.length > 0) {
+        filteredNeedsCheckMatches.push(...matches);
+      } else {
+        eligible.push(entity);
+      }
+    }
+    if (filteredNeedsCheckMatches.length > 0 && eligible.length === 0) {
+      return deepFreeze({ status: 'candidate_filtered', decision: null,
+        pending_items_property_admission: null,
+        needs_check_matches: structuredClone(filteredNeedsCheckMatches),
+        reason: 'needs_check_candidate_filtered', working_projection: projection });
+    }
+    if (filteredNeedsCheckMatches.length > 0 && eligible.length === 1) {
+      raw = { ...raw, entities: eligible };
+      errors = planErrors(raw, request, mechanics, requiredQuantity);
+    }
+  }
   if (errors.length) { if (typeof repairAvailable !== 'function' || !repairAvailable()) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response is invalid and no structural repair budget remains.', { repair_attempted: false, validation_errors: errors }); raw = await invoke(ordinaryMaterializationModel, request, { ...modelContext, repair: { schema: 'ordinary_materialization_repair_context_v1', original_output: null, validation_errors: errors } }, true); errors = planErrors(raw, request, mechanics, requiredQuantity); repaired = true; if (errors.length) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response and its repair are invalid.', { validation_errors: errors }); }
   const plan = freeze(raw);
+  for (const entity of plan.entities ?? []) {
+    if (typeof isEquivalentCandidate !== 'function'
+        || !await isEquivalentCandidate(entity)) {
+      const candidate = { ...entity.semantic_descriptor,
+        path: 'O1.proposed_entity.semantic_descriptor' };
+      if (typeof filterCandidateAllowed === 'function') {
+        const matches = await filterCandidateAllowed({ committedState,
+          candidate });
+        if (Array.isArray(matches) && matches.length > 0) {
+          return deepFreeze({ status: 'candidate_filtered', decision: null,
+            pending_items_property_admission: null,
+            needs_check_matches: structuredClone(matches),
+            reason: 'needs_check_candidate_filtered',
+            working_projection: projection });
+        }
+      } else if (typeof assertCandidateAllowed === 'function') {
+        await assertCandidateAllowed({ committedState,
+          candidate });
+      }
+    }
+  }
   if (plan.resolution !== 'materialize') return negative(input, plan, projection, repaired);
   if (input.identity.admission_class === 'common_mundane'
       && plan.entities.length === 1
@@ -48,7 +101,20 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
     return negative(input, { resolution: 'authority_required' }, projection, repaired);
   }
   const pending = positive(input, plan, projection, basisCatalog);
-  return deepFreeze({ status: 'pending_items_property_admission', decision: decision(request, plan, repaired), pending_items_property_admission: pending, working_projection: projection });
+  return deepFreeze({ status: 'pending_items_property_admission', decision: decision(request, plan, repaired), pending_items_property_admission: pending, ...(filteredNeedsCheckMatches.length === 0 ? {} : { filtered_needs_check_matches: structuredClone(filteredNeedsCheckMatches) }), working_projection: projection });
+}
+
+function onlyEntityCountError(errors) {
+  return errors.length === 1 && errors[0].path === 'entities'
+    && errors[0].code === 'items';
+}
+
+export function preflightOrdinaryMaterializationPresence({ envelope,
+  workingProjection, basisCatalog, codeOwnedResolution = null } = {}) {
+  const input = envelopeOf(envelope);
+  const projection = projectionOf(input.request, workingProjection);
+  return preflight(input, projection, basisCatalog,
+    codeOwnedResolution ?? forbiddenAdmission(input));
 }
 
 function preflight(input, projection, bases, codeOwnedResolution) {
@@ -182,7 +248,7 @@ function propertyContextDigest(value) {
 }
 function projectionOf(request, value) { let p; try { p = assertAndNormalizeTurnOrdinaryWorkingProjection(value); } catch { fail('TURN_ORDINARY_PRESENCE_WORKING_PROJECTION_INVALID'); } if (!scope(p.ordinary_materialization_aggregate.scope_ref, request.scope_ref)) fail('TURN_ORDINARY_PRESENCE_SCOPE_MISMATCH'); return p; }
 function propertyOK(input) { return scope(input.property_placement_context.scope_ref, input.request.scope_ref) && ['man_made','natural_resource_portion'].includes(input.property_placement_context.item_kind); }
-function fresh(input, aggregate) { const state=input.request.ordinary_state; return input.ordinary_state_version===aggregate.state_version && aggregate.seeded===state.seeded && aggregate.density_band===state.density_band && sameRefs(aggregate.background_groups.map((g)=>g.group_ref),state.background_groups) && sameRefs(aggregate.presence_resolutions.map((r)=>r.resolution_ref),state.presence_resolutions) && sameRefs(aggregate.closed_observation_scopes.map((r)=>r.coverage_key),state.closed_observation_scopes); }
+function fresh(input, aggregate) { const state=input.request.ordinary_state; return input.ordinary_state_version===aggregate.state_version && aggregate.seeded===state.seeded && aggregate.density_band===state.density_band && sameRefs(aggregate.background_groups.map((g)=>g.group_ref),state.background_groups) && sameRefs(aggregate.presence_resolutions.filter(isO1PresenceRecord).map((r)=>r.resolution_ref),state.presence_resolutions) && sameRefs(aggregate.closed_observation_scopes.map((r)=>r.coverage_key),state.closed_observation_scopes); }
 function sameRefs(a,b) { return Array.isArray(b) && a.length===b.length && a.every((v,i)=>v===b[i]); }
 function placementOK(v, s) { return v && v.state === 'committed' && scope(v.scope_ref, s); }
 function compatible(input, bases) { return selectOrdinaryMaterializationSupportingBasis({ request: input.request, identity: input.identity, basisCatalog: bases }) !== null; }
@@ -208,8 +274,8 @@ export function selectOrdinaryMaterializationSupportingBasis({ request, identity
 }
 function permissionsFor(identity, request) { if (identity.admission_class === 'common_mundane') return identity.availability_class === 'common' ? [] : null; if (identity.admission_class === 'container_capable' || identity.availability_class !== 'context_bound') return null; const refs = request?.policy_refs?.context_bound_permission_refs; return Array.isArray(refs) && refs.length > 0 && new Set(refs).size === refs.length ? [...refs].sort() : null; }
 function record(v, keys) { if (!v || typeof v !== 'object' || Array.isArray(v) || Object.getPrototypeOf(v) !== Object.prototype || Object.getOwnPropertySymbols(v).length) return null; const n = Object.getOwnPropertyNames(v); if (n.length !== keys.length || keys.some((k) => !n.includes(k))) return null; const out = {}; for (const k of keys) { const d = Object.getOwnPropertyDescriptor(v,k); if (d?.enumerable !== true || !Object.hasOwn(d,'value')) return null; out[k]=d.value; } return out; }
-function mechanicsPolicyOf(value) { const policy=record(value,['policy_ref','max_mass_grams','allowed_external_hand_costs','allowed_carry_forms','max_packing_slot_cost','max_quantity']); return policy&&typeof policy.policy_ref==='string'&&policy.policy_ref.length>0&&Number.isSafeInteger(policy.max_mass_grams)&&policy.max_mass_grams>=1&&Array.isArray(policy.allowed_external_hand_costs)&&policy.allowed_external_hand_costs.length>0&&policy.allowed_external_hand_costs.every((entry)=>[0,1,2].includes(entry))&&new Set(policy.allowed_external_hand_costs).size===policy.allowed_external_hand_costs.length&&Array.isArray(policy.allowed_carry_forms)&&policy.allowed_carry_forms.length>0&&policy.allowed_carry_forms.every((entry)=>['compact','regular','long','bulky'].includes(entry))&&new Set(policy.allowed_carry_forms).size===policy.allowed_carry_forms.length&&Number.isSafeInteger(policy.max_packing_slot_cost)&&policy.max_packing_slot_cost>=0&&Number.isSafeInteger(policy.max_quantity)&&policy.max_quantity>=1?freeze(policy):null; }
-function planErrors(plan,request,policy,requiredQuantity) { const errors=[...validateOrdinaryMaterializationPlanV1(plan,request)]; if(errors.length!==0||policy==null||plan?.resolution!=='materialize')return errors; const mechanics=plan.entities?.[0]?.mechanics_proposal; const checks=[['entities[0].mechanics_proposal.mass_grams',Number.isSafeInteger(mechanics?.mass_grams)&&mechanics.mass_grams>=1&&mechanics.mass_grams<=policy.max_mass_grams,`must be an integer from 1 to ${policy.max_mass_grams}`],['entities[0].mechanics_proposal.external_hand_cost',policy.allowed_external_hand_costs.includes(mechanics?.external_hand_cost),`must be one of ${policy.allowed_external_hand_costs.join(', ')}`],['entities[0].mechanics_proposal.carry_form',policy.allowed_carry_forms.includes(mechanics?.carry_form),`must be one of ${policy.allowed_carry_forms.join(', ')}`],['entities[0].mechanics_proposal.packing_slot_cost',Number.isSafeInteger(mechanics?.packing_slot_cost)&&mechanics.packing_slot_cost>=0&&mechanics.packing_slot_cost<=policy.max_packing_slot_cost,`must be an integer from 0 to ${policy.max_packing_slot_cost}`],['entities[0].mechanics_proposal.quantity.value',Number.isSafeInteger(mechanics?.quantity?.value)&&mechanics.quantity.value>=1&&mechanics.quantity.value<=policy.max_quantity,`must be an integer from 1 to ${policy.max_quantity}`],...(requiredQuantity==null?[]:[['entities[0].mechanics_proposal.quantity',mechanics?.quantity?.value===requiredQuantity.value&&mechanics?.quantity?.unit===requiredQuantity.unit,`must equal the requested ${requiredQuantity.value} ${requiredQuantity.unit}`]])]; return checks.filter(([,pass])=>!pass).map(([path,,message])=>Object.freeze({path,code:'mechanics_policy',message:`${path} ${message}.`})); }
+function mechanicsPolicyOf(value) { const fields=['policy_ref','max_mass_grams','allowed_external_hand_costs','allowed_carry_forms','max_packing_slot_cost','max_quantity']; if(Object.hasOwn(value??{},'mass_grams_per_quantity_unit')){fields.push('mass_grams_per_quantity_unit');if(!Number.isSafeInteger(value.mass_grams_per_quantity_unit)||value.mass_grams_per_quantity_unit<1||value.mass_grams_per_quantity_unit>value.max_mass_grams)return null;} const policy=record(value,fields); return policy&&typeof policy.policy_ref==='string'&&policy.policy_ref.length>0&&Number.isSafeInteger(policy.max_mass_grams)&&policy.max_mass_grams>=1&&Array.isArray(policy.allowed_external_hand_costs)&&policy.allowed_external_hand_costs.length>0&&policy.allowed_external_hand_costs.every((entry)=>[0,1,2].includes(entry))&&new Set(policy.allowed_external_hand_costs).size===policy.allowed_external_hand_costs.length&&Array.isArray(policy.allowed_carry_forms)&&policy.allowed_carry_forms.length>0&&policy.allowed_carry_forms.every((entry)=>['compact','regular','long','bulky'].includes(entry))&&new Set(policy.allowed_carry_forms).size===policy.allowed_carry_forms.length&&Number.isSafeInteger(policy.max_packing_slot_cost)&&policy.max_packing_slot_cost>=0&&Number.isSafeInteger(policy.max_quantity)&&policy.max_quantity>=1?freeze(policy):null; }
+function planErrors(plan,request,policy,requiredQuantity) { const errors=[...validateOrdinaryMaterializationPlanV1(plan,request)]; if(errors.length!==0||policy==null||plan?.resolution!=='materialize')return errors; const mechanics=plan.entities?.[0]?.mechanics_proposal; const checks=[...(policy.mass_grams_per_quantity_unit===undefined?[]:[['entities[0].mechanics_proposal.mass_grams',mechanics?.mass_grams===mechanics?.quantity?.value*policy.mass_grams_per_quantity_unit,`must equal quantity.value * ${policy.mass_grams_per_quantity_unit}`]]),['entities[0].mechanics_proposal.mass_grams',Number.isSafeInteger(mechanics?.mass_grams)&&mechanics.mass_grams>=1&&mechanics.mass_grams<=policy.max_mass_grams,`must be an integer from 1 to ${policy.max_mass_grams}`],['entities[0].mechanics_proposal.external_hand_cost',policy.allowed_external_hand_costs.includes(mechanics?.external_hand_cost),`must be one of ${policy.allowed_external_hand_costs.join(', ')}`],['entities[0].mechanics_proposal.carry_form',policy.allowed_carry_forms.includes(mechanics?.carry_form),`must be one of ${policy.allowed_carry_forms.join(', ')}`],['entities[0].mechanics_proposal.packing_slot_cost',Number.isSafeInteger(mechanics?.packing_slot_cost)&&mechanics.packing_slot_cost>=0&&mechanics.packing_slot_cost<=policy.max_packing_slot_cost,`must be an integer from 0 to ${policy.max_packing_slot_cost}`],['entities[0].mechanics_proposal.quantity.value',Number.isSafeInteger(mechanics?.quantity?.value)&&mechanics.quantity.value>=1&&mechanics.quantity.value<=policy.max_quantity,`must be an integer from 1 to ${policy.max_quantity}`],...(requiredQuantity==null?[]:[['entities[0].mechanics_proposal.quantity',mechanics?.quantity?.value===requiredQuantity.value&&mechanics?.quantity?.unit===requiredQuantity.unit,`must equal the requested ${requiredQuantity.value} ${requiredQuantity.unit}`]])]; return checks.filter(([,pass])=>!pass).map(([path,,message])=>Object.freeze({path,code:'mechanics_policy',message:`${path} ${message}.`})); }
 function plainQuantity(value) { return value != null && typeof value === 'object'
   && !Array.isArray(value) && Object.keys(value).length === 2
   && Number.isSafeInteger(value.value) && value.value >= 1
@@ -218,7 +284,7 @@ function jsonData(value, seen = new Set()) { if (value === null || typeof value 
 function scope(a,b) { const x=record(a,['entity_kind','entity_id']), y=record(b,['entity_kind','entity_id']); return !!x && !!y && x.entity_kind===y.entity_kind && x.entity_id===y.entity_id; }
 function outcome(status, working_projection, reason) { return deepFreeze({ status, decision:null, pending_items_property_admission:null, reason, working_projection }); }
 async function invoke(model, request, context, repair) { try { return await model(request, freeze(context)); } catch (e) { throw turnFailure('TURN_ORDINARY_PRESENCE_MODEL_FAILED', repair ? 'Repair failed.' : 'Model failed.', { cause:message(e) }); } }
-async function invokeBeforeModel(beforeModel) { try { await beforeModel(); } catch (e) { throw turnFailure('TURN_ORDINARY_PRESENCE_CUTOVER_FAILED', 'Ordinary presence cutover failed.', { cause:message(e) }); } }
+async function invokeBeforeModel(beforeModel) { try { await beforeModel(); } catch (e) { if (['TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', 'NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED', 'NEEDS_CHECK_BLOCKER_CATALOG_INVALID'].includes(e?.code)) throw e; throw turnFailure('TURN_ORDINARY_PRESENCE_CUTOVER_FAILED', 'Ordinary presence cutover failed.', { cause:message(e) }); } }
 function decision(request, plan, repaired) { return deepFreeze({ schema:'ordinary_presence_resolution_decision_v1',request_id:request.request_id,scope_ref:freeze(request.scope_ref),resolution:plan.resolution,repaired }); }
 function freeze(v) { return deepFreeze(structuredClone(v)); } function fail(code) { throw turnFailure(code, 'Stage B requires an exact committed server envelope.'); } function reject(code, m=code) { throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_REJECTED',m,{code}); } function message(e) { return e instanceof Error ? e.message : String(e); }
 function withoutOrdinaryAggregate(value) { const { ordinary_materialization_aggregate: _aggregate, ...workingProjection } = value; return workingProjection; }

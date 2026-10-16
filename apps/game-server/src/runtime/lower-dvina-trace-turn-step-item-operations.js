@@ -80,11 +80,7 @@ function createAmbientEntity(execution, state, options) {
 }
 
 function createEntityFromAdmission(execution, state, options, ambient = null) {
-  const { operation, working_projection: projection } = execution;
-  const rootTurnId = execution.request.root_turn_id;
-  requireProjection(projection);
-  const refs = collectCurrentRefs(execution);
-  requireAvailableTempRef(operation.temp_ref, refs, state, rootTurnId);
+  const { operation } = execution;
   const effectiveOperation = ambient == null ? operation : {
     ...operation,
     semantic_type: ambient.semantic_type,
@@ -94,6 +90,23 @@ function createEntityFromAdmission(execution, state, options, ambient = null) {
   const admitted = ambient == null
     ? admitOrdinaryEntity(effectiveOperation, options.ordinaryResultPolicy)
     : { semantic_type: ambient.semantic_type, name: ambient.name };
+  const apply = () => createAdmittedEntity(execution, state, options,
+    ambient, admitted);
+  if (typeof options.assertNeedsCheckAllowed !== 'function') return apply();
+  return Promise.resolve(options.assertNeedsCheckAllowed({
+      committedState: state.committedState,
+      candidate: { semantic_type: admitted.semantic_type, name: admitted.name,
+        facts: (effectiveOperation.facts ?? []).map(({ text }) => text)
+          .filter((text) => typeof text === 'string') }
+    })).then(apply);
+}
+
+function createAdmittedEntity(execution, state, options, ambient, admitted) {
+  const { operation, working_projection: projection } = execution;
+  const rootTurnId = execution.request.root_turn_id;
+  requireProjection(projection);
+  const refs = collectCurrentRefs(execution);
+  requireAvailableTempRef(operation.temp_ref, refs, state, rootTurnId);
   if (ambient == null) requireOrigin(operation.origin, projection, state, refs);
   requireRefs(operation.origin.source_refs, refs, 'origin.source_refs');
   requireRef(operation.placement.target_ref, refs, 'placement.target_ref');

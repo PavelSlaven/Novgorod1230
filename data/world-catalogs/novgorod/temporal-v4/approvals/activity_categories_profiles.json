@@ -40,11 +40,11 @@
     },
     "deterministic_import": {
       "path": "tools/temporal-v4/import-approved-data.mjs",
-      "sha256": "c772c1710c981eb753b3ace9b9cc003b6f3fe765fdd7ed010cad3246f21aa7dc"
+      "sha256": "c1244b3437bf9656ef1b54823cdb6aa15931cb466e56d28e77b0eba95b1da9a7"
     },
     "generated_schema": {
       "path": "infra/world-base/SCHEMA_REFERENCE.md",
-      "sha256": "36acd61486a305d2ae0cd1ea106f50f18febc60735f7c1ecb28a4ea4cff9172a"
+      "sha256": "a59e205e75b3d056c1ca682a9c02aed3d1bdaf9bec4aa18020d11513f7d4ab45"
     }
   }
 }

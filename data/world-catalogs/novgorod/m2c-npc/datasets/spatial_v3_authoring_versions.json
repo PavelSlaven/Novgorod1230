@@ -1,0 +1,659 @@
+[
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "9b806158a1a64cf889686850223c566407ee287c22da2dd1a0fadf514c745654",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3ecdb2bbc0bc842fada7a7c70ba27261bba03d431d9a4db8bd956e2f56ee6366",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "9c425f572b371457b40c4dd5336bca7712da52ab30a5d33a04b89bb905e5c47a",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1f45f6063bc901e643f0ab6a50e9ed1e6b3463fb1adb58bd471554f2bfdff40e",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ca5fffdcba384e9a23fbd68e1a94a4921ed3b375c92ec9c41df742d14bc4b5c8",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "6361f6c7cdde5929b58c56d200e31771b0fb89fcd5014c1b8c982833d17280f0",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0460342e0740bdd9bb0926202e9ecfb6b8af98ef61ce08b708318a72faf59496",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b023cecf54f0e9b708ce91b1eb137b8009156e8b01b7c98bc8f1abd2385ca21c",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e7eae864ef13ecfa8d6132765fe4f1248cda735f2dd30e46471a5ff0b896637d",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7d1f1c6bc6a38f1f12f6c7dd4ffb0f93b00bf41bb6e96e7cfdba1250da4cb2a1",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b3fe5edbc4205f91667e34db0462a4a5427bbbf349d5236b27a056578c3373ed",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e7ea99ecb4708c806ea09a84593607cd4fdbe877e6191eba1834f0b9712994f9",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "23b82e15baf9535898ccf39319127254831dd6e5458b570ee891935cb7577073",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2dd0c7d541e863f1e03217e9ac73a3ef93ab7a6d6e9ad08e5a9a27269d5997e5",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "73e5626ab2dc1906cccaddc280097dfac8ac54d5c741cde6351b34bd52261d1d",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "29eb2f64e3743e4cb7090484636b84467957ad896c4a445ae5b9a420ca909657",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "57a632adb9a72042f8e394f0395a8b8fdc4fd2808b743b8320e3c3b49eb08e06",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c5e39ae23b7b7603e92ddca0e93adf64d5c7f146c9545bb4d9d5466fa46aaf63",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "321b880be8f049b4395d033687b1c605c8228cb8cd9f4d991d82cce3729324f4",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "102d25dbb13b05f84468f9656fc6f48ec48084672a4595016fb3890ff9012456",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ca26c89bf30c52d48e1eebb51942edabf0479f7e7db7531d34d65477c11fb37b",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "9c03b61c2fdafae8db097ac5a47b2a2e80616a2a53c83d6bdf48ac7e140f15a3",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ae80064c79d27cfb7bbc506aed563b0299aed0f3db07ba1b6ca34d153a1a3e13",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "b1051aa7d292418ec6495ef88c8924a152cc084b82880849b21d73072f52eeae",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0d63fdc6741426b944b9b07422fa1c7cdeaf6963819ac8bb2c929fbea4411999",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "5477adaafc4d17aad60ed6c9acf5003fc4218bcb5f108806138605f67cd32cbf",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "6cf37d7aa9ca4aa6711738f67515b481a4785096512dd4802c06bad9ed4efa01",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "70723b598112f2d8ce602308bdc7b95c0e3005b097c36b5f3e017aaadbc9d894",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c5496882d0a17351bbc4a9c1158af51e4f7dc05f1d317f96f7e81ec0c3fada9a",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "39544f334067757ecb3779ded3b171788bc9e6b465834637f2412316f27a13e8",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "d937eeaef0198041e10ab664a55c26178150851090c4b8df6ae8920d46e14c43",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "4dfdffd5f481db26709046e814b9f795a32bb98b20d35d541b5a036486de5866",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_body_ready_traveller_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "5d69fe9459a1eaf2d67077ffcf1e903541eb5d0b24532540d99afd8757e77917",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_boatman_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0ec7a602dc7382b5e822723a60a1a09b38974dfa321e8b6ba9ad633791ca8b37",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_fisher_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "ec1ad40550b2366cddc5e7fb9b6a58ec5af0011cd3aa77f2c6a6933844d83bbf",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_guide_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "688e2665ef72939c1c18d5326da222ec2d1dbbe74da6059a1b12816c9264ad62",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_hunter_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7beb7c64e59167d8819b3d5d9aac647097d1aa9d31b5ca96b5043dadab8d9248",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_forest_worker_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "d519b0b64a7b5081894e665aa9de09e6b7bdf54e7cb304a7c3da76f2d0f0c856",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_local_trader_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "80a09ed12927fcec1ae0dc92c45db012e7ac6286adb6cb1bf6858e3b8d612765",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_visiting_merchant_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7fad04db5e19664bd93c06b3e811897235e64cbe33dffcd53daf609a98835d7a",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_foreign_merchant_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "f442dd23c72a46d4b406dc6bf890e3fc872096d17b52ba1fd83f74fbafeec1b4",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "activity_m2c_npc_household_servant_initial_work_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "5b5e65b8ac86eeb339254889084d95603cd98962a6eba97da5c7992104321b3a",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_ordinary_day_work_routine_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "65a87c4c97f7fd3555300c99f113e13dc2586e7099e94ea1b7e7b8832b494fde",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_ordinary_personal_clothing_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1c6150823b7ae26412282f01c5d92f5fef9151ed5a528fa9a5edf3c9b48ef5ef",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_item_tpl_nov_fishing_net_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "cbc6f640f3f7927dfd2add4ac0810eb2c07e1b61630703f4fe2d4ca484cdc89c",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_inventory_item_tpl_nov_fishing_net_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e3477ef4c211a60e79cfe97f49e12ae9a483f00169f397dae55383f5f370d028",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_item_tpl_nov_linen_shirt_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "69b8e73f846e8624c10e332cd2627567d1862717337448c1dcf85519516bff96",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_inventory_item_tpl_nov_linen_shirt_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c1a5a36cfe1b913994ff9f99ba443b3a4f19e3dd71fd05b4ad920dfcd4fa74c5",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_item_tpl_nov_low_leather_shoes_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "a8c4602c8da87b5b28d63f0ad0da25017a127ca812e84ee2f5f8fdd467f4979a",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_inventory_item_tpl_nov_low_leather_shoes_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7c688e9d95c023baebff208b214f7219b5b9ddb60410b1a5414ea8cb404f1d49",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_item_tpl_nov_trousers_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "8893dddc26b8d75e5bb978b9ab9b49ff5fd9a775e10d1e5d65d27d2827c162d8",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_inventory_item_tpl_nov_trousers_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1d0174769d4aec5dde4a71b8d7a650d0161092efc25468d6a3b1c2e31d70f24a",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_item_tpl_nov_wool_outer_garment_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "5e1566a4cf4b9af53643c97d7d673220b113663922419b0c992fea4ddbd7da85",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_inventory_item_tpl_nov_wool_outer_garment_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "6edbddfc7bec09937b4ed97292eb6186f0f33dce63778bf103e6f9c1c90dc8c2",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_first_playable_visual_profile_base_shirt",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "daf516a5dad24e4d33e084d822567925136af9199028809d61f92fe573a8c44a",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_first_playable_visual_profile_outer_brown",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "73aadc1d8361497b499b8fbc2fcc90f9083b1ddc4bac19678b10fc55909063da",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_m2c_visual_female_long_linen_shirt_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "adf4390b9df178fbe80627ba70e94bcacc33a56fc09648de9bf9dc37f476ede4",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1313008945b1f3df367cc637158a182ec88867eef29e3e55c1f58200d6259352",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_m2c_visual_item_tpl_nov_trousers_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c699e3443747ea683039e68805c8c97cb169d05e0e226e63f7c08d1faf6d445b",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_boatman_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "55c9ca7d0cf771d5060a5a191cbb7f8f44d4c682ad32b15f14f2116f875416c6",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_fisher_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7692270b68208c6765175afce30efbfb39ce7752faf807d739f445edc52c2712",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_guide_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "355fa614963c42d09d355c3981d5e4063004f35044a760f44e0ffa5b78d5770a",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_hunter_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c3db40f055d215bcd6e0da2e6f413c4e0b477323fb3a7872e99c9a7aeae7b638",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_forest_worker_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "1bdc0a55f3daaabc71d6a27954c102e5b75c7a0cdb27176c90b852cba097ca06",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_local_trader_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "2f050d20d395be592fa7a8672723b24e11d07a0612a0533faa122284c964bf52",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_visiting_merchant_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "e92d6c18536755483f87af6d9038b183e6bb933e8590965d23c96a33606a4077",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_foreign_merchant_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "0d71c9d15a076abf5d21553269efea21aeea6795d58b8dcb6c1d695a0910fe88",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_household_servant_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "3233188e514e4eade8f604bed2cccd0d5384e1f708465679aac48bfbd287383e",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "entity_id": "m2c_npc_regional_novgorod_land_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "451a94a7eae7dc017a0c80ce23e6c007396a1950026a63ca3f73f7a8bc076663",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "entity_id": "m2c_npc_regional_gotland_guest_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "47e34eb548c99eba3694024fe10acaf16f91c52b1441dbe853257a3799bc7769",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "entity_id": "m2c_npc_regional_german_baltic_guest_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "7f66bfc42b9afc8a5fdb9af9e8dc281aa155ca06f076339a1dd28afa8b9f8d84",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "entity_id": "m2c_npc_regional_karelian_traveler_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "a5727281b00d16fa45c4653aabcc18bcaaaa0a2245866b6edf987ba067e07e94",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_regional_context_profile",
+    "entity_id": "m2c_npc_regional_ingrian_traveler_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "bbd782f2961f482b1625b4438c3ef7bf156af817529837e7eca4918bac6d4eec",
+    "provenance_ref": "m2c_npc_editorial_001"
+  }
+]

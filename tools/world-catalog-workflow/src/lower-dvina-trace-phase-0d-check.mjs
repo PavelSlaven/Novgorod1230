@@ -9,6 +9,8 @@ import {
   projectCalendar,
   resolveGameTimestampFromCalendarDate
 } from '@rus/time-events-history/calendar';
+import { calendarDerivationMatches, isCanonicalCalendarDerivationSource } from
+  './calendar-derivation-match.mjs';
 
 class TracePhase0DValidationError extends Error {
   constructor(code, message) {
@@ -571,22 +573,32 @@ function validateCorrectionV2(directory = correctionDirectory, { report = true }
     subminute_denominator: specification.subminute_at_start.denominator
   }, projectionProfile);
   const projected = projectCalendar(derivedTimestamp, projectionProfile);
+  const derivation = specification.game_timestamp_derivation;
   correctionRequire(
-    projected.calendar_system === APPROVED_START_DATE.calendar_system
-      && projected.year === exactDate.year
-      && projected.month === exactDate.month
-      && projected.day === exactDate.day
-      && projected.local_time_of_day.numerator === String(specification.exact_local_minute_of_day)
-      && projected.local_time_of_day.denominator === '1',
+    isCanonicalCalendarDerivationSource(derivation),
+    'TRACE_0D_V2_TIMESTAMP_DERIVATION',
+    'GameTimestamp derivation owner, entrypoint, or source path is missing or invalid'
+  );
+  const currentCalendarDigest = correctionSha256Path(resolve(root,
+    'packages/time-events-history/src/calendar.js'));
+  correctionRequire(
+    calendarDerivationMatches({
+      recordedDigest: derivation.digest,
+      currentDigest: currentCalendarDigest,
+      projected,
+      expected: {
+        calendar_system: APPROVED_START_DATE.calendar_system,
+        year: exactDate.year,
+        month: exactDate.month,
+        day: exactDate.day,
+        local_minute_of_day: String(specification.exact_local_minute_of_day)
+      }
+    }),
     'TRACE_0D_V2_TIMESTAMP_DERIVATION',
     'time owner does not project the fixed date to one exact GameTimestamp'
   );
   correctionRequire(
-    specification.game_timestamp_derivation?.owner === '@rus/time-events-history'
-      && specification.game_timestamp_derivation?.entrypoint === TIME_CALENDAR_INVERSE_ENTRYPOINT
-      && specification.game_timestamp_derivation?.path === 'packages/time-events-history/src/calendar.js'
-      && specification.game_timestamp_derivation?.digest === '4b82d6a4f4c07a047ad1a2e38061b3223002914744edc206a419adb14cd0c4c0'
-      && correctionSha256Path(resolve(root, specification.game_timestamp_derivation.path)) === specification.game_timestamp_derivation.digest
+    derivation.digest
       && specification.game_timestamp_derivation?.package_manifest_path === 'packages/time-events-history/package.json'
       && specification.game_timestamp_derivation?.package_manifest_digest === 'ca0f7736cc372a02b4f52ea7556c3638f5181daf7fed4c19a9dbf47ba6d88805'
       && correctionSha256Path(resolve(root, specification.game_timestamp_derivation.package_manifest_path)) === specification.game_timestamp_derivation.package_manifest_digest

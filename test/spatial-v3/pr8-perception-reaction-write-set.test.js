@@ -19,6 +19,7 @@ import {
   createSpatialV3PostgresCombinedAtomicCommitter
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import {
+  SPATIAL_V3_TARGET_MIGRATION_FILES,
   runSpatialV3TargetMigrations
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
@@ -357,6 +358,16 @@ test('mapper rejects a replay or reaction detached from the causal perception', 
 });
 
 test('PostgreSQL commit persists the causal slice and replays without duplicate rows', async (t) => {
+  const requiredTargetMigrations = [
+    '008_party_runtime_pr8_first_entry.sql',
+    '009_party_runtime_pr8_reaction_knowledge.sql',
+    '010_party_runtime_pr8_reaction_options.sql'
+  ];
+  assert.deepEqual(
+    requiredTargetMigrations.filter((file) => !SPATIAL_V3_TARGET_MIGRATION_FILES.includes(file)),
+    [],
+    'the target chain retains first-entry, reaction/knowledge and reaction-options persistence'
+  );
   const docker = (args) => spawnSync('docker', args, {
     encoding: 'utf8',
     timeout: 45_000
@@ -403,7 +414,9 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
     database: 'pr8',
     max: 4
   });
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 31);
+  const migrationResult = await runSpatialV3TargetMigrations(pool);
+  assert.equal(migrationResult.applied, SPATIAL_V3_TARGET_MIGRATION_FILES.length);
+  assert.equal(migrationResult.schema_version, 'party_runtime_v3_target');
   await pool.query(`
     INSERT INTO party_runtime.parties
       (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)

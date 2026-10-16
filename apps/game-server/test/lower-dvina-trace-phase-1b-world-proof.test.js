@@ -74,8 +74,7 @@ test('direct Phase 1A materializer rejects a fabricated descendant world proof',
 });
 
 test('revision 12 fails closed when the v8 reused binding ref is tampered', async (t) => {
-  const root = await copyRevision12BundleClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyRevision12BundleClosure(t);
   const path = join(root,
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8',
     'materialization-bindings.json');
@@ -92,8 +91,9 @@ test('revision 12 fails closed when the v8 reused binding ref is tampered', asyn
   }), { code: 'TRACE_PHASE_6_CONTENT_INVALID' });
 });
 
-async function copyRevision12BundleClosure() {
+async function copyRevision12BundleClosure(t) {
   const root = await mkdtemp(join(tmpdir(), 'trace-phase-6-bundle-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   for (const relative of [
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-6-content',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8',

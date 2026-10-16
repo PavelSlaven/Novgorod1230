@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { isOrdinaryDiscoveryInScope } from '../src/turn-step-admission.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from '../src/index.js';
+import { equivalentVisibleItem } from
+  '../src/ordinary-materialization-discovery-identity.js';
 
 test('ordinary discovery admits an unseen nested player-visible object', () => {
   const target = 'visible-cloak-unseen';
@@ -17,6 +19,19 @@ test('ordinary discovery admits an unseen nested player-visible object', () => {
       } }] }
     }
   }), true);
+});
+
+test('ordinary discovery admits the current scene position as a scope', () => {
+  const playerSafeState = {
+    position: { location_ref: 'scene:forest', position_id: 'position:arrival' },
+    ordinary_resolution: { discovery_available: true,
+      container_resolution_available: false, scene_seed_available: false }
+  };
+  const operation = { op: 'request_discovery', discovery_kind: 'inspect',
+    target_refs: ['position:arrival'], query: 'валежник' };
+  assert.equal(isOrdinaryDiscoveryInScope({ operation, playerSafeState }), true);
+  assert.equal(isOrdinaryDiscoveryInScope({ operation: { ...operation,
+    target_refs: ['position:elsewhere'] }, playerSafeState }), false);
 });
 
 test('ordinary discovery rejects multi-target requests even when all items are visible', () => {
@@ -92,3 +107,50 @@ test('multi-item ordinary inspection returns no-result before context or model',
     assert.equal(Object.hasOwn(result,
       'ordinary_materialization_atomic_write_plan'), false);
   });
+
+test('already-resolved O1 inspection skips the needs-check query guard', async () => {
+  let guardCalls = 0;
+  const resolve = createOrdinaryMaterializationDiscoveryOwner({
+    resolveExistingInspection: async () => ({
+      working_projection: { revision: 3 }, write_fragments: [],
+      summary: 'committed inspection', duration_minutes: 0
+    }),
+    loadDiscoveryContext: async () => {
+      throw new Error('known inspection bypasses discovery context');
+    },
+    ordinaryMaterializationModel: async () => {
+      throw new Error('known inspection bypasses model');
+    },
+    verifyStageBCutover: () => {}, inputDigest: () => 'unused',
+    buildSeedRequest: () => ({}), buildPresenceRequest: () => ({}),
+    sealAtomicWritePlan: () => ({}),
+    assertNeedsCheckAllowed: async () => {
+      guardCalls += 1;
+    }
+  });
+  const result = await resolve({ operation: { target_refs:['position'],
+    discovery_kind:'search',query:'колёсная прялка' },
+    committed_state:{clock:{whole_minutes:'0'}},
+    working_projection:{} });
+  assert.equal(result.summary, 'committed inspection');
+  assert.equal(guardCalls, 0);
+});
+
+test('semantic paraphrase reuses one visible ordinary item instead of cloning it', () => {
+  const request = { request: { player_safe_state: { items: [{
+    item_id: 'ordinary:cord', name: 'Льняной шнур', semantic_type: 'cord'
+  }] } } };
+  assert.equal(equivalentVisibleItem(request, { semantic_descriptor: {
+    name: ' льняной   ШНУР ', semantic_type: 'CORD'
+  } }).item_id, 'ordinary:cord');
+  assert.equal(equivalentVisibleItem(request, { semantic_descriptor: {
+    name: 'Льняная верёвка', semantic_type: 'rope'
+  } }), null);
+  assert.equal(equivalentVisibleItem({ request: { player_safe_state: {
+    items: [request.request.player_safe_state.items[0], {
+      item_id: 'ordinary:cord-2', name: 'Льняной шнур', semantic_type: 'cord'
+    }]
+  } } }, { semantic_descriptor: {
+    name: 'Льняной шнур', semantic_type: 'cord'
+  } }), null);
+});

@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import pg from 'pg';
@@ -7,13 +6,14 @@ import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/regis
 import { createSpatialV3DomainMutationService } from '@rus/party-store/spatial-v3-domain-integration';
 import { createSpatialV3P23DomainRepository } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-p23-domain-repository.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { runSpatialV3TargetMigrations } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const name = `p23-domain-${process.pid}`; const port = 55400 + (process.pid % 200);
 const profile = (id) => ({ entity_ref: { entity_kind: 'access_profile', entity_id: id }, authoring_version: 'r1' });
 function request(overrides = {}) {
-  const body = { party_id: 'p', idempotency_key: 'key', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 0 }], domain_mutation: { entity_kind: 'transport', entity_id: 'boat', placement_kind: 'scene_position', position_node_id: 'pos', capacity_units: 1, required_access_profile_ref: profile('pilot') }, ...overrides };
+  const body = { party_id: 'p', idempotency_key: 'key', expected_state_versions: [{ resource: 'entity_placements', id: 'transport:boat', state_version: 0 }], domain_mutation: { entity_kind: 'transport', entity_id: 'boat', placement_kind: 'moored_at_position', position_node_id: 'pos', capacity_units: 1, required_access_profile_ref: profile('pilot') }, ...overrides };
   return { ...body, canonical_digest: computeSpatialV3CanonicalDigest(body) };
 }
 function visibleEnvelope(input) {
@@ -72,18 +72,18 @@ function carrierLocalRequest(overrides = {}) {
   });
 }
 
-async function migrate(pool) {
-  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql']) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
-}
 async function seed(pool) {
   await pool.query(`
     INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest) VALUES('p',3,'w','d','m','r','c','b');
+    INSERT INTO party_runtime.party_materialization_runs(party_id,run_id,g4_id,run_kind,seed_digest,input_digest,catalog_digest,materializer_version,rng_version,result_digest,idempotency_key,status) VALUES('p','p23-seed-run','g4','baseline','s','i','d','m','r','z','p23-seed-key','committed');
+    INSERT INTO party_runtime.party_npcs(party_id,npc_id,run_id,profile_set_id,profile_level) VALUES('p','guard','p23-seed-run','p23-test-profile','background');
     INSERT INTO party_runtime.party_g5_sites(id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,created_change_set_id,updated_change_set_id) VALUES('site','p','canonical','g4','{}','active',0,'c','c');
     INSERT INTO party_runtime.party_scene_baselines(id,party_id,host_kind,host_id,source_kind,scene_template_ref,materialization_trace_id,materializer_version,catalog_digest,status,state_version,created_change_set_id,updated_change_set_id) VALUES('base','p','transport','boat','transport_template','{}','t','m','d','active',0,'c','c');
     INSERT INTO party_runtime.party_g6_instances(id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,host_kind,host_id,physical_class_id,primary_scene_role_id,vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,acoustic_uniformity,status,state_version,created_change_set_id,updated_change_set_id) VALUES('g6','p','base','{"entity_id":"boat-cabin","authoring_version":"r1"}','slot','transport','boat','open','role','surface','none','default_clear','near','uniform','active',0,'c','c');
     INSERT INTO party_runtime.scene_position_nodes(id,party_id,g6_instance_id,position_type_id,template_slot_key,template_instance_ordinal,capacity,access_class_id,status,state_version,created_change_set_id,updated_change_set_id) VALUES('pos','p','g6','standing','p',0,6,'public','active',0,'c','c'),('pos2','p','g6','standing','p2',0,6,'public','active',0,'c','c');
+    INSERT INTO party_runtime.party_journey_locations(id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id) VALUES('boat-location','p','transport','boat','scene','pos',0,'c');
     INSERT INTO party_runtime.entity_placements(party_id,entity_kind,entity_id,placement_kind,position_node_id,occupies_capacity_units,state_version,updated_change_set_id) VALUES
-      ('p','npc','guard','scene_position','pos',1,0,'c'),('p','transport','boat','scene_position','pos',1,0,'c'),('p','actor','a','scene_position','pos',1,0,'c'),('p','item','x','scene_position','pos',1,0,'c');
+      ('p','npc','guard','scene_position','pos',1,0,'c'),('p','transport','boat','moored_at_position','pos',1,0,'c'),('p','actor','a','scene_position','pos',1,0,'c'),('p','item','x','scene_position','pos',1,0,'c');
     INSERT INTO party_runtime.party_entity_controls(party_id,entity_kind,entity_id,owner_ref,holder_ref,controller_ref,access_profile_ref,capacity_units,state_version,updated_change_set_id) VALUES
       ('p','npc','guard','{"entity_kind":"actor","entity_id":"a"}','{"entity_kind":"actor","entity_id":"a"}','{"entity_kind":"actor","entity_id":"a"}','{"entity_ref":{"entity_kind":"access_profile","entity_id":"open"},"authoring_version":"r1"}',2,0,'c'),
       ('p','transport','boat','{"entity_kind":"actor","entity_id":"a"}','{"entity_kind":"actor","entity_id":"a"}','{"entity_kind":"actor","entity_id":"a"}','{"entity_ref":{"entity_kind":"access_profile","entity_id":"pilot"},"authoring_version":"r1"}',2,0,'c');
@@ -113,7 +113,7 @@ test('P23 Node→PostgreSQL service validates persisted domain rows and commits 
   assert.equal(started.status, 0, started.stderr || started.stdout);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p23', password: 'p23', database: 'p23' }); t.after(() => pool.end());
   for (let i = 0; i < 45; i += 1) { try { await pool.query('SELECT 1'); break; } catch { await new Promise((done) => setTimeout(done, 250)); if (i === 44) throw new Error('PostgreSQL unavailable'); } }
-  await migrate(pool); await seed(pool);
+  await runSpatialV3TargetMigrations(pool); await seed(pool);
   const service = createSpatialV3DomainMutationService({ repository: createSpatialV3P23DomainRepository({ pool }), committer: createSpatialV3PostgresCombinedAtomicCommitter({ pool }), verifyApproval: async () => ({ ok: true }) });
   const first = request(); const firstResult = await commit(service, first);
   assert.equal(firstResult.ok, true, JSON.stringify(firstResult));
@@ -181,7 +181,7 @@ test('P23 Node→PostgreSQL service validates persisted domain rows and commits 
   ];
   const inverseBoat = carrierLocalRequest({
     idempotency_key: 'inverse-boat', expected_state_versions: inverseBase,
-    domain_mutation: { entity_kind: 'transport', entity_id: 'boat', placement_kind: 'scene_position', position_node_id: 'pos', capacity_units: 1, required_access_profile_ref: profile('pilot') }
+    domain_mutation: { entity_kind: 'transport', entity_id: 'boat', placement_kind: 'moored_at_position', position_node_id: 'pos', capacity_units: 1, required_access_profile_ref: profile('pilot') }
   });
   const inverseActor = carrierLocalRequest({
     idempotency_key: 'inverse-actor', expected_state_versions: [...inverseBase].reverse(),

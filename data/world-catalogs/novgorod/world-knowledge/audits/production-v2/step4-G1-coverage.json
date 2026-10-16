@@ -1,0 +1,347 @@
+[
+ {
+  "need_id": "SOC-03-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-runaway-kholop-harborer-pays-owner"
+  ],
+  "note": "Прямая норма Пространной Правды: укрыватель/кормивший беглого холопа платит хозяину 5 гривен (за робу — 6).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g1-runaway-kholop-harborer-pays-owner",
+    "verdict": "REJECT",
+    "reason": "It drops the conditions of the announcement and of knowing he was a kholop. It also adds 'укроет', which is not in the quote."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-04-n1",
+  "status": "no_source",
+  "refs": [],
+  "note": "Источника про общественные вощаные весы конкретно при церкви Иоанна на Опоках (Ивановском сте) и уплату весчего в пакете не нашлось. Есть смежные факты (claim:v2-g1-berkovets-used-for-trade-goods — берковец как реальная мера для соли/воска в грамотах; claim:v2-g1-berkovets-reckoned-as-ten-poods), но именно весчая изба/пошлина не подтверждены строкой книжных фактов — не сочинял.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-11-n1",
+  "status": "no_source",
+  "refs": [],
+  "note": "Источника про Готский двор при церкви св. Олава, Немецкий двор при церкви св. Петра и особый порядок суда по спорам иноземных купцов в пакете не нашлось. Найдена только косвенная строка о тамгах на подсвечниках 'с Готского двора' (items-household-personal.csv), чья собственная note ошибочно отождествляет Готский и Немецкий дворы — решил не строить claim на противоречивой строке, чтобы не внести неточность.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "ACT-12-n1",
+  "status": "no_source",
+  "refs": [],
+  "note": "Ситуация need явно привязана к голоду 1230–1231 гг. (конец сентября 1230, после раннего заморозка, растущие цены) — по правилу D18 голод 1230–1231 не трогаем в этой задаче (отдельный шаг). Отдельного источника про обычную (не блокадную/не голодную) новгородскую цену соли '230 года в пакете тоже нет.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "ACT-12-n4",
+  "status": "no_source",
+  "refs": [],
+  "note": "Прямо про голод 1230–1231 гг. — по правилу задачи 'голод 1230–1231 не трогай (это отдельный шаг)' не создавал claim.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-15-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-grivna-equals-twenty-nogata",
+   "claim:v2-g1-kuna-now-same-as-rezana"
+  ],
+  "note": "Гривна=20 ногатам (аналогия из счёта Краткой Правды, medium/analogical) + прямое подтверждение, что в счёте Пространной Правды (~1230) куна заменила резану.",
+  "final_status": "partly_covered",
+  "final_refs": [
+   "claim:v2-g1-grivna-equals-twenty-nogata"
+  ],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g1-kuna-now-same-as-rezana",
+    "verdict": "REJECT",
+    "reason": "This is a scholarly textual observation turned into everyday practice ('в счёте не осталось'). 'direct' is overstated; this is historiographic inference."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-15-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-urok-values-for-livestock",
+   "claim:v2-g1-princely-horse-worth-more-than-smerd-horse"
+  ],
+  "note": "Урок за скотину (кобыла/вол/корова/овца/свинья) и отдельно за коня по владельцу (княжий с тавром — 3 гривны, смердий — 2 гривны).",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-urok-values-for-livestock",
+   "claim:v2-g1-princely-horse-worth-more-than-smerd-horse"
+  ]
+ },
+ {
+  "need_id": "SOC-15-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-grivna-serebra-worth-four-grivny-kun"
+  ],
+  "note": "Гривна серебра = 4 гривнам кун; подтверждено и расчётом исследователя, и торговым договором Смоленска 1229 г. (почти современным 1230 году).",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-grivna-serebra-worth-four-grivny-kun"
+  ]
+ },
+ {
+  "need_id": "ACT-16-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-hunting-grounds-belong-to-an-owner"
+  ],
+  "note": "Слабая аналогия (period medieval_general, источник о Северо-Восточной Руси, не о Новгородской земле): ловища/перевесища/бобровые гоны тянут к конкретному селу/двору, они не вольные. Существующий claim:early-rus-hunting-ground-terms в пакете покрывает только терминологию (лексику урочищ), а не принадлежность/нарушение — поэтому это не дубль.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g1-hunting-grounds-belong-to-an-owner",
+    "verdict": "REJECT",
+    "reason": "Not confirmed by the source. Overlap is 0.07. The note's quote is not in the book_row, and 'обида хозяину' goes beyond it."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-16-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-vira-forty-for-freeman-eighty-for-princely-man",
+   "claim:v2-g1-woman-judged-same-as-man-unless-at-fault"
+  ],
+  "note": "Вира 40 гривен за свободного человека, 80 — за княжьего мужа; отдельно нюанс про женщину (судят как мужчину, полвиры только если сама виновна — точнее исходной формулировки need, которая обобщает 'за женщину — полвиры').",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-vira-forty-for-freeman-eighty-for-princely-man",
+   "claim:v2-g1-woman-judged-same-as-man-unless-at-fault"
+  ]
+ },
+ {
+  "need_id": "SOC-16-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-verv-pays-dikaya-vira-for-unfound-killer",
+   "claim:v2-g1-killer-pays-vira-with-community-if-open-quarrel"
+  ],
+  "note": "Дикая вира: платит вервь, если убийца не найден (многолетняя выплата); а если убийство было открытым (в ссоре/на пиру), убийца платит вместе со своей вервью.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-verv-pays-dikaya-vira-for-unfound-killer",
+   "claim:v2-g1-killer-pays-vira-with-community-if-open-quarrel"
+  ]
+ },
+ {
+  "need_id": "SOC-16-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Прямого подтверждения 'кровная месть отменена Правдой Ярославичей' в пакете нет. В книжных фактах есть только открывающая статья о праве мстить близким родичам (Правда Ярослава), без утверждения об отмене. Не сочинял историографический вывод без строки факта.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "WLD-16-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "В пакете есть только технические характеристики кольчуги (вес, число колец, толщина проволоки), но ни одной строки с ценой оружия/доспеха в гривнах/кунах не нашлось — не сочинял стоимость.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "ACT-17-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Источника про то, что добыча холопа принадлежит господину, а самовольная отлучка наказуема, в пакете не нашлось (есть смежная норма о бегстве закупа, но не о добыче/отлучке холопа-охотника).",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-18-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-ordeal-by-iron-water-or-oath-by-claim-size"
+  ],
+  "note": "При отсутствии свидетеля и обвинении в убийстве — испытание железом; при меньшем иске — испытание водой; при иске до двух гривен — судебная клятва.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-ordeal-by-iron-water-or-oath-by-claim-size"
+  ]
+ },
+ {
+  "need_id": "WLD-18-n3",
+  "status": "already_in_pack",
+  "refs": [
+   "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky"
+  ],
+  "note": "Существующий claim пакета покрывает то, что летопись 1230 г. называет архиепископа, посадника и тысяцкого. Именно резиденцию князя на Городище вне города и владыки в Детинце подтвердить строкой книжных фактов не удалось — этот конкретный тезис остаётся no_source.",
+  "final_status": "already_in_pack",
+  "final_refs": [
+   "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky"
+  ]
+ },
+ {
+  "need_id": "SOC-20-n4",
+  "status": "no_source",
+  "refs": [],
+  "note": "Событие 1231 года (после 1230) — по правилу D18 ('никаких событий позже 1230 года') не создавал claim.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-21-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-berkovets-reckoned-as-ten-poods",
+   "claim:v2-g1-goods-measured-in-cubits",
+   "claim:v2-g1-rye-measured-in-kad"
+  ],
+  "note": "Берковец=10 пудов (со сниженной уверенностью — сама строка отмечает, что точное соотношение для XIII в. не установлено), сукно/длину мерят локтями, зерно — кадью. Именно весчая изба у церкви Иоанна на Опоках специфически не подтверждена (см. SOC-04-n1).",
+  "final_status": "partly_covered",
+  "final_refs": [
+   "claim:v2-g1-goods-measured-in-cubits",
+   "claim:v2-g1-rye-measured-in-kad"
+  ],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g1-berkovets-reckoned-as-ten-poods",
+    "verdict": "REJECT",
+    "reason": "The book_row says 'позднее берковец = 10 пудам' and the note admits the ratio is not established for the 13th century. Stating it as fact in open text goes beyond the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-21-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-goods-measured-in-cubits",
+   "claim:v2-g1-fine-cloth-sold-in-sealed-postavy"
+  ],
+  "note": "Локоть/сажень как меры длины (прямое свидетельство ~1230); дорогое заморское сукно продают целыми поставами со свинцовой печатью (аналогия, period источника medieval_general).",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-goods-measured-in-cubits",
+   "claim:v2-g1-fine-cloth-sold-in-sealed-postavy"
+  ]
+ },
+ {
+  "need_id": "SOC-21-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-rye-measured-in-kad"
+  ],
+  "note": "Новгородский летописец прямо использует кадь как меру ржи.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-rye-measured-in-kad"
+  ]
+ },
+ {
+  "need_id": "SOC-22-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Источника про наказание Устава Ярослава за насильственную выдачу замуж и удержание детей от брака в пакете не нашлось.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "ACT-25-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Про мор и скудельницы 1230–1231 гг. — по правилу задачи голод/мор 1230–1231 не трогаем в этом проходе.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-26-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-foreign-merchants-come-in-winter-and-summer-groups"
+  ],
+  "note": "Зимние/летние гости, сезон прибытия и отъезда (аналогия — источник описывает ганзейскую контору XIV–XV вв., period medieval_general в самой строке).",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-foreign-merchants-come-in-winter-and-summer-groups"
+  ]
+ },
+ {
+  "need_id": "SOC-27-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-annual-interest-cap-ten-kun-per-grivna",
+   "claim:v2-g1-lender-loses-principal-after-three-times-interest"
+  ],
+  "note": "Найдена именно норма устава о резах: дозволенный рост 10 кун на гривну в год; и правило — после троекратного взимания процентов долга уже не берут. Формулировка исходного need про 'дважды/трижды в треть' в пакете дословно не встретилась — построено по фактически найденной норме (трёхкратное взимание), точнее и без домысливания промежуточного 'дважды'.",
+  "final_status": "partly_covered",
+  "final_refs": [
+   "claim:v2-g1-annual-interest-cap-ten-kun-per-grivna"
+  ],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g1-lender-loses-principal-after-three-times-interest",
+    "verdict": "REJECT",
+    "reason": "It drops the condition from the book_row value: the rule is for 'в треть' loans only. As written it applies to any interest."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-30-n2",
+  "status": "no_source",
+  "refs": [],
+  "note": "Про еду-заменители в голод 1230 г. и массовый исход/самозакабаление — по правилу задачи голод 1230–1231 не трогаем.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "WLD-33-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-monastery-owns-village-with-dependents"
+  ],
+  "note": "Юрьев монастырь получил от князя Мстислава волость Буйцы 'с данью, вирой и штрафами' — прямое (хоть и 1130 г., за сто лет до 1230, институт землевладения сохраняется) подтверждение монастырского села с зависимыми людьми.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g1-monastery-owns-village-with-dependents",
+    "verdict": "REJECT",
+    "reason": "'Зависимые люди трудятся на монастырь' is not in the source. Buitsy is a volost, not a village, and the general rule is overgeneralized."
+   }
+  ]
+ },
+ {
+  "need_id": "ACT-34-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Источника про ответственность господина за вред, причинённый холопом, в пакете не нашлось.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-36-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g1-princely-horse-worth-more-than-smerd-horse"
+  ],
+  "note": "Базовая правовая оценка смердьего коня в 2 гривны подтверждена; нюанс need о том, что рыночная цена при этом колебалась, отдельной строкой не подтверждён — не добавлял этот домысел в runtime_text.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g1-princely-horse-worth-more-than-smerd-horse"
+  ]
+ },
+ {
+  "need_id": "WLD-37-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Источника про то, что реальный вес на вече был у боярских родов и что поимённого голосования не было, в пакете не нашлось (есть только общая строка о том, что бояре участвовали в вече).",
+  "final_status": "no_source",
+  "final_refs": []
+ }
+]

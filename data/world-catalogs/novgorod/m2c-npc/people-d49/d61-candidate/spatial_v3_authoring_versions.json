@@ -1,0 +1,92 @@
+[
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_foreign_merchant_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "approved",
+    "canonical_digest": "c64fbc9c71ddae6ccc1b895fe59c4c2673679038b6ef592136e53e45185a579e",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_foreign_merchant_v1",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "769d02851a428b8b140a0f146078c6821ea979730665c60960f7af75f834f025",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "2a6ef5c4332b5116ccf6d4f7359b255b998f64a63c30562f2cf9bffc06c6e63d",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "a8e588d89412c3694bdb2fe94f09e4182609073e2529ea3ae99cec1cb649e940",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "f3578efe0e588d061a18e3782a3e48ecbdbe869341910e535a0a65909f1ae92d",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "ee12e8312a70a02e67bd1289d81aa543f6942d6edfc2ffc2a33fb0ab748fa5a1",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "43b918688ddabf43b3f72b93317205b298d2f7aeb5c2078bd7cc5299e3b7485b",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "01574e81c0f365d80202be2681b710f008af99a5215786d86846140b29cb6e60",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "f37c529dff167c7ee8879314558cd47ebd30bb947360171721aec4f3aa0cc462",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "e15968603b594ef7a81bd657d2ab14d96a019817861a1e325b1a22caf210245e",
+    "provenance_ref": "m2c_npc_editorial_001"
+  }
+]

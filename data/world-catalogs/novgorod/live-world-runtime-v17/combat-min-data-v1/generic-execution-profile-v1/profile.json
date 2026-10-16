@@ -1,0 +1,580 @@
+{
+  "schema": "novgorod.generic_combat_execution_profile_candidate.v1",
+  "profile_id": "generic_melee_attack_step_v17",
+  "status": "candidate_not_approved",
+  "production_usable": false,
+  "activation_authorized": false,
+  "import_authorized": false,
+  "applicability": {
+    "target": "live-world-runtime-v17",
+    "decision": "pending_independent_CA_and_ap_final",
+    "candidate_action_class": "melee_attack_step",
+    "fallback_to_scenario_profile": false,
+    "source_refs": [
+      "src.contract-index.v-current",
+      "src.combat_system.check.v-current",
+      "src.npc-combat-technical-step.v-current"
+    ],
+    "scope_note": "This is a candidate applicability profile. It does not activate generic v17 combat. Until independent approval and versioned cutover, the active combat-contract scope remains Phase 1B v16. The inherited adjacent NPC decision rows are retained as out-of-scope data references and are not activated by this profile.",
+    "included_clauses": [
+      {
+        "source": "combat_system.md:15-19",
+        "rule": "Single attempted action connects to one check and its consequence; defines the causal unit.",
+        "section_heading": "Боевая система"
+      },
+      {
+        "source": "combat_system.md:40-61",
+        "rule": "Use only current attack-relevant facts (participants, readiness, visibility, distance, equipment, body and witnesses); this does not import session setup.",
+        "section_heading": "2. Что нужно определить перед боем"
+      },
+      {
+        "source": "combat_system.md:109-127,145-150,156-160",
+        "rule": "Defines attack-check formula and only melee attribute/skill selection; ranged, grapple, social, stealth and other bases are outside this profile.",
+        "section_heading": "4. Боевая проверка"
+      },
+      {
+        "source": "combat_system.md:169-204",
+        "rule": "Defines the target defense value consumed by this attack.",
+        "section_heading": "5. Защита цели"
+      },
+      {
+        "source": "combat_system.md:208-230",
+        "rule": "Defines only already-current active-defense modifiers and their limits; no separate defense action is run.",
+        "section_heading": "6. Активная защита"
+      },
+      {
+        "source": "combat_system.md:234-256",
+        "rule": "Defines this check result and its direct outcome bands.",
+        "section_heading": "7. Итог проверки"
+      },
+      {
+        "source": "combat_system.md:260-275",
+        "rule": "Defines the attack harm calculation.",
+        "section_heading": "8. Вред"
+      },
+      {
+        "source": "combat_system.md:279-306",
+        "rule": "Defines weapon danger and directly relevant held-item facts.",
+        "section_heading": "9. Опасность оружия"
+      },
+      {
+        "source": "combat_system.md:310-321",
+        "rule": "Defines target vulnerability used in the harm calculation.",
+        "section_heading": "10. Уязвимость"
+      },
+      {
+        "source": "combat_system.md:325-354",
+        "rule": "Defines armor mitigation and coverage against this attack threat.",
+        "section_heading": "11. Броня и снижение вреда"
+      },
+      {
+        "source": "combat_system.md:368-400",
+        "rule": "Defines direct health/body consequence; authoritative body transition remains with body-state owner.",
+        "section_heading": "12. Потеря здоровья и активные состояния"
+      },
+      {
+        "source": "combat_system.md:439-471",
+        "rule": "Defines current injury, fear or fatigue modifiers when present in authoritative state.",
+        "section_heading": "14. Состояния в бою"
+      },
+      {
+        "source": "combat_system.md:507-532",
+        "rule": "Defines attack reach/distance compatibility and its direct modifier.",
+        "section_heading": "16. Дистанция"
+      },
+      {
+        "source": "combat_system.md:689-725",
+        "rule": "Defines the current ready weapon/hands facts only; drawing or re-equipping is a separate action.",
+        "section_heading": "21. Оружие, доступность и занятые руки"
+      },
+      {
+        "source": "combat_system.md:766-799",
+        "rule": "Defines modifier cap and dominant-modifier selection for the check.",
+        "section_heading": "23. Модификаторы и пределы расчёта"
+      },
+      {
+        "source": "combat_system.md:1104-1107,1111,1116-1118,1120",
+        "rule": "Accepts only direct mechanical prohibitions: no automatic success or invented gear/state, no negating physics, unbounded modifiers, invalid armor coverage, unsupported death, or repetitive unchanged attacks.",
+        "section_heading": "31. Что нельзя делать"
+      },
+      {
+        "source": "combat_system.md:1124-1145,1148",
+        "rule": "Recaps the same single-action attack mechanics; post-fight energy formula at line 1146 is excluded.",
+        "section_heading": "32. Короткие формулы"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:316,318-320,322-334",
+        "rule": "Keeps attack/formula ownership and its non-NPC decision owner boundaries; exchange proposal at line 317 and decision-signal descriptors at line 321 are excluded.",
+        "section_heading": "5.1. `@rus/combat-health`"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:381-384,388",
+        "rule": "Keeps authoritative body state and application with body-state after combat-health produces a harm package.",
+        "section_heading": "5.5. `@rus/body-state`"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:462-472",
+        "rule": "Defines a technical step as one immediate code-owned action; only the attack action is in this profile.",
+        "section_heading": "`combat_technical_step`"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1392-1404",
+        "rule": "Defines inputs used to construct one executable step; this profile covers attack mechanics, not intent/session lifecycle.",
+        "section_heading": "20.2. Один technical step"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1438-1442",
+        "rule": "Requires approved generic profiles and rules out per-NPC scenario handlers.",
+        "section_heading": "20.5. Code profiles"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1467-1474",
+        "rule": "Requires an approved exact duration for a time-bearing step and preserves the global-clock owner; this profile does not define exchange ordering.",
+        "section_heading": "21.2. Exact time"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1515-1520",
+        "rule": "Defines check request, check resolution, combat result/harm package and application of a body event, ending before threshold crossing and signal pipeline.",
+        "section_heading": "23.1. Общая последовательность"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1525-1529",
+        "rule": "Keeps a single shared RNG/check owner for player and NPC attacks.",
+        "section_heading": "23.2. Один RNG owner"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1531-1537",
+        "rule": "Separates combat harm semantics from the authoritative body-state transition.",
+        "section_heading": "23.3. Harm package не равен body commit"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1539-1544",
+        "rule": "Keeps result-band selection code-owned and tied to check resolution.",
+        "section_heading": "23.4. Результат проверки"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:2350-2356,2358-2362",
+        "rule": "Defines generic execution-profile authoring fields except body thresholds, which are not a step mechanic.",
+        "section_heading": "39.3. Combat execution profiles"
+      }
+    ],
+    "excluded_clauses": [
+      {
+        "source": "combat_system.md:7-13,65-71,94-105",
+        "rule": "The declared v16 session/exchange model, saved intent, due-step lifecycle and time advancement do not become generic v17 semantics.",
+        "section_headings": [
+          "Боевая система",
+          "3. Combat intent, technical step и exchange"
+        ]
+      },
+      {
+        "source": "combat_system.md:72-93,536-570,572-688",
+        "rule": "Other actions, initiative/order, movement, autonomous defense, grapple, ranged attacks, flee and draw/store execution are outside one melee attack; §21 current ready-weapon facts remain explicitly included.",
+        "section_headings": [
+          "3. Combat intent, technical step и exchange",
+          "17. Инициатива без отдельной системы",
+          "18. Защитные действия",
+          "19. Борьба и захват",
+          "20. Дальний бой"
+        ]
+      },
+      {
+        "source": "combat_system.md:726-727,728-764",
+        "rule": "Combat §22 weight/load calculations and adjacent non-weapon access text do not become attack-step mechanics.",
+        "section_headings": [
+          "21. Оружие, доступность и занятые руки",
+          "22. Вес и нагрузка в бою"
+        ]
+      },
+      {
+        "source": "combat_system.md:803-830",
+        "rule": "Multi-participant batches, pressure and actor ordering are outside one step.",
+        "section_heading": "24. Бой с несколькими участниками"
+      },
+      {
+        "source": "combat_system.md:834-874,876-920",
+        "rule": "Social aftermath and NPC reaction/decision behavior are owned elsewhere.",
+        "section_headings": [
+          "25. Социальные последствия боя",
+          "26. NPC в бою"
+        ]
+      },
+      {
+        "source": "combat_system.md:922-964,966-1023",
+        "rule": "Fight teardown, treatment, stamina follow-ups and delayed post-fight effects are not direct attack mechanics.",
+        "section_headings": [
+          "27. Окончание боя",
+          "28. Лечение после боя",
+          "29. Боевые отложенные события"
+        ]
+      },
+      {
+        "source": "combat_system.md:129-144,151-155,161-166",
+        "rule": "Ranged, grapple, social, stealth and non-melee action bases in combat §4 are excluded from this melee-only applicability slice.",
+        "section_heading": "4. Боевая проверка"
+      },
+      {
+        "source": "combat_system.md:404-435",
+        "rule": "Incapacity/death rules and timer progression are downstream body-state consequences, not attack-step mechanics.",
+        "section_heading": "13. Здоровье, поражение и смерть"
+      },
+      {
+        "source": "combat_system.md:475-503",
+        "rule": "Post-fight energy, fatigue, load cost and satiety changes are follow-up mechanics, not direct attack effects.",
+        "section_heading": "15. Бодрость и усталость после боя"
+      },
+      {
+        "source": "combat_system.md:1102-1103,1108-1110,1112-1115,1119",
+        "rule": "The remaining §31 prohibitions concern NPC agency, witnesses/law, healing/narration, item generation or social consequences, outside direct attack mechanics.",
+        "section_heading": "31. Что нельзя делать"
+      },
+      {
+        "source": "combat_system.md:1146",
+        "rule": "The summary line for post-fight energy expenditure is excluded from the direct attack recap.",
+        "section_heading": "32. Короткие формулы"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:317,321",
+        "rule": "The §5.1 exchange proposal and decision-signal descriptors are excluded; this profile covers one attack step.",
+        "section_heading": "5.1. `@rus/combat-health`"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:2357",
+        "rule": "Body thresholds in §39.3 are excluded as an authoring field outside this attack-step applicability decision.",
+        "section_heading": "39.3. Combat execution profiles"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:22-43,124-151",
+        "rule": "Combat start, trigger/session activation, persisted lifecycle and current exchange boundary do not transfer from v16.",
+        "section_headings": [
+          "1. Назначение",
+          "2.2. Production cutover revision 16"
+        ]
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:153-176",
+        "rule": "The target session/intent/exchange runtime flow and its boundary are outside this single attack-step profile.",
+        "section_heading": "2.3. Целевое изменение"
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:492-1083,1087-1159,1377-1379,1547-1680",
+        "rule": "Trigger vocabulary/evaluation, perception signals, NPC decision pipeline, body-threshold cross-triggering and multi-NPC decision batches are excluded.",
+        "section_headings": [
+          "7. Универсальные категории триггеров",
+          "7.1. `self`",
+          "7.2. `others`",
+          "7.3. `environment`",
+          "7.4. `objective`",
+          "7.5. `communication`",
+          "7.6. Категориальная полнота",
+          "8. Значимость сигнала",
+          "8.1. `material`",
+          "8.2. `critical`",
+          "8.3. Значимость задаётся декларативно",
+          "9. Контракт `npc_decision_signal_v1`",
+          "9.1. Инварианты",
+          "9.2. Signal не обязан хранить предметные детали",
+          "10. Декларативная генерация сигналов",
+          "10.1. Запрещённый подход",
+          "10.2. Допустимый подход",
+          "10.3. Body profiles",
+          "10.4. Environment profiles",
+          "10.5. Combat participant transitions",
+          "10.6. Objective transitions",
+          "10.7. Communication transitions",
+          "11. Perception и subjective applicability",
+          "11.1. Сигналы без внешнего восприятия",
+          "11.2. Сигналы с восприятием",
+          "11.3. Ошибочное восприятие",
+          "11.4. Неспособность принимать решение",
+          "12. Общий trigger evaluator",
+          "12.1. Алгоритм",
+          "12.2. Код не оценивает психологическую значимость",
+          "12.3. Нулевой результат",
+          "13. Контракт `npc_decision_boundary_v1`",
+          "13.1. Инварианты",
+          "14. Что не создаёт trigger",
+          "15. Универсальный trigger protocol вне боя",
+          "16. Состояние `combat_session_v1`",
+          "16.1. `status`",
+          "16.2. `combat_status` участника",
+          "16.3. Current projection",
+          "19. Operation contract для LLM",
+          "20. Automatic combat execution",
+          "24. Direct-harm body threshold crossing",
+          "24.1. Необходимое расширение",
+          "24.2. Результат",
+          "24.3. Edge-trigger rule",
+          "25. Триггеры боя через пять категорий",
+          "Вход в бой без intent",
+          "Значимое ухудшение собственного состояния",
+          "Потеря оружия или capability",
+          "Появление, выбытие или surrender другого участника",
+          "Изменение пути, света, hazard или укрытия",
+          "Достижение, блокировка или invalidation текущего goal",
+          "Приказ, угроза, просьба или предложение сдачи",
+          "Несколько изменений",
+          "26. Начало боя",
+          "26.1. NPC сам инициировал бой",
+          "26.2. NPC втянут в бой",
+          "26.3. Deterministic non-participant"
+        ]
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1160-1376",
+        "rule": "Intent taxonomy/selection, statements, model input, prompt, repair and validation are excluded.",
+        "section_headings": [
+          "17. NPC combat intent",
+          "17.1. Назначение",
+          "17.2. Закрытый универсальный словарь intent kinds",
+          "17.3. `engage`",
+          "17.4. `control`",
+          "17.5. `protect`",
+          "17.6. `hold`",
+          "17.7. `reach`",
+          "17.8. `break_contact`",
+          "17.9. `surrender`",
+          "17.10. `cease_hostility`",
+          "17.11. Force limit",
+          "17.12. Risk posture",
+          "18. Контракт active intent",
+          "18.1. Field rules",
+          "18.2. Свободный текст не исполняется",
+          "19. Operation contract для LLM"
+        ]
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1380-1390,1406-1436",
+        "rule": "Saved-intent continuation, stop/status evaluation, objective signaling and autonomous defensive subactions are excluded.",
+        "section_headings": [
+          "20.1. Базовое правило",
+          "20.3. Код не выбирает новое намерение",
+          "20.4. Defensive reactions"
+        ]
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1446-1465,1475-1483,1487-1507",
+        "rule": "Exchange composition/order, same-time stale recheck, round/session clock semantics and player-boundary lifecycle are excluded; only §21.2 exact step-duration owner rule is included.",
+        "section_headings": [
+          "21. Combat exchange",
+          "21.1. Порядок",
+          "21.3. Same-time precondition recheck",
+          "21.4. Никакой скрытой «боевой секунды»",
+          "22. Игрок в бою"
+        ]
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1681-2174",
+        "rule": "Combat decision batching/statements, completion, persistence, replay, model interaction and atomicity remain outside the step profile.",
+        "section_headings": [
+          "27. Несколько NPC на одной боевой границе",
+          "27.1. Общий snapshot",
+          "27.2. Отдельная субъективность",
+          "27.3. Decision batch",
+          "27.4. Apply order",
+          "27.5. Новые факты между решениями",
+          "28. Combat statements",
+          "28.1. Короткая речь в бою",
+          "28.2. Statement не заменяет intent",
+          "28.3. Получатели",
+          "28.4. Полный разговор",
+          "29. Завершение боя",
+          "30. Вход LLM: `npc_combat_decision_request_v1`",
+          "30.1. Субъективность",
+          "30.2. Собственное тело",
+          "30.3. Perceived changes",
+          "31. Выход LLM: `npc_combat_intent_plan_v1`",
+          "31.1. `adaptation`",
+          "31.2. Ровно один intent",
+          "31.3. `combat_statement`",
+          "32. Схема ответа модели и владелец текста промпта NPC combat",
+          "Схема ответа",
+          "Инварианты",
+          "33. Схема format repair и владелец текста",
+          "Схема",
+          "34. Validation ответа LLM",
+          "34.1. Stale response",
+          "34.2. Immediate mechanical gap",
+          "35. Persistence, replay и идемпотентность",
+          "35.1. Current combat projection",
+          "35.2. Events",
+          "35.3. NPC decision traces",
+          "35.4. Signal persistence",
+          "35.5. Replay",
+          "36. Atomicity"
+        ]
+      },
+      {
+        "source": "npc_combat_and_trigger_contract.md:1521-1523",
+        "rule": "Threshold crossing, factual event and signal pipeline are trigger-owned and excluded from this one-step applicability slice.",
+        "section_heading": "23.1. Общая последовательность"
+      }
+    ],
+    "source_pins": {
+      "checkout": "integ-98",
+      "commit": "3762df2e25749dfe47907610c64525e52b457406",
+      "files": [
+        {
+          "path": "data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md",
+          "sha256": "a56609a057e9f9e070596ef17cef035bfce122d5808151e5c976957f47e47b76",
+          "id": "src.contract-index.v-current",
+          "lines": "CONTRACT_INDEX.md:103-111,179"
+        },
+        {
+          "path": "data/knowledge-source/corpus/DOCUMENTS/combat_system.md",
+          "sha256": "8542f205b0d78139b57ae6a17d970dbc73aa24a452e75e1b428cf91474139e9a",
+          "id": "src.combat_system.check.v-current",
+          "lines": "combat_system.md:7-13,15-19,40-61,109-166,169-256,260-354,368-400,439-471,507-532,689-725,766-799,1100-1148"
+        },
+        {
+          "path": "data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
+          "sha256": "20bee8872db61df33025c687f56188b973ac4e85ed54cd549e013dcf98cd775f",
+          "id": "src.npc-combat-technical-step.v-current",
+          "lines": "npc_combat_and_trigger_contract.md:306-334,377-388,462-472,1392-1404,1438-1442,1467-1474,1513-1544,2350-2362"
+        }
+      ],
+      "scope": "These exact pins define applicability only. The inherited execution-data source map remains the lineage of the approved authoring package and is not presented as a current applicability pin; its other approvals, values and typed gaps are unchanged."
+    },
+    "excluded_profile_fields": [
+      {
+        "path": "rows.npc_body_context",
+        "reason": "NPC-facing decision context is outside one mechanical attack step and remains subject to its own perception/decision applicability gate."
+      },
+      {
+        "path": "rows.npc_boundary_and_exit",
+        "reason": "Surrender/exit choice and movement belong to NPC decision and movement owners, not this attack step."
+      }
+    ]
+  },
+  "rows": {
+    "check": {
+      "owner": "@rus/checks-rng",
+      "source_refs": [
+        "src.combat_system.check.v-current",
+        "src.contract-index.v-current",
+        "gap:G-ACTOR-CHECK-FACTS",
+        "A-combat-min-execution-profile-bench-01"
+      ],
+      "normative_rule_ref": "combat_system.md:113-127,234-248",
+      "status": "formula_reference_only; v17 applicability and generic input bindings pending",
+      "required_unbound_inputs": [
+        "actor attribute bonus",
+        "combat skill bonus",
+        "state modifier",
+        "equipment modifier",
+        "circumstance modifier",
+        "target defense",
+        "target position"
+      ]
+    },
+    "harm": {
+      "owner": "@rus/combat-health",
+      "source_refs": [
+        "src.combat_system.harm-health.v-current",
+        "src.contract-index.v-current",
+        "gap:G-TARGET-PROTECTION-VULNERABILITY"
+      ],
+      "normative_rule_ref": "combat_system.md:264-275",
+      "status": "formula_reference_only; target vulnerability/protection and applicability pending",
+      "unbound_inputs": [
+        "weapon danger",
+        "target vulnerability",
+        "threat-relevant protection"
+      ]
+    },
+    "health_transition": {
+      "owner": "@rus/body-state",
+      "source_refs": [
+        "src.combat_system.body.v-current",
+        "combat-data-approval.json",
+        "gap:G-BODY-READBACK-COMMIT"
+      ],
+      "normative_rule_ref": "combat_system.md:368-400",
+      "status": "health-loss/incapacity reference only; generic readback and execution binding pending",
+      "rule": "zero health does not establish death"
+    },
+    "weapon_mapping": {
+      "owner": "@rus/items-property + @rus/combat-health",
+      "source_refs": [
+        "src.combat_system.weapon-danger.v-current",
+        "combat-data-approval.json",
+        "gap:G-GENERIC-WEAPON-ROWS"
+      ],
+      "explicit_norm_example": {
+        "item": "unarmed fist",
+        "danger": 1,
+        "source_ref": "combat_system.md:279-304"
+      },
+      "status": "example remains scoped to declared contract; no generic catalog row mapped"
+    },
+    "duration": {
+      "owner": "@rus/time-events-history + @rus/combat-health + @rus/turn",
+      "selected_seconds": null,
+      "source_refs": [
+        "combat-data-approval.json#/limits/0",
+        "A-combat-min-execution-profile-bench-01",
+        "out/duration-calibration/results.json",
+        "gap:G-DURATION-APPROVAL",
+        "gap:G-RATIONAL-TIME-HANDOFF",
+        "gap:G-AUTO-DEFENSE-TIMING",
+        "npc_combat_and_trigger_contract.md:1467-1474",
+        "temporal_world_and_interruptible_activities.md:228-260"
+      ],
+      "status": "selected_candidate_pending_Opus_ap_and_owner_approval",
+      "candidate_seconds": 6,
+      "elapsed_minutes_exact": "1/10",
+      "calibration_label": "D71 proposed_unbenchmarked",
+      "candidate_range_seconds": [
+        5,
+        10
+      ],
+      "selection_rationale": "Retain the existing 6-second D71 authoring proposal from combat-data-approval.json; exact conversion is 1/10 minute. Deterministic scenario totals are in out/duration-calibration/results.json. This is not evidence of optimal pacing; playtest remains required.",
+      "typed_gap_remains": true,
+      "candidate_range_note": "5–10 seconds; refine through playtest",
+      "refine_through_playtest": true
+    },
+    "npc_body_context": {
+      "owner": "@rus/body-state + @rus/npc-runtime",
+      "source_refs": [
+        "body-bands-production-approval-7.json#/approved_use",
+        "D65-v4:RESULT-20261005T014614.534569Z-1-READOUT.md"
+      ],
+      "approved_scope": "Current own authoritative health/energy/satiety description for ordinary combat NPC; exact approved profile only. No mechanical modifier or action threshold.",
+      "status": "scoped data approval only; D65 v4 body-effect gate failed and does not prove decision impact"
+    },
+    "npc_boundary_and_exit": {
+      "owner": "@rus/npc-runtime + @rus/visibility-knowledge-memory + @rus/space-map + @rus/movement-routes",
+      "source_refs": [
+        "combat-cr.md:33-35",
+        "D65-v4:RESULT-20261005T014614.534569Z-1-READOUT.md",
+        "gap:G-INDIVIDUAL-SURRENDER-BASIS",
+        "gap:G-PERCEPTION-BOUNDARY-APPLICABILITY",
+        "gap:G-SURRENDER-PHYSICAL-ACTION",
+        "gap:G-RETREAT-MOVEMENT"
+      ],
+      "status": "intent facts/action effects remain typed gaps; no universal threshold or inferred completed escape"
+    }
+  },
+  "approval_basis": {
+    "combat_data_approval": "APPROVE_WITH_LIMITS: authoring/data-only scope; generic live-NPC applicability, balance, import and activation excluded",
+    "approval_7": "APPROVE_WITH_LIMITS: body-description profile only; no decision influence or execution fields approved",
+    "d65_v4": "script-first result only: body-effect gate FAIL; judge gates unevaluable; runner blind-export assertion failed"
+  },
+  "typed_gaps": [
+    "G-APPLICABILITY-V17",
+    "G-ACTOR-CHECK-FACTS",
+    "G-GENERIC-WEAPON-ROWS",
+    "G-TARGET-PROTECTION-VULNERABILITY",
+    "G-BODY-READBACK-COMMIT",
+    "G-DURATION-APPROVAL",
+    "G-RATIONAL-TIME-HANDOFF",
+    "G-AUTO-DEFENSE-TIMING",
+    "G-RETREAT-MOVEMENT",
+    "G-INDIVIDUAL-SURRENDER-BASIS",
+    "G-PERCEPTION-BOUNDARY-APPLICABILITY",
+    "G-SURRENDER-PHYSICAL-ACTION",
+    "G-NPC-BODY-QUALITATIVE-BANDS"
+  ],
+  "candidate_revision": "5",
+  "profile_version": 1
+}

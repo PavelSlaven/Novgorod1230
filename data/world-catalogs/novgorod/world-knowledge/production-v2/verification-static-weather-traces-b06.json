@@ -1,0 +1,6 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:static-weather-traces-b06-gray-clouds","claim_ref":"claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue","claim_digest":"0f542f21a1040ffd0b450f6358bd8ca9372678c8a17d1eeef0382f96a1736984","candidate_ref":"git:51fb61efc5c99540b50c2099cc21ca08e7630e8f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-weather-traces-b06.json#claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue","auditor_ref":"/root/human_context_sources_b06","independence_basis":"Independent direct-source review by an auditor who did not author the candidate; reviewed RU/EN claims, qualifiers, evidence, and full assembled 1319-claim pack.","evidence_checked":["evidence:static-weather-b06-dark-layer-cloud-rain"],"review_ref":"verification/static-weather-traces-b06.md#approved-premises","verdict":"APPROVE","limits":"Qualitative preparation cue only; no local cloud state, timing, precipitation amount, route, or forecast guarantee."}
+  ]
+}

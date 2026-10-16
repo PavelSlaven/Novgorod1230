@@ -62,6 +62,16 @@ test('public screen contract accepts versioned read models and rejects hidden fi
     assert.throws(() => validatePublicScreen({ ...firstScreen(), wrapper: { [leak]: { secret: 'never public' } } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' }, leak);
   }
   assert.throws(() => assertNoHiddenFields({ nested: { private_motives: [] } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
+  assert.doesNotThrow(() => validatePublicScreen({ ...firstScreen(),
+    exact_npc_utterances: [{ speaker_ref: {
+      entity_kind: 'npc', public_key: 'e1'
+    }, utterance_text: 'Я видел лодку.' }] }));
+  assert.throws(() => validatePublicScreen({ ...firstScreen(),
+    exact_npc_utterances: [{ speaker_ref: { entity_kind: 'npc',
+      public_key: 'e1' }, utterance_text: 'Я видел лодку.',
+      extra: 'unexpected' }] }), {
+    code: 'SCREEN_EXACT_SPEECH_INVALID'
+  });
 });
 
 test('public screen validates exact optional scene affordances', () => {
@@ -75,7 +85,7 @@ test('public screen validates exact optional scene affordances', () => {
         visible: true,
         data: {
           active_interlocutor: {
-            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            entity_ref: { entity_kind: 'npc', public_key: 'e1' },
             display_label: 'Еремей', role_label: 'рыбак'
           }
         }
@@ -304,6 +314,20 @@ test('new-game view keeps free text and published scenarios as start choices', (
   assert.equal(store.getState().rememberedPartyId, 'party-old');
 });
 
+test('new-game scenario card omits description markup when description is absent or blank', () => {
+  const store = createUiStore();
+  store.setScenarios([
+    { scenario_id: 'without-description', title: 'У реки' },
+    { scenario_id: 'blank-description', title: 'У леса', description: '  ' }
+  ]);
+  store.showNewGame();
+  const html = renderAppState(store.getState());
+
+  assert.match(html, /<h3>У реки<\/h3><\/div><button/u);
+  assert.match(html, /<h3>У леса<\/h3><\/div><button/u);
+  assert.doesNotMatch(html, /<p>(?:undefined|\s*)<\/p>/u);
+});
+
 test('game shell has factual context, neutral viewport, independent input and no fake geography', () => {
   const screen = {
     ...firstScreen(),
@@ -314,7 +338,7 @@ test('game shell has factual context, neutral viewport, independent input and no
         visible: true,
         data: {
           active_interlocutor: {
-            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            entity_ref: { entity_kind: 'npc', public_key: 'e1' },
             display_label: 'Еремей',
             portrait_asset_id: 'lower-dvina-eremey'
           }
@@ -472,7 +496,7 @@ test('conversation portrait uses only the canonical interlocutor field', () => {
         visible: true,
         data: {
           active_interlocutor: {
-            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            entity_ref: { entity_kind: 'npc', public_key: 'e1' },
             display_label: '<b>Еремей</b>', role_label: 'рыбак'
           },
           nearby_people: [{ display_label: 'Ратша' }]

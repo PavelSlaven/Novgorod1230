@@ -30,11 +30,15 @@ function serializePlanValue(value) {
   return Array.isArray(value) ? JSON.stringify(value) : value;
 }
 async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = null, committedAtTurn = 0) {
+  const keyValue = (column) => column === 'profile_ref_id'
+    && write.target_table === 'party_g4_expansion_ledgers'
+    ? write.record.profile_ref.entity_id : write.record[column];
   const spec = TABLES[write.target_table]; const record = write.target_table === 'party_v3_change_sets' ? { ...Object.fromEntries(Object.entries(write.record).filter(([key]) => !['idempotency_record_id', 'created_at_turn', 'committed_at_turn'].includes(key))), expected_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), expected_state_version_set: sealedPlan.expected_state_versions, committed_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), write_plan_digest: sealedPlan.write_set_digest.replace('sha256:', ''), created_at_turn: committedAtTurn, committed_at_turn: committedAtTurn } : write.record; const columns = Object.keys(record); const table = `party_runtime.${quote(write.target_table)}`;
   if (mode === 'update') {
+    const versionColumn = spec.version_column ?? 'state_version';
     const set = columns.filter((column) =>
       !spec.key.includes(column)
-      && (spec.version !== true || column !== 'state_version'));
+      && (spec.version !== true || column !== versionColumn));
     if (spec.version !== true) {
       const where = spec.key.map((column, index) =>
         `${quote(column)}=$${set.length + index + 1}`);
@@ -60,7 +64,7 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
     const persistsOwnerVersion =
       write.target_table === 'party_timed_activity_executions';
     const nextVersion = persistsOwnerVersion
-      ? Number(record.state_version) : expected + 1;
+      ? Number(record[versionColumn]) : expected + 1;
     if (!Number.isInteger(nextVersion) || nextVersion <= expected) {
       throw Object.assign(new Error('update has invalid next version'), {
         spatialCode: 'state_version_conflict'
@@ -68,14 +72,14 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
     }
     const where = spec.key.map((column, index) =>
       `${quote(column)}=$${set.length + index + 2}`)
-      .concat(`state_version=$${set.length + spec.key.length + 2}`);
+      .concat(`${quote(versionColumn)}=$${set.length + spec.key.length + 2}`);
     const params = [
       ...set.map((column) => serializePlanValue(record[column])),
       nextVersion,
-      ...spec.key.map((column) => record[column]),
+      ...spec.key.map(keyValue),
       expected
     ];
-    const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, state_version=$${set.length + 1} WHERE ${where.join(' AND ')}`, params);
+    const result = await tx.query(`UPDATE ${table} SET ${set.map((column, index) => `${quote(column)}=$${index + 1}`).join(', ')}, ${quote(versionColumn)}=$${set.length + 1} WHERE ${where.join(' AND ')}`, params);
     if (result.rowCount !== 1) throw Object.assign(new Error('stale state version'), { spatialCode: 'state_version_conflict' });
     return;
   }
@@ -88,8 +92,68 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
   const values = columns.map((column) => serializePlanValue(record[column]));
   await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
-export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, now = () => new Date() } = {}) {
-  return Object.freeze({ async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck, turnBudget = null } = {}) {
+export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, readNaturalSourceProperty = null, now = () => new Date() } = {}) {
+  return Object.freeze({
+    async prepareExpansion({ party_id, g4_id, idempotency_key,
+      canonical_input_digest, prepare } = {}) {
+      if (![party_id, g4_id, idempotency_key, canonical_input_digest].every((value) =>
+        typeof value === 'string' && value.trim()) || typeof prepare !== 'function') {
+        return rejectedBeforeCommit('generated_schema_mismatch', party_id,
+          { reason: 'server-owned expansion identity and preparation are required' });
+      }
+      try { const result = await withTransaction(async (transaction) => {
+        await lockSpatialV3WritePlan(transaction, [
+          `01:clock:${party_id}`, `04:g4:${party_id}:${g4_id}`
+        ]);
+        const prior = await transaction.query(`SELECT canonical_input_digest,status,result_change_set_id,terminal_failure_code,lease_expires_at
+          FROM party_runtime.party_command_idempotency
+          WHERE party_id=$1 AND operation_kind='resolve_frontier' AND idempotency_key=$2`,
+        [party_id, idempotency_key]);
+        if (prior.rows.length) {
+          const row = prior.rows[0];
+          if (row.canonical_input_digest !== canonical_input_digest.replace('sha256:', '')) {
+            return rejectedBeforeCommit('idempotency_conflict', party_id,
+              { reason: 'expansion request differs from its committed identity' });
+          }
+          if (row.status === 'committed') {
+            return Object.freeze({ ok: true, replay: true, change_set_id: row.result_change_set_id });
+          }
+          if (row.status === 'failed_terminal') {
+            return Object.freeze({ ok: false, terminal: true,
+              error: error(row.terminal_failure_code, party_id, { replay: true }) });
+          }
+          if (row.status !== 'leased' || new Date(row.lease_expires_at) > now()) {
+            return Object.freeze({ ok: false, in_progress: true,
+              error: error('idempotency_conflict', party_id, { reason: 'unexpired lease' }) });
+          }
+        }
+        const prepared = await prepare({ transaction });
+        if (!prepared?.ok) return prepared;
+        const plan = prepared.plan;
+        if (plan?.party_id !== party_id || plan.operation_kind !== 'resolve_frontier'
+          || plan.idempotency_key !== idempotency_key
+          || plan.canonical_input_digest !== canonical_input_digest
+          || plan.owner_keys.length || plan.execution_keys.length
+          || plan.g4_keys.length !== 1 || plan.g4_keys[0] !== `${party_id}:${g4_id}`) {
+          return rejectedBeforeCommit('generated_schema_mismatch', party_id,
+            { reason: 'expansion preparation changed its locked identity' });
+        }
+        const scoped = createSpatialV3CombinedAtomicCommitter({
+          withTransaction: (work) => work(transaction), recheck, now,
+          ordinaryFirstEntryProvisioner, readNaturalSourceProperty
+        });
+        return scoped.commit({ plan, recheck: prepared.recheck ?? recheck,
+          created_at_turn: prepared.created_at_turn ?? 0 });
+      });
+        if (result?.ok !== false) return result;
+        const { transaction_rollback_confirmed: rollbackConfirmed, ...publicResult } = result;
+        return rollbackConfirmed === true && result.in_progress !== true
+          ? markNotStarted(publicResult) : Object.freeze(publicResult);
+      } catch (cause) {
+        return Object.freeze({ ok: false, error: spatialCommitFailure(cause, party_id, true) });
+      }
+    },
+    async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck, turnBudget = null } = {}) {
     if (!validateSpatialV3CombinedWritePlan(plan)) return rejectedBeforeCommit('generated_schema_mismatch', plan?.party_id, { reason: 'untrusted or non-whitelisted combined write plan' });
     if (!Number.isSafeInteger(created_at_turn) || created_at_turn < 0) return rejectedBeforeCommit('generated_schema_mismatch', plan.party_id, { reason: 'commit turn must be one non-negative safe integer' });
     if (typeof withTransaction !== 'function' || typeof commitRecheck !== 'function') return rejectedBeforeCommit('generated_schema_mismatch', plan.party_id, { reason: 'transaction owner and full recheck port required' });
@@ -182,7 +246,8 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
             partyStateVersionAfter: plan.ordinary_materialization_atomic_write_plan
               .expected_versions.party_state_version + 1,
             requireEnablementPin: true,
-            p16ChangeSetId: plan.change_set_id
+            p16ChangeSetId: plan.change_set_id,
+            readNaturalSourceProperty
           });
         } catch (cause) {
           if (cause?.code === 'ORDINARY_PHASE6_ENABLEMENT_STALE'
@@ -270,13 +335,46 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
     }, turnBudget); if (result?.ok !== false) return result; const { transaction_rollback_confirmed: rollbackConfirmed, ...publicResult } = result; return rollbackConfirmed === true && result.in_progress !== true ? markNotStarted(publicResult) : Object.freeze(publicResult);
     } catch (cause) {
       if (cause?.code === 'LLM_TURN_BUDGET_EXHAUSTED') throw cause;
-      const diagnostics = { reason: cause.message, ...(cause?.transaction_rollback_confirmed === true ? { turn_commit_status: 'not_started' } : {}) };
-      return Object.freeze({ ok: false, error: error(cause.spatialCode ?? 'generated_schema_mismatch', plan.party_id, diagnostics) });
+      return Object.freeze({ ok: false, error: spatialCommitFailure(cause, plan.party_id) });
     }
   } });
 }
+function spatialCommitFailure(cause, partyId, includeDiagnosticCause = false) {
+  const visibleContextGap = cause?.code === 'SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP';
+  const diagnostic = includeDiagnosticCause ? diagnosticCause(cause) : null;
+  const diagnostics = {
+    reason: visibleContextGap
+      ? cause.details?.reason ?? cause.message : cause.message,
+    ...(diagnostic ? { cause: diagnostic } : {}),
+    ...(cause?.transaction_rollback_confirmed === true
+      ? { turn_commit_status: 'not_started' } : {})
+  };
+  return visibleContextGap
+    ? Object.freeze({ code: cause.code, diagnostics: Object.freeze(diagnostics) })
+    : error(cause.spatialCode ?? 'generated_schema_mismatch', partyId, diagnostics);
+}
 function rejectedBeforeCommit(code, partyId, diagnostics) { return Object.freeze({ ok: false, error: error(code, partyId, { ...diagnostics, turn_commit_status: 'not_started' }) }); }
 function markNotStarted(result) { return Object.freeze({ ...result, error: Object.freeze({ ...result.error, diagnostics: Object.freeze({ ...result.error?.diagnostics, turn_commit_status: 'not_started' }) }) }); }
+function diagnosticCause(cause, depth = 0) {
+  if (!cause || depth >= 8) return null;
+  const diagnostics = cause.details?.diagnostics ?? cause.diagnostics;
+  const nested = cause.cause ?? cause.details?.cause ?? diagnostics?.cause;
+  const reason = cause.details?.reason ?? diagnostics?.reason;
+  const context = cause.details?.diagnostic_context ?? diagnostics?.context;
+  const safeContext = context && typeof context === 'object' && !Array.isArray(context)
+    ? Object.fromEntries(Object.entries(context).filter(([key, value]) =>
+      typeof value === 'boolean' || Number.isSafeInteger(value)
+      || (['source_position_id', 'actor_scene_position_id'].includes(key)
+        && typeof value === 'string'))) : null;
+  const result = {
+    ...(typeof (cause.code ?? cause.spatialCode) === 'string'
+      ? { code: cause.code ?? cause.spatialCode } : {}),
+    ...(typeof reason === 'string' ? { reason } : {}),
+    ...(safeContext && Object.keys(safeContext).length ? { context: safeContext } : {}),
+    ...(nested ? { cause: diagnosticCause(nested, depth + 1) } : {})
+  };
+  return Object.keys(result).length ? result : null;
+}
 function ordinaryOwnedVersionDelta(plan, write) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
   return write.target_table === 'party_containers'
@@ -284,11 +382,11 @@ function ordinaryOwnedVersionDelta(plan, write) {
     && write.id === ordinary.scope_ref.entity_id ? 1 : 0;
 }
 /** P16 owns the PostgreSQL transaction boundary for every target-v3 writer. */
-export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, ordinaryFirstEntryProvisioner, now } = {}) {
+export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, ordinaryFirstEntryProvisioner, readNaturalSourceProperty, now } = {}) {
   if (!pool?.connect) throw new TypeError('P16 PostgreSQL committer requires a pg pool');
   return createSpatialV3CombinedAtomicCommitter({
     now,
-    recheck, ordinaryFirstEntryProvisioner,
+    recheck, ordinaryFirstEntryProvisioner, readNaturalSourceProperty,
     withTransaction: (work, turnBudget = null) => !Number.isFinite(turnBudget?.remaining?.()?.deadline_ms)
       ? withPostgresTransaction(pool, work)
       : withTurnDeadlineTransaction(pool, turnBudget, work, {

@@ -27,8 +27,8 @@ test('approved Temporal bundle has exact family, record, reference and source co
   assert.equal(bundle.family_count, 13);
   assert.equal(bundle.record_count, 22);
   assert.equal(bundle.reference_count, 22);
-  assert.equal(bundle.provenance_count, 14);
-  assert.equal(bundle.source_count, 46);
+  assert.equal(bundle.provenance_count, 15);
+  assert.equal(bundle.source_count, 47);
   assert.equal(bundle.developer_table_binding_count, 0);
   assert.deepEqual(bundle.errors, []);
 });

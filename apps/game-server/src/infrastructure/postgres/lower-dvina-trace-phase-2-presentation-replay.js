@@ -1,5 +1,7 @@
 import { spatialResult } from '@rus/turn';
 import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
+import { playerWorldKnowledgeAuthoritativeFromState } from
+  '../../runtime/world-knowledge-request-context.js';
 import { buildPhase2ReadyScreen } from './lower-dvina-trace-phase-2-projection.js';
 import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-context.js';
 
@@ -12,6 +14,7 @@ export async function replayLowerDvinaTracePhase2Presentation({
   const visibleContext = await loadPhase2VisibleContext(partyPool, {
     commit: replay.state.last_turn.visible_package, turnBudget
   });
+  // F7: same post-commit authoritative source as live narrator wrap.
   const narration = await runWithinTurnDeadline(turnBudget, () => narrator.run({
     version: 1, schema: 'narration_request', request_id: replay.screen.turn_id,
     party_id: partyId,
@@ -21,6 +24,9 @@ export async function replayLowerDvinaTracePhase2Presentation({
       outcome: spatialResult({ consequence: replay.state.last_turn.consequence }) },
     style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
     max_repairs: 1, turnBudget
+  }, {
+    worldKnowledgeAuthoritative:
+      playerWorldKnowledgeAuthoritativeFromState(replay.state)
   }));
   const commit = { state_version: replay.state.party_state?.state_version,
     turn_number: replay.state.party_state?.turn_number,

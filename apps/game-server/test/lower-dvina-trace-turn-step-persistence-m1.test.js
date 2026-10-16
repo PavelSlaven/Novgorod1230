@@ -202,6 +202,26 @@ test('M1 persists formal access on an existing authored container', () => {
     table === 'party_items' && id === 'authored-item'), true);
 });
 
+test('M1 writes ground item at exact current scene position', () => {
+  const state = baseState();
+  state.position.position_id = 'position:arrival';
+  const operation = direct('create_entity', 'op-ground', {
+    temp_ref: 'sand-temp', entity_ref: 'runtime-item:sand',
+    semantic_type: 'material_portion', name: 'горсть мокрого песка',
+    origin: { kind: 'ambient_ordinary', source_refs: ['shore'] },
+    facts: [], runtime_instance_mechanics_snapshot: mechanics('op-ground', 300),
+    placement: { scene_position_id: 'position:arrival' }
+  });
+  const result = prepare({ state, operations: [operation] });
+  assert.equal(result.writes.inserts.find(({ target_table: table }) =>
+    table === 'party_item_placements').record.scene_position_id,
+    'position:arrival');
+  assert.throws(() => prepare({ state, operations: [direct(
+    'create_entity', 'op-ground', { ...operation.value.payload,
+      placement: { scene_position_id: 'position:other' } }
+  )] }), { code: 'TRACE_TURN_STEP_PLACEMENT_REF_UNRESOLVED' });
+});
+
 test('M1 accepts owner-expanded ambient provenance only with a current source', () => {
   const snapshot = structuredClone(mechanics('ambient-op', 500));
   snapshot.provenance.source_kind = 'ordinary_direct_action_result';

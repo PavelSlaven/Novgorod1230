@@ -1,0 +1,704 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import pg from 'pg';
+
+import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { deriveEnvironment } from '@rus/environment-state';
+import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs';
+import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
+import { createSpatialV3ProductionCompositionRoot } from
+  '../../apps/game-server/src/composition/production-spatial-v3.js';
+import { loadSpatialV3RuntimeBindings } from
+  '../../apps/game-server/src/runtime/load-spatial-v3-bindings.js';
+import { readV17PartyProductionCatalogLedger } from
+  '../../scripts/v17-party-production-catalog-ledger.mjs';
+import { WAVE_ATTESTATION_SCHEMA } from '../../scripts/v17-m2c-npc-wave-stage.mjs';
+import { IDENTITY_ATTESTATION_SCHEMA } from '../../scripts/v17-npc-identity-stage.mjs';
+import { turnStepOperationChoices } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
+import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
+import { identifyLlmTestRole } from './llm-test-role.js';
+
+export const POSTGRES_IMAGE = 'postgres:16.14-alpine';
+export const WORLD_DB = 'novgorod_world_v17';
+export const PARTY_DB = 'novgorod_party_v17';
+export const VIKHTUY_MEETING_G5 = 'cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area';
+export const VIKHTUY_LOCALITY_G4 = 'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality';
+export const PF_RURAL_YARD = 'pf_rural_yard';
+export const PF_PEASANT_HOMESTEAD = 'pf_peasant_homestead';
+
+const testEnvironmentEntityRef = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const testEnvironmentVersionedRef = (entity_kind, entity_id) => ({
+  entity_ref: testEnvironmentEntityRef(entity_kind, entity_id), authoring_version: 'v1'
+});
+const sealTestEnvironmentRecord = (payload) => ({
+  ...payload, canonical_digest: computeSpatialV3CanonicalDigest(payload)
+});
+const testEnvironmentScope = testEnvironmentEntityRef('party_g6_instance', 'lines-b1-test-scope');
+const testEnvironmentWeatherRef = testEnvironmentVersionedRef('weather_state', 'lines-b1-test-weather');
+const testEnvironmentLightRef = testEnvironmentVersionedRef('light_profile', 'lines-b1-test-light');
+const testEnvironmentCompositionRef = testEnvironmentVersionedRef('transition_environment_profile', 'lines-b1-test-composition');
+const testEnvironmentAccessRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-access');
+const testEnvironmentWeatherBoundaryRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-weather-boundary');
+const testEnvironmentWeatherVisibilityRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-weather-visibility');
+const testEnvironmentLightBoundaryRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-light-boundary');
+const testEnvironmentLightVisibilityRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-light-visibility');
+const testEnvironmentAccessVisibilityRef = testEnvironmentVersionedRef('condition_set', 'lines-b1-test-access-visibility');
+const testEnvironmentPin = (dependency_role, value) => ({
+  dependency_role,
+  entity_ref: value.entity_ref,
+  version_pin: { pin_kind: 'authoring_version', authoring_version: value.authoring_version }
+});
+const legacyConnectionLabels = JSON.parse(readFileSync(new URL(
+  '../../data/world-catalogs/novgorod/m2c-canonical-connection-labels/candidate.json',
+  import.meta.url), 'utf8')).labels;
+
+/** Test-only approved environment-state input for the local-line route PG fixture. */
+export function projectTestOnlyLineEnvironmentAtClock({ clock } = {}) {
+  const rational = (numerator, denominator = '1') => ({ numerator, denominator });
+  const result = deriveEnvironment({
+    clock,
+    weather_state: sealTestEnvironmentRecord({
+      profile_ref: testEnvironmentWeatherRef,
+      status: 'approved',
+      provenance_ref: testEnvironmentEntityRef('source_record', 'lines-b1-test-weather-source'),
+      applicability: { scope_refs: [testEnvironmentScope] },
+      current_weather_id: 'clear',
+      current_movement_factor: rational('3', '2'),
+      boundary_policy_ref: testEnvironmentWeatherBoundaryRef,
+      visibility_policy_ref: testEnvironmentWeatherVisibilityRef,
+      interrupt_effect: 'background',
+      transitions: []
+    }),
+    light_profile: sealTestEnvironmentRecord({
+      profile_ref: testEnvironmentLightRef,
+      status: 'approved',
+      provenance_ref: testEnvironmentEntityRef('source_record', 'lines-b1-test-light-source'),
+      applicability: { scope_refs: [testEnvironmentScope] },
+      current_light_id: 'daylight',
+      current_movement_factor: rational('1'),
+      boundary_policy_ref: testEnvironmentLightBoundaryRef,
+      visibility_policy_ref: testEnvironmentLightVisibilityRef,
+      interrupt_effect: 'background',
+      transitions: [],
+      artificial_light: null
+    }),
+    place_access_context: sealTestEnvironmentRecord({
+      scope_ref: testEnvironmentScope,
+      portal_access_state_id: 'open',
+      invalidates_at: null,
+      invalidation_reason_id: null,
+      access_policy_ref: testEnvironmentAccessRef,
+      visibility_policy_ref: testEnvironmentAccessVisibilityRef,
+      interrupt_effect: 'background'
+    }),
+    movement_composition_policy: sealTestEnvironmentRecord({
+      policy_ref: testEnvironmentCompositionRef,
+      status: 'approved',
+      composition_kind: 'worst_applicable',
+      factor_reducer: 'maximum_rational',
+      provenance_ref: testEnvironmentEntityRef('source_record', 'lines-b1-test-composition-source')
+    }),
+    catalog_pins: sealTestEnvironmentRecord({ pins: [
+      testEnvironmentPin('weather_dependency', testEnvironmentWeatherRef),
+      testEnvironmentPin('light_profile', testEnvironmentLightRef),
+      testEnvironmentPin('dynamic_environment_rule_set', testEnvironmentCompositionRef),
+      testEnvironmentPin('availability_condition_set', testEnvironmentAccessRef),
+      testEnvironmentPin('condition_rule', testEnvironmentWeatherBoundaryRef),
+      testEnvironmentPin('condition', testEnvironmentWeatherVisibilityRef),
+      testEnvironmentPin('condition_rule', testEnvironmentLightBoundaryRef),
+      testEnvironmentPin('condition', testEnvironmentLightVisibilityRef),
+      testEnvironmentPin('condition', testEnvironmentAccessVisibilityRef)
+    ] })
+  });
+  if (result.status !== 'ok') {
+    throw new Error(`test-only environment-state fixture failed: ${result.error.code}`);
+  }
+  return result;
+}
+export async function assertBootstrapV17PartyProductionLedger(partyPool) {
+  const { row, fingerprint, release } = await readV17PartyProductionCatalogLedger(partyPool);
+  assert.ok(row, 'bootstrap must record party_runtime_catalog_pins_v2 ledger row');
+  assert.equal(row.migration_digest, release.party_runtime_catalog_migration_digest);
+  assert.equal(row.target_schema_fingerprint, release.party_runtime_catalog_target_fingerprint);
+  assert.equal(fingerprint, release.party_runtime_catalog_target_fingerprint);
+}
+
+const docker = (args, options = {}) => spawnSync('docker', args, {
+  encoding: 'utf8',
+  timeout: options.timeout ?? 90_000,
+});
+
+function databaseUrl(adminUrl, name) {
+  const url = new URL(adminUrl);
+  url.pathname = `/${name}`;
+  return url.href;
+}
+
+export function startPostgres(name, { profile = 'default' } = {}) {
+  const resourceArgs = profile === 'canonical-acceptance'
+    ? ['--shm-size', '2g', '--memory', '6g']
+    : [];
+  const postgresArgs = profile === 'canonical-acceptance'
+    ? ['-c', 'shared_buffers=512MB', '-c', 'max_connections=80']
+    : [];
+  const result = docker([
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
+    ...resourceArgs,
+    '-e', 'POSTGRES_PASSWORD=local_only',
+    POSTGRES_IMAGE,
+    ...postgresArgs,
+  ]);
+  assert.equal(result.status, 0, result.stderr);
+}
+
+async function waitForPostgres(name) {
+  for (let attempt = 0; attempt < 120; attempt += 1) {
+    await new Promise((resolveWait) => setTimeout(resolveWait, 250));
+    const logs = docker(['logs', name]);
+    const initialized = `${logs.stdout}\n${logs.stderr}`.includes(
+      'PostgreSQL init process complete; ready for start up.');
+    if (initialized && docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'postgres', '-d', 'postgres']).status === 0) {
+      return;
+    }
+  }
+  throw new Error(`${name} did not become ready.`);
+}
+
+function initializeBootstrapRoles(container) {
+  for (const user of ['world_operator', 'party_operator']) {
+    const role = docker([
+      'exec', container, 'psql', '-v', 'ON_ERROR_STOP=1', '-U', 'postgres',
+      '-d', 'postgres', '-c',
+      `CREATE ROLE ${user} LOGIN SUPERUSER PASSWORD 'local_only'`,
+    ]);
+    assert.equal(role.status, 0, role.stderr);
+  }
+}
+
+function adminDatabaseUrl(container) {
+  const output = docker(['port', container, '5432']).stdout;
+  const port = Number(output.match(/:(\d+)\s*$/u)?.[1]);
+  assert.ok(Number.isInteger(port));
+  return `postgresql://postgres:local_only@127.0.0.1:${port}/postgres`;
+}
+
+function buildFixtureApproval() {
+  return async (stage, payload) => {
+    const value = { ...payload, attested_by: 'isolated-postgres-test-fixture' };
+    return { ...value, attestation_digest: digestEnvelope(value) };
+  };
+}
+
+function buildAttest(fixtureApproval) {
+  return async ({ stage, request }) => {
+    if (stage === 'item_baseline') {
+      return fixtureApproval(stage, {
+        schema: 'rus.baseline_registration_attestation.v2',
+        registration_request_digest: request.registration_request_digest,
+        parent_tuple: {
+          parent_revision_id: request.parent_revision_id,
+          parent_catalog_digest: request.parent_catalog_digest,
+          parent_snapshot_manifest_digest: request.parent_snapshot_manifest_digest,
+        },
+        compatible_world_tuple: {
+          compatible_world_revision_id: request.compatible_world_revision_id,
+          compatible_world_catalog_digest: request.compatible_world_catalog_digest,
+          compatible_world_pin_manifest_digest: request.compatible_world_pin_manifest_digest,
+        },
+        decision: 'approve_register_baseline',
+        action: 'register_baseline',
+      });
+    }
+    if (stage === 'item_import') {
+      return fixtureApproval(stage, {
+        schema: 'rus.item_container_overlay_approval_attestation.v2',
+        approval_request_digest: request.approval_request_digest,
+        decision: 'approve_overlay_import',
+        activation_authorized: false,
+      });
+    }
+    if (stage === 'item_activation') {
+      return fixtureApproval(stage, {
+        schema: 'rus.runtime_catalog_activation_attestation.v2',
+        activation_request_digest: request.activation_request_digest,
+        catalog_scope: request.catalog_scope,
+        target_revision_id: request.target_revision_id,
+        target_catalog_digest: request.target_catalog_digest,
+        import_id: request.import_id,
+        import_audit_digest: request.import_audit_digest,
+        runtime_contract_digest: request.runtime_contract_digest,
+        runtime_release_id: request.runtime_release_id,
+        decision: 'approve_activation',
+      });
+    }
+    if (stage === 'actor_import') {
+      return fixtureApproval(stage, {
+        schema: 'rus.actor_base_attributes_successor_import_attestation.v1',
+        request_digest: request.request_digest,
+        decision: 'approve_exact_actor_base_attributes_successor_import',
+        reviewed_source_digest: request.compatible_world.compatible_world_pin_manifest_digest,
+        independence_basis: 'Test-only approval fixture',
+        database_mutated: false,
+        authority: {
+          import_authorized: true, activation_authorized: false,
+          production_authorized: false, existing_party_migration_authorized: false,
+          old_save_rematerialization_authorized: false,
+        },
+      });
+    }
+    if (stage === 'actor_activation') {
+      return fixtureApproval(stage, {
+        schema: 'rus.actor_base_attributes_successor_activation_attestation.v1',
+        request_digest: request.request_digest,
+        decision: 'approve_exact_actor_base_attributes_new_production_activation',
+        reviewed_source_digest: request.import_request.compatible_world.compatible_world_pin_manifest_digest,
+        independence_basis: 'Test-only approval fixture',
+        database_mutated: false,
+        authority: {
+          import_authorized: false, activation_authorized: true,
+          production_authorized: true, existing_party_migration_authorized: false,
+          old_save_rematerialization_authorized: false,
+        },
+      });
+    }
+    if (stage === 'm2c_npc_wave_import') return fixtureApproval(stage, {
+      schema: WAVE_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
+      independence_basis: 'Test-only approval fixture', database_mutated: false });
+    if (stage === 'm2c_lines_import') {
+      const attestation = JSON.parse(await readFile(
+        resolve(import.meta.dirname, '../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/v17-import-attestation.json'),
+        'utf8'));
+      assert.equal(attestation.request_digest, request.request_digest,
+        'published m2c-lines-v1 import attestation must match the generated request digest');
+      return attestation;
+    }
+    if (stage === 'npc_identity_import') return fixtureApproval(stage, {
+      schema: IDENTITY_ATTESTATION_SCHEMA, verdict: 'APPROVE', request_digest: request.request_digest,
+      independence_basis: 'Test-only approval fixture', database_mutated: false });
+    throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
+  };
+}
+
+/**
+ * @param t node:test context; without it the caller owns `dispose()` (live harness, tools/local-play).
+ * @returns {Promise<{ container, dataRoot, worldPool, partyPool, approvals, rootDir, dispose }>}
+ */
+export async function bootstrapV17PresenceE2e(t, {
+  postgresProfile = 'default',
+} = {}) {
+  assert.equal(docker(['version']).status, 0, 'Docker is required.');
+  const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-presence-e2e-'));
+  const container = `presence-e2e-pg-${randomUUID().slice(0, 12)}`;
+  let worldPool = null;
+  let partyPool = null;
+  const dispose = async () => {
+    await Promise.allSettled([worldPool?.end(), partyPool?.end()]);
+    docker(['rm', '-fv', container]);
+    await rm(dataRoot, { recursive: true, force: true });
+  };
+  t?.after(dispose);
+  try {
+    startPostgres(container, { profile: postgresProfile });
+    await waitForPostgres(container);
+    initializeBootstrapRoles(container);
+    const adminUrl = adminDatabaseUrl(container);
+    const fixtureApproval = buildFixtureApproval();
+    const activationApprovalsPath = join(dataRoot, 'v17-activation-approvals.json');
+    const bootstrap = await bootstrapV17Imports({ adminUrl, activationApprovalsPath,
+      attest: buildAttest(fixtureApproval) });
+    const lineAttestation = JSON.parse(await readFile(resolve(import.meta.dirname,
+      '../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-lines-v1/v17-import-attestation.json'),
+    'utf8'));
+    assert.equal(bootstrap.m2c_lines.request_digest, lineAttestation.request_digest);
+    assert.equal(bootstrap.m2c_lines.rollback, 'pass');
+    assert.equal(bootstrap.m2c_lines.readback, 'exact');
+    const approvals = JSON.parse(await readFile(activationApprovalsPath, 'utf8'));
+    worldPool = new pg.Pool({ connectionString: databaseUrl(adminUrl, WORLD_DB), max: 4 });
+    partyPool = new pg.Pool({ connectionString: databaseUrl(adminUrl, PARTY_DB), max: 4 });
+    // The bootstrap itself imports approved temporal-v4 and the m2c NPC wave (D27).
+    const temporalCount = Number((await worldPool.query(
+      'SELECT count(*)::int AS count FROM world_base.temporal_authoring_records')).rows[0].count);
+    assert.ok(temporalCount > 0, 'v17 bootstrap must import approved temporal-v4');
+    const waveRules = Number((await worldPool.query(
+      'SELECT count(*)::int AS count FROM world_base.presence_rules')).rows[0].count);
+    assert.ok(waveRules > 0, 'v17 bootstrap must import the m2c NPC wave presence rules (D27)');
+    await assertBootstrapV17PartyProductionLedger(partyPool);
+    const rootDir = resolve(import.meta.dirname, '../..');
+    return {
+      container, dataRoot, worldPool, partyPool, approvals, rootDir, dispose,
+    };
+  } catch (error) {
+    await dispose(); // a failed bootstrap must not leave its container behind
+    throw error;
+  }
+}
+
+/**
+ * Movement choice from the planner's own operation data, never from text: the transition
+ * (`movement_kind: 'route'`) once the actor stands at departure, otherwise the approach
+ * (a local hop that carries `route_ref` of the exit it leads to), otherwise the local hop
+ * whose edge was taken least often so far (so a site with several local edges is explored
+ * instead of ping-ponging over the first one).
+ * exactMovement (rt-walk): the player names one option by its label; anything else is no movement.
+ */
+export function pickMovementChoice(request, localHopVisits, { exactMovement = false,
+  expectedRouteRef } = {}) {
+  const movementChoices = turnStepOperationChoices(request).filter(({ operation }) =>
+    operation.op === 'request_movement'
+    && ['local', 'route'].includes(operation.movement_kind));
+  if (exactMovement) {
+    const chooseRouteByRef = (expectedRouteRef) => {
+      const matches = movementChoices.filter(({ operation }) =>
+        operation.op === 'request_movement' && operation.movement_kind === 'route'
+        && operation.target_ref === expectedRouteRef && operation.route_ref === expectedRouteRef);
+      assert.equal(matches.length, 1, `expected one route operation for ${expectedRouteRef}`);
+      return matches[0];
+    };
+    if (expectedRouteRef != null) return chooseRouteByRef(expectedRouteRef);
+    const requestedLabel = request.root_player_action;
+    const exactMenuMatches = movementChoices.filter(({ operation }) =>
+      operation.description === requestedLabel);
+    if (exactMenuMatches.length > 0) {
+      assert.equal(exactMenuMatches.length, 1,
+        `expected one exact current-menu movement for ${requestedLabel}`);
+      return exactMenuMatches[0];
+    }
+    const legacyLookupLabel = typeof requestedLabel === 'string'
+      && requestedLabel.endsWith(' — подход')
+      ? requestedLabel.slice(0, -' — подход'.length) : requestedLabel;
+    const legacyRouteRefs = new Set(legacyConnectionLabels
+      .filter(({ display_label: label }) => label === legacyLookupLabel)
+      .map(({ binding_ref }) => binding_ref?.id)
+      .filter((id) => typeof id === 'string' && id.length > 0));
+    if (legacyRouteRefs.size === 0) return undefined;
+    const currentRouteRefs = new Set(movementChoices.filter(({ operation }) =>
+      operation.op === 'request_movement' && operation.movement_kind === 'route'
+      && operation.target_ref === operation.route_ref
+      && legacyRouteRefs.has(operation.route_ref))
+      .map(({ operation }) => operation.route_ref));
+    assert.equal(currentRouteRefs.size, 1,
+      `expected one current route for legacy connection label ${requestedLabel}`);
+    return chooseRouteByRef([...currentRouteRefs][0]);
+  }
+  const decisive = movementChoices.find(({ operation }) => operation.movement_kind === 'route')
+    ?? movementChoices.find(({ operation }) => operation.route_ref != null);
+  if (decisive) return decisive;
+  const visits = ({ operation }) => localHopVisits.get(operation.target_ref) ?? 0;
+  const pick = movementChoices.reduce((best, choice) =>
+    (best == null || visits(choice) < visits(best) ? choice : best), null);
+  if (pick) localHopVisits.set(pick.operation.target_ref, visits(pick) + 1);
+  return pick;
+}
+
+export function installPresenceProductionE2eFetch({
+  observeText = TARGET_SMOKE_INPUT,
+  movementPrefs = { exactMovement: false },
+  narrationLog = null,
+  requestLog = null,
+  movementLog = null,
+  turnStepPlanner = null,
+} = {}) {
+  const MATERIALIZATION_ROLES = Object.freeze([
+    'ordinary_materialization', 'spatial_semantic_descriptor',
+    'npc_ordinary_semantic_remainder', 'npc_ordinary_semantic_remainder_auditor',
+  ]);
+  const localHopVisits = new Map();
+  const previousFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    assert.equal(String(url), 'https://target-acceptance.invalid/chat/completions');
+    const call = JSON.parse(init.body);
+    const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    const system = call.messages[0].content.replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
+    const role = identifyLlmTestRole(call);
+    requestLog?.push({ system, user: modelInput });
+    let output;
+    const openingRole = presenceOpeningRole(modelInput);
+    if (openingRole === 'gameplay_narrator') {
+      output = { prose: presenceOpeningProse(modelInput) };
+    } else if (openingRole === 'gameplay_narrator_auditor') {
+      output = {
+        pass: true, failed_checks: [], concerns: [],
+        evidence: ['Проверено по переданным фактам вступления.'],
+      };
+    } else if (openingRole === 'gameplay_narrator_semantic_repair') {
+      output = { prose: presenceOpeningProse(modelInput) };
+    } else if (role === 'world_knowledge_query_planner'
+        || system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+      output = {
+        schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+        domains: [], focus_refs: [], requested_predicates: [], search_hints: [],
+      };
+    } else if (role === 'intent_router') {
+      output = { status: 'unknown', reason_code: 'unknown_intent' };
+    } else if (role === 'turn_step_planner') {
+      const request = modelInput.request ?? modelInput;
+      const planned = await turnStepPlanner?.({ request, modelInput });
+      if (planned != null) {
+        output = planned;
+      } else if (request.root_player_action === observeText) {
+        output = {
+          operation_choice: null, interpretation: { adaptation: 'literal' },
+          resolution: 'direct', goal_result: 'achieved',
+          activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+          operations: [], check: null, continuation: null, clarification: null,
+          direct_result_kind: 'player_safe_observation',
+          reason_code: 'review_supplied_visible_surroundings',
+          reason: 'Обзор ограничен уже предоставленными видимыми сведениями.',
+        };
+      } else {
+        const pick = pickMovementChoice(request, localHopVisits, movementPrefs);
+        if (!pick && movementPrefs.exactMovement) {
+          return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({
+            interpretation: { adaptation: 'literal' }, resolution: 'direct', goal_result: 'not_achieved',
+            activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+            operations: [], check: null, continuation: null, clarification: null,
+            direct_result_kind: null, reason_code: 'no_named_passage',
+            reason: 'Названного прохода нет.' }) } }] }), { status: 200 });
+        }
+        assert.ok(pick, `no movement operation in planner request: ${request.root_player_action}`);
+        movementLog?.push({ movement_kind: pick.operation.movement_kind,
+          route_ref: pick.operation.route_ref ?? null, target_ref: pick.operation.target_ref ?? null });
+        output = {
+          interpretation: {
+            player_goal: request.root_player_action,
+            grounded_attempt: pick.operation.description ?? request.root_player_action,
+            adaptation: 'literal',
+          },
+          resolution: 'domain_request', goal_result: 'pending',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operation_family: 'request_movement',
+          operation_choice: pick.choice_id,
+          check: null, continuation: null, clarification: null,
+          direct_result_kind: null, reason_code: 'visible_movement',
+          reason: 'Следую выбранному видимому пути.',
+        };
+      }
+    } else if (system.startsWith('Верните только {"prose"')) {
+      const facts = modelInput.сцена?.факты ?? [];
+      output = { prose: facts.map((fact) => typeof fact === 'string' ? fact : fact.текст)
+        .filter(Boolean).join(' ') };
+    } else if (system.startsWith('Верните только {"pass"')) {
+      output = {
+        pass: true, failed_checks: [], concerns: [],
+        evidence: ['Тестовая проверка использует факты из переданной сцены.'],
+      };
+    } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
+      const sources = [...modelInput.required_current_beat.changes,
+        ...modelInput.required_current_beat.uncertainties];
+      narrationLog?.push({ changes: modelInput.required_current_beat.changes.map(({ text }) => text) });
+      // Temporary: a turn without required beats (arrival on a new site) still needs non-empty prose,
+      // so fall back to the visible scene the request itself supplies. Remove once the empty beat
+      // at a transition is fixed (tasks rt-narr / rt-walk, NOTE-02).
+      const support = modelInput.optional_support;
+      const fallback = [support?.visible_scene, ...(support?.sensory_details ?? [])].filter(Boolean);
+      output = { prose: (sources.length > 0 ? sources.map(({ text }) => text) : fallback).join('\n\n') };
+    } else if (system.startsWith('You are a strict evidence auditor of Russian game prose.')) {
+      const ids = modelInput.segments.map(({ segment_id }) => segment_id);
+      const sources = [...modelInput.required_current_beat.changes,
+        ...modelInput.required_current_beat.uncertainties];
+      output = {
+        reviewed_segments: ids,
+        source_reviews: sources.map(({ ref }) => ({ ref, segment_choices: ids })),
+        unsupported: [], literary_failures: [],
+        evidence: ['Deterministic test source-copy.'],
+      };
+    } else if (system.startsWith('Return only {"prose"')) {
+      const facts = modelInput.visible_context_package.visible_scene_dossier.must_include
+        .map((entry) => entry.text);
+      const split = Math.ceil(facts.length / 2);
+      output = {
+        prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+          .filter(Boolean).join('\n\n'),
+      };
+    } else if (system.startsWith('Return only JSON with exactly mode.')) {
+      output = { mode: 'independent_action' };
+    } else if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
+      output = { pass: true, concerns: [] };
+    } else if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {
+      output = {
+        pass: true, failed_checks: [], concerns: [],
+        evidence: ['Test response uses the supplied committed visible facts.'],
+      };
+    } else if (MATERIALIZATION_ROLES.some((role) => system.includes(role))) {
+      const role = MATERIALIZATION_ROLES.find((name) => system.includes(name));
+      throw new Error(`presence production e2e: unexpected role=${role}`
+        + ` schema=${modelInput.schema ?? '<absent>'} system=${system.slice(0, 120)}`);
+    } else {
+      throw new Error(`presence production e2e: unconfigured role=unknown`
+        + ` schema=${modelInput.schema ?? '<absent>'} system=${system.slice(0, 120)}`);
+    }
+    return new Response(JSON.stringify({
+      choices: [{ message: { content: JSON.stringify(output) } }],
+    }), { status: 200 });
+  };
+  return () => { globalThis.fetch = previousFetch; };
+}
+
+function presenceOpeningRole(input) {
+  const scene = input?.сцена;
+  if (!scene || typeof scene !== 'object' || typeof scene.граница !== 'string'
+      || (scene.факты != null && !Array.isArray(scene.факты))
+      || (scene.персонажи != null && !Array.isArray(scene.персонажи))) return null;
+  if (Object.hasOwn(input, 'отклонённая_проза')) return 'gameplay_narrator_semantic_repair';
+  if (Object.hasOwn(input, 'проверяемая_проза')) return 'gameplay_narrator_auditor';
+  return 'gameplay_narrator';
+}
+
+function presenceOpeningFacts(input) {
+  const scene = input.сцена;
+  const values = [...(scene.факты ?? []),
+    ...(scene.персонажи ?? []).flatMap(({ имя, факты = [] }) => [имя, ...факты])];
+  return values.flatMap((value) => {
+    if (typeof value === 'string') return value.trim() ? [value] : [];
+    return typeof value?.текст === 'string' && value.текст.trim() ? [value.текст] : [];
+  });
+}
+
+function presenceOpeningProse(input) {
+  const facts = presenceOpeningFacts(input);
+  const split = Math.ceil(facts.length / 2);
+  return [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+    .filter(Boolean).join('\n\n');
+}
+
+const FIXTURE_ROOT_ENV = Object.freeze({
+  LLM_API_KEY: 'isolated-fixture-key',
+  LLM_BASE_URL: 'https://target-acceptance.invalid',
+});
+const zeroVectorEncoderFactory = () => ({
+  async ready() {},
+  async encode() { return new Float32Array(1024); },
+  async close() {},
+});
+
+/** env / worldKnowledgeEncoderFactory: live harness overrides; `null` factory = the real Giga worker. */
+export async function createPresenceProductionRoot({
+  worldPool, partyPool, approvals, rootDir, llmSettings = null, extraConfig = {},
+  env = FIXTURE_ROOT_ENV, worldKnowledgeEncoderFactory = zeroVectorEncoderFactory,
+}, {
+  testOnlyProjectEnvironmentAtClock = null,
+  testOnlyProjectStartMaterializationInput = null,
+} = {}) {
+  let readCurrentVisibleContext = null;
+  let readLocalEdgeDisclosure = null;
+  let readCurrentExitDisclosure = null;
+  let readCurrentConnectionDisclosure = null;
+  const pinDigest = approvals.itemApproval.request.compatible_world_pin_manifest_digest;
+  const rootOptions = {
+    env,
+    config: {
+      spatialV3BindingsModule: 'builtin:spatial-v3-production-v17',
+      rootDir,
+      runtimeCatalogPinManifestDigest: pinDigest,
+      targetCatalogActivationApprovals: {
+        itemApproval: approvals.itemApproval,
+        actorApproval: approvals.actorApproval,
+      },
+      traceTurnDecisionSecret: 'isolated-presence-e2e-secret',
+      ...(llmSettings == null ? {} : { llmSettings }),
+      ...extraConfig,
+    },
+    pools: {
+      worldPool: {
+        query: worldPool.query.bind(worldPool),
+        async connect() {
+          const client = await worldPool.connect();
+          return {
+            query: client.query.bind(client),
+            release() { client.release(true); },
+          };
+        },
+      },
+      partyPool,
+      async close() {},
+    },
+    ...(testOnlyProjectEnvironmentAtClock == null ? {} : { testOnlyProjectEnvironmentAtClock }),
+    bindingsFactory: async (context) => {
+      readCurrentVisibleContext = context.readCurrentVisibleContext ?? null;
+      readLocalEdgeDisclosure = context.readLocalEdgeDisclosure ?? null;
+      readCurrentExitDisclosure = context.readCurrentExitDisclosure ?? null;
+      readCurrentConnectionDisclosure = context.readCurrentConnectionDisclosure ?? null;
+      const targetStartRuntime = context.targetStartRuntime;
+      const bindingsContext = testOnlyProjectStartMaterializationInput == null
+        ? context
+        : {
+          ...context,
+          targetStartRuntime: {
+            ...targetStartRuntime,
+            starts: targetStartRuntime.starts.map((startRuntime, startIndex) => ({
+              ...startRuntime,
+              materialization_inputs: testOnlyProjectStartMaterializationInput({
+                materializationInput: startRuntime.materialization_inputs,
+                startRuntime,
+                startIndex,
+                context,
+              }),
+            })),
+          },
+        };
+      return loadSpatialV3RuntimeBindings(context.config.spatialV3BindingsModule, bindingsContext);
+    },
+    ...(worldKnowledgeEncoderFactory == null ? {} : { worldKnowledgeEncoderFactory }),
+  };
+  const runtime = await createSpatialV3ProductionCompositionRoot(rootOptions);
+  return { runtime, rootOptions, readCurrentVisibleContext,
+    readLocalEdgeDisclosure, readCurrentExitDisclosure,
+    readCurrentConnectionDisclosure };
+}
+
+export function routeMovementLabels(screen) {
+  const route = screen?.panels?.route;
+  if (!route?.visible) return [];
+  const options = route.data?.movement?.options ?? route.choices ?? route.options ?? [];
+  return options
+    .filter((entry) => entry.knowledge_state === 'known' || entry.knowledge_state == null)
+    .map((entry) => entry.label ?? entry.text ?? entry.description)
+    .filter(Boolean);
+}
+
+export const PRESENCE_E2E_MOVE_TEXT = 'Иду по видимому пути.';
+
+export async function publicStartScenario(runtime, scenarioId) {
+  const opening = await runtime.startNewGame({
+    scenario_id: scenarioId,
+    request_id: `presence-e2e-start-${scenarioId}`,
+  });
+  assert.equal(opening.screen.schema, 'first_game_screen');
+  await runtime.acknowledgeOpening(opening.party_id, {
+    client_ack_id: `presence-e2e-ack-${scenarioId}`,
+  });
+  return opening.party_id;
+}
+
+export async function submitObserveTurn(runtime, partyId, observeText) {
+  await runtime.submitTurn(partyId, {
+    raw_text: observeText,
+    request_id: `presence-e2e-observe-${partyId}`,
+  });
+}
+
+export async function walkRouteUntil({
+  runtime, partyPool, partyId, observeText, maxSteps = 24,
+  sitePredicate,
+}) {
+  for (let step = 0; step < maxSteps; step += 1) {
+    if (await sitePredicate({ partyPool, partyId })) return step;
+    let screen = (await runtime.getPartyScreen(partyId)).screen;
+    let labels = routeMovementLabels(screen);
+    if (labels.length === 0 && step === 0) {
+      await submitObserveTurn(runtime, partyId, observeText);
+    }
+    await runtime.submitTurn(partyId, {
+      raw_text: PRESENCE_E2E_MOVE_TEXT,
+      request_id: `presence-e2e-move-${partyId}-${step}`,
+    });
+  }
+  assert.fail(`site predicate not met within ${maxSteps} movement steps`);
+}

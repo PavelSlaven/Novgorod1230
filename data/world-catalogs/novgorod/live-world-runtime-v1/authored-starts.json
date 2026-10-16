@@ -1,0 +1,195 @@
+{
+  "schema": "rus.live_world_runtime.authored_starts.v2",
+  "catalog_id": "novgorod_live_world_runtime_v1",
+  "revision": 6,
+  "status": "approved",
+  "current_binding_revision": 6,
+  "actor_catalog": {
+    "version": 1,
+    "region_id": "region_novgorod_land",
+    "roles": {
+      "path": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+      "digest": "8bece789c58e930cace79ccb8aa7e7e4baeffb7e1e9a29d1e01be6cb84c72cea"
+    },
+    "occupations": {
+      "path": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+      "digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6"
+    }
+  },
+  "execution_contract": {
+    "materializer_version": "code_materializer_v2",
+    "rng_algorithm_id": "mulberry32_v1"
+  },
+  "world_compatibility": {
+    "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "source_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "source_status": "approved",
+    "production_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+    "production_world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+    "production_status": "approved",
+    "lineage": [
+      {"path":"data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v2/manifest.json","world_revision_id":"novgorod_spatial_v3_production_v2_candidate_001","parent_revision_id":"novgorod_spatial_v3_target_contract_approval_001","world_catalog_digest":"fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255","status":"approved","digest":"3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a"},
+      {"path":"data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json","world_revision_id":"novgorod_spatial_v3_production_v3_candidate_001","parent_revision_id":"novgorod_spatial_v3_production_v2_candidate_001","world_catalog_digest":"1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e","status":"approved","digest":"593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea"},
+      {"path":"data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json","world_revision_id":"novgorod_spatial_v3_production_v4_candidate_001","parent_revision_id":"novgorod_spatial_v3_production_v3_candidate_001","world_catalog_digest":"acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79","status":"approved","digest":"64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb"},
+      {"path":"data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json","world_revision_id":"novgorod_spatial_v3_production_v5_candidate_001","parent_revision_id":"novgorod_spatial_v3_production_v4_candidate_001","world_catalog_digest":"e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad","status":"approved","digest":"6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c"},
+      {"path":"data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json","world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001","parent_revision_id":"novgorod_spatial_v3_production_v5_candidate_001","world_catalog_digest":"6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad","status":"approved","digest":"776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb"}
+    ]
+  },
+  "external_starts": [{
+    "scenario_id": "lower_dvina_trace_v1",
+    "public_metadata": {"title":"След на Нижней Двине","description":"Позднее лето, разбитая лодья и пропавший груз.","available":true}
+  }],
+  "bindings": [
+    {"binding_id":"vikhtuy_fishing_camp","revision":6,"status":"approved","scenario_id":"vikhtuy_fishing_camp_v1","materializer_binding_id":"live_world_authored_start_v3","materializer_version":"code_materializer_v3","snapshot_schema":"rus.authored_start_initial_party_snapshot.v3"}
+  ],
+  "player_known_facts": [{
+    "fact_id": "vikhtuy_nets_due_before_evening",
+    "status": "approved",
+    "text": "До вечера нужно проверить сети и уложить снасти."
+  }, {
+    "fact_id": "vikhtuy_morning_work_context",
+    "status": "approved",
+    "text": "С рассвета Любава готовит рыбацкий стан к вечернему лову вместе со старшим братом Милославом."
+  }],
+  "starts": [
+    {
+      "scenario_id": "vikhtuy_fishing_camp_v1",
+      "status": "approved",
+      "public_metadata": {
+        "title": "Рыбацкий стан у Вихтуя",
+        "description": "Небольшой стан готовит сети и снасти к вечернему лову.",
+        "available": true
+      },
+      "opening": {
+        "place_label": "рыбацкий стан у Вихтуя",
+        "calendar_label": "20 августа 1230 года",
+        "opening_prose": "Утро застало тебя за подготовкой рыбацкого стана к вечернему лову.",
+        "scene_context": {
+          "foreground": "Открытая рабочая площадка тянется вдоль речного берега; рядом устроен настил для снастей.",
+          "far_orientation": [{
+            "place_key": "other:0",
+            "text": "Выше по берегу видна старая сушильня."
+          }],
+          "local_structure": {
+            "topology_slot_key": "s1_open_one_space",
+            "name": "открытый навес для снастей",
+            "description": "Низкий деревянный навес имеет одно открытое рабочее пространство и свободный проход обратно на стан."
+          },
+          "uncertainty": "Состояние снастей ещё не проверено."
+        }
+      },
+      "player": {
+        "name": "Любава",
+        "role_id": "nov_role_fisher",
+        "occupation_id": "nov_occ_fisher",
+        "role_label": "рыбачка",
+        "attributes": {
+          "strength": {"value":10}, "dexterity": {"value":11},
+          "endurance": {"value":11}, "reason": {"value":10},
+          "attention": {"value":12}, "influence": {"value":10}
+        },
+        "skills": {"observation":{"bonus":1}},
+        "health": 92,
+        "energy": 71,
+        "satiety": 66,
+        "known_fact_refs": ["vikhtuy_nets_due_before_evening", "vikhtuy_morning_work_context"]
+      },
+      "geometry": {
+        "start": {
+          "canonical_g5_id": "trace_ld_v1_g5_fishing_camp",
+          "canonical_g5_version": 1,
+          "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+          "location_profile_id": "trace_ld_v1_smp_fishing_camp",
+          "node_template_id": "trace_ld_v1_tpl_fishing_camp",
+          "node_template_version": 1,
+          "slot_key": "yard",
+          "anchor_template_id": "scene_position.fixed_working_reach",
+          "anchor_slot_key": "working_camp",
+          "capacities": { "npc": 6, "item": 7, "container": 7 }
+        },
+        "other_places": [
+          {
+            "canonical_g5_id": "trace_ld_v1_g5_old_drying_shed",
+            "canonical_g5_version": 1,
+            "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+            "location_profile_id": "trace_ld_v1_smp_old_drying_shed",
+            "node_template_id": "trace_ld_v1_tpl_old_drying_shed",
+            "node_template_version": 1,
+            "slot_key": "flax_shed",
+            "anchor_template_id": "scene_position.fixed_working_reach",
+            "anchor_slot_key": "shed_approach",
+            "capacities": { "npc": 3, "item": 7, "container": 7 }
+          }
+        ]
+      },
+      "people": [
+        {
+          "person_key": "miloslav",
+          "name": "Милослав",
+          "role_id": "nov_role_boatman",
+          "occupation_id": "nov_occ_boatman",
+          "occupation_label": "лодочник",
+          "location": "start",
+          "relationships": [{ "to": "player", "kind": "older_brother", "standing": "trusted" }]
+        },
+        {
+          "person_key": "nezhata",
+          "name": "Нежата",
+          "role_id": "nov_role_fisher",
+          "occupation_id": "nov_occ_fisher",
+          "occupation_label": "рыбак",
+          "location": "other:0",
+          "relationships": [{ "to": "miloslav", "kind": "hire", "standing": "owes_work" }]
+        },
+        {
+          "person_key": "background_fisher",
+          "name": "Твердята",
+          "role_id": "nov_role_fisher",
+          "occupation_id": "nov_occ_fisher",
+          "occupation_label": "незнакомый рыбак",
+          "profile_level": "background",
+          "profile_revision": 1,
+          "routine_profile_id": "ordinary_local_work_cycle_v1",
+          "routine_time_band": "day",
+          "ordinary_activity": "Чинит снасти у настила.",
+          "location": "start",
+          "relationships": []
+        }
+      ],
+      "resources": [
+        {
+          "resource_key": "rope",
+          "display_name": "верёвка",
+          "item_template_id": "item_tpl_nov_rope_v1",
+          "inventory_profile_id": "inventory_item_tpl_nov_rope_v1",
+          "quantity_profile_id": "quantity_item_tpl_nov_rope_v1_count_v5",
+          "category_id": "cat_item_object_rope_v1",
+          "quantity": 1,
+          "holder": "player"
+        },
+        {
+          "resource_key": "linen_shirt",
+          "display_name": "льняная рубаха",
+          "item_template_id": "item_tpl_nov_linen_shirt_v1",
+          "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1",
+          "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+          "category_id": "cat_item_object_linen_shirt_v1",
+          "quantity": 1,
+          "holder": "nezhata"
+        }
+      ],
+      "environment": {
+        "profile_id": "env.local_variable",
+        "facts": [
+          "Светлое позднелетнее утро.",
+          "Слышны течение Вихтуя и работа со снастями на берегу."
+        ]
+      },
+      "timestamp": {
+        "whole_minutes": "333060",
+        "subminute_numerator": "0",
+        "subminute_denominator": "1"
+      }
+    }
+  ]
+}

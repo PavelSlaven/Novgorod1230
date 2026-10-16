@@ -2,7 +2,7 @@
 
 Статус: **candidate**. Автор данных себя не утверждает (WR §21.1). Приоритет по брифу — M3.
 Группа `game-base-v1`, домен `incidents_conflicts`, целевая таблица `world_base.conflict_templates`
-(сейчас 0 строк; DDL — `infra/world-base/schema/05.sql` в PR #98 worktree, read-only).
+(сейчас 0 строк; DDL — `infra/world-base/schema/05.sql` текущего checkout, read-only).
 
 ## Файлы (`conflicts/`)
 
@@ -46,11 +46,12 @@
 
 ```
 cd scripts
-python build_incidents.py
+python3 build_incidents.py
+python3 build_incidents.py --check
 ```
-Скрипт читает: черновик rus13tpl, пинованный TSV ролей и occupations TSV из текущего checkout, а `05.sql`
-из соседнего `/srv/novgorod-work/worktrees/ref-pr98` — всё read-only; собственный `new_role_candidates.tsv` из
+Скрипт читает: черновик rus13tpl, пинованный TSV ролей, occupations TSV и DDL `05.sql` из текущего checkout — всё read-only; собственный `new_role_candidates.tsv` из
 `social_strata_legal_status/` (эта же коллекция, читается, не пишется). Пишет только в эту папку.
+Режим `--check` сравнивает все шесть выходных файлов с ожидаемыми байтами; отсутствующий или устаревший выход даёт ненулевой код и не перезаписывается.
 
 ## Известные пробелы
 

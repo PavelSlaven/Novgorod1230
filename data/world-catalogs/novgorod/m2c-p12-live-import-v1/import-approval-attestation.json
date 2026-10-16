@@ -1,0 +1,62 @@
+{
+  "schema": "rus.m2c_p12_live_import_approval_attestation.v1",
+  "status": "approved_transactional_import_readback_only",
+  "decision": "APPROVE_EXACT_P12_IMPORT_READBACK",
+  "reviewed_repository_head": "eed7f0f4acc24cfa65e146a1b70013a278652d89",
+  "auditor_ref": "/root/approve_p12_live_import",
+  "independence_basis": "Independent high review separate from request and data authoring. Recomputed the request digest, all manifest and approval pins, importer and effective DDL digests, five validated SQL parts and combined SQL digest; compared all cross-bundle primary keys and rows; inspected the insert-only existing-row mismatch guard and activation boundary.",
+  "reviewed_on": "2026-09-24",
+  "request_ref": "data/world-catalogs/novgorod/m2c-p12-live-import-v1/request.json",
+  "request_digest": "d1590cf151765edc518567542f9f5a31edabfd652abfd365fe2c364338d5159c",
+  "target": "designated_persistent_local_play_world_base_pre_beta_production",
+  "scope": {
+    "operation": "insert_only",
+    "transaction": "single_world_base_transaction",
+    "bundle_order": ["expansion", "npc_mapped", "npc_canonical", "acoustic", "local_movement"],
+    "distinct_pinned_rows": 12359,
+    "table_count": 53,
+    "activation": "none"
+  },
+  "pins": {
+    "manifest_sha256": [
+      "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133",
+      "c9ef915cbd16c41bd06857243af54b6f64a20960e6748feffda96d2144ffbdee",
+      "1138d846f4728fc472a64f3ed7f9b6444325bac5493431699bcb472f526152c1",
+      "3e0224b433134009d83adf893ca4514e9dd69e99202f5c1e3c6aa0cd508d5d2c",
+      "58e95543deec824bfda31abcd16c33814ae03b069c889618b2dd32c342c5b2e8"
+    ],
+    "approval_sha256": [
+      "df5c36fff70a0a5935dea3bc26523edeb87e898ad99606e709106d6a09db3b4f",
+      "da3fb06bf246ece7e4ce53c84cbc235c2578e4299b46b70069a5ebee2d18589c",
+      "da3fb06bf246ece7e4ce53c84cbc235c2578e4299b46b70069a5ebee2d18589c",
+      "d1ca9dd890ead6055b0aae505de5afc576bc85af7b478864be6b9995cc42063b",
+      "1e6a2705fe14bbe3c0bc6e35c334867ad9b3009bbf3e2635a9d071cfea64fec9"
+    ],
+    "sql_builder_sha256": "f36150098d48931c0fc7c5a88805955af3d3d2071427ac2567b38aca0e346a9f",
+    "schema_generator_sha256": "18f33300a26746d668f8dfca55a7212f9dac4e99c91eb512bc30f217488074c1",
+    "effective_ddl_sha256": "c712c37fb0f0312ab3917000391a1fab8ae9ea6b065246bc8f955cb73ef5260b",
+    "combined_sql_bytes": 109935306,
+    "combined_sql_sha256": "bfa0b6960fcf545a1ae637c3043f5c15e48f8b94b772a445108abb821974ba48"
+  },
+  "verified": {
+    "p12_validation_errors": 0,
+    "p12_data_gaps": 0,
+    "cross_bundle_primary_key_conflicts": 0,
+    "sql_mutates_existing_world_base_rows": false,
+    "existing_row_mismatch_raises_exception": true
+  },
+  "execution_gates": [
+    "Operator verifies an available offline backup of the designated database before any execution.",
+    "Operator verifies current schema and all pinned inputs against this attestation, regenerates SQL and checks its exact byte count and SHA-256.",
+    "Operator runs the exact SQL with only its final COMMIT replaced by ROLLBACK, confirms no error and verifies rollback before import.",
+    "Any existing pinned row mismatch or failed statement blocks the entire import; after a successful commit, read back every pinned primary key and full row equality and verify unrelated existing rows were unchanged."
+  ],
+  "authority": {
+    "import_and_exact_readback_authorized": true,
+    "item_or_actor_activation_authorized": false,
+    "runtime_or_release_selection_authorized": false,
+    "production_composition_change_authorized": false,
+    "party_migration_authorized": false,
+    "database_mutated": false
+  }
+}

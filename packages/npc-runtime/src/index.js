@@ -49,7 +49,7 @@ export {
   resolveConversationVisualPerception
 } from './perception.js';
 export { proposeNpcScheduleTransition, createNpcRoutineState, npcRoutineActivity, proposeNpcRoutineTransition,
-  validateNpcRoutineProfile } from './routine-schedule.js';
+  resolveNpcRoutinePresence, selectNpcRoutineSchedule, validateNpcRoutineProfile } from './routine-schedule.js';
 export {
   buildNpcOrdinarySemanticRemainder,
   validateNpcOrdinarySemanticRemainder,

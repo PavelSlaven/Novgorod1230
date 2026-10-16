@@ -23,6 +23,8 @@ export async function requestWorldKnowledgeQueryPlan({ request, bundle, plannerM
   return deepFreeze({ plan: structuredClone(output), repaired: true });
 }
 
+// ponytail: no production caller; default-query owner is game-server grounder
+// (LW-047 / #127 cleanup may delete this helper). Empty plan → NO_KNOWLEDGE only.
 export async function resolveTurnStepWorldKnowledge({ mode, core, bundle, exactQuery = null,
   plannerRequest = null, authoritative = null, plannerModel = null } = {}) {
   if (mode === 'NONE') return null;
@@ -36,10 +38,12 @@ export async function resolveTurnStepWorldKnowledge({ mode, core, bundle, exactQ
     throw turnFailure('TURN_WORLD_KNOWLEDGE_CONTEXT_INVALID', 'Authoritative World Knowledge context is invalid.');
   }
   const planned = await requestWorldKnowledgeQueryPlan({ request: plannerRequest, bundle, plannerModel });
-  if (planned.plan.domains.length === 0) return deepFreeze({
-    slice: null, planner_called: true, repaired: planned.repaired,
-    sufficiency: 'NO_KNOWLEDGE_REQUIRED'
-  });
+  if (planned.plan.domains.length === 0) {
+    return deepFreeze({
+      slice: null, planner_called: true, repaired: planned.repaired,
+      sufficiency: 'NO_KNOWLEDGE_REQUIRED'
+    });
+  }
   const query = {
     schema: 'world_knowledge_query_v1',
     pack_ref: plannerRequest.pack_ref,

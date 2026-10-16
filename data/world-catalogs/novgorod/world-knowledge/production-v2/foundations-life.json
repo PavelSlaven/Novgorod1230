@@ -1,0 +1,2584 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-life-fedyukovich","title":"Анатомия и физиология человека: учебное пособие","authors":["Н. И. Федюкович"],"publication":"Феникс, 2003; local FB2 library","source_kind":"scholarship","citation":"/srv/library/f.fb2-425051-428054.zip!426945.fb2","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-life-solodkov-sologub","title":"Физиология человека","authors":["А. С. Солодков","Е. Б. Сологуб"],"publication":"Local FB2 library","source_kind":"scholarship","citation":"/srv/library/f.fb2-473833-476870.zip!475091.fb2","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-life-korotyaev-babichev","title":"Медицинская микробиология, иммунология и вирусология","authors":["А. И. Коротяев","С. А. Бабичев"],"publication":"Local FB2 library","source_kind":"scholarship","citation":"/srv/library/f.fb2-471134-473832.zip!473402.fb2","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-life-sivoglazov","title":"Общая биология. 10–11 классы","authors":["В. И. Сивоглазов и др."],"publication":"Local FB2 library","source_kind":"scholarship","citation":"/srv/library/f.fb2-406402-412295.zip!411927.fb2;411928.fb2","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-life-cdc-niosh-chain","title":"Chain of Infection Components","authors":["CDC/NIOSH"],"publication":"CDC/NIOSH, last reviewed 2022","source_kind":"official_documentation","citation":"https://www.cdc.gov/niosh/learning/safetyculturehc/module-2/3.html","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-life-cdc-air","title":"C. Air: Guidelines for Environmental Infection Control in Health-Care Facilities","authors":["Centers for Disease Control and Prevention"],"publication":"CDC; 2003 guideline content, web page dated 2023","source_kind":"official_documentation","citation":"https://www.cdc.gov/infection-control/hcp/environmental-control/air.html","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-haz-02","source_ref":"source:foundations-hazards-atsdr","anchor":{"section":"What does Exposed Mean?","record_id":"exposure does not establish illness"},"note":"Independent verification HAZ02; no safety guarantee.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-01","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §4 «История изучения клетки. Клеточная теория»","record_id":"opening paragraph"},"note":"Independently approved in verification/verification-foundations-life-library.md; universal biology only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-02","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §§5–8 «Химический состав клетки»","record_id":"opening explanatory paragraphs"},"note":"Independently approved; no nutritional inference.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-03","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §§7–8 «Органические вещества»","record_id":"opening explanatory paragraphs"},"note":"Independently approved; no quantity.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-04","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §16 «Обмен веществ и превращение энергии»","record_id":"paragraph defining ATP as energy carrier"},"note":"Independently approved; distinct from existing muscle/heat ATP facts.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-05","source_ref":"source:foundations-life-fedyukovich","anchor":{"section":"«Обмен веществ и энергии»","record_id":"paragraph defining анаболизм and катаболизм"},"note":"Independently approved; nonnumeric.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-06","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §18 «Деление клетки. Митоз»","record_id":"opening growth-and-division paragraphs"},"note":"Independently approved; no individual prediction.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-07","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §18 «Деление клетки. Митоз»","record_id":"paragraph on copies of genetic material in daughter cells"},"note":"Independently approved; no trait outcome.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-08","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §18 «Деление клетки. Митоз»","record_id":"opening paragraph on division and specialization"},"note":"Independently approved; general organization only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-09","source_ref":"source:foundations-life-fedyukovich","anchor":{"section":"«Организм как единое целое»","record_id":"opening paragraph"},"note":"Independently approved; no complete anatomy simulation.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-10","source_ref":"source:foundations-life-fedyukovich","anchor":{"section":"«Физиология пищеварения»","record_id":"opening paragraph"},"note":"Independently approved; no safety/dose/outcome.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-11","source_ref":"source:foundations-life-solodkov-sologub","anchor":{"section":"11.3 «Всасывание продуктов переваривания пищи»","record_id":"opening paragraph"},"note":"Independently approved; no rate.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-12","source_ref":"source:foundations-life-fedyukovich","anchor":{"section":"«Физиология дыхания»","record_id":"opening paragraph"},"note":"Independently approved; no capacity/diagnosis.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-13","source_ref":"source:foundations-life-fedyukovich","anchor":{"section":"«Физиология дыхания»","record_id":"paragraph on alveolar-capillary diffusion"},"note":"Independently approved; no blood-gas values.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-14","source_ref":"source:foundations-life-fedyukovich","anchor":{"section":"«Организм как единое целое»","record_id":"paragraph listing cardiovascular system"},"note":"Independently approved; no pulse/pressure/volume.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-15","source_ref":"source:foundations-life-solodkov-sologub","anchor":{"section":"8.1–8.2 «Кровь»","record_id":"opening paragraphs on composition and formed elements"},"note":"Independently approved; no clinical values.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-16","source_ref":"source:foundations-life-solodkov-sologub","anchor":{"section":"2.2 «Нервная и гуморальная регуляция функций»","record_id":"opening paragraph"},"note":"Independently approved; no behavioural conclusion.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-17","source_ref":"source:foundations-life-solodkov-sologub","anchor":{"section":"2.3 «Рефлекторный механизм деятельности нервной системы»","record_id":"opening paragraph"},"note":"Independently approved; no forced action.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-18","source_ref":"source:foundations-life-solodkov-sologub","anchor":{"section":"5.2 «Механизмы сокращения и расслабления мышечного волокна»","record_id":"opening paragraph"},"note":"Independently approved; no force/endurance values.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-19","source_ref":"source:foundations-life-solodkov-sologub","anchor":{"section":"7.1–7.4 «Сенсорные системы»","record_id":"opening paragraphs on receptors"},"note":"Independently approved; no perception or knowledge.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-20","source_ref":"source:foundations-life-solodkov-sologub","anchor":{"section":"13.2–13.4 «Почки и их функции»","record_id":"opening paragraphs"},"note":"Independently approved; no hydration/disease conclusion.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-23","source_ref":"source:foundations-life-fedyukovich","anchor":{"section":"«Физиология сна»","record_id":"opening paragraph"},"note":"Independently approved; no sleep duration/recovery schedule.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-24","source_ref":"source:foundations-life-fedyukovich","anchor":{"section":"«Кожа»","record_id":"opening paragraph"},"note":"Independently approved; no injury/pain intensity.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-25","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §19 «Размножение: бесполое и половое»","record_id":"opening paragraphs"},"note":"Independently approved; no fertility/kinship implication.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-26","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §21 «Оплодотворение»","record_id":"opening paragraph"},"note":"Independently approved; no conception probability/status.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-27","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §22 «Индивидуальное развитие организмов»","record_id":"opening paragraph"},"note":"Independently approved; no prognosis/schedule.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-28","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §14 «Неклеточная форма жизни: вирусы»","record_id":"paragraph on dependence on host cell"},"note":"Independently approved; no infection/transmission assertion.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-29","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §14 «Неклеточная форма жизни: вирусы»","record_id":"paragraph beginning «Строение вирусов»"},"note":"Independently approved; additional envelope is conditional.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-31","source_ref":"source:foundations-life-korotyaev-babichev","anchor":{"section":"Глава 25 «Система макрофагов и формирование видового иммунитета»","record_id":"paragraph beginning «Процесс фагоцитоза складывается...»"},"note":"Independently approved rewrite; only engulfment is retained.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-32","source_ref":"source:foundations-life-korotyaev-babichev","anchor":{"section":"Глава 25 «Система макрофагов и формирование видового иммунитета»","record_id":"opening paragraphs on phagocytes and protective reactions"},"note":"Independently approved rewrite; no outcome model.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-33","source_ref":"source:foundations-life-korotyaev-babichev","anchor":{"section":"Глава 29 «Приобретенный иммунитет. Антигены»","record_id":"opening paragraphs"},"note":"Independently approved; no person-level immunity.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-34","source_ref":"source:foundations-life-korotyaev-babichev","anchor":{"section":"Глава 29 «Приобретенный иммунитет. Антигены»","record_id":"paragraph on distributed lymphoid system"},"note":"Independently approved rewrite; no surveillance abstraction.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-35","source_ref":"source:foundations-life-korotyaev-babichev","anchor":{"section":"Глава 31 «Приобретенный иммунитет. Формы иммунного ответа. Антитела»","record_id":"opening paragraph"},"note":"Independently approved; no testing/treatment inference.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-36","source_ref":"source:foundations-life-korotyaev-babichev","anchor":{"section":"Глава 31 «Приобретенный иммунитет. Формы иммунного ответа. Антитела»","record_id":"opening list of immune-response forms"},"note":"Independently approved; no protection duration.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-37","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"11 класс, §§21–23 «Организм и среда. Экологические факторы»","record_id":"opening paragraphs"},"note":"Independently approved; no local habitat/presence.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-38","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"11 класс, §25 «Пищевые связи. Круговорот веществ и энергии в экосистемах»","record_id":"opening paragraph"},"note":"Independently approved; no local food web/rate.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-39","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"11 класс, §26 «Причины устойчивости и смены экосистем»","record_id":"opening explanatory paragraph"},"note":"Independently approved rewrite; no exhaustive causal model.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-40","source_ref":"source:foundations-life-sivoglazov","anchor":{"section":"10 класс, §17 «Пластический обмен. Фотосинтез»","record_id":"opening explanatory paragraph"},"note":"Independently approved; no local plant/yield/presence.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-41","source_ref":"source:foundations-life-korotyaev-babichev","anchor":{"section":"Глава 25 «Система макрофагов и формирование видового иммунитета»","record_id":"opening paragraphs on phagocytes and macrophages"},"note":"Independently approved from LIFE2-03; qualitative components only, no outcome model.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-42","source_ref":"source:foundations-life-solodkov-sologub","anchor":{"section":"14.4 «Регуляция теплообмена»","record_id":"paragraph beginning «Восприятие и анализ температуры...»"},"note":"Independently approved from LIFE2-06; no threshold, tolerance, diagnosis, or body-state inference.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-43","source_ref":"source:foundations-life-cdc-niosh-chain","anchor":{"section":"Chain of Infection Components","record_id":"six enumerated chain components"},"note":"Independently approved LIFE3-01; framework only, no scene transmission.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-44","source_ref":"source:foundations-life-cdc-niosh-chain","anchor":{"section":"Modes of Transport","record_id":"direct and indirect mode lists"},"note":"Independently approved LIFE3-02 taxonomy-safe rewrite; no contamination inference.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-45","source_ref":"source:foundations-life-cdc-niosh-chain","anchor":{"section":"Portal of Entry","record_id":"body-opening, incision and wound examples"},"note":"Independently approved LIFE3-03; no exposure or infection inference.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-46","source_ref":"source:foundations-life-cdc-air","anchor":{"section":"Table 3, Clinical and epidemiologic characteristics of tuberculosis","record_id":"Factors affecting severity and outcomes"},"note":"Independently approved LIFE3-04; tuberculosis and airborne-droplet-nuclei scope only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-life-47","source_ref":"source:foundations-life-cdc-niosh-chain","anchor":{"section":"Susceptible Host","record_id":"listed susceptibility factors"},"note":"Independently approved LIFE3-05; no actor-level status or outcome.","review_status":"approved"}
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:chemical-exposure-not-illness","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-cell","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-cell-substances","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-cell-macromolecules","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-cellular-atp","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-metabolism","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-growth-mitosis","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-mitosis","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-cell-specialization","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-organ-systems","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-digestion","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-absorption","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-respiration","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-alveolar-exchange","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-circulation","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-blood","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-regulation","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-reflex","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-muscle-movement","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-sensory-receptor","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-kidneys","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-sleep-wake-cycle","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-skin-sensation","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-reproduction","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-fertilization","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-ontogeny","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-virus-replication","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-virion-structure","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-phagocytosis","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-phagocytes","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-acquired-immunity","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-lymphoid-system","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-antibodies","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-immune-memory","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-ecological-factors","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-ecosystem-cycling","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-ecosystem-change","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-photosynthesis","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-immune-components","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-infection-chain","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-pathogen-transport","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-infection-entry","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-airborne-exposure","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:foundation-host-susceptibility","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-haz-02-exposure-not-illness","domain":"biology_physiology","subject_ref":"wk:biology_physiology:chemical-exposure-not-illness","predicate":"supported_fact","object":{"kind":"literal","value":"chemical_exposure_not_illness"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-haz-02"],"review_status":"approved","conflict_group_ref":null},
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-01-cell",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-cell",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_cell"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-01"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-02-cell-substances",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-cell-substances",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_cell_substances"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-02"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-03-cell-macromolecules",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-cell-macromolecules",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_cell_macromolecules"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-03"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-04-cellular-atp",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-cellular-atp",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_cellular_atp"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-04"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-05-metabolism",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-metabolism",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_metabolism"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-05"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-06-growth-mitosis",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-growth-mitosis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_growth_mitosis"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-06"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-07-mitosis",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-mitosis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_mitosis"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-07"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-08-cell-specialization",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-cell-specialization",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_cell_specialization"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-08"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-09-organ-systems",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-organ-systems",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_organ_systems"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-09"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-10-digestion",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-digestion",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_digestion"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-10"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-11-absorption",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-absorption",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_absorption"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-11"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-12-respiration",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-respiration",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_respiration"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-12"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-13-alveolar-exchange",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-alveolar-exchange",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_alveolar_exchange"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-13"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-14-circulation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-circulation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_circulation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-14"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-15-blood",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-blood",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_blood"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-15"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-16-regulation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-regulation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_regulation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-16"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-17-reflex",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-reflex",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_reflex"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-17"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-18-muscle-movement",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-muscle-movement",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_muscle_movement"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-18"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-19-sensory-receptor",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-sensory-receptor",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_sensory_receptor"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-19"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-20-kidneys",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-kidneys",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_kidneys"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-20"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-23-sleep-wake-cycle",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-sleep-wake-cycle",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_sleep_wake_cycle"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-23"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-24-skin-sensation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-skin-sensation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_skin_sensation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-24"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-25-reproduction",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-reproduction",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_reproduction"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-25"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-26-fertilization",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-fertilization",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_fertilization"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-26"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-27-ontogeny",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-ontogeny",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_ontogeny"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-27"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-28-virus-replication",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-virus-replication",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_virus_replication"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-28"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-29-virion-structure",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-virion-structure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_virion_structure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-29"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-31-phagocytosis",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-phagocytosis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_phagocytosis"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-31"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-32-phagocytes",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-phagocytes",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_phagocytes"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-32"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-33-acquired-immunity",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-acquired-immunity",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_acquired_immunity"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-33"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-34-lymphoid-system",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-lymphoid-system",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_lymphoid_system"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-34"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-35-antibodies",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-antibodies",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_antibodies"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-35"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-36-immune-memory",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-immune-memory",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_immune_memory"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-36"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-37-ecological-factors",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-ecological-factors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_ecological_factors"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-37"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-38-ecosystem-cycling",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-ecosystem-cycling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_ecosystem_cycling"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-38"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-39-ecosystem-change",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-ecosystem-change",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_ecosystem_change"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-39"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-40-photosynthesis",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-photosynthesis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foundations_life_photosynthesis"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-life-40"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-41-immune-components",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-immune-components",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "foundations_life_immune_components"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:foundations-life-41"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-life-42-thermoreceptors",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:foundation-sensory-receptor",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "foundations_life_thermoreceptors"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:foundations-life-42"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-life-43-infection-chain","domain":"biology_physiology","subject_ref":"wk:biology_physiology:foundation-infection-chain","predicate":"supported_fact","object":{"kind":"literal","value":"foundations_life_infection_chain"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-life-43"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-life-44-pathogen-transport","domain":"biology_physiology","subject_ref":"wk:biology_physiology:foundation-pathogen-transport","predicate":"supported_fact","object":{"kind":"literal","value":"foundations_life_pathogen_transport"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-life-44"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-life-45-infection-entry","domain":"biology_physiology","subject_ref":"wk:biology_physiology:foundation-infection-entry","predicate":"supported_fact","object":{"kind":"literal","value":"foundations_life_infection_entry"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-life-45"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-life-46-airborne-tuberculosis-exposure","domain":"biology_physiology","subject_ref":"wk:biology_physiology:foundation-airborne-exposure","predicate":"supported_fact","object":{"kind":"literal","value":"foundations_life_airborne_tuberculosis_exposure"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-life-46"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-life-47-host-susceptibility","domain":"biology_physiology","subject_ref":"wk:biology_physiology:foundation-host-susceptibility","predicate":"supported_fact","object":{"kind":"literal","value":"foundations_life_host_susceptibility"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-life-47"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:chemical-exposure-not-illness","locale":"ru","labels":["Воздействие не равно болезни"],"short_definition":"Контакт с загрязнителем сам по себе не устанавливает болезнь и не является гарантией безопасности.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:chemical-exposure-not-illness","locale":"en","labels":["Exposure is not illness"],"short_definition":"Contact with a contaminant alone does not establish illness and is not a safety guarantee.","search_aliases":[]},
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cell",
+      "locale": "ru",
+      "labels": [
+        "Клетка"
+      ],
+      "short_definition": "Клетка — основная структурная и функциональная единица живого.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cell",
+      "locale": "en",
+      "labels": [
+        "The cell is the basic structural and functional unit of life"
+      ],
+      "short_definition": "The cell is the basic structural and functional unit of life.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cell-substances",
+      "locale": "ru",
+      "labels": [
+        "Клетки содержат органические и неорганические вещества; к последним относят воду и минеральные соли"
+      ],
+      "short_definition": "Клетки содержат органические и неорганические вещества; к последним относят воду и минеральные соли.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cell-substances",
+      "locale": "en",
+      "labels": [
+        "Cells contain organic and inorganic substances; water and mineral salts are inorganic components"
+      ],
+      "short_definition": "Cells contain organic and inorganic substances; water and mineral salts are inorganic components.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cell-macromolecules",
+      "locale": "ru",
+      "labels": [
+        "Белки, углеводы и липиды участвуют в строении и обмене клеток"
+      ],
+      "short_definition": "Белки, углеводы и липиды участвуют в строении и обмене клеток.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cell-macromolecules",
+      "locale": "en",
+      "labels": [
+        "Proteins, carbohydrates, and lipids participate in cellular structure and metabolism"
+      ],
+      "short_definition": "Proteins, carbohydrates, and lipids participate in cellular structure and metabolism.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cellular-atp",
+      "locale": "ru",
+      "labels": [
+        "АТФ служит непосредственным переносчиком энергии в клеточных процессах"
+      ],
+      "short_definition": "АТФ служит непосредственным переносчиком энергии в клеточных процессах.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cellular-atp",
+      "locale": "en",
+      "labels": [
+        "ATP serves as an immediate energy carrier in cellular processes"
+      ],
+      "short_definition": "ATP serves as an immediate energy carrier in cellular processes.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-metabolism",
+      "locale": "ru",
+      "labels": [
+        "Обмен веществ включает взаимосвязанные синтез и распад веществ"
+      ],
+      "short_definition": "Обмен веществ включает взаимосвязанные синтез и распад веществ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-metabolism",
+      "locale": "en",
+      "labels": [
+        "Metabolism includes interrelated synthesis and breakdown of substances"
+      ],
+      "short_definition": "Metabolism includes interrelated synthesis and breakdown of substances.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-growth-mitosis",
+      "locale": "ru",
+      "labels": [
+        "Рост многоклеточного организма включает увеличение числа клеток через деление"
+      ],
+      "short_definition": "Рост многоклеточного организма включает увеличение числа клеток через деление.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-growth-mitosis",
+      "locale": "en",
+      "labels": [
+        "Multicellular growth includes an increase in cell number through division"
+      ],
+      "short_definition": "Multicellular growth includes an increase in cell number through division.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-mitosis",
+      "locale": "ru",
+      "labels": [
+        "При митозе дочерние клетки получают копии генетического материала"
+      ],
+      "short_definition": "При митозе дочерние клетки получают копии генетического материала.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-mitosis",
+      "locale": "en",
+      "labels": [
+        "In mitosis, daughter cells receive copies of genetic material"
+      ],
+      "short_definition": "In mitosis, daughter cells receive copies of genetic material.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cell-specialization",
+      "locale": "ru",
+      "labels": [
+        "Специализация клеток лежит в основе различий тканей и органов"
+      ],
+      "short_definition": "Специализация клеток лежит в основе различий тканей и органов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-cell-specialization",
+      "locale": "en",
+      "labels": [
+        "Cell specialization underlies differences among tissues and organs"
+      ],
+      "short_definition": "Cell specialization underlies differences among tissues and organs.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-organ-systems",
+      "locale": "ru",
+      "labels": [
+        "Органы образованы разными тканями и объединяются в системы взаимосвязанных функций"
+      ],
+      "short_definition": "Органы образованы разными тканями и объединяются в системы взаимосвязанных функций.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-organ-systems",
+      "locale": "en",
+      "labels": [
+        "Organs are formed from different tissues and combine into systems with interrelated functions"
+      ],
+      "short_definition": "Organs are formed from different tissues and combine into systems with interrelated functions.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-digestion",
+      "locale": "ru",
+      "labels": [
+        "Пищеварение механически обрабатывает пищу и ферментативно расщепляет её вещества до доступных для усвоения форм"
+      ],
+      "short_definition": "Пищеварение механически обрабатывает пищу и ферментативно расщепляет её вещества до доступных для усвоения форм.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-digestion",
+      "locale": "en",
+      "labels": [
+        "Digestion mechanically processes food and enzymatically breaks its substances into absorbable forms"
+      ],
+      "short_definition": "Digestion mechanically processes food and enzymatically breaks its substances into absorbable forms.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-absorption",
+      "locale": "ru",
+      "labels": [
+        "Всасывание переносит продукты переваривания из пищеварительного тракта во внутреннюю среду организма"
+      ],
+      "short_definition": "Всасывание переносит продукты переваривания из пищеварительного тракта во внутреннюю среду организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-absorption",
+      "locale": "en",
+      "labels": [
+        "Absorption transfers digestion products from the digestive tract into the body’s internal environment"
+      ],
+      "short_definition": "Absorption transfers digestion products from the digestive tract into the body’s internal environment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-respiration",
+      "locale": "ru",
+      "labels": [
+        "Дыхание включает поступление кислорода, его транспорт к клеткам и удаление углекислого газа"
+      ],
+      "short_definition": "Дыхание включает поступление кислорода, его транспорт к клеткам и удаление углекислого газа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-respiration",
+      "locale": "en",
+      "labels": [
+        "Respiration includes oxygen uptake, its transport to cells, and carbon-dioxide removal"
+      ],
+      "short_definition": "Respiration includes oxygen uptake, its transport to cells, and carbon-dioxide removal.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-alveolar-exchange",
+      "locale": "ru",
+      "labels": [
+        "В лёгких кислород и углекислый газ переходят между альвеолярным воздухом и кровью путём диффузии"
+      ],
+      "short_definition": "В лёгких кислород и углекислый газ переходят между альвеолярным воздухом и кровью путём диффузии.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-alveolar-exchange",
+      "locale": "en",
+      "labels": [
+        "In lungs, oxygen and carbon dioxide move between alveolar air and blood by diffusion"
+      ],
+      "short_definition": "In lungs, oxygen and carbon dioxide move between alveolar air and blood by diffusion.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-circulation",
+      "locale": "ru",
+      "labels": [
+        "Сердечно-сосудистая система перемещает кровь между лёгкими, тканями и органами"
+      ],
+      "short_definition": "Сердечно-сосудистая система перемещает кровь между лёгкими, тканями и органами.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-circulation",
+      "locale": "en",
+      "labels": [
+        "The cardiovascular system moves blood among lungs, tissues, and organs"
+      ],
+      "short_definition": "The cardiovascular system moves blood among lungs, tissues, and organs.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-blood",
+      "locale": "ru",
+      "labels": [
+        "Кровь включает плазму и форменные элементы; эритроциты, лейкоциты и тромбоциты выполняют разные функции"
+      ],
+      "short_definition": "Кровь включает плазму и форменные элементы; эритроциты, лейкоциты и тромбоциты выполняют разные функции.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-blood",
+      "locale": "en",
+      "labels": [
+        "Blood includes plasma and formed elements; erythrocytes, leukocytes, and platelets have distinct functions"
+      ],
+      "short_definition": "Blood includes plasma and formed elements; erythrocytes, leukocytes, and platelets have distinct functions.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-regulation",
+      "locale": "ru",
+      "labels": [
+        "Нервная и гуморальная регуляция координируют функции органов и систем"
+      ],
+      "short_definition": "Нервная и гуморальная регуляция координируют функции органов и систем.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-regulation",
+      "locale": "en",
+      "labels": [
+        "Neural and humoral regulation coordinate functions of organs and systems"
+      ],
+      "short_definition": "Neural and humoral regulation coordinate functions of organs and systems.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-reflex",
+      "locale": "ru",
+      "labels": [
+        "Рефлекс"
+      ],
+      "short_definition": "Рефлекс — ответная реакция на раздражение, регулируемая нервной системой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-reflex",
+      "locale": "en",
+      "labels": [
+        "A reflex is a nervous-system-regulated response to a stimulus"
+      ],
+      "short_definition": "A reflex is a nervous-system-regulated response to a stimulus.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-muscle-movement",
+      "locale": "ru",
+      "labels": [
+        "Скелетные мышцы, сокращаясь и расслабляясь, обеспечивают движение вместе с костями и суставами"
+      ],
+      "short_definition": "Скелетные мышцы, сокращаясь и расслабляясь, обеспечивают движение вместе с костями и суставами.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-muscle-movement",
+      "locale": "en",
+      "labels": [
+        "By contracting and relaxing, skeletal muscles enable movement together with bones and joints"
+      ],
+      "short_definition": "By contracting and relaxing, skeletal muscles enable movement together with bones and joints.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-sensory-receptor",
+      "locale": "ru",
+      "labels": [
+        "Сенсорные рецепторы преобразуют раздражение в сигналы для нервной системы"
+      ],
+      "short_definition": "Сенсорные рецепторы преобразуют раздражение в сигналы для нервной системы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-sensory-receptor",
+      "locale": "en",
+      "labels": [
+        "Sensory receptors transform stimuli into signals for the nervous system"
+      ],
+      "short_definition": "Sensory receptors transform stimuli into signals for the nervous system.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-kidneys",
+      "locale": "ru",
+      "labels": [
+        "Почки участвуют в выделении продуктов обмена и поддержании состава внутренней среды"
+      ],
+      "short_definition": "Почки участвуют в выделении продуктов обмена и поддержании состава внутренней среды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-kidneys",
+      "locale": "en",
+      "labels": [
+        "Kidneys participate in excreting metabolic products and maintaining the internal environment"
+      ],
+      "short_definition": "Kidneys participate in excreting metabolic products and maintaining the internal environment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-sleep-wake-cycle",
+      "locale": "ru",
+      "labels": [
+        "Сон и бодрствование входят в суточный ритм; смена освещения и внешние раздражители влияют на его становление"
+      ],
+      "short_definition": "Сон и бодрствование входят в суточный ритм; смена освещения и внешние раздражители влияют на его становление.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-sleep-wake-cycle",
+      "locale": "en",
+      "labels": [
+        "Sleep and wakefulness are part of a daily rhythm; changing light and external stimuli influence its formation"
+      ],
+      "short_definition": "Sleep and wakefulness are part of a daily rhythm; changing light and external stimuli influence its formation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-skin-sensation",
+      "locale": "ru",
+      "labels": [
+        "Кожа граничит с внешней средой и участвует в тактильной, болевой и температурной чувствительности"
+      ],
+      "short_definition": "Кожа граничит с внешней средой и участвует в тактильной, болевой и температурной чувствительности.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-skin-sensation",
+      "locale": "en",
+      "labels": [
+        "Skin borders the external environment and participates in tactile, pain, and temperature sensation"
+      ],
+      "short_definition": "Skin borders the external environment and participates in tactile, pain, and temperature sensation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-reproduction",
+      "locale": "ru",
+      "labels": [
+        "Размножение обеспечивает преемственность поколений через передачу генетической информации"
+      ],
+      "short_definition": "Размножение обеспечивает преемственность поколений через передачу генетической информации.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-reproduction",
+      "locale": "en",
+      "labels": [
+        "Reproduction provides continuity of generations through genetic-information transmission"
+      ],
+      "short_definition": "Reproduction provides continuity of generations through genetic-information transmission.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-fertilization",
+      "locale": "ru",
+      "labels": [
+        "При половом размножении слияние гамет образует зиготу, с которой начинается развитие нового организма"
+      ],
+      "short_definition": "При половом размножении слияние гамет образует зиготу, с которой начинается развитие нового организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-fertilization",
+      "locale": "en",
+      "labels": [
+        "In sexual reproduction, gamete fusion forms a zygote from which a new organism’s development begins"
+      ],
+      "short_definition": "In sexual reproduction, gamete fusion forms a zygote from which a new organism’s development begins.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-ontogeny",
+      "locale": "ru",
+      "labels": [
+        "Онтогенез"
+      ],
+      "short_definition": "Онтогенез — совокупность преобразований организма от возникновения до конца жизни; на его ход влияют наследственная программа и условия среды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-ontogeny",
+      "locale": "en",
+      "labels": [
+        "Ontogeny is the set of an organism’s transformations from origin to end of life; hereditary programming and environmental conditions influence it"
+      ],
+      "short_definition": "Ontogeny is the set of an organism’s transformations from origin to end of life; hereditary programming and environmental conditions influence it.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-virus-replication",
+      "locale": "ru",
+      "labels": [
+        "Вирусы не имеют клеточного строения и размножаются только внутри клетки хозяина"
+      ],
+      "short_definition": "Вирусы не имеют клеточного строения и размножаются только внутри клетки хозяина.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-virus-replication",
+      "locale": "en",
+      "labels": [
+        "Viruses lack cellular structure and reproduce only inside a host cell"
+      ],
+      "short_definition": "Viruses lack cellular structure and reproduce only inside a host cell.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-virion-structure",
+      "locale": "ru",
+      "labels": [
+        "Вирусная частица содержит генетический материал и белковую оболочку; у некоторых вирусов есть дополнительная оболочка"
+      ],
+      "short_definition": "Вирусная частица содержит генетический материал и белковую оболочку; у некоторых вирусов есть дополнительная оболочка.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-virion-structure",
+      "locale": "en",
+      "labels": [
+        "A virus particle contains genetic material and a protein coat; some viruses have an additional envelope"
+      ],
+      "short_definition": "A virus particle contains genetic material and a protein coat; some viruses have an additional envelope.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-phagocytosis",
+      "locale": "ru",
+      "labels": [
+        "Фагоцитоз включает захват частицы фагоцитирующей клеткой"
+      ],
+      "short_definition": "Фагоцитоз включает захват частицы фагоцитирующей клеткой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-phagocytosis",
+      "locale": "en",
+      "labels": [
+        "Phagocytosis includes engulfment of a particle by a phagocytic cell"
+      ],
+      "short_definition": "Phagocytosis includes engulfment of a particle by a phagocytic cell.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-phagocytes",
+      "locale": "ru",
+      "labels": [
+        "Макрофаги и другие фагоциты участвуют в защитных реакциях организма"
+      ],
+      "short_definition": "Макрофаги и другие фагоциты участвуют в защитных реакциях организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-phagocytes",
+      "locale": "en",
+      "labels": [
+        "Macrophages and other phagocytes participate in protective responses of an organism"
+      ],
+      "short_definition": "Macrophages and other phagocytes participate in protective responses of an organism.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-acquired-immunity",
+      "locale": "ru",
+      "labels": [
+        "Приобретённый иммунитет специфичен к антигену, вызвавшему его формирование"
+      ],
+      "short_definition": "Приобретённый иммунитет специфичен к антигену, вызвавшему его формирование.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-acquired-immunity",
+      "locale": "en",
+      "labels": [
+        "Acquired immunity is specific to the antigen that induced its formation"
+      ],
+      "short_definition": "Acquired immunity is specific to the antigen that induced its formation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-lymphoid-system",
+      "locale": "ru",
+      "labels": [
+        "Лимфоидная система распределена по телу и участвует в защитной функции организма"
+      ],
+      "short_definition": "Лимфоидная система распределена по телу и участвует в защитной функции организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-lymphoid-system",
+      "locale": "en",
+      "labels": [
+        "The lymphoid system is distributed through the body and participates in protective function"
+      ],
+      "short_definition": "The lymphoid system is distributed through the body and participates in protective function.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-antibodies",
+      "locale": "ru",
+      "labels": [
+        "Антитела"
+      ],
+      "short_definition": "Антитела — иммуноглобулины, образующиеся в ответ на антиген и способные специфически с ним взаимодействовать.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-antibodies",
+      "locale": "en",
+      "labels": [
+        "Antibodies are immunoglobulins formed in response to an antigen and able to interact with it specifically"
+      ],
+      "short_definition": "Antibodies are immunoglobulins formed in response to an antigen and able to interact with it specifically.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-immune-memory",
+      "locale": "ru",
+      "labels": [
+        "Иммунный ответ может включать образование клеток иммунологической памяти"
+      ],
+      "short_definition": "Иммунный ответ может включать образование клеток иммунологической памяти.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-immune-memory",
+      "locale": "en",
+      "labels": [
+        "An immune response can include formation of immunological-memory cells"
+      ],
+      "short_definition": "An immune response can include formation of immunological-memory cells.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-ecological-factors",
+      "locale": "ru",
+      "labels": [
+        "Экологические факторы включают абиотические и биотические влияния; организмы взаимодействуют со средой"
+      ],
+      "short_definition": "Экологические факторы включают абиотические и биотические влияния; организмы взаимодействуют со средой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-ecological-factors",
+      "locale": "en",
+      "labels": [
+        "Ecological factors include abiotic and biotic influences; organisms interact with their environment"
+      ],
+      "short_definition": "Ecological factors include abiotic and biotic influences; organisms interact with their environment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-ecosystem-cycling",
+      "locale": "ru",
+      "labels": [
+        "Пищевые связи и разложение органического вещества участвуют в круговороте веществ и потоке энергии в экосистеме"
+      ],
+      "short_definition": "Пищевые связи и разложение органического вещества участвуют в круговороте веществ и потоке энергии в экосистеме.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-ecosystem-cycling",
+      "locale": "en",
+      "labels": [
+        "Feeding relations and decomposition of organic matter participate in matter cycling and energy flow in an ecosystem"
+      ],
+      "short_definition": "Feeding relations and decomposition of organic matter participate in matter cycling and energy flow in an ecosystem.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-ecosystem-change",
+      "locale": "ru",
+      "labels": [
+        "Изменение условий среды и взаимодействия организмов могут способствовать изменениям экосистемы"
+      ],
+      "short_definition": "Изменение условий среды и взаимодействия организмов могут способствовать изменениям экосистемы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-ecosystem-change",
+      "locale": "en",
+      "labels": [
+        "Changes in environmental conditions and interactions among organisms can contribute to ecosystem change"
+      ],
+      "short_definition": "Changes in environmental conditions and interactions among organisms can contribute to ecosystem change.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-photosynthesis",
+      "locale": "ru",
+      "labels": [
+        "У фотосинтезирующих организмов образование органических веществ связано с использованием энергии света"
+      ],
+      "short_definition": "У фотосинтезирующих организмов образование органических веществ связано с использованием энергии света.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-photosynthesis",
+      "locale": "en",
+      "labels": [
+        "In photosynthetic organisms, organic-matter formation is linked to use of light energy"
+      ],
+      "short_definition": "In photosynthetic organisms, organic-matter formation is linked to use of light energy.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-immune-components",
+      "locale": "ru",
+      "labels": ["Клеточные и тканевые компоненты иммунной защиты"],
+      "short_definition": "Защитные иммунные реакции включают несколько клеточных и тканевых компонентов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:foundation-immune-components",
+      "locale": "en",
+      "labels": ["Cellular and tissue components of immune defence"],
+      "short_definition": "Immune defence involves multiple cellular and tissue components.",
+      "search_aliases": []
+    },
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-infection-chain","locale":"ru","labels":["Компоненты цепи передачи возбудителя"],"short_definition":"Модель CDC/NIOSH описывает источник, выход, перенос, вход и восприимчивого хозяина как компоненты передачи.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-infection-chain","locale":"en","labels":["Components of a pathogen transmission chain"],"short_definition":"The CDC/NIOSH framework describes source, exit, transport, entry and a susceptible host as transmission components.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-pathogen-transport","locale":"ru","labels":["Возможные пути переноса возбудителя"],"short_definition":"CDC/NIOSH перечисляет контакт, капли, укусы, загрязнённое оборудование, переносчиков, пищу и воду как возможные пути переноса.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-pathogen-transport","locale":"en","labels":["Possible pathogen transport modes"],"short_definition":"CDC/NIOSH lists contact, droplets, bites, contaminated equipment, vectors, food and water as possible transport modes.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-infection-entry","locale":"ru","labels":["Возможные порталы входа возбудителя"],"short_definition":"К возможным порталам входа относятся отверстия тела и нарушения кожного барьера.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-infection-entry","locale":"en","labels":["Possible portals of pathogen entry"],"short_definition":"Possible portals of entry include body openings and breaks in the skin barrier.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-airborne-exposure","locale":"ru","labels":["Условия воздушной экспозиции при туберкулёзе"],"short_definition":"В таблице CDC для туберкулёза концентрация ядер капель и длительность воздействия названы факторами тяжести и исходов.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-airborne-exposure","locale":"en","labels":["Airborne-exposure conditions in tuberculosis"],"short_definition":"In the CDC tuberculosis table, droplet-nuclei concentration and exposure duration are named as factors affecting severity and outcomes.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-host-susceptibility","locale":"ru","labels":["Факторы восприимчивости хозяина"],"short_definition":"Восприимчивость хозяина может зависеть от нескольких факторов, перечисленных в модели CDC/NIOSH.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:foundation-host-susceptibility","locale":"en","labels":["Host-susceptibility factors"],"short_definition":"Host susceptibility can be influenced by multiple factors listed in the CDC/NIOSH framework.","search_aliases":[]}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-haz-02-exposure-not-illness","locale":"ru","runtime_text":"Контакт с загрязнителем сам по себе не означает, что человек обязательно заболеет. Это не гарантия безопасности.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-haz-02-exposure-not-illness","locale":"en","runtime_text":"Contact with a contaminant alone does not mean that a person will necessarily become ill. This is not a safety guarantee.","search_aliases":[]},
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-01-cell",
+      "locale": "ru",
+      "runtime_text": "Клетка — основная структурная и функциональная единица живого.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-01-cell",
+      "locale": "en",
+      "runtime_text": "The cell is the basic structural and functional unit of life.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-02-cell-substances",
+      "locale": "ru",
+      "runtime_text": "Клетки содержат органические и неорганические вещества; к последним относят воду и минеральные соли.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-02-cell-substances",
+      "locale": "en",
+      "runtime_text": "Cells contain organic and inorganic substances; water and mineral salts are inorganic components.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-03-cell-macromolecules",
+      "locale": "ru",
+      "runtime_text": "Белки, углеводы и липиды участвуют в строении и обмене клеток.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-03-cell-macromolecules",
+      "locale": "en",
+      "runtime_text": "Proteins, carbohydrates, and lipids participate in cellular structure and metabolism.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-04-cellular-atp",
+      "locale": "ru",
+      "runtime_text": "АТФ служит непосредственным переносчиком энергии в клеточных процессах.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-04-cellular-atp",
+      "locale": "en",
+      "runtime_text": "ATP serves as an immediate energy carrier in cellular processes.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-05-metabolism",
+      "locale": "ru",
+      "runtime_text": "Обмен веществ включает взаимосвязанные синтез и распад веществ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-05-metabolism",
+      "locale": "en",
+      "runtime_text": "Metabolism includes interrelated synthesis and breakdown of substances.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-06-growth-mitosis",
+      "locale": "ru",
+      "runtime_text": "Рост многоклеточного организма включает увеличение числа клеток через деление.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-06-growth-mitosis",
+      "locale": "en",
+      "runtime_text": "Multicellular growth includes an increase in cell number through division.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-07-mitosis",
+      "locale": "ru",
+      "runtime_text": "При митозе дочерние клетки получают копии генетического материала.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-07-mitosis",
+      "locale": "en",
+      "runtime_text": "In mitosis, daughter cells receive copies of genetic material.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-08-cell-specialization",
+      "locale": "ru",
+      "runtime_text": "Специализация клеток лежит в основе различий тканей и органов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-08-cell-specialization",
+      "locale": "en",
+      "runtime_text": "Cell specialization underlies differences among tissues and organs.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-09-organ-systems",
+      "locale": "ru",
+      "runtime_text": "Органы образованы разными тканями и объединяются в системы взаимосвязанных функций.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-09-organ-systems",
+      "locale": "en",
+      "runtime_text": "Organs are formed from different tissues and combine into systems with interrelated functions.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-10-digestion",
+      "locale": "ru",
+      "runtime_text": "Пищеварение механически обрабатывает пищу и ферментативно расщепляет её вещества до доступных для усвоения форм.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-10-digestion",
+      "locale": "en",
+      "runtime_text": "Digestion mechanically processes food and enzymatically breaks its substances into absorbable forms.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-11-absorption",
+      "locale": "ru",
+      "runtime_text": "Всасывание переносит продукты переваривания из пищеварительного тракта во внутреннюю среду организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-11-absorption",
+      "locale": "en",
+      "runtime_text": "Absorption transfers digestion products from the digestive tract into the body’s internal environment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-12-respiration",
+      "locale": "ru",
+      "runtime_text": "Дыхание включает поступление кислорода, его транспорт к клеткам и удаление углекислого газа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-12-respiration",
+      "locale": "en",
+      "runtime_text": "Respiration includes oxygen uptake, its transport to cells, and carbon-dioxide removal.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-13-alveolar-exchange",
+      "locale": "ru",
+      "runtime_text": "В лёгких кислород и углекислый газ переходят между альвеолярным воздухом и кровью путём диффузии.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-13-alveolar-exchange",
+      "locale": "en",
+      "runtime_text": "In lungs, oxygen and carbon dioxide move between alveolar air and blood by diffusion.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-14-circulation",
+      "locale": "ru",
+      "runtime_text": "Сердечно-сосудистая система перемещает кровь между лёгкими, тканями и органами.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-14-circulation",
+      "locale": "en",
+      "runtime_text": "The cardiovascular system moves blood among lungs, tissues, and organs.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-15-blood",
+      "locale": "ru",
+      "runtime_text": "Кровь включает плазму и форменные элементы; эритроциты, лейкоциты и тромбоциты выполняют разные функции.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-15-blood",
+      "locale": "en",
+      "runtime_text": "Blood includes plasma and formed elements; erythrocytes, leukocytes, and platelets have distinct functions.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-16-regulation",
+      "locale": "ru",
+      "runtime_text": "Нервная и гуморальная регуляция координируют функции органов и систем.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-16-regulation",
+      "locale": "en",
+      "runtime_text": "Neural and humoral regulation coordinate functions of organs and systems.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-17-reflex",
+      "locale": "ru",
+      "runtime_text": "Рефлекс — ответная реакция на раздражение, регулируемая нервной системой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-17-reflex",
+      "locale": "en",
+      "runtime_text": "A reflex is a nervous-system-regulated response to a stimulus.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-18-muscle-movement",
+      "locale": "ru",
+      "runtime_text": "Скелетные мышцы, сокращаясь и расслабляясь, обеспечивают движение вместе с костями и суставами.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-18-muscle-movement",
+      "locale": "en",
+      "runtime_text": "By contracting and relaxing, skeletal muscles enable movement together with bones and joints.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-19-sensory-receptor",
+      "locale": "ru",
+      "runtime_text": "Сенсорные рецепторы преобразуют раздражение в сигналы для нервной системы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-19-sensory-receptor",
+      "locale": "en",
+      "runtime_text": "Sensory receptors transform stimuli into signals for the nervous system.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-20-kidneys",
+      "locale": "ru",
+      "runtime_text": "Почки участвуют в выделении продуктов обмена и поддержании состава внутренней среды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-20-kidneys",
+      "locale": "en",
+      "runtime_text": "Kidneys participate in excreting metabolic products and maintaining the internal environment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-23-sleep-wake-cycle",
+      "locale": "ru",
+      "runtime_text": "Сон и бодрствование входят в суточный ритм; смена освещения и внешние раздражители влияют на его становление.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-23-sleep-wake-cycle",
+      "locale": "en",
+      "runtime_text": "Sleep and wakefulness are part of a daily rhythm; changing light and external stimuli influence its formation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-24-skin-sensation",
+      "locale": "ru",
+      "runtime_text": "Кожа граничит с внешней средой и участвует в тактильной, болевой и температурной чувствительности.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-24-skin-sensation",
+      "locale": "en",
+      "runtime_text": "Skin borders the external environment and participates in tactile, pain, and temperature sensation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-25-reproduction",
+      "locale": "ru",
+      "runtime_text": "Размножение обеспечивает преемственность поколений через передачу генетической информации.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-25-reproduction",
+      "locale": "en",
+      "runtime_text": "Reproduction provides continuity of generations through genetic-information transmission.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-26-fertilization",
+      "locale": "ru",
+      "runtime_text": "При половом размножении слияние гамет образует зиготу, с которой начинается развитие нового организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-26-fertilization",
+      "locale": "en",
+      "runtime_text": "In sexual reproduction, gamete fusion forms a zygote from which a new organism’s development begins.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-27-ontogeny",
+      "locale": "ru",
+      "runtime_text": "Онтогенез — совокупность преобразований организма от возникновения до конца жизни; на его ход влияют наследственная программа и условия среды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-27-ontogeny",
+      "locale": "en",
+      "runtime_text": "Ontogeny is the set of an organism’s transformations from origin to end of life; hereditary programming and environmental conditions influence it.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-28-virus-replication",
+      "locale": "ru",
+      "runtime_text": "Вирусы не имеют клеточного строения и размножаются только внутри клетки хозяина.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-28-virus-replication",
+      "locale": "en",
+      "runtime_text": "Viruses lack cellular structure and reproduce only inside a host cell.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-29-virion-structure",
+      "locale": "ru",
+      "runtime_text": "Вирусная частица содержит генетический материал и белковую оболочку; у некоторых вирусов есть дополнительная оболочка.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-29-virion-structure",
+      "locale": "en",
+      "runtime_text": "A virus particle contains genetic material and a protein coat; some viruses have an additional envelope.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-31-phagocytosis",
+      "locale": "ru",
+      "runtime_text": "Фагоцитоз включает захват частицы фагоцитирующей клеткой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-31-phagocytosis",
+      "locale": "en",
+      "runtime_text": "Phagocytosis includes engulfment of a particle by a phagocytic cell.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-32-phagocytes",
+      "locale": "ru",
+      "runtime_text": "Макрофаги и другие фагоциты участвуют в защитных реакциях организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-32-phagocytes",
+      "locale": "en",
+      "runtime_text": "Macrophages and other phagocytes participate in protective responses of an organism.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-33-acquired-immunity",
+      "locale": "ru",
+      "runtime_text": "Приобретённый иммунитет специфичен к антигену, вызвавшему его формирование.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-33-acquired-immunity",
+      "locale": "en",
+      "runtime_text": "Acquired immunity is specific to the antigen that induced its formation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-34-lymphoid-system",
+      "locale": "ru",
+      "runtime_text": "Лимфоидная система распределена по телу и участвует в защитной функции организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-34-lymphoid-system",
+      "locale": "en",
+      "runtime_text": "The lymphoid system is distributed through the body and participates in protective function.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-35-antibodies",
+      "locale": "ru",
+      "runtime_text": "Антитела — иммуноглобулины, образующиеся в ответ на антиген и способные специфически с ним взаимодействовать.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-35-antibodies",
+      "locale": "en",
+      "runtime_text": "Antibodies are immunoglobulins formed in response to an antigen and able to interact with it specifically.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-36-immune-memory",
+      "locale": "ru",
+      "runtime_text": "Иммунный ответ может включать образование клеток иммунологической памяти.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-36-immune-memory",
+      "locale": "en",
+      "runtime_text": "An immune response can include formation of immunological-memory cells.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-37-ecological-factors",
+      "locale": "ru",
+      "runtime_text": "Экологические факторы включают абиотические и биотические влияния; организмы взаимодействуют со средой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-37-ecological-factors",
+      "locale": "en",
+      "runtime_text": "Ecological factors include abiotic and biotic influences; organisms interact with their environment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-38-ecosystem-cycling",
+      "locale": "ru",
+      "runtime_text": "Пищевые связи и разложение органического вещества участвуют в круговороте веществ и потоке энергии в экосистеме.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-38-ecosystem-cycling",
+      "locale": "en",
+      "runtime_text": "Feeding relations and decomposition of organic matter participate in matter cycling and energy flow in an ecosystem.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-39-ecosystem-change",
+      "locale": "ru",
+      "runtime_text": "Изменение условий среды и взаимодействия организмов могут способствовать изменениям экосистемы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-39-ecosystem-change",
+      "locale": "en",
+      "runtime_text": "Changes in environmental conditions and interactions among organisms can contribute to ecosystem change.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-40-photosynthesis",
+      "locale": "ru",
+      "runtime_text": "У фотосинтезирующих организмов образование органических веществ связано с использованием энергии света.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-40-photosynthesis",
+      "locale": "en",
+      "runtime_text": "In photosynthetic organisms, organic-matter formation is linked to use of light energy.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-41-immune-components",
+      "locale": "ru",
+      "runtime_text": "Защитные иммунные реакции включают несколько клеточных и тканевых компонентов; единый исход из этого не следует.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-41-immune-components",
+      "locale": "en",
+      "runtime_text": "Immune defence involves multiple cellular and tissue components; no single outcome follows from this.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-42-thermoreceptors",
+      "locale": "ru",
+      "runtime_text": "Терморецепторы воспринимают температурные изменения во внешней и внутренней среде и передают информацию для терморегуляции.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-life-42-thermoreceptors",
+      "locale": "en",
+      "runtime_text": "Thermoreceptors detect temperature shifts in external and internal environments and provide information for thermoregulation.",
+      "search_aliases": []
+    },
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-43-infection-chain","locale":"ru","runtime_text":"Модель CDC/NIOSH описывает источник, выход, перенос, вход и восприимчивого хозяина как компоненты цепи передачи; это не доказывает передачу в сцене.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-43-infection-chain","locale":"en","runtime_text":"The CDC/NIOSH framework describes source, exit, transport, entry and a susceptible host as transmission-chain components; it does not establish transmission in a scene.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-44-pathogen-transport","locale":"ru","runtime_text":"CDC/NIOSH перечисляет контакт, капли, укусы, загрязнённое оборудование, переносчиков, пищу и воду среди возможных путей переноса возбудителя; загрязнение не предполагается.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-44-pathogen-transport","locale":"en","runtime_text":"CDC/NIOSH lists contact, droplets, bites, contaminated equipment, vectors, food and water among possible pathogen transport modes; contamination is not presumed.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-45-infection-entry","locale":"ru","runtime_text":"Возможные порталы входа включают отверстия тела и нарушения кожного барьера; это не означает экспозиции или инфекции.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-45-infection-entry","locale":"en","runtime_text":"Possible portals of entry include body openings and breaks in the skin barrier; this does not establish exposure or infection.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-46-airborne-tuberculosis-exposure","locale":"ru","runtime_text":"В таблице CDC для туберкулёза концентрация ядер капель в воздухе и длительность воздействия названы факторами тяжести и исходов; это не универсальная формула риска.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-46-airborne-tuberculosis-exposure","locale":"en","runtime_text":"In the CDC tuberculosis table, airborne droplet-nuclei concentration and exposure duration are factors affecting severity and outcomes; this is not a universal risk equation.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-47-host-susceptibility","locale":"ru","runtime_text":"Восприимчивость хозяина может зависеть от нескольких факторов, перечисленных в модели CDC/NIOSH; это не определяет состояние или исход конкретного человека.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-life-47-host-susceptibility","locale":"en","runtime_text":"Host susceptibility can be influenced by multiple factors listed in the CDC/NIOSH framework; this does not determine a particular person's status or outcome.","search_aliases":[]}
+  ]
+}

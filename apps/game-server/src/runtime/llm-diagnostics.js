@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { createLlmTurnBudget } from './llm-turn-budget.js';
 import { safeTurnFailure, safeWritePlanFailure } from './llm-diagnostics-failures.js';
+import { safeOpeningAttemptSnapshot } from './opening-rejection-snapshot.js';
 export { safeTurnFailure, safeWritePlanFailure } from './llm-diagnostics-failures.js';
 const SAFE_TURN_PROGRESS_PHASES = new Set([
   'accepted', 'understanding_action', 'resolving_world', 'saving_result',
@@ -45,6 +46,12 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
     },
     recordFailure(value) {
       const turn = storage.getStore(); if (turn) turn.failure = safeTurnFailure(value);
+    },
+    recordOpeningAttempt(snapshot) {
+      const turn = storage.getStore();
+      if (!turn) return;
+      const safe = safeOpeningAttemptSnapshot(snapshot);
+      if (safe) turn.opening_attempt = safe;
     },
     async runTurn({ party_id, request_id }, execute) {
       const startedAt = now(), partyId = text(party_id), requestId = text(request_id);
@@ -113,7 +120,8 @@ export function buildTurnProgress(turn, currentTime = Date.now()) {
 export function buildLlmTurnReport(input = {}) {
   const { party_id, request_id, calls = [], turn_duration_ms = 0,
     turn_deadline_ms = null,
-    llm_budget_ms = null, incidents = [], failure = null } = input;
+    llm_budget_ms = null, incidents = [], failure = null, opening_attempt = null } = input;
+  const safeOpening = safeOpeningAttemptSnapshot(opening_attempt);
   const waterfall = calls.map((call, index) => Object.freeze({
     sequence: index + 1,
     role: text(call.role ?? call.roleId) || null,
@@ -151,6 +159,7 @@ export function buildLlmTurnReport(input = {}) {
     turn_deadline_ms: turn_deadline_ms == null ? null : nonNegative(turn_deadline_ms),
     llm_budget_ms: llm_budget_ms == null ? null : nonNegative(llm_budget_ms),
     failure: safeTurnFailure(failure),
+    ...(safeOpening ? { opening_attempt: safeOpening } : {}),
     waterfall: Object.freeze(waterfall),
     aggregate: Object.freeze({
       calls: count,

@@ -1,0 +1,557 @@
+[
+ {
+  "need_id": "SOC-04-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-foreign-guests-buy-wax-not-sell"
+  ],
+  "note": "Покрыта только часть о том, что иноземцы воск скупают для вывоза, а не продают; часть про обычный торг-спор (хвалит товар, божится, половину цены не примет) — общая рыночная норма без прямого источника в CSV, не добавлена, чтобы не сочинять.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-foreign-guests-buy-wax-not-sell",
+    "verdict": "REJECT",
+    "reason": "A medieval_general source must be directness=analogical, but the claim has inferred. 'Не привозит свой' goes beyond the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-04-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Нет книжного факта именно о психологической реакции (насмешка/подозрение в обмане) новгородского купца на конкретно эту фразу про иноземцев; nice-критичность, claim не создан, чтобы не сочинять.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-06-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-married-woman-redirects-strange-man-inquiry",
+   "claim:v2-g2-tearing-off-povoi-is-punishable-insult"
+  ],
+  "note": "Сам факт повоя уже был в паке (claim:clothing-povoi-headcover); добавлена норма поведения при разговоре с чужаком и отдельно — договорная норма о плате за срывание повоя (CR §4.4).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-married-woman-redirects-strange-man-inquiry",
+    "verdict": "REJECT",
+    "reason": "The conversation norm does not follow from the fine. The note's reasoning about an uncovered woman is a mistake."
+   },
+   {
+    "claim_ref": "claim:v2-g2-tearing-off-povoi-is-punishable-insult",
+    "verdict": "REJECT",
+    "reason": "Сверх источника: «на людях» и «всё равно что за иное бесчестье» добавлены; норма договора с немцами подана как общая."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-06-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-street-neighbors-vet-newcomer-together"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-street-neighbors-vet-newcomer-together",
+    "verdict": "REJECT",
+    "reason": "Не подтверждено источником: book_row только про выбор старосты; расспросы чужака и «потом помогут» выдуманы, overlap 0.37."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-06-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "В паке уже есть claim:residual-law-widow-separate-property (имущественное право вдовы), но прямого книжного факта о «покровительстве церкви вдове» и о пересудах именно по этому поводу не найдено; nice-критичность, не сочинено.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-07-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-night-gate-locked-elder-only-for-emergency"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-night-gate-locked-elder-only-for-emergency",
+    "verdict": "REJECT",
+    "reason": "The guarantor, waking the master or the vladyka only in an emergency and the guard are not in the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-07-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-persistent-night-caller-suspected-thief"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-persistent-night-caller-suspected-thief",
+    "verdict": "REJECT",
+    "reason": "Not confirmed by the source. Overlap is 0.11."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-08-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-kholop-protection-only-via-church-confessor"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-kholop-protection-only-via-church-confessor",
+    "verdict": "REJECT",
+    "reason": "The confessor as the only channel for complaint is not in the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-08-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-kholop-fear-flight-over-complaint"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-kholop-fear-flight-over-complaint",
+    "verdict": "REJECT",
+    "reason": "The claim moves the zakup rule onto the kholop. The book_row itself describes a complaint route, and 'горшая доля' is not in the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-11-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-foreign-merchant-appeals-to-yard-elder"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-foreign-merchant-appeals-to-yard-elder",
+    "verdict": "REJECT",
+    "reason": "medieval_general is marked inferred instead of analogical. Behaviour in disputes and the Skra readings are not in the book_row."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-12-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-smerd-cannot-strike-boyars-son-complains-up"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-smerd-cannot-strike-boyars-son-complains-up",
+    "verdict": "REJECT",
+    "reason": "Not confirmed by the source. Overlap is 0.13. The smerd, the boyar's son and the complaint route are missing."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-12-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-fish-allowed-annunciation-palm-sunday-in-lent"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-fish-allowed-annunciation-palm-sunday-in-lent",
+    "verdict": "REJECT",
+    "reason": "Not confirmed by the source. Overlap is 0.19. The fish allowance is not in the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-14-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-foreign-guest-fears-local-court-pays-or-leaves-goods"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-foreign-guest-fears-local-court-pays-or-leaves-goods",
+    "verdict": "REJECT",
+    "reason": "Not confirmed. The inference about fearing the court and paying without trial does not follow from the quote."
+   }
+  ]
+ },
+ {
+  "need_id": "ACT-15-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-experienced-villagers-better-at-telling-hemlock-from-edible"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-experienced-villagers-better-at-telling-hemlock-from-edible",
+    "verdict": "REJECT",
+    "reason": "The skill gap between villager, townsperson and child is not in the source. The alias 'вех' names a different plant than болиголов."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-19-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-great-lent-forty-days-after-maslenitsa-no-meat-milk-eggs-fish"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-great-lent-forty-days-after-maslenitsa-no-meat-milk-eggs-fish",
+    "verdict": "REJECT",
+    "reason": "The food bans, the ban on fish and the 'Страстная' week are not in the sources. It also contradicts its own def about fish exceptions."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-19-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-weekly-and-named-fasts-calendar"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-weekly-and-named-fasts-calendar",
+    "verdict": "REJECT",
+    "reason": "Петров пост «летом» не в источниках; второй источник medieval_general, а qualifiers direct/common, не analogical."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-20-n2",
+  "status": "no_source",
+  "refs": [],
+  "note": "Сцена датирована летом 1231 года и говорит о голоде 1230-1231; по правилу задачи голод 1230-1231 не трогаю (отдельный шаг) и не создаю события позже 1230 года (D18). Claim не создан.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "WLD-21-n4",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-novgorod-speech-tsokanie-trait"
+  ],
+  "note": "Часть про речь готландских/немецких купцов не добавлена отдельным claim — присутствие иноземных дворов и купцов на Торгу уже задаётся другими фактами пакета (Готский/Немецкий двор), новое здесь — именно цоканье.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-novgorod-speech-tsokanie-trait",
+    "verdict": "REJECT",
+    "reason": "medieval_general is marked high/direct instead of analogical/medium. The Smolensk and Polotsk speakers also mix ц/ч, so the trait does not set a Novgorodian apart."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-22-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-church-forbids-marriage-between-kin-and-affines"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-church-forbids-marriage-between-kin-and-affines",
+    "verdict": "REJECT",
+    "reason": "First cousins, 'не венчают' and penance from the confessor are not in the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-22-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-church-marriage-age-norm-girl-boy"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-church-marriage-age-norm-girl-boy",
+    "verdict": "REJECT",
+    "reason": "The groom's age of 14–15 and the autumn/winter wedding season are not in the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-23-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-street-communities-and-guilds-regulate-craftsmen",
+   "claim:v2-g2-ivanskoe-sto-wax-merchant-association"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-street-communities-and-guilds-regulate-craftsmen",
+    "verdict": "REJECT",
+    "reason": "Сверх источника: «нет цехов, как у немцев» и «у каждой улицы выборный староста» не в book_row; в ru греческая «τ» в слове «старосτа»."
+   },
+   {
+    "claim_ref": "claim:v2-g2-ivanskoe-sto-wax-merchant-association",
+    "verdict": "REJECT",
+    "reason": "The 50-grivna entry fee and 'самых честных купцов' are not in the book_row. The value names the vladyka, not the boyars."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-23-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-perynhill-site-of-ancient-perun-shrine"
+  ],
+  "note": "Покрыта только часть про Перынь/память о Перуне (прямой книжный источник); часть про то, что во время грозы люди поминают Илью-пророка, прямого книжного источника в CSV не найдена и не добавлена.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-perynhill-site-of-ancient-perun-shrine",
+    "verdict": "NEEDS_REVIEW",
+    "reason": "The package cannot show that people in 1230 remembered a Perun shrine there. The link may be historiographic and belong in domain_internal_only."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-24-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-birch-letters-written-across-strata-incl-women",
+   "claim:v2-g2-literacy-present-but-not-universal"
+  ],
+  "note": "Формулировка сознательно избегает обобщения «грамотность широкая», как и предостерегает note потребности: грамотных людей заметно много, но грамотность не всеобщая.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g2-birch-letters-written-across-strata-incl-women",
+   "claim:v2-g2-literacy-present-but-not-universal"
+  ]
+ },
+ {
+  "need_id": "WLD-26-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-church-bells-mark-city-day-calls-to-service"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-church-bells-mark-city-day-calls-to-service",
+    "verdict": "REJECT",
+    "reason": "'этим звоном и мерит горожанин свой день' and the named ring times go beyond the source."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-28-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-funeral-body-carried-through-broken-roof-on-sled",
+   "claim:v2-g2-funeral-followed-by-memorial-feast"
+  ],
+  "note": "Покрыты вынос через кровлю, перевозка на санях и поминальный пир; про омовение тела и ориентацию головой на запад/лицом на восток прямого книжного факта в CSV не найдено — не сочинено (no_source по этой части).",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g2-funeral-body-carried-through-broken-roof-on-sled",
+   "claim:v2-g2-funeral-followed-by-memorial-feast"
+  ]
+ },
+ {
+  "need_id": "SOC-29-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-crowd-cry-thief-can-beat-culprit-before-court"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-crowd-cry-thief-can-beat-culprit-before-court",
+    "verdict": "REJECT",
+    "reason": "Not confirmed by the source. Overlap is 0.23. Crowd violence before a trial is not in the source."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-29-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-maslenitsa-week-no-meat-dairy-allowed"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-maslenitsa-week-no-meat-dairy-allowed",
+    "verdict": "REJECT",
+    "reason": "The menu of fish, eggs and cheese is not in the sources. ethnographic_late/medieval_general are marked inferred, not analogical."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-29-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-feast-has-a-table-elder-host-must-honor-guests"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-feast-has-a-table-elder-host-must-honor-guests",
+    "verdict": "REJECT",
+    "reason": "Confidence 'high' is overstated because one source is B, so it should be medium. 'Выбирают' turns 'if chosen' into a rule."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-30-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-toll-collector-bribe-risky-with-witnesses"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-toll-collector-bribe-risky-with-witnesses",
+    "verdict": "REJECT",
+    "reason": "Не подтверждено источником: book_row о свидетелях покупки краденого, про посулы мытнику ничего нет, overlap 0.14."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-30-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Ситуация — «голодный 1230 год», прямо про голод 1230-1231 и про архиепископа Спиридона в этой роли; по правилу задачи голод не трогаю (отдельный шаг). Claim не создан.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "WLD-31-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Прямого книжного факта о драках концов именно на Великом мосту во время смут в CSV не найдено; nice-критичность, не сочинено.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-34-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-armed-loud-entry-during-service-is-impious-breach"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-armed-loud-entry-during-service-is-impious-breach",
+    "verdict": "REJECT",
+    "reason": "Not confirmed by the source. Overlap is 0.14. Arms, hats and shouting in church are not in the source."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-34-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-church-service-structure-no-interruption-sexes-separate"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-church-service-structure-no-interruption-sexes-separate",
+    "verdict": "REJECT",
+    "reason": "Not confirmed by the source. Overlap is 0.14. Benches and women standing apart are missing."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-36-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g2-horse-buyer-checks-teeth-legs-gait-traders-tricky"
+  ],
+  "note": null,
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g2-horse-buyer-checks-teeth-legs-gait-traders-tricky",
+    "verdict": "REJECT",
+    "reason": "Not confirmed by the source. Overlap is 0.14. Checking teeth and gait and dealer tricks are missing."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-40-n2",
+  "status": "no_source",
+  "refs": [],
+  "note": "Про массовую самопродажу в холопство в голод 1230-1231; по правилу задачи голод не трогаю (отдельный шаг). Claim не создан.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-40-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Тот же голодный сюжет 1230-1231; по правилу задачи не трогаю. Claim не создан.",
+  "final_status": "no_source",
+  "final_refs": []
+ }
+]

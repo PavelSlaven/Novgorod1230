@@ -309,3 +309,32 @@ test('production verification binds the reviewed payload and rejects stale or no
   for (const field of ['claims', 'sources', 'evidence', 'concepts', 'concept_localizations', 'claim_localizations', 'verifications']) reordered[field].reverse();
   assert.deepEqual(compileWorldKnowledgePack(reordered), compiled);
 });
+
+
+test('started_historical_events facet compiles; unknown facet rejected (A-12)', async () => {
+  const pack = await pilotPack();
+  const claim = structuredClone(pack.claims[0]);
+  const sourceRef = claim.claim_ref;
+  claim.claim_ref = 'claim:test:started-event';
+  claim.applicability = {
+    conditions: [{ facet: 'started_historical_events', operator: 'includes',
+      value: 'event:famine-1230' }]
+  };
+  pack.claims.push(claim);
+  for (const loc of pack.claim_localizations.filter((l) => l.claim_ref === sourceRef)) {
+    pack.claim_localizations.push({ ...structuredClone(loc),
+      claim_ref: claim.claim_ref });
+  }
+  addFixtureVerifications(pack);
+  const compiled = compileWorldKnowledgePack(pack);
+  assert.ok(compiled.claims.some((c) => c.claim_ref === claim.claim_ref));
+
+  const bad = await pilotPack();
+  const badClaim = structuredClone(bad.claims[0]);
+  badClaim.claim_ref = 'claim:test:unknown-facet';
+  badClaim.applicability = {
+    conditions: [{ facet: 'not_a_real_facet', operator: 'includes', value: 'x' }]
+  };
+  bad.claims.push(badClaim);
+  assert.equal(validateWorldKnowledgeAuthoringPack(bad).ok, false);
+});

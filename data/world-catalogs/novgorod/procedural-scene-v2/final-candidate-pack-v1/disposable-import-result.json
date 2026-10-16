@@ -1,0 +1,58 @@
+{
+  "schema": "rus.procedural_final_candidate_disposable_import_result.v1",
+  "status": "PASS",
+  "environment": "fresh_disposable_embedded_postgresql",
+  "database_name": "pr17_procedural_final_candidate",
+  "credentials_persisted": false,
+  "v5_prerequisite": {
+    "lifecycle_applied": true,
+    "rollback_probe": "pass",
+    "target_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+    "target_catalog_digest": "a24fe55497a8aca018fa28a43ab1f54e26e2f30a5c74931ed2570ab69bc07a87",
+    "asserted_table_count": 39,
+    "asserted_record_count": 3248,
+    "records_digest": "dd5f4692c36d7641fc8758b9623f1da11bf728b1c30d6a6679e46152f4a3786c"
+  },
+  "final_import": {
+    "candidate_digest": "29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1",
+    "independent_attestation_digest": "0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c",
+    "import_id": "procedural_final_import_0204d109cbe18d06aed0957be3c10d12",
+    "import_audit_digest": "d5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117",
+    "target_revision_id": "procedural_scene_final_candidate_v1_001",
+    "target_catalog_digest": "4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c",
+    "ledger_record_count": 3269,
+    "compiled_record_count": 21,
+    "compiled_rows_digest": "d919c164eebde0312d09aace80465e8c0d1ba06cdfa313c11b776c92534bc9fc",
+    "activation_event_count": 0,
+    "rollback_probe": "pass"
+  },
+  "development_activation": {
+    "activation_scope": "new_development_parties_only",
+    "event_id": "runtime_catalog_activation_94447901cebfed28716db756f089d0e4",
+    "event_sequence": 2,
+    "previous_event_id": "runtime_catalog_activation_369484deea6a4041fccb5a422737abf7",
+    "activation_request_digest": "ce54f3849dc5dd58a374b1972c3553791fd36a89472e4b31b8dd30643c0ceeb6",
+    "activation_attestation_digest": "c81c4965fea835ed8f5769a0cb21fec3b4be50cbb9a87735808bf4020487f97a",
+    "runtime_release_id": "662d663a583f8bab6dab9aae4340ff72db835f3f817c7764af498605fe294f0e",
+    "audited_candidate_digest": "12a160383a5aba4dfbda9aa5f6ef64273d712944322d9fb44f3a1eb1d45d5d67",
+    "independent_import_approval_attestation_digest": "0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c",
+    "import_audit_digest": "d5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117",
+    "active_revision_id": "procedural_scene_final_candidate_v1_001",
+    "active_catalog_digest": "4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c",
+    "old_party_revision_id": "runtime_catalog_lower_dvina_spatial_v3_v12_001",
+    "new_party_revision_id": "procedural_scene_final_candidate_v1_001",
+    "verified_compiled_profile_count": 13,
+    "verified_compiled_mapping_count": 7,
+    "existing_party_rows_updated": 0,
+    "production_deploy": false,
+    "old_save_migration": false,
+    "rematerialization": false
+  },
+  "cleanup": {
+    "database_stopped": true,
+    "temporary_cluster_removed": true
+  },
+  "production_mutated": false,
+  "development_runtime_activation_performed": true,
+  "production_runtime_activation_performed": false
+}

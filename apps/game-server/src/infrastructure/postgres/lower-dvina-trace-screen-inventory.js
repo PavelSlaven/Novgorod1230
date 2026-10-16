@@ -1,7 +1,7 @@
-import { visibleItemLabel } from '../../runtime/lower-dvina-trace-visible-scene-items.js';
 import { createInventoryPanel, createInventoryPanelContract } from '@rus/presentation';
 import { deriveInventoryZone } from '@rus/items-property';
 import { getCommittedInventoryLoad } from '../../runtime/lower-dvina-trace-committed-inventory.js';
+import { resolveVisibleItemLabel } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 
 export function projectTraceInventoryPanel({ payload, projection, itemLabels }) {
   if (payload.player_profile?.attributes?.strength?.value == null) return null;
@@ -20,8 +20,12 @@ export function projectTraceInventoryPanel({ payload, projection, itemLabels }) 
   for (const item of projection.items ?? []) {
     const zone = deriveInventoryZone({ ...inventory, instance_id: item.item_id });
     if (!zone.pass || zone.zone === 'not_carried') continue;
-    const label = visibleItemLabel({ ...item, name: item.name ?? itemLabels[item.template_id] });
-    const entry = Object.fromEntries(Object.entries({ label, condition: item.condition_state,
+    const resolvedLabel = resolveVisibleItemLabel(item, itemLabels);
+    const entry = Object.fromEntries(Object.entries({
+      ...(resolvedLabel.kind === 'labeled'
+        ? { label: resolvedLabel.label, known_to_viewer: true }
+        : { known_to_viewer: false }),
+      condition: item.condition_state,
       closure_state: item.closure_state,
       access: item.placement?.container_id != null ? 'contained'
         : zone.zone === 'hands' ? 'immediate' : 'quick' }).filter(([, value]) => value !== undefined));

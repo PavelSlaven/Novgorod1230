@@ -1,6 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest, createRandomSource, deriveSeed, deterministicInstanceId, MATERIALIZER_VERSION, MaterializationError } from './core.js';
 import { materializeActorBaseAppearance } from './actor-base-appearance.js';
+import { materializeOrPreserveActorBaseAttributes } from './actor-base-attributes.js';
 import { materializeApprovedItems, parentScene, requireFields } from './stage-helpers.js';
 import { resolveItemPlacementCandidates, resolveNpcPlacementCandidates } from './placement-resolution.js';
 
@@ -30,6 +31,9 @@ export function materializeNpcPlacement(input) {
     const anchor = anchors.get(candidate.placement.g5_anchor_id);
     if (!anchor || anchor.supports?.can_hold_npc !== true || !candidate.placement.presence_reason) throw new MaterializationError('NPC_PLACEMENT_RULE_INVALID', `NPC candidate ${candidate.npc_candidate_id} has no eligible anchor or presence reason.`);
     const npcInstanceId = deterministicInstanceId(identity.partyId, identity.runId, 'npc', candidate.slot_rule_id, ordinal);
+    const baseAttributes = materializeNpcBaseAttributes({
+      candidate, candidateSet, input, npcInstanceId
+    });
     const approvedEntries = actorAppearanceEntries(candidate);
     let actorIdentity = structuredClone(candidate.identity_state);
     let appearanceContractVersion = null;
@@ -47,7 +51,7 @@ export function materializeNpcPlacement(input) {
       appearanceChoices.push(...materialized.choices.map((choice) => structuredClone(choice)));
       appearanceContractVersion = 'actor_base_appearance_v1';
     }
-    return { npc_instance_id: npcInstanceId, npc_candidate_id: candidate.npc_candidate_id, profile_set_id: candidate.npc_profile_set_id, profile_level: candidate.profile_level, base_refs: { social_role_id: candidate.social_role_id, occupation_id: candidate.occupation_id ?? null, npc_archetype_id: candidate.npc_archetype_id, key_npc_seed_id: candidate.key_npc_seed_id ?? null }, placement: structuredClone(candidate.placement), identity: actorIdentity, ...(appearanceContractVersion ? { appearance_contract_version: appearanceContractVersion } : {}), visibility_state: structuredClone(candidate.visibility_state), access_state: structuredClone(candidate.access_state ?? {}), causal_basis: structuredClone(candidate.causal_basis ?? {}), interaction_state: structuredClone(candidate.machine_state), machine_state: structuredClone(candidate.machine_state), knowledge_scope: structuredClone(candidate.knowledge_scope), traits: structuredClone(candidate.traits ?? []), knowledge_records: structuredClone(candidate.knowledge_records ?? []), schedule_records: structuredClone(candidate.schedule_records ?? []), hidden_state_projection: structuredClone(candidate.hidden_state_projection ?? null), source_trace: structuredClone(candidate.source_trace) };
+    return { npc_instance_id: npcInstanceId, npc_candidate_id: candidate.npc_candidate_id, profile_set_id: candidate.npc_profile_set_id, profile_level: candidate.profile_level, base_refs: { social_role_id: candidate.social_role_id, occupation_id: candidate.occupation_id ?? null, npc_archetype_id: candidate.npc_archetype_id, key_npc_seed_id: candidate.key_npc_seed_id ?? null }, placement: structuredClone(candidate.placement), identity: actorIdentity, base_attributes: structuredClone(baseAttributes), attribute_generation_gate: 'active', ...(appearanceContractVersion ? { appearance_contract_version: appearanceContractVersion } : {}), visibility_state: structuredClone(candidate.visibility_state), access_state: structuredClone(candidate.access_state ?? {}), causal_basis: structuredClone(candidate.causal_basis ?? {}), interaction_state: structuredClone(candidate.machine_state), machine_state: structuredClone(candidate.machine_state), knowledge_scope: structuredClone(candidate.knowledge_scope), traits: structuredClone(candidate.traits ?? []), knowledge_records: structuredClone(candidate.knowledge_records ?? []), schedule_records: structuredClone(candidate.schedule_records ?? []), hidden_state_projection: structuredClone(candidate.hidden_state_projection ?? null), source_trace: structuredClone(candidate.source_trace) };
   });
   const instanceByCandidate = new Map(instances.map((instance) => [instance.npc_candidate_id, instance.npc_instance_id]));
   const relations = required.flatMap((candidate) => (candidate.relations ?? []).map((relation) => { const fromCandidateId = relation.from_npc_candidate_id ?? candidate.npc_candidate_id; const toCandidateId = relation.to_npc_candidate_id; const fromNpcId = instanceByCandidate.get(fromCandidateId); const toNpcId = instanceByCandidate.get(toCandidateId); requireFields(relation, ['relation_category_id', 'state'], 'NPC_RELATION_INCOMPLETE'); if (!fromNpcId || !toNpcId || fromNpcId === toNpcId) throw new MaterializationError('NPC_RELATION_REFERENCE_INVALID', 'NPC relations must reference two different materialized candidate IDs.', { from_npc_candidate_id: fromCandidateId, to_npc_candidate_id: toCandidateId }); return { from_npc_id: fromNpcId, to_npc_id: toNpcId, relation_category_id: relation.relation_category_id, state: structuredClone(relation.state) }; }));
@@ -92,6 +96,25 @@ function actorAppearanceEntries(candidate) {
   if (Array.isArray(demographic) || Array.isArray(appearance)) return [...(demographic ?? []), ...(appearance ?? [])];
   if (Array.isArray(candidate?.actor_appearance_profile_entries)) return candidate.actor_appearance_profile_entries;
   return null;
+}
+
+function materializeNpcBaseAttributes({ candidate, candidateSet, input, npcInstanceId }) {
+  const parentSeed = input?.g5_scene_graph?.materialization_run?.seed_digest;
+  const worldRevision = candidate.world_revision_id
+    ?? candidateSet?.world_revision_id
+    ?? input?.g5_scene_graph?.materialization_run?.world_revision_id;
+  const worldDigest = candidate.world_catalog_digest
+    ?? candidateSet?.world_catalog_digest
+    ?? candidateSet?.actor_profile_snapshot?.source_catalog_digest;
+  return materializeOrPreserveActorBaseAttributes({
+    existing_attributes: candidate.base_attributes,
+    runtime_profile: candidate.actor_base_attributes_runtime_profile
+      ?? candidateSet?.actor_base_attributes_runtime_profile,
+    occupation_archetype_id: candidate.occupation_archetype_id,
+    actor_slot_ref: candidate.actor_slot_ref ?? candidate.slot_rule_id ?? npcInstanceId,
+    seed_basis: { world_revision_id: worldRevision,
+      world_catalog_digest: worldDigest, parent_seed_digest: parentSeed }
+  });
 }
 
 function createAppearanceRandom(input, identity) {

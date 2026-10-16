@@ -27,7 +27,8 @@ import { projectLowerDvinaTraceS1Resolutions } from
 import { createLocalFireAtomicWritePlan } from
   './local-fire-atomic-write-plan.js';
 export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
-  inputDigest, phase7Contracts, turn10Contracts, loadState, committer }) {
+  inputDigest, phase7Contracts, turn10Contracts, loadState, committer,
+  onLabelGapsOmitted = null }) {
   const persistedFactual = target(writePlan, 'party_state');
   const factual = completeTurn10Phase7Factual(persistedFactual);
   const visibleContext = target(writePlan, 'party_visible_context_package');
@@ -103,7 +104,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     idemId,
     factual,
     visibleContext: projectedVisibleContext,
-    phase7Contracts
+    phase7Contracts,
+    onLabelGapsOmitted
   });
   next.last_turn.visible_package = {
     package_id: visibleEnvelope.package_id,
@@ -116,7 +118,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   });
   next = turnStep.snapshot;
   const pendingScreen = phase7PendingScreen({
-    state,
+    state: next,
     factual,
     visibleEnvelope,
     turnNumber,

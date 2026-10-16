@@ -1,0 +1,4898 @@
+{
+  "schema": "novgorod.combat_data_bench_manifest.v1",
+  "status": "prepared_for_script_dry_run_only",
+  "hypothesis": "An explicit D71 initial body profile and a bounded exact melee duration can be checked reproducibly; script-first comparison exposes candidate tradeoffs without choosing a winner or approving the profile.",
+  "arms": [
+    {
+      "id": "A",
+      "description": "five-second gameplay calibration alternative"
+    },
+    {
+      "id": "B",
+      "description": "six-second proposed candidate calibration"
+    },
+    {
+      "id": "C",
+      "description": "ten-second gameplay calibration alternative"
+    }
+  ],
+  "model_call": false,
+  "historical_claim": false,
+  "cases": [
+    {
+      "id": "cd01",
+      "challenge": "ordinary accessible NPC, explicit unarmed fist strike",
+      "assertions": [
+        "generic refs are required",
+        "fist danger maps only through the sourced norm"
+      ],
+      "declared_assertion_ids": [
+        "generic_applicability_closed",
+        "fist_danger_rule_pinned",
+        "paraphrase_or_player_action_execution"
+      ],
+      "data_assertion_ids": [
+        "generic_applicability_closed",
+        "fist_danger_rule_pinned"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "paraphrase_or_player_action_execution",
+          "reason": "Requires parser/runtime; not executed by data-only bench."
+        }
+      ]
+    },
+    {
+      "id": "cd02",
+      "challenge": "authored NPC in ordinary unseen-equivalent scene",
+      "assertions": [
+        "same common owner path",
+        "no scenario-name allowlist"
+      ],
+      "declared_assertion_ids": [
+        "scenario_fallback_disabled",
+        "authored_scene_runtime_parity"
+      ],
+      "data_assertion_ids": [
+        "scenario_fallback_disabled"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "authored_scene_runtime_parity",
+          "reason": "Requires runtime scenario execution; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd03",
+      "challenge": "paraphrased free attack",
+      "assertions": [
+        "same action class",
+        "one nearest player action"
+      ],
+      "declared_assertion_ids": [
+        "candidate_never_emits_unapproved",
+        "paraphrase_mapping"
+      ],
+      "data_assertion_ids": [
+        "candidate_never_emits_unapproved"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "paraphrase_mapping",
+          "reason": "Requires player-action parser/runtime; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd04",
+      "challenge": "held item with exact combat profile",
+      "assertions": [
+        "exact owner profile has priority",
+        "current item ref and condition are pinned"
+      ],
+      "declared_assertion_ids": [
+        "exact_owner_capability_required",
+        "current_item_snapshot_resolution"
+      ],
+      "data_assertion_ids": [
+        "exact_owner_capability_required"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "current_item_snapshot_resolution",
+          "reason": "Requires live owner facts; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd05",
+      "challenge": "held ordinary armament, damaged state",
+      "assertions": [
+        "capability scope is checked",
+        "damaged state does not silently resolve as usable"
+      ],
+      "declared_assertion_ids": [
+        "ordinary_armament_condition_scoped",
+        "damaged_instance_resolution"
+      ],
+      "data_assertion_ids": [
+        "ordinary_armament_condition_scoped"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "damaged_instance_resolution",
+          "reason": "Requires owner runtime state; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd06",
+      "challenge": "action-produced item without exact mechanics",
+      "assertions": [
+        "one item and bounded physical facts",
+        "only D47 enum reaches code-owned mapping"
+      ],
+      "declared_assertion_ids": [
+        "d47_enum_map_exact",
+        "physical_facts_from_action"
+      ],
+      "data_assertion_ids": [
+        "d47_enum_map_exact"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "physical_facts_from_action",
+          "reason": "Requires action-produced item runtime; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd07",
+      "challenge": "unknown, multiple, missing or invented weapon",
+      "assertions": [
+        "no item materialization",
+        "typed gap blocks this step"
+      ],
+      "declared_assertion_ids": [
+        "unknown_items_fail_closed",
+        "item_nonmaterialization"
+      ],
+      "data_assertion_ids": [
+        "unknown_items_fail_closed"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "item_nonmaterialization",
+          "reason": "Requires action parser/runtime; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd08",
+      "challenge": "shield, armor or vulnerability facts are unknown",
+      "assertions": [
+        "unknown factors do not become zero",
+        "no armor-zone mechanics claimed"
+      ],
+      "declared_assertion_ids": [
+        "target_facts_gap_present",
+        "armor_and_vulnerability_resolution"
+      ],
+      "data_assertion_ids": [
+        "target_facts_gap_present"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "armor_and_vulnerability_resolution",
+          "reason": "Requires combat profile/runtime facts; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd09",
+      "challenge": "new visible threat changes NPC context",
+      "assertions": [
+        "only NPC-perceived causal facts",
+        "decision boundary aggregates the signal"
+      ],
+      "declared_assertion_ids": [
+        "perception_boundary_is_declared",
+        "npc_perception_of_threat"
+      ],
+      "data_assertion_ids": [
+        "perception_boundary_is_declared"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "npc_perception_of_threat",
+          "reason": "Requires NPC perception/runtime; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd10",
+      "challenge": "surrender intent at a decision boundary",
+      "assertions": [
+        "no universal HP threshold",
+        "intent is not an invented physical reaction"
+      ],
+      "declared_assertion_ids": [
+        "surrender_has_no_universal_threshold",
+        "npc_surrender_choice"
+      ],
+      "data_assertion_ids": [
+        "surrender_has_no_universal_threshold"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "npc_surrender_choice",
+          "reason": "Requires individual context/model/runtime; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd11",
+      "challenge": "break contact with a known feasible route",
+      "assertions": [
+        "route owner proves feasibility",
+        "candidate does not claim unapproved movement success"
+      ],
+      "declared_assertion_ids": [
+        "retreat_movement_gap_present",
+        "route_feasibility_and_success"
+      ],
+      "data_assertion_ids": [
+        "retreat_movement_gap_present"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "route_feasibility_and_success",
+          "reason": "Requires movement owner/runtime; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd12",
+      "challenge": "no known exit or blocked route",
+      "assertions": [
+        "no invented destination",
+        "retreat remains typed gap"
+      ],
+      "declared_assertion_ids": [
+        "retreat_movement_gap_present",
+        "blocked_route_outcome"
+      ],
+      "data_assertion_ids": [
+        "retreat_movement_gap_present"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "blocked_route_outcome",
+          "reason": "Requires movement owner/runtime; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd13",
+      "challenge": "health reaches zero",
+      "assertions": [
+        "transition is incapacitation",
+        "no automatic death event"
+      ],
+      "declared_assertion_ids": [
+        "health_transition_clamps_at_zero",
+        "runtime_incapacitation_event"
+      ],
+      "data_assertion_ids": [
+        "health_transition_clamps_at_zero"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "runtime_incapacitation_event",
+          "reason": "Requires health owner/runtime; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd14",
+      "challenge": "two exact timed melee steps and sub-minute clock",
+      "assertions": [
+        "rational duration is preserved",
+        "no rounding or round clock"
+      ],
+      "declared_assertion_ids": [
+        "duration_is_exact_rational",
+        "clock_owner_subminute_handoff"
+      ],
+      "data_assertion_ids": [
+        "duration_is_exact_rational"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "clock_owner_subminute_handoff",
+          "reason": "Requires clock integration; not run."
+        }
+      ]
+    },
+    {
+      "id": "cd15",
+      "challenge": "re-delivery of an already committed step",
+      "assertions": [
+        "candidate makes no persistence claim",
+        "replay cannot be scored by this data-only dry run"
+      ],
+      "declared_assertion_ids": [
+        "persistence_and_replay_are_gaps",
+        "duplicate_delivery_behavior"
+      ],
+      "data_assertion_ids": [
+        "persistence_and_replay_are_gaps"
+      ],
+      "not_run_assertions": [
+        {
+          "id": "duplicate_delivery_behavior",
+          "reason": "Requires persistence/runtime; not run."
+        }
+      ]
+    }
+  ],
+  "script_first_gates": [
+    "candidate/source/gap files parse and link",
+    "check and harm boundaries execute at every transition",
+    "A/B/C body calibration variants produce exact outputs within declared bounds",
+    "persisted/readback/missing actor inputs follow explicit fail-closed oracle",
+    "duration proposal and 5/6/10 alternatives remain exact rational values within bounds",
+    "seeded synthetic mechanics sample is reproducible",
+    "internal D71 labels do not appear in model/player projections and run does not approve candidate"
+  ],
+  "interpretation_limit": "Passing this dry run checks candidate structure and selected deterministic properties only. It does not calibrate NPC choices, prove contract applicability, exercise runtime persistence, or pass D41.",
+  "body_mapping_calibration": {
+    "mapping_id": "candidate.actor-base-attributes-identity-to-body-profile.v1",
+    "selected_proposal": "B",
+    "hypothesis": "A deterministic initial body baseline can be proposed by analogy to a scoped body_profile, with endurance-only energy adjustment; identity remains a stable binding and does not alter metrics.",
+    "variants": [
+      {
+        "id": "A",
+        "description": "flat control profile analogous to scoped 100/80/70 values",
+        "metrics": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "rule": "constant",
+        "label_internal_only": "D71",
+        "allowed_bounds": {
+          "health": [
+            80,
+            100
+          ],
+          "energy": [
+            60,
+            100
+          ],
+          "satiety": [
+            60,
+            100
+          ]
+        },
+        "calibration_rationale": "flat control mirrors the only located scoped profile values, without transferring that profile into runtime"
+      },
+      {
+        "id": "B",
+        "description": "candidate proposal: health 100, energy 80 + 2 per endurance point from 10 (clamp 60..100), satiety 70",
+        "metrics_at_endurance_10": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "rule": "calibrated endurance energy slope",
+        "label_internal_only": "D71",
+        "allowed_bounds": {
+          "health": [
+            80,
+            100
+          ],
+          "energy": [
+            60,
+            100
+          ],
+          "satiety": [
+            60,
+            100
+          ]
+        },
+        "calibration_rationale": "candidate mapping with an explicit endurance sensitivity coefficient for energy; coefficient is a play-balance hypothesis"
+      },
+      {
+        "id": "C",
+        "description": "lower-start sensitivity arm",
+        "metrics": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        },
+        "rule": "constant",
+        "label_internal_only": "D71",
+        "allowed_bounds": {
+          "health": [
+            80,
+            100
+          ],
+          "energy": [
+            60,
+            100
+          ],
+          "satiety": [
+            60,
+            100
+          ]
+        },
+        "calibration_rationale": "lower-start sensitivity arm to expose effect of starting reserves; not a historical claim"
+      }
+    ],
+    "model_call": false,
+    "historical_claim": false,
+    "evaluation": "script-first on 12 explicit synthetic cases; validate bounds, exact mapping outputs, identity binding, persisted-body precedence, missing-input gaps, check/harm boundaries, and 5/6/10-second rational timing. Report all variant outcomes; do not pick a winner, call a model, or change approval status.",
+    "input_contract": "Full actor_base_attributes_v1 snapshots are test fixtures produced through the pinned materialization API; the candidate requires the same complete shape and source binding but does not approve these fixtures or values."
+  },
+  "body_mapping_cases": [
+    {
+      "id": "bm01",
+      "kind": "valid",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "A",
+        "B",
+        "C"
+      ],
+      "expected": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-10",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-10",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm02",
+      "kind": "valid",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "A",
+        "B",
+        "C"
+      ],
+      "expected": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 78,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "attention": 10,
+          "endurance": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-9",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "0447fe671603c3ec75af7be34fb6822a67f33d994a31060065d96c64248ff48b",
+          "occupation_archetype_id": "animal_husbandry",
+          "priority_mapping_id": "animal_husbandry:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "attention": 10,
+            "endurance": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-9",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "0447fe671603c3ec75af7be34fb6822a67f33d994a31060065d96c64248ff48b",
+          "occupation_archetype_id": "animal_husbandry",
+          "priority_mapping_id": "animal_husbandry:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-9",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-9",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm03",
+      "kind": "valid",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "A",
+        "B",
+        "C"
+      ],
+      "expected": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 84,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "endurance": 12,
+          "dexterity": 11,
+          "reason": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-12",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "55bbc85a3f85e22fbd47dc96c30ea355c618548e3936b0322fea60b5b64326be",
+          "occupation_archetype_id": "fishing_water",
+          "priority_mapping_id": "fishing_water:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "endurance": 12,
+            "dexterity": 11,
+            "reason": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-12",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "55bbc85a3f85e22fbd47dc96c30ea355c618548e3936b0322fea60b5b64326be",
+          "occupation_archetype_id": "fishing_water",
+          "priority_mapping_id": "fishing_water:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-12",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-12",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm04",
+      "kind": "valid",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "B"
+      ],
+      "expected": {
+        "B": {
+          "health": 100,
+          "energy": 76,
+          "satiety": 70
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "attention": 10,
+          "influence": 9,
+          "endurance": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-8",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "cb07cd37cba1c209fcbdc81dffe0d47e50c7a593be77c9167c8fd8757bbc741f",
+          "occupation_archetype_id": "agriculture",
+          "priority_mapping_id": "agriculture:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "attention": 10,
+            "influence": 9,
+            "endurance": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-8",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "cb07cd37cba1c209fcbdc81dffe0d47e50c7a593be77c9167c8fd8757bbc741f",
+          "occupation_archetype_id": "agriculture",
+          "priority_mapping_id": "agriculture:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-8",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-8",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm05",
+      "kind": "valid",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "B"
+      ],
+      "expected": {
+        "B": {
+          "health": 100,
+          "energy": 86,
+          "satiety": 70
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "endurance": 13,
+          "strength": 12,
+          "dexterity": 11,
+          "reason": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-13",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "a5510d1091f881bbbbad78d22a2ab377f283f5e85ff1fbe7012b2a0115860157",
+          "occupation_archetype_id": "forest_hunting",
+          "priority_mapping_id": "forest_hunting:fixture",
+          "choices": [
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "endurance": 13,
+            "strength": 12,
+            "dexterity": 11,
+            "reason": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-13",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "a5510d1091f881bbbbad78d22a2ab377f283f5e85ff1fbe7012b2a0115860157",
+          "occupation_archetype_id": "forest_hunting",
+          "priority_mapping_id": "forest_hunting:fixture",
+          "choices": [
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-13",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-13",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm06",
+      "kind": "determinism",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "B"
+      ],
+      "repeat": 2,
+      "expected": {
+        "B": {
+          "health": 100,
+          "energy": 82,
+          "satiety": 70
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "endurance": 11,
+          "reason": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-11",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "61fec3cd11fb37f2ed301a23c9f0bebc917b2bf4029200eddc6ae719fc70e798",
+          "occupation_archetype_id": "domestic_service",
+          "priority_mapping_id": "domestic_service:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "endurance": 11,
+            "reason": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-11",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "61fec3cd11fb37f2ed301a23c9f0bebc917b2bf4029200eddc6ae719fc70e798",
+          "occupation_archetype_id": "domestic_service",
+          "priority_mapping_id": "domestic_service:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-11",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-11",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm07",
+      "kind": "invalid_attributes",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "B"
+      ],
+      "expected_disposition": "typed_gap_for_actor",
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-10",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-10",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm08",
+      "kind": "invalid_identity",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "B"
+      ],
+      "expected_disposition": "typed_gap_for_actor",
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-10",
+        "schema_version": 1,
+        "actor_ref": "fixture:npc-10",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm09",
+      "kind": "persisted_precedence",
+      "persisted_body": {
+        "health": 43,
+        "energy": 22,
+        "satiety": 11
+      },
+      "approval_fixture": true,
+      "arms": [
+        "A",
+        "B",
+        "C"
+      ],
+      "expected_disposition": "read_persisted",
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-10",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-10",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm10",
+      "kind": "readback_error",
+      "persisted_body": null,
+      "readback_error": true,
+      "approval_fixture": true,
+      "arms": [
+        "B"
+      ],
+      "expected_disposition": "typed_gap_for_actor",
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-10",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-10",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm11",
+      "kind": "unapproved_mapping",
+      "persisted_body": null,
+      "approval_fixture": false,
+      "arms": [
+        "B"
+      ],
+      "expected_disposition": "typed_gap_for_actor",
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-10",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-10",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm12",
+      "kind": "identity_variance_not_used",
+      "identity_values": [
+        "adult",
+        "elder",
+        "male",
+        "female"
+      ],
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "B"
+      ],
+      "expected": {
+        "B": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-10",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-10",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1"
+    },
+    {
+      "id": "bm13",
+      "kind": "invalid_identity_actor_binding",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "A",
+        "B",
+        "C"
+      ],
+      "expected": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-10",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:actor:someone-else",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1",
+      "expected_disposition": "typed_gap_for_actor"
+    },
+    {
+      "id": "bm14",
+      "kind": "invalid_snapshot_trace",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "A",
+        "B",
+        "C"
+      ],
+      "expected": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 78,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "attention": 10,
+          "endurance": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-9",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "0447fe671603c3ec75af7be34fb6822a67f33d994a31060065d96c64248ff48b",
+          "occupation_archetype_id": "animal_husbandry",
+          "priority_mapping_id": "animal_husbandry:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 12,
+            "dexterity": 12,
+            "reason": 11,
+            "attention": 10,
+            "endurance": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-9",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "0447fe671603c3ec75af7be34fb6822a67f33d994a31060065d96c64248ff48b",
+          "occupation_archetype_id": "animal_husbandry",
+          "priority_mapping_id": "animal_husbandry:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-9",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-9",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1",
+      "expected_disposition": "typed_gap_for_actor"
+    },
+    {
+      "id": "bm15",
+      "kind": "invalid_profile_provenance",
+      "persisted_body": null,
+      "approval_fixture": true,
+      "arms": [
+        "A",
+        "B",
+        "C"
+      ],
+      "expected": {
+        "A": {
+          "health": 100,
+          "energy": 80,
+          "satiety": 70
+        },
+        "B": {
+          "health": 100,
+          "energy": 84,
+          "satiety": 70
+        },
+        "C": {
+          "health": 100,
+          "energy": 60,
+          "satiety": 60
+        }
+      },
+      "attributes": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "endurance": 12,
+          "dexterity": 11,
+          "reason": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-12",
+            "profile_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          "seed_digest": "55bbc85a3f85e22fbd47dc96c30ea355c618548e3936b0322fea60b5b64326be",
+          "occupation_archetype_id": "fishing_water",
+          "priority_mapping_id": "fishing_water:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "endurance": 12,
+            "dexterity": 11,
+            "reason": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-12",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "55bbc85a3f85e22fbd47dc96c30ea355c618548e3936b0322fea60b5b64326be",
+          "occupation_archetype_id": "fishing_water",
+          "priority_mapping_id": "fishing_water:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "identity": {
+        "identity_ref": "fixture:identity:fixture:npc-12",
+        "schema_version": 1,
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actor_ref": "fixture:npc-12",
+        "fixture_only": true
+      },
+      "actor_attributes_fixture_only": true,
+      "actor_attributes_source_ref": "src.actor-base-attributes.v1",
+      "expected_disposition": "typed_gap_for_actor"
+    }
+  ],
+  "npc_state_description_eval": {
+    "schema": "novgorod.npc_state_description_eval.v1",
+    "scorer_version": "exact-candidate-mapping.v1",
+    "model_call": false,
+    "naturalness_assessed": false,
+    "cases": [
+      {
+        "id": "q-energy-29",
+        "metric": "energy",
+        "availability": "current_authoritative_readback",
+        "value": 29.5,
+        "expected_band_id": "low",
+        "expected_description": "Запас энергии низкий."
+      },
+      {
+        "id": "q-energy-30",
+        "metric": "energy",
+        "availability": "current_authoritative_readback",
+        "value": 30,
+        "expected_band_id": "moderate",
+        "expected_description": "Запас энергии умеренный."
+      },
+      {
+        "id": "q-energy-69",
+        "metric": "energy",
+        "availability": "current_authoritative_readback",
+        "value": 69.5,
+        "expected_band_id": "moderate",
+        "expected_description": "Запас энергии умеренный."
+      },
+      {
+        "id": "q-energy-70",
+        "metric": "energy",
+        "availability": "current_authoritative_readback",
+        "value": 70,
+        "expected_band_id": "high",
+        "expected_description": "Запас энергии высокий."
+      },
+      {
+        "id": "q-energy-unknown",
+        "metric": "energy",
+        "availability": "unavailable",
+        "value": null,
+        "expected_disposition": "omitted_typed_gap"
+      },
+      {
+        "id": "q-health-29",
+        "metric": "health",
+        "availability": "current_authoritative_readback",
+        "value": 29.5,
+        "expected_band_id": "low",
+        "expected_description": "Здоровье низкое."
+      },
+      {
+        "id": "q-health-30",
+        "metric": "health",
+        "availability": "current_authoritative_readback",
+        "value": 30,
+        "expected_band_id": "moderate",
+        "expected_description": "Здоровье умеренное."
+      },
+      {
+        "id": "q-health-69",
+        "metric": "health",
+        "availability": "current_authoritative_readback",
+        "value": 69.5,
+        "expected_band_id": "moderate",
+        "expected_description": "Здоровье умеренное."
+      },
+      {
+        "id": "q-health-70",
+        "metric": "health",
+        "availability": "current_authoritative_readback",
+        "value": 70,
+        "expected_band_id": "high",
+        "expected_description": "Здоровье высокое."
+      },
+      {
+        "id": "q-health-unknown",
+        "metric": "health",
+        "availability": "unavailable",
+        "value": null,
+        "expected_disposition": "omitted_typed_gap"
+      },
+      {
+        "id": "q-satiety-29",
+        "metric": "satiety",
+        "availability": "current_authoritative_readback",
+        "value": 29.5,
+        "expected_band_id": "low",
+        "expected_description": "Сытость низкая."
+      },
+      {
+        "id": "q-satiety-30",
+        "metric": "satiety",
+        "availability": "current_authoritative_readback",
+        "value": 30,
+        "expected_band_id": "moderate",
+        "expected_description": "Сытость умеренная."
+      },
+      {
+        "id": "q-satiety-69",
+        "metric": "satiety",
+        "availability": "current_authoritative_readback",
+        "value": 69.5,
+        "expected_band_id": "moderate",
+        "expected_description": "Сытость умеренная."
+      },
+      {
+        "id": "q-satiety-70",
+        "metric": "satiety",
+        "availability": "current_authoritative_readback",
+        "value": 70,
+        "expected_band_id": "high",
+        "expected_description": "Сытость высокая."
+      },
+      {
+        "id": "q-satiety-unknown",
+        "metric": "satiety",
+        "availability": "unavailable",
+        "value": null,
+        "expected_disposition": "omitted_typed_gap"
+      }
+    ],
+    "script_first_rules": [
+      "known values use only the matching fixed NPC description",
+      "unknown/unreadable values are omitted with a typed gap and never mapped to zero",
+      "all integer values 0..100 are exhaustively checked for exactly one covered band",
+      "phrases contain no internal calibration metadata or causal/injury assertion"
+    ],
+    "interpretation_limit": "Script checks exact mapping, finite fractional coverage at boundaries, and omission policy. It does not assess naturalness, readability, tone, variation, NPC decisions, or model behavior; those require separate blinded human review.",
+    "fractional_boundary_probes": {
+      "values": [
+        0,
+        0.001,
+        29.5,
+        29.999,
+        30,
+        30.001,
+        69.5,
+        69.999,
+        70,
+        70.001,
+        99.999,
+        100
+      ],
+      "per_metric": true,
+      "expected_intervals": "low=[0,30), moderate=[30,70), high=[70,100]",
+      "out_of_range_values": [
+        -0.001,
+        100.001
+      ],
+      "non_finite_values": [
+        "NaN",
+        "Infinity",
+        "-Infinity"
+      ],
+      "preserve_input_value_without_rounding": true
+    },
+    "integer_values_exhaustive": false
+  },
+  "body_mapping_case_count": 15,
+  "actor_attributes_fixture": {
+    "fixture_only": true,
+    "source_ref": "src.actor-base-attributes.v1",
+    "source_profile_runtime_record": {
+      "schema": "rus.actor_base_attributes_runtime_profile.v1",
+      "catalog_scope": "actor_base_attributes_v1",
+      "catalog_revision_id": "fixture-revision-v1",
+      "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "activation_event_id": "fixture-activation-v1",
+      "import_id": "fixture-import-v1",
+      "import_audit_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "record_registry_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "runtime_contract_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "profile_id": "combat-data-test-fixture-v1",
+      "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27",
+      "profile": {
+        "schema": "rus.actor_base_attributes_profile.v1",
+        "version": 1,
+        "profile_id": "combat-data-test-fixture-v1",
+        "algorithm_version": "actor_base_attributes_v1",
+        "rng_version": "mulberry32_v1",
+        "ordinary_array": [
+          13,
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "occupation_archetype_priorities": [
+          {
+            "mapping_id": "agriculture:fixture",
+            "occupation_archetype_id": "agriculture",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "influence"
+              ],
+              [
+                "endurance"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "animal_husbandry:fixture",
+            "occupation_archetype_id": "animal_husbandry",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "craft_production:fixture",
+            "occupation_archetype_id": "craft_production",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "domestic_service:fixture",
+            "occupation_archetype_id": "domestic_service",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "fishing_water:fixture",
+            "occupation_archetype_id": "fishing_water",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "forest_hunting:fixture",
+            "occupation_archetype_id": "forest_hunting",
+            "priority_tiers": [
+              [
+                "endurance"
+              ],
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "illicit_marginal:fixture",
+            "occupation_archetype_id": "illicit_marginal",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "military_security:fixture",
+            "occupation_archetype_id": "military_security",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "religious_literate:fixture",
+            "occupation_archetype_id": "religious_literate",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "trade_exchange:fixture",
+            "occupation_archetype_id": "trade_exchange",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          },
+          {
+            "mapping_id": "transport_guiding:fixture",
+            "occupation_archetype_id": "transport_guiding",
+            "priority_tiers": [
+              [
+                "strength"
+              ],
+              [
+                "dexterity"
+              ],
+              [
+                "reason"
+              ],
+              [
+                "attention"
+              ],
+              [
+                "endurance"
+              ],
+              [
+                "influence"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    "snapshots_by_endurance": {
+      "8": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "attention": 10,
+          "influence": 9,
+          "endurance": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-8",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "cb07cd37cba1c209fcbdc81dffe0d47e50c7a593be77c9167c8fd8757bbc741f",
+          "occupation_archetype_id": "agriculture",
+          "priority_mapping_id": "agriculture:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "attention": 10,
+            "influence": 9,
+            "endurance": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-8",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "cb07cd37cba1c209fcbdc81dffe0d47e50c7a593be77c9167c8fd8757bbc741f",
+          "occupation_archetype_id": "agriculture",
+          "priority_mapping_id": "agriculture:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "9": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "attention": 10,
+          "endurance": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-9",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "0447fe671603c3ec75af7be34fb6822a67f33d994a31060065d96c64248ff48b",
+          "occupation_archetype_id": "animal_husbandry",
+          "priority_mapping_id": "animal_husbandry:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "attention": 10,
+            "endurance": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-9",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "0447fe671603c3ec75af7be34fb6822a67f33d994a31060065d96c64248ff48b",
+          "occupation_archetype_id": "animal_husbandry",
+          "priority_mapping_id": "animal_husbandry:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "10": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "reason": 11,
+          "endurance": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "reason": 11,
+            "endurance": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-10",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "d1e7ab459840a6073fe39de8c95633ace50d314048c3c753a98e8a37b6701c95",
+          "occupation_archetype_id": "craft_production",
+          "priority_mapping_id": "craft_production:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "11": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "dexterity": 12,
+          "endurance": 11,
+          "reason": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-11",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "61fec3cd11fb37f2ed301a23c9f0bebc917b2bf4029200eddc6ae719fc70e798",
+          "occupation_archetype_id": "domestic_service",
+          "priority_mapping_id": "domestic_service:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "dexterity": 12,
+            "endurance": 11,
+            "reason": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-11",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "61fec3cd11fb37f2ed301a23c9f0bebc917b2bf4029200eddc6ae719fc70e798",
+          "occupation_archetype_id": "domestic_service",
+          "priority_mapping_id": "domestic_service:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "12": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "strength": 13,
+          "endurance": 12,
+          "dexterity": 11,
+          "reason": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-12",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "55bbc85a3f85e22fbd47dc96c30ea355c618548e3936b0322fea60b5b64326be",
+          "occupation_archetype_id": "fishing_water",
+          "priority_mapping_id": "fishing_water:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "strength": 13,
+            "endurance": 12,
+            "dexterity": 11,
+            "reason": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-12",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "55bbc85a3f85e22fbd47dc96c30ea355c618548e3936b0322fea60b5b64326be",
+          "occupation_archetype_id": "fishing_water",
+          "priority_mapping_id": "fishing_water:fixture",
+          "choices": [
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      },
+      "13": {
+        "contract_version": "actor_base_attributes_v1",
+        "values": {
+          "endurance": 13,
+          "strength": 12,
+          "dexterity": 11,
+          "reason": 10,
+          "attention": 9,
+          "influence": 8
+        },
+        "profile_ref": {
+          "id": "combat-data-test-fixture-v1",
+          "version": 1,
+          "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+        },
+        "generation": {
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-13",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "a5510d1091f881bbbbad78d22a2ab377f283f5e85ff1fbe7012b2a0115860157",
+          "occupation_archetype_id": "forest_hunting",
+          "priority_mapping_id": "forest_hunting:fixture",
+          "choices": [
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        },
+        "trace": {
+          "attribute_values": {
+            "endurance": 13,
+            "strength": 12,
+            "dexterity": 11,
+            "reason": 10,
+            "attention": 9,
+            "influence": 8
+          },
+          "profile_ref": {
+            "id": "combat-data-test-fixture-v1",
+            "version": 1,
+            "digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "seed_basis": {
+            "world_revision_id": "fixture-world-v1",
+            "world_catalog_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "parent_seed_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "actor_slot_ref": "fixture:npc-13",
+            "profile_digest": "9f541bb809be80f5c45400d879e1fcb87ac6431f745ef0878fae2f91e85e1f27"
+          },
+          "seed_digest": "a5510d1091f881bbbbad78d22a2ab377f283f5e85ff1fbe7012b2a0115860157",
+          "occupation_archetype_id": "forest_hunting",
+          "priority_mapping_id": "forest_hunting:fixture",
+          "choices": [
+            {
+              "tier": [
+                "endurance"
+              ],
+              "selected_order": [
+                "endurance"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "strength"
+              ],
+              "selected_order": [
+                "strength"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "dexterity"
+              ],
+              "selected_order": [
+                "dexterity"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "reason"
+              ],
+              "selected_order": [
+                "reason"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "attention"
+              ],
+              "selected_order": [
+                "attention"
+              ],
+              "rng_draw": 0
+            },
+            {
+              "tier": [
+                "influence"
+              ],
+              "selected_order": [
+                "influence"
+              ],
+              "rng_draw": 0
+            }
+          ]
+        }
+      }
+    },
+    "scope": "synthetic, deterministic snapshots generated by the pinned actor_base_attributes_v1 materializer for validator and arithmetic checks only; not live NPC records or approval evidence"
+  },
+  "owner_api_compatibility_probe": {
+    "required": false,
+    "script": "bench/combat-data/body-interface.mjs",
+    "default_runtime_root": "/srv/novgorod-work/worktrees/combat-min",
+    "runtime_root_argument": "--runtime-root",
+    "expected_head": "8ef2b6494a88589ef88b7bacf13a9c427408e91d",
+    "pinned_source_paths": [
+      "packages/materialization/src/actor-base-attributes.js",
+      "packages/materialization/src/core.js",
+      "packages/body-state/src/initialization.js"
+    ],
+    "policy": "optional compatibility probe only; require exact HEAD and clean pinned source paths before dynamic import; never part of script-first runner result or approval gate"
+  }
+}

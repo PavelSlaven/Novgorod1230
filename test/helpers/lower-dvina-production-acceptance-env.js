@@ -14,14 +14,36 @@ import { createStaticAssetResolver } from
   '../../apps/game-server/src/http/static-assets.js';
 import { createGameHttpServer, listen } from
   '../../apps/game-server/src/http/server.js';
-import { installActivatedRuntimeCatalog } from
+import { ensureActorBaseAttributesRuntimeActive,
+  installActivatedRuntimeCatalog } from
   '../../tools/local-play/production-setup.js';
+import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from
+  '../../tools/local-play/runtime-capabilities.js';
 import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
 import { createProductionLlmRoleRunner } from
-  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+  '../../apps/game-server/src/infrastructure/provider/openai-compatible.js';
+import { DEFAULT_GAMEPLAY_MODEL } from
+  '../../apps/game-server/src/runtime/llm-settings.js';
+import { installApprovedTemporalDataForTest } from
+  './install-approved-temporal-data.js';
 
 const POSTGRES_IMAGE = 'postgres:16-alpine';
+
+function createAcceptancePools(worldUrl, partyUrl) {
+  const worldPool = new pg.Pool({ connectionString: worldUrl, max: 4 });
+  const partyPool = new pg.Pool({ connectionString: partyUrl, max: 8 });
+  return Object.freeze({
+    worldPool,
+    partyPool,
+    close: async () => {
+      await Promise.all([
+        partyPool.end().catch(() => {}),
+        worldPool.end().catch(() => {})
+      ]);
+    }
+  });
+}
 
 export async function startLowerDvinaProductionAcceptanceEnv({
   llmRespond,
@@ -33,8 +55,7 @@ export async function startLowerDvinaProductionAcceptanceEnv({
   const llm = await startLocalLlmProviderFixture({ respond: llmRespond });
   let root = null;
   let server = null;
-  let worldPool = null;
-  let partyPool = null;
+  let pools = null;
   try {
     startPostgres(postgresContainer);
     await waitForPostgres(postgresContainer, 'postgres', 'postgres');
@@ -49,14 +70,25 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       user: 'party_operator',
       database: 'phase11_party'
     });
-    worldPool = new pg.Pool({ connectionString: worldUrl, max: 4 });
-    partyPool = new pg.Pool({ connectionString: partyUrl, max: 8 });
+    pools = createAcceptancePools(worldUrl, partyUrl);
     const activation = await installActivatedRuntimeCatalog({
-      worldPool,
-      partyPool,
+      worldPool: pools.worldPool,
+      partyPool: pools.partyPool,
       worldUrl,
       repositoryRoot,
       authorizationRef: 'Phase 11 isolated production acceptance'
+    });
+    await installApprovedTemporalDataForTest({
+      worldPool: pools.worldPool,
+      repositoryRoot
+    });
+    assert.deepEqual(activation.runtimeCapabilities,
+      LOCAL_PLAY_RUNTIME_CAPABILITIES_V1);
+    await ensureActorBaseAttributesRuntimeActive({
+      worldPool: pools.worldPool,
+      partyPool: pools.partyPool,
+      worldUrl,
+      repositoryRoot
     });
     const env = {
       ...process.env,
@@ -77,19 +109,16 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       ordinaryMaterializationIdentity: () => qualifiedO1Identity
     });
     const identityFactory = createAcceptanceIdentityFactory();
-    root = await createSpatialV3ProductionCompositionRoot({
+    const compositionOptions = () => Object.freeze({
       env,
       config: {
         runtimeCatalogPinManifestDigest: activation.pinManifestDigest,
         idFactory: identityFactory.next,
         llmSettings
       },
-      pools: {
-        worldPool,
-        partyPool,
-        close: async () => Promise.all([worldPool.end(), partyPool.end()])
-      }
+      pools
     });
+    root = await createSpatialV3ProductionCompositionRoot(compositionOptions());
     server = createGameHttpServer({
       root: acceptanceHttpRoot(root, llm),
       staticAssets: createStaticAssetResolver({
@@ -105,8 +134,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
     return Object.freeze({
       get root() { return root; },
       get server() { return server; },
-      get worldPool() { return worldPool; },
-      get partyPool() { return partyPool; },
+      get worldPool() { return pools.worldPool; },
+      get partyPool() { return pools.partyPool; },
       llm,
       env,
       worldUrl,
@@ -117,22 +146,10 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       async restartRoot() {
         await closeServer(server);
         await root.close();
-        worldPool = new pg.Pool({ connectionString: worldUrl, max: 4 });
-        partyPool = new pg.Pool({ connectionString: partyUrl, max: 8 });
+        pools = createAcceptancePools(worldUrl, partyUrl);
         root = await createSpatialV3ProductionCompositionRoot({
-          env,
-          config: {
-            runtimeCatalogPinManifestDigest: activation.pinManifestDigest,
-            idFactory: identityFactory.next,
-            llmSettings
-          },
-          pools: {
-            worldPool,
-            partyPool,
-            close: async () => Promise.all([
-              worldPool.end(), partyPool.end()
-            ])
-          }
+          ...compositionOptions(),
+          pools
         });
         server = createGameHttpServer({
           root: acceptanceHttpRoot(root, llm),
@@ -152,6 +169,7 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       async close() {
         await closeServer(server);
         await root?.close().catch(() => {});
+        await pools?.close().catch(() => {});
         await llm.close().catch(() => {});
         docker(['rm', '-fv', postgresContainer]);
       }
@@ -159,11 +177,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
   } catch (error) {
     await closeServer(server);
     await root?.close().catch(() => {});
-    await Promise.all([
-      worldPool?.end().catch(() => {}),
-      partyPool?.end().catch(() => {}),
-      llm.close().catch(() => {})
-    ]);
+    await pools?.close().catch(() => {});
+    await llm.close().catch(() => {});
     docker(['rm', '-fv', postgresContainer]);
     throw error;
   }
@@ -172,8 +187,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
 function acceptanceHttpRoot(root, llm) {
   return Object.freeze({ ...root, getLlmSettings: () => ({
     mode: 'custom', compatibility: 'openai_compatible',
-    base_url: llm.baseUrl, model: 'fixture-provider',
-    api_key_present: true
+    base_url: llm.baseUrl, model: DEFAULT_GAMEPLAY_MODEL,
+    api_key_present: true, default_model: DEFAULT_GAMEPLAY_MODEL
   }), getTurnProgress: () => null });
 }
 

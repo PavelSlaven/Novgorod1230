@@ -49,7 +49,7 @@ export function build() {
   }
   const rows = [], gapsAll = [];
   let i = 0;
-  for (const { r, n } of [...groups.values()].sort((a, b) => (a.r.place_template_id + a.r.household_estimate).localeCompare(b.r.place_template_id + b.r.household_estimate))) {
+  for (const { r, n } of [...groups.values()].sort((a, b) => (a.r.place_template_id + a.r.household_estimate).localeCompare(b.r.place_template_id + b.r.household_estimate, 'en'))) {
     const h = parseHouseholds(r.household_estimate), p = parsePeople(r.household_estimate), z = parseG4(r.g4_target);
     const gaps = [];
     if (!h) gaps.push('households: estimate text has no yard range');

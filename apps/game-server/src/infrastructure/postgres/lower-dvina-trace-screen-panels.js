@@ -3,11 +3,16 @@ import { projectCalendar } from '@rus/time-events-history/calendar';
 import { projectTraceInventoryPanel } from './lower-dvina-trace-screen-inventory.js';
 import { distinctNpcLabels } from
   '../../runtime/lower-dvina-trace-visible-scene-items.js';
-
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
+import { playerSafeAppearanceSummary } from
+  '../../runtime/lower-dvina-trace-player-safe-appearance.js';
+import { LOCAL_EDGE_OCCUPIED_STATUS, localEdgeOccupiedLabel } from
+  '../../runtime/local-edge-occupancy.js';
+import { playerSafeOrdinalLabel } from '../../public-boundary.js';
 
-export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null }) {
+export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null,
+  currentVisibleContext = null }) {
   const { actor, player_safe_state: projection } = projectLowerDvinaTracePlayerSafeState({
     scene_presentation: presentation?.scenePresentation,
     committed_state: screen.visible_context == null ? payload : {
@@ -23,17 +28,15 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     ? structuredClone(previousPeople.data) : {};
   delete peopleData.active_interlocutor;
   delete peopleData.visible_npcs;
-  const nearbyNpcIds = new Set((projection.npcs ?? []).map((npc) =>
-    npc.instance_id ?? npc.actor_id ?? npc.npc_id).filter(Boolean));
-  const visibleNpcs = distinctNpcLabels(
-    (projection.current_visible_context?.visible_npc ?? [])
-      .filter((npc) => nearbyNpcIds.has(npc.entity_ref?.entity_id)));
+  const peopleContext = currentVisibleContext ?? projection.current_visible_context;
+  const visibleNpcs = distinctNpcLabels(peopleContext?.visible_npc ?? []);
   if (visibleNpcs.length > 0) {
     peopleData.visible_npcs = visibleNpcs.map((npc) => {
       const appearance = playerSafeAppearanceSummary(npc);
       return {
         display_label: npc.display_label,
-        ...(appearance == null ? {} : { appearance }),
+        ...(appearance == null || npc.display_label?.endsWith(appearance)
+          ? {} : { appearance }),
         ...(typeof npc.visible_status === 'string'
           ? { status: npc.visible_status } : {})
       };
@@ -48,7 +51,7 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
   }
   if (Object.keys(peopleData).length > 0) {
     panels.people = createPeoplePanel(peopleData, {
-      visible: activeInterlocutor !== null || previousPeople?.visible !== false
+      visible: visibleNpcs.length > 0 || activeInterlocutor !== null
     });
   } else {
     delete panels.people;
@@ -69,7 +72,12 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
   const visibleContext = {};
   const location = presentation?.scenePresentation?.locations.find(
     ({ location_ref: ref }) => ref === projection.position?.location_ref);
-  const place = location?.display_name ?? projection.current_visible_context?.visible_scene;
+  const currentVisibleScene = currentVisibleContext
+    ?? projection.current_visible_context;
+  const currentVisibleSceneLabel = typeof currentVisibleScene?.visible_scene === 'string'
+      && currentVisibleScene.visible_scene.trim()
+    ? currentVisibleScene.visible_scene : null;
+  const place = currentVisibleSceneLabel ?? location?.display_name;
   if (place) visibleContext.location_label = place;
   if (projection.clock != null && presentation?.calendarProfile != null) {
     const calendar = projectCalendar(projection.clock, presentation.calendarProfile);
@@ -82,18 +90,45 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     payload.last_turn?.time_update?.exact_elapsed?.exact_minutes);
   if (elapsedLabel != null) visibleContext.turn_elapsed_label = elapsedLabel;
   if (place) {
-    const routes = [...(projection.routes ?? []), ...(projection.available_routes ?? [])]
-      .filter(route => route.from_ref === projection.position?.location_ref && route.label);
-    panels.route = createRoutePanel({ current_place: place, movement: {
-      options: routes.map(route => ({ label: route.label,
-        knowledge_state: route.known === true ? 'known' : 'uncertain' }))
-    } });
+    panels.route = projectLowerDvinaTraceRoutePanel({ currentPlace: place,
+      projection, visibleContext: currentVisibleScene });
   }
-  const projected = { ...screen, presentation_context: visibleContext, panels };
+  const projected = {
+    ...screen,
+    ...(currentVisibleSceneLabel == null ? {} : { visible_context: {
+      ...(screen.visible_context ?? {}),
+      visible_scene: currentVisibleSceneLabel
+    } }),
+    presentation_context: visibleContext,
+    panels
+  };
   const sceneAssetId = sceneAssetFor(projection.position);
   if (sceneAssetId === null) delete projected.scene_asset_id;
   else projected.scene_asset_id = sceneAssetId;
   return projected;
+}
+
+export function projectLowerDvinaTraceRoutePanel({ currentPlace, projection = {},
+  visibleContext = null } = {}) {
+  const routes = [...(projection.routes ?? []), ...(projection.available_routes ?? [])]
+    .filter(route => route.from_ref === projection.position?.location_ref && route.label);
+  const visibleExits = (visibleContext?.visible_objects ?? [])
+    .filter(({ entity_ref: ref, display_label: label }) =>
+      ['scene_movement_edge', 'g4_directional_exit', 'g5_site_connection'].includes(ref?.entity_kind)
+        && typeof label === 'string' && label.trim());
+  return createRoutePanel({ current_place: currentPlace, movement: {
+    options: [...routes.map(route => ({ label: route.label,
+      knowledge_state: route.known === true ? 'known' : 'uncertain' })),
+    ...visibleExits.map(({ entity_ref: ref, display_label: sourceLabel,
+      visible_status: status }) => {
+      const label = playerSafeOrdinalLabel(sourceLabel, ref?.entity_kind);
+      return {
+        label: status === LOCAL_EDGE_OCCUPIED_STATUS ? localEdgeOccupiedLabel(label) : label,
+        knowledge_state: 'known',
+        ...(status === LOCAL_EDGE_OCCUPIED_STATUS ? { status: 'occupied' } : {})
+      };
+    })]
+  } });
 }
 
 const SCENE_ASSET_BY_LOCATION = new Map([
@@ -152,53 +187,4 @@ function exactElapsedLabel(value) {
   const denominator = BigInt(value.denominator);
   if (denominator === 0n) return null;
   return `${denominator === 1n ? numerator : `${numerator}/${denominator}`} мин`;
-}
-
-const HAIR_COLORS = Object.freeze({
-  blond: 'русые', light_brown: 'светло-каштановые',
-  dark_brown: 'тёмно-каштановые', black: 'чёрные', auburn: 'рыжие',
-  gray: 'седые', white: 'белые'
-});
-const HAIR_STYLES = Object.freeze({
-  straight: 'прямые', wavy: 'волнистые', loose: 'распущенные',
-  braided: 'заплетённые'
-});
-const FACIAL_HAIR = Object.freeze({
-  moustache: 'усы', short_beard: 'короткая борода',
-  full_beard: 'густая борода'
-});
-const CLOTHING_COLORS = Object.freeze({
-  undyed_linen: 'неокрашенная льняная', dark_blue: 'тёмно-синяя',
-  forest_green: 'зелёная', madder_red: 'красная', ochre: 'охряная',
-  brown: 'коричневая', charcoal: 'угольно-серая'
-});
-
-function playerSafeAppearanceSummary(npc) {
-  const appearance = npc?.observable_cues?.identity?.appearance;
-  const hair = appearance?.hair;
-  const details = [];
-  if (hair?.length === 'bald') {
-    details.push('лысина');
-  } else {
-    const color = HAIR_COLORS[hair?.color];
-    const style = HAIR_STYLES[hair?.style];
-    const length = hair?.length === 'short' ? 'короткие'
-      : hair?.length === 'long' ? 'длинные' : null;
-    const hairDescription = [length, color, style, 'волосы']
-      .filter(Boolean).join(' ');
-    if (color != null || style != null || length != null) {
-      details.push(hair?.length === 'medium'
-        ? `${hairDescription} средней длины` : hairDescription);
-    }
-  }
-  if (FACIAL_HAIR[hair?.facial_hair]) {
-    details.push(FACIAL_HAIR[hair.facial_hair]);
-  }
-  const garment = (npc?.observable_cues?.equipment ?? []).find(({ visual_profile_snapshot: visual }) =>
-    ['outer_garment', 'outer'].includes(visual?.equipment_slot))
-    ?? npc?.observable_cues?.equipment?.[0];
-  const garmentColor = CLOTHING_COLORS[
-    garment?.visual_profile_snapshot?.main_visible_color];
-  if (garmentColor != null) details.push(`${garmentColor} одежда`);
-  return details.length > 0 ? details.join(', ') : null;
 }

@@ -1,0 +1,662 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-leather",
+      "title": "Caring for Leather, Skin and Fur",
+      "authors": [],
+      "publication": "Canadian Conservation Institute",
+      "source_kind": "official_documentation",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/preventive-conservation/guidelines-collections/caring-leather-skin-fur.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-lime",
+      "title": "Calcium Hydroxide",
+      "authors": [],
+      "publication": "CDC/NIOSH",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/niosh/npg/npgd0092.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-splinter",
+      "title": "Splinter removal",
+      "authors": [],
+      "publication": "NIH/MedlinePlus",
+      "source_kind": "official_documentation",
+      "citation": "https://medlineplus.gov/ency/article/002137.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-smithsonian",
+      "title": "Quick Reference Guide: Salvaging Wet Collections Items",
+      "authors": [],
+      "publication": "Smithsonian National Collections Program",
+      "source_kind": "official_documentation",
+      "citation": "https://ncp.si.edu/sites/default/files/ncp/files/PRICE/Water/QUICK%20REFERENCE%20GUIDE%20Salvaging%20Wet%20Collections%20Items_PRICE_2020%20.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-lime-weather",
+      "title": "Technical Note: Repointing Stone and Brick",
+      "authors": [],
+      "publication": "Northern Ireland Department for Communities",
+      "source_kind": "official_documentation",
+      "citation": "https://www.communities-ni.gov.uk/articles/technical-note-repointing-stone-and-brick",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-tetanus",
+      "title": "Clinical Guidance for Wound Management to Prevent Tetanus",
+      "authors": [],
+      "publication": "CDC",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-leather",
+      "source_ref": "source:streak01-leather",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern general source supports bounded relation only; no 1230 practice, item, treatment, state or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-lime",
+      "source_ref": "source:streak01-lime",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern general source supports bounded relation only; no 1230 practice, item, treatment, state or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-splinter",
+      "source_ref": "source:streak01-splinter",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern general source supports bounded relation only; no 1230 practice, item, treatment, state or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-smithsonian",
+      "source_ref": "source:streak01-smithsonian",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Wet leather support, shape holding, air circulation and air drying are conservation measures; no restoration or historical practice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-lime-weather",
+      "source_ref": "source:streak01-lime-weather",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "New lime work needs protection and remains vulnerable to frost and rain; no historical recipe or bond outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-tetanus",
+      "source_ref": "source:streak01-tetanus",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Wound type and vaccination history guide modern tetanus prevention; no infection, immunity or treatment is established.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:streak01-repair",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:streak01-repair",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:streak01-repair",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-wet-leather-support",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Damp leather can be cautiously supported or reshaped to limit further distortion while its actual condition is observed."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-smithsonian"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-wet-leather-drying",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Strong heat can desiccate, distort, stiffen or split wet leather; slow air drying with support is a bounded modern conservation measure, not restoration."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-leather",
+        "evidence:streak01-smithsonian"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-wet-leather-limits",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Leather processing and prior condition affect wetting and drying response, so former fit, strength or appearance cannot be promised."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-leather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-wet-lime-contact",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Wet calcium hydroxide can irritate or burn skin and eyes; avoiding contact and washing contaminated skin are modern hazard controls, not period treatment."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-lime"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-lime-weather",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Fresh lime work is vulnerable to frost, rain and rapid drying; these exposures can interrupt or weaken setting without predicting a bond outcome."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-lime-weather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-lime-curing-limits",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Mix, exposure, protection and elapsed time affect lime curing; a general limit supplies neither a recipe nor a guaranteed sound result."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-lime-weather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-splinter-assessment",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A visible, safely graspable splinter differs from a deeply embedded or eye-adjacent object; hands and area can be cleaned before bounded assessment."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-splinter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-splinter-escalation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A deep, difficult, painful, eye-adjacent or inflamed splinter is an escalation boundary for skilled help, not a diagnosis or infection outcome."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-splinter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-splinter-tetanus-uncertainty",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Deep or dirty wounds and uncertain tetanus protection are modern escalation considerations; they do not establish infection, immunity or treatment in the world."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-tetanus"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:streak01-repair",
+      "locale": "ru",
+      "labels": [
+        "craft_technology"
+      ],
+      "short_definition": "Ограниченный современный контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:streak01-repair",
+      "locale": "en",
+      "labels": [
+        "craft_technology"
+      ],
+      "short_definition": "Bounded modern context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:streak01-repair",
+      "locale": "ru",
+      "labels": [
+        "chemistry_process"
+      ],
+      "short_definition": "Ограниченный современный контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:streak01-repair",
+      "locale": "en",
+      "labels": [
+        "chemistry_process"
+      ],
+      "short_definition": "Bounded modern context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:streak01-repair",
+      "locale": "ru",
+      "labels": [
+        "biology_physiology"
+      ],
+      "short_definition": "Ограниченный современный контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:streak01-repair",
+      "locale": "en",
+      "labels": [
+        "biology_physiology"
+      ],
+      "short_definition": "Bounded modern context.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-wet-leather-support",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Влажную кожу можно осторожно поддержать или придать форму, ограничивая дальнейшую деформацию и наблюдая её состояние.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-wet-leather-support",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Damp leather can be cautiously supported or reshaped to limit further distortion while its actual condition is observed.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-wet-leather-drying",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Сильный жар может пересушить, деформировать, сделать жёсткой или расколоть влажную кожу; медленная воздушная сушка с поддержкой — современная ограниченная мера, не восстановление.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-wet-leather-drying",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Strong heat can desiccate, distort, stiffen or split wet leather; slow air drying with support is a bounded modern conservation measure, not restoration.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-wet-leather-limits",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Выделка и прежнее состояние кожи влияют на реакцию на влагу и сушку; прежнюю форму, прочность или вид нельзя обещать.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-wet-leather-limits",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Leather processing and prior condition affect wetting and drying response, so former fit, strength or appearance cannot be promised.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-wet-lime-contact",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Влажный гидроксид кальция может раздражать или обжигать кожу и глаза; избегать контакта и промывать загрязнённую кожу — современные меры, не историческое лечение.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-wet-lime-contact",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Wet calcium hydroxide can irritate or burn skin and eyes; avoiding contact and washing contaminated skin are modern hazard controls, not period treatment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-lime-weather",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Свежая известковая работа уязвима к морозу, дождю и быстрому высыханию; это может прервать или ослабить схватывание без предсказания результата.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-lime-weather",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Fresh lime work is vulnerable to frost, rain and rapid drying; these exposures can interrupt or weaken setting without predicting a bond outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-lime-curing-limits",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Состав, воздействие, защита и время влияют на твердение извести; общий предел не даёт рецепта и не гарантирует прочный результат.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-lime-curing-limits",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Mix, exposure, protection and elapsed time affect lime curing; a general limit supplies neither a recipe nor a guaranteed sound result.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-splinter-assessment",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Видимая безопасно захватываемая заноза отличается от глубоко внедрённого или близкого к глазу предмета; руки и место можно очистить перед ограниченной оценкой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-splinter-assessment",
+      "locale": "en",
+      "runtime_text": "INFERENCE: A visible, safely graspable splinter differs from a deeply embedded or eye-adjacent object; hands and area can be cleaned before bounded assessment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-splinter-escalation",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Глубокая, трудная, болезненная, близкая к глазу или воспалённая заноза — граница для обращения за опытной помощью, не диагноз и не исход инфекции.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-splinter-escalation",
+      "locale": "en",
+      "runtime_text": "INFERENCE: A deep, difficult, painful, eye-adjacent or inflamed splinter is an escalation boundary for skilled help, not a diagnosis or infection outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-splinter-tetanus-uncertainty",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Глубокие или грязные раны и неясная защита от столбняка — современные основания эскалации; они не устанавливают инфекцию, иммунитет или лечение в мире.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:streak01-splinter-tetanus-uncertainty",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Deep or dirty wounds and uncertain tetanus protection are modern escalation considerations; they do not establish infection, immunity or treatment in the world.",
+      "search_aliases": []
+    }
+  ]
+}

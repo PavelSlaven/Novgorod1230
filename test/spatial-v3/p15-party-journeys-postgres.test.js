@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { spawn, spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { RUNTIME_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/migrations.js';
-import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { SPATIAL_V3_TARGET_MIGRATION_FILES } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 45_000 });
@@ -20,10 +20,17 @@ test('P15 target-only journey, exact time and idempotency constraints are physic
     1,
     'production runtime remains v2 before the versioned production activation cutover'
   );
-  assert.equal(
-    SPATIAL_V3_TARGET_MIGRATIONS.length,
-    10,
-    'the target-only sequence includes Temporal World and all three PR8 persistence amendments'
+  const requiredTargetMigrations = [
+    '004_party_runtime_v3_journeys.sql',
+    '007_party_runtime_temporal_world.sql',
+    '008_party_runtime_pr8_first_entry.sql',
+    '009_party_runtime_pr8_reaction_knowledge.sql',
+    '010_party_runtime_pr8_reaction_options.sql'
+  ];
+  assert.deepEqual(
+    requiredTargetMigrations.filter((file) => !SPATIAL_V3_TARGET_MIGRATION_FILES.includes(file)),
+    [],
+    'the target-only chain retains journeys, Temporal World and all three PR8 persistence migrations'
   );
   if (docker(['version']).status !== 0) {
     t.skip('Docker required for isolated PostgreSQL test');

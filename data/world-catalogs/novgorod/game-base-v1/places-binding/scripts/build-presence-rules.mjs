@@ -49,7 +49,7 @@ function capByMasterLinks(cls, sourceRefsRaw) {
 
 function listCsv(dir) {
   const out = [];
-  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name, 'en'))) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) { if (!['node_modules', '.git', 'source_snapshot', 'sources', 'authoring'].includes(e.name)) out.push(...listCsv(p)); }
     else if (e.name.endsWith('.csv')) out.push(p);
@@ -251,7 +251,7 @@ export function build({ write = true } = {}) {
   const baseKey = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.subregion_scope || '', p.subject_kind, p.subject_ref,
     ...(p.subject_kind === 'environment' ? [p.condition_key] : [])].join('|');
   const provenance = ['source_pool', 'source_row_id', 'source_refs', 'placement_basis_ref', 'placement_owner_ref', 'pool_confidence', 'class_capped_from', 'derivation_rule', 'availability'];
-  const behavior = (p, includeTime = true) => JSON.stringify(Object.entries(p).filter(([k]) => !provenance.includes(k) && !['allowed_seasons', 'item_ref', 'variants'].includes(k) && (includeTime || k !== 'allowed_times')).sort(([a], [b]) => a.localeCompare(b)));
+  const behavior = (p, includeTime = true) => JSON.stringify(Object.entries(p).filter(([k]) => !provenance.includes(k) && !['allowed_seasons', 'item_ref', 'variants'].includes(k) && (includeTime || k !== 'allowed_times')).sort(([a], [b]) => a.localeCompare(b, 'en')));
   const union = (values, separator) => [...new Set(values.flatMap((v) => String(v || '').split(separator).map((s) => s.trim()).filter(Boolean)))].sort().join(separator === ';' ? ';' : ' | ');
   const groups = new Map();
   for (const p of candidates) for (const season of p.allowed_seasons.includes('all') ? SEASONS : Array.isArray(p.allowed_seasons) ? p.allowed_seasons : split(p.allowed_seasons)) {
@@ -263,13 +263,13 @@ export function build({ write = true } = {}) {
   const evidence = (p) => ({ availability: p.availability, derivation: derivationRank(p), confidence: CONFIDENCE_RANK[p.pool_confidence] || 0, probability_ppm: p.probability_ppm });
   const compare = (a, b) => b.availability - a.availability || derivationRank(b) - derivationRank(a)
     || (CONFIDENCE_RANK[b.pool_confidence] || 0) - (CONFIDENCE_RANK[a.pool_confidence] || 0) || a.probability_ppm - b.probability_ppm
-    || a.source_row_id.localeCompare(b.source_row_id) || a.source_pool.localeCompare(b.source_pool);
+    || a.source_row_id.localeCompare(b.source_row_id, 'en') || a.source_pool.localeCompare(b.source_pool, 'en');
   const decisionReason = (winner, other) => winner.availability !== other.availability ? 'evidence_stronger:availability'
     : derivationRank(winner) !== derivationRank(other) ? 'evidence_stronger:derivation'
       : (CONFIDENCE_RANK[winner.pool_confidence] || 0) !== (CONFIDENCE_RANK[other.pool_confidence] || 0) ? 'evidence_stronger:confidence'
         : winner.probability_ppm !== other.probability_ppm ? 'equal_evidence_lower_ppm' : 'equal_evidence_stable_tie';
   const resolved = [], resolutionSeasons = [];
-  for (const [key, group] of [...groups].sort(([a], [b]) => a.localeCompare(b))) {
+  for (const [key, group] of [...groups].sort(([a], [b]) => a.localeCompare(b, 'en'))) {
     // Compare only link archetypes actually shared by linked competitors. A PF mapping is
     // deliberately not inferred from these links. For several same-archetype links use max.
     const linked = group.map((p) => linkIds(p.source_refs).map((id) => MASTER_LINKS.get(id))).filter((links) => links.length);
@@ -304,7 +304,7 @@ export function build({ write = true } = {}) {
   const compact = [...byBase.values()].flatMap((seasonRows) => seasonRows.length === SEASONS.length && seasonRows.every((p) => behavior(p) === behavior(seasonRows[0]) && provenance.every((field) => p[field] === seasonRows[0][field]))
     ? [{ ...seasonRows[0], allowed_seasons: 'all' }] : seasonRows);
   const keys = new Set(), ids = new Set();
-  const rows = compact.sort((a, b) => `${baseKey(a)}|${a.allowed_seasons}`.localeCompare(`${baseKey(b)}|${b.allowed_seasons}`)).map((p) => {
+  const rows = compact.sort((a, b) => `${baseKey(a)}|${a.allowed_seasons}`.localeCompare(`${baseKey(b)}|${b.allowed_seasons}`, 'en')).map((p) => {
     const ordered = SEASONS.filter((s) => split(p.allowed_seasons).includes(s)).join(';');
     const seasons = p.allowed_seasons === 'all' || ordered === SEASONS.join(';') ? 'all' : ordered;
     const key = presenceIdentity(p, seasons);
@@ -314,7 +314,7 @@ export function build({ write = true } = {}) {
     keys.add(key); ids.add(pr_id);
     return { pr_id, ...p, allowed_seasons: seasons };
   });
-  const environment = environmentRows().sort((a, b) => `${a.scope_kind}|${a.scope_ref}|${a.subject_kind}|${a.subject_ref}|${a.condition_key || ''}|${a.allowed_seasons}`.localeCompare(`${b.scope_kind}|${b.scope_ref}|${b.subject_kind}|${b.subject_ref}|${b.condition_key || ''}|${b.allowed_seasons}`));
+  const environment = environmentRows().sort((a, b) => `${a.scope_kind}|${a.scope_ref}|${a.subject_kind}|${a.subject_ref}|${a.condition_key || ''}|${a.allowed_seasons}`.localeCompare(`${b.scope_kind}|${b.scope_ref}|${b.subject_kind}|${b.subject_ref}|${b.condition_key || ''}|${b.allowed_seasons}`, 'en'));
   const allIds = new Set(rows.map((row) => row.pr_id));
   for (const row of environment) {
     if (allIds.has(row.pr_id)) throw new Error(`presence ID collision ${row.pr_id}`);

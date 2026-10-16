@@ -13,6 +13,7 @@ test('production start provisions the pinned initial ordinary scope', async () =
       if (String(statement).includes('SELECT snapshot.state_payload')) {
         return { rowCount: 1, rows: [{
           location_ref: 'wreck', position_id: 'position:wreck',
+          g6_instance_id: 'g6:wreck',
           change_set_id: 'change:new-game'
         }] };
       }
@@ -38,7 +39,6 @@ test('production start provisions the pinned initial ordinary scope', async () =
       compatible_world_catalog_digest: 'catalog',
       compatible_world_pin_manifest_digest: worldDigest
     },
-    initialOrdinaryScopeBinding: { position_ref: 'wreck', g6_ref: 'g6:wreck' },
     initialOrdinaryProvisioner: {
       async provision(input) {
         provisionInput = input;

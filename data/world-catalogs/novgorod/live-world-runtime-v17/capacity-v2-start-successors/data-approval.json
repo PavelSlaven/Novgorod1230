@@ -1,0 +1,178 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "auditor_ref": "gpt-6-sol/high:/root/m2c_capacity_start_data_approval",
+  "independence_basis": "Independent reviewer did not author or modify the candidate, generator, or prior approvals. Recomputed all source, prior approval, and successor SHA-256 values; compared all seven start/transfer/basis JSON objects against their approved predecessors by field; verified version 2 scene/profile closure, exact forest initial-perception digest, and unchanged nonforest player applicability; ran generator --check and focused test.",
+  "reviewed_on": "2026-09-25",
+  "reviewed_repository_head": "587ee18f0546b7041164c11097ab9f5371833b7c",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/review-candidate.json",
+  "candidate_sha256": "78dec495a07ea03c6cbef7aa3281b37c9a1ce84e2f772ed150a117c0d85bda70",
+  "source_pins": {
+    "active_starts": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json",
+      "sha256": "c990d6ffa40a9c76455566b667df90c8099142f40e7800a07d2f64b83228b7a9"
+    },
+    "capacity_candidate": {
+      "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-candidate.json",
+      "sha256": "8d29ed5d03b3cd6571d85aaaa6341f7ca64b01190a63349d1248c463b887ba19"
+    },
+    "capacity_approval": {
+      "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-data-approval.json",
+      "sha256": "8e1467fa23eb06c379ddf254030576b28ad6de87c808f5d5ab0b35601a78db10"
+    },
+    "scene_templates": {
+      "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_scene_templates.json",
+      "sha256": "2d224ae80f3ac18d9a4d0c09293fb04025f4096a475d084a932c1f1ac7186857"
+    },
+    "materialization_profiles": {
+      "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_scene_materialization_profiles.json",
+      "sha256": "ce2d02dc168a2d357476bdc83bee1a413359767e06610164bba2ecd9959d5d6e"
+    }
+  },
+  "previous_approval_pins": {
+    "novgorod_pine_ridge_approach_v1": {
+      "path": "data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json",
+      "sha256": "df5c36fff70a0a5935dea3bc26523edeb87e898ad99606e709106d6a09db3b4f"
+    },
+    "novgorod_riverbank_approach_v1": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.approval.json",
+      "sha256": "007420250621ec85576aab065b2db2fd66f51d258bfca5ef1c4cad9e5b9b566d"
+    },
+    "novgorod_reed_backwater_entrance_v1": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.approval.json",
+      "sha256": "b9cca9d249000b1e45f1cea410a9395c121ef6c4d9beacd147464a3f7b8ddae3"
+    },
+    "novgorod_vikhtuy_resource_edge_approach_v1": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_resource_edge_approach_v1.approval.json",
+      "sha256": "81d8a4690e390790b9ffe01541da7951e15c34b2c3182e7f0d446b9b94f7f5e9"
+    },
+    "novgorod_zaostrovye_settlement_approach_v1": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.approval.json",
+      "sha256": "90f3f104f88a23869a5a0e4d8996faa97cbb8c2f4657a23547b949b4844dd9c3"
+    },
+    "novgorod_vikhtuy_work_storage_v1": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_work_storage_v1.approval.json",
+      "sha256": "ed90133330481f53faf9483cf78838fc5e587f3a85098dc2d0ae970cb80455dd"
+    },
+    "novgorod_vikhtuy_household_cluster_v1": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_household_cluster_v1.approval.json",
+      "sha256": "5cf196ee1962e1e23d44b7d87f376343f99acf8515ad3e4e4e9977169c1aee5a"
+    }
+  },
+  "approved_successors": [
+    {
+      "scenario_id": "novgorod_pine_ridge_approach_v1",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_pine_ridge_approach_v1.start.json",
+        "sha256": "dc00497652882322b3232f5882fc870ed88be15f981fd5b490caf2f08e980f2a"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_pine_ridge_approach_v1.transfer.json",
+        "sha256": "56473af6a3e89fdc484776e396878f36309a71305ff06b88f4862961610310bb"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_pine_ridge_approach_v1.basis.json",
+        "sha256": "0d92318ee0f8ac92e96932814526e315b692b7a4086b66b3c11986a86a62d179"
+      }
+    },
+    {
+      "scenario_id": "novgorod_riverbank_approach_v1",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_riverbank_approach_v1.start.json",
+        "sha256": "894876862c54da02d284414fefb7541deb00096b85cacf07063b68c3168cc0cd"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_riverbank_approach_v1.transfer.json",
+        "sha256": "7e7d0bb549e1ff8021a63e6340d3c71f0909172936bdd71253e5ef5674892bba"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_riverbank_approach_v1.basis.json",
+        "sha256": "f0a71866df33b1dcd9d01db6df1241b183386f7c32a23b35c978db6888bc443b"
+      }
+    },
+    {
+      "scenario_id": "novgorod_reed_backwater_entrance_v1",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_reed_backwater_entrance_v1.start.json",
+        "sha256": "758cf689a37c4567e9eafa2bd0758bbe89d730cb2d2177d71e21d03da334570b"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_reed_backwater_entrance_v1.transfer.json",
+        "sha256": "0fe327d90b9e57a07db4290a57cd546ecb0ce642b5be871ab3c83ce049ea28b3"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_reed_backwater_entrance_v1.basis.json",
+        "sha256": "329bd40afe65f8c4b75e1ef0f1f5d40a4ad732b42ddc3ef41b56a612a9071aeb"
+      }
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_resource_edge_approach_v1",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_resource_edge_approach_v1.start.json",
+        "sha256": "9531b78d23f1cde9bc64cdbc519cc091394ed634b4df28541e3d2dbb53950773"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_resource_edge_approach_v1.transfer.json",
+        "sha256": "e92130caec7158358c1e4ad0caab68288ea15a3d57146f05e67023c84d489cf5"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_resource_edge_approach_v1.basis.json",
+        "sha256": "9995929a64706dc8bc56a0dd23617e307f3a202f2ae421fe2985960c25ad8831"
+      }
+    },
+    {
+      "scenario_id": "novgorod_zaostrovye_settlement_approach_v1",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_zaostrovye_settlement_approach_v1.start.json",
+        "sha256": "39b2a095706fd682496ced0a915b800f4ef374c20007f4c5753b15951aa2a846"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_zaostrovye_settlement_approach_v1.transfer.json",
+        "sha256": "63460698fc71c8239cc0244ecdc0794a51647d5ae53e3fbc5ca52b7ed2f6cf5a"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_zaostrovye_settlement_approach_v1.basis.json",
+        "sha256": "dd7ade2ef132341a1577a710f9c930bba2266abcf7715d6de6526fa0da4f2846"
+      }
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_work_storage_v1",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_work_storage_v1.start.json",
+        "sha256": "b516be19445f4e292453300cf5d8d56bf8943529e0dfeececf86665731e6cb08"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_work_storage_v1.transfer.json",
+        "sha256": "8a39079dcad42c1eb99a42add60b430d9f0b47123fffa7138c9fb4807e8f8fd1"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_work_storage_v1.basis.json",
+        "sha256": "25f3bf88db5796d975aa5ac30c874b0c9ff94bae4d2ce5cc0f7ee07efbe742a3"
+      }
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_household_cluster_v1",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_household_cluster_v1.start.json",
+        "sha256": "4783ba28711192853034f7560ae768fd36edb2be58b1136f2cbfa72be0e233f8"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_household_cluster_v1.transfer.json",
+        "sha256": "b58dab373c18b405b3a3d0e37f1d3161c3eb1287e3c6e3a16fe992e8d586653d"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_household_cluster_v1.basis.json",
+        "sha256": "b98d0c438bbfc1d56ebc35ee1d25d59b9e7dc8aad3f1eca7eef735c7681cfeda"
+      }
+    }
+  ],
+  "nonforest_successor_applicability": [
+    "novgorod_riverbank_approach_v1",
+    "novgorod_reed_backwater_entrance_v1",
+    "novgorod_zaostrovye_settlement_approach_v1"
+  ],
+  "scope": "Data-only approval of exact mechanical field-only repin for seven approved canonical starts: scene template and materialization profile refs to approved open-capacity version 2; forest initial-perception template version and exact canonical digest; derived transfer and basis target paths and SHA-256 values. Direct applicability approval for the three listed nonforest successor starts because the former derived approval pins old artifact hashes. No role, occupation, history, player, equipment, or other authored assertion changes.",
+  "exclusions": "No import, active manifest or runtime binding change, production authority, historical occupancy claim, or migration of committed scenes.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

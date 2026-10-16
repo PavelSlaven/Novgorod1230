@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import {
@@ -27,10 +27,11 @@ test('stored legacy DOCUMENTS inventory exactly covers manifest legacy records',
   assert.deepEqual(actualLegacyPaths, expectedLegacyPaths);
 });
 
-test('migrated corpus and generated provenance verify without requiring legacy', { concurrency: false }, async () => {
+test('migrated corpus and generated provenance verify without requiring legacy', { concurrency: false }, async (t) => {
   const manifest = await readCorpusManifest();
   const legacyCount = manifest.documents.filter((record) => record.source_legacy_path).length;
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-no-legacy-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
   await cp(resolve(root, 'generated/knowledge-source'), join(fixtureRoot, 'generated/knowledge-source'), { recursive: true });
   await cp(resolve(root, 'package.json'), join(fixtureRoot, 'package.json'));
@@ -73,10 +74,11 @@ test('graph and RAG materializers are deterministic and lexical-only', async () 
   assert.equal(Object.hasOwn(ragA, 'index'), false);
 });
 
-test('public knowledge writer uses the v2 structural and lexical materializer', { concurrency: false }, async () => {
+test('public knowledge writer uses the v2 structural and lexical materializer', { concurrency: false }, async (t) => {
   const manifest = await readCorpusManifest();
   const activeDocuments = manifest.documents.filter((record) => record.status === 'active');
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-writer-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
   await cp(resolve(root, 'package.json'), join(fixtureRoot, 'package.json'));
 
@@ -105,8 +107,9 @@ test('public knowledge writer uses the v2 structural and lexical materializer', 
   assert.equal(lexicalIndex.chunks.some((chunk) => Object.hasOwn(chunk, 'embedding')), false);
 });
 
-test('re-importing legacy sources preserves native records, aliases and files', { concurrency: false }, async () => {
+test('re-importing legacy sources preserves native records, aliases and files', { concurrency: false }, async (t) => {
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-import-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
   await cp(resolve(root, 'legacy/DOCUMENTS/documents-kg'), join(fixtureRoot, 'legacy/DOCUMENTS/documents-kg'), { recursive: true });
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
@@ -132,8 +135,9 @@ test('re-importing legacy sources preserves native records, aliases and files', 
   for (const [alias, documentId] of Object.entries(nativeAliases)) assert.equal(afterAliases[alias], documentId);
 });
 
-test('legacy import rejects native collisions before changing canonical state', { concurrency: false }, async () => {
+test('legacy import rejects native collisions before changing canonical state', { concurrency: false }, async (t) => {
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-import-collision-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
   await cp(resolve(root, 'legacy/DOCUMENTS/documents-kg'), join(fixtureRoot, 'legacy/DOCUMENTS/documents-kg'), { recursive: true });
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
@@ -157,8 +161,9 @@ test('legacy import rejects native collisions before changing canonical state', 
   assert.deepEqual(await readFile(nativePath), nativeBefore);
 });
 
-test('legacy import rejects history conflicts before changing canonical state', { concurrency: false }, async () => {
+test('legacy import rejects history conflicts before changing canonical state', { concurrency: false }, async (t) => {
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-import-history-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
   await cp(resolve(root, 'legacy/DOCUMENTS/documents-kg'), join(fixtureRoot, 'legacy/DOCUMENTS/documents-kg'), { recursive: true });
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
@@ -184,8 +189,9 @@ test('legacy import rejects history conflicts before changing canonical state', 
   for (const [canonicalPath, bytes] of corpusBefore) assert.deepEqual(await readFile(join(sourceRoot, canonicalPath)), bytes, canonicalPath);
 });
 
-test('legacy import rejects malformed history before changing canonical state', { concurrency: false }, async () => {
+test('legacy import rejects malformed history before changing canonical state', { concurrency: false }, async (t) => {
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'rus-knowledge-import-invalid-history-'));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
   await cp(resolve(root, 'data/knowledge-source'), join(fixtureRoot, 'data/knowledge-source'), { recursive: true });
   await cp(resolve(root, 'legacy/DOCUMENTS/documents-kg'), join(fixtureRoot, 'legacy/DOCUMENTS/documents-kg'), { recursive: true });
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');

@@ -1,0 +1,62 @@
+{
+  "schema": "rus.actor_base_attributes_import_approval_attestation.v1",
+  "version": 1,
+  "status": "approved_transactional_import_readback_only",
+  "decision": "approve_exact_actor_base_attributes_transactional_import_readback",
+  "reviewed_repository_head": "fe52b346b0277c79f961528de6adea1b7ff738fc",
+  "auditor_ref": "/root/m3_chain_auditor",
+  "independence_basis": "Independent review separate from authoring and runtime implementation verified the immutable candidate and authoring approval, shared canonical record projection, exact active event-to-import membership replay, PostgreSQL tamper rejection, migration chain, owner privileges, and a pending request that grants no runtime authority.",
+  "reviewed_at": "2026-09-22",
+  "request_ref": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/runtime-import-v1/request.json",
+  "request_digest": "aa7c7ede56c1fd4a9e86533184e5bb2e40906dd8df5966a819065b447b7f4c82",
+  "target_binding": {
+    "catalog_scope": "actor_base_attributes_v1",
+    "target_revision_id": "actor_base_attributes_runtime_profile_v1_001",
+    "target_catalog_digest": "8c10492236dfcc5e1c00f44960a76f7811b9b4e4d8c62e6698a3f12502dd25b8",
+    "record_registry_digest": "6815792a38bf8e0a10f405941bd7116b597805ef68ce8f0a5c4b9c95123e2e64",
+    "runtime_contract_digest": "2151d75852f23b3b70b0c1f0cafec50bad98de5759c580e00e4eead5a06512c0"
+  },
+  "authoring_binding": {
+    "candidate_digest": "7c0916640715c9c48bd023676b3268deccdc0c83a66c980835ae25173f04d309",
+    "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
+    "authoring_request_digest": "fc362bb73f60ad87595d0ca51a2080bff7c970907fa8f2ca5f94e5acae155c89",
+    "authoring_attestation_digest": "06bbe4e0b12a460ecd8bb34119617c1699579d9724ce6524ed3573b2c9aea7ad"
+  },
+  "owner_scope": {
+    "table_name": "actor_base_attribute_profiles",
+    "operation": "insert",
+    "profile_id": "novgorod_ordinary_actor_base_attributes_v1",
+    "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
+    "owner_row_digest": "865bbf0155ae1206860536bd3eaff15ceddea14ce21507e7579188994cbc4b82",
+    "record_count": 1
+  },
+  "import_scope": {
+    "transaction": "single_world_base_transaction",
+    "requested_operations": [
+      "transactional_import",
+      "exact_readback"
+    ],
+    "exact_readback_required": true,
+    "activation_event_count": 0
+  },
+  "authority": {
+    "authoring_approved": true,
+    "import_authorized": true,
+    "transactional_import_readback_only": true,
+    "exact_readback_required": true,
+    "runtime_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "equipment_allocation_activation_authorized": false,
+    "functional_allocation_runtime_selection_authorized": false,
+    "runtime_item_creation_authorized": false,
+    "new_development_party_activation_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false,
+    "world_schema_migration_authorized": false,
+    "party_schema_migration_authorized": false
+  },
+  "database_mutated": false,
+  "activation_request": null,
+  "attestation_digest": "325c5a239767aeddede89dc3dba69b536e3707dcbc040689e24a9b6725a58d1d"
+}

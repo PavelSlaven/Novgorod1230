@@ -79,12 +79,15 @@ test('code materializes concrete NPC and item instances only from approved norma
   const anchor = stage13.output.g5_anchors[0];
   const stage15Input = makeStage15Input();
   stage15Input.g5_scene_graph = stage13.output;
+  stage15Input.npc_candidate_set.world_catalog_digest = 'a'.repeat(64);
+  stage15Input.npc_candidate_set.actor_base_attributes_runtime_profile =
+    actorAttributesRuntimeProfile();
   stage15Input.npc_candidate_set.npc_candidates = [{
-    npc_candidate_id: 'npc-candidate-1', status: 'approved', world_revision_id:'revision-1',region_id:'region-1',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'],required: true, slot_rule_id:'npc-slot-1', npc_profile_set_id:'npc-profile-set-1', profile_level:'background',social_role_id:'role-1',npc_archetype_id:'archetype-1',allowed_profile_levels:['background'],
+    npc_candidate_id: 'npc-candidate-1', status: 'approved', world_revision_id:'revision-1',region_id:'region-1',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'],required: true, slot_rule_id:'npc-slot-1', npc_profile_set_id:'npc-profile-set-1', profile_level:'background',social_role_id:'role-1',npc_archetype_id:'archetype-1',occupation_archetype_id:'fishing_water',allowed_profile_levels:['background'],
     placement:{g5_anchor_id:anchor.anchor_id,g5_minilocation_id:anchor.minilocation_id,parent_g4_node_id:'g4',presence_reason:'Approved place-function rule.'},
     identity_state:{name_status:'unknown',identity_known_to_player:false},visibility_state:{visible_to_player:true,hidden_from_player:false},machine_state:{attention_and_witness_state:{}},knowledge_scope:{known_facts_now:[],rumors_now:[],mistaken_beliefs:[]},traits:[],knowledge_records:[],schedule_records:[],relations:[{to_npc_candidate_id:'npc-candidate-2',relation_category_id:'known_person',state:{status:'neutral'}}],source_trace:[{source_id:'npc-candidate-1'}]
   }, {
-    npc_candidate_id: 'npc-candidate-2', status: 'approved', world_revision_id:'revision-1',region_id:'region-1',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'],required: true, slot_rule_id:'npc-slot-2', npc_profile_set_id:'npc-profile-set-1', profile_level:'background',social_role_id:'role-1',npc_archetype_id:'archetype-1',allowed_profile_levels:['background'],
+    npc_candidate_id: 'npc-candidate-2', status: 'approved', world_revision_id:'revision-1',region_id:'region-1',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'],required: true, slot_rule_id:'npc-slot-2', npc_profile_set_id:'npc-profile-set-1', profile_level:'background',social_role_id:'role-1',npc_archetype_id:'archetype-1',occupation_archetype_id:'fishing_water',allowed_profile_levels:['background'],
     placement:{g5_anchor_id:anchor.anchor_id,g5_minilocation_id:anchor.minilocation_id,parent_g4_node_id:'g4',presence_reason:'Approved place-function rule.'},
     identity_state:{name_status:'unknown',identity_known_to_player:false},visibility_state:{visible_to_player:true,hidden_from_player:false},machine_state:{attention_and_witness_state:{}},knowledge_scope:{known_facts_now:[],rumors_now:[],mistaken_beliefs:[]},traits:[],knowledge_records:[],schedule_records:[],source_trace:[{source_id:'npc-candidate-2'}]
   }];
@@ -92,6 +95,9 @@ test('code materializes concrete NPC and item instances only from approved norma
   assert.equal(stage15.draft.npc_instances.length, 2);
   assert.equal(stage15.draft.npc_relations[0].from_npc_id, stage15.draft.npc_instances[0].npc_instance_id);
   assert.equal(stage15.draft.npc_relations[0].to_npc_id, stage15.draft.npc_instances[1].npc_instance_id);
+  assert.equal(stage15.draft.npc_instances.every((npc) =>
+    npc.attribute_generation_gate === 'active'
+      && Object.keys(npc.base_attributes.values).length === 6), true);
 
   const stage16Input = makeStage16Input();
   stage16Input.g5_scene_graph = stage13.output;
@@ -107,6 +113,44 @@ test('code materializes concrete NPC and item instances only from approved norma
   assert.equal(stage16.draft.item_instances.length, 1);
   assert.equal(stage16.draft.property_bindings[0].property_rule_candidate_id, 'property-rule-1');
   assert.equal(stage16.draft.visibility_state[0].item_instance_id, stage16.draft.item_instances[0].item_instance_id);
+});
+
+test('common Stage 15 NPC path pins attributes for every level and preserves promotion', async () => {
+  const stage13 = await runStage13G5MaterializationBlock({ input: makeStage13Input() });
+  const input = makeStage15Input();
+  input.g5_scene_graph = stage13.output;
+  input.npc_candidate_set.world_catalog_digest = 'a'.repeat(64);
+  input.npc_candidate_set.actor_base_attributes_runtime_profile =
+    actorAttributesRuntimeProfile();
+  const anchor = stage13.output.g5_anchors[0];
+  const candidate = (profile_level) => ({
+    npc_candidate_id: `npc-${profile_level}`, status: 'approved', required: true,
+    world_revision_id: 'revision-1', slot_rule_id: `slot-${profile_level}`,
+    npc_profile_set_id: 'profile', profile_level, social_role_id: 'role',
+    npc_archetype_id: 'archetype', occupation_archetype_id: 'fishing_water',
+    placement: { g5_anchor_id: anchor.anchor_id,
+      g5_minilocation_id: anchor.minilocation_id, parent_g4_node_id: 'g4',
+      presence_reason: 'approved' }, identity_state: {},
+    visibility_state: {}, machine_state: { attention_and_witness_state: {} },
+    knowledge_scope: {}, source_trace: [{ source_id: 'candidate' }]
+  });
+  input.npc_candidate_set.npc_candidates = ['background', 'scene', 'key']
+    .map(candidate);
+  input.eligible_npc_candidates = input.npc_candidate_set.npc_candidates;
+  input.eligible_g5_anchors = [anchor];
+  const first = materializeNpcPlacement(input);
+  assert.equal(first.npc_instances.every((npc) =>
+    Object.keys(npc.base_attributes.values).length === 6), true);
+  const promoted = structuredClone(input);
+  promoted.npc_candidate_set.npc_candidates = [
+    { ...candidate('key'), npc_candidate_id: 'npc-background',
+      slot_rule_id: 'slot-background', base_attributes:
+        first.npc_instances.find((npc) => npc.npc_candidate_id === 'npc-background').base_attributes }
+  ];
+  promoted.eligible_npc_candidates = promoted.npc_candidate_set.npc_candidates;
+  const afterPromotion = materializeNpcPlacement(promoted);
+  assert.deepEqual(afterPromotion.npc_instances[0].base_attributes,
+    first.npc_instances.find((npc) => npc.npc_candidate_id === 'npc-background').base_attributes);
 });
 
 test('Stage 15 and 16 built-ins cannot consume raw candidates rejected by code eligibility filters', async () => {
@@ -188,3 +232,25 @@ test('incomplete legacy Stage 7/8 candidates hard-block instead of receiving inv
     property_rule_candidates: [], quantity_requirements: [], equipment_candidates: [] };
   await assert.rejects(() => runStage16ItemPlacementBlock({ input: stage16Input, audit: async () => makeStage16Audit() }), (error) => error.code === 'PLACEMENT_RULE_CANDIDATES_EMPTY');
 });
+
+function actorAttributesRuntimeProfile() {
+  const archetypes = ['agriculture', 'animal_husbandry', 'craft_production',
+    'domestic_service', 'fishing_water', 'forest_hunting', 'illicit_marginal',
+    'military_security', 'religious_literate', 'trade_exchange',
+    'transport_guiding'];
+  const profile = { schema: 'rus.actor_base_attributes_profile.v1', version: 1,
+    profile_id: 'ordinary-v1', algorithm_version: 'actor_base_attributes_v1',
+    rng_version: 'mulberry32_v1', ordinary_array: [13, 12, 11, 10, 9, 8],
+    occupation_archetype_priorities: archetypes.map((occupation_archetype_id) => ({
+      mapping_id: occupation_archetype_id, occupation_archetype_id,
+      priority_tiers: [['strength'], ['dexterity'], ['endurance'], ['reason'],
+        ['attention'], ['influence']] })) };
+  return { schema: 'rus.actor_base_attributes_runtime_profile.v1',
+    catalog_scope: 'actor_base_attributes_v1',
+    catalog_revision_id: 'attributes-v1', catalog_digest: 'a'.repeat(64),
+    activation_event_id: 'activation-v1', import_id: 'import-v1',
+    import_audit_digest: 'b'.repeat(64),
+    record_registry_digest: 'd'.repeat(64),
+    runtime_contract_digest: 'c'.repeat(64), profile_id: profile.profile_id,
+    profile_digest: canonicalDigest(profile), profile };
+}

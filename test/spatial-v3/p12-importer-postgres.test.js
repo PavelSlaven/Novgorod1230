@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -13,8 +13,10 @@ const name = `p12-import-${process.pid}`;
 const gap = (code) => ({ code, subject_ref: 'p12', dependency_pins: ['catalog'], blocking: true });
 
 test('P12 runs FK-derived staged import/readback only in isolated PostgreSQL and rolls it back', async (t) => {
-  if (docker(['version']).status !== 0) t.skip('Docker required for isolated P12 PostgreSQL test');
-  const dir = await mkdtemp(join(tmpdir(), 'p12-pg-')); await mkdir(join(dir, 'datasets'));
+  if (docker(['version']).status !== 0) return t.skip('Docker required for isolated P12 PostgreSQL test');
+  const dir = await mkdtemp(join(tmpdir(), 'p12-pg-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  await mkdir(join(dir, 'datasets'));
   const rows = JSON.stringify([{ id: 'p12-revision', catalog_digest: 'a'.repeat(64), status: 'draft', provenance_ref: 'p12-source' }]);
   await writeFile(join(dir, 'datasets/revisions.json'), rows);
   const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1', bundle_id: 'p12-pg', world_revision_id: 'p12-revision', status: 'draft', provenance_ref: 'p12-source', delete_policy: 'forbid', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP'), gap('DIRECTIONAL_EXIT_READINESS_DATA_GAP'), gap('ROUTE_BINDING_DATA_GAP'), gap('APPROVED_PROFILE_DATA_GAP')], datasets: [{ table: 'spatial_v3_world_revisions', file: 'datasets/revisions.json', sha256: createHash('sha256').update(rows).digest('hex'), status: 'draft', provenance_ref: 'p12-source', delete_policy: 'forbid', depends_on: [] }] };

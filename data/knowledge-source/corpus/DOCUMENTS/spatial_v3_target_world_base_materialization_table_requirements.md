@@ -14,7 +14,7 @@ target-нормативом `temporal_world_and_interruptible_activities.md`. О
 
 `world_base` является read-only canonical authoring store: world revision, G0–G5, directed world topology/routes, historical provenance, approved templates, expansion profiles/capacities, controlled vocabularies и readiness evidence. `party_runtime` — mutable party store: generated G5, G6/positions, scene/route plans and executions, dynamic entities, perception и append-only history.
 
-Cross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.
+Cross-database relation хранит exact versioned ref, revision and digest; bare ID не является достаточной ссылкой. Узкое исключение из «ambiguous active binding» (§4 этого документа) и из read-only DB §3, только для версий **одного** `id` runtime-профиля: если у этого `id` несколько утверждённых версий, выбирается новейшая версия со `status = approved` (`deprecated`/`retired` не участвуют). Выбранная ссылка записывается точной: в состояние партии идут `{id, version}` вместе с `world_revision_id` и `profile_record_digest`, поэтому появление новой версии не переписывает committed world. Неоднозначность между разными `id` остаётся hard block; «gap» здесь — типизированный отказ по субъекту без выбора профиля, а не fallback на другой профиль. V3 является sole production writer. V2 rows допустимы только как migration/rollback source без dual write и mixed authoritative read.
 
 ## 2. Canonical world authoring
 
@@ -24,6 +24,7 @@ Cross-database relation хранит exact versioned ref, revision and digest; b
 - canonical containment G0–G5 с unique class/parent compatibility;
 - G4 directional exits, route topology, route segments/points, endpoint and physical-segment ownership;
 - canonical G5 inventory, site connections и exact route bindings;
+- canonical G5 connection bindings (`canonical_g5_connection_binding`), line kind profiles (`line_kind_profile`, `line_kind_alternative_method`) и поля линии сегментов маршрутов (`line_kind_id`, `line_name`, `line_discriminator`, `line_direction_id`, `line_toponym`) — Spatial standard amendment 4.7.0, Приложение F; DDL остаётся физической истиной;
 - G4 expansion profile, frontier, finite capacities, candidate/template slots и terminal resolution;
 - scene templates, G6 slots, scene-position slots, directed scene edges, portal/state policies, visibility/acoustic relations;
 - controlled versioned vocabularies; каждый `controlled_*` contract type имеет ровно один finite registry mapping.

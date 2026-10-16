@@ -1,0 +1,35 @@
+{
+  "schema": "rus.live_world_runtime.finite_stage_b_qualification_report.v2",
+  "status": "PASS",
+  "observed_at": "2026-09-24",
+  "scope": "configured real local provider through production ordinary_materialization role; no production database",
+  "eval_candidate_sha256": "9c150ddd45dccef1a73cb175ffdec4d322b003ecc4507818dc5e576fda38894c",
+  "committed_source_probe_sha256": "468c87746d949cb0bc06f12ffa5cfd6a672f3403bab992c21450ac324dfd5825",
+  "model_identity": {
+    "provider": "openai_compatible",
+    "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+    "scope": "turn_runtime",
+    "role_id": "ordinary_materialization",
+    "request_timeout_ms": 120000,
+    "config_hash": "3f4c09d5416c0c79"
+  },
+  "case_count": 13,
+  "model_calls": 7,
+  "failed_case_ids": [],
+  "observations_sha256": "6731be0a3c000404b3adbeb7802ea5e21e07ad89993d6d95cbe63d8e0ad08a1f",
+  "observed_resolutions": {
+    "reeds": "materialize:reed_material_portion:50g",
+    "reeds-kamysh": "materialize:reed_material_portion:50g",
+    "deadwood": "materialize:deadwood_material_portion:50g",
+    "deadwood-khvorost": "materialize:deadwood_material_portion:50g",
+    "deadwood-sushnyak": "materialize:deadwood_material_portion:50g",
+    "driftwood": "materialize:driftwood_material_portion:50g",
+    "standing-wood": "materialize:fresh_wood_material_portion:50g",
+    "berries-absent": "absent",
+    "fungi-absent": "absent",
+    "stone-absent": "absent",
+    "exhausted-source": "absent",
+    "exhausted-synonym": "absent",
+    "owned-wood": "authority_required"
+  }
+}

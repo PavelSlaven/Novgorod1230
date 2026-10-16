@@ -12,13 +12,14 @@ test('LLM runtime exposes combat planner, repair and weapon classifier roles',
   assert.equal(TurnRuntimeRoles.NPC_COMBAT_DECIDER, 'npc_combat_decider');
   assert.equal(TurnRuntimeRoles.ACTION_PRODUCED_WEAPON_CLASSIFIER,
     'combat_weapon_classification');
-  assert.equal(roles.npc_combat_decider.model, 'deepseek-v4-flash');
+  assert.equal(roles.npc_combat_decider.model, 'qwen3.8-27b-uncensored-w4a16-tp2');
   assert.equal(roles.npc_combat_decider.thinking, 'disabled');
   assert.equal(roles.npc_combat_decider.reasoningEffort, null);
+  assert.equal(roles.npc_combat_decider.temperature, 0);
   assert.equal(roles.npc_combat_decider.expectedSchema, null);
   assert.equal(roles.npc_combat_decider_format_repair.expectedSchema, null);
   assert.deepEqual(roles.combat_weapon_classification, {
-    envPrefix: 'COMBAT_WEAPON_CLASSIFICATION', model: 'deepseek-v4-flash',
+    envPrefix: 'COMBAT_WEAPON_CLASSIFICATION', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
     thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
     outputContractMode: 'json_object_with_schema', expectedSchema:

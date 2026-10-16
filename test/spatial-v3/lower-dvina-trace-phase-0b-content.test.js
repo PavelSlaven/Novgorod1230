@@ -144,8 +144,8 @@ const runChecker = (
 
 const expectSemanticFailure = (mutate, expectedMessage) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-trace-0b-'));
-  cpSync(source, directory, { recursive: true });
   try {
+    cpSync(source, directory, { recursive: true });
     mutate(directory);
     refreshDigests(directory);
     const result = runChecker(directory, true);
@@ -158,10 +158,11 @@ const expectSemanticFailure = (mutate, expectedMessage) => {
 
 const expectPlayerProfileFailure = (mutate, expectedMessage) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-trace-0b-'));
-  const playerProfileDirectory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-player-profile-'));
-  cpSync(source, directory, { recursive: true });
-  copyPlayerProfileFixture(playerProfileDirectory);
+  let playerProfileDirectory;
   try {
+    playerProfileDirectory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-player-profile-'));
+    cpSync(source, directory, { recursive: true });
+    copyPlayerProfileFixture(playerProfileDirectory);
     mutate(playerProfileDirectory);
     repinPlayerProfileChain(directory, playerProfileDirectory);
     const result = runChecker(directory, true, undefined, undefined, playerProfileDirectory);
@@ -169,32 +170,34 @@ const expectPlayerProfileFailure = (mutate, expectedMessage) => {
     assert.match(result.stderr, expectedMessage);
   } finally {
     rmSync(directory, { recursive: true, force: true });
-    rmSync(playerProfileDirectory, { recursive: true, force: true });
+    if (playerProfileDirectory) rmSync(playerProfileDirectory, { recursive: true, force: true });
   }
 };
 
 const expectSocialCatalogFailure = (mutate, expectedMessage) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-trace-0b-'));
-  const socialCatalogRoot = mkdtempSync(resolve(tmpdir(), 'lower-dvina-social-catalogs-'));
-  cpSync(source, directory, { recursive: true });
-  copySocialCatalogFixture(socialCatalogRoot);
+  let socialCatalogRoot;
   try {
+    socialCatalogRoot = mkdtempSync(resolve(tmpdir(), 'lower-dvina-social-catalogs-'));
+    cpSync(source, directory, { recursive: true });
+    copySocialCatalogFixture(socialCatalogRoot);
     mutate(socialCatalogRoot);
     const result = runChecker(directory, true, undefined, socialCatalogRoot);
     assert.notEqual(result.status, 0, result.stdout);
     assert.match(result.stderr, expectedMessage);
   } finally {
     rmSync(directory, { recursive: true, force: true });
-    rmSync(socialCatalogRoot, { recursive: true, force: true });
+    if (socialCatalogRoot) rmSync(socialCatalogRoot, { recursive: true, force: true });
   }
 };
 
 const expectSpatialFailure = (mutate, expectedMessage, { repin = true } = {}) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-trace-0b-'));
-  const spatialDirectory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-spatial-v3-'));
-  cpSync(source, directory, { recursive: true });
-  copySpatialFixture(spatialDirectory);
+  let spatialDirectory;
   try {
+    spatialDirectory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-spatial-v3-'));
+    cpSync(source, directory, { recursive: true });
+    copySpatialFixture(spatialDirectory);
     mutate(spatialDirectory);
     if (repin) {
       refreshSpatialManifest(spatialDirectory);
@@ -205,7 +208,7 @@ const expectSpatialFailure = (mutate, expectedMessage, { repin = true } = {}) =>
     assert.match(result.stderr, expectedMessage);
   } finally {
     rmSync(directory, { recursive: true, force: true });
-    rmSync(spatialDirectory, { recursive: true, force: true });
+    if (spatialDirectory) rmSync(spatialDirectory, { recursive: true, force: true });
   }
 };
 
@@ -224,8 +227,8 @@ test('0B package is trusted, reproducible, and uses canonical fisher refs', () =
 
 test('trusted mode rejects a self-consistent rewrite of the immutable package', () => {
   const directory = mkdtempSync(resolve(tmpdir(), 'lower-dvina-trace-0b-trust-'));
-  cpSync(source, directory, { recursive: true });
   try {
+    cpSync(source, directory, { recursive: true });
     const participants = readJson(directory, 'participant-profile-set.json');
     participants.profiles[0].causal_basis = 'forged';
     writeJson(directory, 'participant-profile-set.json', participants);

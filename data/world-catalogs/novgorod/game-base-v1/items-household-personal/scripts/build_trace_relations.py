@@ -1,9 +1,12 @@
 """Return archaeological trace links as typed, finite find candidates."""
 import json
 import subprocess
+import sys
 from collections import Counter, defaultdict
 
 from common import DOMAIN, ITEMS, ME, REPORTS, ROOT, read_csv, write_csv
+sys.path.insert(0, str(ROOT / "data/world-catalogs/novgorod/game-base-v1/scripts"))
+from material_view import overlay_source_ref
 import rules as R
 
 TRACE_KINDS = {"waste", "fragment", "residue", "deposit", "byproduct"}
@@ -21,6 +24,7 @@ TRANSPORT_CONTEXT = {
 ARCHIVE = "sources/master-archive-v1"
 ARCHIVE_ME = f"{ARCHIVE}/data/normalized_source_tables/material_entities/material_entities.csv"
 ARCHIVE_LINKS = f"{ARCHIVE}/data/normalized_source_tables/material_entities/item_location_links.csv"
+MATERIAL_SOURCE_PATH = ME / "material_entities.csv"
 
 OUT = ITEMS / "item_place_trace_relations.csv"
 FIELDS = [
@@ -64,6 +68,16 @@ def main():
             "sources/master-archive-v1/data/normalized_source_tables/food_system/"
             f"recipes.csv#{recipe_id}" for recipe_id in sorted(processes.get(link["item_id"], set()))
         )
+        correction_ref = overlay_source_ref(link["item_id"], MATERIAL_SOURCE_PATH)
+        source_refs = [
+            f"{ARCHIVE_LINKS}#{link['link_id']}",
+            f"{ARCHIVE_ME}#{link['item_id']}",
+        ]
+        if correction_ref:
+            source_refs.append(correction_ref)
+        material_state_basis = f"{ARCHIVE_ME}#{link['item_id']} fixes the material state"
+        if correction_ref:
+            material_state_basis += f" with {correction_ref}"
         rows.append({
             "trace_id": f"itr_{link['link_id'].lower()}",
             "source_link_id": link["link_id"],
@@ -81,14 +95,10 @@ def main():
             "basis": "logical_necessity",
             "derivation": (
                 f"{ARCHIVE_LINKS}#{link['link_id']} permits a {kind} at {archetype}; "
-                f"{ARCHIVE_ME}#{link['item_id']} fixes the material state; D40 returns the excluded link "
+                f"{material_state_basis}; D40 returns the excluded link "
                 "as a finite trace, never as evidence of an intact item"
             ),
-            "source_refs": (
-                "sources/master-archive-v1/data/normalized_source_tables/material_entities/"
-                f"item_location_links.csv#{link['link_id']};sources/master-archive-v1/data/"
-                f"normalized_source_tables/material_entities/material_entities.csv#{link['item_id']}"
-            ),
+            "source_refs": ";".join(source_refs),
             "anachronism_check": "pass:period_1230;confidence_not_exclusion;material_or_domain_vocab;denylist_clear",
             "confidence": "C",
             "status": "candidate",

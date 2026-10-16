@@ -1,0 +1,2438 @@
+{
+  "artifact_type": "spatial_v3_scene_movement_edge_mechanical_candidate",
+  "candidate_id": "novgorod_m2c_scene_movement_edge_mechanics_v1",
+  "version": 1,
+  "status": "candidate_pending_independent_data_approval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "scope": {
+    "scene_templates": [
+      "stfv3__g5_boundary_access_v1@1",
+      "stfv3__g5_burial_ritual_buffer_v1@1",
+      "stfv3__g5_dry_route_v1@1",
+      "stfv3__g5_exploration_concealment_v1@1",
+      "stfv3__g5_general_hazard_v1@1",
+      "stfv3__g5_habitation_v1@1",
+      "stfv3__g5_landing_transition_v1@1",
+      "stfv3__g5_observation_orientation_v1@1",
+      "stfv3__g5_resource_hazard_v1@1",
+      "stfv3__g5_resource_v1@1",
+      "stfv3__g5_route_approach_v1@1",
+      "stfv3__g5_seasonal_route_hazard_v1@1",
+      "stfv3__g5_shelter_rest_v1@1",
+      "stfv3__g5_water_hazard_v1@1",
+      "stfv3__g5_water_navigation_v1@1",
+      "stfv3__g5_wetland_flood_v1@1",
+      "stfv3__g5_work_storage_social_v1@1"
+    ],
+    "edge_pattern": [
+      "arrival↔focus",
+      "focus↔departure"
+    ],
+    "excluded": [
+      "G0-G4 topology and exits",
+      "canonical G5 identity or scene selection",
+      "portal edges",
+      "nonadjacent movement",
+      "historical capacity claims",
+      "runtime activation"
+    ]
+  },
+  "source_refs": [
+    {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json",
+      "sha256": "d6d987f3fe2748f48300d9bf9a285afe8f98619d77677329fbbcd12f6e69a91e",
+      "selector": "all exact approved M2c rows: from_position_slot_key, to_position_slot_key, edge_slot_key",
+      "directness": "approved_template_endpoint_fact",
+      "confidence": "high",
+      "applicability": "all 17 listed generated/canonical scene templates"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json",
+      "sha256": "d729ec63d6d7aef8921eb30019265096320de6c9f7fbab39c60b9c1793f21a04",
+      "selector": "arrival/focus/departure slot capacity",
+      "directness": "approved_template_capacity_fact",
+      "confidence": "high",
+      "applicability": "all 17 listed scene templates; capacity remains 1"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/datasets/spatial_v3_scene_movement_edge_templates.json",
+      "sha256": "87e96bb0f4f73c0f2047f93f9d1d3d313715b4ff6b335b88829a3b3510d22ce7",
+      "selector": "trace_ld_v1_tpl_fishing_camp and trace_ld_v1_tpl_old_drying_shed reciprocal edge rows",
+      "directness": "approved_S1_movement_mechanics_reference",
+      "confidence": "high",
+      "applicability": "mechanical capacity transfer only; does not assert M2c historical or physical capacity"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/canonical-initial/datasets/spatial_v3_g4_npc_composition_bindings.json",
+      "sha256": "8b7c3e33932bd566335dc05867331dd73b99d5545ebd2f19ea8d794f9451d0e5",
+      "selector": "m2c_g4_npc_composition_canonical_initial_south_approach_v1 payload placement_policy",
+      "directness": "approved_canonical_initial_placement_policy",
+      "confidence": "high",
+      "applicability": "canonical south-approach start only"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+      "sha256": "a29676ad909bd1e082f1a8bc97d6e08a168b7cfb6e9e231eb9240b998c1163c6",
+      "selector": "all exact G4 family IDs and scene_template_refs across 32 families",
+      "directness": "approved_authoring_applicability",
+      "confidence": "high",
+      "applicability": "32 exact generated G4 bindings and their selected G5 scene templates"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json",
+      "sha256": "8fc54aa348c9132b75fe65e742c9c6129cb5254e4c27ab05ba0fc321e8801013",
+      "selector": "all 32 exact generation-template NPC composition bindings: count range and placement policy",
+      "directness": "approved_editorial_placement_policy",
+      "confidence": "high",
+      "applicability": "possible placements only; does not claim the random count or actual committed occupancy"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+      "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+      "selector": "initial_placement.g4_ref, canonical_g5_ref, scene_template_ref, position_slot_key",
+      "directness": "exact_approved_spatial_reference",
+      "confidence": "high",
+      "applicability": "canonical south-approach initial placement mapping only"
+    }
+  ],
+  "provenance": {
+    "topology": {
+      "directness": "direct",
+      "confidence": "high",
+      "rule": "Each edge is bound only to the exact source template edge_slot_key and endpoint slots; reverse_edge_slot_key targets the existing row with swapped endpoints."
+    },
+    "capacity": {
+      "directness": "editorial_mechanical_transfer",
+      "confidence": "high",
+      "value": 1,
+      "rule": "Transfer the approved S1 scene-edge capacity value 1 to this exact bounded local edge set. Destination position capacity remains the exact authored value 1; capacity does not imply occupancy, vacancy, throughput beyond the edge contract, or historical fact."
+    },
+    "applicability": {
+      "directness": "exact_approved_template_reference",
+      "confidence": "high",
+      "rule": "The 17 template IDs are the template set referenced by the approved M2c G4 family authoring evidence; canonical south_approach selects stfv3__g5_route_approach_v1@1."
+    }
+  },
+  "canonical_capacity_boundary": {
+    "g4_ref": {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "version": 1
+    },
+    "canonical_g5_ref": {
+      "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+      "version": 1
+    },
+    "scene_template_ref": {
+      "id": "stfv3__g5_route_approach_v1",
+      "version": 1
+    },
+    "position_capacities": {
+      "arrival": 1,
+      "focus": 1,
+      "departure": 1
+    },
+    "npc_composition_ref": {
+      "id": "m2c_g4_npc_composition_canonical_initial_south_approach_v1",
+      "version": 1
+    },
+    "npc_count": {
+      "min": 0,
+      "max": 2
+    },
+    "npc_slot_order": [
+      "focus",
+      "departure"
+    ],
+    "reserved_for_entering_player": [
+      "arrival"
+    ],
+    "runtime_rule": "Read committed placement occupancy. If a destination position has no remaining capacity, keep the move unavailable and report the existing typed capacity result; do not inflate template capacity or assume vacancy.",
+    "typed_gap": {
+      "condition": "committed destination occupancy is unavailable or exceeds exact slot capacity",
+      "result": "existing_typed_destination_capacity_unavailable",
+      "scope": "exact canonical south-approach G4@1 only; do not infer fixed NPC count or occupancy"
+    }
+  },
+  "scene_movement_edge_templates": [
+    {
+      "scene_template_id": "stfv3__g5_boundary_access_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_boundary_access_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_boundary_access_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_boundary_access_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_dry_route_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_dry_route_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_dry_route_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_dry_route_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_general_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_general_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_general_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_general_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_habitation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_habitation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_habitation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_habitation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_landing_transition_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_landing_transition_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_landing_transition_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_landing_transition_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_observation_orientation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_observation_orientation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_observation_orientation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_observation_orientation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_resource_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_route_approach_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_route_approach_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_route_approach_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_route_approach_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_shelter_rest_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_shelter_rest_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_shelter_rest_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_shelter_rest_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_hazard_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_navigation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_navigation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_navigation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_water_navigation_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_wetland_flood_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_wetland_flood_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_wetland_flood_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_wetland_flood_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    },
+    {
+      "scene_template_id": "stfv3__g5_work_storage_social_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_1",
+      "from_position_slot_key": "arrival",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_2"
+    },
+    {
+      "scene_template_id": "stfv3__g5_work_storage_social_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_2",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "arrival",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_1"
+    },
+    {
+      "scene_template_id": "stfv3__g5_work_storage_social_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_3",
+      "from_position_slot_key": "focus",
+      "to_position_slot_key": "departure",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_4"
+    },
+    {
+      "scene_template_id": "stfv3__g5_work_storage_social_v1",
+      "scene_template_version": 1,
+      "edge_slot_key": "edge_4",
+      "from_position_slot_key": "departure",
+      "to_position_slot_key": "focus",
+      "passage_type_id": "internal_passage",
+      "transition_environment_profile_id": "topological_default",
+      "transition_environment_profile_version": 1,
+      "movement_orientation_profile_id": "topological_default",
+      "movement_orientation_profile_version": 1,
+      "cost_kind": "action",
+      "action_units": 1,
+      "capacity": 1,
+      "reverse_edge_slot_key": "edge_3"
+    }
+  ],
+  "generated_capacity_boundaries": {
+    "g4_contexts": [
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_habitation_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 8
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_burial_ritual_buffer_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 3,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_dry_route_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 1,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_resource_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_exploration_concealment_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 1,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_general_hazard_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_general_hazard_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_seasonal_route_hazard_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_dry_route_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 1,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_general_hazard_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_dry_route_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 4,
+          "total_occurrences": 12
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_dry_route_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 4,
+          "total_occurrences": 12
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_dry_route_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 1,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_general_hazard_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_exploration_concealment_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__channel_split",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_water_navigation_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 4,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 10,
+          "total_occurrences": 30
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 10,
+          "total_occurrences": 30
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 10,
+          "total_occurrences": 30
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 10,
+          "total_occurrences": 30
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 10,
+          "total_occurrences": 30
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 6,
+          "total_occurrences": 18
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 6,
+          "total_occurrences": 18
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__side_channel",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 6,
+          "total_occurrences": 18
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_dry_route_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_general_hazard_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_habitation_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 8
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_dry_route_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 1,
+          "total_occurrences": 6
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_dry_route_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 1,
+          "total_occurrences": 5
+        }
+      },
+      {
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_general_hazard_v1",
+          "version": 1
+        },
+        "composition_binding_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+          "version": 1
+        },
+        "npc_count": {
+          "min": 0,
+          "max": 2
+        },
+        "potential_occupied_slots": [
+          "focus",
+          "departure"
+        ],
+        "reserved_for_entering_player": [
+          "arrival"
+        ],
+        "occupancy_status": "not_fixed_by_composition; read exact committed placements",
+        "if_destination_is_full": "reject movement using the existing typed capacity-unavailable result",
+        "if_committed_occupancy_is_missing": "typed_data_gap",
+        "template_selection": {
+          "directness": "inferred_from_exact_canonical_materialization_assignments",
+          "supporting_occurrences": 2,
+          "total_occurrences": 6
+        }
+      }
+    ],
+    "rule": "Every listed generated G4 has 0–2 possible NPCs at focus/departure; with authored position capacity 1, movement into a filled destination is blocked. Count 0 remains allowed. Missing current committed occupancy is a typed data gap; never infer vacancy or enlarge slot capacity."
+  }
+}

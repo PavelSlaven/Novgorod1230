@@ -36,14 +36,25 @@ export function createOrdinaryMaterializationModel({ roleRunner,
   const requestCalls = new WeakMap();
   const model = async function resolveOrdinaryMaterialization(request,
     context = {}) {
-    const { repair, mechanicsPolicy, semanticContext, requiredQuantity } =
-      exactModelContext(context);
+    const { repair, mechanicsPolicy, semanticContext, requiredQuantity,
+      clock, historicalEvents } = exactModelContext(context);
     admitCallSequence(requestCalls, request, repair);
     const expectedIdentity = approvedIdentity({ roleRunner, defaultApprovedIdentity,
       qualifiedO1Identity });
     const modelRequest = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'materialization_support',
-          { semantic_context: semanticContext });
+      : await worldKnowledgeGrounder.ground(request, 'materialization_support', {
+          semantic_context: semanticContext,
+          // Party clock from committed state via model context (A-03).
+          clock: clock
+            ?? request?.player_safe_state?.clock
+            ?? request?.occurred_at
+            ?? request?.requested_at
+            ?? null,
+          // Explicit model-context port only (F1 INJ3: never request body).
+          ...(Array.isArray(historicalEvents)
+            ? { historical_events: historicalEvents }
+            : {})
+        });
     const response = await runRole({ roleRunner, request: modelRequest, repair,
       mechanicsPolicy, semanticContext, requiredQuantity });
     const output = ordinaryMaterializationResponseOf(response);

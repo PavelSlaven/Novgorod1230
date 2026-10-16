@@ -1,5 +1,8 @@
 import { canonicalDigest } from '@rus/materialization';
-import { addElapsedTime } from '@rus/time-events-history';
+import { addElapsedTime, compareRationalMinutes, normalizeElapsedTime } from
+  '@rus/time-events-history';
+import { validateTurnStepBodyTimeProposal } from
+  './lower-dvina-trace-turn-step-body-history.js';
 import { fail, text } from
   './lower-dvina-trace-turn-step-persistence-support.js';
 
@@ -11,7 +14,8 @@ const DELEGATED_FACTUAL_FIELDS = Object.freeze([
 
 /** Validates a semantic commit that has no generic mechanics batch. */
 export function validateNoBatchFactualCommit({ writePlan, factual, state,
-  preparedEffect = null }) {
+  preparedEffect = null, trustedBodyNeedsBindingPin = null,
+  trustedBodyNeedsProfile = null }) {
   if (writePlan?.turn_step_commit == null) return;
   const commit = writePlan.turn_step_commit;
   const selectedOption = commit.mode_resolution?.decision_trace
@@ -38,11 +42,13 @@ export function validateNoBatchFactualCommit({ writePlan, factual, state,
       noBatchFail('delegated domain envelope differs from its factual target');
     }
     if (preparedEffect?.combatSlice != null) return;
-    validateStateAwareTransition({ commit: factual, state });
+    validateStateAwareTransition({ commit: factual, state,
+      trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
     return;
   }
 
-  validateStateAwareTransition({ commit, state });
+  validateStateAwareTransition({ commit, state,
+    trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
   if (!same(commit.time_update?.clock_after, state.clock)
       || Number(commit.consequence?.duration_minutes) !== 0) {
     noBatchFail('no-batch clock window differs from the persisted clock');
@@ -55,7 +61,8 @@ export function validateNoBatchFactualCommit({ writePlan, factual, state,
   }
 }
 
-function validateStateAwareTransition({ commit, state }) {
+function validateStateAwareTransition({ commit, state,
+  trustedBodyNeedsBindingPin = null, trustedBodyNeedsProfile = null }) {
   let expectedClockAfter;
   try {
     expectedClockAfter = addElapsedTime(
@@ -66,7 +73,8 @@ function validateStateAwareTransition({ commit, state }) {
   if (!same(commit.time_update?.clock_before, state.clock)
       || !same(commit.time_update?.clock_after, expectedClockAfter)
       || !durationMatches(commit.consequence?.duration_minutes,
-        commit.time_update?.exact_elapsed?.exact_minutes)) {
+        commit.time_update?.exact_elapsed?.exact_minutes,
+        commit.consequence)) {
     noBatchFail('no-batch clock transition is not state-aware');
   }
 
@@ -82,6 +90,21 @@ function validateStateAwareTransition({ commit, state }) {
       || bodyUpdate.state_after == null) {
     noBatchFail('body transition is incomplete');
   }
+  if (bodyUpdate.proposal.proposal_kind === 'body_time_effect_composite') {
+    try {
+      validateTurnStepBodyTimeProposal({ factual: commit,
+        batch: { root_turn_id: 'no-batch', operations: [] }, state,
+        trustedBodyNeedsBindingPin, trustedBodyNeedsProfile });
+    } catch (cause) {
+      const reason = [cause?.code, cause?.details?.reason,
+        cause?.details?.operation_id == null
+          ? null : `operation_id=${cause.details.operation_id}`]
+        .filter(Boolean).join(': ');
+      noBatchFail('continuous body proposal is invalid',
+        reason || cause?.message);
+    }
+    return;
+  }
   for (const metric of BODY_METRICS) {
     const before = state.body_state?.[metric];
     const delta = bodyUpdate.proposal?.exact_deltas?.[metric];
@@ -93,7 +116,25 @@ function validateStateAwareTransition({ commit, state }) {
   }
 }
 
-function durationMatches(duration, exact) {
+function durationMatches(duration, exact, consequence) {
+  const traversalElapsed = consequence?.spatial_v3_traversal?.clock_update
+    ?.actual_elapsed;
+  if (consequence?.position_transition?.owner
+        === '@rus/turn/spatial-v3-site-connection-traversal'
+      && consequence?.movement?.cost_kind === 'time'
+      && traversalElapsed != null) {
+    try {
+      const expected = normalizeElapsedTime({
+        exact_minutes: traversalElapsed
+      }).exact_minutes;
+      const actual = normalizeElapsedTime({ exact_minutes: exact }).exact_minutes;
+      return Number.isFinite(duration)
+        && duration === Number(expected.numerator) / Number(expected.denominator)
+        && compareRationalMinutes(actual, expected) === 0;
+    } catch {
+      return false;
+    }
+  }
   if (!Number.isSafeInteger(duration) || duration < 0) return false;
   try {
     const denominator = BigInt(exact?.denominator);

@@ -1,8 +1,32 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
-import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvina-trace-narration-llm.js';
+import { buildProviderRequestPayload } from '../../../packages/llm-runtime/src/provider-request.js';
+import { createLowerDvinaTraceNarrationService, narrationWire } from '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { reviewedNarration } from './narration-audit-fixture.js';
+
+test('narration wire omits structural label-gap item and preserves unrelated uncertainty', () => {
+  const wire = narrationWire({ visible_context: {
+    visible_scene: 'У берега.', visible_changes: [],
+    uncertainties: ['Наблюдение ещё не дало результата.'],
+    do_not_imply: [], allowed_tensions: [], visible_objects: [{
+      entity_ref: { entity_kind: 'item', entity_id: 'opaque-item-ref' },
+      label_gap: { code: 'player_safe_item_label_required' },
+      visible_status: 'serviceable'
+    }]
+  } });
+  assert.deepEqual(wire.required_current_beat.uncertainties.map(({ text }) => text),
+    ['Наблюдение ещё не дало результата.']);
+  assert.deepEqual(wire.optional_support, { visible_scene: 'У берега.' });
+  const payload = buildProviderRequestPayload({ model: 'test-model', maxTokens: 20000,
+    responseFormat: { type: 'json_object' }, compatibility: 'openai_compatible',
+    thinking: { type: 'disabled' }, temperature: 0, topP: 1 }, [
+    { role: 'system', content: 'Narration system.' },
+    { role: 'user', content: JSON.stringify(wire) }
+  ]);
+  assert.doesNotMatch(payload.messages[1].content,
+    /opaque-item-ref|serviceable|label_gap|player_safe_item_label_required|Видны вещи, названия которых пока не удалось установить/u);
+});
 
 test('captured live snapshot candidates cannot displace the current speech and pending intent', async () => {
   const { visible_context, prose } = JSON.parse(await readFile(new URL(
@@ -14,7 +38,8 @@ test('captured live snapshot candidates cannot displace the current speech and p
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support, { visible_scene: visible_context.visible_scene, sensory_details: visible_context.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visible_context.visible_scene });
     assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), visible_context.visible_changes);
     assert.deepEqual(wire.required_current_beat.uncertainties.map(({ text }) => text), visible_context.uncertainties);
     if (call.role_id === 'gameplay_narrator') return { output: {
@@ -27,7 +52,7 @@ test('captured live snapshot candidates cannot displace the current speech and p
   assert.equal(calls, 2);
 });
 
-test('private prose wire admits only scene and sensory support beside a current beat', async (t) => {
+test('private prose wire admits only scene identity beside a current beat', async (t) => {
   const cases = [
     { name: 'physical result and body with a pending second action',
       changes: ['Сухой конец жерди отломлен.', 'Одежда стала менее мокрой.'],
@@ -66,7 +91,7 @@ test('private prose wire admits only scene and sensory support beside a current 
       assert.equal(Object.hasOwn(wire, 'visible_context'), false);
       assert.deepEqual(wire.optional_support, visible_changes.length || uncertainties.length
         ? sample.outcome?.qualitative_assessment === true ? {}
-          : { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details }
+          : { visible_scene: visible.visible_scene }
         : support);
       assert.deepEqual(wire.constraints, { allowed_tensions, do_not_imply, style_policy: style });
       assert.deepEqual(wire.required_current_beat.changes,
@@ -118,7 +143,7 @@ for (const sample of [
     change: 'Вы проводили сухим лоскутом по краю глиняной чаши; результат наблюдения не установлен.',
     relevant: 'Край глиняной чаши шероховатый.', other: ['За дверью виден двор.', 'У стены лежат поленья.'],
     prose: 'По шероховатому краю глиняной чаши вы проводите сухим лоскутом; что это позволило заметить, пока неизвестно.' }
-]) test(`${sample.name}: sensory selection supports sparse action, unchanged dump fails`, async () => {
+]) test(`${sample.name}: unchanged dump is a non-blocking literary finding`, async () => {
   for (const dump of [false, true]) {
     const visible = { version: 1, schema: 'visible_context_package', visible_scene: 'Текущее место',
       visible_changes: [sample.change], uncertainties: [], sensory_details: [sample.relevant, ...sample.other],
@@ -128,7 +153,8 @@ for (const sample of [
     const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
       calls.push(call.role_id);
       const wire = JSON.parse(call.messages[1].content);
-      assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
+      assert.deepEqual(wire.optional_support,
+        { visible_scene: visible.visible_scene });
       assert.match(call.messages[0].content,
         /turn duration (?:is code-owned UI metadata|belongs only to the UI)/iu);
       assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'
@@ -164,8 +190,8 @@ for (const sample of [
     const result = await service.run({ version: 1, schema: 'narration_request', request_id: `${sample.name}-${dump}`,
       surface: 'turn', visible_context: visible, context: {} });
     assert.equal(result.status, 'approved');
-    assert.equal(result.approved_output.prose, sample.prose);
-    assert.deepEqual(calls, dump ? ['gameplay_narrator', 'gameplay_narrator_auditor',
-      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor'] : ['gameplay_narrator', 'gameplay_narrator_auditor']);
+    assert.equal(result.approved_output.prose,
+      dump ? `${sample.prose} ${visible.sensory_details.join(' ')}` : sample.prose);
+    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
   }
 });

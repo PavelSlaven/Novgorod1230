@@ -1,0 +1,90 @@
+{
+  "schema": "rus.m2c_line_names_authoring_approval.v1",
+  "decision": "APPROVE_WITH_LIMITS",
+  "candidate_ref": "data/world-catalogs/novgorod/m2c-line-names/candidate.json",
+  "branch": "fleet/slice-r4b-bugs",
+  "reviewed_commit": null,
+  "reviewed_commit_note": "The lead fills in the commit that places this mechanically composed candidate at candidate_ref; its bytes must hash to candidate_sha256.",
+  "reviewed_candidate_source": "/srv/novgorod-work/fleet/tasks/slice-r4b-bugs/out/line-names-v4/m2c-line-names-v4-candidate.json",
+  "candidate_sha256": "0965443b441cfde2155040737b6b051c20bad2fd060dd4c22cad4bdd41c308b2",
+  "previous_candidate_sha256": "ffea92ed07f96b6a027d0bbd947318a9eb796bf7d93493bdff88fa8acd7e180f",
+  "previous_attestation_decision": "APPROVE_WITH_LIMITS (claude-opus-5-5, 2026-09-30, commit 027be107)",
+  "approved_by": "Fleet lead; deterministic composition of independent Claude Opus row approvals, no new Opus decision",
+  "approved_on": "2026-10-05",
+  "decision_ref": "A-slice-r4b-bugs-line-v4; WR §21.1, D84",
+  "scope": "Composition for all 227 local G5-G5 pairs and 43 G4 world-route pairs of the v17 start cell: exact approved v2 line-name candidate plus only cross_g4_16 as approved with limits by ap-line-names-v3. candidate_id/version remain novgorod_m2c_line_names_v1/1. The three v3 CHANGES_REQUIRED rows are reverted to v2 and remain without route-specific distinguishing data; import and runtime activation are not authorized.",
+  "row_decisions": [
+    {
+      "route_pair_id": "cross_g4_14",
+      "line_kind": "shore",
+      "route_kind_env": "route.water_land_transition / env.shore_transition",
+      "name_ru_before": "берегом по мокрому прибрежью",
+      "name_ru": "береговым переходом по мокрому прибрежью",
+      "decision": "APPROVE_WITH_LIMITS",
+      "reason": "'переходом' names the approved water-land transition route kind; same pattern as the approved cross_g4_09 'береговым сходом по травяной земле' (same route kind and environment). 'по мокрому прибрежью' is kept from the approved name. No destination, bearing, distance or new fact.",
+      "limit": "Geometry finding m2c-place-coordinates owner_findings.spatial for cross_g4_14 (15 min vs about 121 min over 4.6 km) is still open; recheck the name if the route is split or re-routed."
+    },
+    {
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+      "line_kind": "path",
+      "route_kind_env": "route.local / env.land_path",
+      "name_ru_before": "по влажной траве у воды",
+      "name_ru": "тропой по влажной траве у воды",
+      "decision": "APPROVE",
+      "reason": "Adds only 'тропой', the closed-dictionary ru_form of the approved line_kind path; the rest is the approved name."
+    },
+    {
+      "route_pair_id": "g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+      "line_kind": "path",
+      "route_kind_env": "route.local / env.land_path",
+      "name_ru_before": "берегом по травянистому краю",
+      "name_ru": "тропой по травянистому краю",
+      "decision": "APPROVE",
+      "reason": "Replaces 'берегом' (ru_form of shore) with 'тропой' (ru_form of the approved line_kind path), removing a kind/name mismatch; 'по травянистому краю' is kept from the approved name."
+    },
+    {
+      "route_pair_id": "cross_g4_16",
+      "line_kind": "path",
+      "route_kind_env": "route.path / env.land_path (basis derived)",
+      "name_ru_before": "по мягкой пойменной траве",
+      "name_ru": "тропой по мягкой пойменной траве",
+      "decision": "APPROVE_WITH_LIMITS",
+      "reason": "'тропой' is the closed-dictionary ru_form of the derived line_kind path; the tail is the approved name. Distinct at sheltered_landing_terrace_flood_edge ('через травянистый склон'). Reads naturally: 'пойти тропой по мягкой пойменной траве'.",
+      "limit": "At zaostrovye_settlement_center_river_approach it stays a near-duplicate of zaostrovye_archaeological_area_cycle until that row is changed; recheck there together with 'по ровной траве' and the shown local 'Уйти тропой по травянистой земле у воды'. May be carried unchanged into the next revision."
+    }
+  ],
+  "checks": [
+    "v4 exact candidate SHA-256 0965443b441cfde2155040737b6b051c20bad2fd060dd4c22cad4bdd41c308b2; candidate_id/version preserved as v2.",
+    "Scripted byte comparison: v4 equals v2 except world_routes[15] cross_g4_16.name_ru; the value exactly matches the separately approved-with-limits cross_g4_16 row from ap-line-names-v3.",
+    "The three v3 CHANGES_REQUIRED names are not carried; all other candidate fields are inherited from the approved v2 candidate.",
+    "data/world-catalogs/novgorod/m2c-line-names/check.mjs validation and check.test.mjs are required after composition.",
+    "Exit-label derivation is deterministic from the exact composed line-name candidate and its attestation; it grants no world_base import or runtime activation."
+  ],
+  "limits": [
+    "Authored game names, not attested 1230 toponyms.",
+    "base_minutes in the candidate are not approved and are not imported (D56).",
+    "All limits of the previous attestation (ffea92ed) remain in force for the unchanged 267 records, including the line_kind draft status, the near-duplicate check owed by the rt-lines loader, and the recheck after place-geo geometry changes.",
+    "cross_g4_14: see row_decisions limit (open geometry finding).",
+    "Style, non-blocking: 'тропой по травянистому краю' does not say whose edge; acceptable because the route runs along the main channel and the menu at that place has no other 'краю' line.",
+    "Outside this revision: the earlier exit-line-label gaps at zaostrovye_settlement_center_river_approach ('по мягкой пойменной траве' / 'через пойменную траву') and vikhtuy_river_approach_water_approach ('по береговой земле' / 'у воды, по мягкой земле') are not changed; those exits have no pass-target description, so the line labels are shown and remain near-duplicates.",
+    "cross_g4_16: APPROVE_WITH_LIMITS as in the separate ap-line-names-v3 row decision; at zaostrovye_settlement_center_river_approach the line-name near-duplicate with zaostrovye_archaeological_area_cycle remains unresolved.",
+    "vikhtuy_local_area_1, vikhtuy_local_area_2, zaostrovye_archaeological_area_cycle: no approved route-correlated distinguishing feature; keep the existing approved fallback and record the editorial data gap in LW-075. Do not infer line features from endpoint natural/presentation profiles."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "composed_from": [
+    {
+      "approval": "/srv/novgorod-work/fleet/tasks/ap-line-names-rev/out/approval-attestation.json",
+      "candidate_sha256": "1f1f1e73e58eb8fddd734c2954f2f52a947595ecefbbfacc2d8a597e98c866e1",
+      "decision": "APPROVE_WITH_LIMITS",
+      "scope": "v2 candidate; three approved name_ru revisions and all carried rows/limits"
+    },
+    {
+      "approval": "/srv/novgorod-work/fleet/tasks/ap-line-names-v3/out/approval-attestation.json",
+      "candidate_sha256": "4f72ef6ab30170a2e78101a51917ea02ad8b99de453ffc9dd9411a055724c9c7",
+      "decision": "CHANGES_REQUIRED overall; cross_g4_16 row APPROVE_WITH_LIMITS only",
+      "scope": "cross_g4_16 row_decision only"
+    }
+  ],
+  "composition_check": "v4 = v2 + одна строка, скриптовая сверка ведущего 2026-10-05"
+}

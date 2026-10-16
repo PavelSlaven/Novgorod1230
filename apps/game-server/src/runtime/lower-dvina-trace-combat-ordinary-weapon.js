@@ -1,5 +1,6 @@
 import {
   ACTION_PRODUCED_WEAPON_CLASSES,
+  actionProducedWeaponClassificationFromModelOutput,
   ordinaryArmamentWeaponDanger,
   resolveActionProducedCombatWeaponClass
 } from '@rus/combat-health';
@@ -17,7 +18,9 @@ export function createLowerDvinaTraceActionProducedWeaponClassifier({
       'Classify the supplied current physical item for this combat only.',
       'Choose exactly one allowed qualitative_class.',
       'Choose not_weapon_capable when current facts do not support a weapon.',
-      'Return only schema, request_id and qualitative_class.',
+      'Return only a JSON object with the single key qualitative_class,',
+      'whose value is one of allowed_classes.',
+      'Do not return schema or request_id.',
       'Never return damage, weapon_danger, identity, facts, or mechanics.'
     ].join(' ') }, { role: 'user', content: JSON.stringify(request) }],
     overrides: { temperature: 0, maxTokens: 20_000 }
@@ -76,11 +79,10 @@ export async function classifyTraceActionProducedWeapon({ items, actor_ref,
     try { raw = await classify(structuredClone(request)); } catch { return null; }
     let resolved;
     try {
-      resolved = resolveActionProducedCombatWeaponClass({
-        classification: raw
-      });
+      resolved = resolveActionProducedCombatWeaponClass({ classification:
+        actionProducedWeaponClassificationFromModelOutput(raw,
+          request.request_id) });
     } catch { return null; }
-    if (resolved.request_id !== request.request_id) return null;
     if (resolved.formal_mechanics.weapon_danger > 0) weapons.push({
       item_ref: item.item_id,
       weapon_danger: resolved.formal_mechanics.weapon_danger

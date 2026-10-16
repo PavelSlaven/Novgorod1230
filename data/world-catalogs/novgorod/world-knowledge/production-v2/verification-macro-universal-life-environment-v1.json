@@ -1,0 +1,18 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v1-parasite-host-disease",
+      "claim_ref": "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+      "claim_digest": "3f2bc4aff0a9d633858cfe73698f1270f5ddcab303c435d6ef3bf93aeeece805",
+      "candidate_ref": "git:53c3e0de12b97543d078d430152b7a4914362633:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v1.json#claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+      "auditor_ref": "/root/macro_claim_verifier",
+      "independence_basis": "Independent direct CDC source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-life-parasite"],
+      "review_ref": "verification/macro-universal-life-environment-v1.md#candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+      "verdict": "APPROVE",
+      "limits": "Supports only the general host relation and possible disease causation; no parasite presence, exposure, infection, symptom, diagnosis, transmission, treatment, or scene outcome."
+    }
+  ]
+}

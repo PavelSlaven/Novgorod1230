@@ -1,0 +1,16 @@
+[
+  {
+    "profile_id": "lkp__river_channel",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.swim",
+    "risk_class": "high",
+    "hazard_rule_ref": "hazard.swim_river_channel@1"
+  },
+  {
+    "profile_id": "lkp__side_channel",
+    "profile_version": 1,
+    "movement_method_id": "movement_method.swim",
+    "risk_class": "high",
+    "hazard_rule_ref": "hazard.swim_side_channel@1"
+  }
+]

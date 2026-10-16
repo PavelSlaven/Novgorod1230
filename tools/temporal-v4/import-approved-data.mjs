@@ -383,8 +383,8 @@ export async function buildApprovedTemporalImportSql({
       bundle.family_count !== TEMPORAL_REQUIRED_DATA_FAMILIES.length ||
       bundle.record_count !== 22 ||
       bundle.reference_count !== 22 ||
-      bundle.provenance_count !== 14 ||
-      bundle.source_count !== 46) {
+      bundle.provenance_count !== 15 ||
+      bundle.source_count !== 47) {
     throw new Error(`Temporal approved import is not closed:\n- ${bundle.errors.join('\n- ')}`);
   }
   const { sourceRows, provenanceRows, recordRows, referenceRows } = normalizeRows(bundle);

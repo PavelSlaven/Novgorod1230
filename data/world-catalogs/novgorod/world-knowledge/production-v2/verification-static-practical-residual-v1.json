@@ -1,0 +1,31 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-belt-friction-slip",
+      "claim_ref": "claim:static-belt-friction-can-resist-relative-slip",
+      "claim_digest": "353384d30c97e1b51ddadf46cd8191f0be15701acfba0766e54a2dd8fd0b8bf9",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-belt-friction-can-resist-relative-slip",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-belt-slip"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Qualitative friction mechanism only; no present belt, pulley, material, coefficient, transmission, or no-slip outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-belt-slip-limit",
+      "claim_ref": "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+      "claim_digest": "f638b88d08a1b2466c7b7be542e7597952afa37d4ac3dc78aff5436df33d89b5",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-belt-limit"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Qualitative flat-belt dependency only; no numerical tension, friction value, contact angle, drive design, or operating outcome."
+    }
+  ]
+}

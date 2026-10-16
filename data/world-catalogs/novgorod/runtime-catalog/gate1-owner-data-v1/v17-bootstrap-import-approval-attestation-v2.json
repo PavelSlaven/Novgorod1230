@@ -1,0 +1,61 @@
+{
+  "schema": "rus.gate1_v17_bootstrap_import_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "claude-opus-5.5-independent-approval-2026-09-27",
+  "independence_basis": "Independent Claude Opus 5.5 high review; the auditor did not author request v2, the runner, the bootstrap gate, the source approvals or the operation plan, and performed only the non-writing dry-run, hash computations and git reads, with no connection to any PostgreSQL database.",
+  "reviewed_repository_head": "1e99ec797fab735e257894fffe5a230e0bb0c906",
+  "request_path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/v17-bootstrap-import-request-v2.json",
+  "request_digest": "5409e9041365c632ee2ca57b92a9f36f1251ec9c00ec47d65beac9c92cce920a",
+  "runner_sha256": "0cbea19ff4f1c106320a930ba051934f3cade1d03625a2477b1dc20a2dcdce30",
+  "supersedes_attestation": {
+    "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/v17-bootstrap-import-approval-attestation.json",
+    "sha256": "e129ebf08b6eb71a3644616e4ba5c6cd6d494d5ffd2b340fad51dc48cd3be16b"
+  },
+  "scope": {
+    "operation": "For a fresh install only: one transactional Gate1 owner closure and item/container catalog import into an already-bootstrapped empty novgorod_world_v17 via --mode v17-local-play, followed by exact readback and a second read-only readback on the same database without a second apply.",
+    "runner_mode": "v17-local-play",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "world_schema": "world_base",
+    "world_schema_tables_before": 208,
+    "world_data_rows_before": 0,
+    "dataset_count": 39,
+    "status_transition_count": 9,
+    "approved_item_templates": 102,
+    "approved_container_templates": 18,
+    "approved_g4_mappings": 9,
+    "seed_table_count": 30,
+    "seed_row_count": 42577,
+    "seed_table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434",
+    "target_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+    "target_catalog_digest": "1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5"
+  },
+  "review_evidence": [
+    "At the reviewed head the runner, the fresh-schema execution attestation, the fresh-schema request and all six approved_sources match their request v2 SHA-256 pins.",
+    "request_digest was recomputed as sha256 of the key-sorted JSON body without request_digest, as in bootstrap-live-world-v17.mjs, and equals 5409e904...920a. supersedes points to the v1 request, and its digest a95018d0...f6ad was recomputed and matches.",
+    "Request v2 differs from v1 only in request_id, runner sha256, runner arguments (v17-local-play), preconditions/execution wording, supersedes and request_digest.",
+    "Runner lines 42-48 and 174-183 bind v17-local-play to novgorod_world_v17 and local-play to novgorod_world before any connection or write. The crossed combinations throw PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED.",
+    "In v17-local-play, assertEmptyWorldBase (runner lines 191-221) checks the 27 approved schema source hashes, the exact 208-table set and zero rows in every table. initializeSchema (the 01.sql DROP SCHEMA IF EXISTS world_base CASCADE) is reachable only through lines 93 and 108, both guarded by !isV17LocalPlay.",
+    "v17-local-play applies once, repeats verifyPromotionState without a second apply, asserts deep equality and records repeat_readback_status exact_match with equal state digests. The shared promotion enforces exact readback and rejects an existing target revision.",
+    "The non-writing dry-run at the reviewed head returned pass=true and applied=false, with candidate, approval, amendment, manifest and catalog digests, 39 datasets and 9 status transitions identical to expected_plan v2.",
+    "Before the write, bootstrap checks the v2 request digest, the runner pin, the exact runner path and arguments, that attestation v2 exists and that its request_digest equals the v2 digest, the source pins and the dry-run plan, and then invokes only --mode v17-local-play. Integration tests exist for crossed DB modes, missing and mismatched attestation v2, non-v17 schema rejection and fresh v17 success; the reviewer did not run them.",
+    "The v1 request, attestation v1, v1 readback and v1 approval-request notes are byte-identical to 8c6b6d3e."
+  ],
+  "execution_preconditions": [
+    "Immediately before the write, record and recheck the actual PostgreSQL cluster system identifier and version 16.14, the identity of novgorod_world_v17 and its world_operator ownership, the exact 208 world_base tables, zero rows in every world_base table, and an available offline backup; stop on any drift. The cluster identifier in request v2 describes the original evidence cluster and is not a match target for a fresh install.",
+    "Recheck all request v2 pinned source, schema and runner hashes and the request digest, and re-run the non-writing dry-run, comparing all expected_plan digests and counts at execution time.",
+    "Execute from a checkout whose runner and all of its transitive imports are identical to reviewed head 1e99ec797fab735e257894fffe5a230e0bb0c906, or obtain a new review.",
+    "Use only the request v2 command with --mode v17-local-play --expected-database novgorod_world_v17 and an explicit PR17_TEST_DATABASE_URL naming novgorod_world_v17. Require the built-in rollback probe, a transactional import, an exact first readback, and a second read-only readback with equal state digests.",
+    "Before relying on the bootstrap gate, harden assertV17Gate1V2Attestation to also require schema rus.gate1_v17_bootstrap_import_approval.v1, verdict APPROVE or APPROVE_CONDITIONAL, and runner_sha256 and request_path equal to request v2. Until then, the operator confirms these fields manually.",
+    "In the change that commits this attestation, update the integration test that expects checkV17BootstrapInputs to reject with V17_GATE1_ATTESTATION_V2_REQUIRED against the real checkout.",
+    "Record the actual v17 import readback, the unchanged 208-table schema and the unchanged counts of the existing databases before preparing a separate P12 successor request."
+  ],
+  "excludes": [
+    "A second apply or a repeat_clean_apply claim",
+    "P12 or historical Spatial dataset import",
+    "Schema initialization, DROP, database recreation, or mutation of existing databases",
+    "Catalog registration or activation, production composition change, party migration, or save rematerialization",
+    "Running on a database that already holds the target revision"
+  ],
+  "database_mutated_by_review": false
+}

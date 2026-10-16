@@ -23,8 +23,17 @@ import {
 } from '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
 import { commitEnvelope } from
   './lower-dvina-trace-turn-step-envelope-fixture.js';
+import { withPhase2CurrentVisibleContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 import { backgroundNpc, body, fixture, semanticActivity } from
   './lower-dvina-trace-turn-step-commit-fixture.js';
+import { SCENE_NPC_SOURCE } from
+  '../src/runtime/lower-dvina-trace-scene-presence.js';
+import { canonicalDigest } from '@rus/materialization';
+import { lowerDvinaTraceVisibleSceneItems } from
+  '../src/runtime/lower-dvina-trace-visible-scene-items.js';
+import { createLowerDvinaTraceTurnStepVisibleProjector } from
+  '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
 
 test('route turn keeps normalized party position with snapshot', () => {
   const writes = buildLowerDvinaTraceTurnStepRootWrites({
@@ -65,9 +74,286 @@ test('S1 local turn updates journey position without rewriting G4/G5', () => {
     table === 'party_journey_locations').record.scene_position_id, 'inside');
 });
 
+test('site traversal root owner writes the projected journey row exactly once', () => {
+  const writes = buildLowerDvinaTraceTurnStepRootWrites({
+    partyId: 'party', state: { actor_id: 'actor', party_state: {},
+      journey_location: { id: 'journey', state_version: 3 },
+      body_state: { active_conditions: [] } },
+    snapshot: { position: { position_id: null },
+      journey_location: { location_kind: 'in_transit', scene_position_id: null,
+        transit_anchor_id: null, travel_state_id: 'travel', state_version: 4 },
+      body_state: { active_conditions: [] } },
+    envelope: { root_turn_id: 'turn', body_update: { applied: false,
+      proposal: null }, consequence: { position_transition: {
+      owner: '@rus/turn/spatial-v3-site-connection-traversal'
+    } } },
+    nextVersion: 4, turnNumber: 4, changeSetId: 'change', idemId: 'idem',
+    pendingScreen: {}, clockChanged: false
+  });
+  const journeyWrites = writes.updates.filter(({ target_table: table }) =>
+    table === 'party_journey_locations');
+  assert.equal(journeyWrites.length, 1);
+  assert.deepEqual(journeyWrites[0].record, {
+    id: 'journey', party_id: 'party', owner_kind: 'actor', owner_id: 'actor',
+    location_kind: 'in_transit', scene_position_id: null, transit_anchor_id: null,
+    travel_state_id: 'travel', updated_change_set_id: 'change'
+  });
+});
+test('commit keeps open-one-space S1 resolution visible at formal destination',
+  async () => {
+    const envelope = commitEnvelope({ clarification: false, check: false });
+    envelope.consequence.position_transition = {
+      owner: '@rus/movement-routes', actor_id: 'actor-1',
+      from_position_ref: 'position:outside',
+      to_position_ref: 'position:inside'
+    };
+    const f = fixture({ direct: true, envelopeOverride: envelope,
+      stateOverride: {
+        position: { location_ref: 'shore', position_id: 'position:outside' },
+        journey_location: { id: 'journey',
+          scene_position_id: 'position:outside', state_version: 3 },
+        spatial_semantic: [{ resolutions: [{
+          local_ref: 'local:bank', position_ref: 'position:outside',
+          formal_spatial_refs: { structural_variant: 'open_one_space',
+            position_ref: 'position:inside' },
+          semantics: { kind: 'shelter', name: 'Навес',
+            description: 'У берега стоит навес.' }
+        }] }]
+      } });
+
+    await f.commit();
+
+    const visible = f.plans[0].appends.find(({ target_table: table }) =>
+      table === 'party_visible_packages').record.visible_payload.visible_objects;
+    assert.deepEqual(visible.find(({ entity_ref }) =>
+      entity_ref.entity_id === 'local:bank'), {
+      entity_ref: { entity_kind: 'spatial_local_reference',
+        entity_id: 'local:bank' },
+      display_label: 'Навес', recognition: 'recognized',
+      visible_status: 'внутри'
+    });
+  });
+
+for (const costKind of ['action', 'time']) {
+  test(`prepared destination projection retains only carried items (${costKind})`,
+    async () => {
+      const destination = { version: 1, schema: 'visible_context_package',
+        visible_scene: 'Двор.', visible_changes: [], sensory_details: [],
+        visible_npc: [], visible_objects: [], known_context: [],
+        uncertainties: [], allowed_tensions: [], do_not_imply: [] };
+      const transition = { owner: '@rus/turn/spatial-v3-site-connection-traversal',
+        from_position_ref: 'position:origin', to_position_ref: 'position:destination',
+        source_site_id: 'site:origin', destination_site_id: 'site:destination',
+        source_g6_instance_id: 'g6:origin', destination_g6_instance_id: 'g6:destination',
+        destination_visible_digest: canonicalDigest(destination) };
+      const endpoint = { endpoint_ref: { endpoint_id: 'endpoint:destination' },
+        resolved_position_id: 'position:destination' };
+      let sceneLoads = 0;
+      const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+        fallback: { project: async () => assert.fail('prepared arrival is self-projected') },
+        loadPreparedMovementScene: async () => {
+          sceneLoads += 1;
+          assert.fail('prepared arrival must reuse its destination seed');
+        },
+        projectCurrentScene: (state) => ({ current_visible_context: {
+          ...destination,
+          visible_objects: [
+            ...lowerDvinaTraceVisibleSceneItems(state.items,
+              state.position, state.actor_id)
+              .map(({ visibleObject }) => visibleObject),
+            { entity_ref: { entity_kind: 'item',
+              entity_id: 'item:origin-ground' },
+              display_label: 'полено', visible_status: 'available' }
+          ]
+        } })
+      });
+      const result = await projector.project({
+        consequence: { position_transition: transition,
+          movement: { cost_kind: costKind },
+          spatial_v3_traversal: { plan: { steps: [{
+            arrival_endpoint_snapshot: endpoint
+          }] }, result: costKind === 'time'
+            ? { result_kind: 'segment_completed' }
+            : { result_kind: 'completed', endpoint_after: {
+              endpoint_id: 'endpoint:destination' } } },
+          visible_seed: { destination_site_origin: 'canonical',
+            destination_visible_context: destination } },
+        retrieved_state: { actor_id: 'actor-1',
+          position: { site_id: 'site:origin', position_id: 'position:origin',
+            location_ref: 'site:origin', g5_anchor_id: 'anchor:origin' },
+          items: [
+            { item_id: 'item:held', name: 'нож', placement: {
+              holder_character_id: 'actor-1', physical_position: 'hands' } },
+            { item_id: 'item:origin-ground', name: 'полено', placement: {
+              anchor_id: 'anchor:origin', physical_position: 'ground' } }
+          ] }
+      });
+
+      assert.deepEqual(result.visible_objects.map(({ entity_ref: ref }) =>
+        ref.entity_id), ['item:held']);
+      assert.equal(sceneLoads, 0,
+        'carried-item projection does not reload the prepared scene');
+
+      const envelope = commitEnvelope({ clarification: false, check: false });
+      envelope.visible_context = result;
+      envelope.consequence.position_transition = {
+        owner: '@rus/movement-routes', actor_id: 'actor-1',
+        from_position_ref: 'position:origin',
+        to_position_ref: 'position:destination'
+      };
+      envelope.consequence.visible_seed.destination_visible_context = destination;
+      const f = fixture({ direct: true, envelopeOverride: envelope,
+        stateOverride: {
+          actor_id: 'actor-1',
+          position: { site_id: 'site:origin', position_id: 'position:origin',
+            location_ref: 'site:origin', g5_anchor_id: 'anchor:origin' },
+          journey_location: { id: 'journey',
+            scene_position_id: 'position:origin', state_version: 3 },
+          items: [{ item_id: 'item:held', template_id: 'template:held',
+            profile_id: 'profile:held', category_id: 'weapon', quantity: 1,
+            condition_state: 'sound', legal_status: 'party_owned',
+            state: {}, name: 'нож', inventory_profile: { mass_grams: 100,
+              external_hand_cost: 0, carry_form: 'compact',
+              packing_slot_cost: 1, packing_bundle_size: 1 }, placement: {
+              holder_character_id: 'actor-1', physical_position: 'hands' } },
+            { item_id: 'item:origin-ground', template_id: 'template:ground',
+              profile_id: 'profile:ground', category_id: 'material', quantity: 1,
+              condition_state: 'sound', legal_status: 'party_owned',
+              state: {}, name: 'полено', inventory_profile: { mass_grams: 100,
+                external_hand_cost: 0, carry_form: 'compact',
+                packing_slot_cost: 1, packing_bundle_size: 1 }, placement: {
+              anchor_id: 'anchor:origin' } }]
+        },
+        turnStepApprovedOwners: { async loadPreparedMovementScene({ state }) {
+          return { ...state, current_visible_context: destination };
+        } } });
+
+      await f.commit();
+
+      const payload = f.plans[0].appends.find(({ target_table: table }) =>
+        table === 'party_visible_packages').record.visible_payload;
+      assert.deepEqual(payload.visible_objects
+        .filter(({ entity_ref: ref }) => ref?.entity_kind === 'item')
+        .map(({ entity_ref: ref }) => ref.entity_id), ['item:held']);
+    });
+}
+
+for (const capacityLeft of [true, false]) {
+  test(`destination commit keeps the S1 planner marker out of visible context (capacity left: ${capacityLeft})`,
+    async () => {
+      const envelope = commitEnvelope({ clarification: false, check: false });
+      envelope.consequence.position_transition = {
+        owner: '@rus/movement-routes', actor_id: 'actor-1',
+        from_position_ref: 'position:source', to_position_ref: 'position:destination'
+      };
+      const { canonical_digest: _digest, ...destination } = envelope.visible_context;
+      envelope.consequence.visible_seed = { ...envelope.consequence.visible_seed,
+        destination_visible_context: { ...destination, visible_scene: 'Двор у избы.' } };
+      let prepared = null;
+      const f = fixture({ direct: true, envelopeOverride: envelope,
+        stateOverride: {
+          journey_location: { id: 'journey', scene_position_id: 'position:source',
+            state_version: 3 },
+          position: { site_id: 'site', position_id: 'position:source', location_ref: 'site' },
+          spatial_semantic: [{ envelope_ref: 'env:destination', status: 'committed',
+            envelope: { position_ref: 'position:destination' }, capacity_total: 1,
+            consumed_count: capacityLeft ? 0 : 1, resolutions: [] }]
+        },
+        turnStepApprovedOwners: { async loadPreparedMovementScene({ state }) {
+          const { prepared_destination_visible_context: context, ...rest } = state;
+          prepared = context;
+          return context == null ? rest : withPhase2CurrentVisibleContext(rest, context);
+        } } });
+
+      await f.commit();
+
+      assert.ok(prepared, 'destination visible context reached the scene loader');
+      assert.equal(Object.hasOwn(prepared, 'spatial_semantic'), false);
+      const payload = f.plans[0].appends.find(({ target_table: table }) =>
+        table === 'party_visible_packages').record.visible_payload;
+      assert.doesNotMatch(JSON.stringify(payload), /semantic_grounding_available/u);
+    });
+}
+
+test('position transition without prepared route loads destination NPCs for pending screen',
+  async () => {
+    const destinationNpc = {
+      instance_id: 'npc:destination', profile_id: 'profile:destination',
+      anchor_id: 'anchor-site', position_id: 'position:destination',
+      g6_instance_id: 'g6:site', runtime_source: SCENE_NPC_SOURCE
+    };
+    const sourceNpc = {
+      ...destinationNpc, instance_id: 'npc:source',
+      position_id: 'position:source'
+    };
+    const envelope = commitEnvelope({ clarification: false, check: false });
+    envelope.consequence.position_transition = {
+      owner: '@rus/movement-routes', actor_id: 'actor-1',
+      from_position_ref: 'position:source',
+      to_position_ref: 'position:destination'
+    };
+    envelope.visible_context.visible_npc = [{
+      entity_ref: { entity_kind: 'npc', entity_id: destinationNpc.instance_id },
+      display_label: 'человек', recognition: 'unrecognized'
+    }];
+    envelope.visible_context.visible_changes = ['Текущий ход завершился у нового места.'];
+    envelope.visible_context.uncertainties = ['Пока неясно, кто находится во дворе.'];
+    envelope.consequence.visible_seed = {
+      ...envelope.consequence.visible_seed,
+      destination_visible_context: {
+        ...envelope.visible_context,
+        visible_scene: 'Двор у избы.',
+        visible_changes: ['Перед путником открылся двор.'],
+        uncertainties: ['Из избы не видно, кто там.']
+      }
+    };
+    const loadedPositions = [];
+    const f = fixture({ direct: true, envelopeOverride: envelope,
+      stateOverride: {
+        journey_location: { id: 'journey', scene_position_id: 'position:source',
+          state_version: 3 },
+        position: { site_id: 'site', position_id: 'position:source',
+          location_ref: 'site', g6_instance_id: 'g6:site', g6_id: 'g6:site',
+          g5_anchor_id: 'anchor-site' },
+        npcs: [sourceNpc]
+      },
+      turnStepApprovedOwners: { async loadPreparedMovementScene({ partyId, state, clock }) {
+        loadedPositions.push({ partyId, position: state.position.position_id,
+          sourceNpcPersisted: state.npcs.some(({ instance_id }) =>
+            instance_id === sourceNpc.instance_id), clock });
+        return { ...state, scene_position_g6: {
+          'position:source': 'g6:site', 'position:destination': 'g6:site'
+        }, npcs: [...state.npcs, destinationNpc] };
+      } }
+    });
+
+    await f.commit();
+
+    const visible = f.plans[0].appends.find(({ target_table: table }) =>
+      table === 'party_visible_packages').record;
+    assert.deepEqual(visible.visible_payload.perceived_changes, [
+      'Перед путником открылся двор.', 'Текущий ход завершился у нового места.'
+    ]);
+    assert.deepEqual(visible.visible_payload.uncertainties, [
+      'Из избы не видно, кто там.', 'Пока неясно, кто находится во дворе.'
+    ]);
+    assert.deepEqual(loadedPositions, [{ partyId: 'p',
+      position: 'position:destination', sourceNpcPersisted: false,
+      clock: envelope.time_update.clock_after }]);
+    const screen = f.plans[0].updates.find(({ target_table: table }) =>
+      table === 'party_server_sessions').record.screen;
+    assert.deepEqual(screen.panels.people.data.visible_npcs.map(
+      ({ display_label }) => display_label), ['человек']);
+    const snapshot = f.plans[0].inserts.find(({ target_table: table }) =>
+      table === 'party_state_snapshots').record.state_payload;
+    assert.equal(snapshot.npcs.some(({ runtime_source }) =>
+      runtime_source === SCENE_NPC_SOURCE), false);
+  });
+
 test('direct-only semantic turn commits one P16 root with snapshot and pending presentation',
   async () => {
     const f = fixture({ direct: true });
+    f.envelope.consequence.visible_seed.destination_site_origin = 'generated';
     const committed = await f.commit();
 
     assert.equal(committed.state_version, 4);
@@ -93,6 +379,8 @@ test('direct-only semantic turn commits one P16 root with snapshot and pending p
       table === 'party_narration_jobs').length, 1);
     const snapshot = plan.inserts.find(({ target_table: table }) =>
       table === 'party_state_snapshots').record.state_payload;
+    assert.equal(JSON.stringify(snapshot).includes('destination_site_origin'),
+      false, 'prepared snapshot must not retain transient destination origin');
     assert.equal(snapshot.schema, 'rus.lower_dvina_trace_turn_snapshot.v2');
     assert.equal(snapshot.last_turn.turn_step_commit.player_input.raw_text,
       'беру песок');

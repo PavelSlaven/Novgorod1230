@@ -1,0 +1,5 @@
+{"id":"plan-access-dio","purpose":"conversation","text":"Спросить кузнеца про наковальню","year":1230,"place_refs":["region_novgorod_land"],"actor_facets":{},"expect_absent_claim_refs":["claim:ordinary-life-smith-anvil-hammer-tongs"]}
+{"id":"plan-access-role","purpose":"conversation","text":"Рыбак про лыко","year":1230,"place_refs":["region_novgorod_land"],"actor_facets":{},"expect_absent_claim_refs":["claim:population-bark-bast"]}
+{"id":"plan-semantic-ok","purpose":"semantic_resolution","text":"Выковать железо","year":1230,"place_refs":["region_novgorod_land"],"actor_facets":{},"expect_absent_claim_refs":[]}
+{"id":"plan-future-date","purpose":"conversation","text":"Онфим после 1230","year":1230,"place_refs":["region_novgorod_land"],"actor_facets":{},"expect_absent_claim_refs":["claim:candidate-gramota199-onfim-instructional-text"]}
+{"id":"plan-npc-dio","purpose":"npc_decision","text":"Кузнец решает про наковальню","year":1230,"place_refs":["region_novgorod_land"],"actor_facets":{},"expect_absent_claim_refs":[],"expect_present_claim_refs":["claim:ordinary-life-smith-anvil-hammer-tongs"]}

@@ -8,10 +8,10 @@ test('P05 historical snapshot remains 160 contracts / 58 errors independently of
   assert.equal(target.errors.length, 58);
 });
 
-test('P06 harness parses the current 225-contract / 82-error union independently of runtime artifacts', async () => {
+test('P06 harness parses the current 228-contract / 86-error union independently of runtime artifacts', async () => {
   const report = await collectConformanceReport();
-  assert.equal(report.target.contracts.length, 225);
-  assert.equal(report.target.errors.length, 82);
+  assert.equal(report.target.contracts.length, 228);
+  assert.equal(report.target.errors.length, 86);
   assert.equal(report.target.stateMachines.executionTransitions.length, 16);
   assert.equal(report.target.stateMachines.executionEvents.length, 12);
 });

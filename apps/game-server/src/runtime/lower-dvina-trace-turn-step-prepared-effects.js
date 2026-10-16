@@ -1,6 +1,8 @@
 import { serverError } from '../errors.js';
 import { deepFreeze } from
   './lower-dvina-trace-turn-step-runtime-common.js';
+import { projectPreparedSiteLineState } from
+  './lower-dvina-trace-turn-step-prepared-state-projection.js';
 import { buildLowerDvinaTracePreparedRouteWorkingProjection,
   projectPreparedDomainState } from
   './lower-dvina-trace-turn-step-prepared-state-projection.js';
@@ -55,6 +57,10 @@ export function createLowerDvinaTracePreparedDomainEffect({
         || (TRACE_PHASE9_PREPARED_COMMANDS.has(commandId) && priorCount === 0);
     },
     currentState() {
+      return structuredClone(currentState);
+    },
+    replaceCurrentState(nextState) {
+      currentState = structuredClone(nextState);
       return structuredClone(currentState);
     },
     assertContinuation({ plan, prepared_chain_context: context } = {}) {
@@ -212,16 +218,22 @@ async function applyPreparedPhase3Route({
 }) {
   const consequence = input?.consequence;
   const movement = consequence?.movement;
-  const duration = Number(consequence?.duration_minutes);
+  const duration = consequence?.duration_minutes;
+  const siteLine = consequence?.position_transition?.owner
+      === '@rus/turn/spatial-v3-site-connection-traversal'
+    && movement?.cost_kind === 'time';
   if (!['movement'].includes(consequence?.phase3_kind
         ?? consequence?.phase8_kind)
-      || !Number.isSafeInteger(duration) || duration <= 0
-      || movement?.destination?.location_ref == null
+      || !validPreparedMovementDuration(consequence, duration)
+      || (!siteLine && movement?.destination?.location_ref == null)
       || !validRoutePriorCount(input, semanticPrefix)) {
     fail('TRACE_TURN_STEP_PREPARED_ROUTE_INVALID');
   }
-  const projection = buildLowerDvinaTracePreparedRouteWorkingProjection({
-    projection: input.working_projection, movement, committedState });
+  const projection = siteLine
+    ? projectPreparedSiteLineState(input.working_projection,
+      consequence.position_transition, consequence.spatial_v3_traversal)
+    : buildLowerDvinaTracePreparedRouteWorkingProjection({
+      projection: input.working_projection, movement, committedState });
   return deepFreeze({
     working_projection: projection,
     summary: `prepared:${input.command_id}`,
@@ -235,6 +247,25 @@ async function applyPreparedPhase3Route({
       consequence: structuredClone(consequence)
     }
   });
+}
+
+function validPreparedMovementDuration(consequence, duration) {
+  const elapsed = consequence?.position_transition?.owner
+      === '@rus/turn/spatial-v3-site-connection-traversal'
+    && consequence?.movement?.cost_kind === 'time'
+    ? consequence?.spatial_v3_traversal?.clock_update?.actual_elapsed
+    : null;
+  if (elapsed == null) return Number.isSafeInteger(duration) && duration > 0;
+  if (!/^\d+$/u.test(String(elapsed.numerator))
+      || !/^\d+$/u.test(String(elapsed.denominator))) return false;
+  const numerator = BigInt(elapsed.numerator);
+  const denominator = BigInt(elapsed.denominator);
+  if (numerator <= 0n || denominator <= 0n) return false;
+  let left = numerator;
+  let right = denominator;
+  while (right !== 0n) [left, right] = [right, left % right];
+  const projection = Number(numerator) / Number(denominator);
+  return left === 1n && Number.isFinite(projection) && duration === projection;
 }
 
 async function applyPreparedPhase4Route({ input, committedState,

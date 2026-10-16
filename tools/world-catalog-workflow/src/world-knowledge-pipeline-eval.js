@@ -9,7 +9,7 @@ import { loadLowerDvinaTraceMaterializationBundle } from
 import { createProductionWorldKnowledgeGrounder, worldKnowledgeFactualClosure } from
   '../../../apps/game-server/src/runtime/world-knowledge-grounding.js';
 import { createProductionLlmRoleRunner } from
-  '../../../apps/game-server/src/infrastructure/provider/deepseek.js';
+  '../../../apps/game-server/src/infrastructure/provider/openai-compatible.js';
 
 if (process.argv[1] != null
     && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
@@ -137,7 +137,7 @@ async function main() {
       correctness_measurement: 'Automatic gate checks answer class and cited evidence refs. Answer prose is retained for independent grounding review; these metrics alone do not prove factual correctness of every sentence.',
       cost_measurement: { unit: 'provider_reported_tokens',
         monetary_estimate_usd: null,
-        reason: 'The configured deepseek-v4-flash alias has no project-owned immutable price schedule; token usage is retained without inventing a rate.' },
+        reason: 'The configured model alias has no project-owned immutable price schedule; token usage is retained without inventing a rate.' },
       modes: Object.fromEntries(['without_wk', 'structured_lexical', 'hybrid']
         .map((mode) => [mode, metrics(runs.filter((run) => run.mode === mode))])),
       decision: { ...productionGate, production_mode: 'hybrid',
@@ -282,5 +282,5 @@ function metrics(values) {
 
 function providerOf(values) {
   const usage = values.find(({ semantic_usage }) => semantic_usage != null);
-  return usage == null ? null : 'configured production DeepSeek backend';
+  return usage == null ? null : 'configured production LLM backend';
 }

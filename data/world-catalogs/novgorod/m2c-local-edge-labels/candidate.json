@@ -1,0 +1,1509 @@
+{
+  "artifact_type": "local_scene_movement_edge_presentation_authoring_candidate",
+  "candidate_id": "novgorod_m2c_local_edge_labels_v1",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "authoring_policy": "Neutral editorial ordinals distinguish currently admitted local passage choices at one source position. Exact template id/version and edge slot identify the candidate; labels do not grant exit visibility, knowledge or movement capability.",
+  "labels": [
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_boundary_access_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_boundary_access_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_boundary_access_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_boundary_access_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_boundary_access_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_boundary_access_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_boundary_access_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_boundary_access_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_boundary_access_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_boundary_access_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_boundary_access_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_boundary_access_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_burial_ritual_buffer_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_burial_ritual_buffer_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_burial_ritual_buffer_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_burial_ritual_buffer_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_burial_ritual_buffer_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_burial_ritual_buffer_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_burial_ritual_buffer_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_burial_ritual_buffer_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_burial_ritual_buffer_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_burial_ritual_buffer_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_burial_ritual_buffer_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_burial_ritual_buffer_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_dry_route_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_dry_route_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_dry_route_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_dry_route_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_dry_route_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_dry_route_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_dry_route_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_dry_route_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_dry_route_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_dry_route_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_dry_route_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_dry_route_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_exploration_concealment_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_exploration_concealment_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_exploration_concealment_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_exploration_concealment_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_exploration_concealment_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_exploration_concealment_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_exploration_concealment_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_exploration_concealment_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_exploration_concealment_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_exploration_concealment_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_exploration_concealment_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_exploration_concealment_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_general_hazard_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_general_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_general_hazard_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_general_hazard_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_general_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_general_hazard_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_general_hazard_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_general_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_general_hazard_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_general_hazard_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_general_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_general_hazard_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_habitation_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_habitation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_habitation_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_habitation_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_habitation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_habitation_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_habitation_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_habitation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_habitation_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_habitation_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_habitation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_habitation_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_landing_transition_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_landing_transition_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_landing_transition_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_landing_transition_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_landing_transition_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_landing_transition_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_landing_transition_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_landing_transition_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_landing_transition_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_landing_transition_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_landing_transition_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_landing_transition_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_observation_orientation_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_observation_orientation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_observation_orientation_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_observation_orientation_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_observation_orientation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_observation_orientation_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_observation_orientation_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_observation_orientation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_observation_orientation_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_observation_orientation_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_observation_orientation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_observation_orientation_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_resource_hazard_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_resource_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_resource_hazard_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_resource_hazard_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_resource_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_resource_hazard_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_resource_hazard_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_resource_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_resource_hazard_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_resource_hazard_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_resource_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_resource_hazard_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_resource_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_resource_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_resource_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_resource_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_resource_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_resource_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_resource_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_resource_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_resource_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_resource_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_resource_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_resource_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_route_approach_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_route_approach_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_route_approach_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_route_approach_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_route_approach_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_route_approach_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_route_approach_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_route_approach_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_seasonal_route_hazard_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_seasonal_route_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_seasonal_route_hazard_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_seasonal_route_hazard_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_seasonal_route_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_seasonal_route_hazard_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_seasonal_route_hazard_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_seasonal_route_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_seasonal_route_hazard_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_seasonal_route_hazard_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_seasonal_route_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_seasonal_route_hazard_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_shelter_rest_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_shelter_rest_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_shelter_rest_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_shelter_rest_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_shelter_rest_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_shelter_rest_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_shelter_rest_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_shelter_rest_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_shelter_rest_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_shelter_rest_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_shelter_rest_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_shelter_rest_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_water_hazard_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_water_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_water_hazard_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_water_hazard_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_water_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_water_hazard_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_water_hazard_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_water_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_water_hazard_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_water_hazard_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_water_hazard_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_water_hazard_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_water_navigation_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_water_navigation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_water_navigation_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_water_navigation_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_water_navigation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_water_navigation_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_water_navigation_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_water_navigation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_water_navigation_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_water_navigation_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_water_navigation_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_water_navigation_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_wetland_flood_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_wetland_flood_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_wetland_flood_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_wetland_flood_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_wetland_flood_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_wetland_flood_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_wetland_flood_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_wetland_flood_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_wetland_flood_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_wetland_flood_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_wetland_flood_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_wetland_flood_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_work_storage_social_v1__edge_1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_work_storage_social_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_1",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_work_storage_social_v1@1/edge_1"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_work_storage_social_v1__edge_2",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_work_storage_social_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_2",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_work_storage_social_v1@1/edge_2"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_work_storage_social_v1__edge_3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_work_storage_social_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_3",
+      "display_label": "Проход 2",
+      "editorial_choice_ordinal": 2,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_work_storage_social_v1@1/edge_3"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    },
+    {
+      "id": "m2c_local_edge_label__stfv3__g5_work_storage_social_v1__edge_4",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "scene_template_ref": {
+        "id": "stfv3__g5_work_storage_social_v1",
+        "version": 1
+      },
+      "edge_slot_key": "edge_4",
+      "display_label": "Проход 1",
+      "editorial_choice_ordinal": 1,
+      "visibility_rule": "require_current_authoritative_visible_or_known_exit_projection",
+      "provenance": {
+        "directness": "editorial",
+        "confidence": "medium",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json#stfv3__g5_work_storage_social_v1@1/edge_4"
+        ],
+        "applicability": "Template edge only; a per-party generated edge inherits this label through its exact scene template and slot reference.",
+        "limits": "The ordinal distinguishes choices from the same position only. It asserts no destination name, compass direction, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission is mandatory."
+      }
+    }
+  ]
+}

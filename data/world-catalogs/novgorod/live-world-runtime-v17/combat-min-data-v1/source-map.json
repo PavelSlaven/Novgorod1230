@@ -1,0 +1,591 @@
+{
+  "schema": "novgorod.combat_data_source_map.v1",
+  "generated_from_candidate": "minimal-combat-bundle.candidate.json",
+  "source_checkout_pins": {
+    "integ-98": "7a33888c3208e049100436e2c4652556f92439bd",
+    "ref-gamebase": "3ab1c890c1caee2c1247ee144bf66bd35de705ec",
+    "ref-pr98": "b3143fad851f67d24d1b9441e03ee0afef4bb658",
+    "combat-min": "8ef2b6494a88589ef88b7bacf13a9c427408e91d"
+  },
+  "sources": [
+    {
+      "id": "src.contract-index.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md",
+      "lines": [
+        99,
+        110,
+        177,
+        178
+      ],
+      "sha256": "262d34f2cd0addaeb2e1cdabed526f88c20e3f365ae7a555290ad6158287dd49",
+      "contract_status": "authoritative status and scope index for the pinned checkout",
+      "use": "active statuses, applicability caveat, and combat contract set"
+    },
+    {
+      "id": "src.combat_system.check.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/combat_system.md",
+      "lines": [
+        109,
+        181,
+        234,
+        256
+      ],
+      "sha256": "8542f205b0d78139b57ae6a17d970dbc73aa24a452e75e1b428cf91474139e9a",
+      "contract_status": "ACTIVE DOMAIN NORM per CONTRACT_INDEX.md:103-110",
+      "use": "attack/defense formulas and margin-to-quality bands; generic applicability to selected v17 binding still needs confirmation"
+    },
+    {
+      "id": "src.combat_system.harm-health.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/combat_system.md",
+      "lines": [
+        260,
+        275,
+        368,
+        400
+      ],
+      "sha256": "8542f205b0d78139b57ae6a17d970dbc73aa24a452e75e1b428cf91474139e9a",
+      "contract_status": "ACTIVE DOMAIN NORM per CONTRACT_INDEX.md:103-110",
+      "use": "harm formula and health-loss bands; no full injury/condition persistence claimed"
+    },
+    {
+      "id": "src.combat_system.body.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/combat_system.md",
+      "lines": [
+        368,
+        435
+      ],
+      "sha256": "8542f205b0d78139b57ae6a17d970dbc73aa24a452e75e1b428cf91474139e9a",
+      "contract_status": "ACTIVE DOMAIN NORM plus CR #224 minimum-scope restriction",
+      "use": "health subtraction and incapacitation; zero health alone is not death"
+    },
+    {
+      "id": "src.combat_system.weapon-danger.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/combat_system.md",
+      "lines": [
+        279,
+        306
+      ],
+      "sha256": "8542f205b0d78139b57ae6a17d970dbc73aa24a452e75e1b428cf91474139e9a",
+      "contract_status": "ACTIVE DOMAIN NORM; field mapping still candidate",
+      "use": "explicit normative examples for fist danger and item access rule; not a row-by-row mapping of game-base catalog"
+    },
+    {
+      "id": "src.ordinary-armament-mechanics.v1",
+      "path": "/srv/novgorod-work/worktrees/integ-98/packages/combat-health/src/ordinary-armament-mechanics.js",
+      "lines": [
+        3,
+        35
+      ],
+      "sha256": "10092c2c33e5e331a8642097100f6886eeab267280742479ca6abe7e1e80002b",
+      "contract_status": "existing runtime capability; D67 generic applicability/approval pending",
+      "use": "serviceable ordinary-light capability maps to danger 1 and damaged to unusable/0 within that capability only"
+    },
+    {
+      "id": "src.action-produced-weapon-mechanics.v1",
+      "path": "/srv/novgorod-work/worktrees/integ-98/packages/combat-health/src/action-produced-weapon-mechanics.js",
+      "lines": [
+        3,
+        49
+      ],
+      "sha256": "55e286ad45160749b281063d8f0b29e608dabf69a630aed590713c6ec4120e04",
+      "contract_status": "D47 code-owned qualitative schema; current generic combat approval pending",
+      "use": "enum-to-danger map 0/1/2, used only for one held physically described action-produced item after exact mechanics lookup"
+    },
+    {
+      "id": "src.items-property-owner.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/packages/combat-health/MODULE.md",
+      "lines": [
+        67,
+        80
+      ],
+      "sha256": "4cd37ce4a4ecc9d0c971d226022d2adcf3b8c593007ecad8ecdcac81b4fb157a",
+      "contract_status": "owner boundary active in pinned checkout",
+      "use": "exact mechanics precede D47 classification; model emits only qualitative class; unknown/damaged/ambiguous items fail closed"
+    },
+    {
+      "id": "src.game-base-weapons-catalog.v1",
+      "path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/README.md",
+      "lines": [
+        1,
+        28,
+        32,
+        42,
+        57,
+        65
+      ],
+      "sha256": "f5e5b6a2c79643cc44ed2fffd75d9b6b4320fe49a572ad4ed3c2eb9a934d1950",
+      "contract_status": "candidate, not approved",
+      "use": "identity/category/material/condition/source evidence and access context only; catalog does not assign combat danger or protection"
+    },
+    {
+      "id": "src.game-base-weapons-rows.v1",
+      "path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv",
+      "lines": [
+        1,
+        71
+      ],
+      "sha256": "6a17320831c82c37db68f87b00e66c3e248e90eb2cd8e7fe7fc21acacbebc288",
+      "contract_status": "candidate rows; no row is promoted by this bundle",
+      "use": "lookup/validation of item identifiers and declared properties only"
+    },
+    {
+      "id": "src.duration.calibration.v1",
+      "path": "minimal-combat-bundle.candidate.json",
+      "lines": [
+        612,
+        612
+      ],
+      "sha256": null,
+      "contract_status": "self-authored D71 proposal locator; not an independent factual source",
+      "use": "candidate-internal locator for six-second proposal, allowed bounds and rationale; value remains a self-derived unbenchmarked gameplay calibration",
+      "pin_kind": "internal_candidate_locator",
+      "json_pointer": "/durations/per_action_profiles/0"
+    },
+    {
+      "id": "src.npc-combat-boundary.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
+      "lines": [
+        482,
+        530,
+        859,
+        904,
+        975,
+        1000,
+        1380,
+        1390
+      ],
+      "sha256": "20bee8872db61df33025c687f56188b973ac4e85ed54cd549e013dcf98cd775f",
+      "contract_status": "ACTIVE per CONTRACT_INDEX.md:101,103; v17 applicability confirmation pending",
+      "use": "meaningful signal aggregation and material/critical decision boundaries; technical events alone do not force a decision"
+    },
+    {
+      "id": "src.temporal-control-outcome.v1",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
+      "lines": [
+        1521,
+        1568
+      ],
+      "sha256": "b085c7c8f0bf7c07f8fa7241d92fe2b56d164bd960d5c0cbfa42d922c7a4ad6f",
+      "contract_status": "ACTIVE per CONTRACT_INDEX.md:100; zero-time control outcome semantics require confirmation for this use",
+      "use": "rational elapsed-time representation; confirm whether boundary/intent-only outcomes may have zero elapsed"
+    },
+    {
+      "id": "src.npc-exit-and-choice.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
+      "lines": [
+        1160,
+        1249,
+        1316,
+        1374,
+        1825,
+        1888
+      ],
+      "sha256": "20bee8872db61df33025c687f56188b973ac4e85ed54cd549e013dcf98cd775f",
+      "contract_status": "ACTIVE per CONTRACT_INDEX.md:103; model/context applicability pending",
+      "use": "surrender and break_contact are intents; actual effects, perceived context and route feasibility remain owner controlled"
+    },
+    {
+      "id": "src.combat-min-checklist.v1",
+      "path": "/srv/novgorod-work/fleet/tasks/iss-224-plan/out/combat-data-approval-checklist.md",
+      "lines": [
+        23,
+        36,
+        43,
+        46,
+        57,
+        61
+      ],
+      "sha256": "4655e1ff58423c8cea682d148d1339644cfbaf905fcd2bfb44e52be274c89251",
+      "contract_status": "accepted task approval checklist; does not itself approve values",
+      "use": "scope, profile/owner requirements, typed gaps, separate approval and D72 metadata boundary"
+    },
+    {
+      "id": "src.combat-cr.v1",
+      "path": "/srv/novgorod-work/fleet/tasks/iss-224/out/combat-cr.md",
+      "lines": [
+        7,
+        15,
+        32,
+        40,
+        48,
+        52
+      ],
+      "sha256": "81a27dd537ccf18b3a39fd066af6b5dd23314a4699949246af5a623f743f2b95",
+      "contract_status": "accepted CR; candidate data still needs separate approval",
+      "use": "minimum slice boundary, owner map, timing requirement, D71/D41/D72 and exclusions"
+    },
+    {
+      "id": "src.combat-gap-matrix.v1",
+      "path": "/srv/novgorod-work/fleet/tasks/iss-224/out/combat-gap-matrix.md",
+      "lines": [
+        9,
+        16,
+        32,
+        40
+      ],
+      "sha256": "4deaa9517d79ab71c6e6a8d743365b9e22641ab381dc843f802c30187fb69ab2",
+      "contract_status": "research synthesis, not approval",
+      "use": "known gaps, Lower Dvina scope boundary, current time-handoff limitation"
+    },
+    {
+      "id": "src.duration-research.v1",
+      "path": "/srv/novgorod-work/fleet/tasks/combat-research/out/combat-research-report.md",
+      "lines": [
+        160,
+        171
+      ],
+      "sha256": "bf0fc78b74220e17f3f6b0da320720dae5bb5fb2c13e229fac37996ded8f94d9",
+      "contract_status": "evidence synthesis; numeric records are not combat action profiles",
+      "use": "shows the collected modern/clinical/demo durations do not establish medieval combat step timing"
+    },
+    {
+      "id": "src.duration-research-table.v1",
+      "path": "/srv/novgorod-work/fleet/tasks/combat-research/out/round3/durations-table.csv",
+      "lines": [
+        1,
+        10
+      ],
+      "sha256": "7034338053dd2b86594113b1b1b4a6e443bef1775ae964e21c8dea9aab48c659",
+      "contract_status": "modern_reference observations only; excluded from combat timing calibration",
+      "use": "negative evidence against treating unrelated measured times as strike or retreat durations"
+    },
+    {
+      "id": "src.combat-min-probe.v1",
+      "path": "/srv/novgorod-work/fleet/tasks/combat-min/out/bench/combat-min-d65/manifest.json",
+      "lines": [
+        1,
+        38
+      ],
+      "sha256": "41711124c96444a6aa3c2da9a6a5e95a9b04eb4b89c9deee4a3be5398367fdf6",
+      "contract_status": "pre-runtime probe fixture; not calibration or D41 result",
+      "use": "source for ordinary/authored, unknown weapon, new signal, surrender and exit cases"
+    },
+    {
+      "id": "src.body-initialization-owner-rule",
+      "path": "/srv/novgorod-work/fleet/tasks/combat-min/answers.md",
+      "lines": [
+        140,
+        145
+      ],
+      "sha256": null,
+      "contract_status": "reviewer decision/addendum; mapping candidate belongs in data task, not an approved numeric profile",
+      "use": "reviewer addendum requires this task to include a versioned actor_base_attributes_v1 + identity to health/energy/satiety mapping; missing links are typed gaps and any calibration carries internal D71 metadata",
+      "pin_kind": "append_only_excerpt",
+      "excerpt_sha256": "bbcc4289b790af6dfb88339f3389cf2bcfde84e5f77634f64053f0add6a3b10d"
+    },
+    {
+      "id": "src.actor-base-attributes.v1",
+      "path": "/srv/novgorod-work/worktrees/integ-98/packages/materialization/src/actor-base-attributes.js",
+      "lines": [
+        4,
+        5,
+        12,
+        50,
+        112,
+        140
+      ],
+      "sha256": "0b204699a17c2730037c00d52dd95526e1bc0e2a816975bff8d33765ef108996",
+      "contract_status": "versioned existing actor capability facts; not a health/energy/satiety profile by itself",
+      "use": "source for six validated NPC base-attribute facts and pinned profile/trace identity"
+    },
+    {
+      "id": "src.approved-procedural-npc-body-binding.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/packages/materialization/src/approved-procedural-npc.js",
+      "lines": [
+        67,
+        74,
+        99,
+        105,
+        123,
+        141
+      ],
+      "sha256": "f3ba9d5273a2e0521f6d8060f068774377c8bd370c6656e7c70226e0fc10bb42",
+      "contract_status": "existing approved procedural binding; generic combat usage requires source/applicability pin",
+      "use": "shows attributes and separately approved body_profile are carried in NPC materialization; do not infer one from the other"
+    },
+    {
+      "id": "src.body-state-owner.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/packages/body-state/MODULE.md",
+      "lines": [
+        5,
+        18,
+        20,
+        24,
+        34,
+        36
+      ],
+      "sha256": "e2bfa5782aa9a7b17f91202932d84c674d19576211ba89eac45a6c487efe1372",
+      "contract_status": "owner boundary and active Temporal body API in pinned checkout",
+      "use": "body metrics, validation and transition owner; no local database commit or invented fallback"
+    },
+    {
+      "id": "src.scene-npc-body-readback.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/apps/game-server/src/infrastructure/postgres/scene-npcs-readback.js",
+      "lines": [
+        12,
+        34,
+        44,
+        67
+      ],
+      "sha256": "62db1a9088d692a056c72b4d301df54a1238680143a54c534f9dda9779c1fad5",
+      "contract_status": "current scene projection omits persisted NPC body state",
+      "use": "source for readback gap; scene position is not body state"
+    },
+    {
+      "id": "src.party-body-state-storage.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/schemas/party-db/011_party_runtime_first_playable.sql",
+      "lines": [
+        330,
+        345
+      ],
+      "sha256": "2714dd9faa9f1941ccf515e7cee6e46d46996cd00520f68492023e40ad59f79a",
+      "contract_status": "existing party body table; atomic first combat write still requires runtime handoff",
+      "use": "body persistence identity and storage source; no new schema implied"
+    },
+    {
+      "id": "src.body-mapping-reviewer-addendum",
+      "path": "/srv/novgorod-work/fleet/tasks/combat-min/answers.md",
+      "lines": [
+        147,
+        153
+      ],
+      "sha256": null,
+      "contract_status": "reviewer instruction for combat-data candidate; not approval of any metric value",
+      "use": "requires versioned attributes+identity to body metrics mapping, per-link sources or D71 rule, and typed gaps for missing evidence",
+      "pin_kind": "append_only_excerpt",
+      "excerpt_sha256": "e6674f36617188efecee4826b5db392c9048e7649941b3c1c81527e31ed83678"
+    },
+    {
+      "id": "src.body-state-metric-bounds.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/packages/body-state/src/index.js",
+      "lines": [
+        17,
+        24,
+        80,
+        91
+      ],
+      "sha256": "272ccc2d6abcebebccbd0fc3be923581e2b56d57bb19c36f3a0fc485a716a37d",
+      "contract_status": "active body-state metric names and 0..100 validation; no initial profile/mapping",
+      "use": "bounds health, energy and satiety outputs without assigning generic starting values"
+    },
+    {
+      "id": "src.character-parameters-guide.v-current",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/knowledge-source/corpus/DOCUMENTS/character_parameters.txt",
+      "lines": [
+        15,
+        35,
+        40,
+        48
+      ],
+      "sha256": "cf8bc8f515e6c6758886e1532ae60a8dccf01f3804f52728cf3a89f609e728c8",
+      "contract_status": "UNDECLARED / DOMAIN GUIDE per CONTRACT_INDEX; descriptive only, not a runtime mapping authority",
+      "use": "separates identity, base attributes and current body metrics; does not define a mapping"
+    },
+    {
+      "id": "src.actor-base-attributes-candidate.v1",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/candidate.json",
+      "lines": [
+        1,
+        16,
+        20,
+        35
+      ],
+      "sha256": "e3d24c12ab778b621f741d1c92bc43cb7c3d4f393686dc9bfc701102f9e1137a",
+      "contract_status": "candidate_approval_pending; runtime/import/activation unauthorized",
+      "use": "source for candidate attribute profile and values; cannot independently authorize body mapping"
+    },
+    {
+      "id": "src.actor-base-attributes-approval-scope.v1",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/authoring-approval-attestation.json",
+      "lines": [
+        1,
+        4,
+        20,
+        45
+      ],
+      "sha256": "2e6549866c614cf4c2810a6e5e15d5236e5ae4f1ae560603df048823c445e3e0",
+      "contract_status": "approved_authoring_only attestation; does not by itself authorize runtime or body metrics",
+      "use": "bounds the existing attribute approval so it is not overstated as approval of health/energy/satiety links"
+    },
+    {
+      "id": "src.body-profile-first-playable-scope.v1",
+      "path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/first-playable-v1/catalog.json",
+      "lines": [
+        90,
+        94
+      ],
+      "sha256": "03b866679392eee2c68605965744a7d1be3e6aeb6ccf2a98132e288cbffa44b3",
+      "contract_status": "candidate first-playable boatman profile; scoped analogy only, not generic default",
+      "use": "analogical anchor for D71 body proposals 100/80/70 only; never load as scenario fallback or claim a generic approved profile"
+    },
+    {
+      "id": "src.actor-base-attributes-v17-activation-readback.v1",
+      "path": "/srv/novgorod-work/worktrees/integ-98/data/world-catalogs/novgorod/live-world-runtime-v17/production-bootstrap-readback.json",
+      "lines": [
+        1
+      ],
+      "sha256": "626d8e4114d510feeb08b949e8badc258ad31f4c1ccbd6c999888e848e26544f",
+      "contract_status": "exact production bootstrap readback: actor profile activated for new production parties only; no body profile mapping approval",
+      "use": "confirms actor_base_attributes_v1 input status and its activation scope; does not determine any initial body metric"
+    },
+    {
+      "id": "src.body-quality-bands-reviewer-addendum",
+      "path": "/srv/novgorod-work/fleet/tasks/combat-data/answers.md",
+      "lines": [
+        27,
+        33
+      ],
+      "sha256": null,
+      "contract_status": "reviewer requirement for D72 candidate content; not approval of thresholds or wording",
+      "use": "requires natural-language state-only NPC descriptions, D71 internal threshold metadata and no invented injuries or causes",
+      "pin_kind": "append_only_excerpt",
+      "excerpt_sha256": "03afb153292fa34be67a818c08744444f9b860077e047e5d469be463c62e5da9"
+    },
+    {
+      "id": "src.body-state-initializer.combat-min.v-current",
+      "path": "/srv/novgorod-work/worktrees/combat-min/packages/body-state/src/initialization.js",
+      "lines": [
+        7,
+        27
+      ],
+      "sha256": "125b306be21bb069f99618a6422ca6ce48e435f4098dd72b3d6c09ea758d8323",
+      "contract_status": "pinned combat-min owner initializer contract; profile still requires approved status",
+      "use": "defines rus.body_state.initialization_profile.v1 DTO shape, status gate and 0..100 initial-state fields"
+    },
+    {
+      "id": "src.actor-base-attributes-validator.combat-min.v-current",
+      "path": "/srv/novgorod-work/worktrees/combat-min/packages/materialization/src/actor-base-attributes.js",
+      "lines": [
+        109,
+        128
+      ],
+      "sha256": "0b204699a17c2730037c00d52dd95526e1bc0e2a816975bff8d33765ef108996",
+      "contract_status": "pinned combat-min full actor_base_attributes_v1 snapshot validator",
+      "use": "defines complete values/profile_ref/generation/trace consistency precondition for initialization inputs"
+    },
+    {
+      "id": "src.combat-health-runtime-harm.v-current",
+      "path": "/srv/novgorod-work/worktrees/combat-min/packages/combat-health/src/index.js",
+      "lines": [
+        62,
+        69
+      ],
+      "sha256": "16272328c6e3f66a7d633e9b02de36ccc10a106bedc67d38989dd9a4a8f358f7",
+      "contract_status": "pinned combat-min implementation; separate from normative combat_system formula",
+      "use": "shows runtime nonnegative damage-score clamp; candidate cites it only for derived normalization, not the raw norm"
+    }
+  ],
+  "field_sources": {
+    "execution.check.normative_rule": [
+      "src.combat_system.check.v-current",
+      "src.combat-min-checklist.v1",
+      "src.contract-index.v-current"
+    ],
+    "execution.harm": [
+      "src.combat_system.harm-health.v-current",
+      "src.combat-min-checklist.v1",
+      "src.contract-index.v-current"
+    ],
+    "execution.health_transition": [
+      "src.combat_system.body.v-current",
+      "src.combat-cr.v1",
+      "src.combat-gap-matrix.v1",
+      "src.body-initialization-owner-rule",
+      "src.actor-base-attributes.v1",
+      "src.approved-procedural-npc-body-binding.v-current",
+      "src.body-state-owner.v-current",
+      "src.scene-npc-body-readback.v-current",
+      "src.party-body-state-storage.v-current",
+      "src.contract-index.v-current",
+      "src.body-mapping-reviewer-addendum",
+      "src.body-state-metric-bounds.v-current",
+      "src.character-parameters-guide.v-current",
+      "src.actor-base-attributes-candidate.v1",
+      "src.actor-base-attributes-approval-scope.v1",
+      "src.body-profile-first-playable-scope.v1",
+      "src.actor-base-attributes-v17-activation-readback.v1"
+    ],
+    "execution.weapon_capability_mapping": [
+      "src.combat_system.weapon-danger.v-current",
+      "src.ordinary-armament-mechanics.v1",
+      "src.action-produced-weapon-mechanics.v1",
+      "src.items-property-owner.v-current",
+      "src.game-base-weapons-catalog.v1",
+      "src.game-base-weapons-rows.v1"
+    ],
+    "durations.per_action_profiles": [
+      "src.duration.calibration.v1",
+      "src.duration-research.v1",
+      "src.duration-research-table.v1",
+      "src.combat-gap-matrix.v1",
+      "src.temporal-control-outcome.v1",
+      "src.body-state-metric-bounds.v-current"
+    ],
+    "npc_decision.meaningful_boundary": [
+      "src.npc-combat-boundary.v-current",
+      "src.combat-cr.v1"
+    ],
+    "npc_decision.decision_context_required": [
+      "src.npc-combat-boundary.v-current",
+      "src.npc-exit-and-choice.v-current",
+      "src.combat-min-probe.v1"
+    ],
+    "npc_decision.surrender_or_exit_facts": [
+      "src.npc-exit-and-choice.v-current",
+      "src.combat-min-checklist.v1",
+      "src.combat-cr.v1"
+    ],
+    "applicability": [
+      "src.contract-index.v-current",
+      "src.combat-min-checklist.v1"
+    ],
+    "execution.health_transition.body_initialization.profile_mapping": [
+      "src.body-mapping-reviewer-addendum",
+      "src.actor-base-attributes.v1",
+      "src.actor-base-attributes-v17-activation-readback.v1",
+      "src.body-state-owner.v-current",
+      "src.body-state-metric-bounds.v-current",
+      "src.character-parameters-guide.v-current",
+      "src.contract-index.v-current",
+      "src.body-profile-first-playable-scope.v1"
+    ],
+    "execution.health_transition.body_initialization.profile_mapping.output_profile.metrics.health": [
+      "src.body-state-metric-bounds.v-current",
+      "src.body-profile-first-playable-scope.v1"
+    ],
+    "execution.health_transition.body_initialization.profile_mapping.output_profile.metrics.energy": [
+      "src.body-state-metric-bounds.v-current",
+      "src.body-profile-first-playable-scope.v1",
+      "src.character-parameters-guide.v-current"
+    ],
+    "execution.health_transition.body_initialization.profile_mapping.output_profile.metrics.satiety": [
+      "src.body-state-metric-bounds.v-current",
+      "src.body-profile-first-playable-scope.v1"
+    ],
+    "npc_decision.body_state_qualitative_context": [
+      "src.body-state-owner.v-current",
+      "src.body-state-metric-bounds.v-current",
+      "src.character-parameters-guide.v-current",
+      "src.body-quality-bands-reviewer-addendum"
+    ],
+    "execution.check.owner_request_binding": [
+      "src.combat-min-checklist.v1",
+      "src.combat-cr.v1",
+      "src.actor-base-attributes-validator.combat-min.v-current"
+    ],
+    "execution.health_transition.body_initialization.owner_initialization_profile_adapter": [
+      "src.body-state-initializer.combat-min.v-current",
+      "src.actor-base-attributes-validator.combat-min.v-current",
+      "src.body-mapping-reviewer-addendum",
+      "src.actor-base-attributes.v1"
+    ],
+    "execution.harm.derived_normalization": [
+      "src.combat-health-runtime-harm.v-current",
+      "src.combat_system.harm-health.v-current"
+    ],
+    "execution.health_transition.body_initialization.profile_mapping.inputs.actor_attributes": [
+      "src.actor-base-attributes-validator.combat-min.v-current",
+      "src.actor-base-attributes.v1"
+    ]
+  }
+}

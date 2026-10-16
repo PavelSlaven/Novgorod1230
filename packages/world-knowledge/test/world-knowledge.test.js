@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery } from '../src/index.js';
+import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery,
+  isValidCondition } from '../src/index.js';
+import { normalizeScores, normalizeRerankScores } from '../src/resolution.js';
 
 const bundlePath = new URL('../../../data/world-catalogs/novgorod/world-knowledge/pilot-v1/runtime-bundle.json', import.meta.url);
 const baseBundle = JSON.parse(await readFile(bundlePath, 'utf8'));
@@ -19,7 +21,7 @@ function query(overrides = {}) {
     requested_predicates: [],
     search_hints: [],
     context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'], actor_facets: {} },
-    budget: { max_facts: 24, max_candidates: 12, max_context_chars: 7000 },
+    budget: { max_facts: 24, max_candidates: 12 },
     ...overrides
   };
 }
@@ -36,9 +38,8 @@ test('the normative query shape is valid and resolution is deterministic', () =>
   assert.deepEqual(core.resolveWorldKnowledge(input), core.resolveWorldKnowledge(input));
 });
 
-test('model-facing context distinguishes reconstruction from direct facts without changing retrieval', () => {
-  for (const [directness, label] of Object.entries({ direct: 'FACT', inferred: 'INFERENCE',
-    analogical: 'ANALOGY', editorial: 'EDITORIAL', unknown: 'UNCERTAIN' })) {
+test('structured facts preserve directness without a prose projection', () => {
+  for (const directness of ['direct', 'inferred', 'analogical', 'editorial', 'unknown']) {
     const bundle = structuredClone(baseBundle);
     const claim = bundle.claims[0];
     claim.qualifiers = { typicality: 'unknown', confidence: 'medium', directness };
@@ -46,8 +47,9 @@ test('model-facing context distinguishes reconstruction from direct facts withou
       domains: [claim.domain], focus_refs: [claim.claim_ref]
     }));
     assert.ok(slice.facts.some(fact => fact.claim_ref === claim.claim_ref));
-    assert.ok(slice.context_text.includes(`${label} ${claim.claim_ref}:`));
-    if (directness !== 'direct') assert.ok(!slice.context_text.includes(`FACT ${claim.claim_ref}:`));
+    assert.equal(slice.facts.find(fact => fact.claim_ref === claim.claim_ref)
+      .qualifiers.directness, directness);
+    assert.equal(Object.hasOwn(slice, 'context_text'), false);
     assert.deepEqual(slice.hard_constraints, []);
   }
 });
@@ -80,7 +82,7 @@ test('query relevance precedes specificity within a shared focus, with determini
   bundle.lexical_indexes.en.inscription = refs;
   const input = query({ domains: ['economy_trade'], query_locale: 'en',
     focus_refs: [historical.subject_ref], search_hints: ['inscription'],
-    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 7000 } });
+    budget: { max_facts: 2, max_candidates: 2 } });
   const core = createWorldKnowledgeCore(bundle);
   assert.deepEqual(core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref), refs);
   input.search_hints = [];
@@ -137,7 +139,7 @@ test('a conflict group is never truncated to one side', () => {
   bundle.structured_indexes.place_to_claim_refs.region_novgorod_land.push(...refs);
   const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
     domains: ['economy_trade'], focus_refs: [support.subject_ref],
-    budget: { max_facts: 1, max_candidates: 1, max_context_chars: 7000 }
+    budget: { max_facts: 1, max_candidates: 1 }
   }));
   assert.equal(slice.verdict, 'disputed');
   assert.deepEqual(slice.disputes, []);
@@ -177,13 +179,32 @@ test('independent search hints retain their matches when another hint is rarer',
   const core = createWorldKnowledgeCore(bundle);
   const input = query({ domains: [support.domain], query_locale: 'en',
     search_hints: ['coppersmith', 'grain storage'],
-    budget: { max_facts: 30, max_candidates: 30, max_context_chars: 10000 } });
-  const refs = core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref);
+    budget: { max_facts: 30, max_candidates: 30 } });
+  const slice = core.resolveWorldKnowledge(input);
+  const refs = slice.facts.map(({ claim_ref }) => claim_ref);
   assert.ok(refs.includes(rareRef));
   assert.ok(commonRefs.every((ref) => refs.includes(ref)));
+  assert.deepEqual(slice.search_hint_hits, [true, true]);
   // Incidental words within one phrase still face the relative admission gate.
   input.search_hints = ['grain storage coppersmith'];
   assert.deepEqual(core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref), [rareRef]);
+});
+
+test('search_hint_hits is one bool per hint for orchestrator sufficiency', () => {
+  const bundle = structuredClone(baseBundle);
+  const support = bundle.claims[0];
+  const hitRef = 'claim:test:hint-hit';
+  bundle.claims.push({
+    ...structuredClone(support), claim_ref: hitRef,
+    applicability: { context_scope: 'universal' }
+  });
+  bundle.lexical_indexes.en.coppersmith = [hitRef];
+  const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
+    domains: [support.domain], query_locale: 'en',
+    search_hints: ['coppersmith', 'zzzz-nonexistent-token']
+  }));
+  assert.deepEqual(slice.search_hint_hits, [true, false]);
+  assert.ok(slice.facts.some((fact) => fact.claim_ref === hitRef));
 });
 
 test('vector recall does not tighten lexical admission when candidate budget has room', () => {
@@ -199,7 +220,7 @@ test('vector recall does not tighten lexical admission when candidate budget has
   bundle.lexical_indexes.en.gamma = [secondary];
   const input = query({ domains: [source.domain], query_locale: 'en',
     search_hints: ['alpha beta gamma'],
-    budget: { max_facts: 3, max_candidates: 3, max_context_chars: 7000 } });
+    budget: { max_facts: 3, max_candidates: 3 } });
   const core = createWorldKnowledgeCore(bundle);
   const lexical = core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref);
   assert.deepEqual(new Set(lexical), new Set([strong, secondary]));
@@ -209,6 +230,130 @@ test('vector recall does not tighten lexical admission when candidate budget has
     new Set([strong, secondary, semantic]));
   input.budget.max_candidates = 2;
   assert.equal(core.resolveWorldKnowledge(input, { vectorScores }).facts.length, 2);
+});
+
+test('optional rerankScores reorder admitted claims without expanding recall', () => {
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const source = bundle.claims[0];
+  const [alpha, beta] = ['claim:test:rerank-a', 'claim:test:rerank-b'];
+  bundle.claims.push(...[alpha, beta].map((claim_ref) => ({
+    ...structuredClone(source), claim_ref, applicability: { context_scope: 'universal' }
+  })));
+  bundle.lexical_indexes.en.alpha = [alpha];
+  bundle.lexical_indexes.en.beta = [beta];
+  const input = query({ domains: [source.domain], query_locale: 'en',
+    search_hints: ['alpha beta'],
+    budget: { max_facts: 2, max_candidates: 2 } });
+  const core = createWorldKnowledgeCore(bundle);
+  const vectorScores = new Map([[alpha, 0.9], [beta, 0.1]]);
+  const without = core.resolveWorldKnowledge(input, { vectorScores });
+  assert.equal(without.facts[0].claim_ref, alpha);
+  const rerankScores = new Map([[alpha, 0.1], [beta, 0.9]]);
+  const withRerank = core.resolveWorldKnowledge(input, { vectorScores, rerankScores });
+  assert.equal(withRerank.facts[0].claim_ref, beta);
+  assert.equal(withRerank.search_hint_relevance.length, 1);
+  // search_hint_relevance uses applied rerank (min-max), not raw vectors / constant 1.
+  assert.equal(without.search_hint_relevance[0], 0.9);
+  assert.equal(withRerank.search_hint_relevance[0], 1);
+  assert.equal(without.rerank_applied, false);
+  assert.equal(withRerank.rerank_applied, true);
+  assert.deepEqual(
+    core.admittedCandidateRefs(input, { vectorScores }).slice().sort(),
+    [alpha, beta].sort());
+});
+
+test('rerank map keys outside candidates do not expand recall', () => {
+  // Empty search_hints: any claim that sneaks into candidates is relevant.
+  // Outsider only in rerankScores must stay out of facts (Q3 / REVIEW-047).
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const source = bundle.claims[0];
+  const [alpha, outsider] = ['claim:test:rerank-cand', 'claim:test:rerank-outsider'];
+  for (const claim_ref of [alpha, outsider]) {
+    bundle.claims.push({
+      ...structuredClone(source), claim_ref,
+      applicability: { context_scope: 'universal' }
+    });
+  }
+  const input = query({ domains: [source.domain], query_locale: 'en',
+    focus_refs: [alpha], search_hints: [],
+    budget: { max_facts: 4, max_candidates: 4 } });
+  const core = createWorldKnowledgeCore(bundle);
+  const vectorScores = new Map([[alpha, 0.9]]);
+  const slice = core.resolveWorldKnowledge(input, {
+    vectorScores,
+    rerankScores: new Map([[alpha, 0.1], [outsider, 99]])
+  });
+  assert.equal(slice.facts.some((fact) => fact.claim_ref === outsider), false);
+  assert.ok(slice.facts.some((fact) => fact.claim_ref === alpha));
+});
+
+test('hybrid normalizeScores is max-divide, not min-max (lex/vector weight)', () => {
+  // Fixture where max-divide and min-max yield different ranked order (Q1).
+  const lexical = new Map([['a', 3], ['b', 4], ['c', 10]]);
+  const vector = new Map([['a', 10], ['b', 9], ['c', 1]]);
+  const maxDivLex = normalizeScores(lexical);
+  const maxDivVec = normalizeScores(vector);
+  const hybridMax = new Map(['a', 'b', 'c'].map((ref) => [
+    ref, (maxDivLex.get(ref) ?? 0) + (maxDivVec.get(ref) ?? 0)
+  ]));
+  const mmLex = normalizeRerankScores(lexical);
+  const mmVec = normalizeRerankScores(vector);
+  const hybridMm = new Map(['a', 'b', 'c'].map((ref) => [
+    ref, (mmLex.get(ref) ?? 0) + (mmVec.get(ref) ?? 0)
+  ]));
+  const order = (scores) => [...scores.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .map(([ref]) => ref);
+  assert.deepEqual(order(hybridMax), ['a', 'b', 'c']);
+  assert.deepEqual(order(hybridMm), ['b', 'a', 'c']);
+  assert.notDeepEqual(order(hybridMax), order(hybridMm));
+  assert.equal(normalizeScores(new Map([['x', -2], ['y', 4]])).get('x'), 0);
+  assert.ok(normalizeRerankScores(new Map([['x', -2], ['y', -0.5]])).get('y') > 0);
+});
+
+test('rerank all-or-nothing: partial map keeps hybrid order; negative logits min-max', () => {
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const source = bundle.claims[0];
+  const [alpha, beta] = ['claim:test:rerank-partial-a', 'claim:test:rerank-partial-b'];
+  bundle.claims.push(...[alpha, beta].map((claim_ref) => ({
+    ...structuredClone(source), claim_ref, applicability: { context_scope: 'universal' }
+  })));
+  bundle.lexical_indexes.en.alpha = [alpha];
+  bundle.lexical_indexes.en.beta = [beta];
+  const input = query({ domains: [source.domain], query_locale: 'en',
+    search_hints: ['alpha beta'],
+    budget: { max_facts: 2, max_candidates: 2 } });
+  const core = createWorldKnowledgeCore(bundle);
+  const vectorScores = new Map([[alpha, 0.9], [beta, 0.1]]);
+  // Partial coverage → hybrid (alpha stays first via vector).
+  const partial = core.resolveWorldKnowledge(input, {
+    vectorScores, rerankScores: new Map([[beta, 10]])
+  });
+  assert.equal(partial.facts[0].claim_ref, alpha);
+  // Complete negative logits → min-max, not clamp-to-empty.
+  const negatives = core.resolveWorldKnowledge(input, {
+    vectorScores, rerankScores: new Map([[alpha, -2], [beta, -0.5]])
+  });
+  assert.equal(negatives.facts[0].claim_ref, beta);
+});
+
+test('Core rejects non-finite rerankScores', () => {
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const core = createWorldKnowledgeCore(bundle);
+  const input = query({ domains: [bundle.claims[0].domain],
+    focus_refs: [bundle.claims[0].claim_ref] });
+  assert.throws(() => core.resolveWorldKnowledge(input, {
+    rerankScores: new Map([[bundle.claims[0].claim_ref, Number.NaN]])
+  }), (error) => error instanceof WorldKnowledgeError
+    && error.code === 'WORLD_KNOWLEDGE_QUERY_INVALID');
+  assert.throws(() => core.resolveWorldKnowledge(input, {
+    rerankScores: { not: 'a map' }
+  }), (error) => error instanceof WorldKnowledgeError
+    && error.code === 'WORLD_KNOWLEDGE_QUERY_INVALID');
 });
 
 test('coverage, operational availability and actor knowledge are distinct', () => {
@@ -308,13 +453,13 @@ test('structured applicability keeps universal and matching claims only', () => 
   assert.deepEqual(new Set(slice.facts.map((claim) => claim.claim_ref)), new Set([source.claim_ref, universal.claim_ref, matching.claim_ref]));
 });
 
-test('facts, candidates and context are bounded', () => {
+test('facts and candidates are bounded in the structured slice', () => {
   const slice = createWorldKnowledgeCore(baseBundle).resolveWorldKnowledge(query({
-    budget: { max_facts: 1, max_candidates: 1, max_context_chars: 40 }
+    budget: { max_facts: 1, max_candidates: 1 }
   }));
   assert.ok(slice.facts.length + slice.hard_constraints.length <= 1);
   assert.ok(slice.candidates.length <= 1);
-  assert.ok(slice.context_text.length <= 40);
+  assert.equal(Object.hasOwn(slice, 'context_text'), false);
 });
 
 test('inapplicable high-ranked noise cannot evict an applicable claim', () => {
@@ -332,7 +477,7 @@ test('inapplicable high-ranked noise cannot evict an applicable claim', () => {
   const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
     domains: ['economy_trade'],
     focus_refs: [support.subject_ref],
-    budget: { max_facts: 1, max_candidates: 1, max_context_chars: 7000 }
+    budget: { max_facts: 1, max_candidates: 1 }
   }));
   assert.equal(slice.verdict, 'supported');
   assert.equal(slice.facts[0].claim_ref, support.claim_ref);
@@ -342,6 +487,9 @@ test('query rejects unknown fields and revision mismatches', () => {
   assert.equal(validateWorldKnowledgeQuery({ ...query(), surprise: true }, baseBundle).ok, false);
   assert.equal(validateWorldKnowledgeQuery(query({ pack_revision: 'revision:other' }), baseBundle).ok, false);
   assert.equal(validateWorldKnowledgeQuery(query({ requested_predicates: ['invented'] }), baseBundle).ok, false);
+  assert.equal(validateWorldKnowledgeQuery(query({ budget: {
+    max_facts: 24, max_candidates: 12, max_context_chars: 7000
+  } }), baseBundle).ok, false);
   assert.equal(validateWorldKnowledgeQuery(query({ context: { time: { year: 1230 }, place_refs: [], actor_facets: {}, conditions: { invented: true } } }), baseBundle).ok, false);
   assert.equal(validateWorldKnowledgeQuery(query({ context: { time: { year: 1230, precision: 'exact' }, place_refs: [], actor_facets: {} } }), baseBundle).ok, false);
 });
@@ -360,7 +508,8 @@ test('production pack grounds historical and physical premises without asserting
   assert.equal(historical.verdict, 'supported');
   assert.ok(historical.facts.some(({ claim_ref }) =>
     claim_ref === 'claim:regional-fish-exploitation'));
-  assert.ok(historical.context_text.includes('не устанавливает'));
+  assert.ok(historical.facts.some(({ runtime_text }) =>
+    runtime_text.includes('не устанавливает')));
 
   const physical = core.resolveWorldKnowledge(query({
     pack_ref: productionBundle.manifest.pack_ref,
@@ -388,4 +537,51 @@ test('production hard exclusion rejects anachronistic legal backport', () => {
   assert.equal(slice.verdict, 'excluded');
   assert.equal(slice.hard_constraints[0].claim_ref,
     'claim:later-novgorod-judicial-charter');
+});
+
+test('empty started_historical_events means nothing begun yet (A-01)', () => {
+  const ok = validateWorldKnowledgeQuery(query({
+    context: { time: { year: 1230 }, place_refs: [], actor_facets: {},
+      conditions: { started_historical_events: [] } }
+  }), baseBundle);
+  assert.equal(ok.ok, true, ok.errors);
+  const slice = createWorldKnowledgeCore(baseBundle).resolveWorldKnowledge(query({
+    context: { time: { year: 1230 }, place_refs: [], actor_facets: {},
+      conditions: { started_historical_events: [] } }
+  }));
+  assert.ok(Array.isArray(slice.facts));
+});
+
+test('started_historical_events claim condition requires includes + string (A-09)', () => {
+  const bundle = structuredClone(baseBundle);
+  const source = bundle.claims[0];
+  const bad = { ...structuredClone(source), claim_ref: 'claim:test:bad-event',
+    applicability: { conditions: [{ facet: 'started_historical_events',
+      operator: 'equals', value: ['event:x'] }] } };
+  bundle.claims.push(bad);
+  assert.throws(() => createWorldKnowledgeCore(bundle));
+});
+
+test('isValidCondition rejects padded started_historical_events value (N-3)', () => {
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'includes', value: 'event:x'
+  }), true);
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'includes', value: ' event:x '
+  }), false);
+});
+
+test('started_historical_events forbids present operator (F4)', () => {
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'present', value: null
+  }), false);
+  const bundle = structuredClone(baseBundle);
+  const source = bundle.claims[0];
+  bundle.claims.push({
+    ...structuredClone(source),
+    claim_ref: 'claim:test:present-event',
+    applicability: { conditions: [{ facet: 'started_historical_events',
+      operator: 'present', value: null }] }
+  });
+  assert.throws(() => createWorldKnowledgeCore(bundle));
 });

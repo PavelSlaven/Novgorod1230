@@ -1,10 +1,9 @@
 # STACK — технологический стек
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-25, commit 59c1a33c.
 
 Карта стека со ссылками на владельцев. Правила здесь не копируются: норма — в [AGENTS.md](../../AGENTS.md),
-профильных контрактах и `MODULE.md`. Версии ниже — то, что закреплено в файлах на указанном commit.
-Пометка «⚠ PR #98 меняет» относится к Draft PR #98 (`codex/live-world-runtime`), пока он не смержен.
+профильных контрактах и `MODULE.md`. Версии ниже — то, что закреплено в файлах на указанном commit ветки PR #98.
 
 ## Runtime и пакеты
 
@@ -37,7 +36,8 @@
 |---|---|---|
 | PostgreSQL | 16 | см. ниже |
 | CI | docker-контейнер `postgres:16` внутри job | [test.yml](../../.github/workflows/test.yml) |
-| Локальная игра | `embedded-postgres` (PostgreSQL 16.14.0) поднимает `npm run play:local` | [local-postgres.js](../../tools/local-play/local-postgres.js), [local-play MODULE.md](../../tools/local-play/MODULE.md) |
+| Локальная игра | `embedded-postgres` (PostgreSQL 16.14.0) поднимает `npm run play:local`; данные в `%LOCALAPPDATA%\Novgorod1230\data\postgres-16.14.0-utf8`. В MSIX/packaged apps `%LOCALAPPDATA%` перенаправлен — пара БД оттуда не видна обычному `play:local`, и тот молча берёт v16 (LW-033) | [local-postgres.js](../../tools/local-play/local-postgres.js), [local-play MODULE.md](../../tools/local-play/MODULE.md), [DB_SCHEMA](DB_SCHEMA.md) §1.1 |
+| Пара БД v17 | `novgorod_world_v17` / `novgorod_party_v17`; bootstrap — `scripts/bootstrap-live-world-v17.mjs` | [DB_SCHEMA.md](DB_SCHEMA.md) §1.1 |
 | Dev-only compose | `postgres:16` + `nocodb/nocodb:2026.09.0` (ручное заполнение world_base в NocoDB); `npm run world-db:up` | [docker-compose.yml](../../docker-compose.yml) |
 | Драйвер | `pg` (node-postgres) | [package.json](../../package.json) |
 
@@ -61,11 +61,10 @@
 
 - Все LLM-вызовы идут через `@rus/llm-runtime` (роли, tier-конфигурация, лимиты, без fallback chain):
   [packages/llm-runtime/MODULE.md](../../packages/llm-runtime/MODULE.md).
-- Провайдер и модель по умолчанию здесь не фиксируются — смотри владельцев:
+- Провайдер и модель по умолчанию здесь не фиксируются числом — смотри владельцев и LW-020:
   [LLM_PROVIDERS.md](../setup/LLM_PROVIDERS.md), [local-play MODULE.md](../../tools/local-play/MODULE.md),
-  переменные окружения — [.env.example](../../.env.example).
-  ⚠ PR #98 меняет: default gameplay provider/model и поведение `play:local` (описано в тех же двух файлах
-  и в `packages/llm-runtime/MODULE.md`; скрипт `gameplay:acceptance:local` сохраняет имя, но указывает на `tools/local-play/local-provider-acceptance.mjs`).
+  [llm-settings.js](../../apps/game-server/src/runtime/llm-settings.js), [.env.example](../../.env.example).
+  Скрипт `gameplay:acceptance:local` → `tools/local-play/local-provider-acceptance.mjs`.
 
 ## Навигация по коду для агентов
 

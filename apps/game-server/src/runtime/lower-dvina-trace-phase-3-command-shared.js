@@ -33,6 +33,14 @@ export function available(canAttempt, checkRequests, reasons) {
   };
 }
 
+export function actorMovementBlocked(state) {
+  return (state?.combat_sessions ?? []).some((session) =>
+    session.status !== 'ended' && session.participant_states?.some((participant) =>
+      participant.actor_ref?.entity_kind === 'player_character'
+      && participant.actor_ref.entity_id === state.actor_id
+      && ['restrained', 'incapacitated'].includes(participant.combat_status)));
+}
+
 export function mode(primary, subsystems) {
   return {
     selected_primary_mode: primary,

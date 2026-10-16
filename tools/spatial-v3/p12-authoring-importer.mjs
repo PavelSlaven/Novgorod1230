@@ -8,12 +8,16 @@ import bundleSchema from '../../data/contracts/spatial-v3/world-base-authoring-b
 import { proveExpansionCapacity } from './p11-capacity-proof.mjs';
 import { validateP12SourceApproval } from './p12-source-approval.mjs';
 import { validateP12TargetMaterializationApprovalV11 } from './p12-target-materialization-approval-v1_1.mjs';
+import { validateM2cNpcWaveApproval } from './m2c-npc-wave-approval.mjs';
+import { bundleIncludesWaveTables, manifestIncludesWaveTables, validateM2cNpcWaveBundle } from './m2c-npc-wave-bundle-validation.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const REGISTRY = 'data/contracts/spatial-v3/world-base-import-registry.v1.json';
 const DEFAULT_MANIFEST = 'data/world-catalogs/novgorod/spatial-v3/manifest.json';
+/** @internal Only set by buildImportWithReadbackSql for approved wave import+readback in one transaction. */
+const waveImportViaReadbackWrapper = Symbol('waveImportViaReadbackWrapper');
 
-export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFAULT_MANIFEST, validateTargetApproval = validateP12TargetMaterializationApprovalV11 } = {}) {
+export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFAULT_MANIFEST, validateTargetApproval = validateP12TargetMaterializationApprovalV11, m2cWaveApprovalPath } = {}) {
   const projectRoot = resolve(root);
   const manifestFile = resolve(projectRoot, manifestPath);
   const manifest = await json(manifestFile);
@@ -47,10 +51,11 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
     const tableSchema = tableSchemas.get(dataset.table);
     if (!tableSchema) { errors.push(issue('UNKNOWN_OR_PARTY_TABLE', dataset.table)); continue; }
     const rowKeys = new Set();
+    const primaryKey = resolveTablePrimaryKey(tableSchema);
     for (const row of rows) {
       const subject = row?.id ?? dataset.table;
       validateStrictRow(row, tableSchema, dataset.table, errors);
-      const key = tableSchema.columns.filter((column) => column.primary_key).map((column) => row?.[column.name]).join('|');
+      const key = primaryKey.map((column) => row?.[column.name]).join('|');
       if (key && rowKeys.has(key)) errors.push(issue('DUPLICATE_RECORD_ID', `${dataset.table}:${key}`)); else rowKeys.add(key);
       if (row?.delete === true) errors.push(issue('DELETE_POLICY_FORBIDDEN', `${dataset.table}:${subject}`));
     }
@@ -62,27 +67,60 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   validateRouteTopology(datasets, errors);
   validateControlledVocabularyBindings(datasets, errors);
   validateCapacityProof(datasets, errors);
+  validateSceneCandidateApplicability(datasets, errors);
+  validateExternalDependencyClosure(datasets, errors);
+  validateExpansionRuleClosure(datasets, errors);
+  validateM2cNpcWaveBundle(manifest, datasets, errors);
+  if (bundleIncludesWaveTables(manifest, datasets) && manifest.status === 'approved') {
+    const waveApproval = await validateM2cNpcWaveApproval({
+      root: projectRoot,
+      approvalPath: m2cWaveApprovalPath,
+      bundleManifestPath: manifestPath,
+    });
+    for (const waveError of waveApproval.errors) errors.push(issue('M2C_WAVE_APPROVAL_INVALID', waveError.code));
+  }
   return Object.freeze({ ok: errors.length === 0 && gaps.length === 0, manifest: relative(projectRoot, manifestFile).replaceAll('\\', '/'), errors: Object.freeze(errors), data_gaps: Object.freeze(gaps), dataset_counts: Object.freeze(Object.fromEntries([...datasets].map(([table, rows]) => [table, rows.length]))), source_approval: sourceApproval, target_approval: targetApproval });
+}
+
+export async function buildImportWithReadbackSql(options = {}) {
+  const importPrefix = options.temporaryTablePrefix ?? 'p12_candidate';
+  const readbackPrefix = options.readbackTemporaryTablePrefix ?? 'p12_readback_expected';
+  if (importPrefix === readbackPrefix) {
+    throw new Error('P12_IMPORT_READBACK_PREFIX_COLLISION');
+  }
+  const importSql = await buildTransactionalImportSql({
+    ...options,
+    wrapTransaction: false,
+    temporaryTablePrefix: importPrefix,
+    [waveImportViaReadbackWrapper]: true,
+  });
+  const readbackSql = await buildBundleReadbackSql({ ...options, temporaryTablePrefix: readbackPrefix });
+  return `BEGIN;\n${importSql}${readbackSql}COMMIT;\n`;
 }
 
 export async function buildStagedDryRunSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST } = {}) {
   return buildTransactionalImportSql({ root, manifestPath, rollback: true, allowTypedGaps: true });
 }
 
-export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true, temporaryTablePrefix = 'p12_candidate' } = {}) {
+export async function buildTransactionalImportSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, rollback = false, allowTypedGaps = false, wrapTransaction = true, temporaryTablePrefix = 'p12_candidate', m2cWaveApprovalPath, [waveImportViaReadbackWrapper]: viaReadbackWrapper = false } = {}) {
   const projectRoot = resolve(root); const manifestFile = resolve(projectRoot, manifestPath);
-  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath });
+  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath, m2cWaveApprovalPath });
   if (result.errors.length || (!allowTypedGaps && result.data_gaps.length)) throw new Error(`P12 import refuses incomplete bundle: ${[...result.errors, ...result.data_gaps].map((error) => error.code).join(', ')}`);
-  const manifest = await json(manifestFile); const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
+  const manifest = await json(manifestFile);
+  const hasWaveTables = manifestIncludesWaveTables(manifest);
+  if (hasWaveTables && !rollback) {
+    if (manifest.status !== 'approved') {
+      throw new Error('P12_WAVE_IMPORT_REQUIRES_APPROVED');
+    }
+    if (!viaReadbackWrapper) {
+      throw new Error('P12_WAVE_IMPORT_REQUIRES_READBACK');
+    }
+  }
+  const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
   const tables = new Map(ddl.schema.tables.map((table) => [table.name, table])); const sql = wrapTransaction ? ['BEGIN;'] : [];
   for (const dataset of manifest.datasets) {
     const rows = await json(resolve(dirname(manifestFile), dataset.file)); const schema = tables.get(dataset.table);
-    let primaryKey = schema.columns.filter((column) => column.primary_key);
-    if (!primaryKey.length) {
-      const declaration = schema.constraints.find((constraint) => /^PRIMARY KEY\s*\(/iu.test(constraint));
-      const names = declaration?.match(/^PRIMARY KEY\s*\(([^)]+)\)/iu)?.[1].split(',').map((name) => name.trim()) ?? [];
-      primaryKey = names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
-    }
+    const primaryKey = resolveTablePrimaryKey(schema);
     if (!primaryKey.length) throw new Error(`P12 import requires a primary key: ${dataset.table}`);
     if (!/^[a-z][a-z0-9_]*$/u.test(temporaryTablePrefix)) throw new Error(`P12 invalid temporary table prefix: ${temporaryTablePrefix}`);
     const candidateTable = `${temporaryTablePrefix}_${dataset.table}`;
@@ -93,7 +131,7 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
     sql.push(`CREATE TEMP TABLE ${candidateTable} (LIKE world_base.${dataset.table} INCLUDING DEFAULTS) ON COMMIT DROP;`);
     for (const row of rows) {
       const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name));
-      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type)]));
+      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type, `${dataset.table}.${column.name}`)]));
       const keyPredicate = primaryKey.map((column) => `${column.name} IS NOT DISTINCT FROM ${values.get(column.name)}`).join(' AND ');
       const actualKeyPredicate = primaryKey.map((column) => `actual.${column.name} IS NOT DISTINCT FROM ${values.get(column.name)}`).join(' AND ');
       sql.push(
@@ -117,6 +155,68 @@ export async function buildTransactionalImportSql({ root = ROOT, manifestPath = 
   return `${sql.join('\n')}\n`;
 }
 
+/** Post-import readback in the same transaction; not part of buildTransactionalImportSql output. */
+export async function buildBundleReadbackSql({ root = ROOT, manifestPath = DEFAULT_MANIFEST, temporaryTablePrefix = 'p12_readback_expected', m2cWaveApprovalPath } = {}) {
+  const projectRoot = resolve(root);
+  const manifestFile = resolve(projectRoot, manifestPath);
+  const result = await validateAuthoringBundle({ root: projectRoot, manifestPath, m2cWaveApprovalPath });
+  if (result.errors.length) throw new Error(`P12 readback refuses invalid bundle: ${result.errors.map((error) => error.code).join(', ')}`);
+  const manifest = await json(manifestFile);
+  const ddl = await buildWorldBaseSchemaReference({ root: projectRoot });
+  const tables = new Map(ddl.schema.tables.map((table) => [table.name, table]));
+  if (!/^[a-z][a-z0-9_]*$/u.test(temporaryTablePrefix)) throw new Error(`P12 invalid readback temp prefix: ${temporaryTablePrefix}`);
+  const sql = [];
+  for (const dataset of manifest.datasets) {
+    const rows = await json(resolve(dirname(manifestFile), dataset.file));
+    const schema = tables.get(dataset.table);
+    const primaryKey = resolveTablePrimaryKey(schema);
+    if (!primaryKey.length) throw new Error(`P12 readback requires a primary key: ${dataset.table}`);
+    const expectedTable = `${temporaryTablePrefix}_${dataset.table}`;
+    const serverManaged = schema.columns.filter((column) => ['created_at', 'updated_at'].includes(column.name)).map((column) => column.name);
+    const canonicalJson = (alias) => serverManaged.length
+      ? `(to_jsonb(${alias}) - ARRAY[${serverManaged.map((column) => `'${column}'`).join(', ')}]::text[])`
+      : `to_jsonb(${alias})`;
+    const pkMatch = primaryKey.map((column) => `w.${column.name} IS NOT DISTINCT FROM e.${column.name}`).join(' AND ');
+    sql.push(`CREATE TEMP TABLE ${expectedTable} (LIKE world_base.${dataset.table} INCLUDING DEFAULTS) ON COMMIT DROP;`);
+    for (const row of rows) {
+      const columns = schema.columns.filter((column) => Object.hasOwn(row, column.name));
+      const values = new Map(columns.map((column) => [column.name, literal(row[column.name], column.type, `${dataset.table}.${column.name}`)]));
+      sql.push(`INSERT INTO ${expectedTable} (${columns.map((column) => column.name).join(', ')}) VALUES (${columns.map((column) => values.get(column.name)).join(', ')});`);
+    }
+    sql.push(
+      `DO $p12_readback$ BEGIN`,
+      `  IF (SELECT count(*) FROM ${expectedTable}) <> ${rows.length} THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}:expected_rows';`,
+      `  END IF;`,
+      `  IF (SELECT count(*) FROM world_base.${dataset.table} w WHERE EXISTS (SELECT 1 FROM ${expectedTable} e WHERE ${pkMatch})) <> ${rows.length} THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}:count';`,
+      `  END IF;`,
+      `  IF (SELECT coalesce(jsonb_agg(${canonicalJson('e')} ORDER BY ${primaryKey.map((column) => `e.${column.name}`).join(', ')}), '[]'::jsonb) FROM ${expectedTable} e)`,
+      `     IS DISTINCT FROM`,
+      `     (SELECT coalesce(jsonb_agg(${canonicalJson('w')} ORDER BY ${primaryKey.map((column) => `w.${column.name}`).join(', ')}), '[]'::jsonb)`,
+      `      FROM world_base.${dataset.table} w WHERE EXISTS (SELECT 1 FROM ${expectedTable} e WHERE ${pkMatch})) THEN`,
+      `    RAISE EXCEPTION 'P12_READBACK_MISMATCH:${dataset.table}';`,
+      `  END IF;`,
+      `END $p12_readback$;`
+    );
+  }
+  return `${sql.join('\n')}\n`;
+}
+
+export function resolveTablePrimaryKey(schema) {
+  let primaryKey = schema.columns.filter((column) => column.primary_key);
+  if (!primaryKey.length) {
+    const declaration = schema.constraints.find((constraint) => /^PRIMARY KEY\s*\(/iu.test(constraint));
+    const names = declaration?.match(/^PRIMARY KEY\s*\(([^)]+)\)/iu)?.[1].split(',').map((name) => name.trim()) ?? [];
+    primaryKey = names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
+  }
+  return primaryKey;
+}
+
+export function sqlLiteral(value, type = '', context = '') {
+  return literal(value, type, context);
+}
+
 function validateReferences(manifest, datasets, errors) {
   for (let index = 0; index < manifest.length; index += 1) for (const dependency of manifest[index].depends_on ?? []) {
     const dependencyIndex = manifest.findIndex((candidate) => candidate.table === dependency);
@@ -132,8 +232,11 @@ function validateStrictRow(row, schema, table, errors) {
   for (const key of Object.keys(row)) if (!columns.has(key)) errors.push(issue('UNKNOWN_ROW_FIELD', `${table}.${key}`));
   for (const column of schema.columns) if (!column.nullable && column.default === null && !Object.hasOwn(row, column.name)) errors.push(issue('MISSING_REQUIRED_FIELD', `${table}.${column.name}`));
   for (const column of schema.columns) if (column.name.endsWith('_id') && columns.has(`${column.name.slice(0, -3)}_version`) && Object.hasOwn(row, column.name)) {
-    const versionValue = row[`${column.name.slice(0, -3)}_version`];
-    if ((row[column.name] === null) !== (versionValue === null) || (row[column.name] !== null && !Number.isInteger(versionValue))) errors.push(issue('UNPINNED_VERSIONED_REFERENCE', `${table}.${column.name}`));
+    const versionColumn = columns.get(`${column.name.slice(0, -3)}_version`);
+    const versionValue = row[versionColumn.name];
+    const validVersion = /^(?:text|varchar|character varying)$/iu.test(versionColumn.type)
+      ? text(versionValue) : Number.isInteger(versionValue);
+    if ((row[column.name] === null) !== (versionValue === null) || (row[column.name] !== null && !validVersion)) errors.push(issue('UNPINNED_VERSIONED_REFERENCE', `${table}.${column.name}`));
   }
   if (Object.hasOwn(row, 'provenance_ref') && !text(row.provenance_ref)) errors.push(issue('INVALID_PROVENANCE', table));
   if (Object.hasOwn(row, 'references') || Object.hasOwn(row, 'children') || Object.hasOwn(row, 'candidates')) errors.push(issue('NON_NORMALIZED_REFERENCE', table));
@@ -145,7 +248,7 @@ function validateReadiness(datasets, gaps, errors, bundleKind) {
   for (const [table, rows] of datasets) {
     if (table === 'spatial_v3_scene_endpoint_slots') unique(rows, (row) => `${row.scene_template_id}:${row.scene_template_version}:${row.slot_key}`, 'SCENE_SLOT_DUPLICATE', errors);
     if (table === 'spatial_v3_world_route_points') contiguous(rows, 'world_route_id', 'ordinal', 'ROUTE_CONTINUITY_GAP', errors);
-    if (table === 'spatial_v3_expansion_profile_template_limits') for (const row of rows) if (!Number.isInteger(row.max_instances) || row.max_instances < 1) errors.push(issue('CAPACITY_PROOF_FAILED', `${table}:${row.id}`));
+    if (table === 'spatial_v3_expansion_profile_template_limits') for (const row of rows) if (!Number.isInteger(row.max_count) || row.max_count < 1) errors.push(issue('CAPACITY_PROOF_FAILED', `${table}:${row.profile_id}:${row.template_id}`));
     if (table === 'spatial_v3_controlled_vocabulary_bindings') for (const row of rows) if (!/^[a-f0-9]{64}$/u.test(row.registry_digest ?? '')) errors.push(issue('CONTROLLED_VOCABULARY_GAP', `${table}:${row.id}`));
   }
   const required = bundleKind === 'dependency_closure'
@@ -164,9 +267,90 @@ function validateControlledVocabularyBindings(datasets, errors) {
 function validateCapacityProof(datasets, errors) {
   const slots = datasets.get('spatial_v3_expansion_slots') ?? []; const limits = datasets.get('spatial_v3_expansion_profile_template_limits') ?? []; const candidates = datasets.get('spatial_v3_expansion_slot_templates') ?? [];
   if (!slots.length && !limits.length && !candidates.length) return;
-  const allowed = new Map(slots.map((slot) => [`${slot.id}:${slot.version}`, candidates.filter((candidate) => candidate.slot_id === slot.id && candidate.slot_version === slot.version).map((candidate) => `${candidate.template_id}:${candidate.template_version}`)]));
-  const proof = proveExpansionCapacity({ slots: slots.map((slot) => ({ id: `${slot.id}:${slot.version}`, maxInstances: slot.max_instances })), limits: limits.map((limit) => ({ template: `${limit.template_id}:${limit.template_version}`, maxCount: limit.max_instances })), allowed });
-  if (!proof.ok) errors.push(issue('CAPACITY_PROOF_FAILED', proof.reason ?? 'expansion'));
+  const profiles = new Set([...slots, ...limits].map((row) => `${row.profile_id}:${row.profile_version}`));
+  for (const profile of profiles) {
+    const profileSlots = slots.filter((row) => `${row.profile_id}:${row.profile_version}` === profile);
+    const profileLimits = limits.filter((row) => `${row.profile_id}:${row.profile_version}` === profile);
+    const allowed = new Map(profileSlots.map((slot) => [`${slot.id}:${slot.version}`, candidates.filter((candidate) => candidate.slot_id === slot.id && candidate.slot_version === slot.version).map((candidate) => `${candidate.template_id}:${candidate.template_version}`)]));
+    const proof = proveExpansionCapacity({ slots: profileSlots.map((slot) => ({ id: `${slot.id}:${slot.version}`, maxInstances: slot.max_instances })), limits: profileLimits.map((limit) => ({ template: `${limit.template_id}:${limit.template_version}`, maxCount: limit.max_count })), allowed });
+    if (!proof.ok) errors.push(issue('CAPACITY_PROOF_FAILED', `${profile}:${proof.reason ?? proof.code}`));
+  }
+}
+
+function validateExternalDependencyClosure(datasets, errors) {
+  const dependencies = datasets.get('spatial_v3_external_dependency_versions');
+  if (!dependencies) return;
+  const approved = new Set(dependencies.filter((row) => row.status === 'approved').map((row) => [
+    row.registry_type, row.registry_id, row.registry_version, row.registry_digest,
+    row.dependency_id, row.dependency_version, row.dependency_digest
+  ].join('|')));
+  for (const edge of datasets.get('spatial_v3_authoring_dependency_edges') ?? []) {
+    if (edge.target_entity_kind !== 'external_dependency') continue;
+    const key = [edge.target_registry_type, edge.target_registry_id,
+      edge.target_registry_version, edge.target_registry_digest,
+      edge.target_entity_id, edge.target_version, edge.target_dependency_digest].join('|');
+    if (!approved.has(key)) errors.push(issue('EXTERNAL_DEPENDENCY_PIN_MISSING', `${edge.source_entity_id}:${edge.dependency_role}`));
+  }
+}
+
+function validateSceneCandidateApplicability(datasets, errors) {
+  const candidates = datasets.get('spatial_v3_scene_materialization_candidates') ?? [];
+  if (!candidates.length) return;
+  const profiles = datasets.get('spatial_v3_scene_materialization_profiles') ?? [];
+  const rules = datasets.get('spatial_v3_scene_applicability_rules') ?? [];
+  const versions = datasets.get('spatial_v3_authoring_versions') ?? [];
+  for (const profile of profiles) {
+    if (!versions.some((row) => row.entity_kind === 'scene_materialization_profile'
+      && row.entity_id === profile.id && row.version === profile.version
+      && row.world_revision_id === profile.world_revision_id
+      && row.canonical_digest === profile.canonical_digest && row.status === 'approved')) {
+      errors.push(issue('SCENE_PROFILE_AUTHORING_VERSION_MISSING', profile.id));
+    }
+  }
+  for (const candidate of candidates) {
+    const profile = profiles.find((row) => row.id === candidate.profile_id && row.version === candidate.profile_version);
+    if (!profile || !rules.some((rule) => rule.id === candidate.applicability_rule_id
+      && rule.version === candidate.applicability_rule_version
+      && rule.world_revision_id === profile.world_revision_id && rule.status === 'approved'
+      && rule.rule_kind === 'exact_source_ref')) {
+      errors.push(issue('SCENE_CANDIDATE_APPLICABILITY_RULE_MISSING', `${candidate.profile_id}:${candidate.scene_template_id}`));
+    }
+  }
+}
+
+function validateExpansionRuleClosure(datasets, errors) {
+  const profiles = datasets.get('spatial_v3_g4_expansion_profiles') ?? [];
+  const templates = datasets.get('spatial_v3_g5_generation_templates') ?? [];
+  if (!profiles.length && !templates.length) return;
+  const rules = datasets.get('spatial_v3_expansion_rule_sets') ?? [];
+  const versions = datasets.get('spatial_v3_authoring_versions') ?? [];
+  const regionalBases = datasets.get('spatial_v3_regional_scene_template_bases') ?? [];
+  for (const profile of profiles) {
+    for (const [field, kind, strategy] of [
+      ['adjacency_rule_set', 'adjacency', 'through_same_exit'],
+      ['connectivity_rule_set', 'connectivity', 'existing_exit_reachable'],
+      ['seed_policy', 'seed', 'mulberry32_v1']
+    ]) {
+      const matches = rules.filter((rule) => rule.id === profile[`${field}_id`]
+        && rule.version === profile[`${field}_version`]
+        && rule.world_revision_id === profile.world_revision_id
+        && rule.rule_kind === kind && rule.strategy === strategy);
+      if (matches.length !== 1 || !versions.some((version) => version.entity_kind === 'expansion_rule_set'
+        && version.entity_id === matches[0].id && version.version === matches[0].version
+        && version.world_revision_id === profile.world_revision_id
+        && version.canonical_digest === matches[0].canonical_digest)) {
+        errors.push(issue('EXPANSION_RULE_CLOSURE_MISSING', `${profile.id}:${field}`));
+      }
+    }
+  }
+  for (const template of templates) {
+    if (!regionalBases.some((basis) => basis.id === template.regional_template_id
+      && basis.version === template.regional_template_version
+      && basis.world_revision_id === template.world_revision_id
+      && basis.status === 'approved')) {
+      errors.push(issue('REGIONAL_TEMPLATE_BASIS_MISSING', template.id));
+    }
+  }
 }
 
 function validateRouteTopology(datasets, errors) {
@@ -219,13 +403,28 @@ function issue(code, subject_ref) { return Object.freeze({ code, subject_ref, de
 function text(value) { return typeof value === 'string' && value.trim().length > 0; }
 function descendant(file, parent) { const path = relative(parent, file); return !!path && !path.startsWith('..') && !isAbsolute(path); }
 function digest(value) { return createHash('sha256').update(value).digest('hex'); }
-function literal(value, type = '') {
+function literal(value, type = '', context = '') {
   if (value === null) return 'NULL';
   if (typeof value === 'number') return String(value);
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+  const normalizedType = String(type).trim().toLowerCase();
+  if (Array.isArray(value) && normalizedType.endsWith('[]')) {
+    const pgType = normalizedType.replace(/\s+/g, '');
+    if (!value.length) return `ARRAY[]::${pgType}`;
+    for (const item of value) {
+      if (item === null || item === undefined) {
+        throw new Error(`P12_ARRAY_NULL_ELEMENT:${context || type}`);
+      }
+    }
+    const elements = value.map((item) => {
+      const serialized = String(item).replaceAll("'", "''");
+      return `'${serialized}'`;
+    });
+    return `ARRAY[${elements.join(', ')}]::${pgType}`;
+  }
   const serialized = typeof value === 'object' ? JSON.stringify(value) : String(value);
   const quoted = `'${serialized.replaceAll("'", "''")}'`;
-  return /\bJSONB?\b/iu.test(type) ? `${quoted}::jsonb` : quoted;
+  return /\bjsonb?\b/iu.test(type) ? `${quoted}::jsonb` : quoted;
 }
 async function json(file) { return JSON.parse(await readFile(file, 'utf8')); }
 

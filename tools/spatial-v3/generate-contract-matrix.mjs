@@ -34,7 +34,7 @@ function ownerFor(name) {
   if (name === 'party_traversal_interval_result') return '@rus/movement-routes';
   if (temporalPartyRuntimeContracts.has(name)) return '@rus/party-store';
   if (temporalContracts.has(name)) return '@rus/contracts';
-  if (/^(world_|g[0-5]_)/.test(name)) return '@rus/world-base';
+  if (/^(world_|g[0-5]_|line_kind_|canonical_g5_)/.test(name)) return '@rus/world-base';
   if (/(route|movement|segment|journey|traversal|direction)/.test(name)) return '@rus/movement-routes';
   if (/(scene|g6|position|visibility|acoustic|carrier|attachment|transport)/.test(name)) return '@rus/space-map';
   if (/(plan|execution|location|history|change_set|reservation)/.test(name)) return '@rus/party-store';
@@ -48,8 +48,8 @@ const errors = typedErrors.errors
   .map(({ error_code }) => error_code)
   .sort((a, b) => a.localeCompare(b));
 
-if (new Set(contracts).size !== 225 || contracts.length !== 225) throw new Error(`Expected 225 unique contracts, got ${contracts.length}/${new Set(contracts).size}`);
-if (new Set(errors).size !== 82 || errors.length !== 82) throw new Error(`Expected 82 unique errors, got ${errors.length}/${new Set(errors).size}`);
+if (new Set(contracts).size !== 228 || contracts.length !== 228) throw new Error(`Expected 228 unique contracts, got ${contracts.length}/${new Set(contracts).size}`);
+if (new Set(errors).size !== 86 || errors.length !== 86) throw new Error(`Expected 86 unique errors, got ${errors.length}/${new Set(errors).size}`);
 
 const matrix = {
   schema_version: '1.0.0',
@@ -82,7 +82,7 @@ const summary = [
   '',
   'Статус: `target`; записи являются обязательным планом владения, не утверждением о существующей реализации.',
   '',
-  `- Contracts: ${matrix.contracts.length}/225; errors: ${matrix.errors.length}/82.`,
+  `- Contracts: ${matrix.contracts.length}/228; errors: ${matrix.errors.length}/86.`,
   '- Каждый contract и error имеет ровно одного planned owner; все implementation fields привязаны к последующим шагам плана.',
   '',
   '## Распределение контрактов',

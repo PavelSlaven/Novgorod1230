@@ -1,0 +1,3826 @@
+[
+  {
+    "id": "dynamic_environment_rule_set.forest_track",
+    "version": 1,
+    "subject_transition_environment_profile_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "env.forest_track"
+      },
+      "authoring_version": "v2"
+    },
+    "policy_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.forest_track"
+      },
+      "authoring_version": "v1"
+    },
+    "composition_policy": {
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "transition_environment_profile",
+          "entity_id": "dynamic_environment_rule_set.forest_track"
+        },
+        "authoring_version": "v1"
+      },
+      "status": "candidate",
+      "composition_kind": "worst_applicable",
+      "factor_reducer": "maximum_rational",
+      "provenance_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "env_dynamic_candidate_2026_10_02"
+      },
+      "canonical_digest": "sha256:2786e1967bda1d5fddf84bb1fe9d54ae604075589c636c0bd3abde74949922f6"
+    },
+    "status": "candidate",
+    "composition_kind": "worst_applicable",
+    "factor_reducer": "maximum_rational",
+    "inputs": {
+      "weather_record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "weather_record_version": "1",
+      "weather_state_factors": "copied without change from approved source record",
+      "light_record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "light_record_version": "1",
+      "light_profile_id": "novgorod_outdoor_civil_light_v2",
+      "light_state_ids": [
+        "night",
+        "civil_dawn",
+        "daylight",
+        "civil_dusk"
+      ],
+      "light_state_factor_source": "approved_dataset_has_no_movement_factors"
+    },
+    "rules": [
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      }
+    ],
+    "unsupported_dynamic_conditions": {
+      "conditions": [
+        "accumulated_snow",
+        "mud_or_mud_depth",
+        "ice_state_or_thickness",
+        "flooded_ground",
+        "artificial_light_without_approved_factor"
+      ],
+      "behavior": "typed_gap; do not resolve to 1/1 and do not infer these conditions from current precipitation or daylight state"
+    },
+    "metadata": {
+      "calibration_marker": "gameplay_calibration",
+      "not_historical_measurement": true,
+      "not_player_or_model_facing": true
+    }
+  },
+  {
+    "id": "dynamic_environment_rule_set.open_water",
+    "version": 1,
+    "subject_transition_environment_profile_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "env.open_water"
+      },
+      "authoring_version": "v2"
+    },
+    "policy_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.open_water"
+      },
+      "authoring_version": "v1"
+    },
+    "composition_policy": {
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "transition_environment_profile",
+          "entity_id": "dynamic_environment_rule_set.open_water"
+        },
+        "authoring_version": "v1"
+      },
+      "status": "candidate",
+      "composition_kind": "worst_applicable",
+      "factor_reducer": "maximum_rational",
+      "provenance_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "env_dynamic_candidate_2026_10_02"
+      },
+      "canonical_digest": "sha256:0da762f6106066be4c6bff12bc7d99a59d16956a21ad1e608c23ca599fcdecb8"
+    },
+    "status": "candidate",
+    "composition_kind": "worst_applicable",
+    "factor_reducer": "maximum_rational",
+    "inputs": {
+      "weather_record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "weather_record_version": "1",
+      "weather_state_factors": "copied without change from approved source record",
+      "light_record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "light_record_version": "1",
+      "light_profile_id": "novgorod_outdoor_civil_light_v2",
+      "light_state_ids": [
+        "night",
+        "civil_dawn",
+        "daylight",
+        "civil_dusk"
+      ],
+      "light_state_factor_source": "approved_dataset_has_no_movement_factors"
+    },
+    "rules": [
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      }
+    ],
+    "unsupported_dynamic_conditions": {
+      "conditions": [
+        "accumulated_snow",
+        "mud_or_mud_depth",
+        "ice_state_or_thickness",
+        "flooded_ground",
+        "artificial_light_without_approved_factor"
+      ],
+      "behavior": "typed_gap; do not resolve to 1/1 and do not infer these conditions from current precipitation or daylight state"
+    },
+    "metadata": {
+      "calibration_marker": "gameplay_calibration",
+      "not_historical_measurement": true,
+      "not_player_or_model_facing": true
+    }
+  },
+  {
+    "id": "dynamic_environment_rule_set.land_path",
+    "version": 1,
+    "subject_transition_environment_profile_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "env.land_path"
+      },
+      "authoring_version": "v2"
+    },
+    "policy_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.land_path"
+      },
+      "authoring_version": "v1"
+    },
+    "composition_policy": {
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "transition_environment_profile",
+          "entity_id": "dynamic_environment_rule_set.land_path"
+        },
+        "authoring_version": "v1"
+      },
+      "status": "candidate",
+      "composition_kind": "worst_applicable",
+      "factor_reducer": "maximum_rational",
+      "provenance_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "env_dynamic_candidate_2026_10_02"
+      },
+      "canonical_digest": "sha256:c38efc87d888213c64deb411fc035043a85d8842caf1523e0d0b2e03f4513fff"
+    },
+    "status": "candidate",
+    "composition_kind": "worst_applicable",
+    "factor_reducer": "maximum_rational",
+    "inputs": {
+      "weather_record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "weather_record_version": "1",
+      "weather_state_factors": "copied without change from approved source record",
+      "light_record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "light_record_version": "1",
+      "light_profile_id": "novgorod_outdoor_civil_light_v2",
+      "light_state_ids": [
+        "night",
+        "civil_dawn",
+        "daylight",
+        "civil_dusk"
+      ],
+      "light_state_factor_source": "approved_dataset_has_no_movement_factors"
+    },
+    "rules": [
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      }
+    ],
+    "unsupported_dynamic_conditions": {
+      "conditions": [
+        "accumulated_snow",
+        "mud_or_mud_depth",
+        "ice_state_or_thickness",
+        "flooded_ground",
+        "artificial_light_without_approved_factor"
+      ],
+      "behavior": "typed_gap; do not resolve to 1/1 and do not infer these conditions from current precipitation or daylight state"
+    },
+    "metadata": {
+      "calibration_marker": "gameplay_calibration",
+      "not_historical_measurement": true,
+      "not_player_or_model_facing": true
+    }
+  },
+  {
+    "id": "dynamic_environment_rule_set.main_river_channel",
+    "version": 1,
+    "subject_transition_environment_profile_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "env.main_river_channel"
+      },
+      "authoring_version": "v2"
+    },
+    "policy_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.main_river_channel"
+      },
+      "authoring_version": "v1"
+    },
+    "composition_policy": {
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "transition_environment_profile",
+          "entity_id": "dynamic_environment_rule_set.main_river_channel"
+        },
+        "authoring_version": "v1"
+      },
+      "status": "candidate",
+      "composition_kind": "worst_applicable",
+      "factor_reducer": "maximum_rational",
+      "provenance_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "env_dynamic_candidate_2026_10_02"
+      },
+      "canonical_digest": "sha256:9410bf2b1a3b03984ff39644bc4763648bf2bbcdaf1a278c8480d2f0346da2d5"
+    },
+    "status": "candidate",
+    "composition_kind": "worst_applicable",
+    "factor_reducer": "maximum_rational",
+    "inputs": {
+      "weather_record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "weather_record_version": "1",
+      "weather_state_factors": "copied without change from approved source record",
+      "light_record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "light_record_version": "1",
+      "light_profile_id": "novgorod_outdoor_civil_light_v2",
+      "light_state_ids": [
+        "night",
+        "civil_dawn",
+        "daylight",
+        "civil_dusk"
+      ],
+      "light_state_factor_source": "approved_dataset_has_no_movement_factors"
+    },
+    "rules": [
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      }
+    ],
+    "unsupported_dynamic_conditions": {
+      "conditions": [
+        "accumulated_snow",
+        "mud_or_mud_depth",
+        "ice_state_or_thickness",
+        "flooded_ground",
+        "artificial_light_without_approved_factor"
+      ],
+      "behavior": "typed_gap; do not resolve to 1/1 and do not infer these conditions from current precipitation or daylight state"
+    },
+    "metadata": {
+      "calibration_marker": "gameplay_calibration",
+      "not_historical_measurement": true,
+      "not_player_or_model_facing": true
+    }
+  },
+  {
+    "id": "dynamic_environment_rule_set.shore_transition",
+    "version": 1,
+    "subject_transition_environment_profile_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "env.shore_transition"
+      },
+      "authoring_version": "v2"
+    },
+    "policy_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.shore_transition"
+      },
+      "authoring_version": "v1"
+    },
+    "composition_policy": {
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "transition_environment_profile",
+          "entity_id": "dynamic_environment_rule_set.shore_transition"
+        },
+        "authoring_version": "v1"
+      },
+      "status": "candidate",
+      "composition_kind": "worst_applicable",
+      "factor_reducer": "maximum_rational",
+      "provenance_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "env_dynamic_candidate_2026_10_02"
+      },
+      "canonical_digest": "sha256:63ece799d51ed9abb459208501ae07eb7ee44fd0b2eec905605636cfeb66a923"
+    },
+    "status": "candidate",
+    "composition_kind": "worst_applicable",
+    "factor_reducer": "maximum_rational",
+    "inputs": {
+      "weather_record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "weather_record_version": "1",
+      "weather_state_factors": "copied without change from approved source record",
+      "light_record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "light_record_version": "1",
+      "light_profile_id": "novgorod_outdoor_civil_light_v2",
+      "light_state_ids": [
+        "night",
+        "civil_dawn",
+        "daylight",
+        "civil_dusk"
+      ],
+      "light_state_factor_source": "approved_dataset_has_no_movement_factors"
+    },
+    "rules": [
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      }
+    ],
+    "unsupported_dynamic_conditions": {
+      "conditions": [
+        "accumulated_snow",
+        "mud_or_mud_depth",
+        "ice_state_or_thickness",
+        "flooded_ground",
+        "artificial_light_without_approved_factor"
+      ],
+      "behavior": "typed_gap; do not resolve to 1/1 and do not infer these conditions from current precipitation or daylight state"
+    },
+    "metadata": {
+      "calibration_marker": "gameplay_calibration",
+      "not_historical_measurement": true,
+      "not_player_or_model_facing": true
+    }
+  },
+  {
+    "id": "dynamic_environment_rule_set.side_channel",
+    "version": 1,
+    "subject_transition_environment_profile_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "env.side_channel"
+      },
+      "authoring_version": "v2"
+    },
+    "policy_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.side_channel"
+      },
+      "authoring_version": "v1"
+    },
+    "composition_policy": {
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "transition_environment_profile",
+          "entity_id": "dynamic_environment_rule_set.side_channel"
+        },
+        "authoring_version": "v1"
+      },
+      "status": "candidate",
+      "composition_kind": "worst_applicable",
+      "factor_reducer": "maximum_rational",
+      "provenance_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "env_dynamic_candidate_2026_10_02"
+      },
+      "canonical_digest": "sha256:7316ec820ab988482723006adffe04cf44e3ba333e9c64bae34cee5ceac66317"
+    },
+    "status": "candidate",
+    "composition_kind": "worst_applicable",
+    "factor_reducer": "maximum_rational",
+    "inputs": {
+      "weather_record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "weather_record_version": "1",
+      "weather_state_factors": "copied without change from approved source record",
+      "light_record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "light_record_version": "1",
+      "light_profile_id": "novgorod_outdoor_civil_light_v2",
+      "light_state_ids": [
+        "night",
+        "civil_dawn",
+        "daylight",
+        "civil_dusk"
+      ],
+      "light_state_factor_source": "approved_dataset_has_no_movement_factors"
+    },
+    "rules": [
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      }
+    ],
+    "unsupported_dynamic_conditions": {
+      "conditions": [
+        "accumulated_snow",
+        "mud_or_mud_depth",
+        "ice_state_or_thickness",
+        "flooded_ground",
+        "artificial_light_without_approved_factor"
+      ],
+      "behavior": "typed_gap; do not resolve to 1/1 and do not infer these conditions from current precipitation or daylight state"
+    },
+    "metadata": {
+      "calibration_marker": "gameplay_calibration",
+      "not_historical_measurement": true,
+      "not_player_or_model_facing": true
+    }
+  },
+  {
+    "id": "dynamic_environment_rule_set.wetland",
+    "version": 1,
+    "subject_transition_environment_profile_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "env.wetland"
+      },
+      "authoring_version": "v2"
+    },
+    "policy_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.wetland"
+      },
+      "authoring_version": "v1"
+    },
+    "composition_policy": {
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "transition_environment_profile",
+          "entity_id": "dynamic_environment_rule_set.wetland"
+        },
+        "authoring_version": "v1"
+      },
+      "status": "candidate",
+      "composition_kind": "worst_applicable",
+      "factor_reducer": "maximum_rational",
+      "provenance_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "env_dynamic_candidate_2026_10_02"
+      },
+      "canonical_digest": "sha256:040da57b7408cb6821e675cbccc42cd499af941ee25cea92e71da5b2bf089da7"
+    },
+    "status": "candidate",
+    "composition_kind": "worst_applicable",
+    "factor_reducer": "maximum_rational",
+    "inputs": {
+      "weather_record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "weather_record_version": "1",
+      "weather_state_factors": "copied without change from approved source record",
+      "light_record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "light_record_version": "1",
+      "light_profile_id": "novgorod_outdoor_civil_light_v2",
+      "light_state_ids": [
+        "night",
+        "civil_dawn",
+        "daylight",
+        "civil_dusk"
+      ],
+      "light_state_factor_source": "approved_dataset_has_no_movement_factors"
+    },
+    "rules": [
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      }
+    ],
+    "unsupported_dynamic_conditions": {
+      "conditions": [
+        "accumulated_snow",
+        "mud_or_mud_depth",
+        "ice_state_or_thickness",
+        "flooded_ground",
+        "artificial_light_without_approved_factor"
+      ],
+      "behavior": "typed_gap; do not resolve to 1/1 and do not infer these conditions from current precipitation or daylight state"
+    },
+    "metadata": {
+      "calibration_marker": "gameplay_calibration",
+      "not_historical_measurement": true,
+      "not_player_or_model_facing": true
+    }
+  },
+  {
+    "id": "dynamic_environment_rule_set.local_variable",
+    "version": 1,
+    "subject_transition_environment_profile_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "env.local_variable"
+      },
+      "authoring_version": "v2"
+    },
+    "policy_ref": {
+      "entity_ref": {
+        "entity_kind": "transition_environment_profile",
+        "entity_id": "dynamic_environment_rule_set.local_variable"
+      },
+      "authoring_version": "v1"
+    },
+    "composition_policy": {
+      "policy_ref": {
+        "entity_ref": {
+          "entity_kind": "transition_environment_profile",
+          "entity_id": "dynamic_environment_rule_set.local_variable"
+        },
+        "authoring_version": "v1"
+      },
+      "status": "candidate",
+      "composition_kind": "worst_applicable",
+      "factor_reducer": "maximum_rational",
+      "provenance_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "env_dynamic_candidate_2026_10_02"
+      },
+      "canonical_digest": "sha256:029bece0714b5f8cebee958cc3983fcc6e76ae43e622f133d6d3b9e467f9e70c"
+    },
+    "status": "candidate",
+    "composition_kind": "worst_applicable",
+    "factor_reducer": "maximum_rational",
+    "inputs": {
+      "weather_record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "weather_record_version": "1",
+      "weather_state_factors": "copied without change from approved source record",
+      "light_record_id": "record:calendar_daylight_light_profiles:novgorod_1230_1233_v2",
+      "light_record_version": "1",
+      "light_profile_id": "novgorod_outdoor_civil_light_v2",
+      "light_state_ids": [
+        "night",
+        "civil_dawn",
+        "daylight",
+        "civil_dusk"
+      ],
+      "light_state_factor_source": "approved_dataset_has_no_movement_factors"
+    },
+    "rules": [
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "clear_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "overcast_dry_calm",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "moderate_rain",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "light_snow",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "dense_fog",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "night",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "movement_factor": {
+          "numerator": "3",
+          "denominator": "2"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dawn",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "daylight",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "1",
+          "denominator": "1"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      },
+      {
+        "weather_state_id": "strong_wind",
+        "light_state_id": "civil_dusk",
+        "weather_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "light_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "movement_factor": {
+          "numerator": "5",
+          "denominator": "4"
+        },
+        "resolution": "maximum_rational(weather_factor, light_factor)"
+      }
+    ],
+    "unsupported_dynamic_conditions": {
+      "conditions": [
+        "accumulated_snow",
+        "mud_or_mud_depth",
+        "ice_state_or_thickness",
+        "flooded_ground",
+        "artificial_light_without_approved_factor"
+      ],
+      "behavior": "typed_gap; do not resolve to 1/1 and do not infer these conditions from current precipitation or daylight state"
+    },
+    "metadata": {
+      "calibration_marker": "gameplay_calibration",
+      "not_historical_measurement": true,
+      "not_player_or_model_facing": true
+    }
+  }
+]

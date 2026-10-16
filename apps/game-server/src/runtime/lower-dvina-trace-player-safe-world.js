@@ -6,8 +6,11 @@ import {
   projectionError,
   scalarRecord,
   text,
-  textArray
+  textArray,
+  visibleText,
+  optionalVisibleText
 } from './lower-dvina-trace-player-safe-json.js';
+import { playerSafeOrdinalLabel } from '../public-boundary.js';
 
 const POSITION_KEYS = new Set([
   'g4_id', 'g5_node_id', 'g5_anchor_id', 'anchor_id', 'location_ref',
@@ -104,7 +107,9 @@ export function projectRoutes(records, { strict = false } = {}) {
         route_ref: text(record.route_ref),
         from_ref: text(record.from_ref ?? record.source_ref),
         to_ref: text(record.to_ref ?? record.target_ref),
-        label: text(record.label ?? record.name),
+    label: optionalVisibleText(playerSafeOrdinalLabel(record.label ?? record.name), {
+      path: 'routes[].label', label: true, code: invalidCode()
+        }) ?? 'переход',
         access: typeof record.access === 'string' ? record.access : undefined,
         known: record.known === true ? true : undefined
       });
@@ -125,7 +130,9 @@ export function projectRouteKnowledge(records, { strict = false } = {}) {
     return compact({
       route_ref: text(record.route_ref ?? record.route_id),
       knowledge_state: text(record.knowledge_state),
-      label: text(record.label ?? record.name)
+      label: optionalVisibleText(playerSafeOrdinalLabel(record.label ?? record.name), {
+        path: 'route_knowledge[].label', label: true, code: invalidCode()
+      }) ?? 'переход'
     });
   });
 }
@@ -160,18 +167,23 @@ export function projectKnowledge(records, { strict = false } = {}) {
     'disclosure_state'
   ]);
   return records.filter((record) => !recordIsClosed(record)).map((record) => {
-    if (typeof record === 'string') return record;
+    if (typeof record === 'string') return optionalVisibleText(record, {
+      path: 'knowledge[]', code: invalidCode()
+    });
     if (strict) assertAllowedKeys(record, allowed, 'knowledge[]', invalidCode());
     return compact({
       fact_id: text(record.fact_id ?? record.knowledge_id ?? record.id),
       knowledge_state: text(record.knowledge_state),
-      category: text(record.category), text: text(record.text ?? record.summary)
+      category: text(record.category), text: optionalVisibleText(
+        record.text ?? record.summary, {
+          path: 'knowledge[].text', code: invalidCode()
+        })
     });
   });
 }
 
 export function projectKnownContext(actor, knowledge = [], interactions = []) {
-  return [...new Set([
+  const values = [
     ...(text(actor?.name) ? [`Вас зовут ${actor.name}.`] : []),
     ...(text(actor?.role) ? [`Ваш род занятий: ${actor.role}.`] : []),
     text(actor?.biography),
@@ -181,7 +193,10 @@ export function projectKnownContext(actor, knowledge = [], interactions = []) {
         ? `В прежнем разговоре вы сказали: ${record.content}`
         : `Содержание сообщения из прежнего разговора: ${record.content}`)
   ].map(value => typeof value === 'string' ? value : value?.text)
-    .filter(value => typeof value === 'string' && value.trim()))];
+    .filter(value => typeof value === 'string' && value.trim());
+  return [...new Set(values.map((value, index) => optionalVisibleText(value, {
+      path: `known_context[${index}]`, code: invalidCode()
+    })).filter(Boolean))];
 }
 
 function admittedScenes(state) {

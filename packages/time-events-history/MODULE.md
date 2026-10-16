@@ -7,6 +7,8 @@
 ## Владеет
 
 - Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, двусторонней календарной проекцией `projectCalendar` / `resolveGameTimestampFromCalendarDate`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade).
+- Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`). Принимаемая форма события: `{ id|event_id, phases[] }` (F7). Плоские v3-записи с одним `event_ref`/`start_at` без `phases[]` молча дают пустой результат. Фазы: v3 `start_at` (GameTimestamp через `compareGameTimestamp`) или legacy `start_at_minutes` (только finite number). Невалидные часы — `StartedHistoricalError`, не TypeError.
+- Владеет узкими approved date-gate DTO для десяти консервативных вестей в Нижнюю Двину и pure projection в party `historical_events`. Голода 1230 в DTO нет: projection получает его event id/start/digest из переданной approved temporal record.
 
 ## Не владеет
 
@@ -14,14 +16,15 @@
 
 ## Public API
 
-- `.`: exact-time primitives `normalizeGameTimestamp`, `normalizeElapsedTime`, rational arithmetic, `addElapsedTime`, `subtractGameTimestamp`, `compareGameTimestamp`, `countCrossedWholeMinuteBoundaries`, `computeTemporalDigest`; historical-phase exports.
-- `./calendar`: `projectCalendar(timestamp, approvedProfile)`, `resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)`.
+- `.`: exact-time primitives `normalizeGameTimestamp`, `normalizeElapsedTime`, rational arithmetic, `addElapsedTime`, `subtractGameTimestamp`, `compareGameTimestamp`, `countCrossedWholeMinuteBoundaries`, `computeTemporalDigest`; historical-phase exports; `startedHistoricalEventsAndPhases`, `startedHistoricalEventIds`, `StartedHistoricalError`.
+- `./calendar`: `projectCalendar(timestamp, approvedProfile)`, `resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)`, `nextCalendarSeasonBoundary(timestamp, approvedProfile)`. The last returns the next actual change of `season_id` strictly after the timestamp, at the approved calendar's local day start, with its exact timestamp and calendar date; calendars without season changes return `null`.
 - `./temporal-boundaries`: `TEMPORAL_RESOLUTION_POLICY_VERSION`, order, `TemporalBoundaryError`, normalization, earliest-batch selection и `resolveSameTimeCascade`.
+- `.`: `APPROVED_EVENT_DATE_GATE_RECORDS`, `projectApprovedPartyHistoricalEvents` — события в форме `startedHistoricalEventIds` с `source_ref`.
 - `./legacy`: compatibility-only clock/timer helpers; не является target temporal execution API.
 
 ## Формальные входы, выходы и ошибки
 
-Входы — closed JSON-safe DTO: canonical decimal strings, rational minutes, exact timestamps, approved calendar/phase/boundary policies и явные callbacks для same-time resolution. Выходы — frozen canonical DTO, ordered boundary batch/cascade result либо typed error. Ошибки валидации времени — `RangeError`/`TypeError`; calendar profile выдаёт `time_calendar_profile_gap`; boundary errors — `TemporalBoundaryError` с temporal code (в том числе `temporal_boundary_ambiguous`, `temporal_boundary_cycle`, `temporal_candidate_stale`). Никакого fallback, округления или hidden read.
+Входы — closed JSON-safe DTO: canonical decimal strings, rational minutes, exact timestamps, approved calendar/phase/boundary policies и явные callbacks для same-time resolution. Выходы — frozen canonical DTO, ordered boundary batch/cascade result либо typed error. Ошибки валидации времени — `RangeError`/`TypeError`; `startedHistorical*` — `StartedHistoricalError` (`STARTED_HISTORICAL_CLOCK_INVALID`); calendar profile выдаёт `time_calendar_profile_gap`; boundary errors — `TemporalBoundaryError` с temporal code (в том числе `temporal_boundary_ambiguous`, `temporal_boundary_cycle`, `temporal_candidate_stale`). Никакого fallback, округления или hidden read.
 
 ## Зависимости и side effects
 
@@ -52,4 +55,4 @@ candidate продолжает active process, а completed process его не 
 
 ## Тесты
 
-`test/exact-time.test.js`, `calendar.test.js`, `temporal-boundaries.test.js`, `historical-phases.test.js`, `domain.test.js` проверяют exact arithmetic, profile gaps, ordering/cascades, phase boundary и legacy-compatible pure helpers.
+`node --test packages/time-events-history/test/*.test.js` проверяют exact arithmetic, profile gaps, ordering/cascades, phase boundary, started-historical date gate и legacy-compatible pure helpers.

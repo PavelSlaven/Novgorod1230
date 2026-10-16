@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
+  playerSafeItemConditionLabel,
   resolvePhysicalItemCondition } from '../src/index.js';
 
 test('physical condition separates runtime lifecycle marker from damage', () => {
@@ -14,6 +15,15 @@ test('physical condition separates runtime lifecycle marker from damage', () => 
   assert.equal(resolvePhysicalItemCondition(item), 'damaged');
   item.state.lifecycle_status = 'retired';
   assert.equal(resolvePhysicalItemCondition(item), null);
+});
+
+test('player-safe item condition labels are shared with visible surfaces', () => {
+  assert.equal(playerSafeItemConditionLabel('serviceable'), 'исправное состояние');
+  assert.equal(playerSafeItemConditionLabel('damaged'), 'повреждённое состояние');
+  for (const value of ['sound', 'intact', 'worn', 'broken']) {
+    assert.equal(playerSafeItemConditionLabel(value), null);
+  }
+  assert.equal(playerSafeItemConditionLabel('unrecognized-state'), null);
 });
 
 function snapshot() {

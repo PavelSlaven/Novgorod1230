@@ -1,5 +1,5 @@
 import { STAGE8_INPUT_SCHEMA } from './policy.js';
-import { buildApprovedItemCatalogSnapshot } from '@rus/world-catalog-workflow';
+import { buildApprovedItemCatalogSnapshot } from '@rus/runtime-catalog/approved-record-snapshots';
 
 export function buildStage8ItemProfileInputFromPipeline(context, options = {}, services = {}) {
   const normalize = services.normalizeStage8ItemProfilePolicy ?? ((value) => value ?? {});

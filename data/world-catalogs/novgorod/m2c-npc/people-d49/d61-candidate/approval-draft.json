@@ -1,0 +1,15 @@
+{
+  "schema": "rus.m2c_people_d61_candidate_approval_draft.v1",
+  "status": "candidate_approval_pending",
+  "exact_candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/candidate-source.json",
+    "sha256": "3e301f74351dd1e8bc85cf954824e511976af2c43eb04f076e7361ffb54f0df1"
+  },
+  "verdict": "PENDING_INDEPENDENT_REVIEW",
+  "approved_by": null,
+  "approved_on": null,
+  "resign_required": true,
+  "import_authorized": false,
+  "runtime_activation_authorized": false,
+  "note": "Review draft only. This is not an approval, import authorization, or runtime activation authorization."
+}

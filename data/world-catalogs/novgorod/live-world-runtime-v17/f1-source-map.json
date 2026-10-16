@@ -1,0 +1,262 @@
+{
+  "schema": "rus.live_world_runtime.f1_source_map.v1",
+  "target_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "sources": [
+    {
+      "id": "SRC_TARGET_PROFILE",
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json",
+      "lines": "1-14, 60-1262, 1902-1910",
+      "use": "Target revision/scope header, all 33 exact applicability selectors, and F1 gap authority.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json"
+    },
+    {
+      "id": "SRC_TARGET_START",
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+      "lines": "30-43, 137-155",
+      "use": "Canonical arrival/topology selectors; water not applicable at dry-pine-ridge water_body; no natural visual source creates stock; canonical entry does not inherit generated finite stocks.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json"
+    },
+    {
+      "id": "SRC_GB_HOUSEHOLD_54",
+      "path": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv",
+      "lines": "54",
+      "use": "Candidate firesteel type, mechanics/property descriptions and candidate mass; not target stock or adopted mass.",
+      "checkout": "ref-gamebase",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv"
+    },
+    {
+      "id": "SRC_GB_HOUSEHOLD_55",
+      "path": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv",
+      "lines": "55",
+      "use": "Candidate flint type; not target stock.",
+      "checkout": "ref-gamebase",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv"
+    },
+    {
+      "id": "SRC_GB_HOUSEHOLD_56",
+      "path": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv",
+      "lines": "56",
+      "use": "Candidate tinder type; not target stock.",
+      "checkout": "ref-gamebase",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv"
+    },
+    {
+      "id": "SRC_GB_HOUSEHOLD_57",
+      "path": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv",
+      "lines": "57",
+      "use": "Candidate kindling bundle type; its 500 g is not adopted.",
+      "checkout": "ref-gamebase",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv"
+    },
+    {
+      "id": "SRC_WK_FIRESTEEL_89_97",
+      "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/household-agriculture.json",
+      "lines": "89-97",
+      "use": "Bounded evidence for XII-century Novgorod firesteel; explicit note says it does not establish fuel, lamp or guaranteed ignition.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/world-knowledge/production-v1/household-agriculture.json"
+    },
+    {
+      "id": "SRC_WK_FIRESTEEL_CLAIM_474_511",
+      "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/household-agriculture.json",
+      "lines": "474-511",
+      "use": "Approved domain-internal use claim for striking fire, regional and temporal bound 1100-1300; no presence/ownership.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/world-knowledge/production-v1/household-agriculture.json"
+    },
+    {
+      "id": "SRC_DRAFT_ITEM_TYPES_453_486",
+      "path": "data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/item_templates.json",
+      "lines": "453-486",
+      "use": "Draft item type seeds only: firesteel, striking flint, tinder, kindling.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/knowledge-source/imports/universal-category-classification-2026-07-15/stage-3b1/bundle/item_templates.json"
+    },
+    {
+      "id": "SRC_NATURAL_MATERIALS_10",
+      "path": "data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/natural_materials_soils/natural_materials.csv",
+      "lines": "10",
+      "use": "Birch bark material candidate; uses include tinder process, not target harvestable stock.",
+      "checkout": "ref-gamebase",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/natural_materials_soils/natural_materials.csv"
+    },
+    {
+      "id": "SRC_GB_NATURAL_MATERIALS_15_17",
+      "path": "data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/natural_materials_soils/natural_materials.csv",
+      "lines": "15-17",
+      "use": "Deadwood, brushwood, driftwood candidates and game-unit masses/stock rules; not F1 placement/access binding.",
+      "checkout": "ref-gamebase",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-gamebase/data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/natural_materials_soils/natural_materials.csv"
+    },
+    {
+      "id": "SRC_WK_COMBUSTION_58",
+      "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r7-gap-repair-v1.json",
+      "lines": "58, 114-115",
+      "use": "Qualitative combustion dependencies; no fixed rate, fuel ratio or guaranteed fire.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r7-gap-repair-v1.json"
+    },
+    {
+      "id": "SRC_WK_FUEL_PROCESS_8_20",
+      "path": "data/world-catalogs/novgorod/world-knowledge/verification/verification-fuel-processes.md",
+      "lines": "8-20",
+      "use": "Limits of charcoal/fuel process evidence; no scene stock or exact yield/duration.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/world-knowledge/verification/verification-fuel-processes.md"
+    },
+    {
+      "id": "SRC_WK_WATER_EXTINGUISHING_114_125",
+      "path": "data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-material-process-v3.json",
+      "lines": "114-125, 160-161",
+      "use": "Qualitative water cooling can assist on ordinary solid fuel/flame; no quantity or success rule.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-material-process-v3.json"
+    },
+    {
+      "id": "SRC_LD_PROFILE",
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m10-content/local-fire-profile.json",
+      "lines": "1-50",
+      "use": "Shape reference only; its refs, quantities, masses and policy are excluded from v17.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m10-content/local-fire-profile.json"
+    },
+    {
+      "id": "SRC_HOUSEHOLD_KINDLING",
+      "path": "data/world-catalogs/novgorod/m2c-items/candidate.json",
+      "lines": "192-253",
+      "use": "Candidate property/quantity schema example; low-confidence household placement/500g excluded from target values.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/m2c-items/candidate.json"
+    },
+    {
+      "id": "SRC_TASK_DECISION",
+      "path": "/srv/novgorod-work/fleet/tasks/b4-f1-data/TASK.md",
+      "lines": "5-9",
+      "use": "Owner decisions: free materialization, fire basic action, D38-D40 by existence with logical_necessity, properties over lists, D59 outside-world-stock rule.",
+      "checkout": "bridge",
+      "resolved_path": "/srv/novgorod-work/fleet/tasks/b4-f1-data/TASK.md"
+    },
+    {
+      "id": "SRC_M2C_FINITE_SOURCE",
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json",
+      "lines": "1-38, 39-475, 780-920, 1000-1120, 2210-2340, 2940-3060, 3360-3470",
+      "use": "Exact four finite-source design definitions and the five G4/family joins used by the F1 scopes; authoring design data only.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-source-capability-candidate.json"
+    },
+    {
+      "id": "SRC_M2C_PROPERTY_CONTEXT",
+      "path": "data/world-catalogs/novgorod/m2c-items/property-context-candidate.json",
+      "lines": "1-38, 105-115, 124-132, 511-1535",
+      "use": "Per-G4 property-context candidate and free-gathering/parcel-right policy. Completeness assertion applies only to new generated G5 and explicitly excludes canonical G5 (105-115); pointer on canonical F1 scope is informational G4 context, not current property decision/readback.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/m2c-items/property-context-candidate.json"
+    },
+    {
+      "id": "SRC_M2C_SOL_DATA_APPROVAL",
+      "path": "data/world-catalogs/novgorod/m2c-sol-data-approval.json",
+      "lines": "18-21, 104-110",
+      "use": "Exact candidate SHA pins and APPROVE_DATA_ONLY scope/exclusions for finite-source and property-context candidates.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/world-catalogs/novgorod/m2c-sol-data-approval.json"
+    },
+    {
+      "id": "SRC_WR_FALLBACK",
+      "path": "docs/governance/WORKFLOW_RULES.md",
+      "lines": "243-243",
+      "use": "No semantic fallback that masks absent required authoritative data; applies to data substitution, not rejecting a player attempt.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/docs/governance/WORKFLOW_RULES.md"
+    },
+    {
+      "id": "SRC_AI_AUTHORITY",
+      "path": "data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md",
+      "lines": "147-151, 283-283",
+      "use": "D-014 separates authored candidate-set hard gaps from ordinary direct action result; typed gap is not physical impossibility, world absence or refusal.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md"
+    },
+    {
+      "id": "SRC_PLAYER_ATTEMPT",
+      "path": "data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md",
+      "lines": "16-28",
+      "use": "Player requests, including ordinary/physically impossible/missing-item attempts, are mapped to a real attempt; action/cause/physics owners resolve the outcome.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md"
+    },
+    {
+      "id": "SRC_LOCAL_FIRE_MECHANICS",
+      "path": "packages/world-processes/src/local-exact-fire.js",
+      "lines": "1-45, 65-110",
+      "use": "Existing owner vocabulary start/add_fuel/affect/due_boundary; source for conceptual decomposition only, not target profile authority.",
+      "checkout": "ref-pr98",
+      "resolved_path": "/srv/novgorod-work/worktrees/ref-pr98/packages/world-processes/src/local-exact-fire.js"
+    }
+  ],
+  "candidate_value_provenance": {
+    "/action_policy_candidate/fire_is_basic_action": "SRC_TASK_DECISION; owner decision",
+    "/action_policy_candidate/actions": "SRC_TASK_DECISION + SRC_LOCAL_FIRE_MECHANICS; editorial decomposition of basic fire action into conceptual action labels; extinguish is not a command whitelist or guaranteed result.",
+    "/existence_candidates/0": "SRC_GB_HOUSEHOLD_54 + SRC_WK_FIRESTEEL_89_97 + SRC_WK_FIRESTEEL_CLAIM_474_511",
+    "/existence_candidates/1": "SRC_GB_HOUSEHOLD_55 + SRC_DRAFT_ITEM_TYPES_453_486; logical_necessity is candidate interpretation only",
+    "/existence_candidates/2": "SRC_GB_HOUSEHOLD_56 + SRC_DRAFT_ITEM_TYPES_453_486; logical_necessity is candidate interpretation only",
+    "/existence_candidates/3": "SRC_GB_HOUSEHOLD_57 + SRC_NATURAL_MATERIALS_10 + SRC_WK_COMBUSTION_58",
+    "/existence_candidates/4": "SRC_WK_FUEL_PROCESS_8_20 + SRC_GB_NATURAL_MATERIALS_15_17",
+    "/scope_profiles/*/selector": "SRC_TARGET_PROFILE; exact projection of approved applicability selectors at lines 60-1262.",
+    "/quantities_masses_and_depletion": "SRC_TARGET_PROFILE + SRC_LD_PROFILE + SRC_HOUSEHOLD_KINDLING; typed gap; no value transferred",
+    "/property_access": "SRC_TARGET_PROFILE + SRC_HOUSEHOLD_KINDLING; typed gap",
+    "/water_and_extinguishing": "SRC_WK_WATER_EXTINGUISHING_114_125 + SRC_TARGET_START; qualitative only, target binding gap",
+    "/initial_fire": "SRC_TARGET_PROFILE; typed gap",
+    "/position_topology": "SRC_TARGET_START + SRC_TARGET_PROFILE; exact target position/site binding gap",
+    "/action_policy_candidate/actions_basis": "SRC_TASK_DECISION + SRC_LOCAL_FIRE_MECHANICS; derivation rule; not direct owner wording.",
+    "/action_policy_candidate/player_attempt_policy": "SRC_PLAYER_ATTEMPT + SRC_AI_AUTHORITY; player attempt remains allowed and causal outcome stays with owners.",
+    "/action_policy_candidate/authority_gap_policy": "SRC_WR_FALLBACK + SRC_AI_AUTHORITY; forbids invented authority substitution, not player action attempts.",
+    "/existence_candidates/4/limits": "SRC_WK_COMBUSTION_58; qualitative combustion dependencies and limits.",
+    "/existence_candidates/4/candidate_property": "SRC_WK_COMBUSTION_58 + SRC_GB_NATURAL_MATERIALS_15_17; qualitative fuel compatibility only.",
+    "/scope_profiles/*/upstream_source_design_refs": "SRC_M2C_FINITE_SOURCE + SRC_M2C_SOL_DATA_APPROVAL; exact G4+generated-family join, approval excludes current node/quantity/property decisions.",
+    "/scope_profiles/*/upstream_property_context_ref": "SRC_M2C_PROPERTY_CONTEXT + SRC_M2C_SOL_DATA_APPROVAL; G4 property-context candidate only, no current owner/access decision.",
+    "/upstream_source_design_authority": "SRC_M2C_FINITE_SOURCE + SRC_M2C_SOL_DATA_APPROVAL; exact design pin and scope exclusions.",
+    "/upstream_property_context_authority": "SRC_M2C_PROPERTY_CONTEXT + SRC_M2C_SOL_DATA_APPROVAL; exact property candidate pin and exclusions.",
+    "/quantities_masses_and_depletion/reason": "SRC_M2C_FINITE_SOURCE + SRC_M2C_SOL_DATA_APPROVAL + SRC_TARGET_PROFILE; known upstream design is not current target quantity or F1 burn policy.",
+    "/quantities_masses_and_depletion/known_upstream_designs_are_target_stock": "SRC_M2C_FINITE_SOURCE + SRC_M2C_SOL_DATA_APPROVAL; approval explicitly excludes current nodes and quantities.",
+    "/action_policy_candidate/fallback_policy": "SRC_WR_FALLBACK + SRC_AI_AUTHORITY; no authored authority substitution for missing inputs, while player action attempts remain permitted.",
+    "/scope_policy/natural_material_candidates_are_stock": "SRC_TARGET_PROFILE + SRC_M2C_FINITE_SOURCE; material descriptions and design refs do not establish current stock.",
+    "/scope_policy/canonical_arrival_inherits_generated_stock_profile": "SRC_TARGET_START + SRC_TARGET_PROFILE; canonical arrival is not generated finite-source scope.",
+    "/scope_policy/cross_scope_transfer_allowed": "SRC_TARGET_PROFILE; selectors are exact and not widened.",
+    "/scope_policy/fallback_policy": "SRC_WR_FALLBACK + SRC_AI_AUTHORITY; no authority substitution for a missing required source, not a ban on player attempts.",
+    "/scope_profiles/*/upstream_property_context_ref_role": "SRC_TARGET_PROFILE + SRC_M2C_PROPERTY_CONTEXT + SRC_M2C_SOL_DATA_APPROVAL; role distinguishes generated G4 policy context from the canonical scope33 informational-only G4 pointer, never a current access decision."
+  },
+  "checkouts": {
+    "ref-pr98": {
+      "root": "/srv/novgorod-work/worktrees/ref-pr98",
+      "commit": "b3143fad851f67d24d1b9441e03ee0afef4bb658"
+    },
+    "ref-gamebase": {
+      "root": "/srv/novgorod-work/worktrees/ref-gamebase",
+      "commit": "3ab1c890c1caee2c1247ee144bf66bd35de705ec"
+    },
+    "bridge": {
+      "root": "/srv/novgorod-work/fleet/tasks/b4-f1-data",
+      "commit": null
+    }
+  },
+  "typed_gap_value_provenance": {
+    "/scope_coverage/*/selector": "SRC_TARGET_PROFILE; exact target applicability selector projection",
+    "/scope_coverage/*/upstream_design_refs": "SRC_M2C_FINITE_SOURCE + SRC_M2C_SOL_DATA_APPROVAL; design applicability only",
+    "/gaps/*/selector": "SRC_TARGET_PROFILE; selector must match same candidate scope",
+    "/gaps/*/reason": "SRC_TARGET_PROFILE + SRC_M2C_FINITE_SOURCE + SRC_M2C_PROPERTY_CONTEXT + SRC_M2C_SOL_DATA_APPROVAL; scoped upstream designs/context are distinguished from current F1 bindings.",
+    "/gaps/*/known_upstream_design_refs": "SRC_M2C_FINITE_SOURCE + SRC_M2C_SOL_DATA_APPROVAL; source design refs only",
+    "/gaps/*/source_refs": "SRC_TARGET_PROFILE + SRC_M2C_FINITE_SOURCE + SRC_M2C_SOL_DATA_APPROVAL; authority context for open gap",
+    "/scope_coverage/*/upstream_property_context_ref": "SRC_M2C_PROPERTY_CONTEXT + SRC_M2C_SOL_DATA_APPROVAL; G4-level property context is not current property/access.",
+    "/gaps/*/known_upstream_property_context_ref": "SRC_M2C_PROPERTY_CONTEXT + SRC_M2C_SOL_DATA_APPROVAL; upstream policy candidate only, no current parcel/source-node access decision.",
+    "/scope_coverage/*/upstream_property_context_ref_role": "SRC_TARGET_PROFILE + SRC_M2C_PROPERTY_CONTEXT + SRC_M2C_SOL_DATA_APPROVAL; mirrors G4 policy-context role, with canonical scope33 informational-only.",
+    "/gaps/*/known_upstream_property_context_ref_role": "SRC_TARGET_PROFILE + SRC_M2C_PROPERTY_CONTEXT + SRC_M2C_SOL_DATA_APPROVAL; mirrors G4 policy-context role, with canonical scope33 informational-only."
+  },
+  "target_f1_gaps": {
+    "source_gap_code": "M2C_TARGET_F1_SOURCE_BINDING_DATA_GAP",
+    "source_ref": "SRC_TARGET_PROFILE",
+    "scope": "all33_authored_scopes",
+    "status": "remains_open"
+  }
+}

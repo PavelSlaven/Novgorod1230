@@ -4,9 +4,10 @@ import { freezeOutput } from './shared.js';
 import { resolveTurnStepSemanticActivityTime } from
   '../semantic-activity-time.js';
 import {
-  buildTurnStepPreparedTimeUpdate,
-  requireTurnStepPreparedEffectLedger
+  resolveTurnStepPreparedConsequenceTime
 } from '../turn-step-prepared-effects.js';
+import { exactElapsedForConsequence } from
+  '../turn-step-prepared-effect-validation.js';
 
 export async function buildTimeUpdateStage({
   retrievedState,
@@ -19,23 +20,15 @@ export async function buildTimeUpdateStage({
   const clock = retrievedState.clock_weather_light?.clock ?? retrievedState.clock ?? {};
   const duration = consequence.duration_minutes ?? 0;
   if (preparedEffectLedger != null) {
-    const ledger = requireTurnStepPreparedEffectLedger(preparedEffectLedger);
-    const prepared = buildTurnStepPreparedTimeUpdate(ledger);
-    if (consequence.prepared_effect_ledger_digest !== ledger.ledger_digest
-        || prepared.exact_elapsed.exact_minutes.numerator
-          !== String(duration)) {
-      const error = new Error(
-        'Prepared effect ledger differs from the consequence duration.');
-      error.code = 'TURN_STEP_PREPARED_EFFECT_INVALID';
-      throw error;
-    }
+    const prepared = resolveTurnStepPreparedConsequenceTime(
+      consequence, preparedEffectLedger);
     const semantic = resolveTurnStepSemanticActivityTime({
       batch: turnStepOperationBatch,
       consequence,
       clockBefore: prepared.clock_before,
       clockAfter: prepared.clock_after,
       exactElapsed: prepared.exact_elapsed,
-      preparedEffectLedger: ledger
+      preparedEffectLedger: prepared.prepared_effect_ledger
     });
     return freezeOutput(withPostAppliedTemporalResults(
       { ...prepared, ...(semantic ?? {}) }, postAppliedTemporalResults));
@@ -53,15 +46,12 @@ export async function buildTimeUpdateStage({
       ...(semantic ?? {})
     }, postAppliedTemporalResults));
   };
+  const exactElapsed = { exact_minutes:
+    exactElapsedForConsequence(consequence) };
   if (typeof temporalAdvance === 'function') {
     const result = await temporalAdvance({
       clock_before: structuredClone(clock),
-      exact_elapsed: {
-        exact_minutes: {
-          numerator: String(duration),
-          denominator: '1'
-        }
-      },
+      exact_elapsed: exactElapsed,
       relevant_state: structuredClone(retrievedState),
       consequence: structuredClone(consequence)
     });
@@ -83,18 +73,8 @@ export async function buildTimeUpdateStage({
       schema: 'turn_time_update',
       owner: '@rus/time-events-history',
       clock_before: structuredClone(clock),
-      clock_after: addElapsedTime(clock, {
-        exact_minutes: {
-          numerator: String(duration),
-          denominator: '1'
-        }
-      }),
-      exact_elapsed: {
-        exact_minutes: {
-          numerator: String(duration),
-          denominator: '1'
-        }
-      },
+      clock_after: addElapsedTime(clock, exactElapsed),
+      exact_elapsed: exactElapsed,
       nearest_boundary: null
     });
   }

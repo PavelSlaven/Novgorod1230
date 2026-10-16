@@ -7,6 +7,7 @@ export function appendBoundaryIntervals({
   intervals,
   partyId,
   executionId,
+  travelStateId,
   stepOrdinal,
   suffix,
   segment,
@@ -30,6 +31,7 @@ export function appendBoundaryIntervals({
     const afterElapsed = elapsed + interval.elapsed_minutes;
     appends.push(row('party_traversal_interval_results', intervalId, {
       id: intervalId,
+      travel_state_id: travelStateId,
       route_plan_execution_id: executionId,
       plan_step_ordinal: stepOrdinal,
       interval_ordinal: intervalOrdinal,

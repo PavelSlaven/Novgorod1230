@@ -1,0 +1,18 @@
+{
+  "decision": "APPROVE_SPATIAL_CONTROLLED_VOCABULARY_V5_AUTHORING",
+  "registry_ref": "spatial.controlled_vocabularies@5.0.0",
+  "registry_sha256": "c9bc283672f22763f835e46b5aa4dfe4eadba3874cbef6c9f3f8d8567686dd82",
+  "aggregate_digest": "a7dbe84290fb490cec216a096b22d7a2ebc82c21b8cc29c36872f5331d324b94",
+  "approved_by": "claude-opus-5-5/high — independent Contract Auditor/approver (lead fleet, spatial-cr)",
+  "approved_on": "2026-09-29",
+  "approval_scope": "exact_registry_data_and_consumer_compatibility",
+  "verdict": "APPROVE_WITH_LIMITS",
+  "limits": [
+    "Runtime imports v4. The v5 pin binds only through B.0.1 of the Spatial standard 4.7.0 after that edit is merged; activation needs the code stage and a versioned cutover (standard §0.4).",
+    "The \"status\": \"approved\" field inside the registry JSON is a generator convention; this file is the approval.",
+    "The approval is bound to the exact registry_sha256. Any regeneration or value change needs a new registry version (v6).",
+    "direction.along_road, direction.along_shore and direction.toward_landmark have no reverse values, so they must not be used as line_direction_id (consumer rule in v5)."
+  ],
+  "source_issue": "Issue #133",
+  "activation_authorized": false
+}

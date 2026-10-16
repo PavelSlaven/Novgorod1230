@@ -28,6 +28,7 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
 } = {}) {
   return async ({ partyId, requestId, inputDigest, state, phase7Contracts,
     workingProjection = null, priorLocalFirePlans = [],
+    assertNeedsCheckAllowed = null,
     conversationBindings = null, conversationActivity = null,
     parentTemporal = null,
     runNpcConversationExchange: boundaryConversationExchange =
@@ -45,7 +46,8 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       loadOrdinaryEnablement });
     const ordinary = typeof createOrdinaryDiscoveryResolver === 'function'
       && discoveryTargets.length > 0
-      ? createOrdinaryDiscoveryResolver({ partyId, inputDigest }) : null;
+      ? createOrdinaryDiscoveryResolver({ partyId, inputDigest,
+        assertNeedsCheckAllowed, requestSubject: 'npc' }) : null;
     if (typeof ordinary === 'function') {
       capabilities.push({
         operation: 'request_discovery',
@@ -60,17 +62,18 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
           && (typeof ordinary === 'function'
             && ['inspect', 'search'].includes(operation.discovery_kind)
             && discoveryTargets.includes(operation.target_refs[0])),
-        execute: (execution) => typeof ordinary === 'function'
-          && ['inspect', 'search'].includes(execution.operation.discovery_kind)
-          && discoveryTargets.includes(execution.operation.target_refs[0])
-          ? ordinary(ordinaryOwnerInput(execution, state, npc,
-            'turn_step_ordinary_discovery_request_v1'))
-          : null
+        execute: async (execution) => typeof ordinary !== 'function'
+          || !['inspect', 'search'].includes(execution.operation.discovery_kind)
+          || !discoveryTargets.includes(execution.operation.target_refs[0])
+          ? null : omitNpcNoChangeDiscoveryPresentation(await ordinary(
+            ordinaryOwnerInput(execution, state, npc,
+              'turn_step_ordinary_discovery_request_v1')))
       });
     }
     const spatial = npcS1Capability({ state, npc,
       resolverAvailable: typeof createSpatialSemanticResolver === 'function' });
-    const s1 = spatial != null ? createSpatialSemanticResolver({ partyId }) : null;
+    const s1 = spatial != null ? createSpatialSemanticResolver({ partyId,
+      assertNeedsCheckAllowed }) : null;
     if (typeof s1 === 'function') capabilities.push({
       operation: 'request_discovery', capability: { owner: '@rus/turn', allowed: [{
         target_refs: [spatial.safe_state.spatial_semantic.position_ref],
@@ -96,7 +99,8 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       });
       const projectionOwner = createNpcA1ProjectionOwner({ state, npc, itemRefs });
       const ownerFor = (ownerRequestId) => createActionProductionOwner({ partyId,
-        requestId: ownerRequestId, inputDigest, applyWorkingProjection: projectionOwner });
+        requestId: ownerRequestId, inputDigest, applyWorkingProjection: projectionOwner,
+        assertNeedsCheckAllowed });
       const owner = ownerFor(requestId);
       const applicable = typeof owner?.referencesApplicable === 'function'
         ? await applicableNpcA1Refs(owner, itemRefs, referenceInput)
@@ -143,7 +147,8 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       });
     }
     const containerCapability = createNpcContainerCapability({ state, npc, partyId,
-      inputDigest, createOrdinaryContainerContentsResolver });
+      inputDigest, createOrdinaryContainerContentsResolver,
+      assertNeedsCheckAllowed });
     if (containerCapability != null) capabilities.push(containerCapability);
     if (typeof createModeOwnerCapabilities === 'function') {
       const visibleTargetRefs = npcSafeActorRefs(npc, state);
@@ -205,8 +210,21 @@ function ownerInput(execution, state, npcRef, schema) {
 }
 
 function ordinaryOwnerInput(execution, state, npc, schema) {
-  return { ...ownerInput(execution, state, npc.instance_id, schema),
+  const safeItemRefs = new Set(npcSafeItemRefs(state, npc));
+  const safeState = { actor_id: npc.instance_id,
+    items: (state.items ?? []).filter((item) =>
+      safeItemRefs.has(item.item_id ?? item.instance_id)) };
+  const input = ownerInput(execution, state, npc.instance_id, schema);
+  return { ...input, player_safe_state: safeState,
+    request: { ...input.request, player_safe_state: safeState },
     committed_state: npcCommittedState(state, npc) };
+}
+
+function omitNpcNoChangeDiscoveryPresentation(result) {
+  if (result?.consequence_fragment?.visible_seed?.ordinary_presence_seed
+      ?.resolution !== 'no_change') return result;
+  const { consequence_fragment, ...ownerResult } = result;
+  return ownerResult;
 }
 
 async function enabledNpcDiscoveryTargets({ partyId, npc, loadOrdinaryEnablement }) {

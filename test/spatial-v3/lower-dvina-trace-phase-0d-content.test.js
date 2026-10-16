@@ -70,8 +70,8 @@ const refreshDigests = (directory) => {
 };
 const withFixture = (mutate, { refresh = true } = {}) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'trace-0d-'));
-  cpSync(source, directory, { recursive: true });
   try {
+    cpSync(source, directory, { recursive: true });
     mutate(directory);
     if (refresh) refreshDigests(directory);
     return runChecker(directory);

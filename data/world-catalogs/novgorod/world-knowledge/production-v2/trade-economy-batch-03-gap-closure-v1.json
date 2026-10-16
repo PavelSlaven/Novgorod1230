@@ -1,0 +1,962 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "title": "Trade economy batch 03 bounded reconstruction",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Candidate reconstruction from trade-economy-batch-03 triage",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/benchmarks/offline-context-v1/trade-economy-batch-03-triage.json",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-exchange",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Qualitative exchange valuation and bargaining"
+      },
+      "note": "Bounded reconstruction: observed usefulness, condition, urgency, alternatives, effort and risk can be discussed qualitatively in exchange. No price, rate, unit, stock, ownership, law, route, agreement, identity, outcome or NPC decision is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-payment-metal",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Payment metal material suitability"
+      },
+      "note": "Bounded reconstruction: already present metal portions can be inspected and kept separate by visible material condition. No authentication, currency identity, amount, rate, ownership, acceptance or settlement is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-packaging",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Packaging geometry and container constraints"
+      },
+      "note": "Bounded reconstruction: shape, opening, capacity and closure constrain handling of already present goods and containers. No container, quantity, owner, route, loss or outcome is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-storage",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Cross-material storage compatibility"
+      },
+      "note": "Bounded reconstruction: moisture, odour, smoke, pests and cold can be considered across already stored materials. No stored good, condition, cause, spoilage, safety, loss or preservation outcome is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-provisions",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Seasonal provision availability and preservation"
+      },
+      "note": "Bounded reconstruction: fresh provision availability can vary seasonally and preservation can extend use of already available food. No food, stock, season at a place, method, safety, duration or outcome is established.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "participants_can_qualitatively_compare_observed_usefulness_and_condition_of_already_present_exchange_items_without_setting_a_price_or_rate"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-exchange"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "effort_risk_and_urgency_can_be_discussed_as_qualitative_conditions_of_an_exchange_without_fixing_terms_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-exchange"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "known_alternatives_can_qualitatively_affect_bargaining_room_without_establishing_demand_acceptance_or_npc_choice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-exchange"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an_already_present_metal_portion_can_be_inspected_for_visible_material_condition_without_authenticating_it_or_assigning_payment_value"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-payment-metal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "already_present_metal_portions_can_be_kept_separate_for_qualitative_comparison_without_setting_an_amount_rate_or_settlement"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-payment-metal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "visible_material_suitability_of_metal_remains_distinct_from_authentication_currency_identity_or_a_partys_acceptance"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-payment-metal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "container_shape_and_opening_geometry_constrain_which_already_present_goods_can_pass_through_without_assigning_a_quantity_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-packaging"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "available_packaging_material_and_closure_can_conditionally_affect_handling_of_already_present_goods_without_proving_containment_or_loss_prevention"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-packaging"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "dividing_goods_into_carried_units_uses_available_packaging_material_and_space_without_establishing_count_capacity_or_owner"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-packaging"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "already_stored_food_leather_textile_or_oil_can_be_separated_by_observed_moisture_or_odour_sensitivity_without_proving_contamination_or_loss"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-storage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "smoke_pest_and_cold_exposure_can_be_considered_as_distinct_storage_conditions_across_materials_without_diagnosing_damage_or_safety"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-storage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "placement_of_already_stored_different_materials_can_be_inspected_and_adjusted_as_space_and_access_allow_without_guaranteeing_preservation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-storage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "availability_of_fresh_provisions_can_vary_by_season_without_establishing_a_place_stock_or_current_food"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-provisions"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "preservation_can_conditionally_extend_use_of_already_available_provisions_without_setting_method_duration_safety_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-provisions"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fresh_and_preserved_provisions_can_be_considered_as_different_availability_forms_without_inferring_current_stock_or_choice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-provisions"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "locale": "ru",
+      "labels": [
+        "Качественный обмен"
+      ],
+      "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "locale": "en",
+      "labels": [
+        "Qualitative exchange"
+      ],
+      "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "locale": "ru",
+      "labels": [
+        "Материальная пригодность платёжного металла"
+      ],
+      "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "locale": "en",
+      "labels": [
+        "Payment-metal material suitability"
+      ],
+      "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "locale": "ru",
+      "labels": [
+        "Упаковка и тара"
+      ],
+      "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "locale": "en",
+      "labels": [
+        "Packaging and containers"
+      ],
+      "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "locale": "ru",
+      "labels": [
+        "Совместимость хранения разных материалов"
+      ],
+      "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "locale": "en",
+      "labels": [
+        "Cross-material storage compatibility"
+      ],
+      "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "locale": "ru",
+      "labels": [
+        "Сезонные припасы"
+      ],
+      "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "locale": "en",
+      "labels": [
+        "Seasonal provisions"
+      ],
+      "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+      "locale": "ru",
+      "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+      "locale": "en",
+      "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+      "search_aliases": []
+    }
+  ]
+}

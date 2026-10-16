@@ -1,0 +1,42 @@
+{
+  "decision": "APPROVE_WITH_LIMITS",
+  "reviewer": "Codex /root, независимый утверждающий; автор данных — luna",
+  "approved_at": "2026-10-03T15:17:16Z",
+  "approved_path": "data/world-catalogs/novgorod/live-world-runtime-v17/s1-envelope-data-v1/",
+  "approved_commit": "d97c5307374301359b7a91563e81b896be45ac4d",
+  "approved_files": [
+    "bench/s1-envelope/README.md",
+    "bench/s1-envelope/cases.json",
+    "bench/s1-envelope/dry-run-result.json",
+    "bench/s1-envelope/run.mjs",
+    "bench/s1-validator/make-fixtures.mjs",
+    "bench/s1-validator/results.json",
+    "bench/s1-validator/run-cli-selftests.sh",
+    "bench/s1-validator/summarize.mjs",
+    "bench/s1-validator/test-resolver-ambiguity.mjs",
+    "report-b4-s1-data.md",
+    "s1-source-map.json",
+    "s1-typed-gaps.json",
+    "s1-v17-candidate.json",
+    "validate-s1-candidate.mjs"
+  ],
+  "scope": "Только exact target applicability/source/typed-gap inventory для 33 selectors и 297 полевых gaps, authored topology refs как source evidence в их заявленной области и task-local validator с его механическими отрицательными проверками. Отчёт и bench artifacts входят как документация и свидетельства проверки. Полный S1 envelope не утверждён.",
+  "limits": [
+    "Кандидат остаётся candidate_only_gap, profile=null, approved=false. Утверждение реестра не переводит содержащиеся в нём candidate refs и pending sources в runtime-approved данные.",
+    "Generated topology @2 остаётся диагностикой; она не является применимым evidence для v17 target @1.",
+    "S1 envelope readiness, закрытие data-gap и #163 не утверждены.",
+    "Import, activation и runtime integration не разрешены; import_authorized=false и activation_authorized=false сохраняются.",
+    "Модельный D41, player prose и данные для рассказчика/NPC не утверждены. 12 D41 inventory cases остаются not_run; CLI mutation checks не являются модельным стендом.",
+    "DB/party/production readback, PG/Docker и полные repository suites не проверены; размещение файлов в репозитории не доказывает их runtime готовность."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "issue_closure_authorized": false,
+  "review_reference": {
+    "task_id": "ap-b4-s1",
+    "submission": "DONE-ap-b4-s1-3",
+    "report": "/srv/novgorod-work/fleet/tasks/ap-b4-s1/out/report-ap-b4-s1-3.md",
+    "verdict": "/srv/novgorod-work/fleet/tasks/ap-b4-s1/out/verdict-ap-b4-s1-3.json"
+  },
+  "approval_validity": "Любая последующая правка утверждённого содержимого снимает утверждение до нового независимого прохода (WR §21.1)."
+}

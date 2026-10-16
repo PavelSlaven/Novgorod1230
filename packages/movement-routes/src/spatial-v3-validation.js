@@ -5,6 +5,16 @@ const text = (value) => typeof value === 'string' && value.trim() ? value.trim()
 const digest = (value) => computeSpatialV3CanonicalDigest(value);
 const validEntityRef = (value) => value && typeof value === 'object' && text(value.entity_kind) && text(value.entity_id);
 const validVersionedRef = (value) => value && typeof value === 'object' && validEntityRef(value.entity_ref) && text(value.authoring_version);
+const validPhysicalSegmentRef = (value) => {
+  const segment = value?.segment_ref;
+  const pin = value?.version_pin;
+  if (!segment || !['scene_edge', 'site_connection', 'world_route_segment'].includes(segment.segment_kind)
+    || !text(segment.segment_id) || !pin) return false;
+  if (segment.segment_kind === 'world_route_segment') return pin.pin_kind === 'authoring_version'
+    && text(pin.authoring_version) && pin.state_version == null;
+  return pin.pin_kind === 'party_state_version' && Number.isInteger(pin.state_version)
+    && pin.state_version > 0 && pin.authoring_version == null;
+};
 const integer = (value) => Number.isInteger(value) && value > 0;
 const rational = (value) => {
   if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).sort().join(',') !== 'denominator,numerator') return false;
@@ -106,7 +116,7 @@ export function validStaticSnapshot(stepKind, value) {
   if (!text(payload.canonical_digest) || payload.canonical_digest !== digest(payloadSeal) || !validPins(payload.dependency_pins)) return false;
   if (stepKind === 'immediate_action') return validVersionedRef(payload.action_contract_ref) && Number.isInteger(payload.action_units) && payload.action_units > 0 && (payload.relation_ref == null ? payload.movement_capacity_units == null : validEntityRef(payload.relation_ref) && Number.isInteger(payload.movement_capacity_units) && payload.movement_capacity_units > 0) && (payload.mode_transition_contract_ref == null || validVersionedRef(payload.mode_transition_contract_ref)) && (payload.completion_effect_contract_ref == null || validVersionedRef(payload.completion_effect_contract_ref));
   if (stepKind === 'timed_activity') return validVersionedRef(payload.activity_contract_ref) && Number.isInteger(payload.planned_total_minutes) && payload.planned_total_minutes > 0 && (payload.mode_transition_contract_ref == null || validVersionedRef(payload.mode_transition_contract_ref)) && (payload.completion_effect_contract_ref == null || validVersionedRef(payload.completion_effect_contract_ref));
-  return validVersionedRef(payload.physical_segment_ref) && text(payload.selected_movement_method_id) && validEntityRef(payload.movement_carrier_ref) && Number.isInteger(payload.movement_capacity_units) && payload.movement_capacity_units > 0 && validVersionedRef(payload.environment_profile_ref) && validVersionedRef(payload.orientation_profile_ref) && validVersionedRef(payload.cost_profile_ref) && validVersionedRef(payload.recheck_policy_ref) && payload.factual_context_snapshot && typeof payload.factual_context_snapshot === 'object';
+  return validPhysicalSegmentRef(payload.physical_segment_ref) && text(payload.selected_movement_method_id) && validEntityRef(payload.movement_carrier_ref) && Number.isInteger(payload.movement_capacity_units) && payload.movement_capacity_units > 0 && validVersionedRef(payload.environment_profile_ref) && validVersionedRef(payload.orientation_profile_ref) && validVersionedRef(payload.cost_profile_ref) && validVersionedRef(payload.recheck_policy_ref) && payload.factual_context_snapshot && typeof payload.factual_context_snapshot === 'object';
 }
 
 export function validReason(reason, readiness) {

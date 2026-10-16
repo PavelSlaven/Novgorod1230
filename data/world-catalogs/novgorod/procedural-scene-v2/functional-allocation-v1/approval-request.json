@@ -1,0 +1,10 @@
+{
+  "schema": "rus.procedural_functional_allocation_approval_request.v1",
+  "decision_requested": "review_functional_actor_allocation_authoring",
+  "candidate_digest": "d081e342e8987ed48b8c7464efe8f1799f3038349c0a364890cf32eac1628c77",
+  "authoring_scope": "functional_actor_allocation_only",
+  "import_authorized": false,
+  "runtime_authorized": false,
+  "activation_authorized": false,
+  "request_digest": "763f7fafe888f2ab7f4a40508d81356780fbf041504b04ecfed3851e4b2e49a0"
+}

@@ -27,9 +27,10 @@ async function lockDestination(client, plan) {
      WHERE party_id=$1 AND actor_id=$2 AND status='active' FOR UPDATE`,
   [plan.party_id, plan.actor_ref]);
   const positions = [...direct.rows, ...carried.rows];
+  const anchorless = pin.anchor_id === null;
   if (plan.result_items.length === 0) {
-    if (selected.rows.length !== 1
-        || selected.rows[0].anchor_id !== pin.anchor_id
+    if ((anchorless ? selected.rows.length !== 0
+        : selected.rows.length !== 1 || selected.rows[0].anchor_id !== pin.anchor_id)
         || pin.destination_kind === 'party_current_scene_position'
           && (positions.length !== 1
             || positions[0].scene_position_id !== pin.scene_position_id)) {
@@ -49,13 +50,13 @@ async function lockDestination(client, plan) {
   const scene = pin.destination_kind === 'party_current_scene_position'
     ? await lockSceneOccupancy(client, plan.party_id, pin.scene_position_id)
     : null;
-  const value = selected.rows.length === 1
+  const value = selected.rows.length === (anchorless ? 0 : 1)
     ? pin.destination_kind === 'party_current_scene_position'
-      ? { anchor_id: selected.rows[0].anchor_id,
+      ? { anchor_id: selected.rows[0]?.anchor_id ?? null,
         scene_position_id: positions.length === 1
           ? positions[0].scene_position_id : null,
         scene_capacity: scene?.capacity, scene_occupancy: scene?.occupancy }
-      : { anchor_id: selected.rows[0].anchor_id,
+      : { anchor_id: selected.rows[0]?.anchor_id ?? null,
         item_capacity: Number(selected.rows[0].item_capacity),
         used_item_ids: used.rows.map(({ item_id: itemId }) => itemId) }
     : null;

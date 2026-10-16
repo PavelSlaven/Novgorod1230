@@ -5,8 +5,33 @@ import { readFile } from 'node:fs/promises';
 import { classifyPlannerEvalFailure, runFrozenRoleEval } from '../src/runner.mjs';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-world-process-llm.js';
+import { assembleTurnStepPlan } from
+  '../../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { validateTurnStepPlan } from '@rus/turn';
 
 const corpus = JSON.parse(await readFile(new URL('../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url), 'utf8'));
+
+async function runFixtureResponses(fixture, outputs) {
+  const requests = [];
+  const server = createServer(async (request, response) => {
+    let body = ''; for await (const chunk of request) body += chunk;
+    requests.push(JSON.parse(body));
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(outputs.shift())
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    return { report, requests };
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+}
 
 function providerOutput(fixture) {
   const output = fixture.expected_output;
@@ -25,7 +50,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 68);
+  assert.equal(corpus.corpus_version, 75);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -41,6 +66,10 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
       corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 19 }
     } });
     assert.equal(report.fixture_count, 38);
+    const worldProcessResult = report.results.find(({ fixture_id }) =>
+      fixture_id === 'world-process-water-affect');
+    assert.ok(worldProcessResult, 'world-process fixture result must exist');
+    assert.equal(worldProcessResult.pass, true);
     assert.equal(report.aggregates.total.passed, 38,
       JSON.stringify(report.results.filter(({ pass }) => !pass)));
     assert.equal(report.aggregates.total.errors, 0);
@@ -193,6 +222,38 @@ test('combat eval records its single bounded production repair', async () => {
     assert.equal(report.metadata.role_config_policy.find(({ role_id }) =>
       role_id === 'npc_combat_decider').max_tokens, 20000);
   } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('combat primary fixture assembles and validates against canonical request', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'npc-combat-engage');
+  const { report, requests } = await runFixtureResponses(fixture,
+    [fixture.expected_output]);
+  assert.equal(report.results[0].pass, true);
+  assert.equal(report.results[0].valid, true);
+  assert.equal(report.results[0].llm_calls, 1);
+  assert.deepEqual(requests[0].messages, fixture.messages);
+});
+
+test('standalone combat repair fixture restores canonical choices', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'npc-combat-format-repair');
+  const { report, requests } = await runFixtureResponses(fixture,
+    [fixture.expected_output]);
+  assert.equal(report.results[0].pass, true);
+  assert.equal(report.results[0].valid, true);
+  assert.equal(report.results[0].repair_calls, 1);
+  assert.deepEqual(requests[0].messages, fixture.messages);
+});
+
+test('invalid combat primary is repaired into a valid plan', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'npc-combat-engage');
+  const { report } = await runFixtureResponses(fixture,
+    [{}, fixture.expected_output]);
+  assert.equal(report.results[0].pass, true);
+  assert.equal(report.results[0].valid, true);
+  assert.equal(report.results[0].llm_calls, 2);
+  assert.equal(report.results[0].repair_calls, 1);
+  assert.equal(report.aggregates.total.repairs, 1);
 });
 
 test('combat eval fails after one invalid production repair', async () => {
@@ -507,10 +568,11 @@ test('planner structurally invalid output fails after exactly one call', async (
 test('world-process semantic mismatch fails even when owner validator accepts plan', async () => {
   const fixture = structuredClone(corpus.fixtures.find(({ id }) =>
     id === 'world-process-water-affect'));
-  const request = JSON.parse(fixture.messages.at(-1).content);
+  const request = structuredClone(fixture.request);
   request.outcome_contract.push({ process_outcome: 'no_effect',
     reason_code: 'water_unaffected',
     applicability: 'the supplied water does not reach the fire' });
+  fixture.request = request;
   let invocation;
   await createLowerDvinaTraceWorldProcessStepModel({ roleRunner: {
     async run(call) { invocation = call; return { output: {} }; }
@@ -530,6 +592,30 @@ test('world-process semantic mismatch fails even when owner validator accepts pl
     assert.equal(report.results[0].pass, false);
     assert.ok(report.results[0].errors.includes('unexpected_value:process_outcome'));
     assert.equal(report.aggregates.total.semantic_failures, 1);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('world-process eval validates assembled plan against its authoritative request', async () => {
+  const fixture = structuredClone(corpus.fixtures.find(({ id }) =>
+    id === 'world-process-water-affect'));
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(fixture.expected_output)
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(report.results[0].valid, true);
+    assert.equal(report.results[0].pass, true);
+    assert.deepEqual(report.results[0].errors, []);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
@@ -665,12 +751,6 @@ test('conversation eval assembles against the exact provider-facing request', as
   const fixture = structuredClone(corpus.fixtures.find(({ id }) =>
     id === 'npc-conversation-check-required'));
   const output = structuredClone(fixture.expected_output);
-  const player = { entity_kind: 'player_character', entity_id: 'player' };
-  output.primary_addressee_ref = player;
-  output.intended_addressee_refs = [player];
-  output.resolution = 'automatic';
-  output.supporting_operations = [];
-  output.check = { purpose: output.check.purpose };
   const server = createServer(async (request, response) => {
     for await (const _ of request) {}
     response.setHeader('Content-Type', 'application/json');
@@ -688,6 +768,83 @@ test('conversation eval assembles against the exact provider-facing request', as
     assert.equal(report.results[0].pass, true,
       JSON.stringify(report.results[0].errors));
   } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('conversation expected refs and required choices come from provider input', () => {
+  const fixtures = corpus.fixtures.filter(({ role_id, expected }) =>
+    ['player_conversation_interpreter',
+      'player_conversation_interpreter_format_repair',
+      'npc_conversation_responder',
+      'npc_conversation_responder_format_repair'].includes(role_id)
+      && Object.keys(expected?.required_values ?? {}).length > 0);
+  assert.equal(fixtures.length, 5);
+  for (const fixture of fixtures) {
+    const payload = JSON.parse(fixture.messages.at(-1).content);
+    const request = payload.request ?? payload;
+    assert.deepEqual(request, fixture.request, `${fixture.id}: request/message mismatch`);
+    const playerRole = fixture.role_id.startsWith('player_conversation');
+    const allowedReferences = playerRole
+      ? request.player_safe_context.allowed_references
+      : request.allowed_references;
+    const allowedIds = new Set(Object.values(allowedReferences)
+      .flatMap((references) => references.map(({ entity_id }) => entity_id)));
+    for (const ref of fixture.expected.required_refs ?? []) {
+      assert.ok(allowedIds.has(ref), `${fixture.id}: expected ref ${ref} is not allowed`);
+      assert.ok(fixture.messages.at(-1).content.includes(ref),
+        `${fixture.id}: provider input omits ${ref}`);
+    }
+
+    const expected = fixture.expected.required_values;
+    const context = playerRole ? request.player_safe_context : request.decision_scope;
+    if (expected.resolution !== undefined) {
+      assert.equal(context.required_resolution ?? 'automatic', expected.resolution,
+        `${fixture.id}: resolution`);
+    }
+    if (expected.input_mode !== undefined) {
+      assert.equal(context.verbatim_utterance_text == null
+        ? 'intent_paraphrase' : 'verbatim', expected.input_mode,
+      `${fixture.id}: input_mode`);
+    }
+    const requiredCheck = context.required_check;
+    for (const field of ['attribute_ref', 'skill_ref', 'difficulty_band']) {
+      if (expected[`check.${field}`] !== undefined) {
+        assert.equal(requiredCheck?.[field], expected[`check.${field}`],
+          `${fixture.id}: check.${field}`);
+      }
+    }
+    if (expected['supporting_operations.0.op'] !== undefined) {
+      const requiredOperation = context.required_supporting_operation;
+      assert.equal(requiredOperation?.op,
+        expected['supporting_operations.0.op'], `${fixture.id}: required operation`);
+      assert.deepEqual(fixture.expected_output.supporting_operations?.[0],
+        requiredOperation, `${fixture.id}: expected operation differs from required input`);
+      const operationContract = playerRole
+        ? request.operation_contract?.[requiredOperation.op]
+        : context.operation_contract?.[requiredOperation.op];
+      const requiredOperationFields = structuredClone(requiredOperation);
+      delete requiredOperationFields.op;
+      assert.deepEqual(operationContract, requiredOperationFields,
+        `${fixture.id}: operation contract differs from required input`);
+    }
+  }
+});
+
+test('planner repair fixture request reaches assembly with its turn identity', () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'planner-domain-owner-unavailable-repair');
+  const payload = JSON.parse(fixture.messages.at(-1).content);
+  assert.equal(Object.hasOwn(payload.request, 'request'), false);
+  assert.equal(payload.request.request_id,
+    fixture.request.request.request_id);
+  assert.equal(payload.request.committed_state_version,
+    fixture.request.request.committed_state_version);
+  const plan = assembleTurnStepPlan(fixture.expected_output, payload.request);
+  assert.equal(plan.request_id, payload.request.request_id);
+  assert.equal(plan.committed_state_version,
+    payload.request.committed_state_version);
+  assert.equal(plan.working_revision, payload.request.working_revision);
+  assert.equal(plan.step_index, payload.request.step_index);
+  assert.equal(validateTurnStepPlan(plan, { request: payload.request }).ok, true);
 });
 
 test('planner, ordinary and NPC conversation semantic mismatches fail after owner validation', async () => {

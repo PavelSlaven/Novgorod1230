@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   ACTION_PRODUCED_WEAPON_CLASSES,
   buildAttackRequest,
+  actionProducedWeaponClassificationFromModelOutput,
   resolveActionProducedCombatWeaponClass
 } from '../src/index.js';
 
@@ -63,3 +64,19 @@ function request(qualitativeClass = 'improvised_puncture_light') {
     request_id: 'combat-weapon:1', qualitative_class: qualitativeClass
   } };
 }
+
+test('model output becomes a classification with code-owned schema and id', () => {
+  const stamped = actionProducedWeaponClassificationFromModelOutput({
+    schema: 'rus.combat.action_produced_weapon_classification_request.v1',
+    request_id: 'copied', qualitative_class: 'improvised_impact_light',
+    weapon_danger: 900 }, 'combat-weapon:1');
+  assert.deepEqual(stamped, request('improvised_impact_light').classification);
+  assert.equal(resolveActionProducedCombatWeaponClass({
+    classification: stamped }).formal_mechanics.weapon_danger, 1);
+  for (const output of [{ qualitative_class: 'royal_spear' }, {}, null, 'x']) {
+    assert.throws(() => resolveActionProducedCombatWeaponClass({
+      classification: actionProducedWeaponClassificationFromModelOutput(
+        output, 'combat-weapon:1') }), {
+      code: 'COMBAT_ACTION_PRODUCED_WEAPON_CLASSIFICATION_INVALID' });
+  }
+});

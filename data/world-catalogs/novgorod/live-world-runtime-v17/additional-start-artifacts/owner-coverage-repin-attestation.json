@@ -1,0 +1,14 @@
+{
+  "schema": "rus.m2c_owner_coverage_repin_attestation.v1",
+  "decision": "APPROVE_MECHANICAL_SOURCE_REPIN",
+  "reviewer": "claude-opus-5.5 — reviewer (Novgorod1230 lead); not the author of the repin",
+  "reviewed_on": "2026-09-29",
+  "source_issue": "PavelSlaven/Novgorod1230#133 (D49)",
+  "file": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-coverage-data-approval.json",
+  "field": "reviewed_source_sha256.m2c_acoustic_approved_baselines",
+  "old_sha256": "9d7f7a482fd4709813f1930e0abdd3fb029735c16e401566fb323a40f865be01",
+  "new_sha256": "8056b3816f512ce1e8c516fea7026942cce60e9e81fb148b14ade67c6e89d91d",
+  "basis": "The approved acoustic baselines file grew from 71 to 218 rows by merging the independently approved canonical-walk package (m2c-acoustic/canonical-walk/approval.json). None of the six start canonical G5 ids is a canonical-walk row; owner-coverage.mjs --check passes; buildAdditionalStartOwnerRows() output (6 NPC, 4 acoustic, 10 authoring rows) is byte-identical before (86d87dae) and after the merge (review request owner-coverage-repin-review-request.md). Only the pinned input digest changes; no start row, value or approval scope changes.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

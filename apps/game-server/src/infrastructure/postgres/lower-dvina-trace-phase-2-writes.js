@@ -3,16 +3,21 @@ import {
   computeSpatialV3CanonicalDigest
 } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import {
   appendPhase2Clue
 } from './lower-dvina-trace-phase-2-clue-writes.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function buildPhase2Writes(input) {
   const {
-    partyId, state, snapshot, factual, visibleEnvelope, pendingScreen,
+    partyId, state, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, clue, inputDigest,
     nextBodyState
   } = input;
+  // Scene NPCs are read from the party tables each turn; the snapshot never keeps them.
+  const snapshot = withoutSceneNpcs(input.snapshot);
   const inserts = [
     row('party_state_snapshots', `${partyId}:${nextVersion}`, {
       party_id: partyId,
@@ -139,17 +144,20 @@ export function buildPhase2VisibleEnvelope({
   changeSetId,
   idemId,
   context,
-  contracts
+  contracts,
+  onLabelGapsOmitted = null
 }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(context, { onLabelGapsOmitted, requireScene: true });
   const payload = {
     schema: 'temporal_visible_package.v1',
-    perceived_scene: context.visible_scene,
-    perceived_changes: context.visible_changes,
-    sensory_details: context.sensory_details,
-    visible_npcs: context.visible_npc,
-    visible_objects: context.visible_objects,
-    known_context: context.known_context,
-    uncertainties: context.uncertainties,
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details,
+    visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects,
+    known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties,
     hypotheses: [],
     player_safe_interruption: null,
     allowed_action_affordances: []

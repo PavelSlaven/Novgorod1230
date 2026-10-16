@@ -21,9 +21,11 @@ Planner receives explicit `resolveKnowledgeTarget`, `loadTopology`, `snapshotEnd
 
 Approved actor-destination proposals distinguish immediate local position transitions from `requires_traversal_runtime_completion` routes. A consumer may apply the former only after the pinned local access/capacity admission; a route changes position only after the existing traversal runtime returns a completed interval proof.
 
-NPC routine consumers используют тот же route owner: schedule задаёт только
-source/destination intent, а adapter сверяет committed source, exact endpoints и
-доступ. Ни начало routine phase, ни заблокированный traversal не меняют position.
+NPC routine consumer передаёт handoff через текущий game-server `npc-routine-movement`
+path. Он сверяет committed source, exact endpoints и доступ, затем использует
+заданную handoff длительность для обычного completion. Это не sealed traversal
+proof. `movement_execution` interval хранится в routine state NPC owner; этот
+пакет предоставляет request/result helpers, но не сохраняет schedule snapshot.
 
 Когда traversal является time-bearing дочерним действием combat exchange,
 он принимает exact parent slice и возвращает `paused_in_transit` либо
@@ -32,6 +34,8 @@ terminal proof. Такой interval использует `shared_root_transport_
 позиция меняется только после terminal proof.
 
 ## Ошибки, зависимости и effects
+
+A path whose timed traversal needs a movement method the actor's capability context lacks stays in the option set as a `temporarily_blocked`, non-executable option with reason `requires_method` (`diagnostic_message` `requires_method:<method id>`); the other paths are still offered, and a query whose paths are all blocked is answered with those options, not failed. Only a ready option activates.
 
 Typed target failures include route/endpoint/capability/readiness/pin/state-version conflicts (for example `route_contract_missing`, `movement_capability_missing`, `route_plan_snapshot_missing`, `route_plan_execution_conflict`). Depends on `@rus/kernel`, `@rus/contracts`, `@rus/time-events-history`; no direct I/O, DB or state mutation. Duration is consumed by turn/time owner, not committed here.
 

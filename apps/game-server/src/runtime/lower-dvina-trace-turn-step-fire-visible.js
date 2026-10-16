@@ -1,14 +1,20 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
-import { lowerDvinaTraceObservedSceneChanges } from './lower-dvina-trace-visible-scene-items.js';
+import { canonicalDigest } from '@rus/materialization';
+import { spatialV3TraversalOutcomeProjection } from '@rus/turn/spatial-v3-execution';
+import { lowerDvinaTraceCarriedItemIds,
+  uniqueLowerDvinaTraceVisibleObjects,
+  lowerDvinaTraceObservedSceneChanges } from './lower-dvina-trace-visible-scene-items.js';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
 import {
   enrichLowerDvinaTraceVisibleNpcCues,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
+  projectPerceivedPeopleAbsence,
   projectDirectSeedChanges
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
+import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 const SCHEMA =
   'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1';
 const FIRE_SEED_PREFIX = 'turn_step_world_process_';
@@ -23,7 +29,10 @@ import { ordinaryPresenceResolution, ordinarySceneDetails,
   overlayOrdinaryPresence, overlayOrdinaryScene } from
   './lower-dvina-trace-turn-step-ordinary-visible.js';
 export function createLowerDvinaTraceTurnStepVisibleProjector({
-  fallback, calendarProfile = null
+  fallback, calendarProfile = null, locationProfiles = null,
+  scenePresentation = null, partyId = null,
+  loadPreparedMovementScene = null, projectCurrentScene = null,
+  recordProjectionGap = null
 } = {}) {
   if (typeof fallback?.project !== 'function') {
     throw new TypeError('fallback visibleProjector.project is required');
@@ -31,12 +40,160 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
   return Object.freeze({
     async project(input) {
       const consequence = input?.consequence;
+      if (consequence?.position_transition?.owner
+          === '@rus/turn/spatial-v3-site-connection-traversal') {
+        const rawDestination = consequence.visible_seed?.destination_visible_context;
+        const transition = consequence.position_transition;
+        const traversal = consequence.spatial_v3_traversal;
+        const traversalStep = traversal?.plan?.steps?.[0];
+        const traversalOutcome = spatialV3TraversalOutcomeProjection(
+          traversal?.result, traversalStep);
+        const timedDestinationCompletion = consequence.movement?.cost_kind === 'time'
+          && traversal?.result?.result_kind === 'segment_completed'
+          && traversalOutcome.endpoint != null
+          && traversalOutcome.endpoint?.resolved_position_id === transition.to_position_ref;
+        const arrivalEndpoint = traversalStep?.arrival_endpoint_snapshot;
+        const legacyDestinationCompletion = consequence.movement?.cost_kind === 'action'
+          && traversal?.result?.result_kind === 'completed'
+          && plain(arrivalEndpoint)
+          && traversal?.result?.endpoint_after?.endpoint_id
+            === arrivalEndpoint?.endpoint_ref?.endpoint_id
+          && arrivalEndpoint?.resolved_position_id === transition.to_position_ref;
+        const destinationCompletion = timedDestinationCompletion
+          || legacyDestinationCompletion;
+        const destinationDigest = transition.destination_visible_digest;
+        const destinationDigestMatches = typeof destinationDigest === 'string'
+          && plain(rawDestination)
+          && destinationDigest === canonicalDigest(rawDestination);
+        if (destinationCompletion && destinationDigest != null
+            && !destinationDigestMatches) {
+          ownerFail('TRACE_SITE_TRAVERSAL_DESTINATION_PERCEPTION_INVALID');
+        }
+        const destination = structuredClone(rawDestination);
+        if (!plain(destination)
+            || destination.sensory_details != null
+              && !Array.isArray(destination.sensory_details)) {
+          ownerFail('TRACE_SITE_TRAVERSAL_DESTINATION_PERCEPTION_INVALID');
+        }
+        destination.sensory_details ??= [];
+        const fact = destination.sensory_details.find(text);
+        const destinationOrigin = consequence.visible_seed?.destination_site_origin;
+        if (!['canonical', 'generated'].includes(destinationOrigin)) {
+          ownerFail('TRACE_SITE_TRAVERSAL_DESTINATION_ORIGIN_INVALID');
+        }
+        const clock = input.time_update?.clock_after
+          ?? input.retrieved_state?.clock_weather_light?.clock
+          ?? input.retrieved_state?.clock ?? null;
+        const sourceEndpoint = traversalOutcome.endpoint != null
+          && traversalOutcome.endpoint.resolved_position_id === transition.from_position_ref;
+        const targetPositionId = sourceEndpoint
+          ? transition.from_position_ref : transition.to_position_ref;
+        const targetSiteId = sourceEndpoint
+          ? transition.source_site_id : transition.destination_site_id;
+        const targetG6InstanceId = sourceEndpoint
+          ? transition.source_g6_instance_id : transition.destination_g6_instance_id;
+        const targetState = {
+          ...structuredClone(input.retrieved_state ?? {}),
+          position: {
+            ...structuredClone(input.retrieved_state?.position ?? {}),
+            site_id: targetSiteId,
+            position_id: targetPositionId,
+            g6_id: targetG6InstanceId,
+            g6_instance_id: targetG6InstanceId
+          },
+          journey_location: {
+            ...structuredClone(input.retrieved_state?.journey_location ?? {}),
+            scene_position_id: targetPositionId
+          },
+          current_spatial_context: destination,
+          current_spatial_context_is_fresh: true,
+          current_spatial_context_filters_entities: true,
+          ...(clock == null ? {} : { clock: structuredClone(clock) })
+        };
+        delete targetState.current_visible_context;
+        const committedDestination = destinationOrigin === 'canonical';
+        const reusePreparedDestination = destinationCompletion
+          && destinationDigestMatches;
+        // Reuse keeps the traversal owner's digest-backed final destination seed.
+        if (reusePreparedDestination && plain(input.retrieved_state)) {
+          const carriedItemIds = lowerDvinaTraceCarriedItemIds(
+            targetState.items, targetState.actor_id);
+          if (carriedItemIds.size > 0) {
+            if (typeof projectCurrentScene !== 'function') {
+              ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+            }
+            const projectedCurrent = projectCurrentScene(targetState)
+              ?.current_visible_context;
+            if (!plain(projectedCurrent)) {
+              ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+            }
+            const carriedItems = (projectedCurrent.visible_objects ?? [])
+              .filter(({ entity_ref: ref }) => ref?.entity_kind === 'item'
+                && carriedItemIds.has(ref.entity_id));
+            destination.visible_objects = uniqueLowerDvinaTraceVisibleObjects([
+              ...carriedItems, ...(destination.visible_objects ?? [])
+            ]);
+          }
+        }
+        if (committedDestination && !reusePreparedDestination) {
+          if (destinationDigest == null && !sourceEndpoint) {
+            if (Object.hasOwn(targetState.position, 'location_ref')) {
+              targetState.position.location_ref = transition.destination_site_id;
+            }
+            delete targetState.position.g5_anchor_id;
+            delete targetState.position.anchor_id;
+          }
+          if (typeof loadPreparedMovementScene !== 'function'
+              || typeof projectCurrentScene !== 'function') {
+            ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+          }
+          if (!plain(input.retrieved_state)) {
+            ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+          }
+          const loadedDestination = await loadPreparedMovementScene({
+            partyId, state: targetState, clock
+          });
+          const projectedDestination = projectCurrentScene(loadedDestination)
+            ?.current_visible_context;
+          if (!plain(projectedDestination)) {
+            ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+          }
+          Object.assign(destination, structuredClone(projectedDestination));
+        } else if (!committedDestination) {
+          if (plain(input.retrieved_state)) {
+            if (typeof projectCurrentScene !== 'function') {
+              ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+            }
+            const projectedDestination = projectCurrentScene(targetState)
+              ?.current_visible_context;
+            if (!plain(projectedDestination)) {
+              ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+            }
+            const carriedItemIds = lowerDvinaTraceCarriedItemIds(
+              targetState.items, targetState.actor_id);
+            destination.visible_objects = (projectedDestination.visible_objects ?? [])
+              .filter(({ entity_ref: ref }) => isMovementVisibleObject({ entity_ref: ref })
+                || (ref?.entity_kind === 'item'
+                && carriedItemIds.has(ref.entity_id)));
+          } else {
+            destination.visible_objects = [];
+          }
+          destination.visible_npc = [];
+        }
+        destination.visible_changes = [fact == null
+          ? 'Вы прибыли.' : arrivalChange(fact)];
+        return destination;
+      }
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
       if (!seedEntries.some(([key]) => key.startsWith(FIRE_SEED_PREFIX))) {
         return finishVisibleProjection(await projectWithoutFire({
-          input, consequence, seedEntries, fallback
-        }), input, calendarProfile);
+          input, consequence, seedEntries, fallback,
+          locationProfiles: locationProfiles
+            ?? input?.retrieved_state?.location_profiles ?? null,
+          scenePresentation: scenePresentation
+            ?? input?.retrieved_state?.scene_presentation ?? null
+        }), input, calendarProfile, recordProjectionGap);
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
@@ -48,30 +205,41 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
         : projectCurrentSceneForVisibleOverlay({
             input,
             directSeedKeys: directSeedKeys(seedEntries),
-            body: currentBody(input)
+            body: currentBody(input),
+            locationProfiles: locationProfiles
+              ?? input?.retrieved_state?.location_profiles ?? null,
+            scenePresentation: scenePresentation
+              ?? input?.retrieved_state?.scene_presentation ?? null
           });
       return finishVisibleProjection(overlayFireVisible(overlayOrdinaryPresence(
           overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence), fireVisible),
-        input, calendarProfile);
+        input, calendarProfile, recordProjectionGap);
     }
   });
 }
-function finishVisibleProjection(base, input, calendarProfile) {
-  const enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
+function finishVisibleProjection(base, input, calendarProfile, recordProjectionGap) {
+  let enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
     committedState: input.retrieved_state, calendarProfile,
     bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after,
     temporalResults: input.time_update?.temporal_results });
+  // A local move changes the place's passages: the retrieved state still holds those of the position left.
+  const arrived = input.consequence?.visible_seed?.destination_movement_objects;
+  if (Array.isArray(arrived)) enriched = { ...enriched, visible_objects: [
+    ...enriched.visible_objects.filter((row) => !isMovementVisibleObject(row)), ...arrived] };
   const consequence = input.consequence;
   const arrival = consequence?.phase3_kind === 'movement'
     || (consequence?.phase6_kind === 'synchronized_carry'
       && consequence.carry?.intent?.execution_after?.status === 'completed');
-  return overlayTurnStepResults(arrival ? { ...enriched,
-    visible_changes: unique([...enriched.visible_changes,
-      ...base.known_context]),
-    sensory_details: lowerDvinaTraceObservedSceneChanges(enriched)
-  } : enriched, input);
+  if (arrival) {
+    enriched = { ...enriched,
+      sensory_details: lowerDvinaTraceObservedSceneChanges(enriched) };
+  }
+  return overlayTurnStepResults(enriched, input, recordProjectionGap);
 }
-function overlayTurnStepResults(base, input) {
+function arrivalChange(fact) {
+  return `Вы прибыли. ${fact}${/[.!?…]$/u.test(fact) ? '' : '.'}`;
+}
+function overlayTurnStepResults(base, input, recordProjectionGap) {
   const itemInspections = Object.values(input?.consequence?.visible_seed ?? {})
     .filter(seed => seed?.kind === 'existing_item_inspection')
     .map(existingItemInspectionVisibleResult);
@@ -110,23 +278,43 @@ function overlayTurnStepResults(base, input) {
       .sort((a, b) => Number(seeds[b]?.kind === 'semantic_activity') - Number(seeds[a]?.kind === 'semantic_activity'));
     orderedKeys.forEach(key => usedKeys.add(key));
     projectDirectSeedChanges({ input, directSeedKeys: orderedKeys }).forEach(change => components.add(change));
-    const changes = projectDirectSeedChanges({ input, directSeedKeys: orderedKeys, appliedPlan: plan });
+    const changes = [
+      ...projectDirectSeedChanges({ input, directSeedKeys: orderedKeys,
+        appliedPlan: plan })
+    ];
     if (plan.direct_result_kind === 'player_safe_observation') {
       components.add('Вы внимательно изучили обстановку.');
       components.add(text(plan.assessment?.text)
         ? plan.assessment.text : 'Вы внимательно изучили обстановку.');
     }
-    if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') changes.push(
-      text(plan.interpretation?.player_goal) ? `Не удалось достичь цели «${plan.interpretation.player_goal}».` : 'Цель попытки не достигнута.');
+    if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') {
+      const obstacle = orderedKeys.some(key => seeds[key]?.change === 'move_blocked'
+        && ['hands_full', 'load_limit'].includes(seeds[key].reason));
+      if (!obstacle) {
+        const absence = projectPerceivedPeopleAbsence({ currentVisibleContext: base,
+          currentSpatialContextIsFresh: input.retrieved_state?.current_spatial_context_is_fresh === true
+            && input.retrieved_state.current_spatial_context != null,
+          currentSpatialContextFiltersEntities: input.retrieved_state?.current_spatial_context_filters_entities });
+        if (absence != null) changes.push(absence);
+        // Perception confirms absence here, but does not classify the failed intent's cause.
+        try { recordProjectionGap?.({ event: 'turn_step_not_achieved_projection_gap',
+          code: 'failure_cause_not_grounded', step_index: step,
+          source: 'turn_step_visible_projection' }); }
+        catch { /* Diagnostics must not affect gameplay. */ }
+      }
+    }
     changes.forEach(change => components.add(change));
     return changes;
   });
   projectDirectSeedChanges({ input, directSeedKeys: [...usedKeys] }).forEach(change => components.add(change));
-  if (!text(remaining) && orderedChanges.length === 0 && inspection == null && itemInspections.length === 0) return base;
+  if (!text(remaining) && orderedChanges.length === 0 && inspection == null && itemInspections.length === 0
+      && !directPlans.some(plan => plan.goal_result === 'not_achieved')) return base;
   return deepFreeze({ ...structuredClone(base),
-    visible_changes: unique([...orderedChanges,
+    visible_changes: [...orderedChanges,
       ...base.visible_changes.filter(change => !components.has(change)),
-      ...itemInspections.flatMap(result => result.changes).filter(change => !components.has(change))]),
+      ...itemInspections.flatMap(result => result.changes)
+        .filter(change => !components.has(change)
+          && !base.visible_changes.includes(change))],
     uncertainties: unique([...base.uncertainties,
       ...itemInspections.map(result => result.uncertainty),
       ...(pendingNpcResponse ? [
@@ -158,20 +346,22 @@ export function projectLowerDvinaTraceFireVisible(entries, clarification) {
   };
 }
 async function projectWithoutFire({ input, consequence, seedEntries,
-  fallback }) {
+  fallback, locationProfiles, scenePresentation }) {
   const ordinaryDetails = ordinarySceneDetails(seedEntries);
   const ordinaryPresence = uncoveredOrdinaryPresence(seedEntries,
     ordinaryPresenceResolution(seedEntries));
   let base;
   if (ordinaryDetails.length > 0 || ordinaryPresence != null
       || seedEntries.some(([key, value]) => key.startsWith('turn_step_')
-        && ['semantic_activity', 'existing_item_inspection'].includes(value?.kind))
+        && ['semantic_activity', 'existing_item_inspection',
+          'background_npc_observation'].includes(value?.kind))
       || seedEntries.some(([key]) => key === 'observed_evidence_inspection_seed')) {
     const body = currentBody(input);
     base = hasVisibleDomainProjection(consequence)
       ? await fallback.project(input)
       : projectCurrentSceneForVisibleOverlay({
-            input, directSeedKeys: directSeedKeys(seedEntries), body
+            input, directSeedKeys: directSeedKeys(seedEntries),
+            body, locationProfiles, scenePresentation
           });
     return overlayOrdinaryPresence(
       overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence);
@@ -187,7 +377,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   const currentScene = projectCurrentSceneForNoOperationDirect({
     input,
     directSeedKeys: directSeeds.map(([key]) => key),
-    body
+    body, locationProfiles, scenePresentation
   });
   if (currentScene != null) return overlayOrdinaryPresence(
     currentScene, ordinaryPresence);
@@ -196,7 +386,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   if (consequence.status === 'partial' && directSeeds.length === 0
       && consequence.visible_seed.clarification == null) {
     return overlayOrdinaryPresence(projectCurrentSceneForVisibleOverlay({
-      input, directSeedKeys: [], body }), ordinaryPresence);
+      input, directSeedKeys: [], body, locationProfiles, scenePresentation }), ordinaryPresence);
   }
   return overlayOrdinaryPresence(deepFreeze({
     version: 1,
@@ -232,10 +422,10 @@ function overlayFireVisible(base, fireVisible) {
     ...structuredClone(base),
     visible_scene: [base.visible_scene, fireVisible.scene]
       .filter(Boolean).join(' '),
-    visible_changes: unique([
+    visible_changes: [
       ...base.visible_changes,
       ...fireVisible.changes.values()
-    ])
+    ]
   });
 }
 function directSeedKeys(entries) {

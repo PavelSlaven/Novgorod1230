@@ -15,7 +15,7 @@ export function withTurnDeadlineQueryPool(pool, turnBudget = null) {
   });
 }
 
-function hasActiveTurnDeadline(turnBudget) {
+export function hasActiveTurnDeadline(turnBudget) {
   return typeof turnBudget?.remaining === 'function'
     && Number.isFinite(turnBudget.remaining()?.deadline_ms);
 }
@@ -53,7 +53,11 @@ async function readQueryWithTurnDeadline(pool, query, turnBudget) {
 }
 
 export async function withTurnDeadlineTransaction(pool, turnBudget, work,
-  { commit = () => true } = {}) {
+  { commit = () => true, beginMode = 'default' } = {}) {
+  const beginStatement = beginMode === 'default' ? 'BEGIN'
+    : beginMode === 'repeatable_read_read_only'
+      ? 'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY' : null;
+  if (beginStatement == null) throw new TypeError('Unsupported transaction begin mode.');
   turnBudget.assertWithinDeadline();
   const { client, release } = await acquireWithinTurnDeadline(pool, turnBudget);
   let transactionOpen = false, sessionTimeoutSet = false, committed = false;
@@ -72,7 +76,7 @@ export async function withTurnDeadlineTransaction(pool, turnBudget, work,
     await setSessionStatementTimeout(client, turnBudget);
     sessionTimeoutSet = true;
     turnBudget.assertWithinDeadline();
-    await client.query('BEGIN');
+    await client.query(beginStatement);
     transactionOpen = true;
     const result = await work(deadlineTransactionClient(client, turnBudget));
     if (!commit(result)) {

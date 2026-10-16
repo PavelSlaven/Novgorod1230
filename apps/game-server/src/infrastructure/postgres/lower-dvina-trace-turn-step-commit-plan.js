@@ -21,7 +21,7 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
   actionProductionPlans = [], localFirePlans = [], spatialSemanticPlan = null,
-  temporalResults = []
+  siteTraversalRechecks = [], temporalResults = []
 }) {
   const actionPlans = actionProductionPlans.map((plan) =>
     createActionProducedAtomicWritePlan(plan));
@@ -95,7 +95,8 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
     local_fire_atomic_write_plans: localFirePlans,
     spatial_semantic_atomic_write_plan: semanticPlan,
     commit_rechecks: commitRechecks({
-      partyId, state, envelope, inputDigest, writes
+      partyId, state, envelope, inputDigest, writes,
+      siteTraversalRechecks
     })
   } };
   for (const temporalResult of temporalResults) {
@@ -132,7 +133,11 @@ function expectedVersions(state, writes) {
   return writes.updates
     .filter(({ target_table: table }) => TABLES[table]?.version === true)
     .map((write) => expected(write.target_table, write.id,
-      turnStepCurrentVersion(state, write)));
+      write.target_table === 'party_route_plans'
+        ? Number(write.record.lifecycle_state_version) - 1
+        : write.target_table === 'party_route_plan_executions'
+          ? Number(write.record.state_version) - 1
+        : turnStepCurrentVersion(state, write)));
 }
 
 export function turnStepCurrentVersion(state, write) {
@@ -176,7 +181,8 @@ export function turnStepCurrentVersion(state, write) {
   );
 }
 
-function commitRechecks({ partyId, state, envelope, inputDigest, writes }) {
+function commitRechecks({ partyId, state, envelope, inputDigest, writes,
+  siteTraversalRechecks }) {
   return [
     sealedCheck('physical', {
       party_id: partyId,
@@ -199,6 +205,7 @@ function commitRechecks({ partyId, state, envelope, inputDigest, writes }) {
     }),
     sealedCheck('change_set', { canonical_input_digest: inputDigest }),
     ...s1LocalMovementRecheck({ partyId, state, envelope }),
+    ...siteTraversalRechecks,
     ...buildActorInstanceRechecks(state, writes)
   ];
 }

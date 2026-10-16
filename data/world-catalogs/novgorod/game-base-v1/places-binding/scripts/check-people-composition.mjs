@@ -249,7 +249,6 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
   if (startTerritory) {
     const expectedSlots = new Set([
       'pf_ferry_landing|occupation:nov_occ_ferryman',
-      'pf_ferry_landing|occupation:nov_occ_crossing_guard',
       'pf_outbuildings|occupation:nov_occ_household_servant',
       'pf_peasant_homestead|social_role:nov_role_smerd_householder',
       'pf_peasant_homestead|social_role:nov_role_household_mistress',
@@ -338,7 +337,7 @@ if (isMain) {
     probe('editorial 1–99', 'unsupported count basis/range/weights', (d) => { const g = d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0]; g.max_count = 99; g.count_weights = Array(99).fill(1); });
     probe('unknown rule', 'unsupported count basis/range/weights', (d) => { d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0].rule_ref = 'rule:unknown'; });
     probe('editorial confidence A', 'editorial rule requires confidence C', (d) => { d.compositions.find((c) => c.pf_id === 'pf_ferry_landing').population_groups[0].confidence = 'A'; });
-    probe('duplicate subject on PF', 'duplicate composition subject', (d) => { const c = d.compositions.find((x) => x.pf_id === 'pf_ferry_landing'); c.population_groups[1].weighted_subjects[0] = structuredClone(c.population_groups[0].weighted_subjects[0]); });
+    probe('duplicate subject on PF', 'duplicate composition subject', (d) => { const c = d.compositions.find((x) => x.pf_id === 'pf_peasant_homestead'); c.population_groups[1].weighted_subjects[0] = structuredClone(c.population_groups[0].weighted_subjects[0]); });
     probe('composition without D1 or source', 'subject lacks D1 schedule at PF or source_refs', (d) => { const c = d.compositions.find((x) => x.pf_id === 'pf_ferry_landing'); c.population_groups[0].weighted_subjects[0].subject_ref = 'nov_occ_potter'; });
     probe('missing never-created gap', 'missing never_created gap', (d) => { d.never_created_gaps.pop(); });
     probe('unresolved book paragraph', 'unresolved source_ref', (d) => { d.compositions.find((c) => c.pf_id === 'pf_peasant_homestead').population_groups.find((g) => g.source_refs).source_refs = 'book:622242 §999999'; });

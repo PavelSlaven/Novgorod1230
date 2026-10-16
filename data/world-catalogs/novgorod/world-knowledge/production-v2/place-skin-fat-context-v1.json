@@ -1,0 +1,17 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {"schema":"world_knowledge_source_v1","source_ref":"source:place-skin-fat-context-dermnet-occlusives","title":"Emollients and moisturisers","authors":["Libby Whittaker","Amanda Oakley"],"publication":"DermNet, updated 2022","source_kind":"official_documentation","citation":"https://dermnetnz.org/topics/emollients-and-moisturisers","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:place-skin-fat-context-oily-film","source_ref":"source:place-skin-fat-context-dermnet-occlusives","anchor":{"section":"What do moisturisers contain? — Emollients and Occlusives"},"note":"DermNet describes emollients as containing oily substances that soften and smooth skin, and occlusive agents as a lipophilic oil layer on skin that reduces evaporative water loss. This supports a conditional physical relation only if an oily or fatty application actually remains as a continuous hydrophobic surface film; it does not establish that every ordinary fat or oil has suitable composition, stays in place, is tolerated, heals skin, treats disease, or suits burns, weeping, or infected skin.","review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss","domain":"biology_physiology","subject_ref":"wk:biology_physiology:skin-emollient-and-occlusive-film","predicate":"supported_fact","object":{"kind":"literal","value":"where_an_oily_or_fatty_skin_application_actually_remains_as_a_continuous_hydrophobic_surface_film_it_can_reduce_evaporative_water_loss_from_the_skin_surface"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-skin-fat-context-oily-film"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss","locale":"ru","runtime_text":"Если маслянистое или жирное нанесение на кожу действительно остаётся сплошной гидрофобной поверхностной плёнкой, оно может уменьшить испарительную потерю влаги с поверхности кожи. Это условная физическая связь, а не обещание, что любой жир или масло годится, останется на месте, переносится кожей, лечит повреждение или подходит для ожога, мокнущей либо инфицированной кожи.","search_aliases":["жир на сухой коже","масло на потрескавшейся коже","защитная жирная плёнка"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss","locale":"en","runtime_text":"Where an oily or fatty skin application actually remains as a continuous hydrophobic surface film, it can reduce evaporative water loss from the skin surface. This is a conditional physical relation, not a promise that every fat or oil is suitable, stays in place, is tolerated, heals damage, or suits burns, weeping, or infected skin.","search_aliases":["fat on dry skin","oil on cracked skin","greasy protective film"]}
+  ]
+}

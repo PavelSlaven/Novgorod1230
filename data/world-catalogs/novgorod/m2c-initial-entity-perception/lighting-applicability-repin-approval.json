@@ -1,0 +1,27 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "novgorod_m2c_same_g6_entity_light_weather_applicability_v1_repin",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/approve_lighting_local_repin",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "independence_basis": "Independent data applicability reviewer; did not author or modify the natural placement or entity perception candidate."
+  },
+  "reviewed_checkout_head": "77c2ee5f176df3144234c729da9ac78be7798816",
+  "source_pins": {
+    "natural_placement_candidate_sha256": "71de9afaeb73825fd32db2e57cf9ad7c5390b427c6b6c7892e81777740429099",
+    "natural_placement_data_approval_sha256": "f9715b568647aab7c0e9062f0339f8f2cb38f7a1600d5b31db682f30afd4f33f",
+    "initial_entity_perception_candidate_v2_sha256": "4500e2864f3e49cf116560d6c4552b4b3e3700c6f6c768dcf58dd49ac576c9ae",
+    "initial_entity_perception_approval_repin_v2_sha256": "5e29564e018c99258ad1cb69c4c72cb447ed60557705c983dde4d2e6334182fc",
+    "spatial_visibility_contract_sha256": "2f4d7b3c8359061a203224620e39f6709891833c8e08c6255507630a82bfc52a",
+    "g6_template_slots_sha256": "6f63f52c3be0293e8d365f66fc0ee996b0edced2b468fc40d22d449c36f7708e"
+  },
+  "scope": "Current ambient lighting and weather from m2c_natural_current_perception_conditions@1 apply to a committed NPC, ground item or exit target only when its current position is in the exact same committed G6 as the natural placement and that placement's scene_physical_pins match the committed G6. Resolve current Temporal light and weather keys, directed geometry, portal state and the complete current modifier set for each target. Night and poor visibility contribute none; dawn, dusk and reduced visibility contribute partial. Ambient conditions alone establish neither an observation nor an identity.",
+  "evidence": "The entity perception candidate changed only its target-start source SHA-256 and has a fresh independent exact-data approval. All six candidate source references match current bytes. All 160 approved natural placements use the same condition policy and match their G6 template physical pins. Spatial section 7.1 and the current visibility resolver combine geometry, portal state, target lighting, cover, occlusion, concealment and weather; current entity disclosure requires admitted committed placements and separate player knowledge for names.",
+  "excludes": "Different G6 or mismatched physical exposure, inferred per-entity observation or recognition, incomplete current facts, unknown policy keys, import, runtime activation and release approval.",
+  "import_authorized": false,
+  "runtime_activation_authorized": false,
+  "release_activation_authorized": false,
+  "reviewed_on": "2026-09-24"
+}

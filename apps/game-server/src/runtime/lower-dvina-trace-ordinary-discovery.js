@@ -25,6 +25,10 @@ import { resolveExistingItemInspection } from
 /** Lower Dvina supplies profile/context adapters to the common @rus/turn owner. */
 export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
   partyId, loadEnablement, ordinaryMaterializationModel,
+  itemLabels = {},
+  assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null,
+  requestSubject = 'npc',
   scopeBinding = null,
   verifyStageBCutover = ordinaryMaterializationModel?.verifyStageBCutover,
   inputDigest
@@ -34,15 +38,21 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       || typeof verifyStageBCutover !== 'function') {
     throw new TypeError('ordinary discovery requires enablement and verified model ports');
   }
+  const needsCheck = typeof assertNeedsCheckAllowed === 'function'
+    ? (input) => assertNeedsCheckAllowed({ ...input, partyId }) : null;
   return createOrdinaryMaterializationDiscoveryOwner({
-    resolveExistingInspection: resolveExistingItemInspection,
+    resolveExistingInspection: (execution) =>
+      resolveExistingItemInspection(execution, itemLabels),
     ordinaryMaterializationModel,
     verifyStageBCutover: (input) => verifyStageBCutover.call(
       ordinaryMaterializationModel, input),
     inputDigest,
+    assertNeedsCheckAllowed: needsCheck,
+    recordNeedsCheckFilter,
     buildSeedRequest: buildOrdinaryMaterializationSeedScopeRequest,
     buildPresenceRequest: buildOrdinaryMaterializationPresenceRequest,
     sealAtomicWritePlan: createOrdinaryMaterializationAtomicWritePlan,
+    requestSubject,
     resolveFiniteResourceEffects({ enabled, item, envelope, presence }) {
       const profile = enabled.ordinary_authority?.finite_source_profile ?? null;
       if (profile == null) return null;
@@ -68,6 +78,10 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         execution: enabled?.execution_context,
         objective: enabled?.objective_context,
         targetRef: request?.operation?.target_refs?.[0],
+        query: request?.operation?.query,
+        visibleObjects: request?.request?.player_safe_state
+          ?.current_visible_context?.visible_objects,
+        positionRef: request?.committed_state?.position?.position_id,
         locationRef: request?.committed_state?.position?.location_ref,
         scopeRef
       });
@@ -85,12 +99,17 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       const constrained = execution.constrained_natural_resource_profile == null
         ? { resolution: null, profile: null }
         : resolveConstrainedNaturalResourcePolicy(policyInput);
-      const codeOwnedResolution = contextBound.resolution
-        ?? constrained.resolution ?? null;
       const genericFinite = resolveFiniteSourceAuthority({
         authority: execution.finite_source_authority,
         committed_source: execution.committed_finite_source
       });
+      const codeOwnedResolution = execution.finite_source_access_decision != null
+          && execution.finite_source_access_decision !== 'allow' ? 'authority_required'
+        : contextBound.resolution
+        ?? constrained.resolution
+        ?? (execution.finite_source_authority != null && genericFinite == null
+          ? 'absent' : null);
+      if (execution.finite_source_authority != null && codeOwnedResolution != null) return null;
       const finiteProfile = constrained.profile ?? genericFinite;
       const sourceRef = contextBound.profile?.source_basis_ref
         ?? constrained.profile?.source_basis_ref ?? null;
@@ -121,11 +140,30 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
     }
   });
 }
-function selectDiscoveryContext({ execution, objective, targetRef, locationRef, scopeRef }) {
+function selectDiscoveryContext({ execution, objective, targetRef, query,
+  visibleObjects, positionRef, locationRef, scopeRef }) {
   if (!validExecution(execution) || typeof targetRef !== 'string') return null;
+  if ((targetRef === positionRef || targetRef === locationRef)
+      && normalized(query)) {
+    const visible = new Set((Array.isArray(visibleObjects) ? visibleObjects : [])
+      .filter(({ entity_ref: ref, display_label: label, visible_status: status }) =>
+        ref?.entity_kind === 'ordinary_resource_source'
+          && status === 'known' && normalized(label) === normalized(query))
+      .map(({ entity_ref }) => entity_ref.entity_id));
+    const matches = (execution.context_bound_capabilities ?? []).filter(
+      ({ source_ref: ref, public_name: name, disclosure_state: disclosure,
+        access_decision: access, finite_source_authority: authority,
+        constrained_natural_resource_profile: constrained }) =>
+        visible.has(ref) && normalized(name) === normalized(query)
+          && disclosure === 'visible' && access === 'allow'
+          && (authority ?? constrained)?.finite_source?.position_ref === positionRef);
+    if (matches.length > 1) return null;
+    if (matches.length === 1) targetRef = matches[0].source_ref;
+  }
   if (execution.candidate_context.target_ref === targetRef
       || targetRef === locationRef
         && execution.candidate_context.target_ref === scopeRef?.entity_id) {
+    if (execution.scope_presence_enabled === false) return null;
     const basisRefs = new Set(execution.supporting_bases.map(({ basis_ref }) =>
       basis_ref));
     return { execution: bindCommittedFiniteSource(execution),
@@ -140,6 +178,9 @@ function selectDiscoveryContext({ execution, objective, targetRef, locationRef, 
   const selected = matches[0];
   const { context_bound_capabilities: _, ...baseExecution } = execution;
   return { execution: bindCommittedFiniteSource({ ...baseExecution,
+    mechanics_policy: selected.execution_context?.mechanics_policy
+      ?? baseExecution.mechanics_policy,
+    finite_source_access_decision: selected.access_decision ?? null,
     candidate_context: selected.candidate_context,
     supporting_bases: selected.supporting_bases,
     context_bound_ordinary_profile:
@@ -149,6 +190,10 @@ function selectDiscoveryContext({ execution, objective, targetRef, locationRef, 
     finite_source_authority: selected.finite_source_authority ?? null }),
   objective: { ...objective, context_refs: selected.context_refs,
     policy_refs: selected.policy_refs } };
+}
+
+function normalized(value) {
+  return typeof value === 'string' ? value.trim().replace(/\s+/gu, ' ').toLocaleLowerCase('ru') : null;
 }
 
 function bindCommittedFiniteSource(execution) {
@@ -213,7 +258,8 @@ function validExecution(value) {
     && typeof value.candidate_context.semantic_type === 'string'
     && typeof value.candidate_context.functional_bucket === 'string'
     && (value.candidate_context.admission_class === 'common_mundane'
-      ? value.candidate_context.semantic_type === 'ordinary_object_candidate'
+      ? (value.candidate_context.semantic_type === 'ordinary_object_candidate'
+          || value.candidate_context.coverage_kind === 'finite_source')
         && value.candidate_context.functional_bucket === 'other_ordinary'
         && value.candidate_context.availability_class === 'common'
       : value.candidate_context.availability_class === 'context_bound')
@@ -246,16 +292,19 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
   const projection = plan == null ? applied.working_projection
     : workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
       applied.working_projection, plan));
+  const visiblePresence = applied.consequence_fragment?.visible_seed
+    ?.ordinary_presence_seed;
   const activity = ordinaryDiscoveryActivity({ operation: execution.operation,
     request: execution.request, plan: execution.plan, ordinaryPlan: plan,
-    knownResolution: applied.known_resolution });
+    knownResolution: applied.known_resolution,
+    visibleSeed: applied.consequence_fragment?.visible_seed });
   if (activity == null) return plan == null ? applied
     : { ...applied, working_projection: projection };
   const timed = await applySemanticActivity({ ...execution,
     working_projection: projection,
     operation: { op: 'apply_semantic_activity', activity }
   }, state, semanticActivityOwner);
-  const presence = applied.consequence_fragment?.visible_seed?.ordinary_presence_seed;
+  const presence = visiblePresence;
   const searchResult = ['no_change', 'authority_required'].includes(presence?.resolution)
     ? { resolution: presence.resolution, query: presence.query } : null;
   return { ...applied, ...timed, summary: applied.summary,

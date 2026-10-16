@@ -37,7 +37,8 @@ export function validateActionProducedDestinationPin(pin) {
       || pin.schema !== 'action_production_output_destination_pin_v1'
       || !['party_current_anchor', 'party_current_scene_position'].includes(
         pin.destination_kind)
-      || !text(pin.anchor_id) || !Number.isSafeInteger(pin.item_capacity)
+      || !(text(pin.anchor_id) || modern && pin.anchor_id === null)
+      || !Number.isSafeInteger(pin.item_capacity)
       || pin.item_capacity < 0 || !Array.isArray(pin.used_item_ids)
       || modern && !text(pin.scene_position_id)
       || modern && (!Number.isSafeInteger(pin.scene_capacity)
@@ -78,7 +79,9 @@ export function actionProducedOutputPlacement(destinationPin) {
   const pin = validateActionProducedDestinationPin(destinationPin);
   if (pin === null) fail('ACTION_PRODUCED_DESTINATION_INVALID');
   return {
-    anchor_id: pin.anchor_id, container_id: null,
+    anchor_id: pin.anchor_id,
+    ...(pin.anchor_id === null ? { scene_position_id: pin.scene_position_id } : {}),
+    container_id: null,
     holder_npc_id: null, holder_character_id: null,
     physical_position: null, equipment_slot_category_id: null,
     attached_item_id: null

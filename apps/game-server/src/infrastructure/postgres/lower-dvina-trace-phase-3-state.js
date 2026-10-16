@@ -13,6 +13,8 @@ import { phase3ConversationFactual } from
   './lower-dvina-trace-phase-3-activity-state.js';
 import { projectFirstEntryArrivalState } from
   '../../runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
+import { phase3CommittedNpcUtterances } from
+  '../../runtime/lower-dvina-trace-npc-utterances.js';
 export { activityHistoryEntry, phase3ActivityRef, phase3ConversationFactual,
   routeMovement } from './lower-dvina-trace-phase-3-activity-state.js';
 export function nextState({
@@ -217,6 +219,9 @@ export function nextState({
     check_result:
       structuredClone(factual.consequence.conversation?.check_result ?? null),
     consequence: projectSharedSemanticConsequence(factual.consequence),
+    exact_npc_utterances: phase3CommittedNpcUtterances(
+      factual.consequence.conversation?.semantic_exchange
+    ),
     time_update: structuredClone(factual.time_update),
     body_update: structuredClone(factual.body_update),
     visible_package: null

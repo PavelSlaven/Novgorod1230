@@ -49,6 +49,7 @@ export function rebuildExpectedFactualTurnDelivery({ envelope, payload = envelop
     inputPanel: carrier.input_panel, scenarioId: carrier.scenario_id,
     screenKind: carrier.screen_kind, deliveryState: carrier.delivery_state,
     openingScreenDigest: carrier.opening_screen_digest, combatState: carrier.combat_state,
+    exactNpcUtterances: carrier.exact_npc_utterances ?? [],
     currentProjectionAnchor, presentationContext: carrier.presentation_context,
     sceneAssetId: carrier.scene_asset_id
   });
@@ -76,7 +77,10 @@ export function validFactualTurnDelivery(screen, envelope) {
     && canonicalDigest(screen.visible_changes)
       === canonicalDigest(visibleContext.visible_changes)
     && canonicalDigest(screen.uncertainties)
-      === canonicalDigest(visibleContext.uncertainties);
+      === canonicalDigest(visibleContext.uncertainties)
+    && canonicalDigest(screen.exact_npc_utterances ?? [])
+      === canonicalDigest(envelope.snapshot_payload?.last_turn
+        ?.exact_npc_utterances ?? []);
 }
 
 function factualCarrierIsBound(screen, envelope) {

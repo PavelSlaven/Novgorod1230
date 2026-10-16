@@ -30,7 +30,9 @@ export function createTracePhase7FireRestCommand({
   revalidateStateVersion,
   conversationBindings = null,
   conversationActivity = null,
-  runNpcConversationExchange = null
+  runNpcConversationExchange = null,
+  assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null
 }) {
   return Object.freeze({
     command_id: 'lower_dvina_trace.rest_by_fire_and_dry_clothing',
@@ -85,7 +87,8 @@ export function createTracePhase7FireRestCommand({
         createBoundaryNpcOwnerCapabilities, randomSource, temporalAdvanceOwner,
         createBoundaryNpcDirectOperations,
         revalidateStateVersion, runNpcConversationExchange,
-        conversationBindings, conversationActivity, admitted
+        conversationBindings, conversationActivity, admitted,
+        assertNeedsCheckAllowed, recordNeedsCheckFilter
       });
     },
     writeTargets(input) {

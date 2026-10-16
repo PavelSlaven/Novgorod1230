@@ -1,0 +1,118 @@
+# production-v2 final approval — batch A-05
+
+Independent approval (WR §21.1) of issue #154 candidates at commit `87d6cc2a865a0f63ce69005c5a155e73f7a1fd4d`. Approver: Claude Opus 5.5 (high reasoning), a separate run from the Sonnet authors and classifiers. Packet: `A-05` (A = access class only, B = text/aliases/date, C = new book-sourced claims).
+
+## A-05
+
+| claim | verdict | limits | reason |
+|---|---|---|---|
+| `claim:practical-net-dry` | APPROVE | Только общий приём ухода за сетью у рыболова; не задаёт срок просушки, место и найденные повреждения. | Бытовое ремесленное знание рыболова, без анахронизмов; роль nov_role_fisher подходит. |
+| `claim:practical-net-repair` | APPROVE | Только общая практика починки сети рыболовом; не задаёт способ, материал и время починки. | Знание рыболова, язык бытовой; роль fisher верна. |
+| `claim:practical-net-space` | APPROVE | Только общее требование места при работе с сетью; не задаёт наличие места и скорость работы. | Практика рыболова, без научных понятий; роль верна. |
+| `claim:practical-season-work` | APPROVE | Только общее житейское знание о сезонности труда; не задаёт конкретные сроки, погоду и цену промедления. | Общеизвестно любому хозяину 1230 года; common_cultural уместен. |
+| `claim:practical-textile-cut` | APPROVE | Только общий смысл раскроя; не задаёт выкройку, количество ткани и употребление обрезков. | Бытовой домашний навык, без анахронизмов. |
+| `claim:practical-textile-repair` | APPROVE | Только общая бережливость к ткани; не задаёт решение о починке конкретной вещи. | Общее бытовое знание; common_cultural верен. |
+| `claim:practical-textile-sew` | APPROVE | Только общий смысл шитья и износа; не задаёт качество шва и срок службы вещи. | Шитьё — повсеместный домашний навык; класс верен. |
+| `claim:practical-textile-spin` | APPROVE | Только порядок волокно → нить; не задаёт наличие прялки, волокна и выход нити. | Прядение — всеобщий домашний труд; класс верен. |
+| `claim:practical-textile-weave` | APPROVE | Только общие сведения о стане и перерыве в тканье для мастера и хозяйки; не задаёт устройство стана и сроки работы. | role_bound уже, чем нужно, но допустим; роли подходят, текст бытовой. |
+| `claim:practical-work-tradeoff` | APPROVE | Только общее знание о нехватке времени и рук; не задаёт приоритеты конкретного хозяйства. | Житейское знание, без анахронизмов; common_cultural верен. |
+| `claim:public-world-armed-loss-reaches-household` | APPROVE | Только общая связь утраты воина с домом; не задаёт ответ семьи, размер ущерба и помощь. | Понятно любому человеку того времени; класс верен. |
+| `claim:public-world-armed-movement-consumes-food-fuel-attention` | APPROVE | Только то, что поход расходует припасы; не задаёт объёмы, запасы и источник пополнения. | Общеизвестно; без научных понятий и дат. |
+| `claim:public-world-armed-presence-changes-public-risk` | APPROVE | Только набор возможных реакций; не задаёт реакцию конкретных людей. | Обычное житейское знание горожан; класс верен. |
+| `claim:public-world-arms-follow-means-role` | APPROVE | Только различие снаряжения по средствам и роли для вооружённых людей; не задаёт конкретный комплект и его наличие. | Роли вооружённых людей подходят; ограничение уже общего допустимо. |
+| `claim:public-world-capacity-can-vary-day-to-day` | REJECT | Остаётся domain_internal_only как устройство мира; в речь и рассказ не открывать. | Современная формулировка «доступная способность» и служебная оговорка об исходе; человек 1230 года так не скажет. |
+| `claim:public-world-church-and-official-speech-can-be-marked` | APPROVE | Только общая заметность формульной речи; не задаёт тексты формул и чин. | Житейское наблюдение, без анахронизмов; класс верен. |
+| `claim:public-world-community-response-to-impairment-varies` | REJECT | Остаётся domain_internal_only как модель поведения общины; не открывать в речь. | Социологический термин «стигма» и поведенческая модель общины; для открытого текста не годится. |
+| `claim:public-world-deference-can-be-calibrated-to-seniority-role` | APPROVE | Только общий обычай учитывать старшинство; не задаёт конкретные формулы и этикет. | Бытовой обычай, понятный современнику; класс верен. |
+| `claim:public-world-dispute-can-use-questions-and-kin` | APPROVE | Только возможные шаги до публичного разбора; не задаёт исход спора. | Обычная практика улаживания споров; класс верен. |
+| `claim:public-world-dispute-starts-with-competing-accounts` | APPROVE | Только то, что рассказы сторон расходятся; не задаёт, кто прав. | Житейское знание; без анахронизмов. |
+| `claim:public-world-foot-and-mounted-service-have-different-needs` | APPROVE | Только общие нужды конного и пешего для участников дружины; не задаёт наличие коня и снаряжения. | Роли дружинников подходят; текст бытовой. |
+| `claim:public-world-health-disclosure-is-contextual` | APPROVE | Только возможные варианты поведения больного; не задаёт выбор конкретного человека. | Житейская истина, без научных понятий; класс допустим. |
+| `claim:public-world-help-access-can-be-limited` | APPROVE | Только общие препятствия помощи; не задаёт наличие помощи и исход. | Общеизвестно; класс верен. |
+| `claim:public-world-illness-can-reallocate-ordinary-work` | APPROVE | Только общее перераспределение работы при недуге; не задаёт, кто и что возьмёт на себя. | Бытовая практика; без анахронизмов. |
+| `claim:public-world-injured-person-needs-safe-carriage-or-shelter` | APPROVE | Только общая забота о раненом; не задаёт тяжесть раны и наличие помощников. | Общеизвестно; класс верен. |
+| `claim:public-world-local-authority-is-one-escalation-option` | APPROVE | Только возможность обратиться к признанному авторитету; не задаёт, кто он и чем кончится обращение. | Известный горожанам путь; класс верен. |
+| `claim:public-world-name-can-combine-personal-and-distinguishing-form` | APPROVE | Только общий обычай уточнять имя; не задаёт конкретные имена и формы. | Бытовой именной обычай, известный современникам. |
+| `claim:public-world-name-form-does-not-prove-status-or-kinship` | APPROVE | Только то, что имя не доказательство; не задаёт статус конкретного человека. | Житейское понимание; без анахронизмов. |
+| `claim:public-world-negotiation-can-precede-formal-escalation` | APPROVE | Только возможность частных переговоров; не задаёт исход и суммы. | Обычная практика; класс верен. |
+| `claim:public-world-ordinary-speech-tracks-relationship-setting` | REJECT | Остаётся domain_internal_only как указание устройству речи NPC; в открытый текст не выносить. | Лингвистический термин «регистр» — современное научное понятие, не формулировка человека 1230 года. |
+| `claim:public-world-publicity-raises-reputation-risk` | APPROVE | Только общий риск огласки; не задаёт виновность и реакцию людей. | Житейское знание; класс верен. |
+| `claim:public-world-rest-warmth-drink-food-are-contextual-support` | APPROVE | Только бытовая поддержка больного; не задаёт лечение и пользу. | Общеизвестно; без научных понятий. |
+| `claim:public-world-route-and-tool-can-be-adapted-to-capacity` | APPROVE | Только разумные приспособления при недуге; не задаёт их доступность. | Бытовой здравый смысл; класс верен. |
+| `claim:public-world-senior-can-coordinate-messenger-can-carry-word` | APPROVE | Только общая практика старшего и посыльного; не создаёт людей, путь и доставку. | Обычная практика; класс верен. |
+| `claim:public-world-speech-can-be-plain-without-modern-slang` | APPROVE | Только общая простота обиходной речи; не задаёт конкретные формулы. | Житейское наблюдение, без терминов; класс верен. |
+| `claim:public-world-status-and-ties-affect-access-not-guilt` | APPROVE | Только влияние связей на доступ к разбору; не задаёт вину и исход. | Понятно горожанину; класс верен. |
+| `claim:public-world-support-needs-available-person-and-resources` | APPROVE | Только зависимость помощи от наличного; не задаёт наличие помощи. | Общеизвестно; класс верен. |
+| `claim:public-world-weapons-shields-armour-have-distinct-tradeoffs` | APPROVE | Только общие свойства щита, доспеха и оружия для вооружённых людей; не задаёт исход схватки. | Практическое знание воинов; роли подходят. |
+| `claim:public-world-witness-account-has-bounded-scope` | APPROVE | Только ограниченность рассказа свидетеля; не задаёт правдивость конкретного рассказа. | Житейское понимание; класс верен. |
+| `claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work` | APPROVE | Только общая подготовка тростника для сельского и промыслового люда; не задаёт порядок, срок и результат. | Бытовое ремесло; роли подходят, узость допустима. |
+| `claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying` | APPROVE | Только общие условия годности циновки; не гарантирует прочность и применение. | Практическое наблюдение плетельщика; роли подходят. |
+| `claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat` | APPROVE | Только общий приём плетения циновки; не задаёт рецепт и связующий материал. | Бытовое ремесло; роли подходят. |
+| `claim:r7-acidic-wet-food-in-unlined-copper-contact-can-change-the-contact-surface` | APPROVE | Только хозяйственная осторожность с медной посудой у мастера и хозяйки; не объясняет химию и не задаёт вред. | Сформулировано как наблюдение, без научных понятий; роли уместны. |
+| `claim:r7-fuelwood-combustion-depends-on-moisture-density-piece-size-and-air` | APPROVE | Только наблюдаемые зависимости горения дров; не задаёт ранжирование пород и теплоотдачу. | Наблюдаемая всеми закономерность; general_physical верен. |
+| `claim:r7-gentle-warming-of-beeswax-comb-can-separate-some-liquid-wax-from-coarse-debris` | APPROVE | Только общий приём вытопки воска у бортника; не задаёт температуру, выход и чистоту. | Знание бортника; роль верна. |
+| `claim:r7-polished-metal-can-reflect-directional-sunlight-with-condition-bound-visibility` | APPROVE | Только наблюдаемое отражение света; не задаёт сигнал, дальность и получателя. | Наблюдаемо каждому; general_physical верен. |
+| `claim:r7-repeated-wetting-rinsing-and-daylight-can-gradually-lighten-some-flax-linen` | APPROVE | Только общая практика отбеливания льна; не задаёт срок и результат. | Бытовое знание хозяйства; класс верен. |
+| `claim:r7-stored-edible-or-lamp-oil-condition-can-change-with-age-air-or-contamination` | APPROVE | Только признаки порчи масла; не задаёт причину и безопасность. | Бытовое наблюдение, без научных понятий. |
+| `claim:r7-suspected-venomous-snakebite-supports-limiting-exertion-and-seeking-help` | REJECT | Остаётся domain_internal_only как устройство мира; в речь и рассказ не открывать. | Оценка ненадёжности разрезания, отсасывания и перетягивания — современная медицина, не знание человека 1230 года. |
+| `claim:r7-unstable-layered-snow-on-a-slope-can-release-and-warning-cues-support-exposure-reduction` | APPROVE | Только наблюдаемая опасность сползания снега; не задаёт сход, маршрут и исход. | Наблюдаемая закономерность; general_physical допустим. |
+| `claim:r7-unusual-flame-colour-or-fume-can-support-unidentified-material-exposure-caution` | APPROVE | Только бытовая осторожность со странным дымом; не определяет материал и действия при пожаре. | Осторожность с едким дымом известна; без научных понятий. |
+| `claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground` | APPROVE | Только возможность собрать стебли; не задаёт количество и результат. | Простое действие; general_physical верен. |
+| `claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor` | APPROVE | Только бытовая проверка трав; не доказывает порчу и безопасность. | Обычное бытовое знание; класс верен. |
+| `claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material` | APPROVE | Только бытовое отделение сырого; не гарантирует сохранность. | Бытовая практика; класс верен. |
+| `claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement` | APPROVE | Только осмотр упряжи возчиком и пахарем; не ставит диагноз травмы. | Практика обращения с упряжной лошадью; роли подходят. |
+| `claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation` | APPROVE | Только возможные меры ухода за лошадью; не решает пригодность и исход. | Знание возчика и пахаря; роли подходят. |
+| `claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care` | APPROVE | Только бытовой уход за ссадиной; не задаёт лечение и исход. | Житейская забота; слово «диагноз» лишь в оговорке, допустимо. |
+| `claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently` | REJECT | Остаётся domain_internal_only; открыть можно лишь после переформулировки без «инфекции». | «Инфекция» — современное понятие, недоступное человеку 1230 года. |
+| `claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material` | REJECT | Остаётся domain_internal_only; не открывать в речь и рассказ. | «Стерильность» и акцент на чистых руках — современная гигиена, не знание 1230 года. |
+| `claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading` | APPROVE | Только осмотр узла лодочником, возчиком и перевозчиком; не задаёт прочность. | Практика работы с грузом; роли подходят. |
+| `claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded` | APPROVE | Только общее свойство развязываемого узла; не задаёт прочность и успех. | Практическое умение; роли подходят. |
+| `claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part` | APPROVE | Только общее условие развязывания узла; не задаёт исход. | Практическое знание; роли подходят. |
+| `claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation` | APPROVE | Только наблюдаемое осыпание мокрого грунта; не задаёт обвал и безопасную глубину. | Наблюдаемо; general_physical верен. |
+| `claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement` | APPROVE | Только очевидная осторожность с лезвием; не задаёт безопасный исход. | Очевидная физическая осторожность; класс верен. |
+| `claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation` | APPROVE | Только возможность различить стебли на глаз; не задаёт наличие и сбор. | Наблюдаемо каждому; класс верен. |
+| `claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment` | APPROVE | Только общий приём плотника; не задаёт состояние соединения и результат. | Знание мастера-плотника; роль подходит. |
+| `claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change` | APPROVE | Только наблюдаемые признаки после работы; не устанавливает усталость и болезнь. | Знание возчика и пахаря; роли подходят. |
+| `claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1` | APPROVE | Только то, что мытьё убирает видимую грязь; не несёт понятий о заразе. | Бытовое знание; «диагноз» лишь в оговорке. |
+| `claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2` | APPROVE | Только бытовое отделение отходов; не объясняет причины болезней. | Бытовая чистота; класс верен. |
+| `claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3` | APPROVE | Только бытовая забота; не задаёт исход. | Общеизвестно; класс верен. |
+| `claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4` | APPROVE | Только бытовое покрытие раны; не задаёт лечение и исход. | Бытовой уход; класс верен. |
+| `claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5` | APPROVE | Только обращение к опытному человеку; не создаёт его и не обещает выздоровления. | Житейская практика; класс верен. |
+| `claim:reality-first-food-animal-products-and-care-need-established-inputs-r1` | APPROVE | Только наблюдаемая порча пищи; не задаёт сроки и безопасность. | Наблюдаемо всеми; general_physical верен. |
+| `claim:reality-first-food-animal-products-and-care-need-established-inputs-r2` | APPROVE | Только бытовая чистота с пищей; не объясняет заразу. | Бытовое знание; класс верен. |
+| `claim:reality-first-food-animal-products-and-care-need-established-inputs-r3` | APPROVE | Только очевидный источник продукта; не создаёт животное и продукт. | Очевидно всем; класс верен. |
+| `claim:reality-first-food-animal-products-and-care-need-established-inputs-r4` | APPROVE | Только общий уход за скотом; не задаёт наличие корма и укрытия. | Бытовое знание; класс верен. |
+| `claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1` | APPROVE | Только общие нужды караула для несущих службу; не создаёт караул и припасы. | Роли стражи и дружины подходят; узость допустима. |
+| `claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2` | APPROVE | Только общий уход за снаряжением у вооружённых людей; не задаёт состояние снаряжения. | Практика службы; роли подходят. |
+| `claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3` | APPROVE | Только общий уход за конём в службе; не задаёт наличие корма и коня. | Знание служилых людей; роли допустимы. |
+| `claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4` | APPROVE | Только влияние сырости на вещи в походе; не задаёт размер порчи. | Практика службы; роли допустимы. |
+| `claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5` | APPROVE | Только зависимость похода от наличных путей и средств; не создаёт отряд, командование и исход. | Знание участника похода; роли подходят. |
+| `claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1` | REJECT | Остаётся domain_internal_only; открыть можно лишь без выражения «рабочий поток». | «Рабочий поток» — современная калька из организации производства. |
+| `claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2` | APPROVE | Только очевидная помеха от груза; не задаёт конкретные операции. | Бытовая очевидность; класс верен. |
+| `claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3` | APPROVE | Только общая осторожность с огнём; не задаёт пожар. | Наблюдаемая опасность; класс верен. |
+| `claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4` | APPROVE | Только влияние сырости на сушку; не задаёт сроки. | Наблюдаемо; general_physical верен. |
+| `claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5` | APPROVE | Только общая осторожность у движущихся частей; не создаёт оборудование. | Житейская осторожность; класс верен. |
+| `claim:reality-first-place-environmental-composition-needs-observed-conditions-r1` | REJECT | Остаётся domain_internal_only; открыть можно лишь без слова «дренаж». | «Дренаж» — современный технический термин, не речь человека 1230 года. |
+| `claim:reality-first-place-environmental-composition-needs-observed-conditions-r2` | REJECT | Остаётся domain_internal_only; не открывать в речь и рассказ. | «Несущая способность грунта» — инженерное научное понятие. |
+| `claim:reality-first-place-environmental-composition-needs-observed-conditions-r3` | APPROVE | Только наблюдаемая помеха от растительности; не создаёт заросли. | Очевидно; класс верен. |
+| `claim:reality-first-place-environmental-composition-needs-observed-conditions-r4` | APPROVE | Только общее воздействие непогоды; не задаёт погоду. | Очевидно; класс верен. |
+| `claim:reality-first-place-environmental-composition-needs-observed-conditions-r5` | APPROVE | Только роль дневного света для осмотра; не создаёт место и свет. | Очевидно; класс верен. |
+| `claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1` | APPROVE | Только общее бережение зерна; не задаёт способ хранения и запас. | Знает любой хозяин; класс верен. |
+| `claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2` | APPROVE | Только общая практика хранения корма; не задаёт устройство двора. | Бытовая практика; класс верен. |
+| `claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3` | APPROVE | Только общий уход за животными; не создаёт животных и корм. | Общеизвестно; класс верен. |
+| `claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4` | APPROVE | Только общее требование прохода; не задаёт планировку двора. | Бытовое знание; класс верен. |
+| `claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5` | APPROVE | Только то, что уход за двором требует труда; не создаёт хозяйство. | Обычный хозяйственный опыт; класс верен. |
+| `claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1` | APPROVE | Только общая судьба записи по грамотности; не задаёт содержание и наличие записи. | Понятно новгородцу; класс верен. |
+| `claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2` | APPROVE | Только общий путь обучения ремеслу; не задаёт срок и наставника. | Общеизвестно; класс верен. |
+| `claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3` | APPROVE | Только зависимость доступа от хозяина; не задаёт его ответ. | Бытовое знание; класс верен. |
+| `claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4` | REJECT | Остаётся domain_internal_only как устройство мира; в речь и рассказ не открывать. | Различие «владения и собственности» — правовая теория, не общее знание 1230 года. |
+| `claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5` | APPROVE | Только возможные пути разбора спорной вещи; не задаёт исход. | Бытовое знание; слово «юридический» лишь в оговорке. |
+| `claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1` | APPROVE | Только влияние поверхности на шаг; не задаёт скорость пути. | Очевидно; класс верен. |
+| `claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2` | APPROVE | Только общее влияние темноты; не задаёт, что путник собьётся. | Очевидно; класс верен. |
+| `claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3` | APPROVE | Только общее воздействие непогоды; не задаёт погоду и вред. | Очевидно; класс верен. |
+| `claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4` | APPROVE | Только общее утомление от груза; не задаёт выносливость конкретного человека. | Очевидно; класс верен. |
+| `claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5` | APPROVE | Только ненадёжность следов и примет; не доказывает маршрут и прибытие. | Наблюдаемо; класс верен. |
+| `claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths` | APPROVE | Только обычное поведение в храме, известное прихожанам; не задаёт чин службы и право входа. | Бытовой церковный обычай, без историографии и дат. |
+| `claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception` | APPROVE | Только ощущения у порога храма; не задаёт устройство конкретной церкви. | Физическое восприятие, доступное каждому; класс верен. |
+| `claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces` | APPROVE | Только наблюдаемое влияние погоды и шагов на двор; не задаёт покрытие и уборку. | Наблюдаемо; general_physical верен. |
+| `claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel` | APPROVE | Только наблюдаемые свет и дым в жилище; не задаёт устройство конкретного дома. | Наблюдаемо жителю; класс верен. |

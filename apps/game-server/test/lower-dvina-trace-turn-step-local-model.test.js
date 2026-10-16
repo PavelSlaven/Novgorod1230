@@ -162,5 +162,5 @@ test('source grounding repair gets a focused semantic instruction', async () => 
     code: 'source_semantic_grounding', message: 'missing material ref'
   }] });
   assert.match(prompt,
-    /Required source repair: discard action_production[\s\S]*one domain_request request_discovery[\s\S]*query naming only the missing ordinary material[\s\S]*Preserve the complete original action verbatim[\s\S]*Связать верёвкой доски/u);
+    /Обязательное исправление источника: отбрось action_production[\s\S]*один domain_request request_discovery[\s\S]*запросом, называющим только отсутствующий обычный материал[\s\S]*Сохрани исходное действие целиком и дословно в continuation\.remaining_intent="Связать верёвкой доски\."/u);
 });

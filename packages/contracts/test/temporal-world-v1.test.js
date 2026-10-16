@@ -29,8 +29,8 @@ const temporalErrors = [
   'remote_catch_up_rule_gap', 'propagation_rule_gap', 'visible_package_persistence_gap'
 ];
 
-test('Temporal World v1.1 is part of the current 4.5 target contract set with one declaration per DTO/error', () => {
-  assert.equal(SPATIAL_V3_CONTRACT_VERSION, '4.5.0-target.1');
+test('Temporal World v1.1 is part of the current 4.7 target contract set with one declaration per DTO/error', () => {
+  assert.equal(SPATIAL_V3_CONTRACT_VERSION, '4.7.0-target.1');
   const contractNames = contractDefinitions.map(({ contract_name }) => contract_name);
   const errorCodes = typedErrorDefinitions.map(({ error_code }) => error_code);
   assert.equal(new Set(contractNames).size, contractNames.length);
@@ -131,7 +131,7 @@ test('Factual visible envelope rejects hidden fields and combined write plans re
           } },
           equipment: [{ physical_position: 'worn',
             visual_profile_snapshot: {
-              schema: 'rus.actor_equipment_visual_profile.v1', version: 1,
+              schema: 'item_visual_profile_snapshot_v1', version: 1,
               visible_fabric: 'light_linen'
             } }],
           outward_presentation: { gaze: 'down', body_pose: 'frontal' }

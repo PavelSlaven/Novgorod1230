@@ -44,7 +44,11 @@ test('actual invalid planner output is a public no-commit rejection, including c
     assert.equal(result.reason.code, 'TURN_STEP_PLAN_INVALID');
     const envelope = errorEnvelope(result.reason);
     assert.equal(envelope.body.error.turn_commit_status, 'not_started');
-    assert.equal(envelope.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+    // PLAN-OK-rt-ux p.4: a refusal with nothing committed is a typed 409, not a masked 500.
+    assert.equal(envelope.status, 409);
+    assert.equal(envelope.body.error.code, 'TURN_NOT_SAVED');
+    assert.equal(envelope.body.error.message,
+      'Ход не сохранён. Попробуйте сформулировать действие иначе.');
   }
   assert.equal(f.commitCount(), 0);
 });

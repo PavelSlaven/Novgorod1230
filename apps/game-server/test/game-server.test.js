@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { computeStage26ScreenDigest } from '@rus/contracts';
@@ -60,6 +60,122 @@ test('unresolved ordinary discovery is a non-5xx conflict without private detail
   });
   assert.equal(JSON.stringify(response).includes('budget_or_cap'), false);
   assert.equal(error.details.reason, 'budget_or_cap_exhausted');
+});
+
+test('authored opening audit rejection stays code-only on the public HTTP envelope', () => {
+  const response = errorEnvelope(Object.assign(new Error('internal'), {
+    code: 'AUTHORED_OPENING_AUDIT_REJECTED',
+    status: 409,
+    details: {
+      codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING'],
+      opening_rejection: {
+        writer_prose: 'Вы у берега.',
+        audit: {
+          pass: false,
+          concerns: [{ code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING', severity: 'repairable',
+            message: 'Missing fact.' }],
+          evidence: ['Shore required.'],
+          codes: ['NARRATOR_PROSE_MUST_INCLUDE_MISSING']
+        },
+        repair: { attempted: true, outcome: 'still_rejected' }
+      }
+    }
+  }));
+  assert.equal(response.status, 409);
+  assert.equal(response.body.error.code, 'AUTHORED_OPENING_AUDIT_REJECTED');
+  assert.equal(response.body.error.opening_rejection, undefined);
+  assert.equal(JSON.stringify(response.body).includes('Вы у берега'), false);
+});
+
+test('known turn failures use safe public categories and never expose internal diagnostics', () => {
+  for (const [internalCode, publicCode, publicMessage] of [
+    ['TURN_STEP_PLAN_INVALID', 'TURN_NOT_SAVED', 'Ход не сохранён. Попробуйте сформулировать действие иначе.'],
+    ['M2C_TARGET_A1_APPLICABILITY_DATA_GAP', 'WORLD_ACTION_UNAVAILABLE', 'Ход не сохранён. Для этого действия не хватает данных мира.']
+  ]) {
+    const response = errorEnvelope(Object.assign(new Error(
+      `${internalCode} /srv/private/handler.js sk-secret http://internal-host`), {
+      code: internalCode, status: 500, details: { path: '/srv/private/schema.sql', key: 'secret' },
+      turn_commit_status: 'not_started'
+    }));
+    assert.equal(response.status, 409);
+    assert.deepEqual(response.body.error, { code: publicCode, message: publicMessage,
+      turn_commit_status: 'not_started' });
+    assert.doesNotMatch(JSON.stringify(response), /TURN_STEP_PLAN_INVALID|M2C_TARGET_A1|TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED|\/srv\/|sk-secret|internal-host|schema\.sql/u);
+  }
+  const unconfirmed = errorEnvelope(Object.assign(new Error('x'), {
+    code: 'TURN_STEP_PLAN_INVALID', status: 500 }));
+  assert.equal(unconfirmed.status, 500, 'no claim that the turn is not saved without not_started');
+  assert.equal(unconfirmed.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  const unknown = errorEnvelope(Object.assign(new Error('private system detail'), {
+    code: 'UNKNOWN_DOMAIN_FAILURE', status: 500
+  }));
+  assert.equal(unknown.status, 500);
+  assert.equal(unknown.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  const needsCheck = errorEnvelope(Object.assign(new Error('private queue id'), {
+    code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED', status: 500,
+    details: { queue_id: 'private-queue' }, turn_commit_status: 'not_started'
+  }));
+  assert.equal(needsCheck.status, 500);
+  assert.equal(needsCheck.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  assert.doesNotMatch(JSON.stringify(needsCheck), /private-queue|NEEDS_CHECK/u);
+});
+
+test('error envelope masks service text in messages that would otherwise be public', () => {
+  const response = errorEnvelope(Object.assign(new Error(
+    'INFERENCE: claim:final-static-b01-living-birch'), {
+    code: 'INVALID_REQUEST', status: 400
+  }));
+  assert.equal(response.body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  assert.equal(response.body.error.message,
+    'Действие временно недоступно. Попробуйте ещё раз.');
+  assert.doesNotMatch(JSON.stringify(response), /INFERENCE|claim:/u);
+});
+
+for (const [code, message, publicMessage] of [
+  ['TRACE_PHASE_2_IDEMPOTENCY_CONFLICT',
+    'The idempotency identity is already bound to another input.',
+    'Этот ход уже отправлен с другим текстом.'],
+  ['TURN_IDEMPOTENCY_CONFLICT',
+    'Idempotency key is already bound to another turn payload or write plan.',
+    'Этот ход уже отправлен с другим текстом.'],
+  ['TURN_IDEMPOTENCY_IN_PROGRESS',
+    'The same turn commit is already in progress.',
+    'Этот ход ещё обрабатывается. Попробуйте чуть позже.']
+]) {
+  test(`idempotency error ${code} keeps HTTP 409 and a Russian message`, () => {
+    const response = errorEnvelope(Object.assign(new Error(message), {
+      code, status: 409
+    }));
+    assert.equal(response.status, 409);
+    assert.equal(response.body.error.code, code);
+    assert.equal(response.body.error.message, publicMessage);
+    for (const fields of [{ status: 500 },
+      { status: 409, public_exposure: 'internal' }]) {
+      const internal = errorEnvelope(Object.assign(new Error(message), {
+        code, ...fields
+      }));
+      assert.equal(internal.status, fields.status);
+      assert.deepEqual(internal.body.error, {
+        code: 'TEMPORARY_ACTION_UNAVAILABLE',
+        message: 'Действие временно недоступно. Попробуйте ещё раз.'
+      });
+    }
+  });
+}
+
+test('immutable blocker catalog failures are permanent and player-safe', () => {
+  for (const code of ['NEEDS_CHECK_BLOCKER_CATALOG_REQUIRED',
+    'NEEDS_CHECK_BLOCKER_CATALOG_INVALID']) {
+    const response = errorEnvelope(Object.assign(new Error('private catalog detail'), {
+      code, status: 503, details: { import_id: 'private-import' },
+      turn_commit_status: 'not_started'
+    }));
+    assert.equal(response.status, 503);
+    assert.deepEqual(response.body.error, { code: 'WORLD_CATALOG_PIN_INVALID',
+      message: 'Данные мира этой партии недоступны.',
+      turn_commit_status: 'not_started' });
+    assert.doesNotMatch(JSON.stringify(response), /NEEDS_CHECK_BLOCKER|private-import|private catalog/u);
+  }
 });
 
 test('provider failures have safe typed public errors', () => {
@@ -322,9 +438,11 @@ test('HTTP publishes only exact player-safe live turn progress', async (t) => {
   assert.equal(JSON.stringify(live).includes('provider'), false);
 });
 
-test('static asset resolver serves only allowlisted web paths', async () => {
+test('static asset resolver serves only allowlisted web paths', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'rus-web-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   const contractsRoot = await mkdtemp(join(tmpdir(), 'rus-contracts-'));
+  t.after(() => rm(contractsRoot, { recursive: true, force: true }));
   await mkdir(join(root, 'public'), { recursive: true });
   await mkdir(join(root, 'public', 'assets'), { recursive: true });
   await mkdir(join(root, 'src'), { recursive: true });
@@ -436,7 +554,7 @@ test('portrait endpoint normalizes text and never exposes provider metadata or A
     roleRunner: {
       run: async () => ({
         output: portraitSpec(),
-        provider_record: { provider: 'deepseek', api_key: secret }
+        provider_record: { provider: 'openai_compatible', api_key: secret }
       })
     }
   });
@@ -491,7 +609,7 @@ test('portrait endpoint preserves Russian UTF-8 text end to end', async (t) => {
   assert.equal(response.headers.get('content-type'), 'application/json; charset=utf-8');
 });
 
-test('portrait normalizer validates DeepSeek output and fails closed', async () => {
+test('portrait normalizer validates model output and fails closed', async () => {
   const calls = [];
   const valid = createPortraitSpecNormalizer({
     roleRunner: {
@@ -521,7 +639,25 @@ test('portrait normalizer validates DeepSeek output and fails closed', async () 
   });
   await assert.rejects(
     () => invalid.normalize('Портрет'),
-    { code: 'PORTRAIT_SPEC_PROVIDER_INVALID', status: 502 }
+    (error) => {
+      assert.equal(error.code, 'PORTRAIT_SPEC_PROVIDER_INVALID');
+      assert.equal(error.status, 502);
+      assert.match(error.message, /^Получены неподдерживаемые данные портрета:/u);
+      return true;
+    }
+  );
+
+  const unavailable = createPortraitSpecNormalizer({
+    roleRunner: { run: async () => { throw new Error('private provider detail'); } }
+  });
+  await assert.rejects(
+    () => unavailable.normalize('Портрет'),
+    (error) => {
+      assert.equal(error.code, 'PORTRAIT_SPEC_PROVIDER_FAILED');
+      assert.equal(error.status, 502);
+      assert.equal(error.message, 'Не удалось преобразовать описание портрета.');
+      return true;
+    }
   );
 
   const legacyOutput = portraitSpec();
@@ -535,7 +671,7 @@ test('portrait normalizer validates DeepSeek output and fails closed', async () 
   );
 });
 
-test('portrait endpoint rejects unknown request fields before calling DeepSeek', async (t) => {
+test('portrait endpoint rejects unknown request fields before normalization', async (t) => {
   let calls = 0;
   const server = createGameHttpServer({
     root: createRoot(),

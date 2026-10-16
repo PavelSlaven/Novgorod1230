@@ -165,6 +165,7 @@ function initialDecision({ context, npc, operation, actorStepRequest }) {
       allowed_skill_refs: [], allowed_check_profile_refs: [],
       allowed_duration_classes: ['domain_owned'], operation_contract: {} }
   });
+  // historical_events: exchange wraps npcSemanticModel with party state (F1).
   const persisted_trace = (context.state.npc_semantic_decision_traces ?? []).find(
     ({ boundary_id }) => boundary_id === boundary.boundary_id) ?? null;
   return { boundary, request, persisted_trace, signal_record: {

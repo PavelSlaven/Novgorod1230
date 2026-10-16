@@ -1,0 +1,44 @@
+{
+  "schema": "f1_independent_approval_review_v4",
+  "record_kind": "validator_update_supplement",
+  "who": "Codex sol 6.1 — независимый утверждающий ap-b4-f1, D67; не автор данных",
+  "when": "2026-10-03T09:35:46Z",
+  "path": "/srv/novgorod-work/worktrees/b4-f1-data/data/world-catalogs/novgorod/live-world-runtime-v17/validate-f1-candidate.mjs",
+  "files": [
+    "validate-f1-candidate.mjs"
+  ],
+  "commit": "aacc5b37b7dd866ff15443605f387091fba03ae9",
+  "repository": "/srv/novgorod-work/worktrees/b4-f1-data",
+  "repository_relative_path": "data/world-catalogs/novgorod/live-world-runtime-v17/validate-f1-candidate.mjs",
+  "branch": "fleet/b4-f1-data",
+  "verdict": "APPROVE_WITH_LIMITS",
+  "approval_granted": true,
+  "approval_status": "APPROVED_WITH_LIMITS",
+  "approval_scope": "Только обновлённый валидатор authoring/data-only пакета; дополнение к утверждению F1 третьего прохода.",
+  "supplements": "f1-approval-review-3.json",
+  "unchanged_data_commit": "31f373b32b07f4f34659184f83c09ead6b5221fe",
+  "reviewer_request": "REAPPROVE-ap-b4-f1-4 | 2026-10-03T09:28:57Z",
+  "findings_closed": [
+    "F1_R4_UNRESOLVED_TARGET_GAP_SOURCE_REF",
+    "F1_R4_NULL_CANDIDATE_PROPERTY"
+  ],
+  "blocking_findings": [],
+  "previous_checks_weakened": false,
+  "limits": [
+    "Только authoring/качественные типовые данные и явно ограниченные ссылки на upstream designs.",
+    "33 scoped bindings и все 231 typed gap остаются открытыми; текущие stock, quantities/mass/depletion, owner/access, water, initial fire и position/topology не утверждены.",
+    "Canonical scope33 property context — informational G4 pointer; generated stock/completeness policy не наследуется.",
+    "Нет разрешения на import/activation/release/runtime.",
+    "Поведение модели, gameplay и current source/property readback не проверены."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "evidence": [
+    "report-ap-b4-f1-4.md",
+    "validator-review-4.md",
+    "diff-review-4.md",
+    "check-results-4.json",
+    "author-check-results-4.json",
+    "committed-content-check-4.json"
+  ]
+}

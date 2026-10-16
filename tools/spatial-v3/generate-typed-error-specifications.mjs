@@ -10,6 +10,7 @@ const standard = await readFile(standardSource, 'utf8');
 const temporal = await readFile(temporalSource, 'utf8');
 const appendix = standard.slice(standard.indexOf('# Приложение C.'), standard.indexOf('# Приложение D.'));
 const temporalAppendix = temporal.slice(temporal.indexOf('# Приложение B.'));
+const amendmentAppendix47 = standard.slice(standard.indexOf('# Приложение F.'));
 
 function parseErrors(text) {
   return text.split(/\r?\n/).flatMap((line) => {
@@ -41,6 +42,11 @@ const byCode = new Map(baselineErrors.map((error) => [error.error_code, error]))
 for (const error of temporalErrors) byCode.set(error.error_code, error);
 const errors = [...byCode.values()];
 if (errors.length !== 82) throw new Error(`Expected 82 merged typed errors, got ${errors.length}`);
+const spatialAmendmentErrors = parseErrors(amendmentAppendix47);
+if (spatialAmendmentErrors.length !== 4 || new Set(spatialAmendmentErrors.map(({ error_code }) => error_code)).size !== 4) throw new Error('Spatial 4.7 Appendix F typed error parse failed');
+for (const error of spatialAmendmentErrors) byCode.set(error.error_code, error);
+const currentErrors = [...byCode.values()];
+if (currentErrors.length !== 86) throw new Error(`Expected 86 current typed errors, got ${currentErrors.length}`);
 await mkdir('packages/contracts/src/spatial-v3', { recursive: true });
 await writeArtifact(baselineOutput, { source: standardSource, source_version: '4.2.0-target.1', errors: baselineErrors });
 const acceptedTemporalArtifact = {
@@ -50,5 +56,5 @@ const acceptedTemporalArtifact = {
   errors
 };
 await writeArtifact(temporalBaselineOutput, acceptedTemporalArtifact);
-await writeArtifact(output, { ...acceptedTemporalArtifact, source_version: '4.5.0-target.1' });
-console.log(`Generated ${output}: ${errors.length} merged Spatial v4.2 + Temporal v4 typed errors.`);
+await writeArtifact(output, { ...acceptedTemporalArtifact, additional_amendment_sources: [{ source: standardSource, scope: 'Appendix F' }], source_version: '4.7.0-target.1', errors: currentErrors });
+console.log(`Generated ${output}: ${currentErrors.length} merged Spatial v4.2 + Temporal v4 + Spatial 4.7 typed errors.`);

@@ -1,4 +1,7 @@
+import registry from '../../data/runtime-catalog/item-container-record-registry.v1.json'
+  with { type: 'json' };
 import { canonicalDigest } from '@rus/materialization';
+import { computeRecordRegistryDigest } from '@rus/runtime-catalog/canonical-records';
 import {
   RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
 } from '@rus/runtime-catalog/runtime-contract';
@@ -13,7 +16,7 @@ export function lowerDvinaTracePhase1ADomainPin(bundle) {
     catalog_digest: canonicalDigest(source),
     import_id: `trace_phase_1a_import_${canonicalDigest(source).slice(0, 24)}`,
     import_audit_digest: canonicalDigest(source.approval_attestation),
-    record_registry_digest: canonicalDigest(source.datasets),
+    record_registry_digest: computeRecordRegistryDigest(registry),
     runtime_contract_digest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST,
     compatible_world_revision_id: world.world_revision_id,
     compatible_world_catalog_digest: world.world_revision_catalog_digest,

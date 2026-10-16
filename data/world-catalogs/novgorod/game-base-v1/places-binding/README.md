@@ -8,8 +8,8 @@
 |---|---|---|---|
 | `places/` | place_families, place_binding | `place_families.csv`, `node_binding.csv` | 45, 227 |
 | `places/` | region-type PF coverage (C012b) | `region_type_pf_manifest.json` | 130 типов: 109 covered, 21 gap |
-| `presence/` | presence_rules | `frequency_rule.json`, `environment_presence_authoring.csv`, `environment_lens_exclusions.csv`, `presence_rules.csv` | правило; 6 976 производных строк, включая 1 236 проекций из 855 environment candidate-правил для 45 PF (см. `presence/README.md`) |
-| `presence/` | people composition D-2 | `people_composition_authoring.json` | 17 PF, 5 постоянных групп, 16 глобальных пробелов; формат и проверки — `presence/README.md` |
+| `presence/` | presence_rules | `frequency_rule.json`, `environment_presence_authoring.csv`, `environment_lens_exclusions.csv`, `presence_rules.csv` | правило; 6 973 производных строки, включая 1 236 проекций из 855 environment candidate-правил для 45 PF (см. `presence/README.md`) |
+| `presence/` | people composition D-2 | `people_composition_authoring.json` | 17 PF, 8 постоянных групп (5 + 3 порога D49), 16 глобальных пробелов; формат и проверки — `presence/README.md` |
 | `categories/` | category_registry | `category_registry.csv`, `place_family_categories.csv` | 983, 62 |
 | `limits/` | place_generation_limits | `place_generation_limits.csv` | 106 |
 | `parameters/` | category_parameters | `parameter_definitions.csv`, `category_parameters.csv` | 16, 3 697 |

@@ -19,7 +19,7 @@ const plan = {
 const authoritative = {
   pack_revision: bundle.manifest.revision_id,
   context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'], actor_facets: {} },
-  budget: { max_facts: 8, max_candidates: 8, max_context_chars: 2000 }
+  budget: { max_facts: 8, max_candidates: 8 }
 };
 
 test('planner gets one structural repair over the same immutable request', async () => {
@@ -85,10 +85,13 @@ test('RETRIEVE merges only authoritative context after planning', async () => {
   assert.equal(result.slice.verdict, 'supported');
 });
 
-test('an empty retrieval plan self-terminates as NO_KNOWLEDGE_REQUIRED', async () => {
+test('an empty semantic_resolution plan self-terminates as NO_KNOWLEDGE_REQUIRED', async () => {
   let coreCalls = 0;
   const result = await resolveTurnStepWorldKnowledge({
-    mode: 'RETRIEVE', core: { resolveWorldKnowledge() { coreCalls += 1; } },
+    mode: 'RETRIEVE', core: { resolveWorldKnowledge() {
+      coreCalls += 1;
+      return { facts: [], hard_constraints: [] };
+    } },
     bundle, plannerRequest, authoritative,
     plannerModel: async () => ({ schema: 'world_knowledge_query_plan_v1',
       query_locale: 'ru', domains: [], focus_refs: [],

@@ -664,3 +664,23 @@
 - все строки candidate, confidence не выше C для `logical_necessity`.
 
 Вердикт группы: **approve_with_limits**.
+
+## Независимая проверка D53 (Claude Opus 5.5, 2026-09-30)
+
+- **Кто:** независимый проверяющий Claude Opus 5.5, не автор (автор — исполнитель fleet ferry-guard, Claude Sonnet 5.5). Проверен диапазон `c3b6fc0d..8fc15870`.
+- **Основание:** решение владельца D53 — сторожа переправы на пристанях нет в источниках (в индексе книг «сторож брода/переправы/перевоза» — 0 попаданий); на `pf_ferry_landing` остаётся перевозчик; запись занятия остаётся (D38).
+- **Проверено:** перегенерация волны на пине 81d96576 совпала побайтно; из производных таблиц удалены только строки со сторожем, добавленных строк нет; `build_schedules.py --check` (161), `households check.py`, `occupations validate.py`, `check-people-composition --self-test` (17 PF, 7 групп, 41 проба) — PASS.
+- **Что:** убраны пары со сторожем на перевозе: `relationship_rules.csv` −7, `address_forms.csv` −14; зимняя пара — перевозчик и работник зимника. Регистры речи, страхи и профиль домохозяйства сторожа остаются (D38).
+- households_kinship/relationship_rules.csv — approve: сгенерирован, пересобран, минус 7 правил
+- speech_address/address_forms.csv — approve: сгенерирован, пересобран, минус 14 форм
+- scripts/build_report.json — approve: сгенерирован, пересобран
+
+Вердикт группы: **approve_with_limits** (прежние ограничения группы в силе).
+
+## Перенос адресных форм #510 — 2026-10-07
+
+- Основание утверждения: `/srv/novgorod-work/fleet/tasks/ap-final-address-forms-reconstruct/out/approval.json`, SHA-256 `3338b4f81eec524b08f7abc40855c1fd72e0c8d46eb6a24198f3588a7d5f729d`; финал Opus `/srv/novgorod-work/fleet/tasks/ap-final-address-forms-reconstruct/out/final-verdict.json`, SHA-256 `36c5364bd7fd11b040e13a84aac7d81e7976ac75b0a904d290b74bc302f7d2a9`; кандидат `address_forms.csv`, SHA-256 `ac2d5319c9ab9e56e9fc7598f3eed9e259eb104d5a24ff3a5acda25415df339a`.
+- Авторский источник speech_address — `speech_address/address_forms_authoring.csv`; `scripts/build.py` строит из него производный `address_forms.csv`. Скриптовая сверка подтвердила 89 строк, 84 прежних `sp_id` сохранены, пять добавлены утверждённым кандидатом; применены только 10 замен approval (30 полей). Супруговые суффиксы остаются генерируемыми.
+- По финалу Opus для `form_prince` §360 (`c1230`) — прямое свидетельство, §1155 (`medieval_general`) — параллель. Поэтому confidence-проверка книжных ссылок стала построчной: A/B отклоняются, только если все книжные свидетельства общие; прежняя строгость для строк только с общими ссылками сохранена.
+- Для ferryman↔fisher сохранены одна нейтральная связь, одна oral-строка на направление и прежние IDs `form_start_gap_44fce0cf41604aec`, `form_start_gap_196110db57ec8988`; проверка принимает утверждённые C-формы с rule_ref согласно финалу Opus.
+- 21 пояснение пробела механически перемещено: прежний `no_source` дополнен `; ` и прежним `attestation`, `attestation` очищен. Это пояснение поиска, не свидетельство формы. Проверка `/srv/novgorod-work/fleet/tasks/address-forms-apply/out/transfer-p/verify_no_source_transfer.py` дала 21 перенесённую строку, 68 остальных без изменений, 0 различий остальных полей; лог `no-source-transfer.json`, SHA-256 `c0dfa9b0e33fe7f742e21249c63876458ef1b14e2cbd0c3e83ce6fdeb75e1091`.

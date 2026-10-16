@@ -1,0 +1,24 @@
+{
+  "schema": "rus.m2c_nature_richness_data_approval.v1",
+  "decision": "APPROVE_AUTHORING_DATA_ONLY",
+  "candidate_path": "data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json",
+  "candidate_sha256": "a6bb9dc862ae9257c3f588776a10395769d06ef56744f7b9c8c55d18e6bbf4e6",
+  "reviewed_on": "2026-09-24",
+  "reviewer_role": "independent_substantive_data_reapproval",
+  "scope": "Conditional flora, fauna, decomposer-substrate and ordinary-material alternatives for all 32 exact M2c G4 profiles; editorial relative weights 8/4/2/1 only.",
+  "provenance": {
+    "historical_regional": ["archaeological_wood", "archaeological_fauna", "medieval_wetland"],
+    "modern_or_general_analogy": ["modern_forest", "modern_willow", "modern_reed", "modern_alder", "modern_fungi", "fungal_decay"],
+    "exact_spatial_context": ["regional_landscape", "exact_g4"],
+    "source_register": "candidate.source_register; historical evidence is regional, modern ecology is analogical, exact G4 references establish template and baseline context only"
+  },
+  "review_result": "All taxon and substrate rows retain low-confidence inferred or analogical directness, conditional season and source limits. Editorial weights do not claim historical frequency, abundance, encounter probability or yield. Fungal process requires an organic ambient material in the same G4: excluded at shifting_shoal_field, permitted at driftwood_bar via driftwood; no visible or edible mushroom is approved.",
+  "limits": [
+    "No exact G4 species presence, animal, trace, sound, harvest, ownership, edible state or stock is approved.",
+    "Fauna remains ineligible at all 32 G4 pending separate natural baseline layer approval; willow is inapplicable at driftwood_bar and shifting_shoal_field.",
+    "Seasonal selection needs current world date, weather, water and phenology; named fruiting bodies and edible mushrooms remain unresolved.",
+    "This decision does not approve mapped import, runtime selection, active binding, v17 operational attestation or M2c final acceptance."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false
+}

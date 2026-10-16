@@ -1,0 +1,23 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent data review; not the candidate or production-code author",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "Exact repin of the 68 local movement eligibility candidate records across 17 scene templates. Only the M2c expansion import-manifest source SHA changed; all records, provenance, runtime requirements, exclusions and authority flags remain unchanged.",
+  "exact_candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/local-movement-eligibility-candidate.json",
+    "sha256": "a86de4fc70b0aaf02dbd0d8a6d9006dc3a4f9f489d601a59d97d5b09abac0dbb",
+    "previous_sha256": "36e384e9c0fbe2681c9c27bb8c85db22cb8b62e167730689d16089f0f929645f"
+  },
+  "source_pins": {
+    "approved_m2c_expansion_manifest_sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133",
+    "independent_nonportal_availability_approval_sha256": "7c51c5e371e7c138ca6fe2a60c1be447a4aad0b26a048648e550816c1a47809a"
+  },
+  "provenance_and_applicability": "Each candidate row pins one approved scene template and one existing directed edge. Its opposing edge is a separate authored row with swapped endpoints, not an inferred reverse relation. The single-root transition limit is editorial mechanics, not historical capacity evidence. Original null reverse references, null edge capacity and position capacity one remain authoritative; current visibility and locked occupancy remain runtime admission requirements.",
+  "checks": "Exact candidate SHA and all five source_refs SHA values match current bytes; the new manifest SHA is independently approved and all 48 manifest dataset hashes match. Compared with HEAD, the candidate differs only in that manifest source pin. All 68 distinct rows match all 68 authored directed edges across 17 templates, with approved template digests, paired swapped endpoints, action cost and destination capacity one. Existing exclusions and approval/import/activation flags are unchanged.",
+  "next_mapped_dependency": "Update local-movement-eligibility-v1/datasets/source_records.json candidate_sha256 from the old candidate SHA to the exact new SHA, recompute its dataset pin and mapped manifest SHA, then independently review and issue a separate mapped-data approval with the new source_candidate_sha256 and manifest_sha256. The prior mapped approval in m2c-sol-data-approval.json remains bound to old bytes and is not renewed by this decision.",
+  "excludes": "Mapped-data approval or import, production activation, runtime/DDL/code review, current visibility or occupancy admission, original edge or position mutation, historical party migration, and approval of the whole M2c milestone.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

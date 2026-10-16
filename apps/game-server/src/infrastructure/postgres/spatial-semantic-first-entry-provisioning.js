@@ -68,9 +68,12 @@ function buildEnvelope(profile, entry, scope, topology) {
 
 function requireProfile(value) {
   const profile = value?.profile;
-  if (value?.schema !== 'rus.lower_dvina_trace_s1_loaded_profile.v1'
-      || profile?.schema !== 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
-      || profile.status !== 'approved' || profile.scenario_definition_revision !== 24
+  const legacy = value?.schema === 'rus.lower_dvina_trace_s1_loaded_profile.v1'
+    && profile?.schema === 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
+    && profile.scenario_definition_revision === 24;
+  const neutral = value?.schema === 'rus.live_world_runtime.s1_loaded_profile.v1'
+    && profile?.schema === 'rus.live_world_runtime.s1_profile.v1';
+  if ((!legacy && !neutral) || profile.status !== 'approved'
       || !text(profile.profile_id) || !text(profile.policy_ref)
       || !Number.isSafeInteger(profile.revision) || !Number.isSafeInteger(profile.policy_version)
       || !['property_ref','function_ref','environment_ref'].every((key) => text(profile[key]))
@@ -91,6 +94,14 @@ function requireProfile(value) {
         || new Set(entry.required_semantic_requirements).size !== entry.required_semantic_requirements.length
         || !entry.required_semantic_requirements.every((requirement) => ['interior_space','controlled_passage','movement_constraint','hazard','extractable_resource'].includes(requirement))
         || !Number.isSafeInteger(entry.capacity_total) || entry.capacity_total < 1
+        || neutral && (!text(entry.opening_resolution?.name)
+          || !text(entry.opening_resolution?.description)
+          || !Array.isArray(entry.opening_resolution?.semantic_requirements)
+          || new Set(entry.opening_resolution.semantic_requirements).size
+            !== entry.opening_resolution.semantic_requirements.length
+          || !entry.opening_resolution.semantic_requirements.every((requirement) =>
+            entry.required_semantic_requirements.includes(requirement)
+              || entry.available_mechanics.includes(requirement)))
         || (entry.structural_variant === 'open_one_space'
           && (!text(entry.slot_key)
             || !entry.required_semantic_requirements.includes('interior_space')))

@@ -1,0 +1,26 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "independent Contract Auditor /root/approve_acoustic_import",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "Exact acoustic P12 authoring-version union: 2157 preserved rows, 457 approved expansion @2 rows (454 canonical G5 connection bindings and three profiles), and four manifest SHA repins. All 2543 expansion authoring-version rows match their approved source; 71 acoustic-owned rows remain unchanged.",
+  "exact_bundle": {
+    "manifest_sha256": "3e0224b433134009d83adf893ca4514e9dd69e99202f5c1e3c6aa0cd508d5d2c",
+    "authoring_versions_sha256": "9354ef5b4c9571bc6cef7d9b7c0076d7cea294d9be3f2f103d984acc295193eb",
+    "connection_profiles_sha256": "9de3d2762bc13d2d7db4dad18f0e70ff9128aff4882657a5ce67a879c90898a8",
+    "connection_bindings_sha256": "4c3d2e21b6946682473caef80035282d7284597df4fe6b68fbc32d84f92a944e",
+    "authoring_dependency_edges_sha256": "aca679943f50bb9e2aacf7af49918649f3d48de896b5446949ec7774ff73d7fd"
+  },
+  "source_approvals": [
+    "data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json",
+    "data/world-catalogs/novgorod/m2c-nonportal-availability-data-approval.json",
+    "data/world-catalogs/novgorod/m2c-acoustic/approval.json",
+    "data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/approval.json",
+    "data/world-catalogs/novgorod/m2c-acoustic/post-promotion-approval.json"
+  ],
+  "checks": "All 2614 authoring-version rows have unique (entity_kind, entity_id, version). All 457 appended rows exactly match approved expansion source rows, with approved status and P12 provenance. All 49 dataset SHA-256 pins match current bytes. Manifest order, fields, and dependencies are unchanged except for the four SHA pins.",
+  "excludes": "New semantic approval of upstream expansion, PostgreSQL import/readback, runtime or production activation, and historical claims.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

@@ -116,8 +116,9 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
       completion_effect: structuredClone(completionEffect)
     });
   }
-  const restCompleted = compareGameTimestamp(
-    advanced.result.clock_after, temporal.limit_timestamp) === 0;
+  const restCompleted = restLimitTimestamp == null
+    && compareGameTimestamp(
+      advanced.result.clock_after, temporal.limit_timestamp) === 0;
   const finished = active?.status === 'completed';
   const stillRunning = active?.status === 'started';
   if (advanced.result.temporal_status !== 'completed'

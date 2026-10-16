@@ -27,6 +27,12 @@ const at = { whole_minutes: '620', subminute_numerator: '0',
   subminute_denominator: '1' };
 const player = { entity_kind: 'player_character', entity_id: 'mikula-1' };
 const ratsha = { entity_kind: 'npc', entity_id: 'ratsha-1' };
+const bodyProfile = (id, health = 100) => ({
+  schema: 'rus.body_state.initialization_profile.v1', status: 'approved',
+  profile_ref: { entity_ref: { entity_kind: 'body_state_profile',
+    entity_id: `test:${id}` }, authoring_version: 'fixture-v1' },
+  initial_state: { health, energy: 80, satiety: 70 }
+});
 
 test('combat target projection selects the active hostile intent', () => {
   const ally = { entity_kind: 'npc', entity_id: 'ally-1' };
@@ -62,6 +68,7 @@ test('player combat response resolves one common two-minute exchange', async () 
       active_conditions: [], body_parts: {}, prose: null },
     npcs: [{ instance_id: 'ratsha-1',
       participant_slot_ref: 'ratsha_storehouse_helper',
+      body_state_profile: bodyProfile('ratsha-1'),
       machine_state: { body_condition: { health: 100 } } }],
     items: [{ item_id: 'ordinary-spear', placement: {
       holder_character_id: 'mikula-1' }, state: {
@@ -316,6 +323,44 @@ test('valid A1 non-weapons resolve as unarmed while classification failures clos
     }
   });
 
+test('weapon classification takes only qualitative_class from model output',
+  async () => {
+    const item = actionProducedItem('a1-spear', ['конец заострён'], 'long');
+    const danger = (reply) => classifyTraceActionProducedWeapon({
+      items: [item], actor_ref: player, request_id: 'combat-weapon:model-only',
+      classify: async (request) => reply(request) });
+    // model copied the request schema and request_id
+    assert.deepEqual(await danger((request) => ({ schema: request.schema,
+      request_id: request.request_id,
+      qualitative_class: 'improvised_puncture_light' })),
+    { item_ref: 'a1-spear', weapon_danger: 1 });
+    // model returned only the semantic choice
+    assert.deepEqual(await danger(() => ({
+      qualitative_class: 'improvised_two_hand_heavy' })),
+    { item_ref: 'a1-spear', weapon_danger: 2 });
+    // extra fields are ignored, danger comes from the class only
+    assert.deepEqual(await danger(() => ({ request_id: 'other',
+      qualitative_class: 'improvised_impact_light', weapon_danger: 900 })),
+    { item_ref: 'a1-spear', weapon_danger: 1 });
+    for (const reply of [{ qualitative_class: 'royal_spear' },
+      { qualitative_class: null }, { schema: 'x' }, null, 'improvised_impact_light']) {
+      assert.equal(await danger(() => reply), null);
+    }
+  });
+
+test('weapon classifier prompt asks only for qualitative_class', async () => {
+  let system = null;
+  const classify = createLowerDvinaTraceActionProducedWeaponClassifier({
+    roleRunner: { run: async ({ messages }) => {
+      system = messages[0].content;
+      return { output: { qualitative_class: 'not_weapon_capable' } };
+    } } });
+  await classify({ request_id: 'combat-weapon:prompt' });
+  assert.match(system, /qualitative_class/);
+  assert.doesNotMatch(system, /Return only schema, request_id/);
+  assert.match(system, /Do not return schema or request_id/);
+});
+
 test('production LLM role resolves A1 weapon classification at combat boundary',
   async () => {
     const previousFetch = globalThis.fetch;
@@ -332,8 +377,8 @@ test('production LLM role resolves A1 weapon classification at combat boundary',
     try {
       const classify = createLowerDvinaTraceActionProducedWeaponClassifier({
         roleRunner: createLlmRoleRunnerAdapter({ env: {
-          DEEPSEEK_API_KEY: 'fixture-key',
-          DEEPSEEK_BASE_URL: 'https://fixture.invalid'
+          LLM_API_KEY: 'fixture-key',
+          LLM_BASE_URL: 'https://fixture.invalid'
         } })
       });
       const item = actionProducedItem('a1-spear', ['конец заострён'], 'long');
@@ -349,13 +394,15 @@ test('production LLM role resolves A1 weapon classification at combat boundary',
     }
   });
 
-test('post-exchange subjective projection reads body and equipment from working state',
+test('post-exchange projection gaps body without approved bands and keeps equipment',
   () => {
     const state = {
       npcs: [{ instance_id: 'ratsha-1',
         participant_slot_ref: 'ratsha_storehouse_helper',
+        body_state: { health: 63, condition_summary: 'test fixture band' },
         machine_state: { body_condition: { health: 100 } } }],
-      actor_states: { 'npc:ratsha-1': { body_state: { health: 63 } } },
+      actor_states: { 'npc:ratsha-1': { body_state: { health: 63,
+        condition_summary: 'test fixture band' } } },
       items: [{ item_id: 'knife-1', placement: {
         holder_npc_id: 'ratsha-1' }, ownership: {
         controller_npc_id: 'ratsha-1' } }, { item_id: 'axe-1', placement: {
@@ -363,7 +410,12 @@ test('post-exchange subjective projection reads body and equipment from working 
         controller_npc_id: 'other-npc' } }]
     };
     const projected = projectTraceCombatSubjectiveState(ratsha, state);
-    assert.equal(projected.body.health, 63);
+    assert.deepEqual(projected.body, {
+      body_state_descriptions: [],
+      body_state_gaps: ['health', 'energy', 'satiety'].map((metric) => ({
+        metric, code: 'body_state_qualitative_metric_gap'
+      }))
+    });
     assert.deepEqual(projected.available_equipment, [{
       entity_kind: 'item', entity_id: 'knife-1' }]);
   });
@@ -395,6 +447,8 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
     npcs: [firstNpc, secondNpc].map((npc, index) => ({
       instance_id: npc.entity_id,
       participant_slot_ref: 'ratsha_storehouse_helper',
+      body_state_profile: bodyProfile(npc.entity_id,
+        index === 0 ? 5 : 100),
       machine_state: { body_condition: { health: index === 0 ? 5 : 100 } }
       })), items: [{ item_id: 'crafted-pole', placement: {
       holder_character_id: 'mikula-1' }, state: { condition_state: 'serviceable',

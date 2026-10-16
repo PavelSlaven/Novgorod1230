@@ -1,12 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import ageCategories from '../src/actor-age-categories.json' with { type: 'json' };
 import {
+  ACTOR_BASE_APPEARANCE_VOCABULARY,
   completeActorBaseAppearance,
   normalizeActor,
   projectActorIdentity,
   validateActor,
   validateActorBaseAppearance
 } from '../src/index.js';
+
+test('actor age category vocabulary comes from its JSON owner', () => {
+  assert.deepEqual(ACTOR_BASE_APPEARANCE_VOCABULARY.age_category, ageCategories);
+});
 
 test('actors validates and projects identity without inventing fields', () => {
   const source = { id:'npc_1', kind:'npc', name:'Иван', biography:{ origin:'Новгород' }, skills:{ craft:2 } };

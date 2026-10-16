@@ -12,6 +12,23 @@ import { createCanonicalPhase11LlmResponder } from
 const CAMP_TEMPLATE = 'trace_ld_v1_tpl_fishing_camp';
 const A1_SOURCE_ITEM_ID = 'item:s1-first-entry-a1-source';
 
+function visibleLocal(screen, resolution, visibleStatus = 'замечен') {
+  const objects = screen.visible_context.visible_objects;
+  const matches = objects.filter(({ entity_ref: ref, display_label }) =>
+    ref?.entity_kind === 'spatial_local_reference'
+      && display_label === resolution.semantics.name);
+  assert.equal(matches.length, 1);
+  const [local] = matches;
+  assert.deepEqual(local, { entity_ref: { entity_kind: 'spatial_local_reference',
+    public_key: local.entity_ref.public_key },
+  display_label: resolution.semantics.name,
+  recognition: 'recognized', visible_status: visibleStatus });
+  assert.match(local.entity_ref.public_key, /^e[1-9]\d*$/u);
+  assert.equal(objects.filter(({ entity_ref: ref }) =>
+    ref?.public_key === local.entity_ref.public_key).length, 1);
+  return local;
+}
+
 test('public Trace first entry provisions fishing camp once; S1 resolves only later',
   { timeout: 300_000 }, async (context) => {
     const environment = await startLowerDvinaProductionAcceptanceEnv({
@@ -67,17 +84,12 @@ test('public Trace first entry provisions fishing camp once; S1 resolves only la
     await environment.restartRoot();
     const reloaded = await get(environment,
       `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
-    const local = reloaded.screen.visible_context.visible_objects.find(
-      ({ entity_ref: ref }) => ref?.entity_kind === 'spatial_local_reference');
-    assert.deepEqual(local, { entity_ref: { entity_kind: 'spatial_local_reference',
-      entity_id: committedResolution.local_ref },
-    display_label: committedResolution.semantics.name,
-    recognition: 'recognized', visible_status: 'замечен' });
+    const local = visibleLocal(reloaded.screen, committedResolution);
+    assert.deepEqual(local, visibleLocal(look.screen, committedResolution),
+      'the saved screen must retain its public key after restart');
     const inspected = await submit(environment, partyId,
       's1-first-entry-inspect-local', 'Осмотреть низкую плетёную загородку.');
-    assert.equal(inspected.screen.visible_context.visible_objects.some(
-      ({ entity_ref: ref }) => ref?.entity_id === committedResolution.local_ref),
-    true);
+    visibleLocal(inspected.screen, committedResolution);
     assert.equal(s1Calls(environment), calls,
       'a reloaded visible local ref must not invoke the S1 model again');
     assert.equal(await resolutionCount(environment, partyId), 1);
@@ -104,8 +116,7 @@ test('public Trace first entry provisions fishing camp once; S1 resolves only la
     await environment.restartRoot();
     const moved = await get(environment,
       `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
-    assert.equal(moved.screen.visible_context.visible_objects.some(
-      ({ entity_ref: ref }) => ref?.entity_id === committedResolution.local_ref), true);
+    visibleLocal(moved.screen, committedResolution, 'внутри');
     assert.equal(JSON.stringify(moved).includes('formal_spatial_refs'), false);
     assert.equal(JSON.stringify(moved).includes('movement_edge_ref'), false);
     assert.equal(await journeyPosition(environment, partyId), afterMove);

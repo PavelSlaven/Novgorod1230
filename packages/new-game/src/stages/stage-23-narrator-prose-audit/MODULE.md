@@ -6,7 +6,7 @@ Audits the Stage 22 player-facing prose against the approved visible-context pac
 - validate the Stage 22 output and immutable digests;
 - run deterministic structural prechecks;
 - invoke semantic auditor, format-repair, senior-auditor and router ports;
-- require semantic literary-composition assessment as well as factual grounding: connect supplied identity/past to present orientation and stake; reject dossier/report/checklist prose and padding without inventing missing context;
+- record semantic literary-composition assessment separately from factual delivery approval: dossier/report/checklist prose remains a literary finding but does not block the first screen when factual, hidden, coverage and technical checks pass;
 - validate audit findings, permissions and repair routes;
 - produce the approved handoff or an upstream repair request.
 

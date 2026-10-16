@@ -27,13 +27,15 @@ import {
 export function phase3SemanticCommitContext({
   writePlan,
   factual,
-  scenarioRevision
+  scenarioRevision,
+  neutralConversation = false
 }) {
   const isConversation = factual.consequence?.conversation != null;
   const semanticExchange = isConversation
     ? factual.consequence.conversation?.semantic_exchange
     : null;
-  if (!Number.isSafeInteger(scenarioRevision) || scenarioRevision < 14) {
+  if (!neutralConversation
+      && (!Number.isSafeInteger(scenarioRevision) || scenarioRevision < 14)) {
     if (semanticExchange != null) {
       fail('TRACE_M2_PHASE_3_SEMANTIC_REVISION_INVALID');
     }

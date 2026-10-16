@@ -19,7 +19,7 @@ function query(focus_refs, overrides = {}) {
     domains: ['biology_physiology'], focus_refs,
     requested_predicates: [], search_hints: [],
     context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'], actor_facets: {} },
-    budget: { max_facts: 24, max_candidates: 24, max_context_chars: 7000 },
+    budget: { max_facts: 24, max_candidates: 24 },
     ...overrides
   });
 }
@@ -44,9 +44,12 @@ test('scientific fauna uses reviewed biological premises, not historical presenc
     });
     assert.ok(local.facts.length > 0, subject);
     assert.deepEqual(local.facts.map(row => row.claim_ref), elsewhere.facts.map(row => row.claim_ref));
-    for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+    for (const purpose of ['conversation', 'narration']) {
       assert.equal(query([subject], { purpose }).facts.length, 0, subject + ':' + purpose);
     }
+    // D15: npc_decision is world machinery — domain_internal_only still admissible.
+    assert.ok(query([subject], { purpose: 'npc_decision' }).facts.length > 0,
+      subject + ':npc_decision');
   }
 });
 

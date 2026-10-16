@@ -40,4 +40,75 @@ test('Phase 6 DTO rejects forged private proposal or v2 snapshot',()=>{const for
 test('Phase 6 DTO re-resolves property and placement from the trusted committed context',()=>{for(const mutate of [(v)=>{v.item.item_proposal.property_placement_evidence.property_basis_ref='forged-property';},(v)=>{v.item.item_proposal.property_placement_evidence.placement.position_ref='forged-position';},(v)=>{v.expected_property_placement_context.placement_catalog[0].position_ref='other-position';}]){const value=data('materialize');mutate(value);assert.throws(()=>createOrdinaryMaterializationAtomicWritePlan(value));}});
 test('Phase 6 property recheck uses the full v2 catalog and rejects a lower authored tier',()=>{const base={schema:'rus.items.ordinary_world_property_placement_context.v2',version:2,scope_ref:{...scope_ref},item_kind:'man_made',property_catalog_version_ref:'property-v2',placement_catalog_version_ref:'placement-v2',explicit_item_source_refs:['source-item'],personal_possession_refs:['person'],communal_public_service_refs:[],container_property_refs:[],occupied_site_refs:['site'],unowned_cause_refs:[],placement_context_refs:['placement-context'],property_catalog:[{property_basis_ref:'explicit',state:'committed',scope_ref:{...scope_ref},basis_class:'explicit_source_item',source_ref:'source-item',unowned_cause_ref:null,unowned_cause_kind:null},{property_basis_ref:'site-property',state:'committed',scope_ref:{...scope_ref},basis_class:'occupied_site_default',source_ref:'site',unowned_cause_ref:null,unowned_cause_kind:null}],placement_catalog:[{position_ref:'position',state:'committed',scope_ref:{...scope_ref},position_kind:'scene_position',g6_ref:'scope',containment_depth:1,placement_context_ref:'placement-context'}]},args={supporting_basis_ref:'source-item',causal_basis_refs:['source-item'],requested_position_ref:'position'},winner=resolveOrdinaryWorldPropertyPlacement({...base,...args}).evidence,lower=resolveOrdinaryWorldPropertyPlacement({...base,...args,explicit_item_source_refs:[],personal_possession_refs:[],property_catalog:[base.property_catalog[1]]}).evidence,item={supporting_basis_ref:'source-item',causal_basis_refs:['source-item'],position_ref:'position',item_proposal:{property_placement_evidence:winner}};assert.equal(propertyPlacementEvidenceMatches({base,item}),true);item.item_proposal.property_placement_evidence=lower;assert.equal(propertyPlacementEvidenceMatches({base,item}),false);});
 test('Phase 6 DTO rejects unknown, query-conditioned and cross-scope supporting bases',()=>{for(const mutate of [(v)=>{v.next_supporting_basis_catalog[0].basis_ref='unknown';},(v)=>{v.next_supporting_basis_catalog[0].prepared_seed_provenance={seed_request_id:'seed',mode:'seed_scope',candidate_query:'forbidden'};},(v)=>{v.next_supporting_basis_catalog[0].scope_ref.entity_id='other';}]){const value=data('materialize');mutate(value);assert.throws(()=>createOrdinaryMaterializationAtomicWritePlan(value));}});
+
+test('P1-3: seed-only plan accepts aggregate after presence-rule preamble without O1 rows', () => {
+  const absent = data('absent');
+  const seeded = applyOrdinaryAggregateTransition({
+    aggregate: createOrdinaryAggregate({ scope_ref, resolution_record_cap: 8 }),
+    transition: {
+      kind: 'resolve_presence_rule',
+      request_identity: 'presence-only',
+      expected_state_version: 0,
+      subject_kind: 'category',
+      subject_ref: 'cat_a',
+      subcategory_ref: null,
+      count: 0,
+      rule_ref: 'pr_empty@1',
+      discovery_mode: 'exposed',
+      scope_instance_ref: 'g5:site',
+      period_number: null,
+    },
+  });
+  const seedTransition = {
+    kind: 'seed',
+    request_identity: 'seed-after-presence',
+    expected_state_version: 1,
+    density_band: 'sparse',
+    identity_budget: 0,
+    background_groups: [],
+  };
+  const next_aggregate = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: seedTransition });
+  const plan = createOrdinaryMaterializationAtomicWritePlan({
+    ...absent,
+    request_identity: 'seed-after-presence',
+    input_digest: 'input',
+    transition_digest: canonicalDigest(seedTransition),
+    expected_versions: {
+      ...absent.expected_versions,
+      ordinary_state_version: 1,
+    },
+    resolution: 'no_change',
+    transitions: [seedTransition],
+    next_aggregate,
+    item: null,
+  });
+  assert.equal(plan.resolution, 'no_change');
+});
+
+test('P1-3: seed-only plan rejects aggregate that already contains O1 presence rows', () => {
+  const absent = data('absent');
+  const seedOnly = {
+    kind: 'seed',
+    request_identity: 'seed-only-with-o1',
+    expected_state_version: absent.next_aggregate.state_version,
+    density_band: 'sparse',
+    identity_budget: 0,
+    background_groups: [],
+  };
+  assert.throws(() => createOrdinaryMaterializationAtomicWritePlan({
+    ...absent,
+    request_identity: 'seed-only-with-o1',
+    input_digest: 'input',
+    transition_digest: canonicalDigest(seedOnly),
+    expected_versions: {
+      ...absent.expected_versions,
+      ordinary_state_version: absent.next_aggregate.state_version,
+    },
+    resolution: 'no_change',
+    transitions: [seedOnly],
+    next_aggregate: absent.next_aggregate,
+    item: null,
+  }), (error) => error.code === 'ORDINARY_PHASE6_TRANSITION_INVALID'
+    && String(error.message).includes('seed_presence'));
+});
 test('Phase 6 coordinator calls model before exact reread and atomic commit',async()=>{let reads=0,modelled=false;const coordinator=createOrdinaryMaterializationPhase6Coordinator({loadCommitted:async()=>{reads+=1;return{version_pins:{v:1}};},buildSanitizedRequest:async()=>({}),model:async()=>{modelled=true;return{};},validate:async()=>({}),admit:async()=>({}),buildPurePlan:async()=>{assert.equal(modelled,true);assert.equal(reads,2);return'plan';},atomicCommit:async(plan)=>{assert.equal(plan,'plan');return'ok';}});assert.equal(await coordinator.execute({}),'ok');});

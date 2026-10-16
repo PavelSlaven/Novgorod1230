@@ -260,3 +260,5 @@ function requiredPositiveInteger(value, path) { if (!Number.isInteger(value) || 
 function requiredNonnegativeInteger(value, path) { if (!Number.isInteger(value) || value < 0) throw stage24BuildError('WRITE_PLAN_APPROVED_VALUE_MISSING', `${path} nonnegative integer is required.`); return value; }
 function assertRequiredText(value, keys, code) { const missing = keys.filter((key) => !String(value?.[key] ?? '').trim()); if (missing.length) throw stage24BuildError(code, `Missing required values: ${missing.join(', ')}.`); }
 function stage24BuildError(code, message) { return Object.assign(new Error(message), { code }); }
+export { approvedNpcBodyRows, approvedNpcConditionRows } from './actor-write-boundary.js';
+export { initialNpcRoutineRecords } from './npc-routine-schedules.js';

@@ -33,7 +33,7 @@ export async function buildPartyRuntimeSchemaReference({ root = '.' } = {}) {
     }
   }
   const lines = [
-    '<!-- GENERATED FILE. Sources: schemas/party-db/001–033, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->',
+    `<!-- GENERATED FILE. Sources: schemas/party-db/${SPATIAL_V3_TARGET_MIGRATION_FILES[0].slice(0, 3)}–${SPATIAL_V3_TARGET_MIGRATION_FILES.at(-1).slice(0, 3)}, ordered by the game-server migration manifest. Run \`npm run docs:generate\`; do not edit manually. -->`,
     '# Справочник схемы `party_runtime`',
     '',
     `- Исполняемый источник: ${SPATIAL_V3_TARGET_MIGRATION_FILES.length} упорядоченных SQL-миграций в \`${SOURCE}/\`.`,

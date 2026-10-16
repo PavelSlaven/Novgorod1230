@@ -1,0 +1,24 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {"schema":"world_knowledge_source_v1","source_ref":"source:candidate-cdc-parasites-about","title":"About Parasites","authors":["Centers for Disease Control and Prevention"],"publication":"CDC Parasites","source_kind":"official_documentation","citation":"https://www.cdc.gov/parasites/about/index.html","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:candidate-life-parasite","source_ref":"source:candidate-cdc-parasites-about","anchor":{"section":"About Parasites"},"note":"Parasites are organisms that live on or in a host and may cause disease. No organism, exposure, infection, symptom, diagnosis or outcome is established.","review_status":"approved"}
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:candidate-parasite-host-relation","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection","domain":"biology_physiology","subject_ref":"wk:biology_physiology:candidate-parasite-host-relation","predicate":"supported_fact","object":{"kind":"literal","value":"a_parasite_can_live_on_or_in_a_host_and_may_cause_disease_without_establishing_presence_exposure_infection_or_diagnosis"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:candidate-life-parasite"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:candidate-parasite-host-relation","locale":"ru","labels":["Паразит и хозяин"],"short_definition":"Общая связь паразита с хозяином и возможной болезнью.","search_aliases":["паразит","хозяин","паразитарная болезнь"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:candidate-parasite-host-relation","locale":"en","labels":["Parasite and host"],"short_definition":"General relation between a parasite, its host and possible disease.","search_aliases":["parasite","host","parasitic disease"]}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection","locale":"ru","runtime_text":"Паразит может жить на хозяине или в нём и вызывать болезнь, но это не устанавливает наличие, воздействие, инфекцию или диагноз в сцене.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection","locale":"en","runtime_text":"A parasite can live on or in a host and may cause disease, but this establishes no presence, exposure, infection or diagnosis in a scene.","search_aliases":[]}
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "rus.m2c_people_d61_candidate_bundle.v1",
+  "bundle_id": "novgorod_m2c_people_d61_candidate",
+  "status": "candidate_approval_pending",
+  "non_operational": true,
+  "import_authorized": false,
+  "runtime_activation_authorized": false,
+  "source_candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/candidate-source.json",
+    "sha256": "3e301f74351dd1e8bc85cf954824e511976af2c43eb04f076e7361ffb54f0df1",
+    "approval_path": "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/approval-draft.json",
+    "approval_sha256": "fc9085559b3180c769d582f01fdc22d4dfd018a9dc4d02622d131fe6526c5b76",
+    "resign_required": true
+  },
+  "source_base_path": "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/source-base.json",
+  "base_operational_manifest_sha256": "1e7afc2255a28e4c40c6e34901ea4f87ee24537f9621b8bcc3e74c6366f28dd2",
+  "datasets": [
+    {
+      "file": "spatial_v3_npc_runtime_profiles.json",
+      "row_count": 2,
+      "sha256": "eba1bf5b95908f8e80304fa8b02feb3da0a4b08ac7ebf51097fd60362c0a9954"
+    },
+    {
+      "file": "spatial_v3_g4_npc_composition_bindings.json",
+      "row_count": 8,
+      "sha256": "429c3662910e810b2c7f92ade2373563caa27f9efa85657f06bf95a69e5dc543"
+    },
+    {
+      "file": "spatial_v3_authoring_versions.json",
+      "row_count": 10,
+      "sha256": "06a34cdc8fe0b834222b677213afa62e502ec5528d89d753d47f2087f85cd813"
+    }
+  ],
+  "limits": [
+    "Review only; candidate bundle is not referenced by the v17 bootstrap or operational import manifest.",
+    "Foreign merchant @2 and its female clothing variants remain unchanged; this bundle contains a pending @3 successor and eight G4 refs.",
+    "Do not import or activate until independent approval explicitly authorizes that stage."
+  ]
+}

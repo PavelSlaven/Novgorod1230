@@ -11,18 +11,16 @@ const gameplayNarrationRoles = {
 };
 
 for (const [roleId, [outputContractMode, expectedSchema, requestTimeoutMs]] of Object.entries(gameplayNarrationRoles)) {
-  test(`${roleId} uses Flash without reasoning`, () => {
+test(`${roleId} uses the role model without reasoning`, () => {
     const resolution = resolveLlmExecutionConfig({
       scope: 'turn_runtime',
       roleId,
       env: {
-        DEEPSEEK_API_KEY: 'test',
-        DEEPSEEK_MODEL: 'deepseek-chat',
-        DEEPSEEK_BASE_URL: 'http://127.0.0.1:1'
+        LLM_BASE_URL: 'http://127.0.0.1:1'
       }
     });
     assert.equal(resolution.enabled, true);
-    assert.equal(resolution.config.model, 'deepseek-v4-flash');
+    assert.equal(resolution.config.model, 'qwen3.8-27b-uncensored-w4a16-tp2');
     assert.deepEqual(resolution.config.thinking, { type: 'disabled' });
     assert.equal(resolution.config.reasoningEffort, null);
     assert.equal(resolution.config.parseJson, true);

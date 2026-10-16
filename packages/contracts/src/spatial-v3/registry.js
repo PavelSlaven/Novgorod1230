@@ -27,7 +27,7 @@ export {
 
 export const SPATIAL_V3_BASELINE_CONTRACT_VERSION = '4.2.0-target.1';
 export const SPATIAL_V3_TEMPORAL_BASELINE_CONTRACT_VERSION = '4.3.0-target.1';
-export const SPATIAL_V3_CONTRACT_VERSION = '4.5.0-target.1';
+export const SPATIAL_V3_CONTRACT_VERSION = '4.7.0-target.1';
 export const SPATIAL_V3_SUPPORTED_CONTRACT_VERSIONS = Object.freeze([
   SPATIAL_V3_BASELINE_CONTRACT_VERSION,
   SPATIAL_V3_TEMPORAL_BASELINE_CONTRACT_VERSION,
@@ -41,8 +41,8 @@ export const contractSpecifications = Object.freeze(specificationsDocument.speci
   identity: Object.freeze(specification.identity),
   invariants: Object.freeze(specification.invariants)
 })));
-if (specificationsDocument.source_version !== SPATIAL_V3_CONTRACT_VERSION || contractSpecifications.length !== 225) {
-  throw new Error(`Spatial target contract artifact must be ${SPATIAL_V3_CONTRACT_VERSION} with 225 declarations.`);
+if (specificationsDocument.source_version !== SPATIAL_V3_CONTRACT_VERSION || contractSpecifications.length !== 228) {
+  throw new Error(`Spatial target contract artifact must be ${SPATIAL_V3_CONTRACT_VERSION} with 228 declarations.`);
 }
 const specificationByName = Object.freeze(Object.fromEntries(contractSpecifications.map((specification) => [specification.contract_name, specification])));
 const CONTRACT_NAMES = contractSpecifications.map(({ contract_name }) => contract_name);
@@ -331,8 +331,8 @@ function defaultRetryability(errorCode) {
 
 const typedErrorCodes = typedErrorDocument.errors.map(({ error_code }) => error_code);
 if (new Set(typedErrorCodes).size !== typedErrorCodes.length) throw new Error('Duplicate spatial typed-error declaration.');
-if (typedErrorDocument.source_version !== SPATIAL_V3_CONTRACT_VERSION || typedErrorCodes.length !== 82) {
-  throw new Error(`Spatial typed-error artifact must be ${SPATIAL_V3_CONTRACT_VERSION} with 82 declarations.`);
+if (typedErrorDocument.source_version !== SPATIAL_V3_CONTRACT_VERSION || typedErrorCodes.length !== 86) {
+  throw new Error(`Spatial typed-error artifact must be ${SPATIAL_V3_CONTRACT_VERSION} with 86 declarations.`);
 }
 export const typedErrorDefinitions = Object.freeze(typedErrorDocument.errors.map((error) => Object.freeze({
   ...error,

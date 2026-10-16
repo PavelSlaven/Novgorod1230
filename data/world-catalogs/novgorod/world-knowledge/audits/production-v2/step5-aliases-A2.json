@@ -1,0 +1,226 @@
+[
+ {
+  "need_id": "ACT-01-n4",
+  "target_ref": "claim:population-joining-steel-quench",
+  "target_kind": "claim",
+  "add_aliases_ru": ["закалка железа", "мягкое кричное железо", "лезвие без стали гнётся", "железо без стали не закаляется"],
+  "note": "ближайший кандидат в паке про закалку стали; конкретно про мягкое бесуглеродистое железо и сравнение с лезвием без стали claim не говорит — уточнение только через доп. aliases"
+ },
+ {
+  "need_id": "WLD-06-n4",
+  "target_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+  "target_kind": "claim",
+  "add_aliases_ru": ["угар в бане", "угорел рано закрыл печь", "угарный газ в бане", "надышаться угаром"],
+  "note": "родственный claim:research-fuel-combustion-can-produce-carbon-monoxide тоже релевантен этому need, но выбран как основной этот — он про накопление в помещении при раннем закрытии"
+ },
+ {
+  "need_id": "ACT-08-n3",
+  "target_ref": "claim:population-physics-floating-shape",
+  "target_kind": "claim",
+  "add_aliases_ru": ["долблёнка тяжёлая", "вытащить лодку на берег", "волочить лодку по каткам"],
+  "note": "общая физика веса/объёма для плавучести есть, конкретная масса долблёнки и волочение по каткам источником не заданы"
+ },
+ {
+  "need_id": "WLD-09-n1",
+  "target_ref": "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
+  "target_kind": "claim",
+  "add_aliases_ru": ["просушить перед горном", "сырое перед плавкой"],
+  "note": "только аналогия (сушка угля перед горном), не про залегание болотной руды под дёрном; про саму руду источника нет — need по руде остаётся no_source для отдельного claim"
+ },
+ {
+  "need_id": "ACT-10-n3",
+  "target_ref": "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
+  "target_kind": "claim",
+  "add_aliases_ru": ["сырой трут не загорится", "хранить трут сухим", "трут в коробочке"],
+  "note": "аналогия с сушёными травами, не про трут конкретно"
+ },
+ {
+  "need_id": "WLD-10-n2",
+  "target_ref": "claim:population-iron-hook",
+  "target_kind": "claim",
+  "add_aliases_ru": ["подлёдный лов", "зимняя рыбалка на крючок", "рыбак у проруби"],
+  "note": "claim:population-net-work и claim:fauna-pike-spawning тоже кандидаты для этой сцены (сети, нерест щуки); верши и виды рыб лещ/окунь/ёрш/налим/судак/сиг источником не заданы"
+ },
+ {
+  "need_id": "WLD-11-n4",
+  "target_ref": "claim:household-ploughshare-tillage",
+  "target_kind": "claim",
+  "add_aliases_ru": ["пашут сохой", "соха с сошниками", "смерд пашет поле"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-13-n2",
+  "target_ref": "claim:vegetable-tanning-prepared-hide",
+  "target_kind": "claim",
+  "add_aliases_ru": ["сапожник шьёт обувь", "поршни башмаки сапоги", "выворотный пошив обуви"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-15-n1",
+  "target_ref": "claim:population-stone-weight",
+  "target_kind": "claim",
+  "add_aliases_ru": ["грузило для сети", "поплавок из бересты", "верша из прутьев", "невод"],
+  "note": "claim:population-iron-hook тоже кандидат (крючки); верша и невод прямо в пакете отдельным claim не найдены"
+ },
+ {
+  "need_id": "WLD-15-n2",
+  "target_ref": "claim:practical-boat-weather-water",
+  "target_kind": "claim",
+  "add_aliases_ru": ["долблёный челн", "набойная лодка", "вёсла лодка рыбака"],
+  "note": null
+ },
+ {
+  "need_id": "ACT-16-n1",
+  "target_ref": "claim:residual-nature-snow-melt-refreeze-crust",
+  "target_kind": "claim",
+  "add_aliases_ru": ["лось проваливается в снег", "охота на лыжах на лося", "наст режет ноги лосю"],
+  "note": null
+ },
+ {
+  "need_id": "ACT-20-n2",
+  "target_ref": "claim:research-cold-water-immersion-can-impair-muscle-control",
+  "target_kind": "claim",
+  "add_aliases_ru": ["провалился под лёд", "перерезать гужи", "лошадь тонет в полынье"],
+  "note": "claim:candidate-physiology-v3-drowning-respiratory-impairment тоже релевантен этой сцене"
+ },
+ {
+  "need_id": "WLD-20-n1",
+  "target_ref": "claim:ha-firesteel-ignition",
+  "target_kind": "claim",
+  "add_aliases_ru": ["огниво кремень трут", "высечь огонь кресалом", "нет спичек"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-20-n3",
+  "target_ref": "claim:transport-winter-sledge-1220",
+  "target_kind": "claim",
+  "add_aliases_ru": ["ездить на санях по льду", "ночевать в избе в дороге", "ночлег у костра в поле"],
+  "note": null
+ },
+ {
+  "need_id": "ACT-21-n2",
+  "target_ref": "claim:clothing-sheepskin-kozhukh",
+  "target_kind": "claim",
+  "add_aliases_ru": ["кожух шуба зимой", "меховая шапка рукавицы", "ночлег в погосте"],
+  "note": "нодья (долгий костёр из брёвен) отдельным claim в пакете не покрыта"
+ },
+ {
+  "need_id": "ACT-22-n2",
+  "target_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+  "target_kind": "claim",
+  "add_aliases_ru": ["увяз в трясине", "выбраться из болота", "изнеможение в холодной трясине"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-22-n1",
+  "target_ref": "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+  "target_kind": "claim",
+  "add_aliases_ru": ["санный путь по льду", "вешки на льду", "зимняя дорога по реке"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-22-n3",
+  "target_ref": "claim:fauna-mammals-wolf-pack-sociality",
+  "target_kind": "claim",
+  "add_aliases_ru": ["волки зимой в пути", "стая волков", "опасность волков на дороге"],
+  "note": "про полыньи у устий и родников claim в пакете не найден"
+ },
+ {
+  "need_id": "WLD-22-n4",
+  "target_ref": "claim:r7-possibly-frozen-body-part-needs-protection-from-further-cold-and-rough-warming-avoidance",
+  "target_kind": "claim",
+  "add_aliases_ru": ["мороз щиплет лицо и пальцы", "обморозить лицо в пути"],
+  "note": null
+ },
+ {
+  "need_id": "ACT-23-n2",
+  "target_ref": "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+  "target_kind": "claim",
+  "add_aliases_ru": ["плыть против течения Волхова", "догнать лодку вплавь", "сильное течение реки"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-23-n1",
+  "target_ref": "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+  "target_kind": "claim",
+  "add_aliases_ru": ["Ильмень мелкое озеро", "короткая крутая волна", "ветер поднимает волну на Ильмене"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-23-n2",
+  "target_ref": "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+  "target_kind": "claim",
+  "add_aliases_ru": ["гроза над Ильменем", "духота перед грозой", "внезапный шквал"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-24-n2",
+  "target_ref": "claim:fauna-tawny-owl-hearing",
+  "target_kind": "claim",
+  "add_aliases_ru": ["уханье совы ночью", "ночные звуки в деревне"],
+  "note": "лай собак, фырканье лошадей, коростель и «без огня в избах» отдельными claim не покрыты"
+ },
+ {
+  "need_id": "WLD-24-n3",
+  "target_ref": "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
+  "target_kind": "claim",
+  "add_aliases_ru": ["пожар в овине", "снопы сушат огнём"],
+  "note": null
+ },
+ {
+  "need_id": "SOC-25-n2",
+  "target_ref": "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+  "target_kind": "claim",
+  "add_aliases_ru": ["моются щёлоком", "зола для мытья", "щёлок из золы"],
+  "note": "claim:bathing-house-heating-before-washing тоже релевантен; «твёрдого мыла в быту нет» отдельно claim не сформулирован"
+ },
+ {
+  "need_id": "WLD-25-n1",
+  "target_ref": "claim:vegetable-tanning-collagen-stabilization",
+  "target_kind": "claim",
+  "add_aliases_ru": ["кожевня у воды", "золят шкуры", "мездрят шкуры", "дубят в чанах корой"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-25-n2",
+  "target_ref": "claim:r7-poorly-ventilated-animal-housing-can-have-irritating-air-from-manure-and-urine",
+  "target_kind": "claim",
+  "add_aliases_ru": ["запах кожевни", "моча для мягчения кожи", "кислый дух дубильного раствора"],
+  "note": null
+ },
+ {
+  "need_id": "SOC-31-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: сцена про весну голодного 1230/1231 года — по инструкции голод 1230-1231 не трогаем в этой задаче, это отдельный шаг"
+ },
+ {
+  "need_id": "WLD-31-n2",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: в пакете нет claim про весенний ледоход и повреждение моста льдинами (проверено лексическим поиском и --grep по «ледоход»/«лёд»/«мост»)"
+ },
+ {
+  "need_id": "WLD-32-n3",
+  "target_ref": "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+  "target_kind": "claim",
+  "add_aliases_ru": ["искры от металла в кузнице", "окалина летит при сварке"],
+  "note": "только про окалину/золу от кузнечной работы; цвет каления от вишнёвого до белого источником не задан — not_source для этой части"
+ },
+ {
+  "need_id": "WLD-35-n2",
+  "target_ref": "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+  "target_kind": "claim",
+  "add_aliases_ru": ["ручные жернова", "мелют муку вручную", "водяная мельница редкость"],
+  "note": null
+ },
+ {
+  "need_id": "WLD-38-n3",
+  "target_ref": null,
+  "target_kind": null,
+  "add_aliases_ru": [],
+  "note": "not_found: есть только общий региональный контекст (claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context — Волхов/Ильмень/лес/пойменные луга), про низкие берега и видимость противоположного берега конкретики нет"
+ }
+]

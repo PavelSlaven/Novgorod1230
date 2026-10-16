@@ -154,8 +154,8 @@ function mergeRisk(edges, forceUnknown = false) {
   return freeze({ ...value, canonical_digest: digest(value) });
 }
 
-function optionFromPath(query, path, snapshots, factualTarget, targetPins, optionOrdinal) {
-  const readiness = path.find((edge) => edge.readiness !== 'ready')?.readiness ?? 'ready';
+function optionFromPath(query, path, snapshots, factualTarget, targetPins, optionOrdinal, missingMethods = []) {
+  const readiness = missingMethods.length ? 'temporarily_blocked' : path.find((edge) => edge.readiness !== 'ready')?.readiness ?? 'ready';
   const visibility = path.at(-1)?.knowledge_visibility ?? (query.knowledge_scope === 'character_known' ? 'visible' : 'hidden');
   const firstBlocking = path.find((edge) => edge.readiness !== 'ready');
   const base = {
@@ -179,7 +179,9 @@ function optionFromPath(query, path, snapshots, factualTarget, targetPins, optio
   }
   const proposal = firstBlocking?.command_proposal ?? null;
   const severity = readiness === 'temporarily_blocked' ? 'temporary' : readiness === 'data_gap' ? 'hard_block' : null;
-  const reasons = firstBlocking?.blocking_reasons ?? (severity ? [{ reason_code: readiness === 'data_gap' ? 'route_contract_missing' : 'temporarily_blocked', severity, diagnostic_message: 'Planning cannot continue.' }] : []);
+  // Appendix C code of the standard; the missing method rides in the diagnostic. Temporary edge reasons stay.
+  const methodReasons = missingMethods.map((method) => ({ reason_code: 'movement_capability_missing', severity: 'temporary', diagnostic_message: `requires_method:${method}` }));
+  const reasons = missingMethods.length ? [...path.filter((edge) => edge.readiness === 'temporarily_blocked').flatMap((edge) => edge.blocking_reasons), ...methodReasons] : firstBlocking?.blocking_reasons ?? (severity ? [{ reason_code: readiness === 'data_gap' ? 'route_contract_missing' : 'temporarily_blocked', severity, diagnostic_message: 'Planning cannot continue.' }] : []);
   const option = { ...base, executable: false, blocking_reasons: reasons, steps: [], topology_command_proposal: readiness === 'requires_frontier_resolution' ? proposal : null, preparation_command_proposal: readiness === 'requires_preparation' ? proposal : null };
   return freeze({ ...option, canonical_digest: digest(option) });
 }
@@ -217,7 +219,13 @@ export function createMovementPlanner({ resolveKnowledgeTarget, loadTopology, sn
     const options = [];
     for (let index = 0; index < candidates.length; index += 1) {
       const path = candidates[index]; const snapshots = [];
-      if (path.some((edge) => edge.step_kind === 'timed_traversal' && !request.capability_context.allowed_movement_methods.includes(edge.static_contract_snapshot.traversal_snapshot.selected_movement_method_id))) return failure('movement_capability_missing', request.party_id, { request_id: request.request_id, reason: 'selected traversal method is absent from capability context' });
+      // A method the actor does not have blocks this option only; the other paths stay in the menu.
+      const missingMethods = [...new Set(path.filter((edge) => edge.step_kind === 'timed_traversal').map((edge) => edge.static_contract_snapshot.traversal_snapshot.selected_movement_method_id).filter((method) => !request.capability_context.allowed_movement_methods.includes(method)))];
+      // A hard data gap of the path itself outranks the method: it stays what it is (optionFromPath).
+      if (missingMethods.length && !path.some((edge) => edge.readiness === 'data_gap')) {
+        if (!factualTarget || matchesTarget(path.at(-1).to_endpoint_ref, factualTarget)) options.push(optionFromPath(request, path, [], factualTarget, targetPins, index, missingMethods));
+        continue;
+      }
       for (const endpoint of [request.start_endpoint_ref, ...path.map((edge) => edge.to_endpoint_ref)]) {
         const value = await snapshotEndpoint(freeze({ endpoint_ref: endpoint, party_id: request.party_id, expected_state_versions: request.expected_state_versions }));
         const snapshot = endpointSnapshot(endpoint, value?.snapshot ?? value);

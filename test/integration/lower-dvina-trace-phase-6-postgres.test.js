@@ -14,8 +14,6 @@ import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-s
 import { createLowerDvinaTracePhase2DurableNarrator } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { firstPlayableCommitRecheck } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
-import { loadLowerDvinaTraceMaterializationBundle } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
-import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
@@ -28,7 +26,9 @@ import { createM2ConversationModels } from
   '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
 import { createLowerDvinaTraceTurnStepTestModel } from
   '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
-import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
+import { TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-revision-26-publication.js';
+import { installLowerDvinaTraceV6World, lowerDvinaTraceV6World as world } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
@@ -38,16 +38,17 @@ test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks
   const name = `lower-dvina-phase-6-${process.pid}`;
   let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
-  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase6', '-e', 'POSTGRES_DB=phase6', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase6', '-e', 'POSTGRES_DB=pr17_phase6', 'postgres:16-alpine']).status, 0);
   await waitForPostgres(name, 'phase6');
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
-  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase6', password: 'local_only', database: 'phase6', max: 8 });
-  await installSchemas(pool); await installLowerDvinaTraceV5World(pool);
-  const pins = await runtimePins();
+  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase6', password: 'local_only', database: 'pr17_phase6', max: 8 });
+  await installSchemas(pool);
+  const { runtimeCatalogPin } = await installLowerDvinaTraceV6World(pool);
+  const pins = await runtimePins(runtimeCatalogPin);
 
   const counters = { rng_factories: 0, rng_draws: 0, now: 0 };
   const runtime = buildRuntime({ pool, ...pins, counters });
-  const party = await readyParty(runtime, 'terminal');
+  const party = await readyParty(pool, runtime, 'terminal');
   const checkpoint = await snapshot(pool, party.party_id);
   assert.deepEqual(body(checkpoint), [79, 37, 58], 'Phase 5 checkpoint for Mikula');
   const released = await assertReleasedSupportResources(
@@ -91,7 +92,7 @@ test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks
   await assertSameTimeHazardCascade(pool, pins);
 
   const rollbackRuntime = buildRuntime({ pool, ...pins });
-  const rollbackParty = await readyParty(rollbackRuntime, 'rollback');
+  const rollbackParty = await readyParty(pool, rollbackRuntime, 'rollback');
   const rollbackBefore = await snapshot(pool, rollbackParty.party_id);
   await pool.query(`ALTER TABLE party_runtime.party_actor_body_states ADD CONSTRAINT phase6_terminal_rollback_probe CHECK (energy <> 35) NOT VALID`);
   try {
@@ -103,10 +104,7 @@ test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks
   assert.equal(await phase6RouteExecutionCount(pool, rollbackParty.party_id), 0);
 });
 
-async function runtimePins() {
-  const bundle = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 12 });
-  const source = lowerDvinaTracePhase1ADomainPin(bundle);
-  const runtimeCatalogPin = Object.freeze({ ...source, compatible_world_revision_id: world.revision, compatible_world_catalog_digest: world.digest, compatible_world_pin_manifest_digest: world.manifest });
+async function runtimePins(runtimeCatalogPin) {
   return { runtimeCatalogPin, release: Object.freeze({ release_id: 'phase-6-postgres-release', world_revision_id: world.revision, world_catalog_digest: world.digest, compatible_world_pin_manifest_digest: world.manifest }) };
 }
 function buildRuntime({ pool, release, runtimeCatalogPin, counters = null,
@@ -126,7 +124,9 @@ function buildRuntime({ pool, release, runtimeCatalogPin, counters = null,
     narrator: createLowerDvinaTracePhase2DurableNarrator({ partyPool: pool, narrationService: { async run(request) { return narration(request.request_id); } } }),
     randomSourceFactory: ({ request_id }) => { if (counters) counters.rng_factories += 1; const source = createSeededRandomSource(`phase-6:${request_id}`); return { next: () => { if (counters) counters.rng_draws += 1; return 0.99; }, snapshot: () => source.snapshot() }; },
     npcDecisionSelector: async (request) => { const selected = request.options.find(({ option_id }) => option_id === (request.options.some(({ option_id }) => option_id === 'surrender_without_confession') ? 'surrender_without_confession' : 'accept_first_aid')); assert.ok(selected); return { request_id: request.request_id, state_version: request.state_version, option_id: selected.option_id, command_token: selected.command_token }; }, decisionSecret: 'phase-6-postgres-secret', temporalAdvanceOwner: phase6TemporalOwner(temporalBoundaryResolver), now: () => { if (counters) counters.now += 1; return '2026-07-30T08:00:00.000Z'; } });
-  return createLowerDvinaTracePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
+  return createLowerDvinaTracePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin,
+    activePhase1AManifestDigest: TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST,
+    activeScenarioDefinitionRevision: 26, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
 }
 function phase6TemporalOwner(resolve) {
   const source = (source_kind, ruleId, policyId) => ({
@@ -182,7 +182,7 @@ function resolvedEventProposal(candidate, projection) {
 }
 function option(raw, options) { const text = raw.toLowerCase(); const id = text.includes('осмотр') ? 'inspect_wreck_in_detail' : text.includes('показ') ? 'show_clue_and_seek_eremey_cooperation' : text.includes('сушиль') ? 'follow_known_route_to_drying_shed' : text.includes('доставить') || text.includes('носил') || text.includes('отнести') ? 'make_stretcher_and_carry_onisim_to_camp' : text.includes('стан') ? 'follow_path_to_fishing_camp' : text.includes('помощ') ? 'attempt_risky_first_aid_onisim' : 'offer_conditional_protection_and_seek_surrender'; assert.ok(options.some(({ option_id }) => option_id === id), `${id}: ${options.map(({ option_id }) => option_id)}`); return id; }
 function turn(request_id, raw_text) { return { request_id, idempotency_key: request_id, raw_text }; }
-async function readyParty(runtime, id) {
+async function readyParty(pool, runtime, id) {
   let party;
   try {
     party = await runtime.startNewGame({
@@ -195,8 +195,24 @@ async function readyParty(runtime, id) {
     throw error;
   }
   await runtime.acknowledgeOpening(party.party_id, { client_ack_id: `phase-6-${id}-ack` });
-  for (const [suffix, text] of [['inspect', 'Осмотреть место крушения подробно.'], ['camp', 'Дойти до рыбацкого стана.'], ['clue', 'Показать Еремею синюю шерсть.'], ['route', 'Пройти известной тропой к старой сушильне.'], ['surrender', 'Предложить Ратше условную защиту и потребовать сдачи.'], ['treatment', 'Оказать Онисиму первую помощь.']]) await runtime.submitTurn(party.party_id, turn(`${id}-${suffix}`, text));
+  for (const [suffix, text] of [['inspect', 'Осмотреть место крушения подробно.'], ['camp', 'Дойти до рыбацкого стана.'], ['clue', 'Показать Еремею синюю шерсть.'], ['route', 'Пройти известной тропой к старой сушильне.'], ['surrender', 'Предложить Ратше условную защиту и потребовать сдачи.'], ['treatment', 'Оказать Онисиму первую помощь.']]) {
+    await runtime.submitTurn(party.party_id, turn(`${id}-${suffix}`, text));
+    if (suffix === 'route') await assertActiveRoutePosition(pool, party.party_id);
+  }
   return party;
+}
+async function assertActiveRoutePosition(pool, partyId) {
+  const positionId = (await snapshot(pool, partyId)).position.position_id;
+  assert.equal(typeof positionId, 'string');
+  const { rows } = await pool.query(
+    `SELECT count(*)::int AS count
+       FROM party_runtime.scene_position_nodes pos
+       JOIN party_runtime.party_g6_instances g6
+         ON g6.party_id=pos.party_id AND g6.id=pos.g6_instance_id
+      WHERE pos.party_id=$1 AND pos.id=$2
+        AND pos.status='active' AND g6.status='active'`,
+    [partyId, positionId]);
+  assert.equal(rows[0].count, 1);
 }
 async function assertTerminal(pool, partyId, before, expectedAttempts = 1) {
   const state = await snapshot(pool, partyId);
@@ -219,7 +235,7 @@ async function assertTerminal(pool, partyId, before, expectedAttempts = 1) {
   assert.equal(await phase6TerminalEffectCount(pool, partyId), 1);
 }
 async function assertInterruptedResume(pool, pins) {
-  const counters = { rng_factories: 0, rng_draws: 0, now: 0 }; const runtime = buildRuntime({ pool, ...pins, counters }); const party = await readyParty(runtime, 'interrupted'); const before = await snapshot(pool, party.party_id);
+  const counters = { rng_factories: 0, rng_draws: 0, now: 0 }; const runtime = buildRuntime({ pool, ...pins, counters }); const party = await readyParty(pool, runtime, 'interrupted'); const before = await snapshot(pool, party.party_id);
   await insertBoundary(pool, before, 5);
   await runtime.submitTurn(party.party_id, turn('phase-6-paused', 'Сделать носилки и отнести Онисима в стан.'));
   const paused = await snapshot(pool, party.party_id);
@@ -247,7 +263,7 @@ async function assertInterruptedResume(pool, pins) {
 async function assertInterruptedAfterRebindResume(pool, pins) {
   const counters = { rng_factories: 0, rng_draws: 0, now: 0 };
   const runtime = buildRuntime({ pool, ...pins, counters });
-  const party = await readyParty(runtime, 'interrupted-after-rebind');
+  const party = await readyParty(pool, runtime, 'interrupted-after-rebind');
   const before = await snapshot(pool, party.party_id);
   await insertBoundary(pool, before, 12);
   await runtime.submitTurn(party.party_id, turn('phase-6-paused-after-rebind',
@@ -324,7 +340,7 @@ async function assertSameTimeHazardCascade(pool, pins) {
   };
   const runtime = buildRuntime({ pool, ...pins,
     temporalBoundaryResolver: resolver });
-  const party = await readyParty(runtime, 'same-time-hazard');
+  const party = await readyParty(pool, runtime, 'same-time-hazard');
   partyId = party.party_id;
   const before = await snapshot(pool, partyId);
   await insertBoundary(pool, before, 10);
@@ -357,7 +373,7 @@ async function assertSameTimeHazardCascade(pool, pins) {
 
   const rollbackRuntime = buildRuntime({ pool, ...pins,
     temporalBoundaryResolver: resolver });
-  const rollbackParty = await readyParty(rollbackRuntime,
+  const rollbackParty = await readyParty(pool, rollbackRuntime,
     'same-time-hazard-rollback');
   const rollbackBefore = await snapshot(pool, rollbackParty.party_id);
   await insertBoundary(pool, rollbackBefore, 10);
@@ -658,4 +674,4 @@ async function boundaryStatus(pool, partyId) {
 }
 function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['visible_context'] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
 async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
-async function waitForPostgres(name, user) { for (let i = 0; i < 30; i += 1) { if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1']).status === 0 && docker(['exec', name, 'psql', '-U', user, '-d', user, '-c', 'SELECT 1']).status === 0) { await new Promise((resolve) => setTimeout(resolve, 750)); return; } await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error('PostgreSQL did not become ready'); }
+async function waitForPostgres(name, user) { for (let i = 0; i < 30; i += 1) { if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1']).status === 0 && docker(['exec', name, 'psql', '-U', user, '-d', 'pr17_phase6', '-c', 'SELECT 1']).status === 0) { await new Promise((resolve) => setTimeout(resolve, 750)); return; } await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error('PostgreSQL did not become ready'); }

@@ -138,7 +138,8 @@ export function bindOrdinaryMaterializationPlan(request, output) {
       functional_bucket: authority.candidate.functional_bucket,
       presence_expectation: entity.presence_expectation,
       supporting_basis_ref: basisRef,
-      causal_basis: { basis_kind: 'ordinary_presence', basis_refs: [basisRef] },
+      causal_basis: { basis_kind: authority.candidate.coverage_kind === 'finite_source'
+        ? 'finite_source' : 'ordinary_presence', basis_refs: [basisRef] },
       property_basis_ref: authority.property_basis_ref,
       placement_proposal: { scope_ref: request.scope_ref.entity_id,
         position_ref: authority.placement_refs[0] },

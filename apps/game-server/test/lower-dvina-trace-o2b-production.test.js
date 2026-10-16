@@ -135,6 +135,29 @@ test('generic enabled fixture seals positive and zero outcomes without reroll',
       .ordinary_materialization_atomic_write_plan,null);
   });
 
+test('O2b filters needs-check descriptors before its atomic plan',
+  async () => {
+    const model = async (request) => modelPlan(request);
+    const expected = modelPlan(seedRequest()).entities[0].semantic_descriptor;
+    let checked;
+    const privateTrace = [];
+    const guarded = resolver({model,assertNeedsCheckAllowed:async ({candidate,
+      matchOnly}) => {
+      assert.equal(matchOnly, true);
+      checked = candidate;
+      return [{queue_id:'anachronism',path:candidate.path}];
+    }, recordNeedsCheckFilter: async (record) => privateTrace.push(record)});
+    const result = await guarded(call());
+    assert.deepEqual(checked, { ...expected,
+      path: 'O2b.proposed_entity.semantic_descriptor' });
+    assert.equal(result.pass, true);
+    assert.deepEqual(result.materialized_items, []);
+    assert.equal(result.ordinary_materialization_atomic_write_plan.items.length,
+      0);
+    assert.deepEqual(privateTrace, [{ path:
+      'O2b.proposed_entity.semantic_descriptor', queue_ids: ['anachronism'] }]);
+  });
+
 test('P16 projection hides precommit child and publishes only safe committed view',
   async () => {
     const result = await resolver({model:async (request) => modelPlan(request)})(call());
@@ -175,10 +198,13 @@ test('O2b physical locks extend but do not alter legacy O1 keys', () => {
 });
 
 function resolver({load = async () => committedFixture(),model,
+  assertNeedsCheckAllowed = null,
+  recordNeedsCheckFilter = null,
   inputDigest = 'input-o2b'} = {}) {
   return createLowerDvinaTraceO2bContainerResolver({partyId,inputDigest,
     loadedProfile:activeProfile(),loadCommittedContainer:load,
-    ordinaryMaterializationModel:model});
+    ordinaryMaterializationModel:model,assertNeedsCheckAllowed,
+    recordNeedsCheckFilter});
 }
 function call() { return {stage_a_request:seedRequest(),
   operation_identity:operationIdentity()}; }

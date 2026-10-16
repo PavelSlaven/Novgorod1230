@@ -1,5 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import { row } from './first-playable/plan-shared.js';
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { appendActivity } from './lower-dvina-trace-phase-3-activity-writes.js';
 import { appendConversation, appendKnowledge } from './lower-dvina-trace-phase-3-conversation-writes.js';
 import {
@@ -25,14 +26,16 @@ export function phase3Writes(input) {
     phase3Contracts, rootTurnId, workingRevision, operationKind
   } = input;
   assertSharedSemanticSnapshotSafe(next);
+  // Scene NPCs are read from the party tables each turn; the snapshot never keeps them.
+  const snapshot = withoutSceneNpcs(next);
   const inserts = [row(
     'party_state_snapshots',
     `${partyId}:${nextVersion}`,
     {
       party_id: partyId,
       state_version: nextVersion,
-      state_payload: next,
-      state_digest: canonicalDigest(next)
+      state_payload: snapshot,
+      state_digest: canonicalDigest(snapshot)
     }
   )];
   const updates = [

@@ -196,8 +196,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 6976,
-      "rebuilt_rows": 6976
+      "rows": 6973,
+      "rebuilt_rows": 6973
     },
     {
       "domain": "presence_rules",
@@ -214,7 +214,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 6976
+      "rows": 6973
     },
     {
       "domain": "presence_rules",
@@ -6213,7 +6213,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "accepted_occurrences": 10928
+      "accepted_occurrences": 10912
     },
     {
       "domain": "presence_rules",
@@ -6245,7 +6245,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "people_rules": 1253,
+      "people_rules": 1250,
       "place_families": 17,
       "g4": 32,
       "g5": 195
@@ -6288,8 +6288,8 @@
           "no_source_place_families": 19
         },
         "weapons": {
-          "rows": 629,
-          "linked_rows": 507,
+          "rows": 617,
+          "linked_rows": 495,
           "no_source_rows": 122,
           "linked_place_families": 19,
           "no_source_place_families": 26

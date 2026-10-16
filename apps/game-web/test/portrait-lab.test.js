@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createApiClient } from '../src/api/client.js';
+import { bootstrapPortraitLab } from '../src/portrait-lab/app.js';
 import { PORTRAIT_SPEC_V1_ENUMS } from '../src/portrait-lab/contract.js';
 import { resolvePortraitInput } from '../src/portrait-lab/input.js';
 import { projectFacePoint } from '../src/portrait-lab/render-model.js';
@@ -10,6 +11,57 @@ import {
   renderPortrait
 } from '../src/portrait-lab/renderer.js';
 import { SAMPLE_PORTRAIT_SPEC } from '../src/portrait-lab/sample.js';
+
+test('portrait lab uses provider-neutral status and error copy', async () => {
+  const elements = new Map([
+    ['[data-portrait-form]', eventTarget()],
+    ['[data-portrait-input]', { value: '' }],
+    ['[data-portrait-canvas]', recordingCanvas()],
+    ['[data-portrait-json]', { textContent: '' }],
+    ['[data-portrait-error]', { hidden: true, textContent: '' }],
+    ['[data-portrait-status]', { textContent: '' }],
+    ['[data-portrait-submit]', { disabled: false }],
+    ['[data-portrait-download]', eventTarget()]
+  ]);
+  const root = {
+    dataset: {},
+    querySelector: (selector) => elements.get(selector)
+  };
+  const api = {
+    normalizePortraitSpec: async () => ({ spec: SAMPLE_PORTRAIT_SPEC })
+  };
+  bootstrapPortraitLab({ root, api });
+  const form = elements.get('[data-portrait-form]');
+  const input = elements.get('[data-portrait-input]');
+  const status = elements.get('[data-portrait-status]');
+  const error = elements.get('[data-portrait-error]');
+  const submit = async () => form.listener({ preventDefault() {} });
+
+  input.value = JSON.stringify(SAMPLE_PORTRAIT_SPEC);
+  await submit();
+  assert.equal(status.textContent, 'Портрет построен напрямую из JSON.');
+
+  input.value = 'Пожилая женщина';
+  await submit();
+  assert.equal(status.textContent, 'Описание преобразовано в структуру портрета и нарисовано.');
+
+  api.normalizePortraitSpec = async () => {
+    throw Object.assign(new Error('private provider detail'), {
+      code: 'PORTRAIT_SPEC_PROVIDER_FAILED'
+    });
+  };
+  await submit();
+  assert.equal(error.textContent, 'Не удалось преобразовать описание. Повторите запрос.');
+  assert.equal(error.hidden, false);
+
+  api.normalizePortraitSpec = async () => {
+    throw Object.assign(new Error('private validation detail'), {
+      code: 'PORTRAIT_SPEC_SERVER_INVALID'
+    });
+  };
+  await submit();
+  assert.equal(error.textContent, 'Не удалось обработать описание портрета. Портрет не был нарисован.');
+});
 
 test('direct portrait JSON bypasses server normalization', async () => {
   let calls = 0;
@@ -382,5 +434,13 @@ function recordingCanvas() {
     height: 768,
     operations,
     getContext: (kind) => kind === '2d' ? context : null
+  };
+}
+
+function eventTarget() {
+  return {
+    addEventListener(type, listener) {
+      if (type === 'submit') this.listener = listener;
+    }
   };
 }

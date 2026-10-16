@@ -1,0 +1,53 @@
+{
+  "schema": "rus.m2c_p12_live_schema_approval_attestation.v1",
+  "status": "approved_pending_execution_gates",
+  "decision": "APPROVE_EXACT_ONE_TIME_DDL_22_THROUGH_26",
+  "reviewed_repository_head": "60a64fce5e034ed814c85e5bd26e4712756cef4a",
+  "auditor_ref": "/root/approve_live_schema",
+  "signed_by": "/root/approve_live_schema",
+  "independence_basis": "Separate high-reasoning auditor reviewed the request and official DDL without authoring them or writing to the database. Recomputed the request, five file, and combined SQL SHA-256 digests; inspected predecessor tables, existing-row constraints, active world-base contract, and the prior import approval scope.",
+  "reviewed_on": "2026-09-24",
+  "request_ref": "data/world-catalogs/novgorod/m2c-p12-live-schema-v1/request.json",
+  "request_digest": "2a22c66415ba87c5eba8ee313187a8e6d010635f7e0cdef6b18f5858e8d09ea9",
+  "target": "designated_persistent_local_play_world_base_pre_beta_production",
+  "scope": {
+    "operation": "apply_exact_world_base_ddl",
+    "transaction": "single_atomic_transaction",
+    "ordered_files": [
+      "infra/world-base/schema/22.sql",
+      "infra/world-base/schema/23.sql",
+      "infra/world-base/schema/24.sql",
+      "infra/world-base/schema/25.sql",
+      "infra/world-base/schema/26.sql"
+    ],
+    "exact_sql_bytes": 14971,
+    "exact_sql_sha256": "cdfdf1e0c18f15fd261a7925284a3e8671a19a26b62ea872c4246d31a8d54f78",
+    "data_row_changes": 0
+  },
+  "execution_gates": [
+    "Operator reconfirms designated database identity and availability of the verified offline backup before any write.",
+    "Operator verifies the part-21 baseline, all absent objects and NOT NULL column listed in request.json, and all five pinned file digests.",
+    "Operator verifies world_base.spatial_v3_g4_expansion_profiles has zero rows before applying part 22; otherwise the three new foreign keys would reference an empty new rule-set table and the exact DDL must not be run.",
+    "Operator generates the exact pinned SQL outside the repository and checks its byte count and SHA-256 before execution.",
+    "Operator executes once with psql -X and ON_ERROR_STOP inside the explicit transaction; any error blocks further execution and requires investigation rather than replay.",
+    "Operator reads back the requested objects, check definition, column nullability and unchanged world-base data rows after commit."
+  ],
+  "review_notes": [
+    "The new part-24 index cannot find duplicate node-parent edges under the existing (child_id, child_version) primary key.",
+    "Part 26 relaxes nullability only for site_connection: existing rows all satisfy its new CHECK because the column is currently NOT NULL. Its unguarded ADD CONSTRAINT makes the transaction one-shot.",
+    "infra/world-base/SCHEMA_REFERENCE.md still displays the original NOT NULL declaration for availability_condition_set_ref; the ordered DDL is the physical source and execution readback must verify actual nullability."
+  ],
+  "excludes": [
+    "P12 data import",
+    "runtime or release selection",
+    "production composition change",
+    "party migration",
+    "activation"
+  ],
+  "authority": {
+    "schema_apply_authorized_subject_to_execution_gates": true,
+    "import_authorized_by_this_attestation": false,
+    "activation_authorized": false,
+    "database_mutated": false
+  }
+}

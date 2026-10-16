@@ -1,10 +1,11 @@
 import { deepFreeze } from '@rus/kernel';
+import ageCategories from './actor-age-categories.json' with { type: 'json' };
 
 export const ACTOR_KINDS = deepFreeze(['player', 'npc']);
 
 export const ACTOR_BASE_APPEARANCE_VOCABULARY = deepFreeze({
   sex_category: ['male', 'female'],
-  age_category: ['young_adult', 'adult', 'middle_aged', 'old'],
+  age_category: ageCategories,
   build: ['slim', 'average', 'stocky'],
   skin_tone: ['pale', 'light', 'warm', 'brown'],
   face_shape: ['oval', 'round', 'broad', 'angular', 'long'],
@@ -21,14 +22,19 @@ export const ACTOR_BASE_APPEARANCE_PATHS = deepFreeze([
   'appearance.build',
   'appearance.skin_tone',
   'appearance.face_shape',
-  'appearance.hair.color',
   'appearance.hair.length',
+  'appearance.hair.color',
   'appearance.hair.style',
   'appearance.hair.facial_hair',
   'appearance.eyes.color'
 ]);
 
 const PROFILE_LEVELS = new Set(['background', 'scene', 'key']);
+
+export function isActorBaseAppearancePathApplicable(identity, path) {
+  return !(['appearance.hair.color', 'appearance.hair.style'].includes(path)
+    && identity?.appearance?.hair?.length === 'bald');
+}
 
 export function validateActor(actor = {}, options = {}) {
   const errors = [];
@@ -49,7 +55,9 @@ export function validateActor(actor = {}, options = {}) {
   return { ok: errors.length === 0, errors };
 }
 
-export function validateActorBaseAppearance(identity = {}, { requireComplete = true, body = null } = {}) {
+export function validateActorBaseAppearance(identity = {}, {
+  requireComplete = true, body = null, allowLegacyBaldMetadata = false
+} = {}) {
   const errors = [];
   if (!isPlainObject(identity)) return { ok: false, errors: ['actor.identity must be an object'] };
 
@@ -64,6 +72,12 @@ export function validateActorBaseAppearance(identity = {}, { requireComplete = t
     if (isPlainObject(appearance.hair)) {
       rejectUnknownKeys(appearance.hair, new Set(['color', 'length', 'style', 'facial_hair']), 'actor.identity.appearance.hair', errors);
       rejectPortraitAndClothingKeys(appearance.hair, 'actor.identity.appearance.hair', errors);
+      for (const path of ['appearance.hair.color', 'appearance.hair.style']) {
+        if (!allowLegacyBaldMetadata && !isActorBaseAppearancePathApplicable(identity, path)
+            && Object.hasOwn(appearance.hair, path.split('.').at(-1))) {
+          errors.push(`actor.identity.${path} is not applicable to bald hair`);
+        }
+      }
     }
     if (appearance.eyes != null && !isPlainObject(appearance.eyes)) errors.push('actor.identity.appearance.eyes must be an object');
     if (isPlainObject(appearance.eyes)) {
@@ -77,9 +91,12 @@ export function validateActorBaseAppearance(identity = {}, { requireComplete = t
   validateVocabularyValue(appearance?.build, ACTOR_BASE_APPEARANCE_VOCABULARY.build, 'actor.identity.appearance.build', requireComplete, errors);
   validateVocabularyValue(appearance?.skin_tone, ACTOR_BASE_APPEARANCE_VOCABULARY.skin_tone, 'actor.identity.appearance.skin_tone', requireComplete, errors);
   validateVocabularyValue(appearance?.face_shape, ACTOR_BASE_APPEARANCE_VOCABULARY.face_shape, 'actor.identity.appearance.face_shape', requireComplete, errors);
-  validateVocabularyValue(appearance?.hair?.color, ACTOR_BASE_APPEARANCE_VOCABULARY.hair_color, 'actor.identity.appearance.hair.color', requireComplete, errors);
+  const hair = appearance?.hair;
+  const hairColorApplicable = isActorBaseAppearancePathApplicable(identity, 'appearance.hair.color');
+  const hairStyleApplicable = isActorBaseAppearancePathApplicable(identity, 'appearance.hair.style');
+  validateVocabularyValue(hair?.color, ACTOR_BASE_APPEARANCE_VOCABULARY.hair_color, 'actor.identity.appearance.hair.color', requireComplete && (hairColorApplicable || allowLegacyBaldMetadata && Object.hasOwn(hair ?? {}, 'color')), errors);
   validateVocabularyValue(appearance?.hair?.length, ACTOR_BASE_APPEARANCE_VOCABULARY.hair_length, 'actor.identity.appearance.hair.length', requireComplete, errors);
-  validateVocabularyValue(appearance?.hair?.style, ACTOR_BASE_APPEARANCE_VOCABULARY.hair_style, 'actor.identity.appearance.hair.style', requireComplete, errors);
+  validateVocabularyValue(hair?.style, ACTOR_BASE_APPEARANCE_VOCABULARY.hair_style, 'actor.identity.appearance.hair.style', requireComplete && (hairStyleApplicable || allowLegacyBaldMetadata && Object.hasOwn(hair ?? {}, 'style')), errors);
   validateVocabularyValue(appearance?.hair?.facial_hair, ACTOR_BASE_APPEARANCE_VOCABULARY.facial_hair, 'actor.identity.appearance.hair.facial_hair', requireComplete, errors);
   validateVocabularyValue(appearance?.eyes?.color, ACTOR_BASE_APPEARANCE_VOCABULARY.eye_color, 'actor.identity.appearance.eyes.color', requireComplete, errors);
 
@@ -97,7 +114,11 @@ export function completeActorBaseAppearance(identity = {}, completion = {}) {
 
   const completed = structuredClone(identity);
   for (const path of ACTOR_BASE_APPEARANCE_PATHS) {
-    if (readPath(completed, path) == null && readPath(completion, path) != null) writePath(completed, path, readPath(completion, path));
+    if (isActorBaseAppearancePathApplicable(completed, path)
+        && readPath(completed, path) == null
+        && readPath(completion, path) != null) {
+      writePath(completed, path, readPath(completion, path));
+    }
   }
   const validation = validateActorBaseAppearance(completed, { requireComplete: true });
   if (!validation.ok) throw new TypeError(validation.errors.join('; '));

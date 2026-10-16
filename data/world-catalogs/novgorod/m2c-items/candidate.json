@@ -1,0 +1,2098 @@
+{
+  "artifact_type": "ordinary_items_and_finite_stocks_authoring_candidate",
+  "candidate_id": "novgorod_m2c_items_g4_v1",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_count": 32,
+    "g5_family_count": 25,
+    "directional_exit_count": 86
+  },
+  "owner_handoff": {
+    "items": "@rus/items-property",
+    "materialization": "@rus/materialization",
+    "first_entry": "apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js",
+    "finite_source": "apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-capability.js",
+    "persistence": "party_runtime.party_resource_nodes",
+    "candidate_consumer": null,
+    "finite_quantity_mechanics_requirement": {
+      "status": "required_owner_extension_before_activation",
+      "owner": "@rus/items-property",
+      "source": "packages/items-property/src/ordinary-world-admission.js:mechanicsOf",
+      "finite_adapter": "apps/game-server/src/runtime/finite-source-effects.js:finiteSourceTransition",
+      "current_behavior": "Admission accepts only item units and independently bounds quantity and mass. Finite transition enforces item-count decrement equality, but neither owner currently enforces mass_grams = quantity.value * approved fixed mass_grams_per_unit.",
+      "required_change": "The existing items owner must derive or validate fixed mass from the approved exact natural-source profile before creating the immutable mechanics snapshot. P16 must revalidate the same approved fixed-mass relation before finite decrement/output commit. Do not accept model mass merely because it is below max_mass_grams.",
+      "data_contract": {
+        "quantity_unit": "item",
+        "fixed_mass_grams_per_unit": 50
+      },
+      "failure": "typed mechanics error before output or decrement; no zero-mass or mismatch fallback"
+    }
+  },
+  "source_catalog": {
+    "authoring_table_path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/",
+    "authoring_rows_status": "draft",
+    "approval_path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+    "target_compatibility_request": "data/world-catalogs/novgorod/runtime-catalog/spatial-v3-target-v1/item-compatibility-request.json",
+    "runtime_approval_required": true,
+    "limits": "Draft source files supply exact row definitions; approval/import/readback chain and target compatibility must resolve before runtime use."
+  },
+  "selection": {
+    "fields": [
+      "world_revision_id",
+      "g4_id",
+      "g4_version",
+      "g5_generation_template_id",
+      "g5_generation_template_version"
+    ],
+    "cardinality": "exactly_one",
+    "on_missing": "M2C_ITEM_FAMILY_BINDING_MISSING",
+    "on_ambiguous": "M2C_ITEM_FAMILY_BINDING_AMBIGUOUS",
+    "fallback": false
+  },
+  "application_prerequisites": {
+    "required_for_every_positive_item_row": [
+      "approved_exact_target_item_catalog_membership",
+      "approved_candidate_row",
+      "committed_occupied_household_basis",
+      "committed_exact_owner_holder_controller_refs",
+      "committed_generated_g5_id",
+      "committed_scene_position_for_named_slot"
+    ],
+    "missing_behavior": "typed_data_gap_before_any_write",
+    "household_binding_source": null,
+    "limits": "The prerequisite is a hard binding requirement, not a model-evaluated conditional or inference from a habitation label.",
+    "evaluation_order": [
+      "Select exact family",
+      "Read committed occupied-site/property basis for exact generated G5",
+      "Evaluate occupied household predicate",
+      "If false allocate no rows; if unknown return typed gap; if true validate all positive row prerequisites",
+      "Commit through existing owner"
+    ],
+    "occupied_household_predicate": {
+      "input_authority": "committed item/property owner snapshot for the exact generated G5, read by existing first-entry owner",
+      "true_when": {
+        "occupied_site_basis_state": "committed",
+        "occupied_site_kind": "household",
+        "occupancy_state": "occupied",
+        "scope_matches_generated_g5": true,
+        "exact_owner_holder_controller_resolved": true
+      },
+      "false_when": {
+        "authoritative_occupancy_state": [
+          "unoccupied",
+          "abandoned",
+          "non_household"
+        ],
+        "scope_matches_generated_g5": true
+      },
+      "on_true": "validate and allocate item_row_refs once",
+      "on_false": {
+        "allocate_item_rows": [],
+        "allocate_finite_sources": [],
+        "assert_absence": false
+      },
+      "on_missing_or_ambiguous": "M2C_OCCUPIED_HOUSEHOLD_CAUSAL_BASIS_REQUIRED",
+      "binding_source": null,
+      "limits": "These are candidate adapter inputs, not existing persistence fields. No label/NPC presence/LLM inference supplies occupancy. Missing input is not false."
+    }
+  },
+  "conservation": {
+    "identity_fields": [
+      "party_id",
+      "generated_g5_id",
+      "profile_id",
+      "profile_version",
+      "row_id"
+    ],
+    "scope": "one allocation per generated G5, shared across all G6 views and entries",
+    "transaction": "existing P16 first-entry transaction",
+    "reroll_on_reentry": false,
+    "replenishment": "none",
+    "stock_representation": "Persist only the finite resource row at baseline. Extraction atomically decrements it and creates output items using the existing finite-resource transition. Do not also seed stock as an ordinary item/background group.",
+    "initial_item_representation": "Initial ordinary items use one stable identity per row and participate in existing committed item lookup; ordinary discovery must reuse that identity.",
+    "allocation_precedence": "Existing explicit item/source or NPC equipment allocation satisfying this exact row is reused. Never allocate a second instance for the same row. An unrelated household or NPC item does not satisfy it.",
+    "exhaustion": "Persist zero/depleted state; reload and return do not restore initial quantity.",
+    "partial_kindling": "This candidate supplies one indivisible bundle. Subdivision requires the existing action-production mass-conservation owner after extraction."
+  },
+  "item_rows": [
+    {
+      "row_id": "m2c_household_wooden_spoon_v1",
+      "layer": "ordinary_item",
+      "status": "candidate_approval_pending",
+      "item_template_ref": "item_tpl_nov_wooden_spoon_v1",
+      "source_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wooden_spoon_v1",
+      "applicability_authority": "new M2c authoring; source profile graph_node_ids are not widened",
+      "quantity_profile_ref": "quantity_item_tpl_nov_wooden_spoon_v1_count_v5",
+      "inventory_profile_ref": "inventory_item_tpl_nov_wooden_spoon_v1",
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "piece"
+      },
+      "initial_quantity": 1,
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 1,
+          "denominator": 1,
+          "unit": "piece"
+        },
+        "maximum": {
+          "numerator": 1,
+          "denominator": 1,
+          "unit": "piece"
+        }
+      },
+      "mass_grams_per_unit": 25,
+      "partial_consumption_allowed": false,
+      "placement": {
+        "scene_template_ref": "stfv3__g5_habitation_v1@1",
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "container_ref": null
+      },
+      "property": {
+        "source_property_profile_ref": "property_context_household_personal_v1",
+        "source_property_rule_ref": "rule_property_context_household_personal_v1",
+        "owner_kind": "household",
+        "holder_kind": "household",
+        "controller_kind": "household",
+        "owner_ref": null,
+        "holder_ref": null,
+        "controller_ref": null,
+        "access_policy": "explicit_owner_holder_controller",
+        "binding_required": true
+      },
+      "representation": "one_persistent_item_instance",
+      "source_binding_refs": [
+        "claim_construction_item_tpl_nov_wooden_spoon_v1",
+        "claim_historical_presence_item_tpl_nov_wooden_spoon_v1",
+        "claim_material_item_tpl_nov_wooden_spoon_v1",
+        "claim_physical_parameter_item_tpl_nov_wooden_spoon_v1"
+      ],
+      "provenance": {
+        "source_tables": [
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_templates.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_profile_entries.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_quantity_profiles.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_inventory_profiles.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_source_bindings.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/property_profiles.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/property_profile_rules.json"
+        ],
+        "directness": "editorial_reconstruction",
+        "confidence": "low",
+        "limits": "One ordinary household allocation is proposed. Historical sources attest item types, not this quantity, local household, ownership, presence or exact placement. Numerical mechanics reuse the V5 gameplay physical policy."
+      }
+    },
+    {
+      "row_id": "m2c_household_kindling_bundle_v1",
+      "layer": "finite_work_material_stock",
+      "status": "candidate_approval_pending",
+      "item_template_ref": "item_tpl_nov_kindling_bundle_v1",
+      "source_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_kindling_bundle_v1",
+      "applicability_authority": "new M2c authoring; source profile graph_node_ids are not widened",
+      "quantity_profile_ref": "quantity_item_tpl_nov_kindling_bundle_v1_count_v5",
+      "inventory_profile_ref": "inventory_item_tpl_nov_kindling_bundle_v1",
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "piece"
+      },
+      "initial_quantity": 1,
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 1,
+          "denominator": 1,
+          "unit": "piece"
+        },
+        "maximum": {
+          "numerator": 1,
+          "denominator": 1,
+          "unit": "piece"
+        }
+      },
+      "mass_grams_per_unit": 500,
+      "partial_consumption_allowed": false,
+      "placement": {
+        "scene_template_ref": "stfv3__g5_habitation_v1@1",
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "container_ref": null
+      },
+      "property": {
+        "source_property_profile_ref": "property_context_household_personal_v1",
+        "source_property_rule_ref": "rule_property_context_household_personal_v1",
+        "owner_kind": "household",
+        "holder_kind": "household",
+        "controller_kind": "household",
+        "owner_ref": null,
+        "holder_ref": null,
+        "controller_ref": null,
+        "access_policy": "explicit_owner_holder_controller",
+        "binding_required": true
+      },
+      "representation": "one_party_resource_nodes_row_until_extracted",
+      "source_binding_refs": [
+        "claim_construction_item_tpl_nov_kindling_bundle_v1",
+        "claim_historical_presence_item_tpl_nov_kindling_bundle_v1",
+        "claim_material_item_tpl_nov_kindling_bundle_v1",
+        "claim_physical_parameter_item_tpl_nov_kindling_bundle_v1"
+      ],
+      "provenance": {
+        "source_tables": [
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_templates.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_profile_entries.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_quantity_profiles.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_inventory_profiles.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_source_bindings.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/property_profiles.json",
+          "data/knowledge-source/imports/item-container-120-v5/candidate/tables/property_profile_rules.json"
+        ],
+        "directness": "editorial_reconstruction",
+        "confidence": "low",
+        "limits": "One ordinary household allocation is proposed. Historical sources attest item types, not this quantity, local household, ownership, presence or exact placement. Numerical mechanics reuse the V5 gameplay physical policy."
+      }
+    }
+  ],
+  "family_profiles": [
+    {
+      "profile_id": "m2c_items_archaeological_area__heritage_access_limited__archaeological_settlement",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_habitation_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "archaeological_settlement"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "blocked_current_occupancy_gap",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [
+        "M2C_ARCHAEOLOGICAL_CURRENT_OCCUPANCY_UNRESOLVED"
+      ],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_archaeological_area__heritage_access_limited__burial_area",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_burial_ritual_buffer_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "burial_area"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_archaeological_area__waterway_access__local_landing",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_dry_route_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "waterway_access",
+        "function": "local_landing"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_archaeological_area__waterway_access__local_landing",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_backwater_wetland__low_intensity_natural_use__reed_backwater",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_resource_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "backwater_wetland",
+        "land_use": "low_intensity_natural_use",
+        "function": "reed_backwater"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context",
+        "finite_natural_source"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "gap_codes": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_reeds_v1"
+      ]
+    },
+    {
+      "profile_id": "m2c_items_backwater_wetland__waterway_access__old_channel",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_exploration_concealment_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "backwater_wetland",
+        "land_use": "waterway_access",
+        "function": "old_channel"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_estuary__low_intensity_natural_use__estuary_mixing",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_general_hazard_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "estuary",
+        "land_use": "low_intensity_natural_use",
+        "function": "estuary_mixing"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_estuary__waterway_access__outer_exposed",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_estuary__waterway_access__outer_exposed",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_general_hazard_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "estuary",
+        "land_use": "waterway_access",
+        "function": "outer_exposed"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_estuary__waterway_access__outer_exposed",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_floodplain__low_intensity_natural_use__floodplain_basin",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_seasonal_route_hazard_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "floodplain_basin"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_floodplain__low_intensity_natural_use__island_ridge",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_dry_route_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_ridge"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_forest__forest_resource_use__forest_tract",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_forest__forest_resource_use__forest_tract",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_general_hazard_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context",
+        "finite_natural_source"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "gap_codes": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_forest__forest_resource_use__forest_tract",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ]
+    },
+    {
+      "profile_id": "m2c_items_forest__forest_resource_use__pine_ridge",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_route_approach_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "pine_ridge"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context",
+        "finite_natural_source"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "gap_codes": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ]
+    },
+    {
+      "profile_id": "m2c_items_island__low_intensity_natural_use__island_head",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+            "version": 1
+          },
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_dry_route_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_ridge__waterway_access__dry_ridge_route",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_route_approach_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "dry_ridge_route"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_ridge__waterway_access__landing_terrace",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_ridge__waterway_access__landing_terrace",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_dry_route_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "landing_terrace"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_ridge__waterway_access__landing_terrace",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_river_channel__forest_resource_use__forest_stream",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_general_hazard_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "forest_resource_use",
+        "function": "forest_stream"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_river_channel__low_intensity_natural_use__backwater",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_exploration_concealment_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "low_intensity_natural_use",
+        "function": "backwater"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_river_channel__waterway_access__channel_split",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_river_channel__waterway_access__channel_split",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_water_navigation_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "channel_split"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_river_channel__waterway_access__channel_split",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_river_channel__waterway_access__river_reach",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_route_approach_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_river_channel__waterway_access__side_channel",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_route_approach_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_river_channel__waterway_access__side_channel",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_river_channel__waterway_access__tributary_mouth",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_dry_route_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "tributary_mouth"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_settlement_landscape__forest_resource_use__forest_tract",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_general_hazard_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context",
+        "finite_natural_source"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "gap_codes": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_deadwood_v1",
+        "m2c_finite_standing_wood_v1"
+      ]
+    },
+    {
+      "profile_id": "m2c_items_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_habitation_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "recurrent_settlement_use",
+        "function": "vikhtuy_locality"
+      },
+      "item_row_refs": [
+        "m2c_household_wooden_spoon_v1",
+        "m2c_household_kindling_bundle_v1"
+      ],
+      "applicable_layers": [
+        "ordinary_item",
+        "finite_work_material_stock"
+      ],
+      "layer_decision": "conditional_occupied_household_allocation",
+      "finite_stock_decision": "one_kindling_bundle_only_when_occupied_household_predicate_true",
+      "gap_codes": [
+        "M2C_COMMITTED_HOUSEHOLD_PROPERTY_BINDING_REQUIRED",
+        "M2C_OCCUPIED_HOUSEHOLD_CAUSAL_BASIS_REQUIRED"
+      ],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+        "directness": "editorial_reconstruction",
+        "confidence": "low",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "application_predicate_ref": "application_prerequisites.occupied_household_predicate",
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_settlement_landscape__waterway_access__landing_terrace",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_dry_route_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "waterway_access",
+        "function": "landing_terrace"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    },
+    {
+      "profile_id": "m2c_items_shoal__low_intensity_natural_use__driftwood_bar",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_dry_route_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "driftwood_bar"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context",
+        "finite_natural_source"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "proposed_finite_editorial_sources_with_explicit_property_override",
+      "gap_codes": [
+        "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED"
+      ],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": [
+        "m2c_finite_driftwood_v1"
+      ]
+    },
+    {
+      "profile_id": "m2c_items_shoal__low_intensity_natural_use__shoal_field",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "exact_match": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "g5_generation_template_id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+        "g5_generation_template_version": 1,
+        "g4_refs": [
+          {
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+            "version": 1
+          }
+        ],
+        "scene_template_refs": [
+          "stfv3__g5_general_hazard_v1@1"
+        ]
+      },
+      "authoring_axes": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "shoal_field"
+      },
+      "item_row_refs": [],
+      "applicable_layers": [
+        "natural_context"
+      ],
+      "layer_decision": "no_automatic_man_made_allocation",
+      "finite_stock_decision": "no_stock_authorized_by_this_candidate",
+      "gap_codes": [],
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "family_ref": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Exact family selection only. Empty item rows mean no initial allocation authority; they do not assert physical absence or bar later ordinary discovery supported by committed causal facts."
+      },
+      "natural_finite_source_profile_refs": []
+    }
+  ],
+  "hard_gaps": [
+    {
+      "code": "M2C_ITEM_CANDIDATE_CONSUMER_MISSING",
+      "scope": "all profiles",
+      "required": "Existing first-entry owner needs an exact approved family reader and adapter; this candidate has no production consumer."
+    },
+    {
+      "code": "M2C_TARGET_ITEM_CATALOG_APPROVAL_PENDING",
+      "scope": "all positive item rows",
+      "required": "Resolve pending target compatibility request and exact runtime item/inventory/quantity/property membership."
+    },
+    {
+      "code": "M2C_COMMITTED_HOUSEHOLD_PROPERTY_BINDING_REQUIRED",
+      "scope": "vikhtuy_locality",
+      "required": "Supply exact committed household owner/holder/controller refs through property owner. Never assume unowned or player-owned."
+    },
+    {
+      "code": "M2C_OCCUPIED_HOUSEHOLD_CAUSAL_BASIS_REQUIRED",
+      "scope": "vikhtuy_locality",
+      "required": "Approve and bind the particular generated inhabited parcel; G4 locality and habitation template alone do not prove occupied household."
+    },
+    {
+      "code": "M2C_ARCHAEOLOGICAL_CURRENT_OCCUPANCY_UNRESOLVED",
+      "scope": "archaeological_settlement",
+      "required": "Current inhabited use must have independent local authority before reusing household rows. Archaeological settlement evidence alone does not establish occupancy in the generated scene."
+    },
+    {
+      "code": "M2C_NATURAL_SOURCE_READER_AND_COMMIT_ADAPTER_REQUIRED",
+      "classification": "implementation gap, not unresolved owner access-policy choice",
+      "scope": "4 natural finite source profiles",
+      "required": "Read independently approved exact profile+policy, commit finite source/property basis once, honor explicit property/access lookup, validate action/tool preconditions, fixed 50 gram mass per item unit and output/decrement atomicity through existing owners."
+    },
+    {
+      "code": "M2C_FINITE_FIXED_MASS_OWNER_VALIDATION_REQUIRED",
+      "classification": "required existing-owner extension",
+      "scope": "4 natural finite-source profiles",
+      "required": "The existing items owner must derive or validate fixed mass from the approved exact natural-source profile before creating the immutable mechanics snapshot. P16 must revalidate the same approved fixed-mass relation before finite decrement/output commit. Do not accept model mass merely because it is below max_mass_grams."
+    }
+  ],
+  "completeness": {
+    "mapping_coverage": "25/25 families; 32/32 G4 exact refs",
+    "runtime_ready": false,
+    "positive_stock_rows": 1,
+    "positive_item_rows": 1,
+    "limits": "Authoring coverage includes 25 families, conditional household rows and 4 finite natural-source classes. Runtime remains blocked on independent approval and existing-owner reader/adapter. Other food/container/craft layers are not invented. Item-count conservation is supported today; mass-per-portion conservation requires the declared existing-owner validation extension and is not claimed implemented.",
+    "positive_natural_source_profiles": 4,
+    "natural_family_binding_count": 8,
+    "unresolved_natural_access_class_a_choices": 0
+  },
+  "natural_source_review": {
+    "review_scope": [
+      "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_templates.json",
+      "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_quantity_profiles.json",
+      "data/knowledge-source/imports/item-container-120-v5/candidate/tables/property_profiles.json",
+      "data/knowledge-source/imports/item-container-120-v5/candidate/tables/property_profile_rules.json",
+      "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json",
+      "data/world-catalogs/novgorod/procedural-scene-v2/natural-shore-approval-attestation.json",
+      "packages/items-property/src/ordinary-world-property-placement.js",
+      "packages/items-property/src/finite-resource-transition.js",
+      "apps/game-server/src/runtime/constrained-natural-resource-policy.js"
+    ],
+    "findings": [
+      {
+        "source_ref": "item_tpl_nov_kindling_bundle_v1",
+        "quantity_profile_ref": "quantity_item_tpl_nov_kindling_bundle_v1_count_v5",
+        "finding": "One 500 gram prepared bundle; not a raw wood, standing timber, reed or driftwood source. Cannot use its unit or quantity as natural stock measurement."
+      },
+      {
+        "source_ref": "trace_ld_v1_o2a_prepared_clay_profile",
+        "finding": "Approved finite source is scenario-scoped prepared clay, 2 item units, with its own property/environment and permission pins. Neither material nor property scope covers target natural sources."
+      },
+      {
+        "source_ref": "trace_ld_v1_o2a_wreck_shore_sand_portion",
+        "finding": "Approved ambient sand portion is scenario-scoped and has no finite source decrement. It cannot establish a finite reed or wood reserve."
+      },
+      {
+        "source_ref": "novgorod_natural_shore_v3@1",
+        "finding": "Approval explicitly excludes stock, local_tree, local_stand and local_entity. Broad nature claims support context only."
+      },
+      {
+        "source_ref": "property_communal_resource_v1",
+        "finding": "Rule requires explicit person owner/holder/controller; category does not establish communal ownership at any target G4."
+      },
+      {
+        "source_ref": "packages/items-property/src/ordinary-world-property-placement.js",
+        "finding": "Generic genuinely_unowned v2 accepts only lost, discarded, abandoned, broken_waste or battlefield_or_ruin_remnant, each with committed causal ref. Natural origin is not such a ref. Do not label natural wood abandoned to pass validation."
+      }
+    ],
+    "conclusion": "Existing historical profiles are not transferred to these sources. Owner direction now supplies the four class-scoped access choices. The new natural source form, quantity and extraction envelopes above are ordinary editorial candidates; exact bindings/runtime adapter and independent approval remain required."
+  },
+  "natural_source_gaps": [],
+  "gameplay_access_policy": {
+    "policy_id": "m2c_natural_gathering_access_v1",
+    "version": 1,
+    "status": "candidate_approval_pending",
+    "scope": {
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g4_refs": [
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+          "version": 1
+        },
+        {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+          "version": 1
+        }
+      ],
+      "source_presence": "exact matching committed finite source required",
+      "generated_g5_only": true
+    },
+    "operations": [
+      "cut_reeds",
+      "gather_deadwood",
+      "salvage_driftwood",
+      "cut_standing_wood"
+    ],
+    "provenance": {
+      "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+      "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+      "directness": "editorial",
+      "confidence": "high",
+      "confidence_scope": "certainty of the explicit gameplay decision, not historical prevalence",
+      "historical_claim": false,
+      "approval": "pending_independent_gpt_6_astra_high"
+    },
+    "precedence": [
+      {
+        "condition": "An explicit committed property or access rule covers this parcel/source and operation",
+        "decision": "Use that exact rule and preserve its owner/controller/claim; this default grants no override."
+      },
+      {
+        "condition": "Property reader confirms no explicit committed restriction and no unresolved/ambiguous applicable rule",
+        "decision": "Allow the matching operation under this editorial default."
+      },
+      {
+        "condition": "Property/access lookup is missing, stale, ambiguous, or fails",
+        "decision": "M2C_NATURAL_ACCESS_CONTEXT_UNRESOLVED; never reinterpret as no restriction."
+      }
+    ],
+    "scope_exclusions": [
+      "unmatched resource class",
+      "absence of committed source",
+      "hidden/significant/evidentiary object",
+      "canonical geography mutation",
+      "automatic replenishment",
+      "guaranteed activity success",
+      "route/traversal safety",
+      "tool availability"
+    ],
+    "output_property": {
+      "explicit_source_claim": "Preserve existing source owner/claim unless its exact rule authorizes transfer; collecting gives no automatic ownership override.",
+      "no_prior_explicit_claim": "Material successfully collected under this owner-authorized default may become the collecting actor possession through the existing property owner.",
+      "holder_controller": "successful collecting actor; resolve exact actor ref at commit",
+      "classification": "policy-authorized collection; never manufacture a genuinely_unowned cause"
+    },
+    "binding_to_existing_owner": {
+      "property_basis_class": "explicit_source_item",
+      "property_source_ref": "exact committed finite source identity",
+      "unowned_cause_ref": null,
+      "unowned_cause_kind": null,
+      "property_basis_ref": "derive once from committed finite source identity and this exact policy version",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "limits": "This describes required adapter binding, not an imported/committed property record."
+    }
+  },
+  "natural_finite_source_profiles": [
+    {
+      "profile_id": "m2c_finite_reeds_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "resource_class": "reeds",
+      "operation": "cut_reeds",
+      "source_form": "small accessible reed patch",
+      "item_kind": "natural_resource_portion",
+      "item_template_ref": null,
+      "template_policy": "Template-less ordinary portion through existing O2a/finite-source owner; no invented item template ref.",
+      "semantic_type": "reed_material_portion",
+      "public_name": "стебли тростника",
+      "admission_class": "common_mundane",
+      "functional_bucket": "other_ordinary",
+      "basis_kind": "finite_source",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "applicable_family_refs": [
+        "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater"
+      ],
+      "initial_quantity": 20,
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "item"
+      },
+      "quantity_unit_source_ref": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref",
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 20,
+          "denominator": 1,
+          "unit": "item"
+        },
+        "maximum": {
+          "numerator": 20,
+          "denominator": 1,
+          "unit": "item"
+        }
+      },
+      "amount_policy": "A finite count of 50 gram ordinary material portions per generated G5/source class. The item unit is the existing ordinary admission unit; portions and total budget are editorial gameplay quantities, not measured landscape abundance.",
+      "stock_representation": "one party_resource_nodes row; no simultaneous ordinary item/background group for the remaining source",
+      "source_identity_fields": [
+        "party_id",
+        "generated_g5_id",
+        "profile_id",
+        "version"
+      ],
+      "placement": {
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "scene_template_ref": "resolve exact family scene_template_refs"
+      },
+      "extraction": {
+        "minimum_quantity": 1,
+        "maximum_quantity": 5,
+        "quantity_unit": "item",
+        "mass_grams_per_unit": 50,
+        "output_mass_grams": "exact extracted item count multiplied by 50",
+        "decrement": "exact output quantity in item units; source mass decreases by that count multiplied by 50; atomic with output item persistence",
+        "partial_extraction_allowed": true,
+        "tool_and_action_precondition": "cutting capability required for intact stems; detached material is outside this operation",
+        "activity_time": "existing activity owner decides from supported action; no instant extraction or new duration authored here",
+        "failure": "no extraction and no decrement without successful owner-authorized causal result",
+        "depleted": "persist zero/depleted; no return/reload reset",
+        "standing_tree_boundary": null
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_reeds_v1:mechanics",
+        "max_mass_grams": 250,
+        "allowed_external_hand_costs": [
+          1
+        ],
+        "allowed_carry_forms": [
+          "regular"
+        ],
+        "max_packing_slot_cost": 2,
+        "max_quantity": 5
+      },
+      "output_mechanics": {
+        "external_hand_cost": 1,
+        "carry_form": "regular",
+        "packing_slot_cost": 2,
+        "mass_grams_per_unit": 50
+      },
+      "provenance": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "low",
+        "confidence_scope": "ordinary local source reconstruction and conservative gameplay quantity/packing policy",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+          "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+          "src_gameplay_physical_policy_v3",
+          "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref"
+        ],
+        "applicability": {
+          "region": "Novgorod land",
+          "period": "1230",
+          "functions": [
+            "reed_backwater"
+          ],
+          "environment": "small accessible reed patch"
+        },
+        "limits": "The source form and numeric budget are newly authored gameplay data requiring independent approval. Existing natural context supports plausibility, not an exact local stand or measured mass. No historical rights, exact species, named tree, wreck or hidden material are asserted. The 50 gram portion size is a new editorial gameplay granularity; the source m22 row supplies only the existing item-unit convention, never clay, scenario scope or permissions."
+      },
+      "mass_grams_per_unit": 50,
+      "initial_mass_grams": 1000
+    },
+    {
+      "profile_id": "m2c_finite_deadwood_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "resource_class": "deadwood",
+      "operation": "gather_deadwood",
+      "source_form": "small patch of fallen detached dead wood",
+      "item_kind": "natural_resource_portion",
+      "item_template_ref": null,
+      "template_policy": "Template-less ordinary portion through existing O2a/finite-source owner; no invented item template ref.",
+      "semantic_type": "deadwood_material_portion",
+      "public_name": "валежник",
+      "admission_class": "common_mundane",
+      "functional_bucket": "other_ordinary",
+      "basis_kind": "finite_source",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "applicable_family_refs": [
+        "m2c_g5_forest__forest_resource_use__forest_tract",
+        "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "m2c_g5_settlement_landscape__forest_resource_use__forest_tract"
+      ],
+      "initial_quantity": 60,
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "item"
+      },
+      "quantity_unit_source_ref": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref",
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 60,
+          "denominator": 1,
+          "unit": "item"
+        },
+        "maximum": {
+          "numerator": 60,
+          "denominator": 1,
+          "unit": "item"
+        }
+      },
+      "amount_policy": "A finite count of 50 gram ordinary material portions per generated G5/source class. The item unit is the existing ordinary admission unit; portions and total budget are editorial gameplay quantities, not measured landscape abundance.",
+      "stock_representation": "one party_resource_nodes row; no simultaneous ordinary item/background group for the remaining source",
+      "source_identity_fields": [
+        "party_id",
+        "generated_g5_id",
+        "profile_id",
+        "version"
+      ],
+      "placement": {
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "scene_template_ref": "resolve exact family scene_template_refs"
+      },
+      "extraction": {
+        "minimum_quantity": 1,
+        "maximum_quantity": 20,
+        "quantity_unit": "item",
+        "mass_grams_per_unit": 50,
+        "output_mass_grams": "exact extracted item count multiplied by 50",
+        "decrement": "exact output quantity in item units; source mass decreases by that count multiplied by 50; atomic with output item persistence",
+        "partial_extraction_allowed": true,
+        "tool_and_action_precondition": "none for already detached hand-carriable material; breaking or cutting requires separately validated action capability",
+        "activity_time": "existing activity owner decides from supported action; no instant extraction or new duration authored here",
+        "failure": "no extraction and no decrement without successful owner-authorized causal result",
+        "depleted": "persist zero/depleted; no return/reload reset",
+        "standing_tree_boundary": null
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_deadwood_v1:mechanics",
+        "max_mass_grams": 1000,
+        "allowed_external_hand_costs": [
+          1
+        ],
+        "allowed_carry_forms": [
+          "regular"
+        ],
+        "max_packing_slot_cost": 4,
+        "max_quantity": 20
+      },
+      "output_mechanics": {
+        "external_hand_cost": 1,
+        "carry_form": "regular",
+        "packing_slot_cost": 4,
+        "mass_grams_per_unit": 50
+      },
+      "provenance": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "low",
+        "confidence_scope": "ordinary local source reconstruction and conservative gameplay quantity/packing policy",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+          "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+          "src_gameplay_physical_policy_v3",
+          "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref"
+        ],
+        "applicability": {
+          "region": "Novgorod land",
+          "period": "1230",
+          "functions": [
+            "forest_tract",
+            "pine_ridge"
+          ],
+          "environment": "small patch of fallen detached dead wood"
+        },
+        "limits": "The source form and numeric budget are newly authored gameplay data requiring independent approval. Existing natural context supports plausibility, not an exact local stand or measured mass. No historical rights, exact species, named tree, wreck or hidden material are asserted. The 50 gram portion size is a new editorial gameplay granularity; the source m22 row supplies only the existing item-unit convention, never clay, scenario scope or permissions."
+      },
+      "mass_grams_per_unit": 50,
+      "initial_mass_grams": 3000
+    },
+    {
+      "profile_id": "m2c_finite_driftwood_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "resource_class": "driftwood",
+      "operation": "salvage_driftwood",
+      "source_form": "small deposit of unworked stranded wood",
+      "item_kind": "natural_resource_portion",
+      "item_template_ref": null,
+      "template_policy": "Template-less ordinary portion through existing O2a/finite-source owner; no invented item template ref.",
+      "semantic_type": "driftwood_material_portion",
+      "public_name": "плавник",
+      "admission_class": "common_mundane",
+      "functional_bucket": "other_ordinary",
+      "basis_kind": "finite_source",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "applicable_family_refs": [
+        "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar"
+      ],
+      "initial_quantity": 100,
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "item"
+      },
+      "quantity_unit_source_ref": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref",
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 100,
+          "denominator": 1,
+          "unit": "item"
+        },
+        "maximum": {
+          "numerator": 100,
+          "denominator": 1,
+          "unit": "item"
+        }
+      },
+      "amount_policy": "A finite count of 50 gram ordinary material portions per generated G5/source class. The item unit is the existing ordinary admission unit; portions and total budget are editorial gameplay quantities, not measured landscape abundance.",
+      "stock_representation": "one party_resource_nodes row; no simultaneous ordinary item/background group for the remaining source",
+      "source_identity_fields": [
+        "party_id",
+        "generated_g5_id",
+        "profile_id",
+        "version"
+      ],
+      "placement": {
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "scene_template_ref": "resolve exact family scene_template_refs"
+      },
+      "extraction": {
+        "minimum_quantity": 1,
+        "maximum_quantity": 40,
+        "quantity_unit": "item",
+        "mass_grams_per_unit": 50,
+        "output_mass_grams": "exact extracted item count multiplied by 50",
+        "decrement": "exact output quantity in item units; source mass decreases by that count multiplied by 50; atomic with output item persistence",
+        "partial_extraction_allowed": true,
+        "tool_and_action_precondition": "none for loose hand-carriable wood; freeing embedded material requires separately validated action capability",
+        "activity_time": "existing activity owner decides from supported action; no instant extraction or new duration authored here",
+        "failure": "no extraction and no decrement without successful owner-authorized causal result",
+        "depleted": "persist zero/depleted; no return/reload reset",
+        "standing_tree_boundary": null
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_driftwood_v1:mechanics",
+        "max_mass_grams": 2000,
+        "allowed_external_hand_costs": [
+          2
+        ],
+        "allowed_carry_forms": [
+          "long"
+        ],
+        "max_packing_slot_cost": 8,
+        "max_quantity": 40
+      },
+      "output_mechanics": {
+        "external_hand_cost": 2,
+        "carry_form": "long",
+        "packing_slot_cost": 8,
+        "mass_grams_per_unit": 50
+      },
+      "provenance": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "low",
+        "confidence_scope": "ordinary local source reconstruction and conservative gameplay quantity/packing policy",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+          "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+          "src_gameplay_physical_policy_v3",
+          "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref"
+        ],
+        "applicability": {
+          "region": "Novgorod land",
+          "period": "1230",
+          "functions": [
+            "driftwood_bar"
+          ],
+          "environment": "small deposit of unworked stranded wood"
+        },
+        "limits": "The source form and numeric budget are newly authored gameplay data requiring independent approval. Existing natural context supports plausibility, not an exact local stand or measured mass. No historical rights, exact species, named tree, wreck or hidden material are asserted. The 50 gram portion size is a new editorial gameplay granularity; the source m22 row supplies only the existing item-unit convention, never clay, scenario scope or permissions."
+      },
+      "mass_grams_per_unit": 50,
+      "initial_mass_grams": 5000
+    },
+    {
+      "profile_id": "m2c_finite_standing_wood_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "resource_class": "standing_wood",
+      "operation": "cut_standing_wood",
+      "source_form": "harvestable stem wood of one small ordinary living tree",
+      "item_kind": "natural_resource_portion",
+      "item_template_ref": null,
+      "template_policy": "Template-less ordinary portion through existing O2a/finite-source owner; no invented item template ref.",
+      "semantic_type": "fresh_wood_material_portion",
+      "public_name": "стволовая древесина небольшого живого дерева",
+      "admission_class": "common_mundane",
+      "functional_bucket": "other_ordinary",
+      "basis_kind": "finite_source",
+      "access_policy_ref": "m2c_natural_gathering_access_v1",
+      "applicable_family_refs": [
+        "m2c_g5_forest__forest_resource_use__forest_tract",
+        "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "m2c_g5_settlement_landscape__forest_resource_use__forest_tract"
+      ],
+      "initial_quantity": 200,
+      "quantity_unit_ref": {
+        "kind": "unit",
+        "id": "item"
+      },
+      "quantity_unit_source_ref": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref",
+      "initial_amount_bounds": {
+        "minimum": {
+          "numerator": 200,
+          "denominator": 1,
+          "unit": "item"
+        },
+        "maximum": {
+          "numerator": 200,
+          "denominator": 1,
+          "unit": "item"
+        }
+      },
+      "amount_policy": "A finite count of 50 gram ordinary material portions per generated G5/source class. The item unit is the existing ordinary admission unit; portions and total budget are editorial gameplay quantities, not measured landscape abundance.",
+      "stock_representation": "one party_resource_nodes row; no simultaneous ordinary item/background group for the remaining source",
+      "source_identity_fields": [
+        "party_id",
+        "generated_g5_id",
+        "profile_id",
+        "version"
+      ],
+      "placement": {
+        "g6_slot_key": "main",
+        "position_slot_key": "focus",
+        "scene_template_ref": "resolve exact family scene_template_refs"
+      },
+      "extraction": {
+        "minimum_quantity": 1,
+        "maximum_quantity": 100,
+        "quantity_unit": "item",
+        "mass_grams_per_unit": 50,
+        "output_mass_grams": "exact extracted item count multiplied by 50",
+        "decrement": "exact output quantity in item units; source mass decreases by that count multiplied by 50; atomic with output item persistence",
+        "partial_extraction_allowed": true,
+        "tool_and_action_precondition": "validated wood-cutting capability and accessible cutting tool; successful activity result required; no free instant felling",
+        "activity_time": "existing activity owner decides from supported action; no instant extraction or new duration authored here",
+        "failure": "no extraction and no decrement without successful owner-authorized causal result",
+        "depleted": "persist zero/depleted; no return/reload reset",
+        "standing_tree_boundary": "Budget covers harvestable stem wood only, not roots/foliage or an adult timber stand. Felling/result/facts belong to the existing action owner; source permission does not establish success."
+      },
+      "mechanics_policy": {
+        "policy_ref": "m2c_finite_standing_wood_v1:mechanics",
+        "max_mass_grams": 5000,
+        "allowed_external_hand_costs": [
+          2
+        ],
+        "allowed_carry_forms": [
+          "long"
+        ],
+        "max_packing_slot_cost": 16,
+        "max_quantity": 100
+      },
+      "output_mechanics": {
+        "external_hand_cost": 2,
+        "carry_form": "long",
+        "packing_slot_cost": 16,
+        "mass_grams_per_unit": 50
+      },
+      "provenance": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "low",
+        "confidence_scope": "ordinary local source reconstruction and conservative gameplay quantity/packing policy",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high",
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+          "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+          "src_gameplay_physical_policy_v3",
+          "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json#/o2a_context_bound/capability/quantity_unit_ref"
+        ],
+        "applicability": {
+          "region": "Novgorod land",
+          "period": "1230",
+          "functions": [
+            "forest_tract",
+            "pine_ridge"
+          ],
+          "environment": "harvestable stem wood of one small ordinary living tree"
+        },
+        "limits": "The source form and numeric budget are newly authored gameplay data requiring independent approval. Existing natural context supports plausibility, not an exact local stand or measured mass. No historical rights, exact species, named tree, wreck or hidden material are asserted. The 50 gram portion size is a new editorial gameplay granularity; the source m22 row supplies only the existing item-unit convention, never clay, scenario scope or permissions."
+      },
+      "mass_grams_per_unit": 50,
+      "initial_mass_grams": 10000
+    }
+  ],
+  "resolved_authority_choices": [
+    {
+      "resource_class": "reeds",
+      "operation": "cut_reeds",
+      "resolution": "Owner-authorized editorial gameplay access policy with explicit committed property/access override",
+      "source": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "high",
+        "confidence_scope": "certainty of the explicit gameplay decision, not historical prevalence",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high"
+      },
+      "policy_ref": "m2c_natural_gathering_access_v1",
+      "stock_and_mechanics_independently_approved": false
+    },
+    {
+      "resource_class": "deadwood",
+      "operation": "gather_deadwood",
+      "resolution": "Owner-authorized editorial gameplay access policy with explicit committed property/access override",
+      "source": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "high",
+        "confidence_scope": "certainty of the explicit gameplay decision, not historical prevalence",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high"
+      },
+      "policy_ref": "m2c_natural_gathering_access_v1",
+      "stock_and_mechanics_independently_approved": false
+    },
+    {
+      "resource_class": "driftwood",
+      "operation": "salvage_driftwood",
+      "resolution": "Owner-authorized editorial gameplay access policy with explicit committed property/access override",
+      "source": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "high",
+        "confidence_scope": "certainty of the explicit gameplay decision, not historical prevalence",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high"
+      },
+      "policy_ref": "m2c_natural_gathering_access_v1",
+      "stock_and_mechanics_independently_approved": false
+    },
+    {
+      "resource_class": "standing_wood",
+      "operation": "cut_standing_wood",
+      "resolution": "Owner-authorized editorial gameplay access policy with explicit committed property/access override",
+      "source": {
+        "source": "https://github.com/PavelSlaven/Novgorod1230/issues/133",
+        "source_detail": "Owner replies in the current M2c task: free collection of reeds, deadwood and driftwood, then live-tree felling including pine; explicit committed parcel rights remain applicable.",
+        "directness": "editorial",
+        "confidence": "high",
+        "confidence_scope": "certainty of the explicit gameplay decision, not historical prevalence",
+        "historical_claim": false,
+        "approval": "pending_independent_gpt_6_astra_high"
+      },
+      "policy_ref": "m2c_natural_gathering_access_v1",
+      "stock_and_mechanics_independently_approved": false
+    }
+  ]
+}

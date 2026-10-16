@@ -101,7 +101,8 @@ test('approved Temporal data imports atomically and idempotently in isolated Pos
     );
   `, { tuples: true });
   assert.equal(committedCounts.status, 0, committedCounts.stderr);
-  assert.deepEqual(JSON.parse(committedCounts.stdout), [46, 14, 22, 22]);
+  // Approved Temporal count baseline is sourced from commit 41232421bcef4da821b725911901230adad2e461.
+  assert.deepEqual(JSON.parse(committedCounts.stdout), [47, 15, 22, 22]);
 
   const readerSelect = psql(`
     SET ROLE world_reader;

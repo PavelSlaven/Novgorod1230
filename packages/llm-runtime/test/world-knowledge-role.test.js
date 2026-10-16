@@ -6,9 +6,9 @@ test('World Knowledge planner uses the existing bounded JSON role transport', ()
   const { config } = resolveLlmExecutionConfig({
     scope: 'turn_runtime',
     roleId: TurnRuntimeRoles.WORLD_KNOWLEDGE_QUERY_PLANNER,
-    env: { DEEPSEEK_API_KEY: 'test-key' }
+    env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' }
   });
-  assert.equal(config.model, 'deepseek-v4-flash');
+  assert.equal(config.model, 'qwen3.8-27b-uncensored-w4a16-tp2');
   assert.deepEqual(config.thinking, { type: 'disabled' });
   assert.equal(config.expectedSchema, 'world_knowledge_query_plan_v1');
   assert.equal(config.maxTokens, 20_000);

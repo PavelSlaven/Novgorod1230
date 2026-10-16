@@ -9,10 +9,25 @@ import {
   mergeValidatedKnowledgeMemory,
   resolveAuthoredStatementEvidence,
   resolveEvidenceConclusions,
+  selectBoundedActorContext,
   stripHiddenForNarrator,
   validateMemoryFact,
   validateVisibleContext
 } from '../src/index.js';
+
+test('bounded actor context keeps an early obligation and recent records', () => {
+  const records = Array.from({ length: 30 }, (_, index) => ({
+    id: `memory-${index}`,
+    ...(index === 2 ? { knowledge_status: 'obligation' } : {})
+  }));
+  const selected = selectBoundedActorContext(records, { limit: 6 });
+  assert.deepEqual(selected.map(({ id }) => id), [
+    'memory-0', 'memory-2', 'memory-26', 'memory-27', 'memory-28', 'memory-29'
+  ]);
+  assert.ok(Object.isFrozen(selected));
+  assert.throws(() => selectBoundedActorContext(records, { limit: 0 }),
+    /positive limit/u);
+});
 import {
   createDisabledOrdinaryResolutionCapability,
   projectPlayerSafeOrdinaryResolutionCapability

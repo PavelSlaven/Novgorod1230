@@ -6,7 +6,7 @@ import { resolveLlmExecutionConfig, TurnRuntimeRoles } from
 test('turn runtime resolves the bounded world-process step role', () => {
   const { config: role } = resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId: TurnRuntimeRoles.WORLD_PROCESS_STEP,
-    env: { DEEPSEEK_API_KEY: 'test-key' }
+    env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' }
   });
   assert.equal(TurnRuntimeRoles.WORLD_PROCESS_STEP, 'world_process_step');
   assert.equal(role.expectedSchema, null);
@@ -18,7 +18,7 @@ test('turn runtime resolves the S1 spatial semantic descriptor role', () => {
   const { config: role } = resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId: TurnRuntimeRoles.SPATIAL_SEMANTIC_DESCRIPTOR,
     env: {
-      DEEPSEEK_API_KEY: 'test-key',
+      LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key',
       TURN_SPATIAL_SEMANTIC_DESCRIPTOR_MODEL: 'fixture-s1'
     }
   });

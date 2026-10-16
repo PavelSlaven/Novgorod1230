@@ -149,7 +149,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
       }
       const [boundary, ...queuedBoundaries] = batch.boundaries;
       remainingRefs = queuedBoundaries.map(({ npc_ref: npcRef }) => npcRef);
-      const decision = normalizeNpcDecision(await callPort(
+      let decision = normalizeNpcDecision(await callPort(
         ports.buildNpcResponseDecision,
         { working_state: workingState,
           latest_contribution: latestContribution,
@@ -166,6 +166,8 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
         validatePlan: ports.validateNpcPlan ?? null,
         validateFreshPlan: ports.validateFreshNpcPlan ?? null
       });
+      decision = { ...decision,
+        request: proposal.decision_context?.request ?? decision.request };
       const npcCheck = await resolveNpcContributionSocialCheck({
         plan: proposal.plan,
         request: decision.request,

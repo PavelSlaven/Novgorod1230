@@ -1,0 +1,60 @@
+{
+  "schema": "rus.character_appearance_candidate.v2",
+  "candidate_id": "novgorod_character_appearance_v2_candidate",
+  "version": 2,
+  "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+  "status": "pending_independent_data_review",
+  "import_authorized": false,
+  "production_activation": false,
+  "runtime_selectable_in_canonical_production": false,
+  "generated_by": "tools/world-catalog-workflow/src/generate-character-appearance-v2-content.mjs",
+  "calibration_file": "calibration.md",
+  "datasets": [
+    {
+      "table": "region_appearance_profiles",
+      "file": "datasets/region_appearance_profiles.json",
+      "sha256": "b1d2f8a5129de7f2a7e71cc3f3d4dc33e702eaf301398b6b8df059e302ac5cd1",
+      "source_file": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profiles.json",
+      "source_sha256": "b1d2f8a5129de7f2a7e71cc3f3d4dc33e702eaf301398b6b8df059e302ac5cd1"
+    },
+    {
+      "table": "region_appearance_profile_entries",
+      "file": "datasets/region_appearance_profile_entries.json",
+      "sha256": "aa53d0c3e812a069784e2a16d01b06e41f32b80edf969f6b5f98a52740e42508",
+      "source_file": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json",
+      "source_sha256": "61230c341f418e386f9213b93cf1f7d43c0bf3751a7aab62300cfadec7fa66b5"
+    }
+  ],
+  "source_pins": [
+    {
+      "table": "region_appearance_profile_entries",
+      "file": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profile_entries.json",
+      "sha256": "61230c341f418e386f9213b93cf1f7d43c0bf3751a7aab62300cfadec7fa66b5"
+    },
+    {
+      "table": "region_appearance_profiles",
+      "file": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_appearance_profiles.json",
+      "sha256": "b1d2f8a5129de7f2a7e71cc3f3d4dc33e702eaf301398b6b8df059e302ac5cd1"
+    },
+    {
+      "table": "region_category_options",
+      "file": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_category_options.json",
+      "sha256": "777eab954536900c981bc84f5f496a0e7a5ffcd6ad5a34abc9c166433753862d"
+    },
+    {
+      "table": "region_demographic_profile_entries",
+      "file": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profile_entries.json",
+      "sha256": "a5c5a1e24d24222eda9a77bdc0659533b2cd7aea82db9a36fa34b2e82170e5af"
+    },
+    {
+      "table": "region_demographic_profiles",
+      "file": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profiles.json",
+      "sha256": "9a7fffa8f4e00db21363b2b67c227ca81b460f5803322e32da0a0709bf21c0cd"
+    },
+    {
+      "table": "universal_categories",
+      "file": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets/universal_categories.json",
+      "sha256": "a48cc78b57789967622776863999fa475703766a11edfcd39d3fdf52fff81006"
+    }
+  ]
+}

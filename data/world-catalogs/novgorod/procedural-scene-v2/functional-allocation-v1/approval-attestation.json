@@ -1,0 +1,48 @@
+{
+  "schema": "rus.procedural_functional_allocation_approval_attestation.v1",
+  "decision": "approve_functional_actor_allocation_authoring",
+  "subject_commit_sha": "ec6b711e4d52e7d8dc811506d59bfa015c1ffff8",
+  "request_digest": "763f7fafe888f2ab7f4a40508d81356780fbf041504b04ecfed3851e4b2e49a0",
+  "candidate_ref": "novgorod_procedural_functional_allocation_candidate_001@1",
+  "candidate_digest": "d081e342e8987ed48b8c7464efe8f1799f3038349c0a364890cf32eac1628c77",
+  "authoring_approved": true,
+  "approval_scope": "functional_actor_allocation_authoring_only",
+  "approved_by": "independent_reaudit",
+  "policy_ids": ["fishing_present_actor_functional_allocation_v1"],
+  "source_bindings": {
+    "functional_mapping_candidate_digest": "aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588",
+    "npc_equipment_candidate_digest": "0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181",
+    "final_assert_existing_catalog_digest": "29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1",
+    "final_import_approval_attestation_digest": "0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c",
+    "work_zone_mapping_id": "fishing_work_zone_place_group_v1",
+    "work_zone_mapping_digest": "b2fab6a6bb6fa50ed60bcdfbf163f2134646f3664c8d299906846c102b6f6a5"
+  },
+  "creation_authority": {
+    "policy_id": "fishing_present_actor_functional_allocation_v1",
+    "status": "authoring_approved",
+    "runtime_inventory_owner_validation_required": true,
+    "runtime_item_creation_authorized": false
+  },
+  "runtime_inventory_owner_requirements": {
+    "module": "@rus/items-property",
+    "functions": ["validateInventoryTopology", "calculateInventoryMass", "calculateHandsState", "resolveInventoryLoad"],
+    "input": "persisted_full_actor_inventory_snapshot"
+  },
+  "remaining_gap_codes": ["FUNCTIONAL_RUNTIME_INVENTORY_OWNER_VALIDATION_PENDING", "FUNCTIONAL_CONTAINER_MAPPING_MISSING"],
+  "limits": {
+    "scene_package_id_and_digest_required": true,
+    "exact_work_zone_mapping_required": true,
+    "reuse_before_create_required": true,
+    "cross_layer_reuse_authorized": false,
+    "stock_creation_authorized": false,
+    "resource_node_authorized": false,
+    "import_authorized": false,
+    "runtime_authorized": false,
+    "activation_authorized": false
+  },
+  "import_authorized": false,
+  "runtime_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "attestation_digest": "692960ad7561b60a0793f1f3fb097e757f8975aa91ec42251296edc6213b552a"
+}

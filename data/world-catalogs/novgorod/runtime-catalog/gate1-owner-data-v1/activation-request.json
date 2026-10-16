@@ -1,0 +1,65 @@
+{
+  "schema": "rus.gate1_v5_v6_new_development_activation_request.v1",
+  "status": "pending_independent_runtime_approval",
+  "requested_scope": "new_development_parties_only",
+  "operational_request_schema": "rus.runtime_catalog_activation_request.v2",
+  "operational_request_status": "blocked_until_approved_import_and_exact_readback",
+  "requested_catalog": {
+    "target_revision": {
+      "id": "world_revision_novgorod_1230_item_container_approved_001",
+      "title": "Novgorod 1230 approved item/container catalogue",
+      "effective_from": "1230-01-01",
+      "effective_to": "1250-12-31"
+    },
+    "authoring_approval_request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+    "authoring_approval_candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
+    "authoring_approval_attestation": {
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+      "sha256": "816509df226b1bab8a91a9b3d2b3afee251f925cb169a90633d5676daeb62859"
+    }
+  },
+  "compatible_worlds": [
+    {
+      "release_id": "spatial-v3-production-v5",
+      "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+      "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad",
+      "world_manifest": {
+        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
+        "sha256": "6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c"
+      },
+      "current_release_status": "validated_candidate_not_active",
+      "current_production_activation": false
+    },
+    {
+      "release_id": "spatial-v3-production-v6",
+      "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+      "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+      "world_manifest": {
+        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json",
+        "sha256": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb"
+      },
+      "current_release_status": "validated_candidate_not_active",
+      "current_production_activation": false
+    }
+  ],
+  "prerequisite_request_digest": "38ea4275130afc53a4bf0368c01cc0d18e2304c7373bb510432528a9765e1da3",
+  "requested_permissions": {
+    "import_approved_item_container_catalog": true,
+    "activate_for_new_development_parties_only": true,
+    "production_activation": false,
+    "existing_party_migration": false,
+    "old_save_rematerialization": false,
+    "authoring_only_functional_allocation_runtime_selection": false,
+    "runtime_item_creation": false
+  },
+  "required_independent_decision": "approve_exact_v5_v6_new_development_runtime_activation",
+  "authority": {
+    "approval_attestation_present": false,
+    "import_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "runtime_item_creation_authorized": false
+  },
+  "request_digest": "81435027867fdc0060c117c0afaa4b20ed6cb3650a4f6067855c15e299457f29"
+}

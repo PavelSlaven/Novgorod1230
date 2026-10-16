@@ -49,6 +49,14 @@ export function spatialResult({ consequence, checks, modeResolution,
   const after = movementDestination(consequence);
   const movement = typeof before === 'string' && typeof after === 'string'
     && before !== after ? { movement_committed: true } : {};
+  if (consequence?.status === 'blocked') {
+    // The code is committed by the code owner (blockPlan) into the consequence; never inferred
+    // from the model plan, so the first pass and a replay give the narrator the same outcome.
+    const { movement_blocked_reason_code } = consequence;
+    return movement_blocked_reason_code == null
+      ? { movement_blocked: true }
+      : { movement_blocked: true, movement_blocked_reason_code };
+  }
   const assessment = modeResolution?.decision_trace?.step_traces?.some(
     ({ applied, approved_plan: plan }) => applied === true
       && plan?.resolution === 'direct'

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -12,8 +12,9 @@ import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { readServerConfig } from '../src/config.js';
 
-test('party log preserves shared WK data and marks only real ancestor cycles', async () => {
+test('party log preserves shared WK data and marks only real ancestor cycles', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-alias-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   const log = createPartyLog({ directory });
   const facts = [{ claim_ref: 'claim:shared', runtime_text: 'same supplied fact' }];
   const cyclic = { value: 'kept' }; cyclic.self = cyclic;
@@ -31,8 +32,9 @@ test('server config exposes LOG_DIRECTORY for party logs', () => {
     'D:\\game-logs');
 });
 
-test('party log records complete player flow and detailed LLM trace in one JSONL file', async () => {
+test('party log records complete player flow and detailed LLM trace in one JSONL file', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   let failTurn = false;
   const root = {
     startNewGame: async () => ({
@@ -189,8 +191,9 @@ test('failed turn cannot reuse consumed LLM trace from previous turn', async () 
   assert.equal(failed.llm, undefined);
 });
 
-test('party log excludes custom provider credentials and endpoint', async () => {
+test('party log excludes custom provider credentials and endpoint', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-secret-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   const apiKey = 'SECRET_SENTINEL';
   const baseUrl = 'https://private.example.test/v1';
   const originalFetch = globalThis.fetch;
@@ -252,8 +255,9 @@ test('party log excludes custom provider credentials and endpoint', async () => 
   }
 });
 
-test('party log redacts recursive credentials but preserves gameplay text', async () => {
+test('party log redacts recursive credentials but preserves gameplay text', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-recursive-secret-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
   const log = createPartyLog({ directory });
   const secret = 'nested-secret-sentinel';
   await log.append('party-redacted', {

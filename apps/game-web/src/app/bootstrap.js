@@ -8,8 +8,10 @@ import { removeMatchingPendingOpeningAck, removeStoredPendingOpeningAck,
 import { storedLlmSettings } from './llm-settings-preferences.js';
 import { createLlmSettingsController } from './llm-settings.js';
 import { storedPendingTurn } from './pending-turn.js';
+import { clearNewGameRequest, newGameRequest } from './pending-new-game.js';
 import { recoverPendingPresentation, submitRecoverableTurn } from './turn-submission.js';
 import { trapOverlayFocus } from './overlay-focus.js';
+import { fillDraftFromMovementButton } from './movement-draft.js';
 export { createTurnRequest, recoverPendingPresentation, submitTurnWithPresentationReplay } from
   './turn-submission.js';
 const PARTY_STORAGE_KEY = 'rus.party_id';
@@ -25,7 +27,7 @@ export function bootstrapGameWeb({
   store.setRememberedPartyId(partyStorage?.getItem?.(PARTY_STORAGE_KEY));
   store.setTheme(storedTheme(partyStorage) ?? preferredTheme());
   store.setLlmSettingsDraft(storedLlmSettings(partyStorage));
-  store.setLlmSettings({ mode: 'local', local_runtime: { ready: false, reasons: ['Проверяется готовность local runtime.'] } });
+  store.setLlmSettings({ mode: 'unconfigured' });
   const llmSettings = createLlmSettingsController({
     root, api, store, storage: partyStorage
   });
@@ -44,7 +46,7 @@ export function bootstrapGameWeb({
     .then((catalog) => store.setScenarios(catalog.scenarios))
     .catch(() => store.setScenarios([]));
   api.getLlmSettings().then((settings) => { store.setLlmSettingsDraft(settings); store.setLlmSettings(settings); })
-    .catch(() => store.setLlmSettings({ mode: 'local', local_runtime: { ready: false, reasons: ['Не удалось проверить local runtime.'] } }));
+    .catch(() => store.setLlmSettings({ mode: 'unconfigured' }));
   root.addEventListener('submit', async (event) => {
     const form = event.target;
     const FormElement = root.ownerDocument.defaultView.HTMLFormElement;
@@ -139,6 +141,7 @@ export function bootstrapGameWeb({
       await startParty({ scenario_id: scenarioButton.dataset.scenarioId });
       return;
     }
+    if (fillDraftFromMovementButton({ target, root, store, isBlocked: flowNavigationBlocked })) return;
     const actionButton = target.closest?.('[data-action-id]');
     if (actionButton && !actionButton.disabled
       && !flowNavigationBlocked(store.getState())) {
@@ -149,9 +152,10 @@ export function bootstrapGameWeb({
   });
 
   async function startParty(input) {
+    const request = newGameRequest(partyStorage, input);
     try {
       store.setLoading();
-      const result = await api.startNewGame(input);
+      const result = await api.startNewGame(request);
       const pendingAck = {
         party_id: result.party_id,
         client_ack_id: `web:${result.party_id}:${Date.now()}`,
@@ -161,6 +165,7 @@ export function bootstrapGameWeb({
       partyStorage?.setItem?.(PARTY_STORAGE_KEY, result.party_id);
       store.setRememberedPartyId(result.party_id);
       store.clearDraft('new_game');
+      clearNewGameRequest(partyStorage, request.request_id);
       store.setScreen(result.screen, {
         openingStatus: 'pending',
         clientAckId: pendingAck.client_ack_id,

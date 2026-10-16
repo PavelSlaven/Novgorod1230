@@ -1,0 +1,77 @@
+{
+  "artifact_type": "canonical_initial_entity_perception_applicability_candidate",
+  "candidate_id": "novgorod_m2c_initial_entity_perception_v1",
+  "version": 1,
+  "status": "data_gap_pending_source_conditions",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "scope": "Exact unchanged canonical authored initial snapshot only",
+  "source_refs": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+      "sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
+      "selector": "initial_placement and initial_perception_rule.actor_initial_state",
+      "directness": "exact_approved_reference",
+      "limit": "Natural-layer source presence and visual_initial_state are not transferred to entities."
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/canonical-initial-candidate.json",
+      "sha256": "3eb2f231ab89b90776f28fcccc905500b014d2c3649687eafd0401dd6be7321b",
+      "selector": "canonical initial composition and runtime profile bindings",
+      "directness": "approved_composition_reference_not_visibility_evidence"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json",
+      "sha256": "50d3dd7e035f2cf5c4524e2bde4ca0915af2526af1da512cd0ac0c9425c39635",
+      "selector": "placement_policy and Stage 16 equipment",
+      "directness": "approved_placement_reference_not_visibility_evidence"
+    }
+  ],
+  "canonical_binding": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "canonical_g5_ref": { "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach", "version": 1 },
+    "scene_template_ref": { "id": "stfv3__g5_route_approach_v1", "version": 1, "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9" },
+    "observer_position_slot": "arrival",
+    "g6_scene_slot": "main",
+    "npc_position_slots": ["focus", "departure"],
+    "position_instance_ordinal": 0,
+    "runtime_entity_binding": "Use exact committed entity_placements for each materialized NPC; compatibility anchor is not position evidence. A slot authorizes neither NPC existence nor visibility."
+  },
+  "perception_owner": {
+    "api": "@rus/presentation/spatial-v3-projection.createSpatialV3VisibilityResolver",
+    "geometry": "Committed active positions, G6, explicit visibility links and current portal states",
+    "light_weather_observer": "Existing initial-state guard and exact approved Temporal/actor inputs",
+    "entity_current_conditions": null,
+    "recognition_evidence": null,
+    "rule": "Resolve every actual entity with its own factual stable_cover, dynamic_occlusion and concealment. Missing data is a typed gap. Same G6, position or anchor does not supply these conditions."
+  },
+  "item_boundary": {
+    "own_carried_items": "Existing safe inventory projection may expose known owned/held garments from committed Stage 16 placements.",
+    "other_actor_equipment": "Requires the holder's admitted perception and the item's actual exterior placement/access state; no automatic identity or contents disclosure.",
+    "ground_items": "Require exact committed placement and their own current visual source conditions. No stock class is an item instance."
+  },
+  "missing_owner_inputs": [
+    "Exact current per-entity stable_cover, dynamic_occlusion and concealment from an authoritative state owner or separately approved authored initial entity state",
+    "Player-safe full and partial appearance/recognition facts; objective NPC name, role, origin, activity or intention does not establish player knowledge",
+    "Current source admission for ground items and visible exterior equipment"
+  ],
+  "runtime_gate": {
+    "code": "SCENE_ENTITY_PERCEPTION_DATA_GAP",
+    "reason": "current_entity_visual_conditions_and_recognition_required",
+    "absence_is_not_invisibility": true,
+    "absence_is_not_empty_scene": true
+  },
+  "provenance": {
+    "directness": "source_boundary_analysis",
+    "historical_claim": false,
+    "current_observation_claim": false,
+    "editorial_initial_conditions_added": false
+  },
+  "review_request": {
+    "role": "independent_data_approver",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "scope": "Exact applicability and unresolved source boundary only; this candidate cannot authorize runtime visibility while required conditions are absent."
+  }
+}

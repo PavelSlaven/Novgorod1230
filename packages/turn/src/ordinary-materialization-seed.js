@@ -21,6 +21,8 @@ export async function resolveOrdinaryMaterializationSeedScope({
   request, ordinaryMaterializationModel, workingProjection, basisCatalog,
   allowedDisclosurePolicyRefs, resolveIdentityBudget,
   semanticContext = null,
+  partyClock = null,
+  historicalEvents = undefined,
   repairAvailable = () => true
 } = {}) {
   assertSeedRequest(request);
@@ -32,7 +34,7 @@ export async function resolveOrdinaryMaterializationSeedScope({
   const normalizedWorkingProjection = assertMatchingWorkingScope(
     safeRequest, workingProjection);
   let rawPlan = await invokeModel(ordinaryMaterializationModel, safeRequest,
-    modelContext(null, semanticContext), false);
+    modelContext(null, semanticContext, partyClock, historicalEvents), false);
   let errors = validateOrdinaryMaterializationPlanV1(rawPlan, safeRequest);
   let repaired = false;
   if (errors.length !== 0) {
@@ -45,7 +47,7 @@ export async function resolveOrdinaryMaterializationSeedScope({
     rawPlan = await invokeModel(ordinaryMaterializationModel, safeRequest,
       modelContext({ schema: 'ordinary_materialization_repair_context_v1',
         original_output: safeModelOutput(rawPlan), validation_errors: errors },
-      semanticContext), true);
+      semanticContext, partyClock, historicalEvents), true);
     errors = validateOrdinaryMaterializationPlanV1(rawPlan, safeRequest);
     repaired = true;
     if (errors.length !== 0) {
@@ -106,9 +108,16 @@ export async function resolveOrdinaryMaterializationSeedScope({
   });
 }
 
-function modelContext(repair, semanticContext) {
-  return semanticContext == null ? { repair } : {
-    repair, semantic_context: immutable(semanticContext)
+function modelContext(repair, semanticContext, partyClock = null,
+  historicalEvents = undefined) {
+  return {
+    repair,
+    ...(semanticContext == null ? {} : {
+      semantic_context: immutable(semanticContext)
+    }),
+    ...(partyClock == null ? {} : { clock: immutable(partyClock) }),
+    ...(Array.isArray(historicalEvents)
+      ? { historical_events: immutable(historicalEvents) } : {})
   };
 }
 

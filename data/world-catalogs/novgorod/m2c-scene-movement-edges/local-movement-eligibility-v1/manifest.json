@@ -1,0 +1,52 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+  "bundle_id": "novgorod_m2c_local_movement_eligibility_v1",
+  "bundle_kind": "dependency_closure",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "status": "approved",
+  "provenance_ref": "m2c_local_movement_eligibility_editorial_v1",
+  "delete_policy": "forbid",
+  "datasets": [
+    {
+      "table": "source_records",
+      "file": "datasets/source_records.json",
+      "sha256": "071bcc3db82014914fc9b0306c75d0821172ce3c04ed69a1566bc5ed32735529",
+      "status": "approved",
+      "provenance_ref": "m2c_local_movement_eligibility_editorial_v1",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_authoring_versions",
+      "file": "datasets/spatial_v3_authoring_versions.json",
+      "sha256": "0af4611383800fe8cfe57c7239489dbf0a3d06b8f3458a45d374e0021d5ff17c",
+      "status": "approved",
+      "provenance_ref": "m2c_local_movement_eligibility_editorial_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_v3_nodes",
+      "file": "datasets/spatial_v3_nodes.json",
+      "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a",
+      "status": "approved",
+      "provenance_ref": "m2c_local_movement_eligibility_editorial_v1",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_local_movement_eligibility_profiles",
+      "file": "datasets/spatial_v3_local_movement_eligibility_profiles.json",
+      "sha256": "3923773694dc364f8187eb81edddb2aefa14e6bd122e91e49c51cd4798f65c75",
+      "status": "approved",
+      "provenance_ref": "m2c_local_movement_eligibility_editorial_v1",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "spatial_v3_authoring_versions"
+      ]
+    }
+  ],
+  "data_gaps": []
+}

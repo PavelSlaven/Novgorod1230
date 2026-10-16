@@ -73,17 +73,17 @@ test('query can explicitly include non-active statuses only when requested', () 
   assert.deepEqual(payload.requested_statuses, ['active', 'proposed']);
 });
 
-test('active-only query excludes proposed classification policy while explicit status selection exposes it', () => {
+test('active query includes active classification policy; proposed-only request does not surface it', () => {
   const query = 'universal category classification policy stable code facet';
-  const activeOnly = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'active']));
-  assert.ok(activeOnly.results.every((item) => item.document_id !== 'universal-category-classification-policy'));
-
-  const explicit = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'proposed', '--limit', '5']));
-  assert.ok(explicit.results.some((item) => item.document_id === 'universal-category-classification-policy'));
+  const activeOnly = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'active', '--limit', '5']));
+  assert.ok(activeOnly.results.some((item) => item.document_id === 'universal-category-classification-policy'));
   assert.equal(
-    explicit.results.find((item) => item.document_id === 'universal-category-classification-policy').status,
-    'proposed'
+    activeOnly.results.find((item) => item.document_id === 'universal-category-classification-policy').status,
+    'active'
   );
+
+  const proposedOnly = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'proposed', '--limit', '5']));
+  assert.ok(proposedOnly.results.every((item) => item.document_id !== 'universal-category-classification-policy'));
 });
 
 test('controls returns a machine-readable successful report', () => {

@@ -19,8 +19,8 @@ const dataset = async (name) => JSON.parse(await readFile(
 ));
 
 test('approved package compiles two independent continuous routes with four segments', async () => {
-  await compileLowerDvinaBoundaryV1({ root, exactHead: process.env.GITHUB_SHA
-    ?? '0a196b3293cc8c87ea52ec55b7bc493b21b03d19' });
+  // The committed candidate pins this exact head; a CI GITHUB_SHA would rewrite tracked files.
+  await compileLowerDvinaBoundaryV1({ root, exactHead: '0a196b3293cc8c87ea52ec55b7bc493b21b03d19' });
   const routes = (await dataset('spatial_v3_world_routes'))
     .filter(({ id }) => id.startsWith('wrv3__lower_dvina_'));
   const points = (await dataset('spatial_v3_world_route_points'))

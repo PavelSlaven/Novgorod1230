@@ -4,11 +4,12 @@ import {
   MaterializationError,
   materializeApprovedActorEquipment
 } from '@rus/materialization';
+import { finalizeProceduralActorEquipment } from './finalize-procedural-actor-equipment.js';
 
 /** Completes an authored party result through the common Stage 16 owner. */
 export function materializeInitialActorEquipment(partyMaterialization) {
   const handoff = partyMaterialization?.initial_actor_equipment_handoff;
-  if (handoff == null) return partyMaterialization;
+  if (handoff == null) return finalizeProceduralActorEquipment(partyMaterialization);
   if (!Array.isArray(partyMaterialization?.immediate?.items)
       || !partyMaterialization?.trace) {
     throw new MaterializationError(
@@ -27,5 +28,5 @@ export function materializeInitialActorEquipment(partyMaterialization) {
     structuredClone(stage16.materialization_run);
   completed.trace.result_digest =
     computeMaterializationEnvelopeDigest(completed);
-  return deepFreeze(completed);
+  return finalizeProceduralActorEquipment(deepFreeze(completed));
 }

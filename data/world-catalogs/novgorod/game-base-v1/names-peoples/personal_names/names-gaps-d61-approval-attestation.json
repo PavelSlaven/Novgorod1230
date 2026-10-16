@@ -1,0 +1,141 @@
+{
+  "schema": "rus.names_gaps_d61_approval.v1",
+  "decision_ref": "D61 (#133, comment 5931406104)",
+  "worktree": "servak:/srv/novgorod-work/worktrees/names-gaps",
+  "approved_by": "claude-opus-5-5 (Opus, independent approver; author: Codex gpt-6-luna)",
+  "approved_on": "2026-10-01",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "approval_semantics": "APPROVE_WITH_LIMITS covers the reviewed content plus exactly the listed required_corrections. The corrections are mechanical (a value given by an already approved derivation rule, a path fix, a version bump). The lead verifies them with deterministic checks (diff limited to the listed fields, validator, builder --check, focused test) and records the new sha256 values; no new judgment pass is needed unless the diff goes beyond the listed corrections.",
+  "packages": {
+    "A_names_pool_additions": {
+      "decision": "APPROVE_WITH_LIMITS",
+      "reviewed_head": "a258dbd93e588c6b356c5d19b524c57ebfdfec93",
+      "reviewed_state": "working tree on top of HEAD (uncommitted modifications)",
+      "files_sha256": {
+        "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/names-gaps-additions.json": "b60fdcd99ebf3d1d4001a26458d9e468f049e1cbd55b0de34678321aec976dcf",
+        "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/name_pool_entries.csv": "4bc2ebf1b9bbe0d93b8bfe37d964f6b4688d5d1dc33d5f6714bd35621832f5d1",
+        "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/b2-name-pool-source.json": "bfb5bffaf582e9d5cc82116dcc9602d849c4994040518301cde747bdfd08aaba",
+        "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/name-pool-report.json": "95bb476c9d13ef470be0e308fe1d582ac97ffe688b58c5b17a9ee6cbf330d070",
+        "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/README.md": "916e75a1776fd4cc105c149f10578a8097db6f15ddc4dd229811b1b9d3456d07"
+      },
+      "tooling_sha256_not_data": {
+        "data/world-catalogs/novgorod/game-base-v1/names-peoples/scripts/build-b2-name-pool.mjs": "2d1eaa2b166582fde46f2b8077376159868bb8d8bc2ada03557a961d7c988e29",
+        "data/world-catalogs/novgorod/game-base-v1/names-peoples/scripts/validate-b2-name-pool.mjs": "f3a46d00edae4c74141b630fbba483c17fe62340039cf7f364c5586b470a8287"
+      },
+      "checks": [
+        "Scope script (HEAD vs working tree): name_pool_entries.csv gains exactly 12 rows and loses or changes none; all 12 are pp_korela ordinary calendar_name_gender (4 male, 8 female), status draft; 349 unique ids and 349 unique form|sex|people.",
+        "Counts per people|sex|class: only pp_korela male/female ordinary changed (0->4, 0->8). The Novgorod control pool is unchanged: pp_novgorod_rus male ordinary 204, female ordinary 62 (monastic/dynastic/significant also unchanged).",
+        "b2-name-pool-source.json: the pools array is semantically identical (whitespace reformat only); additional_entries 1 -> 13, the existing entry is unchanged and 12 new ones match the CSV rows.",
+        "name-pool-report.json: changed only total_entries 337->349, counts, additional_evidence_accounting, names_gaps_additions and 4 typed gaps (fg001_female, fg002_female -> v17_status not_applicable; korela_male 4, korela_female 8 still ordinary_pool_below_10); no typed gap added or removed (48).",
+        "Reproduced in an isolated copy: build-b2-name-pool.mjs regenerates name_pools.csv, name_pool_entries.csv and name-pool-report.json byte-identically; validate-b2-name-pool.mjs PASS entries=349 approved_ordinary_probe=0; --self-test PASS including the 4 new D61 negative cases.",
+        "Sources: L18 = birchbark No. 508 (Janin 1979, book:254935 §242) and L28 = birchbark No. 506 (Janin 1997, book:624953 §1362), both from the estate of the priest and icon painter Olisei Grechin, turn of the 12th-13th c. (§244, §1362). Per Janin §1362 the series consists of baptismal (calendar) names of real commissioners/worshippers, so the names have bearers in a Novgorod record before 1230. L201 = Life of Alexander Nevsky (book:857568 §733), Pelgusy baptized as Philip, 1240. The README claim 'Russian records of the 12th-13th c.' holds.",
+        "Historical judgment: Петр, Феодор, Филипп, Анна, Мариамна, София, Федосия, Улияна, Пелагия, Оводокия and Мирофа are attested baptismal names in Novgorod records c. 1200 and are not anachronistic for 1230-1260. Мирофа is female, consistent with the already approved catalog row nov_name_mirofa_v1 (Chaykina 2006, female calendar names, grade A). The colloquial nominative forms Оводокия (Евдокия) and Улияна are acceptable for an ordinary pool and match the forms already used in the Novgorod pool from the same evidence line.",
+        "Rule application: basis calendar_rule, confidence C, period c1230, period_cap 1260, people_derivation candidate_origin, rule_basis_refs book:849577 §435 (mass baptism of Karelians 1227) + book:857568 §733 (Pelgusy/Philip). Every note says this is a calendar transfer, not a direct ethnic attestation and not a Russian fallback. This matches D61 item 1.",
+        "German/Gotland female gaps: gap_personal_names_fg001_female and fg002_female keep current_count 0 and gain v17_status not_applicable with the D61 reason; the reason explicitly says it is not a claim of historical absence; no invented names were added. v17_applicability pairs for pp_fg001/pp_fg002 female become needed_in_v17=no with the D61 successor ref; male pairs are unchanged apart from JSON reformatting.",
+        "The validator restricts v17_status=not_applicable to exactly these two gap ids."
+      ],
+      "required_corrections": [
+        {
+          "id": "A-RC1",
+          "what": "Change the Korela male name_form 'Павело' to 'Павел' (keep source_form 'Павело') in b2-name-pool-source.json additional_entries, in names-gaps-additions.json calendar_rule_review and in the korela_male gap reason, then rebuild the CSV and report. The id may stay or become ..._pavel_d61_v1.",
+          "why": "'Павело' is an inflected/dialectal form from a list with mixed case endings (Онуфрио, Деметре, Офимию). The approved B2 derivation for the same line already normalizes it: b2-evidence-derivations.tsv row (evidence_line 18) 'Павело -> Павел', which gives the Novgorod pool row nov_name_evidence_l18_06_v1 = Павел. One uniform variant rule applies, and a different display form for the same evidence in the Korela pool is an error."
+        },
+        {
+          "id": "A-RC2",
+          "what": "Fix the broken evidence ref in gap_personal_names_korela_male: 'game-base:names-peoples/sources/sources/book_evidence_m2c_names_b2.csv#source_line=L201' -> 'game-base:names-peoples/sources/book_evidence_m2c_names_b2.csv#source_line=L201' (names-gaps-additions.json and the regenerated name-pool-report.json; 1 occurrence each).",
+          "why": "The path does not resolve, and the validator does not resolve gap evidence_refs, so it was not caught."
+        },
+        {
+          "id": "A-RC3",
+          "what": "Do not commit the file-mode changes 100644->100755 on tools/{cutover,docs-tools,map-maker,shadow-run,world-catalog-workflow}/src/cli.js that are present in the worktree.",
+          "why": "They are outside the package scope and look like a side effect of the environment."
+        }
+      ],
+      "recommendations_non_blocking": [
+        "Apply the calendar rule uniformly across the cited lists: No. 508 also names the bearers Деметре, Офимию and Гюръги, which the approved B2 derivation normalizes to Деметрий, Офимья and Гюрги. Either add them (male 4->6, female 8->9) or record an exclusion reason in calendar_rule_review. The current selection is not explained, and male names matter most for the route-guide context.",
+        "Refresh negative_search_scope.result ('No new entry met all checks...'): it predates D61 and now reads as if it contradicts the 12 new candidates. Add one line saying it refers to direct people attribution only."
+      ],
+      "limits": [
+        "Korela forms are a low-confidence calendar transfer (confidence C), not attestations of Karelian bearers. Both Korela pools stay below 10 (typed gaps remain open), and the pool stays draft and unbound in runtime.",
+        "Dual naming (native name + baptismal name, as with Pelgusy/Philip) is not modelled; only baptismal names are pooled, as D61 says.",
+        "The not_applicable status of the German/Gotland female gaps is valid only together with the promotion of m2c_npc_foreign_merchant_v1@3 (package B). While @2 (sex-unrestricted) is the operational profile, female foreign guests can still materialize, so these gaps must not be treated as closed in any runtime that uses @2. Promote both together.",
+        "The Izhora pool (1 male, 0 female) is outside D61 and unchanged; the calendar rule was not extended to it."
+      ]
+    },
+    "B_d61_foreign_merchant_successor": {
+      "decision": "APPROVE_WITH_LIMITS",
+      "reviewed_head": "a258dbd93e588c6b356c5d19b524c57ebfdfec93",
+      "reviewed_state": "untracked files on top of HEAD",
+      "files_sha256": {
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/candidate-source.json": "3e301f74351dd1e8bc85cf954824e511976af2c43eb04f076e7361ffb54f0df1",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/source-base.json": "892bd806f25939028c7507a35811a6a9f154e4cf14e9dee8a12c827783fbb672",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/spatial_v3_npc_runtime_profiles.json": "eba1bf5b95908f8e80304fa8b02feb3da0a4b08ac7ebf51097fd60362c0a9954",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/spatial_v3_g4_npc_composition_bindings.json": "ec2aa6896ea47244ea1a2a3c459b2447b46e7a7cb362e9bc7be0677bee7f81aa",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/spatial_v3_authoring_versions.json": "88a4cbdf903b4b8c5a36800708d68af055b33ecfe85a19be6304a2c669cc5e2e",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/bundle.json": "3324075012059af0402f56170ae250f082e80f94231e878d97efb56fb1eecdae",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/approval-draft.json": "fc9085559b3180c769d582f01fdc22d4dfd018a9dc4d02622d131fe6526c5b76",
+        "data/world-catalogs/novgorod/m2c-npc/people-d49/d61-candidate/reapproval-request.md": "ca4a4cbaf61d8504e2d2070e7b62f375f2fe17c065e1019f03ec970348adb402"
+      },
+      "tooling_sha256_not_data": {
+        "scripts/build-m2c-people-d61-candidate.mjs": "3be2fc04de6e51c1da44db19f8d040cd1a152f5dadb045b8a990caf87d1e4dc0",
+        "test/spatial-v3/people-d49-d61-candidate.test.js": "cb785637628f310a3b5fe4e1552d3530f64d806b4034c5992bb334a29aafe2ed"
+      },
+      "checks": [
+        "source-base.json approved_profile_v2 deep-equals operational m2c_npc_foreign_merchant_v1@2 (open-capacity-v2-import, the only version there, approved). All 8 composition_rows_v2 are byte-identical (JSON) to the operational composition rows.",
+        "Exactly 8 operational G4 composition bindings reference m2c_npc_foreign_merchant_v1, all at @2. Their g4_id set equals candidate-source composition_g4_ids (8 Lower Dvina xp017_yp026 r2 nodes). Older datasets (m2c-npc/datasets, canonical-initial) reference the same 8 at @1.",
+        "Profile @2->@3 diff is limited to: version, payload.actor_applicability (new; sex_category=[nov_1200_1250_sex_category_male]), payload.clothing_variant_requirements (female_summer/female_cool_seasons removed; the remaining male variants are identical to @2), status (candidate_approval_pending), canonical_digest. The clothing filter follows directly from male-only and matches the precedent of male-only profiles (ferryman, householder) and promote-m2c-open-capacity-v2.mjs.",
+        "Runtime support: packages/materialization generated-npc-bindings.js passes payload.actor_applicability.sex_category to sex_category_applicability; MODULE.md says a single value fixes the identity sex. The mechanism is supported, not a new owner.",
+        "Composition diff vs source rows: only payload.weighted_profile_refs (exactly one entry per row, foreign_merchant @2->@3, weight unchanged; other refs unchanged), status and canonical_digest.",
+        "Only m2c_npc_foreign_merchant_v1 references the regional contexts m2c_npc_regional_gotland_guest_v1 / m2c_npc_regional_german_baltic_guest_v1 in the operational profiles, so @3 covers the whole Gotland/German guest population of the slice.",
+        "Isolation: rg 'd61-candidate|novgorod_m2c_people_d61' finds only the candidate directory, its builder, its test and names-peoples docs/report. scripts/bootstrap-live-world-v17.mjs and data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json do not reference it. The manifest sha256 equals the pinned 1e7afc22... (bootstrap line 49 and source-base). people-d49/candidate.json, approval.json and reapproval-request.md are tracked and unmodified.",
+        "builder --check passes (outputs byte-stable); node --test test/spatial-v3/people-d49-d61-candidate.test.js: 2/2 pass; the worktree status is unchanged after the checks.",
+        "Authoring rows: 10, and canonical_digest/status equal the corresponding profile/composition rows."
+      ],
+      "required_corrections": [
+        {
+          "id": "B-RC1",
+          "what": "Give the 8 changed G4 composition bindings a new version (id@3, superseding approved @2) instead of rewriting @2: version 3 in spatial_v3_g4_npc_composition_bindings.json and in the matching spatial_v3_authoring_versions.json rows, then recompute digests. Extend the test to assert (a) composition version = source version + 1, (b) composition_rows_v2 deep-equal the operational rows, (c) the operational set of compositions that reference foreign_merchant equals composition_g4_ids, (d) the manifest file sha256 equals base_operational_manifest_sha256.",
+          "why": "The candidate rows keep id@2 but change payload, status and canonical_digest (for example zaostrovye_landing: operational @2 b18ddfbf43b5 vs candidate @2 b75387837e28). spatial_v3_g4_npc_composition_bindings and spatial_v3_authoring_versions have PRIMARY KEY (id, version) / (entity_kind, entity_id, version). On import this either collides or rewrites committed approved data. The project precedent bumped compositions @1->@2 when the profile ref moved @1->@2 (m2c-npc/datasets vs open-capacity-v2-import)."
+        }
+      ],
+      "recommendations_non_blocking": [
+        "Align actor_applicability with the existing vocabulary: precedent profiles use sex_basis 'editorial' (or another token) and confidence 'C'. @3 has a prose sex_basis and confidence 'low'. Move the prose into a note or source_refs before promotion.",
+        "@3 row status is candidate_approval_pending, but payload.status stays 'approved' (copied from @2). Mirror the pending state or document that payload.status is set at promotion.",
+        "At promotion, record the D61 sex applicability in the authoring owner as well (game-base occupations-activities npc_runtime_profiles: profile- or subject-level actor_applicability for m2c_npc_foreign_merchant_v1), so that a rebuild from game-base does not drop it, and add a D61 provenance/source record instead of reusing m2c_npc_editorial_001 unchanged."
+      ],
+      "limits": [
+        "Candidate approval only: import_authorized=false, activation_authorized=false. Import needs a separate operational re-approval of people-d49 at promotion, which must cover the new composition versions, runtime-bindings/activation-inputs refs and the manifest change.",
+        "Male-only is an owner authoring decision (D61; female merchant travel to the Dvina around 1230 is unconfirmed), confidence low. It is not a claim of historical absence of women.",
+        "Promote together with package A's not_applicable female gaps (see A limits); either one without the other leaves an inconsistent state."
+      ]
+    }
+  },
+  "not_checked": [
+    "PostgreSQL import/bootstrap of the candidate (not run by instruction; import not authorized).",
+    "Full repository test suite and CI; only the names-peoples validator/self-test, the reproducible build in a temp copy, the D61 builder --check and the focused D61 test were run.",
+    "Quote existence for book:624953 §1362, book:254935 §242, book:857568 §733 and book:849577 §435 was taken from the lead's verification; I re-read §236-252 (254935) and §1358-1366 (624953) for dating and context only. book:849577 §435 and book:681281 §419 were not re-opened.",
+    "Original birchbark editions (gramoty.ru / NGB volumes) were not consulted for the exact case analysis of 'Павело'; A-RC1 rests on the project's own approved B2 normalization.",
+    "codebase-memory-mcp was not used (servak worktree, read-only data review); navigation used rg and direct reads."
+  ],
+  "mechanical_continuation": {
+    "required": "A: normalized name_form «Павел» (source_form stays «Павело»); evidence path sources/sources/ -> sources/. B: the 8 candidate G4 composition bindings and their authoring rows move to version 3 (refs to profile @3, @2 snapshot unchanged); test checks the @2 snapshot against the operational rows, the exact set of 8 G4, versions and the operational manifest sha256.",
+    "applied_in": "fleet/names-gaps worktree, DONE-names-gaps-7 (2026-10-01)",
+    "accepted_by": "lead reviewer (claude-opus-5-5), deterministic check; no new Opus pass per this attestation",
+    "acceptance_results": [
+      "name_pool_entries.csv: korela row nov_name_korela_calendar_pavelo_d61_v1 has name_form «Павел»; no 'sources/sources/' path left in personal_names/",
+      "d61-candidate spatial_v3_g4_npc_composition_bindings.json: 8 rows, all version 3",
+      "git diff HEAD of people-d49 candidate.json, approval.json, reapproval-request.md and promote-m2c-open-capacity-v2.mjs: empty",
+      "build-m2c-people-d61-candidate.mjs --check: PASS (2 profiles, 8 compositions, 10 authoring rows, import and runtime not authorized); people-d49-d61-candidate.test.js 2/2; validate-b2-name-pool --self-test PASS"
+    ],
+    "post_continuation_sha256": {
+      "names-gaps-additions.json": "0e97940f4ea5eda6148a94a8986b15dd3f64014c1293872b4234f4ec77288f64",
+      "b2-name-pool-source.json": "f4bf54728688f389483de214ec1b3c1146a5fdc1dd32183d6d4204a1bda58418",
+      "name_pool_entries.csv": "c93b00b4705902ed5d01f1e8a37de6b68ed839f137c92b5d6833bc75ef885004",
+      "name-pool-report.json": "258c071305a7791aea50a11e455bbcf29bd555020c6d3cf3d77baab6b23f8d3c",
+      "d61 spatial_v3_g4_npc_composition_bindings.json": "429c3662910e810b2c7f92ade2373563caa27f9efa85657f06bf95a69e5dc543",
+      "d61 spatial_v3_authoring_versions.json": "06a34cdc8fe0b834222b677213afa62e502ec5528d89d753d47f2087f85cd813",
+      "d61 bundle.json": "39900982f6db0edb39d45975ac621db07b81f2e46388be85b520506e25c6d8e3"
+    }
+  }
+}

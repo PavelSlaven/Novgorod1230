@@ -1,0 +1,57 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-process-gap-v1-asperity-contact-wear",
+      "claim_ref": "claim:static-asperity-contact-can-cause-local-stress-and-wear",
+      "claim_digest": "84ca030257aec545ab40ebe70d6341898cda00fdbf45820d42dde414c788849c",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-process-gap-v1.json#claim:static-asperity-contact-can-cause-local-stress-and-wear",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1228 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-process-asperity-contact-wear"],
+      "review_ref": "verification/static-process-gap-v1.md#approved-process-premises",
+      "verdict": "APPROVE",
+      "limits": "Conditional contact mechanism only; actual stress, wear, deformation, and failure remain dependent on load, geometry, motion, surface, and lubricant conditions."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-process-gap-v1-nonhydraulic-lime-carbonation",
+      "claim_ref": "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+      "claim_digest": "bfad503d94be3282833f5a82d9dc74a16bffe375ed6c0b4119078e458a158a4e",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-process-gap-v1.json#claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1228 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-process-nonhydraulic-lime-carbonation"],
+      "review_ref": "verification/static-process-gap-v1.md#approved-process-premises",
+      "verdict": "APPROVE",
+      "limits": "Chemical mechanism only; it does not attest lime, limestone, fuel, kiln technology, mortar practice, or material availability in a place or period."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-process-gap-v1-hydraulic-lime-water-crystals",
+      "claim_ref": "claim:static-hydraulic-lime-can-initially-set-with-water",
+      "claim_digest": "ceb2b0587a1134352f55cf92378cb7e220ef0356beb0ae4666e1c08dd6c261da",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-process-gap-v1.json#claim:static-hydraulic-lime-can-initially-set-with-water",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1228 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-process-hydraulic-lime-water-crystals"],
+      "review_ref": "verification/static-process-gap-v1.md#approved-process-premises",
+      "verdict": "APPROVE",
+      "limits": "Conditional chemical mechanism only; it supplies no formulation, quantity, curing outcome, historical availability, or construction-performance guarantee."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-process-gap-v1-wood-ash-variable-ph",
+      "claim_ref": "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
+      "claim_digest": "fece436e7221d43df527addab9345c8d603d609a1583c2c1421ff8ac4274deab",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-process-gap-v1.json#claim:static-wood-ash-ph-raising-effect-varies-by-sample",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1228 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-process-wood-ash-variable-ph"],
+      "review_ref": "verification/static-process-gap-v1.md#approved-process-premises",
+      "verdict": "APPROVE",
+      "limits": "Sample-dependent qualitative effect only; no application rate, soil outcome, safety, or agricultural recommendation follows."
+    }
+  ]
+}

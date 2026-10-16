@@ -1,0 +1,24 @@
+{
+  "schema": "rus.live_world_runtime.m2c_finite_stage_b_runtime_cutover_approval.v1",
+  "decision": "APPROVE_RUNTIME_SELECTION",
+  "reviewed_on": "2026-09-24",
+  "reviewed_head": "ba732a10df6919d00efb6bbdbbe14ae59cd96765",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/m2c-finite-only-ordinary-stage-b-successor-candidate.json",
+  "candidate_sha256": "9c150ddd45dccef1a73cb175ffdec4d322b003ecc4507818dc5e576fda38894c",
+  "source_probe_path": "data/world-catalogs/novgorod/live-world-runtime-v17/m2c-stage-b-source-access-probes.json",
+  "source_probe_sha256": "468c87746d949cb0bc06f12ffa5cfd6a672f3403bab992c21450ac324dfd5825",
+  "qualification_report_path": "data/model-evals/live-world-runtime-v17-finite-stage-b-qualification-pass.json",
+  "qualification_report_sha256": "3c4d57e0016d510de03a4b8c5e18a1e308e4185be53742302d8c83aced2d81cf",
+  "model_identity": {
+    "provider": "openai_compatible",
+    "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+    "scope": "turn_runtime",
+    "role_id": "ordinary_materialization",
+    "config_hash": "3f4c09d5416c0c79"
+  },
+  "scope": "M2c generated G5 finite ordinary Stage B, first wave only: reeds, deadwood, driftwood and standing_wood. Exact source and access state owns absence, depletion and denial; model qualifies seven positive semantic results against code-owned mechanics. The recorded 13-case real-provider qualification passed with seven model calls.",
+  "limits": "Approval permits the runtime owner to select this exact successor after pinned profile and committed source readback. It does not select an active binding, import or change production data, migrate parties, authorize berries/fungi/stone sources, or activate the full release.",
+  "runtime_selection_authorized": true,
+  "active_binding_changed": false,
+  "production_db_authorized": false
+}

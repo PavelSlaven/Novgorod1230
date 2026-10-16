@@ -1,0 +1,15 @@
+[
+  {
+    "id": "env.open_water",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "environment_class_id": null,
+    "permanent_cost_basis_id": null,
+    "dynamic_environment_rule_set_id": null,
+    "dynamic_environment_rule_set_version": null,
+    "definition": "open_water: authored for m2c-lines-v1 as a copy of env.main_river_channel (assumption, no open-water record exists)",
+    "status": "approved",
+    "provenance_ref": "m2c_lines_v1_candidate",
+    "canonical_digest": "b45e64ebb19c433d180deb368361d519cbb63ee90b62f1b7c5690bf8a4ad0887"
+  }
+]

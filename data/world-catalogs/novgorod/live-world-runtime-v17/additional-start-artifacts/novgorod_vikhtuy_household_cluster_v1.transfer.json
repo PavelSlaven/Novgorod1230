@@ -1,0 +1,135 @@
+{
+  "schema": "rus.target_start_player_transfer_candidate.v1",
+  "candidate_id": "novgorod_vikhtuy_household_cluster_v1_player_transfer_v1",
+  "version": 1,
+  "status": "pending_independent_data_approval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target_start": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_household_cluster_v1.start.json",
+    "sha256": "1ed6e526c5e0e4930575d7403e028117c995ee58136c1c7f137ecd4cbf46bec6",
+    "scenario_id": "novgorod_vikhtuy_household_cluster_v1",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e"
+  },
+  "requested_approval_scope": [
+    "Exact new player-character applicability of the body transfer below.",
+    "Exact new player-character applicability of the existing ordinary actor attribute profile and forest_hunting mapping through its existing seeded owner.",
+    "Exact new player-character applicability of the three pinned summer clothing entries, ownership, equipped placement and visual profiles below."
+  ],
+  "applicability": {
+    "actor_kind": "player_character",
+    "actor_slot_ref": "player",
+    "scenario_id": "novgorod_vikhtuy_household_cluster_v1",
+    "role_ref": "nov_role_forest_promyslovik",
+    "occupation_ref": "nov_occ_forest_worker",
+    "sex_category": "male",
+    "age_category": "adult",
+    "legal_status": "free",
+    "social_status_band": "low_middle",
+    "season": "summer",
+    "existing_actor_policy": "preserve_committed_snapshot",
+    "directness": "explicit_editorial_player_initial_condition",
+    "historical_person_claim": false,
+    "limits": "The legal and status conditions are authored for this new player only. Neither occupation nor appearance establishes these facts for another person."
+  },
+  "body_transfer": {
+    "source_path": "data/world-catalogs/novgorod/first-playable-v1/catalog.json",
+    "source_sha256": "03b866679392eee2c68605965744a7d1be3e6aeb6ccf2a98132e288cbffa44b3",
+    "source_pointer": "/character_candidate_sets/player_boatman/body_profile_candidates/0",
+    "profile_id": "body_ready_traveller_v1",
+    "metrics": {
+      "health": 100,
+      "energy": 80,
+      "satiety": 70
+    },
+    "active_conditions": [],
+    "directness": "explicit_transfer_of_approved_gameplay_metrics_to_new_player",
+    "confidence": "medium",
+    "limits": "Initial gameplay condition only. No boatman occupation, historical health observation, journey, language, skills, memory or knowledge scope is transferred."
+  },
+  "attribute_transfer": {
+    "source_path": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/candidate.json",
+    "source_sha256": "e3d24c12ab778b621f741d1c92bc43cb7c3d4f393686dc9bfc701102f9e1137a",
+    "authoring_approval_path": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/authoring-approval-attestation.json",
+    "authoring_approval_sha256": "2e6549866c614cf4c2810a6e5e15d5236e5ae4f1ae560603df048823c445e3e0",
+    "profile_ref": {
+      "id": "novgorod_ordinary_actor_base_attributes_v1",
+      "version": 1,
+      "digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7"
+    },
+    "occupation_archetype_id": "forest_hunting",
+    "owner": "materializeActorBaseAttributes",
+    "algorithm_version": "actor_base_attributes_v1",
+    "rng_version": "mulberry32_v1",
+    "seed_policy": "Use exact world tuple, existing new-game parent seed digest and actor_slot_ref=player. Preserve generated profile ref, values, seed basis, choices and trace. Do not author an anonymous constant attribute array or copy an NPC instance.",
+    "directness": "explicit_editorial_extension_of_approved_ordinary_actor_profile_to_player",
+    "confidence": "medium",
+    "limits": "No historical population or occupation measurement is claimed. Requires the exact approved target actor runtime pin before use; this transfer cannot activate a catalog."
+  },
+  "clothing_transfer": {
+    "source_path": "data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json",
+    "source_sha256": "50d3dd7e035f2cf5c4524e2bde4ca0915af2526af1da512cd0ac0c9425c39635",
+    "source_profile_id": "m2c_npc_ordinary_personal_clothing_v1",
+    "source_variant_id": "m2c_npc_clothing_male_summer_v1",
+    "source_approval_path": "data/world-catalogs/novgorod/m2c-sol-data-approval.json",
+    "source_approval_scope": "npc_runtime_raw_approval",
+    "equipment_entries": [
+      {
+        "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+        "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+        "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+        "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+        "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+        "equipment_slot_category_id": "base_garment"
+      },
+      {
+        "item_template_ref": "item_tpl_nov_trousers_v1",
+        "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+        "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+        "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+        "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+        "equipment_slot_category_id": "lower_garment"
+      },
+      {
+        "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+        "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+        "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+        "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+        "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+        "equipment_slot_category_id": "footwear"
+      }
+    ],
+    "condition_state": "serviceable",
+    "physical_position": "equipped",
+    "legal_status": "owned",
+    "claim_state": "established",
+    "quantity_policy": "Exactly one count unit under each exact approved quantity profile; footwear is the source template unit, not a count of individual feet. No source candidate selection weight is transferred.",
+    "property": {
+      "owner": "player",
+      "holder": "player",
+      "controller": "player",
+      "source_profile_ref": "profile_household_personal_v3",
+      "source_rule_ref": "rule_property_context_household_personal_v1"
+    },
+    "owner": "Stage 16 and existing item/materialization owners",
+    "directness": "explicit_editorial_transfer_of_approved_clothing_authoring_to_new_player",
+    "confidence": "low",
+    "limits": "Only the listed shirt, trousers and low shoes. No tool, weapon, food, money, container, outer garment, detailed ethnicity, silhouette, expensive status sign or property right outside these personal items is granted. Exact source mechanics, visuals and target item pin must be verified before materialization."
+  },
+  "approval_request": {
+    "reviewer_role": "independent_data_approver",
+    "model": "gpt-6-sol",
+    "reasoning": "high",
+    "author_may_approve": false,
+    "decision_requested": "Approve the explicit player applicability above as authoring data only; do not inherit the earlier target-start exclusion as an approval of this transfer.",
+    "approval_attestation": null
+  },
+  "runtime_limits": [
+    "No import or activation authority; exact target item and actor import/activation approvals and readbacks remain mandatory.",
+    "No old-save migration or regeneration of existing player attributes, body or equipment.",
+    "Player appearance and skill/language/knowledge generation remain with their approved owners and are not implicitly transferred by this artifact.",
+    "The target canonical new-game runtime and initial sensory guard must pass their own checks before this scenario becomes available."
+  ]
+}

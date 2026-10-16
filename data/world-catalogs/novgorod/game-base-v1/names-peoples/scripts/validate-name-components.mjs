@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseCsv } from "./build-b2-name-pool.mjs";
@@ -252,6 +254,30 @@ if (process.argv.includes("--self-test")) {
   for (const key of ["army_0094", "army_0954", "army_0955"]) {
     const row = data.ledger.find((item) => item.source_key === key);
     assert.deepEqual([row?.decision, row?.reason, row?.target_refs], ["reject", "non_personal_name_form", ""]);
+  }
+
+  const tempRepo = fs.mkdtempSync(path.join(os.tmpdir(), "names-build-check-"));
+  try {
+    const tempGroup = path.join(tempRepo, "data/world-catalogs/novgorod/game-base-v1/names-peoples");
+    const tempScript = path.join(tempGroup, "scripts/build-personal-names.mjs");
+    const tempNames = path.join(tempGroup, "personal_names");
+    const tempCandidate = path.join(tempRepo, "data/world-catalogs/novgorod/onomastics/candidates/novgorod-1230-1250-v1/candidate.json");
+    fs.mkdirSync(path.dirname(tempScript), { recursive: true });
+    fs.mkdirSync(tempNames, { recursive: true });
+    fs.mkdirSync(path.dirname(tempCandidate), { recursive: true });
+    fs.copyFileSync(path.join(GROUP_DIR, "scripts/build-personal-names.mjs"), tempScript);
+    fs.copyFileSync(path.resolve(GROUP_DIR, "../../onomastics/candidates/novgorod-1230-1250-v1/candidate.json"), tempCandidate);
+    const sentinel = "stale output sentinel\n";
+    for (const name of ["personal_names.csv", "coverage-report.json"]) fs.writeFileSync(path.join(tempNames, name), sentinel);
+    const check = spawnSync(process.execPath, [tempScript, "--check"], { encoding: "utf8" });
+    assert.equal(check.status, 1, "stale --check should exit nonzero");
+    assert.match(check.stderr, /personal_names\.csv is stale/);
+    for (const name of ["personal_names.csv", "coverage-report.json"]) {
+      assert.equal(fs.readFileSync(path.join(tempNames, name), "utf8"), sentinel, `${name} changed during --check`);
+    }
+    console.log("self-test PASS: stale personal-name --check does not write outputs");
+  } finally {
+    fs.rmSync(tempRepo, { recursive: true, force: true });
   }
 }
 console.log(JSON.stringify({ result: "PASS", pools: data.pools.length, entries: data.entries.length, rules: data.rules.length, army_rows: data.army.length, self_test: process.argv.includes("--self-test") }));

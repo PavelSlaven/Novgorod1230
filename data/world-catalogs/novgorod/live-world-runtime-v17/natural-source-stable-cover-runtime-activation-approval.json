@@ -1,0 +1,15 @@
+{
+  "schema": "rus.live_world_runtime.natural_source_stable_cover_runtime_activation_approval.v1",
+  "decision": "ACTIVATE",
+  "decided_by": "ведущий, решение A по fixc2-09 от 2026-10-12",
+  "decided_on": "2026-10-12",
+  "subject": "novgorod_natural_source_stable_cover_v1",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-candidate.json",
+  "candidate_sha256": "5b2fc71f25042e64ea5de8b3256caa33f264baeac4712af49207982a7f1ae41b",
+  "reason": "Отдельное разрешение runtime только для устойчивого покрова природного источника; прочие ограничения исходного APPROVE_DATA_ONLY сохранены.",
+  "decision_quote": "Как итоговый утверждающий (D88/D174; не автор и не промежуточный утверждающий) разрешаю runtime-активацию novgorod_natural_source_stable_cover_v1, кандидат natural-source-stable-cover-candidate.json, SHA-256 5b2fc71f25042e64ea5de8b3256caa33f264baeac4712af49207982a7f1ae41b.",
+  "limits": "Only runtime activation of novgorod_natural_source_stable_cover_v1 under the exact subject/SHA gate is approved. Current source presence, entity-specific cover, observer perception, dynamic occlusion, concealment, turn, weather, scene function, import, and full release are not approved.",
+  "import_authorized": false,
+  "runtime_activation_authorized": true,
+  "release_activation_authorized": false
+}

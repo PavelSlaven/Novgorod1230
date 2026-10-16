@@ -1,4 +1,5 @@
 import {
+  AUTHORED_MATERIALIZER_VERSION,
   MATERIALIZER_VERSION,
   RNG_VERSION
 } from '@rus/materialization';
@@ -6,7 +7,8 @@ import {
 export function assertLowerDvinaTraceExecutionSupport(
   executionIdentity
 ) {
-  if (executionIdentity?.materializer_version !== MATERIALIZER_VERSION
+  if (![MATERIALIZER_VERSION, AUTHORED_MATERIALIZER_VERSION]
+      .includes(executionIdentity?.materializer_version)
     || executionIdentity.rng_algorithm_id !== RNG_VERSION) {
     throw Object.assign(
       new Error(

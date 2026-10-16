@@ -1,0 +1,180 @@
+{
+  "schema": "fleet.b4_s1_data.validator_cli_selftest.v1",
+  "baseline": {
+    "exit_status": 0,
+    "passed": true
+  },
+  "negative_cases": [
+    {
+      "id": "R2-01-foreign-selector",
+      "expected_error": "TARGET_SELECTOR_MISMATCH",
+      "actual_error": "TARGET_SELECTOR_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-02-invented-scene",
+      "expected_error": "CANONICAL_SCENE_REF_MISMATCH",
+      "actual_error": "CANONICAL_SCENE_REF_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-03-wrong-scene-version",
+      "expected_error": "CANONICAL_SCENE_VERSION_MISMATCH",
+      "actual_error": "CANONICAL_SCENE_VERSION_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-04-invented-position",
+      "expected_error": "CANONICAL_POSITION_RECORD_MISMATCH",
+      "actual_error": "CANONICAL_POSITION_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-05-wrong-movement-number",
+      "expected_error": "CANONICAL_MOVEMENT_RECORD_MISMATCH",
+      "actual_error": "CANONICAL_MOVEMENT_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-06-invented-g6-enclosure",
+      "expected_error": "CANONICAL_G6_RECORD_MISMATCH",
+      "actual_error": "CANONICAL_G6_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-07-fabricated-visibility",
+      "expected_error": "CANONICAL_VISIBILITY_NOT_AUTHORED",
+      "actual_error": "CANONICAL_VISIBILITY_NOT_AUTHORED",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-08-extra-property-payload",
+      "expected_error": "CANDIDATE_UNKNOWN_KEY",
+      "actual_error": "CANDIDATE_UNKNOWN_KEY",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-09-invented-gap-selector",
+      "expected_error": "GAP_SELECTOR_MISMATCH",
+      "actual_error": "GAP_SELECTOR_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-10-unknown-gap-reason",
+      "expected_error": "GAP_REASON_UNKNOWN",
+      "actual_error": "GAP_REASON_UNKNOWN",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-11-missing-required-pin",
+      "expected_error": "SOURCE_PIN_SET_MISMATCH",
+      "actual_error": "SOURCE_PIN_SET_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R2-12-approved-candidate",
+      "expected_error": "CANDIDATE_STATUS_INVALID",
+      "actual_error": "CANDIDATE_STATUS_INVALID",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R1-13-negative-array-index",
+      "expected_error": "SOURCE_POINTER_INVALID",
+      "actual_error": "SOURCE_POINTER_INVALID",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R1-14-pointer-out-of-range",
+      "expected_error": "SOURCE_POINTER_UNRESOLVED",
+      "actual_error": "SOURCE_POINTER_UNRESOLVED",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R1-15-wrong-source-path",
+      "expected_error": "SOURCE_PATH_MISMATCH",
+      "actual_error": "SOURCE_PATH_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R1-16-wrong-record-version-pointer",
+      "expected_error": "SOURCE_RECORD_MISMATCH",
+      "actual_error": "SOURCE_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R5-17-start-source-status",
+      "expected_error": "CANONICAL_START_STATUS_MISMATCH",
+      "actual_error": "CANONICAL_START_STATUS_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R5-18-start-candidate-status",
+      "expected_error": "CANONICAL_START_STATUS_MISMATCH",
+      "actual_error": "CANONICAL_START_STATUS_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "R5-19-start-source-path",
+      "expected_error": "CANONICAL_START_SOURCE_PATH_MISMATCH",
+      "actual_error": "CANONICAL_START_SOURCE_PATH_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "P2-20-expansion-v1-generation-ref",
+      "expected_error": "SOURCE_RECORD_MISMATCH",
+      "actual_error": "SOURCE_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "P2-21-expansion-v1-scene-ref",
+      "expected_error": "SOURCE_RECORD_MISMATCH",
+      "actual_error": "SOURCE_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "P2-22-expansion-v1-topology",
+      "expected_error": "SOURCE_RECORD_MISMATCH",
+      "actual_error": "SOURCE_RECORD_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    },
+    {
+      "id": "P2-23-expansion-v1-gap-pointer",
+      "expected_error": "EXPANSION_V1_GAP_EVIDENCE_MISMATCH",
+      "actual_error": "EXPANSION_V1_GAP_EVIDENCE_MISMATCH",
+      "exit_status": 1,
+      "matched": true
+    }
+  ],
+  "negative_case_count": 23,
+  "rejected": 23,
+  "accepted_invalid": 0,
+  "duplicate_source_unit": {
+    "exit_status": 0,
+    "expected": "SOURCE_RECORD_AMBIGUOUS",
+    "passed": true
+  },
+  "model_calls": 0,
+  "passed": true
+}

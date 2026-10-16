@@ -38,6 +38,8 @@ for (const [material, tool, intent, physicalDescription] of [
         /semantic roles come only from action_production[\s\S]*source_refs are changed materials[\s\S]*tool_refs are unchanged implements/u);
       assert.match(call.messages[0].content,
         /carrier fields are code-normalized: item_ref equals the first source_ref[\s\S]*target_refs equal the remaining source_refs followed by tool_refs/u);
+      assert.match(call.messages[0].content,
+        /One-source partial separation has one closed identity topology:[\s\S]*null requested_output_count is the code-owned default of one detached result/u);
       const payload = JSON.parse(call.messages[1].content);
       assert.deepEqual(payload.operations, [{ path: '$.operations.0', operation }]);
       assert.deepEqual(payload.continuation, continuation);

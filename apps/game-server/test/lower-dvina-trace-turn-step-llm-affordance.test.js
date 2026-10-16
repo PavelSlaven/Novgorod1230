@@ -6,6 +6,11 @@ import { assembleTurnStepPlan } from
   '../src/runtime/lower-dvina-trace-turn-step-plan-assembly.js';
 import { request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
+function promptMappings(prompt) {
+  return Object.fromEntries([...prompt.matchAll(/^Сопоставление: ([^\n]+)\n([^\n]+)/gmu)]
+    .map(([, name, json]) => [name, JSON.parse(json)]));
+}
+
 function modelFor(input, operationChoice, extra = {}) {
   return createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
     extra.onPrompt?.(call.messages[0].content);
@@ -35,7 +40,7 @@ test('ordinary sustained action uses semantic activity instead of speech', async
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
     async run(call) {
       assert.match(call.messages[0].content,
-        /ordinary_semantic_activity[\s\S]*first-person action sentence is not spoken words/iu);
+        /ordinary_semantic_activity[\s\S]*Предложение о действии от первого лица не является произнесёнными словами/u);
       return { output: {
         interpretation: { player_goal: action, grounded_attempt: action,
           adaptation: 'literal' },
@@ -76,7 +81,7 @@ test('focused discovery outranks general look and preserves continuation', async
     assert.equal(plan.continuation.remaining_intent, 'then wait.');
   }
   for (const prompt of prompts) assert.match(prompt,
-    /Inspect\/search for a new physical detail is focused perception[\s\S]*use matching available_domain_operations first[\s\S]*A passive look cannot absorb a focused clause[\s\S]*visible_general_look/u);
+    /Осмотр или поиск новой физической подробности — целенаправленное восприятие[\s\S]*сначала используй подходящие available_domain_operations[\s\S]*Пассивный взгляд не поглощает целенаправленную часть намерения[\s\S]*visible_general_look/u);
 });
 
 test('ordinary material prerequisite has an explicit continuation mapping', async () => {
@@ -93,16 +98,22 @@ test('ordinary material prerequisite has an explicit continuation mapping', asyn
     reasonCode: 'ordinary_material_prerequisite',
     onPrompt: (value) => { prompt = value; }
   })(input);
+  const mapping = promptMappings(prompt).ordinary_material_prerequisite;
+  assert.equal(mapping.resolution, 'domain_request');
+  assert.equal(mapping.goal_result, 'pending');
+  assert.deepEqual(mapping.operations.map(({ op, discovery_kind }) => ({ op, discovery_kind })),
+    [{ op: 'request_discovery', discovery_kind: 'inspect' }]);
+  assert.equal(typeof mapping.operations[0].query, 'string');
+  assert.deepEqual(mapping.continuation.depends_on_refs, []);
+  assert.equal(typeof mapping.continuation.remaining_intent, 'string');
   assert.match(prompt,
-    /Mapping: ordinary_material_prerequisite[\s\S]*"query":"<name only the needed ordinary referent, material, or physically connected group>"[\s\S]*"continuation":\{"remaining_intent":"<complete unexecuted acquisition, relocation, transformation, handling, and use intent>"/u);
+    /Если нет подходящей ambient_ordinary_capability или семантически соответствующего пригодного entity_ref предмета[\s\S]*ordinary_material_prerequisite[\s\S]*остаётся лишь чувственным фактом: это не пригодный item ref[\s\S]*continuation\.remaining_intent должен точно равняться request\.remaining_intent[\s\S]*Discovery только раскрывает или материализует[\s\S]*скопированные в его query слова действия не исполняют эти действия/u);
   assert.match(prompt,
-    /Without a matching ambient_ordinary_capability or semantically matching actionable item entity_ref[\s\S]*take\/use\/transform[\s\S]*sensory-only[\s\S]*not an actionable item ref[\s\S]*use ordinary_material_prerequisite[\s\S]*complete unexecuted physical intent[\s\S]*Discovery only reveals or materializes[\s\S]*action words copied into its query never execute/iu);
+    /Эта предпосылка ОБЯЗАТЕЛЬНО имеет приоритет над action_production[\s\S]*Никогда не подменяй названный игроком материал несвязанным inventory, надетым, переносимым или лишь перечисленным item_ref/u);
   assert.match(prompt,
-    /MUST win over action_production[\s\S]*Never substitute an unrelated inventory, worn, held, or merely listed item_ref/u);
+    /Все refs — непрозрачные идентификаторы[\s\S]*только если у этого же ref есть собственная переданная player-safe метка, категория, описание или факты[\s\S]*Чувственный факт без entity_ref не маркирует ни один перечисленный item ref/u);
   assert.match(prompt,
-    /All refs are opaque identifiers[\s\S]*only when that same ref has its own supplied player-safe label, category, description, or facts supporting the match[\s\S]*sensory fact without an entity_ref does not label any listed item ref/u);
-  assert.match(prompt,
-    /request_discovery choice covers only its own fixed query[\s\S]*never select or copy a broad authored inspection/u);
+    /Переданный вариант request_discovery покрывает только собственный фиксированный query[\s\S]*никогда не выбирай и не копируй широкий авторский осмотр/u);
 });
 
 test('action production prompt matches the active qualitative DTO', async () => {
@@ -120,12 +131,66 @@ test('action production prompt matches the active qualitative DTO', async () => 
     } });
   let prompt;
   await modelFor(input, null, { onPrompt: (value) => { prompt = value; } })(input);
+  const mapping = promptMappings(prompt).action_production_preserve_source;
+  const [operation] = mapping.operations;
+  assert.equal(operation.op, 'request_item_use');
+  assert.equal(operation.use_kind, 'other');
+  assert.deepEqual(Object.keys(operation.action_production).sort(), [
+    'identity_mode', 'material_extent', 'origin', 'output_class',
+    'requested_output_count', 'result_class', 'result_descriptor',
+    'source_refs', 'tool_refs'
+  ].sort());
+  assert.deepEqual(Object.keys(operation.action_production.result_descriptor).sort(), [
+    'display_name', 'inscription_text', 'physical_description',
+    'physical_form', 'qualitative_facts', 'removed_physical_fact_refs',
+    'source_fact_delta'
+  ].sort());
+  assert.equal(operation.action_production.identity_mode, 'preserve_source');
+  assert.equal(operation.action_production.result_class, 'ordinary_physical_result');
+  assert.equal(operation.action_production.result_descriptor.display_name, null);
+  assert.deepEqual(operation.action_production.result_descriptor.removed_physical_fact_refs, []);
+  assert.equal(operation.action_production.result_descriptor.source_fact_delta, null);
   assert.match(prompt,
-    /Mapping: action_production_preserve_source[\s\S]*"use_kind":"other"[\s\S]*"result_descriptor":\{"display_name":null,"physical_description":"<visible physical result on preserved item>","qualitative_facts":\["<visible qualitative physical fact>"\],"removed_physical_fact_refs":\[\],"inscription_text":null,"physical_form":"<one allowed physical form or null>","source_fact_delta":null\}/u);
-  assert.match(prompt,
-    /action_production contains exactly source_refs, tool_refs, requested_output_count, identity_mode, origin, result_class, material_extent, result_descriptor, and output_class/u);
+    /В action_production должны быть ровно source_refs, tool_refs, requested_output_count, identity_mode, origin, result_class, material_extent, result_descriptor и output_class/u);
   assert.doesNotMatch(prompt, /request_item_use kind other|output_facts|output_physical_form|fact_removals|independent_outputs":\[\]|preserve_source":true/u);
 });
+
+test('partial direct partition accepts the model-owned closed result class',
+  async () => {
+    const action = 'Отщепляю от найденной щепки тонкую лучину.';
+    const input = request({ root_player_action: action,
+      remaining_intent: action, actor: { actor_ref: 'actor:player' } });
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: {
+        interpretation: { player_goal: action, grounded_attempt: action,
+          adaptation: 'literal' }, resolution: 'domain_request',
+        goal_result: 'pending', activity: { owner: 'semantic',
+          duration_class: 'brief', effort: 'light' },
+        operation_family: null, operation_choice: null,
+        operations: [{ op: 'request_item_use', actor_ref: 'actor:player',
+          item_ref: 'item:chip', use_kind: 'other', target_refs: [],
+          action_production: { source_refs: ['item:chip'], tool_refs: [],
+            requested_output_count: null,
+            identity_mode: 'independent_outputs', origin: 'direct_partition',
+            result_class: 'partial_transformation', material_extent: 'minor',
+            result_descriptor: { display_name: 'тонкая лучина',
+              physical_description: 'тонкая лучина', qualitative_facts: [],
+              removed_physical_fact_refs: [], inscription_text: null,
+              physical_form: 'long', source_fact_delta: {
+                physical_description: 'щепка с отколотым краем',
+                qualitative_facts: [], removed_physical_fact_refs: [],
+                physical_form: 'compact' } }, output_class: 'ordinary_mundane' }
+        }], check: null, continuation: null, clarification: null,
+        direct_result_kind: null, reason_code: 'partial_partition',
+        reason: 'A thin independent part is split from the source.'
+      } }; }
+    } });
+
+    const plan = await model(input);
+    assert.equal(plan.operations[0].action_production.result_class,
+      'partial_transformation');
+    assert.equal(plan.operations[0].action_production.material_extent, 'minor');
+  });
 
 test('movement keeps supplied semantic label', async () => {
   const movement = { op: 'request_movement', actor_ref: 'actor:player', movement_kind: 'route',
@@ -180,7 +245,7 @@ test('authored operation choice exposes its complete semantic scope', async () =
   assert.match(prompt,
     /player_safe_grounding.*semantic_scope.*authored_evidence_investigation.*investigate wreck circumstances/u);
   assert.match(prompt,
-    /select it only when the current step matches that complete purpose and result scope/u);
+    /выбирай его только когда текущий шаг соответствует всей этой цели и области результата/u);
 });
 
 test('ownerless speech prompt preserves its step before the later domain action',
@@ -198,7 +263,7 @@ test('ownerless speech prompt preserves its step before the later domain action'
       onPrompt: (value) => { prompt = value; }
     })(input);
     assert.match(prompt,
-      /utterance without a matching supplied interaction owner[\s\S]*direct player_utterance step[\s\S]*preserve their exact uncovered suffix[\s\S]*intent_paraphrase/u);
+      /Короткий оклик, крик или другая реплика без подходящего переданного владельца взаимодействия[\s\S]*отдельный шаг direct player_utterance[\s\S]*сохрани их точный непокрытый остаток в continuation[\s\S]*intent_paraphrase/u);
   });
 
 test('travel prompt prioritizes supplied movement over unrelated inspection', async () => {
@@ -211,7 +276,7 @@ test('travel prompt prioritizes supplied movement over unrelated inspection', as
     available_domain_operations: [movement, inspect] });
   const model = modelFor(input, 'domain_operation_1_request_movement_route', {
     onPrompt: (prompt) => assert.match(prompt,
-      /travel is the current earliest independently executable action[\s\S]*request_movement reaches its location[\s\S]*Do not substitute inspecting/u)
+      /Если перемещение — самое раннее независимо исполнимое действие[\s\S]*переданный пункт маршрута[\s\S]*не подменяй текущее перемещение общим действием/u)
   });
   assert.deepEqual((await model(input)).operations, [movement]);
 });
@@ -250,13 +315,13 @@ test('active conversation selects exact supplied interaction', async (t) => {
     const model = modelFor(input, 'domain_operation_1_emit_interaction_speech', {
       reasonCode: 'active_conversation', onPrompt: (prompt) => {
         assert.match(prompt,
-          /current earliest owned boundary is speech or a request addressed to the active interlocutor/u);
+          /речь, ответ или вопрос, продолжающий разговор, являются самым ранним независимо исполнимым действием[\s\S]*ОБЯЗАТЕЛЬНО выбери его точный переданный choice_id/u);
         assert.match(prompt,
-          /emit_interaction targeting exactly that entity MUST select its exact supplied choice_id/u);
+          /адресованного точно этому персонажу[\s\S]*ОБЯЗАТЕЛЬНО выбери его точный переданный choice_id/u);
         assert.match(prompt,
-          /explicitly grounded visible addressee overrides a different active interlocutor/u);
+          /Имя или описание роли, прямо подтверждённое текущей видимой проекцией[\s\S]*имеет приоритет над другим active_interlocutor/u);
         assert.match(prompt,
-          /addresses several visible actors[\s\S]*first addressed actor[\s\S]*other addressee in continuation/u);
+          /Если одна речевая просьба адресована нескольким видимым персонажам[\s\S]*выбери первого адресата[\s\S]*сохрани просьбу ко всем остальным адресатам в continuation/u);
       }
     });
     assert.deepEqual((await model(input)).operations, [speech]);

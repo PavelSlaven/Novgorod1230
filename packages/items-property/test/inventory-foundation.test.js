@@ -50,6 +50,54 @@ test('inventory foundation: empty inventory is light, has no mass and two free h
   assert.deepEqual(resolveInventoryLoad({ total_mass_grams: 0, strength: 10 }), { pass: true, load_category: 'light', at_limit: false, errors: [] });
 });
 
+test('inventory foundation: NPC carrier identity covers nested mass, hands, load and slots', () => {
+  const input = state({
+    actor_id: 'npc-1',
+    actor_kind: 'npc',
+    strength: 1,
+    items: [
+      { item_id: 'knife-1', template_id: 'knife', quantity: 1 },
+      { item_id: 'bow-1', template_id: 'bow', quantity: 1 },
+      { item_id: 'coat-1', template_id: 'coat', quantity: 1 },
+      { item_id: 'burden-1', template_id: 'burden', quantity: 1 }
+    ],
+    containers: [{ container_id: 'bag-1', template_id: 'bag' }],
+    item_profiles: { ...profiles, burden: { ...profiles.coat, mass_grams: 5000 } },
+    item_placements: [
+      { item_id: 'knife-1', container_id: 'bag-1' },
+      { item_id: 'bow-1', holder_npc_id: 'npc-1', physical_position: 'hands' },
+      { item_id: 'coat-1', holder_npc_id: 'npc-1', physical_position: 'equipped', equipment_slot_id: 'torso' },
+      { item_id: 'burden-1', holder_npc_id: 'npc-1', physical_position: 'external' }
+    ],
+    container_placements: [{ container_id: 'bag-1', holder_npc_id: 'npc-1', physical_position: 'worn' }]
+  });
+
+  assert.equal(validateInventoryTopology(input).pass, true);
+  assert.equal(calculateInventoryMass(input).total_mass_grams, 7600);
+  assert.deepEqual(calculateHandsState(input), {
+    pass: true, hands_total: 2, hands_used: 1, hands_free: 1, errors: []
+  });
+  assert.equal(resolveInventoryLoad({ total_mass_grams: 7600, strength: 1 }).load_category, 'overloaded');
+  assert.equal(calculateInventoryMass({ ...input, actor_kind: 'character' }).total_mass_grams, 0);
+  assert.equal(calculateInventoryMass({
+    ...input,
+    items: [...input.items, input.items[0]]
+  }).errors[0].code, 'INVENTORY_ITEM_NOT_FOUND');
+  assert.equal(calculateInventoryMass({
+    ...input,
+    item_profiles: { ...input.item_profiles, knife: undefined }
+  }).errors[0].code, 'ITEM_MASS_DATA_GAP');
+
+  const duplicateSlot = {
+    ...input,
+    items: [...input.items, { item_id: 'coat-2', template_id: 'coat', quantity: 1 }],
+    item_placements: [...input.item_placements,
+      { item_id: 'coat-2', holder_npc_id: 'npc-1', physical_position: 'equipped', equipment_slot_id: 'torso' }]
+  };
+  assert.equal(validateInventoryTopology(duplicateSlot).errors[0].code,
+    'INVENTORY_EQUIPMENT_SLOT_OCCUPIED');
+});
+
 test('inventory foundation: normalized graph counts equipment, containers and nested contents once', () => {
   const input = state({
     items: [{ item_id: 'coat-1', template_id: 'coat', quantity: 1 }, { item_id: 'knife-1', template_id: 'knife', quantity: 2 }],
@@ -190,6 +238,27 @@ test('inventory foundation: generic item moves are planned as a validated change
   assert.equal(moved.pass, true);
   assert.deepEqual(moved.change_set.placement_changes[0], { instance_kind: 'item', party_id: partyId, item_id: 'knife-1', container_id: 'pouch-1' });
   assert.equal(planInventoryTransfer({ ...input, operation: 'equip', item_or_container_id: 'knife-1', expected_state_version: 4 }).errors[0].code, 'INVENTORY_EQUIPMENT_SLOT_REQUIRED');
+});
+
+test('inventory foundation: NPC transfer preserves carrier field and derived inventory state', () => {
+  const input = state({
+    actor_id: 'npc-1', actor_kind: 'npc', strength: 10,
+    items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }],
+    item_placements: [{ item_id: 'knife-1', holder_npc_id: 'npc-1', physical_position: 'equipped', equipment_slot_id: 'belt' }]
+  });
+  const result = planInventoryTransfer({ ...input, operation: 'unequip', item_or_container_id: 'knife-1', target_physical_position: 'hands', expected_state_version: 4 });
+  assert.equal(result.pass, true);
+  assert.deepEqual(result.change_set.placement_changes[0], {
+    instance_kind: 'item', party_id: partyId, item_id: 'knife-1',
+    holder_npc_id: 'npc-1', physical_position: 'hands'
+  });
+  assert.deepEqual(result.derived_after, {
+    total_mass_grams: 300, load_category: 'light', hands_used: 1, hands_free: 1
+  });
+  assert.equal(validateInventoryTopology({
+    ...input,
+    item_placements: [result.change_set.placement_changes[0]]
+  }).pass, true);
 });
 
 test('inventory foundation: approved actor transition moves a NPC-held quick item to NPC hands without changing its owner', () => {

@@ -1,4 +1,4 @@
-import { calculatePackingSlots } from '@rus/world-catalog-workflow';
+import { calculatePackingSlots } from '@rus/items-property';
 import { concern } from '../shared/utils.js';
 
 const CAPACITY_POLICY = Object.freeze({ version: 1, mode: 'packing_slots', unit: 'packing_slot' });

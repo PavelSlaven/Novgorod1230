@@ -17,7 +17,8 @@ export const PLAYER_SAFE_VISIBLE_PAYLOAD_KEYS = Object.freeze([
   'player_safe_interruption',
   'allowed_action_affordances'
 ]);
-const playerSafeVisiblePayloadKeySet = new Set(PLAYER_SAFE_VISIBLE_PAYLOAD_KEYS);
+const LIGHT_PHASES = Object.freeze(['daylight', 'civil_dawn', 'civil_dusk', 'night']);
+const playerSafeVisiblePayloadKeySet = new Set([...PLAYER_SAFE_VISIBLE_PAYLOAD_KEYS, 'current_light_phase']);
 const playerSafeEntityKeys = Object.freeze([
   'entity_ref', 'display_label', 'recognition', 'visible_status',
   'observable_cues'
@@ -155,25 +156,17 @@ function validateObservableEquipment(value, path) {
 function validateVisualProfile(value, path) {
   if (!isObject(value)) return [issue('generated_schema_mismatch', path,
     `${path} must be a visible equipment profile.`)];
-  const keys = ['schema', 'version', 'equipment_slot', 'neckline',
+  const keys = ['schema', 'version', 'garment_kind', 'equipment_slot', 'neckline',
     'sleeve_form', 'outer_form', 'visible_fabric', 'trim',
     'main_visible_color', 'secondary_visible_color', 'headwear_kind'];
   const errors = unexpected(value, keys, path);
-  optionalText(value, 'schema', path, errors);
-  if (value.version != null && !Number.isFinite(value.version)) errors.push(
+  if (value.schema !== 'item_visual_profile_snapshot_v1') errors.push(issue(
+    'generated_schema_mismatch', `${path}.schema`,
+    `${path}.schema must be item_visual_profile_snapshot_v1.`));
+  if (value.version !== 1) errors.push(
     issue('generated_schema_mismatch', `${path}.version`,
-      `${path}.version must be finite.`));
-  optionalText(value, 'equipment_slot', path, errors);
-  for (const [key, values] of Object.entries({
-    neckline: PORTRAIT_SPEC_V1_ENUMS.clothing.neckline,
-    sleeve_form: PORTRAIT_SPEC_V1_ENUMS.clothing.sleeve,
-    outer_form: PORTRAIT_SPEC_V1_ENUMS.clothing.outer,
-    visible_fabric: PORTRAIT_SPEC_V1_ENUMS.clothing.fabric,
-    trim: PORTRAIT_SPEC_V1_ENUMS.clothing.trim,
-    main_visible_color: PORTRAIT_SPEC_V1_ENUMS.clothing.main_color,
-    secondary_visible_color: PORTRAIT_SPEC_V1_ENUMS.clothing.secondary_color,
-    headwear_kind: PORTRAIT_SPEC_V1_ENUMS.clothing.headwear
-  })) optionalEnum(value, key, values, path, errors);
+      `${path}.version must be 1.`));
+  for (const key of keys.slice(2)) optionalText(value, key, path, errors);
   return errors;
 }
 
@@ -238,6 +231,7 @@ export function validatePlayerSafeVisiblePayload(value, path = 'visible_payload'
     ...validatePlayerSafeAffordances(value.allowed_action_affordances, `${path}.allowed_action_affordances`)
   );
   if (value.player_safe_interruption != null && !stableId(value.player_safe_interruption)) errors.push(issue('generated_schema_mismatch', `${path}.player_safe_interruption`, `${path}.player_safe_interruption must be null or a non-empty player-safe string.`));
+  if (value.current_light_phase != null && !LIGHT_PHASES.includes(value.current_light_phase)) errors.push(issue('generated_schema_mismatch', `${path}.current_light_phase`, `${path}.current_light_phase must be an approved calendar light phase.`));
   return errors;
 }
 

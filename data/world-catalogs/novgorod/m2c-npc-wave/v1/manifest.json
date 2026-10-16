@@ -1,0 +1,166 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+  "bundle_kind": "dependency_closure",
+  "bundle_id": "novgorod_m2c_npc_wave_v1",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "status": "draft",
+  "provenance_ref": "game_base_v1_m2c_people_81d96576",
+  "delete_policy": "forbid",
+  "datasets": [
+    {
+      "table": "source_records",
+      "file": "datasets/source_records.json",
+      "sha256": "f9b522fef7d5f127fe69857259bb1c0d721c18cc3a2d1e790515c92d79c6be23",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_world_revisions",
+      "file": "datasets/spatial_v3_world_revisions.json",
+      "sha256": "5792b6a25936e581f63fd61d022e4fcb4f5819c9743f27697adbdadc06c4aa05",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "place_families",
+      "file": "datasets/place_families.json",
+      "sha256": "1678a10b7c99ceaf02959e8b9a215cc150e67b22bc92482e44f842e0d18b487c",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions"
+      ]
+    },
+    {
+      "table": "spatial_node_place_family_bindings",
+      "file": "datasets/spatial_node_place_family_bindings.json",
+      "sha256": "7d0c6c92b62964c2eb1c153c059432a9c013cab968e13a87155d04928f04367a",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "presence_rules",
+      "file": "datasets/presence_rules.json",
+      "sha256": "420e40272115d3a38a3807fb4d7c958b357c0b7b4ba127c0da3a22bf0314e63a",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "water_body_presence_facets",
+      "file": "datasets/water_body_presence_facets.json",
+      "sha256": "4ff62558f2b5c9f58cf7efd45cf9c8a4eaeecbd99ca64fbca8f231c60e617e7a",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "npc_relationship_materialization_rules",
+      "file": "datasets/npc_relationship_materialization_rules.json",
+      "sha256": "b20219c39db112cf7f4e1a7e78e75e4236384d4c36cfb352ba6620f57e635f00",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "speech_address_forms",
+      "file": "datasets/speech_address_forms.json",
+      "sha256": "6b6da2ffd9712867c15413e93258126d913b4de7f74efc94f796b2738ab88655",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "household_composition_profiles",
+      "file": "datasets/household_composition_profiles.json",
+      "sha256": "ec4749a5ac1eeae508c6cffd2b0a5d254d69a01702e91abdc7a2d78ada4f3dae",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "slot_instance_variants",
+      "file": "datasets/slot_instance_variants.json",
+      "sha256": "a3d5437886785f5db5d6b90265b85e5eaa81488c02b5c496391e033fbbcd657c",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "fauna_phase_activity_rules",
+      "file": "datasets/fauna_phase_activity_rules.json",
+      "sha256": "b2b7e0fe60ed18c5a2aaabdf05ea58459c3428896f7e0fafec024f2104e96a88",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "npc_schedule_routine_rules",
+      "file": "datasets/npc_schedule_routine_rules.json",
+      "sha256": "518955adff64197fb4e8bfbfec9dd18bb275384d8732bbef6f2d039955d17579",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "place_population_composition_rules",
+      "file": "datasets/place_population_composition_rules.json",
+      "sha256": "75a65bd437b72aad81db2194430c440359968356d28016cc3d270834b516486a",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "spatial_v3_nodes",
+      "file": "datasets/spatial_v3_nodes.json",
+      "sha256": "9af09819a491f4c56af19a2d79c30c9021056c091209a264039503f56c789e5b",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_81d96576",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records",
+        "spatial_v3_world_revisions"
+      ]
+    }
+  ],
+  "data_gaps": []
+}

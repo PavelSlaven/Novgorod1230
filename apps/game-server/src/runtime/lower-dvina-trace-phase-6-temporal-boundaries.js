@@ -3,6 +3,7 @@ import {
 } from '@rus/contracts/spatial-v3/registry';
 import { canonicalDigest } from '@rus/materialization';
 import {
+  normalizeRationalMinutes,
   addElapsedTime,
   subtractGameTimestamp
 } from '@rus/time-events-history';
@@ -144,8 +145,8 @@ function temporalRequest({ state, contracts, executionId, limit,
       active_execution_requires_boundary: false,
       available_event_ids: (state.temporal_boundary_candidates ?? [])
         .map(({ boundary_id: id }) => id),
-      cumulative_elapsed_minutes:
-        Number(priorElapsed(state.phase6_carry_execution)),
+      cumulative_elapsed_minutes: rationalMinutes(
+        priorElapsed(state.phase6_carry_execution)),
       phase6_clock_before: structuredClone(state.clock),
       phase6_state: structuredClone(state)
     },
@@ -206,6 +207,12 @@ function integerElapsed(from, to) {
 
 function priorElapsed(prior) {
   return prior?.cumulative_elapsed_minutes ?? 0;
+}
+
+function rationalMinutes(value) {
+  return normalizeRationalMinutes(typeof value === 'number'
+    ? { numerator: String(value), denominator: '1' }
+    : value);
 }
 
 function fail(code, details = undefined) {

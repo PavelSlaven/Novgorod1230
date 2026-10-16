@@ -17,7 +17,7 @@ async function insertRecord(tx, table, record) {
 
 export async function applySealedLifecycleInsert(tx, write) {
   if (write.target_table === 'party_route_plan_executions'
-      && ['active', 'completed', 'aborted'].includes(
+      && ['active', 'waiting_at_anchor', 'completed', 'aborted'].includes(
         write.record.status
       )) {
     return insertRouteExecution(tx, write.record);
@@ -62,12 +62,15 @@ async function insertTemporalEvent(tx, terminal) {
 }
 
 async function insertRouteExecution(tx, terminal) {
-  const source = (await tx.query(
-    `SELECT source_endpoint_snapshot
-     FROM party_runtime.party_route_plans
-     WHERE id=$1`,
+  const plan = (await tx.query(
+    `SELECT p.source_endpoint_snapshot, s.step_kind
+     FROM party_runtime.party_route_plans p
+     JOIN party_runtime.party_route_plan_steps s
+       ON s.route_plan_id=p.id AND s.ordinal=0
+     WHERE p.id=$1`,
     [terminal.route_plan_id]
-  )).rows[0]?.source_endpoint_snapshot;
+  )).rows[0];
+  const source = plan?.source_endpoint_snapshot;
   if (!source) {
     throw Object.assign(
       new Error('route plan source is unavailable for lifecycle insert'),
@@ -90,72 +93,59 @@ async function insertRouteExecution(tx, terminal) {
     terminal_at_turn: null,
     state_version: 1
   });
-  if (terminal.status === 'active') {
-    return async () => {
-      await tx.query(
-        `UPDATE party_runtime.party_route_plan_executions
-         SET status='active',
-             current_step_ordinal=$2,
-             current_endpoint_ref=NULL,
-             active_travel_state_id=$3,
-             started_at_turn=$4,
-             state_version=2,
-             updated_change_set_id=$5
-         WHERE id=$1 AND status='planned' AND state_version=1`,
-        [
-          terminal.id,
-          terminal.current_step_ordinal,
-          terminal.active_travel_state_id,
-          terminal.started_at_turn,
-          terminal.updated_change_set_id
-        ]
-      );
-      await tx.query(
-        `UPDATE party_runtime.party_route_plan_executions
-         SET state_version=$2,
-             updated_change_set_id=$3
-         WHERE id=$1 AND status='active' AND state_version=2`,
-        [
-          terminal.id,
-          terminal.state_version,
-          terminal.updated_change_set_id
-        ]
-      );
-    };
-  }
   return async () => {
-    await tx.query(
-      `UPDATE party_runtime.party_route_plan_executions
-     SET status='active',
-         current_endpoint_ref=NULL,
-         active_travel_state_id=$2,
-         started_at_turn=$3,
-         state_version=2
-     WHERE id=$1 AND status='planned' AND state_version=1`,
-      [terminal.id, activeTravelStateId, terminal.started_at_turn]
-    );
-    await tx.query(
-      `UPDATE party_runtime.party_route_plan_executions
-     SET status=$2,
-         current_step_ordinal=NULL,
-         current_endpoint_ref=NULL,
-         active_travel_state_id=NULL,
-         final_location_snapshot=$3,
-         abort_reason_code=$4,
-         terminal_at_turn=$5,
-         state_version=$7,
-         updated_change_set_id=$6
-     WHERE id=$1 AND status='active' AND state_version=2`,
-      [
-        terminal.id,
-        terminal.status,
-        terminal.final_location_snapshot,
-        terminal.abort_reason_code,
-        terminal.terminal_at_turn,
-        terminal.updated_change_set_id,
-        terminal.state_version
-      ]
-    );
+    const events = (await tx.query(
+      `SELECT event_ordinal,event_kind,to_status
+         FROM party_runtime.party_route_plan_execution_events
+        WHERE execution_id=$1 AND event_ordinal>0
+        ORDER BY event_ordinal`, [terminal.id])).rows;
+    let status = 'planned';
+    let version = 1;
+    for (const event of events) {
+      if (Number(event.event_ordinal) !== version
+        || event.event_kind === 'activated' && event.to_status !== 'active') {
+        throw Object.assign(new Error('route execution lifecycle event sequence is invalid'), {
+          spatialCode: 'generated_schema_mismatch'
+        });
+      }
+      const final = version + 1 === Number(terminal.state_version);
+      const nextStatus = event.to_status;
+      const stepOrdinal = final ? terminal.current_step_ordinal
+        : (nextStatus === 'completed' || nextStatus === 'aborted' || nextStatus === 'superseded'
+          ? null : 0);
+      const currentEndpoint = final ? terminal.current_endpoint_ref
+        : (nextStatus === 'planned' ? source : null);
+      const activeStateId = final ? terminal.active_travel_state_id
+        : (nextStatus === 'active' ? activeTravelStateId : null);
+      const terminalStatus = ['completed', 'aborted', 'superseded'].includes(nextStatus);
+      const result = await tx.query(
+        `UPDATE party_runtime.party_route_plan_executions
+            SET status=$2,current_step_ordinal=$3,current_endpoint_ref=$4,
+                active_travel_state_id=$5,active_activity_execution_id=NULL,
+                suspension_endpoint_ref=$6,final_location_snapshot=$7,
+                abort_reason_code=$8,started_at_turn=$9,terminal_at_turn=$10,
+                state_version=$11,updated_change_set_id=$12
+          WHERE id=$1 AND status=$13 AND state_version=$14`,
+        [terminal.id, nextStatus, stepOrdinal, currentEndpoint, activeStateId,
+          final ? terminal.suspension_endpoint_ref : null,
+          terminalStatus ? terminal.final_location_snapshot : null,
+          terminal.abort_reason_code, terminal.started_at_turn,
+          terminalStatus ? terminal.terminal_at_turn : null, version + 1,
+          terminal.updated_change_set_id, status, version]);
+      if (result.rowCount !== 1) {
+        throw Object.assign(new Error('route execution lifecycle transition failed'), {
+          spatialCode: 'state_version_conflict'
+        });
+      }
+      status = nextStatus;
+      version += 1;
+    }
+    if (version !== Number(terminal.state_version)
+      || status !== terminal.status) {
+      throw Object.assign(new Error('route execution lifecycle did not reach its sealed result'), {
+        spatialCode: 'generated_schema_mismatch'
+      });
+    }
   };
 }
 
@@ -177,7 +167,9 @@ async function insertActivityExecution(tx, terminal) {
   await insertRecord(tx, 'party_timed_activity_executions', {
     ...terminal,
     cumulative_elapsed_numerator: 0,
+    cumulative_elapsed_denominator: 1,
     remaining_time_numerator: elapsed,
+    remaining_time_denominator: 1,
     next_attempt_ordinal: 0,
     status: 'active',
     state_version: 1,
@@ -215,7 +207,9 @@ async function insertActivityExecution(tx, terminal) {
          next_boundary_at_subminute_numerator=$13,
          next_boundary_at_subminute_denominator=$14,
          terminal_reason_code=$15,
-         progress=$16
+         progress=$16,
+         cumulative_elapsed_denominator=$17,
+         remaining_time_denominator=$18
      WHERE id=$1 AND status='active' AND state_version=1`,
       [
         terminal.id,
@@ -233,7 +227,9 @@ async function insertActivityExecution(tx, terminal) {
         terminal.next_boundary_at_subminute_numerator,
         terminal.next_boundary_at_subminute_denominator,
         terminal.terminal_reason_code,
-        terminal.progress
+        terminal.progress,
+        terminal.cumulative_elapsed_denominator,
+        terminal.remaining_time_denominator
       ]
     );
     if (result.rowCount !== 1) {

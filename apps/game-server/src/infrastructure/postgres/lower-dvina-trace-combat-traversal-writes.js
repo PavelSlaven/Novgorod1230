@@ -63,7 +63,7 @@ function appendTraversal({ inserts, updates, appends, partyId, state, factual,
     appends.push(event(ids.execution_id, 1, 'activated', 'planned', 'active',
       traversal.source_endpoint, changeSetId, idemId, turnNumber));
   }
-  appends.push(intervalRow(interval));
+  appends.push(intervalRow(interval, ids.travel_state_id));
   appends.push(event(ids.execution_id, 2 + interval.interval_ordinal,
     terminal ? 'completed' : stranded ? 'stranded' : 'step_paused', 'active',
     terminal ? 'completed' : stranded ? 'stranded_in_transit' : 'active', terminal
@@ -120,9 +120,10 @@ function staticTraversalContract(route, traversal) {
   risk_profile_ref: null, temporal_boundary_owner: 'movement_route_owner' };
 }
 
-function intervalRow(interval) {
+function intervalRow(interval, travelStateId) {
   return row('party_traversal_interval_results', interval.id, {
     id: interval.id,
+    travel_state_id: travelStateId,
     route_plan_execution_id: interval.route_plan_execution_id,
     plan_step_ordinal: interval.plan_step_ordinal,
     interval_ordinal: interval.interval_ordinal,

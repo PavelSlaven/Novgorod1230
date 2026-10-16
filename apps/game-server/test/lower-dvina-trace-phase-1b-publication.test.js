@@ -20,8 +20,7 @@ import { TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST } from
   '../src/internal/lower-dvina-trace-revision-27-publication.js';
 
 test('publication loader rejects an exact binding digest mismatch', async (t) => {
-  const root = await copyPublicationClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyPublicationClosure(t);
   const path = join(root,
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v20',
     'publication-binding.json');
@@ -65,8 +64,7 @@ test('publication root pin rejects resealed semantic mutations', async (t) => {
       }
     ]
   ]) {
-    const root = await copyPublicationClosure();
-    t.after(() => rm(root, { recursive: true, force: true }));
+    const root = await copyPublicationClosure(t);
     await mutateAndResealPublication(root, mutate);
     await assert.rejects(
       () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
@@ -179,8 +177,7 @@ test('current publication rejects tampered Phase 1A v21 or revision 25 content',
       'TRACE_NPC_ACTOR_STEP_PUBLICATION_INVALID'
     ]
   ]) {
-    const root = await copyPublicationClosure();
-    t.after(() => rm(root, { recursive: true, force: true }));
+    const root = await copyPublicationClosure(t);
     const path = join(root, relative);
     await writeFile(path, `${await readFile(path, 'utf8')} `);
     await assert.rejects(
@@ -213,8 +210,7 @@ test('publication loader rejects resealed dependency and lineage mutations', asy
       }
     ]
   ]) {
-    const root = await copyPublicationClosure();
-    t.after(() => rm(root, { recursive: true, force: true }));
+    const root = await copyPublicationClosure(t);
     await mutateAndResealPublication(root, mutate);
     await assert.rejects(
       () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
@@ -225,8 +221,7 @@ test('publication loader rejects resealed dependency and lineage mutations', asy
 });
 
 test('NPC actor-step loader leaves historical v12 and revision 24 artifacts untouched', async (t) => {
-  const root = await copyPublicationClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyPublicationClosure(t);
   const historical = [
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v12/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v20/manifest.json',
@@ -242,8 +237,7 @@ test('publication cutover rejects mutations of exact superseded packages', async
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v19/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v19/publication-binding.json'
   ]) {
-    const root = await copyPublicationClosure();
-    t.after(() => rm(root, { recursive: true, force: true }));
+    const root = await copyPublicationClosure(t);
     const path = join(root, relative);
     const raw = await readFile(path, 'utf8');
     await writeFile(path, `${raw} `);
@@ -258,8 +252,7 @@ test('publication cutover rejects mutations of exact superseded packages', async
 test('historical recovery resolves only the exact immutable v1 publication', async (t) => {
   const digest =
     'b458b646afe745e4f3eda6308eb3fa18ceeb6867d3f16fe87088d3a96c46e605';
-  const root = await copyPublicationClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyPublicationClosure(t);
   const historical = await loadLowerDvinaTracePhase1BPublication({
     rootDir: root,
     phase1AManifestDigest: digest
@@ -290,8 +283,7 @@ test('historical recovery resolves only the exact immutable v1 publication', asy
 test('historical recovery resolves the exact immutable v2 publication', async (t) => {
   const digest =
     'c6fcf966ff9638d6649eca90fd7ec45c8252620ce02908c4354e9bd934d0f895';
-  const root = await copyPublicationClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyPublicationClosure(t);
   const historical = await loadLowerDvinaTracePhase1BPublication({
     rootDir: root,
     phase1AManifestDigest: digest
@@ -315,8 +307,7 @@ test('historical recovery resolves the exact immutable v2 publication', async (t
 test('historical recovery resolves only the exact immutable v4 publication', async (t) => {
   const digest =
     'dc7e58dfa3382a2a91dd1954c645ad630c8de3b4fb42bdc68888cd72d5fff44f';
-  const root = await copyPublicationClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyPublicationClosure(t);
   const historical = await loadLowerDvinaTracePhase1BPublication({
     rootDir: root,
     phase1AManifestDigest: digest
@@ -338,8 +329,7 @@ test('historical recovery resolves only the exact immutable v4 publication', asy
 });
 
 test('historical revision 11 resolves by its saved Phase 1A manifest digest', async (t) => {
-  const root = await copyPublicationClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyPublicationClosure(t);
   const historical = await loadLowerDvinaTracePhase1BPublication({
     rootDir: root,
     phase1AManifestDigest:
@@ -351,8 +341,7 @@ test('historical revision 11 resolves by its saved Phase 1A manifest digest', as
 });
 
 test('historical v7 publication and revision 12 resolve by their immutable pin', async (t) => {
-  const root = await copyPublicationClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyPublicationClosure(t);
   const digest =
     'b696a7420a3331915a2c00827f455671e54b005fbe29bf6749fa90482f73a10b';
   const historical = await loadLowerDvinaTracePhase1BPublication({
@@ -382,8 +371,7 @@ test('historical v7 publication and revision 12 resolve by their immutable pin',
 });
 
 test('historical recovery rejects an absent or unknown persisted identity', async (t) => {
-  const root = await copyPublicationClosure();
-  t.after(() => rm(root, { recursive: true, force: true }));
+  const root = await copyPublicationClosure(t);
   for (const phase1AManifestDigest of [undefined, '0'.repeat(64)]) {
     await assert.rejects(
       () => loadHistoricalLowerDvinaTracePhase1BPublication({
@@ -395,8 +383,9 @@ test('historical recovery rejects an absent or unknown persisted identity', asyn
   }
 });
 
-async function copyPublicationClosure() {
+async function copyPublicationClosure(t) {
   const root = await mkdtemp(join(tmpdir(), 'trace-phase-1b-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   for (const relative of [
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v20',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v19',

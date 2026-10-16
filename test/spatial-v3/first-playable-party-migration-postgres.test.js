@@ -4,8 +4,20 @@ import { spawnSync } from 'node:child_process';
 import pg from 'pg';
 import {
   runSpatialV3TargetMigrations,
+  SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   SPATIAL_V3_TARGET_MIGRATIONS
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import {
+  spatialV3TargetChainMigrationId
+} from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-chain-ledger.js';
+import { readPostgresSchemaFingerprint } from
+  '../../tools/runtime-catalog-activation/src/forward-migration.js';
+import { runSpatialV3TargetMigrationsForProductionRestart } from
+  '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migration-restart.js';
+import { SPATIAL_V3_PRODUCTION_RELEASE } from
+  '../../apps/game-server/src/composition/production-spatial-v3-release-v16.js';
+import { PARTY_RUNTIME_CATALOG_MIGRATION } from
+  '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input = null) => spawnSync(
@@ -314,3 +326,105 @@ test('011 applies to isolated PostgreSQL and permits transport departure without
   assert.equal(departure.status, 0, departure.stderr);
   assert.match(departure.stdout, /1/u);
 });
+
+test('extended target chain skips re-applying DDL when the head is already current',
+  async (t) => {
+    if (docker(['version']).status !== 0) {
+      t.skip('Docker is required for the isolated PostgreSQL migration gate.');
+      return;
+    }
+    const container = `lower-dvina-party-restart-skip-${process.pid}`;
+    let pool;
+    t.after(async () => {
+      if (pool) await pool.end();
+      docker(['rm', '-fv', container]);
+    });
+    const started = docker([
+      'run', ...testContainerLabel(), '-d', '--name', container,
+      '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=restart_skip_local',
+      '-e', 'POSTGRES_USER=restart_skip',
+      '-e', 'POSTGRES_DB=restart_skip',
+      'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    let ready = false;
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      if (docker([
+        'exec', container, 'pg_isready', '-h', '127.0.0.1',
+        '-U', 'restart_skip', '-d', 'restart_skip'
+      ]).status === 0) {
+        ready = true;
+        break;
+      }
+    }
+    assert.equal(ready, true);
+    const port = Number(docker([
+      'port', container, '5432'
+    ]).stdout.match(/:(\d+)\s*$/u)?.[1]);
+    pool = new pg.Pool({ host: '127.0.0.1', port,
+      user: 'restart_skip', password: 'restart_skip_local',
+      database: 'restart_skip' });
+    for (const sql of SPATIAL_V3_TARGET_MIGRATIONS) {
+      await pool.query(sql);
+    }
+    await pool.query(PARTY_RUNTIME_CATALOG_MIGRATION.sql);
+    await pool.query(`
+      INSERT INTO party_runtime.schema_migrations (
+        migration_id,migration_digest,source_schema_fingerprint,
+        target_schema_fingerprint,applied_by
+      ) VALUES ($1,$2,$3,$4,$5)
+    `, [
+      SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_migration_id,
+      SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_migration_digest,
+      PARTY_RUNTIME_CATALOG_MIGRATION.source_schema_fingerprint,
+      SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_target_fingerprint,
+      'restart-skip-test'
+    ]);
+    const ledgerClient = await pool.connect();
+    try {
+      const targetFingerprint = await readPostgresSchemaFingerprint(
+        ledgerClient,
+        'party_runtime'
+      );
+      await ledgerClient.query(`
+        INSERT INTO party_runtime.schema_migrations (
+          migration_id,migration_digest,source_schema_fingerprint,
+          target_schema_fingerprint,applied_by
+        ) VALUES ($1,$2,$3,$4,$5)
+      `, [
+        spatialV3TargetChainMigrationId(),
+        SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
+        targetFingerprint,
+        targetFingerprint,
+        'restart-skip-test'
+      ]);
+    } finally {
+      ledgerClient.release();
+    }
+    const first = await runSpatialV3TargetMigrationsForProductionRestart(pool, {
+      exactAppliedMigration: {
+        migration_id:
+          SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_migration_id,
+        migration_digest:
+          SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_migration_digest,
+        target_schema_fingerprint:
+          SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_target_fingerprint
+      }
+    });
+    assert.equal(first.execution_mode, 'extended_existing_current');
+    assert.equal(first.newly_applied, 0);
+    const second = await runSpatialV3TargetMigrationsForProductionRestart(pool, {
+      exactAppliedMigration: {
+        migration_id:
+          SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_migration_id,
+        migration_digest:
+          SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_migration_digest,
+        target_schema_fingerprint:
+          SPATIAL_V3_PRODUCTION_RELEASE.party_runtime_catalog_target_fingerprint
+      }
+    });
+    assert.equal(second.execution_mode, 'extended_existing_current');
+    assert.equal(second.newly_applied, 0);
+  });

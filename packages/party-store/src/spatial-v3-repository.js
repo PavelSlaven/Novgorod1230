@@ -1,4 +1,5 @@
 import { computeSpatialV3CanonicalDigest, createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
+import { deepFreeze } from '@rus/kernel';
 
 const RESOURCE_SQL = Object.freeze({
   spatial_state: { table: 'party_runtime.party_journey_locations', id: 'id', order: 'id', versioned: true },
@@ -16,6 +17,84 @@ function text(value) { return typeof value === 'string' && value.trim() ? value.
 
 /** A deliberately non-semantic repository: it only loads or persists declared rows. */
 export function createSpatialV3PartyRepository({ transaction } = {}) {
+  async function loadExpansionState({ party_id, g4_id } = {}, context = {}) {
+    const tx = context.transaction ?? transaction;
+    if (!text(party_id) || !text(g4_id) || !requireTransaction(tx)) {
+      return failure('generated_schema_mismatch', 'party', party_id, {
+        reason: 'party, G4 and active transaction are required'
+      });
+    }
+    // One statement gives every normalized component the same MVCC snapshot.
+    // Mutation callers hold the existing P16 party/G4 locks before this read.
+    const result = await tx.query(`WITH sites AS (
+        SELECT * FROM party_runtime.party_g5_sites WHERE party_id=$1 AND parent_g4_id=$2
+      ), baselines AS (
+        SELECT b.* FROM party_runtime.party_scene_baselines b
+        JOIN sites s ON b.host_kind='g5_site' AND b.host_id=s.id WHERE b.party_id=$1
+      ), g6 AS (
+        SELECT g.* FROM party_runtime.party_g6_instances g
+        JOIN baselines b ON b.id=g.scene_baseline_id WHERE g.party_id=$1
+      ), positions AS (
+        SELECT p.* FROM party_runtime.scene_position_nodes p
+        JOIN g6 g ON g.id=p.g6_instance_id WHERE p.party_id=$1
+      ), connections AS (
+        SELECT c.* FROM party_runtime.g5_site_connections c
+        JOIN sites s ON s.id=c.from_site_id WHERE c.party_id=$1
+      ) SELECT
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.profile_ref_id)
+        FROM party_runtime.party_g4_expansion_ledgers r
+        WHERE r.party_id=$1 AND r.g4_id=$2), '[]'::jsonb) AS ledgers,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM sites r), '[]'::jsonb) AS sites,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.party_continuation_chains r
+        WHERE r.party_id=$1 AND r.g4_id=$2), '[]'::jsonb) AS chains,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.expansion_frontiers r
+        WHERE r.party_id=$1 AND r.g4_id=$2), '[]'::jsonb) AS frontiers,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.expansion_capacity_reservations r
+        WHERE r.party_id=$1 AND r.g4_id=$2), '[]'::jsonb) AS reservations,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.scene_frontier_bindings r
+        JOIN party_runtime.expansion_frontiers f ON f.id=r.frontier_id
+        WHERE r.party_id=$1 AND f.party_id=$1 AND f.g4_id=$2), '[]'::jsonb) AS bindings,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id) FROM baselines r), '[]'::jsonb) AS scene_baselines,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id) FROM g6 r), '[]'::jsonb) AS g6_instances,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id) FROM positions r), '[]'::jsonb) AS scene_positions,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.portal_entities r JOIN baselines b ON b.id=r.scene_baseline_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS portals,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.scene_movement_edges r JOIN baselines b ON b.id=r.scene_baseline_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS movement_edges,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.visibility_modifiers r
+        WHERE r.party_id=$1), '[]'::jsonb) AS visibility_modifiers,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.visibility_links r JOIN baselines b ON b.id=r.scene_baseline_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS visibility_links,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.g6_instance_id)
+        FROM party_runtime.g6_acoustic_profiles r JOIN g6 g ON g.id=r.g6_instance_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS acoustic_profiles,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.acoustic_edges r JOIN baselines b ON b.id=r.scene_baseline_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS acoustic_edges,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.entity_kind, r.entity_id)
+        FROM party_runtime.entity_placements r JOIN positions p ON p.id=r.position_node_id
+        WHERE r.party_id=$1 AND r.host_entity_ref IS NULL), '[]'::jsonb) AS placements,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id) FROM connections r), '[]'::jsonb) AS site_connections,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.party_site_connection_endpoint_bindings r
+        JOIN connections c ON c.id=r.site_connection_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS endpoint_bindings,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.party_journey_locations r
+        JOIN positions p ON p.id=r.scene_position_id
+        WHERE r.party_id=$1 AND r.location_kind='scene'), '[]'::jsonb) AS journey_locations`,
+    [party_id, g4_id]);
+    return deepFreeze({ ok: true, snapshot: clone(result.rows[0]) });
+  }
   async function load({ resource, party_id, id = null, expected_state_version = null } = {}, context = {}) {
     const tx = context.transaction ?? transaction;
     if (!RESOURCE_SQL[resource] || !text(party_id)) return failure('generated_schema_mismatch', 'party', text(party_id) ?? 'unknown', { resource });
@@ -145,6 +224,16 @@ export function createSpatialV3PartyRepository({ transaction } = {}) {
       knowledge: Object.freeze(knowledge.rows.map((row) => Object.freeze(clone(row))))
     });
   }
+  async function loadVisibilityModifiers({ party_id } = {}, context = {}) {
+    const tx = context.transaction ?? transaction;
+    if (!text(party_id) || !requireTransaction(tx)) return failure('generated_schema_mismatch', 'party', party_id ?? 'unknown', { resource: 'visibility_modifiers' });
+    // A party-wide read avoids treating an unknown or broader spatial scope as empty.
+    const result = await tx.query(`SELECT id,party_id,source_entity_ref,affected_scope_ref,
+      modifier_kind,condition_ref,source_dependency_pins,state_version,updated_change_set_id
+      FROM party_runtime.visibility_modifiers WHERE party_id=$1 ORDER BY id`, [party_id]);
+    return Object.freeze({ ok: true, complete: true,
+      rows: Object.freeze(result.rows.map((row) => Object.freeze(clone(row)))) });
+  }
   const persist = async ({ party_id } = {}) => failure('generated_schema_mismatch', 'party', party_id ?? 'unknown', { reason: 'P16 repositories are read-only; only CombinedAtomicCommitter writes.' });
-  return Object.freeze({ load, persist, loadSpatialState: (input, context) => load({ ...input, resource: 'spatial_state' }, context), loadPlan: (input, context) => load({ ...input, resource: 'plans' }, context), loadExecution: (input, context) => load({ ...input, resource: 'executions' }, context), loadFrontier: (input, context) => load({ ...input, resource: 'frontiers' }, context), loadCarrier: (input, context) => load({ ...input, resource: 'carriers' }, context), loadHistory, loadPerceptionReplay, loadReactionOptionProposal, loadReactionConsequence, loadKnowledgeMergeResult, loadKnowledgeState });
+  return Object.freeze({ load, persist, loadExpansionState, loadVisibilityModifiers, loadSpatialState: (input, context) => load({ ...input, resource: 'spatial_state' }, context), loadPlan: (input, context) => load({ ...input, resource: 'plans' }, context), loadExecution: (input, context) => load({ ...input, resource: 'executions' }, context), loadFrontier: (input, context) => load({ ...input, resource: 'frontiers' }, context), loadCarrier: (input, context) => load({ ...input, resource: 'carriers' }, context), loadHistory, loadPerceptionReplay, loadReactionOptionProposal, loadReactionConsequence, loadKnowledgeMergeResult, loadKnowledgeState });
 }

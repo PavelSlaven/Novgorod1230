@@ -1,0 +1,49 @@
+{
+  "schema": "rus.live_world_runtime.o1_applicability_selector_approval.v1",
+  "decision": "APPROVE_WITH_LIMITS",
+  "selector_id": "novgorod_v17_o1_applicability_4a5_candidate_001",
+  "selector_path": "data/world-catalogs/novgorod/live-world-runtime-v17/ordinary-materialization-o1-applicability-selector-v1.json",
+  "selector_sha256": "9c055925be5f117c7dd89a1465875fdc90a9f8d028bd49020411506f5a223dc4",
+  "independent_review": {
+    "path": "/srv/novgorod-work/fleet/tasks/ap-o1-selector/out/ap-o1-selector.json",
+    "sha256": "b333fd1b0ab13ae160a393cb3d3c04b9a38aa10c7df39e2a61111395ce393a69",
+    "verdict": "CHANGES_REQUIRED",
+    "reviewed_object_sha256": "9c055925be5f117c7dd89a1465875fdc90a9f8d028bd49020411506f5a223dc4"
+  },
+  "lead_decision": {
+    "reference": "/srv/novgorod-work/fleet/tasks/v17-channels/answers.md#PLAN-OK-v17-channels-5.4",
+    "decision": "APPROVE_WITH_LIMITS",
+    "decision_id": "D67"
+  },
+  "source_checkout_head": "68bb6645cc1c9f752edd27865ffeff0334fcdc9c",
+  "limits": [
+    "Scope: только перечисленные 75 (rule_id, rule_version) и четыре точных G1/G4/canonical-G5/PF кортежа; нет расширения на другие узлы/версии или весь PF.",
+    "O1 v1 использует существующие строки M2c v1 без изменений. Наличие всех 75 rule refs не утверждает 75 item mappings: ведущий утвердил только 12 identity mappings; пять предложений и 70 прежних refs остаются gaps.",
+    "Четыре PF bindings approved с confidence=low. Две привязки G4-предков не включаются в селектор и не отзываются.",
+    "139 прочих правил этой PF — точное невхождение в whitelist, а не ошибка каталога. Вне четырёх кортежей O1 не действует, generic presence остаётся как на 68bb6645. Судьба nonmember-правил внутри кортежа относится к PLAN подключения и здесь не утверждается.",
+    "Draft manifest M2c не переименован в approved: авторитет существующих строк — отдельный approval.json approve_with_limits на source_commit 81d965760627482f4173cabb6bc4d54d1959dacb.",
+    "Полномочия кандидата остаются false. Этот отчёт не является P12 attestation, разрешением импорта, активации или изменения world_base.",
+    "Кандидатные semantics/unresolved_approvals/candidate_only_for_world_rev_next не утверждаются как runtime contract. Более поздние решения ведущего TASK.md:13–21 и v17-channels/answers.md:853–878 имеют приоритет; profile schema/release pin/loader/diagnostics/CA — отдельный PLAN подключения.",
+    "Новый D41/model/PG/gameplay прогон не выполнялся; этот аудит доказывает только целостность данных и связи источников.",
+    "Окончательное утверждение остаётся за ведущим (D67). При текущем CHANGES_REQUIRED селектор не получает утверждение данным проходом."
+  ],
+  "excludes": [
+    "4a5 values/override pr_666699806d22311e/8 category refs/variants/unsupported placement",
+    "import",
+    "activation",
+    "world_base row authoring",
+    "release profile schema and pin",
+    "runtime wiring/diagnostics",
+    "D41/PG/gameplay acceptance"
+  ],
+  "required_source_pins": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/ordinary-materialization-o1-4a5-candidate.json",
+      "sha256": "615f443f9aeac2e09de1c6ec803bcc591009818a4ab58af4572bd28d1207cbd3"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/ordinary-materialization-o1-projection-4a5-candidate.json",
+      "sha256": "5f10be71175e190f9fb3f3fa455f97f54215cf23eea260ffaeab8ac2458aabc4"
+    }
+  ]
+}

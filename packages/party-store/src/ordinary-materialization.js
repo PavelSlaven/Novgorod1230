@@ -1,7 +1,8 @@
 import { deepFreeze } from '@rus/kernel';
+import { ORDINARY_MATERIALIZATION_V1_ENUMS } from '@rus/contracts';
 import { assertAndNormalizeOrdinaryAggregate } from '@rus/materialization';
 
-const SCOPE_KINDS = new Set(['g6', 'scene_position', 'container', 'source']);
+const SCOPE_KINDS = new Set(ORDINARY_MATERIALIZATION_V1_ENUMS.scope_kind);
 
 export class OrdinaryAggregateStoreError extends Error {
   constructor(code, message) { super(message); this.name = 'OrdinaryAggregateStoreError'; this.code = code; }

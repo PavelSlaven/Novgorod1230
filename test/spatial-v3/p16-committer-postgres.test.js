@@ -953,6 +953,15 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
       }
     },
     {
+      target_table: 'g6_acoustic_profiles',
+      id: 'g6-new',
+      record: {
+        party_id: 'p', g6_instance_id: 'g6-new', ambient_noise: 0,
+        acoustic_uniformity: 'uniform', state_version: 0,
+        updated_change_set_id: 'first-entry-cs'
+      }
+    },
+    {
       target_table: 'scene_position_nodes',
       id: 'position-new',
       record: {
@@ -970,7 +979,9 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     ...write,
     record: {
       ...write.record,
-      created_change_set_id: changeSetId,
+      ...(write.target_table === 'g6_acoustic_profiles'
+        ? {}
+        : { created_change_set_id: changeSetId }),
       updated_change_set_id: changeSetId
     }
   }));
@@ -1424,34 +1435,52 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3`,
   ['p', 'g6', 'g6-new', saturatedAggregate.state_version,
     JSON.stringify(saturatedAggregate)]);
-  let capModelCalls = 0;
-  const cappedResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
-    partyId: 'p', inputDigest: 'first-entry-o1-cap',
+  let beyondLegacyRecordCapModelCalls = 0;
+  let beyondLegacyRecordCapCutoverCalls = 0;
+  const beyondLegacyRecordCapResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'p', inputDigest: 'first-entry-o1-beyond-legacy-record-cap',
     loadEnablement: (value) => enablements.load(value),
     verifyStageBCutover: async () => {
-      throw new Error('full cap must preflight before cutover');
+      beyondLegacyRecordCapCutoverCalls += 1;
+      return true;
     },
-    ordinaryMaterializationModel: async () => {
-      capModelCalls += 1;
-      throw new Error('full cap must not invoke the model');
+    ordinaryMaterializationModel: async (modelRequest) => {
+      beyondLegacyRecordCapModelCalls += 1;
+      return { schema: 'ordinary_materialization_plan_v1',
+        request_id: modelRequest.request_id, resolution: 'no_change',
+        density_band_proposal: null, background_groups: [], entities: [],
+        presence_resolutions: [{
+          candidate_key: modelRequest.candidate_query.candidate_key,
+          coverage_key: modelRequest.candidate_query.coverage_key,
+          resolution: 'no_change'
+        }], reason_code: 'no_change' };
     }
   });
-  const capped = await cappedResolver({
-    request: { root_turn_id: 'first-entry-o1-cap' },
+  const beyondLegacyRecordCap = await beyondLegacyRecordCapResolver({
+    request: { root_turn_id: 'first-entry-o1-beyond-legacy-record-cap' },
     committed_state: { position: { g6_id: 'g6-new',
       g5_anchor_id: 'ordinary-anchor', position_id: 'position-new' } },
     operation: { target_refs: ['g6-new'], query: 'найти другую вещь' },
     working_projection: {}
   });
-  assert.equal(capModelCalls, 0);
-  assert.equal(capped.ordinary_materialization_atomic_write_plan, undefined);
-  const cappedReadback = (await client.query(`SELECT aggregate_payload
+  assert.equal(beyondLegacyRecordCapCutoverCalls, 1);
+  assert.equal(beyondLegacyRecordCapModelCalls, 1,
+    'the legacy record cap does not block an independent presence resolution');
+  const beyondLegacyRecordCapPlan =
+    beyondLegacyRecordCap.ordinary_materialization_atomic_write_plan;
+  assert.ok(beyondLegacyRecordCapPlan);
+  assert.equal(beyondLegacyRecordCapPlan.transitions.at(-1).kind,
+    'resolve_presence');
+  assert.equal(beyondLegacyRecordCapPlan.next_aggregate.presence_resolutions.length,
+    5);
+  assert.equal(beyondLegacyRecordCapPlan.next_aggregate.state_version, 6);
+  const persistedBeforeCommit = (await client.query(`SELECT aggregate_payload
     FROM party_runtime.party_ordinary_materialization_aggregates
     WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new'`))
     .rows[0].aggregate_payload;
-  assert.equal(cappedReadback.presence_resolutions.length, 4);
-  assert.equal(cappedReadback.state_version, 5,
-  'a new capped query adds no granular resolution record');
+  assert.equal(persistedBeforeCommit.presence_resolutions.length, 4);
+  assert.equal(persistedBeforeCommit.state_version, 5,
+    'planning a new resolution does not persist it before the P16 commit');
   assert.deepEqual(
     (await client.query("SELECT claim_status,state_version,terminal_change_set_id FROM party_runtime.preparation_claims WHERE id='preparation-claim-first-entry'")).rows[0],
     {

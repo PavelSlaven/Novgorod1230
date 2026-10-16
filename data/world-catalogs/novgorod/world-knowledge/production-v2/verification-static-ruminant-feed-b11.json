@@ -1,0 +1,65 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+      "claim_ref": "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+      "claim_digest": "be738071f757e7dd5855582c961193ce71d64c7f1ad05ad93d80e77a538be130",
+      "candidate_ref": "git:e9ea5d9cfa479337e24699b1fd0350a4d333133e:data/world-catalogs/novgorod/world-knowledge/production-v1/static-ruminant-feed-b11.json#claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent direct-source/domain review by a reviewer distinct from the candidate authors. Root mechanically binds the recorded verdict to the frozen candidate and assembled authoring pack.",
+      "evidence_checked": [
+        "evidence:static-ruminant-feed-b11-legume-froth"
+      ],
+      "review_ref": "verification/static-ruminant-feed-b11.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Legume or legume-dominant forage can support rapid fermentation with stable foam that traps gas in a ruminant rumen. This does not establish frothy bloat from every clover exposure, ruminant, or distension, nor amount eaten, timing, severity, or outcome. Modern factual context does not create historical actor knowledge or local availability."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+      "claim_ref": "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+      "claim_digest": "5435d5a4ba40633774b110a688ad5a0749fa8356356f66449a66c1dd1f877450",
+      "candidate_ref": "git:e9ea5d9cfa479337e24699b1fd0350a4d333133e:data/world-catalogs/novgorod/world-knowledge/production-v1/static-ruminant-feed-b11.json#claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent direct-source/domain review by a reviewer distinct from the candidate authors. Root mechanically binds the recorded verdict to the frozen candidate and assembled authoring pack.",
+      "evidence_checked": [
+        "evidence:static-ruminant-feed-b11-distension-respiratory"
+      ],
+      "review_ref": "verification/static-ruminant-feed-b11.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Marked ruminant distension with respiratory distress can be urgent and warrants prompt qualified animal-care assessment without establishing a diagnosis. This is not a procedure, drug, dose, puncture, surgery, outcome time, or available help in the scene. Modern factual context does not create historical actor knowledge or local availability."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+      "claim_ref": "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+      "claim_digest": "8b91407ab18dcf468c56e9cbb5c23d84b3afcd6f242ad62c4455e7b4dccc23eb",
+      "candidate_ref": "git:e9ea5d9cfa479337e24699b1fd0350a4d333133e:data/world-catalogs/novgorod/world-knowledge/production-v1/static-ruminant-feed-b11.json#claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent direct-source/domain review by a reviewer distinct from the candidate authors. Root mechanically binds the recorded verdict to the frozen candidate and assembled authoring pack.",
+      "evidence_checked": [
+        "evidence:static-ruminant-feed-b11-mold-mycotoxin"
+      ],
+      "review_ref": "verification/static-ruminant-feed-b11.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Some feed molds can produce mycotoxins that can affect animal health or performance, with effects depending on toxin and animal factors. This does not establish mold, toxin, dose, illness, or outcome in a particular feed or animal, including livestock or poultry. Modern factual context does not create historical actor knowledge or local availability."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
+      "claim_ref": "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
+      "claim_digest": "d499252df36b87746b8b1ab84ee1d745686aec4c7884fc07046a8be1519d8094",
+      "candidate_ref": "git:e9ea5d9cfa479337e24699b1fd0350a4d333133e:data/world-catalogs/novgorod/world-knowledge/production-v1/static-ruminant-feed-b11.json#claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent direct-source/domain review by a reviewer distinct from the candidate authors. Root mechanically binds the recorded verdict to the frozen candidate and assembled authoring pack.",
+      "evidence_checked": [
+        "evidence:static-ruminant-feed-b11-visual-mold-not-level"
+      ],
+      "review_ref": "verification/static-ruminant-feed-b11.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Visible mold does not establish mycotoxin presence or level in feed. It does not establish safety, danger, clean-feed availability, replacement outcome, a test method, or a threshold for a particular animal. Modern factual context does not create historical actor knowledge or local availability."
+    }
+  ]
+}

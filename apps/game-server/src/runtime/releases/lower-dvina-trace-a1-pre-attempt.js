@@ -1,4 +1,5 @@
 import { mergeActionProducedPhysicalFacts,
+  projectCommittedInventoryMechanicsProfile,
   resolveInventoryMechanicsProfile } from '@rus/items-property';
 import { admitActionProducedResult } from
   '@rus/items-property/action-produced-result';
@@ -152,7 +153,7 @@ function validateCurrentFactRefs(semantic, loaded, sourceRef) {
     removed_fact_refs: removed, inscription_text: null });
 }
 
-function committedMechanics(item) {
+export function committedMechanics(item) {
   const state = item?.state;
   const templateId = item?.template_id;
   const instance = templateId == null
@@ -164,11 +165,14 @@ function committedMechanics(item) {
     template_id: templateId
   }];
   const resolved = resolveInventoryMechanicsProfile({ instance, profiles });
-  if (!resolved.pass || resolved.profile.container !== null) {
+  // v5 item inventory profiles (v17 clothing) omit packing/quantity/container: none of them applies.
+  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
+    quantity, container } = projectCommittedInventoryMechanicsProfile(
+      resolved.profile ?? {}
+    );
+  if (!resolved.pass || container !== null) {
     fail('TRACE_A1_ITEM_MECHANICS_INVALID');
   }
-  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
-    quantity, container } = resolved.profile;
   if (!Number.isSafeInteger(mass_grams) || mass_grams < 0
       || ![0, 1, 2].includes(external_hand_cost)
       || !['compact', 'regular', 'long', 'bulky'].includes(carry_form)

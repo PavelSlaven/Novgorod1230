@@ -98,20 +98,35 @@ const localFireSql = readFileSync(
   new URL('../../schemas/party-db/028_party_runtime_local_exact_fire.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 033 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 33);
+const actorBaseAttributesSql = readFileSync(
+  new URL('../../schemas/party-db/034_party_runtime_actor_base_attributes.sql', import.meta.url),
+  'utf8'
+);
+const nonportalAvailabilitySql = readFileSync(
+  new URL('../../schemas/party-db/035_party_runtime_nonportal_availability.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 035 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 35);
   assert.deepEqual(
     getSpatialV3TargetMigrationsBeforeCatalogMigration(),
     SPATIAL_V3_TARGET_MIGRATIONS.slice(0, 11)
   );
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-23), [sql,
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-25), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
     ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql,
     finiteResourceSql, existingContainerOrdinarySql, actionProductionSql, localFireSql,
     spatialSemanticSql, snapshotValidatorAliasSql, deferredNpcSchedulesSql,
-    factualPresentationSql, initialSemanticDecisionSql]);
+    factualPresentationSql, initialSemanticDecisionSql, actorBaseAttributesSql,
+    nonportalAvailabilitySql]);
+});
+
+test('034 adds attribute_profile_snapshot idempotently for restart re-apply', () => {
+  assert.match(actorBaseAttributesSql,
+    /ADD COLUMN IF NOT EXISTS attribute_profile_snapshot jsonb/u);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS[33], actorBaseAttributesSql);
 });
 
 test('015 and 030 qualify jsonb array entry values in snapshot validators', () => {

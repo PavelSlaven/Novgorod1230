@@ -67,7 +67,7 @@ function createRecordedRoot(records) {
   const acknowledgementAttempts = new Map();
   return Object.freeze({
     health: () => ({ status: 'ok', service: '@rus/game-server', api_version: 1 }),
-    getLlmSettings: () => ({ mode: 'local',
+    getLlmSettings: () => ({ mode: 'custom',
       compatibility: 'openai_compatible',
       base_url: 'http://127.0.0.1:8000/v1',
       model: 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced',
@@ -82,18 +82,24 @@ function createRecordedRoot(records) {
         title: 'След на Нижней Двине',
         description: 'Позднее лето, разбитая лодья и пропавший груз.',
         available: true
+      }, {
+        scenario_id: 'vikhtuy_fishing_camp_v1',
+        title: 'Рыбацкий стан у Вихтуя',
+        description: 'Небольшой стан готовит сети и снасти к вечернему лову.',
+        available: true
       }]
     }),
     async startNewGame(input) {
       records.newGames.push(structuredClone(input));
-      if (input.scenario_id !== 'lower_dvina_trace_v1') {
+      if (!['lower_dvina_trace_v1', 'vikhtuy_fishing_camp_v1']
+        .includes(input.scenario_id)) {
         throw Object.assign(new Error('Scenario is not supported.'), {
           code: 'SCENARIO_NOT_SUPPORTED', status: 400
         });
       }
       partyNumber += 1;
       const partyId = `party-e2e-${partyNumber}`;
-      const screen = openingFixture(partyId);
+      const screen = openingFixture(partyId, input.scenario_id);
       sessions.set(partyId, { screen, turnNumber: 0 });
       return { party_id: partyId, screen };
     },
@@ -141,16 +147,19 @@ function createRecordedRoot(records) {
   });
 }
 
-function openingFixture(partyId) {
+function openingFixture(partyId, scenarioId = 'lower_dvina_trace_v1') {
+  const authored = scenarioId === 'vikhtuy_fishing_camp_v1';
   return {
     version: 1,
     schema: 'first_game_screen',
     screen_status: 'ready',
     party_id: partyId,
-    scenario_id: 'lower_dvina_trace_v1',
-    main_prose: 'Ты приходишь в себя на берегу Нижней Двины после крушения.',
+    scenario_id: scenarioId,
+    main_prose: authored
+      ? 'Утро застало тебя в рыбацком стане у Вихтуя.'
+      : 'Ты приходишь в себя на берегу Нижней Двины после крушения.',
     visible_context: {
-      location_label: 'Берег Нижней Двины',
+      location_label: authored ? 'Рыбацкий стан у Вихтуя' : 'Берег Нижней Двины',
       calendar: '20 августа 1230 года',
       environment: {
         profile_id: 'env.land_path',
@@ -164,9 +173,11 @@ function openingFixture(partyId) {
     panels: {
       character: {
         visible: true,
-        data: { name: '<script>bad()</script>Микула', role: 'Приказчик', health: 9 }
+        data: { name: authored ? 'Любава' : '<script>bad()</script>Микула',
+          role: authored ? 'Рыбачка' : 'Приказчик', health: authored ? 92 : 9 }
       },
-      route: { visible: true, data: { current_place: 'Берег Нижней Двины' } }
+      route: { visible: true, data: { current_place: authored
+        ? 'Рыбацкий стан у Вихтуя' : 'Берег Нижней Двины' } }
     },
     delivery_state: { message_id: `opening:${partyId}` }
   };
@@ -349,7 +360,8 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-retry-opening-ack]');
   assert.equal(await page.locator('[data-turn-form] textarea:disabled').count(), 1);
-  assert.deepEqual(records.newGames[0], { scenario_id: 'lower_dvina_trace_v1' });
+  assert.equal(records.newGames[0].scenario_id, 'lower_dvina_trace_v1');
+  assert.match(records.newGames[0].request_id, /^web:new-game:[0-9a-f-]{36}$/u);
   const firstPendingAck = await page.evaluate(() => JSON.parse(
     localStorage.getItem('rus.pending_opening_ack') ?? 'null'
   ));
@@ -461,7 +473,8 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(secondPartyAcks.length, 2);
   assert.deepEqual(secondPartyAcks[1].input, secondPartyAcks[0].input,
     'response-loss retry must replay the exact committed acknowledgement');
-  assert.deepEqual(records.newGames.at(-1), { scenario_id: 'lower_dvina_trace_v1' });
+  assert.equal(records.newGames.at(-1).scenario_id, 'lower_dvina_trace_v1');
+  assert.match(records.newGames.at(-1).request_id, /^web:new-game:[0-9a-f-]{36}$/u);
   assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')), 'party-e2e-2');
   assert.equal(await page.evaluate(() => localStorage.getItem(
     'rus.pending_opening_ack'
@@ -515,6 +528,24 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.doesNotMatch(errorBody, /secret|opaque-trace|binding-42|hidden-route-value|nested-route-value/u);
   assert.equal(await page.inputValue('[data-turn-form] textarea'),
     'Проверка утечки', 'failed turn must keep the player draft');
+
+  await page.click('[data-dismiss-error]');
+  await page.click('[data-return-start]');
+  await page.click('[data-start-new-game]');
+  await page.click('[data-scenario-id="vikhtuy_fishing_camp_v1"]');
+  await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+  assert.equal(records.newGames.at(-1).scenario_id, 'vikhtuy_fishing_camp_v1');
+  assert.match(records.newGames.at(-1).request_id, /^web:new-game:[0-9a-f-]{36}$/u);
+  assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
+  const authoredPartyId = await page.evaluate(() =>
+    localStorage.getItem('rus.party_id'));
+  await page.click('[data-return-start]');
+  await page.reload();
+  await page.waitForSelector('[data-continue-party]');
+  await page.click('[data-continue-party]');
+  await page.waitForSelector('[data-screen-schema="first_game_screen"]');
+  assert.equal(records.screenReads.at(-1), authoredPartyId);
+  assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
 
   await page.evaluate(() => {
     localStorage.setItem('rus.party_id', 'party-missing');

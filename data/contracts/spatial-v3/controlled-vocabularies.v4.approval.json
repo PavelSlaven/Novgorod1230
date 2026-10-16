@@ -1,0 +1,11 @@
+{
+  "decision": "APPROVE_M2C_CONTROLLED_VOCABULARY_V4_AUTHORING",
+  "registry_ref": "spatial.controlled_vocabularies@4.0.0",
+  "registry_sha256": "166a83f2f6a88720f1912195f76704fb33dc2ca9a07ed8b3360b6873e32fcd9c",
+  "aggregate_digest": "4a7eab79bb19c81c344e80d2dacb8a5d0c387ee1ede8a08b88945c7357ba1384",
+  "approved_by": "gpt-6-astra/high — independent reviewer /root/m2c_data_approval",
+  "approved_on": "2026-09-24",
+  "approval_scope": "exact_registry_data_and_consumer_compatibility",
+  "source_issue": "Issue #133 §4",
+  "activation_authorized": false
+}

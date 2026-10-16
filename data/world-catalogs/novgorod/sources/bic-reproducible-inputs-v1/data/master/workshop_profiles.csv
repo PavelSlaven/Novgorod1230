@@ -1,0 +1,21 @@
+﻿id,name_ru,family_ids,environmental_clutter_ru,spawn_semantics,requires_causal_owner_or_activity,confidence
+urban_yard_general,Обычный городской двор,"[""wood_splitting_hewing"",""repair_reuse_recycling"",""sewing_mending""]","щепа, обрезки, верёвки, тара и следы текущего ремонта без обязательной мастерской",candidate_distribution_not_fixed_inventory,true,B
+carpenter_yard,Двор плотника,"[""timber_felling_conversion"",""wood_splitting_hewing"",""wood_joinery"",""log_building""]","брёвна, плахи, стружка, заготовки, нагели и пробные соединения",candidate_distribution_not_fixed_inventory,true,B
+wood_turner_shop,Место мелкой деревообработки,"[""wood_turning_carving""]","чурбаки, полузавершённые чаши, стружка, резные обрезки",candidate_distribution_not_fixed_inventory,true,B
+cooper_yard,Бондарное рабочее место,"[""cooperage_wooden_vessels""]","клёпки, обручи, сосуды на проверке и мокрые следы течи",candidate_distribution_not_fixed_inventory,true,B
+forge,Кузница,"[""iron_forging"",""iron_heat_treatment"",""iron_finishing_repair""]","уголь, окалина, обсечки, горячие заготовки только при действующем огне",candidate_distribution_not_fixed_inventory,true,B
+bloomery_site,Сыродутная площадка,"[""iron_bloomery"",""fuel_charcoal_fire""]","руда, уголь, шлак, обломки футеровки и тяжёлая крица; специализированный контекст",candidate_distribution_not_fixed_inventory,true,C
+jewelry_workshop,Ювелирное рабочее место,"[""nonferrous_casting"",""sheet_wire_metal"",""jewelry_decoration""]","тигли, формы, проволочные концы, литники и малые ценные заготовки",candidate_distribution_not_fixed_inventory,true,B
+potter_yard,Двор гончара,"[""clay_preparation"",""pottery_forming"",""pottery_firing_repair""]","комья глины, подсушенные сосуды, черепки, топливо и следы обжига",candidate_distribution_not_fixed_inventory,true,B
+tannery_edge,Кожевенное рабочее место,"[""hide_skin_preparation"",""tanning_leather""]","мокрые шкуры, волос, мездра, кора и ёмкости; запах и стоки причинно учитываются",candidate_distribution_not_fixed_inventory,true,B
+shoemaker_shop,Рабочее место сапожника,"[""leather_cut_sew"",""footwear_repair""]","кожаные детали, старые подошвы, обрезки, нити и ремонтируемая обувь",candidate_distribution_not_fixed_inventory,true,B
+textile_household,Домашняя текстильная работа,"[""fiber_preparation"",""spinning"",""sewing_mending""]","кудель, веретено, клубки, лоскуты и незавершённый шов",candidate_distribution_not_fixed_inventory,true,B
+weaver_house,Дом с ткацким станом,"[""spinning"",""weaving"",""textile_finish_dye""]","основа, грузики, уток, обрывки нитей и полотно; наличие станка не универсально",candidate_distribution_not_fixed_inventory,true,B
+net_mending_shore,Береговое место починки сетей,"[""rope_net_mat""]","сеть, челнок, мерка, поплавки, грузила и мокрая нить",candidate_distribution_not_fixed_inventory,true,B
+bone_worker_shop,Косторезное рабочее место,"[""bone_antler_horn""]","отпиленные эпифизы, пластины, сверлильная пыль и полузавершённые детали",candidate_distribution_not_fixed_inventory,true,B
+construction_site,Строительная площадка,"[""log_building"",""roof_floor_finish"",""stone_work"",""lime_mortar_plaster""]","брёвна, плахи, щепа, мох, глина, камень и временные крепления",candidate_distribution_not_fixed_inventory,true,B
+street_pavement_repair,Ремонт мостовой,"[""roads_bridges_waterfront""]","снятые плахи, новые подкладки, грязь, вода и отсортированная старая древесина",candidate_distribution_not_fixed_inventory,true,B
+boatyard_shore,Береговая лодочная работа,"[""boat_shipbuilding"",""rope_net_mat""]","доски, конопатка, смола, крепёж, стружка и корпус на подпорках",candidate_distribution_not_fixed_inventory,true,B
+cart_repair_yard,Двор ремонта телеги и саней,"[""cart_sledge_wheel"",""wood_joinery"",""iron_finishing_repair""]","колесо, ступица, спицы, ось, полозья, деревянные и железные ремонтные детали",candidate_distribution_not_fixed_inventory,true,B
+monastery_scriptorium,Монастырское или церковное место письма,"[""writing_bookmaking""]","береста, писала, восковая дощечка или книжные материалы строго по социальному контексту",candidate_distribution_not_fixed_inventory,true,C
+scrap_sorting_corner,Угол сортировки отходов,"[""repair_reuse_recycling""]","раздельные малые партии железа, цветного металла, кожи, ткани, дерева, кости и керамики",candidate_distribution_not_fixed_inventory,true,B

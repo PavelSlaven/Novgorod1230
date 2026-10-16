@@ -2,6 +2,7 @@ import {
   applyFirstPlayableV2ActivationBundle,
   buildFirstPlayableV2ActivationBundle
 } from './first-playable-v2-activation.js';
+import { WORLD_RUNTIME_CATALOG_MIGRATION_V3 } from './forward-migrations.js';
 
 export const SPATIAL_V3_PRODUCTION_V12_RELEASE = Object.freeze({
   releaseId: 'spatial-v3-production-v12',
@@ -25,6 +26,41 @@ export const SPATIAL_V3_PRODUCTION_V12_RELEASE = Object.freeze({
   activationBasis: 'S1 production runtime acceptance'
 });
 
+/** Disposable successor for the post-catalog-migration schema; never V12. */
+export const SPATIAL_V3_DEVELOPMENT_V13_RELEASE = Object.freeze({
+  ...SPATIAL_V3_PRODUCTION_V12_RELEASE,
+  releaseId: 'spatial-v3-development-v13',
+  baselineRevision:
+    'world_revision_novgorod_1230_runtime_catalog_baseline_v13_dev_001',
+  domainRevision: 'runtime_catalog_lower_dvina_spatial_v3_v13_dev_001',
+  worldSchemaFingerprint:
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
+  worldSchemaMigration: WORLD_RUNTIME_CATALOG_MIGRATION_V3,
+  bindingsFile: 'spatial-v3-production-v12-bindings.js',
+  bundleSchema: 'rus.spatial_v3_development_v13_activation_bundle.v1',
+  bundleIdentitySchema:
+    'rus.spatial_v3_development_v13_activation_bundle_identity.v1',
+  resultSchema: 'rus.spatial_v3_development_v13_activation_result.v1',
+  baselineTitle: 'Spatial-v3 development v13 runtime catalog baseline',
+  activationBasis: 'disposable development runtime acceptance'
+});
+
+/** Independently approved current-schema M3 development release. */
+export const SPATIAL_V3_M3_DEVELOPMENT_V14_RELEASE = Object.freeze({
+  ...SPATIAL_V3_DEVELOPMENT_V13_RELEASE,
+  releaseId: 'spatial-v3-m3-development-v14',
+  baselineRevision:
+    'world_revision_novgorod_1230_runtime_catalog_baseline_m3_dev_001',
+  domainRevision: 'runtime_catalog_lower_dvina_spatial_v3_m3_dev_001',
+  bundleSchema: 'rus.spatial_v3_m3_development_v14_activation_bundle.v1',
+  bundleIdentitySchema:
+    'rus.spatial_v3_m3_development_v14_activation_bundle_identity.v1',
+  resultSchema: 'rus.spatial_v3_m3_development_v14_activation_result.v1',
+  baselineTitle: 'Spatial-v3 M3 development v14 runtime catalog baseline',
+  activationBasis:
+    'independent M3 current-schema development runtime approval'
+});
+
 export function buildSpatialV3ProductionV12ActivationBundle(options) {
   return buildFirstPlayableV2ActivationBundle({
     ...options,
@@ -36,5 +72,19 @@ export function applySpatialV3ProductionV12ActivationBundle(options) {
   return applyFirstPlayableV2ActivationBundle({
     ...options,
     release: SPATIAL_V3_PRODUCTION_V12_RELEASE
+  });
+}
+
+export function buildSpatialV3DevelopmentV13ActivationBundle(options) {
+  return buildFirstPlayableV2ActivationBundle({
+    ...options,
+    release: options.release ?? SPATIAL_V3_DEVELOPMENT_V13_RELEASE
+  });
+}
+
+export function applySpatialV3DevelopmentV13ActivationBundle(options) {
+  return applyFirstPlayableV2ActivationBundle({
+    ...options,
+    release: options.release ?? SPATIAL_V3_DEVELOPMENT_V13_RELEASE
   });
 }

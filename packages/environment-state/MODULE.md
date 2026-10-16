@@ -13,6 +13,7 @@ production activation cutover` release `spatial-v3-production-v1` включил
 - применением supplied approved weather, light и access profiles к supplied exact clock;
 - выводом environment snapshot и ближайших domain boundaries;
 - proposal соответствующего weather, light или access effect.
+- sealing body environment snapshot для сохранённого факта партии.
 
 ## Не владеет
 
@@ -23,10 +24,13 @@ production activation cutover` release `spatial-v3-production-v1` включил
 - `findNearestEnvironmentBoundaries(input)` — frozen ordered formal `temporal_boundary_candidate` set для weather, light или place access.
 - `deriveEnvironment(input)` — frozen environment snapshot с одним composite movement factor и ближайшей boundary.
 - `proposeEnvironmentBoundaryEffect({ input, candidate })` — frozen proposal `weather_transition`, `light_transition` или `portal_access_invalidated` только для кандидата из текущего approved set.
+- `deriveBodyEnvironmentSnapshot({ environment_fact, party_id, state_version, observed_at })` — frozen result с sealed body-state snapshot, идентичность которого выводится из строки сохранённого факта и проверяется по exact `observed_at`.
 
 ## Формальные контракты
 
 Input включает exact clock, sealed approved weather/light transition profiles, place-access context, composition policy и dependency pins. Все применимые profile/policy/provenance refs должны быть version-pinned; input не изменяется. Outputs содержат status, formal result/proposal и trace. Движение использует один factor по approved `maximum_rational` composition, не складывает weather и light factors. Boundary order — exact timestamp, затем boundary id; interval `(from,to]` передаётся в trace.
+
+Body snapshot функция не выбирает и не пересчитывает погоду или свет. `body_factor_ids` пуст, поскольку approved data сейчас не содержит правил environment→body; не выводить такие факторы из погоды, сезона, одежды или помещения ([#315](https://github.com/PavelSlaven/Novgorod1230/issues/315)). Отсутствие `party_id`/`state_version` блокируется как `environment_identity_required`; неверный `observed_at` — как `time_timestamp_invalid`.
 
 ## Typed errors и gaps
 
@@ -45,3 +49,6 @@ committed facts из изменившихся authoring data запрещены.
 `test/environment-state.test.js` проверяет
 dawn/light, artificial light и weather transition, exact ordering boundaries,
 access invalidation proposal, typed blocks и отсутствие implicit defaults.
+Также проверяет sealed body snapshot, идентичность сохранённой строки, exact
+start time и пустой набор факторов при отсутствии approved environment→body
+rules.

@@ -1,0 +1,17 @@
+{
+  "schema_version": "rus.onomastics.approval_request.v1",
+  "candidate_id": "novgorod-1230-1250-onomastics-v1",
+  "requested_decision": "independent_per_entry_review",
+  "requester_may_approve": false,
+  "approval_status": "pending_independent_review",
+  "import_enabled": false,
+  "activation_enabled": false,
+  "review_scope": [
+    "compiled A1/A2 evidence bindings",
+    "editorial equal weights",
+    "contextual exclusions",
+    "selection policy",
+    "30/30 position and 71/71 role coverage"
+  ],
+  "forbidden_promotion_source": "tools/rus13-novgorod-regional-templates/novgorod_npc_name_pools_v1.json"
+}

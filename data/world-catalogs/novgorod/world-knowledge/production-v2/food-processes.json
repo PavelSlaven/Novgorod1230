@@ -1,0 +1,643 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-micro13-physical",
+      "title": "13.2 Using Physical Methods to Control Microorganisms",
+      "authors": [],
+      "publication": "OpenStax Microbiology, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/microbiology/pages/13-2-using-physical-methods-to-control-microorganisms",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-micro94-temperature",
+      "title": "9.4 Temperature and Microbial Growth",
+      "authors": [],
+      "publication": "OpenStax Microbiology, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/microbiology/pages/9-4-temperature-and-microbial-growth",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-micro95-water",
+      "title": "9.5 Other Environmental Conditions that Affect Growth",
+      "authors": [],
+      "publication": "OpenStax Microbiology, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/microbiology/pages/9-5-other-environmental-conditions-that-affect-growth",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-micro84-fermentation",
+      "title": "8.4 Fermentation",
+      "authors": [],
+      "publication": "OpenStax Microbiology, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/microbiology/pages/8-4-fermentation",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-micro92-oxygen",
+      "title": "9.2 Oxygen Requirements for Microbial Growth",
+      "authors": [],
+      "publication": "OpenStax Microbiology, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/microbiology/pages/9-2-oxygen-requirements-for-microbial-growth",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:umn-fermentation",
+      "title": "Preserving food at home: Fermentation",
+      "authors": [],
+      "publication": "University of Minnesota Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.umn.edu/es/node/172346",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fp-physical",
+      "source_ref": "source:openstax-micro13-physical",
+      "anchor": {
+        "section": "Heat; Refrigeration and Freezing; Desiccation"
+      },
+      "note": "Mechanisms only; no safe food result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fp-temperature",
+      "source_ref": "source:openstax-micro94-temperature",
+      "anchor": {
+        "section": "Temperature and Microbial Growth"
+      },
+      "note": "Species-specific range and cold-tolerant limit.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fp-water",
+      "source_ref": "source:openstax-micro95-water",
+      "anchor": {
+        "section": "Osmotic Pressure; Water Activity"
+      },
+      "note": "Moisture/osmotic mechanism and tolerant-microbe limits.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fp-fermentation",
+      "source_ref": "source:openstax-micro84-fermentation",
+      "anchor": {
+        "section": "Fermentation"
+      },
+      "note": "Fermentation mechanism only.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fp-oxygen",
+      "source_ref": "source:openstax-micro92-oxygen",
+      "anchor": {
+        "section": "Oxygen Requirements for Microbial Growth"
+      },
+      "note": "Oxygen compatibility differs by microbe.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fp-umn",
+      "source_ref": "source:umn-fermentation",
+      "anchor": {
+        "section": "4 main types of fermentation"
+      },
+      "note": "Mechanism only; all modern method and safety guidance excluded.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:food-process-microbial-conditions",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:food-heating","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:food-drying","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:microbial-growth","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:fermentation","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:lactic-fermentation","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:yeast-fermentation","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:heating-reduces-microbial-viability",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:food-heating",
+      "predicate": "reduces",
+      "object": {
+        "kind": "literal",
+        "value": "microbial_viability_through_membrane_and_protein_damage"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-physical"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:low-temperature-reduces-many-microbial-metabolic-rates",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:microbial-growth",
+      "predicate": "reduces",
+      "object": {
+        "kind": "literal",
+        "value": "metabolic_activity_and_growth_of_many_microbes"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-physical"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:drying-reduces-microbial-growth-conditions",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:food-drying",
+      "predicate": "reduces",
+      "object": {
+        "kind": "literal",
+        "value": "available_water_for_microbial_metabolism_and_growth"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-physical"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:microbial-growth-depends-on-species-temperature-range",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:microbial-growth",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "microbe_specific_temperature_range"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-temperature"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:microbial-growth-depends-on-available-moisture",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:microbial-growth",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "available_moisture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-water"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:solute-concentration-reduces-available-water-for-many-microbes",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:microbial-growth",
+      "predicate": "reduces",
+      "object": {
+        "kind": "literal",
+        "value": "available_water_for_many_microbes_at_high_osmotic_pressure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-physical",
+        "evidence:fp-water"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fermentation-depends-on-microbe-substrate-conditions",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:fermentation",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "actual_microbe_substrate_temperature_moisture_oxygen_and_time"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-fermentation",
+        "evidence:fp-oxygen"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:lactic-fermentation",
+      "predicate": "affects",
+      "object": {
+        "kind": "literal",
+        "value": "acidity_and_protein_state_of_a_susceptible_food_medium"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-fermentation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:lactic-fermentation",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "lactic_acid_and_carbon_dioxide_from_carbohydrate"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-umn"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:yeast-fermentation",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "ethanol_from_sugars_under_low_or_no_oxygen"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fp-umn"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:food-process-microbial-conditions",
+      "locale": "ru",
+      "labels": [
+        "Микробные условия пищевых процессов"
+      ],
+      "short_definition": "Условия, от которых зависят микробные процессы в пище.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:food-process-microbial-conditions",
+      "locale": "en",
+      "labels": [
+        "Food-process microbial conditions"
+      ],
+      "short_definition": "Conditions governing microbial processes in food.",
+      "search_aliases": []
+    },
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:food-heating","locale":"ru","labels":["Нагрев пищи"],"short_definition":"Нагрев как физический пищевой процесс.","search_aliases":[]},{"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:food-heating","locale":"en","labels":["Food heating"],"short_definition":"Heating as a physical food process.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:food-drying","locale":"ru","labels":["Сушка пищи"],"short_definition":"Сушка как процесс снижения доступной влаги.","search_aliases":[]},{"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:food-drying","locale":"en","labels":["Food drying"],"short_definition":"Drying as a process reducing available moisture.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:microbial-growth","locale":"ru","labels":["Рост микроорганизмов"],"short_definition":"Рост микроорганизмов зависит от условий среды.","search_aliases":[]},{"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:microbial-growth","locale":"en","labels":["Microbial growth"],"short_definition":"Microbial growth depends on environmental conditions.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:fermentation","locale":"ru","labels":["Брожение"],"short_definition":"Микробное превращение субстрата зависит от условий.","search_aliases":[]},{"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:fermentation","locale":"en","labels":["Fermentation"],"short_definition":"Microbial substrate conversion depends on conditions.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:lactic-fermentation","locale":"ru","labels":["Молочнокислое брожение"],"short_definition":"Брожение с образованием молочной кислоты.","search_aliases":[]},{"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:lactic-fermentation","locale":"en","labels":["Lactic fermentation"],"short_definition":"Fermentation producing lactic acid.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:yeast-fermentation","locale":"ru","labels":["Дрожжевое брожение"],"short_definition":"Брожение сахаров дрожжами.","search_aliases":[]},{"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:yeast-fermentation","locale":"en","labels":["Yeast fermentation"],"short_definition":"Fermentation of sugars by yeast.","search_aliases":[]}
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:heating-reduces-microbial-viability",
+      "locale": "ru",
+      "runtime_text": "Нагрев может снижать жизнеспособность микроорганизмов; безопасность не гарантируется.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:heating-reduces-microbial-viability",
+      "locale": "en",
+      "runtime_text": "Heating can reduce microbial viability; safety is not guaranteed.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:low-temperature-reduces-many-microbial-metabolic-rates",
+      "locale": "ru",
+      "runtime_text": "Низкая температура замедляет многие микробные процессы, но есть исключения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:low-temperature-reduces-many-microbial-metabolic-rates",
+      "locale": "en",
+      "runtime_text": "Low temperature slows many microbial processes, but cold-preferring microbes remain a limit.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:drying-reduces-microbial-growth-conditions",
+      "locale": "ru",
+      "runtime_text": "Сушка уменьшает доступную микроорганизмам воду; выжившие микроорганизмы могут возобновить рост при возвращении влаги.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:drying-reduces-microbial-growth-conditions",
+      "locale": "en",
+      "runtime_text": "Drying reduces water available to microbes; survivors can regrow if moisture returns.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:microbial-growth-depends-on-species-temperature-range",
+      "locale": "ru",
+      "runtime_text": "Рост микроорганизмов зависит от температурного диапазона конкретного вида.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:microbial-growth-depends-on-species-temperature-range",
+      "locale": "en",
+      "runtime_text": "Microbial growth depends on each species’ temperature range.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:microbial-growth-depends-on-available-moisture",
+      "locale": "ru",
+      "runtime_text": "Рост микроорганизмов зависит от доступной влаги.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:microbial-growth-depends-on-available-moisture",
+      "locale": "en",
+      "runtime_text": "Microbial growth depends on available moisture.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:solute-concentration-reduces-available-water-for-many-microbes",
+      "locale": "ru",
+      "runtime_text": "Высокая концентрация растворённых веществ уменьшает доступную многим микроорганизмам воду; есть устойчивые виды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:solute-concentration-reduces-available-water-for-many-microbes",
+      "locale": "en",
+      "runtime_text": "High solute concentration reduces water available to many microbes; tolerant species exist.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fermentation-depends-on-microbe-substrate-conditions",
+      "locale": "ru",
+      "runtime_text": "Брожение зависит от микроорганизма, субстрата и условий; рецепт не задан.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fermentation-depends-on-microbe-substrate-conditions",
+      "locale": "en",
+      "runtime_text": "Fermentation depends on the actual microbe, substrate, temperature, moisture, oxygen, and time; no recipe is given.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+      "locale": "ru",
+      "runtime_text": "Молочнокислое брожение образует молочную кислоту и может менять белки среды; готовая пища не подразумевается.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+      "locale": "en",
+      "runtime_text": "Lactic fermentation produces lactic acid and can change proteins of a medium; no food is implied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
+      "locale": "ru",
+      "runtime_text": "Молочнокислые бактерии могут превращать углеводы в кислоту и углекислый газ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
+      "locale": "en",
+      "runtime_text": "Lactic bacteria can convert carbohydrate to acid and carbon dioxide.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen",
+      "locale": "ru",
+      "runtime_text": "Дрожжи могут превращать сахара в этанол при низком содержании кислорода.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen",
+      "locale": "en",
+      "runtime_text": "Yeast can convert sugars to ethanol under low oxygen.",
+      "search_aliases": []
+    }
+  ]
+}

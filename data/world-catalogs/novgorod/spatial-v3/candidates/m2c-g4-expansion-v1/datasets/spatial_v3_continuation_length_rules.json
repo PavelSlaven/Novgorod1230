@@ -1,0 +1,11 @@
+[
+  {
+    "id": "m2c_through_length_0_3",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "selection_kind": "deterministic_weighted",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "a3c92721bb5e47b13abb0203939a88d47cc2e68a24e0fdfcbba12aa0d2d75df6"
+  }
+]

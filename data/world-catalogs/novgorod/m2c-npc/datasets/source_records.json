@@ -1,0 +1,26 @@
+[
+  {
+    "id": "m2c_npc_editorial_001",
+    "title": "M2c NPC composition and runtime binding approved authoring",
+    "slug": "m2c-npc-editorial-authoring-v1",
+    "source_type": "project_note",
+    "author": "Novgorod runtime authoring",
+    "publication_year": null,
+    "period_covered": null,
+    "region_covered": "Novgorod target runtime",
+    "url": null,
+    "file_reference": "data/world-catalogs/novgorod/m2c-npc/candidate.json; data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json",
+    "page_or_section": "reviewed candidate and runtime bindings; approval.json",
+    "quote_short": null,
+    "summary": "Independently approved gameplay mapping of G4 compositions to NPC runtime profiles. Source reuse and editorial reconstruction are explicitly separated; weights are gameplay choices, not historical frequencies.",
+    "reliability_level": "authoring_record",
+    "bias_notes": "Not evidence of historical population, demographic frequencies, or individual origin/language.",
+    "usefulness": "Provenance for the reviewed NPC authoring rows and mechanical promotion.",
+    "limitations": "Data-only approval permits mechanical promotion and isolated import verification. Production runtime activation remains a separate gate.",
+    "checked_by": "gpt-6-sol high; independent agent /root/m2c_contract_audit_sol",
+    "checked_at": "2026-09-23T21:56:40Z",
+    "status": "approved",
+    "confidence": "low",
+    "audit_notes": "Independent APPROVE_DATA_ONLY_DRAFT verdict recorded in m2c-npc/approval.json; no historical frequencies or language inferred."
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-soap-cleaning-v1-alkaline-hydrolysis",
+      "claim_ref": "claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap",
+      "claim_digest": "32a332d9a2fe74585967192d02ec9d47fad8dafa2a379da8ca49583f82449737",
+      "candidate_ref": "git:c2f0c693346dcc517878d5b40361c9dd7fe0906b:data/world-catalogs/novgorod/world-knowledge/production-v1/static-soap-cleaning-v1.json#claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1276 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-soap-alkaline-hydrolysis"],
+      "review_ref": "verification/static-soap-cleaning-v1.md#approved-soap-cleaning-premises",
+      "verdict": "APPROVE",
+      "limits": "General reaction mechanism only; no alkali source, concentration, amount, heating protocol, historical availability, product quality, or cleaning outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-soap-cleaning-v1-amphiphilic-dispersion",
+      "claim_ref": "claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water",
+      "claim_digest": "147bbe5a16d8e2f9ba4e8135e18d4021a5113cb279b36bfd11a85f8645fac023",
+      "candidate_ref": "git:c2f0c693346dcc517878d5b40361c9dd7fe0906b:data/world-catalogs/novgorod/world-knowledge/production-v1/static-soap-cleaning-v1.json#claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1276 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-soap-amphiphilic-dispersion"],
+      "review_ref": "verification/static-soap-cleaning-v1.md#approved-soap-cleaning-premises",
+      "verdict": "APPROVE",
+      "limits": "Possible surfactant mechanism only; no amount, textile, water condition, agitation, stain, complete removal, preservation, or health outcome."
+    }
+  ]
+}

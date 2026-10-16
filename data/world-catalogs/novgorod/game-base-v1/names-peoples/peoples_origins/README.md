@@ -8,8 +8,9 @@ Status: candidate.
 - `game-base:data/world-catalogs/novgorod/sources/costume-dataset-v1/data/foreigner_profiles.csv`
   (10 rows, candidate) — itinerant/guest groups (merchants, clergy,
   mercenaries). `entity_kind = guest_itinerant`.
-- `Одним ПРОМТОМ:data/rus13-base-staging/nov_region_audit/novgorod_neighbor_regions_v1.json`
-  (6 neighbor lands, draft) — border lands, not peoples.
+- `../../../sources/names-peoples-build-inputs-v1/novgorod_neighbor_regions_v1.json` (6 neighbor
+  lands, draft; snapshot from the collected rus13-nov-region-audit archive) —
+  border lands, not peoples.
   `entity_kind = neighbor_land`.
 - the verified remote book evidence
   (`ssh servak … data/books/evidence/names-peoples.csv`, domain
@@ -100,7 +101,7 @@ needs `place_family` weights that do not yet exist for these peoples.
 ## Sources
 
 - `game-base:data/world-catalogs/novgorod/sources/costume-dataset-v1/data/foreigner_profiles.csv`
-- `Одним ПРОМТОМ:data/rus13-base-staging/nov_region_audit/novgorod_neighbor_regions_v1.json`
+- `../../../sources/names-peoples-build-inputs-v1/novgorod_neighbor_regions_v1.json`
 - remote book evidence: `ssh servak "cat /srv/novgorod-work/data/books/evidence/names-peoples.csv"`,
   domain `peoples_origins`; each `people` row cites the exact `book:<id> §<section_path> ¶<para_no>`
   entries it draws on in its own `source_refs` cell.

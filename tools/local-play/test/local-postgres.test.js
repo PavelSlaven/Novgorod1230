@@ -5,7 +5,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
-import { classifyLocalDatabases, ensureLocalPostgres } from
+import { classifyLocalDatabases, ensureLocalPostgres, selectLocalRelease,
+  LOCAL_POSTGRES } from
   '../local-postgres.js';
 
 const query = (count, sentinels) => async (sql, [name] = []) => ({ rows: [
@@ -40,7 +41,7 @@ test('managed PostgreSQL is initialized, classified, and stopped', async () => {
   const calls = [];
   try {
     const process = { exitCode: null };
-    const pools = [readinessPool(), adminPool(calls), queryPool(), queryPool()];
+    const pools = [readinessPool(), adminPool(calls), adminPool(calls), queryPool(), queryPool()];
     const result = await ensureLocalPostgres({ dataRoot: directory,
       reservePort: async () => 55432, loadBinaries: async () => ({
         nativeDir: native }), spawnProcess: () => process,
@@ -61,6 +62,21 @@ test('managed PostgreSQL is initialized, classified, and stopped', async () => {
     await result.close();
     assert.ok(calls.at(-1).includes('stop'));
   } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('release selection uses complete v17 pair only', async () => {
+  for (const [names, expected] of [
+    [[], 16],
+    [['novgorod_world_v17', 'novgorod_party_v17'], 17]
+  ]) {
+    const release = await selectLocalRelease({ port: 5432, settings: LOCAL_POSTGRES,
+      createPool: () => ({ query: async () => ({ rows: names.map((datname) => ({ datname })) }),
+        end: async () => {} }) });
+    assert.equal(release.version, expected);
+  }
+  await assert.rejects(selectLocalRelease({ port: 5432, settings: LOCAL_POSTGRES,
+    createPool: () => ({ query: async () => ({ rows: [{ datname: 'novgorod_world_v17' }] }),
+      end: async () => {} }) }), { code: 'LOCAL_POSTGRES_V17_PAIR_INCOMPLETE' });
 });
 
 function readinessPool() {

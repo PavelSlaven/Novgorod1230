@@ -21,7 +21,7 @@ contract set: `4.4.0-target.1`
 
 ## 0. Нормативная сила и модель активации
 
-Этот документ задаёт целевое поведение механики времени после её реализации и
+Этот документ задаёт действующее поведение механики времени после её реализации и
 активации. P28 exact-head evidence прежнего кандидата принято как immutable
 historical evidence и не выполняло production write либо composition switch.
 Исторически применялись два разных утверждения:
@@ -189,7 +189,7 @@ Narration:
 | Perception, knowledge, memory, player-safe package | `@rus/visibility-knowledge-memory` |
 | NPC schedule/runtime/reaction semantics | один явно назначенный NPC runtime owner; выбор package фиксируется ADR после inventory |
 | Place/access dynamic state and transition semantics | один явно назначенный spatial/place runtime owner, зафиксированный ADR после inventory; `@rus/turn` не владеет portal/access state |
-| Weather state transitions | один явно назначенный environment/weather owner; `@rus/contracts/weather-state` остаётся только contract layer |
+| Weather state transitions | следующее состояние выбирает `@rus/turn` детерминированным RandomSource по (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D7); `@rus/environment-state` проверяет и применяет погоду и свет и считает моменты смены; начальное состояние выбирает `@rus/materialization`; `@rus/contracts/weather-state` — только contract layer. Выбор следующего состояния в turn и инерция профиля — долг CR реализации M2c (LW-044; код v17 ещё не делает) |
 | Propagation lifecycle и remote aggregate catch-up | один явно назначенный world-process runtime owner; semantic effects остаются у соответствующих domains |
 | Historical phase activation | historical/time contract owner применяет только source-backed records; содержательные effects принадлежат соответствующим domains |
 | Orchestration, decision boundary, proposal merge, combined plan | `@rus/turn` |
@@ -768,7 +768,7 @@ validate request, pins, clock and execution
 → commit atomically
 ```
 
-`@rus/turn` не вычисляет body, traversal, weather или NPC formulas. Оно передаёт snapshots соответствующим owners и объединяет proposals.
+`@rus/turn` не вычисляет body, traversal или NPC formulas и не вычисляет weather formulas. Следующее состояние погоды выбирает `@rus/turn` детерминированным RandomSource (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов; `@rus/environment-state` проверяет и применяет погоду и свет. Snapshots остальных owners передаются им, proposals объединяет `@rus/turn`. Выбор следующего состояния погоды в turn — долг CR реализации M2c (LW-044; код v17 ещё не делает).
 
 ### 11.3. Результат
 
@@ -862,6 +862,8 @@ stranded
 blocked_before_progress
 ```
 
+Spatial standard 4.7.0 (§4.10.1, §10.7.1, §11.6, Приложение F.1.1) добавляет седьмой исход `returned_to_departure` — обратный ход после разворота посреди segment; шесть исходов выше и инвариант A.6 «шесть исходов» сохраняются без изменений (A.6 остаётся текстом редакции 4.3, F.1.1 копирует его блок и расширяет). Время обратного хода считается по этой же формуле для зеркального segment.
+
 Movement duration использует approved formula:
 
 ```text
@@ -885,6 +887,15 @@ Boundaries включают portal state, opening/closing schedule, blocker, cap
 
 ### 14.2. Weather
 
+Погода по D7 ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154), поправка п.10):
+
+1. **Начальное состояние** выбирает `@rus/materialization` (как сейчас при старте).
+2. **Следующее состояние** выбирает `@rus/turn` детерминированным RandomSource по (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов (преемник `weather_transition_profiles_processes.json` / novgorod v2: инерция, держащееся отклонение температуры, осадки от температуры; утверждение по WR §21.1).
+3. **`@rus/environment-state`** проверяет и применяет погоду и свет и считает моменты смены. `npc_combat_and_trigger_contract.md` §5.8 и ADR-005 не меняются этим разделом.
+4. Каждое наступившее состояние — **факт партии**; следующее выбирается от предыдущего сохранённого.
+5. Одна цепочка на G0 с местными поправками по ландшафту.
+6. Историческая фаза ограничивает погоду только по утверждённой источниковой записи.
+
 Weather transition существует только из approved weather profile/process. Runtime не генерирует случайную погоду без profile, seed policy, applicable candidates и owner.
 
 Weather может влиять на:
@@ -897,6 +908,8 @@ Weather может влиять на:
 - access.
 
 Отсутствующий required weather catalog — readiness blocker.
+
+Действующая норма; выбор следующего состояния в turn и инерция профиля — долг CR реализации M2c (LW-044; код v17 ещё не делает).
 
 ### 14.3. Исторические фазы
 
@@ -2990,6 +3003,39 @@ relations:
 invariants:
   - Limit is not earlier than clock_before and request names exactly one authoritative clock owner.
   - Provider inputs and state projection are complete; hidden reads and implicit providers are forbidden.
+```
+
+## A.9. Committed NewGame visible package baseline
+
+For the current target registry, the visible-package persistence envelope may
+identify the existing committed NewGame snapshot at state version 0. This
+amendment supersedes A.6 only for the current definition of this contract;
+historical A.1–A.6 and the pinned 4.2.0/4.3.0 target specifications remain
+unchanged. The package records the matching committed snapshot version; it does
+not synthesize a successor version.
+
+```yaml
+contract_name: visible_package_persistence_envelope
+storage: party_runtime_append_only
+identity:
+  - package_id
+fields:
+  package_id: required stable_id
+  party_id: required stable_id
+  turn_id: required stable_id
+  committed_state_version: required non_negative_decimal_string
+  change_set_id: required stable_id
+  package_digest: required sha256_hex
+  visible_payload: required json_object
+  presentation_status: required enum[pending, delivered, failed_retryable]
+  projection_policy_ref: required versioned_ref
+  dependency_pins: required dependency_pin_set
+  idempotency_record_id: required stable_id
+invariants:
+  - committed_state_version identifies the existing committed party snapshot; zero is valid only when that snapshot has version 0.
+  - Payload contains only perceived/known player-safe facts, uncertainty and already calculated affordances.
+  - Hidden queues, future timestamps, unperceived knowledge, motives, raw options, traces, rolls, DC and state patches are forbidden.
+  - Package and pending status commit atomically with facts; narration output is stored separately.
 ```
 
 # Приложение B. Temporal typed-error amendment

@@ -1,5 +1,5 @@
 import { describeRoleLlmCall, executeRoleLlmCall } from '@rus/llm-runtime';
-import { isRepairRole } from '../runtime/llm-turn-budget.js';
+import { exhausted, isRepairRole } from '../runtime/llm-turn-budget.js';
 
 export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null, settings = null, turnBudget = null, execute = executeRoleLlmCall } = {}) {
   if (typeof execute !== 'function') throw new TypeError('execute must be a function.');
@@ -7,22 +7,22 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
   return Object.freeze({
     describe({ scope, role_id = null, tier_id = null,
       overrides = null, provider_snapshot = null } = {}) {
-      const runtimeProviderOverride = toProviderOverride(
-        provider_snapshot ?? settings?.providerSnapshot());
+      const runtimeProviderOverride = configuredProviderOverride(
+        provider_snapshot, settings);
       return describeRoleLlmCall({ scope, roleId: role_id, tierId: tier_id,
         overrides, ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}), env });
     },
     isCustomProvider() {
       const mode = settings?.providerSnapshot()?.mode;
-      return mode === 'local' || mode === 'custom';
+      return mode === 'custom';
     },
     async run({ scope, role_id = null, tier_id = null, messages = [],
       overrides = null, provider_snapshot = null, repair = false,
       request_identity = null } = {}) {
       if (!String(scope ?? '').trim()) throw new TypeError('scope is required.');
       if (!Array.isArray(messages)) throw new TypeError('messages must be an array.');
-      const runtimeProviderOverride = toProviderOverride(
-        provider_snapshot ?? settings?.providerSnapshot());
+      const runtimeProviderOverride = configuredProviderOverride(
+        provider_snapshot, settings);
       const description = describeRoleLlmCall({ scope, roleId: role_id, tierId: tier_id,
         overrides, ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}), env });
       const isRepair = repair === true || isRepairRole(role_id, description?.contract);
@@ -78,6 +78,10 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       });
       turnBudget?.assertWithinDeadline?.();
       if (result.status !== 'ok') {
+        if (result.error?.code === 'timeout' && requestTimeoutMs < 120_000) {
+          const available = turnBudget?.remaining?.() ?? { deadline_ms: 0 };
+          throw exhausted(available);
+        }
         const error = new Error(result.error?.message ?? `LLM role ${role_id ?? '<unnamed>'} failed.`);
         error.code = result.error?.code ?? 'LLM_ROLE_FAILED';
         error.retryable = result.error?.retryable === true;
@@ -120,8 +124,19 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
 }
 
 function toProviderOverride(snapshot) {
-  if (snapshot?.mode !== 'local' && snapshot?.mode !== 'custom') return null;
+  if (snapshot?.mode !== 'custom') return null;
   return Object.freeze({ compatibility: 'openai_compatible', baseUrl: snapshot.baseUrl, model: snapshot.model, apiKey: snapshot.apiKey ?? null });
+}
+function configuredProviderOverride(snapshot, settings) {
+  const selected = snapshot ?? settings?.providerSnapshot();
+  const override = toProviderOverride(selected);
+  if (settings != null && override == null && selected?.mode !== 'default') {
+    const error = new Error(
+      'Configure the Qwen OpenAI-compatible vLLM endpoint in LLM settings.');
+    error.code = 'LLM_PROVIDER_CONFIGURATION_REQUIRED';
+    throw error;
+  }
+  return override;
 }
 function probeTelemetry(telemetry) {
   if (typeof telemetry?.onCall !== 'function') return telemetry;

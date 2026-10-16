@@ -19,26 +19,30 @@ export async function loadActionProducedOutputDestination(client, input) {
      FROM party_runtime.party_actor_carrier_positions
      WHERE party_id=$1 AND actor_id=$2 AND status='active'`,
   [input.party_id, input.actor_ref]);
-  if (selected.rows.length === 0) return null;
-  if (selected.rows.length !== 1 || !text(selected.rows[0].anchor_id)) {
+  if (modern.rows.length > 1 || modern.rows.some(({ scene_position_id: id }) =>
+    !text(id))) fail('ACTION_PRODUCED_DESTINATION_INVALID');
+  const scenePositionId = modern.rows[0]?.scene_position_id ?? null;
+  // A party that walked to a place has no legacy g5 anchor: the scene position alone is the destination.
+  const anchorless = selected.rows.length === 0;
+  if (anchorless && scenePositionId === null) return null;
+  if (!anchorless && (selected.rows.length !== 1
+      || !text(selected.rows[0].anchor_id))) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
-  const itemCapacity = Number(selected.rows[0].item_capacity);
+  const anchorId = anchorless ? null : selected.rows[0].anchor_id;
+  const itemCapacity = anchorless ? 0 : Number(selected.rows[0].item_capacity);
   if (!Number.isSafeInteger(itemCapacity) || itemCapacity < 0) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
-  const used = await client.query(
+  const used = anchorless ? { rows: [] } : await client.query(
     `SELECT p.item_id FROM party_runtime.party_item_placements p
      JOIN party_runtime.party_items i
        ON i.party_id=p.party_id AND i.item_id=p.item_id
      WHERE p.party_id=$1 AND p.anchor_id=$2
        AND COALESCE(i.state->>'lifecycle_status','active') <> 'retired'
      ORDER BY p.item_id`,
-  [input.party_id, selected.rows[0].anchor_id]);
+  [input.party_id, anchorId]);
   const usedItemIds = used.rows.map(({ item_id: itemId }) => itemId);
-  if (modern.rows.length > 1 || modern.rows.some(({ scene_position_id: id }) =>
-    !text(id))) fail('ACTION_PRODUCED_DESTINATION_INVALID');
-  const scenePositionId = modern.rows[0]?.scene_position_id ?? null;
   if (!refs(usedItemIds) || scenePositionId === null
       && usedItemIds.length > itemCapacity) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
@@ -60,7 +64,7 @@ export async function loadActionProducedOutputDestination(client, input) {
       || Number(scene.rows[0].occupancy) > Number(scene.rows[0].capacity))) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
-  const value = { anchor_id: selected.rows[0].anchor_id,
+  const value = { anchor_id: anchorId,
     item_capacity: itemCapacity, used_item_ids: usedItemIds };
   return { schema: 'action_production_output_destination_pin_v1',
     destination_kind: scenePositionId === null ? 'party_current_anchor'

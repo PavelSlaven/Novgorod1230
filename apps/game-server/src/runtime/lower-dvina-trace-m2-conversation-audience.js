@@ -3,6 +3,8 @@ import { projectConversationAudience } from
   '@rus/visibility-knowledge-memory';
 import { compareRefs, npcRef, ref } from
   './lower-dvina-trace-m2-conversation-shared.js';
+import { sameSceneLocus, sceneLocus } from
+  './lower-dvina-trace-scene-presence.js';
 
 export function audienceForStatement(
   context,
@@ -28,12 +30,11 @@ export function audienceForStatement(
               instanceId === statement.speaker_ref.entity_id
           )
         : null;
-      const listenerAnchor = listenerRef.entity_kind === 'player_character'
-        ? context.state.position.g5_anchor_id
-        : actor?.anchor_id;
-      const speakerAnchor = statement.speaker_ref.entity_kind === 'player_character'
-        ? context.state.position.g5_anchor_id
-        : speakerActor?.anchor_id;
+      const together = sameSceneLocus(
+        sceneLocus(context.state, listenerRef.entity_kind === 'player_character'
+          ? context.state.position : actor),
+        sceneLocus(context.state, statement.speaker_ref.entity_kind
+          === 'player_character' ? context.state.position : speakerActor));
       const machine = actor?.machine_state ?? {};
       const semantic = actor?.semantic_state ?? {};
       const perception = resolveConversationListenerPerception({
@@ -42,10 +43,8 @@ export function audienceForStatement(
           'perception_result',
           `perception:${statement.statement_id}:${listenerRef.entity_id}`
         ),
-        acoustic_path: listenerAnchor && listenerAnchor === speakerAnchor
-          ? 'clear' : 'blocked',
-        distance_band: listenerAnchor && listenerAnchor === speakerAnchor
-          ? 'conversation' : 'distant',
+        acoustic_path: together ? 'clear' : 'blocked',
+        distance_band: together ? 'conversation' : 'distant',
         ambient_noise: context.state.environment?.ambient_noise ?? 'ordinary',
         hearing_capability: machine.hearing_capability ?? 'full',
         attention: ['unconscious', 'incapacitated'].includes(machine.status)

@@ -1,3 +1,4 @@
+import { withoutSceneNpcs } from './scene-npcs-readback.js';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { canonicalDigest } from '@rus/materialization';
@@ -10,19 +11,24 @@ import { appendCombatTraversalWrites } from
 import { phase2ScreenDigest, phase2VisibleContextFromPayload,
   projectPlayerSafeChecks } from
   './lower-dvina-trace-phase-2-projection.js';
+import { projectVisibleContextForPlayerPackage } from
+  '../../runtime/lower-dvina-trace-player-safe-visible-context.js';
 
 export function combatVisibleEnvelope({ partyId, factual, visibleContext,
-  nextVersion, turnNumber, changeSetId, idemId }) {
+  nextVersion, turnNumber, changeSetId, idemId,
+  onLabelGapsOmitted = null }) {
+  const { visible_context: playerContext } =
+    projectVisibleContextForPlayerPackage(visibleContext, { onLabelGapsOmitted, requireScene: true });
   const session = factual.consequence.combat.session_after;
   const combatEnded = session.status === 'ended';
   const payload = { schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details,
-    visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects,
-    known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties, hypotheses: [],
+    perceived_scene: playerContext.visible_scene,
+    perceived_changes: playerContext.visible_changes,
+    sensory_details: playerContext.sensory_details,
+    visible_npcs: playerContext.visible_npc,
+    visible_objects: playerContext.visible_objects,
+    known_context: playerContext.known_context,
+    uncertainties: playerContext.uncertainties, hypotheses: [],
     player_safe_interruption: combatEnded ? null :
       'Требуется решение в бою.',
     allowed_action_affordances: combatEnded ? [] : [{
@@ -75,8 +81,8 @@ export function combatWrites({ partyId, state, next, factual, turnNumber,
   const combat = factual.consequence.combat;
   const inserts = [row('party_state_snapshots',
     `${partyId}:${next.party_state.state_version}`, { party_id: partyId,
-      state_version: next.party_state.state_version, state_payload: next,
-      state_digest: canonicalDigest(next) })];
+      state_version: next.party_state.state_version, state_payload: withoutSceneNpcs(next),
+      state_digest: canonicalDigest(withoutSceneNpcs(next)) })];
   const updates = [row('parties', partyId, { party_id: partyId,
     status: 'active' }), row('party_server_sessions', partyId, {
       party_id: partyId, turn_number: turnNumber,
@@ -90,6 +96,8 @@ export function combatWrites({ partyId, state, next, factual, turnNumber,
       health: next.body_state.health, energy: next.body_state.energy,
       satiety: next.body_state.satiety, updated_change_set_id: changeSetId }));
   appendNpcBodyWrites({ updates, state, next, partyId });
+  appendNpcBodyStateWrites({ inserts, updates, state, factual, partyId,
+    changeSetId });
   appendCombatItemWrites({ updates, state, next, partyId });
   const appends = [row('party_v3_change_sets', changeSetId, { id: changeSetId,
     party_id: partyId, operation_kind: 'combat_exchange',
@@ -154,6 +162,34 @@ function appendNpcBodyWrites({ updates, state, next, partyId }) {
         !== canonicalDigest(npc.machine_state)) updates.push(row('party_npcs',
       npc.instance_id, { party_id: partyId, npc_id: npc.instance_id,
         machine_state: npc.machine_state }));
+  }
+}
+
+function appendNpcBodyStateWrites({ inserts, updates, state, factual,
+  partyId, changeSetId }) {
+  const combat = factual.consequence.combat;
+  const before = new Map((state.npcs ?? []).map((npc) => [npc.instance_id, npc]));
+  const after = new Map((combat.working_state_after?.npcs ?? [])
+    .map((npc) => [npc.instance_id, npc]));
+  for (const { entity_kind: kind, entity_id: id } of
+    combat.session_after.participant_refs ?? []) {
+    if (kind !== 'npc') continue;
+    const prior = before.get(id);
+    const body = combat.working_state_after?.actor_states?.[`npc:${id}`]
+      ?.body_state;
+    if (!prior || !body) continue;
+    const bodyRow = { party_id: partyId, actor_kind: 'npc', actor_id: id,
+      body_profile_ref: prior.body_profile_ref
+        ?? after.get(id)?.body_profile_ref,
+      health: body.health, energy: body.energy, satiety: body.satiety,
+      updated_change_set_id: changeSetId };
+    if (!prior.body_state_persisted) {
+      inserts.push(row('party_actor_body_states', `npc:${id}`, bodyRow));
+    } else if (prior.body_state.health !== body.health
+        || prior.body_state.energy !== body.energy
+        || prior.body_state.satiety !== body.satiety) {
+      updates.push(row('party_actor_body_states', `npc:${id}`, bodyRow));
+    }
   }
 }
 

@@ -1,0 +1,2790 @@
+{
+  "schema": "rus.v17_channels.o1_placement_authoring_candidate.v2",
+  "candidate_id": "novgorod_v17_vikhtuy_o1_placement_4a4_candidate",
+  "status": "pending_short_reapproval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "scope": "Только candidate homestead PF rows в Vikhtuy G4; outbuildings и другие G4 не входят.",
+  "authoring_policy": "One category rule per exact scope/category. allowed_item_refs is limited to the matching 4a2 presence row item_ref plus its PF frequency-backed variants; category used_by never expands the pool.",
+  "weight_policy": "Explicit candidate 1:1 is the editorial default required when both weights are NULL by world_base_materialization_table_requirements.md §8.1. It is not an empirical claim. Keep disclosure modes unchanged.",
+  "counts": {
+    "candidate_placement_rules": 56,
+    "source_no_source_markers": 61,
+    "open_only_rules": 3,
+    "source_rows_merged": 1
+  },
+  "candidate_rules": [
+    {
+      "rule_id": "placement_pr_0e0be6c1a835a1fb",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_toy_vehicle_v1",
+      "presence_pr_id": "pr_0e0be6c1a835a1fb",
+      "allowed_item_refs": [
+        "it_ps_toy_boat"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_toy_boat",
+          "category_id": "cat_item_object_toy_vehicle_v1",
+          "subcategory": "toys",
+          "material": "wood;textile",
+          "technique": "carved",
+          "size_band": "small",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_toy_boat__peasant_homestead",
+        "ipf_it_ps_toy_boat__peasant_homestead",
+        "master_where_used:MUS0025"
+      ],
+      "source_presence_pr_ids": [
+        "pr_0e0be6c1a835a1fb"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_1b1d2e6d1622a471",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_candlestick_v1",
+      "presence_pr_id": "pr_1b1d2e6d1622a471",
+      "allowed_item_refs": [
+        "it_hh_candlestick_iron"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_candlestick_iron",
+          "category_id": "cat_item_object_candlestick_v1",
+          "subcategory": "lighting",
+          "material": "iron",
+          "technique": "forged",
+          "size_band": "small",
+          "functions": "holding_candle",
+          "item_group": "HH_FIRE_LIGHT"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_candlestick_iron__peasant_homestead",
+        "ipf_it_hh_candlestick_iron__peasant_homestead",
+        "master_where_used:HOU0006"
+      ],
+      "source_presence_pr_ids": [
+        "pr_1b1d2e6d1622a471"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_1cf90b782effc83f",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_loom_weight_v1",
+      "presence_pr_id": "pr_1cf90b782effc83f",
+      "allowed_item_refs": [
+        "it_hh_loom_weight"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_loom_weight",
+          "category_id": "cat_item_object_loom_weight_v1",
+          "subcategory": "weaving",
+          "material": "clay;stone",
+          "technique": "fired_clay;ground_stone",
+          "size_band": "small",
+          "functions": "tensioning_warp",
+          "item_group": "HH_TEXTILE_WORK"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_loom_weight__peasant_homestead",
+        "ipf_it_hh_loom_weight__peasant_homestead",
+        "master_where_used:CRF0052"
+      ],
+      "source_presence_pr_ids": [
+        "pr_1cf90b782effc83f"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_1d74054e7a56924f",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_container_form_bucket_v1",
+      "presence_pr_id": "pr_1d74054e7a56924f",
+      "allowed_item_refs": [
+        "it_hh_bucket_hollowed"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_bucket_hollowed",
+          "category_id": "cat_item_object_bucket_v1",
+          "subcategory": "stave_and_hollowed",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "medium",
+          "functions": "carrying_water",
+          "item_group": "HH_VESSELS_WATER"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_bucket_hollowed__peasant_homestead",
+        "ipf_it_hh_bucket_hollowed__peasant_homestead",
+        "master_where_used:HOU0031"
+      ],
+      "source_presence_pr_ids": [
+        "pr_1d74054e7a56924f"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_1ea1130e807a7799",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_container_form_cask_v1",
+      "presence_pr_id": "pr_1ea1130e807a7799",
+      "allowed_item_refs": [
+        "it_hh_small_cask"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_small_cask",
+          "category_id": "cat_item_object_cask_v1",
+          "subcategory": "stave_and_hollowed",
+          "material": "wood",
+          "technique": "staved;hooped_with_wood",
+          "size_band": "medium",
+          "functions": "storing_liquid;carrying_drink",
+          "item_group": "HH_VESSELS_WATER"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_small_cask__peasant_homestead",
+        "ipf_it_hh_small_cask__peasant_homestead",
+        "master_where_used:HOU0025"
+      ],
+      "source_presence_pr_ids": [
+        "pr_1ea1130e807a7799"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_2341bcd6a3d3d648",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_tablet_weaving_card_v1",
+      "presence_pr_id": "pr_2341bcd6a3d3d648",
+      "allowed_item_refs": [
+        "it_hh_tablet_card"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_tablet_card",
+          "category_id": "cat_item_object_tablet_weaving_card_v1",
+          "subcategory": "weaving",
+          "material": "wood;bone_or_antler",
+          "technique": "carved",
+          "size_band": "tiny",
+          "functions": "weaving_bands",
+          "item_group": "HH_TEXTILE_WORK"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_tablet_card__peasant_homestead",
+        "ipf_it_hh_tablet_card__peasant_homestead",
+        "master_where_used:CRF0083"
+      ],
+      "source_presence_pr_ids": [
+        "pr_2341bcd6a3d3d648"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_2e4554fa45e30249",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_firesteel_v1",
+      "presence_pr_id": "pr_2e4554fa45e30249",
+      "allowed_item_refs": [
+        "it_hh_firesteel"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_firesteel",
+          "category_id": "cat_item_object_firesteel_v1",
+          "subcategory": "fire_making",
+          "material": "iron;steel_edge",
+          "technique": "forged;hardened_striking_edge",
+          "size_band": "small",
+          "functions": "striking_fire",
+          "item_group": "HH_FIRE_LIGHT"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_firesteel__peasant_homestead",
+        "ipf_it_hh_firesteel__peasant_homestead",
+        "master_where_used:HOU0012"
+      ],
+      "source_presence_pr_ids": [
+        "pr_2e4554fa45e30249"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_31bb48d7e23237db",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_spindle_whorl_v1",
+      "presence_pr_id": "pr_31bb48d7e23237db",
+      "allowed_item_refs": [
+        "it_hh_clay_whorl"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_clay_whorl",
+          "category_id": "cat_item_object_spindle_whorl_v1",
+          "subcategory": "spinning",
+          "material": "clay",
+          "technique": "fired_clay",
+          "size_band": "tiny",
+          "functions": "weighting_spindle",
+          "item_group": "HH_TEXTILE_WORK"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_clay_whorl__peasant_homestead",
+        "ipf_it_hh_clay_whorl__peasant_homestead",
+        "master_link:ILO005769;master_link:ILO005772"
+      ],
+      "source_presence_pr_ids": [
+        "pr_31bb48d7e23237db"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_324f66380a3ac4ef",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_container_form_carrying_basket_v1",
+      "presence_pr_id": "pr_324f66380a3ac4ef",
+      "allowed_item_refs": [
+        "it_hh_basket"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_basket",
+          "category_id": "cat_item_object_carrying_basket_v1",
+          "subcategory": "small_storage",
+          "material": "willow_or_roots;bast;reed_or_splint",
+          "technique": "woven",
+          "size_band": "medium",
+          "functions": "carrying;storing",
+          "item_group": "HH_SMALL_STORAGE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_basket__peasant_homestead",
+        "ipf_it_hh_basket__peasant_homestead",
+        "master_spawn:SPN038:HOU0016"
+      ],
+      "source_presence_pr_ids": [
+        "pr_324f66380a3ac4ef"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_33dbe944cad6306b",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_game_board_v1",
+      "presence_pr_id": "pr_33dbe944cad6306b",
+      "allowed_item_refs": [
+        "it_ps_game_board"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_game_board",
+          "category_id": "cat_item_object_game_board_v1",
+          "subcategory": "games",
+          "material": "wood",
+          "technique": "carved;incised",
+          "size_band": "medium",
+          "functions": "gaming",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_game_board__peasant_homestead",
+        "ipf_it_ps_game_board__peasant_homestead",
+        "master_where_used:MUS0031"
+      ],
+      "source_presence_pr_ids": [
+        "pr_33dbe944cad6306b"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_33fc66815e7b904e",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_dice_v1",
+      "presence_pr_id": "pr_33fc66815e7b904e",
+      "allowed_item_refs": [
+        "it_ps_die"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_die",
+          "category_id": "cat_item_object_dice_v1",
+          "subcategory": "games",
+          "material": "bone_or_antler",
+          "technique": "carved;drilled_dots",
+          "size_band": "tiny",
+          "functions": "gaming",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_die__peasant_homestead",
+        "ipf_it_ps_die__peasant_homestead",
+        "master_where_used:MUS0004"
+      ],
+      "source_presence_pr_ids": [
+        "pr_33fc66815e7b904e"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_3b69bc5d887f0d94",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_instrument_part_v1",
+      "presence_pr_id": "pr_3b69bc5d887f0d94",
+      "allowed_item_refs": [
+        "it_ps_gudok_bow",
+        "it_ps_gusli_peg"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_ps_gusli_peg__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_gusli_peg__peasant_homestead",
+          "item_ref": "it_ps_gusli_peg"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_gudok_bow",
+          "category_id": "cat_item_object_instrument_part_v1",
+          "subcategory": "string_instruments",
+          "material": "wood;horsehair",
+          "technique": "carved;bent_wood",
+          "size_band": "small",
+          "functions": "bowing",
+          "item_group": "PS_MUSIC"
+        },
+        {
+          "it_id": "it_ps_gusli_peg",
+          "category_id": "cat_item_object_instrument_part_v1",
+          "subcategory": "string_instruments",
+          "material": "wood;bone_or_antler",
+          "technique": "carved",
+          "size_band": "tiny",
+          "functions": "tuning",
+          "item_group": "PS_MUSIC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_gudok_bow__peasant_homestead",
+        "ipf_it_ps_gudok_bow__peasant_homestead",
+        "master_where_used:MUS0035"
+      ],
+      "source_presence_pr_ids": [
+        "pr_3b69bc5d887f0d94"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_40ea882ed08e2986",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_awl_v1",
+      "presence_pr_id": "pr_40ea882ed08e2986",
+      "allowed_item_refs": [
+        "it_hh_awl"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_awl",
+          "category_id": "cat_item_object_awl_v1",
+          "subcategory": "sewing",
+          "material": "iron;wood",
+          "technique": "forged;wooden_haft",
+          "size_band": "tiny",
+          "functions": "piercing_leather;piercing_bark",
+          "item_group": "HH_SEWING"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_awl__peasant_homestead",
+        "ipf_it_hh_awl__peasant_homestead",
+        "master_where_used:HOU0049"
+      ],
+      "source_presence_pr_ids": [
+        "pr_40ea882ed08e2986"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_483c287dd6e73c60",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_jaw_harp_v1",
+      "presence_pr_id": "pr_483c287dd6e73c60",
+      "allowed_item_refs": [
+        "it_ps_jaw_harp"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_jaw_harp",
+          "category_id": "cat_item_object_jaw_harp_v1",
+          "subcategory": "idiophones",
+          "material": "iron",
+          "technique": "forged",
+          "size_band": "tiny",
+          "functions": "playing_music",
+          "item_group": "PS_MUSIC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_jaw_harp__peasant_homestead",
+        "ipf_it_ps_jaw_harp__peasant_homestead",
+        "master_where_used:MUS0032"
+      ],
+      "source_presence_pr_ids": [
+        "pr_483c287dd6e73c60"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_4e1460e1819958b4",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_toy_figure_v1",
+      "presence_pr_id": "pr_4e1460e1819958b4",
+      "allowed_item_refs": [
+        "it_ps_clay_animal",
+        "it_ps_doll",
+        "it_ps_toy_horse"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_ps_doll__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_doll__peasant_homestead",
+          "item_ref": "it_ps_doll"
+        },
+        {
+          "source_row_id": "ipf_it_ps_toy_horse__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_toy_horse__peasant_homestead",
+          "item_ref": "it_ps_toy_horse"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_clay_animal",
+          "category_id": "cat_item_object_toy_figure_v1",
+          "subcategory": "toys",
+          "material": "clay",
+          "technique": "fired_clay;modelled",
+          "size_band": "tiny",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        },
+        {
+          "it_id": "it_ps_doll",
+          "category_id": "cat_item_object_toy_figure_v1",
+          "subcategory": "toys",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "small",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        },
+        {
+          "it_id": "it_ps_toy_horse",
+          "category_id": "cat_item_object_toy_figure_v1",
+          "subcategory": "toys",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "small",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_clay_animal__peasant_homestead",
+        "ipf_it_ps_clay_animal__peasant_homestead",
+        "master_where_used:MUS0024"
+      ],
+      "source_presence_pr_ids": [
+        "pr_4e1460e1819958b4"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_51512b54d107a3d7",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_small_bell_v1",
+      "presence_pr_id": "pr_51512b54d107a3d7",
+      "allowed_item_refs": [
+        "it_ps_hand_bell"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_hand_bell",
+          "category_id": "cat_item_object_small_bell_v1",
+          "subcategory": "sound",
+          "material": "copper_alloy",
+          "technique": "cast",
+          "size_band": "tiny",
+          "functions": "signalling;decoration",
+          "item_group": "PS_MUSIC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_hand_bell__peasant_homestead",
+        "ipf_it_ps_hand_bell__peasant_homestead",
+        "master_where_used:MUS0006"
+      ],
+      "source_presence_pr_ids": [
+        "pr_51512b54d107a3d7"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_558f8a68fa018bb9",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_frame_drum_v1",
+      "presence_pr_id": "pr_558f8a68fa018bb9",
+      "allowed_item_refs": [
+        "it_ps_frame_drum"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_frame_drum",
+          "category_id": "cat_item_object_frame_drum_v1",
+          "subcategory": "percussion",
+          "material": "wood;rawhide",
+          "technique": "bent_wood;stretched_skin",
+          "size_band": "hand",
+          "functions": "playing_music",
+          "item_group": "PS_MUSIC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_frame_drum__peasant_homestead",
+        "ipf_it_ps_frame_drum__peasant_homestead",
+        "master_where_used:MUS0037"
+      ],
+      "source_presence_pr_ids": [
+        "pr_558f8a68fa018bb9"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_5988d9266ec840d2",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_clamp_peg_v1",
+      "presence_pr_id": "pr_5988d9266ec840d2",
+      "allowed_item_refs": [
+        "it_hh_peg_clamp"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_peg_clamp",
+          "category_id": "cat_item_object_clamp_peg_v1",
+          "subcategory": "fittings",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "tiny",
+          "functions": "clamping;hanging",
+          "item_group": "HH_TOOLS_SMALL"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_peg_clamp__peasant_homestead",
+        "ipf_it_hh_peg_clamp__peasant_homestead",
+        "master_where_used:HOU0029"
+      ],
+      "source_presence_pr_ids": [
+        "pr_5988d9266ec840d2"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_5becd0d3b5f7b12b",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_flax_tow_bundle_v1",
+      "presence_pr_id": "pr_5becd0d3b5f7b12b",
+      "allowed_item_refs": [
+        "it_hh_tow"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_tow",
+          "category_id": "cat_item_object_flax_tow_bundle_v1",
+          "subcategory": "fibre_preparation",
+          "material": "flax;wool",
+          "technique": "prepared",
+          "size_band": "small",
+          "functions": "spinning_stock",
+          "item_group": "HH_TEXTILE_WORK"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_tow__peasant_homestead",
+        "ipf_it_hh_tow__peasant_homestead",
+        "master_where_used:CRF0034"
+      ],
+      "source_presence_pr_ids": [
+        "pr_5becd0d3b5f7b12b"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_5e1bd21d12ca9d93",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_ball_v1",
+      "presence_pr_id": "pr_5e1bd21d12ca9d93",
+      "allowed_item_refs": [
+        "it_ps_leather_ball",
+        "it_ps_wooden_ball"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_ps_wooden_ball__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_wooden_ball__peasant_homestead",
+          "item_ref": "it_ps_wooden_ball"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_leather_ball",
+          "category_id": "cat_item_object_ball_v1",
+          "subcategory": "toys",
+          "material": "leather;wool;hair",
+          "technique": "sewn",
+          "size_band": "small",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        },
+        {
+          "it_id": "it_ps_wooden_ball",
+          "category_id": "cat_item_object_ball_v1",
+          "subcategory": "toys",
+          "material": "wood",
+          "technique": "turned_on_lathe",
+          "size_band": "small",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_leather_ball__peasant_homestead",
+        "ipf_it_ps_leather_ball__peasant_homestead",
+        "master_where_used:MUS0019"
+      ],
+      "source_presence_pr_ids": [
+        "pr_5e1bd21d12ca9d93"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_5efb361215b9735c",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_brush_v1",
+      "presence_pr_id": "pr_5efb361215b9735c",
+      "allowed_item_refs": [
+        "it_hh_brush_wood"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_brush_wood",
+          "category_id": "cat_item_object_brush_v1",
+          "subcategory": "cleaning",
+          "material": "wood;plant_fiber",
+          "technique": "assembled",
+          "size_band": "small",
+          "functions": "brushing;cleaning",
+          "item_group": "HH_CLEANING"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_brush_wood__peasant_homestead",
+        "ipf_it_hh_brush_wood__peasant_homestead",
+        "master_where_used:HOU0030"
+      ],
+      "source_presence_pr_ids": [
+        "pr_5efb361215b9735c"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_60054a3a805e2024",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_blanket_wool_v1",
+      "presence_pr_id": "pr_60054a3a805e2024",
+      "allowed_item_refs": [
+        "it_hh_wool_blanket"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_wool_blanket",
+          "category_id": "cat_item_object_blanket_wool_v1",
+          "subcategory": "bedding",
+          "material": "wool",
+          "technique": "woven",
+          "size_band": "medium",
+          "functions": "covering_sleeper",
+          "item_group": "HH_BEDDING_TEXTILE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_wool_blanket__peasant_homestead",
+        "ipf_it_hh_wool_blanket__peasant_homestead",
+        "master_where_used:MIL0023"
+      ],
+      "source_presence_pr_ids": [
+        "pr_60054a3a805e2024"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_64ea5a128fb29f3a",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_ceramic_bowl_v1",
+      "presence_pr_id": "pr_64ea5a128fb29f3a",
+      "allowed_item_refs": [
+        "it_hh_ceramic_bowl"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_ceramic_bowl",
+          "category_id": "cat_item_object_ceramic_bowl_v1",
+          "subcategory": "ceramic_table",
+          "material": "clay",
+          "technique": "wheel_thrown_or_hand_finished;fired_clay",
+          "size_band": "hand",
+          "functions": "eating;serving",
+          "item_group": "HH_TABLEWARE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_ceramic_bowl__peasant_homestead",
+        "ipf_it_hh_ceramic_bowl__peasant_homestead",
+        "master_link:ILO005850"
+      ],
+      "source_presence_pr_ids": [
+        "pr_64ea5a128fb29f3a"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_65284c79a14838f3",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_toy_weapon_v1",
+      "presence_pr_id": "pr_65284c79a14838f3",
+      "allowed_item_refs": [
+        "it_ps_toy_bow",
+        "it_ps_toy_sword"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_ps_toy_sword__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_toy_sword__peasant_homestead",
+          "item_ref": "it_ps_toy_sword"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_toy_bow",
+          "category_id": "cat_item_object_toy_weapon_v1",
+          "subcategory": "toys",
+          "material": "wood;plant_fiber",
+          "technique": "carved",
+          "size_band": "small",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        },
+        {
+          "it_id": "it_ps_toy_sword",
+          "category_id": "cat_item_object_toy_weapon_v1",
+          "subcategory": "toys",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "small",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_toy_bow__peasant_homestead",
+        "ipf_it_ps_toy_bow__peasant_homestead",
+        "master_where_used:MUS0018"
+      ],
+      "source_presence_pr_ids": [
+        "pr_65284c79a14838f3"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_67ae629fa56a23b5",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_hand_quern_v1",
+      "presence_pr_id": "pr_67ae629fa56a23b5",
+      "allowed_item_refs": [
+        "it_hh_hand_quern"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": null,
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)",
+        "logical_necessity: catalog size_band large/bulky + items_and_property.txt §12"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_hand_quern",
+          "category_id": "cat_item_object_hand_quern_v1",
+          "subcategory": "food_processing",
+          "material": "stone;wood",
+          "technique": "ground_stone;assembled",
+          "size_band": "bulky",
+          "functions": "grinding_grain",
+          "item_group": "HH_FOODPROC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Только открыто: крупная/тяжёлая вещь не может быть concealed; это не историческая вероятность. Source Stage 16 gap сохранён.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_hand_quern__peasant_homestead",
+        "ipf_it_hh_hand_quern__peasant_homestead",
+        "master_where_used:AGR0017"
+      ],
+      "source_presence_pr_ids": [
+        "pr_67ae629fa56a23b5"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_69e8c51d0432bfc7",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_chess_piece_v1",
+      "presence_pr_id": "pr_69e8c51d0432bfc7",
+      "allowed_item_refs": [
+        "it_ps_chess_king",
+        "it_ps_chess_pawn",
+        "it_ps_chess_rook"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_ps_chess_pawn__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_chess_pawn__peasant_homestead",
+          "item_ref": "it_ps_chess_pawn"
+        },
+        {
+          "source_row_id": "ipf_it_ps_chess_rook__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_chess_rook__peasant_homestead",
+          "item_ref": "it_ps_chess_rook"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_chess_king",
+          "category_id": "cat_item_object_chess_piece_v1",
+          "subcategory": "games",
+          "material": "bone_or_antler;wood",
+          "technique": "carved",
+          "size_band": "tiny",
+          "functions": "playing_chess",
+          "item_group": "PS_PLAY"
+        },
+        {
+          "it_id": "it_ps_chess_pawn",
+          "category_id": "cat_item_object_chess_piece_v1",
+          "subcategory": "games",
+          "material": "bone_or_antler;wood",
+          "technique": "carved;turned_on_lathe",
+          "size_band": "tiny",
+          "functions": "playing_chess",
+          "item_group": "PS_PLAY"
+        },
+        {
+          "it_id": "it_ps_chess_rook",
+          "category_id": "cat_item_object_chess_piece_v1",
+          "subcategory": "games",
+          "material": "bone_or_antler;wood",
+          "technique": "carved",
+          "size_band": "tiny",
+          "functions": "playing_chess",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_chess_king__peasant_homestead",
+        "ipf_it_ps_chess_king__peasant_homestead",
+        "master_where_used:MUS0003"
+      ],
+      "source_presence_pr_ids": [
+        "pr_69e8c51d0432bfc7"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_6b3aed4a3cdde2cf",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_container_form_knife_sheath_v1",
+      "presence_pr_id": "pr_6b3aed4a3cdde2cf",
+      "allowed_item_refs": [
+        "it_ps_knife_sheath"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_knife_sheath",
+          "category_id": "cat_item_object_knife_sheath_v1",
+          "subcategory": "knives",
+          "material": "leather",
+          "technique": "sewn;fitted_sheath",
+          "size_band": "tiny",
+          "functions": "holding_knife",
+          "item_group": "PS_KNIFE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_knife_sheath__peasant_homestead",
+        "ipf_it_ps_knife_sheath__peasant_homestead",
+        "master_where_used:HOU0037;master_where_used:MIL0017"
+      ],
+      "source_presence_pr_ids": [
+        "pr_6b3aed4a3cdde2cf"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_6cea9056b789d1db",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_whetstone_v1",
+      "presence_pr_id": "pr_6cea9056b789d1db",
+      "allowed_item_refs": [
+        "it_hh_whetstone"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_whetstone",
+          "category_id": "cat_item_object_whetstone_v1",
+          "subcategory": "maintenance",
+          "material": "stone",
+          "technique": "ground_stone;pierced",
+          "size_band": "tiny",
+          "functions": "sharpening",
+          "item_group": "HH_TOOLS_SMALL"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_whetstone__peasant_homestead",
+        "ipf_it_hh_whetstone__peasant_homestead",
+        "master_where_used:HOU0005"
+      ],
+      "source_presence_pr_ids": [
+        "pr_6cea9056b789d1db"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_736e1dcf90cf4be7",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_ice_grip_v1",
+      "presence_pr_id": "pr_736e1dcf90cf4be7",
+      "allowed_item_refs": [
+        "it_ps_ice_grips"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_ice_grips",
+          "category_id": "cat_item_object_ice_grip_v1",
+          "subcategory": "winter_gear",
+          "material": "iron;leather",
+          "technique": "forged",
+          "size_band": "small",
+          "functions": "walking_on_ice",
+          "item_group": "PS_CARRY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_ice_grips__peasant_homestead",
+        "ipf_it_ps_ice_grips__peasant_homestead",
+        "master_where_used:MSC0032"
+      ],
+      "source_presence_pr_ids": [
+        "pr_736e1dcf90cf4be7"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_778a18a1b37b42b6",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_container_form_small_soft_bag_v1",
+      "presence_pr_id": "pr_778a18a1b37b42b6",
+      "allowed_item_refs": [
+        "it_ps_small_bag"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_small_bag",
+          "category_id": "cat_item_object_small_soft_bag_v1",
+          "subcategory": "carry",
+          "material": "linen;leather",
+          "technique": "sewn",
+          "size_band": "tiny",
+          "functions": "carrying_small_items",
+          "item_group": "PS_CARRY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_small_bag__peasant_homestead",
+        "ipf_it_ps_small_bag__peasant_homestead",
+        "master_where_used:HOU0041"
+      ],
+      "source_presence_pr_ids": [
+        "pr_778a18a1b37b42b6"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_79a7d4683e48ff1c",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_thimble_v1",
+      "presence_pr_id": "pr_79a7d4683e48ff1c",
+      "allowed_item_refs": [
+        "it_hh_thimble"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_thimble",
+          "category_id": "cat_item_object_thimble_v1",
+          "subcategory": "sewing",
+          "material": "copper_alloy;iron",
+          "technique": "cast;forged",
+          "size_band": "tiny",
+          "functions": "sewing",
+          "item_group": "HH_SEWING"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_thimble__peasant_homestead",
+        "ipf_it_hh_thimble__peasant_homestead",
+        "master_where_used:HOU0042"
+      ],
+      "source_presence_pr_ids": [
+        "pr_79a7d4683e48ff1c"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_804e4033a1f92cee",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_container_form_birch_bark_box_v1",
+      "presence_pr_id": "pr_804e4033a1f92cee",
+      "allowed_item_refs": [
+        "it_hh_bark_box",
+        "it_hh_bark_tues"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_hh_bark_tues__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_bark_tues__peasant_homestead",
+          "item_ref": "it_hh_bark_tues"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_bark_box",
+          "category_id": "cat_item_object_birch_bark_box_v1",
+          "subcategory": "small_storage",
+          "material": "birch_bark;wood",
+          "technique": "folded_sewn_bark",
+          "size_band": "medium",
+          "functions": "storing;carrying",
+          "item_group": "HH_SMALL_STORAGE"
+        },
+        {
+          "it_id": "it_hh_bark_tues",
+          "category_id": "cat_item_object_birch_bark_box_v1",
+          "subcategory": "small_storage",
+          "material": "birch_bark;wood",
+          "technique": "folded_sewn_bark",
+          "size_band": "small",
+          "functions": "storing;carrying_berries;carrying_liquid",
+          "item_group": "HH_SMALL_STORAGE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_bark_box__peasant_homestead",
+        "ipf_it_hh_bark_box__peasant_homestead",
+        "master_where_used:HOU0021"
+      ],
+      "source_presence_pr_ids": [
+        "pr_804e4033a1f92cee"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_8ac3452938c181e1",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_gusli_v1",
+      "presence_pr_id": "pr_8ac3452938c181e1",
+      "allowed_item_refs": [
+        "it_ps_gusli_lyre",
+        "it_ps_gusli_wing"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_ps_gusli_wing__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_gusli_wing__peasant_homestead",
+          "item_ref": "it_ps_gusli_wing"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_gusli_lyre",
+          "category_id": "cat_item_object_gusli_v1",
+          "subcategory": "string_instruments",
+          "material": "wood;gut_or_metal_string",
+          "technique": "carved;hollowed",
+          "size_band": "medium",
+          "functions": "playing_music",
+          "item_group": "PS_MUSIC"
+        },
+        {
+          "it_id": "it_ps_gusli_wing",
+          "category_id": "cat_item_object_gusli_v1",
+          "subcategory": "string_instruments",
+          "material": "wood;gut_or_metal_string",
+          "technique": "carved;hollowed",
+          "size_band": "medium",
+          "functions": "playing_music",
+          "item_group": "PS_MUSIC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_gusli_lyre__peasant_homestead",
+        "ipf_it_ps_gusli_lyre__peasant_homestead",
+        "master_where_used:MUS0014;master_where_used:MUS0034"
+      ],
+      "source_presence_pr_ids": [
+        "pr_8ac3452938c181e1"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_913f0469648374bf",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_scoop_v1",
+      "presence_pr_id": "pr_913f0469648374bf",
+      "allowed_item_refs": [
+        "it_hh_ash_scoop"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_ash_scoop",
+          "category_id": "cat_item_object_scoop_v1",
+          "subcategory": "hearth_tools",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "small",
+          "functions": "removing_ash;scooping_grain",
+          "item_group": "HH_HEARTH_TOOLS"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_ash_scoop__peasant_homestead",
+        "ipf_it_hh_ash_scoop__peasant_homestead",
+        "master_where_used:HOU0020"
+      ],
+      "source_presence_pr_ids": [
+        "pr_913f0469648374bf"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_a0fed4e417730a37",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_striking_flint_v1",
+      "presence_pr_id": "pr_a0fed4e417730a37",
+      "allowed_item_refs": [
+        "it_hh_flint"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_flint",
+          "category_id": "cat_item_object_striking_flint_v1",
+          "subcategory": "fire_making",
+          "material": "stone",
+          "technique": "selected_or_struck_fragment",
+          "size_band": "tiny",
+          "functions": "striking_fire",
+          "item_group": "HH_FIRE_LIGHT"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_flint__peasant_homestead",
+        "ipf_it_hh_flint__peasant_homestead",
+        "master_where_used:HOU0011"
+      ],
+      "source_presence_pr_ids": [
+        "pr_a0fed4e417730a37"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_a28436900ad90167",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_distaff_v1",
+      "presence_pr_id": "pr_a28436900ad90167",
+      "allowed_item_refs": [
+        "it_hh_distaff"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_distaff",
+          "category_id": "cat_item_object_distaff_v1",
+          "subcategory": "spinning",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "hand",
+          "functions": "holding_fibre",
+          "item_group": "HH_TEXTILE_WORK"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_distaff__peasant_homestead",
+        "ipf_it_hh_distaff__peasant_homestead",
+        "master_where_used:CRF0028"
+      ],
+      "source_presence_pr_ids": [
+        "pr_a28436900ad90167"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_aa47aec36a9908dd",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_toy_whistle_v1",
+      "presence_pr_id": "pr_aa47aec36a9908dd",
+      "allowed_item_refs": [
+        "it_ps_clay_whistle"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_clay_whistle",
+          "category_id": "cat_item_object_toy_whistle_v1",
+          "subcategory": "toys",
+          "material": "clay",
+          "technique": "fired_clay;modelled",
+          "size_band": "tiny",
+          "functions": "play;sound",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_clay_whistle__peasant_homestead",
+        "ipf_it_ps_clay_whistle__peasant_homestead",
+        "master_where_used:MUS0021"
+      ],
+      "source_presence_pr_ids": [
+        "pr_aa47aec36a9908dd"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_aaa1e44da2ef98bc",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_wooden_bowl_v1",
+      "presence_pr_id": "pr_aaa1e44da2ef98bc",
+      "allowed_item_refs": [
+        "it_hh_hollowed_bowl"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_hollowed_bowl",
+          "category_id": "cat_item_object_wooden_bowl_v1",
+          "subcategory": "tableware_wood",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "hand",
+          "functions": "eating;serving;mixing",
+          "item_group": "HH_TABLEWARE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_hollowed_bowl__peasant_homestead",
+        "ipf_it_hh_hollowed_bowl__peasant_homestead",
+        "master_link:ILO000498"
+      ],
+      "source_presence_pr_ids": [
+        "pr_aaa1e44da2ef98bc"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_ad5c9bfa09dcaa25",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_fire_kit_v1",
+      "presence_pr_id": "pr_ad5c9bfa09dcaa25",
+      "allowed_item_refs": [
+        "it_ps_fire_kit"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_fire_kit",
+          "category_id": "cat_item_object_fire_kit_v1",
+          "subcategory": "fire_making",
+          "material": "iron;stone;tinder_fungus;leather",
+          "technique": "assembled",
+          "size_band": "tiny",
+          "functions": "striking_fire",
+          "item_group": "PS_FIRE_KIT"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_fire_kit__peasant_homestead",
+        "ipf_it_ps_fire_kit__peasant_homestead",
+        "master_where_used:HOU0011;master_where_used:HOU0012"
+      ],
+      "source_presence_pr_ids": [
+        "pr_ad5c9bfa09dcaa25"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_b0d8aa39c8fedace",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_pipe_flute_v1",
+      "presence_pr_id": "pr_b0d8aa39c8fedace",
+      "allowed_item_refs": [
+        "it_ps_bone_flute",
+        "it_ps_double_pipe",
+        "it_ps_pipe_wood"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_ps_double_pipe__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_double_pipe__peasant_homestead",
+          "item_ref": "it_ps_double_pipe"
+        },
+        {
+          "source_row_id": "ipf_it_ps_pipe_wood__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_pipe_wood__peasant_homestead",
+          "item_ref": "it_ps_pipe_wood"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_bone_flute",
+          "category_id": "cat_item_object_pipe_flute_v1",
+          "subcategory": "wind_instruments",
+          "material": "bone_or_antler",
+          "technique": "carved;drilled",
+          "size_band": "tiny",
+          "functions": "playing_music;signalling",
+          "item_group": "PS_MUSIC"
+        },
+        {
+          "it_id": "it_ps_double_pipe",
+          "category_id": "cat_item_object_pipe_flute_v1",
+          "subcategory": "wind_instruments",
+          "material": "wood",
+          "technique": "carved;drilled",
+          "size_band": "small",
+          "functions": "playing_music",
+          "item_group": "PS_MUSIC"
+        },
+        {
+          "it_id": "it_ps_pipe_wood",
+          "category_id": "cat_item_object_pipe_flute_v1",
+          "subcategory": "wind_instruments",
+          "material": "wood",
+          "technique": "carved;drilled",
+          "size_band": "small",
+          "functions": "playing_music;signalling",
+          "item_group": "PS_MUSIC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_bone_flute__peasant_homestead",
+        "ipf_it_ps_bone_flute__peasant_homestead",
+        "master_where_used:MUS0028"
+      ],
+      "source_presence_pr_ids": [
+        "pr_b0d8aa39c8fedace"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_b65784224e5d6278",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_iron_hook_v1",
+      "presence_pr_id": "pr_b65784224e5d6278",
+      "allowed_item_refs": [
+        "it_hh_iron_hook"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_iron_hook",
+          "category_id": "cat_item_object_iron_hook_v1",
+          "subcategory": "fittings",
+          "material": "iron",
+          "technique": "forged",
+          "size_band": "small",
+          "functions": "hanging",
+          "item_group": "HH_TOOLS_SMALL"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_iron_hook__peasant_homestead",
+        "ipf_it_hh_iron_hook__peasant_homestead",
+        "master_where_used:HOU0033"
+      ],
+      "source_presence_pr_ids": [
+        "pr_b65784224e5d6278"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_beebe70fcabd3fad",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_trough_v1",
+      "presence_pr_id": "pr_beebe70fcabd3fad",
+      "allowed_item_refs": [
+        "it_hh_trough"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": null,
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)",
+        "logical_necessity: catalog size_band large/bulky + items_and_property.txt §12"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_trough",
+          "category_id": "cat_item_object_trough_v1",
+          "subcategory": "stave_and_hollowed",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "large",
+          "functions": "kneading;washing;feeding",
+          "item_group": "HH_VESSELS_WATER"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Только открыто: крупная/тяжёлая вещь не может быть concealed; это не историческая вероятность. Source Stage 16 gap сохранён.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_trough__peasant_homestead",
+        "ipf_it_hh_trough__peasant_homestead",
+        "master_where_used:HOU0019"
+      ],
+      "source_presence_pr_ids": [
+        "pr_beebe70fcabd3fad"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_c5fced1141ce47ad",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_container_form_tub_v1",
+      "presence_pr_id": "pr_c5fced1141ce47ad",
+      "allowed_item_refs": [
+        "it_hh_tub",
+        "it_hh_washtub"
+      ],
+      "variant_source_rows": [
+        {
+          "source_row_id": "ipf_it_hh_washtub__peasant_homestead",
+          "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_washtub__peasant_homestead",
+          "item_ref": "it_hh_washtub"
+        }
+      ],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": null,
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)",
+        "logical_necessity: catalog size_band large/bulky + items_and_property.txt §12"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_tub",
+          "category_id": "cat_item_object_tub_v1",
+          "subcategory": "stave_and_hollowed",
+          "material": "wood",
+          "technique": "staved;hooped_with_wood",
+          "size_band": "large",
+          "functions": "storing;soaking;pickling",
+          "item_group": "HH_VESSELS_WATER"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Только открыто: крупная/тяжёлая вещь не может быть concealed; это не историческая вероятность. Source Stage 16 gap сохранён.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_tub__peasant_homestead",
+        "ipf_it_hh_tub__peasant_homestead",
+        "master_spawn:SPN026:TRD0024"
+      ],
+      "source_presence_pr_ids": [
+        "pr_c5fced1141ce47ad",
+        "pr_320d010b5bbcad63"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_ca6485de01298c62",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_bone_skate_v1",
+      "presence_pr_id": "pr_ca6485de01298c62",
+      "allowed_item_refs": [
+        "it_ps_bone_skates"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_bone_skates",
+          "category_id": "cat_item_object_bone_skate_v1",
+          "subcategory": "winter_play",
+          "material": "bone_or_antler;leather",
+          "technique": "ground;pierced",
+          "size_band": "hand",
+          "functions": "skating;winter_travel",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_bone_skates__peasant_homestead",
+        "ipf_it_ps_bone_skates__peasant_homestead",
+        "master_where_used:MUS0022"
+      ],
+      "source_presence_pr_ids": [
+        "pr_ca6485de01298c62"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_cbef94868112aa3b",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_utility_knife_v1",
+      "presence_pr_id": "pr_cbef94868112aa3b",
+      "allowed_item_refs": [
+        "it_hh_kitchen_knife"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_kitchen_knife",
+          "category_id": "cat_item_object_utility_knife_v1",
+          "subcategory": "knives",
+          "material": "iron;steel_edge;wood",
+          "technique": "forged;wooden_haft",
+          "size_band": "hand",
+          "functions": "cutting;butchering",
+          "item_group": "HH_COOKWARE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_kitchen_knife__peasant_homestead",
+        "ipf_it_hh_kitchen_knife__peasant_homestead",
+        "master_where_used:HOU0013"
+      ],
+      "source_presence_pr_ids": [
+        "pr_cbef94868112aa3b"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_d338024606323e30",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_vessel_lid_v1",
+      "presence_pr_id": "pr_d338024606323e30",
+      "allowed_item_refs": [
+        "it_hh_vessel_lid_wood"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_vessel_lid_wood",
+          "category_id": "cat_item_object_vessel_lid_v1",
+          "subcategory": "tableware_wood",
+          "material": "wood",
+          "technique": "carved",
+          "size_band": "small",
+          "functions": "covering",
+          "item_group": "HH_TABLEWARE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_vessel_lid_wood__peasant_homestead",
+        "ipf_it_hh_vessel_lid_wood__peasant_homestead",
+        "master_link:ILO001143;master_link:ILO001146"
+      ],
+      "source_presence_pr_ids": [
+        "pr_d338024606323e30"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_d4b2f1f9bafb2b0f",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_leather_strap_v1",
+      "presence_pr_id": "pr_d4b2f1f9bafb2b0f",
+      "allowed_item_refs": [
+        "it_hh_leather_strap"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_leather_strap",
+          "category_id": "cat_item_object_leather_strap_v1",
+          "subcategory": "cordage",
+          "material": "leather",
+          "technique": "cut",
+          "size_band": "tiny",
+          "functions": "tying;fastening",
+          "item_group": "HH_TOOLS_SMALL"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_leather_strap__peasant_homestead",
+        "ipf_it_hh_leather_strap__peasant_homestead",
+        "master_where_used:HOU0004"
+      ],
+      "source_presence_pr_ids": [
+        "pr_d4b2f1f9bafb2b0f"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_dc29d7d9a216fc97",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_container_form_sack_v1",
+      "presence_pr_id": "pr_dc29d7d9a216fc97",
+      "allowed_item_refs": [
+        "it_hh_cloth_sack"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_cloth_sack",
+          "category_id": "cat_item_object_sack_v1",
+          "subcategory": "small_storage",
+          "material": "linen;hemp",
+          "technique": "woven;sewn",
+          "size_band": "small",
+          "functions": "storing_grain;carrying",
+          "item_group": "HH_SMALL_STORAGE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_cloth_sack__peasant_homestead",
+        "ipf_it_hh_cloth_sack__peasant_homestead",
+        "master_spawn:SPN038:HOU0015"
+      ],
+      "source_presence_pr_ids": [
+        "pr_dc29d7d9a216fc97"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_e58d16429a35bc8d",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_iron_clamp_v1",
+      "presence_pr_id": "pr_e58d16429a35bc8d",
+      "allowed_item_refs": [
+        "it_hh_repair_clamp"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_repair_clamp",
+          "category_id": "cat_item_object_iron_clamp_v1",
+          "subcategory": "fittings",
+          "material": "iron",
+          "technique": "forged",
+          "size_band": "tiny",
+          "functions": "repairing_wood;joining",
+          "item_group": "HH_TOOLS_SMALL"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_repair_clamp__peasant_homestead",
+        "ipf_it_hh_repair_clamp__peasant_homestead",
+        "master_link:ILO003741;master_spawn:SPN004:HOU0032;master_spawn:SPN035:HOU0032"
+      ],
+      "source_presence_pr_ids": [
+        "pr_e58d16429a35bc8d"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_ebc47f9329ad0665",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_straw_mat_v1",
+      "presence_pr_id": "pr_ebc47f9329ad0665",
+      "allowed_item_refs": [
+        "it_hh_straw_mat"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_straw_mat",
+          "category_id": "cat_item_object_straw_mat_v1",
+          "subcategory": "bedding",
+          "material": "straw;grass",
+          "technique": "woven;bound",
+          "size_band": "medium",
+          "functions": "sleeping;sitting",
+          "item_group": "HH_BEDDING_TEXTILE"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_straw_mat__peasant_homestead",
+        "ipf_it_hh_straw_mat__peasant_homestead",
+        "master_link:ILO011964;master_link:ILO012382"
+      ],
+      "source_presence_pr_ids": [
+        "pr_ebc47f9329ad0665"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_ec8eb5b73cc1eefe",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_cord_v1",
+      "presence_pr_id": "pr_ec8eb5b73cc1eefe",
+      "allowed_item_refs": [
+        "it_hh_cord"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_cord",
+          "category_id": "cat_item_object_cord_v1",
+          "subcategory": "cordage",
+          "material": "linen;hemp;wool",
+          "technique": "twisted_fiber",
+          "size_band": "tiny",
+          "functions": "tying;hanging",
+          "item_group": "HH_TOOLS_SMALL"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_cord__peasant_homestead",
+        "ipf_it_hh_cord__peasant_homestead",
+        "master_link:ILO012183"
+      ],
+      "source_presence_pr_ids": [
+        "pr_ec8eb5b73cc1eefe"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_f1910c9dd6b9c22b",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_gudok_v1",
+      "presence_pr_id": "pr_f1910c9dd6b9c22b",
+      "allowed_item_refs": [
+        "it_ps_gudok"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_gudok",
+          "category_id": "cat_item_object_gudok_v1",
+          "subcategory": "string_instruments",
+          "material": "wood;gut_or_metal_string",
+          "technique": "carved;hollowed",
+          "size_band": "medium",
+          "functions": "playing_music",
+          "item_group": "PS_MUSIC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_gudok__peasant_homestead",
+        "ipf_it_ps_gudok__peasant_homestead",
+        "master_where_used:MUS0036"
+      ],
+      "source_presence_pr_ids": [
+        "pr_f1910c9dd6b9c22b"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_f3c9ea88351a712c",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_spinning_top_v1",
+      "presence_pr_id": "pr_f3c9ea88351a712c",
+      "allowed_item_refs": [
+        "it_ps_spinning_top"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_spinning_top",
+          "category_id": "cat_item_object_spinning_top_v1",
+          "subcategory": "toys",
+          "material": "wood",
+          "technique": "turned_on_lathe;carved",
+          "size_band": "tiny",
+          "functions": "play",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_spinning_top__peasant_homestead",
+        "ipf_it_ps_spinning_top__peasant_homestead",
+        "master_where_used:MSC0019;master_where_used:MUS0016"
+      ],
+      "source_presence_pr_ids": [
+        "pr_f3c9ea88351a712c"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_f67730487ca5b052",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_rope_v1",
+      "presence_pr_id": "pr_f67730487ca5b052",
+      "allowed_item_refs": [
+        "it_hh_rope"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_hh_rope",
+          "category_id": "cat_item_object_rope_v1",
+          "subcategory": "cordage",
+          "material": "hemp;flax",
+          "technique": "twisted_fiber",
+          "size_band": "medium",
+          "functions": "tying;hauling",
+          "item_group": "HH_TOOLS_SMALL"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_hh_rope__peasant_homestead",
+        "ipf_it_hh_rope__peasant_homestead",
+        "master_spawn:SPN004:HOU0018"
+      ],
+      "source_presence_pr_ids": [
+        "pr_f67730487ca5b052"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_fa9527accf6d382b",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_knucklebone_v1",
+      "presence_pr_id": "pr_fa9527accf6d382b",
+      "allowed_item_refs": [
+        "it_ps_knucklebone"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_knucklebone",
+          "category_id": "cat_item_object_knucklebone_v1",
+          "subcategory": "games",
+          "material": "bone_or_antler",
+          "technique": "selected;ground",
+          "size_band": "tiny",
+          "functions": "playing_knucklebones",
+          "item_group": "PS_PLAY"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_knucklebone__peasant_homestead",
+        "ipf_it_ps_knucklebone__peasant_homestead",
+        "master_where_used:MUS0012"
+      ],
+      "source_presence_pr_ids": [
+        "pr_fa9527accf6d382b"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    },
+    {
+      "rule_id": "placement_pr_fc849544932d1ecd",
+      "scope_ref": "pf_peasant_homestead@1",
+      "category_ref": "cat_item_object_bagpipe_v1",
+      "presence_pr_id": "pr_fc849544932d1ecd",
+      "allowed_item_refs": [
+        "it_ps_bagpipe"
+      ],
+      "variant_source_rows": [],
+      "entry_visible_if": "placed_exposed",
+      "search_only_if": "placed_concealed",
+      "entry_exposed_weight_candidate": 1,
+      "search_concealed_weight_candidate": 0,
+      "weight_status": "candidate_editorial_calibration_pending_opus",
+      "placement_basis_ref": [
+        "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md §8.1 (NULL/NULL => editorial 1/1 default)",
+        "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt §1, §12 (placement/disclosure semantics)",
+        "no_source:placement_modes_absent (Stage 16 gap retained; not source-resolved)"
+      ],
+      "item_nature_evidence": [
+        {
+          "it_id": "it_ps_bagpipe",
+          "category_id": "cat_item_object_bagpipe_v1",
+          "subcategory": "wind_instruments",
+          "material": "wood;leather",
+          "technique": "carved;sewn",
+          "size_band": "medium",
+          "functions": "playing_music",
+          "item_group": "PS_MUSIC"
+        }
+      ],
+      "nature_evidence_limit": "Catalog properties can organize allowed items; they do not establish placement likelihood or weights.",
+      "candidate_status": "candidate",
+      "editorial_note": "Neutral explicit 1:1 candidate matching §8.1 default; not historical evidence. Opus may approve, replace, or reject. Existing ppm/count/frequency values are unchanged.",
+      "source_refs": [
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#ipf_it_ps_bagpipe__peasant_homestead",
+        "ipf_it_ps_bagpipe__peasant_homestead",
+        "master_where_used:MUS0008;master_where_used:MUS0029"
+      ],
+      "source_presence_pr_ids": [
+        "pr_fc849544932d1ecd"
+      ],
+      "placement_owner_ref": "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/ordinary-materialization-o1-start-data-candidate.json",
+      "sha256": "56e3a9fed5fb438d05d84afc656839fd331b29380b63c463ed5e46ae54e04bc8",
+      "source_status": "candidate",
+      "use": "exact 77 no-source O1 presence rules and permitted item/variant scope"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv",
+      "sha256": "d588e28bc2524fe8b0eefe889b40def4390b42674f267396bce6beebb3b1f0b1",
+      "source_status": "candidate",
+      "use": "nature descriptors for household items"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/personal.csv",
+      "sha256": "f9c875af7ef5321f7bb6ac41aef0150e26769acd928897f131aedf5b7c8720bb",
+      "source_status": "candidate",
+      "use": "nature descriptors for personal items"
+    },
+    {
+      "path": "data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md",
+      "sha256": "c39b258384a674bb8af2f3d57df611f459b5423af97d7c40a76465becadb2b17",
+      "source_status": "active_norm",
+      "use": "§8.1 placement weight default"
+    },
+    {
+      "path": "data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt",
+      "sha256": "6b3a5a5f4bbb9b959ae5864be54cfe0c5eefb637e9f1814d8afb9eb7072e4dc6",
+      "source_status": "active_norm",
+      "use": "§1 and §12 ownership/placement/disclosure boundaries"
+    }
+  ],
+  "approval_request": "Повторно утвердить только changed homestead placement rows: 4 O1B-01 source rows now open-only; remaining no_source rows retain Stage 16 marker and owner. No import/activation.",
+  "source_gap_marker_register": {
+    "source_marker": "no_source:placement_modes_absent",
+    "source_row_count": 61,
+    "retained_source_pr_ids": [
+      "pr_0e0be6c1a835a1fb",
+      "pr_1b1d2e6d1622a471",
+      "pr_1cf90b782effc83f",
+      "pr_1d74054e7a56924f",
+      "pr_1ea1130e807a7799",
+      "pr_2341bcd6a3d3d648",
+      "pr_2e4554fa45e30249",
+      "pr_31bb48d7e23237db",
+      "pr_320d010b5bbcad63",
+      "pr_324f66380a3ac4ef",
+      "pr_33dbe944cad6306b",
+      "pr_33fc66815e7b904e",
+      "pr_3b69bc5d887f0d94",
+      "pr_40ea882ed08e2986",
+      "pr_483c287dd6e73c60",
+      "pr_4e1460e1819958b4",
+      "pr_51512b54d107a3d7",
+      "pr_558f8a68fa018bb9",
+      "pr_5988d9266ec840d2",
+      "pr_5becd0d3b5f7b12b",
+      "pr_5e1bd21d12ca9d93",
+      "pr_5efb361215b9735c",
+      "pr_60054a3a805e2024",
+      "pr_64ea5a128fb29f3a",
+      "pr_65284c79a14838f3",
+      "pr_67ae629fa56a23b5",
+      "pr_69e8c51d0432bfc7",
+      "pr_6b3aed4a3cdde2cf",
+      "pr_6cea9056b789d1db",
+      "pr_736e1dcf90cf4be7",
+      "pr_778a18a1b37b42b6",
+      "pr_79a7d4683e48ff1c",
+      "pr_804e4033a1f92cee",
+      "pr_8ac3452938c181e1",
+      "pr_913f0469648374bf",
+      "pr_a0fed4e417730a37",
+      "pr_a28436900ad90167",
+      "pr_aa47aec36a9908dd",
+      "pr_aaa1e44da2ef98bc",
+      "pr_ad5c9bfa09dcaa25",
+      "pr_b0d8aa39c8fedace",
+      "pr_b65784224e5d6278",
+      "pr_beebe70fcabd3fad",
+      "pr_c5fced1141ce47ad",
+      "pr_ca6485de01298c62",
+      "pr_cbef94868112aa3b",
+      "pr_d338024606323e30",
+      "pr_d4b2f1f9bafb2b0f",
+      "pr_dc29d7d9a216fc97",
+      "pr_e58d16429a35bc8d",
+      "pr_ebc47f9329ad0665",
+      "pr_ec8eb5b73cc1eefe",
+      "pr_f1910c9dd6b9c22b",
+      "pr_f3c9ea88351a712c",
+      "pr_f67730487ca5b052",
+      "pr_fa9527accf6d382b",
+      "pr_fc849544932d1ecd"
+    ],
+    "excluded_source_pr_ids": [
+      "pr_03f58bdce56a4b98",
+      "pr_6799f4e1aa8721c2",
+      "pr_8d7283c31896f66a",
+      "pr_a2e55eee216b584d"
+    ],
+    "all_original_markers_preserved_in_pool_or_exclusion_record": true,
+    "placement_owner_ref_preserved_for_candidate_rows": true,
+    "note": "Merge может свести два source PR к одной derived presence/placement row; source IDs сохранены отдельно."
+  },
+  "source_pins_4a4": {
+    "ordinary-materialization-o1-start-data-candidate.json": "56e3a9fed5fb438d05d84afc656839fd331b29380b63c463ed5e46ae54e04bc8",
+    "ordinary-materialization-o1-placement-authoring-4a3-candidate.json": "63e4214c72bb902322425b28b65a337ae6d9dcfb584e513fa0df23db54e3aa1f",
+    "ordinary-materialization-o1-ownership-authoring-4a3-candidate.json": "89800c99c9a23158e73e173ce5cc57f08c7c7a2b15b420573b61d0aef19e63c0",
+    "o1a-attestation-draft.json": "e4cd29724907ecf0be291cf06a94d5bab5e2f147e2f850d55e04626bcdc4654b",
+    "o1b-attestation-draft.json": "1bf801c88bc4649de90bc5cea95b216a540b9b165cc7228dfaea5111bc8111bc"
+  }
+}

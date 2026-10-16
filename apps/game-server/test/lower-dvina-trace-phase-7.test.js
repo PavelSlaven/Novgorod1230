@@ -41,12 +41,43 @@ import {
 import { addPhase7RoutineBoundary, externalBoundary, factualTurn, phase7ReadPool, rows, timeUpdate,
   versioned, visibleContext } from
   './lower-dvina-trace-phase-7-persistence-fixture.js';
+import { applyOrdinaryAggregateTransition } from '@rus/materialization';
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+  '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
+import { enabled as enabledO1 } from './lower-dvina-trace-o1-fixture.js';
 
 const digest = 'a'.repeat(64);
 
 const COMPOUND_TURN_10 =
   'Отдохнуть у огня полчаса и подсушить одежду. '
   + 'Попросить Еремея и рыбака пойти со мной к Жданко.';
+
+async function commitReadReplay(state, contracts, consequence, label,
+  previousPlans = []) {
+  const update = timeUpdate(state, consequence, consequence.duration_minutes);
+  const body = createTracePhase7BodyEffect({ contracts,
+    fallback: { apply() { throw new Error('unexpected fallback'); } }
+  }).apply({ committed_state: state, consequence, time_update: update });
+  const factual = factualTurn(state, consequence, update, body);
+  const input = { partyId: state.party_id, factual, state,
+    inputDigest: digest, visibleContext: visibleContext(),
+    phase7Contracts: contracts };
+  const commit = await buildLowerDvinaTracePhase7Commit(input);
+  const snapshot = rows(commit.plan, 'party_state_snapshots')[0]
+    .record.state_payload;
+  await assert.doesNotReject(() => assertPhase7NormalizedRows(
+    phase7ReadPool([...previousPlans, commit.plan], snapshot), snapshot),
+  `${label}: commit read`);
+  const replay = await buildLowerDvinaTracePhase7Commit(input);
+  assert.equal(replay.plan.digest, commit.plan.digest,
+    `${label}: same-key replay has the same persisted plan`);
+  await assert.doesNotReject(() => assertPhase7NormalizedRows(
+    phase7ReadPool([...previousPlans, replay.plan], snapshot), snapshot),
+  `${label}: replay read`);
+  assert.equal(snapshot.party_state.turn_number,
+    state.party_state.turn_number + 1, `${label}: next committed turn`);
+  return { commit, replay, snapshot };
+}
 
 test('Phase 7 exact matches admit only the registered rest command', () => {
   const command = createTracePhase7FireRestCommand({
@@ -134,6 +165,267 @@ test('Phase 7 executes a direct NPC step and continues the rest interval',
     assert.equal(snapshot.npcs[1].machine_state.status, 'idle');
   });
 
+test('needs-check replaces the whole NPC plan with wait before actor-step',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    const queueId = 'needs_check.csv#HNT0024';
+    let npcOperationCalls = 0;
+    const diagnostics = [];
+    const capability = {
+      operation: 'request_discovery',
+      capability: { owner: '@rus/turn', allowed: [{
+        discovery_kinds: ['inspect'], target_refs: ['storehouse_inside']
+      }] },
+      supports: ({ operation }) => operation.op === 'request_discovery',
+      async execute() {
+        npcOperationCalls += 1;
+        throw new Error('blocked NPC plan must not execute');
+      }
+    };
+    const consequence = await commandFor({ state, contracts,
+      npcOwnerCapabilities: [capability],
+      assertNeedsCheckAllowed: async ({ candidate }) => {
+        assert.equal(candidate.path, 'O1.request.query');
+        assert.equal(candidate.name, 'Колёсная прялка');
+        throw Object.assign(new Error('blocked NPC proposal'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+          details: { path: candidate.path, queue_id: queueId,
+            queue_ids: [queueId] }
+        });
+      },
+      recordNeedsCheckFilter: (record) => diagnostics.push(record),
+      model: async (request) => ({ ...autonomousPlan(request, 'wait'),
+        operations: [{ op: 'request_discovery', actor_ref: request.npc_ref,
+          discovery_kind: 'inspect', target_refs: ['storehouse_inside'],
+          query: 'Колёсная прялка' }] })
+    }).consequence({ retrievedState: state,
+      playerInput: playerInput(state, 'needs-check-npc') });
+
+    assert.equal(npcOperationCalls, 0);
+    assert.deepEqual(diagnostics, [{ path: 'O1.request.query',
+      queue_ids: [queueId] }]);
+    assert.equal(consequence.status, 'resolved');
+    assert.equal(consequence.duration_minutes, 30);
+    assert.equal(consequence.phase7.schedule_temporal.rest_completed, true);
+    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
+      .whole_minutes, '130');
+    assert.equal(consequence.phase7.actor_step.status, 'started');
+    assert.equal(consequence.phase7.actor_step.semantic_operation.op,
+      'request_activity');
+    assert.equal(consequence.phase7.actor_step.semantic_operation.activity_kind,
+      'wait');
+    assert.deepEqual(consequence.phase7.actor_step_owner_outputs, {
+      write_fragments: [], consequence_fragment: null,
+      ordinary_materialization_atomic_write_plan: null,
+      action_production_atomic_write_plans: [], local_fire_atomic_write_plans: [],
+      spatial_semantic_atomic_write_plan: null
+    });
+
+    const { commit, snapshot: next } = await commitReadReplay(
+      state, contracts, consequence, 'full rest with blocked NPC plan');
+    assert.equal(next.party_state.state_version, state.party_state.state_version + 1);
+    assert.equal(next.clock.whole_minutes, '130');
+    assert.equal(JSON.stringify(next).includes(queueId), false,
+      'queue IDs remain in developer diagnostics only');
+    const persistedDecision = rows(commit.plan, 'party_npc_decision_traces')[0]
+      .record;
+    assert.equal(persistedDecision.semantic_plan.operations.length, 1);
+    assert.equal(persistedDecision.semantic_plan.operations[0].op,
+      'request_activity');
+    assert.equal(rows(commit.plan, 'party_items').length, 0,
+      'refused NPC operation creates no item rows');
+    assert.equal(rows(commit.plan, 'party_timed_activity_executions')[0]
+      .record.status, 'completed',
+    'the replacement wait schedule is persisted as a normal activity');
+    assert.equal(next.phase7_fire_rest.status, 'completed');
+  });
+
+test('NPC O1 descriptor filter lets fire rest commit without materialization',
+  async () => {
+    const state = committedState();
+    state.position.g6_id = 'shore';
+    state.position.position_id = 'shore-position';
+    const contracts = approvedContracts(state);
+    const queueId = 'needs_check.csv#HNT0024';
+    const catalog = enabledO1();
+    catalog.ordinary_aggregate = applyOrdinaryAggregateTransition({
+      aggregate: catalog.ordinary_aggregate,
+      transition: { kind: 'seed', request_identity: 'fixture-seed',
+        expected_state_version: 0, density_band: 'ordinary',
+        identity_budget: 1, background_groups: [] }
+    });
+    catalog.version_pins.ordinary_state_version =
+      catalog.ordinary_aggregate.state_version;
+    catalog.objective_context.ordinary_state = {
+      ...catalog.objective_context.ordinary_state,
+      seeded: true, density_band: 'ordinary', remaining_identity_budget: 1
+    };
+    const trace = [];
+    const guardCandidates = [];
+    let ordinaryResult = null;
+    const o1 = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: state.party_id, inputDigest: () => digest,
+      requestSubject: 'npc', loadEnablement: async () => catalog,
+      ordinaryMaterializationModel: Object.assign(async (request) => ({
+        schema: 'ordinary_materialization_plan_v1',
+        request_id: request.request_id, resolution: 'materialize',
+        density_band_proposal: null, background_groups: [],
+        entities: [{ semantic_descriptor: {
+          semantic_type: 'household_tool', name: 'механизм',
+          facts: ['Колёсная прялка'] }, authority_class: 'ordinary',
+          admission_class: 'common_mundane', availability_class: 'common',
+          functional_bucket: 'other_ordinary',
+          presence_expectation: 'plausible', supporting_basis_ref: 'basis',
+          causal_basis: { basis_kind: 'household_use', basis_refs: ['basis'] },
+          property_basis_ref: 'property',
+          placement_proposal: { scope_ref: 'shore', position_ref: 'bench' },
+          mechanics_proposal: { mass_grams: 100, external_hand_cost: 0,
+            carry_form: 'bulky', packing_slot_cost: 1,
+            quantity: { value: 1, unit: 'item' }, container: null }
+        }], presence_resolutions: [], reason_code: 'materialize'
+      }), { verifyStageBCutover: async () => {} }),
+      assertNeedsCheckAllowed: async ({ candidate, matchOnly }) => {
+        guardCandidates.push(candidate);
+        if (candidate.path === 'O1.request.query') return [];
+        assert.equal(candidate.path,
+          'O1.proposed_entity.semantic_descriptor');
+        assert.equal(matchOnly, true);
+        return [{ queue_id: queueId }];
+      }, recordNeedsCheckFilter: (entry) => trace.push(entry)
+    });
+    let ownerCalls = 0;
+    const capability = {
+      operation: 'request_discovery',
+      capability: { owner: '@rus/turn', allowed: [{
+        discovery_kinds: ['search'], target_refs: ['shore']
+      }] },
+      supports: ({ operation }) => operation.op === 'request_discovery'
+        && operation.discovery_kind === 'search'
+        && operation.target_refs?.[0] === 'shore',
+      async execute(execution) {
+        ownerCalls += 1;
+        ordinaryResult = await o1({ schema: 'turn_step_ordinary_discovery_request_v1',
+          operation: execution.operation, plan: execution.plan,
+          request: { root_turn_id: execution.request.root_turn_id,
+            step_index: execution.request.decision_index },
+          actor: { actor_id: execution.request.npc_ref },
+          committed_state: { ...execution.committed_state,
+            position: { ...execution.committed_state.position,
+              g6_id: 'shore' } },
+          working_projection: execution.working_projection });
+        if (ordinaryResult.consequence_fragment?.visible_seed
+            ?.ordinary_presence_seed?.resolution === 'no_change') {
+          const { consequence_fragment, ...ownerOutput } = ordinaryResult;
+          return ownerOutput;
+        }
+        return ordinaryResult;
+      }
+    };
+    const consequence = await commandFor({ state, contracts,
+      npcOwnerCapabilities: [capability],
+      assertNeedsCheckAllowed: async ({ candidate }) => {
+        assert.equal(candidate.path, 'O1.request.query');
+        return [];
+      },
+      recordNeedsCheckFilter: (entry) => trace.push(entry),
+      model: async (request) => ({ ...autonomousPlan(request, 'wait'),
+        operations: [{ op: 'request_discovery', actor_ref: request.npc_ref,
+          discovery_kind: 'search', target_refs: ['shore'],
+          query: 'деревянная деталь' }] })
+    }).consequence({ retrievedState: state,
+      playerInput: playerInput(state, 'npc-o1-descriptor-filter') });
+
+    assert.equal(ownerCalls, 1);
+    assert.equal(consequence.status, 'resolved');
+    assert.equal(consequence.duration_minutes, 30);
+    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
+      .whole_minutes, '130');
+    assert.equal(consequence.phase7.actor_step.semantic_operation.op,
+      'request_discovery');
+    assert.equal(consequence.phase7.actor_step_owner_outputs
+      .ordinary_materialization_atomic_write_plan, null);
+    assert.equal(ordinaryResult.summary, 'ordinary discovery resolved',
+      JSON.stringify(ordinaryResult));
+    assert.deepEqual(guardCandidates.map(({ path }) => path), [
+      'O1.request.query', 'O1.proposed_entity.semantic_descriptor'
+    ]);
+    assert.equal(ordinaryResult.known_resolution.resolution, 'no_change');
+    assert.deepEqual(trace, [{ path:
+      'O1.proposed_entity.semantic_descriptor', queue_ids: [queueId] }]);
+    const { commit, snapshot } = await commitReadReplay(state, contracts,
+      consequence, 'NPC O1 descriptor filter');
+    assert.equal(snapshot.clock.whole_minutes, '130');
+    assert.equal(rows(commit.plan, 'party_items').length, 0);
+    assert.equal(snapshot.phase7_fire_rest.status, 'completed');
+  });
+
+test('deferred rest segment persists and replays the blocked-plan wait',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    const queueId = 'needs_check.csv#HNT0024';
+    const capability = {
+      operation: 'request_discovery',
+      capability: { owner: '@rus/turn', allowed: [{
+        discovery_kinds: ['search'], target_refs: ['storehouse_inside']
+      }] },
+      supports: ({ operation }) => operation.op === 'request_discovery',
+      async execute() { throw new Error('blocked NPC plan must not execute'); }
+    };
+    const consequence = await commandFor({ state, contracts,
+      preparedFollowupRef: 'prepared:shore-search',
+      npcOwnerCapabilities: [capability],
+      assertNeedsCheckAllowed: async ({ candidate }) => {
+        assert.equal(candidate.path, 'O1.request.query');
+        assert.equal(candidate.name, 'самопрялка');
+        throw Object.assign(new Error('blocked NPC proposal'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+          details: { path: candidate.path, queue_ids: [queueId] }
+        });
+      },
+      model: async (request) => ({ ...autonomousPlan(request, 'wait'),
+        operations: [{ op: 'request_discovery', actor_ref: request.npc_ref,
+          discovery_kind: 'search', target_refs: ['storehouse_inside'],
+          query: 'самопрялка' }] })
+    }).consequence({ retrievedState: state,
+      playerInput: playerInput(state, 'needs-check-deferred'),
+      semanticPlan: { continuation: {
+        remaining_intent: 'Осмотреть берег.', depends_on_refs: [],
+        prepared_followup_ref: 'prepared:shore-search'
+      } }
+    });
+
+    assert.equal(consequence.duration_minutes, 25);
+    assert.equal(consequence.phase7.schedule_temporal.rest_completed, false,
+      'the prepared followup ends a segment, not the full rest');
+    assert.equal(consequence.phase7.schedule_execution.clock_after.whole_minutes,
+      '125');
+    assert.equal(consequence.phase7.actor_step.semantic_operation.activity_kind,
+      'wait');
+    const { commit, snapshot } = await commitReadReplay(state, contracts, consequence,
+      'deferred 25-minute segment');
+    assert.equal(snapshot.clock.whole_minutes, '125');
+    assert.equal(snapshot.phase7_fire_rest.status, 'paused');
+    assert.equal(snapshot.phase7_fire_rest.exact_elapsed_minutes, 25);
+
+    const resumedContracts = approvedContracts(snapshot);
+    const resumed = await commandFor({ state: snapshot,
+      contracts: resumedContracts,
+      model: async () => { throw new Error('deferred rest resume skips NPC decision'); }
+    }).consequence({ retrievedState: snapshot,
+      playerInput: playerInput(snapshot, 'needs-check-deferred-resume') });
+    assert.equal(resumed.duration_minutes, 5);
+    assert.equal(resumed.phase7.schedule_temporal.rest_completed, true);
+    const { snapshot: completed } = await commitReadReplay(snapshot,
+      resumedContracts, resumed, 'deferred rest final 5-minute segment',
+      [commit.plan]);
+    assert.equal(completed.clock.whole_minutes, '130');
+    assert.equal(completed.phase7_fire_rest.status, 'completed');
+    assert.equal(completed.phase7_fire_rest.exact_elapsed_minutes, 30,
+      'the deferred segment and its next-turn continuation retain cumulative time');
+  });
+
 test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
   async () => {
     const state = committedState();
@@ -180,7 +472,7 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
       'reaction_decision');
   });
 
-test('Phase 7 preserves an external pause and resumes without a second NPC decision',
+test('Phase 7 preserves repeated external pauses on the NPC wait path',
   async () => {
     const state = committedState();
     const contracts = approvedContracts(state);
@@ -207,11 +499,31 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
       ]
     });
     let modelCalls = 0;
+    const capability = {
+      operation: 'request_discovery',
+      capability: { owner: '@rus/turn', allowed: [{
+        discovery_kinds: ['inspect'], target_refs: ['storehouse_inside']
+      }] },
+      supports: ({ operation }) => operation.op === 'request_discovery',
+      async execute() { throw new Error('blocked proposal must not execute'); }
+    };
     const first = await commandFor({ state, contracts,
       temporalAdvanceOwner,
+      npcOwnerCapabilities: [capability],
+      assertNeedsCheckAllowed: async ({ candidate }) => {
+        assert.equal(candidate.path, 'O1.request.query');
+        throw Object.assign(new Error('blocked NPC query'), {
+          code: 'TURN_MATERIALIZATION_NEEDS_CHECK_BLOCKED',
+          details: { queue_ids: ['needs_check.csv#HNT0024'] }
+        });
+      },
       model: async (request) => {
         modelCalls += 1;
-        return autonomousPlan(request, 'wait');
+        return { ...autonomousPlan(request, 'wait'), operations: [{
+          op: 'request_discovery', actor_ref: request.npc_ref,
+          discovery_kind: 'inspect', target_refs: ['storehouse_inside'],
+          query: 'Колёсная прялка'
+        }] };
       }
     }).consequence({
       retrievedState: state,
@@ -225,14 +537,8 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
     }).apply({ committed_state: state, consequence: first,
       time_update: firstTime });
     assert.equal(firstBody.applied, false);
-    const firstCommit = await buildLowerDvinaTracePhase7Commit({
-      partyId: state.party_id,
-      factual: factualTurn(state, first, firstTime, firstBody),
-      state, inputDigest: digest, visibleContext: visibleContext(),
-      phase7Contracts: contracts
-    });
-    const paused = rows(firstCommit.plan, 'party_state_snapshots')[0]
-      .record.state_payload;
+    const { commit: firstCommit, snapshot: paused } = await commitReadReplay(
+      state, contracts, first, 'interrupted 27-minute segment');
     const pausedExecution = rows(firstCommit.plan,
       'party_timed_activity_executions')[0].record;
     const pausedAttempt = rows(firstCommit.plan,
@@ -249,66 +555,70 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
     assert.equal(rows(firstCommit.plan, 'party_npc_runtime_transitions').length, 1);
     assert.equal(rows(firstCommit.plan, 'party_body_temporal_history').length,
       0);
-    await assert.doesNotReject(() => assertPhase7NormalizedRows(
-      phase7ReadPool(firstCommit.plan, paused), paused));
 
-    const resumedContracts = approvedContracts(paused);
-    const second = await commandFor({ state: paused,
+    const secondPauseState = structuredClone(paused);
+    secondPauseState.temporal_boundary_candidates = [externalBoundary(
+      paused.party_id, ruleRef, policyRef, '128', 'phase7-external-pause-second')];
+    const resumedContracts = approvedContracts(secondPauseState);
+    const second = await commandFor({ state: secondPauseState,
       contracts: resumedContracts, temporalAdvanceOwner,
       model: async () => {
         modelCalls += 1;
         throw new Error('resume must not ask the NPC model again');
       }
     }).consequence({
-      retrievedState: paused,
+      retrievedState: secondPauseState,
       playerInput: playerInput(paused, 'external-resume')
     });
-    assert.equal(second.duration_minutes, 3);
+    assert.equal(second.duration_minutes, 1);
     assert.equal(second.phase7.resumed, true);
-    assert.equal(second.phase7.schedule_temporal.rest_completed, true);
+    assert.equal(second.phase7.schedule_temporal.rest_completed, false);
     assert.equal(modelCalls, 1);
     assert.deepEqual(phase7StateBeforeSchedule(paused, second.phase7).npcs,
       paused.npcs, 'resume preserves the committed history and active step before its current result');
-    const secondTime = timeUpdate(paused, second, 3);
-    const secondBody = createTracePhase7BodyEffect({
-      contracts: resumedContracts,
-      fallback: { apply() { throw new Error('unexpected fallback'); } }
-    }).apply({ committed_state: paused, consequence: second,
-      time_update: secondTime });
-    assert.equal(secondBody.applied, true);
-    const secondCommit = await buildLowerDvinaTracePhase7Commit({
-      partyId: paused.party_id,
-      factual: factualTurn(paused, second, secondTime, secondBody),
-      state: paused, inputDigest: digest, visibleContext: visibleContext(),
-      phase7Contracts: resumedContracts
-    });
-    const completed = rows(secondCommit.plan, 'party_state_snapshots')[0]
-      .record.state_payload;
-    const completedExecution = rows(secondCommit.plan,
+    const { commit: secondCommit, snapshot: pausedAgain } = await commitReadReplay(
+      secondPauseState, resumedContracts, second, 'repeated pause at 128',
+      [firstCommit.plan]);
+    assert.equal(pausedAgain.clock.whole_minutes, '128');
+    assert.equal(pausedAgain.phase7_fire_rest.exact_elapsed_minutes, 28);
+    const finalState = structuredClone(pausedAgain);
+    finalState.temporal_boundary_candidates = [];
+    const finalContracts = approvedContracts(finalState);
+    const final = await commandFor({ state: finalState,
+      contracts: finalContracts, temporalAdvanceOwner,
+      model: async () => { throw new Error('completion must not rerun NPC'); }
+    }).consequence({ retrievedState: finalState,
+      playerInput: playerInput(finalState, 'external-resume-final') });
+    assert.equal(final.duration_minutes, 2);
+    assert.equal(final.phase7.schedule_temporal.rest_completed, true);
+    const { commit: finalCommit, snapshot: completed } = await commitReadReplay(
+      finalState, finalContracts, final, 'resumed final 2-minute segment',
+      [firstCommit.plan, secondCommit.plan]);
+    const completedExecution = rows(finalCommit.plan,
       'party_timed_activity_executions')[0].record;
-    const completedAttempt = rows(secondCommit.plan,
+    const completedAttempt = rows(finalCommit.plan,
       'party_timed_activity_attempts')[0].record;
     assert.equal(completed.phase7_fire_rest.status, 'completed');
     assert.equal(completed.clock.whole_minutes, '130');
     assert.equal(completedExecution.status, 'completed');
     assert.equal(completedExecution.cumulative_elapsed_numerator, 30);
     assert.equal(completedExecution.remaining_time_numerator, 0);
-    assert.equal(completedAttempt.attempt_ordinal, 1);
-    assert.equal(completedAttempt.actual_time_numerator, 3);
+    assert.equal(completedAttempt.attempt_ordinal, 2);
+    assert.equal(completedAttempt.actual_time_numerator, 2);
     const completedNpc = completed.npcs.find(({ instance_id: id }) => id === routineNpc.instance_id);
     assert.equal(completedNpc.machine_state.npc_schedule_history.length, 2);
     assert.deepEqual(completedNpc.machine_state.npc_schedule_history[0],
       pausedNpc.machine_state.npc_schedule_history[0]);
-    assert.equal(rows(secondCommit.plan, 'party_npc_runtime_transitions').length, 0);
-    assert.deepEqual(rows(secondCommit.plan, 'party_npcs')[0].record.machine_state,
+    assert.equal(rows(finalCommit.plan, 'party_npc_runtime_transitions').length, 0);
+    assert.deepEqual(rows(finalCommit.plan, 'party_npcs')[0].record.machine_state,
       completedNpc.machine_state);
-    assert.equal(rows(secondCommit.plan,
+    assert.equal(rows(finalCommit.plan,
       'party_npc_decision_traces').length, 0);
-    assert.equal(rows(secondCommit.plan,
+    assert.equal(rows(finalCommit.plan,
       'party_body_temporal_history').length, 1);
     await assert.doesNotReject(() => assertPhase7NormalizedRows(
-      phase7ReadPool([firstCommit.plan, secondCommit.plan], completed),
-      completed));
+      phase7ReadPool([firstCommit.plan, secondCommit.plan, finalCommit.plan], completed), completed),
+    'readback of the accumulated 27 + 1 + 2 minute rest lifecycle');
   });
 
 test('Phase 7 delegates an autonomous concealment attempt to the item owner',

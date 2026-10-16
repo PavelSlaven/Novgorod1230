@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url';
 
 const src = new URL('../src/', import.meta.url);
 const ioAdapters = new Set(['cli.js', 'world-knowledge-authoring-loader.js',
-  'world-knowledge-embeddings.js', 'world-knowledge-pipeline-eval.js']);
+  'world-knowledge-embeddings.js', 'world-knowledge-pipeline-eval.js',
+  'wk-audit-plan-harness.js']);
 
 test('pure modules have no hidden filesystem, network, time or randomness dependencies', async () => {
   const dir = fileURLToPath(src);

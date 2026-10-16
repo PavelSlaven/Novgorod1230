@@ -1,0 +1,146 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "local_movement_eligibility_candidate_approval": {
+    "candidate_sha256": "36e384e9c0fbe2681c9c27bb8c85db22cb8b62e167730689d16089f0f929645f",
+    "scope": "68 append-only eligibility adjuncts for 17 exact scene templates; independently directed opposing edges, editorial single-root transition limit, unchanged original relation and position capacity",
+    "excludes": "Mapped-data approval, P12 import, current visibility admission, historical party migration, runtime and production activation",
+    "reviewer": "gpt-6-sol/high independent data review",
+    "reviewed_on": "2026-09-24"
+  },
+  "reviewer": "gpt-6-sol/high — independent Contract Auditor, separate data approval pass",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "reviewed_on": "2026-09-23",
+  "approved_exact_candidates": {
+    "expansion_manifest_sha256": "1899e9b286dcd163b9879e90698fca5dd86899fc4e5c410a4d298f05304d49ce",
+    "expansion_evidence_sha256": "a29676ad909bd1e082f1a8bc97d6e08a168b7cfb6e9e231eb9240b998c1163c6",
+    "natural_baseline_sha256": "d07eaf5abfa684c31c6493c553ae53404b3ed49658ceddcb6f2826db95f89f93",
+    "natural_presentation_sha256": "b06baae3f8befa4468dfeef24c6bb5639f2d21a8c777aae67423a1ae2ee49e5c",
+    "finite_items_sha256": "55a6b48eda10e80af2bb4db200941a22037697afb4e50941ecfec4709c18868d",
+    "property_context_sha256": "7352d869d11fc1d903ba6a48b62f0a878500b3b54ece7f0c6b5336a11551f926",
+    "acoustic_manifest_sha256": "2b621ff76a08198436440267a8b5d74704d780120d8a9b0409fbb16736c9b18a",
+    "vocabulary_v4_sha256": "166a83f2f6a88720f1912195f76704fb33dc2ca9a07ed8b3360b6873e32fcd9c",
+    "natural_placement_sha256": "71de9afaeb73825fd32db2e57cf9ad7c5390b427c6b6c7892e81777740429099"
+  },
+  "regional_npc_partial_approval": {
+    "candidate_sha256": "2a9a15527f0d69b72273c4debc163127bb79e40dca57cdad60e1ea194501abce",
+    "scope": "regional_context_sources, five regional_context_profiles, exact G4 applicability and unknown language only",
+    "excludes": "Nonzero generation, count weights, clothing, body, activity, routine and target actor pin"
+  },
+  "npc_runtime_raw_approval": {
+    "candidate_sha256": "50d3dd7e035f2cf5c4524e2bde4ca0915af2526af1da512cd0ac0c9425c39635",
+    "scope": "Body transfer, ordinary routine, nine activity references, four clothing variants, personal control and water-without-carrier zero count as authoring data only",
+    "excludes": "Imported status, equipment activation, current target actor/item/Temporal pins and NPC production"
+  },
+  "npc_mapped_postpromotion_approval": {
+    "import_manifest_sha256": "d1e975b8d92a5f5b44a1f19c0e2b9c9ec3a0698ed936e52dae9250fa14fe6575",
+    "scope": "Exact approved-status mapped NPC authoring rows, provenance, references and P12 union; 32 composition, 36 runtime, five regional and 73 matching authoring-version rows",
+    "excludes": "PostgreSQL import/readback, runtime use and production activation"
+  },
+  "npc_canonical_postpromotion_approval": {
+    "candidate_sha256": "3eb2f231ab89b90776f28fcccc905500b014d2c3649687eafd0401dd6be7321b",
+    "import_manifest_sha256": "432dc9d1157385f72d1d141c157d3a89fb065f42ed02058355c5fad1029242ab",
+    "scope": "Exact canonical south_approach NPC authoring and approved-status P12 union: 33 composition, 39 runtime and six regional rows; explicit count zero to two and three editorial profiles",
+    "excludes": "PostgreSQL import/readback, runtime activation and historical population claims"
+  },
+  "target_start_proposal_approval": {
+    "candidate_sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
+    "scope": "Exact canonical entry and initial-state authoring proposal only",
+    "excludes": "Player body, attribute and clothing applicability or transfer; import, canonical start runtime and release activation"
+  },
+  "target_player_transfer_approval": {
+    "candidate_sha256": "48b0abdc41aee283b5403a336ec2ebac0710c31ba614283d3ecca01082730b2f",
+    "scope": "Exact new-player body, actor forest_hunting and three owned equipped summer garments for the target start scenario",
+    "excludes": "Historical party snapshots, appearance, skills, language, knowledge, import, runtime pins and release activation"
+  },
+  "target_player_basis_approval": {
+    "candidate_sha256": "62b5f1e2dc09f75671d74756d8ca3c0f0bcd9c8bf2d0332abb252a377d8b9658",
+    "scope": "Exact new-player male adult appearance membership and weights, twelve editorial skills, common Novgorod speech, unknown literacy and empty specific knowledge",
+    "excludes": "Historical frequency, historical party snapshots, import and release activation"
+  },
+  "target_appearance_transfer_approval": {
+    "candidate_sha256": "d870b05b973e1403d008ec7809438bfc3ab754a49f247fb8476e846d802ded66",
+    "scope": "Exact legacy target world revision and 84 carried appearance rows from approved v4, with provenance, FK order and target applicability",
+    "excludes": "Rejected v1 candidate, promoted import package, PostgreSQL import/readback, runtime pins and release activation"
+  },
+  "target_appearance_transfer_rejected_v1": {
+    "candidate_sha256": "e9dfc7c294d401a691988c55d52c918efc2b7e8db01606f7e2654ba09c66fe3d",
+    "decision": "REJECT_DATA_ONLY",
+    "reason": "Target region options referenced a Spatial revision absent from the required legacy world_revisions table."
+  },
+  "target_appearance_mapped_approval": {
+    "import_manifest_sha256": "4a88afe0e3f0ba64b953c428984891afce03010cfa5c381d6b67e2f40b6baa06",
+    "source_candidate_sha256": "d870b05b973e1403d008ec7809438bfc3ab754a49f247fb8476e846d802ded66",
+    "scope": "Exact approved-status mapping of one target world revision, 42 region options, six demographic entries and 36 appearance entries with source dependencies and FK order",
+    "excludes": "PostgreSQL import/readback, player or NPC runtime binding, release activation and historical population claims",
+    "reviewed_on": "2026-09-24"
+  },
+  "initial_entity_perception_boundary_approval": {
+    "candidate_sha256": "770f1bed777d3e42bf41baeb149558ff6bd7d6cf391c0172a32bbb241e6e6076",
+    "scope": "Exact canonical initial entity perception applicability and truthful typed data gap, with source pins and no historical or current observation claim",
+    "excludes": "NPC or item visibility, recognition, empty-scene inference, import, runtime use and release activation",
+    "reviewed_on": "2026-09-24"
+  },
+  "target_runtime_profiles_candidate_approval": {
+    "candidate_sha256": "8a5e2659008c83668f8f37723580aac78e04df20b35a40500449e426c1eab439",
+    "scope": "Exact 32 G4, 25 generated families and one canonical start applicability; unchanged generic turn/A1 mechanics, eight N1 occupations and twelve approved NPC bindings as editorial gameplay transfer",
+    "excludes": "S1, O2a, O2b and F1 authority gaps; A1 and N1 consumer admission, mapped import, runtime activation and historical claims",
+    "reviewed_on": "2026-09-24"
+  },
+  "target_runtime_profiles_mapped_approval": {
+    "manifest_sha256": "3f3db9bc8dc3204f765f1fba67b36d67350c6c54a31d5e56caad305063bef739",
+    "dataset_sha256": "0dbf387fba464ce024cb686a2ed0252ea807f93798f6f63daa7b512ee12365ca",
+    "source_candidate_sha256": "8a5e2659008c83668f8f37723580aac78e04df20b35a40500449e426c1eab439",
+    "scope": "Exact approved-status mapping of the reviewed target runtime authoring candidate; 33 applicability scopes, unchanged mechanical payloads and explicit null S1/O2a/O2b/F1 gaps",
+    "excludes": "PostgreSQL import/readback, A1 and N1 consumer admission, runtime activation, historical claims and full release approval",
+    "reviewed_on": "2026-09-24"
+  },
+  "directional_exit_labels_candidate_approval": {
+    "candidate_sha256": "7e1ec1f6f7d5cda906b3fbb5666624e4769a26c84b4bc3c046fb950e461fff26",
+    "scope": "Exact 86 approved directional exits and contexts across 32 G4, with editorial orientation-family labels and per-G4 choice ordinals only",
+    "excludes": "Exit visibility or knowledge admission, traversal capability, compass bearing, distance, destination, spatial order, mapped import and release activation",
+    "reviewed_on": "2026-09-24"
+  },
+  "finite_source_capability_candidate_approval": {
+    "candidate_sha256": "de2cee442d6f1eaf0c585a4b096b53367becfcd84c22f67aecb0a7f077fddff5",
+    "scope": "Four exact M2c finite source profiles and 32 G4 family joins; five eligible G4 scopes and 27 explicit no-stock scopes as editorial gameplay authoring",
+    "excludes": "Target ordinary base context, policy, density, disclosure and Stage B authority; current resource nodes, quantities or property decisions; mapped import, runtime use and release activation",
+    "reviewed_on": "2026-09-24"
+  },
+  "scene_movement_edge_candidate_approval": {
+    "candidate_sha256": "34d653efa8f96f9ecb9e5a05447e9c5b24fecf4e10983ab8da80973f966880a9",
+    "scope": "Exact 68 reciprocal action edges across 17 approved scene templates, editorial edge capacity one, unchanged position capacity one, 32 generated G4 NPC placement joins and pinned canonical south-approach source",
+    "excludes": "Historical capacity or actual NPC occupancy, G0-G4 topology or exits, scene-edge import, player visibility admission, runtime movement and release activation",
+    "reviewed_on": "2026-09-24"
+  },
+  "finite_only_ordinary_base_candidate_approval": {
+    "candidate_sha256": "fcd2b47ff318b79031dc309193c159afd71909418beab1f77e9a455c4160bacd",
+    "scope": "Exact target generated-G5 finite-source ordinary request base with editorial symbolic context, zero background density, no disclosure or generic presence, and a mechanics envelope bounded by the union and maxima of four approved finite source profiles",
+    "excludes": "Canonical initial G5, current source or property readback, ordinary background or ambient seeding, Stage B qualification, per-source mechanics bypass, mapped import, runtime use, historical claims and release activation",
+    "reviewed_on": "2026-09-24"
+  },
+  "finite_only_ordinary_base_mapped_approval": {
+    "manifest_sha256": "81278ca154bca3dafb44c0301ca2041ee4615d8292c05dc2010c9a95a4ff551e",
+    "dataset_sha256": "465e6626ec976805a3234422a768cf53482ecfaaa714e7c6a1363ff37ab0edcf",
+    "source_candidate_sha256": "fcd2b47ff318b79031dc309193c159afd71909418beab1f77e9a455c4160bacd",
+    "scope": "Exact deterministic approved-status mapping of the unchanged finite-only ordinary base profile and its four exact source SHA pins for the target world revision",
+    "excludes": "World Base import, item catalog activation or runtime selection, current finite source and property decisions, ordinary background or Stage B authority, existing party migration and release activation",
+    "reviewed_on": "2026-09-24"
+  },
+  "local_movement_eligibility_mapped_approval": {
+    "manifest_sha256": "fc962c1aa530635325bcf0d02806c73a86b51e104c215e920d44da8ec729e068",
+    "dataset_sha256": "3923773694dc364f8187eb81edddb2aefa14e6bd122e91e49c51cd4798f65c75",
+    "source_candidate_sha256": "36e384e9c0fbe2681c9c27bb8c85db22cb8b62e167730689d16089f0f929645f",
+    "scope": "All 68 raw-preserving mapped eligibility adjuncts, exact authoring versions and canonical digests, editorial source and unchanged canonical node dependency inventory",
+    "excludes": "Runtime Contract Audit, current visibility admission, live production import or activation, original edge or position mutation, historical party migration",
+    "reviewer": "gpt-6-sol/high independent postpromotion data review",
+    "reviewed_on": "2026-09-24"
+  },
+  "limits": [
+    "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
+    "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",
+    "NPC imported datasets and canonical initial start runtime need separate approval.",
+    "Earlier Astra attestations remain historical records; this supplemental decision supersedes their reviewer choice for the listed M2c candidates."
+  ],
+  "activation_authorized": false
+}

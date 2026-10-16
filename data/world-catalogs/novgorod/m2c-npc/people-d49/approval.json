@@ -1,0 +1,33 @@
+{
+  "schema": "rus.m2c_people_d49_approval.v1",
+  "status": "approved_with_limits",
+  "subject": "novgorod_m2c_people_d49_v1",
+  "exact_candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-npc/people-d49/candidate.json",
+    "sha256": "6d6e5c9ea3a876168600a47c1e9bd9c4889b6022b6e822435555f8bc488df83c"
+  },
+  "promoted_by": "scripts/promote-m2c-open-capacity-v2.mjs (--check reproduces the v2 pack and manifest bytes)",
+  "scope": "Three npc_binding profiles (ferryman, householder, household mistress), one clothing profile, one canonical regional context (g4-only applicability, 29 G4), version-3 successors of the fisher and household-servant profiles, G4 vikhtuy_locality version 2 lower bound (min_count 1, count_weights [1,1]). Gameplay authoring, no historical frequency, origin or language claim.",
+  "review_points": [
+    "Pair role x occupation: householder = nov_role_smerd_householder + nov_occ_haymaker (no source for Lower Dvina arable ~1230); mistress = nov_role_household_mistress + nov_occ_cook_baker (only approved occupation listing the role); ferryman = nov_role_ferryman + nov_occ_ferryman.",
+    "Reuse of approved activity rows: boatman mooring inspection for the ferryman, household-servant work-area inspection for householder and mistress.",
+    "Sex is data (payload.actor_applicability.sex_category, one value each); enforcement is materializer/rt-people code.",
+    "Version 3 of m2c_npc_fisher_v1 and m2c_npc_household_servant_v1 only adds the canonical regional context reference."
+  ],
+  "limits": [
+    "Occupations are editorial analogies: householder = haymaker (floodplain meadows and cattle; no source for Lower Dvina arable around 1230), mistress = cook_baker (household cooking and bread); confidence C/low. Narration must not present the mistress as a professional cook.",
+    "The mistress has no headdress: m2c clothing has no married-woman variant, while a married woman went covered around 1230. Follow-up: a headdress variant from game-base garments.",
+    "No winter hat or mittens for anyone (inherited from clothing v1).",
+    "Sex is enforced by the rt-people materializer code (payload.actor_applicability.sex_category); merge together with rt-people, otherwise a mistress can be male.",
+    "Future subjects with occupation haymaker or cook_baker and no profile_ref resolve to the householder or mistress profile; they need an explicit profile_ref.",
+    "D-2 is not seasonal: the ferryman is at the landing in winter too.",
+    "The G4 lower bound covers vikhtuy_locality only; generated places of other G4 can be empty (about 1/3)."
+  ],
+  "approved_by": "claude-opus-5-5 — independent data approver (not the author; author Claude Sonnet 5.5, fleet people-data)",
+  "approved_on": "2026-09-30",
+  "verdict": "APPROVE_WITH_LIMITS",
+  "import_authorized": true,
+  "runtime_activation_authorized": false,
+  "approved_commit": "740b7101a945e5e439389afc4e68acba514b23f3",
+  "approval_note": "Rows of the G4 v2 binding and of the wave v1 change in place under the same {id, version, revision}; valid only because the v17 pair is recreated fresh (no backward compatibility). Existing v17 pairs must be rebuilt. D53 re-approval 2026-09-30 (independent Opus pass; change authored by fleet ferry-guard, Claude Sonnet 5.5): candidate differs from the approved 44651daa… only by not_created → []; profiles byte-identical; promote --check reproduces capacity manifest 1e7afc22…."
+}

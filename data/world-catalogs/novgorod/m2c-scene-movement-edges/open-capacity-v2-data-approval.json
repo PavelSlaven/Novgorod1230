@@ -1,0 +1,16 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent data reviewer /root/m2c_capacity_data_reapproval; did not author or modify candidate bytes",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "exact_candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-candidate.json",
+    "sha256": "8d29ed5d03b3cd6571d85aaaa6341f7ca64b01190a63349d1248c463b887ba19"
+  },
+  "scope": "Data-only approval of the version 2 successor for 51 positions across 17 approved open or water G6 templates and 68 nonportal local movement edges. Every position has Spatial-valid physical type and editorial capacity 7; every edge has null mechanical capacity. Seven former work-role focus slots use physical types supported by their approved scene profiles. All other position and edge fields match the pinned version 1 sources exactly.",
+  "checks": "All six source SHA-256 pins match current bytes; deterministic generator --check and focused test pass. Independent exact-field comparison, Spatial enum, physical G6 classes, nonportal action edge status, and candidate SHA-256 pass.",
+  "excludes": "Historical occupancy claim, exact narrow-point capacity without additional physical evidence, dependency repin, import, runtime or release activation, and migration of committed scenes.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

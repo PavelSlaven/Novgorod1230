@@ -2,9 +2,13 @@
 // register (911 place names with a name_status/evidence_status pair).
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const SRC = "C:/Users/Slaven/Documents/Novgorod-game-base/DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/source_tsv/novgorod_g2_g4_70_cells_v6_naming_register.tsv";
-const OUT_DIR = path.resolve(new URL(".", import.meta.url).pathname.replace(/^\/([A-Za-z]):/, "$1:"), "../place_names");
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(SCRIPT_DIR, "../../../../../../");
+const SRC = path.resolve(REPO_ROOT, "DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/source_tsv/novgorod_g2_g4_70_cells_v6_naming_register.tsv");
+const OUT_DIR = path.resolve(SCRIPT_DIR, "../place_names");
+const CHECK_ONLY = process.argv.includes("--check");
 
 const raw = fs.readFileSync(SRC, "utf8");
 const lines = raw.split(/\r?\n/).filter((l) => l.length);
@@ -41,9 +45,17 @@ for (const line of lines.slice(1)) {
   ]);
 }
 
-fs.mkdirSync(OUT_DIR, { recursive: true });
 const csv = [outHeader.join(","), ...rows.map((r) => r.map(csvEsc).join(","))].join("\n") + "\n";
-fs.writeFileSync(path.join(OUT_DIR, "place_names.csv"), csv, "utf8");
+const outputPath = path.join(OUT_DIR, "place_names.csv");
+if (CHECK_ONLY) {
+  if (!fs.existsSync(outputPath) || fs.readFileSync(outputPath, "utf8") !== csv) {
+    console.error("place_names.csv is stale; run without --check to rebuild");
+    process.exitCode = 1;
+  }
+} else {
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  fs.writeFileSync(outputPath, csv, "utf8");
+}
 
 const statusCounts = {};
 for (const r of rows) statusCounts[r[4]] = (statusCounts[r[4]] || 0) + 1;

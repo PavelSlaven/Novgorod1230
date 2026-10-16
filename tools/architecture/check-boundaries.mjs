@@ -2,10 +2,12 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join, relative, extname, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROOT_MARKDOWN_ALLOWLIST } from '../docs-tools/src/documentation.js';
+import { findRuntimeToolsBoundaryViolations } from './runtime-tools-boundary.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const sourceRoots = ['apps', 'packages'];
 const violations = [];
+violations.push(...await findRuntimeToolsBoundaryViolations({ root }));
 
 for (const sourceRoot of sourceRoots) {
   for (const file of await walk(join(root, sourceRoot))) {
@@ -424,7 +426,8 @@ const domainModuleNames = [
   'checks-rng',
   'combat-health',
   'social-law',
-  'visibility-knowledge-memory'
+  'visibility-knowledge-memory',
+  'economy'
 ];
 const baseApprovedDomainImports = new Set([
   '@rus/kernel',
@@ -619,6 +622,7 @@ const approvedTurnImports = new Set([
   '@rus/kernel',
   '@rus/checks-rng',
   '@rus/items-property',
+  '@rus/movement-routes',
   '@rus/time-events-history',
   '@rus/time-events-history/legacy',
     '@rus/time-events-history/temporal-boundaries',
@@ -675,16 +679,16 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/combat-health', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/ordinary-materialization-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
+      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/combat-health', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/ordinary-materialization-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/environment-state', '@rus/knowledge-source', '@rus/llm-runtime',
       '@rus/items-property', '@rus/items-property/action-produced-result',
       '@rus/items-property/action-produced-transition',
-      '@rus/items-property/finite-resource-transition', '@rus/materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a', '@rus/materialization/internal/lower-dvina-trace-s1',
+      '@rus/items-property/finite-resource-transition', '@rus/materialization', '@rus/materialization/spatial-v3-materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a', '@rus/materialization/internal/lower-dvina-trace-s1',
       '@rus/movement-routes', '@rus/new-game',
       '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',
       '@rus/new-game/stages/stage-24',
       '@rus/new-game/stages/stage-24/internal/lower-dvina-trace-phase-1a', '@rus/new-game/stages/stage-25', '@rus/narration',
-      '@rus/party-store', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/party-store/ordinary-materialization', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/action-produced-result', '@rus/turn/spatial-v3-execution', '@rus/turn/spatial-v3-target-composition', '@rus/turn/spatial-v3-temporal-write-integration', '@rus/turn/temporal-advance',
-      '@rus/runtime-catalog', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
+      '@rus/party-store', '@rus/party-store/spatial-v3', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/party-store/ordinary-materialization', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/presentation/spatial-v3-projection', '@rus/turn', '@rus/turn/action-produced-result', '@rus/turn/spatial-v3-execution', '@rus/turn/spatial-v3-target-composition', '@rus/turn/spatial-v3-temporal-write-integration', '@rus/turn/temporal-advance',
+      '@rus/runtime-catalog', '@rus/runtime-catalog/active-pin', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/runtime-catalog/schema-fingerprint', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
       '@rus/time-events-history/temporal-boundaries',
       '@rus/visibility-knowledge-memory',
       '@rus/visibility-knowledge-memory/ordinary-resolution-capability',
@@ -747,11 +751,25 @@ const productionRequired = [
   'apps/game-server/src/infrastructure/postgres/pools.js',
   'apps/game-server/src/infrastructure/postgres/session-store.js',
   'apps/game-server/src/infrastructure/postgres/stage25.js',
-  'apps/game-server/src/infrastructure/provider/deepseek.js',
+  'apps/game-server/src/infrastructure/provider/openai-compatible.js',
   'test/integration/production-infrastructure.test.js',
   'test/e2e/browser-game-flow.test.js',
   'schemas/party-db/010_party_runtime_pr8_reaction_options.sql'
 ];
+for (const sourceRoot of ['apps', 'packages', 'tools/local-play']) {
+  for (const file of await walk(join(root, sourceRoot))) {
+    if (!['.js', '.mjs'].includes(extname(file))) continue;
+    const rel = relative(root, file).replaceAll('\\', '/');
+    if ((sourceRoot === 'apps' || sourceRoot === 'packages')
+        && !rel.includes('/src/')) continue;
+    if (sourceRoot === 'tools/local-play'
+        && !rel.startsWith('tools/local-play/')) continue;
+    const source = await readFile(file, 'utf8');
+    if (/deepseek/iu.test(rel) || /deepseek/iu.test(source)) {
+      violations.push(`${rel}: retired provider name remains in active production sources`);
+    }
+  }
+}
 for (const requiredPath of productionRequired) {
   try { await readFile(join(root, requiredPath), 'utf8'); }
   catch { violations.push(`${requiredPath}: required production integration artifact is missing`); }

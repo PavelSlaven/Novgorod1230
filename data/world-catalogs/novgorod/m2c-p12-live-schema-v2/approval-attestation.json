@@ -1,0 +1,56 @@
+{
+  "schema": "rus.m2c_p12_live_schema_approval_attestation.v2",
+  "status": "approved_pending_execution_gates",
+  "decision": "APPROVE_EXACT_ONE_TIME_DDL_21_TAIL_THROUGH_26",
+  "reviewed_repository_head": "7217b5a4e2e75664fdf7085ef240a756b8acfa7f",
+  "reviewed_source_head": "02e0c40850d9fb68ee0f446a8f95f0c88d0cc069",
+  "auditor_ref": "/root/approve_schema_v2",
+  "signed_by": "/root/approve_schema_v2",
+  "independence_basis": "Separate high-reasoning auditor reviewed the v2 request, exact SQL, official DDL, predecessor constraints, and applicable world-base contracts without authoring the request or writing to the database. Recomputed source and request digests and verified the assembled SQL byte for byte.",
+  "reviewed_on": "2026-09-24",
+  "request_ref": "data/world-catalogs/novgorod/m2c-p12-live-schema-v2/request.json",
+  "request_digest": "56d47d8439640efc0013d86f94272c55e2f3bb18e6cf934d680af647ad9e8613",
+  "target": "designated_persistent_local_play_world_base_pre_beta_production",
+  "scope": {
+    "operation": "apply_exact_world_base_ddl",
+    "transaction": "single_atomic_transaction",
+    "part_21_fragment": "infra/world-base/schema/21.sql:260-282",
+    "ordered_full_files": [
+      "infra/world-base/schema/22.sql",
+      "infra/world-base/schema/23.sql",
+      "infra/world-base/schema/24.sql",
+      "infra/world-base/schema/25.sql",
+      "infra/world-base/schema/26.sql"
+    ],
+    "exact_sql_bytes": 15908,
+    "exact_sql_sha256": "9eda7de0c5600c8d168eb04c4467df4b49fa67e8d616359b35f1935ff545e46e",
+    "data_row_changes": 0
+  },
+  "execution_gates": [
+    "Operator reconfirms designated database identity, task authorization, and verified offline backup before any write.",
+    "Operator rechecks all request.json preconditions against the live database immediately before execution: parts 18-20 and part 21 through line 259 present; the compiled-record table and all part 22-26 objects absent; referenced tables and world_reader present; expansion profiles empty; node-parent exact edges unique; existing connection profiles satisfy the part 26 CHECK and availability_condition_set_ref remains NOT NULL.",
+    "Operator rechecks request.json and exact-apply.sql SHA-256 and byte counts and the pinned source digests; any mismatch blocks execution.",
+    "Operator executes the verified exact SQL once with psql -X -v ON_ERROR_STOP=1 -f inside its explicit transaction. Any error requires investigation, not replay.",
+    "Operator reads back every table, constraint, index, function, trigger, grant, column nullability, check definition, and unchanged data-row counts listed in request.json; record actual target identity and result independently."
+  ],
+  "review_notes": [
+    "Part 21 begins at a complete CREATE TABLE after line 259 and ends with a complete GRANT SELECT; its two existing grant targets are present in part 21.",
+    "The part 24 exact-edge unique index is safe under the existing node-parent primary key (child_id, child_version), subject to the live precheck.",
+    "Part 22 adds three foreign keys to an empty expansion-profile table; the zero-row gate is required.",
+    "Part 26 preserves existing rows because availability_condition_set_ref is currently NOT NULL; its new CHECK allows NULL only for site_connection. The ALTER and ADD CONSTRAINT are one-shot.",
+    "The DDL contains no data INSERT, UPDATE, or DELETE. Live inventory and backup counts were supplied for review and must be reconfirmed by the operator."
+  ],
+  "excludes": [
+    "P12 data import",
+    "runtime or release selection",
+    "production composition change",
+    "party migration",
+    "activation"
+  ],
+  "authority": {
+    "schema_apply_authorized_subject_to_execution_gates": true,
+    "import_authorized_by_this_attestation": false,
+    "activation_authorized": false,
+    "database_mutated": false
+  }
+}

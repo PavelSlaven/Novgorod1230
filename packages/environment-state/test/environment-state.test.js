@@ -5,6 +5,7 @@ import {
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
 import {
+  deriveBodyEnvironmentSnapshot,
   deriveEnvironment,
   findNearestEnvironmentBoundaries,
   proposeEnvironmentBoundaryEffect
@@ -174,4 +175,61 @@ test('rejects non-exact timestamps and never reads implicit defaults', () => {
   assert.equal(deriveEnvironment(input({
     weather_state: amendSealed(weatherProfile(), { applicability: { scope_refs: [ref('party_g6_instance', 'other-place')] } })
   })).error.code, 'weather_profile_gap');
+});
+
+test('seals body environment snapshot from saved row identity and exact start time', () => {
+  const args = {
+    environment_fact: { schema: 'rus.approved_initial_environment.v1', version: 1, weather_id: 'rain', light_id: 'night' },
+    party_id: 'party-1',
+    state_version: 4,
+    observed_at: at('100')
+  };
+  const first = deriveBodyEnvironmentSnapshot(args);
+  const again = deriveBodyEnvironmentSnapshot(args);
+  const nextVersion = deriveBodyEnvironmentSnapshot({ ...args, state_version: 5 });
+  assert.equal(first.status, 'ok');
+  assert.deepEqual(first, again);
+  assert.equal(first.environment_snapshot.state_ref.entity_id, 'party-1:environment:4');
+  assert.notEqual(first.environment_snapshot.canonical_digest, nextVersion.environment_snapshot.canonical_digest);
+  assert.deepEqual(first.environment_snapshot.body_factor_ids, []);
+  assert.equal(first.environment_snapshot.canonical_digest, computeSpatialV3CanonicalDigest({
+    state_ref: first.environment_snapshot.state_ref,
+    body_factor_ids: first.environment_snapshot.body_factor_ids
+  }));
+  assert.equal(Object.isFrozen(first), true);
+  assert.equal(Object.isFrozen(first.environment_snapshot), true);
+});
+
+test('blocks missing persisted identity and invalid exact start time', () => {
+  const args = {
+    environment_fact: { schema: 'rus.approved_initial_environment.v1', version: 1, weather_id: 'rain' },
+    party_id: 'party-1',
+    state_version: 4,
+    observed_at: at('100')
+  };
+  assert.equal(deriveBodyEnvironmentSnapshot({ ...args, party_id: '' }).error.code, 'environment_identity_required');
+  assert.equal(deriveBodyEnvironmentSnapshot({ ...args, state_version: undefined }).error.code, 'environment_identity_required');
+  assert.equal(deriveBodyEnvironmentSnapshot({ ...args, observed_at: { whole_minutes: 100 } }).error.code, 'time_timestamp_invalid');
+});
+
+test('seals an empty body factor set when approved data has no environment-to-body rules', () => {
+  const result = deriveBodyEnvironmentSnapshot({
+    environment_fact: { schema: 'rus.approved_initial_environment.v1', version: 1, weather_id: 'rain', light_id: 'night' },
+    party_id: 'party-1',
+    state_version: 4,
+    observed_at: at('100')
+  });
+  assert.deepEqual(result.environment_snapshot.body_factor_ids, []);
+});
+
+test('hard-blocks environment facts without the approved schema and version', () => {
+  const args = {
+    environment_fact: { schema: 'rus.approved_initial_environment.v1', version: 1 },
+    party_id: 'party-1',
+    state_version: 4,
+    observed_at: at('100')
+  };
+  assert.equal(deriveBodyEnvironmentSnapshot({ ...args, environment_fact: {} }).error.code, 'environment_fact_schema_mismatch');
+  assert.equal(deriveBodyEnvironmentSnapshot({ ...args, environment_fact: { ...args.environment_fact, schema: 'unapproved' } }).error.code, 'environment_fact_schema_mismatch');
+  assert.equal(deriveBodyEnvironmentSnapshot({ ...args, environment_fact: { ...args.environment_fact, version: 2 } }).error.code, 'environment_fact_schema_mismatch');
 });

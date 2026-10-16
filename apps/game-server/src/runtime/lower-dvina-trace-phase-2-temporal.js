@@ -6,9 +6,9 @@ import {
   selectEarliestTemporalBoundaryBatch
 } from '@rus/time-events-history/temporal-boundaries';
 import { serverError } from '../errors.js';
-import { computeSpatialV3CanonicalDigest } from
-  '@rus/contracts/spatial-v3/registry';
-import { PHASE6_PROGRESS_EFFECT_REF } from
+import { canonicalDigest } from '@rus/materialization';
+import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { PHASE2_PROGRESS_EFFECT_REF } from
   './lower-dvina-trace-phase-6-temporal-effect-owner.js';
 import { buildTracePhase7TemporalRequest,
   TRACE_PHASE7_EXTERNAL_PROVIDER,TRACE_PHASE7_PROVIDER,
@@ -19,7 +19,7 @@ import { applyLocalFireTemporalProjection,
   './lower-dvina-trace-local-fire-temporal.js';
 
 export function createTracePhase2TemporalAdvance({ contracts,
-  temporalAdvanceOwner }) {
+  temporalAdvanceOwner, bodyTimeEffectAdapter = null }) {
   if (contracts.activity.nearest_temporal_boundary_rule
       !== 'split_before_earliest_boundary') {
     throw temporalError('TRACE_PHASE_2_TEMPORAL_POLICY_MISMATCH');
@@ -27,6 +27,7 @@ export function createTracePhase2TemporalAdvance({ contracts,
   return async function advance({
     clock_before: clockBefore,
     exact_elapsed: exactElapsed, effect_kind: effectKind, consequence,
+    body_time_exact_state: bodyTimeExactState = null,
     relevant_state: state,local_fire_atomic_write_plans:actorPlans=[],
     root_turn_id:rootTurnId='turn:prepared',change_set_id:changeSetId=
       `change:${state.party_id}:trace-phase2:${state.party_state.turn_number+1}`
@@ -43,7 +44,14 @@ export function createTracePhase2TemporalAdvance({ contracts,
       applyLocalFireTemporalProjection(localFireProjection,plan);
     const sourceCandidates=replaceLocalFireTemporalCandidates(
       state.temporal_boundary_candidates??[],localFireProjection,actorPlans);
-    if(window.ok&&sourceCandidates.length===0)return basicResult(
+    const bodyThresholds = bodyNeedsThresholdCandidates({
+      adapter: bodyTimeEffectAdapter, state, consequence, effectKind,
+      clockBefore, clockAfter: window.clock_after,
+      exactBodyState: bodyTimeExactState
+    });
+    const bodyCandidates = bodyThresholds.map(({ candidate }) => candidate);
+    const allSourceCandidates = [...sourceCandidates, ...bodyCandidates];
+    if(window.ok&&allSourceCandidates.length===0)return basicResult(
       clockBefore,window.clock_after,exactElapsed,window.candidate_count);
     if(typeof temporalAdvanceOwner?.advance!=='function')
       throw temporalError('TRACE_PHASE_2_TEMPORAL_OWNER_MISSING');
@@ -51,24 +59,31 @@ export function createTracePhase2TemporalAdvance({ contracts,
     const projection={calendar_profile_ref:calendarProfileRef(),
       active_execution_refs:[{entity_kind:'party_timed_activity_execution',
         entity_id:executionId}],active_execution_requires_boundary:false,
-      available_event_ids:sourceCandidates.map(({boundary_id:id})=>id),
-      cumulative_elapsed_minutes:0,processed_source_boundary_ids:[],
+      available_event_ids:allSourceCandidates.map(({boundary_id:id})=>id),
+      cumulative_elapsed_minutes:{ numerator:'0', denominator:'1' },
+      processed_source_boundary_ids:[],
       phase6_state: structuredClone(state),
       npc_schedule_runtime: structuredClone(state.npc_schedule_runtime ?? []),
-      local_fire_runtime:localFireProjection.local_fire_runtime};
+      local_fire_runtime:localFireProjection.local_fire_runtime,
+      body_threshold_descriptors: bodyThresholds.map(({ candidate,
+        descriptor }) => ({
+        candidate_digest: canonicalDigest(candidate),
+        boundary_id: candidate.boundary_id,
+        ...descriptor
+      }))};
     const request=buildTracePhase7TemporalRequest({state,contracts:null,
       executionId,limit:window.clock_after,commandIdempotencyKey:
       `${rootTurnId}:prepared`,rootTurnId,clockBefore,
       changeSetId,
-      sourceCandidates,projection,segment:'prepared'});
+      sourceCandidates:allSourceCandidates,projection,segment:'prepared'});
     const advanced=temporalAdvanceOwner.advance({request,
       engine_version:'lower-dvina-trace-prepared-temporal-v1',
       temporal_resolution_policy_version:'temporal-resolution-v1',
       safety_limits:{max_slices:100,max_candidates:500,max_iterations:500},
       source_provider_ref:TRACE_PHASE7_EXTERNAL_PROVIDER,
-      source_candidates:sourceCandidates,
+      source_candidates:allSourceCandidates,
       registered_provider_ref:TRACE_PHASE7_PROVIDER,registered_effects:[],
-      continuous_effect:{effect_ref:PHASE6_PROGRESS_EFFECT_REF,input:{}},
+      continuous_effect:{effect_ref:PHASE2_PROGRESS_EFFECT_REF,input:{}},
       finalization:{visible_package_candidate:
         tracePhase7TemporalVisibleEnvelope(request),
         validation_report:{ok:true}},stop_after_source_batch:false});
@@ -90,11 +105,46 @@ export function createTracePhase2TemporalAdvance({ contracts,
         owner: '@rus/time-events-history/temporal-boundaries',
         policy:
           contracts.activity.nearest_temporal_boundary_rule,
-        evaluated_candidate_count: sourceCandidates.length,
+        evaluated_candidate_count: allSourceCandidates.length,
         processed_boundary_ids: advanced.result.trace.processed_boundary_ids
       }
     };
   };
+}
+
+function bodyNeedsThresholdCandidates({ adapter, state, consequence,
+  effectKind, clockBefore, clockAfter, exactBodyState = null }) {
+  if (adapter == null || effectKind !== 'semantic_activity') return [];
+  const activity = (consequence?.state_changes ?? []).find((entry) =>
+    entry?.kind === 'semantic_activity');
+  if (!['none', 'light', 'moderate', 'heavy', 'extreme']
+    .includes(activity?.effort)) return [];
+  if (!state?.body_state || !state?.environment_snapshot
+      || typeof state.actor_id !== 'string' || typeof state.party_id !== 'string') {
+    throw temporalError('TRACE_PHASE_2_BODY_NEEDS_CONTEXT_MISSING');
+  }
+  const input = {
+    effort: activity.effort,
+    body_state: {
+      health: (exactBodyState ?? state.body_state).health,
+      satiety: (exactBodyState ?? state.body_state).satiety,
+      energy: (exactBodyState ?? state.body_state).energy
+    },
+    body_state_ref: { entity_kind: 'body_state', entity_id: state.actor_id },
+    scope_ref: { entity_kind: 'party', entity_id: state.party_id },
+    environment_fact: state.environment_snapshot,
+    party_id: state.party_id,
+    state_version: state.party_state?.state_version,
+    observed_at: clockBefore,
+    active_conditions: (state.body_state.active_conditions ?? [])
+      .map((condition) => condition.id),
+    window_start: clockBefore,
+    window_end: clockAfter
+  };
+  const result = adapter.predictThresholdCandidates(input);
+  if (!result.ok) throw temporalError(result.code
+    ?? 'TRACE_PHASE_2_BODY_NEEDS_THRESHOLD_PREDICTION_FAILED');
+  return result.candidates;
 }
 
 function basicResult(clockBefore,clockAfter,exactElapsed,count){return{

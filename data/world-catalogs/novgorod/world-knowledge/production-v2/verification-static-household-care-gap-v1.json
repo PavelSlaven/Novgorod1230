@@ -1,0 +1,18 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-trauma-danger-or-airway-changes-position-choice",
+      "claim_ref": "claim:household-trauma-danger-or-airway-changes-position-choice",
+      "claim_digest": "ef0fc6ab69c23f3af880c819fccb1f7fad4a59bd1c9fea4b6fb30378b86cc611",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-trauma-danger-or-airway-changes-position-choice",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-trauma-airway-danger", "evidence:household-trauma-movement"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "WHO CFAR supports positioning for defined airway obstruction/choking risk; AHA/ARC supports relocation from an unsafe area. Relation remains contextual safety reasoning, not treatment or transport protocol."
+    }
+  ]
+}

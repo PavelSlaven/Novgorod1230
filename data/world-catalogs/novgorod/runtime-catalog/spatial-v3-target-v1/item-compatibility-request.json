@@ -1,0 +1,92 @@
+{
+  "schema": "rus.item_container_target_compatibility_request.v1",
+  "version": 1,
+  "status": "pending_independent_compatibility_approval",
+  "subject_commit": "821a1e10230fcedd6c846599868bf55521ad0233",
+  "runtime_configuration": {
+    "schema": "rus.spatial_v3_target_catalog_configuration.v1",
+    "release_id": "spatial-v3-production-v17",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "world_manifest_sha256": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e"
+  },
+  "compatible_world": {
+    "schema": "rus.base_world_compatibility_manifest.v1",
+    "compatible_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "compatible_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "source_runtime_configuration_digest": "082b68d7b7caa2827382c3b8f7dba9a52e6892e185a296470a434643e0b95a2c",
+    "source_artifact_paths": [
+      "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_world_revisions.json",
+      "data/world-catalogs/novgorod/spatial-v3/manifest.json"
+    ],
+    "source_commit_sha": "821a1e10230fcedd6c846599868bf55521ad0233",
+    "validation_contract_version": "base_world_compatibility_v2",
+    "compatible_world_pin_manifest_digest": "9fec9e6180fc1f1ac9c5aa80721cd671c16ba4d1a12f509820598aaf2c675f44"
+  },
+  "activation_scope": "new_production_parties_only",
+  "authority": {
+    "import_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false
+  },
+  "independent_approval_attestation": null,
+  "runtime_pin": null,
+  "catalog_scope": "item_container_materialization_v2",
+  "target_revision_id": "item_container_spatial_v3_target_001",
+  "target_catalog_digest": null,
+  "approved_source_catalog": {
+    "revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+    "catalog_digest": "1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5",
+    "status": "approved"
+  },
+  "approved_source_readback": {
+    "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/import-readback-result.json",
+    "sha256": "45287a72231589b5b257c5e0f129b6213893660a285ee57207dc87dbb16dc2f1",
+    "canonical_digest": "8fd919db006f54cb74e997be7d800b884f1743e54a2df9bfa3efd29230ac29e5",
+    "status": "imported_exact_readback_verified",
+    "rollback": "pass",
+    "repeat_clean_apply": true,
+    "restart_verified": true,
+    "restart_verification": {
+      "path": "test/integration/gate1-owner-data-import-postgres.test.js",
+      "sha256": "698dcbeb221fb0dbc81c541324854cd8e237ca11347600c2ac4006f885a12e80"
+    },
+    "import_completed": true,
+    "requests_new_import_authority": false
+  },
+  "authoring_approval_chain": {
+    "parent": {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/authoring-approval-attestation.json",
+      "sha256": "21ef98e8ebbc4c28b3f1d4dcb32566a54258d66bf4c226b66491822ecd5b9b7c",
+      "attestation_digest": "ab153b6e20c1bb9cac7e276e8dd8776b38d554a1cfbfa4d9b9d2f85350c05061"
+    },
+    "reconciliation": {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1/authoring-approval-attestation.json",
+      "sha256": "9910353d273a97163472a8e203cba3e85871813d300065ae9f3bc4e08f194d15",
+      "attestation_digest": "d8fa62d4b7783c95ce3c6ebfede7f7e80ef1902fd8de57b1aee83adb3080d1f7"
+    },
+    "seed_closure": {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/seed-closure-v1/authoring-approval-attestation.json",
+      "sha256": "054212eb613b4718948c7a87984007aada6eefd97bf42b888126bc5ef0440230",
+      "attestation_digest": "19fa5e4ee8f7663bfc354b7d67498366f9d111021fb8d9b235645e7bfb474d89"
+    }
+  },
+  "requested_operations": [
+    "register_target_compatible_baseline",
+    "assert_existing_approved_item_container_membership",
+    "exact_readback",
+    "activate_for_new_production_parties_only"
+  ],
+  "operational_request": null,
+  "required_before_operational_request": [
+    "live_target_world_and_approved_source_membership_readback",
+    "exact_target_baseline_and_compiled_overlay",
+    "independent_target_compatibility_and_import_approval",
+    "target_import_exact_readback",
+    "live_activation_predecessor_and_party_preflight",
+    "independent_new_production_activation_approval"
+  ],
+  "request_digest": "44aca55791e583e588dc23ca8a3f38990f3c824682be9e81993f85d3c96dd44d"
+}

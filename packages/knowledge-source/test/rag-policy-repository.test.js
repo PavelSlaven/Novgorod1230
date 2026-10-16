@@ -23,20 +23,20 @@ test('repository retrieval policy covers every registered document and pins curr
   assert.ok(policy.control_queries.length >= 5);
 });
 
-test('repository policy registers proposed classification policy; references stay non-active per CONTRACT_INDEX', async () => {
+test('repository policy registers active classification policy; references stay non-active per CONTRACT_INDEX', async () => {
   const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
   const policy = validateRetrievalPolicy(JSON.parse(await readFile(resolve(sourceRoot, 'retrieval-policy.json'), 'utf8')), manifest);
-  const proposedIds = [
+  const ids = [
     'universal-category-classification-policy',
     'universal-category-classification-references'
   ];
   assert.deepEqual(
-    manifest.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.status),
-    ['proposed', 'reference']
+    manifest.documents.filter((document) => ids.includes(document.document_id)).map((document) => document.status),
+    ['active', 'reference']
   );
   assert.deepEqual(
-    policy.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.document_id),
-    proposedIds
+    policy.documents.filter((document) => ids.includes(document.document_id)).map((document) => document.document_id),
+    ids
   );
 });
 

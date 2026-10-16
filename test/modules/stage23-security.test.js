@@ -76,7 +76,7 @@ for (const fixture of [
     evidence: '«Вчера поиски ... привели» связывает supplied прошлое с нынешними воротами; «Здесь ли ваш груз» сохраняет supplied неопределённость. Иней и сторож уже есть в visible context.'
   }
 ]) {
-  test(`Stage 23 literary gate: ${fixture.name}`, async () => {
+test(`Stage 23 literary verdict: ${fixture.name}`, async () => {
     const input = makeStage23Input(makeNarratorProse({ prose: fixture.prose }), (values, pkg) => {
       pkg.visible_facts.push(...fixture.facts.map((label, index) => ({ visible_fact_id: `fact-opening-${index}`, label })));
       values.visible_context_package_digest = computeVisibleContextPackageDigest(pkg);
@@ -84,12 +84,11 @@ for (const fixture of [
     });
     assert.equal(stage23.buildNarratorProseCodePrecheck(input).pass, true);
     const audit = makePassingNarratorAudit(input);
-    audit.pass = fixture.pass;
+    audit.pass = true;
     audit.checks.literary_composition_check = { pass: fixture.pass };
     audit.evidence = [fixture.evidence];
     if (!fixture.pass) {
-      audit.concerns = [{ code: 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION', severity: 'repairable', message: fixture.evidence }];
-      for (const key of Object.keys(audit.commit_permission)) audit.commit_permission[key] = false;
+      audit.concerns = [{ code: 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION', severity: 'warning', message: fixture.evidence }];
     }
     const calls = [];
     const result = await stage23.runStage23NarratorProseAuditBlock({
@@ -105,17 +104,12 @@ for (const fixture of [
       },
       formatRepairer: async () => assert.fail('semantic findings are not format errors'),
       seniorAuditor: async () => assert.fail('valid semantic verdict needs no senior retry'),
-      router: async () => {
-        calls.push('router');
-        return { version: 1, schema: stage23.STAGE23_ROUTE_SCHEMA, request_id: input.request_id,
-          return_to_stage: 'narrator_prose_semantic_repair', repair_kind: 'semantic_rewrite',
-          reason: fixture.evidence, supporting_concern_codes: ['NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION'] };
-      }
+      router: async () => assert.fail('literary finding must not route or block opening')
     });
-    assert.equal(result.pass, fixture.pass);
-    assert.equal(result.commit_permission.can_show_to_player, fixture.pass);
-    assert.deepEqual(calls, fixture.pass ? ['auditor'] : ['auditor', 'router']);
-    assert.equal(result.repair_route?.return_to_stage ?? null, fixture.pass ? null : 'narrator_prose_semantic_repair');
+    assert.equal(result.pass, true);
+    assert.equal(result.commit_permission.can_show_to_player, true);
+    assert.deepEqual(calls, ['auditor']);
+    assert.equal(result.repair_route, null);
   });
 }
 

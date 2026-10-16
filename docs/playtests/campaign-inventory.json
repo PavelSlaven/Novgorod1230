@@ -1,0 +1,23 @@
+{
+  "schema": "rus.gameplay_report_inventory.v1",
+  "campaigns": [
+    {"campaign":"m3-0d39712c-vikhtuy-browser-exact","report":"2026-09-20_M3_0d39712c_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-2b156864-vikhtuy-browser-exact","report":"2026-09-19_M3_2b156864_vikhtuy-browser-01.md"},
+    {"campaign":"m3-3b524109-vikhtuy-browser-exact","report":"2026-09-20_M3_3b524109_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-62b1b726-vikhtuy-browser-exact","report":"2026-09-20_M3_62b1b726_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-6bd62877-vikhtuy-browser-exact","report":"2026-09-20_M3_6bd62877_vikhtuy-browser-02.md"},
+    {"campaign":"m3-78a1b6f2-vikhtuy-browser-exact","report":"2026-09-20_M3_78a1b6f2_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-78a1b6f2-vikhtuy-o1-a1-exact","report":"2026-09-20_M3_78a1b6f2_vikhtuy-o1-a1-exact.md"},
+    {"campaign":"m3-78a1b6f2-vikhtuy-s1-o1-a1-exact","report":"2026-09-20_M3_78a1b6f2_vikhtuy-s1-o1-a1-exact.md"},
+    {"campaign":"m3-8e6faaf5-vikhtuy-browser-exact-2","report":"2026-09-20_M3_8e6faaf5_vikhtuy-browser-exact-2.md"},
+    {"campaign":"m3-97840068-vikhtuy-browser-exact","report":"2026-09-20_M3_97840068_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-9b6556de-review-exact","report":"2026-09-20_M3_9b6556de_review-browser-03.md"},
+    {"campaign":"m3-9fdfb5bd-vikhtuy-browser-exact","report":"2026-09-20_M3_9fdfb5bd_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-ca35c6ba-vikhtuy-browser-exact","report":"2026-09-20_M3_ca35c6ba_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-cc34af90-vikhtuy-browser-exact","report":"2026-09-20_M3_cc34af90_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-e20f5c55-vikhtuy-browser-exact","report":"2026-09-20_M3_e20f5c55_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-e3e736f2-vikhtuy-browser-exact","report":"2026-09-20_M3_e3e736f2_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-e7094ff1-vikhtuy-browser-exact","report":"2026-09-20_M3_e7094ff1_vikhtuy-browser-exact.md"},
+    {"campaign":"m3-f8474d9b-review-exact","report":"2026-09-20_M3_f8474d9b_review-browser-04.md"}
+  ]
+}

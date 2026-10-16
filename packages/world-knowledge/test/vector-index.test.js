@@ -30,8 +30,7 @@ test('flat vectors add recall candidates but applicability still decides truth',
     search_hints: ['несовпадающая формулировка'],
     context: { time: { year: 1230 },
       place_refs: ['region_novgorod_land'], actor_facets: {} },
-    budget: { max_facts: 2, max_candidates: 2,
-      max_context_chars: 2000 }
+    budget: { max_facts: 2, max_candidates: 2 }
   }, { vectorScores: scores });
   assert.deepEqual(slice.facts.map(({ claim_ref }) => claim_ref),
     ['claim:regional-fish-exploitation']);
@@ -68,7 +67,7 @@ test('vector relevance is calibrated against lexical relevance', () => {
     search_hints: ['Верёвка из растительного волокна тёрлась о кол, была перегнута и завязана узлом. Что меняется для её прочности?'],
     context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'],
       actor_facets: {} },
-    budget: { max_facts: 10, max_candidates: 10, max_context_chars: 2000 }
+    budget: { max_facts: 10, max_candidates: 10 }
   }, { vectorScores: new Map([
     ['claim:modern-fibre-rope-condition-can-reduce-available-strength', 0.49]
   ]) });

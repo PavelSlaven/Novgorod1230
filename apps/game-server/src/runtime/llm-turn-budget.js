@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
-const GAMEPLAY_LLM_CALL_TIMEOUT_MS = 120_000;
+export const GAMEPLAY_LLM_CALL_TIMEOUT_MS = 120_000;
 export const GAMEPLAY_TURN_DEADLINE_MS = 360_000;
 const GAMEPLAY_COMMIT_RESERVE_MS = 5_000;
 

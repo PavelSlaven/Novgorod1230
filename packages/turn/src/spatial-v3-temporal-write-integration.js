@@ -163,6 +163,34 @@ export function integrateSpatialV3TemporalWriteFragments({
       for (const row of fragmentWrites) {
         const rowKey = key(row);
         const prior = seenRows.get(rowKey);
+        if (prior && mode === 'inserts' && prior.mode === 'inserts'
+            && row?.target_table === 'party_npc_knowledge_merge_states'
+            && prior.row.record?.party_id === row.record?.party_id
+            && prior.row.record?.npc_id === row.record?.npc_id) {
+          const priorNoOp = noOpMergeState(prior.row.record);
+          const currentNoOp = noOpMergeState(row.record);
+          const priorChanged = changedMergeState(prior.row.record);
+          const currentChanged = changedMergeState(row.record);
+          if (priorNoOp && currentChanged
+              && orderedMergeStateVersions(prior.row.record, row.record)) {
+            prior.row.record = clone(row.record);
+            continue;
+          }
+          if (priorChanged && currentNoOp
+              && orderedMergeStateVersions(row.record, prior.row.record)) {
+            continue;
+          }
+        }
+        if (prior && row?.target_table
+            === 'party_npc_knowledge_merge_states'
+            && prior.mode === mode && ['inserts', 'updates'].includes(mode)
+            && record(prior.row.record) && record(row.record)
+            && row.record.party_id === prior.row.record.party_id
+            && row.record.npc_id === prior.row.record.npc_id
+            && prior.row.record?.state_version === row.record?.state_version) {
+          Object.assign(prior.row.record, clone(row.record));
+          continue;
+        }
         if (prior && mode === 'updates' && prior.mode === mode
             && record(row.previous_record)
             && Object.keys(row.previous_record).length > 0
@@ -218,6 +246,24 @@ export function integrateSpatialV3TemporalWriteFragments({
     )
   });
   return freeze({ ok: true, input, fragment_count: fragments.length });
+}
+
+function noOpMergeState(record) {
+  return record?.last_proposal_id === null
+    && record?.last_result_digest === null;
+}
+
+function changedMergeState(record) {
+  return typeof record?.last_proposal_id === 'string'
+    && record.last_proposal_id.length > 0
+    && typeof record.last_result_digest === 'string'
+    && record.last_result_digest.length > 0;
+}
+
+function orderedMergeStateVersions(noOp, changed) {
+  return Number.isSafeInteger(noOp?.state_version)
+    && Number.isSafeInteger(changed?.state_version)
+    && changed.state_version >= noOp.state_version;
 }
 
 function localFireIdentity(plan){const proposal=plan?.transition_proposal;

@@ -2,9 +2,11 @@ import {
   buildNpcConversationResponseRequest,
   evaluateNpcDecisionSignals
 } from '@rus/npc-runtime';
+import { canonicalDigest } from '@rus/materialization';
 import {
   allowedNpcContributionReferences,
   currentSceneObservationProjection,
+  interlocutorSpeechProjection,
   ownKnowledgeProjection,
   ownMemoryProjection,
   ownNpcProjection,
@@ -24,6 +26,7 @@ import { npcConversationDecisionCapability, npcPresentationContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
 import { projectCampFireState } from
   './lower-dvina-trace-player-safe-state.js';
+import { selectBoundedActorContext } from '@rus/visibility-knowledge-memory';
 export function buildNpcBoundary(context, working) {
   const resolvedRecords = allSignalRecords(context, working).filter(
     ({ same_time_batch_key: batchKey }) => batchKey === context.batchKey
@@ -60,6 +63,9 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
       : context.npcDecisionScope.required_supporting_operation;
   const perceivedMessage = perceivedBoundaryMessage(
     context, working, resolvedRecords
+  );
+  const interlocutorSpeech = interlocutorSpeechProjection(
+    context, latestContribution, perceivedMessage
   );
   const currentOfferPerceived = fullyPerceivedCurrentOffer(
     context, perceivedMessage
@@ -111,6 +117,9 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
       delivery_cues: structuredClone(perceivedMessage?.delivery_cues ?? []),
       claims_are_speaker_assertions_not_objective_truth: true,
       ...npcPresentationContext(context, latestContribution),
+      ...(interlocutorSpeech === null ? {} : {
+        interlocutor_speech: interlocutorSpeech
+      }),
       ...(context.phase === 'phase_3' && presentedEvidenceRecognized
         ? { presented_evidence_ref: context.contracts.ids.evidence }
         : {}),
@@ -163,12 +172,28 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
           requiredSupportingOperation) })
     }
   });
+  // historical_events: exchange wraps npcSemanticModel with party state (F1).
   const persistedTrace = (context.state.npc_semantic_decision_traces ?? [])
     .find(({ boundary_id: boundaryId }) =>
       boundaryId === boundary.boundary_id) ?? null;
+  const persistedInputs = persistedTrace === null ? []
+    : (context.state.npc_semantic_decision_inputs ?? []).filter((input) =>
+      input?.request_snapshot?.schema
+          === 'npc_conversation_response_request_v1'
+        && plainRecord(input.boundary_snapshot)
+        && plainRecord(input.trace)
+        && input.request_snapshot.request_id === request.request_id
+        && input.request_snapshot.boundary_id === request.boundary_id
+        && input.request_snapshot.conversation_id === request.conversation_id
+        && input.request_snapshot.exchange_id === request.exchange_id
+        && input.request_snapshot.state_version === request.state_version
+        && sameRef(input.request_snapshot.npc_ref, request.npc_ref)
+        && input.boundary_snapshot.boundary_id === boundary.boundary_id
+        && canonicalDigest(input.trace) === canonicalDigest(persistedTrace));
   return {
     boundary,
-    request,
+    request: persistedInputs.length === 1
+      ? persistedInputs[0].request_snapshot : request,
     persisted_trace: persistedTrace
   };
 }
@@ -295,5 +320,5 @@ function publicConversationHistory(
       history.push(structuredClone(latestVisible));
     }
   }
-  return history;
+  return selectBoundedActorContext(history);
 }

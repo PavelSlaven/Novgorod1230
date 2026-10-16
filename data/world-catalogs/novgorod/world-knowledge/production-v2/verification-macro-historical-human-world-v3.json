@@ -1,0 +1,31 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-human-world-v3-helmet-half-mask-find",
+      "claim_ref": "claim:candidate-novgorod-helmet-half-mask-find",
+      "claim_digest": "bfac68ab24ce51d35b6b07fb6fd2cdd0dcd6ebb7ce2d24a7649970d40fe197b8",
+      "candidate_ref": "git:87ba65ec43d7fec36a48897a7402595d1bcad51c:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-human-world-v3.json#claim:candidate-novgorod-helmet-half-mask-find",
+      "auditor_ref": "/root/historical_v3_verifier",
+      "independence_basis": "Independent direct Novgorod Museum page review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-helmet-find"],
+      "review_ref": "verification/macro-historical-human-world-v3.md#claim-candidate-novgorod-helmet-half-mask-find",
+      "verdict": "APPROVE",
+      "limits": "Supports only the museum's 2026 report of this Troitsky-XVII-I find and its stated later-thirteenth to first-quarter-fourteenth-century preliminary dating; it is not a 1230 object, owner, armour set, protection value, weapon skill, rank, combat event, or inventory."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-human-world-v3-psalter-eleventh-century",
+      "claim_ref": "claim:candidate-novgorod-psalter-eleventh-century",
+      "claim_digest": "3e43615af81a1fc256f8e2fbc64764dcff006347e22db9f151129771ae251678",
+      "candidate_ref": "git:87ba65ec43d7fec36a48897a7402595d1bcad51c:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-human-world-v3.json#claim:candidate-novgorod-psalter-eleventh-century",
+      "auditor_ref": "/root/historical_v3_verifier",
+      "independence_basis": "Independent direct Novgorod Museum page review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-writing-psalter"],
+      "review_ref": "verification/macro-historical-human-world-v3.md#claim-candidate-novgorod-psalter-eleventh-century",
+      "verdict": "APPROVE",
+      "limits": "Supports only the Museum of Writing's identification of the Novgorod Psalter as an eleventh-century book; it is not a 1230 school, book, reader, literacy rate, curriculum, scriptoria, or scene text."
+    }
+  ]
+}

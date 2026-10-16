@@ -74,7 +74,7 @@ export function appendTraversal({ inserts, updates, appends, partyId, state,
       traversal.source_endpoint, changeSetId, idemId, turnNumber));
   }
   const eventOrdinal = 2 + intent.attempt.ordinal;
-  appends.push(intervalRow(interval));
+  appends.push(intervalRow(interval, ids.travel_state_id));
   appends.push(event(ids.execution_id, eventOrdinal,
     terminal ? 'completed' : 'step_paused', 'active',
     terminal ? 'completed' : 'active',
@@ -145,9 +145,10 @@ function travelStateRecord({ partyId, state, traversal, intent, terminal,
   };
 }
 
-function intervalRow(interval) {
+function intervalRow(interval, travelStateId) {
   return row('party_traversal_interval_results', interval.id, {
     id: interval.id,
+    travel_state_id: travelStateId,
     route_plan_execution_id: interval.route_plan_execution_id,
     plan_step_ordinal: interval.plan_step_ordinal,
     interval_ordinal: interval.interval_ordinal,

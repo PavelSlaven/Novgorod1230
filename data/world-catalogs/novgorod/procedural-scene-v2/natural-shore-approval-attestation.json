@@ -1,0 +1,88 @@
+{
+  "schema": "rus.procedural_scene_row_approval_attestation.v1",
+  "candidate_ref": "novgorod_natural_shore_v3@1",
+  "subject_commit_sha": "6624b1d32cd1503dc2cf5d8d72b6c8af95de5adb",
+  "candidate_path": "data/world-catalogs/novgorod/procedural-scene-v2/authoring-overlay.json",
+  "overlay_digest": "52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3",
+  "approval_request_digest": "89ae5f2030961c85e8e12f3b220052db04e5b95e3c7af45ac7c6076136453325",
+  "candidate_digest": "3a8a1b71b22d139f3df7e9c133bd46754ff1038d23c54a06b57f4582111e8abc",
+  "authoring_approved": true,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "approved_by": "independent_final_audit",
+  "approval_scope": "authoring_row_only",
+  "verification": [
+    {
+      "claim_ref": "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
+      "verification_ref": null,
+      "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
+      "limits": {
+        "source_claim_object": {
+          "kind": "literal",
+          "value": "repeated freezing and thawing can break apart bank soil and leave it more vulnerable to erosion after thaw without establishing a particular bank collapse route safety or load limit"
+        },
+        "knowledge_access": {
+          "class": "domain_internal_only",
+          "required_facets": []
+        },
+        "hard_exclusion": null
+      }
+    },
+    {
+      "claim_ref": "claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
+      "verification_ref": null,
+      "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
+      "limits": {
+        "source_claim_object": {
+          "kind": "literal",
+          "value": "riparian vegetation and organic debris can slow floodwater and dissipate stream energy without proving that a particular bank is stable passable or protected"
+        },
+        "knowledge_access": {
+          "class": "domain_internal_only",
+          "required_facets": []
+        },
+        "hard_exclusion": null
+      }
+    },
+    {
+      "claim_ref": "claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+      "verification_ref": null,
+      "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
+      "limits": {
+        "source_claim_object": {
+          "kind": "literal",
+          "value": "where vegetation or organic debris slows floodwater sediment can be deposited without establishing the material depth age contamination or footing at a particular place"
+        },
+        "knowledge_access": {
+          "class": "domain_internal_only",
+          "required_facets": []
+        },
+        "hard_exclusion": null
+      }
+    },
+    {
+      "claim_ref": "claim:white-willow-depends-on-moist-lit-riparian-habitat",
+      "verification_ref": "wk-verification:production-white-willow-depends-on-moist-lit-riparian-habitat",
+      "review_ref": "research/verification-population-environment-biology.md#final-replacement-source-check--root-2026-09-03",
+      "limits": "Качественная универсальная/видоспецифичная связь; не доказывает местный водоём, заросли, глину, зерно, погоду, запас или исход. Review mapping: candidate=ENV-13."
+    }
+  ],
+  "forbidden_implications": [
+    "landing",
+    "access",
+    "safety",
+    "stock",
+    "wreck",
+    "local_taxon_assertion"
+  ],
+  "materialization_limits": [
+    "no_local_willow",
+    "no_local_tree",
+    "no_local_stand",
+    "no_local_stock",
+    "no_local_entity",
+    "no_outcome"
+  ],
+  "attestation_digest": "ac32cb2ffeda13e9a45245a9c6c12ad424f16854928b094c4994c107b0dc6fce"
+}

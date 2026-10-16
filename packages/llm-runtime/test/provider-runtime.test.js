@@ -3,7 +3,7 @@ import { createServer } from 'node:http';
 import test from 'node:test';
 
 import { TurnRuntimeRoles, resolveLlmExecutionConfig } from '../src/provider-config.js';
-import { buildProviderRequestPayload } from '../src/provider-request.js';
+import { buildProviderRequestPayload, normalizeExecutionLimits } from '../src/provider-request.js';
 import { describeRoleLlmCall, executeRoleLlmCall } from '../src/runtime.js';
 
 const roleId = TurnRuntimeRoles.WORLD_PROCESS_STEP;
@@ -22,37 +22,37 @@ function providerPayload(compatibility, messages, responseFormat = {
   }, messages);
 }
 
-test('DeepSeek JSON mode adds its required format-only instruction', () => {
+test('JSON mode adds its required format-only instruction', () => {
   const messages = [{ role: 'user', content: 'Choose one option.' }];
-  const payload = providerPayload('deepseek', messages);
+  const payload = providerPayload('openai_compatible', messages);
   assert.deepEqual(payload.messages, [
-    { role: 'system', content: 'Return a valid json object.' },
+    { role: 'system', content: 'Верните корректный объект JSON.' },
     ...messages
   ]);
   assert.deepEqual(messages, [{ role: 'user', content: 'Choose one option.' }]);
 });
 
 test('JSON mode adds its instruction to the existing first system message without changing the input', () => {
-  for (const compatibility of ['deepseek', 'openai_compatible']) {
+  for (const compatibility of ['openai_compatible']) {
     const messages = Object.freeze([
       Object.freeze({ role: 'system', content: 'Return one semantic choice.' }),
       Object.freeze({ role: 'user', content: 'Choose one option.' })
     ]);
     const payload = providerPayload(compatibility, messages);
     assert.deepEqual(payload.messages, [
-      { role: 'system', content: 'Return a valid json object.\n\nReturn one semantic choice.' },
+      { role: 'system', content: 'Верните корректный объект JSON.\n\nReturn one semantic choice.' },
       messages[1]
     ]);
     assert.equal(messages[0].content, 'Return one semantic choice.');
     assert.equal(payload.messages[1], messages[1]);
     assert.deepEqual(providerPayload(compatibility, [messages[1]]).messages, [
-      { role: 'system', content: 'Return a valid json object.' }, messages[1]
+      { role: 'system', content: 'Верните корректный объект JSON.' }, messages[1]
     ]);
   }
 });
 
 test('JSON mode does not duplicate an existing JSON instruction', () => {
-  for (const compatibility of ['deepseek', 'openai_compatible']) {
+  for (const compatibility of ['openai_compatible']) {
     const messages = [{ role: 'user', content: 'Return one JSON object.' }];
     assert.strictEqual(providerPayload(compatibility, messages).messages,
       messages);
@@ -60,7 +60,7 @@ test('JSON mode does not duplicate an existing JSON instruction', () => {
 });
 
 test('plain-text transport leaves messages unchanged', () => {
-  for (const compatibility of ['deepseek', 'openai_compatible']) {
+  for (const compatibility of ['openai_compatible']) {
     const messages = [{ role: 'user', content: 'Return plain prose.' }];
     const payload = providerPayload(compatibility, messages, null);
     assert.strictEqual(payload.messages, messages);
@@ -68,36 +68,48 @@ test('plain-text transport leaves messages unchanged', () => {
   }
 });
 
-test('execution limits override environment, provider, and per-call values', () => {
+test('execution limits cap requestTimeoutMs at 120 s but honor smaller positive values', () => {
   for (const [value, expected] of [
-    [undefined, 120000], ['', 120000], ['invalid', 120000], ['0', 120000], ['-1', 120000], ['1.5', 120000], ['60000', 120000]
+    [undefined, 120000], ['', 120000], ['invalid', 120000], ['0', 120000], ['-1', 120000], ['1.5', 120000],
+    ['60000', 60000], ['500000', 120000]
   ]) {
     const resolution = resolveLlmExecutionConfig({
       scope: 'turn_runtime',
       roleId,
-      env: { DEEPSEEK_API_KEY: 'test-key', ...(value === undefined ? {} : { DEEPSEEK_REQUEST_TIMEOUT_MS: value }) }
+      env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key', ...(value === undefined ? {} : { LLM_REQUEST_TIMEOUT_MS: value }) }
     });
     assert.equal(resolution.config.requestTimeoutMs, expected);
   }
   const hostile = resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId,
-    env: { DEEPSEEK_API_KEY: 'test-key', TURN_WORLD_PROCESS_STEP_MAX_TOKENS: '1',
+    env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key', TURN_WORLD_PROCESS_STEP_MAX_TOKENS: '1',
       TURN_WORLD_PROCESS_STEP_REQUEST_TIMEOUT_MS: '1' },
     runtimeProviderOverride: { ...customProvider, requestTimeoutMs: 1 },
     overrides: { maxTokens: 1, requestTimeoutMs: 1 }
   });
   assert.equal(hostile.config.maxTokens, 1);
-  assert.equal(hostile.config.requestTimeoutMs, 120_000);
+  assert.equal(hostile.config.requestTimeoutMs, 1);
   assert.equal(resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId,
-    env: { DEEPSEEK_API_KEY: 'test-key' },
+    env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' },
     overrides: { maxTokens: 50_000 }
   }).config.maxTokens, 20_000);
 });
 
+test('normalizeExecutionLimits treats requestTimeoutMs as a ceiling, not a replacement', () => {
+  for (const [requestTimeoutMs, expected] of [
+    [30_000, 30_000], [500_000, 120_000], [undefined, 120_000],
+    [0, 120_000], [-5, 120_000], ['abc', 120_000]
+  ]) {
+    const config = { maxTokens: 100, requestTimeoutMs };
+    normalizeExecutionLimits(config);
+    assert.equal(config.requestTimeoutMs, expected);
+  }
+});
+
 test('portrait scope retains 120 s transport fallback', () => {
   const resolution = resolveLlmExecutionConfig({
-    scope: 'portrait_lab', roleId: 'portrait_spec_normalizer', env: { DEEPSEEK_API_KEY: 'test-key' }
+    scope: 'portrait_lab', roleId: 'portrait_spec_normalizer', env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' }
   });
   assert.equal(resolution.config.requestTimeoutMs, 120000);
 });
@@ -111,7 +123,7 @@ test('aborted request reports deterministic retryable timeout', async () => {
       scope: 'turn_runtime',
       roleId,
       messages: [],
-      env: { DEEPSEEK_API_KEY: 'test-key', DEEPSEEK_REQUEST_TIMEOUT_MS: '1' }
+      env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key', LLM_REQUEST_TIMEOUT_MS: '1' }
     });
     assert.equal(result.status, 'transport_error');
     assert.equal(result.error.code, 'transport_error');
@@ -123,10 +135,10 @@ test('aborted request reports deterministic retryable timeout', async () => {
 
 test('custom provider overrides role model and normalizes base or full request URLs', () => {
   const defaultResolution = resolveLlmExecutionConfig({
-    scope: 'turn_runtime', roleId, env: { DEEPSEEK_API_KEY: 'test-key' }
+    scope: 'turn_runtime', roleId, env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' }
   });
-  assert.equal(defaultResolution.config.provider, 'deepseek');
-  assert.equal(defaultResolution.config.model, 'deepseek-v4-flash');
+  assert.equal(defaultResolution.config.provider, 'openai_compatible');
+  assert.equal(defaultResolution.config.model, 'qwen3.8-27b-uncensored-w4a16-tp2');
 
   for (const [baseUrl, requestUrl] of [
     ['http://127.0.0.1:8000/v1', 'http://127.0.0.1:8000/v1/chat/completions'],
@@ -149,10 +161,10 @@ test('custom provider overrides role model and normalizes base or full request U
   }
 });
 
-test('config hash retains DeepSeek base endpoint and canonicalizes custom request endpoint', () => {
+test('config hash retains configured provider endpoint and canonicalizes custom request endpoint', () => {
   assert.match(describeRoleLlmCall({
     scope: 'turn_runtime', roleId: 'ordinary_materialization',
-    env: { DEEPSEEK_API_KEY: 'test-key' }, overrides: { temperature: 0, maxTokens: 6000 }
+    env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' }, overrides: { temperature: 0, maxTokens: 6000 }
   }).config_hash, /^[a-f0-9]{16}$/u);
   assert.equal(describeRoleLlmCall({
     scope: 'turn_runtime', roleId, runtimeProviderOverride: customProvider
@@ -165,7 +177,7 @@ test('config hash retains DeepSeek base endpoint and canonicalizes custom reques
 
 test('call description exposes resolved timeout and telemetry exposes redacted start time', async () => {
   const description = describeRoleLlmCall({
-    scope: 'turn_runtime', roleId, env: { DEEPSEEK_API_KEY: 'test-key' }
+    scope: 'turn_runtime', roleId, env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' }
   });
   assert.equal(description.request_timeout_ms, 120000);
 
@@ -177,7 +189,7 @@ test('call description exposes resolved timeout and telemetry exposes redacted s
   try {
     await executeRoleLlmCall({
       scope: 'turn_runtime', roleId, messages: [{ role: 'user', content: 'secret prompt' }],
-      env: { DEEPSEEK_API_KEY: 'secret-key' }, telemetry: { onCall: (value) => { call = value; } }
+      env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'secret-key' }, telemetry: { onCall: (value) => { call = value; } }
     });
     assert.equal(Number.isFinite(call.started_at_ms), true);
     assert.equal(call.started_at_ms > 0, true);
@@ -188,7 +200,7 @@ test('call description exposes resolved timeout and telemetry exposes redacted s
   }
 });
 
-test('generic provider omits empty authorization and DeepSeek-only payload fields', async () => {
+test('generic provider omits empty authorization and provider-specific payload fields', async () => {
   const originalFetch = globalThis.fetch;
   let request;
   globalThis.fetch = async (url, init) => {
@@ -245,13 +257,13 @@ test('an OpenAI-compatible role can explicitly turn reasoning off', () => {
   assert.deepEqual(config.thinking, { type: 'disabled' });
 });
 
-test('local OpenAI-compatible endpoint disables thinking for every gameplay role', async (t) => {
+test('local OpenAI-compatible endpoint disables thinking for every gameplay role over HTTP', async (t) => {
   const requests = [];
   const server = createServer(async (incoming, response) => {
     let body = '';
     for await (const chunk of incoming) body += chunk;
-    requests.push({ url: incoming.url, authorization: incoming.headers.authorization,
-      body: JSON.parse(body) });
+    requests.push({ method: incoming.method, url: incoming.url,
+      headers: incoming.headers, body: JSON.parse(body) });
     response.writeHead(200, { 'content-type': 'application/json' });
     response.end(JSON.stringify({ choices: [{ message: { content: '{}' } }] }));
   });
@@ -293,8 +305,10 @@ test('local OpenAI-compatible endpoint disables thinking for every gameplay role
   }
   assert.equal(requests.length, roles.length);
   for (const request of requests) {
+    assert.equal(request.method, 'POST');
     assert.equal(request.url, '/v1/chat/completions');
-    assert.equal(request.authorization, undefined);
+    assert.equal(request.headers['content-type'], 'application/json');
+    assert.equal(request.headers.authorization, undefined);
     assert.equal(request.body.model, model);
     assert.equal(request.body.max_tokens, 20_000);
     assert.deepEqual(request.body.messages, messages);
@@ -303,6 +317,69 @@ test('local OpenAI-compatible endpoint disables thinking for every gameplay role
       { enable_thinking: false });
     assert.equal('thinking' in request.body, false);
     assert.equal('reasoning_effort' in request.body, false);
+  }
+});
+
+test('OpenAI-compatible endpoint disables thinking for every gameplay role', async () => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  globalThis.fetch = async (url, init) => {
+    requests.push({ url, authorization: init.headers.Authorization,
+      body: JSON.parse(init.body) });
+    return { ok: true, json: async () => ({
+      choices: [{ message: { content: '{}' } }]
+    }) };
+  };
+  const model = 'arbitrary-local-model';
+  const roles = [...new Set(Object.values(TurnRuntimeRoles))];
+  const messages = Object.freeze([
+    Object.freeze({ role: 'system', content: 'Return JSON.' }),
+    Object.freeze({ role: 'user', content: 'Preserve this request.' })
+  ]);
+  const hostileEnv = new Proxy({}, { get(_target, key) {
+    if (String(key).endsWith('_THINKING')) return 'enabled';
+    if (String(key).endsWith('_REASONING_EFFORT')) return 'high';
+    return undefined;
+  } });
+  try {
+    for (const role of roles) {
+      const baseline = resolveLlmExecutionConfig({
+        scope: 'turn_runtime', roleId: role,
+        runtimeProviderOverride: customProvider
+      }).config;
+      const resolved = resolveLlmExecutionConfig({
+        scope: 'turn_runtime', roleId: role, env: hostileEnv,
+        runtimeProviderOverride: customProvider
+      }).config;
+      assert.deepEqual(resolved.thinking, { type: 'disabled' }, role);
+      assert.equal(resolved.reasoningEffort, null, role);
+      assert.equal(resolved.maxTokens, 20_000, role);
+      assert.equal(resolved.requestTimeoutMs, 120_000, role);
+      assert.deepEqual(resolved.contextBudget, baseline.contextBudget, role);
+      assert.deepEqual(resolved.responseFormat, baseline.responseFormat, role);
+      const result = await executeRoleLlmCall({
+        scope: 'turn_runtime', roleId: role, messages, env: hostileEnv,
+        runtimeProviderOverride: { compatibility: 'openai_compatible',
+          baseUrl: 'http://127.0.0.1:8000/v1', model }
+      });
+      assert.equal(result.status, 'ok', role);
+    }
+    assert.equal(requests.length, roles.length);
+    for (const request of requests) {
+      assert.equal(request.url,
+        'http://127.0.0.1:8000/v1/chat/completions');
+      assert.equal(request.authorization, undefined);
+      assert.equal(request.body.model, model);
+      assert.equal(request.body.max_tokens, 20_000);
+      assert.deepEqual(request.body.messages, messages);
+      assert.deepEqual(request.body.response_format, { type: 'json_object' });
+      assert.deepEqual(request.body.chat_template_kwargs,
+        { enable_thinking: false });
+      assert.equal('thinking' in request.body, false);
+      assert.equal('reasoning_effort' in request.body, false);
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
   }
 });
 
@@ -389,7 +466,8 @@ test('custom key is sent, excluded from config hash, and error body is redacted'
     assert.equal(request.headers.Authorization, 'Bearer secret-key');
     assert.equal(result.error.code, 'http_401');
     assert.equal(result.error.message.includes('secret-key'), false);
-    assert.equal(result.error.message.includes('DeepSeek'), false);
+    assert.doesNotMatch(result.error.message,
+      /(?:deepseek|qwen|openai(?:_compatible|-compatible)?)/iu);
     assert.equal(result.error.message.length <= 512 + 'Provider request failed (401): '.length, true);
     const withoutKey = resolveLlmExecutionConfig({
       scope: 'turn_runtime', roleId, runtimeProviderOverride: customProvider
@@ -409,21 +487,21 @@ test('custom key is sent, excluded from config hash, and error body is redacted'
   }
 });
 
-test('DeepSeek retains extensions and timeout precedence is per-call, provider, role, then default', async () => {
+test('OpenAI-compatible provider uses neutral settings and timeout precedence is per-call, provider, role, then default', async () => {
   const defaultResolution = resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId,
     env: {
-      DEEPSEEK_API_KEY: 'test-key', DEEPSEEK_REQUEST_TIMEOUT_MS: '100',
+      LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key', LLM_REQUEST_TIMEOUT_MS: '100',
       TURN_WORLD_PROCESS_STEP_REQUEST_TIMEOUT_MS: '200'
     },
     runtimeProviderOverride: { ...customProvider, requestTimeoutMs: 300 },
     overrides: { requestTimeoutMs: 400 }
   });
-  assert.equal(defaultResolution.config.requestTimeoutMs, 120000);
+  assert.equal(defaultResolution.config.requestTimeoutMs, 400);
   assert.equal(resolveLlmExecutionConfig({
-    scope: 'turn_runtime', roleId, env: { DEEPSEEK_API_KEY: 'test-key' },
+    scope: 'turn_runtime', roleId, env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key' },
     overrides: { requestTimeoutMs: 500 }
-  }).config.requestTimeoutMs, 120000);
+  }).config.requestTimeoutMs, 500);
 
   const originalFetch = globalThis.fetch;
   let payload;
@@ -434,15 +512,70 @@ test('DeepSeek retains extensions and timeout precedence is per-call, provider, 
   try {
     const result = await executeRoleLlmCall({
       scope: 'turn_runtime', roleId, messages: [], env: {
-        DEEPSEEK_API_KEY: 'test-key',
+        LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_API_KEY: 'test-key',
         TURN_WORLD_PROCESS_STEP_THINKING: 'enabled',
         TURN_WORLD_PROCESS_STEP_REASONING_EFFORT: 'high'
       }
     });
     assert.equal(result.status, 'ok');
-    assert.deepEqual(payload.thinking, { type: 'disabled' });
+    assert.deepEqual(payload.chat_template_kwargs, { enable_thinking: false });
     assert.equal('reasoning_effort' in payload, false);
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+
+test('missing or invalid LLM_BASE_URL disables execution without fetching', async () => {
+  const originalFetch = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => { calls += 1; throw new Error('unexpected fetch'); };
+  try {
+    for (const [env, reason] of [
+      [{ LLM_API_KEY: 'optional-key' }, 'missing_base_url'],
+      [{ LLM_BASE_URL: 'not a url' }, 'invalid_provider_config']
+    ]) {
+      const result = await executeRoleLlmCall({
+        scope: 'turn_runtime', roleId, messages: [], env
+      });
+      assert.equal(result.status, 'provider_disabled');
+      assert.equal(result.error.code, reason);
+    }
+    assert.equal(calls, 0);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('role model and parameters resolve before shared defaults, override stays primary', () => {
+  const shared = resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId: TurnRuntimeRoles.TURN_STEP_PLANNER,
+    env: { LLM_BASE_URL: 'http://127.0.0.1:8000/v1', LLM_MODEL: 'shared-model' }
+  });
+  assert.equal(shared.config.model, 'shared-model');
+  assert.equal(shared.config.apiKey, null);
+
+  const { config } = resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId: TurnRuntimeRoles.TURN_STEP_PLANNER,
+    env: {
+      LLM_BASE_URL: 'http://127.0.0.1:8000/v1',
+      LLM_MODEL: 'shared-model',
+      TURN_STEP_PLANNER_MODEL: 'role-model',
+      TURN_STEP_PLANNER_TEMPERATURE: '0.2'
+    }
+  });
+  assert.equal(config.model, 'role-model');
+  assert.equal(config.temperature, 0.2);
+
+  const override = resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId: TurnRuntimeRoles.TURN_STEP_PLANNER,
+    env: {
+      LLM_BASE_URL: 'http://127.0.0.1:8000/v1',
+      LLM_MODEL: 'shared-model', LLM_API_KEY: 'env-key'
+    },
+    runtimeProviderOverride: customProvider
+  });
+  assert.equal(override.config.model, 'local-model');
+  assert.equal(override.config.requestUrl,
+    'http://127.0.0.1:8000/v1/chat/completions');
+  assert.equal(override.config.apiKey, null);
 });

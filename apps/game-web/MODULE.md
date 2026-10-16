@@ -10,21 +10,42 @@ Browser-клиент, который получает только versioned pub
 
 ## Владеет
 
-- HTTP API client `/api/v1`;
+- HTTP API client `/api/v1`; ожидание ответа fetch у `submitTurn` ограничено
+  120 секундами. Дедлайн прерывает transport и предлагает повтор/восстановление,
+  не утверждает отсутствие commit и сохраняет exact pending identity; чтение
+  тела ответа и отдельный presentation recovery этим дедлайном не ограничены;
+- отображением безопасного error message; структурный error code не добавляется
+  в текст экрана ни при каком developerMode;
 - валидацией публичных API envelopes и screen contracts;
 - UI-only store;
+- persisted pending new-game request identity reused after timeout/reload until
+  the same committed party opening succeeds; success clears it;
+- созданием request UUID v4 для new-game и turn: native `randomUUID`, а при
+  его отсутствии — `getRandomValues`; префиксы, pending reuse и turn idempotency
+  сохраняются, persisted request не получает новый UUID при повторе;
 - постоянным указанием управляемого персонажа в header из уже публичных
   `panels.character.data.name/role`; другие люди не становятся этим персонажем;
 - отображением готового `presentation_context` в header; календарь, место и
   exact длительность последнего committed хода вычисляет server из committed
   state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen/FactualTurnDeliveryScreen;
+- проверкой optional `exact_npc_utterances` на ready/pending TurnScreen и
+  `FactualTurnDeliveryScreen v1`; принимает только публичный leaf
+  `{ speaker_ref: { entity_kind: 'npc', public_key }, utterance_text }` без
+  server provenance. Обычный prose slot сохраняет переданную `main_prose`/`prose`
+  без дополнительного speech block; дословную речь и ясную атрибуцию в
+  одобренной прозе обеспечивает upstream narration/delivery. UI не достраивает
+  отсутствующую речь и не ищет совпадения подстрок в свободном тексте.
+  Factual delivery сохраняет все exact utterances в переданном порядке,
+  связывает доступную подпись по полной паре `entity_kind`/`public_key`, а без
+  видимого говорящего показывает слова без придуманной подписи;
 - проверкой и rendering `FactualTurnDeliveryScreen v1`: degraded recovery
   переиспользует обычные context, navigation, scene, task, checks, actions и
   overlays, заменяя только prose slot factual block; сохраняет `intent_not_fact`
   input, не показывает `main_prose`/`prose`, narrator output, digest,
   audit/provider/retry diagnostics или новую causal фразу;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
+- кнопками подписей ходов из `panels.route.data.movement.options`: клик подставляет точную подпись в черновик и поле ввода (`app/movement-draft.js`), ничего не отправляет и контракт сервера не меняет;
 - чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome
   виден сразу, полная формула и signed modifiers доступны через `<details>`;
 - Character отображает уже безопасные предысторию, память и известные сведения;
@@ -45,8 +66,9 @@ Browser-клиент, который получает только versioned pub
   факт commit без ETA/percent либо private role/provider/trace. Polling optional:
   ошибка или null не прерывает authoritative turn/recovery, после их завершения
   polling останавливается; reload продолжает тот же сохранённый request ID.
-- компактным LLM settings overlay для default, локального Gemma preset и
-  произвольного OpenAI-compatible endpoint: browser вызывает только game-server
+- компактным LLM settings overlay для unconfigured/default Qwen identity и
+  пользовательского OpenAI-compatible vLLM endpoint: без настроенного endpoint игра
+  остаётся unconfigured и новые вызовы недоступны; browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в
   browser storage, logs или telemetry. Server возвращает сохранённые non-secret
   поля после reload; gameplay provider и transport UI не выбирает сам.
@@ -64,6 +86,7 @@ Browser-клиент, который получает только versioned pub
   asset выбирает authored portrait; неизвестный сохраняет DTO compatibility и
   идёт в procedural/SVG fallback по `AUTHORED_PORTRAIT_CONTRACT.md`;
 - отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и Canvas 2D renderer без portrait-specific RNG/hash;
+- рендерингом физически лысого портрета без `hair.color` и `hair.style`: геометрия волос головы отсутствует, борода и брови используют нейтральные чернила представления, а сама спецификация не дополняется цветом или укладкой;
 - скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`;
 - semantic geometry branches, включая отдельную процедурную конструкцию косы для `hair.style: "braided"`;
 - единым внутренним владельцем процедурной одежды `buildClothingGeometry(model, bodyGeometry)`: neckline, anchored arm/sleeve boundaries (либо armholes для sleeveless overlayer), outer construction, fabric-driven folds/texture и trim строятся от общих body anchors, а `body.torsoPatch` остаётся только envelope;

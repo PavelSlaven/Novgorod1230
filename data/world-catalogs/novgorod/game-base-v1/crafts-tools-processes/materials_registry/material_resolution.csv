@@ -879,6 +879,8 @@ clothing-appearance/garments/garments.csv,gm_new_votola,material,грубая ш
 clothing-appearance/garments/garments.csv,gm_new_votola,material_ids,MAT003,mt_wool,,,
 clothing-appearance/garments/garments.csv,gm_new_korzno,material,окрашенная шерсть; дорогая ткань у элиты; фибула или завязки,mt_wool;mt_textile_generic,фибула | завязки,,
 clothing-appearance/garments/garments.csv,gm_new_korzno,material_ids,MAT003|MAT004,mt_wool,,,
+clothing-appearance/garments/garments.csv,gm_new_lapti,material,лыко,mt_bast_linden,,,
+clothing-appearance/garments/garments.csv,gm_new_lapti,material_ids,birch_bark_bast,mt_birch_bark;mt_bast_linden,,,
 clothing-appearance/garments/material_entities.csv,n1230:material_item:omi00311,primary_material,textile,mt_textile_generic,,,
 clothing-appearance/garments/material_entities.csv,n1230:material_item:omi00311,materials,"[""textile""]",,"[""textile""]",,
 crafts-tools-processes/craft_tools_gear/tools_gear.csv,tl_axe_carpenter,material,mt_iron;mt_steel;mt_wood_birch,mt_iron;mt_steel;mt_wood_birch,,,

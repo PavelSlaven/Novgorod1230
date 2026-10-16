@@ -1,0 +1,450 @@
+{
+  "schema": "rus.live_world_runtime.owner_coverage_candidate.v1",
+  "status": "pending_independent_data_approval",
+  "activation_authorized": false,
+  "source_paths": [
+    "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json",
+    "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json",
+    "data/world-catalogs/novgorod/m2c-npc/canonical-initial/datasets/spatial_v3_g4_npc_composition_bindings.json",
+    "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g5_generation_templates.json",
+    "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_materialization_candidates.json",
+    "data/world-catalogs/novgorod/m2c-acoustic/approved/spatial_v3_g6_acoustic_baselines.json",
+    "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json"
+  ],
+  "starts": [
+    {
+      "scenario_id": "novgorod_riverbank_approach_v1",
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "npc": {
+        "coverage": "mechanical_scene_match_pending_canonical_binding",
+        "source_composition_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_river_channel__waterway_access__river_reach",
+          "version": 1
+        },
+        "generated_scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "source_count_range": [
+          0,
+          2
+        ],
+        "source_profile_refs": [
+          {
+            "profile_ref": {
+              "id": "m2c_npc_boatman_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_fisher_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_visiting_merchant_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_foreign_merchant_v1",
+              "version": 1
+            },
+            "weight": 1
+          }
+        ],
+        "source_position_slot_order": [
+          "focus",
+          "departure"
+        ]
+      },
+      "acoustic": {
+        "coverage": "exact_approved",
+        "approved_row_refs": [
+          {
+            "id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach__main",
+            "version": 1,
+            "g6_scene_slot_key": "main",
+            "ambient_noise": 1
+          }
+        ],
+        "generated_source_row_refs": [
+          {
+            "id": "acoustic_m2c_g5_river_channel__waterway_access__river_reach_main",
+            "version": 1,
+            "g6_scene_slot_key": "main",
+            "ambient_noise": 1
+          }
+        ],
+        "missing_g6_scene_slot_keys": []
+      }
+    },
+    {
+      "scenario_id": "novgorod_reed_backwater_entrance_v1",
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "npc": {
+        "coverage": "semantic_candidate_required",
+        "source_composition_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+          "version": 1
+        },
+        "generated_scene_template_ref": {
+          "id": "stfv3__g5_resource_v1",
+          "version": 1
+        },
+        "source_count_range": [
+          0,
+          2
+        ],
+        "source_profile_refs": [
+          {
+            "profile_ref": {
+              "id": "m2c_npc_fisher_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_guide_v1",
+              "version": 1
+            },
+            "weight": 1
+          }
+        ],
+        "source_position_slot_order": [
+          "focus",
+          "departure"
+        ]
+      },
+      "acoustic": {
+        "coverage": "exact_approved",
+        "approved_row_refs": [
+          {
+            "id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance__main",
+            "version": 1,
+            "g6_scene_slot_key": "main",
+            "ambient_noise": 0
+          }
+        ],
+        "generated_source_row_refs": [],
+        "missing_g6_scene_slot_keys": []
+      }
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_resource_edge_approach_v1",
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "npc": {
+        "coverage": "semantic_candidate_required",
+        "source_composition_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+          "version": 1
+        },
+        "generated_scene_template_ref": {
+          "id": "stfv3__g5_general_hazard_v1",
+          "version": 1
+        },
+        "source_count_range": [
+          0,
+          2
+        ],
+        "source_profile_refs": [
+          {
+            "profile_ref": {
+              "id": "m2c_npc_forest_worker_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_hunter_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_guide_v1",
+              "version": 1
+            },
+            "weight": 1
+          }
+        ],
+        "source_position_slot_order": [
+          "focus",
+          "departure"
+        ]
+      },
+      "acoustic": {
+        "coverage": "exact_approved",
+        "approved_row_refs": [
+          {
+            "id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge__main",
+            "version": 1,
+            "g6_scene_slot_key": "main",
+            "ambient_noise": 0
+          }
+        ],
+        "generated_source_row_refs": [],
+        "missing_g6_scene_slot_keys": []
+      }
+    },
+    {
+      "scenario_id": "novgorod_zaostrovye_settlement_approach_v1",
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "npc": {
+        "coverage": "semantic_candidate_required",
+        "source_composition_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+          "version": 1
+        },
+        "generated_scene_template_ref": {
+          "id": "stfv3__g5_habitation_v1",
+          "version": 1
+        },
+        "source_count_range": [
+          0,
+          2
+        ],
+        "source_profile_refs": [
+          {
+            "profile_ref": {
+              "id": "m2c_npc_guide_v1",
+              "version": 1
+            },
+            "weight": 1
+          }
+        ],
+        "source_position_slot_order": [
+          "focus",
+          "departure"
+        ]
+      },
+      "acoustic": {
+        "coverage": "exact_approved",
+        "approved_row_refs": [
+          {
+            "id": "m2c_acoustic_canonical__cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach__main",
+            "version": 1,
+            "g6_scene_slot_key": "main",
+            "ambient_noise": 0
+          }
+        ],
+        "generated_source_row_refs": [],
+        "missing_g6_scene_slot_keys": []
+      }
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_work_storage_v1",
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_work_storage_social_v1",
+        "version": 1
+      },
+      "npc": {
+        "coverage": "semantic_candidate_required",
+        "source_composition_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+          "version": 1
+        },
+        "generated_scene_template_ref": {
+          "id": "stfv3__g5_habitation_v1",
+          "version": 1
+        },
+        "source_count_range": [
+          0,
+          2
+        ],
+        "source_profile_refs": [
+          {
+            "profile_ref": {
+              "id": "m2c_npc_fisher_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_local_trader_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_household_servant_v1",
+              "version": 1
+            },
+            "weight": 1
+          }
+        ],
+        "source_position_slot_order": [
+          "focus",
+          "departure"
+        ]
+      },
+      "acoustic": {
+        "coverage": "semantic_candidate_required",
+        "approved_row_refs": [],
+        "generated_source_row_refs": [],
+        "missing_g6_scene_slot_keys": [
+          "main"
+        ]
+      }
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_household_cluster_v1",
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_habitation_v1",
+        "version": 1
+      },
+      "npc": {
+        "coverage": "mechanical_scene_match_pending_canonical_binding",
+        "source_composition_ref": {
+          "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+          "version": 1
+        },
+        "generation_template_ref": {
+          "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+          "version": 1
+        },
+        "generated_scene_template_ref": {
+          "id": "stfv3__g5_habitation_v1",
+          "version": 1
+        },
+        "source_count_range": [
+          0,
+          2
+        ],
+        "source_profile_refs": [
+          {
+            "profile_ref": {
+              "id": "m2c_npc_fisher_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_local_trader_v1",
+              "version": 1
+            },
+            "weight": 1
+          },
+          {
+            "profile_ref": {
+              "id": "m2c_npc_household_servant_v1",
+              "version": 1
+            },
+            "weight": 1
+          }
+        ],
+        "source_position_slot_order": [
+          "focus",
+          "departure"
+        ]
+      },
+      "acoustic": {
+        "coverage": "mechanical_scene_and_ambient_match_pending_canonical_binding",
+        "approved_row_refs": [],
+        "generated_source_row_refs": [
+          {
+            "id": "acoustic_m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality_main",
+            "version": 1,
+            "g6_scene_slot_key": "main",
+            "ambient_noise": 0
+          }
+        ],
+        "missing_g6_scene_slot_keys": [
+          "main"
+        ]
+      }
+    }
+  ]
+}

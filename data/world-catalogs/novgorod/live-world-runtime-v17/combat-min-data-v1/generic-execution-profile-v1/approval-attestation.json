@@ -1,0 +1,55 @@
+{
+  "schema": "novgorod.ap_final_approval_attestation.v1",
+  "task": "ap-final-combat-min",
+  "who": "Claude Opus (ap-final, независимый утверждающий; не автор)",
+  "when": "2026-10-06",
+  "verdict": "APPROVE_WITH_LIMITS",
+  "objects": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/combat-min-data-v1/generic-execution-profile-v1/profile.json",
+      "sha256": "b6ca53c99cc218c98a14532f740dfd53d03c4841bb4d55ebd490ea4e27de4355",
+      "profile": "generic_melee_attack_step_v17@1",
+      "candidate_revision": "5",
+      "approved_parts": "applicability (included/excluded clauses, source_pins, excluded_profile_fields), typed_gaps, duration candidate 6 s = 1/10 min as D71 start calibration",
+      "candidate_source": "/srv/novgorod-work/fleet/tasks/combat-min/out/generic-execution-profile-candidate-5.json"
+    },
+    {
+      "path": "/srv/novgorod-work/fleet/tasks/combat-min/out/corpus-edit-applicability-candidate-3.md",
+      "sha256": "3712196030e4803d318dbda0bbabde01463cc263cf4325f0bd8d5b8718c59da9",
+      "approved_parts": "only the index sentence at line 21, appended after CONTRACT_INDEX.md:111 of integ-98 and replacing combat-min provisional line :110"
+    }
+  ],
+  "norm_pins": {
+    "checkout": "integ-98",
+    "commit": "3762df2e25749dfe47907610c64525e52b457406",
+    "CONTRACT_INDEX.md": "a56609a057e9f9e070596ef17cef035bfce122d5808151e5c976957f47e47b76",
+    "combat_system.md": "8542f205b0d78139b57ae6a17d970dbc73aa24a452e75e1b428cf91474139e9a",
+    "npc_combat_and_trigger_contract.md": "20bee8872db61df33025c687f56188b973ac4e85ed54cd549e013dcf98cd775f"
+  },
+  "allowed_changes_for_approved_copy": [
+    "status",
+    "production_usable",
+    "activation_authorized",
+    "import_authorized",
+    "applicability.decision"
+  ],
+  "limits": [
+    "Не утверждены код ветки combat-min, import, activation, versioned cutover и корпусный коммит (repin/generated/CI по CORPUS_EDIT).",
+    "6 с — стартовая игровая калибровка D71, не темп; G-DURATION-APPROVAL (владельцы time/turn) и плейтест остаются.",
+    "rows.npc_body_context и rows.npc_boundary_and_exit исключены из шага самим профилем и этим утверждением не активируются.",
+    "Все typed gaps остаются fail-closed; любое иное изменение байтов профиля снимает утверждение.",
+    "Метка D71 и служебные поля профиля — внутренние, не для модели и не для игрока."
+  ],
+  "nonblocking_findings": [
+    "P3-1..P3-6 в report-ap-final-combat-min.md"
+  ],
+  "evidence": [
+    "report-ap-final-combat-min.md",
+    "final-verdict.json",
+    "checks/applicability-coverage.txt",
+    "checks/applicability-coverage.py",
+    "checks/calculate-rerun.json"
+  ],
+  "commit": "b19d42b964024fe680d36ae17c2025b5c530d503",
+  "commit_note": "вписан ведущим: коммит, которым утверждённый профиль вошёл в fleet/combat-min"
+}

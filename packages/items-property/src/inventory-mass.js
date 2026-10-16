@@ -74,7 +74,7 @@ export function inventoryItemIsCarried(input, itemId, seen = new Set()) {
   if (seen.has(itemId)) return false;
   seen.add(itemId);
   const placement = findPlacement(input.item_placements, 'item_id', itemId);
-  return placement?.holder_character_id === input.actor_id
+  return holderMatchesActor(input, placement)
     || Boolean(placement?.container_id
       && inventoryContainerIsCarried(input, placement.container_id))
     || Boolean(placement?.attached_item_id
@@ -87,10 +87,16 @@ export function inventoryContainerIsCarried(input, containerId,
   seen.add(containerId);
   const placement = findPlacement(
     input.container_placements, 'container_id', containerId);
-  return placement?.holder_character_id === input.actor_id
+  return holderMatchesActor(input, placement)
     || Boolean(placement?.parent_container_id
       && inventoryContainerIsCarried(
         input, placement.parent_container_id, seen));
+}
+
+function holderMatchesActor(input, placement) {
+  return (input.actor_kind === 'npc'
+    ? placement?.holder_npc_id
+    : placement?.holder_character_id) === input.actor_id;
 }
 
 function addMass(total, mass, errors, details) {

@@ -1,0 +1,18 @@
+{
+  "schema": "rus.m2c_acoustic_authoring_candidate.v1",
+  "status": "pending_independent_approval",
+  "version": 1,
+  "provenance_ref": "m2c_acoustic_editorial_001",
+  "source_refs": [
+    "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md (g6_acoustic_profile contract)",
+    "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+    "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json"
+  ],
+  "directness": "analogical",
+  "confidence": "low",
+  "policy": "Editorial persistent baseline uses contract scale 0..2, not physical decibels. 0 is no persistent masking penalty, not a claim of silence. Moving river channels and exposed estuary families use 1 for ordinary persistent water masking. Backwaters and other families use 0. Weather, transient water events, human activity and animal calls are runtime events/modifiers and must not overwrite this baseline. No family is assigned persistent level 2 without stronger local evidence.",
+  "source_boundary": "The family tuple and scene/G6 identities are copied from the exact expansion catalog; landscape/land-use/scene applicability retain the directness and confidence recorded in authoring-evidence.json. Numeric ambient values are explicit low-confidence analogical authoring judgments, never historical measurements.",
+  "family_count": 25,
+  "row_count": 25,
+  "approval": null
+}

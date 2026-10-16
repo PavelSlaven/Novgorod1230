@@ -23,14 +23,15 @@ test('P12 approved Novgorod source package is immutable, complete and never acti
   assert.equal(approval.production_activation_allowed, false);
 });
 
-async function copiedPackageRoot() {
+async function copiedPackageRoot(t) {
   const root = await mkdtemp(join(tmpdir(), 'p12-source-approval-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   await cp('data/world-catalogs/novgorod/spatial-v3/source-approval', join(root, 'data/world-catalogs/novgorod/spatial-v3/source-approval'), { recursive: true, filter: (source) => !source.includes('.tmp-p12-invalid-copy') });
   return root;
 }
 
-test('P12 source approval rejects a manifest mutation even when its declared digest is retained', async () => {
-  const root = await copiedPackageRoot();
+test('P12 source approval rejects a manifest mutation even when its declared digest is retained', async (t) => {
+  const root = await copiedPackageRoot(t);
   const manifestPath = join(root, 'data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/manifest.json');
   try {
     const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
@@ -42,8 +43,8 @@ test('P12 source approval rejects a manifest mutation even when its declared dig
   } finally { await rm(root, { recursive: true, force: true }); }
 });
 
-test('P12 source approval rejects an unlisted extra package file', async () => {
-  const root = await copiedPackageRoot();
+test('P12 source approval rejects an unlisted extra package file', async (t) => {
+  const root = await copiedPackageRoot(t);
   try {
     await writeFile(join(root, 'data/world-catalogs/novgorod/spatial-v3/source-approval/p12_novgorod_source_approval_001/extra-unapproved.txt'), 'must not be ignored', 'utf8');
     const result = await validateP12SourceApproval({ root });

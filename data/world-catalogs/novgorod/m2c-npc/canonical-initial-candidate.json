@@ -1,0 +1,1712 @@
+{
+  "artifact_type": "canonical_initial_npc_composition_candidate",
+  "candidate_id": "novgorod_m2c_npc_canonical_initial_south_approach_v1",
+  "version": 1,
+  "status": "draft",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "scope": "canonical initial snapshot only; does not bind all generated G5 instances",
+  "runtime_profiles": [
+    {
+      "entity_kind": "npc_runtime_profile",
+      "id": "m2c_npc_canonical_initial_forest_worker_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "profile_kind": "npc_binding",
+      "role_ref": "nov_role_forest_promyslovik",
+      "occupation_ref": "nov_occ_forest_worker",
+      "payload": {
+        "profile_id": "m2c_npc_canonical_initial_forest_worker_v1",
+        "profile_level": "background",
+        "materialization_depth": "full",
+        "demographic_profile_ref": "novgorod_1200_1250_demographic_profile_v1",
+        "appearance_profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_policy": {
+          "required_facets": [
+            "sex_category",
+            "age_category",
+            "build",
+            "skin_tone",
+            "face_shape",
+            "hair_color",
+            "hair_length",
+            "hair_style",
+            "facial_hair",
+            "eye_color"
+          ],
+          "origin_inference_from_appearance": "forbidden",
+          "ethnic_facet_weights": "not_authored",
+          "selection": "explicit_approved_variant; no frequency inference"
+        },
+        "actor_profile_rule_ref": "m2c_npc_canonical_initial_forest_worker_v1",
+        "role_ref": "nov_role_forest_promyslovik",
+        "occupation_ref": "nov_occ_forest_worker",
+        "body_profile_ref": {
+          "id": "m2c_npc_body_ready_traveller_v1",
+          "version": 1
+        },
+        "activity_profile_ref": {
+          "id": "activity_m2c_npc_forest_worker_initial_work_v1",
+          "version": 1
+        },
+        "routine_profile_ref": {
+          "id": "m2c_npc_ordinary_day_work_routine_v1",
+          "version": 1
+        },
+        "clothing_profile_ref": {
+          "id": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1
+        },
+        "regional_context_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+            "version": 1,
+            "gameplay_weight": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency"
+          }
+        ],
+        "runtime_profile_refs": [
+          {
+            "id": "activity_m2c_npc_forest_worker_initial_work_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_body_ready_traveller_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_first_playable_visual_profile_base_shirt",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_first_playable_visual_profile_outer_brown",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_fishing_net_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_wool_outer_garment_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_fishing_net_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_wool_outer_garment_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_female_long_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_ordinary_day_work_routine_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_ordinary_personal_clothing_v1",
+            "version": 1
+          }
+        ],
+        "initial_equipment_templates": [],
+        "clothing_variant_requirements": [
+          {
+            "variant_ref": "m2c_npc_clothing_male_summer_v1",
+            "sex_categories": [
+              "male"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "summer"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "lower_garment",
+              "footwear"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_trousers_v1",
+                "equipment_slot_category_id": "lower_garment",
+                "item_template_ref": "item_tpl_nov_trousers_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+            "sex_categories": [
+              "male"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "spring",
+              "spring_rasputitsa",
+              "autumn",
+              "winter"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "lower_garment",
+              "footwear",
+              "outer_garment"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_trousers_v1",
+                "equipment_slot_category_id": "lower_garment",
+                "item_template_ref": "item_tpl_nov_trousers_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_wool_outer_v1",
+                "equipment_slot_category_id": "outer_garment",
+                "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_outer_brown",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_female_summer_v1",
+            "sex_categories": [
+              "female"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "summer"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "footwear"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_female_long_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_female_long_linen_shirt_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+            "sex_categories": [
+              "female"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "spring",
+              "spring_rasputitsa",
+              "autumn",
+              "winter"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "footwear",
+              "outer_garment"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_female_long_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_female_long_linen_shirt_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_wool_outer_v1",
+                "equipment_slot_category_id": "outer_garment",
+                "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_outer_brown",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+                "status": "approved"
+              }
+            ]
+          }
+        ],
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "approved",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "observable_activity": {
+          "value": "Inspects visible trees and work conditions from the current place; no tools, felling, timber stock, or wood output is assumed.",
+          "source_ref": "record:activity_categories_profiles:m2c_npc_forest_worker_initial_work_v1"
+        },
+        "no_goods_or_world_outputs": true,
+        "status": "draft",
+        "canonical_initial_snapshot_only": true
+      },
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001",
+      "directness": "explicit_gameplay_reconstruction_for_canonical_initial_snapshot",
+      "confidence": "low",
+      "canonical_digest": "e2be3e1ede97065bc2785b95e3432cd56e66357d5a9b2f51e5147d03eb599b41"
+    },
+    {
+      "entity_kind": "npc_runtime_profile",
+      "id": "m2c_npc_canonical_initial_hunter_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "profile_kind": "npc_binding",
+      "role_ref": "nov_role_hunter",
+      "occupation_ref": "nov_occ_hunter_trapper",
+      "payload": {
+        "profile_id": "m2c_npc_canonical_initial_hunter_v1",
+        "profile_level": "background",
+        "materialization_depth": "full",
+        "demographic_profile_ref": "novgorod_1200_1250_demographic_profile_v1",
+        "appearance_profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_policy": {
+          "required_facets": [
+            "sex_category",
+            "age_category",
+            "build",
+            "skin_tone",
+            "face_shape",
+            "hair_color",
+            "hair_length",
+            "hair_style",
+            "facial_hair",
+            "eye_color"
+          ],
+          "origin_inference_from_appearance": "forbidden",
+          "ethnic_facet_weights": "not_authored",
+          "selection": "explicit_approved_variant; no frequency inference"
+        },
+        "actor_profile_rule_ref": "m2c_npc_canonical_initial_hunter_v1",
+        "role_ref": "nov_role_hunter",
+        "occupation_ref": "nov_occ_hunter_trapper",
+        "body_profile_ref": {
+          "id": "m2c_npc_body_ready_traveller_v1",
+          "version": 1
+        },
+        "activity_profile_ref": {
+          "id": "activity_m2c_npc_hunter_initial_work_v1",
+          "version": 1
+        },
+        "routine_profile_ref": {
+          "id": "m2c_npc_ordinary_day_work_routine_v1",
+          "version": 1
+        },
+        "clothing_profile_ref": {
+          "id": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1
+        },
+        "regional_context_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+            "version": 1,
+            "gameplay_weight": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency"
+          }
+        ],
+        "runtime_profile_refs": [
+          {
+            "id": "activity_m2c_npc_hunter_initial_work_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_body_ready_traveller_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_first_playable_visual_profile_base_shirt",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_first_playable_visual_profile_outer_brown",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_fishing_net_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_wool_outer_garment_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_fishing_net_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_wool_outer_garment_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_female_long_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_ordinary_day_work_routine_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_ordinary_personal_clothing_v1",
+            "version": 1
+          }
+        ],
+        "initial_equipment_templates": [],
+        "clothing_variant_requirements": [
+          {
+            "variant_ref": "m2c_npc_clothing_male_summer_v1",
+            "sex_categories": [
+              "male"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "summer"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "lower_garment",
+              "footwear"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_trousers_v1",
+                "equipment_slot_category_id": "lower_garment",
+                "item_template_ref": "item_tpl_nov_trousers_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+            "sex_categories": [
+              "male"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "spring",
+              "spring_rasputitsa",
+              "autumn",
+              "winter"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "lower_garment",
+              "footwear",
+              "outer_garment"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_trousers_v1",
+                "equipment_slot_category_id": "lower_garment",
+                "item_template_ref": "item_tpl_nov_trousers_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_wool_outer_v1",
+                "equipment_slot_category_id": "outer_garment",
+                "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_outer_brown",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_female_summer_v1",
+            "sex_categories": [
+              "female"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "summer"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "footwear"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_female_long_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_female_long_linen_shirt_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+            "sex_categories": [
+              "female"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "spring",
+              "spring_rasputitsa",
+              "autumn",
+              "winter"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "footwear",
+              "outer_garment"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_female_long_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_female_long_linen_shirt_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_wool_outer_v1",
+                "equipment_slot_category_id": "outer_garment",
+                "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_outer_brown",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+                "status": "approved"
+              }
+            ]
+          }
+        ],
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "approved",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "observable_activity": {
+          "value": "Inspects visible ground and animal signs from the current place; no trap, weapon, hunt, animal, or yield is assumed.",
+          "source_ref": "record:activity_categories_profiles:m2c_npc_hunter_initial_work_v1"
+        },
+        "no_goods_or_world_outputs": true,
+        "status": "draft",
+        "canonical_initial_snapshot_only": true
+      },
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001",
+      "directness": "explicit_gameplay_reconstruction_for_canonical_initial_snapshot",
+      "confidence": "low",
+      "canonical_digest": "f42c8e912e00c89c61fb42143da97ba013dda6dce7dccd5b05a00459aad6974e"
+    },
+    {
+      "entity_kind": "npc_runtime_profile",
+      "id": "m2c_npc_canonical_initial_guide_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "profile_kind": "npc_binding",
+      "role_ref": "nov_role_guide",
+      "occupation_ref": "nov_occ_route_guide",
+      "payload": {
+        "profile_id": "m2c_npc_canonical_initial_guide_v1",
+        "profile_level": "background",
+        "materialization_depth": "full",
+        "demographic_profile_ref": "novgorod_1200_1250_demographic_profile_v1",
+        "appearance_profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_policy": {
+          "required_facets": [
+            "sex_category",
+            "age_category",
+            "build",
+            "skin_tone",
+            "face_shape",
+            "hair_color",
+            "hair_length",
+            "hair_style",
+            "facial_hair",
+            "eye_color"
+          ],
+          "origin_inference_from_appearance": "forbidden",
+          "ethnic_facet_weights": "not_authored",
+          "selection": "explicit_approved_variant; no frequency inference"
+        },
+        "actor_profile_rule_ref": "m2c_npc_canonical_initial_guide_v1",
+        "role_ref": "nov_role_guide",
+        "occupation_ref": "nov_occ_route_guide",
+        "body_profile_ref": {
+          "id": "m2c_npc_body_ready_traveller_v1",
+          "version": 1
+        },
+        "activity_profile_ref": {
+          "id": "activity_m2c_npc_guide_initial_work_v1",
+          "version": 1
+        },
+        "routine_profile_ref": {
+          "id": "m2c_npc_ordinary_day_work_routine_v1",
+          "version": 1
+        },
+        "clothing_profile_ref": {
+          "id": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1
+        },
+        "regional_context_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+            "version": 1,
+            "gameplay_weight": 1,
+            "weight_basis": "editorial_equal_choice_not_historical_frequency"
+          }
+        ],
+        "runtime_profile_refs": [
+          {
+            "id": "activity_m2c_npc_guide_initial_work_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_body_ready_traveller_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_first_playable_visual_profile_base_shirt",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_first_playable_visual_profile_outer_brown",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_fishing_net_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_inventory_item_tpl_nov_wool_outer_garment_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_fishing_net_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_item_tpl_nov_wool_outer_garment_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_female_long_linen_shirt_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_m2c_visual_item_tpl_nov_trousers_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_ordinary_day_work_routine_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_ordinary_personal_clothing_v1",
+            "version": 1
+          }
+        ],
+        "initial_equipment_templates": [],
+        "clothing_variant_requirements": [
+          {
+            "variant_ref": "m2c_npc_clothing_male_summer_v1",
+            "sex_categories": [
+              "male"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "summer"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "lower_garment",
+              "footwear"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_trousers_v1",
+                "equipment_slot_category_id": "lower_garment",
+                "item_template_ref": "item_tpl_nov_trousers_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_male_cool_seasons_v1",
+            "sex_categories": [
+              "male"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "spring",
+              "spring_rasputitsa",
+              "autumn",
+              "winter"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "lower_garment",
+              "footwear",
+              "outer_garment"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_base_shirt",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_trousers_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_trousers_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_trousers_v1",
+                "equipment_slot_category_id": "lower_garment",
+                "item_template_ref": "item_tpl_nov_trousers_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_trousers_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_trousers_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_wool_outer_v1",
+                "equipment_slot_category_id": "outer_garment",
+                "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_outer_brown",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_female_summer_v1",
+            "sex_categories": [
+              "female"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "summer"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "footwear"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_female_long_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_female_long_linen_shirt_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              }
+            ]
+          },
+          {
+            "variant_ref": "m2c_npc_clothing_female_cool_seasons_v1",
+            "sex_categories": [
+              "female"
+            ],
+            "age_categories": [
+              "adult",
+              "young_adult",
+              "middle_aged",
+              "old"
+            ],
+            "seasons": [
+              "spring",
+              "spring_rasputitsa",
+              "autumn",
+              "winter"
+            ],
+            "required_clothing_slot_refs": [
+              "base_garment",
+              "footwear",
+              "outer_garment"
+            ],
+            "equipment_templates": [
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_female_long_linen_shirt_v1",
+                "equipment_slot_category_id": "base_garment",
+                "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_female_long_linen_shirt_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_low_leather_shoes_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_low_leather_shoes_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_low_leather_shoes_v1",
+                "equipment_slot_category_id": "footwear",
+                "item_template_ref": "item_tpl_nov_low_leather_shoes_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "m2c_visual_item_tpl_nov_low_leather_shoes_v1",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_low_leather_shoes_v1",
+                "status": "approved"
+              },
+              {
+                "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+                "item_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+                "equipment_candidate_id": "m2c_npc_clothing_wool_outer_v1",
+                "equipment_slot_category_id": "outer_garment",
+                "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+                "claim_state": "established",
+                "legal_status": "owned",
+                "visual_profile_ref": "first_playable_visual_profile_outer_brown",
+                "physical_position": "equipped",
+                "condition_state": "serviceable",
+                "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+                "status": "approved"
+              }
+            ]
+          }
+        ],
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "approved",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "observable_activity": {
+          "value": "Checks visible landmarks and the immediate route approach from the current place; does not traverse or assert unseen route knowledge.",
+          "source_ref": "record:activity_categories_profiles:m2c_npc_guide_initial_work_v1"
+        },
+        "no_goods_or_world_outputs": true,
+        "status": "draft",
+        "canonical_initial_snapshot_only": true
+      },
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001",
+      "directness": "explicit_gameplay_reconstruction_for_canonical_initial_snapshot",
+      "confidence": "low",
+      "canonical_digest": "3401c49693f1900041f7897fedaea903aab4d289b58e5d52642eb987f00f1a2b"
+    }
+  ],
+  "schema_owner_plan": {
+    "binding_mode": "exactly_one_of_generation_template_or_canonical_g5",
+    "ddl24_current_shape": "generation_template_id/version are non-null and no canonical_g5_id/version columns exist",
+    "required_owner_change": "DDL24/import-reader must support canonical_g5_id/version with XOR against generation_template_id/version before this candidate can be imported",
+    "import_authorized": false,
+    "provenance_ref": "m2c_npc_canonical_initial_editorial_001"
+  },
+  "canonical_digest": "8c4e89cfe77b173effa3be7ba355d7dcbafdced2c3a57ccfee05beaeacd4206a",
+  "composition": {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_canonical_initial_south_approach_v1",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "g4_version": 1,
+    "generation_template_id": null,
+    "generation_template_version": null,
+    "canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+    "canonical_g5_version": 1,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_canonical_initial_forest_worker_v1",
+            "version": 1
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_canonical_initial_hunter_v1",
+            "version": 1
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_canonical_initial_guide_v1",
+            "version": 1
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "draft",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use.",
+        "canonical_initial_snapshot_only": true
+      },
+      "canonical_initial_snapshot_only": true,
+      "initial_placement_ref": {
+        "source_path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+        "mode": "canonical_g4_entry_initial_state",
+        "g4_ref": {
+          "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+          "version": 1,
+          "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001"
+        },
+        "entry_binding_ref": {
+          "id": "g4entryv3__g3_to_g4_access_028",
+          "version": 1
+        },
+        "canonical_g5_ref": {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+          "version": 1,
+          "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001"
+        },
+        "scene_materialization_profile_ref": {
+          "id": "smpv3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+          "version": 1
+        },
+        "scene_template_ref": {
+          "id": "stfv3__g5_route_approach_v1",
+          "version": 1
+        },
+        "g6_scene_slot_key": "main",
+        "scene_endpoint_slot_key": "arrival",
+        "position_slot_key": "arrival",
+        "position_instance_ordinal": 0,
+        "placement_cause": "authored_initial_state"
+      }
+    },
+    "status": "draft",
+    "provenance_ref": "m2c_npc_canonical_initial_editorial_001",
+    "directness": "analogical_gameplay_composition_reuse",
+    "confidence": "low",
+    "canonical_digest": "049c1ff788b73dc5c46cc3b6b5a7605f1dbaf53f1d010c6298740cc965aa87ae"
+  },
+  "regional_context_profiles": [
+    {
+      "entity_kind": "npc_regional_context_profile",
+      "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "payload": {
+        "allowed_role_refs": [
+          "nov_role_forest_promyslovik",
+          "nov_role_hunter",
+          "nov_role_guide"
+        ],
+        "allowed_occupation_refs": [
+          "nov_occ_forest_worker",
+          "nov_occ_hunter_trapper",
+          "nov_occ_route_guide"
+        ],
+        "applicability": [
+          {
+            "g4_ref": {
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+              "version": 1,
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001"
+            },
+            "canonical_g5_ref": {
+              "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+              "version": 1,
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001"
+            }
+          }
+        ],
+        "origin": {
+          "label": "Новгородская земля",
+          "kind": "regional_affiliation",
+          "source_refs": [
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
+          ],
+          "directness": "analogical",
+          "confidence": "low",
+          "historical_basis": "Approved regional role basis; an individual affiliation is proposed gameplay reconstruction."
+        },
+        "language_status": "unknown",
+        "language_repertoire": null,
+        "gameplay_weight": 1,
+        "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+        "version": 1,
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "schema": "rus.npc_regional_context_profile.v1",
+        "status": "draft",
+        "canonical_initial_snapshot_only": true
+      },
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001",
+      "directness": "analogical",
+      "confidence": "low",
+      "canonical_digest": "3c1a72835674850c626d50c73bb5c6466123c7ae2c9efa19523a89488fbee3bb"
+    }
+  ],
+  "source_refs": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+      "selector": "initial_placement",
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+        "version": 1,
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001"
+      },
+      "directness": "exact_approved_spatial_reference"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json",
+      "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "version": 1,
+      "canonical_digest": "b3fe5edbc4205f91667e34db0462a4a5427bbbf349d5236b27a056578c3373ed",
+      "directness": "approved_gameplay_composition_reuse"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json",
+      "id": "m2c_npc_regional_novgorod_land_v1",
+      "version": 1,
+      "canonical_digest": "451a94a7eae7dc017a0c80ce23e6c007396a1950026a63ca3f73f7a8bc076663",
+      "directness": "approved_source_semantics_restricted_to_canonical_initial_context"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json",
+      "id": "m2c_npc_forest_worker_v1",
+      "version": 1,
+      "canonical_digest": "1bdc0a55f3daaabc71d6a27954c102e5b75c7a0cdb27176c90b852cba097ca06",
+      "directness": "approved_runtime_profile_reuse"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json",
+      "id": "m2c_npc_hunter_v1",
+      "version": 1,
+      "canonical_digest": "c3db40f055d215bcd6e0da2e6f413c4e0b477323fb3a7872e99c9a7aeae7b638",
+      "directness": "approved_runtime_profile_reuse"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json",
+      "id": "m2c_npc_guide_v1",
+      "version": 1,
+      "canonical_digest": "355fa614963c42d09d355c3981d5e4063004f35044a760f44e0ffa5b78d5770a",
+      "directness": "approved_runtime_profile_reuse"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/canonical-initial-candidate.json",
+      "selector": "canonical initial snapshot candidate mapping",
+      "directness": "new editorial gameplay authoring"
+    }
+  ],
+  "authoring_provenance": {
+    "provenance_ref": "m2c_npc_canonical_initial_editorial_001",
+    "source_refs": [
+      {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+        "selector": "initial_placement",
+        "canonical_g5_ref": {
+          "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+          "version": 1,
+          "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001"
+        },
+        "directness": "exact_approved_spatial_reference"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json",
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1,
+        "canonical_digest": "b3fe5edbc4205f91667e34db0462a4a5427bbbf349d5236b27a056578c3373ed",
+        "directness": "approved_gameplay_composition_reuse"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json",
+        "id": "m2c_npc_regional_novgorod_land_v1",
+        "version": 1,
+        "canonical_digest": "451a94a7eae7dc017a0c80ce23e6c007396a1950026a63ca3f73f7a8bc076663",
+        "directness": "approved_source_semantics_restricted_to_canonical_initial_context"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json",
+        "id": "m2c_npc_forest_worker_v1",
+        "version": 1,
+        "canonical_digest": "1bdc0a55f3daaabc71d6a27954c102e5b75c7a0cdb27176c90b852cba097ca06",
+        "directness": "approved_runtime_profile_reuse"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json",
+        "id": "m2c_npc_hunter_v1",
+        "version": 1,
+        "canonical_digest": "c3db40f055d215bcd6e0da2e6f413c4e0b477323fb3a7872e99c9a7aeae7b638",
+        "directness": "approved_runtime_profile_reuse"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json",
+        "id": "m2c_npc_guide_v1",
+        "version": 1,
+        "canonical_digest": "355fa614963c42d09d355c3981d5e4063004f35044a760f44e0ffa5b78d5770a",
+        "directness": "approved_runtime_profile_reuse"
+      },
+      {
+        "path": "data/world-catalogs/novgorod/m2c-npc/canonical-initial-candidate.json",
+        "selector": "canonical initial snapshot candidate mapping",
+        "directness": "new editorial gameplay authoring"
+      }
+    ],
+    "directness": "analogical_gameplay_reconstruction",
+    "confidence": "low",
+    "historical_population_claim": false,
+    "historical_frequency_claim": false,
+    "gameplay_weights": {
+      "basis": "explicit_equal_editorial_weight",
+      "value_per_profile": 1
+    },
+    "appearance_origin_inference": "forbidden"
+  },
+  "authoring_versions": [
+    {
+      "entity_kind": "g4_npc_composition_binding",
+      "entity_id": "m2c_g4_npc_composition_canonical_initial_south_approach_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "canonical_digest": "049c1ff788b73dc5c46cc3b6b5a7605f1dbaf53f1d010c6298740cc965aa87ae",
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001"
+    },
+    {
+      "entity_kind": "npc_runtime_profile",
+      "entity_id": "m2c_npc_canonical_initial_forest_worker_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "canonical_digest": "e2be3e1ede97065bc2785b95e3432cd56e66357d5a9b2f51e5147d03eb599b41",
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001"
+    },
+    {
+      "entity_kind": "npc_runtime_profile",
+      "entity_id": "m2c_npc_canonical_initial_hunter_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "canonical_digest": "f42c8e912e00c89c61fb42143da97ba013dda6dce7dccd5b05a00459aad6974e",
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001"
+    },
+    {
+      "entity_kind": "npc_runtime_profile",
+      "entity_id": "m2c_npc_canonical_initial_guide_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "canonical_digest": "3401c49693f1900041f7897fedaea903aab4d289b58e5d52642eb987f00f1a2b",
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001"
+    },
+    {
+      "entity_kind": "npc_regional_context_profile",
+      "entity_id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+      "version": 1,
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "canonical_digest": "3c1a72835674850c626d50c73bb5c6466123c7ae2c9efa19523a89488fbee3bb",
+      "status": "draft",
+      "provenance_ref": "m2c_npc_canonical_initial_editorial_001"
+    }
+  ],
+  "source_records": [
+    {
+      "id": "m2c_npc_canonical_initial_editorial_001",
+      "title": "Canonical initial-snapshot NPC composition authoring candidate",
+      "slug": "m2c-npc-canonical-initial-editorial-v1",
+      "source_type": "project_note",
+      "author": "Novgorod runtime authoring",
+      "publication_year": null,
+      "period_covered": null,
+      "region_covered": "Novgorod target runtime",
+      "url": null,
+      "file_reference": "data/world-catalogs/novgorod/m2c-npc/canonical-initial-candidate.json",
+      "page_or_section": "composition, profile and regional-context authoring candidate",
+      "quote_short": null,
+      "summary": "Draft gameplay-only NPC composition for the canonical initial south-approach snapshot. Equal profile weights and count weights are editorial authoring, not historical population/frequency evidence.",
+      "reliability_level": "authoring_record",
+      "bias_notes": "Does not claim individual origin, language competence, historical population, or frequency.",
+      "usefulness": "Provenance for pending canonical initial-snapshot NPC candidate rows.",
+      "limitations": "Draft only; requires independent approval and a DDL24 canonical-G5 XOR binding owner plan. No import or activation authority.",
+      "checked_by": null,
+      "checked_at": null,
+      "status": "draft",
+      "confidence": "low",
+      "audit_notes": "Canonical initial-snapshot scope only; independent review required."
+    }
+  ],
+  "record_sources": [
+    {
+      "id": "m2c_npc_canonical_initial_link_g4_npc_composition_binding_m2c_g4_npc_composition_canonical_initial_south_approach_v1_v1",
+      "source_id": "m2c_npc_canonical_initial_editorial_001",
+      "target_table": "spatial_v3_g4_npc_composition_bindings",
+      "target_record_id": "m2c_g4_npc_composition_canonical_initial_south_approach_v1@1",
+      "support_type": "supports",
+      "summary": "Supports provenance for this draft gameplay-authoring row only; no historical population or frequency claim.",
+      "page_or_section": "canonical-initial-candidate.json",
+      "confidence": "low"
+    },
+    {
+      "id": "m2c_npc_canonical_initial_link_npc_runtime_profile_m2c_npc_canonical_initial_forest_worker_v1_v1",
+      "source_id": "m2c_npc_canonical_initial_editorial_001",
+      "target_table": "spatial_v3_npc_runtime_profiles",
+      "target_record_id": "m2c_npc_canonical_initial_forest_worker_v1@1",
+      "support_type": "supports",
+      "summary": "Supports provenance for this draft gameplay-authoring row only; no historical population or frequency claim.",
+      "page_or_section": "canonical-initial-candidate.json",
+      "confidence": "low"
+    },
+    {
+      "id": "m2c_npc_canonical_initial_link_npc_runtime_profile_m2c_npc_canonical_initial_hunter_v1_v1",
+      "source_id": "m2c_npc_canonical_initial_editorial_001",
+      "target_table": "spatial_v3_npc_runtime_profiles",
+      "target_record_id": "m2c_npc_canonical_initial_hunter_v1@1",
+      "support_type": "supports",
+      "summary": "Supports provenance for this draft gameplay-authoring row only; no historical population or frequency claim.",
+      "page_or_section": "canonical-initial-candidate.json",
+      "confidence": "low"
+    },
+    {
+      "id": "m2c_npc_canonical_initial_link_npc_runtime_profile_m2c_npc_canonical_initial_guide_v1_v1",
+      "source_id": "m2c_npc_canonical_initial_editorial_001",
+      "target_table": "spatial_v3_npc_runtime_profiles",
+      "target_record_id": "m2c_npc_canonical_initial_guide_v1@1",
+      "support_type": "supports",
+      "summary": "Supports provenance for this draft gameplay-authoring row only; no historical population or frequency claim.",
+      "page_or_section": "canonical-initial-candidate.json",
+      "confidence": "low"
+    },
+    {
+      "id": "m2c_npc_canonical_initial_link_npc_regional_context_profile_m2c_npc_regional_novgorod_canonical_initial_v1_v1",
+      "source_id": "m2c_npc_canonical_initial_editorial_001",
+      "target_table": "spatial_v3_npc_regional_context_profiles",
+      "target_record_id": "m2c_npc_regional_novgorod_canonical_initial_v1@1",
+      "support_type": "supports",
+      "summary": "Supports provenance for this draft gameplay-authoring row only; no historical population or frequency claim.",
+      "page_or_section": "canonical-initial-candidate.json",
+      "confidence": "low"
+    }
+  ]
+}

@@ -1,0 +1,228 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-famine-ekzemplyarsky-frost-quote",
+      "source_ref": "source:book-667380",
+      "anchor": {
+        "section": "Приложение 2 Свод летописных известий о Новгородской земле в хронологическом порядке за период времени от 1230 г. до пад ¶486",
+        "record_id": "book:667380"
+      },
+      "note": "«На Воздвижение мороз побил озими («обилие»), и на все необыкновенно поднялись цены.»",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-famine-pogodin-frost-price-quote",
+      "source_ref": "source:book-301539",
+      "anchor": {
+        "section": "ВТОРОЕ НАШЕСТВИЕ ¶4391",
+        "record_id": "book:301539"
+      },
+      "note": "«На Воздвиженье мороз избил весь хлеб, и он вздорожал еще больше прежнего.»",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-famine-karpov-opening-prices-quote",
+      "source_ref": "source:book-556930",
+      "anchor": {
+        "section": "ХРОНИКА СОРОКА ЧЕТЫРЁХ ЛЕТ ЗЕМНОЙ ЖИЗНИ ВЕЛИКОГО КНЯЗЯ АЛЕКСАНДРА ЯРОСЛАВИЧА ¶178",
+        "record_id": "book:556930"
+      },
+      "note": "«мороз урожай по волости нашей, и оттого пришло горе великое: начали покупать хлеб по 8 кун, а ржи кадь по 20 гривен, а во дворах по 25, а пшеницы по 40 гривен, а пшена по 50, а овса по 13 гривен.»",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-famine-1230",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-famine-frost-vozdvizhenie-damaged-grain",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-famine-1230",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "frost_on_exaltation_day_14_september_1230_struck_the_winter_grain_in_novgorod_land_and_prices_on_everything_rose_sharply"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1230,
+          "to": 1231,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ],
+        "conditions": [
+          {
+            "facet": "started_historical_events",
+            "operator": "includes",
+            "value": "novgorod_famine_1230"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-famine-ekzemplyarsky-frost-quote",
+        "evidence:v2-famine-pogodin-frost-price-quote"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-famine-great-distress-after-frost",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-famine-1230",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "the_frost_that_ruined_the_harvest_brought_great_grief_and_dread_of_hunger_across_novgorod_land_right_from_the_start"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1230,
+          "to": 1231,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ],
+        "conditions": [
+          {
+            "facet": "started_historical_events",
+            "operator": "includes",
+            "value": "novgorod_famine_1230"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-famine-karpov-opening-prices-quote"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-famine-1230",
+      "locale": "ru",
+      "labels": [
+        "голод 1230 года в Новгороде"
+      ],
+      "short_definition": "Голод в Новгородской земле, начавшийся осенью 1230 года после того, как мороз на Воздвиженье (14 сентября) побил озимые хлеба и цены на всё резко подскочили.",
+      "search_aliases": [
+        "голод",
+        "неурожай",
+        "мороз побил озимь",
+        "дорогой хлеб"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-famine-1230",
+      "locale": "en",
+      "labels": [
+        "famine of 1230 in Novgorod"
+      ],
+      "short_definition": "Famine in the Novgorod land that began in autumn 1230 after frost on the feast of the Exaltation (14 September) damaged the winter grain and prices on everything jumped sharply.",
+      "search_aliases": [
+        "famine",
+        "harvest failure",
+        "frost killed the winter grain",
+        "expensive bread"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-famine-frost-vozdvizhenie-damaged-grain",
+      "locale": "ru",
+      "runtime_text": "На Воздвиженье мороз побил озимь, и цены на всё сразу небывало подскочили.",
+      "search_aliases": [
+        "мороз побил озимь",
+        "неурожай",
+        "цены поднялись",
+        "Воздвиженье"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-famine-frost-vozdvizhenie-damaged-grain",
+      "locale": "en",
+      "runtime_text": "Frost on the feast of the Exaltation struck down the winter grain, and prices on everything jumped unusually high right away.",
+      "search_aliases": [
+        "frost killed winter grain",
+        "harvest failure",
+        "prices rose",
+        "Exaltation feast"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-famine-great-distress-after-frost",
+      "locale": "ru",
+      "runtime_text": "От этого мороза по всей волости — горе великое; боязно, что зима будет голодной.",
+      "search_aliases": [
+        "горе великое",
+        "боятся голода",
+        "голодная зима",
+        "тревога"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-famine-great-distress-after-frost",
+      "locale": "en",
+      "runtime_text": "Because of this frost there is great grief through the whole land; people fear the winter will be hungry.",
+      "search_aliases": [
+        "great grief",
+        "fear of hunger",
+        "hungry winter",
+        "dread"
+      ]
+    }
+  ]
+}

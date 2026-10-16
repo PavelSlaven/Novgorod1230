@@ -1,0 +1,79 @@
+{
+  "schema": "rus.target_appearance_transfer_v17_import_request.v1",
+  "request_id": "novgorod_target_appearance_transfer_v2_v17_import_001",
+  "status": "blocked_pending_dependencies_and_independent_high_review",
+  "source_head": "dbf828dc5d580874b8e1dec46e8992ed7fdfd0f7",
+  "target": {
+    "cluster_system_identifier": "7683141184713630856",
+    "postgres_version": "16.14",
+    "database": "novgorod_world_v17",
+    "owner": "world_operator",
+    "schema": "world_base",
+    "old_databases": ["novgorod_world", "novgorod_party"],
+    "old_database_operation": "none"
+  },
+  "prior_p12_execution": {
+    "path": "data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1/import-execution-attestation.json",
+    "sha256": "1fd6cde1d781b13d63bf562c3c9868527230c20b62b38d9438661d7aa2fbdaac"
+  },
+  "approved_bundle": {
+    "manifest_path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v2-import-manifest.json",
+    "manifest_sha256": "3fe1a37e5bb3bd75b8cfb4955de21804cde27f4deb2b618e99544027fa31fb60",
+    "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v2-candidate.json",
+    "candidate_sha256": "081e57ca0600dc886c082a7ddb1c8dcd42a0ddfaadbff190f1e68dcb5ee4d049",
+    "data_approval_path": "data/world-catalogs/novgorod/m2c-appearance-repin-data-approval.json",
+    "data_approval_sha256": "8ade66f9fa9754783037934e58c3e2e71d8b1a6be99ccf415c38f94420ccab1a",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "dataset_order": [
+      {"table": "world_revisions", "sha256": "2220761b2b747037ebfc123c730bd9b9b1869e133b928671668fcc9a9df8fa63", "rows": 1},
+      {"table": "region_category_options", "sha256": "6d1fc6a1b7d90964b02be20a3613d5cffb122fadda40dd6aa485bcb3d3d6ace2", "rows": 42},
+      {"table": "region_demographic_profile_entries", "sha256": "8084b217c608f956c3c7b40e543ebe4b889c9e6fb19eddc282891be3aba03cce", "rows": 6},
+      {"table": "region_appearance_profile_entries", "sha256": "969af82c61a7c1d5a7d2588571a051328949c82a0479b1c3556326cac0df4f8f", "rows": 36}
+    ]
+  },
+  "sql": {
+    "builder_path": "tools/spatial-v3/character-appearance-v1-importer.mjs",
+    "builder_sha256": "f061359afaa2c1c88e3533df74bd8cf8a3fe1787c2c066db6fb6246acffea081",
+    "schema_generator_path": "scripts/generate-world-base-schema-reference.mjs",
+    "schema_generator_sha256": "18f33300a26746d668f8dfca55a7212f9dac4e99c91eb512bc30f217488074c1",
+    "function": "buildTargetAppearanceTransferImportSql",
+    "commit_options": {"root": "repository root", "rollback": false},
+    "commit_bytes": 128382,
+    "commit_sha256": "3355e81f03ebe8800007db44b0eb42547e47a7e07f19f58d74005729178a1254",
+    "rollback_options": {"root": "repository root", "rollback": true},
+    "rollback_bytes": 128384,
+    "rollback_sha256": "b67b412e49981c1f43f6deb124035fbc0267bae915b5d991cf19cc6c69820edd",
+    "operation": "insert_only",
+    "transaction": "single_world_base_transaction_with_commit"
+  },
+  "preflight_at_source_head": {
+    "world_base_tables": 208,
+    "p12_table_count_drift": 0,
+    "target_world_revision_absent": true,
+    "candidate_primary_key_collisions": 0,
+    "required_existing_dependencies": 44,
+    "required_existing_dependencies_present": 0,
+    "missing_by_table": {"region_demographic_profiles": 1, "region_appearance_profiles": 1, "universal_categories": 42},
+    "rollback_probe": "blocked_before_insert_by_CHARACTER_APPEARANCE_DEPENDENCY_READBACK_MISMATCH:region_demographic_profiles; explicit ROLLBACK issued"
+  },
+  "expected_import_readback_after_prerequisites": {
+    "inserted_rows": 85,
+    "by_table": {"world_revisions": 1, "region_category_options": 42, "region_demographic_profile_entries": 6, "region_appearance_profile_entries": 36},
+    "full_row_equality_required": true,
+    "preexisting_rows_preserved": true,
+    "old_databases_unchanged": true
+  },
+  "preconditions": [
+    "Import and independently verify all 44 exact existing dependency rows through their separately approved owner; this request does not authorize those imports.",
+    "Obtain independent Sol high review of this exact request digest and the approved bundle after dependency readback.",
+    "Reverify target cluster, database, owner, schema, P12 readback, all manifest and builder pins, absent candidate primary keys, exact dependency rows and offline backup immediately before execution.",
+    "Run the pinned rollback SQL to completion with zero errors and unchanged table counts, then regenerate and hash the commit SQL."
+  ],
+  "execution_after_approval": [
+    "Capture pre-import full-row snapshot and counts for all 208 target world_base tables and old database counts.",
+    "Execute only the pinned COMMIT SQL in novgorod_world_v17.world_base after every precondition passes.",
+    "Read back all 85 candidate primary keys with full-row equality, preserve all preexisting rows, and verify old databases unchanged; record a separate execution attestation."
+  ],
+  "authority": {"request_only": true, "import_authorized": false, "activation_authorized": false, "party_migration_authorized": false, "database_mutated_by_this_request": false},
+  "independent_import_approval": null
+}

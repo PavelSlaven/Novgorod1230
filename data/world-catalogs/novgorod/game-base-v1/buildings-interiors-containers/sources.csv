@@ -38,9 +38,9 @@ nov1230db:S27,М. Н. Тихомиров. Древнерусские город�
 nov1230db:S28,Работа Новгородской археологической экспедиции в 2021 году,https://www.hist.msu.ru/departments/8841/news/72958/,,"Стратифицированные комплексы, близкие к срезу 1230 г.",nov1230db_source
 nov1230db:S29,Средневековые древности Новгородской земли: электронная база данных,https://portal.novsu.ru/archeology/,,Сопоставление типов находок и памятников региона.,nov1230db_source
 nov1230db:S30,Историко-географический анализ границ Новгородской земли,https://cyberleninka.ru/article/n/istoriko-geograficheskiy-analiz-vnutrennih-i-vneshnih-granits-novgorodskoy-zemli-v-srednevekovyy-period,,Многослойность границ и речные коридоры.,nov1230db_source
-nov1230db,"Новгородская земля и Великий Новгород в 1230 году (SQLite, 13.07.2026)",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A-D per row,"curated db, not in repo",database
-matcult,Novgorod1230 material culture dataset v1,Downloads/Novgorod1230_material_culture_dataset_v1.zip (catalog_items.csv 1137; scenes copied to sources/material-culture-scenes-v1),A-D per row,candidate,dataset
-master,Novgorod1230 MASTER ARCHIVE v1,Downloads/Novgorod1230_MASTER_ARCHIVE_v1.zip,candidate,"spawn_profiles, workshop_profiles",dataset
+nov1230db,"Новгородская земля и Великий Новгород в 1230 году (SQLite, 13.07.2026)",data/world-catalogs/novgorod/sources/bic-reproducible-inputs-v1/data/curated/novgorod_1230_curated.sqlite,A-D per row,curated SQLite source snapshot,database
+matcult,Novgorod1230 material culture dataset v1,data/world-catalogs/novgorod/sources/bic-reproducible-inputs-v1/data/material-culture (source snapshot),A-D per row,candidate,dataset
+master,Novgorod1230 MASTER ARCHIVE v1,data/world-catalogs/novgorod/sources/master-archive-v1/data plus BIC validation snapshot,candidate,spawn_profiles and workshop_profiles,dataset
 wk,World Knowledge production-v1 (approved),data/world-catalogs/novgorod/world-knowledge/production-v1,approved,claim ids,repo
 v5,item-container-120-v5 candidate tables (pending),data/knowledge-source/imports/item-container-120-v5/candidate/tables,pending,,repo
 rus13tpl,rus13-novgorod-regional-templates (draft),tools/rus13-novgorod-regional-templates,draft,,repo

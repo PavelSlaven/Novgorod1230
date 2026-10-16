@@ -1,0 +1,226 @@
+[
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__channel_split",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 2,
+    "max_count": 12
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 2,
+    "max_count": 3
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "profile_version": 1,
+    "template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "profile_version": 1,
+    "template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "template_version": 2,
+    "max_count": 12
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "profile_version": 1,
+    "template_id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "profile_version": 1,
+    "template_id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "profile_version": 1,
+    "template_id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "profile_version": 1,
+    "template_id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "profile_version": 1,
+    "template_id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+    "template_version": 2,
+    "max_count": 3
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "profile_version": 1,
+    "template_id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "profile_version": 1,
+    "template_id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "profile_version": 1,
+    "template_id": "m2c_g5_estuary__waterway_access__outer_exposed",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "profile_version": 1,
+    "template_id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "profile_version": 1,
+    "template_id": "m2c_g5_ridge__waterway_access__landing_terrace",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "profile_version": 1,
+    "template_id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+    "template_version": 2,
+    "max_count": 12
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "profile_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "profile_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+    "template_version": 2,
+    "max_count": 12
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "profile_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "profile_version": 1,
+    "template_id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "profile_version": 1,
+    "template_id": "m2c_g5_forest__forest_resource_use__forest_tract",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "profile_version": 1,
+    "template_id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+    "template_version": 2,
+    "max_count": 6
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "profile_version": 1,
+    "template_id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+    "template_version": 2,
+    "max_count": 9
+  },
+  {
+    "profile_id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "profile_version": 1,
+    "template_id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+    "template_version": 2,
+    "max_count": 12
+  }
+]

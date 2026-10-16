@@ -1,0 +1,70 @@
+{
+  "schema": "rus.actor_base_attributes_authoring_approval_attestation.v1",
+  "version": 1,
+  "status": "approved_authoring_only",
+  "decision": "approve_actor_base_attributes_authoring_only",
+  "reviewed_repository_head": "64a9ed747a05e20611632715897accea7e84df1e",
+  "candidate_subject_commit": "6428097ed150cb6c6e66248669a53d3803d4213e",
+  "candidate_ref": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/candidate.json",
+  "approval_request_ref": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/approval-request.json",
+  "request_digest": "fc362bb73f60ad87595d0ca51a2080bff7c970907fa8f2ca5f94e5acae155c89",
+  "candidate_digest": "7c0916640715c9c48bd023676b3268deccdc0c83a66c980835ae25173f04d309",
+  "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
+  "approved_scope": {
+    "profile_id": "novgorod_ordinary_actor_base_attributes_v1",
+    "algorithm_version": "actor_base_attributes_v1",
+    "rng_version": "mulberry32_v1",
+    "attribute_keys": [
+      "strength",
+      "dexterity",
+      "endurance",
+      "reason",
+      "attention",
+      "influence"
+    ],
+    "ordinary_array": [
+      13,
+      12,
+      11,
+      10,
+      9,
+      8
+    ],
+    "occupation_archetype_ids": [
+      "agriculture",
+      "animal_husbandry",
+      "craft_production",
+      "domestic_service",
+      "fishing_water",
+      "forest_hunting",
+      "illicit_marginal",
+      "military_security",
+      "religious_literate",
+      "trade_exchange",
+      "transport_guiding"
+    ]
+  },
+  "source_bindings": {
+    "task_attachment_sha256": "671f6b94d857fe492de213ff116d841567e5ebc3cc0830a7866d5a94591aff2d",
+    "character_parameters_sha256": "cf8bc8f515e6c6758886e1532ae60a8dccf01f3804f52728cf3a89f609e728c8",
+    "occupation_tsv_sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6"
+  },
+  "authority": {
+    "authoring_approved": true,
+    "runtime_authorized": false,
+    "import_authorized": false,
+    "activation_authorized": false,
+    "equipment_allocation_activation_authorized": false,
+    "functional_allocation_runtime_selection_authorized": false,
+    "runtime_item_creation_authorized": false,
+    "production_authorized": false,
+    "new_development_party_activation_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false
+  },
+  "activation_request": null,
+  "auditor_ref": "/root/m3_chain_auditor",
+  "independence_basis": "Independent review separate from candidate authoring; approval is limited to the exact ordinary NPC actor-base-attribute profile and grants no import, runtime, activation, equipment allocation, item creation, production or migration authority.",
+  "reviewed_at": "2026-09-21",
+  "attestation_digest": "06bbe4e0b12a460ecd8bb34119617c1699579d9724ce6524ed3573b2c9aea7ad"
+}

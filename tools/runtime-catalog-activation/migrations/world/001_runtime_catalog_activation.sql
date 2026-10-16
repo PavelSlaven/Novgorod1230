@@ -205,6 +205,23 @@ CREATE INDEX runtime_catalog_activation_latest
 CREATE INDEX catalog_import_records_digest_lookup
   ON world_base.catalog_import_records (import_id, record_digest);
 
+CREATE TABLE IF NOT EXISTS world_base.procedural_scene_compiled_records (
+  record_id TEXT NOT NULL,
+  version INTEGER NOT NULL CHECK (version > 0),
+  record_kind TEXT NOT NULL CHECK (record_kind IN (
+    'profile','mapping','approval_metadata'
+  )),
+  family_candidate_ref TEXT,
+  payload JSONB NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
+  payload_digest TEXT NOT NULL CHECK (payload_digest ~ '^[a-f0-9]{64}$'),
+  source_pack_digest TEXT NOT NULL
+    CHECK (source_pack_digest ~ '^[a-f0-9]{64}$'),
+  status TEXT NOT NULL
+    CHECK (status = 'approved_authoring_not_runtime_selectable'),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (record_id, version)
+);
+
 CREATE TRIGGER catalog_baseline_registrations_append_only
 BEFORE UPDATE OR DELETE ON world_base.catalog_baseline_registrations
 FOR EACH ROW EXECUTE FUNCTION world_base.reject_runtime_catalog_ledger_mutation();
@@ -226,6 +243,9 @@ FOR EACH ROW EXECUTE FUNCTION world_base.reject_runtime_catalog_ledger_mutation(
 CREATE TRIGGER runtime_catalog_activation_events_append_only
 BEFORE UPDATE OR DELETE ON world_base.runtime_catalog_activation_events
 FOR EACH ROW EXECUTE FUNCTION world_base.reject_runtime_catalog_ledger_mutation();
+CREATE TRIGGER procedural_scene_compiled_records_append_only
+BEFORE UPDATE OR DELETE ON world_base.procedural_scene_compiled_records
+FOR EACH ROW EXECUTE FUNCTION world_base.reject_runtime_catalog_ledger_mutation();
 
 REVOKE INSERT, UPDATE, DELETE, TRUNCATE
   ON world_base.catalog_baseline_registrations,
@@ -233,6 +253,7 @@ REVOKE INSERT, UPDATE, DELETE, TRUNCATE
      world_base.catalog_import_records,
      world_base.catalog_import_dependency_assertions,
      world_base.runtime_catalog_activation_events,
+     world_base.procedural_scene_compiled_records,
      world_base.schema_migrations
   FROM PUBLIC;
 REVOKE UPDATE, DELETE, TRUNCATE
@@ -309,7 +330,8 @@ GRANT INSERT ON
   world_base.materialization_slot_rules,
   world_base.g4_container_materialization_rules,
   world_base.g4_item_materialization_rules,
-  world_base.record_sources
+  world_base.record_sources,
+  world_base.procedural_scene_compiled_records
   TO runtime_catalog_importer;
 GRANT SELECT ON
   world_base.domain_catalog_revisions,
@@ -325,7 +347,8 @@ REVOKE UPDATE, DELETE, TRUNCATE ON
   world_base.catalog_import_tables,
   world_base.catalog_import_records,
   world_base.catalog_import_dependency_assertions,
-  world_base.runtime_catalog_activation_events
+  world_base.runtime_catalog_activation_events,
+  world_base.procedural_scene_compiled_records
   FROM runtime_catalog_importer, runtime_catalog_activator;
 
 GRANT SELECT
@@ -334,5 +357,6 @@ GRANT SELECT
      world_base.catalog_import_records,
      world_base.catalog_import_dependency_assertions,
      world_base.runtime_catalog_activation_events,
+     world_base.procedural_scene_compiled_records,
      world_base.schema_migrations
   TO world_reader;

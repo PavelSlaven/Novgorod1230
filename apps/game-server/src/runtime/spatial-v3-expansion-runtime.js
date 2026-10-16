@@ -1,0 +1,369 @@
+import { resolveSpatialV3CanonicalEndpointSlot, selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
+import { serverError } from '../errors.js';
+import { slotByExitOf } from './spatial-v3-pass-target-disclosure.js';
+import { spatialV3LineLabel } from './spatial-v3-line-label.js';
+
+const pin = (row) => ({ id: row.id, version: row.version });
+const sameRef = (ref, row) => ref?.entity_id === row?.id
+  && Number(ref?.authoring_version) === row?.version;
+const one = (rows, reason) => { if (rows.length !== 1) gap(reason); return rows[0]; };
+
+/** Is this position exactly at a departure/both endpoint slot? */
+function atDepartureSlot(scene, position) {
+  return scene.endpoint_slots.some((row) => ['departure', 'both'].includes(row.endpoint_role)
+    && row.required_position_slot_key === position.template_slot_key
+    && row.required_position_instance_ordinal === position.template_instance_ordinal);
+}
+
+/** Deterministic BFS over local edges to the nearest departure/both endpoint
+ * (shortest path, ties broken by edge id). `eligibleExpansions` still decides from
+ * that endpoint. The local-scene owner admits and rechecks the ordered path; the
+ * crossing stays one named route request.
+ * `firstStepEdgeIds` (F3) restricts the first hop to the edges the local-scene owner
+ * itself offers from the current position - visible, eligible, admitted; the walk past
+ * the first hop is only path-finding over raw topology and never executes anything. */
+export function findReachableDeparturePosition(context, firstStepEdgeIds = null) {
+  return findReachablePosition(context, (position) => atDepartureSlot(context.scene, position), firstStepEdgeIds);
+}
+
+function findReachablePosition(context, isTarget, firstStepEdgeIds = null) {
+  const { position, scene } = context;
+  if (isTarget(position)) return { position, path: [] };
+  const positions = new Map((scene.positions ?? []).map((row) => [row.id, row]));
+  const edges = [...(scene.movement_edges ?? [])].filter((row) => row.status === 'active')
+    .sort((left, right) => left.id.localeCompare(right.id));
+  const offered = firstStepEdgeIds == null ? null : new Set(firstStepEdgeIds);
+  const visited = new Set([position.id]);
+  let frontier = [{ positionId: position.id, path: [] }];
+  while (frontier.length) {
+    const next = [];
+    for (const { positionId, path } of frontier) {
+      for (const edge of edges) {
+        if (edge.from_position_id !== positionId || visited.has(edge.to_position_id)) continue;
+        if (path.length === 0 && offered != null && !offered.has(edge.id)) continue;
+        visited.add(edge.to_position_id);
+        const toPosition = positions.get(edge.to_position_id);
+        const nextPath = [...path, edge.id];
+        if (toPosition && isTarget(toPosition)) return { position: toPosition, path: nextPath };
+        if (toPosition) next.push({ positionId: edge.to_position_id, path: nextPath });
+      }
+    }
+    frontier = next;
+  }
+  return null;
+}
+
+function canonicalSourceEndpoint(scene, binding) {
+  const resolved = resolveSpatialV3CanonicalEndpointSlot(scene?.endpoint_slots ?? [],
+    binding?.from_scene_endpoint_slot_key);
+  if (!resolved.ok) gap('canonical_connection_source_endpoint_required');
+  return resolved.endpoint;
+}
+
+function atCanonicalSourceEndpoint(endpoint, position) {
+  return endpoint?.required_position_slot_key === position?.template_slot_key
+    && endpoint?.required_position_instance_ordinal === position?.template_instance_ordinal;
+}
+
+function findReachableCanonicalConnectionSources(context, firstStepEdgeIds) {
+  const targets = new Map();
+  for (const { binding } of context.canonical_connections ?? []) {
+    const endpoint = canonicalSourceEndpoint(context.scene, binding);
+    if (endpoint) targets.set(endpoint.slot_key, endpoint);
+  }
+  return [...targets.values()].flatMap((endpoint) => {
+    const reachable = findReachablePosition(context,
+      (position) => atCanonicalSourceEndpoint(endpoint, position), firstStepEdgeIds);
+    return !reachable || !reachable.path.length ? [] : [{ endpoint, ...reachable }];
+  });
+}
+
+/** Server command bridge. Read-only menus never seed frontiers. Selection is
+ * repeated by the generated adapter under the existing party/G4 P16 lock. */
+export function createSpatialV3ExpansionRuntime({ readContext, generatedExpansionAdapter,
+  readExitDisclosure, readConnectionDisclosure, prepareSiteTraversal, materializerVersion,
+  now = () => Date.now() } = {}) {
+  async function selectedContext({ partyId, actorId, directionalExitId, ordered_local_edge_path = [] }) {
+    if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+    const context = await readContext({ partyId, actorId });
+    const approach = resolveLocalApproachPath(context, ordered_local_edge_path);
+    const selectionContext = approach == null ? context : { ...context, position: approach.position };
+    const options = eligibleExpansions(selectionContext, now());
+    if (!options.length) {
+      if (directionalExitId != null) gap('selected_exit_unavailable');
+      return { context, options: [], selected: null };
+    }
+    if (typeof readExitDisclosure !== 'function') gap('current_exit_disclosure_owner_required');
+    const disclosed = await readExitDisclosure({ ...context,
+      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context.closure?.slots) });
+    if (!Array.isArray(disclosed)) gap('current_exit_disclosure_required');
+    const visible = options.flatMap((option) => {
+      const matches = disclosed.filter((row) => row.directional_exit_id === option.exit.id
+        && row.directional_exit_version === option.exit.version
+        && row.direction_context_id === option.exit.direction_context_id);
+      if (!matches.length) return [];
+      const disclosure = one(matches, 'ambiguous_exit_disclosure');
+      if (!['visible', 'known'].includes(disclosure.knowledge_state)
+        || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) gap('approved_exit_disclosure_required');
+      return [{ ...option, display_label: disclosure.display_label }];
+    });
+    return { context, approach, options: visible, selected: directionalExitId == null ? null
+      : one(visible.filter((row) => row.exit.id === directionalExitId), 'selected_exit_unavailable') };
+  }
+  /** Expose a route at the actor's current position with its ordered local approach
+   * hidden in the request. The local-scene owner admits that path before P16. */
+  async function approachOptions({ partyId, actorId, firstStepEdgeIds }) {
+    if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+    // No offered first step, no approach: the hop is the local-scene owner's, never a guess.
+    if (!Array.isArray(firstStepEdgeIds) || !firstStepEdgeIds.length) return [];
+    const context = await readContext({ partyId, actorId });
+    const reachable = findReachableDeparturePosition(context, firstStepEdgeIds);
+    if (reachable == null || reachable.path.length === 0) return [];
+    const options = eligibleExpansions({ ...context, position: reachable.position }, now());
+    if (!options.length || typeof readExitDisclosure !== 'function') return [];
+    const disclosed = await readExitDisclosure({ ...context,
+      directional_exits: options.map((row) => row.exit), slotByExit: slotByExitOf(context.closure?.slots) });
+    if (!Array.isArray(disclosed)) return [];
+    return options.flatMap((option) => {
+      const disclosure = disclosed.find((row) => row.directional_exit_id === option.exit.id
+        && row.directional_exit_version === option.exit.version
+        && row.direction_context_id === option.exit.direction_context_id);
+      if (!disclosure || !['visible', 'known'].includes(disclosure.knowledge_state)
+        || typeof disclosure.display_label !== 'string' || !disclosure.display_label.trim()) return [];
+      return [{ directional_exit_id: option.exit.id, edge_id: reachable.path[0],
+        ordered_local_edge_path: describeLocalEdgePath(context, reachable.path),
+        display_label: disclosure.display_label }];
+    });
+  }
+  /** Canonical connections revealed from the actor's current position (same disclosure rule as exits). */
+  async function revealedConnections(context, eligible) {
+    if (!eligible.length) return [];
+    if (typeof readConnectionDisclosure !== 'function') gap('current_connection_disclosure_owner_required');
+    const disclosed = await readConnectionDisclosure({ ...context, connections: eligible });
+    if (!Array.isArray(disclosed)) gap('current_connection_disclosure_required');
+    return eligible.flatMap((option) => {
+      const matches = disclosed.filter((row) => row.connection_binding_id === option.binding.id);
+      if (!matches.length) return [];
+      const disclosure = one(matches, 'ambiguous_connection_disclosure');
+      if (!['visible', 'known'].includes(disclosure.knowledge_state)) gap('approved_connection_disclosure_required');
+      const display_label = spatialV3LineLabel(option.binding.line_name, option.binding.line_discriminator);
+      if (!display_label) gap('approved_connection_line_label_required');
+      return [{ ...option, display_label }];
+    });
+  }
+  async function selectedConnection({ partyId, actorId, connectionBindingId,
+    ordered_local_edge_path = [] }) {
+    if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+    const context = await readContext({ partyId, actorId });
+    const binding = context.canonical_connections?.find((row) => row.binding.id === connectionBindingId)?.binding;
+    const sourceEndpoint = binding ? canonicalSourceEndpoint(context.scene, binding) : null;
+    const approach = resolveLocalApproachPath(context, ordered_local_edge_path, sourceEndpoint);
+    const selectionContext = approach == null ? context : { ...context, position: approach.position };
+    const visible = await revealedConnections(context, eligibleCanonicalConnections(selectionContext));
+    return { context, approach, selected: one(visible.filter((row) => row.binding.id === connectionBindingId),
+      'selected_connection_unavailable') };
+  }
+  return Object.freeze({
+    async listConnectionOptions(input) {
+      if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+      const context = await readContext({ partyId: input.partyId, actorId: input.actorId });
+      return (await revealedConnections(context, eligibleCanonicalConnections(context)))
+        .map(({ binding, display_label }) => ({ kind: 'connection',
+          connection_binding_id: binding.id, display_label }));
+    },
+    /** Same first-hop rule as the exit approach: only an edge the local-scene owner offered. */
+    async listConnectionApproachOptions(input) {
+      if (typeof readContext !== 'function') gap('current_expansion_reader_required');
+      if (!Array.isArray(input.firstStepEdgeIds) || !input.firstStepEdgeIds.length) return [];
+      const context = await readContext({ partyId: input.partyId, actorId: input.actorId });
+      const reachable = findReachableCanonicalConnectionSources(context, input.firstStepEdgeIds);
+      if (!reachable.length) return [];
+      const eligible = reachable.flatMap(({ endpoint, position, path }) =>
+        eligibleCanonicalConnections({ ...context, position }).filter(({ binding }) =>
+          binding.from_scene_endpoint_slot_key === endpoint.slot_key).map((option) => ({
+          ...option, reachable_path: path })));
+      return (await revealedConnections(context, eligible)).map(({ binding, display_label, reachable_path }) => ({
+        kind: 'approach', connection_binding_id: binding.id, edge_id: reachable_path[0],
+        ordered_local_edge_path: describeLocalEdgePath(context, reachable_path), display_label }));
+    },
+    async prepareConnection(input, { onLabelGapsOmitted = null } = {}) {
+      const { context, approach, selected } = await selectedConnection(input);
+      if (selected.connection) return Object.freeze({ ok: true, replay: true,
+        topology_status: 'committed', connection_id: selected.connection.id,
+        source_position_id: approach?.position.id ?? context.position.id,
+        moves_traveller: false, advances_time: false });
+      if (typeof generatedExpansionAdapter?.prepareCanonicalConnection !== 'function') gap('p16_expansion_owner_required');
+      return generatedExpansionAdapter.prepareCanonicalConnection({ party_id: input.partyId,
+        actor_id: input.actorId, g4: context.g4, profile: context.profile, binding_id: selected.binding.id,
+        source_site_id: context.site.id, source_position_id: approach?.position.id ?? context.position.id,
+        ...orderedApproachFields(input, context, approach),
+        materializer_version: materializerVersion }, { onLabelGapsOmitted });
+    },
+    async prepareConnectionTraversal(input) {
+      if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
+      const { context, approach, selected } = await selectedConnection(input);
+      const sourcePositionId = approach?.position.id ?? context.position.id;
+      if (!selected.connection || selected.connection.id !== input.expansion?.connection_id
+        || sourcePositionId !== input.expansion.source_position_id) gap('committed_site_connection_required');
+      // The binding names its own profile; the expansion profile pins only one of them.
+      return prepareSiteTraversal({ ...input, connection: selected.connection,
+        ...(approach ? { local_edge_path_proofs: input.local_edge_path_proofs
+          ?? approach.edges } : {}),
+        context: { ...context,
+          ...(approach ? { approach_departure_position: approach.position } : {}),
+          snapshot: { ...context.snapshot, line_bindings: [{ ...selected.line_binding,
+            site_connection_id: selected.connection.id }] },
+          closure: { ...context.closure, connection_profiles: [selected.profile] } } });
+    },
+    async listExpansionOptions(input) {
+      const { options } = await selectedContext({ partyId: input.partyId, actorId: input.actorId });
+      return options.map(({ exit, display_label }) => ({ kind: 'crossing',
+        directional_exit_id: exit.id, display_label }));
+    },
+    async listApproachOptions(input) {
+      const approaches = await approachOptions({ partyId: input.partyId, actorId: input.actorId,
+        firstStepEdgeIds: input.firstStepEdgeIds });
+      return approaches.map((row) => ({ kind: 'approach', ...row }));
+    },
+    async prepareExpansion(input, { onLabelGapsOmitted = null } = {}) {
+      const { context, approach, selected } = await selectedContext(input);
+      if (selected.connection) return Object.freeze({ ok: true, replay: true,
+        topology_status: 'committed', connection_id: selected.connection.id,
+        source_position_id: approach?.position.id ?? context.position.id, directional_exit: pin(selected.exit),
+        moves_traveller: false, advances_time: false });
+      if (typeof generatedExpansionAdapter?.prepareExpansion !== 'function') gap('p16_expansion_owner_required');
+      return generatedExpansionAdapter.prepareExpansion({ party_id: input.partyId, actor_id: input.actorId,
+        g4: context.g4, profile: context.profile, slot_ref: pin(selected.slot),
+        directional_exit: pin(selected.exit), candidate_ordinal: selected.ordinal,
+        source_site_id: context.site.id, source_position_id: approach?.position.id ?? context.position.id,
+        ...orderedApproachFields(input, context, approach),
+        ...(selected.entry ? { entry_binding: pin(selected.entry) } : {}),
+        materializer_version: materializerVersion }, { onLabelGapsOmitted });
+    },
+    async prepareTraversal(input) {
+      if (typeof prepareSiteTraversal !== 'function') gap('site_connection_traversal_owner_required');
+      const { context, approach, selected } = await selectedContext(input);
+      if (!selected.connection || selected.connection.id !== input.expansion?.connection_id
+        || (approach?.position.id ?? context.position.id) !== input.expansion.source_position_id) {
+        gap('committed_site_connection_required');
+      }
+      return prepareSiteTraversal({ ...input, connection: selected.connection,
+        local_edge_path_proofs: input.local_edge_path_proofs ?? approach?.edges ?? [],
+        context: { ...context, ...(approach ? { approach_departure_position: approach.position } : {}) } });
+    }
+  });
+}
+
+export function eligibleExpansions(context, now) {
+  const { closure, snapshot, site, position, scene, partyId } = context;
+  const departures = scene.endpoint_slots.filter((row) => ['departure', 'both'].includes(row.endpoint_role)
+    && row.required_position_slot_key === position.template_slot_key
+    && row.required_position_instance_ordinal === position.template_instance_ordinal);
+  // A crossing is eligible only at a departure endpoint; approach resolution composes
+  // the local path with this exact slot rule.
+  if (!departures.length) return [];
+  const departure = one(departures, 'ambiguous_departure_endpoint');
+  const options = [];
+  for (const slot of closure.slots) {
+    const exit = one(closure.directional_exits.filter((row) => row.id === slot.directional_exit_id
+      && row.version === slot.directional_exit_version), 'exact_directional_exit_required');
+    const frontiers = snapshot.frontiers.filter((row) => row.source_g5_site_id === site.id && sameRef(row.slot_ref, slot));
+    let entry; let ordinal = 0; let chain; let connection;
+    if (frontiers.length) {
+      const frontier = one(frontiers, 'ambiguous_source_frontier');
+      if (frontier.status === 'closed') continue;
+      ordinal = frontier.continuation_ordinal;
+      chain = one(snapshot.chains.filter((row) => row.id === frontier.continuation_chain_id), 'committed_chain_required');
+      const bindings = snapshot.bindings.filter((row) => row.frontier_id === frontier.id && row.position_id === position.id);
+      if (!bindings.length) continue;
+      const binding = one(bindings, 'ambiguous_source_frontier_binding');
+      if (frontier.status === 'consumed') {
+        if (binding.status !== 'inactive') gap('consumed_frontier_binding_invalid');
+        connection = one(snapshot.site_connections.filter((row) => row.id === frontier.resolved_site_connection_id
+          && row.status === 'active' && row.from_site_id === site.id), 'committed_connection_required');
+        const from = one(snapshot.endpoint_bindings.filter((row) => row.site_connection_id === connection.id
+          && row.endpoint_role === 'from' && row.status === 'active'), 'committed_connection_source_required');
+        if (from.position_id !== position.id) continue;
+      } else if (frontier.status !== 'open' || binding.status !== 'active') gap('open_frontier_binding_invalid');
+    } else {
+      if (site.origin !== 'canonical') continue;
+      const entries = closure.entry_endpoint_bindings.filter((row) => sameRef(site.canonical_g5_ref,
+        { id: row.canonical_g5_id, version: row.canonical_g5_version })
+        && row.departure_scene_endpoint_slot_key === departure.slot_key
+        && closure.entry_slot_rules.some((rule) => rule.entry_binding_id === row.id
+          && rule.entry_binding_version === row.version && rule.slot_id === slot.id && rule.slot_version === slot.version));
+      if (!entries.length) continue;
+      entry = one(entries, 'ambiguous_entry_slot_rule');
+      if (snapshot.chains.some((row) => sameRef(row.slot_ref, slot))) continue;
+    }
+    if (!connection) {
+      const selection = selectSpatialV3Expansion({ closure, snapshot, now, party_id: partyId,
+        slot_ref: pin(slot), directional_exit: pin(exit), entry_binding: entry && pin(entry),
+        candidate_ordinal: ordinal, ...(ordinal === 0 ? {} : { terminal_ordinal: chain?.terminal_ordinal }) });
+      if (!selection.ok) continue;
+    }
+    options.push({ slot, exit, entry, ordinal, connection });
+  }
+  return options;
+}
+export const canonicalConnectionId = (partyId, bindingId) => `canconn:${partyId}:${bindingId}`;
+
+/** Approved intra-G4 connections of the actor's canonical place that start at its current
+ * departure position; `connection` is the committed row when the party already made the passage. */
+export function eligibleCanonicalConnections(context) {
+  const { canonical_connections: connections, snapshot, site, position, scene, partyId } = context;
+  if (site?.origin !== 'canonical' || !connections?.length) return [];
+  return connections.flatMap(({ binding, profile, line_binding }) => {
+    const sourceEndpoint = canonicalSourceEndpoint(scene, binding);
+    if (!sourceEndpoint || !atCanonicalSourceEndpoint(sourceEndpoint, position)) return [];
+    const committed = snapshot.site_connections.find((row) => row.id === canonicalConnectionId(partyId, binding.id));
+    return committed && committed.status !== 'active' ? []
+      : [{ binding, profile, line_binding, connection: committed }];
+  });
+}
+
+function resolveLocalApproachPath(context, edgePath, targetEndpoint = null) {
+  if (edgePath == null || !Array.isArray(edgePath)) gap('local_approach_path_invalid');
+  if (edgePath.length === 0) return null;
+  let positionId = context.position?.id;
+  const edges = [];
+  for (const item of edgePath) {
+    const edgeId = typeof item === 'string' ? item : item?.edge_id;
+    const edge = (context.scene?.movement_edges ?? []).filter((row) => row.id === edgeId
+      && row.status === 'active' && row.from_position_id === positionId);
+    if (edge.length !== 1) gap('local_approach_path_stale');
+    const selected = edge[0];
+    if (typeof item === 'object' && item != null
+      && (item.from_position_id !== selected.from_position_id
+        || item.to_position_id !== selected.to_position_id)) gap('local_approach_path_stale');
+    const position = context.scene?.positions?.find((row) => row.id === selected.to_position_id);
+    if (!position) gap('local_approach_path_stale');
+    edges.push({ edge_id: selected.id, from_position_id: selected.from_position_id,
+      to_position_id: selected.to_position_id });
+    positionId = selected.to_position_id;
+  }
+  const position = context.scene?.positions?.find((row) => row.id === positionId);
+  if (!position || !(targetEndpoint
+    ? atCanonicalSourceEndpoint(targetEndpoint, position)
+    : atDepartureSlot(context.scene, position))) gap('local_approach_path_not_at_departure');
+  return { position, edges };
+}
+
+function describeLocalEdgePath(context, path) {
+  let positionId = context.position.id;
+  return path.map((edgeId) => {
+    const edge = one((context.scene?.movement_edges ?? []).filter((row) => row.id === edgeId
+      && row.status === 'active' && row.from_position_id === positionId), 'local_approach_path_stale');
+    positionId = edge.to_position_id;
+    return { edge_id: edge.id, from_position_id: edge.from_position_id,
+      to_position_id: edge.to_position_id };
+  });
+}
+
+function orderedApproachFields(input, context, approach) {
+  return approach ? { approach_origin_position_id: context.position.id,
+    ordered_local_edge_path: approach.edges, local_edge_path_proofs: input.local_edge_path_proofs ?? [] } : {};
+}
+
+function gap(reason) { throw serverError('LIVE_WORLD_EXPANSION_DATA_GAP',
+  'This movement is not available.', { status: 409, details: { reason } }); }

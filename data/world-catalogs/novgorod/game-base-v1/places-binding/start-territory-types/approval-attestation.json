@@ -1,0 +1,182 @@
+{
+  "schema": "rus.start_territory_types_candidate_approval.v1",
+  "pass": 3,
+  "decision": "APPROVE_WITH_LIMITS",
+  "decision_summary": "Короткий третий проход по RC-2-01…RC-2-06. По существу всё закрыто. Глиняная выемка стоит на поселениях и их рабочих зонах, исключения по воде адресные. Сад и бортничество стали честными gaps «нет точного основания» с editorial-посылками и условием закрытия, как решил ведущий ревьюер. Причина у солеварни разбирает mixing_reach и outer_exposed_approach. Лодочная стоянка стоит на явных узлах высадки. У зимовья и стана нет «влажной низины». Валидатор проверяет каждую ссылку и строку node_binding в исключениях. Новых смысловых ошибок в refs нет: все оценки, разбиение 38/32, совместимость и 21 исключение подтверждены скриптом. Остались три текстовых хвоста. Первый: в lu_saltmaking_saltern осталась фраза «outer nearshore node is external marine context», которую RC-2-03 просил убрать. Второй: в matrix.csv у lu_dye_medicinal_crop_plot осталось «orchard context», исправлен только typed-gaps. Третий: README называет вытаскивание лодок «волоком». Это механические замены точного текста, ниже он дан дословно. Их нужно внести до импорта. Новый проход Opus для них не нужен: достаточно проверить скриптом, что изменились только эти три ячейки.",
+  "candidate_ref": "servak:/srv/novgorod-work/worktrees/start-types/data/world-catalogs/novgorod/game-base-v1/places-binding/start-territory-types/ (untracked package on base eed0aa27708d8e7eaad201eb69e91a76cc670f6b)",
+  "reviewed_head": "eed0aa27708d8e7eaad201eb69e91a76cc670f6b",
+  "file_sha256": {
+    "matrix.csv": "10021a13a81386fb6f92016797b3aae07bde24a05150efab0cfce3f996988eba",
+    "candidates.csv": "29638fe988a76cd3afe7521a068e989ca693471f2bcb0cb2c29b872b45396cf9",
+    "typed-gaps.csv": "0bc5192037dc3ffce2b4109120a5fda7377882c1bb741a25143c3601c4a55720",
+    "selector-reconciliation.csv": "e8958ccebcb97de69148757fa9f632f742dc49451531cebffcf4692edf36626e",
+    "validate.mjs": "324433bc18e04b0805a11cad6f6761d0134206dbc8832296257831c432dea9d7",
+    "README.md": "cd98c5fe306ebf5659978a9a06c1d214c3f9028f3be49e3796adcf6473ddbbcf"
+  },
+  "file_sha256_informational": {
+    "../../scripts/start-territory-types.test.mjs": "742c987a435c6444c78c420d692db56cf8d7c118e1782fe02ae85b352681117f"
+  },
+  "approved_by": "claude-opus-5-5 (Opus, independent approver; author: Codex gpt-6-luna)",
+  "approved_on": "2026-10-01",
+  "binding_lead_decisions_applied": [
+    "lu_orchard_fruit_grove и lu_tree_beekeeping_bortnichestvo: gap «нет точного основания» с editorial-посылками и условием закрытия, не «не применим».",
+    "Региональное исключение верфи остаётся. pt_shipyard_boatyard — gap. zaostrovye_landing_boat_drawing означает вытаскивание и обслуживание малых лодок, а не верфь.",
+    "Ручной сбор песка в selector не продвигается и остаётся gap.",
+    "Каменоломня — gap (editorial: каменного строительства в регионе около 1230 г. нет), без заказа геологии."
+  ],
+  "rc2_status": {
+    "RC-2-01": {
+      "status": "closed",
+      "note": "pt_clay_pit_pottery_site стоит на G4 vikhtuy_locality (nb:25), zaostrovye_settlement_center (nb:33) и G5 vikhtuy_locality_work_storage (nb:178, «обработка и временное хранение ресурсов»), zaostrovye_settlement_center_work_zone (nb:228, «ремонт, обработка сырья и бытовое производство»). tributary_mouth, переход через ручей и сам водоток убраны. Ландшафты lt_alluvial_floodplain и lt_wooded_floodplain входят в allowLS. По воде wb_river_channel даны четыре адресных исключения с причиной: «поселенческий берег, не выемка в русле». Строки nb совпадают 4/4, шаблон требует воду рядом, и это выполнено. candidate_PF_refs (pf_peasant_homestead, pf_outbuildings) есть на узлах. Причина говорит о выемке и не утверждает гончарную мастерскую. Мелочь: book:755331 §725 в source_refs записан дважды."
+    },
+    "RC-2-02": {
+      "status": "closed",
+      "note": "По решению ведущего ревьюера обе строки стали «нет точного основания». Причины явно названы editorial-посылками: климат около 64,5° с.ш. и северная граница пчелы. Они не выдаются за источник, невозможность не утверждается. Условие закрытия — местный источник по Двине, затем точные G4/G5. Противоречия «не применим» с отказом от основания больше нет. README и matrix синхронизированы, вопрос владельцу в README записан. Мелочь (рекомендация): каждая строка ссылается на обе книжные ссылки сразу, §1354 (яблоки) и §1500–1501 (борть)."
+    },
+    "RC-2-03": {
+      "status": "partially_closed",
+      "note": "pt_saltworks закрыт. Причина прямо признаёт, что mixing_reach и outer_exposed_approach формально совместимы. Положительное основание такое: нет совместимого lu_saltmaking_saltern, а шаблон требует land_use. Посылка «сток Двины опресняет воду, рассолов в срезе нет» помечена как editorial. В обеих строках ссылки заменены на node_binding.csv:14 (mixing_reach) и :18 (outer_exposed_approach), скрипт это подтвердил. wb_estuary:803 и wb_nearshore_sea:963 указаны верно. Остаток: в lu_saltmaking_saltern (typed-gaps.csv и тот же текст в matrix.csv) сохранилась необоснованная фраза «while the outer nearshore node is external marine context». Узел входит в 32 стартовых G4 и указан в этой же строке как nb:18. Оценка «не применим» у saltern верна по данным: outer_exposed_approach (lt_alluvial_floodplain, wb_nearshore_sea) и mixing_reach (wb_estuary) не входят в allowLS/allowWB солеварения. Исправить надо только формулировку, см. required_corrections[0]."
+    },
+    "RC-2-04": {
+      "status": "closed",
+      "note": "west_hidden_backwater_muddy_shore и tributary_mouth_mouth_bar убраны, G4 tributary_mouth тоже. Добавлены zaostrovye_landing_landing_edge (nb:218, «выход на сушу»), vikhtuy_river_approach_landing_edge (nb:188, «высадка и вытаскивание лодки») и vikhtuy_locality_landing_candidate (nb:173). Остались boat_drawing, dry_platform и reed_edge (скрытый берег), это обоснованно. Все узлы совместимы с шаблоном без исключений. source nb 8/8 совпадают с refs, matrix синхронизирован."
+    },
+    "RC-2-05": {
+      "status": "closed",
+      "note": "У pt_wintering_hut и pt_hunting_camp G5 *_wet_forest убраны. Остались dry_patch и deep_forest, как допускал RC. К стану добавлен dry_pine_ridge_sandy_hollow (nb:66, «сухая стоянка»). allowWB стана пуст, исключение не нужно и не объявлено. G4 лесных массивов остались, это было принято во втором проходе."
+    },
+    "RC-2-06": {
+      "status": "partially_closed",
+      "note": "(1) Shipyard теперь ссылается на canonical-g5-inventory.json:8642. Строка лежит внутри записи zaostrovye_landing_boat_drawing, закрыто. (2) Closure у peat и estate написаны по существу, закрыто. (3) В typed-gaps у dye «orchard context» убран, но в matrix.csv остался, mirror причины разошёлся (required_corrections[1]). Автор в журнале заявил «source/matrix/gap mirrors подтверждены», это неверно для этой строки. (4) В исключении ford для old_channel_pool_dry_crossing теперь стоит «old-channel crossing». В исключениях hay/pasture для flooded_interior_basin_dry_mound теперь «dry mound in the flooded basin». Закрыто, хвост формулировки «high-bank» тривиален. (5) У bog iron (19, 139), iron smelting (12, 93) и clay pit (25, 33, 178, 228) source nb совпадают с refs, PF есть на узлах, закрыто. (6) validate.mjs закрыт: hasResolvableSourceLine проверяет каждую ссылку (book-формат или file:line в пределах файла; иначе false), nodeBindingRefsMatch проверяет, что node_binding.csv:N в исключении — строка того же node_ref. Добавлены два отрицательных теста: битая ссылка рядом с валидной и чужая строка nb."
+    }
+  },
+  "checks": [
+    {
+      "check": "Прочитаны attestation второго прохода (RC-2-01…06, рекомендации, open questions), ответ автора opus-review-6-response.md, журнал progress.md (последние записи), README целиком, selector-reconciliation (4 строки), validate.mjs целиком и два новых теста.",
+      "count": 1
+    },
+    {
+      "check": "Скрипт (opus-st3/refs.py) выгрузил строки clay pit, clay extraction, boat landing, wintering hut, hunting camp, ford, hay, pasture, bog iron и iron smelting. Для каждого ref выведены строка node_binding, landscape, water body, PF, каноническое имя и функция: G4 из rev002 g3-places.json (тип места, population, economic function), G5 из canonical-g5-inventory.json (title, spatial_function, function). Сверены с allowLS/allowWB/limits шаблонов.",
+      "count": 10
+    },
+    {
+      "check": "Скрипт (opus-st3/dump.py) выгрузил gaps orchard, bort, saltworks, saltern, shipyard, peat, estate, dye, sand и stone. Причины и closure прочитаны. Allowlists saltern и saltworks прочитаны из seed. node_binding:14/:18 = mixing_reach/outer_exposed_approach. water_body_templates:803/:963 = wb_estuary/wb_nearshore_sea. canonical-g5-inventory.json:8642 = boat_drawing.",
+      "count": 10
+    },
+    {
+      "check": "Скрипт (opus-st3/check.py), весь пакет. Разбиение 70 = 38 + 32 без пересечений. Распределение оценок: кандидаты 28/10, gaps 25/7. node_binding.csv: 228 физических строк = 228 CSV-записей, так что сопоставление строка↔запись корректно.",
+      "count": 70
+    },
+    {
+      "check": "Скрипт проверил все ссылки file:line во всех четырёх CSV и в исключениях: файл существует, диапазон в пределах файла. Не разрешилось 0 из 576. Книжные ссылки: 755331 §725 ×5, 622242 §1354 ×4, 622242 §1500–1501 ×4.",
+      "count": 576
+    },
+    {
+      "check": "Скрипт проверил, что первая ссылка на template seed в каждой из 70 строк лежит внутри объекта с тем же type_id. Ошибок 0.",
+      "count": 70
+    },
+    {
+      "check": "Скрипт пересчитал совместимость всех 38 кандидатов (G5 при пустом значении берёт значение родителя): каждое несовпадение покрыто исключением, лишних исключений нет. Все 21 исключение указывают node_binding.csv:N на свой node_ref.",
+      "count": 21
+    },
+    {
+      "check": "Скрипт сверил matrix с candidates и typed-gaps по оценке, причине, refs и source_refs. Оценки и refs совпадают 70/70. Причины не совпадают в одной строке (lu_dye_medicinal_crop_plot). source_refs в matrix — подмножество source_refs строки у 9 строк (ford, clay extraction, peat, estate, pogost, четыре городских типа). Это различие было и раньше, на суть не влияет.",
+      "count": 70
+    },
+    {
+      "check": "rg по пакету искал остатки фраз из RC-2: «external marine» (найдено: saltern, typed-gaps и matrix), «orchard context» (найдено: matrix, dye), «island ground» (только у островных узлов, верно), «forest crossing» (только у forest_stream_route_bog_crossing, верно), «permissible crop» (только у dye, по смыслу), «g5-inventory.csv» (0), *_wet_forest/muddy_shore/mouth_bar в изменённых строках (0).",
+      "count": 8
+    },
+    {
+      "check": "Git на servak: HEAD eed0aa27. Изменения в tracked-файлах — только режим у пяти tools/*/src/cli.js, 0 строк. regional-environment, infra/world-base и places-binding/places не менялись. sha256 шести файлов пакета и теста вычислены на servak.",
+      "count": 1
+    }
+  ],
+  "required_corrections": [
+    {
+      "id": "RC-3-01",
+      "priority": "medium",
+      "kind": "mechanical_text_replacement_pre_import",
+      "rows": [
+        "lu_saltmaking_saltern"
+      ],
+      "files": [
+        "typed-gaps.csv (cause_gap)",
+        "matrix.csv (reason)"
+      ],
+      "what": "В обоих файлах заменить причину целиком на точный текст: «The template requires salt-producing landscape/water. Starter water links show freshwater river channels, a brackish-or-fresh estuary at mixing_reach and wb_nearshore_sea at outer_exposed_approach, both on lt_alluvial_floodplain; none of these water or landscape values is in the saltern allowlists. No salt pan, brine spring, saline lake, lagoon, or sea bay is a canonical starter node. Do not infer saline production from estuary/nearshore labels.»",
+      "why": "Остаток RC-2-03. outer_exposed_approach — стартовый G4 (nb:18 в этой же строке), не «внешний морской контекст». Оценка «не применим» верна по allowlists, но объяснение при импорте будет ложным."
+    },
+    {
+      "id": "RC-3-02",
+      "priority": "low",
+      "kind": "mechanical_mirror_pre_import",
+      "rows": [
+        "lu_dye_medicinal_crop_plot"
+      ],
+      "files": [
+        "matrix.csv (reason)"
+      ],
+      "what": "Скопировать в matrix.csv reason точный текст cause_gap из typed-gaps.csv: «Specialty dye/medicinal crop plots are not localized. Ordinary household context does not identify crop, cultivation, or processing; keep unselected pending exact local basis.»",
+      "why": "Остаток RC-2-06(3). Сейчас matrix и typed-gaps расходятся, а validator этот mirror не проверяет."
+    },
+    {
+      "id": "RC-3-03",
+      "priority": "low",
+      "kind": "mechanical_text_replacement_pre_import",
+      "rows": [
+        "pt_shipyard_boatyard (README)"
+      ],
+      "files": [
+        "README.md (Открытые вопросы владельцу, Shipyard)"
+      ],
+      "what": "Заменить «волок/обслуживание малых судов не равны верфи» на «вытаскивание лодок и обслуживание малых судов (zaostrovye_landing_boat_drawing) не равны верфи».",
+      "why": "Новая ошибка этой правки. Волок — отдельный тип pt_portage_place, и в этом пакете он gap («Нет подтверждённого волока»). Канонический G5 — «Место вытаскивания лодок», это не волок."
+    }
+  ],
+  "required_corrections_procedure": "Все три правки — точный перенос текста, который дан здесь, а не новое authoring. Для них не нужен новый проход Opus. Нужна детерминированная проверка: скриптовый diff подтверждает, что изменились только эти четыре ячейки (saltern в typed-gaps и matrix, dye в matrix) и одна строка README; validate.mjs проходит; новые sha256 записываются рядом с этим attestation. Любое другое изменение делает approval недействительным.",
+  "recommendations_non_blocking": [
+    "pt_shipyard_boatyard cause_gap выровнять с решением ведущего: исключение остаётся, boat_drawing — вытаскивание и обслуживание лодок, а не верфь. Тогда «causal conflict… request regional owner review» заменить на открытый вопрос владельцу о будущем источнике постройки судов, как в README.",
+    "lu_stone_quarrying: в cause_gap добавить editorial-посылку из решения ведущего («каменного строительства в регионе около 1230 г. нет, поэтому нет и спроса на ломку камня»). Closure не сводить к одной геологии: нужен и источник о спросе или ломке.",
+    "lu_orchard_fruit_grove: оставить book:622242 §1354. lu_tree_beekeeping_bortnichestvo: оставить §1500–1501. Чужую книжную ссылку убрать или пометить как контекст.",
+    "lu_clay_extraction: source_refs ссылаются на node_binding:33, :221, :223 (zaostrovye_settlement_center, habitation_terrace, household_zone), а этих узлов нет в refs строки. Нужно либо добавить их в refs (для lt_wooded_floodplain понадобится адресное исключение по ландшафту), либо убрать ссылки или пометить их как контекст. Так refs совпадут с выемкой у Заостровья. Выяснить, появились ли эти ссылки в этом раунде, не удалось: снимка второго прохода нет.",
+    "Мелочи текста: дубль book:755331 §725 у clay pit; «high-bank» в исключениях dry_mound у hay и pasture; «Wet forest/marsh» в причине bog iron, хотя refs только болотные; дубли claim-ledger :216/:345 у четырёх городских типов.",
+    "validate.mjs: добавить проверку mirror matrix↔candidates/typed-gaps (оценка, причина, refs); она поймала бы RC-3-02. nodeBindingRefsMatch пропускает исключение, в котором вообще нет ссылки на node_binding: стоит требовать хотя бы одну. Подсчёт строк через split даёт +1 при завершающем переводе строки, это тривиально."
+  ],
+  "limits": [
+    "Решение касается только содержания строк в рамках RC-2-01…06 и отсутствия новых ошибок в изменённых строках. import_authorized=false, activation_authorized=false: никакой записи в БД, selector или regional-environment.",
+    "validate.mjs, focused test и PostgreSQL по заданию не запускались. Корректность логики валидатора установлена чтением кода и двух новых тестов. Результаты прогонов автора (validator PASS, pg-request 10/10) не перепроверялись. Независимо проверены скриптом ссылки, совместимость, исключения, разбиение и mirror.",
+    "Снимка пакета второго прохода нет. Поэтому изменённые строки определены по списку RC-2 и ответу автора, а не по diff. Строки вне RC-2 (кроме lu_clay_extraction и lu_sand_gravel_extraction) повторно по смыслу не ревьюились: их приняли первый и второй проходы.",
+    "Климатические, ареальные и гидрологические посылки (сад, борть, опреснение стоком Двины) записаны как editorial, а не как источник. Внешне ревьюер их не проверял, веб не использовался.",
+    "Цитаты из книг в этом проходе заново не сверялись: во втором проходе они проверены дословно, а в изменённых строках новых книжных цитат нет.",
+    "Approval действует для указанных sha256 плюс правок RC-3-01…03, внесённых по required_corrections_procedure. Режим файлов у пяти tools/*/src/cli.js в коммит пакета попадать не должен."
+  ],
+  "open_owner_questions": [
+    "Shipyard: подтверждать ли дальнейшую смену selector exclusion, если появится источник о постройке судов? Сейчас `pt_shipyard_boatyard` остаётся gap: волок/обслуживание малых судов не равны верфи.",
+    "Ручной сбор песка: оставить selector без promotion до локального источника? Текущий пакет фиксирует gap и не рекомендует promotion.",
+    "Сад и бортничество: достаточно ли сохранять editorial неопределённость как «нет точного основания», или заказать локальное WK-исследование по Двине? «Не применим» не утверждается.",
+    "Каменоломня: заказывать ли позднее локальный геологический источник? Сейчас gap без явного исключения и без геологического задания."
+  ],
+  "open_owner_questions_note": "Список скопирован из README дословно. Слово «волок» в первом пункте нужно исправить по RC-3-03.",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "mechanical_continuation": {
+    "required": "RC-3-01 saltern reason (typed-gaps and matrix), RC-3-02 dye reason mirrored into matrix, RC-3-03 README wording; recommended validator check matrix = candidates/typed-gaps",
+    "applied_in": "fleet/start-types worktree, DONE-start-types-7 (2026-10-01)",
+    "accepted_by": "lead reviewer (claude-opus-5-5), deterministic check; no new Opus pass per this attestation",
+    "acceptance_results": [
+      "candidates.csv and selector-reconciliation.csv sha256 equal to the pass-3 reviewed files",
+      "cell diff against the pass-3 copies: matrix.csv changed only lu_dye_medicinal_crop_plot.reason and lu_saltmaking_saltern.reason; typed-gaps.csv changed only lu_saltmaking_saltern.cause_gap",
+      "the new saltern text is the Opus RC-3-01 text; matrix reasons equal typed-gaps causes for both rows; README no longer calls boat hauling a portage",
+      "validate.mjs PASS (70 = 38 + 32) with the new matrix/detail mirror check; focused test 11/11 via pg-request 20261001T142953.235564Z-1"
+    ],
+    "post_continuation_sha256": {
+      "matrix.csv": "41d1ed42f5c8fc5fc9a76131f8cb876a09e181f96a85d0a2cac20b7a7c39422d",
+      "candidates.csv": "29638fe988a76cd3afe7521a068e989ca693471f2bcb0cb2c29b872b45396cf9",
+      "typed-gaps.csv": "910e11c637f86c9a8ee5134f0b457cb9b5e982dfe004bc35eae9b6c1167d7d4b",
+      "selector-reconciliation.csv": "e8958ccebcb97de69148757fa9f632f742dc49451531cebffcf4692edf36626e",
+      "README.md": "fc3610ff4b6310e76663a0432e42c3b35c1f86aeb0c1f399a1aff19d20cb213e",
+      "validate.mjs": "d27d86c9297a08fd1cccf02da870257a595dbc74c4c65fe171f4629268e27f4a"
+    }
+  }
+}

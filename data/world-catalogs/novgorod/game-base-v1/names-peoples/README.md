@@ -25,10 +25,8 @@ equivalent evidence pass.
 
 - `personal_names/` — 54 compiled candidate personal names (pr98 onomastics
   candidate, `status: candidate_not_approved`). Pool membership comes
-  only from the candidate's own `pools` map; the rus13tpl
-  `novgorod_npc_name_pools_v1.json` file is read by the build script but
-  contributes nothing (see `personal_names/README.md`) — it is not
-  cross-joined, and it is in any case a declared
+  only from the candidate's own `pools` map. The rus13tpl
+  `novgorod_npc_name_pools_v1.json` is not read or cross-joined; it is a declared
   `forbidden_promotion_source` for this candidate.
   C013b and D46 add a separate 337-entry B2 import projection from that
   candidate, the reviewed name evidence and the archive decision delta, with
@@ -43,6 +41,8 @@ equivalent evidence pass.
   `novgorod_neighbor_regions_v1.json` + 8 distinct peoples (новгородцы,
   водь, ижора, корела, весь, чудь/эсты, емь/сумь, смоляне) from
   verified remote book evidence; see `peoples_origins/README.md`.
+  The neighbor source snapshot is stored under
+  `data/world-catalogs/novgorod/sources/names-peoples-build-inputs-v1/`.
 
 ## Not done (out of scope for this collector, flagged for owner/critic)
 

@@ -31,7 +31,7 @@ export async function executeRoleLlmCall({
   if (!resolution.enabled) {
     return {
       raw_text: '',
-      provider: 'deepseek',
+      provider: 'not_configured',
       model: null,
       scope,
       role_id: roleId ?? null,

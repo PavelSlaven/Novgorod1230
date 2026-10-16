@@ -1,0 +1,170 @@
+{
+  "schema": "rus.regional_environment_source_authoring.v1",
+  "revision_id": "novgorod_regional_environment_1230_1250_v1",
+  "region_id": "region_novgorod_land",
+  "period": {
+    "from_year": 1230,
+    "to_year": 1250
+  },
+  "source_bundle": {
+    "manifest_path": "data/world-base-sources/rus13-base-v1.manifest.json",
+    "archive_path": "data/world-base-sources/rus13-base-v1.tar.gz",
+    "archive_sha256": "c2aa107250d859d3c2a6f3a49f15f70598b0fc869c6aa416e5b3de6b95c117d9"
+  },
+  "audit": {
+    "title": "Regional audit: landscape / water / land-use / place — Новгородская земля, 1230–1250",
+    "audited_checkout": "73181ecff601c28e3db5f90144e8b33db039b104",
+    "verdict": "PASS_WITH_SCOPED_EXCLUSIONS",
+    "source_ref": "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md"
+  },
+  "selectors": {
+    "landscape": [
+      "lt_temperate_broadleaf_mixed_forest", "lt_temperate_coniferous_forest", "lt_boreal_taiga_coniferous_forest", "lt_boreal_mixed_forest", "lt_dense_coniferous_forest", "lt_sparse_forest_woodland", "lt_wet_lowland_forest", "lt_freshwater_marsh", "lt_seasonal_sedge_marsh", "lt_reedbed_marsh", "lt_shrub_swamp", "lt_wooded_swamp", "lt_peat_swamp_forest", "lt_raised_bog", "lt_fen", "lt_dry_meadow", "lt_mesic_meadow", "lt_wet_meadow", "lt_scrub_meadow", "lt_alluvial_floodplain", "lt_floodplain_wet_grassland", "lt_wooded_floodplain", "lt_seasonally_flooded_forest", "lt_low_alluvial_riverbank", "lt_steep_eroding_riverbank", "lt_riparian_scrub_bank", "lt_sandy_lake_shore", "lt_rocky_lake_shore", "lt_reed_lake_shore", "lt_marsh_lake_margin", "lt_gentle_hills", "lt_steep_hills", "lt_wooded_hills", "lt_dry_ravine_gully"
+    ],
+    "water": [
+      "wb_spring", "wb_seep", "wb_brook", "wb_small_river", "wb_medium_river", "wb_large_river", "wb_river_channel", "wb_rapid_section", "wb_oxbow_lake", "wb_backwater", "wb_floodplain_lake", "wb_freshwater_pond", "wb_small_fresh_lake", "wb_large_fresh_lake", "wb_seasonal_pool", "wb_floodwater", "wb_marsh_pool", "wb_bog_pool", "wb_marsh_channel", "wb_brine_spring", "wb_moat_water"
+    ],
+    "land_use": [
+      "lu_rainfed_arable", "lu_fallow_rotation", "lu_slash_burn_cultivation", "lu_kitchen_garden", "lu_orchard_fruit_grove", "lu_fiber_crop_plot", "lu_hay_meadow_cutting", "lu_common_pasture", "lu_wood_pasture_silvopasture", "lu_reed_sedge_harvest", "lu_timber_felling", "lu_fuelwood_gathering", "lu_charcoal_burning", "lu_resin_tar_pitch_production", "lu_bark_bast_collection", "lu_wild_food_gathering", "lu_tree_beekeeping_bortnichestvo", "lu_hunting_ground", "lu_fur_trapping_ground", "lu_inland_capture_fishing", "lu_fish_weir_trap_operation", "lu_saltmaking_saltern", "lu_clay_extraction", "lu_bog_iron_extraction"
+    ],
+    "place": [
+      "pt_isolated_farmstead", "pt_hamlet", "pt_village", "pt_nucleated_village", "pt_dispersed_settlement_cluster", "pt_rural_church_center", "pt_pogost_center", "pt_estate_center", "pt_monastic_grange", "pt_wintering_hut", "pt_forest_work_camp", "pt_hunting_camp", "pt_fishing_station", "pt_fish_weir_site", "pt_river_landing", "pt_boat_landing", "pt_market_place", "pt_periodic_fairground", "pt_town", "pt_city_major_center", "pt_fortified_town", "pt_posad_suburb", "pt_crossroads", "pt_ford_place", "pt_ferry_place", "pt_bridge_place", "pt_portage_place", "pt_monastery", "pt_hermitage_skete", "pt_pilgrimage_shrine", "pt_hillfort_gorodishche", "pt_watchpost_guard_post", "pt_administrative_court", "pt_toll_customs_post", "pt_saltworks", "pt_clay_pit_pottery_site", "pt_iron_smelting_site"
+    ]
+  },
+  "conditional_guards": {
+    "lt_scrub_meadow": ["local_topology_ref", "local_succession_ref"],
+    "lt_rocky_lake_shore": ["local_topology_ref", "local_geology_ref"],
+    "lt_steep_hills": ["local_topology_ref", "local_geology_ref"],
+    "lt_dry_ravine_gully": ["local_topology_ref", "local_geology_or_erosion_context_ref"],
+    "wb_rapid_section": ["hydrology_graph_ref"],
+    "wb_seasonal_pool": ["seasonal_hydrology_context_ref"],
+    "wb_floodwater": ["temporal_hydrology_state_ref"],
+    "wb_brine_spring": ["brine_resource_ref", "authored_salt_locality_ref"],
+    "wb_moat_water": ["fortified_site_ref"],
+    "lu_orchard_fruit_grove": ["settlement_context_ref", "apple_orchard_basis_ref"],
+    "lu_reed_sedge_harvest": ["wetland_landscape_ref", "economic_basis_ref"],
+    "lu_charcoal_burning": ["forest_resource_ref", "production_basis_ref"],
+    "lu_resin_tar_pitch_production": ["forest_work_context_ref", "economic_basis_ref"],
+    "lu_fish_weir_trap_operation": ["water_ref", "fishing_right_or_infrastructure_ref"],
+    "lu_saltmaking_saltern": ["brine_resource_ref", "production_basis_ref"],
+    "lu_clay_extraction": ["clay_resource_patch_ref", "production_basis_ref"],
+    "lu_bog_iron_extraction": ["bog_iron_resource_ref", "fuel_ref", "production_basis_ref"],
+    "pt_rural_church_center": ["religious_authority_ref", "route_or_settlement_context_ref"],
+    "pt_monastic_grange": ["monastic_authority_ref", "economic_context_ref"],
+    "pt_river_landing": ["route_edge_ref", "access_authority_ref"],
+    "pt_boat_landing": ["route_edge_ref", "access_authority_ref"],
+    "pt_periodic_fairground": ["market_authority_ref", "route_context_ref"],
+    "pt_ford_place": ["route_edge_ref", "access_authority_ref"],
+    "pt_ferry_place": ["route_edge_ref", "access_authority_ref"],
+    "pt_bridge_place": ["route_edge_ref", "access_authority_ref"],
+    "pt_portage_place": ["route_edge_ref", "access_authority_ref"],
+    "pt_hermitage_skete": ["historical_religious_anchor_ref"],
+    "pt_pilgrimage_shrine": ["historical_religious_anchor_ref"],
+    "pt_watchpost_guard_post": ["authority_ref", "route_context_ref"],
+    "pt_toll_customs_post": ["market_or_authority_ref", "route_context_ref"],
+    "pt_saltworks": ["brine_resource_ref", "authored_salt_locality_ref"],
+    "pt_clay_pit_pottery_site": ["clay_resource_patch_ref", "land_use_ref"],
+    "pt_iron_smelting_site": ["bog_iron_resource_ref", "charcoal_resource_ref", "production_basis_ref"]
+  },
+  "approve_with_limits_ids": [
+    "lt_scrub_meadow", "lt_rocky_lake_shore", "lt_steep_hills", "lt_dry_ravine_gully",
+    "wb_rapid_section", "wb_seasonal_pool", "wb_floodwater", "wb_brine_spring", "wb_moat_water",
+    "lu_orchard_fruit_grove", "lu_reed_sedge_harvest", "lu_charcoal_burning", "lu_resin_tar_pitch_production", "lu_fish_weir_trap_operation", "lu_saltmaking_saltern", "lu_clay_extraction", "lu_bog_iron_extraction",
+    "pt_rural_church_center", "pt_monastic_grange", "pt_river_landing", "pt_boat_landing", "pt_periodic_fairground", "pt_ford_place", "pt_ferry_place", "pt_bridge_place", "pt_portage_place", "pt_hermitage_skete", "pt_pilgrimage_shrine", "pt_watchpost_guard_post", "pt_toll_customs_post", "pt_saltworks", "pt_clay_pit_pottery_site", "pt_iron_smelting_site"
+  ],
+  "context_ref_schema": {
+    "schema": "rus.regional_environment_context_ref.v1",
+    "guard_schema": "rus.regional_environment_context_guard.v1",
+    "enforcement": "reject_if_any_required_ref_missing",
+    "required_ref_fields": [
+      "access_authority_ref", "apple_orchard_basis_ref", "authored_salt_locality_ref", "authority_ref", "bog_iron_resource_ref", "brine_resource_ref", "charcoal_resource_ref", "clay_resource_patch_ref", "economic_basis_ref", "economic_context_ref", "fishing_right_or_infrastructure_ref", "forest_resource_ref", "forest_work_context_ref", "fortified_site_ref", "fuel_ref", "historical_religious_anchor_ref", "hydrology_graph_ref", "land_use_ref", "local_geology_or_erosion_context_ref", "local_geology_ref", "local_succession_ref", "local_topology_ref", "market_authority_ref", "market_or_authority_ref", "monastic_authority_ref", "production_basis_ref", "religious_authority_ref", "route_context_ref", "route_edge_ref", "route_or_settlement_context_ref", "seasonal_hydrology_context_ref", "settlement_context_ref", "temporal_hydrology_state_ref", "water_ref", "wetland_landscape_ref"
+    ],
+    "reference_shape": {
+      "required": ["schema", "field", "world_revision_id", "owner_table", "owner_record_id", "owner_record_version", "owner_record_digest"],
+      "additional_properties": false,
+      "schema_const": "rus.regional_environment_context_ref.v1",
+      "field_enum_source": "required_ref_fields",
+      "owner_table_enum": ["world_base.graph_nodes", "world_base.graph_edges", "world_base.spatial_v3_transition_environment_profiles", "world_base.source_records"],
+      "owner_record_id_pattern": "^[a-z0-9][a-z0-9_.:-]*$",
+      "owner_record_version_type": "positive_integer",
+      "owner_record_digest_pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "explicit_exclusions": [
+    "lt_wet_ravine_gully", "lu_open_field_strip_cultivation", "lu_fishpond_aquaculture", "lu_watermill_water_management", "wb_mill_leat", "wb_reservoir_impoundment", "wb_fishpond", "pt_watermill_site", "pt_shipyard_boatyard"
+  ],
+  "minimum_m3_rows": [
+    "lt_low_alluvial_riverbank", "wb_small_river", "lu_inland_capture_fishing", "pt_fishing_station"
+  ],
+  "new_place": {
+    "candidate_status": "pending_independent_review",
+    "universal_row": {
+      "id": "pt_drying_storage_workspace",
+      "slug": "drying_storage_workspace",
+      "title": "Сушильное, временно-складское и хозяйственно-обрабатывающее рабочее место",
+      "summary": "Хозяйственное рабочее место для сушки, временного хранения и бытовой обработки; наличие и активность процесса задаются отдельно.",
+      "place_kind": "household_processing_workspace",
+      "default_node_type": "place",
+      "can_exist_inside_landscape": true,
+      "requires_water_nearby": false,
+      "requires_route_nearby": false,
+      "requires_land_use": false,
+      "compatible_landscape_template_ids": [],
+      "compatible_water_body_template_ids": [],
+      "compatible_route_template_ids": [],
+      "compatible_land_use_template_ids": [],
+      "typical_scale_level": "G5",
+      "settlement_density_effect": "context_owned",
+      "access_logic": "Доступ определяется exact bound G5 и его существующими spatial edges.",
+      "social_logic": "Не создаёт NPC, владельца, работника или право доступа.",
+      "economic_logic": "Совместимо с сушкой, временным хранением и бытовой обработкой без утверждения конкретного материала или процесса.",
+      "defense_logic": "Не задаёт укрепление или охрану.",
+      "game_use": "Place-template для уже authored хозяйственного G5; dormant/active состояние принадлежит process owner.",
+      "limits": "Не создаёт огонь, тепло, топливо, материал, контейнер, инструмент, NPC или процесс; не заменяет pt_forest_work_camp.",
+      "status": "needs_review",
+      "confidence": "medium",
+      "sources": [
+        "data/world-catalogs/novgorod/world-knowledge/research/procedural-scene-family-authoring-v1.md#5. Семейство: старая сушильня / ремесленно-складское место",
+        "data/world-catalogs/novgorod/procedural-scene-v2/drying-storage-workspace-approval-attestation.json"
+      ],
+      "audit_notes": "Новый authoring row; требует отдельного approval. Route-free editorial evidence уже одобрена только для authoring_row_only."
+    },
+    "regional_row": {
+      "id": "rpt_novgorod_drying_storage_workspace",
+      "region_id": "region_novgorod_land",
+      "place_template_id": "pt_drying_storage_workspace",
+      "is_allowed": false,
+      "is_common": false,
+      "is_rare": true,
+      "generation_weight": 0,
+      "allowed_scale_levels": ["G5"],
+      "allowed_node_types": ["place"],
+      "regional_limits": "Только exact current old-shed G5 context; не generic regional generation и не pt_forest_work_camp substitution.",
+      "game_use": "Только для exact authored old drying shed G5 после отдельного approval.",
+      "limits": "Не создаёт route, fire, fuel, material, container, tool, NPC или process; dormant/active state принадлежит process owner.",
+      "status": "needs_review",
+      "confidence": "medium",
+      "sources": [
+        "data/world-catalogs/novgorod/procedural-scene-v2/drying-storage-workspace-approval-attestation.json"
+      ],
+      "audit_notes": "Pending second audit; import and activation forbidden."
+    },
+    "spatial_context_ref": {
+      "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+      "scene_template_id": "trace_ld_v1_tpl_old_drying_shed",
+      "scene_template_version": 1,
+      "scene_template_digest": "8e5019e07de39dc1eb3d07f996bca38f2af8ef25f927cc30a729bd3edd297679",
+      "g5_id": "trace_ld_v1_g5_old_drying_shed",
+      "g5_version": 1,
+      "g5_digest": "32b6e5db1bffb825d6d9da2a4805f9d045a766c9b04a33ab834d615ec0112832",
+      "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "parent_version": 4
+    },
+    "process_state_contract": {
+      "owner": "process",
+      "states": ["dormant", "active"],
+      "row_asserts_current_state": false
+    },
+    "evidence_attestation_digest": "965995aae64b72a6329ac97e33b09700733e69c609a247d2d76716d5d68333c3"
+  }
+}

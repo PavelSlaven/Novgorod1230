@@ -1,0 +1,6 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:r201-porridge-1","claim_ref":"claim:r201-porridge-1","claim_digest":"e72f05cc64ac5e51fdccac6f1df55675536293f57443352ff62dde18e61eb17f","candidate_ref":"git:0eda18606ba1d1a3af979f11d9ada8b358eb66ee:data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-streak-r2-01-gap-repair-v1.json#claim:r201-porridge-1","auditor_ref":"/root/seven_gap_verifier_v3","independence_basis":"Independent source, domain, scope, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:r201-porridge","evidence:r201-porridge-bottom"],"review_ref":"verification/final-static-streak-r2-01-gap-repair-v1.md#independent-review","verdict":"APPROVE","limits":"General starch/heating relation only; no ingredient, vessel, cooking state or meal outcome."}
+  ]
+}

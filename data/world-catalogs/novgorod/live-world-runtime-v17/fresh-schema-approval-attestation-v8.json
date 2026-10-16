@@ -1,0 +1,62 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "codex-gpt-6.1-sol-ap-fresh-v8-2026-10-01",
+  "independence_basis": "Issued by the independent Codex approval session ap-fresh-v8, assigned sol 6.1 under owner decision D67. This approver did not author the request, its generator, migration 038, or any lines-b1 change (author: Codex gpt-6-luna, fleet task lines-b1), and did not communicate with that author. Three separate read-only gpt-6-luna helpers checked bytes, request delta/chain digest, and DDL/test evidence; the primary approver reviewed their scripts and results and made this verdict. PostgreSQL evidence is the supplied author pg-slot log, read but not rerun by the approver. No repository or database was modified by this review.",
+  "reviewed_repository_head": "ee832b64f358d8d1c41bfa178d966fa3f94670e4",
+  "source_commit": "6d28d386b6acafc414c68db25bbfae4aec6647aa",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+  "request_digest": "124aba7c244cce4a5a3a36dcbf242b2ac727b734c9cea7e49cc786094946ac12",
+  "request_bytes": 16171,
+  "review_request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md",
+  "supersedes": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-approval-attestation-v7.json",
+    "sha256_at_reviewed_head": "8d80def8dc08491aab9c7ea4b242f07f287ff438b6d5f3d834d3993abbf00e46",
+    "request_digest": "cc76fa8b0e1a4c05faccf697cb58ee139e9ee9ba284f010653e541bad542f6db",
+    "reason": "Request changed after v7 only in source_commit and migration 038 byte length/hash, with the resulting party-chain digest change. 038 now drops passage_type_id NOT NULL and requires a non-null passage_type_id in the non-line branch of g5_site_connections_line_binding_ck; line-kind connections may omit it. Migration 038: 12632 -> 12763 bytes, 3cae28e5... -> 6a7e55e4...; chain 2945088e... -> 91f177ac...; source 1114da73 -> 6d28d386. World inputs, party owner module and migrations 001-037 are byte-identical. v7 remains unchanged as history and cannot approve this request digest."
+  },
+  "scope": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "party_database": "novgorod_party_v17",
+    "party_owner": "party_operator",
+    "world_schema": "infra/world-base/schema.sql (649 bytes, sha256 a98f19ac4bd4b1e1d6d2057859d797bf0a6ac81b5fc7232b75887bcf2683eb18) and its ordered 01.sql-30.sql parts exactly as hashed in the request (30.sql: 7675 bytes, sha256 b6986ec63233e6c028cf02840a34b34bb47b321a5d6881581dc982da6e4f46e7; 29.sql unchanged 3885 bytes e46386ab...; 09.sql unchanged 16933 bytes 544ca153...)",
+    "party_schema": "runSpatialV3TargetMigrations and its ordered 001-038 SQL files, exactly as hashed in the request",
+    "party_chain_digest": "91f177ac5899f49400c8b4bf8d381aeff30ae20c155d4c196021f0311be52e0b",
+    "expected_world_base_tables": 224,
+    "expected_party_runtime_tables": 133,
+    "expected_party_migrations_applied": 38
+  },
+  "verified_by_approver": {
+    "request_digest_recomputed": "124aba7c244cce4a5a3a36dcbf242b2ac727b734c9cea7e49cc786094946ac12 (sha256 of the raw 16171-byte request; HEAD blob equals the working-tree file)",
+    "source_commit_is_ancestor_of_reviewed_head": true,
+    "schema_inputs_unchanged_source_commit_to_reviewed_head": true,
+    "ordered_parts_and_migrations": "verify-bytes.py PASS: all 70 referenced inputs (world entrypoint, 30 ordered parts, party owner module, 38 ordered migrations) match request sha256/bytes in HEAD, working tree and source_commit; no mismatches and empty source-to-HEAD input diff.",
+    "request_unchanged_vs_v7_except": "verify-diff-chain.py PASS, 13 checks: recursive delta is exactly /source_commit, /party_schema/ordered_migrations/37/bytes, /party_schema/ordered_migrations/37/sha256 and /party_schema/chain_digest. The old request extracted at v7 reviewed_repository_head has 16171 bytes and digest cc76fa8b... matching v7. Only 038 raw schema-input bytes changed. Both chain digests independently recomputed using the existing owner algorithm.",
+    "generator_rebuild": "node verify-generator.mjs PASS: buildFreshSchemaRequest with the pinned source_commit and both request renderers reproduce the committed request and review-request byte-identically. The generator CLI was not run and no repository file was written.",
+    "migration_038_statements": "verify-ddl-log.py PASS plus primary static review: exact delta is ALTER COLUMN passage_type_id DROP NOT NULL and passage_type_id IS NOT NULL in the non-line CHECK branch. No other 038 change. A non-line with NULL passage makes both branches FALSE, including under SQL three-valued logic; a complete time-cost line with NULL passage is accepted. Preflight is unchanged. The full migration retains guarded column/index creation, DROP-before-ADD constraints and CREATE OR REPLACE FUNCTION; no new table or DML introduced by this delta.",
+    "postgres_tests": "Read the supplied author log /srv/novgorod-work/fleet/tasks/lines-b1/pg/res-20261001T211200.776386Z-1.log: test/integration/m2c-lines-party-ddl-postgres.test.js PASS 1/1, fail 0, cancelled 0, skipped 0. The current test asserts line NULL accepted, non-line NULL rejected (23514), fresh and repeated production-chain application, rerun with game data preserved, and legacy-history preflight rejection (55000). This approver did not rerun PostgreSQL or claim an independent PG execution.",
+    "existing_rows": "No backfill (D51). The unchanged preflight rejects nonempty legacy travel/interval history before first 038 application, based on absence of travel_state_id; once 038 has been applied it skips that legacy guard. This approval authorizes only fresh-target DDL, not migration of an existing populated database.",
+    "documentation_notes": "Inherited descriptive text in request.execution_order[3] says 001-037, while its ordered list, expected_readback, generator and runner specify 38. The exact 001-038 list is approved here; 037 is not permission to omit 038. v7 execution_preconditions[6] also contains stale 222/37/v5 references. v8 corrects its own conditions to 224 world tables, 133 party tables, 38 migrations and v8 without modifying either the reviewed request or v7. Table counts are required future readbacks, not measurements from a live DB during this review."
+  },
+  "approval": "Fresh creation of novgorod_world_v17 / novgorod_party_v17 in the existing managed local-play cluster and application of exactly the hashed world entrypoint, parts 01-30 and party migrations 001-038 of request digest 124aba7c244cce4a5a3a36dcbf242b2ac727b734c9cea7e49cc786094946ac12, only after the currently existing v17 pair has been renamed (never dropped) and after all execution preconditions pass. No existing database may be dropped, reused or modified other than that explicit rename. Recreation requires the owner's explicit command under D51; this review performs no execution.",
+  "execution_preconditions": [
+    "This v8 file is committed byte-identically into data/world-catalogs/novgorod/live-world-runtime-v17/ as fresh-schema-approval-attestation-v8.json; v1-v7 remain unchanged as history. At the execution head checkV17BootstrapInputs must select exactly v8 by request_path and request_digest 124aba7c244cce4a5a3a36dcbf242b2ac727b734c9cea7e49cc786094946ac12, and test/integration/v17-bootstrap-fresh-schema-gate.test.js updated for v8 must pass. Neither integration nor that test was performed in this review.",
+    "The execution head carries byte-identical reviewed schema inputs: request_digest 124aba7c244cce4a5a3a36dcbf242b2ac727b734c9cea7e49cc786094946ac12, all 70 request source hashes/lengths, ordered world parts 01-30 and party migrations 001-038, with chain digest 91f177ac5899f49400c8b4bf8d381aeff30ae20c155d4c196021f0311be52e0b. Stop on any mismatch. The inherited descriptive 001-037 text does not reduce the ordered 38-migration chain.",
+    "The npc_identity_import stage has its own current attestation (npc_identity_import.json, schema rus.npc_identity_v17_import_approval.v1) for the exact import request digest at the execution head; every other bootstrap import stage retains its own current approval.",
+    "Verify PostgreSQL cluster identity (system_identifier), server version 16.14, existing database names/owners, a fresh backup of the existing v17 pair taken after its last write with a readback check, and per-table row counts of every existing Novgorod database; record all before any write.",
+    "On the owner's explicit recreation command, stop every game-server, tool or session connected to the existing v17 pair. Rename (never drop) novgorod_world_v17 and novgorod_party_v17 to unused bak names with ALTER DATABASE ... RENAME TO ... from the postgres maintenance database; read back pg_database and prove both target names free. Existing novgorod_world and novgorod_party remain untouched.",
+    "Create both databases with the requested owners and prove them empty. Apply the complete world schema in one transaction with stop-on-error and party chain 001-038 through runSpatialV3TargetMigrations using the standard scripts/bootstrap-live-world-v17.mjs path. This approval grants no import or activation.",
+    "Read back 224 world_base tables, world_reader USAGE on world_base and SELECT on all 224 tables, 133 party_runtime tables, 38 applied party migrations with chain digest 91f177ac5899f49400c8b4bf8d381aeff30ae20c155d4c196021f0311be52e0b, zero parties and unchanged row counts in the bak databases and all other existing Novgorod databases. Record execution and exact readbacks in a separate execution attestation referencing this v8."
+  ],
+  "excludes": [
+    "any data import (every bootstrap import stage needs its own current approval)",
+    "catalog registration or activation",
+    "runtime or default startup cutover",
+    "migration or mutation of existing databases other than the rename",
+    "dropping the bak pair (the owner does this later manually)",
+    "the m2c-lines-v1 line wave import (approved APPROVE_WITH_LIMITS in its own attestation; its bootstrap import stage needs its own current import approval)"
+  ],
+  "database_mutated_by_review": false
+}

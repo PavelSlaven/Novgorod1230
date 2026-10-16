@@ -13,33 +13,33 @@
   "data_gaps": [],
   "external_audit_decision": {
     "path": "docs/work/temporal-world-v4/external-data-audit/decisions/historical_phase_local_effect_rules.decision.json",
-    "sha256": "2d55b644868b15f189d3994dc12faa2373b3c2141281756c3831dc91a3a56b93",
-    "decision_id": "decision:historical_phase_local_effect_rules:2026-07-24-reaudit-2"
+    "sha256": "15c1a600a71817c97bc75fcfda673b6eb49794d6d5cb4fda9111ff6a1fc11c7f",
+    "decision_id": "decision:historical_phase_local_effect_rules:2026-09-26-reaudit-3"
   },
   "artifacts": {
     "dataset": {
       "path": "data/world-catalogs/novgorod/temporal-v4/datasets/historical_phase_local_effect_rules.json",
-      "sha256": "64d291563632478af1d91d07b8430b61b515ea6835811487b2fb2a22507b9f43"
+      "sha256": "896432f7e39cb33fab5a0e0f61946216cb06e251657d88d4c07ead22ec7d8bfb"
     },
     "provenance": {
       "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/historical_phase_local_effect_rules.provenance.json",
-      "sha256": "cdbb9032c149b3624dabc8e7a8dd6f0c461b91cbe6edbf8600c00773d32e991a"
+      "sha256": "ee6adab29169817e16c9424086a259073e62ca8ba4e3f86d9beddced3586a017"
     },
     "normalized_references": {
       "path": "data/world-catalogs/novgorod/temporal-v4/datasets/historical_phase_local_effect_rules.references.json",
-      "sha256": "b64113a3e9659c87f79cc1347b8c8bd1ed898eeb81e7a116ba3a7806dfa498cf"
+      "sha256": "a971df178ae0577bd482f1f465e28541dfd5bbfd143f40dd86f7527c47960ace"
     },
     "source_history": {
       "path": "data/world-catalogs/novgorod/temporal-v4/source-approval/historical_phase_local_effect_rules.sources.json",
-      "sha256": "69ab4713893ddd48940f78e76a894dd4382f60d4c9eb0ab10b1f6ddebb509d9d"
+      "sha256": "a38cfc04565a4da60ac8c97ef5fe1a0b7ef260669df99839587c957c8272de73"
     },
     "deterministic_import": {
       "path": "tools/temporal-v4/import-approved-data.mjs",
-      "sha256": "c772c1710c981eb753b3ace9b9cc003b6f3fe765fdd7ed010cad3246f21aa7dc"
+      "sha256": "c1244b3437bf9656ef1b54823cdb6aa15931cb466e56d28e77b0eba95b1da9a7"
     },
     "generated_schema": {
       "path": "infra/world-base/SCHEMA_REFERENCE.md",
-      "sha256": "36acd61486a305d2ae0cd1ea106f50f18febc60735f7c1ecb28a4ea4cff9172a"
+      "sha256": "a59e205e75b3d056c1ca682a9c02aed3d1bdaf9bec4aa18020d11513f7d4ab45"
     }
   }
 }

@@ -1,0 +1,231 @@
+{
+  "schema": "rus.m2c_canonical_connection_labels_authoring_approval.v2",
+  "decision": "APPROVE_WITH_LIMITS",
+  "candidate_ref": "novgorod_m2c_canonical_connection_labels_v1@1",
+  "approved_commit": "the commit that adds this file (data(v17): route labels from approved line names); content pinned by candidate_sha256",
+  "approved_by": "claude-opus-5-5 (Opus, independent approver, task ap-route-labels; author: Codex gpt-6-luna, task route-labels)",
+  "approved_on": "2026-10-05",
+  "source_issue": "PavelSlaven/Novgorod1230#160, #133 (D49)",
+  "scope": "34 directed display_label rows (17 physical pairs) of the v17 start territories: display_label = \"Уйти \" + name_ru of the APPROVE_WITH_LIMITS m2c-line-names pair named by the binding source_pair_id; both sides of each pair identical; same binding ids. The 416 rows outside scope are byte-identical to the current catalog and keep the earlier APPROVE_DATA_ONLY ordinal approval (no new approval). 4 rows (2 pairs) are withheld, see withheld_rows.",
+  "approved_rows": [
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_dry_pine_ridge_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_dry_pine_ridge_1",
+      "display_label": "Уйти по корням между соснами"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_dry_pine_ridge_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_dry_pine_ridge_cycle",
+      "display_label": "Уйти по хвое меж кустами"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_1",
+      "display_label": "Уйти лодкой вдоль осоки"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_cycle",
+      "display_label": "Уйти лодкой по протоке среди осоки"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_1",
+      "display_label": "Уйти лодкой над глинистым дном"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_cycle",
+      "display_label": "Уйти береговой травой вдоль воды"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_1",
+      "display_label": "Уйти берегом по низкой траве"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_2",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_2",
+      "display_label": "Уйти по твёрдой земле"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_3",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_3",
+      "display_label": "Уйти по глинистому проходу"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4",
+      "display_label": "Уйти травяным проходом"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_5",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_5",
+      "display_label": "Уйти по глинистой тропе"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_6",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_6",
+      "display_label": "Уйти по ровной пойменной земле"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_cycle",
+      "display_label": "Уйти по глинистой низине"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+      "display_label": "Уйти тропой между корнями по мягкой земле"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+      "display_label": "Уйти лесным ходом по сырому краю"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_1",
+      "display_label": "Уйти по речной воде вдоль берега"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_cycle",
+      "display_label": "Уйти тропой по травянистой земле у воды"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_dry_pine_ridge_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_dry_pine_ridge_1",
+      "display_label": "Уйти по корням между соснами"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_dry_pine_ridge_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_dry_pine_ridge_cycle",
+      "display_label": "Уйти по хвое меж кустами"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_1",
+      "display_label": "Уйти лодкой вдоль осоки"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_reed_backwater_cycle",
+      "display_label": "Уйти лодкой по протоке среди осоки"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_1",
+      "display_label": "Уйти лодкой над глинистым дном"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_south_entry_reach_cycle",
+      "display_label": "Уйти береговой травой вдоль воды"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_1",
+      "display_label": "Уйти берегом по низкой траве"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_2",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_2",
+      "display_label": "Уйти по твёрдой земле"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_3",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_3",
+      "display_label": "Уйти по глинистому проходу"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_4",
+      "display_label": "Уйти травяным проходом"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_5",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_5",
+      "display_label": "Уйти по глинистой тропе"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_6",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_6",
+      "display_label": "Уйти по ровной пойменной земле"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_cycle",
+      "display_label": "Уйти по глинистой низине"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_1",
+      "display_label": "Уйти тропой между корнями по мягкой земле"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge_cycle",
+      "display_label": "Уйти лесным ходом по сырому краю"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_1",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_1",
+      "display_label": "Уйти по речной воде вдоль берега"
+    },
+    {
+      "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_cycle",
+      "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center_cycle",
+      "display_label": "Уйти тропой по травянистой земле у воды"
+    }
+  ],
+  "withheld_rows": {
+    "verdict": "CHANGES_REQUIRED",
+    "rows": [
+      {
+        "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_7",
+        "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_7",
+        "display_label": "Уйти тропой среди кустов"
+      },
+      {
+        "binding_id": "cg5bindv3__g4dirv3f__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_cross",
+        "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_cross",
+        "display_label": "Уйти кустарниковой тропой"
+      },
+      {
+        "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_7",
+        "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_7",
+        "display_label": "Уйти тропой среди кустов"
+      },
+      {
+        "binding_id": "cg5bindv3__g4dirv3r__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_cross",
+        "source_pair_id": "pepv3__g4route_gn_nov_g3_xp017_yp026_r2_vikhtuy_locality_cross",
+        "display_label": "Уйти кустарниковой тропой"
+      }
+    ],
+    "reason": "At vikhtuy_locality_forest_path (a v17 start place) the two exits read \"Уйти тропой среди кустов\" (pair _7, to meeting_area) and \"Уйти кустарниковой тропой\" (pair _cross, to landing_candidate): same content words (path + shrubs), no distinguishing feature. Spatial §4.7.2 / §14.4: a near-identical label at one place is a data gap, not a choice.",
+    "fix": "Preferred: rename one of the two m2c-line-names records by a perceivable feature of that line (line-names re-approval for that record), then re-derive mechanically. Interim alternative: keep these 4 rows equal to the current catalog rows (\"Проход N\"); this is a mechanical revert, checked by script, no new approval."
+  },
+  "checks": [
+    "Author scripts (read-only, ref-pr98 b3143fad): node validate.mjs PASS; node validate.mjs --self-test PASS, 8 negative cases rejected; node --test candidate.test.mjs 4/4 pass. Author files unchanged (sha256 before/after).",
+    "Approver check.mjs against the current catalog in worktrees/lead (27e48352; catalog, line-names, bindings, start manifest byte-identical to ref-pr98): header fields equal except authoring_policy; same 454 rows in the same order; 416 rows byte-identical (JSON per row); 38 changed rows differ only in display_label and provenance (editorial_choice_ordinal, visibility_rule, ids, refs unchanged); every changed row = \"Уйти \" + name_ru of its binding source_pair_id with null qualifiers; 19 pairs with exactly 2 sides, identical labels, mutual reverse_binding_id; no digits/latin/underscore; no exact duplicate label among all exits of any G5 (all 454); no new label equals a local-edge label. 5 own negative mutations rejected.",
+    "m2c-line-names check.mjs in worktrees/lead: OK (227 local pairs, 43 world routes, 18 kinds) — includes target-title stem leak and ordinal checks for name_ru.",
+    "derive.mjs has exactly two label literals: \"Проход ${ordinal}\" (regenerates the unchanged baseline rows, equal to the current catalog) and \"Уйти ${pair.name_ru}\"; it throws if the line-names attestation is not APPROVE_WITH_LIMITS with matching candidate sha, if a scoped pair has no name_ru or has a qualifier, or if the scope is not 38/19.",
+    "Approver judgement over all 23 menus of scoped G5 nodes: labels name the line, not the destination; no compass/upstream words; no hidden topology or position names; read as natural action menu items. One semantic duplicate found (withheld). reed_backwater_entrance \"лодкой вдоль осоки\" / \"лодкой по протоке среди осоки\" accepted as distinguishable, as in the line-names approval."
+  ],
+  "limits": [
+    "name_ru are authored game names, not attested 1230 toponyms (inherited from m2c-line-names APPROVE_WITH_LIMITS and its limits).",
+    "The prefix \"Уйти\" is approved for these rows as the action word of a move to another canonical G5 place; it is not a norm for all lines. Spatial §14.4 composes name + discriminator + direction word; if the runtime later adds a direction or method word, the full string must be rechecked.",
+    "Base names with \"лодкой\" (reed_backwater_1, reed_backwater_cycle, south_entry_reach_1): if a party without a boat is offered an alternative method (§14.4, D49 \"вплавь\"/\"на бревне\"), the composed label could contradict itself. Not checked in runtime.",
+    "\"над глинистым дном\" (south_entry_reach_1): perceptibility of the bottom from a boat is taken from the line-names approval, not rechecked here.",
+    "Mixed menus during the interim: 10 scoped G5 nodes still show out-of-scope \"Проход N\" rows next to \"Уйти …\" rows; local G6 edges keep \"Проход N\" (m2c-local-edge-labels). \"Уйти травяным проходом\" / \"по глинистому проходу\" sit next to such ordinals until those catalogs are replaced.",
+    "editorial_choice_ordinal stays in the 38 rows and is passed by spatial-v3-current-visibility-provider.js:157–158 alongside display_label; it must not reach the screen (D72). Not checked in presentation.",
+    "Integration: the current candidate.test.mjs and derive.mjs in the repo require every label to be \"Проход N\" and the old APPROVE_DATA_ONLY attestation sha; the author derive.mjs uses absolute ref-pr98 paths. Both must be adapted at commit; the new test must check approved_rows / withheld handling deterministically.",
+    "Not checked: database import, live playtest, LLM narration of these labels."
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "candidate_path": "data/world-catalogs/novgorod/m2c-canonical-connection-labels/candidate.json",
+  "candidate_sha256": "22ee9a4fa732507415ea8f7e4cedd019a3e8b1f82fea08f5e52988b18fae3ce2",
+  "previous_approval": "approval-attestation-ordinals-2026-09-29.json (APPROVE_DATA_ONLY ordinals; still covers the 420 unchanged rows)"
+}

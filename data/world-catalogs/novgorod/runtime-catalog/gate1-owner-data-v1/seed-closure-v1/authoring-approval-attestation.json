@@ -1,0 +1,37 @@
+{
+  "schema": "rus.gate1_rus13_seed_closure_authoring_approval_attestation.v1",
+  "status": "approved_seed_derivation_and_transactional_full_closure_readback",
+  "decision": "approve_exact_seed_derivation_and_transactional_full_closure_readback",
+  "subject_commit_sha": "0a0a65152b8c2863e88e376784951c5a7953b0a9",
+  "auditor_ref": "/root/m3_chain_auditor",
+  "independence_basis": "Independent review separate from seed closure authoring; approval added only after deterministic source reproduction, exact PostgreSQL payload readback, same-count tamper rejection, canonical-path isolation and a full non-activating Gate1 lifecycle were verified.",
+  "reviewed_at": "2026-09-21",
+  "candidate_digest": "ac832b7130e54bfba67812adac490536b111694ced601c8c283cff1edd9b3ee0",
+  "request_digest": "bf7b0d56efb8bd887dc3ea0c5b3bf4885fcb3d2e850d142d261eb5eca8db6fd4",
+  "approved_scope": {
+    "seed_gzip_sha256": "69833f0a829dd8623dcc128f07f31a6101d2fa502c3b0ba6a6ccd02d22b9e731",
+    "seed_sql_sha256": "04d9362307049e9842f34a7c8cf610aa10b1f8c10976fb40ae6976091e68ae97",
+    "report_sha256": "915db4168aca53cc55c96f585a1d444e74fedef5c1837776330e9ee5d0008f48",
+    "total_row_count": 42577,
+    "table_count": 30,
+    "table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434",
+    "exact_all_table_readback_required": true,
+    "transactional_import_only": true,
+    "grants_runtime_activation": false
+  },
+  "authority": {
+    "approval_attestation_present": true,
+    "seed_derivation_authorized": true,
+    "import_authorized": true,
+    "transactional_import_readback_only": true,
+    "exact_all_table_readback_required": true,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false,
+    "authoring_only_functional_allocation_runtime_selection": false,
+    "runtime_item_creation_authorized": false
+  },
+  "limits": "Approval covers only deterministic derivation of the exact pinned RUS13 seed, transactional import, exact persisted payload readback for 42577 rows across 30 tables, and rollback-safe evidence. Runtime activation, production activation, existing-party migration, old-save rematerialization, authoring-only allocation for runtime selection, and runtime item creation remain forbidden.",
+  "attestation_digest": "19fa5e4ee8f7663bfc354b7d67498366f9d111021fb8d9b235645e7bfb474d89"
+}

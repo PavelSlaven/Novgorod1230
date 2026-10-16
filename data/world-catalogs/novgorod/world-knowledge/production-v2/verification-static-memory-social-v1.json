@@ -1,0 +1,44 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-memory-social-v1-source-misattribution",
+      "claim_ref": "claim:research-memory-source-misattribution",
+      "claim_digest": "fc4da0d03e77a1d024a11e6c96061a0897691b1cceb9e52f518b10a895144773",
+      "candidate_ref": "git:d4b5568245c6ed4708deb49f01d2706e11705003:data/world-catalogs/novgorod/world-knowledge/production-v1/static-memory-social-v1.json#claim:research-memory-source-misattribution",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Independent direct OpenStax source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-memory-source-misattribution"],
+      "review_ref": "verification/static-memory-social-v1.md#claimresearch-memory-source-misattribution",
+      "verdict": "APPROVE",
+      "limits": "Supports source confusion in recollection only; no particular actor's perception, memory, belief, testimony truth, or intent follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-memory-social-v1-postevent-misinformation",
+      "claim_ref": "claim:research-memory-postevent-misinformation",
+      "claim_digest": "3accce7f774d4b20db4c728b60c0fb9a8317b016b9951c15b682b30734d992a1",
+      "candidate_ref": "git:d4b5568245c6ed4708deb49f01d2706e11705003:data/world-catalogs/novgorod/world-knowledge/production-v1/static-memory-social-v1.json#claim:research-memory-postevent-misinformation",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Independent direct OpenStax source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-memory-postevent-misinformation"],
+      "review_ref": "verification/static-memory-social-v1.md#claimresearch-memory-postevent-misinformation",
+      "verdict": "APPROVE",
+      "limits": "Supports possible later recollection distortion only; no exposure, changed memory, actor knowledge, error probability, testimony verdict, or ability to implant a particular memory follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-memory-social-v1-pooled-work-social-loafing",
+      "claim_ref": "claim:research-pooled-work-social-loafing",
+      "claim_digest": "464e2f45216b5a4b9ed1a532b4143f4ed5c2e0052293a055c5e732c59476a1fb",
+      "candidate_ref": "git:d4b5568245c6ed4708deb49f01d2706e11705003:data/world-catalogs/novgorod/world-knowledge/production-v1/static-memory-social-v1.json#claim:research-pooled-work-social-loafing",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Independent direct OpenStax source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-pooled-work-social-loafing"],
+      "review_ref": "verification/static-memory-social-v1.md#claimresearch-pooled-work-social-loafing",
+      "verdict": "APPROVE",
+      "limits": "Supports a conditional reduction in individual output only; no medieval prevalence, worker motive, staffing, labour rate, allocation, compliance, or forced NPC decision follows."
+    }
+  ]
+}

@@ -71,8 +71,8 @@ const runChecker = ({ directory = null, historicalV2Directory = null } = {}) => 
 };
 const withFixture = (mutate, { refresh = true } = {}) => {
   const directory = mkdtempSync(resolve(tmpdir(), 'trace-0d-v3-'));
-  cpSync(source, directory, { recursive: true });
   try {
+    cpSync(source, directory, { recursive: true });
     mutate(directory);
     if (refresh) refreshDigests(directory);
     return runChecker({ directory });
@@ -223,8 +223,8 @@ test('revision 6 and package v3 exact-supersede immutable revision 5 and package
 
 test('mutation of historical body/environment revision 2 is detected', () => {
   const historicalDirectory = mkdtempSync(resolve(tmpdir(), 'trace-0d-v2-mutated-'));
-  cpSync(v2Source, historicalDirectory, { recursive: true });
   try {
+    cpSync(v2Source, historicalDirectory, { recursive: true });
     const historicalBodyPath = resolve(historicalDirectory, bodyFile);
     writeFileSync(historicalBodyPath, `${readFileSync(historicalBodyPath, 'utf8')}\n`);
     const historicalBodyDigest = digest(historicalBodyPath);

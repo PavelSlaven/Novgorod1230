@@ -16,7 +16,7 @@ const P = {
   bibleItems: path.join(NOV, 'sources', 'character-bible-1230', 'data', 'items.json'),
   v5: path.join(REPO, 'data', 'knowledge-source', 'imports', 'item-container-120-v5', 'candidate', 'tables'),
   catalog: path.join(NOV, 'game-base-v1', 'catalog.json'),
-  sqlite: process.env.NOV1230_DB || 'C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite'
+  sqlite: process.env.NOV1230_DB || path.join(NOV, 'sources', 'bic-reproducible-inputs-v1', 'data', 'curated', 'novgorod_1230_curated.sqlite')
 };
 const readJson = f => JSON.parse(fs.readFileSync(f, 'utf8'));
 const readCsv = f => parseCsv(fs.readFileSync(f, 'utf8'));

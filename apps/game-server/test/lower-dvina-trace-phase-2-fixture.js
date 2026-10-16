@@ -25,7 +25,13 @@ import { nextPhase9State } from '../src/infrastructure/postgres/lower-dvina-trac
 import { buildTracePhase10Completion } from '../src/runtime/lower-dvina-trace-phase-10-completion.js';
 import { nextPhase10State, phase10VisibleEnvelope } from '../src/infrastructure/postgres/lower-dvina-trace-phase-10-writes.js';
 import { phase2VisibleContextFromPayload } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
+import { phase2InitialCurrentVisibleContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 import { fixturePhase2VisibleState } from './lower-dvina-trace-phase-2-fixture-current-visible.js';
+import SCENE_PRESENTATION from
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json'
+  with { type: 'json' };
+export { SCENE_PRESENTATION };
 const bundle = await loadLowerDvinaTraceMaterializationBundle();
 const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 9,
@@ -46,6 +52,7 @@ function fixture({
   npcCombatModel = unexpectedNpcCombatModel,
   playerSafeStateProjector = null,
   temporalAdvanceOwner = null,
+  currentSpatialContextProvider = null,
   createTurnStepOrdinaryDiscoveryResolver = null,
   ordinaryDiscoveryEnablementMarker = null,
   ordinaryDiscoveryScopeBinding = null,
@@ -55,10 +62,15 @@ function fixture({
   createTurnStepWorldProcessResolver = null,
   worldBaseReferenceSnapshot = undefined,
   llmDiagnostics = null,
+  authoredTurnProfile = null,
+  postActionPerceptionProfile = null,
+  spatialExpansionRuntime = null,
   beforeSemanticResolve = null,
   beforeRandomSource = null,
   afterCommittedVisibleRead = null,
   afterNarration = null,
+  loadTurnRuntimeCatalogContext = null,
+  turnStepNeedsCheckGuard = null,
 } = {}) {
   const partyId = 'party:trace-phase-2';
   const instance = phase1AInstance(partyId, materializationBundle,
@@ -151,6 +163,11 @@ function fixture({
           },
         }
       : structuredClone(committedState);
+  if (committedState == null) {
+    state.current_visible_context = fixtureOpeningCurrentVisibleContext({
+      state, materializationBundle
+    });
+  }
   const replays = new Map();
   const events = [];
   let committedVisible = null;
@@ -174,9 +191,22 @@ function fixture({
   const npcCombatInputs = [];
   const bundleRequests = [];
   const repository = {
-    async loadPhase2State() {
+    async loadPhase2State(_partyId, options = {}) {
       events.push('load_state');
-      return structuredClone(state);
+      const current = structuredClone(state);
+      if (options.includeCurrentVisibleContext === true
+          && typeof currentSpatialContextProvider === 'function') {
+        current.current_spatial_context = structuredClone(
+          await currentSpatialContextProvider({ partyId,
+            actorId: current.actor_id, state: current }));
+        current.current_spatial_context_is_fresh = true;
+        current.current_spatial_context_filters_entities = true;
+      }
+      if (committedVisible?.visible_payload != null) {
+        current.current_visible_context = phase2VisibleContextFromPayload(
+          committedVisible.visible_payload);
+      }
+      return current;
     },
     async loadPhase2Replay({ idempotencyKey }) {
       return structuredClone(replays.get(idempotencyKey) ?? null);
@@ -198,14 +228,26 @@ function fixture({
         max_repairs: 1,
       });
       if (narration?.status !== 'approved' || narration.pass !== true) {
-        throw new Error('narration_flow_result invalid');
+        const error = new Error('Narration did not produce an approved presentation.');
+        error.code = 'TURN_NARRATION_REJECTED';
+        throw error;
       }
+      const screen = {
+        version: 1,
+        schema: 'lower_dvina_trace_turn_screen',
+        party_id: partyId,
+        turn_id: replay.screen?.turn_id ?? replay.factual?.mode_resolution?.turn_id,
+        turn_number: state.party_state.turn_number,
+        screen_status: 'ready',
+        main_prose: narration.approved_output?.prose ?? 'Готово.'
+      };
       const publicResult = {
         party_id: partyId,
         turn_number: state.party_state.turn_number,
         state_version: state.party_state.state_version,
         completion: structuredClone(state.completion ?? null),
         narration,
+        screen,
       };
       const stored = replays.get(replay.factual.player_input.idempotency_key);
       if (stored) stored.public_result = structuredClone(publicResult);
@@ -511,7 +553,9 @@ function fixture({
     repository,
     bundleLoader: async (request) => {
       bundleRequests.push(structuredClone(request));
-      return scenarioBundle;
+      return scenarioBundle.scene_presentation == null
+        ? { ...scenarioBundle, scene_presentation: SCENE_PRESENTATION }
+        : scenarioBundle;
     },
     decisionSecret: 'phase-2-decision-secret',
     now: () => '2026-07-30T08:00:00.000Z',
@@ -528,10 +572,11 @@ function fixture({
     },
     ...(turnStepModel
       ? {
-          turnStepModel: async (input, repairContext) => {
+          // Forward 3rd arg (services historical_events wrap); do not swallow.
+          turnStepModel: async (input, repairContext, modelCallContext) => {
             turnStepCount += 1;
             turnStepInput = structuredClone(input);
-            return turnStepModel(input, repairContext);
+            return turnStepModel(input, repairContext, modelCallContext);
           },
         }
       : {}),
@@ -556,6 +601,8 @@ function fixture({
     createTurnStepOrdinaryDiscoveryResolver,
     ordinaryDiscoveryEnablementMarker,
     ordinaryDiscoveryScopeBinding,
+    loadTurnRuntimeCatalogContext,
+    turnStepNeedsCheckGuard,
     actionProductionProfile,
     createTurnStepActionProductionOwner,
     localFireProfile,
@@ -602,6 +649,9 @@ function fixture({
       },
     },
     ...(llmDiagnostics ? { llmDiagnostics } : {}),
+    ...(authoredTurnProfile ? { authoredTurnProfile } : {}),
+    postActionPerceptionProfile,
+    ...(spatialExpansionRuntime ? { spatialExpansionRuntime } : {}),
   });
   return {
     bodyUpdateCount: () => bodyUpdateCount,
@@ -631,6 +681,28 @@ function fixture({
     turnStepInput: () => turnStepInput,
     state,
   };
+}
+
+export function fixtureOpeningCurrentVisibleContext({ state, materializationBundle }) {
+  const profiles = materializationBundle?.location_topology_set?.location_profiles;
+  const matches = Array.isArray(profiles)
+    ? profiles.filter(({ location_profile_id }) =>
+      location_profile_id === state?.position?.location_ref) : [];
+  if (matches.length !== 1 || typeof matches[0].display_name !== 'string'
+      || matches[0].display_name.length === 0) {
+    throw new TypeError('Fixture opening screen requires its exact authored location.');
+  }
+  const screen = {
+    version: 1,
+    schema: 'first_game_screen',
+    screen_status: 'ready',
+    party_id: state.party_id,
+    main_prose: 'Тестовая начальная сцена.',
+    visible_context: { place: matches[0].display_name,
+      calendar: 'утро', environment: { facts: [] } }
+  };
+  return phase2InitialCurrentVisibleContext({ screen,
+    openingScreenDigest: canonicalDigest(screen), initialState: state });
 }
 export { bundle, bundle9, fixture, loadScenarioBundle };
 export { currentWorldBaseReferenceSnapshot };

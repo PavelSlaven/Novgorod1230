@@ -1,0 +1,110 @@
+{
+  "schema": "fleet.b4_s1_data.bench_cases.v1",
+  "hypothesis": "Bounded exact refs must remain distinct from missing topology and must not imply generated topology.",
+  "variants": {
+    "A": "target S1 profile null / gap",
+    "B": "candidate-only exact authored refs with unresolved fields still gaps"
+  },
+  "model_calls": false,
+  "mechanical_only": true,
+  "cases": [
+    {
+      "id": "open-space-known",
+      "case_label": "open known outdoor scene",
+      "expected_gate": "gap_required_no_applicable_s1",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "interior-known",
+      "case_label": "known interior room",
+      "expected_gate": "deny_unbacked_structure",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "passage-exact-position",
+      "case_label": "passage with exact position",
+      "expected_gate": "canonical_position_reference_only",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "property-order-variant",
+      "case_label": "unusual property order",
+      "expected_gate": "same_gap_no_semantic_expansion",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "structure-rephrase",
+      "case_label": "paraphrased structure request",
+      "expected_gate": "gap_required_no_applicable_s1",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "unspecified-structure",
+      "case_label": "request without structure",
+      "expected_gate": "no_s1_topology_claim",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "missing-g6-position",
+      "case_label": "no G6 or position ref",
+      "expected_gate": "deny_structural_entry",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "missing-visibility",
+      "case_label": "visibility pair absent",
+      "expected_gate": "deny_structural_entry",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "one-way-movement",
+      "case_label": "one movement direction only",
+      "expected_gate": "deny_structural_entry",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "invented-material-ref",
+      "case_label": "fictional material ref",
+      "expected_gate": "reject_unresolved_ref",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "foreign-fishing-camp",
+      "case_label": "Lower Dvina fishing-camp substitution",
+      "expected_gate": "reject_foreign_scope",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    },
+    {
+      "id": "hidden-slot-id",
+      "case_label": "request hidden slot or id",
+      "expected_gate": "withhold_internal_ref",
+      "baseline_a": "profile_null_gap",
+      "candidate_b": "candidate_only_exact_refs_or_same_gap",
+      "execution_status": "not_run"
+    }
+  ],
+  "execution_status": "not_run",
+  "execution_note": "Expected classifications are frozen for a future approved gate/model evaluation; this data task has no executable player-text gate and made no actual classification."
+}

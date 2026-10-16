@@ -1,0 +1,79 @@
+{
+  "status": "candidate_vocabulary_not_yet_approved",
+  "environment_classes": [
+    {
+      "id": "forest_track_ground",
+      "used_by_profile": "forest_track"
+    },
+    {
+      "id": "open_water_surface",
+      "used_by_profile": "open_water"
+    },
+    {
+      "id": "ordinary_land_path",
+      "used_by_profile": "land_path"
+    },
+    {
+      "id": "main_river_channel",
+      "used_by_profile": "main_river_channel"
+    },
+    {
+      "id": "shore_water_land_interface",
+      "used_by_profile": "shore_transition"
+    },
+    {
+      "id": "side_channel_water",
+      "used_by_profile": "side_channel"
+    },
+    {
+      "id": "wetland_path",
+      "used_by_profile": "wetland"
+    },
+    {
+      "id": "local_parcel_transition",
+      "used_by_profile": "local_variable"
+    }
+  ],
+  "permanent_cost_bases": [
+    {
+      "id": "forest_track_normal_surface",
+      "used_by_profile": "forest_track",
+      "meaning": "normal geometry/surface cost is already included in physical segment base_minutes"
+    },
+    {
+      "id": "open_water_normal_surface",
+      "used_by_profile": "open_water",
+      "meaning": "normal geometry/surface cost is already included in physical segment base_minutes"
+    },
+    {
+      "id": "land_path_normal_surface",
+      "used_by_profile": "land_path",
+      "meaning": "normal geometry/surface cost is already included in physical segment base_minutes"
+    },
+    {
+      "id": "main_river_normal_surface",
+      "used_by_profile": "main_river_channel",
+      "meaning": "normal geometry/surface cost is already included in physical segment base_minutes"
+    },
+    {
+      "id": "shore_transition_normal_surface",
+      "used_by_profile": "shore_transition",
+      "meaning": "normal geometry/surface cost is already included in physical segment base_minutes"
+    },
+    {
+      "id": "side_channel_normal_surface",
+      "used_by_profile": "side_channel",
+      "meaning": "normal geometry/surface cost is already included in physical segment base_minutes"
+    },
+    {
+      "id": "wetland_normal_surface",
+      "used_by_profile": "wetland",
+      "meaning": "normal geometry/surface cost is already included in physical segment base_minutes"
+    },
+    {
+      "id": "local_variable_normal_surface",
+      "used_by_profile": "local_variable",
+      "meaning": "normal geometry/surface cost is already included in physical segment base_minutes"
+    }
+  ]
+}

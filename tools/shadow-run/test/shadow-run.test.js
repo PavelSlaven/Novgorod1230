@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -72,8 +72,9 @@ test('report recommends staged cutover only with full coverage, zero blockers an
   assert.equal(blocked.recommendation.decision, 'no_go');
 });
 
-test('runner executes allowlisted Node tests and writes a report model', async () => {
+test('runner executes allowlisted Node tests and writes a report model', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'shadow-run-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
   await mkdir(join(root, 'test'), { recursive: true });
   await writeFile(join(root, 'test/pass.test.js'), "import test from 'node:test'; import assert from 'node:assert/strict'; test('ok',()=>assert.equal(1,1));\n");
   const validManifest = validateShadowManifest(manifest([coveredCase()]), root);

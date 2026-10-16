@@ -1,0 +1,2930 @@
+{
+  "artifact_type": "npc_baseline_authoring_candidate",
+  "candidate_id": "novgorod_m2c_npc_baseline_g4_v1",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_count": 32,
+    "generation_template_count": 25,
+    "requirement": "Issue #133 M2c step 4: full coded NPC baseline for generated G5 before narration."
+  },
+  "selection_rule": "Exact world_revision_id + G4 id/version + generation_template id/version; one row per G4. No fallback. Choose count 0..2 using explicit candidate weights; choose a referenced profile using explicit weights. These draft choices require independent approval and an owner implementation before execution.",
+  "source_catalogs": {
+    "spatial_target": "data/world-catalogs/novgorod/spatial-v3/manifest.json",
+    "appearance": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json",
+    "appearance_transfer": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
+    "equipment_rows": "data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/authoring-rows.json",
+    "equipment_approval": "data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/approval-attestation.json",
+    "routine": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m21-content/initial-npc-schedule-profile.json"
+  },
+  "appearance_policy": {
+    "required_facets": [
+      "sex_category",
+      "age_category",
+      "build",
+      "skin_tone",
+      "face_shape",
+      "hair_color",
+      "hair_length",
+      "hair_style",
+      "facial_hair",
+      "eye_color"
+    ],
+    "source_demographic_profile_ref": "novgorod_1200_1250_demographic_profile_v1",
+    "source_appearance_profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+    "source_status": "approved_in_v4_and_authoring_approved_carry_forward_to_v6",
+    "target_status": "unbound",
+    "directness": "direct_for_source_rows_analogical_for_target_transfer",
+    "confidence": "medium",
+    "origin_inference_from_appearance": "forbidden",
+    "ethnic_facet_weights": "not_authored",
+    "policy": "Use the existing diverse appearance options without inferring ethnicity or language; never substitute the adult male equipment set for a selected woman."
+  },
+  "profiles": [
+    {
+      "profile_id": "m2c_npc_boatman_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_boatman",
+      "occupation_ref": "nov_occ_boatman",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": "novgorod_commoner_male_basic_clothing_v1",
+      "equipment_authoring_source_ref": "novgorod_transport_guiding_equipment_v1",
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_fisher_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_fisher",
+      "occupation_ref": "nov_occ_fisher",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": "novgorod_commoner_male_basic_clothing_v1",
+      "equipment_authoring_source_ref": "novgorod_fishing_water_equipment_v1",
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_guide_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_guide",
+      "occupation_ref": "nov_occ_route_guide",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": null,
+      "equipment_authoring_source_ref": null,
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_regional_karelian_traveler_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_regional_ingrian_traveler_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_hunter_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_hunter",
+      "occupation_ref": "nov_occ_hunter_trapper",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": null,
+      "equipment_authoring_source_ref": null,
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_forest_worker_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_forest_promyslovik",
+      "occupation_ref": "nov_occ_forest_worker",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": null,
+      "equipment_authoring_source_ref": null,
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_local_trader_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_trader",
+      "occupation_ref": "nov_occ_local_trader",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": null,
+      "equipment_authoring_source_ref": null,
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_visiting_merchant_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_merchant_guest",
+      "occupation_ref": "nov_occ_long_distance_merchant",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": null,
+      "equipment_authoring_source_ref": null,
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_foreign_merchant_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_foreign_guest",
+      "occupation_ref": "nov_occ_long_distance_merchant",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": null,
+      "equipment_authoring_source_ref": null,
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_gotland_guest_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_regional_german_baltic_guest_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_household_servant_v1",
+      "status": "candidate_approval_pending",
+      "role_ref": "nov_role_servant",
+      "occupation_ref": "nov_occ_household_servant",
+      "profile_level": "scene",
+      "materialization_depth": "full",
+      "provenance": {
+        "directness": "direct",
+        "confidence": "medium_high",
+        "role_source": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+        "occupation_source": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+        "role_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "occupation_source_refs": [
+          "src_novgorod_first_chronicle",
+          "src_russkaya_pravda",
+          "src_yanin_novgorod_posadniki",
+          "src_birchbark_corpus_context",
+          "src_project_region_profile_v1",
+          "src_project_map_v6"
+        ],
+        "scope": "Approved regional role/occupation basis; exact presence, population count and target bindings are new authoring."
+      },
+      "demographic_profile_source_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "appearance_target_binding": null,
+      "clothing_authoring_source_ref": null,
+      "equipment_authoring_source_ref": null,
+      "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+      "routine_source_ref": "ordinary_day_work_routine_v1@1",
+      "routine_transfer_status": "proposed_analogy",
+      "seasonal_schedule_source_fields": [
+        "daily_schedule_winter",
+        "daily_schedule_spring_rasputitsa",
+        "daily_schedule_summer",
+        "daily_schedule_autumn"
+      ],
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "actor_base_attributes_target_binding": null,
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ],
+      "regional_context_candidate_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "g4_compositions": [
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "archaeological_settlement"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "passing_people_only",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "burial_area"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "passing_people_only",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_archaeological_area__heritage_access_limited__burial_area]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "archaeological_area",
+        "land_use": "waterway_access",
+        "function": "local_landing"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_local_trader_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_archaeological_area__waterway_access__local_landing]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "backwater_wetland",
+        "land_use": "low_intensity_natural_use",
+        "function": "reed_backwater"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "backwater_wetland",
+        "land_use": "waterway_access",
+        "function": "old_channel"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_backwater_wetland__waterway_access__old_channel]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "estuary",
+        "land_use": "low_intensity_natural_use",
+        "function": "estuary_mixing"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_estuary__low_intensity_natural_use__estuary_mixing]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "estuary",
+        "land_use": "waterway_access",
+        "function": "outer_exposed"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_estuary__waterway_access__outer_exposed]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "floodplain_basin"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_ridge"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_floodplain__low_intensity_natural_use__island_ridge]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_forest_worker_v1",
+        "m2c_npc_hunter_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_forest__forest_resource_use__forest_tract]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "pine_ridge"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_forest_worker_v1",
+        "m2c_npc_hunter_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_forest__forest_resource_use__pine_ridge]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_island__low_intensity_natural_use__island_head]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_island__low_intensity_natural_use__island_head]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "dry_ridge_route"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_ridge__waterway_access__dry_ridge_route]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "landing_terrace"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_local_trader_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_ridge__waterway_access__landing_terrace]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "forest_resource_use",
+        "function": "forest_stream"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_forest_worker_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__forest_resource_use__forest_stream]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "low_intensity_natural_use",
+        "function": "backwater"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__low_intensity_natural_use__backwater]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__channel_split",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "channel_split"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_guide_v1",
+        "m2c_npc_visiting_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__channel_split]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__river_reach]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__river_reach]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__river_reach]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__river_reach]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__river_reach]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__side_channel]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__side_channel]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__side_channel]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "tributary_mouth"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_river_channel__waterway_access__tributary_mouth]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_forest_worker_v1",
+        "m2c_npc_hunter_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_settlement_landscape__forest_resource_use__forest_tract]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "recurrent_settlement_use",
+        "function": "vikhtuy_locality"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_local_trader_v1",
+        "m2c_npc_household_servant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "waterway_access",
+        "function": "landing_terrace"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_local_trader_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_settlement_landscape__waterway_access__landing_terrace]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "driftwood_bar"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_shoal__low_intensity_natural_use__driftwood_bar]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    },
+    {
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+        "version": 1
+      },
+      "authoring_axes": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "shoal_field"
+      },
+      "candidate_profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "profile_weights": [
+        1,
+        1
+      ],
+      "population_policy_status": "candidate_approval_pending",
+      "provenance": {
+        "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/authoring-evidence.json",
+        "source_selector": "families[family_id=m2c_g5_shoal__low_intensity_natural_use__shoal_field]",
+        "directness": "analogical",
+        "confidence": "low",
+        "claim": "Gameplay reconstruction of possible occupation/transit presence; count and equal weights are authoring choices, not historical population estimates."
+      },
+      "ready_for_materialization": false
+    }
+  ],
+  "origin_proposals": [
+    {
+      "profile_ref": {
+        "id": "m2c_npc_regional_novgorod_land_v1",
+        "version": 1
+      },
+      "label": "Новгородская земля",
+      "status": "pending_independent_approval",
+      "directness": "analogical",
+      "confidence": "low"
+    },
+    {
+      "profile_ref": {
+        "id": "m2c_npc_regional_gotland_guest_v1",
+        "version": 1
+      },
+      "label": "Готланд",
+      "status": "pending_independent_approval",
+      "directness": "analogical",
+      "confidence": "low"
+    },
+    {
+      "profile_ref": {
+        "id": "m2c_npc_regional_german_baltic_guest_v1",
+        "version": 1
+      },
+      "label": "Немецкие города Балтийского торгового круга",
+      "status": "pending_independent_approval",
+      "directness": "analogical",
+      "confidence": "low"
+    },
+    {
+      "profile_ref": {
+        "id": "m2c_npc_regional_karelian_traveler_v1",
+        "version": 1
+      },
+      "label": "Корела",
+      "status": "pending_independent_approval",
+      "directness": "analogical",
+      "confidence": "low"
+    },
+    {
+      "profile_ref": {
+        "id": "m2c_npc_regional_ingrian_traveler_v1",
+        "version": 1
+      },
+      "label": "Ижора",
+      "status": "pending_independent_approval",
+      "directness": "analogical",
+      "confidence": "low"
+    }
+  ],
+  "hard_gaps": [
+    {
+      "code": "M2C_NPC_SPATIAL_V3_BINDING_OWNER_MISSING",
+      "owner": "@rus/materialization and game-server World Base reader",
+      "reason": "g4_npc_materialization_rules and region_npc_profile_sets belong to v2 world_revisions/graph_nodes; these Spatial v3 G4 refs must not be inserted into those FK fields. Connect through the existing approved-procedural-NPC owner with a reviewed Spatial v3 binding."
+    },
+    {
+      "code": "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+      "owner": "runtime catalog activation",
+      "reason": "Exact target actor appearance/base-attribute catalog, profile digests, seed, G5 anchor and position must come from approved target/committed generated scene bindings."
+    },
+    {
+      "code": "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+      "owner": "@rus/items-property / materialization",
+      "reason": "Existing equipment authoring covers fisher and boatman only, adult male basic garments; target activation, footwear, women and remaining occupations lack exact bindings. Every selected NPC requires clothing/equipment appropriate to actual sex, role, occupation and season, with property basis."
+    },
+    {
+      "code": "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+      "owner": "Temporal / materialization",
+      "reason": "Regional schedule prose is not an executable activity. Select exact approved activity/body refs and real equipment before initial current_activity. Do not invent health, energy or satiety values."
+    },
+    {
+      "code": "M2C_NPC_ROUTINE_TRANSFER_PENDING",
+      "owner": "@rus/npc-runtime",
+      "reason": "ordinary_day_work_routine_v1 is approved in the scenario source. Reuse outside that binding is an analogical authoring proposal requiring independent approval; exact seasonal activity and current-time start still required."
+    },
+    {
+      "code": "M2C_NPC_LANGUAGE_AUTHORITY_MISSING",
+      "owner": "regional actor authoring",
+      "reason": "Primary treaty and chronicle sources support bounded regional-origin authoring, not exact individual language competence. language_status remains unknown and language_repertoire null. A language-specific action requires separately approved language_ref, proficiency_ref and source_refs; never infer from origin or appearance."
+    },
+    {
+      "code": "M2C_NPC_SPATIAL_ACTIVITY_COMPATIBILITY_REQUIRED",
+      "owner": "Spatial v3 / materialization",
+      "reason": "Before nonzero materialization, exact generated scene position, land/water support and activity/equipment must admit each NPC. A boatman/merchant on water needs a committed vessel and occupancy binding; occupation labels alone never create vessels, cargo, households or land."
+    }
+  ],
+  "completion": {
+    "g4_authoring_coverage": 32,
+    "production_ready_profiles": 0,
+    "independent_approval": "pending_gpt_6_astra_high",
+    "contract_audit": "pending",
+    "runtime_instances_created": false,
+    "canonical_topology_changed": false
+  },
+  "regional_context_sources": [
+    {
+      "id": "m2c_npc_treaty_gotland_german_cities_1191_1192",
+      "kind": "primary_document_translation",
+      "title": "A Treaty of Novgorod with Gotland and the German Cities",
+      "url": "https://www.furthark.com/hanseaticleague/src_pri_1190novgorodgotland.shtml",
+      "edition": "George Vernadsky, ed., A Source Book for Russian History, vol. 1, Yale University Press, 1972, pp. 69-70",
+      "date": "1191/1192 (museum attribution); edition page gives broader 1189-1199",
+      "date_support_url": "https://www.hansemuseum.eu/records/handelsvertrag-mit-dem-fuersten-von-nowgorod/",
+      "direct_claim": "The treaty names merchants from Novgorod, Gotland and German lands and reciprocal travel.",
+      "directness": "direct",
+      "confidence": "high",
+      "exclusions": [
+        "No Lower Dvina presence or frequency",
+        "No individual language competence",
+        "No ethnicity inferred from appearance",
+        "Legal clauses not imported into gameplay"
+      ]
+    },
+    {
+      "id": "m2c_npc_npl_younger_1228",
+      "kind": "primary_chronicle_edition",
+      "title": "Novgorod First Chronicle, younger recension, entry 6736 [1228]",
+      "url": "https://litopys.org.ua/novglet/novg23.htm",
+      "edition": "Novgorodskaia pervaia letopis starshego i mladshego izvodov, published text with variants, p. 271",
+      "date": "1228, retrospective chronicle account",
+      "direct_claim": "The entry names Izhorians and Karelians in the Ladoga/Neva conflict.",
+      "directness": "direct",
+      "confidence": "high",
+      "exclusions": [
+        "Does not attest ordinary trade by these participants",
+        "Does not attest Lower Dvina residents or travelers",
+        "No language repertoire, ethnicity frequency or individual biography"
+      ]
+    }
+  ],
+  "regional_context_profiles": [
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_novgorod_land_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_boatman",
+        "nov_role_fisher",
+        "nov_role_forest_promyslovik",
+        "nov_role_guide",
+        "nov_role_hunter",
+        "nov_role_merchant_guest",
+        "nov_role_servant",
+        "nov_role_trader"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_boatman",
+        "nov_occ_fisher",
+        "nov_occ_forest_worker",
+        "nov_occ_household_servant",
+        "nov_occ_hunter_trapper",
+        "nov_occ_local_trader",
+        "nov_occ_long_distance_merchant",
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Новгородская земля",
+        "kind": "regional_affiliation",
+        "source_refs": [
+          "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Approved regional role basis; an individual affiliation is proposed gameplay reconstruction."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_gotland_guest_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_foreign_guest"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_long_distance_merchant"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Готланд",
+        "kind": "guest_origin",
+        "source_refs": [
+          "m2c_npc_treaty_gotland_german_cities_1191_1192"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Gotland merchants are directly attested for Novgorod; presence in target generated G5 is analogical reconstruction."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_german_baltic_guest_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_foreign_guest"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_long_distance_merchant"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Немецкие города Балтийского торгового круга",
+        "kind": "guest_origin",
+        "source_refs": [
+          "m2c_npc_treaty_gotland_german_cities_1191_1192"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "German merchant contacts are directly attested; Baltic denotes trading geography, not Baltic ethnicity."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_karelian_traveler_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Корела",
+        "kind": "traveler_origin",
+        "source_refs": [
+          "m2c_npc_npl_younger_1228"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Karelians are named in the chronicle near Ladoga/Neva. An ordinary traveler in target G5 is explicitly analogical authoring."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_ingrian_traveler_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Ижора",
+        "kind": "traveler_origin",
+        "source_refs": [
+          "m2c_npc_npl_younger_1228"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Izhorians are named in the chronicle near Ladoga/Neva. An ordinary traveler in target G5 is explicitly analogical authoring."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    }
+  ]
+}

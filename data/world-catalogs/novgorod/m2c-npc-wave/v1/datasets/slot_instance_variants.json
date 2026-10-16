@@ -1,0 +1,402 @@
+[
+  {
+    "variant_id": "siv_001",
+    "variant_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "slot_id": "msr_ferry_crossing",
+    "weight": 1,
+    "applicability": {
+      "scope": "all"
+    },
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "trv_011: источник материала перевозного судна отсутствует",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "размер конкретного пути или судна не установлен",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "состояние конкретного экземпляра не установлено",
+        "confidence": "C"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "возраст конкретного экземпляра не установлен",
+        "confidence": "C"
+      }
+    },
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "candidate_record_ref": "transport:trv_011"
+    }
+  },
+  {
+    "variant_id": "siv_002",
+    "variant_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "slot_id": "msr_homestead_dwelling",
+    "weight": 1,
+    "applicability": {
+      "scope": "all"
+    },
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_log_conifer|mat_moss|mat_plank_hewn|mat_clay|mat_boulder|mat_roof_tes",
+        "source_refs": "",
+        "rule_ref": "building:bt_izba_heated_single.materials",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "16–80 м² (matcult ARC0020); чаще 20–70 м² (nov1230db B028); стороны 4–9 м (arhitekto); сруб около 6×6 м первой половины XIII в. (nov1230db S26)",
+        "value_ref": "",
+        "source_refs": "matcult:ARC0020|nov1230db:B028|nov1230db:S26|ref:arhitekto_2russ27",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "condition": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "данные не задают состояние этого конкретного экземпляра; runtime выбирает его из building_types.condition_states",
+        "confidence": "C"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
+        "confidence": "C"
+      }
+    },
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "candidate_record_ref": "building:bt_izba_heated_single"
+    }
+  },
+  {
+    "variant_id": "siv_003",
+    "variant_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "slot_id": "msr_homestead_fence",
+    "weight": 1,
+    "applicability": {
+      "scope": "all"
+    },
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_log_conifer|mat_pole",
+        "source_refs": "",
+        "rule_ref": "building:bt_palisade_fence.materials",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "городской пример: тын 2–2,5 м высотой, брёвна 13–18 см; частокол 2,5–2,6 м, жерди 14–16 см",
+        "value_ref": "",
+        "source_refs": "book:622242 ¶1262|book:709382 ¶280|book:709382 ¶283",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано",
+        "value_ref": "",
+        "source_refs": "matcult:ARC0014",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
+        "confidence": "C"
+      }
+    },
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "candidate_record_ref": "building:bt_palisade_fence"
+    }
+  },
+  {
+    "variant_id": "siv_004",
+    "variant_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "slot_id": "msr_homestead_fence",
+    "weight": 2,
+    "applicability": {
+      "scope": "all"
+    },
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_wattle|mat_pole",
+        "source_refs": "",
+        "rule_ref": "building:bt_wattle_fence.materials",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "размер для сельского экземпляра не установлен",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "данные не задают состояние этого конкретного экземпляра; runtime выбирает его из building_types.condition_states",
+        "confidence": "C"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
+        "confidence": "C"
+      }
+    },
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "candidate_record_ref": "building:bt_wattle_fence"
+    }
+  },
+  {
+    "variant_id": "siv_005",
+    "variant_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "slot_id": "msr_outbuildings_economic",
+    "weight": 2,
+    "applicability": {
+      "scope": "all"
+    },
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_log_conifer|mat_wattle|mat_plank_hewn|mat_straw|mat_pole",
+        "source_refs": "",
+        "rule_ref": "building:bt_khlev.materials",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "размер для сельского экземпляра не установлен",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано",
+        "value_ref": "",
+        "source_refs": "matcult:ARC0002",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
+        "confidence": "C"
+      }
+    },
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "candidate_record_ref": "building:bt_khlev"
+    }
+  },
+  {
+    "variant_id": "siv_006",
+    "variant_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "slot_id": "msr_outbuildings_economic",
+    "weight": 2,
+    "applicability": {
+      "scope": "all"
+    },
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_log_conifer|mat_plank_hewn|mat_hardwood_bar|mat_iron_hasp|mat_roof_tes",
+        "source_refs": "",
+        "rule_ref": "building:bt_klet_ambar.materials",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "городские примеры: клеть 4×4 м (ярус 1224 г.), амбар 4×4 м (усадьба XII в.); не норма для сельского слота",
+        "value_ref": "",
+        "source_refs": "book:709382 ¶669|book:709382 ¶638",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано",
+        "value_ref": "",
+        "source_refs": "matcult:ARC0018",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
+        "confidence": "C"
+      }
+    },
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "candidate_record_ref": "building:bt_klet_ambar"
+    }
+  },
+  {
+    "variant_id": "siv_007",
+    "variant_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "slot_id": "msr_outbuildings_economic",
+    "weight": 1,
+    "applicability": {
+      "scope": "all"
+    },
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_pole|mat_plank_hewn|mat_wattle|mat_roof_tes|mat_shingle_conifer",
+        "source_refs": "",
+        "rule_ref": "building:bt_light_shed.materials",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "размер для сельского экземпляра не установлен",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "возможны следы дыма, осадки, грязь и ремонт; состояние экземпляра не задано",
+        "value_ref": "",
+        "source_refs": "matcult:ARC0017",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "данные не задают возраст этого конкретного экземпляра; runtime выбирает его из building_types.age_states",
+        "confidence": "C"
+      }
+    },
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "candidate_record_ref": "building:bt_light_shed"
+    }
+  },
+  {
+    "variant_id": "siv_008",
+    "variant_version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "slot_id": "msr_winter_ice_road",
+    "weight": 1,
+    "applicability": {
+      "scope": "winter"
+    },
+    "facets": {
+      "material": {
+        "value": "Санный путь по снегу, льду, болотам и замёрзшим водам.",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "route_modes.csv#trm_novgorod_winter_road.game_use_ru",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "размер конкретного пути или судна не установлен",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "на зимнике возможны снежные заносы и полыньи (пример пути по Ильменю)",
+        "value_ref": "",
+        "source_refs": "book:694952 ¶140",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "C"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "возраст конкретного экземпляра не установлен",
+        "confidence": "C"
+      }
+    },
+    "status": "approved",
+    "confidence": "low",
+    "provenance_ref": "game_base_v1_m2c_people_81d96576",
+    "payload": {
+      "candidate_record_ref": "route:rt_winter_road"
+    }
+  }
+]

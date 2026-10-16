@@ -20,7 +20,7 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
   if (!validCurrentScene(visibleContext)) failCurrentScene();
   const projectedState = applyNpcRoutineTemporalResults(
     structuredClone(committedState ?? {}), temporalResults);
-  const transitions = npcRoutineTransitions(temporalResults);
+  const transitionEntries = npcRoutineTransitionEntries(temporalResults);
   const projectedNpcs = visibleContext.visible_npc.flatMap((npc) =>
     npc?.entity_ref?.entity_kind === 'npc' && text(npc.entity_ref.entity_id)
       ? [{ instance_id: npc.entity_ref.entity_id }] : []);
@@ -32,14 +32,20 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
   }).map((npc) => [npc.instance_id, npc]));
   const visibleBefore = new Set((committedState?.current_visible_context
     ?.visible_npc ?? []).map(({ entity_ref: ref }) => ref?.entity_id));
-  const visibleAfter = new Map(distinctNpcLabels(visibleContext.visible_npc).map((npc) => [
+  const visibleAfterEntries = distinctNpcLabels(visibleContext.visible_npc);
+  const visibleAfter = new Map(visibleAfterEntries.map((npc) => [
     npc?.entity_ref?.entity_id, npc?.display_label
   ]));
-  const observedTransitions = transitions.filter(({ npc_id: id }) =>
-    visibleBefore.has(id) && visibleAfter.has(id));
-  const latestActivity = new Map((projectedState.npcs ?? []).map((npc) => [
-    npc.instance_id, npc.machine_state?.current_activity?.summary
-  ]));
+  const visibleLabelCounts = new Map();
+  for (const label of visibleAfter.values()) {
+    if (text(label)) visibleLabelCounts.set(label,
+      (visibleLabelCounts.get(label) ?? 0) + 1);
+  }
+  const observedTransitions = transitionEntries.filter(({ transition }) =>
+    visibleBefore.has(transition.npc_id) && visibleAfter.has(transition.npc_id));
+  const observedChangeCues = observedNpcChangeCues({
+    observedTransitions, visibleAfter, visibleLabelCounts
+  });
   const beforeContext = currentActorContext(committedState?.body_state, committedState?.clock, calendarProfile);
   const afterContext = currentActorContext(bodyAfter ?? committedState?.body_state,
     clockAfter ?? committedState?.clock, calendarProfile);
@@ -54,14 +60,9 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
       `${BODY_CHANGE_CONTEXT}${JSON.stringify({ before: removed, after: added })}`];
   return deepFreeze({
     ...structuredClone(visibleContext),
-    visible_changes: [...new Set([...visibleContext.visible_changes,
-      ...observedTransitions.flatMap(({ npc_id: id, proposal }) => {
-        const summary = proposal?.factual_transition?.summary;
-        const label = visibleAfter.get(id);
-        return text(label) && text(summary)
-          ? [`${label} ${lowerInitial(summary)}`] : [];
-      }),
-      ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])])],
+    visible_changes: [...new Set(visibleContext.visible_changes),
+      ...observedChangeCues,
+      ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])],
     known_context: [...new Set([...visibleContext.known_context.filter(value =>
       !beforeContext.includes(value) && !value.startsWith(BODY_CHANGE_CONTEXT)),
       ...afterContext, ...conditionChanges,
@@ -70,35 +71,84 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
           ...(committedState?.player_profile?.knowledge?.initial_records ?? []),
           ...(committedState?.knowledge ?? [])]), projectInteractions(committedState?.interactions))])],
     visible_npc: visibleContext.visible_npc.map((npc) => {
-      const detail = details.get(npc?.entity_ref?.entity_id);
+      const id = npc?.entity_ref?.entity_id;
+      // ponytail: only observed (visible before+after) transitions may refresh
+      // status; never machine_state.current_activity.summary (private note).
+      const observed = observedTransitions.find(({ transition }) =>
+        transition.npc_id === id);
+      const transitionStatus = text(observed?.transition.proposal?.factual_transition?.summary)
+        ? observed.transition.proposal.factual_transition.summary
+        : null;
+      const detail = details.get(id);
       const informative = detail != null
         && (detail.visible_equipment.length > 0
           || Object.keys(detail.presentation).length > 0
           || detail.ordinary_remainder != null
           || Object.keys(detail.identity_state).some((key) =>
             key !== 'display_name'));
-      const status = latestActivity.get(npc?.entity_ref?.entity_id);
-      return !informative && !text(status) ? structuredClone(npc) : {
+      if (!informative && !transitionStatus) return structuredClone(npc);
+      return {
         ...structuredClone(npc),
-        ...(text(status) ? { visible_status: status } : {}),
-        observable_cues: {
-          identity: structuredClone(detail.identity_state),
-          equipment: structuredClone(detail.visible_equipment),
-          outward_presentation: structuredClone(detail.presentation),
-          ...(detail.ordinary_remainder == null ? {} : {
-            ordinary_remainder: structuredClone(detail.ordinary_remainder)
-          })
-        }
+        ...(transitionStatus ? { visible_status: transitionStatus } : {}),
+        ...(informative ? {
+          observable_cues: {
+            identity: structuredClone(detail.identity_state),
+            equipment: structuredClone(detail.visible_equipment),
+            outward_presentation: structuredClone(detail.presentation),
+            ...(detail.ordinary_remainder == null ? {} : {
+              ordinary_remainder: structuredClone(detail.ordinary_remainder)
+            })
+          }
+        } : {})
       };
     })
   });
 }
 
-function npcRoutineTransitions(results) {
-  return (results ?? []).flatMap((result) =>
-    result?.combined_change_set?.proposals ?? [])
-    .map(({ npc_routine_transition: transition }) => transition)
-    .filter(Boolean);
+function npcRoutineTransitionEntries(results) {
+  return (results ?? []).flatMap((result, resultIndex) =>
+    (result?.combined_change_set?.proposals ?? [])
+      .map(({ npc_routine_transition: transition }) => transition)
+      .filter(Boolean)
+      .map((transition) => ({ transition,
+        boundary_key: temporalBoundaryKey(transition.occurred_at, resultIndex) })));
+}
+
+function temporalBoundaryKey(occurredAt, resultIndex) {
+  if (occurredAt == null) return `result:${resultIndex}`;
+  if (typeof occurredAt === 'object'
+      && occurredAt.whole_minutes != null
+      && occurredAt.subminute_numerator != null
+      && occurredAt.subminute_denominator != null) {
+    return `time:${occurredAt.whole_minutes}:${occurredAt.subminute_numerator}/${occurredAt.subminute_denominator}`;
+  }
+  return `time:${JSON.stringify(occurredAt)}`;
+}
+
+function observedNpcChangeCues({ observedTransitions, visibleAfter, visibleLabelCounts }) {
+  const groups = new Map();
+  for (const entry of observedTransitions) {
+    const { transition, boundary_key } = entry;
+    const summary = transition.proposal?.factual_transition?.summary;
+    const label = visibleAfter.get(transition.npc_id);
+    if (!text(label) || !text(summary)) continue;
+    const key = JSON.stringify([boundary_key, label, summary]);
+    const group = groups.get(key) ?? { label, summary, npcIds: new Set() };
+    group.npcIds.add(transition.npc_id);
+    groups.set(key, group);
+  }
+  return [...groups.values()].map(({ label, summary, npcIds }) => {
+    if (visibleLabelCounts.get(label) === 1) return `${label} ${lowerInitial(summary)}`;
+    const count = npcIds.size;
+    return `${count} ${peopleForm(count)} с общей подписью «${label}»: ${summary}`;
+  });
+}
+
+function peopleForm(count) {
+  const lastTwo = count % 100;
+  if (lastTwo >= 12 && lastTwo <= 14) return 'человек';
+  const last = count % 10;
+  return last >= 2 && last <= 4 ? 'человека' : 'человек';
 }
 
 function currentActorContext(body, clock, calendarProfile) {

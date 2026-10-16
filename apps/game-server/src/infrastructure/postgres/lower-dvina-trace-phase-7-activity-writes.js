@@ -88,8 +88,8 @@ export function appendPhase7Activities({ inserts, updates, appends, partyId, sta
             phase7.schedule_temporal.completion_candidate
           )
         },
-        npc_schedule_result: scheduleTrace(phase7.schedule_execution,
-          changeSetId)
+        npc_schedule_result: structuredClone(
+          next.phase7_fire_rest.schedule_result)
       },
       bodyEffectRefs: completed
         ? [factual.body_update.proposal.profile_ref] : []
@@ -111,26 +111,6 @@ export function appendPhase7Activities({ inserts, updates, appends, partyId, sta
 
 function ref(entityKind, entityId) {
   return { entity_kind: entityKind, entity_id: entityId };
-}
-
-function scheduleTrace(execution, changeSetId) {
-  return {
-    status: execution.status,
-    failure_code: execution.failure_code ?? null,
-    semantic_operation: structuredClone(execution.semantic_operation),
-    ...(execution.additional_semantic_operations?.length > 0 ? {
-      additional_semantic_operations: structuredClone(
-        execution.additional_semantic_operations)
-    } : {}),
-    execution_binding_ref: execution.execution_binding_ref,
-    schedule_option_id: execution.schedule_option_id,
-    activity_profile_ref: execution.activity_profile_ref,
-    exact_elapsed: structuredClone(execution.exact_elapsed),
-    clock_before: structuredClone(execution.clock_before),
-    clock_after: structuredClone(execution.clock_after),
-    factual_result_source: execution.factual_result_source,
-    change_set_id: changeSetId
-  };
 }
 
 function activityExecution({ id, profileRef, ownerRef, state, factual, next,

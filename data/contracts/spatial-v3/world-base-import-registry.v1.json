@@ -7,6 +7,19 @@
     ["source_records"],
     ["universal_categories"],
     ["spatial_v3_world_revisions"],
+    ["place_families"],
+    [
+      "spatial_node_place_family_bindings",
+      "presence_rules",
+      "water_body_presence_facets",
+      "npc_relationship_materialization_rules",
+      "speech_address_forms",
+      "household_composition_profiles",
+      "slot_instance_variants",
+      "fauna_phase_activity_rules",
+      "npc_schedule_routine_rules",
+      "place_population_composition_rules"
+    ],
     [
       "spatial_v3_authoring_versions",
       "spatial_v3_controlled_vocabulary_bindings"
@@ -30,6 +43,7 @@
     [
       "spatial_v3_orientation_reference_frames",
       "spatial_v3_movement_orientation_profiles",
+      "spatial_v3_line_kind_profiles",
       "spatial_v3_g4_directional_exits",
       "spatial_v3_world_routes",
       "spatial_v3_world_route_points",
@@ -59,21 +73,37 @@
       "spatial_v3_scene_movement_edge_templates"
     ],
     [
+      "spatial_v3_expansion_rule_sets"
+    ],
+    [
+      "spatial_v3_terminal_policies",
+      "spatial_v3_continuation_length_rules",
+      "spatial_v3_continuation_length_candidates"
+    ],
+    [
       "spatial_v3_g4_expansion_profiles",
       "spatial_v3_g5_generation_templates",
       "spatial_v3_expansion_profile_template_limits",
       "spatial_v3_expansion_slots",
       "spatial_v3_expansion_slot_templates",
-      "spatial_v3_g5_successor_frontier_rules"
+      "spatial_v3_g5_successor_frontier_rules",
+      "spatial_v3_g4_npc_composition_bindings",
+      "spatial_v3_npc_runtime_profiles",
+      "spatial_v3_npc_regional_context_profiles"
     ],
+    ["spatial_v3_g6_acoustic_baselines"],
+    ["spatial_v3_local_movement_eligibility_profiles"],
     ["record_sources"]
   ],
   "allowlist": [
+    "spatial_v3_local_movement_eligibility_profiles",
     "source_records",
     "record_sources",
     "universal_categories",
     "spatial_v3_world_revisions",
     "spatial_v3_authoring_versions",
+    "spatial_v3_external_dependency_versions",
+    "spatial_v3_expansion_rule_sets",
     "spatial_v3_nodes",
     "spatial_v3_node_parents",
     "spatial_v3_node_classes",
@@ -91,6 +121,8 @@
     "spatial_v3_transition_environment_profiles",
     "spatial_v3_movement_method_cost_profiles",
     "spatial_v3_movement_method_cost_options",
+    "spatial_v3_line_kind_profiles",
+    "spatial_v3_line_kind_alternative_methods",
     "spatial_v3_dynamic_recheck_policies",
     "spatial_v3_dynamic_recheck_policy_points",
     "spatial_v3_world_route_segments",
@@ -108,6 +140,9 @@
     "spatial_v3_continuation_length_candidates",
     "spatial_v3_g4_expansion_profiles",
     "spatial_v3_g5_generation_templates",
+    "spatial_v3_g4_npc_composition_bindings",
+    "spatial_v3_npc_runtime_profiles",
+    "spatial_v3_npc_regional_context_profiles",
     "spatial_v3_expansion_profile_template_limits",
     "spatial_v3_expansion_slots",
     "spatial_v3_expansion_slot_templates",
@@ -118,6 +153,7 @@
     "spatial_v3_scene_materialization_profiles",
     "spatial_v3_scene_materialization_candidates",
     "spatial_v3_g6_template_slots",
+    "spatial_v3_g6_acoustic_baselines",
     "spatial_v3_scene_position_templates",
     "spatial_v3_scene_endpoint_slots",
     "spatial_v3_portal_templates",
@@ -134,6 +170,17 @@
     "spatial_v3_canonical_g5_connection_bindings",
     "spatial_v3_g4_entry_endpoint_bindings",
     "spatial_v3_topological_direction_contexts",
-    "spatial_v3_g4_traversal_profiles"
+    "spatial_v3_g4_traversal_profiles",
+    "place_families",
+    "spatial_node_place_family_bindings",
+    "presence_rules",
+    "npc_relationship_materialization_rules",
+    "speech_address_forms",
+    "household_composition_profiles",
+    "slot_instance_variants",
+    "water_body_presence_facets",
+    "fauna_phase_activity_rules",
+    "npc_schedule_routine_rules",
+    "place_population_composition_rules"
   ]
 }

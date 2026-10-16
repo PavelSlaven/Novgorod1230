@@ -43,6 +43,34 @@ test('ordinary aggregate logical contract keeps stale CAS explicit', async () =>
   assert.deepEqual(await store.compareAndSet({ ...identity, expected_state_version: 0, aggregate }), { status: 'stale' });
 });
 
+test('ordinary aggregate logical contract accepts g5 scope from contracts enum', async () => {
+  const g5Identity = { party_id: 'party-a', scope_ref: { entity_kind: 'g5', entity_id: 'scope-g5' } };
+  const g5Aggregate = applyOrdinaryAggregateTransition({
+    aggregate: createOrdinaryAggregate({ scope_ref: g5Identity.scope_ref, resolution_record_cap: 1 }),
+    transition: { kind: 'seed', request_identity: 'seed-g5', expected_state_version: 0, density_band: 'sparse', identity_budget: 1, background_groups: [] }
+  });
+  assert.deepEqual(normalizeOrdinaryAggregateIdentity(g5Identity), g5Identity);
+  const store = createOrdinaryAggregateStore({
+    load: async () => ({ status: 'unseeded' }),
+    compareAndSet: async () => ({ status: 'committed', state_version: 1 })
+  });
+  assert.deepEqual(
+    await store.compareAndSet({ ...g5Identity, expected_state_version: 0, aggregate: g5Aggregate }),
+    { status: 'committed', state_version: 1 }
+  );
+});
+
+test('ordinary aggregate SCOPE_KINDS stays in sync with contracts scope_kind enum', async () => {
+  const { ORDINARY_MATERIALIZATION_V1_ENUMS } = await import('@rus/contracts');
+  for (const kind of ORDINARY_MATERIALIZATION_V1_ENUMS.scope_kind) {
+    assert.doesNotThrow(() => normalizeOrdinaryAggregateIdentity({
+      party_id: 'party-a',
+      scope_ref: { entity_kind: kind, entity_id: `scope-${kind}` }
+    }));
+  }
+  assert.ok(ORDINARY_MATERIALIZATION_V1_ENUMS.scope_kind.includes('g5'));
+});
+
 test('ordinary aggregate logical contract rejects malformed public payloads before its ports run', async () => {
   let calls = 0;
   const store = createOrdinaryAggregateStore({

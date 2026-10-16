@@ -56,7 +56,7 @@ function expressionFeature(value) {
 }
 
 function hairFeature(value) {
-  return { straight: 0, wavy: 1, loose: 2, braided: 3 }[value];
+  return { straight: 0, wavy: 1, loose: 2, braided: 3 }[value] ?? 0;
 }
 
 function ageFeature(value) {

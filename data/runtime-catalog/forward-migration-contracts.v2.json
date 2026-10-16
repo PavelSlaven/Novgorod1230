@@ -10,7 +10,26 @@
   "migrations": [
     {
       "migration_id": "world_legacy_062_to_canonical_v1",
-      "migration_digest": "52adb2e1e16fd4a2f7f4f4858b749121512714515a2a3059290d5ef54d595f11",
+      "migration_digest": "00b2117919c568b61e174dd96241c25a912df2497bd42ea388be20122b7ac717",
+      "schema_name": "world_base",
+      "source_schema_fingerprint": "869021eded07633eec27048a102600385248e5a8e5f8dd499943d404e17fad8f",
+      "target_schema_fingerprint": "420103523402f005fe58ecbdbc6f50ec7f939221eb2b01ae9dbad9f34743282d",
+      "sql_paths": [
+        "infra/world-base/schema/09.sql..20.sql",
+        "tools/runtime-catalog-activation/migrations/world/000_legacy_world_bridge_finalize.sql"
+      ]
+    },
+    {
+      "migration_id": "world_runtime_catalog_activation_v2",
+      "migration_digest": "61d5e9563f09a25bc058026ae4f6d030891771a42f0eadae237fe2176bf01263",
+      "schema_name": "world_base",
+      "source_schema_fingerprint": "420103523402f005fe58ecbdbc6f50ec7f939221eb2b01ae9dbad9f34743282d",
+      "target_schema_fingerprint": "150bbcddc46d37273b83cc0bf1ffe16f640c2640766b0b3101af41dcf48cc8ea",
+      "sql_path": "tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql"
+    },
+    {
+      "migration_id": "world_legacy_062_to_canonical_v2",
+      "migration_digest": "667c61d1a81b138e47705f1ad605b20225630f3c847b6aa8e79f4307ce28d18d",
       "schema_name": "world_base",
       "source_schema_fingerprint": "869021eded07633eec27048a102600385248e5a8e5f8dd499943d404e17fad8f",
       "target_schema_fingerprint": "9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080",
@@ -20,11 +39,11 @@
       ]
     },
     {
-      "migration_id": "world_runtime_catalog_activation_v2",
-      "migration_digest": "66afda650fbefb0560bef97602e2d30e3b8b4fb49e06b25f404d4e57cc25ec72",
+      "migration_id": "world_runtime_catalog_activation_v3",
+      "migration_digest": "27ba1022d58edad89f6caed270667b7b5b5a09f885747c6e23c8a35c987e3e99",
       "schema_name": "world_base",
       "source_schema_fingerprint": "9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080",
-      "target_schema_fingerprint": "e977fdd2e6a7f06fd801b32b23965f35106d057c63989200546f179c6193091d",
+      "target_schema_fingerprint": "9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6",
       "sql_path": "tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql"
     },
     {
@@ -34,6 +53,22 @@
       "source_schema_fingerprint": "16f99b12e58ce60f6c87e29e0824518987ddb66b9ee6c7d945daebc2b0957817",
       "target_schema_fingerprint": "47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165",
       "sql_path": "tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql"
+    },
+    {
+      "migration_id": "world_actor_base_attributes_owner_v1",
+      "migration_digest": "d1f993fa308622566cc32a9f655cf6dce274f68bc6a5612c9853e87a0cc8bd33",
+      "schema_name": "world_base",
+      "source_schema_fingerprint": "9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6",
+      "target_schema_fingerprint": "18c437d4515ab951374cd5c8849c61d7188f4147ac128e0b81b050f1eb485927",
+      "sql_path": "tools/runtime-catalog-activation/migrations/world/002_actor_base_attributes_owner.sql"
+    },
+    {
+      "migration_id": "party_actor_base_attributes_pins_v1",
+      "migration_digest": "378484a1653cd53049e37bed592cf2bd76c06bd040dadfa3a27fc29882b04d59",
+      "schema_name": "party_runtime",
+      "source_schema_fingerprint": "47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165",
+      "target_schema_fingerprint": "25a8012cb25446a30b8896c30c78ed161505ec75689dbc6914bed669bac71299",
+      "sql_path": "tools/runtime-catalog-activation/migrations/party/002_actor_base_attributes_pins.sql"
     }
   ]
 }

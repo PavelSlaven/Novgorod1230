@@ -10,7 +10,7 @@ import {
   validateNarrationOutput,
   validateNarrationSemanticRepair
 } from '@rus/narration';
-import { resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
+import { actionProducedWeaponClassificationFromModelOutput, resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
 import {
   validateConversationContributionPlan,
   validateNpcCombatIntentPlan,
@@ -386,8 +386,11 @@ function sumUsage(calls) {
 }
 
 function validateRoleOutput(fixture, output) {
-  const payload = fixture.role_id.startsWith('gameplay_narrator')
-    ? fixture.request : messagePayload(fixture.messages);
+  const authoritativeRequest = fixture.role_id.startsWith('gameplay_narrator')
+    || fixture.validator === 'world_process_step_plan'
+    || fixture.validator === 'npc_combat_plan';
+  const payload = authoritativeRequest ? fixture.request
+    : messagePayload(fixture.messages);
   const request = fixture.repair === true && payload?.request ? payload.request : payload;
   switch (fixture.validator) {
     case 'turn_step_plan': return validateTurnStepPlan(output, { request }).ok ? [] : ['validator:turn_step_plan'];
@@ -398,7 +401,7 @@ function validateRoleOutput(fixture, output) {
     case 'npc_step_plan': return validateNpcStepPlan(output, request) ? [] : ['validator:npc_step_plan'];
     case 'npc_combat_plan': return validateNpcCombatPlanApplicability(output, request).pass ? [] : ['validator:npc_combat_plan'];
     case 'combat_weapon_classification':
-      try { resolveActionProducedCombatWeaponClass({ classification: output }); return []; }
+      try { resolveActionProducedCombatWeaponClass({ classification: actionProducedWeaponClassificationFromModelOutput(output, request?.request_id) }); return []; }
       catch { return ['validator:combat_weapon_classification']; }
     case 'narration_output': {
       const requestId = request?.request_id;
@@ -461,13 +464,14 @@ function assembleFixtureOutput(fixture, output) {
   const request = fixture.repair === true && payload?.request
     ? payload.request : payload;
   if (fixture.role_id === 'world_process_step') {
-    return assembleWorldProcessStepPlan(output, request);
+    return assembleWorldProcessStepPlan(output, fixture.request ?? request);
   }
   if (fixture.role_id.startsWith('turn_step_planner')) {
     return assembleTurnStepPlan(output, request);
   }
   if (fixture.role_id.startsWith('npc_combat_decider')) {
-    return assembleNpcCombatPlan(output, request);
+    const combatRequest = fixture.request?.request ?? fixture.request ?? request;
+    return assembleNpcCombatPlan(output, combatRequest);
   }
   if (fixture.role_id.startsWith('player_conversation_interpreter')) {
     return assemblePlayerConversationPlan(output, request);

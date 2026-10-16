@@ -1,0 +1,53 @@
+{
+  "schema": "f1_independent_approval_review_v3",
+  "who": "Codex sol 6.1 — независимый утверждающий ap-b4-f1, D67; не автор данных",
+  "when": "2026-10-03T08:07:10Z",
+  "path": "/srv/novgorod-work/worktrees/b4-f1-data/data/world-catalogs/novgorod/live-world-runtime-v17",
+  "files": [
+    "f1-v17-candidate.json",
+    "f1-source-map.json",
+    "f1-typed-gaps.json",
+    "report-b4-f1-data.md",
+    "validate-f1-candidate.mjs"
+  ],
+  "commit": "31f373b32b07f4f34659184f83c09ead6b5221fe",
+  "commit_status": "Проверен git commit утверждённого содержимого; пять файлов побайтово совпадают с проверенной авторской версией.",
+  "verdict": "APPROVE_WITH_LIMITS",
+  "verdict_scope": "Положительное утверждение WR §21.1 только authoring/data-only пакета F1 с перечисленными ограничениями.",
+  "approval_granted": true,
+  "approval_status": "APPROVED_WITH_LIMITS",
+  "reviewer_request": "A-ap-b4-f1-commit | 2026-10-03T08:03:36Z",
+  "findings_closed": [
+    "F1-01",
+    "F1-02",
+    "F1-03",
+    "F1-04",
+    "F1-01-R2-01",
+    "F1-R2-P3-01"
+  ],
+  "blocking_data_findings": [],
+  "workflow_blockers": [],
+  "limits": [
+    "Только authoring/качественные типовые данные и явно ограниченные ссылки на upstream designs.",
+    "33 scoped bindings и все 231 typed gap остаются открытыми; текущие stock, quantities/mass/depletion, owner/access, water, initial fire и position/topology не утверждены.",
+    "Canonical scope33 property context — informational G4 pointer; generated stock/completeness policy не наследуется.",
+    "Нет разрешения на import/activation/release/runtime.",
+    "Поведение модели, gameplay и current source/property readback не проверены."
+  ],
+  "evidence": [
+    "report-ap-b4-f1-3.md",
+    "validator-review-3.md",
+    "diff-p3-review-3.md",
+    "check-results-3.json",
+    "author-check-results-3.json",
+    "committed-content-check.json",
+    "committed-content-check.md"
+  ],
+  "repository": "/srv/novgorod-work/worktrees/b4-f1-data",
+  "repository_relative_path": "data/world-catalogs/novgorod/live-world-runtime-v17/",
+  "branch": "fleet/b4-f1-data",
+  "technical_review_when": "2026-10-03T07:10:24Z",
+  "content_verification": "committed-content-check.json",
+  "import_authorized": false,
+  "activation_authorized": false
+}

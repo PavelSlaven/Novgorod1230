@@ -5,14 +5,14 @@ const REASONING_EFFORTS = new Set(['minimal', 'low', 'medium', 'high', 'xhigh'])
 export const LLM_MAX_OUTPUT_TOKENS = 20_000;
 export const LLM_REQUEST_TIMEOUT_MS = 120_000;
 const JSON_FORMAT_INSTRUCTION = Object.freeze({
-  role: 'system', content: 'Return a valid json object.'
+  role: 'system', content: 'Верните корректный объект JSON.'
 });
 
 export function resolveRuntimeProviderOverride(override) {
   if (override == null) return { ok: true, config: null };
   if (!override || typeof override !== 'object') return { ok: false };
   const compatibility = readText(override.compatibility ?? override.provider);
-  if (compatibility !== 'openai_compatible' && compatibility !== 'deepseek') return { ok: false };
+  if (compatibility !== 'openai_compatible') return { ok: false };
   const baseUrl = readText(override.requestUrl ?? override.baseUrl);
   const model = readText(override.model);
   const requestUrl = normalizeRequestUrl(baseUrl);
@@ -47,7 +47,7 @@ export function normalizeRequestUrl(value) {
 }
 
 export function normalizeBaseUrl(value) {
-  return value?.trim().replace(/\/+$/, '') || 'https://api.deepseek.com';
+  return readText(value).replace(/\/+$/, '') || null;
 }
 
 export function applyProviderOverrides(config, overrides) {
@@ -93,7 +93,10 @@ export function normalizeExecutionLimits(config) {
   config.maxTokens = requestedMaxTokens === null
     ? LLM_MAX_OUTPUT_TOKENS
     : Math.min(requestedMaxTokens, LLM_MAX_OUTPUT_TOKENS);
-  config.requestTimeoutMs = LLM_REQUEST_TIMEOUT_MS;
+  const requestedTimeoutMs = readPositiveInt(config.requestTimeoutMs);
+  config.requestTimeoutMs = requestedTimeoutMs === null
+    ? LLM_REQUEST_TIMEOUT_MS
+    : Math.min(requestedTimeoutMs, LLM_REQUEST_TIMEOUT_MS);
 }
 
 export function buildProviderRequestPayload(config, messages) {
@@ -107,8 +110,6 @@ export function buildProviderRequestPayload(config, messages) {
       ? { chat_template_kwargs: { enable_thinking: false } } : {}),
     ...(config.compatibility === 'openai_compatible' && config.reasoningEffort
       ? { reasoning_effort: config.reasoningEffort } : {}),
-    ...(config.compatibility === 'deepseek' && config.thinking ? { thinking: config.thinking } : {}),
-    ...(config.compatibility === 'deepseek' && config.reasoningEffort ? { reasoning_effort: config.reasoningEffort } : {}),
     ...(config.temperature != null ? { temperature: config.temperature } : {}),
     ...(config.topP != null ? { top_p: config.topP } : {})
   };

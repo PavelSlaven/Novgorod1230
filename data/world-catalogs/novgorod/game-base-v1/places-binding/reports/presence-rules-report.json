@@ -89,11 +89,11 @@
   "pool_rows_accepted": 5906,
   "environment_authoring_rows": 855,
   "environment_projection_rows": 1236,
-  "rules_written": 6976,
+  "rules_written": 6973,
   "category_rules": 5723,
-  "people_rules": 17,
+  "people_rules": 14,
   "environment_rules": 1236,
-  "seasonal_candidate_rows": 10928,
+  "seasonal_candidate_rows": 10912,
   "resolutions": [
     {
       "key": "place_family|pf_bridge_crossing|||category|cat_item_object_drawstring_pouch_v1",
@@ -6150,33 +6150,6 @@
       ]
     },
     {
-      "key": "place_family|pf_rural_yard|region_novgorod_land||social_role|nov_role_smerd_householder",
-      "reason": "time_union",
-      "tie_break": "",
-      "behavior_conflict": false,
-      "chosen": {
-        "source_pool": "presence/people_presence_authoring.csv#row17",
-        "source_row_id": "17",
-        "item_ref": ""
-      },
-      "equivalent": [
-        {
-          "source_pool": "presence/people_presence_authoring.csv#row18",
-          "source_row_id": "18",
-          "item_ref": ""
-        }
-      ],
-      "variants": [],
-      "dropped": [],
-      "compared": [],
-      "seasons": [
-        "autumn",
-        "spring",
-        "summer",
-        "winter"
-      ]
-    },
-    {
       "key": "place_family|pf_town_courtyard|||category|cat_item_object_ball_v1",
       "reason": "equal_evidence_stable_tie",
       "tie_break": "equal_evidence_stable_tie",
@@ -8020,11 +7993,11 @@
     "analogy": 11
   },
   "by_scope_kind": {
-    "place_family": 6976
+    "place_family": 6973
   },
   "by_class": {
     "common": 1347,
-    "contextual": 2954,
+    "contextual": 2951,
     "ubiquitous": 443,
     "rare": 2232
   }

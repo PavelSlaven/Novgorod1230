@@ -4,15 +4,16 @@ import { serverError } from '../errors.js';
 
 export const SPATIAL_V3_PRODUCTION_BINDINGS_MODULE =
   'builtin:spatial-v3-production-v16';
+export const SPATIAL_V3_TARGET_BINDINGS_MODULE = 'builtin:spatial-v3-production-v17';
 
 export function resolveSpatialV3ProductionBindingsModule(config, env) {
   const selected = config.spatialV3BindingsModule
     ?? env.RUS_SPATIAL_V3_BINDINGS_MODULE
     ?? SPATIAL_V3_PRODUCTION_BINDINGS_MODULE;
-  if (selected !== SPATIAL_V3_PRODUCTION_BINDINGS_MODULE) {
+  if (![SPATIAL_V3_PRODUCTION_BINDINGS_MODULE, SPATIAL_V3_TARGET_BINDINGS_MODULE].includes(selected)) {
     throw serverError(
       'RUNTIME_BINDINGS_MODULE_INACTIVE',
-      'Only the production-v16 spatial-v3 runtime binding may be selected.'
+      'Only a release-pinned built-in spatial-v3 runtime binding may be selected.'
     );
   }
   return selected;
@@ -34,6 +35,8 @@ export async function loadSpatialV3RuntimeBindings(
         './releases/spatial-v3-production-v16-bindings.js',
         import.meta.url
       ).href
+    : reference === SPATIAL_V3_TARGET_BINDINGS_MODULE
+      ? new URL('./releases/spatial-v3-production-v17-bindings.js', import.meta.url).href
     : reference.startsWith('.') || isAbsolute(reference)
       ? pathToFileURL(resolve(reference)).href
       : reference;

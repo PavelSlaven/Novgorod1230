@@ -331,3 +331,13 @@ evidence, плюс все 3 WK-строки против claims. Итого вр
   6. livestock `phase_activity.csv`: 996→996 строк, id не менялись; изменено содержимое 9 строк (куры/овцы/свиньи/крупный скот, летний/зимний вечер и т.п.) — добавлены `voice_text_ref`/уточнены `source_refs`, у части строк `visibility_state`/`voice_state` перешли из `no_source` в `yes` (летние сумерки скота, K8).
   7. `settlement_ambience_texts.csv`: 184→185 строк; добавлена `sat_ferry_landing_smells_winter_185`; изменена `sat_ferry_landing_smells_winter_057` (текст clear/partial о зимнем дыме на перевозе).
   8. `relationship_rules.csv`: добавлен 1 id (`rel_start_joint_work_cfd99623f78d343d`), удалений нет. `address_forms.csv`: добавлено 2 id (`form_start_gap_aaf8f803ba39a62d`, `form_start_gap_df626d9ed76da6d4`), удалений нет.
+
+## Независимая проверка D53 (Claude Opus 5.5, 2026-09-30)
+
+- **Кто:** независимый проверяющий Claude Opus 5.5, не автор (автор — исполнитель fleet ferry-guard, Claude Sonnet 5.5). Проверен диапазон `c3b6fc0d..8fc15870`.
+- **Основание:** решение владельца D53 — сторожа переправы на пристанях нет в источниках (в индексе книг «сторож брода/переправы/перевоза» — 0 попаданий); на `pf_ferry_landing` остаётся перевозчик; запись занятия остаётся (D38).
+- **Проверено:** перегенерация волны на пине 81d96576 совпала побайтно; из производных таблиц удалены только строки со сторожем, добавленных строк нет; `build_schedules.py --check` (161), `households check.py`, `occupations validate.py`, `check-people-composition --self-test` (17 PF, 7 групп, 41 проба) — PASS.
+- **Что:** из расписаний D-1 убраны 6 строк сторожа (`pf_ferry_landing`, `pf_winter_ice_crossing`); `schedules_routines.csv` 167 → 161.
+- time/schedules_routines.csv — approve: сгенерирован, пересобран, минус 6 строк сторожа
+
+Вердикт группы: **approve_with_limits** (прежние ограничения группы в силе).

@@ -61,7 +61,7 @@ export const PORTRAIT_SPEC_V1_JSON_SCHEMA = deepFreeze({
   properties: {
     schema: { type: 'string', const: SCHEMA_NAME },
     person: objectSchema(PORTRAIT_SPEC_V1_ENUMS.person),
-    hair: objectSchema(PORTRAIT_SPEC_V1_ENUMS.hair),
+    hair: hairSchema(),
     eyes: objectSchema(PORTRAIT_SPEC_V1_ENUMS.eyes),
     expression: objectSchema(PORTRAIT_SPEC_V1_ENUMS.expression),
     clothing: objectSchema(PORTRAIT_SPEC_V1_ENUMS.clothing),
@@ -101,12 +101,51 @@ function objectSchema(properties) {
   };
 }
 
+function hairSchema() {
+  return {
+    type: 'object',
+    additionalProperties: false,
+    required: ['length', 'facial_hair'],
+    properties: Object.fromEntries(
+      Object.entries(PORTRAIT_SPEC_V1_ENUMS.hair).map(([name, values]) => [name, enumSchema(values)])
+    ),
+    oneOf: [
+      {
+        type: 'object',
+        properties: { length: { const: 'bald' } },
+        required: ['length', 'facial_hair']
+      },
+      {
+        type: 'object',
+        not: {
+          type: 'object',
+          properties: { length: { const: 'bald' } }
+        },
+        required: ['length', 'color', 'style', 'facial_hair']
+      }
+    ]
+  };
+}
+
 function enumSchema(values) {
   return { type: 'string', enum: values };
 }
 
 function validateNode(value, schema, path, errors) {
   const label = path || 'portrait';
+  if (schema.oneOf) {
+    const matching = schema.oneOf.filter((branch) => {
+      const branchErrors = [];
+      validateNode(value, branch, path, branchErrors);
+      return branchErrors.length === 0;
+    }).length;
+    if (matching !== 1) errors.push(issue(path, 'one_of', `${label} must match exactly one allowed schema.`));
+  }
+  if (schema.not) {
+    const forbiddenErrors = [];
+    validateNode(value, schema.not, path, forbiddenErrors);
+    if (forbiddenErrors.length === 0) errors.push(issue(path, 'not', `${label} matches a forbidden schema.`));
+  }
   if (schema.type === 'object') {
     if (!plainObject(value)) {
       errors.push(issue(path, 'type', `${label} must be an object.`));

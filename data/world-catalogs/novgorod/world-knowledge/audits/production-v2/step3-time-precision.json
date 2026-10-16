@@ -1,0 +1,58 @@
+[
+  {
+    "claim_ref": "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+    "current_time": { "precision": "unknown" },
+    "proposed_time": { "from": 1200, "to": 1220, "precision": "range" },
+    "describes_dated_event_office_or_price": false,
+    "reason": "Evidence (source:gramota531, novgorod/531) gives an explicit catalogue conditional date 1200-1220 with a probable forward shift; that is the source's own precision, not an invented one, so from/to can be narrowed to it. Content is a single private kin request for protection against an alleged accusation — no office-holder, price, or dated public event is named, so nothing here required a non-unknown precision on correctness grounds; the fix is purely picking up dating already present in the evidence."
+  },
+  {
+    "claim_ref": "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+    "current_time": { "precision": "unknown" },
+    "proposed_time": { "from": 1200, "to": 1220, "precision": "range" },
+    "describes_dated_event_office_or_price": false,
+    "reason": "Evidence (source:gramota778, novgorod/778) states catalogue conditional date 1200-1220 with a probable backward shift and alternative datings; use that stated range, no tighter figure is offered so do not invent one. Content classifies the item as an alphabet exercise — no office, price, or specific dated event, so this is a plain unknown-to-range fix from existing source metadata."
+  },
+  {
+    "claim_ref": "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+    "current_time": { "precision": "unknown" },
+    "proposed_time": { "from": 1100, "to": 1120, "precision": "range" },
+    "describes_dated_event_office_or_price": true,
+    "reason": "Evidence (source:gramota907, novgorod/907) gives catalogue conditional date 1100-1120 with a probable backward shift; narrow to that stated range. Flag: the claim's own text names an office (posadnik) and a specific investigative act (theft inquiry) addressed to that office-holder, i.e. an office and a dated-document event — this is exactly the kind of content the task says should not sit at precision unknown, so the narrowing above should be applied, not left open."
+  },
+  {
+    "claim_ref": "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+    "current_time": { "precision": "unknown" },
+    "proposed_time": null,
+    "describes_dated_event_office_or_price": false,
+    "reason": "Evidence (source:candidate-v7-novgorod-museum-city-underfoot, section 'О выставке') is a present-day museum exhibition-text summary of what Onfim's letters show him learning; it carries no century, date range, or shift note at all, unlike the gramota-catalogue-sourced claims. No source basis exists to assign from/to without inventing one, so precision unknown should stay — this is a genuine no_source-for-dating case, not an oversight. Content names no office or price and no single dated event, only a general learning description, so leaving it unknown is not itself a correctness problem."
+  },
+  {
+    "claim_ref": "claim:candidate-v5-gramota600-is-near-1230-private-letter",
+    "current_time": { "precision": "unknown" },
+    "proposed_time": { "from": 1220, "to": 1240, "precision": "range" },
+    "describes_dated_event_office_or_price": false,
+    "reason": "Evidence (source:candidate-v5-gramota600, novgorod/600) states catalogue conditional date 1220-1240 with a probable backward shift; narrow to that stated range directly from the metadata already cited. Content only establishes the item as a private letter — no office, price, or discrete dated event, so this is a straightforward unknown-to-range fix."
+  },
+  {
+    "claim_ref": "claim:candidate-v5-gramota600-reports-khotynians-context",
+    "current_time": { "precision": "unknown" },
+    "proposed_time": { "from": 1220, "to": 1240, "precision": "range" },
+    "describes_dated_event_office_or_price": false,
+    "reason": "Same source and record as gramota600 above (source:candidate-v5-gramota600, novgorod/600): catalogue conditional date 1220-1240, probable backward shift. Narrow to that same range. Content reports on 'the situation among Khotynians' — a group description, not a named office-holder, a price, or one discrete dated event — so unknown was not itself a correctness violation, just an unused source date."
+  },
+  {
+    "claim_ref": "claim:candidate-gramota8-wife-cow-redemption-letter",
+    "current_time": { "precision": "unknown" },
+    "proposed_time": { "from": 1180, "to": 1200, "precision": "range" },
+    "describes_dated_event_office_or_price": false,
+    "reason": "Evidence (source:candidate-gramota8, novgorod/8) states catalogue conditional date 1180-1200 with a probable forward shift; narrow to that stated range. Content is a private letter about redeeming a cow — a named transaction type but with no stated sum/price and no office-holder, so it is a transaction reference, not itself a priced or officiated dated event; still worth a second look since 'redemption' borders on an economic transaction."
+  },
+  {
+    "claim_ref": "claim:candidate-gramota213-official-obligations-document",
+    "current_time": { "precision": "unknown" },
+    "proposed_time": { "from": 1240, "to": 1260, "precision": "range" },
+    "describes_dated_event_office_or_price": false,
+    "reason": "Evidence (source:candidate-gramota213, novgorod/213) states catalogue conditional date 1240-1260 with a probable forward shift; narrow to that stated range (note this falls after 1230, so under D18 this claim's window does not itself describe an in-game-reachable 1230 event). Content is an official memorandum ('память') recording Radoslav's obligations regarding Mestyatka — a legal-document genre but no office-title or price figure is stated, so it is borderline: flagged for a closer look at whether the 'official document' genre and 'obligations' framing should count as office/price content, but as written it names neither directly."
+  }
+]

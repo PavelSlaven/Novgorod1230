@@ -1,4 +1,4 @@
-import { renderProse } from '../features/prose/render.js';
+import { renderExactNpcUtterances, renderProse } from '../features/prose/render.js';
 import { renderActions } from '../features/actions/render.js';
 import { renderCharacterPanel } from '../features/character/render.js';
 import { renderInventoryPanel } from '../features/inventory/render.js';
@@ -43,7 +43,7 @@ function renderNarrativeSlot(screen) {
 }
 
 function renderFactualTurnDelivery(screen) {
-  return `<section class="factual-turn-delivery" aria-label="Восстановленное состояние после хода"><p class="eyebrow">Восстановленное состояние</p><h1>Текущий момент</h1><p>${escapeHtml(screen.visible_context.visible_scene ?? '')}</p>${renderFactualList('Изменения', screen.visible_changes)}${renderFactualList('Неясное', screen.uncertainties)}</section>`;
+  return `<section class="factual-turn-delivery" aria-label="Восстановленное состояние после хода"><p class="eyebrow">Восстановленное состояние</p><h1>Текущий момент</h1><p>${escapeHtml(screen.visible_context.visible_scene ?? '')}</p>${renderExactNpcUtterances(screen)}${renderFactualList('Изменения', screen.visible_changes)}${renderFactualList('Неясное', screen.uncertainties)}</section>`;
 }
 
 function renderFactualList(title, items) {
@@ -79,11 +79,10 @@ export function renderAppState(state) {
 
 function renderLanding({ rememberedPartyId = null, theme = 'light',
   loading = false, llmSettings: settings = null } = {}) {
-  const blocked = settings?.mode === 'local'
-    && settings?.local_runtime?.ready === false;
+  const blocked = settings?.mode !== 'custom';
   const disabled = loading || blocked ? ' disabled' : '';
   const diagnostic = blocked
-    ? `<p class="error" role="alert">Локальная Gemma не может быть запущена на этом ПК: ${escapeHtml((settings.local_runtime.reasons ?? []).join(' '))} Выбери внешний OpenAI-compatible provider в настройках LLM.</p>` : '';
+    ? '<p class="error" role="alert">Настрой OpenAI-compatible vLLM endpoint для Qwen 3.8 в настройках LLM.</p>' : '';
   return `<main class="start-screen"><div class="theme-corner"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(theme)}</button></div><section class="start-card" aria-labelledby="chronicle-title"><p class="eyebrow">Хроника</p><h1 id="chronicle-title">Русь, лета 6738</h1><p class="start-description">Текстовое путешествие по Руси XIII века. Ты ведёшь одного человека; мир ведёт себя сам.</p>${diagnostic}<div class="start-actions"><button class="button-primary" type="button" data-start-new-game${disabled}>Новая игра</button>${rememberedPartyId ? `<button class="button-secondary" type="button" data-continue-party${disabled}>Продолжить</button>` : ''}</div><button class="theme-text" type="button" data-theme-toggle>Сменить освещение</button></section></main>`;
 }
 
@@ -91,7 +90,9 @@ function renderNewGame({ scenarios = [], newGameDraft = '', theme = 'light',
   loading = false } = {}) {
   const scenarioButtons = scenarios.map((scenario) => {
     const unavailable = scenario.available === false;
-    return `<article class="scenario-card"><div><h3>${escapeHtml(scenario.title)}</h3><p>${escapeHtml(scenario.description)}</p></div><button class="button-secondary" type="button" data-scenario-id="${escapeHtml(scenario.scenario_id)}"${unavailable || loading ? ' disabled' : ''}>Начать</button></article>`;
+    const description = typeof scenario.description === 'string' && scenario.description.trim()
+      ? `<p>${escapeHtml(scenario.description)}</p>` : '';
+    return `<article class="scenario-card"><div><h3>${escapeHtml(scenario.title)}</h3>${description}</div><button class="button-secondary" type="button" data-scenario-id="${escapeHtml(scenario.scenario_id)}"${unavailable || loading ? ' disabled' : ''}>Начать</button></article>`;
   }).join('');
   const disabled = loading ? ' disabled' : '';
   return `<div class="new-game-page"><header class="game-header"><button class="brand-button" type="button" data-return-start${disabled}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(theme)}</button></div></header><main class="new-game-screen" data-new-game-screen><section class="new-game-intro"><p class="eyebrow">Новая запись</p><h1>Кем ты окажешься?</h1><p>Опиши начало своими словами. Игра выберет ближайшую опубликованную историческую рамку; дальше ты действуешь свободно.</p></section><form class="new-game-form" data-new-game-form><label for="start-text">Начало истории</label><textarea id="start-text" name="start_text" required placeholder="Например: молодой приказчик приходит в себя после крушения…"${disabled}>${escapeHtml(newGameDraft)}</textarea><div class="form-actions"><button class="button-quiet" type="button" data-return-start${disabled}>Назад</button><button class="button-primary" type="submit"${disabled}>Начать историю</button></div></form><section class="scenario-section"><div class="section-heading"><p class="eyebrow">Готовые истории</p><h2>Сценарии</h2></div><div class="scenario-list">${scenarioButtons || '<p class="empty-state">Опубликованных сценариев сейчас нет.</p>'}</div></section></main></div>`;
@@ -153,14 +154,14 @@ function renderOverlay(screen, { activeOverlay, developerMode = false, llmSettin
 }
 
 function renderLlmSettingsOverlay(settings = {}, activeSettings = {}, message = null) {
-  const mode = ['local', 'custom'].includes(settings?.mode)
-    ? settings.mode : 'local';
-  const configured = true;
+  const mode = settings?.mode === 'custom' ? 'custom' : 'unconfigured';
+  const configured = mode === 'custom';
   const baseUrl = escapeHtml(settings?.base_url ?? '');
-  const model = escapeHtml(settings?.model ?? '');
-  const disabled = configured ? '' : ' disabled';
+  const model = escapeHtml(settings?.model ?? settings?.default_model
+    ?? activeSettings?.default_model ?? '');
+  const disabled = '';
   const note = message ? `<p class="llm-settings-message${message.kind === 'error' ? ' error' : ''}" role="${message.kind === 'error' ? 'alert' : 'status'}">${escapeHtml(message.text)}</p>` : '';
-  return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Настройки</p><h2 id="overlay-title">LLM</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body"><form class="llm-settings-form" data-llm-settings-form><fieldset><legend>Режим</legend><label><input type="radio" name="mode" value="local"${mode === 'local' ? ' checked' : ''}> Локальная Gemma 4 (по умолчанию)</label><label><input type="radio" name="mode" value="custom"${mode === 'custom' ? ' checked' : ''}> Свой OpenAI-compatible endpoint</label></fieldset><label class="input-label">API base URL<input name="base_url" type="url" value="${baseUrl}" placeholder="http://127.0.0.1:8000/v1"${disabled}></label><label class="input-label">Model<input name="model" value="${model}"${disabled}></label><label class="input-label">API key <small>необязательно${activeSettings?.api_key_present ? ', ключ сохранён на этом ПК' : ''}</small><input name="api_key" type="password" autocomplete="off"${disabled}></label>${note}<div class="form-actions"><button class="button-secondary" type="submit" name="llm_action" value="test"${disabled}>Проверить</button><button class="button-primary" type="submit" name="llm_action" value="apply">Применить</button><button class="button-quiet" type="submit" name="llm_action" value="reset">Вернуть локальную Gemma</button></div></form></div></section></div>`;
+  return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Настройки</p><h2 id="overlay-title">LLM</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body"><form class="llm-settings-form" data-llm-settings-form><fieldset><legend>Провайдер</legend><label><input type="radio" name="mode" value="custom" checked> OpenAI-compatible vLLM endpoint</label></fieldset>${configured ? '' : '<p>Провайдер не настроен. Укажи endpoint для Qwen 3.8.</p>'}<label class="input-label">API base URL<input name="base_url" type="url" value="${baseUrl}" placeholder="http://host:port/v1"${disabled}></label><label class="input-label">Model<input name="model" value="${model}"${disabled}></label><label class="input-label">API key <small>необязательно${activeSettings?.api_key_present ? ', ключ сохранён на этом ПК' : ''}</small><input name="api_key" type="password" autocomplete="off"${disabled}></label>${note}<div class="form-actions"><button class="button-secondary" type="submit" name="llm_action" value="test"${disabled}>Проверить</button><button class="button-primary" type="submit" name="llm_action" value="apply">Применить</button><button class="button-quiet" type="submit" name="llm_action" value="reset">Сбросить настройку</button></div></form></div></section></div>`;
 }
 
 function panelBody(kind, screen, options) {

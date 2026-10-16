@@ -23,7 +23,8 @@ export async function resolveTracePhase7FireRestConsequence({
   createBoundaryNpcOwnerCapabilities, randomSource, temporalAdvanceOwner,
   createBoundaryNpcDirectOperations,
   revalidateStateVersion, runNpcConversationExchange,
-  conversationBindings, conversationActivity, admitted
+  conversationBindings, conversationActivity, admitted,
+  assertNeedsCheckAllowed = null, recordNeedsCheckFilter = null
 }) {
   if (!admitted(state, contracts)) fail('TRACE_PHASE_7_ADMISSION_FAILED');
   const actualRootTurnId = modeResolution?.turn_id ?? rootTurnId;
@@ -89,7 +90,8 @@ export async function resolveTracePhase7FireRestConsequence({
       const autonomous = await resolveTracePhase7AutonomousDecision({
         state: currentBoundaryState, contracts, temporal, signalBatch,
         operationContract: actorStepRuntime.registry.operationContract(),
-        npcAutonomousModel, revalidateStateVersion, rootTurnId: actualRootTurnId
+        npcAutonomousModel, revalidateStateVersion, rootTurnId: actualRootTurnId,
+        assertNeedsCheckAllowed, recordNeedsCheckFilter
       });
       return { boundary: autonomous.boundary, autonomous };
     },
@@ -178,10 +180,7 @@ function resumeFireRest({ state, playerInput, inputDigest,
     rootTurnId: actualRootTurnId,
     priorScheduleTemporal: prior.schedule_temporal
   });
-  const scheduleExecution = finalizeTracePhase7ScheduleExecution({
-    actorStep,
-    scheduleTemporal
-  });
+  const scheduleExecution = finalizeTracePhase7ScheduleExecution({ actorStep, scheduleTemporal });
   const duration = Number(scheduleTemporal.result.clock_after.whole_minutes)
     - Number(state.clock.whole_minutes);
   if (!Number.isSafeInteger(duration) || duration <= 0 || duration > 5) {

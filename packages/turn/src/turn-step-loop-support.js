@@ -105,14 +105,17 @@ export async function revalidateBaseVersion({ revalidateCommittedState, expected
 }
 
 export function traceFor({ plan, request, repaired, applied, checkResult = null,
-  checkRequest = null, boundary = false }) {
+  checkRequest = null, boundary = false, canonicalizations = [] }) {
   return {
     step_index: plan.step_index, working_revision: plan.working_revision,
     resolution: plan.resolution, goal_result: plan.goal_result, repaired, applied,
     check_outcome: checkResult?.outcome?.band ?? null,
     check_binding: checkRequest == null ? null : structuredClone(checkRequest),
     approved_plan: structuredClone(plan), plan_request: structuredClone(request),
-    player_response_boundary: boundary, reason_code: plan.reason_code
+    player_response_boundary: boundary, reason_code: plan.reason_code,
+    ...(canonicalizations.length === 0 ? {} : {
+      canonicalizations: structuredClone(canonicalizations)
+    })
   };
 }
 

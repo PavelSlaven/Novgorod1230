@@ -1,0 +1,309 @@
+{
+  "artifact_type": "npc_activation_input_inventory",
+  "status": "read_only_findings",
+  "candidate_ref": "novgorod_m2c_npc_baseline_g4_v1",
+  "target_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "complete_approved_target_variants": 0,
+  "classification_rule": "A means missing historical/class-A authority. Missing implementation, approval, target pin or new gameplay reconstruction is B authoring/activation, not a historical-source blocker.",
+  "shared_inputs": [
+    {
+      "input": "actor_base_attributes_runtime_profile",
+      "classification": "B_activation",
+      "owner": "runtime-catalog-activation",
+      "source_path": "data/world-catalogs/novgorod/runtime-catalog/spatial-v3-target-v1/actor-compatibility-request.json",
+      "profile_id": "novgorod_ordinary_actor_base_attributes_v1",
+      "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
+      "target_revision_id": "actor_base_attributes_spatial_v3_target_001",
+      "observed_status": "pending_independent_compatibility_approval",
+      "observed_runtime_pin": null,
+      "required": "Approved target compatibility, parent item target import/readback, exact actor import/readback and activation event; load existing verified runtime profile shape. Independent target worker confirmed pending."
+    },
+    {
+      "input": "body_profile",
+      "classification": "B_authoring",
+      "owner": "@rus/body-state and @rus/materialization",
+      "source_path": "data/world-catalogs/novgorod/first-playable-v1/catalog.json",
+      "source_profile_id": "body_ready_traveller_v1",
+      "source_values": {
+        "health": 100,
+        "energy": 80,
+        "satiety": 70
+      },
+      "source_status": "approved_in_bounded_first_playable_catalog",
+      "source_scope": "Character generation, sheltered_landing_terrace/high_platform, late_summer_open_water, 1230-1250",
+      "required": "Explicit approved NPC transfer/applicability and exact profile status/source_ref/record_digest; these numerical gameplay values do not require a newly invented historical source."
+    },
+    {
+      "input": "activity_record_ref",
+      "classification": "B_authoring",
+      "owner": "Temporal and @rus/materialization",
+      "source_path": "data/world-catalogs/novgorod/temporal-v4/datasets/activity_categories_profiles.json",
+      "approved_record_refs": [
+        "record:activity_categories_profiles:wait_exact_v2",
+        "record:activity_categories_profiles:manual_labor_segment_v1",
+        "record:activity_categories_profiles:sleep_bounded_v1",
+        "record:activity_categories_profiles:meal_quiet_rest_segment_v1"
+      ],
+      "source_limit": "manual_labor_segment_v1 is explicitly untooled general labor only; wait requires exact command duration; sleep and meal need concrete resources. None is an automatic fishing, trade, guiding or boat-propulsion activity.",
+      "required": "Exact initial activity per role/season/current time, actual preconditions/resource refs and body effect rows; do not assign generic labor to specialist work or all NPCs waiting to evade the gap."
+    },
+    {
+      "input": "routine_profile",
+      "classification": "B_authoring",
+      "owner": "@rus/npc-runtime",
+      "source_path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m21-content/initial-npc-schedule-profile.json",
+      "source_profile_id": "ordinary_day_work_routine_v1",
+      "source_revision": 1,
+      "required": "Approve transfer outside its scenario binding and seasonal activity adaptation; preserve exact current-time alignment and interruption semantics."
+    },
+    {
+      "input": "demographic_and_appearance_target_binding",
+      "classification": "B_activation",
+      "owner": "actor catalog and @rus/materialization",
+      "source_path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
+      "source_profile_refs": [
+        "novgorod_1200_1250_demographic_profile_v1",
+        "novgorod_1200_1250_appearance_profile_v1"
+      ],
+      "required": "Target-revision approved import/readback; preserve both sexes and all existing age/appearance options instead of constraining RNG to equipment availability."
+    },
+    {
+      "input": "clothing_and_personal_property",
+      "classification": "B_authoring_and_activation",
+      "owner": "Stage16 @rus/materialization / @rus/items-property",
+      "source_path": "data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/authoring-rows.json",
+      "approval_path": "data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/approval-attestation.json",
+      "source_profile_id": "novgorod_commoner_male_basic_clothing_v1",
+      "source_templates": [
+        "item_tpl_nov_linen_shirt_v1",
+        "item_tpl_nov_wool_outer_garment_v1"
+      ],
+      "source_scope": "Adult male fisher/boatman only",
+      "source_property_profile_ref": "property_context_household_personal_v1",
+      "source_property_rule_ref": "rule_property_context_household_personal_v1",
+      "required": "Approved sex/age/season/status-compatible clothing for all selected variants, footwear slot support where required, exact target item/inventory/visual profiles, actor candidate mapping, owner/holder/controller/property admission and activation."
+    }
+  ],
+  "profile_inputs": [
+    {
+      "profile_id": "m2c_npc_boatman_v1",
+      "role_ref": "nov_role_boatman",
+      "occupation_ref": "nov_occ_boatman",
+      "clothing_source_ref": "novgorod_commoner_male_basic_clothing_v1",
+      "occupation_equipment_source_ref": "novgorod_transport_guiding_equipment_v1",
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    },
+    {
+      "profile_id": "m2c_npc_fisher_v1",
+      "role_ref": "nov_role_fisher",
+      "occupation_ref": "nov_occ_fisher",
+      "clothing_source_ref": "novgorod_commoner_male_basic_clothing_v1",
+      "occupation_equipment_source_ref": "novgorod_fishing_water_equipment_v1",
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    },
+    {
+      "profile_id": "m2c_npc_guide_v1",
+      "role_ref": "nov_role_guide",
+      "occupation_ref": "nov_occ_route_guide",
+      "clothing_source_ref": null,
+      "occupation_equipment_source_ref": null,
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    },
+    {
+      "profile_id": "m2c_npc_hunter_v1",
+      "role_ref": "nov_role_hunter",
+      "occupation_ref": "nov_occ_hunter_trapper",
+      "clothing_source_ref": null,
+      "occupation_equipment_source_ref": null,
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    },
+    {
+      "profile_id": "m2c_npc_forest_worker_v1",
+      "role_ref": "nov_role_forest_promyslovik",
+      "occupation_ref": "nov_occ_forest_worker",
+      "clothing_source_ref": null,
+      "occupation_equipment_source_ref": null,
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    },
+    {
+      "profile_id": "m2c_npc_local_trader_v1",
+      "role_ref": "nov_role_trader",
+      "occupation_ref": "nov_occ_local_trader",
+      "clothing_source_ref": null,
+      "occupation_equipment_source_ref": null,
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    },
+    {
+      "profile_id": "m2c_npc_visiting_merchant_v1",
+      "role_ref": "nov_role_merchant_guest",
+      "occupation_ref": "nov_occ_long_distance_merchant",
+      "clothing_source_ref": null,
+      "occupation_equipment_source_ref": null,
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    },
+    {
+      "profile_id": "m2c_npc_foreign_merchant_v1",
+      "role_ref": "nov_role_foreign_guest",
+      "occupation_ref": "nov_occ_long_distance_merchant",
+      "clothing_source_ref": null,
+      "occupation_equipment_source_ref": null,
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    },
+    {
+      "profile_id": "m2c_npc_household_servant_v1",
+      "role_ref": "nov_role_servant",
+      "occupation_ref": "nov_occ_household_servant",
+      "clothing_source_ref": null,
+      "occupation_equipment_source_ref": null,
+      "activity_record_ref": null,
+      "body_profile_ref": null,
+      "target_actor_runtime_pin": null,
+      "complete": false,
+      "classification": "B_authoring_and_activation",
+      "required_source_fields": [
+        "approved_occupations:typical_tools",
+        "approved_occupations:typical_clothing",
+        "approved_occupations:typical_containers",
+        "approved_occupations:daily_schedule_<season>"
+      ],
+      "required": "Resolve actual chosen demographic variant and exact initial activity, then build approved Stage16 candidates with matching target templates and real actor/property/location refs. Occupation prose is not an executable or ownership binding."
+    }
+  ],
+  "bounded_equipment_findings": [
+    {
+      "occupation_ref": "nov_occ_fisher",
+      "profile_id": "novgorod_fishing_water_equipment_v1",
+      "item_template_ref": "item_tpl_nov_fishing_net_v1",
+      "activity_profile_ref": "activity_assist_fishing_net_v1",
+      "property_profile_ref": "property_context_fishing_v1",
+      "property_rule_ref": "rule_property_context_fishing_v1",
+      "classification": "B_authoring_and_activation",
+      "required": "activity_assist_fishing_net_v1 occurs in procedural functional allocation/equipment source, not as activity_record_ref in Temporal activity_categories_profiles; keep the existing activity owner, exact target inventory/quantity/property rows and actual committed actor/scene allocation."
+    },
+    {
+      "occupation_ref": "nov_occ_boatman",
+      "profile_id": "novgorod_transport_guiding_equipment_v1",
+      "item_template_ref": "item_tpl_nov_rope_v1",
+      "activity_profile_ref": null,
+      "classification": "B_authoring",
+      "required": "Source records explicitly lack oar/pole activity mapping. Rope is optional and does not propel a vessel. Travel requires real vessel/occupancy, propulsion and navigation admission."
+    }
+  ],
+  "class_a_gaps": [
+    {
+      "code": "M2C_NPC_LANGUAGE_COMPETENCE_SOURCE_MISSING",
+      "blocking_scope": "Only language-dependent gameplay; not origin-independent baseline materialization",
+      "required_input": "An independently approved exact language_ref + proficiency_ref for the individual/profile, with relevant source/authoring basis. A primary document establishing contacts does not establish individual fluency.",
+      "primary_source_need": "Contemporary speech/language evidence for the claimed competence or explicitly approved bounded reconstruction. No language is currently claimed.",
+      "current_behavior": "language_status=unknown; language_repertoire=null"
+    }
+  ],
+  "p16_handoff": {
+    "materializer": "packages/materialization/src/approved-procedural-npc.js",
+    "equipment": "packages/materialization/src/approved-actor-equipment.js",
+    "committer": "apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js",
+    "needed_rows": [
+      "party_npcs",
+      "party_actor_profile_bindings",
+      "party_actor_body_states",
+      "party_actor_active_conditions",
+      "entity_placements",
+      "party_items",
+      "party_item_placements",
+      "party_ownership",
+      "party_npc_spatial_schedules"
+    ],
+    "existing_support": "P16 supports NPC/item/body inserts; party_npc_spatial_schedules currently permits update only. Stage16 equipment accepts an actor map containing the existing player and generated NPCs; it must not create a second player.",
+    "missing": "Approved nonzero input closure, target-neutral NPC row projection and schedule insertion through the existing P16 owner.",
+    "pg_test_run": false,
+    "pg_test_reason": "No complete approved target input exists. A fabricated approval/target pin would only test fixtures and cannot establish activation readiness."
+  }
+}

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLlmTurnBudget, isRepairRole } from '../src/runtime/llm-turn-budget.js';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
-import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/deepseek.js';
+import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/openai-compatible.js';
 import { PortraitLabRoles, TurnRuntimeRoles } from '@rus/llm-runtime';
 import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
@@ -67,7 +67,7 @@ test('registered gameplay repair roles and explicit ordinary repair marker claim
   assert.equal(isRepairRole('ordinary_materialization'), false);
   const budget = createLlmTurnBudget();
   const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
-    execute: async () => ({ status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm' }) });
+    execute: async () => ({ status: 'ok', parsed_json: {}, provider: 'openai_compatible', model: 'm' }) });
   await budget.runTurn(() => runner.run({ scope: 'turn_runtime',
     role_id: 'ordinary_materialization', repair: true,
     request_identity: 'ordinary-request-1' }));
@@ -79,7 +79,7 @@ test('same-role repairs for independent requests execute and duplicate request i
   const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
     execute: async (input) => {
       calls.push(input);
-      return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm' };
+      return { status: 'ok', parsed_json: {}, provider: 'openai_compatible', model: 'm' };
     } });
   await budget.runTurn(async () => {
     await runner.run({ scope: 'turn_runtime',
@@ -147,7 +147,7 @@ test('every role receives the shared timeout and may request a lower token cap',
   const runner = createLlmRoleRunnerAdapter({
     execute: async (input) => {
       calls.push(input);
-      return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm' };
+      return { status: 'ok', parsed_json: {}, provider: 'openai_compatible', model: 'm' };
     }
   });
   for (const role_id of ['turn_step_planner', 'turn_step_planner_repair',
@@ -162,7 +162,7 @@ test('every role receives the shared timeout and may request a lower token cap',
 test('runtime provider override reaches every registered gameplay and portrait role', async () => {
   const calls = [];
   const runner = createLlmRoleRunnerAdapter({
-    settings: { providerSnapshot: () => ({ mode: 'local',
+    settings: { providerSnapshot: () => ({ mode: 'custom',
       baseUrl: 'http://127.0.0.1:8000/v1', model: 'local-all-roles' }) },
     execute: async (input) => {
       calls.push(input);
@@ -239,7 +239,7 @@ test('later gameplay calls are clamped to the remaining safety deadline', async 
   const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
     execute: async (input) => {
       calls.push(input);
-      return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm' };
+      return { status: 'ok', parsed_json: {}, provider: 'openai_compatible', model: 'm' };
     } });
   await budget.runTurn(async () => {
     await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner' });
@@ -257,7 +257,7 @@ test('production role runner applies the active turn safety clamp', async () => 
     assertWithinDeadline() {}
   }, execute: async (input) => {
     calls.push(input);
-    return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm', durationMs: 1 };
+    return { status: 'ok', parsed_json: {}, provider: 'openai_compatible', model: 'm', durationMs: 1 };
   } });
   await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner',
     overrides: { requestTimeoutMs: 500 } });
@@ -274,8 +274,8 @@ test('planner and repair each receive shared execution limits', async () => {
       calls.push(input);
       return calls.length === 1
         ? { status: 'parse_error', error: { code: 'json_parse_failed' } }
-        : { status: 'ok', parsed_json: {}, provider: 'deepseek',
-          model: 'deepseek-v4-flash', durationMs: 1 };
+        : { status: 'ok', parsed_json: {}, provider: 'openai_compatible',
+          model: 'qwen3.8-27b-uncensored-w4a16-tp2', durationMs: 1 };
     } });
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: runner });
   const request = { request_id: 'planner-request-1' };
@@ -300,7 +300,7 @@ test('production runner starts later calls with full transport timeout', async (
     execute: async (input) => {
       calls.push(input);
       now = 24_500;
-      return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'deepseek-v4-flash',
+      return { status: 'ok', parsed_json: {}, provider: 'openai_compatible', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
         scope: input.scope, role_id: input.roleId, durationMs: 1, config_hash: 'safe' };
     } });
   await budget.runTurn(async () => {

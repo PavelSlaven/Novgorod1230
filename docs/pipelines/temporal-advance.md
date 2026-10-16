@@ -1,11 +1,13 @@
-# Temporal advance pipeline (production v16)
+# Temporal advance pipeline (v16 / v17)
 
 `temporal-world-v1.1` / `4.4.0-target.1` is the current active-norm target
 pipeline; accepted `temporal-world-v1` / `4.3.0-target.1` remains an immutable
 historical contract snapshot.
 Accepted historical P28 evidence changed no production composition. The later
-`versioned production activation cutover` now uses
-`spatial-v3-production-v16`; this pipeline remains the sole production path.
+`versioned production activation cutover` activates Spatial v3 bindings **v16
+(default) or v17** (`RUS_SPATIAL_V3_BINDINGS_MODULE` / v17 DB pair — LW-033).
+This document describes the shared temporal advance path on those bindings; it
+is not a claim that only v16 exists.
 Historical `spatial-v3-production-v9` inherited the Phase 7 autonomous NPC path and
 revision-16 combat on the same turn/temporal ownership boundary. Revision 17
 adds no second clock or scheduler: Phase 9 movement and conversation continue
@@ -44,7 +46,17 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    - `@rus/turn` with `@rus/party-store` — availability, placement, capacity,
      access and consequences (ADR-004 deliberately creates no place/access
      package);
-   - `@rus/environment-state` — weather/light effects;
+   - weather/light — `@rus/environment-state` применяет погоду и свет и считает
+     моменты смены; следующее состояние выбирает `@rus/turn` через
+     детерминированный RandomSource (seed партии, G0-зона, интервал);
+     начальное — `@rus/materialization`
+     `projectApprovedCurrentEnvironment` via
+     `apps/game-server/src/infrastructure/postgres/target-current-factual-context.js`
+     (v17); данные — преемник
+     `data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json`
+     (novgorod v2; утверждение WR §21.1)
+     ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)
+     D7); живая смена по seed ещё не реализована как полный runtime path;
    - `@rus/time-events-history` — historical phases and due event effects;
    - `@rus/npc-runtime` — schedule, perception and generic NPC signal
      proposals (`npc_decision_signal_v1`);
@@ -135,8 +147,9 @@ catch-up boundary, not as continuous simulation of every distant entity.
 ## Boundary of this document
 
 This describes the active production temporal lifecycle after the completed
-`versioned production activation cutover`. Composition, authoritative reads and
-writes follow the sole production path. Current `spatial-v3-production-v16`
-inherits Phase 7 autonomous decisions and revision-16 combat on common owners
-without a second scheduler or scenario-local combat state machine; production
-older releases are historical and not selectable at runtime.
+`versioned production activation cutover` on selectable bindings v16 and v17
+(LW-033). Composition, authoritative reads and writes follow the chosen binding
+path. `spatial-v3-production-v16` / `v17` inherit Phase 7 autonomous decisions
+and revision-16 combat on common owners without a second scheduler or
+scenario-local combat state machine; releases v2–v15 remain on disk but are not
+selected by the loader (removal after M2c — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425)).

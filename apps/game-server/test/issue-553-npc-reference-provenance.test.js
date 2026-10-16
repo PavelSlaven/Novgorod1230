@@ -83,9 +83,13 @@ test('real NPC conversation wires resolve claims only to projected own refs',
       assert.equal(validateConversationContributionPlan(plan, preparedRequest),
         true, `${name}: captured claims should resolve against projected refs`);
       assert.equal(calls.length, 1);
-      assert.equal(calls[0].messages[0].content,
-        wire.request.messages.find(({ role }) => role === 'system').content,
-      `${name}: the captured system prompt remains unchanged`);
+      const capturedSystem = wire.request.messages.find(({ role }) =>
+        role === 'system').content;
+      const expectedSystem = repair == null ? capturedSystem : capturedSystem.replace(
+        'preserve the response meaning.',
+        'при ошибке `utterance_mixed_script` исправить написание слова, названного в ошибке `utterance_mixed_script` (поле `word`), заменив буквы так, чтобы слово стало русским; остальные слова и их порядок, смысл, refs, enum values и operations не менять, новых фактов не добавлять.');
+      assert.equal(calls[0].messages[0].content, expectedSystem,
+        `${name}: only the required repair instruction changes`);
       assert.deepEqual(calls[0].overrides,
         { temperature: wire.request.temperature,
           maxTokens: wire.request.max_tokens });
@@ -112,8 +116,9 @@ test('real NPC conversation wires resolve claims only to projected own refs',
         structuredClone(beforeModelRequest.allowed_references);
       assert.deepEqual(normalizedAfterUser, beforeUser,
         `${name}: user changes only the explicit reference allowlist`);
-      assert.deepEqual(afterPayload.messages[0], wire.request.messages[0],
-        `${name}: system message is unchanged after provider projection`);
+      assert.deepEqual(afterPayload.messages[0],
+        { role: 'system', content: expectedSystem },
+        `${name}: system message survives provider projection`);
       for (const key of ['model', 'max_tokens', 'temperature', 'top_p',
         'response_format', 'chat_template_kwargs', 'reasoning_effort']) {
         assert.deepEqual(afterPayload[key], wire.request[key],

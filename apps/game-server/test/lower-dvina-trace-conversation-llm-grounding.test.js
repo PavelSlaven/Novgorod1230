@@ -894,7 +894,7 @@ test('marker repair also resolves a missing required tag from combined concerns'
       /INFERENCE: marker-only-secret|secret-claim|secret-ref/u);
   });
 
-test('marker repair restores an unchanged claim with regenerated id before audit',
+test('marker repair restores an unchanged claim from wire ref and regenerated id',
   async () => {
     let originalClaim;
     const scenario = await runNpcConversationTurn({
@@ -912,7 +912,9 @@ test('marker repair restores an unchanged claim with regenerated id before audit
           source_knowledge_refs: [ref('knowledge_record', 'claim:fish-net')],
           mentioned_entity_refs: [] };
         output.speech.claims = [{ ...originalClaim,
-          claim_id: repairing ? 'c1' : originalClaim.claim_id }];
+          claim_id: repairing ? 'c1' : originalClaim.claim_id,
+          source_knowledge_refs: repairing ? ['claim:fish-net']
+            : originalClaim.source_knowledge_refs }];
         return output;
       },
       audit(call) {
@@ -928,7 +930,7 @@ test('marker repair restores an unchanged claim with regenerated id before audit
   });
 
 test('marker repair rejects changed or ambiguous claims before audit', async () => {
-  for (const variant of ['changed', 'ambiguous', 'duplicate']) {
+  for (const variant of ['changed', 'ambiguous', 'duplicate', 'missing_ref']) {
     const scenario = await runNpcConversationTurn({
       batchId: `marker-claim-${variant}`,
       responder(call, input) {
@@ -943,8 +945,13 @@ test('marker repair rejects changed or ambiguous claims before audit', async () 
           mentioned_entity_refs: [] };
         output.speech.claims = repairing
           ? variant === 'duplicate'
-            ? [{ ...claim, claim_id: 'c1' }, { ...claim, claim_id: 'c2' }]
+            ? [{ ...claim, claim_id: 'c1',
+              source_knowledge_refs: ['claim:fish-net'] },
+              { ...claim, claim_id: 'c2',
+                source_knowledge_refs: ['claim:fish-net'] }]
             : [{ ...claim, claim_id: 'c1',
+              source_knowledge_refs: [variant === 'missing_ref'
+                ? 'missing' : 'claim:fish-net'],
               ...(variant === 'changed' ? { content_summary: 'Иное.' } : {}) }]
           : variant === 'ambiguous'
             ? [claim, { ...claim, claim_id: 'other' }] : [claim];

@@ -187,7 +187,9 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     });
     const compactRepair = originalRepairPlan != null && !repairServiceText;
     const markerRepairOutput = originalRepairPlan != null && repairServiceText
-      ? restoreMarkerRepairClaimIds(response.output, originalRepairPlan)
+      ? restoreMarkerRepairClaimIds(
+        resolveNpcClaimReferenceIds(response.output, requestForPlan),
+        originalRepairPlan)
       : response.output;
     if (markerRepairOutput === null) {
       const rejectedPlan = structuredClone(repair.original_output);

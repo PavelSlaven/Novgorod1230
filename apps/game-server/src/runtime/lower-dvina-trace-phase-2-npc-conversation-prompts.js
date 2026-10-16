@@ -176,7 +176,7 @@ export function npcConversationInstructions(repair, request = null) {
   }
   return [
     ...(semanticRepair ? [
-      'MANDATORY SEMANTIC REPAIR: return the complete semantic conversation JSON shape without service labels or technical markers. The rejected text is intentionally absent. Ground every factual assertion in the request, preserve the typed choices in marker_safe_decision, and add no unsupported claim. Missing memory records do not prove the NPC lacks knowledge or that an event did not happen. Express uncertainty naturally.'
+      'MANDATORY SEMANTIC REPAIR: return the complete semantic conversation JSON shape without service labels or technical markers. The rejected text is intentionally absent. Ground every factual assertion in the request, preserve the typed choices in marker_safe_decision, and add no unsupported claim. Existing claims may have regenerated claim_id only when all other fields exactly match one original claim; the server restores that original claim. Missing memory records do not prove the NPC lacks knowledge or that an event did not happen. Express uncertainty naturally.'
     ] : repair ? [
       'MANDATORY FORMAT REPAIR: repair only structure, refs, and enum values; при ошибке `utterance_mixed_script` исправить написание слова, названного в ошибке `utterance_mixed_script` (поле `word`), заменив буквы так, чтобы слово стало русским; остальные слова и их порядок, смысл, refs, enum values и operations не менять, новых фактов не добавлять.'
     ] : []),

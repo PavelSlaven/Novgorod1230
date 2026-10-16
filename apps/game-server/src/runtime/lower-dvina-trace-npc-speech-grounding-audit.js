@@ -36,6 +36,9 @@ const PROMPT = [
   'сохранять не требуется. Если',
   'подтверждённый факт потерян, верни pass:false с краткой причиной и пустой',
   'quote: отсутствующего текста нет в новом utterance_text.',
+  'Если передана initial_audit_feedback, это только диагностические указатели',
+  'первого аудита. Перепроверь указанные смыслы по request и новому плану;',
+  'диагностика не является истиной, свидетельством или новым фактом.',
   'Проверяй переданный план речи NPC только по переданному субъективному',
   'запросу. Проверь каждое фактическое утверждение в utterance_text, claims, reason,',
   'interpretation, topic_refs и supporting_operations. Для каждого фактического',
@@ -105,7 +108,7 @@ const PROMPT = [
 ].join(' ');
 
 export async function auditFreshNpcSpeech({ roleRunner, plan, request,
-  originalSpeech = null }) {
+  originalSpeech = null, initialAuditFeedback = [] }) {
   if (plan?.contribution_kind !== 'speech') return true;
   if (plan.speech.claims.some(
     (claim) => claim.source_knowledge_refs.length === 0
@@ -116,7 +119,9 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request,
     request_identity: request.request_id,
     messages: [{ role: 'system', content: PROMPT }, {
       role: 'user', content: JSON.stringify({ request, plan,
-        ...(originalSpeech == null ? {} : { original_speech: originalSpeech }) })
+        ...(originalSpeech == null ? {} : { original_speech: originalSpeech }),
+        ...(initialAuditFeedback.length === 0 ? {}
+          : { initial_audit_feedback: initialAuditFeedback }) })
     }],
     overrides: { temperature: 0, maxTokens: 20_000 }
   });

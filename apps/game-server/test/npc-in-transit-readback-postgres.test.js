@@ -140,10 +140,7 @@ test('Phase 2 journey readback preserves authoritative in-transit identity',
 
 async function fixture(t) {
   const backend = await createPostgresTestBackend('issue_352');
-  if (!backend) {
-    t.skip('No supported PostgreSQL test backend');
-    return null;
-  }
+  assert.ok(backend, 'PostgreSQL test backend is required for transit readback acceptance');
   const pool = new pg.Pool({ connectionString: backend.partyUrl, max: 1 });
   t.after(async () => { await pool.end(); await backend.close(); });
   for (const file of PARTY_SCHEMA_FILES) {

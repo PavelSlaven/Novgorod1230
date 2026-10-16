@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(conversation): restore omitted source whitespace between exact speech audit fragments and require evidence for categorical NPC knowledge bounds in speech and private reasoning (#247).
 - fix(conversation): resolve allowed source IDs before matching repaired NPC claims to their original identities; keep changed, unknown and reused claims rejected (#247, D49).
 - fix(conversation): restore unchanged NPC claims after service-marker repair despite regenerated claim IDs; pass initial audit feedback to final audit as diagnostic context (#247, D49).
 - fix(conversation): require complete private NPC speech audit fragments linked to existing claims; fail closed on unclaimed factual text without changing one-repair budget (#247, D49).

@@ -38,6 +38,26 @@ test('private audit rejects a supported event left in utterance without an origi
     ['unclaimed_factual_utterance']);
 });
 
+test('private audit restores only source whitespace between exact fragments', async () => {
+  const text = 'На пристани выгрузили дрова. \tЯ не уверен.';
+  assert.equal(await run({ pass: true, concerns: [], utterance_fragments: [
+    fragment('На пристани выгрузили дрова.', true, ['event']),
+    fragment('Я не уверен.', false)
+  ] }, { utterance_text: text, claims: [claim] }).result, true);
+  for (const fragments of [
+    [fragment('На пристани выгрузили', true, ['event']),
+      fragment('Я не уверен.', false)],
+    [fragment('На пристани выгрузили дрова', true, ['event']),
+      fragment('Я не уверен.', false)],
+    [fragment('Я не уверен.', false),
+      fragment('На пристани выгрузили дрова.', true, ['event'])]
+  ]) {
+    await assert.rejects(run({ pass: true, concerns: [],
+      utterance_fragments: fragments }, { utterance_text: text,
+      claims: [claim] }).result, { code: 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID' });
+  }
+});
+
 test('private audit checks exact ordered coverage and existing claim ids', async () => {
   const invalid = [
     [fragment('На пристани выгрузили дрова.', true, ['event'])],
@@ -65,4 +85,18 @@ test('private audit accepts linked fact and nonfactual current speech', async ()
     assert.equal(await run({ pass: true, concerns: [], utterance_fragments: [
       fragment(text, false)] }, { utterance_text: text, claims: [] }).result, true);
   }
+});
+
+test('private audit demands evidence for categorical NPC knowledge bounds', async () => {
+  const text = 'Больше ничего не знаю.';
+  const concern = { kind: 'unsupported_knowledge_bound',
+    reason: 'A single memory record does not prove the NPC knows nothing else.',
+    quote: text };
+  const { result, calls } = run({ pass: false, concerns: [concern],
+    utterance_fragments: [fragment(text, true)] },
+  { utterance_text: text, claims: [] });
+  assert.deepEqual((await result).errors[0].concern_kinds,
+    ['unsupported_knowledge_bound', 'unclaimed_factual_utterance']);
+  assert.match(calls[0].messages[0].content, /Категорический предел знаний/u);
+  assert.match(calls[0].messages[0].content, /interpretation и reason/u);
 });

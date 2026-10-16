@@ -1540,3 +1540,26 @@ test('semantic repair allows changed interpretation and reason prose', async () 
   assert.equal(scenario.result.plan.interpretation.adaptation, 'literal');
   assert.equal(auditCount, 2);
 });
+
+test('NPC responder and marker repair require evidence for total knowledge bounds', async () => {
+  const input = request();
+  const original = plan(input);
+  original.speech.utterance_text = 'INFERENCE: private.';
+  const fixture = runner((call) => {
+    if (call.role_id === 'npc_conversation_responder_format_repair') {
+      const safe = plan(input);
+      safe.speech.utterance_text = 'Не уверен в ответе.';
+      return safe;
+    }
+    return original;
+  });
+  const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+  await model(input);
+  await model(input, { repair: { original_output: original,
+    validation_errors: [{ code: 'TRACE_NPC_SPEECH_SERVICE_TEXT',
+      category: 'semantic_grounding', concern_kinds: ['service_text_marker'] }] } });
+  for (const call of fixture.calls) {
+    assert.match(call.messages[0].content, /предел знаний или памяти NPC|full extent of NPC knowledge/u);
+    assert.match(call.messages[0].content, /interpretation.*reason/u);
+  }
+});

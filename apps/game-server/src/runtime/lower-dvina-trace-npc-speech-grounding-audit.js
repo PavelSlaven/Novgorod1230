@@ -9,7 +9,8 @@ const PROMPT = [
   '"quote":"<точная цитата из utterance_text либо пустая строка>"}.',
   'Добавь utterance_fragments: упорядоченный массив непустых точных фрагментов',
   'utterance_text. Их text при склеивании обязаны дословно дать всю реплику',
-  'без пропусков и повтора. Для каждого фрагмента укажи factual: true, если',
+  'без пропусков и повтора; только пробелы между точными фрагментами',
+  'сервер восстановит из исходной реплики. Для каждого фрагмента укажи factual: true, если',
   'он содержит проверяемое фактическое утверждение, иначе false, и claim_ids:',
   'массив точных claim_id из speech.claims, которые поддерживают это утверждение.',
   'Разделяй речь так, чтобы каждому фактическому фрагменту соответствовали',
@@ -17,6 +18,10 @@ const PROMPT = [
   'фрагмент без подходящего claim укажи с claim_ids: [] и верни pass:false.',
   'Вопросы, отказы, неуверенность и выраженная сейчас субъективная позиция',
   'без фактического утверждения могут иметь factual:false и пустые claim_ids.',
+  'Категорический предел знаний или памяти NPC — факт: одна запись о событии',
+  'не доказывает, что NPC больше ничего не знает. В реплике нужен исходный',
+  'claim и точное свидетельство; в interpretation и reason — точное свидетельство.',
+  'Без него верни pass:false, включая случай скрытой service-marker речи.',
   'Формат результата: {"pass":boolean,"concerns":[],"utterance_fragments":',
   '[{"text":"<точный фрагмент>","factual":boolean,"claim_ids":[]}]}.',
   'Для каждого замечания укажи короткую диагностическую причину; quote может быть',
@@ -161,7 +166,7 @@ function valid(value, speech) {
     && value.utterance_fragments.length > 0
     && value.utterance_fragments.every((fragment) => fragment != null
       && typeof fragment === 'object' && typeof fragment.text === 'string')
-    && value.utterance_fragments.map(({ text }) => text).join('') === utterance
+    && exactFragmentCoverage(value.utterance_fragments, utterance)
     && value.utterance_fragments.every((fragment) => fragment != null
       && typeof fragment === 'object' && !Array.isArray(fragment)
       && Object.keys(fragment).length === 3
@@ -181,4 +186,18 @@ function valid(value, speech) {
       && concern.reason.length <= 240
       && typeof concern.quote === 'string'
       && (concern.quote === '' || utterance.includes(concern.quote)));
+}
+
+function exactFragmentCoverage(fragments, utterance) {
+  let end = 0;
+  const restored = [];
+  for (const { text } of fragments) {
+    const start = utterance.indexOf(text, end);
+    if (start < 0) return false;
+    const gap = utterance.slice(end, start);
+    if (gap && (end === 0 || !/^\s+$/u.test(gap))) return false;
+    restored.push(gap + text);
+    end = start + text.length;
+  }
+  return restored.join('') === utterance;
 }

@@ -8,23 +8,30 @@ import { computeVisibleContextPackageDigest } from '@rus/contracts';
 import { adaptApprovedOpeningNarration } from '@rus/narration';
 import { serverError } from '../errors.js';
 import { GAMEPLAY_LLM_CALL_TIMEOUT_MS } from './llm-turn-budget.js';
+import { WORLD_STORY_BOUNDARY } from './lower-dvina-trace-narration-audit.js';
 import { buildOpeningRejectionSnapshot } from './opening-rejection-snapshot.js';
 import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
 import { playerSafeAppearanceSummary, PLAYER_SAFE_AGE,
   PLAYER_SAFE_AGE_FEMALE, PLAYER_SAFE_BUILDS, PLAYER_SAFE_EYE_COLORS } from
   './player-safe-appearance-summary.js';
 
-const WRITER = `Верните только {"prose":"<полное вступление>"}. Напишите 2–4 связанных
-абзаца сдержанной литературной прозы на русском языке во втором лице. Используйте только
-переданный player-safe visible_context_package. Охватите каждую переданную запись must_include.
-Неуказанные история, цели, обязанности, люди, строения и маршруты остаются неупомянутыми;
-пустой список наблюдений не означает, что место пусто или тихо.
-Свяжите переданные факты в сцену, а не в досье, журнал заданий,
-список, меню команд или отчёт о состоянии. opening source_hint — лишь необязательная опора,
-это не вся сцена. Не упоминайте предметы, людей, маршруты, звуки, погоду, воспоминания или
-действия, которых нет в переданных сохранённых источниках.`;
+const WRITER = `Верните только {"prose":"<полное вступление>"}. Напишите связную
+литературную прозу на русском языке в третьем лице и прошедшем времени. Назовите
+героя по имени из сведений; местоимение выбирайте по его полу, если он известен. Обычно уместны
+2–4 абзаца. Используйте переданную сцену.
+Охватите каждый смысл из группы обязательный_смысл. Остальные факты сцены
+используйте там, где они помогают рассказу. Неуказанные история, цели,
+обязанности, люди, строения и маршруты остаются неупомянутыми; пустой список
+наблюдений не означает, что место пусто или тихо.
+${WORLD_STORY_BOUNDARY}
+Свяжите переданные факты в сцену, а не в досье, журнал заданий, список, меню
+команд или отчёт о состоянии. opening source_hint — лишь необязательная опора,
+это не вся сцена.`;
 
-const AUDITOR = `Верните только {"pass":<boolean>,"failed_checks":["<обязательная проверка>"],"concerns":[{"code":"<допустимый код>","severity":"warning|repairable|hard_block|upstream_block","message":"<причина>"}],"evidence":["<обоснованное свидетельство>"]}. Проверяйте вступление по visible_context_package, а не по правдоподобию. Оцените каждую обязательную проверку. В failed_checks могут появляться только эти точные названия фактических/технических проверок: ${STAGE23_REQUIRED_CHECKS.filter((key) => key !== 'literary_composition_check').join(', ')}. В concerns могут появляться только эти точные коды: ${STAGE23_CONCERN_CODES.join(', ')}. Перечисляйте только проваленные проверки, не проверки, которые пройдены, и не названия требований. Если провалена только литературная композиция, верните pass=true и failed_checks=[]. Установите pass=false, только если failed_checks называет проваленную фактическую или техническую проверку и concerns содержит соответствующее фактическое или техническое замечание. Не пропускайте pass, failed_checks или concerns; при pass=true не должно быть блокирующих проваленных проверок или замечаний. Отклоняйте фактические, скрытые, покрытие, технические или агентные дефекты. Если найдена только литературная проблема, досье, перечень или слабая композиция, сообщите NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION в concerns; хост выводит literary_composition_check из этого замечания. Не помещайте literary_composition_check в failed_checks. Литературные замечания не меняют pass на false, когда все блокирующие проверки пройдены. Неподтверждённый отрицательный факт в прозе — это провал фактической проверки must_not_include_check: pass=false с NARRATOR_PROSE_MUST_NOT_INCLUDE_VIOLATION. Используйте severity repairable, если переписывание прозы по тому же видимому пакету может устранить дефект; используйте hard_block или upstream_block, если дефект нельзя исправить одной прозой. Используйте warning только для литературных замечаний. Свидетельства должны быть краткими и непустыми. Не переписывайте прозу и не включайте закрытое состояние.`;
+const AUDITOR = `${WORLD_STORY_BOUNDARY}
+Проверяйте полноту группы обязательный_смысл.
+Проверяйте мир по переданным фактам, а ощущения, мысли, мелкие движения и связки — по границам рассказа. Фоновый звук и ощущение, естественно следующие из переданных места, растительности, сезона, погоды и времени суток, сами по себе не выдуманный факт мира; звук или запах, выдающий новое событие либо объект мира, требует источника. Проверяйте как факты мира местность и положение героя, состояние тела и сил, свойства одежды и предметов, а также отрицания: отсутствие источника не подтверждает их.
+Верните только {"pass":<boolean>,"failed_checks":["<обязательная проверка>"],"concerns":[{"code":"<допустимый код>","severity":"warning|repairable|hard_block|upstream_block","message":"<причина>"}],"evidence":["<обоснованное свидетельство>"]}. Проверяйте вступление по переданной сцене, а не по правдоподобию. Оцените каждую обязательную проверку. В failed_checks могут появляться только эти точные названия фактических/технических проверок: ${STAGE23_REQUIRED_CHECKS.filter((key) => key !== 'literary_composition_check').join(', ')}. В concerns могут появляться только эти точные коды: ${STAGE23_CONCERN_CODES.join(', ')}. Перечисляйте только проваленные проверки, не проверки, которые пройдены, и не названия требований. Если провалена только литературная композиция, верните pass=true и failed_checks=[]. Установите pass=false, только если failed_checks называет проваленную фактическую или техническую проверку и concerns содержит соответствующее фактическое или техническое замечание. Не пропускайте pass, failed_checks или concerns; при pass=true не должно быть блокирующих проваленных проверок или замечаний. Отклоняйте фактические, скрытые, покрытие, технические или агентные дефекты. Если найдена только литературная проблема, досье, перечень или слабая композиция, сообщите NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION в concerns; хост выводит literary_composition_check из этого замечания. Не помещайте literary_composition_check в failed_checks. Литературные замечания не меняют pass на false, когда все блокирующие проверки пройдены. Неподтверждённый отрицательный факт в прозе — это провал фактической проверки must_not_include_check: pass=false с NARRATOR_PROSE_MUST_NOT_INCLUDE_VIOLATION. Используйте severity repairable, если переписывание прозы по тому же видимому пакету может устранить дефект; используйте hard_block или upstream_block, если дефект нельзя исправить одной прозой. Используйте warning только для литературных замечаний. Свидетельства должны быть краткими и непустыми. Не переписывайте прозу и не включайте закрытое состояние.`;
 
 const REPAIR_SEVERITY_LABELS = Object.freeze({
   warning: 'литературное замечание',
@@ -229,10 +236,11 @@ function projectOpeningRoleInput(input, roleId) {
   })).filter((npc, npcIndex) =>
     modelFacts.some((fact) => fact.npc_index === npcIndex));
   const projectedPackage = {
+    обязательный_смысл: (source?.visible_scene_dossier?.must_include ?? [])
+      .map(({ text }) => text),
     ...(sceneFacts.length ? { факты: sceneFacts } : {}),
     ...(people.length ? { персонажи: people } : {}),
-    ...(factKeyed ? { обязательные_ключи: projectedFacts.map((_, index) => `f${index + 1}`) } : {}),
-    граница: 'Каждое утверждение должно иметь опору в фактах; отсутствие сведений не доказывает отсутствие чего-либо.'
+    граница: WORLD_STORY_BOUNDARY
   };
   const result = { сцена: projectedPackage };
   const currentProse = input.narrator_starting_prose?.prose
@@ -310,7 +318,7 @@ function projectOpeningFacts(source) {
     const normalized = typeof entry?.text === 'string'
       ? entry.text.normalize('NFC').trim().toLocaleLowerCase('ru') : '';
     const repeatsHeldItem = [...heldItemLabels].some((label) =>
-      normalized === `при вас: ${label}.`);
+      normalized === `у героя: ${label}.`);
     if (!repeatsHeldItem) add(entry?.text, null, entry?.basis_refs ?? []);
   }
   for (const entry of source?.touch_body_context ?? []) add(entry?.text);
@@ -347,7 +355,7 @@ function projectOpeningFacts(source) {
     const condition = Object.hasOwn(OPENING_ITEM_CONDITIONS, conditionKey)
       ? OPENING_ITEM_CONDITIONS[conditionKey] : null;
     if (item.placement === 'held_by_player') {
-      add(`${label} при вас${condition ? `; состояние — ${condition}` : ''}.`,
+      add(`${label} у героя${condition ? `; состояние — ${condition}` : ''}.`,
         null, [item.item_instance_id]);
       continue;
     }
@@ -371,7 +379,8 @@ function projectOpeningFacts(source) {
     for (const entry of collection ?? []) add(entry?.text);
   }
   for (const [index, entry] of (source?.uncertain_context ?? []).entries()) {
-    add(typeof entry?.text === 'string' ? `Не подтверждено: ${entry.text}` : null,
+    const text = typeof entry?.text === 'string' ? entry.text.trim() : '';
+    add(text ? `Возможно, ${text[0].toLocaleLowerCase('ru')}${text.slice(1)}` : null,
       `opening:uncertain:${index + 1}`, entry?.inference_basis_refs ?? []);
   }
   for (const entry of source?.rumor_context ?? []) {

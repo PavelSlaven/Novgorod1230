@@ -7,6 +7,8 @@
 - fix(narration): carry a completed return to departure and an anchored interruption into the visible scene and all prose roles (#586).
 - fix(narration): retain the confirmed traversal line and player-safe current weather in arrival prose context; pass descriptive visible routes to all prose roles.
 - fix(conversation): resolve allowed source IDs before matching repaired NPC claims to their original identities; keep changed, unknown and reused claims rejected (#247, D49).
+- fix(opening): send authoritative required meaning separately from supporting scene facts to writer, auditor and semantic repair; retain Stage 22/23 coverage and visible NPC detail (#654, D49).
+- fix(opening): give writer, auditor and repair neutral body and item facts plus confirmed player sex; express opening uncertainty in natural Russian (#654, D49).
 - fix(conversation): restore unchanged NPC claims after service-marker repair despite regenerated claim IDs; pass initial audit feedback to final audit as diagnostic context (#247, D49).
 - fix(conversation): require complete private NPC speech audit fragments linked to existing claims; fail closed on unclaimed factual text without changing one-repair budget (#247, D49).
 - fix(conversation): accept full exact NPC auditor quotes in semantic repair feedback without a 160-character cutoff; continue rejecting quotes absent from the utterance (#247, D49).

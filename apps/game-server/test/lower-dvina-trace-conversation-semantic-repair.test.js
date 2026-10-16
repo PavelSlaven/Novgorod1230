@@ -321,6 +321,41 @@ test('model repair keeps cited present facts and removes an unsupported past cla
   assert.doesNotMatch(scenario.result.plan.speech.utterance_text, /Вчера/u);
 });
 
+for (const marker of [false, true]) {
+  for (const retainsFact of [false, true]) {
+    test(`${marker ? 'marker' : 'ordinary'} repair ${retainsFact ? 'retains' : 'drops'} supported speech fact`, async () => {
+      const input = request(`semantic-retention-${marker}-${retainsFact}`);
+      const seen = observation(input);
+      const original = plan(input, `${seen.fact_text} Вчера я видел лодку.${marker ? ' INFERENCE: npc_private.' : ''}`);
+      const corrected = plan(input, retainsFact
+        ? `${seen.fact_text} О лодке судить не берусь.`
+        : 'О лодке судить не берусь.');
+      const finalAudits = [];
+      const scenario = await runConversation(input, original, corrected, {
+        audit(call, number) {
+          if (!marker && number === 1) return rejected('unsupported_past_activity');
+          const candidate = payload(call);
+          finalAudits.push(candidate);
+          if (candidate.original_speech?.utterance_text.includes(seen.fact_text)
+              && !candidate.plan.speech.utterance_text.includes(seen.fact_text)) {
+            return rejected('supported_fact_dropped');
+          }
+          return approved();
+        }
+      });
+      assert.deepEqual(finalAudits.map(({ original_speech }) => original_speech),
+        [original.speech]);
+      if (marker) assert.doesNotMatch(JSON.stringify(singleRepair(scenario).messages),
+        /INFERENCE:|npc_private/u);
+      if (retainsFact) exactModelReply(scenario, corrected);
+      else {
+        assert.equal(scenario.result, undefined);
+        assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_INVALID');
+      }
+    });
+  }
+}
+
 test('repair preserves refusal and introduction while marker repair keeps a separate clean wire', async () => {
   const input = request('semantic-refusal-and-marker-pair');
   input.npc = { identity_state: { canonical_name: 'Еремей' } };

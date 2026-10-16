@@ -279,6 +279,7 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       return presentation;
     }
     const audit = await auditFreshNpcSpeech({ roleRunner, plan,
+      originalSpeech: originalDecision?.original?.speech,
       request: preparedContext?.audit_request
         ?? preparedContext?.context?.audit_request ?? request });
     if (audit?.errors?.some(({ category }) => category === 'semantic_grounding')) {

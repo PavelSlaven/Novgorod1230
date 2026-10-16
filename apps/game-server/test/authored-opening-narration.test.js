@@ -168,13 +168,13 @@ test('opening shares the world/story boundary across distinct scenes and repair'
     assert.deepEqual(calls.map(({ role_id }) => role_id), [
       'gameplay_narrator', 'gameplay_narrator_auditor',
       'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
-    const boundary = JSON.parse(calls[0].messages[1].content).сцена.граница;
-    assert.match(boundary, /Рассказ — то, как герой переживает этот мир/u);
-    assert.match(boundary, /Герой не совершает поступков, которых игрок не выбирал/u);
     for (const call of calls) {
-      assert.ok(call.messages[0].content.includes(boundary));
+      assert.match(call.messages[0].content,
+        /Рассказ — то, как герой переживает этот мир/u);
+      assert.match(call.messages[0].content,
+        /Герой не совершает поступков, которых игрок не выбирал/u);
       const scene = JSON.parse(call.messages[1].content).сцена;
-      assert.equal(scene.граница, boundary);
+      assert.equal(scene.граница, undefined);
       assert.match(JSON.stringify(scene), new RegExp(setting, 'u'));
     }
     assert.match(calls[1].messages[0].content,
@@ -222,7 +222,9 @@ test('opening repairs unsupported negative prose once and blocks hard findings',
   for (const call of repairable.calls.slice(0, 3)) {
     const roleInput = JSON.parse(call.messages[1].content);
     assert.deepEqual(roleInput.сцена.обязательный_смысл,
-      pkg.visible_scene_dossier.must_include.map(({ text }) => text));
+      pkg.visible_scene_dossier.must_include
+        .filter(({ category }) => category !== 'surroundings')
+        .map(({ text }) => text));
   }
   assert.equal(result.prose, 'Любава стоит у берега рядом с братом.');
   assert.match(repairable.calls[0].messages[0].content,
@@ -322,18 +324,25 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   const auditorInput = JSON.parse(calls[1].messages[1].content);
   assert.deepEqual(Object.keys(writerInput), ['сцена']);
   assert.deepEqual(Object.keys(auditorInput), ['сцена', 'проверяемая_проза']);
-  const required = pkg.visible_scene_dossier.must_include.map(({ text }) => text);
+  const required = pkg.visible_scene_dossier.must_include
+    .filter(({ category }) => category !== 'surroundings').map(({ text }) => text);
   assert.deepEqual(writerInput.сцена.обязательный_смысл, required);
   assert.deepEqual(auditorInput.сцена.обязательный_смысл, required);
   assert.match(calls[0].messages[0].content, /группы обязательный_смысл/u);
   assert.match(calls[1].messages[0].content, /группы обязательный_смысл/u);
+  for (const call of calls) {
+    assert.match(call.messages[0].content,
+      /Если переданы сведения об окружении,[\s\S]*главные воспринимаемые черты/u);
+    assert.match(call.messages[0].content, /Не требуйте пересказа каждой детали окружения/u);
+    assert.doesNotMatch(call.messages[1].content, /главные воспринимаемые черты окружения/u);
+  }
   for (const modelInput of [writerInput, auditorInput]) {
     const serialized = JSON.stringify(modelInput);
     assert.doesNotMatch(serialized,
       /visible_context_package|frame|clock|whole_minutes|weather_light_context|must_include|source_refs|fact_id|summer|daylight|"[^"]*":\s*\[\s*\]/u);
     assert.doesNotMatch(serialized, /male|young|blue|auburn|stocky|low_leather_shoe/u);
-    assert.match(serialized, /Мир сцены задан только сведениями/u);
-    assert.match(serialized, /Рассказ — то, как герой переживает этот мир/u);
+    assert.doesNotMatch(serialized, /Мир сцены задан только сведениями/u);
+    assert.doesNotMatch(serialized, /Рассказ — то, как герой переживает этот мир/u);
   }
   const writerFacts = [
     ...(writerInput.сцена.факты ?? []),
@@ -1302,7 +1311,7 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
   ]) {
     assert.match(opening.visible_scene_dossier.must_include
       .find(({ category }) => category === 'surroundings').text,
-    /главные воспринимаемые черты окружения/u);
+    /Главные воспринимаемые черты окружения/u);
     assert.deepEqual(opening.visible_scene_facts
       .filter(({ fact_id }) => fact_id.startsWith('opening:natural:'))
       .map(({ text }) => text), texts);
@@ -1339,10 +1348,16 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
       const scene = JSON.parse(call.messages[1].content).сцена;
       const facts = scene.факты.map((fact) => typeof fact === 'string' ? fact : fact.текст);
       for (const text of texts) assert.ok(facts.includes(text));
-      assert.ok(scene.обязательный_смысл.some((text) =>
-        /главные воспринимаемые черты окружения/u.test(text)));
       assert.equal(scene.обязательный_смысл.some((text) =>
-        texts.every((fact) => text.includes(fact))), false);
+        /главные воспринимаемые черты окружения/u.test(text)), false);
+      assert.deepEqual(scene.обязательный_смысл,
+        opening.visible_scene_dossier.must_include
+          .filter(({ category }) => category !== 'surroundings')
+          .map(({ text }) => text));
+      assert.match(call.messages[0].content,
+        /Если переданы сведения об окружении,[\s\S]*главные воспринимаемые черты/u);
+      assert.doesNotMatch(call.messages[1].content,
+        /главные воспринимаемые черты окружения/u);
     }
   }
   assert.equal(pkg.visible_scene_facts.find(({ fact_id }) =>

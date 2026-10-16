@@ -168,7 +168,9 @@ function committedReadPool(saved) {
       const positionId = `position:${snapshot.party_id}:ca03`;
       const g6Id = `g6:${snapshot.party_id}:ca03`;
       const journey = { id: `journey:${snapshot.party_id}:${snapshot.actor_id}:ca03`,
-        scene_position_id: positionId, g6_instance_id: g6Id, state_version: 1 };
+        location_kind: 'scene', scene_position_id: positionId,
+        transit_anchor_id: null, travel_state_id: null,
+        g6_instance_id: g6Id, state_version: 1 };
       assert.match(sql.trim(), /^SELECT\b/u, 'read fixture must never accept a mutation');
       let rows;
       if (sql.includes('AS party_state_version')) rows = [{
@@ -226,7 +228,8 @@ function committedReadPool(saved) {
           action_set_digest: last.action_set_digest, semantic_trace: last.semantic_trace
         }
       }] : [];
-      else if (sql.includes('SELECT journey.id,journey.scene_position_id,journey.state_version,')
+      else if (sql.includes('SELECT journey.id,journey.location_kind,journey.scene_position_id,')
+        && sql.includes('journey.transit_anchor_id,journey.travel_state_id,')
         && sql.includes('FROM party_runtime.party_journey_locations journey')) {
         rows = values?.[0] === snapshot.party_id && values?.[1] === snapshot.actor_id
           ? [journey] : [];

@@ -34,7 +34,8 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       if (!row) return null;
       const refs = projectLowerDvinaTracePhase1ASceneRefs({ partyId,
         createdRefs: row.created_refs,
-        initialSpatialV3: row.state_payload?.initial_spatial_v3 });
+        initialSpatialV3: row.state_payload?.initial_spatial_v3,
+        initialSpatialV3Runtime: row.state_payload?.initial_spatial_v3_runtime });
       const siteRef = refs.find(({ table }) => table === 'party_g5_sites');
       const site = siteRef == null ? null : await one(
         `SELECT created_change_set_id FROM party_runtime.party_g5_sites
@@ -358,7 +359,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
 
 /** Map Phase1A's legacy domain refs to exact physical scene rows it authored. */
 export function projectLowerDvinaTracePhase1ASceneRefs({ partyId,
-  createdRefs, initialSpatialV3 } = {}) {
+  createdRefs, initialSpatialV3, initialSpatialV3Runtime } = {}) {
   const fail = () => { throw rehydrateIncomplete(
     'Committed Phase 1A scene refs do not match its physical scene proposal.'); };
   if (typeof partyId !== 'string' || !Array.isArray(createdRefs)
@@ -370,6 +371,55 @@ export function projectLowerDvinaTracePhase1ASceneRefs({ partyId,
     const key = `${ref.domain}\0${ref.instance_id}`;
     if (refs.has(key)) fail();
     refs.add(key);
+  }
+  if (initialSpatialV3.canonical_scene_proposal == null) {
+    const spatial = initialSpatialV3;
+    const runtime = initialSpatialV3Runtime;
+    const ids = { g5: `g5:${spatial.node_id}`,
+      baseline: `baseline:${spatial.node_id}`,
+      g6: `g6:${spatial.anchor_id}`,
+      position: `position:${spatial.anchor_id}` };
+    const playerRefs = createdRefs.filter((ref) => ref.domain === 'player_character');
+    if (typeof spatial.node_id !== 'string' || !refs.has(`g5_node\0${spatial.node_id}`)
+        || typeof spatial.anchor_id !== 'string'
+        || !refs.has(`g5_anchor\0${spatial.anchor_id}`)
+        || runtime?.g5 !== ids.g5 || runtime?.baseline !== ids.baseline
+        || runtime?.g6 !== ids.g6 || runtime?.position !== ids.position
+        || playerRefs.length !== 1
+        || runtime?.journey !== `journey-location:${partyId}:${playerRefs[0].instance_id}`) fail();
+    const topology = spatial.s1_topology;
+    const writes = spatial.s1_physical_writes ?? [];
+    if (!Array.isArray(writes) || (topology == null && writes.length !== 0)
+        || (topology != null && (!Array.isArray(topology.movement_edge_refs)
+          || !Array.isArray(topology.visibility_link_refs)
+          || topology.movement_edge_refs.length !== 2
+          || topology.visibility_link_refs.length !== 2
+          || writes.length !== 6))) fail();
+    const expected = topology == null ? [] : [
+      ['party_g6_instances', topology.g6_instance_ref, ids.baseline, ids.g5],
+      ['scene_position_nodes', topology.position_ref, topology.g6_instance_ref],
+      ...topology.movement_edge_refs.map((id) => ['scene_movement_edges', id]),
+      ...topology.visibility_link_refs.map((id) => ['visibility_links', id])
+    ];
+    for (const [table, id, parent, host] of expected) {
+      const rows = writes.filter((row) => row?.target_table === table && row.id === id);
+      if (typeof id !== 'string' || !id || rows.length !== 1
+          || (table === 'party_g6_instances'
+            && (rows[0].record?.scene_baseline_id !== parent
+              || rows[0].record?.host_kind !== 'g5_site'
+              || rows[0].record?.host_id !== host))
+          || (table === 'scene_position_nodes'
+            && rows[0].record?.g6_instance_id !== parent)) fail();
+    }
+    const physicalRefs = [{ table: 'party_g5_sites', id: ids.g5 },
+      { table: 'party_scene_baselines', id: ids.baseline },
+      { table: 'party_g6_instances', id: ids.g6 },
+      { table: 'scene_position_nodes', id: ids.position },
+      ...writes.map((row) => ({ table: row.target_table, id: row.id }))];
+    if (new Set(physicalRefs.map((ref) => `${ref.table}\0${ref.id}`)).size
+        !== physicalRefs.length) fail();
+    return Object.freeze(physicalRefs.sort((left, right) =>
+      left.table.localeCompare(right.table) || left.id.localeCompare(right.id)));
   }
   const proposal = initialSpatialV3.canonical_scene_proposal;
   const nodeId = initialSpatialV3.node_id;

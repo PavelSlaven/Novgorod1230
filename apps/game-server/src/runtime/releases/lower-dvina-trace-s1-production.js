@@ -21,7 +21,7 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
     assertNeedsCheckAllowed: turnGuard = assertNeedsCheckAllowed,
     recordNeedsCheckFilter: turnRecord = recordNeedsCheckFilter }) =>
     async function resolveSpatialSemantic(input) {
-    const value = strictSnapshot(input);
+    const value = strictSnapshot(input, { allowUndefined: true });
     const operation = value.operation;
     const request = value.request;
     const actor = value.actor?.actor_id;
@@ -170,7 +170,7 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   const next = projectLowerDvinaTraceS1Visible({ playerSafeState,
     committedState, resolverAvailable });
   let committed;
-  try { strictSnapshot(playerSafeState); committed = strictSnapshot(committedState); }
+  try { strictSnapshot(playerSafeState); committed = strictSnapshot(committedState, { allowUndefined: true }); }
   catch { return next; }
   if (!resolverAvailable || !Array.isArray(committed.spatial_semantic)) return next;
   const position = committed.position?.position_id ?? committed.position?.position_ref;
@@ -188,7 +188,7 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
 export function projectLowerDvinaTraceS1Visible({ playerSafeState,
   committedState, resolverAvailable }) {
   let player; let committed;
-  try { player = strictSnapshot(playerSafeState); committed = strictSnapshot(committedState); }
+  try { player = strictSnapshot(playerSafeState); committed = strictSnapshot(committedState, { allowUndefined: true }); }
   catch { return player ?? {}; }
   if (!resolverAvailable || !Array.isArray(committed.spatial_semantic)) return player;
   const position = committed.position?.position_id ?? committed.position?.position_ref;
@@ -212,7 +212,7 @@ function projectLocalPositionStatus(state, resolutions, position) {
 export function projectLowerDvinaTraceNpcS1Capability({ npcSnapshot,
   committedState, resolverAvailable }) {
   let npc; let committed;
-  try { npc = strictSnapshot(npcSnapshot); committed = strictSnapshot(committedState); }
+  try { npc = strictSnapshot(npcSnapshot); committed = strictSnapshot(committedState, { allowUndefined: true }); }
   catch { return { visible_objects: [], known_context: [] }; }
   const safe = { visible_objects: [], known_context: [] };
   if (!resolverAvailable || !Array.isArray(committed.spatial_semantic)) return safe;
@@ -322,9 +322,10 @@ function ownRecord(value, key) {
   return Object.fromEntries(Object.entries(descriptors)
     .map(([name, entry]) => [name, entry.value]));
 }
-function strictSnapshot(value) {
+function strictSnapshot(value, { allowUndefined = false } = {}) {
   const seen = new WeakSet();
   const visit = (input) => {
+    if (input === undefined && allowUndefined) return input;
     if (input === null || typeof input === 'string' || typeof input === 'boolean') return input;
     if (typeof input === 'number') { if (Number.isFinite(input)) return input; fail('TRACE_S1_INPUT_INVALID'); }
     if (!input || typeof input !== 'object' || seen.has(input)

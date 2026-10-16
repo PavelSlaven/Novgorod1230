@@ -47,3 +47,18 @@ test('S1 player-safe projection rejects hostile committed snapshots without read
     }
     assert.equal(reads, 0);
   });
+
+test('S1 capability ignores undefined in unrelated committed NPC fields', () => {
+  const projected = projectLowerDvinaTraceS1Capability({
+    playerSafeState: {}, resolverAvailable: true, committedState: {
+      position: { position_id: 'camp' },
+      npcs: [{ scene_readback_prior_locus: { position_id: { value: undefined } } }],
+      spatial_semantic: [{ envelope_ref: 'envelope', status: 'committed',
+        envelope: { position_ref: 'camp' }, capacity_total: 1, consumed_count: 0,
+        resolutions: [] }]
+    }
+  });
+  assert.deepEqual(projected.spatial_semantic, {
+    semantic_grounding_available: true, position_ref: 'camp'
+  });
+});

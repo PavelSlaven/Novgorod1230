@@ -18,6 +18,7 @@ test('exhausted S1 envelope exposes no resolver marker or model path', async () 
   assert.equal(playerSafeState.spatial_semantic, undefined);
   const request = s1Request();
   request.request.player_safe_state = playerSafeState;
+  request.committed_state.npcs = [{ prior_locus: { value: undefined } }];
   const resolver = createLowerDvinaTraceS1ProductionResolverFactory({
     pool: { query: async () => { reads += 1; return { rowCount: 0, rows: [] }; } },
     resolveSpatialSemanticDescriptor: async () => { modelCalls += 1; }

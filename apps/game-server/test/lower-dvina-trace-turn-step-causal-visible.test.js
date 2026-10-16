@@ -269,7 +269,7 @@ for (const fire of [false, true]) {
   test(`authored projection retains findings, body and utterance with remaining intent (fire=${fire})`, async () => {
     const state = committedState();
     const base = { ...state.current_visible_context,
-      visible_changes: ['На доске видна зарубка.'], known_context: ['energy:83'] };
+      visible_changes: ['На доске видна зарубка.'], known_context: ['Сил достаточно для работы.'] };
     const projector = createLowerDvinaTraceTurnStepVisibleProjector({
       fallback: { project: async () => base }
     });
@@ -287,7 +287,7 @@ for (const fire of [false, true]) {
         } }] } } });
     assert.ok(visible.visible_changes.includes('На доске видна зарубка.'));
     assert.ok(visible.visible_changes.includes(`Герой произнёс: «${spoken}»`));
-    assert.deepEqual(visible.known_context, ['energy:83']);
+    assert.deepEqual(visible.known_context, ['Сил достаточно для работы.']);
     assert.equal(visible.uncertainties.some((value) =>
       value.includes('Проверить пространство под настилом.')), false);
     assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));

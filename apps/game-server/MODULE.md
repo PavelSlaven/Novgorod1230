@@ -279,10 +279,10 @@ and adds no second transaction owner.
   visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
   (changes/uncertainties с ref/text), optional_support
   и constraints (do_not_imply/allowed_tensions/style_policy), без копии visible_context.
-  При любом current change/uncertainty optional_support содержит только
-  `visible_scene`: остальные static arrays/metadata и неизменный sensory panorama
-  не поступают writer/auditor/repair. Newly relevant sensory details уже входят
-  в required visible changes; полный пересказ окружения запрещён.
+  При current change/uncertainty optional_support содержит применимые сведения
+  сцены: место, видимых людей и предметы, ощущения и известный герою контекст.
+  Writer/auditor/repair получают один player-safe snapshot; полный пересказ
+  окружения вместо текущего действия запрещён.
   Newly relevant facts приходят через visible_changes: applied observation
   продвигает воспринимаемые scene facts, а подтверждённое прибытие — одно событие
   из player-safe факта места назначения,
@@ -1118,11 +1118,11 @@ coverage/verdict, а final audit строго проверяется по IDs
 prose wire: её вычисляет temporal owner и показывает server-owned UI projection.
 Любая придуманная narrator временная величина является unsupported fact, а
 служебная формулировка дополнительно проваливает elapsed_as_service_report.
-При current beat `optional_support` private wire допускает только `visible_scene`;
-неизменный sensory panorama не передаётся. Новые относящиеся к эпизоду sensory facts
-обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
+При current beat `optional_support` private wire передаёт применимые сведения
+обстановки: место, видимых людей и предметы, ощущения и известный герою контекст.
+Текущий результат остаётся в `required_current_beat`; unrelated/all-facts
 dump остаётся static_context_dump. При отсутствии current beat scene-only wire
-сохраняет `visible_scene` и grounded descriptive sensory support.
+сохраняет сведения о сцене и grounded descriptive sensory support.
 Материализованная обычная вещь передаётся как одно естественное сообщение о находке,
 подтверждённое её размещением в текущей сцене, без неподтверждённой детали о поверхности.
 Полный grounded пересказ required sources по одному в исходном порядке является
@@ -1153,9 +1153,11 @@ Narrator переводит evidence wording в естественную реч�
 (Spatial 4.7.0 §7.1.1): при плохой видимости линии (`local_edge`, `site_connection`, `directional_exit`) остаются в disclosure,
 их скрывает только concealment (`visibleCurrentTargets`). Экран локального хода показывает проходы места прибытия:
 `prepareLocalMovement` кладёт их в `visible_seed.destination_movement_objects`, проектор подменяет ими проходы прежней позиции.
-Три вида выбора панели route не становятся объектами сцены: `lowerDvinaTraceObservedSceneChanges` и
-`narrationWire` пропускают `scene_movement_edge`, `g4_directional_exit`, `g5_site_connection`.
-Допущенное видимое описание `passage` остаётся сведением для прозы без внутренних ссылок; оно само по себе
+Выбор панели route не становится событием сцены: `lowerDvinaTraceObservedSceneChanges`
+пропускает `scene_movement_edge`, `g4_directional_exit`, `g5_site_connection`.
+`narrationWire` исключает `scene_movement_edge` и небезопасные подписи проходов;
+допущенные player-safe описания `g4_directional_exit` и `g5_site_connection`
+остаются сведениями для прозы без внутренних ссылок. Видимое описание `passage` само по себе
 не доказывает совершённый переход. Линия при плохой видимости приходит из `visibleCurrentTargets`
 с `visibility: 'none'`.
 

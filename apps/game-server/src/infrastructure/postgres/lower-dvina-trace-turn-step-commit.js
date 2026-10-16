@@ -161,8 +161,8 @@ export async function commitLowerDvinaTraceTurnStep({
         ...(destinationVisibleContext.visible_objects ?? [])
       ]),
       visible_changes: mergeVisibleChanges(
-        destinationVisibleContext.visible_changes ?? [],
-        envelope.visible_context.visible_changes ?? []),
+        envelope.visible_context.visible_changes ?? [],
+        destinationVisibleContext.visible_changes ?? []),
       uncertainties: [...new Set([
         ...(destinationVisibleContext.uncertainties ?? []),
         ...(envelope.visible_context.uncertainties ?? [])
@@ -380,10 +380,10 @@ function assertRootInput({ partyId, inputDigest, envelope }) {
   }
 }
 
-function mergeVisibleChanges(destination, turn) {
+function mergeVisibleChanges(turn, destination) {
   const unmatched = new Map();
-  for (const change of destination) unmatched.set(change, (unmatched.get(change) ?? 0) + 1);
-  return [...destination, ...turn.filter((change) => {
+  for (const change of turn) unmatched.set(change, (unmatched.get(change) ?? 0) + 1);
+  return [...turn, ...destination.filter((change) => {
     const count = unmatched.get(change) ?? 0;
     if (count === 0) return true;
     unmatched.set(change, count - 1);

@@ -342,8 +342,9 @@ test('position transition without prepared route loads destination NPCs for pend
       entity_ref: { entity_kind: 'npc', entity_id: destinationNpc.instance_id },
       display_label: 'человек', recognition: 'unrecognized'
     }];
+    const spoken = 'Герой произнёс: «Подождите у тропы.»';
     envelope.visible_context.visible_changes = [
-      'Во дворе слышен шум.', 'Во дворе слышен шум.',
+      spoken, 'Во дворе слышен шум.', 'Во дворе слышен шум.',
       'Текущий ход завершился у нового места.'];
     envelope.visible_context.uncertainties = ['Пока неясно, кто находится во дворе.'];
     envelope.consequence.visible_seed = {
@@ -380,11 +381,14 @@ test('position transition without prepared route loads destination NPCs for pend
 
     const visible = f.plans[0].appends.find(({ target_table: table }) =>
       table === 'party_visible_packages').record;
-    assert.deepEqual(visible.visible_payload.perceived_changes, [
-      'Перед путником открылся двор.',
-      'Во дворе слышен шум.', 'Во дворе слышен шум.',
-      'Текущий ход завершился у нового места.'
-    ]);
+    const expectedChanges = [
+      spoken, 'Во дворе слышен шум.', 'Во дворе слышен шум.',
+      'Текущий ход завершился у нового места.',
+      'Перед путником открылся двор.'
+    ];
+    assert.deepEqual(visible.visible_payload.perceived_changes, expectedChanges);
+    assert.deepEqual(phase2VisibleContextFromPayload(visible.visible_payload)
+      .visible_changes, expectedChanges);
     assert.deepEqual(visible.visible_payload.uncertainties, [
       'Из избы не видно, кто там.', 'Пока неясно, кто находится во дворе.'
     ]);

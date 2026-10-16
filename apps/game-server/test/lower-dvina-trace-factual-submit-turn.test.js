@@ -144,14 +144,16 @@ test('submitTurn uses durable factual delivery after narrator rejection with a s
     'gameplay_narrator', 'gameplay_narrator_auditor',
     'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor'
   ]);
-  const writerWire = JSON.parse(roleCalls[0].messages[1].content);
-  const auditWire = JSON.parse(roleCalls[1].messages[1].content);
+  const writerWire = compatNarrationWire(JSON.parse(roleCalls[0].messages[1].content));
+  const auditWire = compatNarrationWire(JSON.parse(roleCalls[1].messages[1].content));
   assert.equal(JSON.stringify(writerWire.required_current_beat).includes('npc-at-start'), false,
     'the static NPC is not a required current beat');
-  assert.equal(JSON.stringify(writerWire.optional_support).includes('npc-at-start'), true,
+  assert.ok(writerWire.optional_support.visible_npc.length > 0,
     'the fixture shows the static NPC only as optional support');
-  assert.equal(JSON.stringify(auditWire.optional_support).includes('npc-at-start'), true,
+  assert.deepEqual(auditWire.optional_support.visible_npc, writerWire.optional_support.visible_npc,
     'the auditor receives the same optional NPC support as the writer');
+  assert.equal(JSON.stringify(writerWire.optional_support).includes('npc-at-start'), false,
+    'private NPC identifiers must not reach the narrator');
   assert.deepEqual(validateTerminalNarrationPolicyRejection(rejectionFlow,
     writerRequest), { ok: true, errors: [] });
   assert.equal(claimCalls, 1);

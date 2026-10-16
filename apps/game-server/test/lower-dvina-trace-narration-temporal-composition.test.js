@@ -204,7 +204,7 @@ test('completed-before literary findings remain non-blocking delivery metadata',
           assert.match(call.messages[0].content,
             /передай каждое обязательное положение один раз/u);
           assert.match(call.messages[0].content,
-          /Ничего из этого не добавляй и не меняй/u);
+          /К этому проза ничего не добавляет и переданного не меняет/u);
           assert.match(call.messages[0].content, /сохрани его смысл, уверенность и порядок совершённых действий/u);
           assert.match(call.messages[0].content, /Покажи важное через взгляд героя/u);
           assert.match(call.messages[0].content, /свяжи действие, внимание и внутренний отклик героя/u);

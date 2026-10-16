@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(narration): restore direct coverage of every required episode fact after the rejected composition trial while retaining clear names for known people.
 - fix(game-server): authorize exact player speech in public text only from the committed turn trace; preserve it through visible-package and screen readback without admitting forged system markers (#364, D49).
 - fix(conversation): give the final NPC speech auditor the rejected speech as a comparison candidate so repair cannot drop request-supported facts; keep service-marker text out of repair input (#247).
 - fix(narration): capture the initial qualification audit in the workflow owner without exposing its phase to the model; use a Russian JSON instruction and align frozen role builders and regression fixtures with the compact narration wire (#563, #654, D49).
@@ -759,6 +760,7 @@
 # Changelog
 
 ## Unreleased
+- fix(narration): restore direct coverage of every required episode fact after the rejected composition trial while retaining clear names for known people.
 
 - feat(npc): select pinned D-1 routines on first entry; preserve identity through typed offstage/location gaps without invented placement; LW-125 added (first-entry context gap), LW-126 added (month-boundary applicability remains deferred after calendar-leap fix), LW-127 added (multi-movement placement CAS latent) (#227)
 - docs(tech-debt): LW-124 Julian leap-day inverse gap recorded; closed by the calendar fix in the same merge series

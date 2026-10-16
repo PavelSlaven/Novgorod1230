@@ -202,10 +202,10 @@ test('completed-before literary findings remain non-blocking delivery metadata',
         const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
         if (call.role_id === 'gameplay_narrator') {
           assert.match(call.messages[0].content,
-            /После сочинения проверь, что каждое обязательное положение передано один раз/u);
+            /передай каждое обязательное положение один раз/u);
           assert.match(call.messages[0].content,
           /К этому проза ничего не добавляет и переданного не меняет/u);
-          assert.match(call.messages[0].content, /сохрани смысл и степень уверенности каждого обязательного положения и порядок совершённых действий/u);
+          assert.match(call.messages[0].content, /сохрани его смысл, уверенность и порядок совершённых действий/u);
           assert.match(call.messages[0].content, /Покажи важное через взгляд героя/u);
           assert.match(call.messages[0].content, /свяжи действие, внимание и внутренний отклик героя/u);
           assert.match(call.messages[0].content, /Не делай позднее действие ранним, одновременным или вложенным в раннее/u);

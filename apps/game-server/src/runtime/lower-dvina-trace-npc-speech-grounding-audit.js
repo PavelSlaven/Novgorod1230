@@ -3,8 +3,22 @@ import { NPC_INTERLOCUTOR_SPEECH_INSTRUCTION } from
   './lower-dvina-trace-phase-2-npc-conversation-prompts.js';
 
 const PROMPT = [
-  'Возвращай только {"pass":true,"concerns":[]} либо',
-  '{"pass":false,"concerns":[{"kind":"<вид>","reason":"<краткая диагностика>","quote":"<точная цитата из utterance_text либо пустая строка>"}]}.',
+  'Верни JSON с pass, concerns и utterance_fragments.',
+  'При pass:true concerns:[]; при pass:false concerns содержит',
+  '{"kind":"<вид>","reason":"<краткая диагностика>",',
+  '"quote":"<точная цитата из utterance_text либо пустая строка>"}.',
+  'Добавь utterance_fragments: упорядоченный массив непустых точных фрагментов',
+  'utterance_text. Их text при склеивании обязаны дословно дать всю реплику',
+  'без пропусков и повтора. Для каждого фрагмента укажи factual: true, если',
+  'он содержит проверяемое фактическое утверждение, иначе false, и claim_ids:',
+  'массив точных claim_id из speech.claims, которые поддерживают это утверждение.',
+  'Разделяй речь так, чтобы каждому фактическому фрагменту соответствовали',
+  'именно его claims; нефактический фрагмент имеет claim_ids: []. Фактический',
+  'фрагмент без подходящего claim укажи с claim_ids: [] и верни pass:false.',
+  'Вопросы, отказы, неуверенность и выраженная сейчас субъективная позиция',
+  'без фактического утверждения могут иметь factual:false и пустые claim_ids.',
+  'Формат результата: {"pass":boolean,"concerns":[],"utterance_fragments":',
+  '[{"text":"<точный фрагмент>","factual":boolean,"claim_ids":[]}]}.',
   'Для каждого замечания укажи короткую диагностическую причину; quote может быть',
   'только точной подстрокой исходного utterance_text. Для замечания о private',
   'interpretation или reason передай пустую quote и назови проблему без',
@@ -106,12 +120,16 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request,
     }],
     overrides: { temperature: 0, maxTokens: 20_000 }
   });
-  if (!valid(response?.output, plan.speech.utterance_text)) throw serverError(
+  if (!valid(response?.output, plan.speech)) throw serverError(
     'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID',
     'NPC speech grounding auditor returned an invalid result.', { status: 503 }
   );
-  return response.output.pass ? true : unsupported(
-    response.output.concerns
+  const missing = response.output.utterance_fragments.filter(
+    ({ factual, claim_ids }) => factual && claim_ids.length === 0
+  ).map(({ text }) => ({ kind: 'unclaimed_factual_utterance',
+    reason: 'Фактическое утверждение отсутствует в speech.claims.', quote: text }));
+  return response.output.pass && missing.length === 0 ? true : unsupported(
+    [...response.output.concerns, ...missing]
   );
 }
 
@@ -127,11 +145,28 @@ function unsupported(concerns) {
   }] };
 }
 
-function valid(value, utterance) {
+function valid(value, speech) {
+  const utterance = speech.utterance_text;
+  const claimIds = new Set(speech.claims.map(({ claim_id }) => claim_id));
   return value != null && typeof value === 'object' && !Array.isArray(value)
-    && Object.keys(value).length === 2
+    && Object.keys(value).length === 3
     && typeof value.pass === 'boolean' && Array.isArray(value.concerns)
     && (value.pass ? value.concerns.length === 0 : value.concerns.length > 0)
+    && Array.isArray(value.utterance_fragments)
+    && value.utterance_fragments.length > 0
+    && value.utterance_fragments.every((fragment) => fragment != null
+      && typeof fragment === 'object' && typeof fragment.text === 'string')
+    && value.utterance_fragments.map(({ text }) => text).join('') === utterance
+    && value.utterance_fragments.every((fragment) => fragment != null
+      && typeof fragment === 'object' && !Array.isArray(fragment)
+      && Object.keys(fragment).length === 3
+      && typeof fragment.text === 'string' && fragment.text.length > 0
+      && typeof fragment.factual === 'boolean'
+      && Array.isArray(fragment.claim_ids)
+      && (fragment.factual || fragment.claim_ids.length === 0)
+      && fragment.claim_ids.every((id) => typeof id === 'string'
+        && claimIds.has(id))
+      && new Set(fragment.claim_ids).size === fragment.claim_ids.length)
     && value.concerns.every((concern) => concern != null
       && typeof concern === 'object' && !Array.isArray(concern)
       && Object.keys(concern).length === 3
@@ -139,6 +174,6 @@ function valid(value, utterance) {
       && concern.kind.length <= 80
       && typeof concern.reason === 'string' && concern.reason.trim().length > 0
       && concern.reason.length <= 240
-      && typeof concern.quote === 'string' && concern.quote.length <= 160
+      && typeof concern.quote === 'string'
       && (concern.quote === '' || utterance.includes(concern.quote)));
 }

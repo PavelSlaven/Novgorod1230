@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildNpcDecisionBoundary } from '@rus/npc-runtime';
@@ -179,7 +180,7 @@ test('P2-1: quoted NPC output fails before the grounding auditor and repair pres
   const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner: { async run(call) {
     calls.push(call);
     if (call.role_id === 'npc_conversation_grounding_auditor') {
-      return { output: { pass: true, concerns: [] } };
+      return { output: npcAuditReport(call) };
     }
     return { output: npcPlan(input, 'Не отвечу тебе.') };
   } } });
@@ -210,7 +211,7 @@ test('P2-1: repeated quoted NPC output fails closed before a proposal is planned
   const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner: { async run(call) {
     calls.push(call.role_id);
     return { output: call.role_id === 'npc_conversation_grounding_auditor'
-      ? { pass: true, concerns: [] } : npcPlan(input, 'Не отвечу «npc:123».') };
+      ? npcAuditReport(call) : npcPlan(input, 'Не отвечу «npc:123».') };
   } } });
   await assert.rejects(requestNpcSemanticDecision({
     boundary, request: input, semanticModel: model,

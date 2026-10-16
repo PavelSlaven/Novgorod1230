@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -166,7 +167,7 @@ function harness({ responsePlan = (request) => npcSpeechPlan(request, {
       requested_predicates: ['supported_fact'], search_hints: ['мастерство']
     } };
     if (call.role_id === 'npc_conversation_grounding_auditor') {
-      return { output: { pass: true, concerns: [] } };
+      return { output: npcAuditReport(call) };
     }
     assert.ok(['npc_conversation_responder', 'npc_conversation_responder_format_repair']
       .includes(call.role_id), `unexpected role: ${call.role_id}`);

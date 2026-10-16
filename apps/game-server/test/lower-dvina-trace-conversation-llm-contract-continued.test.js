@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
@@ -301,7 +302,7 @@ test('NPC grounding auditor receives claims preserved by required assembly', asy
   ];
   const fixture = runner((call) => call.role_id
     === 'npc_conversation_grounding_auditor'
-    ? { pass: true, concerns: [] } : output);
+    ? npcAuditReport(call) : output);
   const model = createLowerDvinaTraceNpcSemanticModel(fixture);
   const plan = await model(request);
 

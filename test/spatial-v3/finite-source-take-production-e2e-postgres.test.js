@@ -78,6 +78,14 @@ function installTakeFetch(seen) {
             packing_slot_cost: 0, quantity: { value: quantity, unit: 'item' },
             container: null } }] });
     }
+    if (system.startsWith('Верни JSON с pass, concerns и utterance_fragments.')) {
+      seen.auditorCalls += 1;
+      const speech = input.plan.speech;
+      return respond({ pass: true, concerns: [], utterance_fragments: [{
+        text: speech.utterance_text, factual: speech.claims.length > 0,
+        claim_ids: speech.claims.map(({ claim_id }) => claim_id)
+      }] });
+    }
     if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       seen.auditorCalls += 1;
       return respond({ pass: true, concerns: [] });

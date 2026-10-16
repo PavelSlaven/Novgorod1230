@@ -45,9 +45,9 @@ function narrationRole(input) {
     if (Object.hasOwn(input, 'проверяемая_проза')) return 'auditor';
     return 'writer';
   }
-  if (input?.required_current_beat) {
-    if (Array.isArray(input.concerns)) return 'repair';
-    if (Array.isArray(input.segments)) return 'auditor';
+  if (Array.isArray(input?.['Обязательные положения текущего эпизода'])) {
+    if (Object.hasOwn(input, 'Отклонённая проза')) return 'repair';
+    if (Array.isArray(input['Отрывки прозы'])) return 'auditor';
     return 'writer';
   }
   return null;

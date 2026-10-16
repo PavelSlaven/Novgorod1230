@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- fix(conversation): rebuild semantic repair speech from exact request evidence, preserve supported facts and speech acts, and retain typed decisions; run19 Qwen qualification passed 6/6 primary cases with 18/18 frozen gates (#247).
+- fix(npc): treat supplied memory as supporting evidence rather than an exhaustive account of what the speaker knows; apply the same rule to speech, interpretation and internal reasoning (#247).
+- fix(conversation): repair unsupported NPC speech without replacing supported knowledge; preserve typed decisions and request-scoped repair provenance (#247)
 - fix(materialization): identify finite extractions by root turn and step; replay the same portion, allow the next portion while stock remains, and refuse known exhausted sources without activity or duplicate depletion (#730).
 - fix(turn): canonicalize unknown executor actor refs to the request actor before strict plan validation, preserving known foreign refs and targets (#586).
 - fix(ci): run the nine fast npm checks in four parallel, time-bounded jobs while keeping the full merge gate and streaming failing logs (#98).

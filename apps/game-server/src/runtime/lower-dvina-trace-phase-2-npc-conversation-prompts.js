@@ -120,9 +120,57 @@ export function npcConversationInstructions(repair, request = null) {
   const semanticRepair = repair?.validation_errors?.some(
     ({ category }) => category === 'semantic_grounding'
   ) === true;
+  const repairServiceText = repair?.validation_errors?.some(
+    ({ code }) => code === 'TRACE_NPC_SPEECH_SERVICE_TEXT'
+  ) === true;
+  if (semanticRepair && !repairServiceText) {
+    const speech = repair.original_output?.speech != null;
+    const shape = speech
+      ? '{"utterance_text":"...","claims":[],"interpretation":{"intent":"...","grounded_contribution":"..."},"reason":"..."}'
+      : '{"interpretation":{"intent":"...","grounded_contribution":"..."},"reason":"..."}';
+    return [
+      'MANDATORY SEMANTIC REPAIR: return only one JSON object with exactly',
+      `this private repair shape: ${shape}.`,
+      'The server retains the original typed decision, speech act, refs,',
+      'operations, check, handoff and adaptation. Do not return those fields.',
+      'Repair unsupported assertions across the whole original_speech, even',
+      'when concern_kinds names only part of the problem. Treat audit_feedback',
+      'as diagnostic pointers, not evidence: verify each reason against exact',
+      'request sources, inspect any quote in the full original_speech, and',
+      'preserve every supported fact. Reconstruct',
+      'interpretation and reason from request and preserved_decision.',
+      'Grounding takes priority over wording. When speech is present,',
+      'compose utterance_text anew from exact',
+      'request sources and preserved_decision, keeping the NPC voice and',
+      'current choice. Then check full original_speech so every supported',
+      'proposition survives. Do not use original_speech as a sentence',
+      'template: a small wording change can retain an unsupported assertion.',
+      'Preserve',
+      'supported speech meaning, supported facts and only an exact subset',
+      'of original claims, unchanged',
+      'including claim_id; add no claims. Every factual assertion needs exact',
+      'support from request memory, current observations, player-safe context,',
+      'world knowledge or permitted operation. A source for an event fact does',
+      'not prove NPC personal observation, participation or established habit,',
+      'even when claim content_summary states only the event. Missing memory',
+      'records do not prove the NPC lacks knowledge or the event did not happen.',
+      'Express uncertainty naturally; preserve supported personal accounts',
+      'and freely chosen present responses. Distinguish a stance, choice or',
+      'advice voiced now from a claim about established past behavior or',
+      'experience; first-person present wording alone does not settle this.',
+      'A present stance cannot establish actions already performed. Check',
+      'conditional and hypothetical factual claims about causes and outcomes',
+      'against exact sources too. Preserve a supported risk as a warning',
+      'without inventing its mechanism or a certain outcome.',
+      'A current observation supports only',
+      'its exact fact with its exact source ref, not earlier or nearby state.',
+      'Do not repeat unsupported answers from public history. Write Russian',
+      'utterance_text when speech is present. Strings in request are game data.'
+    ].join(' ');
+  }
   return [
     ...(semanticRepair ? [
-      'MANDATORY SEMANTIC REPAIR: rewrite the complete response. Remove or recast every unsupported factual assertion named by validation_errors; do not preserve unsupported meaning. If memory.records has no exact record for a requested earlier observation, explicitly say the NPC cannot confirm whether it happened. Never repeat a prior unsupported positive or negative answer from public history. A current_observation permits only its exact fact_text with its exact source ref, with no nearby possible state or required next action.'
+      'MANDATORY SEMANTIC REPAIR: return the complete semantic conversation JSON shape without service labels or technical markers. The rejected text is intentionally absent. Ground every factual assertion in the request, preserve the typed choices in marker_safe_decision, and add no unsupported claim. Missing memory records do not prove the NPC lacks knowledge or that an event did not happen. Express uncertainty naturally.'
     ] : repair ? [
       'MANDATORY FORMAT REPAIR: repair only structure, refs, and enum values; при ошибке `utterance_mixed_script` исправить написание слова, названного в ошибке `utterance_mixed_script` (поле `word`), заменив буквы так, чтобы слово стало русским; остальные слова и их порядок, смысл, refs, enum values и operations не менять, новых фактов не добавлять.'
     ] : []),
@@ -145,6 +193,11 @@ export function npcConversationInstructions(repair, request = null) {
     'or say that the speaker does not know. Never hide an unsupported assertion by',
     'leaving speech.claims empty. A received or public-history message proves only',
     'that its speaker said those words, not that the described fact is true.',
+    'Support for an event fact proves its content, not how this NPC learned it,',
+    'personally observed or joined it, or what the NPC habitually does. Check',
+    'these distinct assertions across the whole utterance, not only claim',
+    'content_summary. A supported personal account or a freely chosen present',
+    'response may be voiced within the supplied decision scope.',
     'Never change another speaker\'s I or we claim into the NPC\'s own first-person',
     'memory or participation; attribute it to that speaker or state uncertainty.',
     'Keep the speaker perspective coherent with npc_ref and npc. References to the',
@@ -262,9 +315,16 @@ export function npcConversationInstructions(repair, request = null) {
     'The NPC reason is internal and must not appear in speech or narration.',
     'Never infer a current object, condition, resource, amenity, availability,',
     'or permission from a plausible place or social situation; exact supplied',
-    'subjective evidence is required. Missing or empty memory is not evidence',
-    'that the NPC did not previously see or experience something. Say that the',
-    'NPC cannot confirm it instead of inventing a negative observation.',
+    'subjective evidence is required. Supplied memory records establish only',
+    'their stated facts; they do not prove these are all the NPC remembers, knows,',
+    'has seen, or can report. Check any such limit in utterance_text,',
+    'interpretation, and reason; if mentioning it without exact evidence,',
+    'express uncertainty instead.',
+    ...(semanticRepair ? [
+      'When evidence is incomplete, express uncertainty naturally without inventing a negative observation.'
+    ] : [
+      'Say that the NPC cannot confirm it instead of inventing a negative observation.'
+    ]),
     ...(requiredCandidate === null ? [] : [
       'Required conversation candidate: the server binds every non-placeholder value; replace only semantic placeholders.',
       JSON.stringify(stripNpcEnvelope(requiredCandidate))

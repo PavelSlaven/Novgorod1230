@@ -4,7 +4,11 @@ import { NPC_INTERLOCUTOR_SPEECH_INSTRUCTION } from
 
 const PROMPT = [
   'Возвращай только {"pass":true,"concerns":[]} либо',
-  '{"pass":false,"concerns":[{"kind":"<краткий устойчивый вид замечания>"}]}.',
+  '{"pass":false,"concerns":[{"kind":"<вид>","reason":"<краткая диагностика>","quote":"<точная цитата из utterance_text либо пустая строка>"}]}.',
+  'Для каждого замечания укажи короткую диагностическую причину; quote может быть',
+  'только точной подстрокой исходного utterance_text. Для замечания о private',
+  'interpretation или reason передай пустую quote и назови проблему без',
+  'копирования отвергнутого поля. Не превращай диагностику в свидетельство.',
   NPC_INTERLOCUTOR_SPEECH_INSTRUCTION,
   'Проверяй переданный план речи NPC только по переданному субъективному',
   'запросу. Проверь каждое фактическое утверждение в utterance_text, claims, reason,',
@@ -13,14 +17,30 @@ const PROMPT = [
   'соответствующие source_knowledge_refs. claims:[] допустим, только если реплика',
   'не содержит фактических утверждений. Возвращай pass:false, если речь утверждает наличие',
   'текущего предмета, состояния, ресурса, удобства, доступности или разрешения,',
-  'которое не установлено точным полем запроса, даже если это правдоподобно для',
-  'места или социальной ситуации. Полученное сообщение доказывает только, что его',
+  'которое не установлено точным полем запроса, даже если это правдоподобно для места или социальной ситуации.',
+  'Свидетельство о событии подтверждает его содержание, но не личное',
+  'наблюдение или участие NPC и не его установившуюся привычку. Проверяй',
+  'эти самостоятельные утверждения во всей реплике, даже если content_summary',
+  'содержит только подтверждённый факт. Точное свидетельство о личном опыте',
+  'допускает такой рассказ. Различай выражаемую сейчас позицию, выбор или совет',
+  'и утверждение об уже установленном поведении или опыте NPC. Не отклоняй',
+  'позицию только из-за первого лица или грамматического настоящего времени:',
+  'проверяй её смысл в контексте. Текущая позиция не подтверждает фактически',
+  'совершённые прежде действия; свободный текущий выбор допустим в границе',
+  'переданного решения.',
+  'Полученное сообщение доказывает только, что его',
   'говорящий произнёс эти слова, но не истинность их содержания. Правила допуска знаний',
   'разрешают категории, но не создают факты. npc.machine_state.current_activity',
   'описывает только requested_at; оно не доказывает более раннюю или будущую работу, место,',
   'наблюдение или пережитое событие. Для прошлой деятельности или наблюдения от первого лица нужна',
-  'точная запись памяти. Пустая или отсутствующая память никогда не доказывает отрицательное',
-  'прошлое наблюдение вроде «я этого не видел»; вместо этого выражай неуверенность.',
+  'точная запись памяти. Переданные записи памяти подтверждают только изложенные в них факты,',
+  'но не доказывают, что это всё, что NPC помнит, знает, видел или может сообщить.',
+  'Отсутствие подробностей в переданной записи можно описать как предел самой записи;',
+  'это не свидетельство о пределах знаний, памяти или прошлого NPC. Различай',
+  'эти два смысла во всех полях плана: утверждение о пределе самого NPC',
+  'по-прежнему требует точного свидетельства.',
+  'Проверяй такие ограничения также в utterance_text, interpretation и reason;',
+  'если говоришь о таком пределе без точного свидетельства, выражай неуверенность.',
   'memory.current_observations подтверждает только свой точный настоящий fact_text, если',
   'соответствующий observation_ref указан в source_knowledge_refs; оно не подтверждает прошлое',
   'наблюдение, причину или скрытый факт.',
@@ -62,7 +82,7 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request }) {
   if (plan?.contribution_kind !== 'speech') return true;
   if (plan.speech.claims.some(
     (claim) => claim.source_knowledge_refs.length === 0
-  )) return unsupported(['claim_without_source_knowledge']);
+  )) return unsupported([{ kind: 'claim_without_source_knowledge' }]);
   const response = await roleRunner.run({
     scope: 'turn_runtime',
     role_id: 'npc_conversation_grounding_auditor',
@@ -70,34 +90,41 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request }) {
     messages: [{ role: 'system', content: PROMPT }, {
       role: 'user', content: JSON.stringify({ request, plan })
     }],
-    overrides: { temperature: 0, maxTokens: 256 }
+    overrides: { temperature: 0, maxTokens: 20_000 }
   });
-  if (!valid(response?.output)) throw serverError(
+  if (!valid(response?.output, plan.speech.utterance_text)) throw serverError(
     'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID',
     'NPC speech grounding auditor returned an invalid result.', { status: 503 }
   );
   return response.output.pass ? true : unsupported(
-    response.output.concerns.map(({ kind }) => kind)
+    response.output.concerns
   );
 }
 
-function unsupported(concernKinds) {
+function unsupported(concerns) {
   return { pass: false, errors: [{
     code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
     category: 'semantic_grounding',
     retryable: true,
-    concern_kinds: concernKinds,
+    concern_kinds: concerns.map(({ kind }) => kind),
+    audit_feedback: concerns.every(({ reason }) => typeof reason === 'string')
+      ? concerns.map(({ kind, reason, quote }) => ({ kind, reason, quote })) : [],
     message: 'Rewrite the complete response without unsupported factual assertions.'
   }] };
 }
 
-function valid(value) {
+function valid(value, utterance) {
   return value != null && typeof value === 'object' && !Array.isArray(value)
     && Object.keys(value).length === 2
     && typeof value.pass === 'boolean' && Array.isArray(value.concerns)
     && (value.pass ? value.concerns.length === 0 : value.concerns.length > 0)
     && value.concerns.every((concern) => concern != null
       && typeof concern === 'object' && !Array.isArray(concern)
-      && Object.keys(concern).length === 1
-      && typeof concern.kind === 'string' && concern.kind.trim().length > 0);
+      && Object.keys(concern).length === 3
+      && typeof concern.kind === 'string' && concern.kind.trim().length > 0
+      && concern.kind.length <= 80
+      && typeof concern.reason === 'string' && concern.reason.trim().length > 0
+      && concern.reason.length <= 240
+      && typeof concern.quote === 'string' && concern.quote.length <= 160
+      && (concern.quote === '' || utterance.includes(concern.quote)));
 }

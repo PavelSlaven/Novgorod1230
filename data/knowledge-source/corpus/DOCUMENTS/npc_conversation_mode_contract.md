@@ -1918,6 +1918,8 @@ Narrator:
 
 Код не выбирает «похожую» реплику и не исправляет характер NPC.
 
+Неподтверждённое содержание речи NPC допускает ровно одну semantic repair той же моделью с исходным `request`, полной исходной `speech` (включая текст, claims, refs и response expectation), сохранённым типизированным решением и конкретными `concern_kinds`. Private auditor передаёт также краткую диагностическую причину и точную цитату из исходного `utterance_text` (или пустую цитату для замечания о private-поле); эти сведения не являются свидетельством и не копируют отвергнутые `interpretation` или `reason` во вход repair. Repair проверяет диагноз по исходному request и сохраняет все поддержанные факты; эта попытка имеет отдельный бюджет от единственной format repair попытки §37.1. Обычный semantic repair возвращает только private JSON: для речи `{utterance_text, claims, interpretation: {intent, grounded_contribution}, reason}`, для вклада без речи — те же `interpretation` и `reason` без речевых полей. Исходный полный план остаётся у сервера; в обычный private repair не передаются отвергнутые `interpretation` и `reason` — модель строит их заново из request, полной исходной речи и сохранённого решения. Код подставляет эти поля в исходный валидный план, сохраняя `contribution_kind`, `speech.dominant_act`, adaptation, refs, operations, check, handoff и прочее типизированное решение. `claims` может содержать только точное подмножество исходных claims; новый claim или изменение существующего запрещены. Код может добавить лишь точный `required_interaction_tag` из request при concern `required_npc_behavior_missing`. Repair устраняет неподтверждённое содержание и сохраняет поддержанный смысл; неверная private-форма завершается typed failure без подмены. При service-marker исходный текст в repair не передаётся, и действует правило §37.1/§40. Повторный провал завершается typed LLM contract failure без применения плана, а код не синтезирует и не подменяет реплику.
+
 ### 37.3. Data gap
 
 Data gap возникает, если для необходимого действия отсутствует утверждённый:
@@ -1960,7 +1962,7 @@ Data gap возникает, если для необходимого дейст
 
 ### Схема ответа
 
-Модель возвращает один JSON по schema `conversation_contribution_plan_v1`. Identity и envelope собирает код.
+Первый ответ модели возвращает один JSON по schema `conversation_contribution_plan_v1`. Identity и envelope собирает код. Private semantic repair описан в §37.2; format repair — в §40.
 
 ### Инварианты
 

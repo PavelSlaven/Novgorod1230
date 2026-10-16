@@ -21,8 +21,11 @@ Writer, repair и auditor получают явное требование пе�
 directness, confidence и предел typicality обычной речью возле соответствующего
 факта. Canonical WK bundle и wire других consumers не переписываются.
 Format repair разговора получает исходный request, полный original output и
-конкретные validation errors; marker-specific semantic retry остаётся отдельным.
-Marker-specific retry сохраняет исходный contribution и speech act; повторная
+конкретные validation errors. Любая semantic-grounding ошибка допускает одну
+semantic repair моделью с конкретными concern kinds; для безмаркерной ветки
+repair получает полный original output. Semantic и format repair имеют
+раздельные бюджеты. Marker-specific провод остаётся прежним и не передаёт
+исходный текст. Repair сохраняет исходный contribution и speech act; повторная
 грязная реплика или изменение акта завершаются штатным typed fail-closed до
 NPC proposal, без синтеза слов или применения вклада.
 Error envelope проверяет динамический message независимо от allowlist code:

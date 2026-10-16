@@ -32,6 +32,17 @@ test('authored opening package answers all reader controls from persisted refs',
   assert.equal(JSON.stringify(pkg).includes('Тайный'), false);
 });
 
+test('opening projects confirmed sex and neutral body for an ambiguous name', () => {
+  const input = openingPackage({ raw: true });
+  input.visible.player.name = 'Саша';
+  input.internal.player.dossier.identity = { name: 'Саша', sex_category: 'male' };
+  const pkg = buildAuthoredOpeningVisibleContext(input);
+  assert.equal(pkg.visible_scene_facts.find(({ fact_id }) =>
+    fact_id === 'opening:sex').text, 'Пол героя: мужской.');
+  assert.equal(pkg.touch_body_context[0].text,
+    'Ранений нет; сил достаточно для работы; сильного голода нет.');
+});
+
 test('opening reader control fails without a persisted immediate interaction', () => {
   assert.equal(auditAuthoredOpeningContext({
     mustInclude: ['identity', 'preceding_context', 'people', 'current_event',
@@ -213,13 +224,21 @@ test('opening repairs unsupported negative prose once and blocks hard findings',
     /^Верните только \{"prose":"<полное вступление>"\}/u);
   assert.equal(repairable.calls[2].messages[0].content,
     `${repairable.calls[0].messages[0].content} Исправьте каждое переданное замечание Stage 23.`);
+  const roleFacts = repairable.calls.slice(0, 3).map((call) => {
+    const scene = JSON.parse(call.messages[1].content).сцена;
+    return scene.факты.map((fact) => typeof fact === 'string' ? fact : fact.текст);
+  });
+  assert.deepEqual(roleFacts[1], roleFacts[0]);
+  assert.deepEqual(roleFacts[2], roleFacts[0]);
+  assert.ok(roleFacts[0].includes('Пол героя: женский.'));
+  assert.doesNotMatch(roleFacts[0].join(' '), /\b(?:Вы|вы|Ты|ты|вас|Вас)\b/u);
   const repairInput = JSON.parse(repairable.calls[2].messages[1].content);
   assert.deepEqual(repairInput.замечания_проверки, [{
     исправимость: 'исправимо по тем же фактам',
     причина: 'The prose denies a supplied visible person.'
   }], JSON.stringify(repairInput));
   assert.deepEqual(repairInput.свидетельства_проверки,
-    ['Visible person f10 is present.']);
+    ['Visible person f11 is present.']);
   assert.doesNotMatch(repairable.calls[2].messages[0].content,
     /severity|NARRATOR_PROSE/u);
   assert.doesNotMatch(JSON.stringify(repairInput),
@@ -316,12 +335,15 @@ test('opening sends one readable Russian fact projection to writer and auditor',
     ...(auditorInput.сцена.персонажи ?? []).flatMap(({ факты }) => факты)
   ];
   assert.ok(writerFacts.some((fact) => fact.includes('Любава')));
-  assert.ok(writerFacts.includes('верёвка при вас; состояние — пригодное к использованию.'));
+  assert.ok(writerFacts.includes('Пол героя: женский.'));
+  assert.ok(writerFacts.includes('Ранений нет; сил достаточно для работы; сильного голода нет.'));
+  assert.doesNotMatch(writerFacts.join(' '), /\b(?:Вы|вы|Ты|ты|вас|Вас)\b/u);
+  assert.ok(writerFacts.includes('верёвка у героя; состояние — пригодное к использованию.'));
   assert.equal(writerFacts.some((fact) => /serviceable|held_by_player/u.test(fact)), false);
   assert.ok(writerFacts.some((fact) => fact.includes('Виден молодой мужчина.')));
   assert.ok(writerFacts.some((fact) => fact.includes('Глаза: голубые.')));
   assert.ok(writerFacts.some((fact) => fact.includes('низкие кожаные башмаки')));
-  assert.ok(writerFacts.some((fact) => fact.startsWith('Не подтверждено:')));
+  assert.ok(writerFacts.some((fact) => fact.startsWith('Возможно, снасти')));
   assert.ok(!writerFacts.includes(pkg.uncertain_context[0].text));
   assert.ok(writerFacts.some((fact) => /лето/iu.test(fact)));
   for (const person of writerInput.сцена.персонажи ?? []) {
@@ -331,7 +353,7 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   assert.ok(auditorFacts.every(({ ключ, текст }) => /^f\d+$/u.test(ключ)
     && typeof текст === 'string'));
   assert.ok(auditorFacts.some(({ текст }) =>
-    текст === 'верёвка при вас; состояние — пригодное к использованию.'));
+    текст === 'верёвка у героя; состояние — пригодное к использованию.'));
   assert.equal(auditorFacts.some(({ текст }) =>
     /serviceable|held_by_player/u.test(текст)), false);
   assert.equal(new Set(auditorFacts.map(({ ключ }) => ключ)).size,
@@ -577,7 +599,7 @@ test('opening deduplicates only whole visible scene tokens with matching item re
       pkg.visible_items.push({ item_instance_id: 'item:rope-ground',
         label: 'верёвка', placement: 'on_ground' });
       return pkg;
-    })(), expected: ['верёвка при вас; состояние — пригодное к использованию.',
+    })(), expected: ['верёвка у героя; состояние — пригодное к использованию.',
       'верёвка'] },
     { name: 'item_named_in_uncertain_only', pkg: (() => {
       const pkg = structuredClone(base);
@@ -586,7 +608,7 @@ test('opening deduplicates only whole visible scene tokens with matching item re
       pkg.uncertain_context = [{ text: 'Лодки у берега нет.',
         inference_basis_refs: [] }];
       return pkg;
-    })(), expected: ['Не подтверждено: Лодки у берега нет.', 'берег'] }
+    })(), expected: ['Возможно, лодки у берега нет.', 'берег'] }
   ];
   for (const { name, pkg, expected } of cases) {
     const roleFacts = await project(pkg);
@@ -1052,7 +1074,7 @@ function openingPackage({ raw = false } = {}) {
       'Светлое позднелетнее утро.', 'Слышны течение и работа на берегу.'
     ] } };
   const internal = { player: { instance_id: 'player:1', dossier: {
-    identity: { name: 'Любава' }, social_status: { display_name: 'рыбачка' },
+    identity: { name: 'Любава', sex_category: 'female' }, social_status: { display_name: 'рыбачка' },
     knowledge: { known_facts: ['До вечера проверить снасти.',
       'С рассвета Любава работает вместе с братом.'] },
     opening_context: { schema: 'rus.authored_start_opening_context.v1',
@@ -1256,7 +1278,12 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
     partyId: 'party:1', actorId: 'player:1', positionId: 'position:shore' });
   input.internal.items.push({ instance_id: 'item:hidden', placement: { holder_character_id: 'player:1' },
     visibility_state: 'concealed', state: { display_name: 'невидимый предмет' } });
+  assert.equal(input.internal.player.dossier.identity.sex_category, 'female');
   const pkg = buildCanonicalOpeningVisibleContext(input);
+  assert.equal(pkg.visible_scene_facts.find(({ fact_id }) =>
+    fact_id === 'opening:sex').text, 'Пол героя: женский.');
+  assert.doesNotMatch(pkg.touch_body_context[0].text,
+    /\b(?:Вы|вы|Ты|ты|вас|Вас)\b/u);
   assert.deepEqual(pkg.frame.weather_state, { sky: 'obscured',
     precipitation: 'none', visibility: 'poor', wind: 'calm_or_light' });
   assert.doesNotMatch(JSON.stringify(pkg),
@@ -1283,7 +1310,7 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
   assert.equal(JSON.stringify(pkg).includes('невидимый предмет'), false);
   assert.equal(JSON.stringify(pkg).includes('canonical_source_binding'), false);
   const rolePackage = structuredClone(pkg);
-  assert.ok(rolePackage.known_context.some(({ text }) => text === 'При вас: верёвка.'));
+  assert.ok(rolePackage.known_context.some(({ text }) => text === 'У героя: верёвка.'));
   rolePackage.visible_items.push({ item_instance_id: 'item:canonical-seen-rope',
     label: 'верёвка' });
   for (const key of ['party_id', 'actor_id', 'position_id', 'scenario_id']) {
@@ -1304,14 +1331,14 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
       assert.ok(modelInput.сцена.факты.includes('Небо не видно.'));
       assert.ok(modelInput.сцена.факты.includes('Осадков нет.'));
       assert.ok(modelInput.сцена.факты.includes('Видимость плохая.'));
-      assert.ok(modelInput.сцена.факты.includes('При вас: верёвка.'));
+      assert.ok(modelInput.сцена.факты.includes('У героя: верёвка.'));
       assert.ok(modelInput.сцена.факты.includes('верёвка'));
       assert.doesNotMatch(JSON.stringify(modelInput),
         /player:1|source_refs|weather_state_id|dense_fog|movement_factor|private-movement-factor|obscured|summer|civil_dawn|whole_minutes/u);
-      return { output: { prose: 'Вы — Любава, рыбачка. Тело готово к работе.\n\nПри вас верёвка.' } };
+      return { output: { prose: 'Любава была у берега. Сил хватало для работы.\n\nВерёвка оставалась у неё.' } };
     }
     const auditInput = JSON.parse(call.messages[1].content);
-    assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'При вас: верёвка.'));
+    assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'У героя: верёвка.'));
     assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'верёвка'));
     assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'Рассвет.'));
     assert.ok(auditInput.сцена.факты.some(({ текст }) => текст === 'Светает.'));

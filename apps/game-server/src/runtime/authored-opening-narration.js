@@ -315,7 +315,7 @@ function projectOpeningFacts(source) {
     const normalized = typeof entry?.text === 'string'
       ? entry.text.normalize('NFC').trim().toLocaleLowerCase('ru') : '';
     const repeatsHeldItem = [...heldItemLabels].some((label) =>
-      normalized === `при вас: ${label}.`);
+      normalized === `у героя: ${label}.`);
     if (!repeatsHeldItem) add(entry?.text, null, entry?.basis_refs ?? []);
   }
   for (const entry of source?.touch_body_context ?? []) add(entry?.text);
@@ -352,7 +352,7 @@ function projectOpeningFacts(source) {
     const condition = Object.hasOwn(OPENING_ITEM_CONDITIONS, conditionKey)
       ? OPENING_ITEM_CONDITIONS[conditionKey] : null;
     if (item.placement === 'held_by_player') {
-      add(`${label} при вас${condition ? `; состояние — ${condition}` : ''}.`,
+      add(`${label} у героя${condition ? `; состояние — ${condition}` : ''}.`,
         null, [item.item_instance_id]);
       continue;
     }
@@ -376,7 +376,8 @@ function projectOpeningFacts(source) {
     for (const entry of collection ?? []) add(entry?.text);
   }
   for (const [index, entry] of (source?.uncertain_context ?? []).entries()) {
-    add(typeof entry?.text === 'string' ? `Не подтверждено: ${entry.text}` : null,
+    const text = typeof entry?.text === 'string' ? entry.text.trim() : '';
+    add(text ? `Возможно, ${text[0].toLocaleLowerCase('ru')}${text.slice(1)}` : null,
       `opening:uncertain:${index + 1}`, entry?.inference_basis_refs ?? []);
   }
   for (const entry of source?.rumor_context ?? []) {

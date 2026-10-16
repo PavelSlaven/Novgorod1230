@@ -113,6 +113,9 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
   const local = context.local_structure;
   const facts = [
     { fact_id: 'opening:identity', text: `${dossier.identity.name} — ${dossier.social_status.display_name}.`, source_refs: [actorId] },
+    ...(['male', 'female'].includes(dossier.identity.sex_category) ? [{ fact_id: 'opening:sex',
+      text: `Пол героя: ${dossier.identity.sex_category === 'male' ? 'мужской' : 'женский'}.`,
+      source_refs: [actorId] }] : []),
     ...knownFacts.map((text, index) => ({ fact_id: `opening:known:${index + 1}`,
       text, source_refs: [actorId] })),
     { fact_id: 'opening:foreground', text: context.foreground.text,
@@ -246,11 +249,11 @@ export function bodyStateSummary(body) {
   if (![health, energy, satiety].every(Number.isFinite)) {
     fail('AUTHORED_OPENING_CONTEXT_INVALID', 'Player body state is unavailable.');
   }
-  const condition = health >= 75 ? 'Вы не ранены'
-    : health >= 40 ? 'Вы чувствуете боль' : 'Вы тяжело ранены';
+  const condition = health >= 75 ? 'Ранений нет'
+    : health >= 40 ? 'Ощущается боль' : 'Тяжёлые ранения';
   const fatigue = energy >= 60 ? 'сил достаточно для работы'
     : energy >= 30 ? 'чувствуется усталость' : 'сил почти не осталось';
-  const hunger = satiety >= 50 ? 'сильного голода нет' : 'вы голодны';
+  const hunger = satiety >= 50 ? 'сильного голода нет' : 'ощущается голод';
   return `${condition}; ${fatigue}; ${hunger}.`;
 }
 

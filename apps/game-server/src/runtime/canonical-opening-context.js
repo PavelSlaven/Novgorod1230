@@ -43,6 +43,9 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
       recognition: item.recognition, visible_status: item.visible_status }));
   const known = (internal.player.dossier?.knowledge?.known_facts ?? []).filter((fact) => typeof fact === 'string' && fact.trim());
   const facts = [{ fact_id: 'opening:identity', text: identity, source_refs: [actorId] },
+    ...(['male', 'female'].includes(internal.player.dossier?.identity?.sex_category)
+      ? [{ fact_id: 'opening:sex', text: `Пол героя: ${internal.player.dossier.identity.sex_category === 'male' ? 'мужской' : 'женский'}.`,
+        source_refs: [actorId] }] : []),
     { fact_id: 'opening:body', text: body, source_refs: [actorId] },
     ...visibleNpcs.map((npc, index) => ({ fact_id: `opening:person:${index + 1}`,
       text: npc.label, source_refs: [npc.npc_instance_id] })),
@@ -92,7 +95,7 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
       light_state: environment.light_state,
       ...(Object.keys(weatherState).length ? { weather_state: weatherState } : {}) }],
     known_context: [...known.map((text) => ({ text, basis_refs: [actorId] })),
-      ...ownItems.map((item) => ({ text: `При вас: ${item.name}.`, basis_refs: [actorId, item.item_id] }))],
+      ...ownItems.map((item) => ({ text: `У героя: ${item.name}.`, basis_refs: [actorId, item.item_id] }))],
     rumor_context: [], uncertain_context: [], available_actions_context: [], hidden_filtered_out: [],
     source_trace: [{ source_id: actorId, kind: 'committed_canonical_initial_state' }],
     audit_self_check: { pass: reader.pass, concerns: [], evidence: ['Independent reader control verified source boundaries and assessed all eight opening questions.'] },

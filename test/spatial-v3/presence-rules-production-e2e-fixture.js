@@ -24,6 +24,7 @@ import { turnStepOperationChoices } from
 import { testContainerLabel } from '../helpers/test-containers.js';
 import { TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 import { identifyLlmTestRole } from './llm-test-role.js';
+import { npcAuditReport } from '../../apps/game-server/test/support/npc-audit-report.js';
 
 export const POSTGRES_IMAGE = 'postgres:16.14-alpine';
 export const WORLD_DB = 'novgorod_world_v17';
@@ -515,6 +516,8 @@ export function installPresenceProductionE2eFetch({
       }
     } else if (system.startsWith('Return only JSON with exactly mode.')) {
       output = { mode: 'independent_action' };
+    } else if (system.startsWith('Верни JSON с pass, concerns и utterance_fragments.')) {
+      output = npcAuditReport(call);
     } else if (system.startsWith('Return only {"pass":true,"concerns":[]}') || system.startsWith('Возвращай только {"pass"')) {
       output = { pass: true, concerns: [] };
     } else if (system.startsWith('Return only {"pass"') || system.startsWith('Возвращай только {"pass"')) {

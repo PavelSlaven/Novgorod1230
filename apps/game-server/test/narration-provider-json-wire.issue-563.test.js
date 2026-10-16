@@ -9,7 +9,7 @@ import { createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { reviewedNarration, compatNarrationWire } from './narration-audit-fixture.js';
 
-test('ожидаемо красный, issue #563: narration JSON instruction on provider wire is Russian', async () => {
+test('issue #563: narration JSON instruction on provider wire is Russian', async () => {
   const { visible_context, prose } = JSON.parse(await readFile(new URL(
     './fixtures/narration-current-beat.json', import.meta.url), 'utf8'));
   const env = Object.freeze({});
@@ -40,7 +40,7 @@ test('ожидаемо красный, issue #563: narration JSON instruction on
     const output = callIndex === 1
       ? { prose }
       : (() => {
-        const wire = JSON.parse(request.messages[1].content);
+        const wire = compatNarrationWire(JSON.parse(request.messages[1].content));
         const sourceRefs = [
           ...wire.required_current_beat.changes,
           ...wire.required_current_beat.uncertainties
@@ -74,4 +74,7 @@ test('ожидаемо красный, issue #563: narration JSON instruction on
     'issue #563: the added first-line JSON instruction must be Russian');
   assert.match(addedInstruction, /JSON/iu,
     'issue #563: the added first-line instruction must retain the JSON requirement');
+  assert.doesNotMatch(writerRequest.messages[0].content,
+    /Return only|complete Russian prose|The server/iu,
+    'issue #563: Cyrillic elsewhere must not hide an English format instruction');
 });

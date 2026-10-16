@@ -78,7 +78,7 @@ test('turn commit projects the post-turn clock through the pinned Temporal owner
   assert.equal(visible.visible_payload.current_light_phase, 'daylight');
 });
 
-test('narration repairs unsupported local dimness under daylight using persisted phase', async () => {
+test('narration repairs a contradictory night under daylight using persisted phase', async () => {
   const calls = [];
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
     async run(call) {
@@ -87,18 +87,19 @@ test('narration repairs unsupported local dimness under daylight using persisted
       assert.equal(request.current_light_phase, 'daylight');
       assert.equal(request.optional_support?.current_light_phase, undefined);
       if (call.role_id === 'gameplay_narrator') return { output: {
-        prose: 'В полумраке вы различаете очертания деревьев.' } };
+        prose: 'Стояла ночь. Вы различаете очертания деревьев.' } };
       if (call.role_id === 'gameplay_narrator_auditor') {
         const segment = request.segments[0].segment_id;
-        const bad = request.output.prose.includes('полумраке');
-        return { output: { reviewed_segments: [segment],
+        const bad = request.output.prose.includes('ночь');
+        return { output: { reviewed_segments: request.segments.map(({ segment_id }) => segment_id),
           source_reviews: [{ ref: 'visible_change_1', segment_choices: bad ? [] : [segment] }],
           unsupported: bad ? [{ segment_choice: segment,
-            kind: 'unsupported_sensory', reason: 'No supplied local dimness.' }] : [],
+            kind: 'unsupported_world_state', reason: 'Ночь противоречит переданной дневной фазе.' }] : [],
           literary_failures: [], evidence: bad ? [] : ['Grounded prose.'] } };
       }
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
-        assert.match(call.messages[0].content, /current_light_phase.*calendar daylight phase/u);
+        assert.match(call.messages[0].content,
+          /Фаза суток не доказывает источник света или видимость конкретного места/u);
         return { output: { replacements: [{ prose: 'Вы рассмотрели деревья и различили их очертания.' }] } };
       }
       throw new Error(`Unexpected role ${call.role_id}`);

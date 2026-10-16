@@ -286,6 +286,9 @@ test('missing settings stay unconfigured and legacy local settings migrate witho
 });
 
 test('narration workflow qualification distinguishes split static clusters and rejects malformed audit atomically', async () => {
+  const { fixtures } = JSON.parse(await readFile(new URL(
+    '../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url), 'utf8'));
+  const auditFixtures = fixtures.filter(({ role_id }) => role_id === 'gameplay_narrator_auditor');
   let candidateWriterCalls = 0;
   const qualifyingRunner = ({ invalid = null } = {}) => ({
     describe: ({ role_id }) => ({ provider: 'openai_compatible', model: 'local-model',
@@ -310,17 +313,16 @@ test('narration workflow qualification distinguishes split static clusters and r
       const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
       const sources = [...wire.required_current_beat.changes,
         ...wire.required_current_beat.uncertainties];
-      const initial = wire.phase === 'initial';
-      const positive = wire.output.output_id.endsWith('governed-action')
-        || wire.output.output_id.endsWith('finite-perception');
-      return { output: {
+      const fixture = auditFixtures.find(({ request }) => request.output.prose === wire.output.prose);
+      const audit = fixture ? structuredClone(fixture.expected_output) : {
         reviewed_segments: wire.segments.map(({ segment_id }) => segment_id),
-        source_reviews: sources.map(({ ref }, index) => ({ ref,
-          segment_choices: [initial ? (wire.segments[index]?.segment_id ?? 's1') : 's1'] })),
-        unsupported: [], literary_failures: initial && !positive ? [{
-          check: invalid ?? 'weak_literary_composition', segment_choice: 's1', reason: 'catalogue'
-        }] : [], evidence: ['factual coverage verified']
-      }, provider_record: record };
+        source_reviews: sources.map(({ ref }) => ({ ref, segment_choices: ['s1'] })),
+        unsupported: [], literary_failures: [], evidence: ['factual coverage verified']
+      };
+      audit.literary_failures = audit.literary_failures.map((finding) => ({
+        ...finding, check: invalid ?? finding.check
+      }));
+      return { output: audit, provider_record: record };
     }
   });
   const runner = qualifyingRunner();

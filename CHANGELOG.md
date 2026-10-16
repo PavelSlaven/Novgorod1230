@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(narration): capture the initial qualification audit in the workflow owner without exposing its phase to the model; use a Russian JSON instruction and align frozen role builders and regression fixtures with the compact narration wire (#563, #654, D49).
 - fix(narration): use Russian repair feedback for omitted sources and rejected prose markers; require Russian auditor reasons while preserving private source keys.
 - fix(conversation): rebuild semantic repair speech from exact request evidence, preserve supported facts and speech acts, and retain typed decisions; run19 Qwen qualification passed 6/6 primary cases with 18/18 frozen gates (#247).
 - fix(npc): treat supplied memory as supporting evidence rather than an exhaustive account of what the speaker knows; apply the same rule to speech, interpretation and internal reasoning (#247).

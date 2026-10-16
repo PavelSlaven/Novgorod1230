@@ -27,7 +27,7 @@ ${WORLD_STORY_BOUNDARY}
 
 const GROUNDING_RULES = `Фаза суток не доказывает источник света или видимость конкретного места. Название даёт имя, но не новый признак или действие.`;
 
-const WRITER_SHAPE = 'Return only {"prose":"<complete Russian prose>"}. The server assembles version, schema, output_id, action_options=[], used_references=[] and neutral self_check={}; do not generate those fields.';
+const WRITER_SHAPE = 'Верни только JSON {"prose":"<цельная русская проза>"}. Сервер сам добавляет version, schema, output_id, action_options=[], used_references=[] и нейтральный self_check={}; эти поля не создавай.';
 
 /** Per-run pack: ground once on writer; reuse for repair/auditor (F1). */
 const narrationWkStore = new AsyncLocalStorage();

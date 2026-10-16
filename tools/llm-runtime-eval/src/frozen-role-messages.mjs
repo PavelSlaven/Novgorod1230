@@ -75,31 +75,6 @@ function reviewedNarration(segments, coverage = {}) {
   };
 }
 
-function projectedNarrationAudit(expected, wire) {
-  const segmentKey = (value) => {
-    const match = typeof value === 'string' ? value.match(/^s(\d+)$/u) : null;
-    return match ? `p${match[1]}` : value;
-  };
-  const sourceKey = (value) => {
-    const match = typeof value === 'string'
-      ? value.match(/^(visible_change|uncertainty)_(\d+)$/u) : null;
-    return match ? `${match[1] === 'visible_change' ? 'c' : 'u'}${match[2]}` : value;
-  };
-  const result = structuredClone(expected);
-  result.reviewed_segments = (result.reviewed_segments ?? []).map(segmentKey);
-  result.source_reviews = (result.source_reviews ?? []).map((row) => ({
-    ...row, ref: sourceKey(row.ref),
-    segment_choices: (row.segment_choices ?? []).map(segmentKey)
-  }));
-  result.unsupported = (result.unsupported ?? []).map((row) => ({
-    ...row, segment_choice: segmentKey(row.segment_choice)
-  }));
-  result.literary_failures = (result.literary_failures ?? []).map((row) => ({
-    ...row, segment_choice: segmentKey(row.segment_choice)
-  }));
-  return result;
-}
-
 async function narrationMessages(fixture) {
   const target = fixture.role_id;
   const payload = fixture.request;
@@ -127,16 +102,14 @@ async function narrationMessages(fixture) {
     if (next.role_id === 'gameplay_narrator_semantic_repair') return { output: fixture.expected_output };
     auditCalls += 1;
     if (target === 'gameplay_narrator_auditor') {
-      const wire = JSON.parse(next.messages[1].content);
-      return { output: projectedNarrationAudit(fixture.expected_output, wire) };
+      return { output: fixture.expected_output };
     }
     const wire = JSON.parse(next.messages[1].content);
-    const first = wire.segments[0]?.segment_id;
-    const coverage = Object.fromEntries([
-      ...(wire.required_current_beat?.changes ?? []),
-      ...(wire.required_current_beat?.uncertainties ?? [])
-    ].map(({ ref }) => [ref, first == null ? [] : [first]]));
-    const audit = reviewedNarration(wire.segments, coverage);
+    const segments = wire['Отрывки прозы'];
+    const first = segments[0]?.segment_id;
+    const coverage = Object.fromEntries(wire['Обязательные положения текущего эпизода']
+      .map((line) => [line.split(': ', 1)[0], first == null ? [] : [first]]));
+    const audit = reviewedNarration(segments, coverage);
     if (target === 'gameplay_narrator_semantic_repair' && auditCalls === 1) {
       audit.unsupported = [{ segment_choice: first,
       kind: payload.concerns[0].kind, reason: payload.concerns[0].reason }];

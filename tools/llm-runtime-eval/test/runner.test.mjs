@@ -931,7 +931,7 @@ test('frozen narration semantic repair captures the exact rejected draft', async
     id === 'gameplay-narrator-semantic-repair-whole-prose');
   const messages = await buildFrozenRoleMessages(fixture);
   const wire = JSON.parse(messages[1].content);
-  assert.equal(wire.segments[0].prose, fixture.request.segments[0].prose);
-  assert.deepEqual(wire.concerns.map(({ kind }) => kind),
-    fixture.request.concerns.map(({ kind }) => kind));
+  assert.equal(wire['Отклонённая проза'], fixture.request.segments[0].prose);
+  assert.deepEqual(wire['Замечания'],
+    fixture.request.concerns.map(({ reason }) => reason));
 });

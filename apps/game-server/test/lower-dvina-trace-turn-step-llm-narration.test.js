@@ -77,7 +77,7 @@ test('body delta reaches narration as grounded meaning without technical prose o
       assert.doesNotMatch(JSON.stringify(input.optional_support.known_context),
         /cold_with_possible_shivering|before|after|""id""|wet|damp/u);
       if (call.role_id === 'gameplay_narrator') {
-        assert.match(call.messages[0].content, /Ничего из этого не добавляй и не меняй/u);
+        assert.match(call.messages[0].content, /К этому проза ничего не добавляет и переданного не меняет/u);
         return { output: { prose: 'Вас трясёт. {"before":"wet","after":"damp"}',
           action_options: [], used_references: [], self_check: {} } };
       }
@@ -181,7 +181,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       assert.match(call.messages[0].content, /Подтверждённую речь цитируй дословно/u);
       assert.match(call.messages[0].content, /Совершённое действие остаётся совершённым при неизвестном результате/u);
       assert.match(call.messages[0].content, /Переход героя между местами подтверждают только сведения о переходе/u);
-      assert.match(call.messages[0].content, /Ничего из этого не добавляй и не меняй/u);
+      assert.match(call.messages[0].content, /К этому проза ничего не добавляет и переданного не меняет/u);
     }
   }
   const audit = JSON.parse(calls[2].messages[1].content);

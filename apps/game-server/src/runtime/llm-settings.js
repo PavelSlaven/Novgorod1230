@@ -95,6 +95,7 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
       const request = narrationRequest(fixture);
       let initialRaw = null;
       let initialProvider = null;
+      let initialAuditSeen = false;
       const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
         async run(call) {
           if (call.role_id === 'gameplay_narrator') return { output: fixture.request.output };
@@ -102,8 +103,8 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
             overrides: call.overrides, provider_snapshot: candidate });
           const response = await roleRunner.run({ ...call, provider_snapshot: candidate });
           if (!sameIdentity(expected, response?.provider_record)) throw narrationQualificationError();
-          if (call.role_id === 'gameplay_narrator_auditor'
-              && auditPhase(call) === 'initial') {
+          if (call.role_id === 'gameplay_narrator_auditor' && !initialAuditSeen) {
+            initialAuditSeen = true;
             initialRaw = response.output;
             initialProvider = response.provider_record;
           }
@@ -151,10 +152,6 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
       .test(String(error?.code ?? ''))) throw error;
     throw narrationQualificationError();
   }
-}
-function auditPhase(call) {
-  try { return JSON.parse(call.messages?.at(-1)?.content).phase; }
-  catch { return null; }
 }
 export const runNarrationAuditorQualification = runNarrationWorkflowQualification;
 function narrationRequest(fixture) {

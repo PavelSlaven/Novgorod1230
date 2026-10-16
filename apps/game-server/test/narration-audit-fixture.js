@@ -16,6 +16,8 @@ export function compatNarrationWire(wire) {
   });
   const support = wire['Переданные сведения об обстановке'] ?? {};
   const old = {
+    current_light_phase: ({ 'День.': 'daylight', 'Рассвет.': 'civil_dawn',
+      'Сумерки.': 'civil_dusk', 'Ночь.': 'night' })[support['Фаза суток']],
     required_current_beat: {
       changes: sources.filter(({ ref }) => ref.startsWith('visible_change_')),
       uncertainties: sources.filter(({ ref }) => ref.startsWith('uncertainty_'))

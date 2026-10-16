@@ -59,7 +59,7 @@ test('frozen narration writer fixtures expose only model-owned prose', async () 
     role_id === 'gameplay_narrator' || role_id === 'gameplay_narrator_format_repair')) {
     assert.deepEqual(Object.keys(fixture.expected_output), ['prose'], fixture.id);
     assert.match(fixture.messages[0].content,
-      /^Return only \{"prose":"<complete Russian prose>"\}\./u, fixture.id);
+      /^Верни только JSON \{"prose":"<цельная русская проза>"\}\./u, fixture.id);
   }
 });
 
@@ -70,7 +70,7 @@ test('frozen narration auditor prompts require the raw source-review shape', asy
     const prompt = fixture.messages[0].content;
     assert.match(prompt, /source_reviews must contain exactly/u);
     assert.match(prompt, /Use \[\] for an omitted or partially\s+conveyed source/u);
-    assert.match(prompt, /an embedded unknown result must remain unknown/u);
+    assert.match(prompt, /Неизвестный результат должен остаться неизвестным/u);
     assert.match(prompt, /unsupported contains only/u);
     assert.match(prompt, /literary_failures contains only/u);
     assert.doesNotMatch(prompt, /failure_checks/u);
@@ -91,10 +91,7 @@ test('frozen dense controls distinguish terminal static clusters from governed p
   const fixtures = corpus.fixtures.filter(({ id }) => controls.has(id));
   assert.equal(fixtures.length, controls.size);
   for (const fixture of fixtures) {
-    const assembled = assembleNarrationAuditOutput(fixture.expected_output, {
-      ...JSON.parse(fixture.messages[1].content),
-      visible_context: fixture.request.visible_context
-    });
+    const assembled = assembleNarrationAuditOutput(fixture.expected_output, fixture.request);
     const governed = fixture.id.endsWith('governed-action')
       || fixture.id.endsWith('finite-perception');
     assert.equal(assembled.pass, true, fixture.id);
@@ -197,7 +194,8 @@ async function narrationMessages(fixture) {
   };
   const draft = target === 'gameplay_narrator_auditor' ? payload.output : {
     version: 1, schema: 'narration_output', output_id: request.request_id,
-    prose: 'Сначала видны ворота. Телега скрипит у ворот. Потом всё тихо.',
+    prose: target === 'gameplay_narrator_semantic_repair'
+      ? payload.segments?.[0]?.prose : 'Сначала видны ворота. Телега скрипит у ворот. Потом всё тихо.',
     action_options: [], used_references: [], self_check: {}
   };
   let call, auditCalls = 0;

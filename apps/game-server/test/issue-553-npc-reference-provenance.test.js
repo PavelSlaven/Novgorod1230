@@ -85,17 +85,22 @@ test('real NPC conversation wires resolve claims only to projected own refs',
       assert.equal(calls.length, 1);
       const capturedSystem = wire.request.messages.find(({ role }) =>
         role === 'system').content;
-      const expectedSystem = repair == null ? capturedSystem : capturedSystem.replace(
+      const groundedSystem = capturedSystem.replace(
+        'not that the described fact is true.',
+        'not that the described fact is true. Support for an event fact proves its content, not how this NPC learned it, personally observed or joined it, or what the NPC habitually does. Check these distinct assertions across the whole utterance, not only claim content_summary. A supported personal account or a freely chosen present response may be voiced within the supplied decision scope.').replace(
+        'Missing or empty memory is not evidence that the NPC did not previously see or experience something.',
+        'Supplied memory records establish only their stated facts; they do not prove these are all the NPC remembers, knows, has seen, or can report. Check any such limit in utterance_text, interpretation, and reason; if mentioning it without exact evidence, express uncertainty instead.');
+      const expectedSystem = repair == null ? groundedSystem : groundedSystem.replace(
         'preserve the response meaning.',
         'при ошибке `utterance_mixed_script` исправить написание слова, названного в ошибке `utterance_mixed_script` (поле `word`), заменив буквы так, чтобы слово стало русским; остальные слова и их порядок, смысл, refs, enum values и operations не менять, новых фактов не добавлять.');
       assert.equal(calls[0].messages[0].content, expectedSystem,
-        `${name}: only the required repair instruction changes`);
+        `${name}: only approved grounding and repair instructions change`);
       assert.deepEqual(calls[0].overrides,
         { temperature: wire.request.temperature,
-          maxTokens: wire.request.max_tokens });
+          maxTokens: 20_000 });
       const providerConfig = {
         model: wire.request.model,
-        maxTokens: wire.request.max_tokens,
+        maxTokens: calls[0].overrides.maxTokens,
         responseFormat: wire.request.response_format,
         compatibility: 'openai_compatible',
         temperature: wire.request.temperature,
@@ -121,8 +126,8 @@ test('real NPC conversation wires resolve claims only to projected own refs',
         `${name}: system message survives provider projection`);
       for (const key of ['model', 'max_tokens', 'temperature', 'top_p',
         'response_format', 'chat_template_kwargs', 'reasoning_effort']) {
-        assert.deepEqual(afterPayload[key], wire.request[key],
-          `${name}: provider parameter ${key} is unchanged`);
+        assert.deepEqual(afterPayload[key], key === 'max_tokens' ? 20_000 : wire.request[key],
+          `${name}: provider parameter ${key} follows the approved role configuration`);
       }
       assert.deepEqual(plan.speech.claims.map(({ source_knowledge_refs }) =>
         source_knowledge_refs), [[request.npc_ref], [{ entity_kind:

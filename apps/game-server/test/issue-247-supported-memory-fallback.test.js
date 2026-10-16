@@ -101,7 +101,15 @@ test('semantic fallback keeps only exact memory, allowed WK, and current observa
       corrected.speech.utterance_text = [memoryFact, wkFact,
         observationFact].join(' ');
       corrected.speech.claims = structuredClone(supportedClaims);
-      return { output: corrected };
+      return { output: {
+        utterance_text: corrected.speech.utterance_text,
+        claims: corrected.speech.claims,
+        interpretation: {
+          intent: corrected.interpretation.intent,
+          grounded_contribution: corrected.interpretation.grounded_contribution
+        },
+        reason: corrected.reason
+      } };
     } };
     const worldKnowledge = { schema: 'world_knowledge_slice_v1',
       pack_ref: 'wk:test', pack_revision: 'revision:test',

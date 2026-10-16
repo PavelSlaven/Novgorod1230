@@ -40,7 +40,7 @@ function openingResponse(role, auditorStep) {
 }
 
 function narrationRole(input) {
-  if (typeof input?.сцена?.граница === 'string') {
+  if (Array.isArray(input?.сцена?.обязательный_смысл)) {
     if (Object.hasOwn(input, 'отклонённая_проза')) return 'repair';
     if (Object.hasOwn(input, 'проверяемая_проза')) return 'auditor';
     return 'writer';

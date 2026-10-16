@@ -21,7 +21,7 @@ function roleOf(call) {
   const content = call.messages?.find((message) => message.role === 'user')?.content;
   let input;
   try { input = JSON.parse(content); } catch { input = null; }
-  if (input?.сцена && typeof input.сцена.граница === 'string') {
+  if (Array.isArray(input?.сцена?.обязательный_смысл)) {
     if (Object.hasOwn(input, 'отклонённая_проза')) return 'gameplay_narrator_semantic_repair';
     if (Object.hasOwn(input, 'проверяемая_проза')) return 'gameplay_narrator_auditor';
     return 'gameplay_narrator';

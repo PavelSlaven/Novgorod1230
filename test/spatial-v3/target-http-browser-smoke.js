@@ -58,7 +58,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     const captured = { model: call.model, system: call.messages[0].content, input };
     report.model_calls.push(captured);
     let output;
-    const hasScene = typeof input?.сцена?.граница === 'string';
+    const hasScene = Array.isArray(input?.сцена?.обязательный_смысл);
     const hasRejectedProse = Object.hasOwn(input ?? {}, 'отклонённая_проза');
     const hasCheckedProse = Object.hasOwn(input ?? {}, 'проверяемая_проза');
     const isOpeningWriter = hasScene && Object.keys(input).length === 1;

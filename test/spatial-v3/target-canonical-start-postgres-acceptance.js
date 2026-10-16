@@ -184,7 +184,7 @@ export async function assertTargetCanonicalStartPostgres({
       let output;
       const role = identifyLlmTestRole(call);
       diagnostic.role = role;
-      const hasScene = typeof modelInput?.сцена?.граница === 'string';
+      const hasScene = Array.isArray(modelInput?.сцена?.обязательный_смысл);
       const hasRejectedProse = Object.hasOwn(modelInput ?? {}, 'отклонённая_проза');
       const hasCheckedProse = Object.hasOwn(modelInput ?? {}, 'проверяемая_проза');
       const isOpeningWriter = hasScene && Object.keys(modelInput ?? {}).length === 1;

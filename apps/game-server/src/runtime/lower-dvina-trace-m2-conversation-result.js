@@ -1,3 +1,5 @@
+import { withoutSceneRead } from './lower-dvina-trace-scene-presence.js';
+
 export function projectM2ConversationExecutionResult({
   exchange,
   context,
@@ -36,7 +38,7 @@ export function projectM2ConversationExecutionResult({
       && npcRef.entity_id === context.targetRef.entity_id).at(-1)?.outcome
     ?? null;
   return {
-    exchange,
+    exchange: withoutSceneRead(exchange),
     decision: primaryDecision,
     decisions: exchange.npc_decisions,
     statements: exchange.working_state.statements,

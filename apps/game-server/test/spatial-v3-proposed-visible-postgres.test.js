@@ -28,7 +28,14 @@ test('PostgreSQL committed destination has proposed visible package digest', asy
   if (!backend) return t.skip('No supported PostgreSQL test backend');
   const pool = new pg.Pool({ connectionString: backend.partyUrl, max: 1 });
   t.after(async () => { await pool.end(); await backend.close(); });
-  for (const name of ['001_party_runtime.sql', '002_party_runtime_v3.sql']) {
+  for (const name of ['001_party_runtime.sql', '002_party_runtime_v3.sql',
+    '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql',
+    '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql',
+    '007_party_runtime_temporal_world.sql', '008_party_runtime_pr8_first_entry.sql',
+    '009_party_runtime_pr8_reaction_knowledge.sql',
+    '010_party_runtime_pr8_reaction_options.sql',
+    '011_party_runtime_first_playable.sql',
+    '034_party_runtime_actor_base_attributes.sql']) {
     await pool.query(await readFile(new URL(`../../../schemas/party-db/${name}`, import.meta.url), 'utf8'));
   }
   const fixture = await approvedNaturalPerceptionFixture({ canonical: true });
@@ -139,7 +146,14 @@ test('Phase 2 refresh reads committed NPCs through Spatial after arrival and res
   if (!backend) return t.skip('No supported PostgreSQL test backend');
   const pool = new pg.Pool({ connectionString: backend.partyUrl, max: 2 });
   t.after(async () => { await pool.end(); await backend.close(); });
-  for (const name of ['001_party_runtime.sql', '002_party_runtime_v3.sql']) {
+  for (const name of ['001_party_runtime.sql', '002_party_runtime_v3.sql',
+    '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql',
+    '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql',
+    '007_party_runtime_temporal_world.sql', '008_party_runtime_pr8_first_entry.sql',
+    '009_party_runtime_pr8_reaction_knowledge.sql',
+    '010_party_runtime_pr8_reaction_options.sql',
+    '011_party_runtime_first_playable.sql',
+    '034_party_runtime_actor_base_attributes.sql']) {
     await pool.query(await readFile(new URL(`../../../schemas/party-db/${name}`, import.meta.url), 'utf8'));
   }
   const fixture = await approvedNaturalPerceptionFixture({ canonical: true });

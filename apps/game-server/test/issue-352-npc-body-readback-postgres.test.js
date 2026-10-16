@@ -53,7 +53,11 @@ test('no-site combat NPC body reload drives second P16 update without duplicate 
       party_state: { state_version: 1, session_state_version: 1,
         clock_state_version: 1, body_state_version: 1, turn_number: 0 },
       body_state: { health: 100, energy: 100, satiety: 100 }, clock: stamp(),
-      position: {}, combat_sessions: [session], knowledge: [], items: [],
+      position: {}, journey_location: { id: 'journey:352',
+        location_kind: 'in_transit', scene_position_id: null,
+        transit_anchor_id: null, travel_state_id: 'travel:352',
+        g6_instance_id: null, state_version: 1 },
+      combat_sessions: [session], knowledge: [], items: [],
       npcs: [{ instance_id: npcId, body_profile_ref: bodyProfileRef,
         body_state_profile: bodyStateProfile, body_state_persisted: false,
         machine_state: { status: 'active' },
@@ -138,7 +142,7 @@ test('no-site combat NPC body reload drives second P16 update without duplicate 
     assert.deepEqual(final.npcs[0].body_profile_ref, bodyProfileRef);
 
     const positioned = await withSceneNpcs(pool, initial.party_id, {
-      ...initial,
+      ...initial, journey_location: null,
       position: { site_id: 'site:positioned', position_id: 'position:control',
         g6_instance_id: 'g6:control' },
       combat_sessions: [{ ...session, participant_refs: [

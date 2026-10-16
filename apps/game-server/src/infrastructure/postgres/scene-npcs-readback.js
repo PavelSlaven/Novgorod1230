@@ -19,6 +19,22 @@ export async function withSceneNpcs(pool, partyId, state, {
 } = {}) {
   state = await withCombatParticipantBodies(pool, partyId, state,
     loadBodyInitializationProfile);
+  if (state?.journey_location?.location_kind === 'in_transit') {
+    const journey = state.journey_location;
+    const position = state.position ?? {};
+    if (typeof journey.travel_state_id !== 'string'
+        || journey.travel_state_id.trim() === ''
+        || journey.scene_position_id !== null
+        || journey.transit_anchor_id !== null
+        || journey.g6_instance_id !== null
+        || position.position_id != null || position.g6_id != null
+        || position.g6_instance_id != null
+        || position.site_id != null) {
+      throw sceneNpcReadbackDataGap(
+        'The in-transit journey location has a partial scene identity.');
+    }
+    return state;
+  }
   const positionId = state?.position?.position_id;
   if (typeof positionId !== 'string' || positionId.trim() === '') {
     throw sceneNpcReadbackDataGap('The current scene position is missing.');

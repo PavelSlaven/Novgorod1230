@@ -137,7 +137,7 @@ test('issue #594 D81: actual v17 opening and look provider bodies before/after v
           CUDA_VISIBLE_DEVICES: '' };
         delete childEnv.RUS_ISSUE_594_WIRE_OUT_DIR;
         delete childEnv.NODE_TEST_CONTEXT;
-        const child = spawnSync(process.execPath, ['--test', '--test-isolation=none',
+        const child = spawnSync(process.execPath, ['--test',
           '--test-reporter=spec', fileURLToPath(import.meta.url)], {
           encoding: 'utf8', env: childEnv,
           timeout: Math.max(1, Math.min(735_000, deadline - Date.now())),

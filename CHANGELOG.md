@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- fix(ci): restore committed NPC journey readback, authored-start scene validation and S1 first-entry snapshots; compute conversation digests after removing scene readback; update PostgreSQL fixtures and the Node 22 child test invocation without weakening acceptance checks (#98, #631, #645).
 - fix(spatial): retain generated traversal origin and verified canonical perception with endpoint checks; align P18, appearance and route test fixtures with active contracts (#98)
 - fix(game-base): align source-backed event years with phases (#439), accept variable material correction counts (#465), and discover data/m2c tests in Spatial CI (#535)
 - fix(game-web): render approved speech once and retain exact factual speech without an unknown-speaker placeholder; bound submitTurn fetch to 120 seconds preserving pending retry identity; use UUID v4 request IDs without randomUUID (#600, #293 client only, #506).

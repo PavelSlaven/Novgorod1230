@@ -894,41 +894,47 @@ test('marker repair also resolves a missing required tag from combined concerns'
       /INFERENCE: marker-only-secret|secret-claim|secret-ref/u);
   });
 
-test('marker repair restores an unchanged claim with regenerated id before audit',
+test('marker repair restores an unchanged claim from wire ref and regenerated id',
   async () => {
-    let originalClaim;
-    const scenario = await runNpcConversationTurn({
-      batchId: 'marker-claim-id-restored',
-      responder(call, input) {
-        const output = plan(input);
-        const repairing = call.role_id
-          === 'npc_conversation_responder_format_repair';
-        output.speech.utterance_text = repairing
-          ? 'Рыбацкая работа связана с сетями.'
-          : 'INFERENCE: Рыбацкая работа связана с сетями.';
-        originalClaim = originalClaim ?? { claim_id: 'claim_dry_logs_unloaded',
-          content_summary: 'Рыбацкая работа связана с сетями.',
-          form: 'assertion', speaker_posture: 'believed_true',
-          source_knowledge_refs: [ref('knowledge_record', 'claim:fish-net')],
-          mentioned_entity_refs: [] };
-        output.speech.claims = [{ ...originalClaim,
-          claim_id: repairing ? 'c1' : originalClaim.claim_id }];
-        return output;
-      },
-      audit(call) {
-        const payload = JSON.parse(call.messages[1].content);
-        assert.deepEqual(payload.plan.speech.claims, [originalClaim]);
-        assert.deepEqual(payload.original_speech.claims, [originalClaim]);
-        return npcAuditReport(call);
-      }
-    });
-    assert.equal(scenario.result?.status, 'planned',
-      JSON.stringify(scenario.error));
-    assert.deepEqual(scenario.result.plan.speech.claims, [originalClaim]);
+    for (const wireRef of ['claim:fish-net',
+      ref('knowledge_record', 'claim:fish-net')]) {
+      let originalClaim;
+      const scenario = await runNpcConversationTurn({
+        batchId: `marker-claim-id-restored-${typeof wireRef}`,
+        responder(call, input) {
+          const output = plan(input);
+          const repairing = call.role_id
+            === 'npc_conversation_responder_format_repair';
+          output.speech.utterance_text = repairing
+            ? 'Рыбацкая работа связана с сетями.'
+            : 'INFERENCE: Рыбацкая работа связана с сетями.';
+          originalClaim = originalClaim ?? { claim_id: 'claim_dry_logs_unloaded',
+            content_summary: 'Рыбацкая работа связана с сетями.',
+            form: 'assertion', speaker_posture: 'believed_true',
+            source_knowledge_refs: [ref('knowledge_record', 'claim:fish-net')],
+            mentioned_entity_refs: [] };
+          output.speech.claims = [{ ...originalClaim,
+            claim_id: repairing ? 'c1' : originalClaim.claim_id,
+            source_knowledge_refs: repairing ? [wireRef]
+              : originalClaim.source_knowledge_refs }];
+          return output;
+        },
+        audit(call) {
+          const payload = JSON.parse(call.messages[1].content);
+          assert.deepEqual(payload.plan.speech.claims, [originalClaim]);
+          assert.deepEqual(payload.original_speech.claims, [originalClaim]);
+          return npcAuditReport(call);
+        }
+      });
+      assert.equal(scenario.result?.status, 'planned',
+        JSON.stringify(scenario.error));
+      assert.deepEqual(scenario.result.plan.speech.claims, [originalClaim]);
+    }
   });
 
 test('marker repair rejects changed or ambiguous claims before audit', async () => {
-  for (const variant of ['changed', 'ambiguous', 'duplicate']) {
+  for (const variant of ['changed', 'ambiguous', 'duplicate',
+    'missing_ref', 'wrong_kind', 'extra_field']) {
     const scenario = await runNpcConversationTurn({
       batchId: `marker-claim-${variant}`,
       responder(call, input) {
@@ -943,8 +949,18 @@ test('marker repair rejects changed or ambiguous claims before audit', async () 
           mentioned_entity_refs: [] };
         output.speech.claims = repairing
           ? variant === 'duplicate'
-            ? [{ ...claim, claim_id: 'c1' }, { ...claim, claim_id: 'c2' }]
+            ? [{ ...claim, claim_id: 'c1',
+              source_knowledge_refs: ['claim:fish-net'] },
+              { ...claim, claim_id: 'c2',
+                source_knowledge_refs: ['claim:fish-net'] }]
             : [{ ...claim, claim_id: 'c1',
+              source_knowledge_refs: [variant === 'missing_ref'
+                ? 'missing' : variant === 'wrong_kind'
+                  ? ref('actor', 'claim:fish-net')
+                  : variant === 'extra_field'
+                    ? { ...ref('knowledge_record', 'claim:fish-net'),
+                      unexpected: true }
+                    : 'claim:fish-net'],
               ...(variant === 'changed' ? { content_summary: 'Иное.' } : {}) }]
           : variant === 'ambiguous'
             ? [claim, { ...claim, claim_id: 'other' }] : [claim];
@@ -1523,4 +1539,27 @@ test('semantic repair allows changed interpretation and reason prose', async () 
     originalOutput.speech.dominant_act);
   assert.equal(scenario.result.plan.interpretation.adaptation, 'literal');
   assert.equal(auditCount, 2);
+});
+
+test('NPC responder and marker repair require evidence for total knowledge bounds', async () => {
+  const input = request();
+  const original = plan(input);
+  original.speech.utterance_text = 'INFERENCE: private.';
+  const fixture = runner((call) => {
+    if (call.role_id === 'npc_conversation_responder_format_repair') {
+      const safe = plan(input);
+      safe.speech.utterance_text = 'Не уверен в ответе.';
+      return safe;
+    }
+    return original;
+  });
+  const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+  await model(input);
+  await model(input, { repair: { original_output: original,
+    validation_errors: [{ code: 'TRACE_NPC_SPEECH_SERVICE_TEXT',
+      category: 'semantic_grounding', concern_kinds: ['service_text_marker'] }] } });
+  for (const call of fixture.calls) {
+    assert.match(call.messages[0].content, /предел знаний или памяти NPC|full extent of NPC knowledge/u);
+    assert.match(call.messages[0].content, /interpretation.*reason/u);
+  }
 });

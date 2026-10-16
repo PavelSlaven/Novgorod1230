@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildNpcDecisionBoundary } from '@rus/npc-runtime';
@@ -66,7 +67,7 @@ function harness(responder) {
   const roleRunner = { async run(call) {
     calls.push(structuredClone(call));
     if (call.role_id === 'npc_conversation_grounding_auditor') {
-      return { output: { pass: true, concerns: [] } };
+      return { output: npcAuditReport(call) };
     }
     return { output: await responder(call) };
   } };

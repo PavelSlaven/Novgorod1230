@@ -42,7 +42,7 @@ function speechRole(input, system) {
     return 'npc_conversation_responder_format_repair';
   }
   if (input?.request?.schema === 'npc_conversation_response_request_v1'
-      && input.plan != null && system.startsWith('Возвращай только {"pass":true,"concerns":[]}')) {
+      && input.plan != null && system.startsWith('Верни JSON с pass, concerns и utterance_fragments.')) {
     return 'npc_conversation_grounding_auditor';
   }
   return null;
@@ -155,7 +155,11 @@ test('capture production v17 speech payloads for all seeded NPCs', {
     if (role === 'player_conversation_planner') return JSON_RESPONSE(playerContribution(input));
     if (role === 'npc_conversation_grounding_auditor') {
       activeTurn.auditCalls += 1;
-      return JSON_RESPONSE({ pass: true, concerns: [] });
+      return JSON_RESPONSE({ pass: true, concerns: [], utterance_fragments: [{
+        text: input.plan.speech.utterance_text,
+        factual: input.plan.speech.claims.length > 0,
+        claim_ids: input.plan.speech.claims.map(({ claim_id }) => claim_id)
+      }] });
     }
     if (role === 'npc_conversation_responder_format_repair') {
       activeTurn.repairCalls += 1;

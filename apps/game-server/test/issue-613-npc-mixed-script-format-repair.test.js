@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildNpcDecisionBoundary } from '@rus/npc-runtime';
@@ -72,7 +73,7 @@ async function runNpcReply(id, initialUtterance, repairedUtterance = initialUtte
     roleRunner: { async run(call) {
       calls.push(structuredClone(call));
       if (call.role_id === 'npc_conversation_grounding_auditor') {
-        return { output: { pass: true, concerns: [] } };
+        return { output: npcAuditReport(call) };
       }
       const payload = JSON.parse(call.messages[1].content);
       return { output: npcSpeechPlan(payload.request ?? payload,

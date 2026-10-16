@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildNpcDecisionBoundary, validateConversationContributionPlan }
@@ -77,9 +78,7 @@ async function requestNpcProposal(input, model) {
   });
 }
 
-async function runNpcConversationTurn({ batchId, responder, audit = () => ({
-  pass: true, concerns: []
-}), addAmbiguousRef = () => {}, addObservation = false,
+async function runNpcConversationTurn({ batchId, responder, audit = (call) => npcAuditReport(call), addAmbiguousRef = () => {}, addObservation = false,
 configureInput = () => {}, rawRepair = false }) {
   const input = request();
   configureInput(input);
@@ -451,7 +450,7 @@ test('speech audit rejects invented past work from a current schedule',
     unsupported.speech.utterance_text =
       'На рассвете я был у реки и проверял сети.';
     unsupported.speech.dominant_act = 'inform';
-    const fixture = runner(() => ({ pass: false, concerns: [{
+    const fixture = runner((call) => npcAuditReport(call, { pass: false, concerns: [{
       kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] }));
     const result = await createLowerDvinaTraceNpcSemanticModel(
       fixture).validateFreshPlan(unsupported, input);
@@ -489,7 +488,7 @@ test('speech audit applies to another NPC, place, and earlier time', async () =>
   const unsupported = plan(input);
   unsupported.speech.utterance_text =
     'Вчера до твоего прихода я видел людей у переправы.';
-  const fixture = runner(() => ({ pass: false, concerns: [{
+  const fixture = runner((call) => npcAuditReport(call, { pass: false, concerns: [{
     kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] }));
 
   const result = await createLowerDvinaTraceNpcSemanticModel(
@@ -506,7 +505,7 @@ test('speech audit preserves precise feedback and rejects invented quotes', asyn
   const concern = { kind: 'unsupported_past_observation',
     reason: 'No memory record supports the claimed personal sighting.',
     quote: 'я видел людей' };
-  const accepted = runner(() => ({ pass: false, concerns: [concern] }));
+  const accepted = runner((call) => npcAuditReport(call, { pass: false, concerns: [concern] }));
   const result = await createLowerDvinaTraceNpcSemanticModel(
     accepted).validateFreshPlan(proposal, input);
   assert.deepEqual(result.errors[0].audit_feedback, [concern]);
@@ -515,12 +514,12 @@ test('speech audit preserves precise feedback and rejects invented quotes', asyn
   assert.ok(longQuote.length > 160);
   proposal.speech.utterance_text = longQuote;
   const longConcern = { ...concern, quote: longQuote };
-  const longReply = runner(() => ({ pass: false, concerns: [longConcern] }));
+  const longReply = runner((call) => npcAuditReport(call, { pass: false, concerns: [longConcern] }));
   const longResult = await createLowerDvinaTraceNpcSemanticModel(
     longReply).validateFreshPlan(proposal, input);
   assert.deepEqual(longResult.errors[0].audit_feedback, [longConcern]);
 
-  const invalid = runner(() => ({ pass: false, concerns: [{
+  const invalid = runner((call) => npcAuditReport(call, { pass: false, concerns: [{
     ...concern, quote: 'я видел волков'
   }] }));
   await assert.rejects(() => createLowerDvinaTraceNpcSemanticModel(
@@ -589,7 +588,7 @@ test('NPC service markers fail before grounding audit while ordinary wording pas
 
     const ordinary = plan(input);
     ordinary.speech.utterance_text = 'The passage is available.';
-    const cleanFixture = runner(() => ({ pass: true, concerns: [] }));
+    const cleanFixture = runner((call) => npcAuditReport(call));
     const accepted = await createLowerDvinaTraceNpcSemanticModel(cleanFixture)
       .validateFreshPlan(ordinary, input);
     assert.equal(accepted, true);
@@ -637,7 +636,7 @@ test('NPC marker retry succeeds while preserving the original refusal act',
     safeRetry.speech.utterance_text = 'Не отдам тебе это.';
     const fixture = runner((call) => call.role_id
       === 'npc_conversation_grounding_auditor'
-      ? { pass: true, concerns: [] }
+      ? npcAuditReport(call)
       : call.role_id === 'npc_conversation_responder_format_repair'
         ? safeRetry : marked);
     const model = createLowerDvinaTraceNpcSemanticModel(fixture);
@@ -664,7 +663,7 @@ test('repeated dirty NPC marker retry fails closed before planning', async () =>
     markedPlan.speech.dominant_act = originalAct;
     const fixture = runner((call) => call.role_id
       === 'npc_conversation_grounding_auditor'
-      ? { pass: true, concerns: [] } : markedPlan);
+      ? npcAuditReport(call) : markedPlan);
     const model = createLowerDvinaTraceNpcSemanticModel(fixture);
     let typedFailure;
     try {
@@ -698,7 +697,7 @@ test('safe NPC marker repair rejects changed act with typed non-applicable outco
       cleanButChanged.speech.dominant_act = repairedAct;
       const fixture = runner((call) => call.role_id
         === 'npc_conversation_grounding_auditor'
-        ? { pass: true, concerns: [] }
+        ? npcAuditReport(call)
         : call.role_id === 'npc_conversation_responder_format_repair'
           ? cleanButChanged : marked);
       const model = createLowerDvinaTraceNpcSemanticModel(fixture);
@@ -761,11 +760,11 @@ test('semantic grounding repair receives original output and concrete concerns',
           'Не стану отвечать. Вчера я видел купца.';
         return originalOutput;
       },
-      audit() {
+      audit(call) {
         auditCount += 1;
         return auditCount === 1
-          ? { pass: false, concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: 'Вчера я видел купца' }] }
-          : { pass: true, concerns: [] };
+          ? npcAuditReport(call, { pass: false, concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: 'Вчера я видел купца' }] })
+          : npcAuditReport(call);
       }
     });
 
@@ -804,10 +803,10 @@ test('repeated semantic grounding failure is typed after one model repair',
         output.speech.utterance_text = 'Я видел то, чего не было.';
         return output;
       },
-      audit() {
+      audit(call) {
         auditCount += 1;
-        return { pass: false,
-          concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] };
+        return npcAuditReport(call, { pass: false,
+          concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] });
       }
     });
 
@@ -906,12 +905,12 @@ test('semantic grounding repair preserves the original typed activity choice',
         original.speech.utterance_text = 'Вчера я видел лодку.';
         return original;
       },
-      audit() {
+      audit(call) {
         auditCount += 1;
         return auditCount === 1
-          ? { pass: false,
-            concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] }
-          : { pass: true, concerns: [] };
+          ? npcAuditReport(call, { pass: false,
+            concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] })
+          : npcAuditReport(call);
       }
     });
 
@@ -1018,12 +1017,12 @@ test('semantic grounding repair compares interaction tags as an unordered set',
           ? ['withhold', 'inform'] : ['inform', 'withhold'];
         return output;
       },
-      audit() {
+      audit(call) {
         auditCount += 1;
         return auditCount === 1
-          ? { pass: false,
-            concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] }
-          : { pass: true, concerns: [] };
+          ? npcAuditReport(call, { pass: false,
+            concerns: [{ kind: 'unsupported_past_activity', reason: 'No exact supporting evidence.', quote: '' }] })
+          : npcAuditReport(call);
       }
     });
 
@@ -1064,12 +1063,12 @@ for (const difference of rawTypedDifferenceCases) {
               dominant_act: output.speech.dominant_act }
             : output;
         },
-        audit() {
+        audit(call) {
           auditCount += 1;
           return auditCount === 1
-            ? { pass: false,
-              concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] }
-            : { pass: true, concerns: [] };
+            ? npcAuditReport(call, { pass: false,
+              concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] })
+            : npcAuditReport(call);
         }
       });
 
@@ -1100,7 +1099,7 @@ test('semantic grounding repair rejects adding a claim', async () => {
         source_knowledge_refs: [sourceRef], mentioned_entity_refs: [] }] : [];
       return output;
     },
-    audit: (_call) => ({ pass: false,
+    audit: (call) => npcAuditReport(call, { pass: false,
       concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] })
   });
 
@@ -1125,7 +1124,7 @@ test('semantic grounding repair rejects changing a claim', async () => {
         source_knowledge_refs: [sourceRef], mentioned_entity_refs: [] }];
       return output;
     },
-    audit: (_call) => ({ pass: false,
+    audit: (call) => npcAuditReport(call, { pass: false,
       concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] })
   });
 
@@ -1152,12 +1151,12 @@ test('semantic grounding repair may remove a claim while revising the utterance'
           mentioned_entity_refs: [] }];
         return output;
       },
-      audit() {
+      audit(call) {
         auditCount += 1;
         return auditCount === 1
-          ? { pass: false,
-            concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] }
-          : { pass: true, concerns: [] };
+          ? npcAuditReport(call, { pass: false,
+            concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] })
+          : npcAuditReport(call);
       }
     });
 
@@ -1286,7 +1285,7 @@ test('conversation production model receives planner-selected role, material, an
       } };
     }
     if (call.role_id === 'npc_conversation_grounding_auditor') return { output: {
-      pass: true, concerns: []
+      ...npcAuditReport(call)
     } };
     return { output: plan(input) };
   } };
@@ -1429,12 +1428,12 @@ test('semantic repair allows changed interpretation and reason prose', async () 
       output.speech.utterance_text = originalOutput.speech.utterance_text;
       return output;
     },
-    audit() {
+    audit(call) {
       auditCount += 1;
       return auditCount === 1
-        ? { pass: false,
-          concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] }
-        : { pass: true, concerns: [] };
+        ? npcAuditReport(call, { pass: false,
+          concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] })
+        : npcAuditReport(call);
     }
   });
 

@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
@@ -277,7 +278,7 @@ test('NPC adapter retries an initial JSON parse failure with its format role',
           code: 'json_parse_failed'
         });
         if (call.role_id === 'npc_conversation_grounding_auditor') {
-          return { output: { pass: true, concerns: [] } };
+          return { output: npcAuditReport(call) };
         }
         const payload = JSON.parse(call.messages[1].content);
         return { output: baseModel(payload.request ?? payload) };
@@ -305,7 +306,7 @@ test('NPC speech owner accepts exact route disclosure and ordinary reply', async
     roleRunner: { async run(call) {
       calls.push(call);
       if (call.role_id === 'npc_conversation_grounding_auditor') {
-        return { output: { pass: true, concerns: [] } };
+        return { output: npcAuditReport(call) };
       }
       const payload = JSON.parse(call.messages[1].content);
       return { output: baseModel(payload.request ?? payload) };
@@ -335,7 +336,7 @@ test('NPC speech owner accepts exact route disclosure and ordinary reply', async
       roleRunner: { async run(call) {
         ordinaryCalls.push(call);
         if (call.role_id === 'npc_conversation_grounding_auditor') {
-          return { output: { pass: true, concerns: [] } };
+          return { output: npcAuditReport(call) };
         }
         const payload = JSON.parse(call.messages[1].content);
         return { output: baseModel(payload.request ?? payload) };

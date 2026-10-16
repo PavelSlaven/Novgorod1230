@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -284,7 +285,7 @@ test('D102-6 responder, auditor and both model repair paths share the Russian pr
   const calls = [];
   const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner: { async run(call) {
     calls.push(structuredClone(call));
-    if (call.role_id === 'npc_conversation_grounding_auditor') return { output: { pass: true, concerns: [] } };
+    if (call.role_id === 'npc_conversation_grounding_auditor') return { output: npcAuditReport(call) };
     return { output: { contribution_kind: 'speech', speech: {
       utterance_text: 'Расскажу о работе.', dominant_act: 'answer', interaction_tags: [],
       topic_refs: [], claims: [], response_expectation: { kind: 'none', target_refs: [] } },

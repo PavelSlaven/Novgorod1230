@@ -1,3 +1,4 @@
+import { npcAuditReport } from './support/npc-audit-report.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { appendFileSync } from 'node:fs';
@@ -13,8 +14,8 @@ const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 const responder = 'npc_conversation_responder';
 const repairRole = 'npc_conversation_responder_format_repair';
 const auditor = 'npc_conversation_grounding_auditor';
-const approved = () => ({ pass: true, concerns: [] });
-const rejected = (kind) => ({ pass: false, concerns: [{ kind,
+const approved = (call) => npcAuditReport(call);
+const rejected = (kind, call) => npcAuditReport(call, { pass: false, concerns: [{ kind,
   reason: 'No exact supporting evidence.', quote: '' }] });
 const payload = (call) => JSON.parse(call.messages[1].content);
 
@@ -99,8 +100,8 @@ function observation(input) {
 }
 
 async function runConversation(input, original, corrected, {
-  audit = (_call, number) => number === 1
-    ? rejected('unsupported_qualifier') : approved(),
+  audit = (call, number) => number === 1
+    ? rejected('unsupported_qualifier', call) : approved(call),
   worldKnowledgeGrounder = null, repairOutput = null
 } = {}) {
   // Validate fixtures before exercising production; schema defects are not
@@ -333,14 +334,14 @@ for (const marker of [false, true]) {
       const finalAudits = [];
       const scenario = await runConversation(input, original, corrected, {
         audit(call, number) {
-          if (!marker && number === 1) return rejected('unsupported_past_activity');
+          if (!marker && number === 1) return rejected('unsupported_past_activity', call);
           const candidate = payload(call);
           finalAudits.push(candidate);
           if (candidate.original_speech?.utterance_text.includes(seen.fact_text)
               && !candidate.plan.speech.utterance_text.includes(seen.fact_text)) {
-            return rejected('supported_fact_dropped');
+            return rejected('supported_fact_dropped', call);
           }
-          return approved();
+          return approved(call);
         }
       });
       assert.deepEqual(finalAudits.map(({ original_speech }) => original_speech),
@@ -553,7 +554,7 @@ test('a second grounding failure ends in typed failure without synthetic speech 
   const stillUnsupported = plan(input, 'Вчера я видел две лодки.');
   const scenario = await runConversation(input, original, stillUnsupported, {
     audit: (call) => payload(call).plan.speech.utterance_text.includes('Вчера')
-      ? rejected('unverified_past_observation') : approved()
+      ? rejected('unverified_past_observation', call) : approved(call)
   });
   assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_INVALID',
     'repeated model failure must not be converted to a successful coded reply');
@@ -572,7 +573,7 @@ test('an unseen grounding concern uses the same model repair and preserves its c
   const corrected = plan(input, 'Не берусь обещать. Поговорим позже.');
   const unseenKind = 'unverified_tidal_arrival_expectation';
   const scenario = await runConversation(input, original, corrected, {
-    audit: (_call, number) => number === 1 ? rejected(unseenKind) : approved()
+    audit: (call, number) => number === 1 ? rejected(unseenKind, call) : approved(call)
   });
   const retry = singleRepair(scenario);
   assert.deepEqual(payload(retry).validation_errors[0].concern_kinds, [unseenKind]);
@@ -628,8 +629,8 @@ test('speech grounding separates event content from personal experience and pres
     'Вода поднялась выше метки; переправляться опасно. Сейчас я туда не пойду.');
   corrected.speech.claims = [fact];
   const scenario = await runConversation(input, unsupported, corrected, {
-    audit: (_call, number) => number === 1
-      ? rejected('unsupported_personal_experience') : approved()
+    audit: (call, number) => number === 1
+      ? rejected('unsupported_personal_experience', call) : approved(call)
   });
   const retry = singleRepair(scenario);
   const firstAudit = scenario.calls.find(({ role_id }) => role_id === auditor);

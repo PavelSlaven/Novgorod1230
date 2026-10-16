@@ -28,7 +28,7 @@ Format repair разговора получает исходный request, по
 конкретные validation errors. Любая semantic-grounding ошибка допускает одну
 semantic repair моделью с конкретными concern kinds; для безмаркерной ветки
 repair получает полный original output. Semantic и format repair имеют
-раздельные бюджеты. Marker-specific провод остаётся прежним и не передаёт
+раздельные бюджеты. Private NPC speech audit возвращает точное покрытие всей реплики фрагментами с factual и ссылками на существующие speech.claims; game-server проверяет полноту/порядок и отправляет фактические фрагменты без claim в существующий semantic repair. Источники остаются в самих claims; смысл и опору проверяет тот же LLM auditor. Marker-specific провод остаётся прежним и не передаёт
 исходный текст. Repair сохраняет исходный contribution и speech act; повторная
 грязная реплика или изменение акта завершаются штатным typed fail-closed до
 NPC proposal, без синтеза слов или применения вклада.

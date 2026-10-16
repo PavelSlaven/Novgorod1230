@@ -115,6 +115,8 @@ test('private prose wire admits only scene identity beside a current beat', asyn
         assert.match(call.messages[0].content,
           /unperformed_result_unknown[\s\S]*Never attribute it to an NPC[\s\S]*not unsupported_attempt/u);
         assert.doesNotMatch(call.messages[0].content, /Never\s+Treat a required_current_beat uncertainty/u);
+        assert.match(call.messages[0].content,
+          /omitted required beat is a coverage failure[\s\S]*unsupported_attempt only for an action proposition/u);
       }
       if (call.role_id === 'gameplay_narrator') return { output: {
         prose: sample.prose, action_options: [], used_references: [] } };
@@ -174,6 +176,8 @@ for (const sample of [
         action_options: [], used_references: [] } };
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
         assert.ok(wire.concerns.some(({ kind }) => kind === 'literary_quality'));
+        assert.match(call.messages[0].content,
+          /never turn a player request or unperformed intent into a performed event/u);
         return { output: { replacements: [{ prose: sample.prose }] } };
       }
       const ids = wire.segments.map(({ segment_id }) => segment_id);

@@ -379,10 +379,33 @@ for (const sample of [
         operations: [{ op: 'request_item_use', use_kind: 'other', description: sample.action }] } } ] } } });
   assert.deepEqual(visible.visible_changes, [
     `Вы произнесли: «${sample.speech}»`,
-    `Вы выполнили попытку: «${sample.action}»`
+    `Вы выполнили попытку: «${sample.action}»`,
+    'Результат этой попытки пока не установлен.'
   ]);
   assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_changes.some(change => /Прошл[ао]/u.test(change)), false);
+});
+
+test('applied item-use seed projects an unknown result regardless of goal status', () => {
+  const attempt = { kind: 'transient_item_use',
+    description: 'Касаюсь посохом воды.' };
+  const input = { consequence: { visible_seed: {
+    turn_step_item_use_1: attempt } } };
+  const pending = projectDirectSeedChanges({ input,
+    directSeedKeys: ['turn_step_item_use_1'],
+    appliedPlan: { resolution: 'domain_request', goal_result: 'pending' } });
+  assert.deepEqual(pending, [
+    'Вы выполнили попытку: «Касаюсь посохом воды.»',
+    'Результат этой попытки пока не установлен.'
+  ]);
+  assert.deepEqual(projectDirectSeedChanges({ input,
+    directSeedKeys: ['turn_step_item_use_1'],
+    appliedPlan: { resolution: 'domain_request', goal_result: 'achieved' } }),
+  ['Вы выполнили попытку: «Касаюсь посохом воды.»',
+    'Результат этой попытки пока не установлен.']);
+  assert.deepEqual(projectDirectSeedChanges({ input: { consequence: {
+    visible_seed: {} } }, directSeedKeys: [],
+    appliedPlan: { resolution: 'domain_request', goal_result: 'pending' } }), []);
 });
 
 test('observation stays before later speech while duration stays out of prose', async () => {

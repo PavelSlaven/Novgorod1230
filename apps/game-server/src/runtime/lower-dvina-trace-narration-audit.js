@@ -54,6 +54,9 @@ proposition as unsupported_result.
 Do not require prose to supply a result for an attempt. A proposition that only
 says the attempt occurred is complete and supported; never report
 unsupported_result merely because that prose omits an outcome.
+An omitted required beat is a coverage failure, not evidence that the segment
+claims an action. Report unsupported_attempt only for an action proposition
+actually present in the segment without a matching performed source.
 
 Review literary composition for exactly these checks:
 ${Object.keys(FAILURE_KINDS).join(', ')}. Use unsupported_response_or_continuation

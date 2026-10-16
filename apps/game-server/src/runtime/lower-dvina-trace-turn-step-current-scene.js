@@ -321,7 +321,9 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     ? appliedPlan.assessment.text : 'Вы внимательно изучили обстановку.',
   ...changes];
   if (appliedPlan != null && attempts.length === 1) return [
-    ...directSeedChange(attempts[0]), ...changes
+    ...directSeedChange(attempts[0]),
+    'Результат этой попытки пока не установлен.',
+    ...changes
   ];
   return changes;
 }

@@ -49,4 +49,3 @@ The repository production integration test now keeps this opening-baseline/first
 ## Result
 
 The #749 behavior is evidenced on the actual91 authored start and a reloaded second LOOK: unchanged canonical opening sensory facts stay available to the writer/auditor/repair path as support without being repeated as required beat; the executed observation and perceived NPC result remain required. The run uses a deterministic fake provider, so it does not assess full D49 prose or style.
-

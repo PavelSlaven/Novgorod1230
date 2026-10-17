@@ -2,7 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
-- fix(npc): pass approved activity records through every non-fire turn-step scene projection route.
+- fix(npc): pass approved activity records through turn-step scene projection and final visible-context enrichment, preserving eligible NPC status in the persisted package.
 - fix(npc): project authored player-safe current activity only when the exact active profile and its held-item requirements are clearly observed; suppress private activity summaries in opening context (#566).
 - fix(narration): include current visible NPC-held item labels in safe cues and writer facts (#685).
 - fix(game-server): read valid transit-anchor locations without requiring scene NPC placement, while rejecting stale or conflicting scene identities (#744).

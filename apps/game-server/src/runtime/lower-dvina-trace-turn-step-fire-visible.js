@@ -218,7 +218,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           scenePresentation: scenePresentation
             ?? input?.retrieved_state?.scene_presentation ?? null,
           approvedActivityRecords
-        }), input, calendarProfile, recordProjectionGap);
+        }), input, calendarProfile, recordProjectionGap,
+        approvedActivityRecords);
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
@@ -240,15 +241,18 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       return finishVisibleProjection(overlayFireVisible(overlayOrdinaryPresence(
           overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence,
           input?.ordinary_materialization_atomic_write_plan?.item), fireVisible),
-        input, calendarProfile, recordProjectionGap);
+        input, calendarProfile, recordProjectionGap,
+        approvedActivityRecords);
     }
   });
 }
-function finishVisibleProjection(base, input, calendarProfile, recordProjectionGap) {
+function finishVisibleProjection(base, input, calendarProfile, recordProjectionGap,
+  approvedActivityRecords) {
   let enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
     committedState: input.retrieved_state, calendarProfile,
     bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after,
-    temporalResults: input.time_update?.temporal_results });
+    temporalResults: input.time_update?.temporal_results,
+    approvedActivityRecords });
   // A local move changes the place's passages: the retrieved state still holds those of the position left.
   const arrived = input.consequence?.visible_seed?.destination_movement_objects;
   if (Array.isArray(arrived)) enriched = { ...enriched, visible_objects: [

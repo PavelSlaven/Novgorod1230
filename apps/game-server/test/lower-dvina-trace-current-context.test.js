@@ -121,7 +121,13 @@ test('non-fire scene projection routes receive approved activity records', async
   state.npcs = [{ instance_id: 'npc:fisher', machine_state: { status: 'active',
     current_activity: { activity_ref: 'activity:fishing', status: 'active' } } }];
   state.items = [{ instance_id: 'item:net', template_id: 'item_tpl_net',
-    placement: { holder_npc_id: 'npc:fisher', physical_position: 'hands' } }];
+    placement: { holder_npc_id: 'npc:fisher', physical_position: 'hands' } },
+  { instance_id: 'item:coat', placement: { holder_npc_id: 'npc:fisher',
+    physical_position: 'worn' }, visual_profile_snapshot: {
+      schema: 'item_visual_profile_snapshot_v1', version: 1,
+      garment_kind: 'coat', equipment_slot: 'outerwear',
+      visible_fabric: 'wool', main_visible_color: 'brown'
+    } }];
   const approvedActivityRecords = [{ record_kind: 'activity_profile', status: 'approved',
     payload: { activity_profile_id: 'activity:fishing',
       player_safe_observation: 'Осматривает рыболовную сеть.',

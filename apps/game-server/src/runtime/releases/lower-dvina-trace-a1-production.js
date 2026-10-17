@@ -256,11 +256,16 @@ function sourceDescriptorFor(loaded, sourceRef) {
 export function createActionProductionVisibleConsequence({ actionRef, stepIndex,
   semantic }) {
   const descriptor = semantic.result_descriptor;
+  const sourceDelta = descriptor.source_fact_delta;
   return {
     visible_seed: { [`turn_step_action_production_${stepIndex}`]: {
       change: 'physical_change', entity_ref: semantic.source_refs[0],
       physical_description: descriptor.physical_description,
-      qualitative_facts: structuredClone(descriptor.qualitative_facts)
+      qualitative_facts: structuredClone(descriptor.qualitative_facts),
+      ...(sourceDelta == null ? {} : { source_fact_delta: {
+        physical_description: sourceDelta.physical_description,
+        qualitative_facts: structuredClone(sourceDelta.qualitative_facts)
+      } })
     } },
     state_changes: [{ operation_id: actionRef,
       operation_kind: 'action_production' }]

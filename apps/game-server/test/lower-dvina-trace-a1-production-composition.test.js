@@ -31,7 +31,12 @@ test('A1 exposes its approved physical result to player-safe presentation', () =
     actionRef: 'action:1', stepIndex: 2, semantic: {
       source_refs: ['board'], result_descriptor: {
         physical_description: 'доска приспособлена как опора',
-        qualitative_facts: ['опора поддерживает плечо']
+        qualitative_facts: ['опора поддерживает плечо'],
+        source_fact_delta: {
+          physical_description: 'доска с укороченным концом',
+          qualitative_facts: ['конец доски укорочен'],
+          removed_physical_fact_refs: ['old-fact'], physical_form: 'regular'
+        }
       }
     }
   });
@@ -39,7 +44,11 @@ test('A1 exposes its approved physical result to player-safe presentation', () =
     .turn_step_action_production_2, {
     change: 'physical_change', entity_ref: 'board',
     physical_description: 'доска приспособлена как опора',
-    qualitative_facts: ['опора поддерживает плечо']
+    qualitative_facts: ['опора поддерживает плечо'],
+    source_fact_delta: {
+      physical_description: 'доска с укороченным концом',
+      qualitative_facts: ['конец доски укорочен']
+    }
   });
 });
 

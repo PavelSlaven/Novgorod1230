@@ -217,6 +217,71 @@ test('perceived speech remains pending instead of inventing final silence', asyn
     'unresolved_npc_response_as_absence'));
 });
 
+test('committed A1 transformation projects output and visible source facts without remaining intent', async () => {
+  const state = committedState();
+  const shirtId = 'item:linen-shirt';
+  state.party_state = { state_version: 0 };
+  state.current_visible_context.visible_objects = [{
+    entity_ref: { entity_kind: 'item', entity_id: shirtId },
+    display_label: 'нижняя рубаха', recognition: 'recognized',
+    visible_status: 'при вас'
+  }];
+  const consequence = createActionProductionVisibleConsequence({
+    actionRef: 'action:captured-make', stepIndex: 1,
+    semantic: { source_refs: [shirtId], result_descriptor: {
+      physical_description: 'отрезанная полоса льняной ткани',
+      qualitative_facts: ['отделена от подола'],
+      source_fact_delta: {
+        physical_description: 'рубаха с укороченным подолом',
+        qualitative_facts: ['подол укорочен']
+      }
+    } }
+  });
+  const remainingIntent = 'Оторву ещё одну полосу от той же рубахи.';
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
+    project: async () => assert.fail('unexpected fallback')
+  } });
+  const visible = await projector.project({ retrieved_state: state,
+    consequence: { ...consequence, status: 'resolved', visible_seed: {
+      completed_steps: [], ...consequence.visible_seed
+    } },
+    mode_resolution: { decision_trace: { remaining_intent: remainingIntent,
+      step_traces: [{ step_index: 1, applied: true, approved_plan: {
+        resolution: 'domain_request', goal_result: 'achieved',
+        operations: [{ op: 'request_item_use' }]
+      } }] } } });
+
+  assert.deepEqual(visible.visible_changes, [
+    'Действие изменило исходную вещь.',
+    'отрезанная полоса льняной ткани.', 'отделена от подола.',
+    'рубаха с укороченным подолом.', 'подол укорочен.'
+  ]);
+  const writerWire = narrationWire({ visible_context: visible },
+    { roleId: 'gameplay_narrator' });
+  assert.deepEqual(writerWire['Обязательные положения текущего эпизода'],
+    visible.visible_changes);
+  assert.doesNotMatch(JSON.stringify(writerWire),
+    /Оторву ещё одну полосу|item:linen-shirt|entity_id|source_fact_delta/u);
+  assert.doesNotMatch(JSON.stringify(visible),
+    /Оторву ещё одну полосу от той же рубахи/u);
+
+  const hiddenSource = structuredClone(state);
+  hiddenSource.current_visible_context.visible_objects = [];
+  const withoutUnobservedSource = await projector.project({
+    retrieved_state: hiddenSource,
+    consequence: { ...consequence, status: 'resolved', visible_seed: {
+      completed_steps: [], ...consequence.visible_seed
+    } },
+    mode_resolution: { decision_trace: { remaining_intent: null,
+      step_traces: [{ step_index: 1, applied: true, approved_plan: {
+        resolution: 'domain_request', goal_result: 'achieved',
+        operations: [{ op: 'request_item_use' }]
+      } }] } } });
+  assert.deepEqual(withoutUnobservedSource.visible_changes, [
+    'отрезанная полоса льняной ткани.', 'отделена от подола.'
+  ]);
+});
+
 for (const domainFallback of [false, true]) test(`materialized O1 precedes physical continuation (fallback=${domainFallback})`, async () => {
   const state = committedState();
   state.current_visible_context.sensory_details = ['У воды лежат доски.'];

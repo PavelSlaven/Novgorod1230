@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
 import { projectDirectSeedChanges } from '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
-import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvina-trace-narration-llm.js';
+import { createLowerDvinaTraceNarrationService, narrationWire } from '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { createPorts, execution, preparedOrdinary, semanticOwners } from './lower-dvina-trace-turn-step-runtime-ports-fixture.js';
 import { createActionProductionVisibleConsequence } from '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 
@@ -283,10 +283,18 @@ test('new ordinary discovery binds its beat to the committed item among identica
   assert.equal(visible.visible_changes.length, 1);
   assert.match(visible.visible_changes[0], /Найден предмет — сухая ветка/u);
   assert.match(visible.visible_changes[0], /не в руках героя/u);
+  assert.match(visible.visible_changes[0], /отдельная вещь от других видимых предметов с тем же названием/u);
   assert.equal(JSON.stringify(visible).includes('new-branch'), true);
   assert.equal(visible.visible_changes[0].includes('new-branch'), false);
   assert.deepEqual(visible.visible_objects.map(({ visible_status }) => visible_status),
     ['у вас в руках', 'available']);
+  for (const roleId of ['gameplay_narrator', 'gameplay_narrator_format_repair',
+    'gameplay_narrator_auditor', 'gameplay_narrator_semantic_repair']) {
+    const wire = narrationWire({ visible_context: visible }, { roleId });
+    assert.match(wire['Обязательные положения текущего эпизода'][0],
+      /отдельная вещь от других видимых предметов с тем же названием/u);
+    assert.doesNotMatch(JSON.stringify(wire), /old-branch|new-branch/u);
+  }
   const oldSeed = { ...seed };
   delete oldSeed.item_ref;
   const oldVisible = await projector.project({ retrieved_state: state,
@@ -300,6 +308,7 @@ test('new ordinary discovery binds its beat to the committed item among identica
     ordinary_materialization_atomic_write_plan: plan,
     consequence: { visible_seed: { ordinary_presence_seed: seed } } });
   assert.match(projectedBeforeCommit.visible_changes[0], /При находке он не находился в руках героя/u);
+  assert.match(projectedBeforeCommit.visible_changes[0], /отдельная вещь от других видимых предметов с тем же названием/u);
   assert.deepEqual(projectedBeforeCommit.visible_objects.map(({ entity_ref }) => entity_ref.entity_id),
     ['old-branch']);
   await assert.rejects(projector.project({ retrieved_state: state,
@@ -311,6 +320,35 @@ test('new ordinary discovery binds its beat to the committed item among identica
     consequence: { visible_seed: { ordinary_presence_seed: {
       ...seed, item_ref: 'old-branch' } } } }),
   { code: 'TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID' });
+});
+
+test('discovery relation survives several identical labels and a later confirmed taking', async () => {
+  const state = committedState();
+  state.items = [
+    { item_id: 'held-cup', name: 'глиняная чаша', placement: {
+      location_ref: 'shore', holder_character_id: 'mikula', physical_position: 'hands' } },
+    { item_id: 'seen-cup', name: 'глиняная чаша', placement: { location_ref: 'shore' } },
+    { item_id: 'found-cup', name: 'глиняная чаша', placement: { location_ref: 'shore' } }
+  ];
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
+    project: async () => assert.fail('unexpected fallback') } });
+  const seed = { kind: 'ordinary_presence_seed', resolution: 'materialized',
+    query: 'чаша', display_name: 'глиняная чаша', item_ref: 'found-cup' };
+  const found = await projector.project({ retrieved_state: state,
+    consequence: { visible_seed: { ordinary_presence_seed: seed } } });
+  assert.match(found.visible_changes[0], /отдельная вещь от других видимых предметов с тем же названием/u);
+  assert.deepEqual(found.visible_objects.map(({ visible_status }) => visible_status),
+    ['у вас в руках', 'available', 'available']);
+
+  state.items[2].placement = { location_ref: 'shore', holder_character_id: 'mikula',
+    physical_position: 'hands' };
+  const taken = await projector.project({ retrieved_state: state,
+    consequence: { visible_seed: { ordinary_presence_seed: seed,
+      turn_step_item_take_2: { change: 'moved', relation: 'held_by',
+        display_label: 'найденную глиняную чашу' } } } });
+  assert.match(taken.visible_changes[0], /отдельная вещь от других видимых предметов с тем же названием/u);
+  assert.match(taken.visible_changes[0], /у вас в руках/u);
+  assert.equal(taken.visible_changes[1], 'Герой взял в руки найденную глиняную чашу.');
 });
 
 for (const fire of [false, true]) {

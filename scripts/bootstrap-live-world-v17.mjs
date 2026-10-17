@@ -34,7 +34,7 @@ import { WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
   PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
   ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP } from
   '../tools/runtime-catalog-activation/src/forward-migrations.js';
-import { buildAdditionalStartOwnerRows } from
+import { assertAdditionalStartImportAuthorizationForRows, buildAdditionalStartOwnerRows } from
   '../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
 import { ensureV17PartyProductionCatalogLedger } from './v17-party-production-catalog-ledger.mjs';
 import { assertWaveInputs, readWaveRequest, runWaveImportStage } from './v17-m2c-npc-wave-stage.mjs';
@@ -782,6 +782,7 @@ async function rollbackProbe(pool, apply, table, stage) {
 
 export async function importAdditionalStartOwnerRows(pool) {
   const ownerRows = await buildAdditionalStartOwnerRows();
+  await assertAdditionalStartImportAuthorizationForRows(ownerRows);
   for (const rollback of [true, false]) {
     const client = await pool.connect();
     try {

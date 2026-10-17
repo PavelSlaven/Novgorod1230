@@ -8,11 +8,44 @@ const root = resolve(import.meta.dirname, '../../../../..');
 const base = 'data/world-catalogs/novgorod';
 const here = `${base}/live-world-runtime-v17/additional-start-artifacts`;
 const observation = `${base}/m2c-npc/activity-observation`;
+const importAuthorizationPath = `${here}/owner-import-authorization.json`;
 const read = async (path) => readFile(resolve(root, path));
 const json = async (path) => JSON.parse(await read(path));
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const one = (rows, label) => { assert.equal(rows.length, 1, label); return rows[0]; };
 const withDigest = (row) => ({ ...row, canonical_digest: computeSpatialV3CanonicalDigest(row).slice(7) });
+
+export function assertAdditionalStartImportAuthorization(authorization, candidateSha256, ownerRows) {
+  const expectedSuccessors = [
+    'activity_m2c_npc_fisher_initial_work_observation_v1@1',
+    'm2c_npc_fisher_v1@4',
+    'm2c_g4_npc_composition_canonical_initial_novgorod_vikhtuy_work_storage_v1@2'
+  ];
+  if (authorization.approver !== '/root acting D49 lead'
+      || authorization.date !== '2026-10-17'
+      || authorization.scope !== 'new_isolated_D49_test_databases'
+      || authorization.candidate_sha256 !== candidateSha256
+      || authorization.runtime_selection !== true
+      || authorization.production !== false
+      || authorization.existing_databases !== false
+      || JSON.stringify(authorization.successors) !== JSON.stringify(expectedSuccessors))
+    throw new Error('V17_ADDITIONAL_START_IMPORT_AUTHORIZATION_MISMATCH');
+  const selected = [
+    ...ownerRows.runtimeProfiles.filter((row) => row.id === 'activity_m2c_npc_fisher_initial_work_observation_v1'
+      || row.id === 'm2c_npc_fisher_v1'),
+    ...ownerRows.npc.filter((row) => row.id ===
+      'm2c_g4_npc_composition_canonical_initial_novgorod_vikhtuy_work_storage_v1')
+  ].map(({ id, version }) => `${id}@${version}`).sort();
+  if (JSON.stringify(selected) !== JSON.stringify([...expectedSuccessors].sort()))
+    throw new Error('V17_ADDITIONAL_START_IMPORT_AUTHORIZATION_ROWS_MISMATCH');
+}
+
+export async function assertAdditionalStartImportAuthorizationForRows(ownerRows) {
+  const [authorization, approval] = await Promise.all([
+    json(importAuthorizationPath), json(`${observation}/approval.json`)
+  ]);
+  assertAdditionalStartImportAuthorization(authorization, approval.candidate_sha256, ownerRows);
+}
 
 function approveDerivedRow(row) {
   const approved = structuredClone(row);

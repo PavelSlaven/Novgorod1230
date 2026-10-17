@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(npc): bind the D49 additional-start import and runtime selection to the separately recorded exact-scope authorization.
 - fix(ci): give full-profile fast-rest 90 minutes after run 39045454832 reached the 75-minute timeout; other suites keep 75 minutes (green run 39032668663 took 73m35s).
 - fix(narration): include currently visible items held by a clearly perceived NPC in opening and turn scene facts; preserve item identity and discard stale held-item cues when visibility changes (#685, D49).
 - fix(narration): retain observable changes to both the produced item and its recognized source in the current episode facts (#748, D49).

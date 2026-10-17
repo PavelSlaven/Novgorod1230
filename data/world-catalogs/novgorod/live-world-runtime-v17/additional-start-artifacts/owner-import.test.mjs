@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import { computeSpatialV3CanonicalDigest } from '../../../../../packages/contracts/src/spatial-v3/registry.js';
-import { buildAdditionalStartOwnerRows } from './owner-import.mjs';
+import { assertAdditionalStartImportAuthorization, buildAdditionalStartOwnerRows } from './owner-import.mjs';
 
 const root = resolve(import.meta.dirname, '../../../../..');
 const base = 'data/world-catalogs/novgorod';
@@ -18,6 +18,14 @@ test('owner rows import approved observation profiles and select composition suc
   assert.equal(sha(await read(approval.candidate_path)), approval.candidate_sha256);
   const candidate = await json(approval.candidate_path);
   const rows = await buildAdditionalStartOwnerRows();
+  const importAuthorization = await json(`${base}/live-world-runtime-v17/additional-start-artifacts/owner-import-authorization.json`);
+  assert.doesNotThrow(() => assertAdditionalStartImportAuthorization(
+    importAuthorization, approval.candidate_sha256, rows));
+  assert.throws(() => assertAdditionalStartImportAuthorization(
+    importAuthorization, '0'.repeat(64), rows), /V17_ADDITIONAL_START_IMPORT_AUTHORIZATION_MISMATCH/u);
+  assert.throws(() => assertAdditionalStartImportAuthorization(
+    { ...importAuthorization, scope: 'production' }, approval.candidate_sha256, rows),
+  /V17_ADDITIONAL_START_IMPORT_AUTHORIZATION_MISMATCH/u);
   assert.equal(rows.runtimeProfiles.length, 2);
   const activity = one(rows.runtimeProfiles.filter((row) => row.profile_kind === 'activity'), 'activity profile');
   const fisher = one(rows.runtimeProfiles.filter((row) => row.id === 'm2c_npc_fisher_v1'), 'Fisher @4');

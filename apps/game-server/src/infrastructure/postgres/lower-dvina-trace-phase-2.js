@@ -178,8 +178,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         })
       );
       const openingPrior = includeCurrentVisibleContext
-        ? phase2OpeningPerceivedContext({ screen: row.screen,
-          openingScreenDigest: row.stage26_result.opening_screen_digest,
+        ? phase2OpeningPerceivedContext({
+          openingPerceivedContext: row.stage26_result.opening_perceived_context,
           partyId, initialState: initial }) : null;
       const visibleWithPrior = openingPrior == null ? visible : {
         ...visible, prior_perceived_visible_context: openingPrior
@@ -347,8 +347,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
             approvedActivityRecords: activityRecordsForBinding(head.stage26_result?.runtime_binding)
           }));
       const openingPrior = includeCurrentVisibleContext
-        ? phase2OpeningPerceivedContext({ screen: head.screen,
-          openingScreenDigest: head.stage26_result.opening_screen_digest,
+        ? phase2OpeningPerceivedContext({
+          openingPerceivedContext: head.stage26_result.opening_perceived_context,
           partyId, initialState: initial }) : null;
       const visibleWithPrior = openingPrior == null ? visible : {
         ...visible, prior_perceived_visible_context: openingPrior

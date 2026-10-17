@@ -12,7 +12,7 @@ import {
   TRACE_SCENARIO_ID,
   validateLowerDvinaTraceSessionRead
 } from './lower-dvina-trace-session.js';
-import { buildAuthoredOpeningVisibleContext } from
+import { buildAuthoredOpeningVisibleContext, openingPerceivedContextFromPackage } from
   './lower-dvina-trace-opening.js';
 import { buildVisibleContextAuditApproval,
   computeVisibleContextPackageDigest } from '@rus/contracts';
@@ -144,6 +144,7 @@ export async function startLowerDvinaTrace({
   }
   let openingProse = null;
   let openingNarrationResult = null;
+  let openingPerceivedContext = null;
   let openingRoutePanel = null;
   if (binding.runtime_binding != null) {
     if (typeof authoredOpeningNarration?.run !== 'function') {
@@ -189,6 +190,7 @@ export async function startLowerDvinaTrace({
       approvedProjection: publication.public_projection, naturalScenePerception,
       canonicalSourceBinding, approvedActivityRecords
     });
+    openingPerceivedContext = openingPerceivedContextFromPackage(openingPackage);
     if (openingPackage.opening_reader_control?.pass !== true) {
       throw serverError('AUTHORED_OPENING_CONTEXT_INCOMPLETE',
         'Opening reader control must pass before narrator approval.', { status: 409 });
@@ -264,6 +266,7 @@ export async function startLowerDvinaTrace({
     ...(binding.runtime_binding == null ? {} : {
       runtime_binding: structuredClone(binding.runtime_binding),
       opening_narration_flow: structuredClone(openingNarrationResult.flow),
+      opening_perceived_context: openingPerceivedContext,
       opening_stage23_original_audit: structuredClone(
         openingNarrationResult.original_stage23_audit)
     }),

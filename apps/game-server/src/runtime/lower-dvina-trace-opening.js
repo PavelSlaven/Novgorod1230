@@ -298,6 +298,23 @@ export function assertLowerDvinaTracePublicScreen(screen) {
   return screen;
 }
 
+export function openingPerceivedContextFromPackage(visibleContextPackage) {
+  const position = visibleContextPackage?.position;
+  if (!position || typeof position !== 'object'
+      || !Array.isArray(visibleContextPackage?.visible_scene_facts)) {
+    fail('AUTHORED_OPENING_CONTEXT_INVALID',
+      'Persisted authored opening perception is unavailable.');
+  }
+  const sensoryDetails = visibleContextPackage.visible_scene_facts
+    .filter((fact) => typeof fact?.text === 'string'
+      && (fact.fact_id?.startsWith('opening:environment:')
+        || fact.fact_id?.startsWith('opening:natural:')))
+    .map(({ text }) => text);
+  return freezeDeep({ version: 1,
+    schema: 'rus.authored_opening_perceived_context.v1',
+    position: structuredClone(position), sensory_details: [...new Set(sensoryDetails)] });
+}
+
 export function assertVisibleSource(visible, approvedProjection) {
   if (!visible || typeof visible !== 'object' || Array.isArray(visible)
     || visible.party_id == null

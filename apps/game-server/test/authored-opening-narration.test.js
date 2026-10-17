@@ -1185,7 +1185,7 @@ test('first screen receives natural perception after committed rehydrate without
       if (observation.visual_conditions) observation.visual_conditions.lighting = lighting;
     }
     const surfaceText = perception.presentation_profile.layers.find((row) => row.layer === 'surface').clear_text;
-    let committed = false, session, narratorInput, narratorMaterializationGaps;
+    let committed = false, session, sessionIdentity, narratorInput, narratorMaterializationGaps;
     const startPresenceGaps = [{ rule_ref: 'rule_start_gap@1', reason: 'template_missing',
       missing_item_refs: ['internal_start_gap_item'] }];
     const order = [];
@@ -1223,7 +1223,8 @@ test('first screen receives natural perception after committed rehydrate without
       } },
       traceOpeningProjector: buildLowerDvinaTraceOpeningScreen,
       repository: {
-        async attachCommittedOpeningSession(input) { session = { screen: input.screen, delivery_attempt: input.deliveryAttempt }; },
+        async attachCommittedOpeningSession(input) { sessionIdentity = input.sessionIdentity;
+          session = { screen: input.screen, delivery_attempt: input.deliveryAttempt }; },
         async loadSession() { return session; }
       }, validateSession: async () => {}
     });
@@ -1232,6 +1233,16 @@ test('first screen receives natural perception after committed rehydrate without
     assert.ok(order.indexOf('perception') < order.indexOf('narrate'));
     assert.equal(result.screen.main_prose.includes(surfaceText), lighting === 'clear');
     assert.deepEqual(narratorMaterializationGaps, canonical ? startPresenceGaps : undefined);
+    if (canonical) {
+      assert.deepEqual(sessionIdentity.opening_perceived_context?.sensory_details,
+        narratorInput.visible_scene_facts.filter(({ fact_id }) =>
+          fact_id.startsWith('opening:natural:')
+            || fact_id.startsWith('opening:environment:')).map(({ text }) => text),
+        'the exact sensory facts already sent in the opening package are committed for the first v0 scene');
+      assert.deepEqual(sessionIdentity.opening_perceived_context?.position?.anchor_id,
+        narratorInput.position.anchor_id);
+      assert.doesNotMatch(JSON.stringify(result.screen), /opening_perceived_context/u);
+    }
     assert.doesNotMatch(JSON.stringify(narratorInput), /internal_start_gap_item/u);
     assert.doesNotMatch(JSON.stringify(result.screen), /internal_start_gap_item/u);
     assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), !canonical);

@@ -110,23 +110,24 @@ export function phase2InitialCurrentVisibleContext({
   });
 }
 
-export function phase2OpeningPerceivedContext({ screen, openingScreenDigest,
+export function phase2OpeningPerceivedContext({ openingPerceivedContext,
   partyId, initialState }) {
-  try {
-    assertLowerDvinaTracePublicScreen(screen);
-  } catch {
-    throw phase2IntegrityError();
+  const position = initialState?.position;
+  const priorPosition = openingPerceivedContext?.position;
+  const sensoryDetails = openingPerceivedContext?.sensory_details;
+  if (initialState?.party_id !== partyId
+      || Number(initialState?.party_state?.state_version) !== 0
+      || openingPerceivedContext?.version !== 1
+      || openingPerceivedContext?.schema !== 'rus.authored_opening_perceived_context.v1'
+      || priorPosition?.region_id !== position?.g4_id
+      || priorPosition?.place_id !== position?.g5_node_id
+      || priorPosition?.anchor_id !== position?.g5_anchor_id
+      || !Array.isArray(sensoryDetails)
+      || sensoryDetails.some((fact) => typeof fact !== 'string' || fact.length === 0)) {
+    return null;
   }
-  if (canonicalDigest(screen) !== openingScreenDigest
-      || screen.party_id !== partyId
-      || initialState?.party_id !== partyId) throw phase2IntegrityError();
-  const sensoryDetails = screen.visible_context?.sensory_details
-    ?? screen.visible_context?.environment?.facts;
   return { party_id: partyId, committed_state_version: 0,
-    position: structuredClone(initialState.position ?? null),
-    context: { sensory_details: Array.isArray(sensoryDetails)
-      ? sensoryDetails.filter((fact) => typeof fact === 'string' && fact.length > 0)
-      : [] } };
+    position: structuredClone(position), context: { sensory_details: [...sensoryDetails] } };
 }
 
 function initialEnvironmentChange(state) {

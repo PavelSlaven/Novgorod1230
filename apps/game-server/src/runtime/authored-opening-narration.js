@@ -240,7 +240,7 @@ function projectOpeningRoleInput(input, roleId) {
           !== (typeof npc?.label === 'string' ? npc.label : `Человек ${npcIndex + 1}`)
             .normalize('NFC').trim().toLocaleLowerCase('ru')))
       .map(renderFact)
-  })).filter((npc) => npc.факты.length > 0);
+  }));
   const projectedPackage = {
     обязательный_смысл: (source?.visible_scene_dossier?.must_include ?? [])
       .filter(({ category }) => category !== 'surroundings')

@@ -1,0 +1,13 @@
+{
+  "approver": "/root acting D49 lead",
+  "date": "2026-10-18",
+  "scope": "new_isolated_D49_test_databases",
+  "candidate_sha256": "316ed5e72a6eb8e12048757510f7c6d27163a3cbbfb2f4fc5273a31c904d032e",
+  "successors": [
+    "m2c_npc_fisher_v1@5",
+    "m2c_g4_npc_composition_canonical_initial_novgorod_vikhtuy_work_storage_v1@3"
+  ],
+  "runtime_selection": true,
+  "production": false,
+  "existing_databases": false
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "m2c_npc_activity_observation_lineage_v2",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/approve_fisher_lineage_v2",
+    "role": "independent senior data reviewer / Contract Auditor",
+    "reasoning_effort": "high",
+    "independent_from_author": true
+  },
+  "reviewed_at": "2026-10-17T22:46:13.091Z",
+  "reviewed_git_commit": "71a27a7c06974f23e942c095fe70761f27f431c1",
+  "candidate_path": "data/world-catalogs/novgorod/m2c-npc/activity-observation-lineage-v2/candidate.json",
+  "candidate_sha256": "316ed5e72a6eb8e12048757510f7c6d27163a3cbbfb2f4fc5273a31c904d032e",
+  "scope": "Exact immutable candidate bytes only: Fisher m2c_npc_fisher_v1@5 preserves every approved @4 field except version, regional_context_refs and canonical_digest; regional references retain all complete @4 refs and all complete approved predecessor @3 refs. Existing land@1 template@1, land@2 template@2 and land_d2@1 G4-only applicability remain distinct. Canonical initial Vikhtuy composition @3 preserves @2 except version, Fisher reference @4 to @5 and canonical_digest. Existing provenance is unchanged; no new historical facts, mechanics, world outcomes or persisted state are approved.",
+  "checks": [
+    "Independent complete deep equality against approved Fisher @4 and composition @2 confirmed the exact declared delta, including unchanged provenance.",
+    "Candidate SHA-256, both manifest input hashes, four artifact hashes, both canonical record digests and dataset/authoring-version projections match.",
+    "All tracked old activity-observation files are byte-identical to reviewed HEAD and its parent; manifest inputs also match both revisions.",
+    "Real approved regional rows confirm distinct template@1, template@2 and G4-only scopes for the exact Vikhtuy G4. Real connection row confirms the captured cg5bindv3 ID has that parent_g4_id.",
+    "Production MAX(version) resolver and G4-only compiler applicability explain @4 regional coverage loss and @5 restoration. In-memory owner mapping with both valid gates selects Fisher @5 and composition @3 without a new domain owner or runtime branch."
+  ],
+  "limitations": "DATA APPROVAL ONLY. Open P2 importer lifecycle finding remains: owner-import.mjs:91 throws ENOENT when this valid data-only approval exists but owner-import-authorization-v2.json is absent; importer tests also assume the pre-activation @4 state. Lead explicitly separated this DATA PASS from lifecycle acceptance; repair and focused gate-state tests are required before activation. No PostgreSQL readback, model bench, runtime first-entry acceptance, import or activation was performed or authorized. Original independent audit report: C:/Users/Slaven/AppData/Local/Temp/d49-fisher-lineage-v2-data-audit.md. No repeated semantic audit was performed for this approval record.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

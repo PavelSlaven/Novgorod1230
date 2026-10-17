@@ -42,7 +42,9 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
     .map((item) => ({ item_instance_id: item.entity_ref.entity_id, label: item.display_label,
       recognition: item.recognition, visible_status: item.visible_status }));
   const known = (internal.player.dossier?.knowledge?.known_facts ?? []).filter((fact) => typeof fact === 'string' && fact.trim());
+  const place = `Текущее место: ${context.visible_scene}.`;
   const facts = [{ fact_id: 'opening:identity', text: identity, source_refs: [actorId] },
+    { fact_id: 'opening:place', text: place, source_refs: [position.g5_node_id] },
     ...(['male', 'female'].includes(internal.player.dossier?.identity?.sex_category)
       ? [{ fact_id: 'opening:sex', text: `Пол героя: ${internal.player.dossier.identity.sex_category === 'male' ? 'мужской' : 'женский'}.`,
         source_refs: [actorId] }] : []),
@@ -52,8 +54,7 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
     ...naturalFacts.map((fact, index) => ({ fact_id: `opening:natural:${index + 1}`,
       text: fact.text, source_refs: [fact.source_position_id] }))];
   const mustInclude = [{ category: 'identity', text: identity }, { category: 'body', text: body }];
-  if (naturalFacts.length) mustInclude.push({ category: 'surroundings',
-    text: 'Главные воспринимаемые черты окружения, достаточные для ориентации героя.' });
+  mustInclude.push({ category: 'surroundings', text: place });
   if (visibleNpcs.length) mustInclude.push({ category: 'people', text: visibleNpcs.map((npc) => npc.label).join('; ') });
   if (ownItems.length) mustInclude.push({ category: 'carried_items', text: ownItems.map((item) => item.name).join('; ') });
   const naturalRefs = facts.filter((fact) => fact.fact_id.startsWith('opening:natural:')).map((fact) => fact.fact_id);
@@ -66,8 +67,8 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
       reason: peopleRefs.length ? 'Only supplied player-safe entity observations.' : 'No complete current entity-perception evidence is supplied; this does not establish absence.' },
     { question: 'current_event', status: 'supported', fact_refs: ['opening:body', ...naturalRefs], reason: 'Current bodily state and admitted sensory observations.' },
     { question: 'goal_stake', status: 'unknown', fact_refs: [], reason: 'No player-known goal or obligation is supplied.' },
-    { question: 'surroundings', status: naturalRefs.length ? 'supported' : 'unknown', fact_refs: naturalRefs,
-      reason: naturalRefs.length ? 'Only P22-admitted sensory observations.' : 'No admitted environmental observation; this does not establish an empty or silent place.' },
+    { question: 'surroundings', status: 'supported', fact_refs: ['opening:place', ...naturalRefs],
+      reason: 'Current player-safe place label and P22-admitted sensory observations.' },
     { question: 'directions_interactions', status: 'unknown', fact_refs: [], reason: 'No perceived route or immediate interaction with an exact causal basis is supplied.' }
   ] });
   if (!reader.pass) throw serverError('CANONICAL_OPENING_CONTEXT_INCOMPLETE',

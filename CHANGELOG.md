@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(opening): pass the current player-safe place label to opening narration and reader control even when visual details are obscured (#741, D49).
 - fix(narration): explicitly relate a newly found item to other visible items with the same name, preserving distinct identity and the order of a later confirmed pickup (#654, D49).
 - fix(world-knowledge): include the narrator's visible scene in query planning while retaining authoritative context and actor access checks (#654, D49).
 - fix(narration): bind ordinary discovery results to the admitted item through the existing precommit projection, keeping a new find distinct from an identically named carried item (#654, D49).

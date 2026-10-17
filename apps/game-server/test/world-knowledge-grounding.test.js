@@ -28,6 +28,53 @@ test('production loader requires the exact encoder readiness at startup', async 
   assert.equal(loaded.vector_index.dimension, 1024);
 });
 
+test('narration planner sees the visible scene without changing authoritative query context', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  const plannerWires = [];
+  const queries = [];
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge(query, options) {
+        queries.push(query);
+        return loaded.core.resolveWorldKnowledge(query, options);
+      } },
+      encoder: { encode: async () => new Float32Array(1024) },
+      vector_index: { search: () => new Map() } },
+    year: 1230, placeRefs: ['region_novgorod_land'],
+    roleRunner: { async run(call) {
+      const wire = JSON.parse(call.messages[1].content);
+      plannerWires.push(wire);
+      return { output: {
+        schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+        domains: ['environment'], focus_refs: [],
+        requested_predicates: [], search_hints: ['ветер летом']
+      } };
+    } }
+  });
+  const authoritative = { actor_facets: { role_ref: 'nov_role_fisher' },
+    clock: null, historical_events: [] };
+  const visibleContext = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'Летний берег реки.',
+    visible_changes: ['Герой вышел на берег.'],
+    sensory_details: ['Тёплый ветер с реки.'] };
+  await grounder.ground({ schema: 'narration_request', request_id: 'scene:baseline',
+    visible_context: { visible_changes: visibleContext.visible_changes } },
+  'narration', authoritative);
+  await grounder.ground({ schema: 'narration_request', request_id: 'scene:visible',
+    visible_context: visibleContext }, 'narration', authoritative);
+
+  assert.match(plannerWires[1].situation_summary, /Летний берег реки/u);
+  assert.match(plannerWires[1].situation_summary, /Тёплый ветер с реки/u);
+  assert.equal(plannerWires[0].semantic_input, plannerWires[1].semantic_input);
+  assert.deepEqual(queries[1].context, queries[0].context);
+  assert.equal(queries[1].context.time.year, 1230);
+  assert.deepEqual(queries[1].context.place_refs, ['region_novgorod_land']);
+  assert.deepEqual(queries[1].context.actor_facets,
+    { role_ref: 'nov_role_fisher' });
+});
+
 test('production grounding plans once and injects only an applicable bounded slice', async (t) => {
   const calls = [];
   const diagnostics = [];

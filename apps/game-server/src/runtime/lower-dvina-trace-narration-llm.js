@@ -125,6 +125,15 @@ export function narrationWorldKnowledgePromptData(value) {
 
 function narrationVisibleDescriptions(records, path) {
   if (!Array.isArray(records)) return [];
+  const refsByLabel = new Map();
+  for (const record of records) {
+    if (typeof record?.display_label !== 'string' || record.entity_ref == null) continue;
+    const label = record.display_label.trim();
+    if (!refsByLabel.has(label)) refsByLabel.set(label, new Set());
+    refsByLabel.get(label).add(JSON.stringify([
+      record.entity_ref.entity_kind, record.entity_ref.entity_id
+    ]));
+  }
   return records.flatMap((record, index) => {
     if (typeof record === 'string') {
       const safe = safeNarrationText(record, path + '[' + index + ']');
@@ -146,8 +155,12 @@ function narrationVisibleDescriptions(records, path) {
       return typeof safe === 'string' && /\p{Script=Cyrillic}/u.test(safe)
         ? [safe.trim()] : [];
     });
-    return descriptions.length ? [descriptions.filter((value, position) =>
-      descriptions.indexOf(value) === position).join(' ')]: [];
+    if (!descriptions.length) return [];
+    const description = descriptions.filter((value, position) =>
+      descriptions.indexOf(value) === position).join(' ');
+    const distinct = record.entity_ref != null
+      && refsByLabel.get(record.display_label?.trim())?.size > 1;
+    return [distinct ? `Отдельный объект №${index + 1}: ${description}` : description];
   });
 }
 

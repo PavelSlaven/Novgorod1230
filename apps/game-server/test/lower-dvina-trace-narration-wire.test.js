@@ -56,6 +56,36 @@ test('narration roles receive Russian entity descriptions without private refs o
   }
 });
 
+test('writer and auditor distinguish same-named visible objects by identity and placement', () => {
+  const visible_context = { visible_scene: 'Берег.', visible_changes: ['Найдена сухая ветка.'],
+    uncertainties: [], sensory_details: [], known_context: [], allowed_tensions: [],
+    do_not_imply: [], visible_npc: [], visible_objects: [
+      { entity_ref: { entity_kind: 'item', entity_id: 'held-branch' },
+        display_label: 'сухая ветка', visible_status: 'у вас в руках' },
+      { entity_ref: { entity_kind: 'item', entity_id: 'new-branch' },
+        display_label: 'сухая ветка', visible_status: 'замечена' },
+      { entity_ref: { entity_kind: 'item', entity_id: 'knife' },
+        display_label: 'нож', visible_status: 'при вас' }
+    ] };
+  for (const roleId of ['gameplay_narrator', 'gameplay_narrator_auditor',
+    'gameplay_narrator_semantic_repair']) {
+    const wire = narrationWire({ visible_context }, { roleId });
+    const objects = wire['Переданные сведения об обстановке']['Предметы и ориентиры'];
+    assert.deepEqual(objects, [
+      'Отдельный объект №1: сухая ветка у вас в руках',
+      'Отдельный объект №2: сухая ветка замечена',
+      'нож при вас'
+    ]);
+    assert.doesNotMatch(JSON.stringify(wire), /held-branch|new-branch|entity_ref/u);
+  }
+  const repeatedRef = structuredClone(visible_context);
+  repeatedRef.visible_objects[1].entity_ref = repeatedRef.visible_objects[0].entity_ref;
+  assert.deepEqual(narrationWire({ visible_context: repeatedRef })
+    ['Переданные сведения об обстановке']['Предметы и ориентиры'], [
+    'сухая ветка у вас в руках', 'сухая ветка замечена', 'нож при вас'
+  ]);
+});
+
 test('all prose roles retain described NPC and admitted path without internal fields', () => {
   const npc = { entity_ref: { entity_kind: 'npc', entity_id: 'private-npc-92' },
     display_label: 'Рыбак', observable_cues: {

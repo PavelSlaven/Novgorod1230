@@ -128,7 +128,10 @@ test('first free line arrival and the next turn read the same first-entry NPC an
       WHERE npc.party_id=$1 AND g6.host_kind='g5_site' AND g6.host_id=$2`,
     [partyId, locations[0].site_id]);
     const newNpcs = destinationNpcs.filter(({ npc_id }) => !beforeNpcIds.has(npc_id));
-    assert.ok(newNpcs.length > 0, 'first entry creates a destination NPC after the start snapshot');
+    assert.ok(newNpcs.length > 0,
+      `first entry creates a destination NPC after the start snapshot; `
+      + `party=${partyId}; before=${JSON.stringify([...beforeNpcIds])}; `
+      + `destination=${JSON.stringify(destinationNpcs)}`);
     // #330 keys belong to this saved screen; HTTP must still contain the NPC.
     const arrivalScreen = (await runtime.getPartyScreen(partyId)).screen;
     const visibleKeys = new Set((arrival.screen.visible_context?.visible_npc ?? [])

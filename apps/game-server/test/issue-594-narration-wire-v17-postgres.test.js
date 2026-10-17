@@ -105,9 +105,12 @@ function wireChecks(captures, privateNpcs) {
         /[A-Za-z]/u.test(code) && containsWords(text, code))).map(({ path }) => path);
       const russianNpcFacts = npcStrings.length > 0 && npcStrings.every(({ text }) =>
         /[\p{Script=Cyrillic}]/u.test(text));
+      const nonRussianNpcFactPaths = npcStrings.filter(({ text }) =>
+        !/[\p{Script=Cyrillic}]/u.test(text)).map(({ path }) => path);
       return { stage, role, phase,
         ...(stage === 'opening' ? { projected_npc_count: people.length,
-          russian_npc_facts: russianNpcFacts } : {}),
+          russian_npc_facts: russianNpcFacts,
+          non_russian_npc_fact_paths: nonRussianNpcFactPaths } : {}),
         instance_id_free: idPaths.length === 0, unknown_name_free: namePaths.length === 0,
         npc_machine_reference_paths: [...new Set([...idPaths, ...codePaths])],
         private_name_occurrence_paths: namePaths };
@@ -241,7 +244,8 @@ test('issue #594 D81: actual v17 opening and look provider bodies before/after v
     for (const row of check.roles.filter(({ stage }) => stage === 'opening')) {
       assert.ok(row.instance_id_free, 'opening NPC facts must omit committed instance IDs');
       assert.ok(row.unknown_name_free, 'opening unknown NPCs must omit committed names and aliases');
-      assert.ok(row.russian_npc_facts, 'opening NPC fact text must be Russian');
+      assert.ok(row.russian_npc_facts,
+        `opening NPC fact text must be Russian; paths=${JSON.stringify(row.non_russian_npc_fact_paths)}`);
       assert.deepEqual(row.npc_machine_reference_paths, [], 'opening NPC facts must omit appearance codes');
     }
     if (ARM === 'before') assert.equal(baselineLoads, 1, 'the exact baseline owner was loaded');

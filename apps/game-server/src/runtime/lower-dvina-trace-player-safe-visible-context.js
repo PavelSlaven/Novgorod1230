@@ -229,7 +229,7 @@ function projectAmbientPortionBounds(value, strict, path) {
 function projectObservableCues(value, strict, path) {
   if (!plain(value)) return undefined;
   const allowed = new Set([
-    'identity', 'equipment', 'outward_presentation', 'ordinary_remainder'
+    'identity', 'equipment', 'held_items', 'outward_presentation', 'ordinary_remainder'
   ]);
   if (strict) assertAllowedKeys(value, allowed, path, invalidCode());
   return compact({
@@ -237,6 +237,8 @@ function projectObservableCues(value, strict, path) {
       `${path}.identity`),
     equipment: projectObservableEquipment(value.equipment, strict,
       `${path}.equipment`),
+    held_items: projectObservableHeldItems(value.held_items, strict,
+      `${path}.held_items`),
     outward_presentation: projectTextRecord(value.outward_presentation,
       ['emotion', 'intensity', 'gaze', 'body_pose', 'head_pose', 'background'],
       strict, `${path}.outward_presentation`),
@@ -288,6 +290,35 @@ function projectObservableEquipment(value, strict, path) {
       visual_profile_snapshot: projectVisualProfile(
         item.visual_profile_snapshot, strict,
         `${itemPath}.visual_profile_snapshot`)
+    });
+  }).filter(Boolean);
+}
+
+function projectObservableHeldItems(value, strict, path) {
+  if (!Array.isArray(value)) {
+    if (strict && value != null) {
+      throw projectionError(invalidCode(), `${path} must be an array.`);
+    }
+    return undefined;
+  }
+  return value.map((item, index) => {
+    const itemPath = `${path}[${index}]`;
+    if (!plain(item)) {
+      if (strict) throw projectionError(invalidCode(), `${itemPath} is invalid.`);
+      return undefined;
+    }
+    if (strict) assertAllowedKeys(item, new Set(['entity_ref', 'display_label']),
+      itemPath, invalidCode());
+    const entityRef = projectEntityRef(item.entity_ref, strict, itemPath);
+    if (strict && (entityRef?.entity_kind !== 'item'
+        || !text(entityRef.entity_id))) {
+      throw projectionError(invalidCode(), `${itemPath}.entity_ref must refer to an item.`);
+    }
+    return compact({
+      entity_ref: entityRef,
+      display_label: optionalVisibleText(item.display_label, {
+        path: `${itemPath}.display_label`, label: true, code: invalidCode()
+      })
     });
   }).filter(Boolean);
 }

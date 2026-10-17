@@ -414,11 +414,13 @@ export function installPresenceProductionE2eFetch({
   const previousFetch = globalThis.fetch;
   globalThis.fetch = async (url, init) => {
     assert.equal(String(url), 'https://target-acceptance.invalid/chat/completions');
-    const call = JSON.parse(init.body);
+    const rawBody = typeof init.body === 'string'
+      ? init.body : Buffer.from(init.body).toString('utf8');
+    const call = JSON.parse(rawBody);
     const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
     const system = call.messages[0].content.replace(/^(?:Return a valid json object\.|Верните корректный объект JSON\.)\s*/u, '');
     const role = identifyLlmTestRole(call);
-    requestLog?.push({ system, user: modelInput });
+    requestLog?.push({ system, user: modelInput, raw_body: rawBody });
     let output;
     const openingRole = presenceOpeningRole(modelInput);
     if (openingRole === 'gameplay_narrator') {

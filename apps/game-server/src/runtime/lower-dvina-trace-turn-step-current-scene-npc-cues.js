@@ -103,6 +103,9 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
           observable_cues: {
             identity: structuredClone(detail.identity_state),
             equipment: structuredClone(detail.visible_equipment),
+            ...(Array.isArray(npc.observable_cues?.held_items) ? {
+              held_items: structuredClone(npc.observable_cues.held_items)
+            } : {}),
             outward_presentation: structuredClone(detail.presentation),
             ...(detail.ordinary_remainder == null ? {} : {
               ordinary_remainder: structuredClone(detail.ordinary_remainder)

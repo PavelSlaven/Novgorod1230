@@ -75,11 +75,13 @@ function validateObservableCues(value, path) {
   if (!isObject(value)) return [issue('generated_schema_mismatch', path,
     `${path} must be a player-safe observable cue object.`)];
   const errors = unexpected(value,
-    ['identity', 'equipment', 'outward_presentation', 'ordinary_remainder'], path);
+    ['identity', 'equipment', 'held_items', 'outward_presentation', 'ordinary_remainder'], path);
   if (value.identity != null) errors.push(...validateObservableIdentity(
     value.identity, `${path}.identity`));
   if (value.equipment != null) errors.push(...validateObservableEquipment(
     value.equipment, `${path}.equipment`));
+  if (value.held_items != null) errors.push(...validateObservableHeldItems(
+    value.held_items, `${path}.held_items`));
   if (value.outward_presentation != null) errors.push(...validateEnumRecord(
     value.outward_presentation, `${path}.outward_presentation`, {
       emotion: PORTRAIT_SPEC_V1_ENUMS.expression.emotion,
@@ -149,6 +151,28 @@ function validateObservableEquipment(value, path) {
     if (entry.visual_profile_snapshot != null) errors.push(
       ...validateVisualProfile(entry.visual_profile_snapshot,
         `${entryPath}.visual_profile_snapshot`));
+    return errors;
+  });
+}
+
+function validateObservableHeldItems(value, path) {
+  if (!Array.isArray(value)) return [issue('generated_schema_mismatch', path,
+    `${path} must be an array of player-safe held-item cues.`)];
+  return value.flatMap((entry, index) => {
+    const entryPath = `${path}[${index}]`;
+    if (!isObject(entry)) return [issue('generated_schema_mismatch',
+      entryPath, `${entryPath} must be a player-safe held-item cue.`)];
+    const errors = unexpected(entry, ['entity_ref', 'display_label'], entryPath);
+    if (!isObject(entry.entity_ref)
+        || !hasOnly(entry.entity_ref, ['entity_kind', 'entity_id'])
+        || entry.entity_ref.entity_kind !== 'item'
+        || !stableId(entry.entity_ref.entity_id)) {
+      errors.push(issue('generated_schema_mismatch', `${entryPath}.entity_ref`,
+        `${entryPath}.entity_ref requires an item entity reference.`));
+    }
+    if (!stableId(entry.display_label)) errors.push(issue(
+      'generated_schema_mismatch', `${entryPath}.display_label`,
+      `${entryPath}.display_label must be a non-empty player-safe label.`));
     return errors;
   });
 }

@@ -88,6 +88,8 @@ export function projectLowerDvinaTracePlayerSafeState({
     : currentVisibleContext;
   const perceivedRoutes = perceivedRoutesForState({ scenePresentation, state: committedState });
   const playerVisibleNpcIds = new Set((currentSceneVisibleContext?.visible_npc ?? [])
+    .filter((npc) => !(plain(npc?.observable_cues)
+      && Object.keys(npc.observable_cues).length === 0))
     .map(({ entity_ref: ref }) => ref?.entity_id).filter(Boolean));
   const items = projectItems([...(committedState.items ?? []),
     ...containerItems(committedState.containers,

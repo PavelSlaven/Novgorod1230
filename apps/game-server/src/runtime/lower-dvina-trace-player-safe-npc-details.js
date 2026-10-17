@@ -22,15 +22,20 @@ export function projectLowerDvinaTraceVisibleNpcDetails({
       ids.some((id) => [candidate?.instance_id, candidate?.actor_id,
         candidate?.npc_id].includes(id)));
     const committed = committedMatches.length === 1 ? committedMatches[0] : null;
+    const explicitlyNoCues = plain(visibleNpc.observable_cues)
+      && Object.keys(visibleNpc.observable_cues).length === 0;
     return {
       instance_id: id,
-      identity_state: safeConversationIdentity(
-        committed?.identity_state, visibleNpc.display_label.trim()),
-      visible_equipment: safeConversationEquipment(committedItems, ids),
-      presentation: safeConversationPresentation(
-        committed?.player_safe_presentation),
-      ordinary_remainder: safeOrdinaryRemainder(
-        committed?.semantic_state?.n1_remainder)
+      identity_state: explicitlyNoCues
+        ? { display_name: visibleNpc.display_label.trim() }
+        : safeConversationIdentity(committed?.identity_state,
+          visibleNpc.display_label.trim()),
+      visible_equipment: explicitlyNoCues
+        ? [] : safeConversationEquipment(committedItems, ids),
+      presentation: explicitlyNoCues
+        ? {} : safeConversationPresentation(committed?.player_safe_presentation),
+      ordinary_remainder: explicitlyNoCues
+        ? null : safeOrdinaryRemainder(committed?.semantic_state?.n1_remainder)
     };
   }).filter(Boolean);
 }

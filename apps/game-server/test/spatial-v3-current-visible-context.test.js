@@ -5,6 +5,7 @@ import { prepareG4NaturalScenePerceptionInput } from '../src/runtime/g4-natural-
 import { projectSpatialV3CurrentVisibleContext,
   readAndProjectSpatialV3CurrentVisibleContext } from
   '../src/runtime/spatial-v3-current-visible-context.js';
+import { projectNpcCueFacts } from '../src/runtime/authored-opening-narration.js';
 import { createCurrentSpatialContextProjector } from
   '../src/runtime/releases/spatial-v3-production-trace-runtime.js';
 
@@ -130,9 +131,39 @@ test('canonical and generated current scenes compose admitted natural, entities 
     assert.deepEqual(result.visible_npc.map((row) => row.entity_ref.entity_id), ['npc:1']);
     assert.deepEqual(result.visible_objects.map((row) => row.entity_ref.entity_id),
       ['item:1', 'edge:1', 'exit:1']);
-    assert.deepEqual(Object.keys(result.visible_npc[0].observable_cues), ['identity', 'equipment']);
+    assert.deepEqual(Object.keys(result.visible_npc[0].observable_cues),
+      ['identity', 'equipment', 'held_items']);
     assert.equal(result.visible_objects[0].visible_status, undefined);
   }
+});
+
+test('clear NPC held-item cues project generic item refs and narrator facts', async () => {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const result = projectSpatialV3CurrentVisibleContext({
+    naturalInput: prepareG4NaturalScenePerceptionInput(input),
+    partyId: 'party:1', actorId: 'player:1', positionId: 'position:inside',
+    localEdges: [], directionalExits: [],
+    entityObservations: [{
+      entity_kind: 'npc', entity_id: 'npc:generic-holder', visibility: 'clear',
+      display_label: 'человек',
+      exterior: {
+        sex_category: 'male', age_category: 'adult',
+        appearance: { build: 'thin' }, visible_equipment: [],
+        held_items: [{
+          entity_ref: { entity_kind: 'item', entity_id: 'item:generic' },
+          display_label: 'медный котёл'
+        }]
+      }
+    }]
+  });
+  const cues = result.visible_npc[0].observable_cues;
+  assert.deepEqual(cues.held_items, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'item:generic' },
+    display_label: 'медный котёл'
+  }]);
+  assert.deepEqual(projectNpcCueFacts({ held_items: cues.held_items }), [
+    'В руках — медный котёл.'
+  ]);
 });
 
 test('a young_adult NPC is disclosed with the player-safe age word `young`', async () => {

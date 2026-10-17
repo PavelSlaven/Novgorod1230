@@ -179,6 +179,27 @@ test('direct overlay rebuilds current entities instead of forwarding stale packa
     ref?.entity_kind === 'scene_movement_edge'), false);
 });
 
+test('partial current NPC observation clears previously held-item cues', () => {
+  const state = committedState();
+  state.current_visible_context.visible_npc[0].observable_cues = {
+    identity: { display_name: 'Онисим' },
+    equipment: [],
+    held_items: [{
+      entity_ref: { entity_kind: 'item', entity_id: 'item:stale' },
+      display_label: 'старый предмет'
+    }]
+  };
+  state.current_spatial_context = structuredClone(state.current_visible_context);
+  state.current_spatial_context.visible_npc[0].observable_cues = {};
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = true;
+
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles }).current_visible_context;
+
+  assert.deepEqual(current.visible_npc[0].observable_cues, {});
+});
+
 test('filtered current Spatial NPCs define the observed committed scene set', () => {
   const state = committedState();
   state.current_spatial_context = {
@@ -366,11 +387,14 @@ test('current scene rebuilds co-located NPC cues from committed state', () => {
   const state = committedState();
   state.current_visible_context.visible_npc[0].visible_status =
     'говорит с вами';
+  const observedNpc = structuredClone(state.current_visible_context.visible_npc[0]);
+  delete observedNpc.visible_status;
   state.current_spatial_context = {
     ...structuredClone(state.current_visible_context),
-    visible_npc: []
+    visible_npc: [observedNpc]
   };
   state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = true;
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles });
   assert.deepEqual(current.current_visible_context.visible_npc.map((npc) => ({
@@ -413,7 +437,14 @@ test('current scene rebuilds co-located NPC cues from committed state', () => {
             grounded_attempt: 'поднести доску к глазам' },
           goal_result: 'not_achieved', operations: [], check: null } }] }
     } }, directSeedKeys: ['turn_step_1'], body: {} });
-  assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
+  const directNpcWithoutHeldCue = structuredClone(direct.visible_npc[0]);
+  delete directNpcWithoutHeldCue.observable_cues.held_items;
+  const currentNpcWithoutHeldCue = structuredClone(
+    current.current_visible_context.visible_npc[0]);
+  delete currentNpcWithoutHeldCue.observable_cues.held_items;
+  assert.deepEqual(directNpcWithoutHeldCue, currentNpcWithoutHeldCue);
+  assert.equal(direct.visible_npc[0].observable_cues.held_items, undefined,
+    'a direct current observation must not replay an old held-item cue');
   assert.equal(JSON.stringify(direct).includes('injured_unable_to_walk'), false);
   assert.deepEqual(direct.visible_changes, []);
   assert.deepEqual(direct.uncertainties, []);
@@ -476,6 +507,8 @@ test('current scene never promotes an authored NPC name into player knowledge', 
 test('current scene maps actor age into the player-safe portrait vocabulary', () => {
   const state = committedState();
   state.npcs[0].identity_state.age_category = 'young_adult';
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = true;
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
   });
@@ -489,6 +522,8 @@ test('current scene keeps private NPC schedule summaries out of observations', (
     status: 'active', can_continue_automatically: true,
     activity_ref: 'unseen-routine', summary: 'Private schedule instruction.'
   };
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = true;
 
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
@@ -505,6 +540,8 @@ test('current scene keeps private NPC schedule summaries out of observations', (
 test('version zero scene uses a safe label and gains committed observable cues', () => {
   const state = committedState();
   state.party_state.state_version = 0;
+  delete state.current_visible_context.visible_npc[0].observable_cues;
+  delete state.current_spatial_context.visible_npc[0].observable_cues;
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
   });
@@ -935,7 +972,9 @@ function committedState() {
       schema: 'visible_context_package', visible_scene: 'Старая сушильня',
       visible_changes: [], sensory_details: [], visible_npc: [{
         entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
-        display_label: 'раненый мужчина', recognition: 'unrecognized' }],
+        display_label: 'раненый мужчина', recognition: 'unrecognized',
+        observable_cues: { identity: { display_name: 'раненый мужчина' },
+          equipment: [], held_items: [] } }],
       visible_objects: [], known_context: [], uncertainties: [],
       allowed_tensions: [], do_not_imply: [] },
     route_history: [{ route_ref: 'camp-shed' }], npcs: [{ instance_id: 'onisim',

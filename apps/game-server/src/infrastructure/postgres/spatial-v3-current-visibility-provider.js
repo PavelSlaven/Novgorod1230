@@ -45,6 +45,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
   readNatural = readCurrentNaturalPerceptionFacts,
   onCurrentVisibilityDiagnostics = null } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
+  const safeItemLabels = Object.keys(itemLabels).length > 0
+    ? itemLabels : approvedSpatialItemLabels(verifiedCatalog);
   const exitLabels = readExitLabels();
   const legacyExitLabels = readLegacyExitLabels();
   const connectionLabels = readConnectionLabels();
@@ -292,7 +294,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           const placement = placements.find((row) =>
             `${row.entity_kind}:${row.entity_id}` === entry.target_id);
           const exterior = await readEntityExterior({ transaction: current.transaction,
-            partyId, actorId, placement, visibility: entry.visibility });
+            partyId, actorId, placement, visibility: entry.visibility,
+            itemLabels: safeItemLabels });
           if (!exterior || typeof exterior !== 'object' || Array.isArray(exterior)) {
             gap('committed_entity_exterior_required');
           }

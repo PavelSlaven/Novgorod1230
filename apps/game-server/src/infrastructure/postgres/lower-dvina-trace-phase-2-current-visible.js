@@ -115,6 +115,7 @@ export function phase2OpeningPerceivedContext({ openingPerceivedContext,
   const position = initialState?.position;
   const priorPosition = openingPerceivedContext?.position;
   const sensoryDetails = openingPerceivedContext?.sensory_details;
+  const currentG6 = position?.g6_instance_id ?? position?.g6_instance_ref;
   if (initialState?.party_id !== partyId
       || Number(initialState?.party_state?.state_version) !== 0
       || openingPerceivedContext?.version !== 1
@@ -122,6 +123,10 @@ export function phase2OpeningPerceivedContext({ openingPerceivedContext,
       || priorPosition?.region_id !== position?.g4_id
       || priorPosition?.place_id !== position?.g5_node_id
       || priorPosition?.anchor_id !== position?.g5_anchor_id
+      || typeof priorPosition?.minilocation_id !== 'string'
+      || priorPosition.minilocation_id.length === 0
+      || typeof currentG6 !== 'string'
+      || priorPosition.minilocation_id !== currentG6
       || !Array.isArray(sensoryDetails)
       || sensoryDetails.some((fact) => typeof fact !== 'string' || fact.length === 0)) {
     return null;

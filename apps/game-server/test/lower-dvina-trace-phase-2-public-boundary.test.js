@@ -105,10 +105,11 @@ test('opening prior baseline comes from the exact opening writer package, not em
     } };
   const initialState = { party_id: 'party-1', position: {
     g4_id: 'region', g5_node_id: 'shore', g5_anchor_id: 'bank',
-    location_ref: 'shore', position_id: 'position:bank'
+    location_ref: 'shore', position_id: 'position:bank',
+    g6_instance_id: 'minilocation:shore'
   } };
   const openingPackage = { position: { region_id: 'region', place_id: 'shore',
-    anchor_id: 'bank' }, visible_scene_facts: [
+    anchor_id: 'bank', minilocation_id: 'minilocation:shore' }, visible_scene_facts: [
     { fact_id: 'opening:natural:1', text: 'cold' },
     { fact_id: 'opening:environment:1', text: 'wet' },
     { fact_id: 'opening:known:1', text: 'exposed' }
@@ -130,6 +131,13 @@ test('opening prior baseline comes from the exact opening writer package, not em
     partyId: 'party-1', initialState: { ...initialState,
       party_state: { state_version: 1 } } }), null,
   'only the original committed version can bind the opening package');
+  assert.equal(phase2OpeningPerceivedContext({
+    openingPerceivedContext: { ...openingPerceivedContext,
+      position: { ...openingPerceivedContext.position,
+        minilocation_id: 'minilocation:other' } },
+    partyId: 'party-1', initialState: { ...initialState,
+      party_state: { state_version: 0 } }
+  }), null, 'an opening in another G6 minilocation is not this starting scene');
   assert.deepEqual(withoutPhase2CurrentVisibleContext({
     prior_perceived_visible_context: prior
   }), {});

@@ -319,12 +319,20 @@ function samePerceivedPosition(prior, current) {
   if (!text(prior?.location_ref) || prior.location_ref !== current?.location_ref) {
     return false;
   }
+  if (!text(prior.position_id) || prior.position_id !== current?.position_id) {
+    return false;
+  }
+  const priorG6 = prior.g6_instance_id ?? prior.g6_instance_ref;
+  const currentG6 = current?.g6_instance_id ?? current?.g6_instance_ref;
+  if (text(priorG6) || text(currentG6)) {
+    if (!text(priorG6) || priorG6 !== currentG6) return false;
+  }
   const priorAnchor = prior.g5_anchor_id ?? prior.anchor_id;
   const currentAnchor = current?.g5_anchor_id ?? current?.anchor_id;
   if (text(priorAnchor) || text(currentAnchor)) {
     return text(priorAnchor) && priorAnchor === currentAnchor;
   }
-  return text(prior.position_id) && prior.position_id === current?.position_id;
+  return true;
 }
 export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null,
   visibleObjects = null }) {

@@ -955,10 +955,13 @@ test('opening prior survives current-scene projection into the first direct obse
   state.party_state.state_version = 0;
   state.position.g4_id = 'region';
   state.position.g5_node_id = 'shed';
+  state.position.position_id = 'position:shed';
+  state.position.g6_instance_id = 'minilocation:shed';
   const alreadySeen = 'Низкое сырое небо.';
   const newlySeen = 'На воде видна свежая рябь.';
   const openingPackage = { position: { region_id: 'region',
-    place_id: 'shed', anchor_id: 'shed-anchor' }, visible_scene_facts: [
+    place_id: 'shed', anchor_id: 'shed-anchor',
+    minilocation_id: 'minilocation:shed' }, visible_scene_facts: [
     { fact_id: 'opening:natural:shore', text: alreadySeen }
   ] };
   const openingPerceivedContext = openingPerceivedContextFromPackage(openingPackage);
@@ -977,7 +980,7 @@ test('opening prior survives current-scene projection into the first direct obse
   assert.deepEqual(retrievedState.prior_perceived_visible_context, prior,
     'the state reader carries the opening baseline past current-scene projection');
 
-  const result = projectCurrentSceneForNoOperationDirect({ input: {
+  const observe = (retrievedState) => projectCurrentSceneForNoOperationDirect({ input: {
     consequence: { status: 'resolved', visible_seed: {} }, retrieved_state: retrievedState,
     mode_resolution: { decision_trace: { remaining_intent: null,
       step_traces: [{ applied: true, approved_plan: {
@@ -985,12 +988,22 @@ test('opening prior survives current-scene projection into the first direct obse
         check: null, direct_result_kind: 'player_safe_observation'
       } }] } }
   }, directSeedKeys: [], body: {} });
+  const result = observe(retrievedState);
   assert.ok(result.visible_changes.includes(newlySeen));
   assert.equal(result.visible_changes.includes(alreadySeen), false,
     'the first LOOK does not turn opening support into a newly required sensory fact');
   assert.ok(result.visible_changes.includes('Вы внимательно изучили обстановку.'));
   assert.ok(result.visible_changes.some((fact) => fact.includes('раненый мужчина')),
     'the currently perceived entity result remains required');
+  const differentPosition = observe({ ...retrievedState,
+    position: { ...retrievedState.position, position_id: 'position:other' } });
+  assert.ok(differentPosition.visible_changes.includes(alreadySeen),
+    'a matching G5 anchor cannot suppress facts at a different exact position');
+  const differentG6 = observe({ ...retrievedState,
+    position: { ...retrievedState.position,
+      g6_instance_id: 'minilocation:other' } });
+  assert.ok(differentG6.visible_changes.includes(alreadySeen),
+    'a matching anchor and position id cannot suppress facts across G6 spaces');
 });
 
 test('fresh authoritative NPC presence retains labels of the same perceived people', () => {

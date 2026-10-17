@@ -245,7 +245,8 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
-      ...projectDirectSeedChanges({ input, directSeedKeys }),
+      ...projectDirectSeedChanges({ input, directSeedKeys,
+        visibleObjects: current.visible_objects }),
       ...directResultChanges
     ]),
     known_context: unique([
@@ -284,7 +285,8 @@ function withoutCurrentSpatialContext(state) {
     ...projectedState } = state;
   return projectedState;
 }
-export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null }) {
+export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null,
+  visibleObjects = null }) {
   const seed = input?.consequence?.visible_seed ?? {};
   const values = directSeedKeys.map((key) => seed[key]);
   const speech = appliedPlan?.resolution === 'direct' && appliedPlan.direct_result_kind === 'player_utterance'
@@ -313,7 +315,8 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
           && (appliedPlan.resolution === 'direct'
             || value.discovery_result == null))
         || (attempts.length === 1 && value === attempts[0]))) return [];
-    return directSeedChange(value);
+    return directSeedChange(value, visibleObjects,
+      input?.ordinary_materialization_atomic_write_plan?.item);
   }).filter(Boolean);
   if (speech != null) return [speech, ...changes];
   if (text(directActivity)) return [sentence(directActivity), ...changes];
@@ -327,15 +330,39 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
   ];
   return changes;
 }
-export function materializedOrdinaryPresenceChange(value) {
+export function validateMaterializedOrdinaryPresence(value) {
   if (!plain(value) || value.kind !== 'ordinary_presence_seed' || value.resolution !== 'materialized'
-      || Object.keys(value).length !== 4 || typeof value.query !== 'string' || !value.query.trim()
-      || typeof value.display_name !== 'string' || !value.display_name.trim()) {
+      || ![4, 5].includes(Object.keys(value).length)
+      || typeof value.query !== 'string' || !value.query.trim()
+      || typeof value.display_name !== 'string' || !value.display_name.trim()
+      || (Object.keys(value).length === 5 && !text(value.item_ref))) {
     ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
+  }
+}
+export function materializedOrdinaryPresenceChange(value, visibleObjects, plannedItem = null) {
+  validateMaterializedOrdinaryPresence(value);
+  if (value.item_ref != null) {
+    if (plannedItem != null && plannedItem.item_id !== value.item_ref) {
+      ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
+    }
+    const matches = (visibleObjects ?? []).filter(({ entity_ref: ref }) =>
+      ref?.entity_kind === 'item' && ref.entity_id === value.item_ref);
+    const descriptor = plannedItem?.item_proposal?.semantic_descriptor;
+    if (matches.length > 1 || (matches.length === 0 && plannedItem == null)
+        || (matches.length === 1 && (!text(matches[0].display_label)
+          || matches[0].display_label !== value.display_name))
+        || (plannedItem != null && descriptor?.name !== value.display_name)) {
+      ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
+    }
+    if (matches.length === 0) return `Найден предмет — ${value.display_name}. `
+      + 'При находке он не находился в руках героя.';
+    return `Найден предмет — ${value.display_name}. Найденный предмет ${
+      matches[0].visible_status === 'available'
+        ? 'виден здесь, не в руках героя' : matches[0].visible_status}.`;
   }
   return `Найден предмет — ${value.display_name}.`;
 }
-function directSeedChange(value) {
+function directSeedChange(value, visibleObjects, plannedItem) {
   if (value?.kind === 'local_movement_signature') {
     failCurrentScene();
   }
@@ -348,7 +375,8 @@ function directSeedChange(value) {
   }
   if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
     return [`Выполнена попытка: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`];
-  if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);
+  if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value,
+    visibleObjects, plannedItem);
   if (value?.kind === 'existing_item_inspection') {
     return existingItemInspectionVisibleResult(value).changes;
   }

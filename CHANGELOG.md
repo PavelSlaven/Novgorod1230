@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(narration): bind ordinary discovery results to the admitted item through the existing precommit projection, keeping a new find distinct from an identically named carried item (#654, D49).
 - fix(narration): preserve committed seasonal, weather and light facts as scene support during ordinary turns, separately from the action's required result (#654, D49).
 - fix(narration): distinguish separately referenced people and objects with matching visible labels in natural Russian, preserving repeated references and unique-label descriptions (#654, D49).
 - fix(conversation): require the NPC speech auditor to preserve the source fact's subject, function, object and context when checking a claim (#247, D49).

@@ -1,4 +1,4 @@
-import { materializedOrdinaryPresenceChange } from
+import { materializedOrdinaryPresenceChange, validateMaterializedOrdinaryPresence } from
   './lower-dvina-trace-turn-step-current-scene.js';
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import { deepFreeze, plain } from
@@ -39,7 +39,7 @@ export function ordinaryPresenceResolution(entries) {
     'TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
   const value = seeds[0][1];
   if (value?.resolution === 'materialized') {
-    materializedOrdinaryPresenceChange(value);
+    validateMaterializedOrdinaryPresence(value);
     return value;
   }
   if (!plain(value) || value.kind !== 'ordinary_presence_seed'
@@ -53,13 +53,14 @@ export function ordinaryPresenceResolution(entries) {
   }
   return value;
 }
-export function overlayOrdinaryPresence(base, presence) {
+export function overlayOrdinaryPresence(base, presence, plannedItem = null) {
   if (presence == null) return base;
   const { resolution, query } = presence;
   const positive = resolution === 'materialized';
   const field = positive || resolution === 'absent'
     ? 'visible_changes' : 'uncertainties';
-  const change = positive ? materializedOrdinaryPresenceChange(presence)
+  const change = positive ? materializedOrdinaryPresenceChange(presence,
+    base.visible_objects, plannedItem)
     : `${presence.reason_code == null
       ? ORDINARY_PRESENCE_CHANGES[resolution]
       : FINITE_SOURCE_REASONS[presence.reason_code]}: «${query}».`;

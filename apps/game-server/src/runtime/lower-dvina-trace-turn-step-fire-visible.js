@@ -235,7 +235,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
               ?? input?.retrieved_state?.scene_presentation ?? null
           });
       return finishVisibleProjection(overlayFireVisible(overlayOrdinaryPresence(
-          overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence), fireVisible),
+          overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence,
+          input?.ordinary_materialization_atomic_write_plan?.item), fireVisible),
         input, calendarProfile, recordProjectionGap);
     }
   });
@@ -300,10 +301,11 @@ function overlayTurnStepResults(base, input, recordProjectionGap) {
     const orderedKeys = unique(keys).filter(key => !usedKeys.has(key))
       .sort((a, b) => Number(seeds[b]?.kind === 'semantic_activity') - Number(seeds[a]?.kind === 'semantic_activity'));
     orderedKeys.forEach(key => usedKeys.add(key));
-    projectDirectSeedChanges({ input, directSeedKeys: orderedKeys }).forEach(change => components.add(change));
+    projectDirectSeedChanges({ input, directSeedKeys: orderedKeys,
+      visibleObjects: base.visible_objects }).forEach(change => components.add(change));
     const changes = [
       ...projectDirectSeedChanges({ input, directSeedKeys: orderedKeys,
-        appliedPlan: plan })
+        appliedPlan: plan, visibleObjects: base.visible_objects })
     ];
     if (plan.direct_result_kind === 'player_safe_observation') {
       components.add('Вы внимательно изучили обстановку.');
@@ -329,7 +331,8 @@ function overlayTurnStepResults(base, input, recordProjectionGap) {
     changes.forEach(change => components.add(change));
     return changes;
   });
-  projectDirectSeedChanges({ input, directSeedKeys: [...usedKeys] }).forEach(change => components.add(change));
+  projectDirectSeedChanges({ input, directSeedKeys: [...usedKeys],
+    visibleObjects: base.visible_objects }).forEach(change => components.add(change));
   if (!text(remaining) && orderedChanges.length === 0 && inspection == null && itemInspections.length === 0
       && !directPlans.some(plan => plan.goal_result === 'not_achieved')) return base;
   return deepFreeze({ ...structuredClone(base),
@@ -387,13 +390,15 @@ async function projectWithoutFire({ input, consequence, seedEntries,
             body, locationProfiles, scenePresentation
           });
     return overlayOrdinaryPresence(
-      overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence);
+      overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence,
+      input?.ordinary_materialization_atomic_write_plan?.item);
   }
   const synthetic = plain(consequence?.visible_seed)
     && Array.isArray(consequence.visible_seed.completed_steps)
     && !hasVisibleDomainProjection(consequence);
   if (!synthetic) return overlayOrdinaryPresence(
-    await fallback.project(input), ordinaryPresence);
+    await fallback.project(input), ordinaryPresence,
+    input?.ordinary_materialization_atomic_write_plan?.item);
   const directSeeds = seedEntries
     .filter(([key, value]) => key.startsWith('turn_step_') && plain(value));
   const body = currentBody(input);
@@ -403,13 +408,15 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     body, locationProfiles, scenePresentation
   });
   if (currentScene != null) return overlayOrdinaryPresence(
-    currentScene, ordinaryPresence);
+    currentScene, ordinaryPresence,
+    input?.ordinary_materialization_atomic_write_plan?.item);
   // An unfinished domain handoff with no visible effects confirms no part of
   // the player's goal. Keep the committed scene, not a synthetic success.
   if (consequence.status === 'partial' && directSeeds.length === 0
       && consequence.visible_seed.clarification == null) {
     return overlayOrdinaryPresence(projectCurrentSceneForVisibleOverlay({
-      input, directSeedKeys: [], body, locationProfiles, scenePresentation }), ordinaryPresence);
+      input, directSeedKeys: [], body, locationProfiles, scenePresentation }), ordinaryPresence,
+      input?.ordinary_materialization_atomic_write_plan?.item);
   }
   return overlayOrdinaryPresence(deepFreeze({
     version: 1,
@@ -433,7 +440,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     do_not_imply: [
       'hidden_fact', 'uncommitted_body_delta', 'uncommitted_time'
     ]
-  }), ordinaryPresence);
+  }), ordinaryPresence, input?.ordinary_materialization_atomic_write_plan?.item);
 }
 function currentBody(input) {
   return input.body_update?.state_after ?? input.retrieved_state?.body_state

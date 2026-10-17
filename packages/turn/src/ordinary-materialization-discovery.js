@@ -499,7 +499,7 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     } }),
     ...(item == null || resolution !== 'materialize' ? {} : { ordinary_presence_seed: {
       kind: 'ordinary_presence_seed', resolution: 'materialized', query: request.operation.query,
-      display_name: item.item_proposal.semantic_descriptor.name
+      display_name: item.item_proposal.semantic_descriptor.name, item_ref: item.item_id
     } }),
     ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
       kind: 'ordinary_presence_seed', resolution: negativePresenceResolution,

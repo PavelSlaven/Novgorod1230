@@ -265,6 +265,54 @@ test('ordinary presence seed accepts only the strict negative or materialized un
   }
 });
 
+test('new ordinary discovery binds its beat to the committed item among identical labels', async () => {
+  const state = committedState();
+  state.items = [
+    { item_id: 'old-branch', name: 'сухая ветка',
+      placement: { location_ref: 'shore', holder_character_id: 'mikula',
+        physical_position: 'hands' } },
+    { item_id: 'new-branch', name: 'сухая ветка',
+      placement: { location_ref: 'shore' } }
+  ];
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
+    project: async () => assert.fail('unexpected fallback') } });
+  const seed = { kind: 'ordinary_presence_seed', resolution: 'materialized',
+    query: 'ветка', display_name: 'сухая ветка', item_ref: 'new-branch' };
+  const visible = await projector.project({ retrieved_state: state,
+    consequence: { visible_seed: { ordinary_presence_seed: seed } } });
+  assert.equal(visible.visible_changes.length, 1);
+  assert.match(visible.visible_changes[0], /Найден предмет — сухая ветка/u);
+  assert.match(visible.visible_changes[0], /не в руках героя/u);
+  assert.equal(JSON.stringify(visible).includes('new-branch'), true);
+  assert.equal(visible.visible_changes[0].includes('new-branch'), false);
+  assert.deepEqual(visible.visible_objects.map(({ visible_status }) => visible_status),
+    ['у вас в руках', 'available']);
+  const oldSeed = { ...seed };
+  delete oldSeed.item_ref;
+  const oldVisible = await projector.project({ retrieved_state: state,
+    consequence: { visible_seed: { ordinary_presence_seed: oldSeed } } });
+  assert.deepEqual(oldVisible.visible_changes, ['Найден предмет — сухая ветка.']);
+  const plan = preparedOrdinary('new-branch');
+  plan.item.item_proposal.semantic_descriptor.name = 'сухая ветка';
+  const beforeCommit = structuredClone(state);
+  beforeCommit.items.pop();
+  const projectedBeforeCommit = await projector.project({ retrieved_state: beforeCommit,
+    ordinary_materialization_atomic_write_plan: plan,
+    consequence: { visible_seed: { ordinary_presence_seed: seed } } });
+  assert.match(projectedBeforeCommit.visible_changes[0], /При находке он не находился в руках героя/u);
+  assert.deepEqual(projectedBeforeCommit.visible_objects.map(({ entity_ref }) => entity_ref.entity_id),
+    ['old-branch']);
+  await assert.rejects(projector.project({ retrieved_state: state,
+    consequence: { visible_seed: { ordinary_presence_seed: {
+      ...seed, item_ref: 'missing-branch' } } } }),
+  { code: 'TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID' });
+  await assert.rejects(projector.project({ retrieved_state: beforeCommit,
+    ordinary_materialization_atomic_write_plan: plan,
+    consequence: { visible_seed: { ordinary_presence_seed: {
+      ...seed, item_ref: 'old-branch' } } } }),
+  { code: 'TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID' });
+});
+
 for (const fire of [false, true]) {
   test(`authored projection retains findings, body and utterance with remaining intent (fire=${fire})`, async () => {
     const state = committedState();

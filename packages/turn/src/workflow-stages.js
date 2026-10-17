@@ -134,6 +134,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       consequence: state.consequence,
       timeUpdate: state.timeUpdate,
       bodyUpdate: state.bodyUpdate,
+      ordinaryMaterializationPlan: turnStepDraftOrdinaryAtomicWritePlan(
+        getTurnStepWorkflowDraft(state.modeResolution)),
       visibleProjector: services.visibleProjector
     }), context)),
     stage(13, 'persistence_plan', async (state) => next(state, 'writePlan', await buildPersistencePlanStage({

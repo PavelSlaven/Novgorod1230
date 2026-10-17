@@ -141,7 +141,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     assert.equal(distinctPinnedRows, p12Readback.distinct_pinned_rows);
     assert.equal(result.p12.inserted_rows, distinctPinnedRows);
     assert.deepEqual(result.additional_start_owners,
-      { npc: 6, runtimeProfiles: 2, acoustic: 4, authoring: 12,
+      { npc: 6, runtimeProfiles: 3, acoustic: 4, authoring: 13,
         rollback: 'pass', readback: 'exact' });
     assert.equal(result.m2c_lines.readback, 'exact');
     assert.equal(result.m2c_lines.added_rows, 2351);

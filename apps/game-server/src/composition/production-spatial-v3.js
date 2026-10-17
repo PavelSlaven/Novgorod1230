@@ -182,8 +182,7 @@ export async function createSpatialV3ProductionCompositionRoot({
     const authoredStartCatalog = targetContext == null ? null
       : createTargetAuthoredStartCatalog({ runtime: targetContext.runtime, release });
     const authoredRuntimeBindingResolver = authoredStartCatalog?.resolveRuntimeBinding ?? null;
-    const approvedActorTemporalRecords = targetContext?.runtime?.materialization_inputs
-      ?.approved_actor_temporal_bundle?.temporal_records ?? null;
+    const approvedActorTemporalRecords = null;
     const targetStartPublication = authoredStartCatalog == null ? null
       : await authoredStartCatalog.loadPublication(release.scenario_binding_id);
     let committer;

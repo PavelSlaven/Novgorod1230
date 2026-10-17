@@ -231,6 +231,8 @@ export async function createSpatialV3ProductionBindings(
           authoredStartCatalog.ordinary_profiles?.n1 ?? null,
         authoredRuntimeBindingResolver:
           authoredStartCatalog.resolveRuntimeBinding,
+        resolveTargetStartRuntime:
+          authoredStartCatalog.resolveTargetStartRuntime,
         targetStartRuntime,
         worldKnowledge,
         spatialExpansionRuntime,

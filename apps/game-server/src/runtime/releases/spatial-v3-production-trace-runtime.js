@@ -91,6 +91,7 @@ export function createTraceTurnRuntime({
   authoredSpatialSemanticProfile = null,
   authoredNpcSemanticRemainderProfile = null,
   authoredRuntimeBindingResolver,
+  resolveTargetStartRuntime = null,
   targetStartRuntime = null,
   spatialExpansionRuntime = null,
   spatialLocalSceneRuntime = null,
@@ -246,7 +247,7 @@ export function createTraceTurnRuntime({
     npcSpeechAddressForms: materializationInputs?.npc_speech_address_forms ?? [],
     npcSpeechRegisters: materializationInputs?.npc_speech_registers ?? [] });
   const projectCurrentSpatialContext = createCurrentSpatialContextProjector({
-    partyPool, readCurrentSources,
+    partyPool, readCurrentSources, resolveTargetStartRuntime,
     onProjected: config.onCurrentSpatialContextProjection ?? null
   });
   if (typeof config.onCurrentSpatialContextProjector === 'function') {
@@ -258,6 +259,7 @@ export function createTraceTurnRuntime({
       trustedBodyNeedsBindingPin: bodyTimeEffectAdapter?.trustedBindingPin ?? null,
       trustedBodyNeedsProfile: bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null,
       projectCurrentSpatialContext,
+      resolveTargetStartRuntime,
       readLocalEdgeDisclosure, readCurrentExitDisclosure, readCurrentConnectionDisclosure,
       readCurrentVisibleContext,
       projectEnvironmentAtClock: targetStartRuntime == null ? null
@@ -269,7 +271,8 @@ export function createTraceTurnRuntime({
             bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null
         }).projectEnvironmentAtClock,
       approvedActivityRecords: materializationInputs
-        ?.approved_actor_temporal_bundle?.temporal_records ?? null
+        ?.approved_activity_records ?? null,
+      resolveTargetStartRuntime
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
@@ -352,7 +355,7 @@ export function createTraceTurnRuntime({
     onNpcSceneProjection: config.onNpcSceneProjection ?? null,
     authoredTurnProfile,
     approvedActivityRecords: materializationInputs
-      ?.approved_actor_temporal_bundle?.temporal_records ?? null,
+      ?.approved_activity_records ?? null,
     postActionPerceptionProfile,
     spatialExpansionRuntime,
     spatialLocalSceneRuntime
@@ -432,10 +435,11 @@ function versionedRef(entityKind, entityId, authoringVersion) {
 }
 
 export function createCurrentSpatialContextProjector({ partyPool,
-  readCurrentSources, onProjected = null } = {}) {
+  readCurrentSources, resolveTargetStartRuntime = null,
+  onProjected = null } = {}) {
   if (typeof readCurrentSources !== 'function') return null;
   return async ({ partyId, actorId, state, turnBudget = null,
-    transaction: suppliedTransaction = null }) => {
+    runtimeBinding = null, transaction: suppliedTransaction = null }) => {
     const positionId = state?.position?.position_id
       ?? state?.journey_location?.scene_position_id;
     if (typeof positionId !== 'string' || positionId.length === 0) {
@@ -443,9 +447,12 @@ export function createCurrentSpatialContextProjector({ partyPool,
         'Current position is required for scene perception.', { status: 409,
           details: { reason: 'current_position_required' } });
     }
+    const runtime = resolveTargetStartRuntime?.(runtimeBinding);
+    const approvedActivityRecords = runtime == null
+      ? null : runtime.materialization_inputs?.approved_activity_records ?? null;
     const project = (transaction) => readAndProjectSpatialV3CurrentVisibleContext({
       transaction, partyId, actorId, positionId, observedPositionId: positionId,
-      readCurrentSources, state, directionalExits: []
+      readCurrentSources, state, directionalExits: [], approvedActivityRecords
     });
     let visible;
     if (typeof suppliedTransaction?.query === 'function') {

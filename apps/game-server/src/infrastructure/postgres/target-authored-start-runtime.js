@@ -133,6 +133,11 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
   }
   const approvedActorTemporalBundle = Object.freeze({ ...actorBundle,
     npc_relationship_materialization_rules: relationshipRules });
+  const approvedActivityRecords = mergeApprovedActivityRecords(
+    approvedActorTemporalBundle.temporal_records,
+    (npc.value.runtime_profiles ?? []).filter((row) =>
+      row.profile_kind === 'activity' && row.status === 'approved')
+      .map((row) => row.payload));
   const initialRule = start.initial_perception_rule == null ? null
     : loadApprovedCanonicalNaturalInitialRule({ verifiedCatalog: catalog, pin: itemPin,
       rule_ref: { id: start.initial_perception_rule.id, version: start.initial_perception_rule.version } });
@@ -148,12 +153,24 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
           .includes(row.payload?.body_effect_profile_id))),
       materialization_inputs: Object.freeze({ scenario_bundle: profile, domain_catalog: catalog, domain_catalog_pin: itemPin,
       world_base_reference_snapshot: snapshot, approved_actor_temporal_bundle: approvedActorTemporalBundle,
+      approved_activity_records: approvedActivityRecords,
       canonical_npc_closure: npc.value, canonical_acoustic_rows: acoustic.value.rows,
       npc_speech_address_forms: speechAddressForms,
       npc_speech_registers: speechRegisters,
       actor_base_attributes_runtime_profile: actorBinding.runtime_profile,
       actor_equipment_activation: { status: 'active', event_id: itemPin.activation_event_id },
       calendar_profile: buildCalendarProjectionProfile(calendar) }) });
+}
+
+export function mergeApprovedActivityRecords(baseRecords, profileRecords) {
+  const rows = [...(baseRecords ?? []), ...(profileRecords ?? [])]
+    .filter((row) => row?.status === 'approved'
+      && row.record_kind === 'activity_profile'
+      && typeof row.record_id === 'string'
+      && typeof row.payload?.activity_profile_id === 'string');
+  const byDigest = new Map();
+  for (const row of rows) byDigest.set(canonicalDigest(row), row);
+  return Object.freeze([...byDigest.values()]);
 }
 
 function dateString(date) {

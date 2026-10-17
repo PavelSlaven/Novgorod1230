@@ -15,13 +15,15 @@ export const SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF = Object.freeze({
 
 /** The P16 caller supplies its transaction; source readers must use that same client. */
 export async function readAndProjectSpatialV3CurrentVisibleContext({ transaction, partyId,
-  actorId, positionId, readCurrentSources, state, directionalExits } = {}) {
+  actorId, positionId, readCurrentSources, state, directionalExits,
+  approvedActivityRecords = null } = {}) {
   if (typeof transaction?.query !== 'function' || typeof readCurrentSources !== 'function') {
     gap('current_visible_transaction_and_sources_required');
   }
   const sources = await readCurrentSources({ transaction, partyId, actorId, positionId,
     state, directionalExits });
-  return projectSpatialV3CurrentVisibleContext({ ...sources, partyId, actorId, positionId });
+  return projectSpatialV3CurrentVisibleContext({ ...sources, partyId, actorId, positionId,
+    approvedActivityRecords });
 }
 
 /** Compose only observations admitted by the current perception and disclosure owners.

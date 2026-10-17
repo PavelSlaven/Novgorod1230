@@ -301,6 +301,13 @@ and adds no second transaction owner.
   snapshot. Item placement/status/facts and visible NPCs come from committed
   state; movement objects come from the current Spatial projection. A prior
   visible package is not a source for current item, NPC, or movement facts.
+  Clear NPC observations may include currently held, non-concealed items with
+  labels resolved by the pinned item catalog; the cue is refreshed from the
+  current observation and is carried as a player-safe narration fact. An
+  explicit empty `observable_cues: {}` means the current observation disclosed
+  no details and blocks enrichment from committed NPC state; an absent cue
+  field is legacy-unspecified and retains its prior projection path.
+
   Private auditor возвращает только полный ordered reviewed_segments,
   ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,

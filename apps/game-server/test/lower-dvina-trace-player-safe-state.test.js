@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { projectLowerDvinaTracePlayerSafeState } from
   '../src/runtime/lower-dvina-trace-player-safe-state.js';
+import { enrichLowerDvinaTraceVisibleNpcCues } from
+  '../src/runtime/lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
 import { fixture, loadScenarioBundle } from
@@ -86,13 +88,43 @@ test('NPC-held items require current perceptual evidence, not co-location', () =
 
   state.current_visible_context.visible_npc.push({
     entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
-    display_label: 'мужчина'
+    display_label: 'мужчина',
+    observable_cues: { identity: { display_name: 'мужчина' },
+      equipment: [], held_items: [] }
   });
   const visible = projectLowerDvinaTracePlayerSafeState({
     committed_state: state, actor_id: state.actor_id
   }).player_safe_state;
   assert.equal(visible.items.some(({ item_id: id }) => id === 'npc-knife'),
     true);
+});
+
+test('partial NPC-held items stay out of player-safe state', () => {
+  const state = richCommittedState();
+  state.items.push({ item_id: 'partial-npc-held', placement: {
+    holder_npc_id: 'onisim', physical_position: 'hands'
+  }, state: { display_name: 'плотницкий топор' } });
+  state.current_visible_context = {
+    version: 1, schema: 'visible_context_package',
+    visible_scene: 'Старая сушильня', visible_changes: [], sensory_details: [],
+    visible_npc: [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
+      display_label: 'мужчина', observable_cues: {}
+    }], visible_objects: [], known_context: [], uncertainties: [],
+    allowed_tensions: [], do_not_imply: []
+  };
+  const enriched = enrichLowerDvinaTraceVisibleNpcCues({
+    visibleContext: state.current_visible_context, committedState: state
+  });
+  assert.deepEqual(enriched.visible_npc[0].observable_cues, {});
+  state.current_visible_context = enriched;
+
+  const visible = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state;
+
+  assert.equal(visible.items.some(({ item_id: id }) =>
+    id === 'partial-npc-held'), false);
 });
 
 test('projects a committed player-safe item display name from item state', () => {

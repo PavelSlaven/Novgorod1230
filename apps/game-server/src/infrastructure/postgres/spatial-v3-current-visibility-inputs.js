@@ -3,7 +3,7 @@ import { isActorBaseAppearancePathApplicable, validateActorBaseAppearance } from
 import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { playerSafeHeardNpcIntroduction, safeVisualProfile } from
   '../../runtime/lower-dvina-trace-player-safe-npc-details.js';
-import { visibleItemName } from '../../runtime/lower-dvina-trace-visible-item-label.js';
+import { resolveVisibleItemLabel, visibleItemName } from '../../runtime/lower-dvina-trace-visible-item-label.js';
 
 /** Exclude only scopes proven outside this exact scene; unknown wider scopes stay fail-closed. */
 export function currentSceneVisibilityModifiers(rows, scene) {
@@ -58,7 +58,8 @@ export async function readCurrentTargetConditions({ partyId, actorId, scene, nat
 }
 
 /** Only outward fields from the committed entity; identity stays with knowledge. */
-export async function readCommittedEntityExterior({ transaction, partyId, placement } = {}) {
+export async function readCommittedEntityExterior({ transaction, partyId, placement,
+  itemLabels = {} } = {}) {
   if (typeof transaction?.query !== 'function' || !partyId || !placement?.entity_id) {
     gap('committed_entity_exterior_required');
   }
@@ -96,8 +97,24 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
         equipment_slot_category_id: row.equipment_slot_category_id,
         visual_profile_snapshot });
     }
+    const held = await transaction.query(`SELECT i.*,p.item_id,p.physical_position
+      FROM party_runtime.party_items i
+      JOIN party_runtime.party_item_placements p
+        ON p.party_id=i.party_id AND p.item_id=i.item_id
+      WHERE p.party_id=$1 AND p.holder_npc_id=$2 AND p.physical_position='hands'
+      ORDER BY p.item_id`, [partyId, placement.entity_id]);
+    if (!Array.isArray(held.rows)) gap('committed_entity_exterior_required');
+    const held_items = held.rows.flatMap((row) => {
+      if (runtimeItemRecordIsConcealed(row, { includeAccess: false })) return [];
+      const resolved = resolveVisibleItemLabel({
+        name: visibleItemName({ state: row.state }), template_id: row.template_id
+      }, itemLabels);
+      return resolved.kind === 'labeled' ? [{ entity_ref: {
+        entity_kind: 'item', entity_id: row.item_id
+      }, display_label: resolved.label }] : [];
+    });
     return { sex_category: identity.sex_category, age_category: identity.age_category,
-      appearance, visible_equipment };
+      appearance, visible_equipment, held_items };
   }
   if (placement.entity_kind === 'item') {
     const result = await transaction.query(`SELECT i.state,i.condition_state,i.template_id,

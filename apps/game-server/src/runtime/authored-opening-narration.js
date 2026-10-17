@@ -456,6 +456,11 @@ export function projectNpcCueFacts(cues) {
       NPC_TRANSLATIONS.facial_hair, 'identity.appearance.hair.facial_hair');
     if (facialHair) facts.push(`${facialHair[0].toLocaleUpperCase('ru')}${facialHair.slice(1)}.`);
   }
+  for (const item of Array.isArray(cues.held_items) ? cues.held_items : []) {
+    if (typeof item?.display_label === 'string' && item.display_label.trim()) {
+      facts.push(`В руках — ${item.display_label.trim()}.`);
+    }
+  }
   const equipmentWithoutFacts = [];
   for (const item of Array.isArray(cues.equipment) ? cues.equipment : []) {
     const visual = item?.visual_profile_snapshot;
@@ -496,6 +501,7 @@ export function projectNpcCueFacts(cues) {
     ...cues, identity: summaryIdentity, equipment: equipmentWithoutFacts
   } });
   if (summary != null) facts.push(summary);
+
   return facts;
 }
 

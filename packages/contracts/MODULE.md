@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Canonical machine-readable contract/typed-error registry shared by packages and applications. It defines names, validators, canonical digests, controlled vocabularies and public target-port primitives; it executes no game workflow.
+Canonical machine-readable contract/typed-error registry shared by packages and applications. It defines names, validators, canonical digests, controlled vocabularies and public target-port primitives; it executes no game workflow. Its Spatial v3 player-safe visible payload validator owns the closed observable-cue DTO, including optional NPC held-item refs and labels.
 
 ## Владеет
 

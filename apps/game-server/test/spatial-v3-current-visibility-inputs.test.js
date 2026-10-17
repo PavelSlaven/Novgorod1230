@@ -43,6 +43,7 @@ test('NPC exterior exposes committed appearance and visible Stage 16 gear withou
     sleeve_form: 'not_applicable', outer_form: 'low_leather_shoe',
     visible_fabric: 'leather', main_visible_color: 'brown',
     secondary_visible_color: 'brown' };
+  let heldRows = [];
   let gear = [{ state: { visual_profile_snapshot: { ...visual, secret_origin: 'hidden' } },
     condition_state: 'serviceable', physical_position: 'equipped',
     equipment_slot_category_id: 'base_garment' },
@@ -58,7 +59,11 @@ test('NPC exterior exposes committed appearance and visible Stage 16 gear withou
       canonical_name: 'hidden', public_role_label: 'путник', origin: 'hidden',
       occupation: 'hidden', sex_category: 'male', age_category: 'young_adult', appearance
     } }] };
-    assert.match(sql, /FROM party_runtime.party_item_placements p/u);
+    assert.match(sql, /party_runtime.party_item_placements p/u);
+    if (sql.includes("p.physical_position='hands'")) {
+      assert.match(sql, /p.holder_npc_id=\$2/u);
+      return { rows: heldRows };
+    }
     return { rows: gear };
   } };
   const input = { transaction, partyId: 'party',
@@ -69,11 +74,58 @@ test('NPC exterior exposes committed appearance and visible Stage 16 gear withou
       equipment_slot_category_id: 'base_garment',
       visual_profile_snapshot: visual },
     { physical_position: 'equipped', equipment_slot_category_id: 'footwear',
-      visual_profile_snapshot: footwear }]
+      visual_profile_snapshot: footwear }],
+    held_items: []
   });
   gear = [{ ...gear[0], state: {} }];
   await assert.rejects(readCommittedEntityExterior(input),
     (error) => error.details?.reason === 'committed_entity_exterior_required');
+});
+
+test('NPC hand items use current holder and hands placement; locked access does not hide visible items', async () => {
+  const currentItem = {
+    item_id: 'item-held', template_id: 'tpl-generic', state: {},
+    condition_state: 'serviceable', lifecycle_status: 'active',
+    access_state: 'locked', physical_position: 'hands',
+    holder_npc_id: 'npc'
+  };
+  let heldRows = [currentItem,
+    { ...currentItem, item_id: 'item-concealed',
+      state: { visibility_state: 'concealed' }, access_state: null },
+    { ...currentItem, item_id: 'item-terminal',
+      condition_state: 'destroyed', access_state: null }];
+  let currentHolder = 'npc';
+  let currentPosition = 'hands';
+  const transaction = { async query(sql, params) {
+    assert.deepEqual(params, ['party', 'npc']);
+    if (sql.includes('FROM party_runtime.party_npcs')) return { rows: [{
+      identity_state: { sex_category: 'male', age_category: 'young_adult',
+        appearance: { build: 'stocky', skin_tone: 'light', face_shape: 'broad',
+          hair: { color: 'dark_brown', length: 'short', style: 'straight',
+            facial_hair: 'short_beard' }, eyes: { color: 'gray' } } }
+    }] };
+    assert.match(sql, /party_runtime.party_item_placements p/u);
+    if (sql.includes("p.physical_position='hands'")) {
+      assert.match(sql, /p.holder_npc_id=\$2/u);
+      assert.match(sql, /p.party_id=\$1/u);
+      return { rows: currentPosition === 'hands' && currentHolder === 'npc'
+        ? heldRows : [] };
+    }
+    return { rows: [] };
+  } };
+  const input = { transaction, partyId: 'party',
+    placement: { entity_kind: 'npc', entity_id: 'npc' },
+    itemLabels: { 'tpl-generic': 'медный котёл' } };
+  assert.deepEqual((await readCommittedEntityExterior(input)).held_items, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'item-held' },
+    display_label: 'медный котёл'
+  }]);
+
+  currentPosition = 'worn';
+  assert.deepEqual((await readCommittedEntityExterior(input)).held_items, []);
+  currentPosition = 'hands';
+  currentHolder = 'other';
+  assert.deepEqual((await readCommittedEntityExterior(input)).held_items, []);
 });
 
 test('ground item exterior uses the validated committed item name', async () => {

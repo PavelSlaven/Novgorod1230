@@ -43,16 +43,28 @@ test('visible item profile keeps approved item vocabulary and rejects extra publ
     equipment_slot_category_id: 'footwear', visual_profile_snapshot: visual };
   const npc = { entity_ref: { entity_kind: 'npc', entity_id: 'npc' },
     display_label: 'путник', recognition: 'unrecognized',
-    observable_cues: { equipment: [item] } };
+    observable_cues: { equipment: [item], held_items: [{
+      entity_ref: { entity_kind: 'item', entity_id: 'held-item-1' },
+      display_label: 'медный котёл'
+    }] } };
   const payload = { schema: 'temporal_visible_package.v1',
     perceived_scene: 'Путник рядом.', perceived_changes: [], sensory_details: [],
     visible_npcs: [npc], visible_objects: [], known_context: [],
     uncertainties: [], hypotheses: [], player_safe_interruption: null,
     allowed_action_affordances: [] };
   assert.deepEqual(validatePlayerSafeVisiblePayload(payload), []);
-  assert.deepEqual(projectVisibleContext({ visible_npc: [npc] },
-    { strict: true }).visible_npc[0].observable_cues.equipment[0]
+  const projectedNpc = projectVisibleContext({ visible_npc: [npc] },
+    { strict: true }).visible_npc[0];
+  assert.deepEqual(projectedNpc.observable_cues.equipment[0]
     .visual_profile_snapshot, visual);
+  assert.deepEqual(projectedNpc.observable_cues.held_items, npc.observable_cues.held_items);
+  const badHeldRef = validatePlayerSafeVisiblePayload({ ...payload,
+    visible_npcs: [{ ...npc, observable_cues: { held_items: [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'wrong-kind' },
+      display_label: 'медный котёл'
+    }] } }]
+  });
+  assert.ok(badHeldRef.some((error) => error.field.endsWith('entity_ref')));
   const leaked = { ...visual, secret_origin: 'hidden' };
   assert.ok(validatePlayerSafeVisiblePayload({ ...payload, visible_npcs: [{ ...npc,
     observable_cues: { equipment: [{ ...item,

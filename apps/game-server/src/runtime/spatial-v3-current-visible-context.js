@@ -111,7 +111,7 @@ function projectVisibleNpcObservation(row) {
   return { entity_ref: { entity_kind: 'npc', entity_id: row.entity_id },
     display_label: row.display_label,
     recognition: row.display_name === row.display_label ? 'recognized' : 'unrecognized',
-    ...(row.visibility === 'clear' ? { observable_cues: {
+    observable_cues: row.visibility === 'clear' ? {
       identity: { ...(row.display_name === row.display_label
         ? { display_name: row.display_name } : {}),
         sex_category: row.exterior.sex_category,
@@ -119,7 +119,9 @@ function projectVisibleNpcObservation(row) {
         age_category: row.exterior.age_category === 'young_adult'
           ? 'young' : row.exterior.age_category,
         appearance: structuredClone(row.exterior.appearance) },
-      equipment: structuredClone(row.exterior.visible_equipment) } } : {}) };
+      equipment: structuredClone(row.exterior.visible_equipment),
+      held_items: structuredClone(row.exterior.held_items ?? [])
+    } : {} };
 }
 
 function gap(reason) { throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',

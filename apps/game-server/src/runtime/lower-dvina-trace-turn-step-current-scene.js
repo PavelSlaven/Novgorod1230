@@ -138,7 +138,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
           recognition: perceived.recognition ?? npc?.recognition
         }),
         ...(npc?.observable_cues == null && perceived?.observable_cues != null ? {
-          observable_cues: structuredClone(perceived.observable_cues)
+          observable_cues: withoutHeldItemCues(perceived.observable_cues)
         } : {})
       };
     })
@@ -491,5 +491,11 @@ function directOutcomeConstraints(input) {
   }
   return constraints;
 }
+function withoutHeldItemCues(cues) {
+  const current = structuredClone(cues);
+  delete current.held_items;
+  return current;
+}
+
 function text(value) { return typeof value === 'string' && value.length > 0; }
 function unique(values) { return [...new Set(values)]; }

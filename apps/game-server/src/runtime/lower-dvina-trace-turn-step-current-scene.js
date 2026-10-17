@@ -448,8 +448,43 @@ function directSeedChange(value, visibleObjects, plannedItem) {
         : failCurrentScene();
   }
   if (value?.change === 'physical_change'
-      && text(value.physical_description)) {
-    return sentence(value.physical_description);
+      && (text(value.physical_description)
+        || Array.isArray(value.qualitative_facts))) {
+    const changes = [];
+    const delta = value.source_fact_delta;
+    let sourceIsVisible = false;
+    if (delta != null) {
+      if (!plain(delta)
+          || Object.keys(delta).some((key) => ![
+            'physical_description', 'qualitative_facts'
+          ].includes(key))
+          || delta.physical_description != null
+            && !text(delta.physical_description)
+          || !Array.isArray(delta.qualitative_facts)
+          || delta.qualitative_facts.some((fact) => !text(fact))) {
+        failCurrentScene();
+      }
+      sourceIsVisible = typeof value.entity_ref === 'string'
+        && Array.isArray(visibleObjects)
+        && visibleObjects.some((object) =>
+          object?.entity_ref?.entity_id === value.entity_ref
+          && ['recognized', 'known'].includes(object.recognition));
+      if (sourceIsVisible) {
+        changes.push('Действие изменило исходную вещь.');
+      }
+    }
+    if (text(value.physical_description)) {
+      changes.push(sentence(value.physical_description));
+    }
+    if (Array.isArray(value.qualitative_facts)) {
+      changes.push(...value.qualitative_facts.map(sentence));
+    }
+    if (sourceIsVisible) {
+      changes.push(...(text(delta.physical_description)
+        ? [sentence(delta.physical_description)] : []),
+      ...delta.qualitative_facts.map(sentence));
+    }
+    return changes;
   }
   if (value?.change === 'container_accessed') {
     return 'Герой изменил состояние доступного вместилища.';

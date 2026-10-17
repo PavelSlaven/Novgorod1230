@@ -495,6 +495,7 @@ function situationContextOf(request, authoritative) {
   }
   return request.player_safe_state?.current_visible_context
     ?? request.npc_safe_state?.visible_context
+    ?? (request.schema === 'narration_request' ? request.visible_context : null)
     ?? authoritative?.semantic_context ?? null;
 }
 

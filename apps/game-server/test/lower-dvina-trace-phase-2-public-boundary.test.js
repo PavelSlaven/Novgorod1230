@@ -12,6 +12,8 @@ import { buildPhase2VisibleEnvelope } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-writes.js';
 import { phase2InitialCurrentVisibleContext } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { phase2OpeningPerceivedContext, withoutPhase2CurrentVisibleContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 import { playerSafeWeatherLightFacts } from
   '../src/runtime/player-safe-weather-light.js';
 import { projectVisibleContextForPlayerPackage } from
@@ -90,6 +92,35 @@ test('validated opening projection supplies the initial current scene', () => {
     screen: unsafeScreen,
     openingScreenDigest: canonicalDigest(unsafeScreen)
   }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+});
+
+test('opening prior baseline comes from the displayed screen, before current-scene refresh', () => {
+  const screen = { version: 1, schema: 'first_game_screen',
+    screen_status: 'ready', party_id: 'party-1',
+    main_prose: 'Литературная стартовая проза не становится фактом.', visible_context: {
+      place: 'берег крушения', calendar: 'утро', environment: {
+        profile_id: 'trace_ld_v1_env_cold_wet_shore', facts: [
+        'cold', 'wet', 'exposed'
+      ] }
+    } };
+  const initialState = { party_id: 'party-1', position: {
+    location_ref: 'shore', g5_anchor_id: 'bank'
+  } };
+  const prior = phase2OpeningPerceivedContext({ screen,
+    openingScreenDigest: canonicalDigest(screen), partyId: 'party-1',
+    initialState });
+  const refreshed = phase2InitialCurrentVisibleContext({ screen,
+    openingScreenDigest: canonicalDigest(screen), initialState,
+    scenePresentation: { locations: [{ location_ref: 'shore',
+      display_name: 'берег',
+      player_visible_physical_facts: ['У воды лежит новый настил.'] }] } });
+
+  assert.deepEqual(prior.context.sensory_details,
+    ['cold', 'wet', 'exposed']);
+  assert.notDeepEqual(prior.context.sensory_details, refreshed.sensory_details);
+  assert.deepEqual(withoutPhase2CurrentVisibleContext({
+    prior_perceived_visible_context: prior
+  }), {});
 });
 
 test('revision 28 initial scene uses the authored presentation, not environment IDs', () => {

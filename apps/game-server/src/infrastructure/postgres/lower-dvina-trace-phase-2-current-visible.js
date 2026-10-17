@@ -110,6 +110,25 @@ export function phase2InitialCurrentVisibleContext({
   });
 }
 
+export function phase2OpeningPerceivedContext({ screen, openingScreenDigest,
+  partyId, initialState }) {
+  try {
+    assertLowerDvinaTracePublicScreen(screen);
+  } catch {
+    throw phase2IntegrityError();
+  }
+  if (canonicalDigest(screen) !== openingScreenDigest
+      || screen.party_id !== partyId
+      || initialState?.party_id !== partyId) throw phase2IntegrityError();
+  const sensoryDetails = screen.visible_context?.sensory_details
+    ?? screen.visible_context?.environment?.facts;
+  return { party_id: partyId, committed_state_version: 0,
+    position: structuredClone(initialState.position ?? null),
+    context: { sensory_details: Array.isArray(sensoryDetails)
+      ? sensoryDetails.filter((fact) => typeof fact === 'string' && fact.length > 0)
+      : [] } };
+}
+
 function initialEnvironmentChange(state) {
   const value = state?.environment_snapshot;
   if (value?.schema !== 'rus.approved_initial_environment.v1') return [];
@@ -225,5 +244,6 @@ export function withoutPhase2CurrentVisibleContext(state) {
   delete state.current_spatial_context;
   delete state.current_spatial_context_is_fresh;
   delete state.current_spatial_context_filters_entities;
+  delete state.prior_perceived_visible_context;
   return state;
 }

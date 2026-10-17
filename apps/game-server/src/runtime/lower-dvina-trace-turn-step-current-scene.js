@@ -218,6 +218,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     current_spatial_context_is_fresh: _currentSpatialContextIsFresh,
     current_spatial_context_filters_entities: _currentSpatialContextFiltersEntities,
     prior_perceived_visible_npcs: _priorPerceivedVisibleNpcs,
+    prior_perceived_visible_context: _priorPerceivedVisibleContext,
     ...projectedState } = committedState;
   return { ...projectedState, current_visible_context: deepFreeze(current) };
 }
@@ -258,7 +259,8 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);
   const directResultChanges = lowerDvinaTraceDirectResultChanges(input,
-    playerSafeSceneItems(input?.retrieved_state), body, current);
+    playerSafeSceneItems(input?.retrieved_state), body, current,
+    directObservationPriorScene(input?.retrieved_state));
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
@@ -299,8 +301,30 @@ function withoutCurrentSpatialContext(state) {
     current_spatial_context_is_fresh: _currentSpatialContextIsFresh,
     current_spatial_context_filters_entities: _currentSpatialContextFiltersEntities,
     prior_perceived_visible_npcs: _priorPerceivedVisibleNpcs,
+    prior_perceived_visible_context: _priorPerceivedVisibleContext,
     ...projectedState } = state;
   return projectedState;
+}
+function directObservationPriorScene(state) {
+  const prior = state?.prior_perceived_visible_context;
+  const stateVersion = Number(state?.party_state?.state_version);
+  if (prior?.party_id !== state?.party_id
+      || !Number.isSafeInteger(stateVersion)
+      || Number(prior.committed_state_version) !== stateVersion
+      || !samePerceivedPosition(prior.position, state?.position)
+      || !Array.isArray(prior.context?.sensory_details)) return null;
+  return prior.context;
+}
+function samePerceivedPosition(prior, current) {
+  if (!text(prior?.location_ref) || prior.location_ref !== current?.location_ref) {
+    return false;
+  }
+  const priorAnchor = prior.g5_anchor_id ?? prior.anchor_id;
+  const currentAnchor = current?.g5_anchor_id ?? current?.anchor_id;
+  if (text(priorAnchor) || text(currentAnchor)) {
+    return text(priorAnchor) && priorAnchor === currentAnchor;
+  }
+  return text(prior.position_id) && prior.position_id === current?.position_id;
 }
 export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null,
   visibleObjects = null }) {

@@ -283,9 +283,12 @@ and adds no second transaction owner.
   сцены: место, видимых людей и предметы, ощущения и известный герою контекст.
   Writer/auditor/repair получают один player-safe snapshot; полный пересказ
   окружения вместо текущего действия запрещён.
-  Newly relevant facts приходят через visible_changes: applied observation
-  продвигает воспринимаемые scene facts, а подтверждённое прибытие — одно событие
-  из player-safe факта места назначения,
+  При direct player-safe observation sensory_details остаётся полным support;
+  в required_current_beat попадают только exact sensory strings, которых нет в
+  предыдущем показанном package той же party, committed state version и позиции.
+  Отсутствующая или несовпадающая привязка сохраняет прежнюю обязательность всех
+  sensory facts. Новые scene facts и результаты наблюдения сущностей остаются
+  required. Подтверждённое прибытие продвигает одно событие из player-safe факта места назначения,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums
   не становятся prose и не требуют нового словаря,
   ordinary scene seed — только факты текущего результата. Общая projection

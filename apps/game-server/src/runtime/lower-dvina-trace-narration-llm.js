@@ -123,23 +123,13 @@ export function narrationWorldKnowledgePromptData(value) {
   return project(slice, 'world_knowledge');
 }
 
-function narrationVisibleDescriptions(records, path) {
+function narrationVisibleDescriptions(records, path, groupName) {
   if (!Array.isArray(records)) return [];
-  const refsByLabel = new Map();
-  for (const record of records) {
-    if (typeof record?.display_label !== 'string' || record.entity_ref == null) continue;
-    const label = record.display_label.trim();
-    if (!refsByLabel.has(label)) refsByLabel.set(label, new Map());
-    const ref = JSON.stringify([
-      record.entity_ref.entity_kind, record.entity_ref.entity_id
-    ]);
-    const refs = refsByLabel.get(label);
-    if (!refs.has(ref)) refs.set(ref, refs.size + 1);
-  }
-  return records.flatMap((record, index) => {
+  const entries = records.flatMap((record, index) => {
     if (typeof record === 'string') {
       const safe = safeNarrationText(record, path + '[' + index + ']');
-      return safe && /\p{Script=Cyrillic}/u.test(safe) ? [safe] : [];
+      return safe && /\p{Script=Cyrillic}/u.test(safe)
+        ? [{ description: safe }] : [];
     }
     if (record == null || typeof record !== 'object') return [];
     const cues = record.observable_cues;
@@ -160,13 +150,32 @@ function narrationVisibleDescriptions(records, path) {
     if (!descriptions.length) return [];
     const description = descriptions.filter((value, position) =>
       descriptions.indexOf(value) === position).join(' ');
-    const distinct = record.entity_ref != null
-      && refsByLabel.get(record.display_label?.trim())?.size > 1;
-    const ref = JSON.stringify([
-      record.entity_ref?.entity_kind, record.entity_ref?.entity_id
-    ]);
-    const marker = refsByLabel.get(record.display_label?.trim())?.get(ref);
-    return [distinct ? `Отдельный объект №${marker}: ${description}` : description];
+    const label = record.display_label?.trim();
+    const ref = record.entity_ref != null && label
+      ? JSON.stringify([record.entity_ref.entity_kind, record.entity_ref.entity_id])
+      : null;
+    return [{ description, label, ref }];
+  });
+  const groups = new Map();
+  for (const entry of entries) {
+    if (entry.ref == null) continue;
+    if (!groups.has(entry.label)) groups.set(entry.label, new Map());
+    const refs = groups.get(entry.label);
+    if (!refs.has(entry.ref)) refs.set(entry.ref, []);
+    if (!refs.get(entry.ref).includes(entry.description))
+      refs.get(entry.ref).push(entry.description);
+  }
+  const emitted = new Set();
+  return entries.flatMap(({ description, label, ref }) => {
+    if (ref == null) return [description];
+    if (emitted.has(label)) return [];
+    emitted.add(label);
+    const refs = groups.get(label);
+    if (refs.size > 1) {
+      const details = [...refs.values()].map(parts => parts.join(' ')).join('; ');
+      return [`Разные ${groupName}: ${details}${/[.!?]$/u.test(details) ? '' : '.'}`];
+    }
+    return [[...refs.values()][0].join('; ')];
   });
 }
 
@@ -256,7 +265,7 @@ export function narrationWire(request, { roleId } = {}) {
       'visible_context.sensory_details'),
     'Известное герою': known,
     'Люди': narrationVisibleDescriptions(visible.visible_npc,
-      'visible_context.visible_npc'),
+      'visible_context.visible_npc', 'люди'),
     'Предметы и ориентиры': narrationVisibleDescriptions(
       (visible.visible_objects ?? []).filter((row) =>
         !(row?.entity_ref?.entity_kind === 'item'
@@ -265,7 +274,7 @@ export function narrationWire(request, { roleId } = {}) {
             || row.entity_ref.entity_kind !== 'scene_movement_edge'
               && findUnsafePlayerText(row.display_label,
                 { label: true, generatedProse: true }) == null)),
-      'visible_context.visible_objects')
+      'visible_context.visible_objects', 'предметы и ориентиры')
   };
   const worldKnowledge = request?.world_knowledge ?? original?.world_knowledge;
   const outcome = original?.context?.outcome ?? request?.confirmed_outcome;

@@ -371,8 +371,9 @@ async function issue620CanonicalOpeningPackage(woman) {
   const projectedNpc = pkg.visible_npcs.find(({ npc_instance_id }) =>
     npc_instance_id === woman.entity_ref.entity_id);
   assert.ok(projectedNpc, 'perception includes the target NPC in the opening');
-  assert.deepEqual(projectedNpc.observable_cues, woman.observable_cues,
-    'opening builder carries cues from perception without post-projection edits');
+  assert.deepEqual(projectedNpc.observable_cues, {
+    ...woman.observable_cues, held_items: []
+  }, 'opening builder carries perceived equipment and canonical empty held items');
   return pkg;
 }
 

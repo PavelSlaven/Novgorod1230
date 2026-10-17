@@ -209,6 +209,13 @@ test('generic composition preserves domain body and handles direct visible',
       ['Герой ощутил перемену в своём состоянии.']);
 
     const physical = await visible.project({
+      retrieved_state: {
+        actor_id: 'player',
+        position: { location_ref: 'shore' },
+        current_visible_context: currentVisibleContext(),
+        current_spatial_context: currentVisibleContext(),
+        current_spatial_context_is_fresh: true
+      },
       consequence: { visible_seed: { completed_steps: [],
         clarification: null,
         turn_step_move: { change: 'moved', relation: 'held_by',
@@ -221,7 +228,8 @@ test('generic composition preserves domain body and handles direct visible',
     });
     assert.deepEqual(physical.visible_changes, [
       'Герой взял в руки длинную доску.',
-      'Доска с обрывком снасти приспособлена как опора для плеча.'
+      'Доска с обрывком снасти приспособлена как опора для плеча.',
+      'опора поддерживает плечо.'
     ]);
 
     const scene = await visible.project({

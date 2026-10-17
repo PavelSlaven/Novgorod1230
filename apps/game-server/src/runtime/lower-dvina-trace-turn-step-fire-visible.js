@@ -216,7 +216,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           locationProfiles: locationProfiles
             ?? input?.retrieved_state?.location_profiles ?? null,
           scenePresentation: scenePresentation
-            ?? input?.retrieved_state?.scene_presentation ?? null
+            ?? input?.retrieved_state?.scene_presentation ?? null,
+          approvedActivityRecords
         }), input, calendarProfile, recordProjectionGap);
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
@@ -374,7 +375,7 @@ export function projectLowerDvinaTraceFireVisible(entries, clarification) {
   };
 }
 async function projectWithoutFire({ input, consequence, seedEntries,
-  fallback, locationProfiles, scenePresentation }) {
+  fallback, locationProfiles, scenePresentation, approvedActivityRecords = null }) {
   const ordinaryDetails = ordinarySceneDetails(seedEntries);
   const ordinaryPresence = uncoveredOrdinaryPresence(seedEntries,
     ordinaryPresenceResolution(seedEntries));

@@ -106,6 +106,54 @@ test('temporal current activity uses approved text plus currently visible held-i
   assert.equal(Object.hasOwn(project().visible_npc[0], 'visible_status'), false);
 });
 
+test('non-fire scene projection routes receive approved activity records', async (t) => {
+  const current = { ...scene(), visible_npc: [{
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc:fisher' },
+    display_label: 'рыбак', observable_cues: { held_items: [{
+      entity_ref: { entity_kind: 'item', entity_id: 'item:net' }, display_label: 'сеть'
+    }] }
+  }] };
+  const state = fixture({ scenarioBundle: bundle, materializationBundle: bundle }).state;
+  state.current_visible_context = current;
+  state.current_spatial_context = structuredClone(current);
+  state.current_spatial_context_is_fresh = true;
+  state.current_spatial_context_filters_entities = true;
+  state.npcs = [{ instance_id: 'npc:fisher', machine_state: { status: 'active',
+    current_activity: { activity_ref: 'activity:fishing', status: 'active' } } }];
+  state.items = [{ instance_id: 'item:net', template_id: 'item_tpl_net',
+    placement: { holder_npc_id: 'npc:fisher', physical_position: 'hands' } }];
+  const approvedActivityRecords = [{ record_kind: 'activity_profile', status: 'approved',
+    payload: { activity_profile_id: 'activity:fishing',
+      player_safe_observation: 'Осматривает рыболовную сеть.',
+      resource_requirements: { required_items: [{ item_template_ref: 'item_tpl_net' }] } } }];
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => current }, approvedActivityRecords
+  });
+  const directTrace = { approved_plan: { resolution: 'direct', goal_result: 'achieved',
+    operations: [], check: null } };
+  const scenarios = [
+    { name: 'semantic activity', consequence: { status: 'resolved', visible_seed: {
+      turn_step_1: { kind: 'semantic_activity', duration_minutes: 1 }
+    } }, step_traces: [directTrace] },
+    { name: 'synthetic direct no-op', consequence: { status: 'resolved', visible_seed: {
+      completed_steps: []
+    } }, step_traces: [directTrace] },
+    { name: 'partial result with no direct steps', consequence: {
+      status: 'partial', visible_seed: { completed_steps: [] }
+    }, step_traces: [] }
+  ];
+  for (const scenario of scenarios) {
+    await t.test(scenario.name, async () => {
+      const visible = await projector.project({ retrieved_state: state,
+        consequence: scenario.consequence, body_update: { state_after: {} },
+        mode_resolution: { decision_trace: { remaining_intent: null,
+          step_traces: scenario.step_traces } } });
+      assert.equal(visible.visible_npc[0].visible_status,
+        'Осматривает рыболовную сеть.');
+    });
+  }
+});
+
 test('a remembered player utterance is not recast as received testimony', () => {
   const known = projectKnownContext({ actor_id: 'player' }, [], [
     { speaker_actor_id: 'player', content: 'Я не знаю дороги.' },

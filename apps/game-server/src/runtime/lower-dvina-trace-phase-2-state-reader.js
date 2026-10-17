@@ -13,7 +13,15 @@ export function createLowerDvinaTracePhase2StateReader({
             presentationIdempotencyKey: idempotencyKey, turnBudget
           })
         : state;
-      return projectCurrentScene(committedState);
+      const projected = projectCurrentScene(committedState);
+      // Current-scene projection consumes this read-time baseline to refresh
+      // presentation, but a direct observation still needs it to distinguish
+      // newly perceived facts from the opening the player already saw.
+      const priorPerceivedContext = committedState?.prior_perceived_visible_context;
+      return priorPerceivedContext == null ? projected : {
+        ...projected,
+        prior_perceived_visible_context: priorPerceivedContext
+      };
     },
     async revalidate() {
       if (typeof repository.loadPhase2StateVersion === 'function') {

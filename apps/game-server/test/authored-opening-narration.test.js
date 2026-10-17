@@ -5,7 +5,8 @@ import { buildVisibleContextAuditApproval,
 import { ACTOR_BASE_APPEARANCE_VOCABULARY } from '@rus/actors';
 import { STAGE23_CONCERN_CODES } from '@rus/new-game';
 import { buildAuthoredOpeningVisibleContext,
-  auditAuthoredOpeningContext, auditOpeningReaderAssessments, buildLowerDvinaTraceOpeningScreen } from
+  auditAuthoredOpeningContext, auditOpeningReaderAssessments, buildLowerDvinaTraceOpeningScreen,
+  openingPerceivedContextFromPackage } from
   '../src/runtime/lower-dvina-trace-opening.js';
 import { createAuthoredOpeningNarrationService } from
   '../src/runtime/authored-opening-narration.js';
@@ -18,6 +19,12 @@ import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixtur
 import { buildCanonicalOpeningVisibleContext } from '../src/runtime/canonical-opening-context.js';
 import { projectG4NaturalPerception } from '../src/runtime/g4-natural-perception.js';
 import { deriveApprovedInitialEnvironment } from '@rus/materialization';
+import { phase2OpeningPerceivedContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { lowerDvinaTraceObservedSceneChanges } from
+  '../src/runtime/lower-dvina-trace-visible-scene-items.js';
+import { playerSafeWeatherLightFacts } from
+  '../src/runtime/player-safe-weather-light.js';
 
 test('authored opening package answers all reader controls from persisted refs', () => {
   const pkg = openingPackage();
@@ -312,7 +319,8 @@ test('opening sends one readable Russian fact projection to writer and auditor',
       outer_form: 'low_leather_shoe', visible_fabric: 'leather',
       main_visible_color: 'brown' } }] };
   pkg.frame = { ...pkg.frame, season: 'summer', light_profile: 'daylight',
-    weather_state: {} };
+    day_part: 'daylight', weather_state: { sky: 'overcast',
+      precipitation: 'none', visibility: 'normal', wind: 'calm_or_light' } };
   pkg.narrator_scope.style_constraints = ['connected_literary_russian',
     'third_person', 'two_to_four_paragraphs'];
   pkg.weather_light_context = [];
@@ -399,6 +407,14 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   assert.ok(writerFacts.some((fact) => fact.startsWith('Возможно, снасти')));
   assert.ok(!writerFacts.includes(pkg.uncertain_context[0].text));
   assert.ok(writerFacts.some((fact) => /лето/iu.test(fact)));
+  assert.ok(writerFacts.includes('День.'));
+  assert.equal(writerFacts.includes('Стоит светлое время дня.'), false,
+    'opening narration deduplicates daylight when the typed day part already says day');
+  const perceivedOpeningFacts = openingPerceivedContextFromPackage(pkg).sensory_details;
+  assert.ok(perceivedOpeningFacts.includes('День.'));
+  assert.ok(perceivedOpeningFacts.includes('Стоит светлое время дня.'),
+    'the typed baseline retains daylight even when the opening writer omits its duplicate');
+  assert.ok(perceivedOpeningFacts.includes('Небо затянуто облаками.'));
   for (const person of writerInput.сцена.персонажи ?? []) {
     assert.equal(new Set(person.факты.map((fact) => fact.toLocaleLowerCase('ru'))).size,
       person.факты.length);
@@ -415,6 +431,30 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   assert.ok(auditorFacts.length > required.length,
     'supporting scene material remains available without becoming required');
   assert.match(result.original_stage23_audit.evidence[0], /opening:/u);
+});
+
+test('opening perception preserves nine natural plus seven typed weather facts', () => {
+  const naturalFacts = Array.from({ length: 9 }, (_, index) => ({
+    fact_id: `opening:natural:${index + 1}`, text: `Наблюдение ${index + 1}.`
+  }));
+  const weather = { sky: 'overcast', precipitation: 'none',
+    visibility: 'normal', wind: 'calm_or_light' };
+  const frame = { season: 'summer', day_part: 'daylight',
+    light_profile: 'daylight', weather_state: weather };
+  const perceived = openingPerceivedContextFromPackage({
+    position: { place_id: 'place:shore' }, visible_scene_facts: naturalFacts,
+    frame, weather_light_context: [{ ...frame, light_state: 'daylight',
+      weather_state: weather }]
+  });
+  assert.equal(perceived.sensory_details.length, 16);
+  assert.deepEqual(perceived.sensory_details.slice(0, 9),
+    naturalFacts.map(({ text }) => text));
+  assert.deepEqual(perceived.sensory_details.slice(9), [
+    'Лето.', 'День.', 'Стоит светлое время дня.', 'Небо затянуто облаками.',
+    'Осадков нет.', 'Видимость обычная.', 'Ветер отсутствует или слабый.'
+  ]);
+  assert.equal(new Set(perceived.sensory_details).size, 16,
+    'duplicate frame/weather values collapse while day and light remain separate typed facts');
 });
 
 test('opening does not repeat clothing summary after item facts', async () => {
@@ -1177,7 +1217,10 @@ test('first screen receives natural perception after committed rehydrate without
       internal.environment_snapshot = { ...naturalInput.currentFacts.current_environment, version: 1,
         calendar_date: initialRule.initial_environment_inputs.calendar_date,
         local_minute_of_day: initialRule.initial_environment_inputs.local_minute_of_day,
-        season: 'summer', light_state: 'daylight' };
+        season: 'summer', day_part: 'daylight', light_state: 'daylight',
+        weather_state: { ...naturalInput.currentFacts.current_environment.weather_state,
+          sky: 'overcast', precipitation: 'none', visibility: 'normal',
+          wind: 'calm_or_light' } };
       visible.environment = structuredClone(internal.environment_snapshot);
       approvedProjection.scenario_id = initialRule.scenario_id;
     }
@@ -1185,7 +1228,7 @@ test('first screen receives natural perception after committed rehydrate without
       if (observation.visual_conditions) observation.visual_conditions.lighting = lighting;
     }
     const surfaceText = perception.presentation_profile.layers.find((row) => row.layer === 'surface').clear_text;
-    let committed = false, session, narratorInput, narratorMaterializationGaps;
+    let committed = false, session, sessionIdentity, narratorInput, narratorMaterializationGaps;
     const startPresenceGaps = [{ rule_ref: 'rule_start_gap@1', reason: 'template_missing',
       missing_item_refs: ['internal_start_gap_item'] }];
     const order = [];
@@ -1223,7 +1266,8 @@ test('first screen receives natural perception after committed rehydrate without
       } },
       traceOpeningProjector: buildLowerDvinaTraceOpeningScreen,
       repository: {
-        async attachCommittedOpeningSession(input) { session = { screen: input.screen, delivery_attempt: input.deliveryAttempt }; },
+        async attachCommittedOpeningSession(input) { sessionIdentity = input.sessionIdentity;
+          session = { screen: input.screen, delivery_attempt: input.deliveryAttempt }; },
         async loadSession() { return session; }
       }, validateSession: async () => {}
     });
@@ -1232,6 +1276,49 @@ test('first screen receives natural perception after committed rehydrate without
     assert.ok(order.indexOf('perception') < order.indexOf('narrate'));
     assert.equal(result.screen.main_prose.includes(surfaceText), lighting === 'clear');
     assert.deepEqual(narratorMaterializationGaps, canonical ? startPresenceGaps : undefined);
+    if (canonical) {
+      const frameWeather = narratorInput.frame?.weather_state ?? {};
+      const weatherContext = narratorInput.weather_light_context?.find((entry) =>
+        entry && typeof entry === 'object') ?? {};
+      const typedWeatherFacts = playerSafeWeatherLightFacts({
+        season: weatherContext.season ?? narratorInput.frame?.season,
+        day_part: weatherContext.day_part ?? narratorInput.frame?.day_part,
+        light_state: weatherContext.light_state ?? weatherContext.light_profile
+          ?? narratorInput.frame?.light_state ?? narratorInput.frame?.light_profile,
+        weather_state: { ...frameWeather, ...(weatherContext.weather_state ?? {}) }
+      }).map(({ text }) => text);
+      const expectedOpeningSensory = [...new Set([
+        ...narratorInput.visible_scene_facts.filter(({ fact_id }) =>
+          fact_id.startsWith('opening:natural:')
+            || fact_id.startsWith('opening:environment:')).map(({ text }) => text),
+        ...typedWeatherFacts
+      ])];
+      assert.deepEqual(sessionIdentity.opening_perceived_context?.sensory_details,
+        expectedOpeningSensory,
+        'opening perception commits natural and typed weather/light facts supplied to its narrator');
+      assert.ok(expectedOpeningSensory.includes('День.'));
+      assert.ok(expectedOpeningSensory.includes('Стоит светлое время дня.'));
+      assert.equal(new Set(expectedOpeningSensory).size, expectedOpeningSensory.length,
+        'typed day and light facts are exact and deduplicated');
+      const phase2Prior = phase2OpeningPerceivedContext({
+        openingPerceivedContext: sessionIdentity.opening_perceived_context,
+        partyId: 'party:1', initialState: { party_id: 'party:1',
+          party_state: { state_version: 0 }, position: internal.position }
+      });
+      assert.deepEqual(phase2Prior?.context?.sensory_details,
+        sessionIdentity.opening_perceived_context.sensory_details,
+        'the first Phase 2 read binds the committed opening baseline to its v0 position');
+      const newlyPerceived = 'У берега показалась свежая рябь.';
+      const observedChanges = lowerDvinaTraceObservedSceneChanges({
+        sensory_details: [...phase2Prior.context.sensory_details, newlyPerceived],
+        visible_npc: []
+      }, phase2Prior.context.sensory_details);
+      assert.deepEqual(observedChanges, [newlyPerceived],
+        'opening facts remain scene support while only genuinely new sensory facts become observation changes');
+      assert.deepEqual(sessionIdentity.opening_perceived_context?.position?.anchor_id,
+        narratorInput.position.anchor_id);
+      assert.doesNotMatch(JSON.stringify(result.screen), /opening_perceived_context/u);
+    }
     assert.doesNotMatch(JSON.stringify(narratorInput), /internal_start_gap_item/u);
     assert.doesNotMatch(JSON.stringify(result.screen), /internal_start_gap_item/u);
     assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), !canonical);

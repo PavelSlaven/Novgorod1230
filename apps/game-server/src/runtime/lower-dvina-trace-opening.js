@@ -1,6 +1,7 @@
 import { validateFirstGameScreen } from '@rus/presentation';
 import { detectHiddenLeaks, validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { playerSafeActivityObservation } from './lower-dvina-trace-player-safe-npc-details.js';
+import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
 import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 
 const FORBIDDEN_KEYS = new Set([
@@ -296,6 +297,36 @@ export function assertLowerDvinaTracePublicScreen(screen) {
     );
   }
   return screen;
+}
+
+export function openingPerceivedContextFromPackage(visibleContextPackage) {
+  const position = visibleContextPackage?.position;
+  if (!position || typeof position !== 'object'
+      || !Array.isArray(visibleContextPackage?.visible_scene_facts)) {
+    fail('AUTHORED_OPENING_CONTEXT_INVALID',
+      'Persisted authored opening perception is unavailable.');
+  }
+  const sceneSensoryDetails = visibleContextPackage.visible_scene_facts
+    .filter((fact) => typeof fact?.text === 'string'
+      && (fact.fact_id?.startsWith('opening:environment:')
+        || fact.fact_id?.startsWith('opening:natural:')))
+    .map(({ text }) => text);
+  const frame = visibleContextPackage.frame ?? {};
+  const weatherContext = visibleContextPackage.weather_light_context
+    ?.find((entry) => entry && typeof entry === 'object') ?? {};
+  const frameWeather = frame.weather_state ?? {};
+  const contextWeather = weatherContext.weather_state ?? {};
+  const typedWeatherFacts = playerSafeWeatherLightFacts({
+    season: weatherContext.season ?? frame.season,
+    day_part: weatherContext.day_part ?? frame.day_part,
+    light_state: weatherContext.light_state ?? weatherContext.light_profile
+      ?? frame.light_state ?? frame.light_profile,
+    weather_state: { ...frameWeather, ...contextWeather }
+  }).map(({ text }) => text);
+  const sensoryDetails = [...new Set([...sceneSensoryDetails, ...typedWeatherFacts])];
+  return freezeDeep({ version: 1,
+    schema: 'rus.authored_opening_perceived_context.v1',
+    position: structuredClone(position), sensory_details: [...new Set(sensoryDetails)] });
 }
 
 export function assertVisibleSource(visible, approvedProjection) {

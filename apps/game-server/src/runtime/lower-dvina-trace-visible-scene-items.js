@@ -9,7 +9,7 @@ const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках
 const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
 
 export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
-  body = {}, currentScene = null) {
+  body = {}, currentScene = null, priorScene = null) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
   const directPlans = plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
@@ -21,7 +21,8 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
     ...(directPlans.some((plan) => plan.direct_result_kind === 'player_safe_observation'
         && plan.assessment == null)
       ? ['Вы внимательно изучили обстановку.',
-        ...lowerDvinaTraceObservedSceneChanges(currentScene)] : []),
+        ...lowerDvinaTraceObservedSceneChanges(currentScene,
+          priorScene?.sensory_details)] : []),
     ...(kinds.has('player_safe_item_observation')
       ? carriedItemObservationChanges(sceneItems) : []),
     ...(kinds.has('player_safe_body_observation')
@@ -33,10 +34,12 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
 
 // Call only for a confirmed observation or a newly reached scene. Snapshot
 // knowledge (including inventory/body metadata) is not a new observation.
-export function lowerDvinaTraceObservedSceneChanges(scene) {
+export function lowerDvinaTraceObservedSceneChanges(scene,
+  priorSensoryDetails = []) {
   const visibleNpcs = distinctNpcLabels(scene?.visible_npc ?? []);
+  const priorSensory = new Set(priorSensoryDetails);
   return [...new Set([
-    ...(scene?.sensory_details ?? []),
+    ...(scene?.sensory_details ?? []).filter((fact) => !priorSensory.has(fact)),
     ...visibleNpcs.flatMap((npc) => [
       ...observedEntityChanges(npc),
       ...[npc.observable_cues?.ordinary_remainder?.ordinary_descriptor,

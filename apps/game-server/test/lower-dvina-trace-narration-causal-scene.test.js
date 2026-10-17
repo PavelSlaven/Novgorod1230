@@ -1,4 +1,4 @@
-import { compatNarrationWire } from './narration-audit-fixture.js';
+import { compatNarrationWire, reviewedNarration } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createTracePhase3VisibleProjector } from '../src/runtime/lower-dvina-trace-phase-3-effects.js';
@@ -202,6 +202,128 @@ test('applied player-safe observation exposes perceived facts and not static sel
   input.mode_resolution.decision_trace.step_traces[0].applied = false;
   const unapplied = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
   assert.deepEqual(unapplied.visible_changes, []);
+});
+
+test('direct look keeps prior scene facts as support and requires new results', async () => {
+  const prior = currentScene();
+  const scene = currentScene();
+  scene.sensory_details.push('Под навесом видны свежие стружки.');
+  scene.visible_npc[0].visible_status = 'перебирает снасти';
+  const state = currentSceneState(scene);
+  state.party_id = 'party';
+  state.party_state = { state_version: 7 };
+  state.prior_perceived_visible_context = {
+    party_id: 'party', committed_state_version: 7,
+    position: structuredClone(state.position), context: prior
+  };
+  const input = { consequence: { status: 'resolved', visible_seed: {
+    completed_steps: [] } }, retrieved_state: state,
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'achieved',
+        operations: [], check: null,
+        direct_result_kind: 'player_safe_observation' } }] } }
+  };
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({ fallback });
+  const visible = await projector.project(input);
+  assert.deepEqual(await projector.project(input), visible,
+    'replay of the same committed package produces the same required beat');
+
+  assert.deepEqual(visible.visible_changes, [
+    'Обстановка внимательно изучена.',
+    'Под навесом видны свежие стружки.',
+    'В поле зрения — рыбак: перебирает снасти.'
+  ]);
+  assert.deepEqual(visible.sensory_details, scene.sensory_details);
+  await assertCurrentWire(visible, visible.visible_changes,
+    ['У воды виден надломленный колышек.']);
+});
+
+test('direct look keeps full scene support in writer, audit and repair requests', async () => {
+  const scene = currentScene();
+  scene.sensory_details.push('Под навесом видны свежие стружки.');
+  const state = currentSceneState(scene);
+  state.party_id = 'party';
+  state.party_state = { state_version: 7 };
+  state.prior_perceived_visible_context = {
+    party_id: 'party', committed_state_version: 7,
+    position: structuredClone(state.position), context: currentScene()
+  };
+  const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback
+  }).project({ consequence: { status: 'resolved', visible_seed: {
+    completed_steps: [] } }, retrieved_state: state,
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'achieved',
+        operations: [], check: null,
+        direct_result_kind: 'player_safe_observation' } }] } }
+  });
+  const roles = [];
+  let auditCount = 0;
+  const service = createLowerDvinaTraceNarrationService({ roleRunner: {
+    async run(call) {
+      roles.push(call.role_id);
+      const wire = compatNarrationWire(JSON.parse(call.messages[1].content));
+      assert.deepEqual(wire.optional_support.sensory_details, scene.sensory_details);
+      assert.ok(wire.required_current_beat.changes.some(({ text }) =>
+        text === 'Под навесом видны свежие стружки.'));
+      assert.equal(wire.required_current_beat.changes.some(({ text }) =>
+        text === 'У воды виден надломленный колышек.'), false);
+      if (call.role_id === 'gameplay_narrator') return { output: {
+        prose: 'Микула внимательно осмотрел берег.', action_options: [],
+        used_references: [] } };
+      if (call.role_id === 'gameplay_narrator_semantic_repair') return {
+        output: { replacements: [{ prose: 'Микула внимательно осмотрел берег.' }] }
+      };
+      auditCount += 1;
+      const required = wire.required_current_beat.changes;
+      const coverage = Object.fromEntries(required.map(({ ref }, index) =>
+        [ref, auditCount === 1 && index === 0 ? [] : ['s1']]));
+      const audit = reviewedNarration(wire.segments, coverage);
+      if (auditCount === 1) audit.evidence = [];
+      return { output: audit };
+    }
+  } });
+
+  const result = await service.run({ version: 1, schema: 'narration_request',
+    request_id: 'direct-look-current-beat', surface: 'turn',
+    visible_context: visible, context: {} });
+  assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor',
+    'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+  assert.equal(result.status, 'approved');
+});
+
+test('direct look keeps all scene facts required when prior snapshot binding is absent or mismatched', async () => {
+  const scene = currentScene();
+  for (const prior of [null, {
+    party_id: 'other-party', committed_state_version: 7,
+    position: { location_ref: 'shore', g5_anchor_id: 'shore-anchor' },
+    context: currentScene()
+  }, {
+    party_id: 'party', committed_state_version: 6,
+    position: { location_ref: 'shore', g5_anchor_id: 'shore-anchor' },
+    context: currentScene()
+  }, {
+    party_id: 'party', committed_state_version: 7,
+    position: { location_ref: 'other-shore', g5_anchor_id: 'other-anchor' },
+    context: currentScene()
+  }]) {
+    const state = currentSceneState(scene);
+    state.party_id = 'party';
+    state.party_state = { state_version: 7 };
+    if (prior != null) state.prior_perceived_visible_context = prior;
+    const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback
+    }).project({ consequence: { status: 'resolved', visible_seed: {
+      completed_steps: [] } }, retrieved_state: state,
+      mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+        approved_plan: { resolution: 'direct', goal_result: 'achieved',
+          operations: [], check: null,
+          direct_result_kind: 'player_safe_observation' } }] } }
+    });
+    assert.ok(visible.visible_changes.includes(
+      'У воды виден надломленный колышек.'));
+    await assertCurrentWire(visible, visible.visible_changes);
+  }
 });
 
 test('observation preserves separately visible NPCs with the same label', async () => {

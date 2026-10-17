@@ -45,6 +45,7 @@ export function validateAuthoredStartSessionRead({ partyId, session,
   }
   const initialSnapshotSchema = resolvedBinding.snapshot_schema;
   const openingFlow = identity?.opening_narration_flow;
+  const openingPerceivedContext = identity?.opening_perceived_context;
   const openingAudit = identity?.opening_stage23_original_audit;
   if (!session
     || identity?.schema !== 'rus.live_world_runtime.authored_start_session_identity.v1'
@@ -73,6 +74,8 @@ export function validateAuthoredStartSessionRead({ partyId, session,
     || screen?.party_id !== partyId
     || screen?.scenario_id !== scenarioId
     || identity.opening_screen_digest !== canonicalDigest(screen)
+    || openingPerceivedContext != null
+      && !validOpeningPerceivedContext(openingPerceivedContext)
     || !validateNarrationFlowResult(openingFlow).ok
     || openingFlow.surface !== 'first_game'
     || openingFlow.status !== 'approved'
@@ -91,6 +94,17 @@ export function validateAuthoredStartSessionRead({ partyId, session,
       || !String(session.delivery_ack_result.acknowledged_at ?? '').trim())) invalid();
   try { assertLowerDvinaTracePublicScreen(screen); } catch { invalid(); }
   return session;
+}
+
+function validOpeningPerceivedContext(value) {
+  return value?.version === 1
+    && value.schema === 'rus.authored_opening_perceived_context.v1'
+    && typeof value.position?.region_id === 'string'
+    && typeof value.position?.place_id === 'string'
+    && typeof value.position?.anchor_id === 'string'
+    && Array.isArray(value.sensory_details)
+    && value.sensory_details.every((fact) => typeof fact === 'string'
+      && fact.length > 0);
 }
 
 function invalid() {

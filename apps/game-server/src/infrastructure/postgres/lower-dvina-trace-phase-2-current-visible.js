@@ -110,6 +110,31 @@ export function phase2InitialCurrentVisibleContext({
   });
 }
 
+export function phase2OpeningPerceivedContext({ openingPerceivedContext,
+  partyId, initialState }) {
+  const position = initialState?.position;
+  const priorPosition = openingPerceivedContext?.position;
+  const sensoryDetails = openingPerceivedContext?.sensory_details;
+  const currentG6 = position?.g6_instance_id ?? position?.g6_instance_ref;
+  if (initialState?.party_id !== partyId
+      || Number(initialState?.party_state?.state_version) !== 0
+      || openingPerceivedContext?.version !== 1
+      || openingPerceivedContext?.schema !== 'rus.authored_opening_perceived_context.v1'
+      || priorPosition?.region_id !== position?.g4_id
+      || priorPosition?.place_id !== position?.g5_node_id
+      || priorPosition?.anchor_id !== position?.g5_anchor_id
+      || typeof priorPosition?.minilocation_id !== 'string'
+      || priorPosition.minilocation_id.length === 0
+      || typeof currentG6 !== 'string'
+      || priorPosition.minilocation_id !== currentG6
+      || !Array.isArray(sensoryDetails)
+      || sensoryDetails.some((fact) => typeof fact !== 'string' || fact.length === 0)) {
+    return null;
+  }
+  return { party_id: partyId, committed_state_version: 0,
+    position: structuredClone(position), context: { sensory_details: [...sensoryDetails] } };
+}
+
 function initialEnvironmentChange(state) {
   const value = state?.environment_snapshot;
   if (value?.schema !== 'rus.approved_initial_environment.v1') return [];
@@ -225,5 +250,6 @@ export function withoutPhase2CurrentVisibleContext(state) {
   delete state.current_spatial_context;
   delete state.current_spatial_context_is_fresh;
   delete state.current_spatial_context_filters_entities;
+  delete state.prior_perceived_visible_context;
   return state;
 }

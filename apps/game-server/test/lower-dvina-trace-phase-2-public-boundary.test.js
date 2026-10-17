@@ -12,6 +12,10 @@ import { buildPhase2VisibleEnvelope } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-writes.js';
 import { phase2InitialCurrentVisibleContext } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { phase2OpeningPerceivedContext, withoutPhase2CurrentVisibleContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { openingPerceivedContextFromPackage } from
+  '../src/runtime/lower-dvina-trace-opening.js';
 import { playerSafeWeatherLightFacts } from
   '../src/runtime/player-safe-weather-light.js';
 import { projectVisibleContextForPlayerPackage } from
@@ -90,6 +94,53 @@ test('validated opening projection supplies the initial current scene', () => {
     screen: unsafeScreen,
     openingScreenDigest: canonicalDigest(unsafeScreen)
   }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+});
+
+test('opening prior baseline comes from the exact opening writer package, not empty screen or fresh scene', () => {
+  const screen = { version: 1, schema: 'first_game_screen',
+    screen_status: 'ready', party_id: 'party-1',
+    main_prose: 'Литературная стартовая проза не становится фактом.', visible_context: {
+      place: 'берег крушения', calendar: 'утро', environment: {
+        profile_id: 'trace_ld_v1_env_cold_wet_shore', facts: [] }
+    } };
+  const initialState = { party_id: 'party-1', position: {
+    g4_id: 'region', g5_node_id: 'shore', g5_anchor_id: 'bank',
+    location_ref: 'shore', position_id: 'position:bank',
+    g6_instance_id: 'minilocation:shore'
+  } };
+  const openingPackage = { position: { region_id: 'region', place_id: 'shore',
+    anchor_id: 'bank', minilocation_id: 'minilocation:shore' }, visible_scene_facts: [
+    { fact_id: 'opening:natural:1', text: 'cold' },
+    { fact_id: 'opening:environment:1', text: 'wet' },
+    { fact_id: 'opening:known:1', text: 'exposed' }
+  ] };
+  const openingPerceivedContext = openingPerceivedContextFromPackage(openingPackage);
+  const prior = phase2OpeningPerceivedContext({ openingPerceivedContext,
+    partyId: 'party-1', initialState: { ...initialState,
+      party_state: { state_version: 0 } } });
+  const refreshed = phase2InitialCurrentVisibleContext({ screen,
+    openingScreenDigest: canonicalDigest(screen), initialState,
+    scenePresentation: { locations: [{ location_ref: 'shore',
+      display_name: 'берег',
+      player_visible_physical_facts: ['У воды лежит новый настил.'] }] } });
+
+  assert.deepEqual(prior.context.sensory_details,
+    ['cold', 'wet']);
+  assert.notDeepEqual(prior.context.sensory_details, refreshed.sensory_details);
+  assert.equal(phase2OpeningPerceivedContext({ openingPerceivedContext,
+    partyId: 'party-1', initialState: { ...initialState,
+      party_state: { state_version: 1 } } }), null,
+  'only the original committed version can bind the opening package');
+  assert.equal(phase2OpeningPerceivedContext({
+    openingPerceivedContext: { ...openingPerceivedContext,
+      position: { ...openingPerceivedContext.position,
+        minilocation_id: 'minilocation:other' } },
+    partyId: 'party-1', initialState: { ...initialState,
+      party_state: { state_version: 0 } }
+  }), null, 'an opening in another G6 minilocation is not this starting scene');
+  assert.deepEqual(withoutPhase2CurrentVisibleContext({
+    prior_perceived_visible_context: prior
+  }), {});
 });
 
 test('revision 28 initial scene uses the authored presentation, not environment IDs', () => {

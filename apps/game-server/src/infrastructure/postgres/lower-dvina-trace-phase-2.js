@@ -7,6 +7,7 @@ import { phase2PublicResult, phase2ScreenDigest, publicCombatStateFromConsequenc
 import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery, factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
 import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
 import { phase2InitialCurrentVisibleContext, withPhase2CurrentVisibleContext,
+  phase2OpeningPerceivedContext,
   withPhase2CurrentLocalEdges,
   withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
 import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
@@ -28,7 +29,8 @@ import { assertPhase10NormalizedRows } from './lower-dvina-trace-phase-10-read.j
 import { commitLowerDvinaTracePhase10 } from './lower-dvina-trace-phase-10-commit.js';
 import { withCommittedRuntimeContainers } from './lower-dvina-trace-phase-2-committed-runtime-containers.js';
 import { loadPhase2JourneyLocation, withJourneyLocation } from './lower-dvina-trace-phase-2-journey-location.js';
-import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-context.js';
+import { loadPhase2VisibleContext, loadPhase2VisibleContextRecord } from
+  './lower-dvina-trace-phase-2-visible-context.js';
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 import { withSceneNpcs, withoutSceneNpcs } from './scene-npcs-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool,
@@ -175,10 +177,17 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
           approvedActivityRecords: activityRecordsForBinding(row.stage26_result?.runtime_binding)
         })
       );
+      const openingPrior = includeCurrentVisibleContext
+        ? phase2OpeningPerceivedContext({
+          openingPerceivedContext: row.stage26_result.opening_perceived_context,
+          partyId, initialState: initial }) : null;
+      const visibleWithPrior = openingPrior == null ? visible : {
+        ...visible, prior_perceived_visible_context: openingPrior
+      };
       const journeyLocation = await loadPhase2JourneyLocation(
         readPool, partyId, initial.actor_id);
       const current = await withPhase2CurrentLocalEdges(
-        withJourneyLocation(visible, journeyLocation),
+        withJourneyLocation(visibleWithPrior, journeyLocation),
         includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
         includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
         includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null);
@@ -228,12 +237,14 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     withJourneyLocation(loadedPayload, journeyLocation);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    const priorVisibleContext = includeCurrentVisibleContext
+    const priorVisibleRecord = includeCurrentVisibleContext
         && typeof projectCurrentSpatialContext === 'function'
         && Number(row.party_state_version) > 0
-      ? await loadPhase2VisibleContext(partyPool, {
-        commit: loadedPayload.last_turn.visible_package, turnBudget
+      ? await loadPhase2VisibleContextRecord(partyPool, {
+        commit: loadedPayload.last_turn.visible_package, partyId,
+        turnBudget
       }) : null;
+    const priorVisibleContext = priorVisibleRecord?.context ?? null;
     const loadedWithCurrentVisible = !includeCurrentVisibleContext
       || typeof projectCurrentSpatialContext === 'function' ? loadedPayload : withPhase2CurrentVisibleContext(
       loadedPayload, await loadPhase2VisibleContext(partyPool, {
@@ -241,6 +252,9 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       }));
     const sceneInput = typeof projectCurrentSpatialContext === 'function'
       ? { ...loadedWithCurrentVisible,
+        ...(priorVisibleRecord == null ? {} : {
+          prior_perceived_visible_context: priorVisibleRecord
+        }),
         ...(priorVisibleContext == null ? {} : {
           prior_perceived_visible_npcs: priorVisibleContext.visible_npc
         }) }
@@ -332,6 +346,13 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
             itemLabels: screenPresentation?.itemLabels ?? {},
             approvedActivityRecords: activityRecordsForBinding(head.stage26_result?.runtime_binding)
           }));
+      const openingPrior = includeCurrentVisibleContext
+        ? phase2OpeningPerceivedContext({
+          openingPerceivedContext: head.stage26_result.opening_perceived_context,
+          partyId, initialState: initial }) : null;
+      const visibleWithPrior = openingPrior == null ? visible : {
+        ...visible, prior_perceived_visible_context: openingPrior
+      };
       const journeyLocation = await loadPhase2JourneyLocation(transaction,
         partyId, initial.actor_id);
       const initialRunId = initial.materialization_trace?.run_id;
@@ -340,7 +361,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       const validateSceneRows = ({ rows }) => late.validateSceneRows(
         rows.map(({ table, row }) => ({ ...row, table })));
       const currentState = await withPhase2CurrentLocalEdges(
-        withJourneyLocation(visible, journeyLocation),
+        withJourneyLocation(visibleWithPrior, journeyLocation),
         includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
         includeCurrentVisibleContext ? readCurrentExitDisclosure : null,
         includeCurrentVisibleContext ? readCurrentConnectionDisclosure : null,

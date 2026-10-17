@@ -8,6 +8,8 @@ import { phase2VisibleContextFromPayload } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import { loadPhase2VisibleContext } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-visible-context.js';
+import { loadPhase2VisibleContextRecord } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-visible-context.js';
 import { createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { fixture } from './lower-dvina-trace-turn-step-commit-fixture.js';
@@ -40,6 +42,27 @@ test('committed calendar phase survives player-safe package and retry readback',
     } }, { commit: envelope });
     assert.equal(replay.current_light_phase, phase);
   }
+});
+
+test('previous visible package readback returns same-party committed position binding', async () => {
+  const context = visibleContext('daylight');
+  const envelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
+    partyId: 'party-bound', turnNumber: 4, nextVersion: 7,
+    changeSetId: 'change:7', idemId: 'idem:7',
+    envelope: { root_turn_id: 'turn:7', visible_context: context,
+      loop_trace: { clarification: null }, consequence: { state_changes: [] } }
+  });
+  const position = { location_ref: 'shore', g5_anchor_id: 'bank' };
+  const prior = await loadPhase2VisibleContextRecord({ async query({ text, values }) {
+    assert.match(text, /visible\.party_id=\$3/u);
+    assert.match(text, /snapshot\.state_version=visible\.committed_state_version/u);
+    assert.deepEqual(values, [envelope.package_id, envelope.package_digest, 'party-bound']);
+    return { rowCount: 1, rows: [{ visible_payload: envelope.visible_payload,
+      package_digest: envelope.package_digest, party_id: 'party-bound',
+      committed_state_version: '7', state_payload: { position } }] };
+  } }, { commit: envelope, partyId: 'party-bound' });
+  assert.deepEqual(prior, { party_id: 'party-bound', committed_state_version: 7,
+    position, context: phase2VisibleContextFromPayload(envelope.visible_payload) });
 });
 
 test('turn-step visible envelope omits typed label gaps and retains named items', () => {

@@ -356,7 +356,7 @@ test('NPC prompt shows complete grounded claim shape and personal-fact limits',
       'uncertain', 'withheld']) {
       assert.match(prompt, new RegExp(posture, 'u'));
     }
-    const claimsRule = 'claims — только утверждения о мире, людях, событиях или предметах, которые NPC высказывает в своей реплике. Незнание, сомнение, отказ, собственные чувства и мотивы говорящего — не claims, они выражаются в тексте реплики. Если утверждать нечего — claims: [].';
+    const claimsRule = 'claims — только утверждения о мире, людях, событиях или предметах, которые NPC высказывает в своей реплике. Неуверенность в ответе, отказ, собственные чувства и мотивы без утверждения о фактах — не claims. Категорический предел знаний или памяти NPC требует claim и точного свидетельства. Если утверждать нечего — claims: [].';
     assert.equal(prompt.includes(claimsRule), true);
     assert.equal(npcConversationInstructions({ validation_errors: [] }, request)
       .includes(claimsRule), true);

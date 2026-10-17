@@ -81,6 +81,19 @@ test('scene and malformed or partial journey identities fail closed', async () =
       journey_location: { location_kind: 'in_transit',
         scene_position_id: null, transit_anchor_id: null,
         travel_state_id: 'travel:paused', g6_instance_id: null },
+      npcs: [], combat_sessions: [] },
+    { position: {}, journey_location: { location_kind: 'transit_anchor',
+      scene_position_id: null, transit_anchor_id: null,
+      travel_state_id: null, g6_instance_id: null },
+      npcs: [], combat_sessions: [] },
+    { position: { site_id: 'site:stale' },
+      journey_location: { location_kind: 'transit_anchor',
+        scene_position_id: null, transit_anchor_id: 'anchor:arrival',
+        travel_state_id: null, g6_instance_id: null },
+      npcs: [], combat_sessions: [] },
+    { position: {}, journey_location: { location_kind: 'transit_anchor',
+      scene_position_id: null, transit_anchor_id: 'anchor:arrival',
+      travel_state_id: 'travel:stale', g6_instance_id: null },
       npcs: [], combat_sessions: [] }
   ];
   for (const state of invalidStates) {
@@ -112,6 +125,25 @@ test('journey projection clears stale scene G6 identity before in-transit readba
     assert.equal(loaded.journey_location.location_kind, 'in_transit');
     assert.deepEqual(readback.queries, []);
   });
+
+test('transit anchor readback has no scene identity or scene NPC query', async () => {
+  const journeyLocation = normalizeJourneyLocation({ id: 'journey:anchor',
+    location_kind: 'transit_anchor', scene_position_id: null,
+    transit_anchor_id: 'anchor:arrival', travel_state_id: null,
+    state_version: '1', g6_instance_id: null });
+  const state = withJourneyLocation({ position: {
+    position_id: 'position:stale', g6_id: 'g6:stale',
+    g6_instance_id: 'g6:stale', site_id: 'site:stale'
+  }, npcs: [], combat_sessions: [] }, journeyLocation);
+  assert.deepEqual(state.position, {});
+  const readback = trackedPool({ query: async () => {
+    assert.fail('transit anchor must skip scene SQL');
+  } });
+  const loaded = await withSceneNpcs(readback.pool, 'party:transit-readback',
+    state);
+  assert.equal(loaded.journey_location.transit_anchor_id, 'anchor:arrival');
+  assert.deepEqual(readback.queries, []);
+});
 
 test('null journey projection removes stale scene G6 identity', async () => {
   const state = withJourneyLocation({ journey_location: { stale: true },

@@ -19,19 +19,23 @@ export async function withSceneNpcs(pool, partyId, state, {
 } = {}) {
   state = await withCombatParticipantBodies(pool, partyId, state,
     loadBodyInitializationProfile);
-  if (state?.journey_location?.location_kind === 'in_transit') {
+  const locationKind = state?.journey_location?.location_kind;
+  if (locationKind === 'in_transit' || locationKind === 'transit_anchor') {
     const journey = state.journey_location;
     const position = state.position ?? {};
-    if (typeof journey.travel_state_id !== 'string'
-        || journey.travel_state_id.trim() === ''
+    const identity = locationKind === 'in_transit'
+      ? journey.travel_state_id : journey.transit_anchor_id;
+    if (typeof identity !== 'string' || identity.trim() === ''
         || journey.scene_position_id !== null
-        || journey.transit_anchor_id !== null
+        || (locationKind === 'in_transit'
+          ? journey.transit_anchor_id !== null
+          : journey.travel_state_id !== null)
         || journey.g6_instance_id !== null
         || position.position_id != null || position.g6_id != null
         || position.g6_instance_id != null
         || position.site_id != null) {
       throw sceneNpcReadbackDataGap(
-        'The in-transit journey location has a partial scene identity.');
+        'The non-scene journey location has a partial scene identity.');
     }
     return state;
   }

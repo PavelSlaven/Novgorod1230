@@ -4,7 +4,7 @@
 - Source checkout: `/srv/novgorod-work/tmp/d49-566-activity-capture-d4f3948-20261017/clone`, exact source HEAD `29f4e1f62f93920f65cf8eb3c731de2cf6e3be80`.
 - Temporary capture harness: `test/integration/held-item-visible-npc-production-capture-29f4e1f.test.js`, SHA-256 `0d24b4ab1fda44f657e1b81b560d05ac2ba1a097c143fb721e9b020e473663f4`.
 - Request: `issue-566-fisher-seed-000005`; scenario `novgorod_vikhtuy_work_storage_v1`; provider was the harness fake fetch target. Model calls: 0.
-- This is a failed single production capture, not a paired model benchmark. The original opening writer user JSON is preserved in [`2026-10-17_d49-activity_29f4e1f_opening-writer-user.json`](2026-10-17_d49-activity_29f4e1f_opening-writer-user.json).
+- This is a failed single production capture, not a paired model benchmark. The full safe opening writer system/user/parameters are preserved in [`2026-10-17_d49-activity_29f4e1f_opening-writer-input.json`](2026-10-17_d49-activity_29f4e1f_opening-writer-input.json), with the original user-only extract in [`2026-10-17_d49-activity_29f4e1f_opening-writer-user.json`](2026-10-17_d49-activity_29f4e1f_opening-writer-user.json).
 
 # Preconditions
 

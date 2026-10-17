@@ -115,13 +115,59 @@ test('fresh production Vikhtuy start exposes NPC-held fishing net to safe contex
     await runtime.acknowledgeOpening(opening.party_id, {
       client_ack_id: `${START_REQUEST_ID}-ack`,
     });
+    const firstLookRequestStart = requestLog.length;
     await runtime.submitTurn(opening.party_id, {
       raw_text: OBSERVE,
       request_id: `${START_REQUEST_ID}-look`,
     });
+    const firstLookRequestLog = requestLog.slice(firstLookRequestStart);
     await writeWireCapture();
 
     assert.equal(opening.screen.schema, 'first_game_screen');
+    const openingContextResult = await env.partyPool.query(`SELECT
+        stage26_result->'opening_perceived_context' AS opening_perceived_context
+      FROM party_runtime.party_server_sessions WHERE party_id=$1`, [opening.party_id]);
+    const openingPerceivedContext = openingContextResult.rows[0]?.opening_perceived_context;
+    const openingSensoryFacts = openingPerceivedContext?.sensory_details ?? [];
+    assert.ok(openingSensoryFacts.length > 0,
+      'the committed Stage26 opening package stores player-safe sensory facts');
+    const firstLookWriter = firstLookRequestLog.map(({ user }) => user)
+      .find(isTurnNarratorWriter);
+    assert.ok(firstLookWriter, 'the first LOOK uses the production narrator writer');
+    const firstLookSupport = firstLookWriter['Переданные сведения об обстановке']?.['Ощущения'] ?? [];
+    const firstLookRequired = firstLookWriter['Обязательные положения текущего эпизода'] ?? [];
+    assert.ok(openingSensoryFacts.every((fact) => firstLookSupport.includes(fact)),
+      'all opening sensory facts remain available as first-LOOK support');
+    assert.ok(openingSensoryFacts.every((fact) => !firstLookRequired.includes(fact)),
+      'unchanged opening sensory facts are not required again');
+    assert.ok(firstLookRequired.includes('Обстановка внимательно изучена.'),
+      'the LOOK observation result remains required');
+    assert.ok(firstLookRequired.some((fact) => fact.startsWith('В поле зрения')),
+      'the observed NPC result remains required');
+
+    const reloadedRoot = await createPresenceProductionRoot(env);
+    t.after(() => reloadedRoot.runtime.close());
+    const secondLookRequestStart = requestLog.length;
+    await reloadedRoot.runtime.submitTurn(opening.party_id, {
+      raw_text: OBSERVE,
+      request_id: `${START_REQUEST_ID}-look-after-reload`,
+    });
+    const secondLookRequestLog = requestLog.slice(secondLookRequestStart);
+    const secondLookWriter = secondLookRequestLog.map(({ user }) => user)
+      .find(isTurnNarratorWriter);
+    assert.ok(secondLookWriter, 'a reloaded runtime can submit another production LOOK');
+    const secondLookSupport = secondLookWriter['Переданные сведения об обстановке']?.['Ощущения'] ?? [];
+    const secondLookRequired = secondLookWriter['Обязательные положения текущего эпизода'] ?? [];
+    assert.ok(openingSensoryFacts.every((fact) => secondLookSupport.includes(fact)),
+      'the reloaded LOOK retains all opening facts as sensory support');
+    assert.ok(openingSensoryFacts.every((fact) => !secondLookRequired.includes(fact)),
+      'the reloaded LOOK does not require unchanged opening sensory facts');
+    assert.ok(secondLookRequired.includes('Обстановка внимательно изучена.'),
+      'the reloaded LOOK observation result remains required');
+    assert.ok(secondLookRequired.some((fact) => fact.startsWith('В поле зрения')),
+      'the reloaded LOOK NPC result remains required');
+    await writeWireCapture();
+
     const client = await env.partyPool.connect();
     let heldNets;
     let holderObservations;
@@ -179,7 +225,7 @@ test('fresh production Vikhtuy start exposes NPC-held fishing net to safe contex
       && cue.entity_ref?.entity_kind === 'item'
       && cue.entity_ref?.entity_id === heldNet.item_id);
 
-    const turnWriters = requestLog
+    const turnWriters = firstLookRequestLog
       .filter(({ user }) => isTurnNarratorWriter(user))
       .map(({ user }) => user);
     assert.equal(turnWriters.length, 1,

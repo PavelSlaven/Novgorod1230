@@ -9,6 +9,7 @@ import { commitLowerDvinaTracePhase2 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
 import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { narrationWire } from '../src/runtime/lower-dvina-trace-narration-llm.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import { enabled, group, verifyStageBCutover } from
@@ -454,6 +455,10 @@ test('standalone ordinary inspect replay does not repeat activity or model',
         })
     });
     f.state.position.position_id = 'shore-position';
+    f.state.environment_snapshot = { schema: 'rus.approved_initial_environment.v1',
+      season: 'summer', day_part: 'daylight', light_state: 'daylight',
+      weather_state: { sky: 'variable', precipitation: 'none',
+        visibility: 'normal_or_reduced', wind: 'strong' } };
     const input = turn('turn-step-standalone-inspect-replay',
       'Внимательно изучаю всё место крушения.');
     const first = await submit(f, input);
@@ -468,6 +473,16 @@ test('standalone ordinary inspect replay does not repeat activity or model',
           && seed.discovery_kind === 'inspect'));
     assert.ok(factual.visible_context.visible_changes.some((change) =>
       change.startsWith('Осмотр по вопросу «')));
+    const wire = narrationWire(f.narratorInput(), { roleId: 'gameplay_narrator' });
+    for (const fact of ['Лето.', 'Состояние неба меняется.', 'Осадков нет.',
+      'Сильный ветер.']) {
+      assert.ok(factual.visible_context.sensory_details.includes(fact));
+      assert.ok(f.narratorInput().visible_context.sensory_details.includes(fact));
+      assert.ok(wire['Переданные сведения об обстановке']['Ощущения'].includes(fact));
+      assert.ok(!factual.visible_context.visible_changes.includes(fact));
+    }
+    assert.ok(wire['Обязательные положения текущего эпизода']
+      .some((change) => change.startsWith('Осмотр по вопросу «')));
     assert.equal(materializationCalls, 2);
     assert.equal(f.turnStepCount(), 1);
     assert.equal(f.commitCount(), 1);

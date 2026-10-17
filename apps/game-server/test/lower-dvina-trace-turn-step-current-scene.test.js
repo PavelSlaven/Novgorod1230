@@ -24,6 +24,12 @@ import { mergeApprovedActivityRecords } from
   '../src/infrastructure/postgres/target-authored-start-runtime.js';
 import { buildAdditionalStartOwnerRows } from
   '../../../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
+import { createLowerDvinaTracePhase2StateReader } from
+  '../src/runtime/lower-dvina-trace-phase-2-state-reader.js';
+import { openingPerceivedContextFromPackage } from
+  '../src/runtime/lower-dvina-trace-opening.js';
+import { phase2OpeningPerceivedContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
@@ -941,6 +947,50 @@ test('direct player-safe observation does not replay previous-package sensory fa
   } }, [], { active_conditions: [{ id: 'hand_soreness' }] });
   assert.equal(unlabeled.some((change) => change.includes('hand_soreness')),
     false);
+});
+
+test('opening prior survives current-scene projection into the first direct observation', async () => {
+  const state = committedState();
+  state.party_id = 'party:opening';
+  state.party_state.state_version = 0;
+  state.position.g4_id = 'region';
+  state.position.g5_node_id = 'shed';
+  const alreadySeen = 'Низкое сырое небо.';
+  const newlySeen = 'На воде видна свежая рябь.';
+  const openingPackage = { position: { region_id: 'region',
+    place_id: 'shed', anchor_id: 'shed-anchor' }, visible_scene_facts: [
+    { fact_id: 'opening:natural:shore', text: alreadySeen }
+  ] };
+  const openingPerceivedContext = openingPerceivedContextFromPackage(openingPackage);
+  const prior = phase2OpeningPerceivedContext({ openingPerceivedContext,
+    partyId: state.party_id, initialState: state });
+  assert.ok(prior, 'the persisted v0 opening package binds to the same position');
+  state.prior_perceived_visible_context = prior;
+  state.current_visible_context.sensory_details = [alreadySeen, newlySeen];
+
+  const reader = createLowerDvinaTracePhase2StateReader({ repository: {},
+    partyId: state.party_id, idempotencyKey: 'look:opening', state,
+    projectCurrentScene: (committedState) => withResolvedLowerDvinaTraceCurrentScene({
+      committedState, locationProfiles
+    }) });
+  const retrievedState = await reader.read({ revalidation: false });
+  assert.deepEqual(retrievedState.prior_perceived_visible_context, prior,
+    'the state reader carries the opening baseline past current-scene projection');
+
+  const result = projectCurrentSceneForNoOperationDirect({ input: {
+    consequence: { status: 'resolved', visible_seed: {} }, retrieved_state: retrievedState,
+    mode_resolution: { decision_trace: { remaining_intent: null,
+      step_traces: [{ applied: true, approved_plan: {
+        resolution: 'direct', goal_result: 'achieved', operations: [],
+        check: null, direct_result_kind: 'player_safe_observation'
+      } }] } }
+  }, directSeedKeys: [], body: {} });
+  assert.ok(result.visible_changes.includes(newlySeen));
+  assert.equal(result.visible_changes.includes(alreadySeen), false,
+    'the first LOOK does not turn opening support into a newly required sensory fact');
+  assert.ok(result.visible_changes.includes('Вы внимательно изучили обстановку.'));
+  assert.ok(result.visible_changes.some((fact) => fact.includes('раненый мужчина')),
+    'the currently perceived entity result remains required');
 });
 
 test('fresh authoritative NPC presence retains labels of the same perceived people', () => {

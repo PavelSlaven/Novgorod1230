@@ -308,7 +308,7 @@ function withoutCurrentSpatialContext(state) {
 function directObservationPriorScene(state) {
   const prior = state?.prior_perceived_visible_context;
   const stateVersion = Number(state?.party_state?.state_version);
-  if (prior?.party_id !== state?.party_id
+  if (prior == null || prior.party_id !== state?.party_id
       || !Number.isSafeInteger(stateVersion)
       || Number(prior.committed_state_version) !== stateVersion
       || !samePerceivedPosition(prior.position, state?.position)

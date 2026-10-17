@@ -452,20 +452,29 @@ test('Phase 2 state revalidators forward deadline to version reader', async () =
 
 test('initial Phase 2 state reader reuses its per-attempt state without mutation',
   async () => {
-    const state = { party_state: { state_version: 17 }, items: [{ id: 'item' }] };
+    const priorPerceivedContext = { party_id: 'party',
+      committed_state_version: 0, position: { location_ref: 'shore',
+        g5_anchor_id: 'bank' }, context: { sensory_details: ['Старый берег.'] } };
+    const state = { party_state: { state_version: 17 },
+      prior_perceived_visible_context: priorPerceivedContext,
+      items: [{ id: 'item' }] };
     const before = structuredClone(state);
     let projected = null;
     const reader = createLowerDvinaTracePhase2StateReader({
       repository: {}, partyId: 'party', idempotencyKey: 'key', state,
       projectCurrentScene: (value) => {
         projected = value;
-        return { ...value, current_visible_context: { visible_scene: 'Берег' } };
+        const { prior_perceived_visible_context: _prior, ...current } = value;
+        return { ...current, current_visible_context: { visible_scene: 'Берег' } };
       }
     });
     const result = await reader.read({ revalidation: false });
     assert.equal(projected, state);
     assert.deepEqual(state, before);
     assert.notEqual(result, state);
+    assert.deepEqual(result.prior_perceived_visible_context,
+      priorPerceivedContext,
+      'the opening baseline survives current-scene projection until the direct-observation result is built');
   });
 
 test('replay deadline after visible read does not call narrator', async () => {

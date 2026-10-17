@@ -18,6 +18,10 @@ import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixtur
 import { buildCanonicalOpeningVisibleContext } from '../src/runtime/canonical-opening-context.js';
 import { projectG4NaturalPerception } from '../src/runtime/g4-natural-perception.js';
 import { deriveApprovedInitialEnvironment } from '@rus/materialization';
+import { phase2OpeningPerceivedContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { lowerDvinaTraceObservedSceneChanges } from
+  '../src/runtime/lower-dvina-trace-visible-scene-items.js';
 
 test('authored opening package answers all reader controls from persisted refs', () => {
   const pkg = openingPackage();
@@ -1239,6 +1243,21 @@ test('first screen receives natural perception after committed rehydrate without
           fact_id.startsWith('opening:natural:')
             || fact_id.startsWith('opening:environment:')).map(({ text }) => text),
         'the exact sensory facts already sent in the opening package are committed for the first v0 scene');
+      const phase2Prior = phase2OpeningPerceivedContext({
+        openingPerceivedContext: sessionIdentity.opening_perceived_context,
+        partyId: 'party:1', initialState: { party_id: 'party:1',
+          party_state: { state_version: 0 }, position: internal.position }
+      });
+      assert.deepEqual(phase2Prior?.context?.sensory_details,
+        sessionIdentity.opening_perceived_context.sensory_details,
+        'the first Phase 2 read binds the committed opening baseline to its v0 position');
+      const newlyPerceived = 'У берега показалась свежая рябь.';
+      const observedChanges = lowerDvinaTraceObservedSceneChanges({
+        sensory_details: [...phase2Prior.context.sensory_details, newlyPerceived],
+        visible_npc: []
+      }, phase2Prior.context.sensory_details);
+      assert.deepEqual(observedChanges, [newlyPerceived],
+        'opening facts remain scene support while only genuinely new sensory facts become observation changes');
       assert.deepEqual(sessionIdentity.opening_perceived_context?.position?.anchor_id,
         narratorInput.position.anchor_id);
       assert.doesNotMatch(JSON.stringify(result.screen), /opening_perceived_context/u);

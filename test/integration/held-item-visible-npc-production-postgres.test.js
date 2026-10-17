@@ -28,7 +28,8 @@ import {
 } from '../spatial-v3/presence-rules-production-e2e-fixture.js';
 
 const SCENARIO_ID = 'novgorod_vikhtuy_work_storage_v1';
-const START_REQUEST_ID = 'issue-566-fisher-seed-000091';
+// Imported approved composition @3 (digest 02694c68...) selects Fisher @5 for this seed.
+const START_REQUEST_ID = 'issue-566-fisher-seed-000005';
 const OBSERVE = 'Осматриваюсь вокруг.';
 const FISHING_NET_TEMPLATE = 'item_tpl_nov_fishing_net_v1';
 const FISHING_NET_LABEL = 'рыболовная сеть';

@@ -354,11 +354,17 @@ export function materializedOrdinaryPresenceChange(value, visibleObjects, planne
         || (plannedItem != null && descriptor?.name !== value.display_name)) {
       ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
     }
+    const distinctSameName = (visibleObjects ?? []).some(({ entity_ref: ref, display_label }) =>
+      ref?.entity_kind === 'item' && ref.entity_id !== value.item_ref
+        && display_label === value.display_name);
+    const distinctness = distinctSameName
+      ? ' Найденный предмет — отдельная вещь от других видимых предметов с тем же названием.'
+      : '';
     if (matches.length === 0) return `Найден предмет — ${value.display_name}. `
-      + 'При находке он не находился в руках героя.';
+      + `При находке он не находился в руках героя.${distinctness}`;
     return `Найден предмет — ${value.display_name}. Найденный предмет ${
       matches[0].visible_status === 'available'
-        ? 'виден здесь, не в руках героя' : matches[0].visible_status}.`;
+        ? 'виден здесь, не в руках героя' : matches[0].visible_status}.${distinctness}`;
   }
   return `Найден предмет — ${value.display_name}.`;
 }

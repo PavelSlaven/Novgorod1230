@@ -269,7 +269,7 @@ test('historical pre-v17 party ledger rejects v17 release readiness without touc
     await pool.query(await buildTransactionalImportSql({ manifestPath: capacityManifestPath,
       temporaryTablePrefix: 'm2c_capacity_v2' }));
     assert.deepEqual(await importAdditionalStartOwnerRows(pool),
-      { npc: 6, acoustic: 4, authoring: 10, rollback: 'pass', readback: 'exact' });
+      { npc: 6, acoustic: 4, authoring: 12, rollback: 'pass', readback: 'exact' });
     for (const table of ['spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles']) {
       const dataset = capacity.datasets.find((entry) => entry.table === table);
       const expected = await json(`data/world-catalogs/novgorod/${dataset.file}`);

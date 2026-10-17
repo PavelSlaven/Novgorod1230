@@ -28,7 +28,7 @@ import {
 } from '../spatial-v3/presence-rules-production-e2e-fixture.js';
 
 const SCENARIO_ID = 'novgorod_vikhtuy_work_storage_v1';
-const START_REQUEST_ID = 'issue-594-pine-ridge-clear-sight-seed-000024';
+const START_REQUEST_ID = 'issue-566-fisher-seed-000091';
 const OBSERVE = 'Осматриваюсь вокруг.';
 const FISHING_NET_TEMPLATE = 'item_tpl_nov_fishing_net_v1';
 const FISHING_NET_LABEL = 'рыболовная сеть';

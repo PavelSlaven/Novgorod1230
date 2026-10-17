@@ -51,7 +51,15 @@ function exteriorInput(authored) {
       calls.push('identity');
       return { rows: [{ identity_state: authored }] };
     }
-    assert.match(sql, /FROM party_runtime.party_item_placements p/u);
+    if (sql.includes("p.physical_position='hands'")) {
+      assert.match(sql, /FROM party_runtime\.party_items i/u);
+      assert.match(sql, /JOIN party_runtime\.party_item_placements p/u);
+      assert.match(sql, /p.party_id=\$1/u);
+      assert.match(sql, /p.holder_npc_id=\$2/u);
+      calls.push('held');
+      return { rows: [] };
+    }
+    assert.match(sql, /FROM party_runtime\.party_item_placements p/u);
     calls.push('gear');
     return { rows: [] };
   } };
@@ -72,8 +80,9 @@ test('CA536-F1: committed v4 bald exterior remains readable without rewriting id
   const { input, calls } = exteriorInput(authored);
   const exterior = await readCommittedEntityExterior(input);
   assert.deepEqual(exterior, { sex_category: 'male', age_category: 'middle_aged',
-    appearance: physicalBaldAppearance(before), visible_equipment: [] });
-  assert.deepEqual(calls, ['identity', 'gear']);
+    appearance: physicalBaldAppearance(before), visible_equipment: [],
+    held_items: [], machine_status: null, current_activity: null });
+  assert.deepEqual(calls, ['identity', 'gear', 'held']);
   assert.deepEqual(authored, before);
 });
 
@@ -85,7 +94,7 @@ test('CA536-F1: new bald exterior and ordinary exterior retain their physical fi
     const { input, calls } = exteriorInput(authored);
     const exterior = await readCommittedEntityExterior(input);
     assert.deepEqual(exterior.appearance, before.appearance);
-    assert.deepEqual(calls, ['identity', 'gear']);
+    assert.deepEqual(calls, ['identity', 'gear', 'held']);
     assert.deepEqual(authored, before);
   }
 });

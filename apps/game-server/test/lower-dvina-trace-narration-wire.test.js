@@ -56,6 +56,63 @@ test('narration roles receive Russian entity descriptions without private refs o
   }
 });
 
+test('prose roles distinguish same-named visible objects without technical counters', () => {
+  const visible_context = { visible_scene: 'Берег.', visible_changes: ['Найдена сухая ветка.'],
+    uncertainties: [], sensory_details: [], known_context: [], allowed_tensions: [],
+    do_not_imply: [], visible_npc: [], visible_objects: [
+      { entity_ref: { entity_kind: 'item', entity_id: 'held-branch' },
+        display_label: 'сухая ветка', visible_status: 'у вас в руках' },
+      { entity_ref: { entity_kind: 'item', entity_id: 'new-branch' },
+        display_label: 'сухая ветка', visible_status: 'замечена' },
+      { entity_ref: { entity_kind: 'item', entity_id: 'knife' },
+        display_label: 'нож', visible_status: 'при вас' }
+    ] };
+  for (const roleId of ['gameplay_narrator', 'gameplay_narrator_auditor',
+    'gameplay_narrator_semantic_repair', 'gameplay_narrator_format_repair']) {
+    const wire = narrationWire({ visible_context }, { roleId });
+    const objects = wire['Переданные сведения об обстановке']['Предметы и ориентиры'];
+    assert.deepEqual(objects, [
+      'Разные предметы и ориентиры: сухая ветка у вас в руках; сухая ветка замечена.',
+      'нож при вас'
+    ]);
+    assert.doesNotMatch(JSON.stringify(wire), /held-branch|new-branch|entity_ref|№\d/u);
+  }
+  const repeatedRef = structuredClone(visible_context);
+  repeatedRef.visible_objects[1].entity_ref = repeatedRef.visible_objects[0].entity_ref;
+  assert.deepEqual(narrationWire({ visible_context: repeatedRef })
+    ['Переданные сведения об обстановке']['Предметы и ориентиры'], [
+    'сухая ветка у вас в руках', 'сухая ветка замечена', 'нож при вас'
+  ]);
+  const repeatedAfterOther = structuredClone(visible_context);
+  repeatedAfterOther.visible_objects.splice(2, 0, {
+    ...repeatedAfterOther.visible_objects[0], visible_status: 'у вас в руках'
+  });
+  assert.deepEqual(narrationWire({ visible_context: repeatedAfterOther })
+    ['Переданные сведения об обстановке']['Предметы и ориентиры'], [
+    'Разные предметы и ориентиры: сухая ветка у вас в руках; сухая ветка замечена.',
+    'нож при вас'
+  ]);
+  const sameDescriptions = structuredClone(visible_context);
+  sameDescriptions.visible_objects[1].visible_status = 'у вас в руках';
+  assert.deepEqual(narrationWire({ visible_context: sameDescriptions })
+    ['Переданные сведения об обстановке']['Предметы и ориентиры'], [
+    'Разные предметы и ориентиры: сухая ветка у вас в руках; сухая ветка у вас в руках.',
+    'нож при вас'
+  ]);
+  const npcContext = structuredClone(visible_context);
+  npcContext.visible_objects = [];
+  npcContext.visible_npc = [
+    { entity_ref: { entity_kind: 'npc', entity_id: 'first' },
+      display_label: 'Рыбак', visible_status: 'Стоит у воды.' },
+    { entity_ref: { entity_kind: 'npc', entity_id: 'second' },
+      display_label: 'Рыбак', visible_status: 'Идёт по берегу.' }
+  ];
+  assert.deepEqual(narrationWire({ visible_context: npcContext })
+    ['Переданные сведения об обстановке']['Люди'], [
+    'Разные люди: Рыбак Стоит у воды.; Рыбак Идёт по берегу.'
+  ]);
+});
+
 test('all prose roles retain described NPC and admitted path without internal fields', () => {
   const npc = { entity_ref: { entity_kind: 'npc', entity_id: 'private-npc-92' },
     display_label: 'Рыбак', observable_cues: {
@@ -339,7 +396,12 @@ test('provider payload gives four prose roles one fact snapshot without service 
       visible_scene: 'У берега.', visible_changes: ['Мирон коснулся жерди.'],
       uncertainties: ['Исход прикосновения неизвестен.'],
       sensory_details: ['Вода шумела.'], known_context: ['Имя героя: Мирон.'],
-      visible_npc: [], visible_objects: [], allowed_tensions: [],
+      visible_npc: [], visible_objects: [
+        { entity_ref: { entity_kind: 'item', entity_id: 'held-branch' },
+          display_label: 'сухая упавшая ветка', visible_status: 'у вас в руках' },
+        { entity_ref: { entity_kind: 'item', entity_id: 'seen-branch' },
+          display_label: 'сухая упавшая ветка', visible_status: 'замечен' }
+      ], allowed_tensions: [],
       do_not_imply: [] }, context: { outcome: {} } });
   assert.equal(result.status, 'approved');
   assert.deepEqual(captured.map(({ role }) => role), [
@@ -350,6 +412,10 @@ test('provider payload gives four prose roles one fact snapshot without service 
   for (const { role, wire, payload } of captured) {
     assert.deepEqual(wire['Переданные сведения об обстановке'],
       captured[0].wire['Переданные сведения об обстановке']);
+    assert.deepEqual(wire['Переданные сведения об обстановке']['Предметы и ориентиры'], [
+      'Разные предметы и ориентиры: сухая упавшая ветка у вас в руках; сухая упавшая ветка замечен.'
+    ]);
+    assert.doesNotMatch(payload.messages[1].content, /held-branch|seen-branch|№\d/u);
     assert.deepEqual(wire['Подтверждённый исход'], []);
     assert.deepEqual(wire['Сведения о мире'], []);
     assert.deepEqual(wire['Обязательные положения текущего эпизода'].map((line) =>

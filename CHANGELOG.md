@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(narration): include currently visible items held by a clearly perceived NPC in opening and turn scene facts; preserve item identity and discard stale held-item cues when visibility changes (#685, D49).
 - fix(narration): include current visible NPC-held item labels in safe cues and writer facts (#685).
 - fix(game-server): read valid transit-anchor locations without requiring scene NPC placement, while rejecting stale or conflicting scene identities (#744).
 - fix(opening): pass the current player-safe place label to opening narration and reader control even when visual details are obscured (#741, D49).

@@ -88,4 +88,3 @@ This table is computed mechanically from blind-judgment-corrected.json, blind-me
 | R-abd4fc9e5fa6 | recorded | I-9e63fb7be9ab | yes/yes | pass → pass | yes | yes | 5 | pass |
 
 Totals recomputed from judge JSON: schema-valid 26/28; expected decision derived correctly 26/28; full semantic diagnosis 22/28; retention correct 28/28; all four criteria 21/28. These agree with the corrected judge JSON/summary. Production replay independently agrees on schema validity and host outcomes; its two recorded typed failures are not successful expected decisions.
-

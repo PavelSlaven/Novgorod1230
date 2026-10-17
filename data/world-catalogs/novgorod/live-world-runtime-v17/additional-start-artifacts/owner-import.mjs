@@ -88,7 +88,9 @@ async function readApprovedFisherLineage() {
   assert.equal(approval.candidate_path, candidatePath);
   const bytes = await read(candidatePath);
   assert.equal(sha(bytes), approval.candidate_sha256);
-  const authorization = await json(lineageImportAuthorizationPath);
+  let authorization;
+  try { authorization = await json(lineageImportAuthorizationPath); }
+  catch (error) { if (error.code === 'ENOENT') return null; throw error; }
   assertAdditionalStartImportAuthorization(authorization, approval.candidate_sha256);
   const manifest = await json(`${lineage}/artifact-manifest.json`);
   assert.equal(manifest.artifact_sha256['candidate.json'], approval.candidate_sha256);

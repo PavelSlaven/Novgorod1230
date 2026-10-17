@@ -19,9 +19,23 @@ import { failCurrentScene, validCurrentScene, visibleNpc } from
   './lower-dvina-trace-turn-step-current-scene-validation.js';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
+
 import { playerSafeAppearanceSummary } from
   './lower-dvina-trace-player-safe-appearance.js';
 export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
+
+export function withResolvedLowerDvinaTraceCurrentScene({
+  resolveTargetStartRuntime = null, approvedActivityRecords = null, ...input
+} = {}) {
+  const state = input.committedState;
+  const runtime = typeof resolveTargetStartRuntime === 'function'
+    ? resolveTargetStartRuntime(state?.runtime_binding ?? { scenario_id: state?.scenario_id })
+    : null;
+  return withLowerDvinaTraceCurrentScene({ ...input,
+    approvedActivityRecords: typeof resolveTargetStartRuntime === 'function'
+      ? runtime?.materialization_inputs?.approved_activity_records ?? null
+      : approvedActivityRecords });
+}
 export function projectPerceivedPeopleAbsence({ currentVisibleContext,
   currentSpatialContextIsFresh, currentSpatialContextFiltersEntities }) {
   if (currentSpatialContextIsFresh !== true
@@ -36,7 +50,8 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   itemLabels = {},
   currentSpatialContext = committedState?.current_spatial_context ?? null,
   currentSpatialContextIsFresh = committedState?.current_spatial_context_is_fresh
-    ?? currentSpatialContext != null }) {
+    ?? currentSpatialContext != null,
+  approvedActivityRecords = null }) {
   if (committedState == null || typeof committedState !== 'object'
       || Array.isArray(committedState)) failCurrentScene();
   const projectionSource = structuredClone(committedState);
@@ -66,7 +81,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
           ...initial.visible_objects,
           ...sceneItems.map(({ visibleObject }) => visibleObject)])
       },
-      committedState: projectionSource
+      committedState: projectionSource, approvedActivityRecords
     });
     const current = { ...observed,
       visible_npc: distinctNpcLabels(observed.visible_npc) };
@@ -187,7 +202,8 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     uncertainties: unique(currentUncertainties).filter(text),
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
-  }, committedState: projectionSource }), projectionSource, playerSafe.position);
+  }, committedState: projectionSource, approvedActivityRecords }),
+  projectionSource, playerSafe.position);
   const current = { ...observed,
     visible_npc: distinctNpcLabels(observed.visible_npc).map((npc) => {
       if (!refreshedAppearanceNpcIds.has(npc?.entity_ref?.entity_id)) return npc;
@@ -208,7 +224,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
 export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys, body,
   locationProfiles = input?.retrieved_state?.location_profiles ?? null,
   scenePresentation = input?.retrieved_state?.scene_presentation ?? null,
-  itemLabels = {} }) {
+  itemLabels = {}, approvedActivityRecords = null }) {
   if (input?.consequence?.visible_seed?.clarification != null) return null;
   const traces = input?.mode_resolution?.decision_trace?.step_traces;
   if (!Array.isArray(traces) || traces.length === 0
@@ -222,21 +238,22 @@ export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys,
   return projectCurrentSceneForVisibleOverlay({
     input, directSeedKeys, body,
     currentSpatialContext: input?.retrieved_state?.current_spatial_context,
-    locationProfiles, scenePresentation, itemLabels
+    locationProfiles, scenePresentation, itemLabels, approvedActivityRecords
   });
 }
 export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, body,
   currentSpatialContext = input?.retrieved_state?.current_spatial_context,
   locationProfiles = input?.retrieved_state?.location_profiles ?? null,
   scenePresentation = input?.retrieved_state?.scene_presentation ?? null,
-  itemLabels = {} }) {
+  itemLabels = {}, approvedActivityRecords = null }) {
   const state = input?.retrieved_state;
   const isFresh = state?.current_spatial_context_is_fresh === true
     && currentSpatialContext != null;
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles, scenePresentation,
     itemLabels,
-    currentSpatialContext, currentSpatialContextIsFresh: isFresh
+    currentSpatialContext, currentSpatialContextIsFresh: isFresh,
+    approvedActivityRecords
   }).current_visible_context;
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);

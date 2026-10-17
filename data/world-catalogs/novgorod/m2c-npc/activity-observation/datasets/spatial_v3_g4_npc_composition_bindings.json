@@ -1,0 +1,90 @@
+[
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_canonical_initial_novgorod_vikhtuy_work_storage_v1",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "g4_version": 1,
+    "generation_template_id": null,
+    "generation_template_version": null,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 4
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_local_trader_v1",
+            "version": 1
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_household_servant_v1",
+            "version": 1
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      },
+      "canonical_initial_snapshot_only": true,
+      "canonical_source_generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+        "version": 1
+      }
+    },
+    "status": "candidate_approval_pending",
+    "provenance_ref": "m2c_npc_canonical_initial_editorial_001",
+    "directness": "approved_gameplay_composition_transfer",
+    "confidence": "low",
+    "canonical_g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+    "canonical_g5_version": 1,
+    "canonical_digest": "ef26a77f4d30996ce45da2ea2221d9f1c4f0428db51e6e03cd948ab06f5025da"
+  }
+]

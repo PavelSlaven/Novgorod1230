@@ -1,0 +1,29 @@
+{
+  "schema": "rus.m2c_npc_activity_observation_artifact_manifest.v1",
+  "candidate_id": "m2c_npc_activity_observation_v1",
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "transform_path": "C:\\Users\\Slaven\\AppData\\Local\\Temp\\d49-566-activity-observation-draft.py",
+  "transform_sha256": "df008edab4ca566fc13949973b943aefba17d232e432b87f964385939a6f1f19",
+  "input_sha256": {
+    "data/world-catalogs/novgorod/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json": "a0a5fea52f7be3a7f7de033d6aad11cc0b10f8560f3cd53b6fc6a78bdd2f10f7",
+    "data/world-catalogs/novgorod/m2c-npc/canonical-initial/datasets/spatial_v3_g4_npc_composition_bindings.json": "8b7c3e33932bd566335dc05867331dd73b99d5545ebd2f19ea8d794f9451d0e5",
+    "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-coverage-candidate-v1.json": "16f9f3479c2fddb2d8af6dfbf18fbb6bb00603ad36afa8146c97e4a0310078f2",
+    "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-coverage-data-approval.json": "c49f83fce0dde4ff3593c01b078bbee5b5893be613005e0707a8a5e4f36640d5"
+  },
+  "artifact_sha256": {
+    "candidate.json": "69e26bcded6e56e7453c88eac54be0ab4c7da1c9cc0c22de5c4f77c12d34308f",
+    "datasets/record_sources.json": "371dc6d41b14216b8e1cc2d4c8523a9cb66572b5b10fe2d193cf74645e5e5d4e",
+    "datasets/spatial_v3_authoring_versions.json": "c68d5ea1573b739a897aab7b2c26ed71dee0741375fb03b0af19a1634d53d41c",
+    "datasets/spatial_v3_g4_npc_composition_bindings.json": "0de967644e7f8a902f04c8e8db47f46e1a8eda3b08613176ed577dad196ab5e0",
+    "datasets/spatial_v3_npc_runtime_profiles.json": "7c707d420871b7566ef20bd8a3146a19b7433204162ed1a6c619d0a3f38d5566",
+    "review-request.md": "961e835ec82e533c161740774cf28b173e7c1d25c827dc3966189d699cc467aa"
+  },
+  "record_canonical_digests": {
+    "activity_profile": "43891d6cea5c70bb7dbcfe071dbb89e0c053c097970885809bc695a4a2f7f076",
+    "fisher_binding_successor": "0c12eef971dfdd5f8faeb2238db0b23bd5ec4ca3b853faaed2220c750ba9d9a6",
+    "canonical_composition_successor": "ef26a77f4d30996ce45da2ea2221d9f1c4f0428db51e6e03cd948ab06f5025da"
+  }
+}

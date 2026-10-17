@@ -213,6 +213,19 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     }),
     loadInternal: (partyId) => repository.loadInternal(partyId),
     loadVisible: (partyId) => repository.loadVisible(partyId),
+    resolveTargetStartRuntime(binding) {
+      const matches = targetStarts.filter((start) =>
+        start.profile?.scenario_id === binding?.scenario_id
+          && (start.bindingRevision ?? 1) === binding?.revision);
+      return matches.length === 1 ? matches[0] : null;
+    },
+    getApprovedActivityRecords(scenarioId) {
+      const matches = targetStarts.filter(({ profile }) =>
+        profile.scenario_id === scenarioId);
+      return matches.length === 1
+        ? matches[0].materialization_inputs?.approved_activity_records ?? null
+        : null;
+    },
     ...(targetStartRuntime == null ? {} : {
       async loadNaturalScenePerceptionInput({ partyId, actorId, internal,
         initialState, transaction: suppliedTransaction = null }) {
@@ -258,7 +271,9 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             partyId, actorId });
           if (ownsTransaction) await transaction.query('COMMIT');
           return { ...input, entity_observations: entityObservations,
-            site_connections: siteConnections };
+            site_connections: siteConnections,
+            approved_activity_records: selectedStart.materialization_inputs
+              ?.approved_activity_records ?? null };
         } catch (error) {
           if (ownsTransaction) await transaction.query('ROLLBACK');
           throw error;

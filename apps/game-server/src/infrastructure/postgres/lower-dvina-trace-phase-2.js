@@ -13,7 +13,7 @@ import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2
 import { replayLowerDvinaTracePhase2Presentation } from './lower-dvina-trace-phase-2-presentation-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { hydrateNpcRoutineState } from '../../runtime/npc-routine-temporal.js';
-import { withLowerDvinaTraceCurrentScene } from
+import { withResolvedLowerDvinaTraceCurrentScene } from
   '../../runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
 import { assertPhase3NormalizedRows, hydrateSemanticDecisionReplay } from './lower-dvina-trace-phase-3-read.js';
@@ -76,7 +76,13 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
   readCurrentConnectionDisclosure = null,
   readCurrentVisibleContext = null,
-  projectEnvironmentAtClock = null } = {}) {
+  projectEnvironmentAtClock = null,
+  approvedActivityRecords = null, resolveTargetStartRuntime = null } = {}) {
+  const activityRecordsForBinding = (binding) =>
+    typeof resolveTargetStartRuntime === 'function'
+      ? resolveTargetStartRuntime(binding)?.materialization_inputs
+        ?.approved_activity_records ?? null
+      : approvedActivityRecords;
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -108,10 +114,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         { status: 409 }
       );
     }
+    const resolvedBinding = typeof authoredRuntimeBindingResolver === 'function'
+      ? authoredRuntimeBindingResolver(row.stage26_result?.runtime_binding)
+      : null;
     if (Number(row.party_state_version) === 0) {
-      const resolvedBinding = typeof authoredRuntimeBindingResolver === 'function'
-        ? authoredRuntimeBindingResolver(row.stage26_result?.runtime_binding)
-        : null;
       const authoredInitialState = row.state_payload?.schema === 'rus.authored_start_initial_party_snapshot.v3';
       const naturalPin = resolvedBinding?.initial_natural_perception_rule_pin;
       const canonicalInitialState = naturalPin != null
@@ -165,7 +171,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
           initialNaturalPerceptionRulePin: naturalPin,
           naturalScenePerceptionInput,
           scenePresentation: screenPresentation?.scenePresentation ?? null,
-          itemLabels: screenPresentation?.itemLabels ?? {}
+          itemLabels: screenPresentation?.itemLabels ?? {},
+          approvedActivityRecords: activityRecordsForBinding(row.stage26_result?.runtime_binding)
         })
       );
       const journeyLocation = await loadPhase2JourneyLocation(
@@ -270,7 +277,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       return hydrated;
     }
     const currentSpatialContext = await projectCurrentSpatialContext({ partyId,
-      actorId: hydrated.actor_id, state: hydrated, turnBudget });
+      actorId: hydrated.actor_id, state: hydrated, turnBudget,
+      runtimeBinding: row.stage26_result?.runtime_binding });
     const spatial = { ...withPhase2CurrentVisibleContext(hydrated,
       currentSpatialContext), current_spatial_context: currentSpatialContext,
       current_spatial_context_is_fresh: true,
@@ -321,7 +329,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
             initialNaturalPerceptionRulePin: naturalPin,
             naturalScenePerceptionInput,
             scenePresentation: screenPresentation?.scenePresentation ?? null,
-            itemLabels: screenPresentation?.itemLabels ?? {}
+            itemLabels: screenPresentation?.itemLabels ?? {},
+            approvedActivityRecords: activityRecordsForBinding(head.stage26_result?.runtime_binding)
           }));
       const journeyLocation = await loadPhase2JourneyLocation(transaction,
         partyId, initial.actor_id);
@@ -378,7 +387,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       if (typeof projectCurrentSpatialContext === 'function') {
         const currentSpatialContext = await projectCurrentSpatialContext({
           partyId, actorId: hydrated.actor_id, state: hydrated, turnBudget,
-          transaction
+          transaction, runtimeBinding: head.stage26_result?.runtime_binding
         });
         const disclosed = await withPhase2CurrentLocalEdges(
           withPhase2CurrentVisibleContext(hydrated, currentSpatialContext),
@@ -551,10 +560,12 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       }) : null;
     const presentation = await loadLowerDvinaTraceScreenPresentation(screenPayload);
     const currentVisibleContext = refreshedScene == null ? null
-      : withLowerDvinaTraceCurrentScene({
+      : withResolvedLowerDvinaTraceCurrentScene({
         committedState: refreshedScene,
         scenePresentation: presentation?.scenePresentation ?? null,
-        itemLabels: presentation?.itemLabels ?? {}
+        itemLabels: presentation?.itemLabels ?? {},
+        approvedActivityRecords,
+        resolveTargetStartRuntime
       }).current_visible_context;
     const screen = projectLowerDvinaTraceScreenPanels({
       payload: screenPayload,

@@ -5,6 +5,7 @@ import {
   projectDirectSeedChanges,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
+  withResolvedLowerDvinaTraceCurrentScene,
   withLowerDvinaTraceCurrentScene as projectCommittedScene
 } from
   '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
@@ -19,10 +20,59 @@ import { createLowerDvinaTraceTurnStepVisibleProjector } from
 import { existingItemObservationChanges, lowerDvinaTraceDirectResultChanges,
   lowerDvinaTraceVisibleSceneItems } from
   '../src/runtime/lower-dvina-trace-visible-scene-items.js';
+import { mergeApprovedActivityRecords } from
+  '../src/infrastructure/postgres/target-authored-start-runtime.js';
+import { buildAdditionalStartOwnerRows } from
+  '../../../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
 
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
   economic_basis: 'Пустая сушильня.' }];
+
+test('turn overlay and post-commit refresh use only the persisted scenario activity records', async () => {
+  const ownerRows = await buildAdditionalStartOwnerRows();
+  const records = mergeApprovedActivityRecords([], ownerRows.runtimeProfiles
+    .filter((row) => row.profile_kind === 'activity' && row.status === 'approved')
+    .map((row) => row.payload));
+  const runtime = { materialization_inputs: { approved_activity_records: records } };
+  const resolveTargetStartRuntime = (binding) => binding?.scenario_id === 'vikhtuy'
+    ? runtime : null;
+  const state = committedState();
+  state.scenario_id = 'vikhtuy';
+  state.current_visible_context.visible_npc[0].entity_ref.entity_id = 'fisher';
+  state.current_visible_context.visible_npc[0].display_label = 'рыбак';
+  state.current_visible_context.visible_npc[0].observable_cues.held_items = [
+    { entity_ref: { entity_kind: 'item', entity_id: 'net' } }
+  ];
+  state.current_spatial_context = structuredClone(state.current_visible_context);
+  state.current_spatial_context_filters_entities = true;
+  state.current_spatial_context_is_fresh = true;
+  state.npcs[0].instance_id = 'fisher';
+  state.npcs[0].machine_state = { status: 'active', current_activity: { status: 'active',
+    activity_ref: 'activity_m2c_npc_fisher_initial_work_observation_v1' } };
+  state.items.push({ item_id: 'net', template_id: 'item_tpl_nov_fishing_net_v1',
+    placement: { holder_npc_id: 'fisher', physical_position: 'hands' } });
+
+  for (const projectionState of [state, structuredClone(state)]) {
+    const projected = withResolvedLowerDvinaTraceCurrentScene({
+      committedState: projectionState, locationProfiles, resolveTargetStartRuntime
+    });
+    assert.equal(projected.current_visible_context.visible_npc[0].visible_status,
+      'Осматривает рыболовную сеть.', JSON.stringify(projected.current_visible_context.visible_npc[0]));
+  }
+  const unknown = structuredClone(state);
+  unknown.scenario_id = 'unknown';
+  const hiddenProfile = withResolvedLowerDvinaTraceCurrentScene({
+    committedState: unknown, locationProfiles, resolveTargetStartRuntime
+  });
+  assert.equal(Object.hasOwn(hiddenProfile.current_visible_context.visible_npc[0],
+    'visible_status'), false);
+  const legacy = withResolvedLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+  assert.equal(Object.hasOwn(legacy.current_visible_context.visible_npc[0],
+    'visible_status'), false);
+});
 const scenePresentation = { locations: [{ location_ref: 'shed',
   display_name: 'Старая сушильня',
   player_visible_physical_facts: [] }] };

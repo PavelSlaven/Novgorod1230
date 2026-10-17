@@ -166,6 +166,37 @@ test('clear NPC held-item cues project generic item refs and narrator facts', as
   ]);
 });
 
+test('current visible status needs an approved active profile and every held requirement', async () => {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const observation = { entity_kind: 'npc', entity_id: 'npc:fisher', visibility: 'clear',
+    display_label: 'рыбак', exterior: { machine_status: 'active',
+      current_activity: { activity_ref: 'activity:fishing', status: 'active',
+        summary: 'PRIVATE TASK FOCUS' }, sex_category: 'male', age_category: 'adult',
+      appearance: { build: 'thin' }, visible_equipment: [], held_items: [
+        { entity_ref: { entity_kind: 'item', entity_id: 'item:net' },
+          display_label: 'сеть', item_template_ref: 'item_tpl_net' }
+      ] } };
+  const record = { record_kind: 'activity_profile', status: 'approved', payload: {
+    activity_profile_id: 'activity:fishing',
+    player_safe_observation: 'Осматривает рыболовную сеть.',
+    resource_requirements: { required_items: [{ item_template_ref: 'item_tpl_net' }] }
+  } };
+  const project = (row = observation, records = [record]) =>
+    projectSpatialV3CurrentVisibleContext({ naturalInput: prepareG4NaturalScenePerceptionInput(input),
+      partyId: 'party:1', actorId: 'player:1', positionId: 'position:inside',
+      localEdges: [], directionalExits: [], entityObservations: [row],
+      approvedActivityRecords: records }).visible_npc[0];
+  assert.equal(project().visible_status, 'Осматривает рыболовную сеть.');
+  assert.doesNotMatch(JSON.stringify(project()), /item_template_ref|PRIVATE TASK FOCUS/u);
+  assert.equal(project({ ...observation, visibility: 'partial' }).visible_status, undefined);
+  assert.equal(project({ ...observation, exterior: { ...observation.exterior,
+    held_items: [] } }).visible_status, undefined);
+  assert.equal(project(observation, [{ ...record, payload: {
+    ...record.payload, activity_profile_id: 'unknown'
+  } }]).visible_status, undefined);
+  assert.equal(project(observation, [record, record]).visible_status, undefined);
+});
+
 test('a young_adult NPC is disclosed with the player-safe age word `young`', async () => {
   const { input } = await approvedNaturalPerceptionFixture();
   const result = projectSpatialV3CurrentVisibleContext({ naturalInput: prepareG4NaturalScenePerceptionInput(input),

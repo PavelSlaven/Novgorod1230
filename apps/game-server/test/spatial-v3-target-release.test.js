@@ -15,6 +15,8 @@ import { resolveSpatialV3ProductionBindingsModule } from '../src/runtime/load-sp
 import { readServerConfig, assertModularStartupConfig } from '../src/config.js';
 import { createLowerDvinaTracePublicRuntime } from '../src/runtime/lower-dvina-trace-public-runtime.js';
 import { loadTargetAuthoredStartRuntimes } from '../src/infrastructure/postgres/target-authored-start-runtime.js';
+import { mergeApprovedActivityRecords } from '../src/infrastructure/postgres/target-authored-start-runtime.js';
+import { buildAdditionalStartOwnerRows } from '../../../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
 
 test('v17 requires issued exact approvals before querying runtime data', async () => {
   let queries = 0;
@@ -128,7 +130,9 @@ test('target current-owner start does not require a historical initial perceptio
 });
 
 test('target catalog lists and selects each exact loaded start', async () => {
-  const makeRuntime = (id) => ({ profile: {
+  const makeRuntime = (id) => ({ materialization_inputs: {
+    approved_activity_records: [{ scenario_marker: id }]
+  }, profile: {
     scenario_id: id, manifest_digest: id,
     public_metadata: { title: id, description: `service description for ${id}` }, actor_catalog: {},
     canonical_start: { policy_profile_pins: [{ key: 'rule', revision: 1, digest: id }],
@@ -155,6 +159,11 @@ test('target catalog lists and selects each exact loaded start', async () => {
   assert.equal((await catalog.loadPublication('river', { bindingRevision: 2 })).binding.scenario_id, 'river');
   assert.equal((await catalog.loadPublication('river', { bindingRevision: 1 })).binding.runtime_binding.revision, 2);
   assert.equal(catalog.resolveRuntimeBinding({ catalog_id: 'novgorod_live_world_runtime_v17', revision: 2 }).scenario_id, 'river');
+  assert.equal(catalog.resolveTargetStartRuntime({ catalog_id: 'novgorod_live_world_runtime_v17',
+    revision: 2 })?.materialization_inputs.approved_activity_records[0].scenario_marker,
+  'river');
+  assert.equal(catalog.resolveTargetStartRuntime({ catalog_id: 'novgorod_live_world_runtime_v17',
+    revision: 9 }), null);
   assert.equal(catalog.hasScenario('unknown'), false);
   let selected = null;
   const marker = new Error('selected authored publication reached materialization');
@@ -170,6 +179,47 @@ test('target catalog lists and selects each exact loaded start', async () => {
   await assert.rejects(runtime.startNewGame({ scenario_id: 'river', request_id: 'river-request' }),
     (error) => error === marker);
   assert.equal(selected, 'river');
+});
+
+test('approved imported NPC observation follows the exact non-default start runtime', async () => {
+  const imported = await buildAdditionalStartOwnerRows();
+  const activityRows = mergeApprovedActivityRecords([], imported.runtimeProfiles
+    .filter((row) => row.profile_kind === 'activity' && row.status === 'approved')
+    .map((row) => row.payload));
+  assert.equal(activityRows.find((row) =>
+    row.payload?.activity_profile_id === 'activity_m2c_npc_fisher_initial_work_observation_v1')
+    ?.payload?.player_safe_observation, 'Осматривает рыболовную сеть.');
+  const makeRuntime = (scenarioId, records) => ({
+    materialization_inputs: { approved_activity_records: records },
+    profile: { scenario_id: scenarioId, manifest_digest: scenarioId,
+      public_metadata: { title: scenarioId }, actor_catalog: {},
+      canonical_start: { policy_profile_pins: [], start: {
+        world_pin: { world_revision_id: 'world', world_catalog_digest: 'digest' },
+        initial_environment_inputs: { calendar_date: { year: 1230, month: 7, day: 1 } }
+      } } }
+  });
+  const starts = [makeRuntime('default', []), {
+    ...makeRuntime('vikhtuy', activityRows), bindingRevision: 2
+  }];
+  const catalog = createTargetAuthoredStartCatalog({ runtime: { starts }, release: {
+    scenario_binding_id: 'default', scenario_binding_ids: ['default', 'vikhtuy'],
+    scenario_profile_exact_pins_by_id: Object.fromEntries(starts.map(({ profile }) =>
+      [profile.scenario_id, { scenario_definition_revision: 1,
+        phase_1a_manifest_digest: profile.manifest_digest }])),
+    world_revision_id: 'world', world_catalog_digest: 'digest',
+    production_activation: true, runtime_selectable_in_canonical_production: true
+  } });
+  const selected = catalog.resolveTargetStartRuntime({
+    catalog_id: 'novgorod_live_world_runtime_v17', revision: 2
+  });
+  assert.equal(selected.profile.scenario_id, 'vikhtuy');
+  assert.equal(selected.materialization_inputs.approved_activity_records, activityRows);
+  assert.equal(catalog.resolveTargetStartRuntime({ scenario_id: 'vikhtuy' }), selected);
+  assert.equal(catalog.resolveTargetStartRuntime({ catalog_id: 'wrong', revision: 2,
+    scenario_id: 'vikhtuy' }), null);
+  assert.equal(catalog.resolveTargetStartRuntime({
+    catalog_id: 'novgorod_live_world_runtime_v17', revision: 9
+  }), null);
 });
 
 test('target manifest rejects incomplete and duplicate binding revisions before database reads', async () => {

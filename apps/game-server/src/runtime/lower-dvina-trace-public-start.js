@@ -152,6 +152,8 @@ export async function startLowerDvinaTrace({
     }
     let naturalScenePerception = null;
     let canonicalSourceBinding = null;
+    const approvedActivityRecords = traceStartAdapter.getApprovedActivityRecords?.(
+      internal.request_identity?.scenario_id) ?? null;
     if (typeof traceStartAdapter.loadNaturalScenePerceptionInput === 'function') {
       const perceptionInput = await traceStartAdapter.loadNaturalScenePerceptionInput({
         partyId, actorId: internal.player.instance_id, internal, visible });
@@ -166,10 +168,12 @@ export async function startLowerDvinaTrace({
         visible_context: projectSpatialV3CurrentVisibleContext({ naturalInput: perceptionInput,
           partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id,
           entityObservations: perceptionInput.entity_observations,
+          approvedActivityRecords,
           localEdges: [], directionalExits: [] }) };
       const openingRoutes = projectSpatialV3CurrentVisibleContext({ naturalInput: perceptionInput,
         partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id,
         entityObservations: perceptionInput.entity_observations,
+        approvedActivityRecords,
         localEdges: [], directionalExits: [],
         siteConnections: perceptionInput.site_connections });
       openingRoutePanel = projectLowerDvinaTraceRoutePanel({
@@ -182,7 +186,8 @@ export async function startLowerDvinaTrace({
       ? buildAuthoredOpeningVisibleContext : buildCanonicalOpeningVisibleContext;
     const openingPackage = buildOpeningContext({
       requestId: requestId, visible, internal,
-      approvedProjection: publication.public_projection, naturalScenePerception, canonicalSourceBinding
+      approvedProjection: publication.public_projection, naturalScenePerception,
+      canonicalSourceBinding, approvedActivityRecords
     });
     if (openingPackage.opening_reader_control?.pass !== true) {
       throw serverError('AUTHORED_OPENING_CONTEXT_INCOMPLETE',

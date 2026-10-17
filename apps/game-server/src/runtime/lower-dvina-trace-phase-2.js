@@ -79,6 +79,8 @@ export function createLowerDvinaTracePhase2Runtime({
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
   authoredTurnProfile = null,
   postActionPerceptionProfile = null,
+  approvedActivityRecords = null,
+  resolveTargetStartRuntime = null,
   spatialExpansionRuntime = null,
   spatialLocalSceneRuntime = null,
 } = {}) {
@@ -350,6 +352,8 @@ export function createLowerDvinaTracePhase2Runtime({
           playerSafeStateProjector,
           locationProfiles: bundle.location_topology_set.location_profiles,
           scenePresentation,
+          approvedActivityRecords,
+          resolveTargetStartRuntime,
           itemLabels,
           turnStepBodyEventOwner: turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner, turnStepSemanticActivityOwner: turnStepSemanticActivityOwner ?? genericOwners?.semanticActivityOwner,
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,

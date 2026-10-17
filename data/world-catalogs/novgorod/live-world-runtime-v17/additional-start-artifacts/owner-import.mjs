@@ -7,11 +7,55 @@ import { computeSpatialV3CanonicalDigest } from '../../../../../packages/contrac
 const root = resolve(import.meta.dirname, '../../../../..');
 const base = 'data/world-catalogs/novgorod';
 const here = `${base}/live-world-runtime-v17/additional-start-artifacts`;
+const observation = `${base}/m2c-npc/activity-observation`;
 const read = async (path) => readFile(resolve(root, path));
 const json = async (path) => JSON.parse(await read(path));
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const one = (rows, label) => { assert.equal(rows.length, 1, label); return rows[0]; };
 const withDigest = (row) => ({ ...row, canonical_digest: computeSpatialV3CanonicalDigest(row).slice(7) });
+
+function approveDerivedRow(row) {
+  const approved = structuredClone(row);
+  approved.status = 'approved';
+  if (approved.payload?.status === 'candidate_approval_pending') approved.payload.status = 'approved';
+  if (approved.payload?.payload?.status === 'candidate_approval_pending') approved.payload.payload.status = 'approved';
+  const { canonical_digest: ignoredDigest, ...fields } = approved;
+  return withDigest(fields);
+}
+
+async function readApprovedActivityObservation() {
+  const approval = await json(`${observation}/approval.json`);
+  assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(approval.subject, 'm2c_npc_activity_observation_v1');
+  assert.equal(approval.import_authorized, false);
+  const candidatePath = `${observation}/candidate.json`;
+  const candidateBytes = await read(candidatePath);
+  assert.equal(approval.candidate_path, candidatePath);
+  assert.equal(sha(candidateBytes), approval.candidate_sha256);
+  const manifest = await json(`${observation}/artifact-manifest.json`);
+  assert.equal(manifest.candidate_id, approval.subject);
+  assert.equal(manifest.artifact_sha256['candidate.json'], approval.candidate_sha256);
+  const load = async (file) => {
+    const bytes = await read(`${observation}/${file}`);
+    assert.equal(sha(bytes), manifest.artifact_sha256[file], file);
+    return JSON.parse(bytes);
+  };
+  const [profiles, compositions, versions] = await Promise.all([
+    load('datasets/spatial_v3_npc_runtime_profiles.json'),
+    load('datasets/spatial_v3_g4_npc_composition_bindings.json'),
+    load('datasets/spatial_v3_authoring_versions.json')
+  ]);
+  const candidate = JSON.parse(candidateBytes);
+  assert.deepEqual(profiles, [candidate.canonical_records.activity_profile,
+    candidate.canonical_records.fisher_binding_successor]);
+  assert.deepEqual(compositions, [candidate.canonical_records.canonical_composition_successor]);
+  assert.deepEqual(versions, Object.values(candidate.canonical_records).map((row) => ({
+    entity_kind: row.entity_kind, entity_id: row.id, version: row.version,
+    world_revision_id: row.world_revision_id, status: row.status,
+    canonical_digest: row.canonical_digest, provenance_ref: row.provenance_ref
+  })));
+  return { candidate, profiles, compositions, versions };
+}
 
 export async function buildAdditionalStartOwnerRows() {
   const approval = await json(`${here}/owner-coverage-data-approval.json`);
@@ -60,6 +104,23 @@ export async function buildAdditionalStartOwnerRows() {
       directness: semantic ? 'approved_gameplay_composition_transfer' : 'mechanical_gameplay_composition_reuse',
       provenance_ref: 'm2c_npc_canonical_initial_editorial_001' });
   });
+  const activityObservation = await readApprovedActivityObservation();
+  const selectedStart = one(candidate.starts.filter((start) =>
+    start.scenario_id === activityObservation.candidate.lineage.active_composition.scenario_id),
+  'activity observation scenario');
+  const selectedComposition = one(activityObservation.compositions.filter((row) =>
+    row.id === activityObservation.candidate.lineage.composition_successor.id
+      && row.version === activityObservation.candidate.lineage.composition_successor.version),
+  'approved activity observation composition');
+  assert.equal(selectedComposition.g4_id, selectedStart.g4_ref.id);
+  assert.equal(selectedComposition.g4_version, selectedStart.g4_ref.version);
+  assert.equal(selectedComposition.canonical_g5_id, selectedStart.canonical_g5_ref.id);
+  assert.equal(selectedComposition.canonical_g5_version, selectedStart.canonical_g5_ref.version);
+  const compositionIndex = npc.findIndex((row) => row.id === selectedComposition.id);
+  assert.notEqual(compositionIndex, -1, 'activity observation composition identity');
+  npc[compositionIndex] = approveDerivedRow(selectedComposition);
+  const runtimeProfiles = activityObservation.profiles.map(approveDerivedRow);
+  assert.equal(runtimeProfiles.length, 2);
   const acoustic = candidate.starts.filter((start) => start.acoustic.coverage !== 'exact_approved')
     .map((start) => {
       const semantic = approval.semantic_acoustic_approval.scenario_id === start.scenario_id;
@@ -117,9 +178,9 @@ export async function buildAdditionalStartOwnerRows() {
   assert.equal(approval.semantic_npc_approval.length, 4);
   assert.equal(npc.length, 6);
   assert.equal(acoustic.length, 4);
-  const authoring = [...npc, ...acoustic].map((row) => ({ entity_kind: row.entity_kind,
+  const authoring = [...runtimeProfiles, ...npc, ...acoustic].map((row) => ({ entity_kind: row.entity_kind,
     entity_id: row.id, version: row.version, world_revision_id: row.world_revision_id,
     status: row.status, canonical_digest: row.canonical_digest,
     provenance_ref: row.provenance_ref }));
-  return { sourceRecords, authoring, npc, acoustic };
+  return { sourceRecords, authoring, npc, runtimeProfiles, acoustic };
 }

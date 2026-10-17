@@ -789,6 +789,7 @@ export async function importAdditionalStartOwnerRows(pool) {
       await client.query('SET CONSTRAINTS ALL DEFERRED');
       for (const [table, rows] of [
         ['source_records', ownerRows.sourceRecords],
+        ['spatial_v3_npc_runtime_profiles', ownerRows.runtimeProfiles],
         ['spatial_v3_authoring_versions', ownerRows.authoring],
         ['spatial_v3_g4_npc_composition_bindings', ownerRows.npc],
         ['spatial_v3_g6_acoustic_baselines', ownerRows.acoustic]
@@ -824,6 +825,7 @@ export async function importAdditionalStartOwnerRows(pool) {
   }
   for (const [table, rows] of [
     ['source_records', ownerRows.sourceRecords],
+    ['spatial_v3_npc_runtime_profiles', ownerRows.runtimeProfiles],
     ['spatial_v3_authoring_versions', ownerRows.authoring],
     ['spatial_v3_g4_npc_composition_bindings', ownerRows.npc],
     ['spatial_v3_g6_acoustic_baselines', ownerRows.acoustic]
@@ -841,7 +843,8 @@ export async function importAdditionalStartOwnerRows(pool) {
     if (actual.rowCount !== 1 || actual.rows[0].exact !== true)
       throw new Error(`V17_OWNER_COMMITTED_ROW_MISMATCH:${table}:${id}`);
   }
-  return { npc: ownerRows.npc.length, acoustic: ownerRows.acoustic.length,
+  return { npc: ownerRows.npc.length, runtimeProfiles: ownerRows.runtimeProfiles.length,
+    acoustic: ownerRows.acoustic.length,
     authoring: ownerRows.authoring.length, rollback: 'pass', readback: 'exact' };
 }
 

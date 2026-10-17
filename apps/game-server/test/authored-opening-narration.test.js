@@ -32,6 +32,40 @@ test('authored opening package answers all reader controls from persisted refs',
   assert.equal(JSON.stringify(pkg).includes('Тайный'), false);
 });
 
+test('opening narrator gets only approved current activity, never persisted private summary', () => {
+  const input = openingPackage({ raw: true });
+  const fisher = input.internal.npcs.find(({ instance_id }) => instance_id === 'npc:fisher');
+  fisher.machine_state = { status: 'active', current_activity: {
+    activity_ref: 'activity:fishing', status: 'active', summary: 'PRIVATE TASK FOCUS'
+  } };
+  input.approvedActivityRecords = [{ record_kind: 'activity_profile', status: 'approved',
+    payload: { activity_profile_id: 'activity:fishing',
+      player_safe_observation: 'Осматривает рыболовную сеть.',
+      resource_requirements: { required_items: [{ item_template_ref: 'item_tpl_net', quantity: 1 }] } } }];
+  input.internal.items.push({ instance_id: 'item:net', template_id: 'item_tpl_net',
+    placement: { holder_npc_id: 'npc:fisher', physical_position: 'hands' } });
+  input.naturalScenePerception = { ok: true, perceived_facts: [], visible_context: {
+    schema: 'visible_context_package', version: 1, visible_scene: 'Берег',
+    visible_changes: [], sensory_details: [], visible_objects: [], known_context: [],
+    uncertainties: [], allowed_tensions: [], do_not_imply: [], visible_npc: [
+      { entity_ref: { entity_kind: 'npc', entity_id: 'npc:fisher' },
+        display_label: 'рыбак', recognition: 'unrecognized', observable_cues: { held_items: [
+          { entity_ref: { entity_kind: 'item', entity_id: 'item:net' }, display_label: 'сеть' }
+        ] } }
+    ]
+  } };
+  const pkg = buildAuthoredOpeningVisibleContext(input);
+  const fisherman = pkg.visible_npcs.find(({ npc_instance_id }) => npc_instance_id === 'npc:fisher');
+  assert.equal(fisherman.current_activity, 'Осматривает рыболовную сеть.');
+  assert.doesNotMatch(JSON.stringify(pkg), /PRIVATE TASK FOCUS|Чинит снасти/u);
+
+  input.naturalScenePerception.visible_context.visible_npc[0].observable_cues = {};
+  const partial = buildAuthoredOpeningVisibleContext(input);
+  assert.equal(Object.hasOwn(partial.visible_npcs.find(({ npc_instance_id }) =>
+    npc_instance_id === 'npc:fisher'), 'current_activity'), false);
+  assert.doesNotMatch(JSON.stringify(partial), /PRIVATE TASK FOCUS|Осматривает рыболовную сеть/u);
+});
+
 test('opening projects confirmed sex and neutral body for an ambiguous name', () => {
   const input = openingPackage({ raw: true });
   input.visible.player.name = 'Саша';

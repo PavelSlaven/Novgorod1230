@@ -396,11 +396,25 @@ active | paused | completed | failed | aborted
 
 ### 8.2. `ActivityProfile`
 
+Profile may include optional `player_safe_observation` text for an ongoing
+activity. Runtime may project this text only from the exact active approved
+profile of a clearly perceived NPC. When the profile declares required item
+templates in `resource_requirements.required_items`, every declared template
+must be supported by the NPC's current held-item observations. An activity
+whose approved profile declares no required item may be described without an
+item, provided the exact profile is active and the NPC is clearly perceived.
+Otherwise, omit the text. The projection uses only this authored field; it
+does not infer a task from private activity summaries, `task_focus`, or
+`observable_activity`, and it does not add an event or outcome. An absent
+`player_safe_observation` field provides no activity description and never
+licenses inferring an occupation or task.
+
 ```yaml
 ActivityProfile:
   activity_profile_id:
   activity_category_id:
   version:
+  player_safe_observation: optional string
   applicability_rule_ref:
   completion_model:
     kind: fixed_exact | progress_target | condition_or_deadline

@@ -6,6 +6,8 @@
 - fix(narration): include currently visible items held by a clearly perceived NPC in opening and turn scene facts; preserve item identity and discard stale held-item cues when visibility changes (#685, D49).
 - fix(narration): retain observable changes to both the produced item and its recognized source in the current episode facts (#748, D49).
 - test(game-server): cover committed action-production facts across the real A1 writer, factual audit and semantic repair wire with isolated PostgreSQL readback (#748, D49).
+- fix(npc): pass approved activity records through turn-step scene projection and final visible-context enrichment, preserving eligible NPC status in the persisted package.
+- fix(npc): project authored player-safe current activity only when the exact active profile and its held-item requirements are clearly observed; suppress private activity summaries in opening context (#566).
 - fix(game-server): read valid transit-anchor locations without requiring scene NPC placement, while rejecting stale or conflicting scene identities (#744).
 - fix(opening): pass the current player-safe place label to opening narration and reader control even when visual details are obscured (#741, D49).
 - fix(narration): explicitly relate a newly found item to other visible items with the same name, preserving distinct identity and the order of a later confirmed pickup (#654, D49).

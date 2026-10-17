@@ -111,7 +111,7 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       destinationBaseline, destinationSite });
     if (admission?.ok !== true || admission.status !== 'open' || admission.condition_set_ref !== profile.availability_condition_set_ref
       || admission.connection_id !== connection.id) gap('site_traversal_availability_denied');
-    const projected = await projectDestination({ partyId, actorId, context,
+    const projected = await projectDestination({ partyId, actorId, context, state,
       connection, profile, destinationPosition, destinationG6,
       destinationBaseline, destinationSite });
     if (projected?.ok !== true || projected.position_id !== destinationPosition.id
@@ -318,7 +318,7 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       : null;
     const returnedToDeparture = prepared.result.result_kind === 'returned_to_departure';
     const interruptedAtShore = prepared.result.result_kind === 'interrupted_at_anchor';
-    const sourceProjection = returnedToDeparture || interruptedAtShore ? await projectDestination({ partyId, actorId,
+    const sourceProjection = returnedToDeparture || interruptedAtShore ? await projectDestination({ partyId, actorId, state,
       context: { ...context, position: sourcePosition }, connection, profile, destinationPosition: sourcePosition,
       destinationG6: sourceG6, destinationBaseline: context.baseline,
       destinationSite: context.site }) : null;
@@ -448,7 +448,7 @@ async function prepareLegacyGeneratedTraversal({ pool, assessAvailability,
   if (admission?.ok !== true || admission.status !== 'open'
     || admission.condition_set_ref !== profile.availability_condition_set_ref
     || admission.connection_id !== connection.id) gap('site_traversal_availability_denied');
-  const projected = await projectDestination({ partyId, actorId, context,
+  const projected = await projectDestination({ partyId, actorId, context, state,
     connection, profile, destinationPosition, destinationG6,
     destinationBaseline, destinationSite });
   if (projected?.ok !== true || projected.position_id !== destinationPosition.id

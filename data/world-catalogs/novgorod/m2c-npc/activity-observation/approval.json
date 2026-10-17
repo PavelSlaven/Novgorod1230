@@ -1,0 +1,32 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "m2c_npc_activity_observation_v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/approve_activity_observation_data",
+    "role": "independent senior data reviewer",
+    "reasoning_effort": "high",
+    "independent_from_author": true
+  },
+  "reviewed_at": "2026-10-17T16:29:51Z",
+  "reviewed_git_commit": "f7bbc7e6b005734b0158d35591f1f0cbc86c5f31",
+  "candidate_path": "data/world-catalogs/novgorod/m2c-npc/activity-observation/candidate.json",
+  "candidate_sha256": "69e26bcded6e56e7453c88eac54be0ab4c7da1c9cc0c22de5c4f77c12d34308f",
+  "scope": "Exact candidate bytes: distinct ActivityProfile activity_m2c_npc_fisher_initial_work_observation_v1@1 with player_safe_observation 'Осматривает рыболовную сеть.'; Fisher m2c_npc_fisher_v1@4 derived from approved @1 with existing regional context; canonical initial Vikhtuy work-storage composition @2 replacing only Fisher @1 with @4. Identity, version, candidate-status and canonical-digest metadata changes are included. No new action, production or repair outcome is authorized.",
+  "checks": [
+    "Candidate SHA-256, four input hashes against checkout and HEAD, six artifact hashes, transform hash and all three canonical record digests match.",
+    "Activity requirements, net item and all existing mechanics remain inherited; only authored observation and identity/status metadata change.",
+    "Fisher successor preserves all non-activity fields, including regional refs; only exact activity refs and identity/status metadata change.",
+    "Canonical initial composition is reconstructed from the existing owner-import rule and its actual approved source; only Fisher version and composition version/status/digest change.",
+    "Dataset rows, authoring-version rows and record-source targets match the three candidate records."
+  ],
+  "limitations": "Data review only. No PostgreSQL readback, import, activation or runtime behavior acceptance. Runtime projection remains subject to Temporal §8.2: exact active approved profile, clear perception and every required held item.",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "normalization_review": {
+    "previous_candidate_sha256": "fb57bed9002c3a43c7c6db31d2991dc1ba5aed10592bc7d9bb09fcc89ac7ffee",
+    "change": "CRLF to LF only in candidate and dataset bytes; review-request candidate SHA updated and manifest artifact hashes refreshed. JSON content and all canonical record digests are unchanged.",
+    "result": "PASS",
+    "semantic_review": "Prior independent semantic approval retained by deterministic byte normalization and JSON equality; no repeated semantic audit."
+  }
+}

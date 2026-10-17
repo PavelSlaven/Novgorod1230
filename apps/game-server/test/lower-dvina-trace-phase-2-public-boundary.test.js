@@ -143,6 +143,9 @@ test('initial scene projects persisted items and NPC appearance/equipment', () =
     appearance);
   assert.equal(current.visible_npc[0].observable_cues.equipment[0].item_ref,
     'shirt');
+  assert.equal(Object.hasOwn(current.visible_npc[0], 'visible_status'), false,
+    'noncanonical fallback lacks a current clear-visibility proof');
+  assert.doesNotMatch(JSON.stringify(current), /чинит сеть/u);
   assert.deepEqual(current.visible_changes, ['Лето.', 'День.',
     'Стоит светлое время дня.', 'Небо ясное.', 'Осадков нет.',
     'Видимость обычная.', 'Ветер отсутствует или слабый.']);

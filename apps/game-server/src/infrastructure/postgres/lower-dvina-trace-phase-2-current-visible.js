@@ -10,6 +10,7 @@ import { serverError } from '../../errors.js';
 import { isMovementVisibleObject, movementVisibleObjects } from '../../runtime/spatial-v3-movement-objects.js';
 import { playerSafeWeatherLightFacts } from '../../runtime/player-safe-weather-light.js';
 import { resolveVisibleItemLabel } from '../../runtime/lower-dvina-trace-visible-item-label.js';
+import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 
 const ARRAY_FIELDS = [
   'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
@@ -24,7 +25,8 @@ export function phase2InitialCurrentVisibleContext({
   itemLabels = {},
   canonicalInitialState = false,
   initialNaturalPerceptionRulePin = null,
-  naturalScenePerceptionInput = null
+  naturalScenePerceptionInput = null,
+  approvedActivityRecords = null
 }) {
   try {
     assertLowerDvinaTracePublicScreen(screen);
@@ -54,7 +56,7 @@ export function phase2InitialCurrentVisibleContext({
       naturalInput: naturalScenePerceptionInput, partyId: initialState.party_id,
       actorId: initialState.actor_id, positionId: initialState.position.position_id,
       entityObservations: naturalScenePerceptionInput.entity_observations,
-      localEdges: [], directionalExits: [] }));
+      localEdges: [], directionalExits: [], approvedActivityRecords }));
   }
   const visibleContext = screen.visible_context;
   const presented = scenePresentation == null ? null : scenePresentationForLocation({
@@ -63,7 +65,9 @@ export function phase2InitialCurrentVisibleContext({
   const environmentFacts = presented?.player_visible_physical_facts
     ?? visibleContext?.environment?.facts;
   const visibleNpc = (initialState?.npcs ?? []).filter((npc) =>
-    npc.anchor_id === initialState?.position?.g5_anchor_id).map((npc) => ({
+    npc.anchor_id === initialState?.position?.g5_anchor_id).map((npc) => {
+      const heldItems = visibleNpcHeldItems(initialState, npc.instance_id, itemLabels);
+      return {
       entity_ref: { entity_kind: 'npc', entity_id: npc.instance_id },
       display_label: npc.profile_level === 'background'
         ? npc.identity_state?.public_role_label ?? 'незнакомый человек'
@@ -71,7 +75,6 @@ export function phase2InitialCurrentVisibleContext({
           ?? npc.identity_state?.public_role_label ?? 'человек',
       recognition: npc.profile_level === 'background'
         ? 'unrecognized' : 'recognized',
-      visible_status: npc.machine_state?.current_activity?.summary ?? 'рядом',
       ...(npc.identity_state?.appearance == null ? {} : {
         observable_cues: { identity: {
           display_name: npc.identity_state?.public_role_label,
@@ -79,9 +82,12 @@ export function phase2InitialCurrentVisibleContext({
           age_category: npc.identity_state?.age_category,
           appearance: structuredClone(npc.identity_state.appearance)
         }, equipment: visibleNpcEquipment(initialState, npc.instance_id),
+        held_items: heldItems
+          .map(({ item_template_ref: _template, ...item }) => item),
         outward_presentation: {} }
       })
-  }));
+      };
+  });
   const visibleObjects = visibleInitialItems(initialState, itemLabels);
   return requirePhase2CurrentVisibleContext({
     version: 1,
@@ -138,6 +144,21 @@ function visibleInitialItems(state, itemLabels = {}) {
         ...(typeof item.condition_state === 'string'
           ? { visible_status: item.condition_state } : {}) };
     });
+}
+
+function visibleNpcHeldItems(state, npcId, itemLabels = {}) {
+  return (state?.items ?? []).flatMap((item) => {
+    if (item.placement?.holder_npc_id !== npcId
+        || item.placement?.physical_position !== 'hands'
+        || item.placement?.container_id != null
+        || runtimeItemRecordIsConcealed(item, { includeAccess: false })) return [];
+    const label = resolveVisibleItemLabel({ template_id: item.template_id,
+      name: item.state?.display_name }, itemLabels);
+    return label.kind === 'labeled' ? [{
+      entity_ref: { entity_kind: 'item', entity_id: item.item_id },
+      display_label: label.label, item_template_ref: item.template_id
+    }] : [];
+  });
 }
 
 function visibleNpcEquipment(state, npcId) {

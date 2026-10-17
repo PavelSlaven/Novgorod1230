@@ -9,6 +9,8 @@ import { projectActor, projectBodyState, projectInteractions } from './lower-dvi
 import { projectKnowledge, projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
 import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
 import { bodyConditionLabels, distinctNpcLabels } from './lower-dvina-trace-visible-scene-items.js';
+import { playerSafeActivityObservation } from './lower-dvina-trace-player-safe-npc-details.js';
+import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
   'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
@@ -17,7 +19,7 @@ const BODY_CURRENT_CONTEXT = 'Текущие состояния тела гер�
 
 export function enrichLowerDvinaTraceVisibleNpcCues({
   visibleContext, committedState, bodyAfter = null, clockAfter = null,
-  calendarProfile = null, temporalResults = []
+  calendarProfile = null, temporalResults = [], approvedActivityRecords = null
 }) {
   if (!validCurrentScene(visibleContext)) failCurrentScene();
   const projectedState = applyNpcRoutineTemporalResults(
@@ -88,6 +90,17 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
       const transitionStatus = text(observed?.transition.proposal?.factual_transition?.summary)
         ? observed.transition.proposal.factual_transition.summary
         : null;
+      const currentNpc = (projectedState.npcs ?? []).find((candidate) =>
+        [candidate.instance_id, candidate.actor_id, candidate.npc_id].includes(id));
+      const activityObservation = transitionStatus == null
+          && Array.isArray(npc?.observable_cues?.held_items)
+        ? playerSafeActivityObservation({
+          activity: currentNpc?.machine_state?.current_activity,
+          actorStatus: currentNpc?.machine_state?.status,
+          activityRecords: approvedActivityRecords,
+          heldItemTemplateIds: visibleHeldItemTemplateIds({ npc, id,
+            committedItems: projectedState.items })
+        }) : null;
       const detail = details.get(id);
       const informative = detail != null
         && (detail.visible_equipment.length > 0
@@ -95,10 +108,13 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
           || detail.ordinary_remainder != null
           || Object.keys(detail.identity_state).some((key) =>
             key !== 'display_name'));
-      if (!informative && !transitionStatus) return structuredClone(npc);
+      if (!informative && !transitionStatus && activityObservation == null
+          && !Array.isArray(approvedActivityRecords)) return structuredClone(npc);
+      const { visible_status: _priorStatus, ...baseNpc } = npc;
       return {
-        ...structuredClone(npc),
-        ...(transitionStatus ? { visible_status: transitionStatus } : {}),
+        ...structuredClone(baseNpc),
+        ...(transitionStatus ? { visible_status: transitionStatus }
+          : activityObservation == null ? {} : { visible_status: activityObservation }),
         ...(informative ? {
           observable_cues: {
             identity: structuredClone(detail.identity_state),
@@ -114,6 +130,22 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
         } : {})
       };
     })
+  });
+}
+
+function visibleHeldItemTemplateIds({ npc, id, committedItems }) {
+  const held = npc?.observable_cues?.held_items;
+  if (!Array.isArray(held)) return [];
+  return held.flatMap(({ entity_ref: ref }) => {
+    if (ref?.entity_kind !== 'item' || typeof ref.entity_id !== 'string') return [];
+    const matches = (committedItems ?? []).filter((item) =>
+      [item.item_id, item.instance_id].includes(ref.entity_id)
+      && item.placement?.holder_npc_id === id
+      && item.placement?.physical_position === 'hands'
+      && item.placement?.container_id == null
+      && !runtimeItemRecordIsConcealed(item, { includeAccess: false }));
+    return matches.length === 1 && typeof matches[0].template_id === 'string'
+      ? [matches[0].template_id] : [];
   });
 }
 

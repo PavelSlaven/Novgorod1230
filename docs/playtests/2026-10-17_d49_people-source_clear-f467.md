@@ -124,3 +124,27 @@ severity: P1
 verdict: PASS_WITH_NOTES
 
 CBM note: list_projects/index_status and search_graph were run. Coverage for the cited projection/contracts was metadata_changed and recommended direct reads; local graph HEAD is not the server f4674cffda83c9a91a148d5184198bc1b132dfea. Source conclusions above were checked directly in the server checkout/capture. No tests or mutations run; no contract delta is currently required.
+
+## Уточнение независимого аудита после проверки предметов
+
+Первоначальный разбор выше сохранён дословно. Последующее уточнение отменяет предложение напрямую копировать observable_activity.value: это редакционная policy, а не безопасная реплика для рассказчика. Сначала требуется общий путь наблюдения предмета в руках через владельцев items и visibility. Ниже — полный addendum аудитора.
+
+# Addendum — D49 observable activity authority
+
+The earlier verdict remains **PASS_WITH_NOTES** verbatim; this addendum narrows its proposed projection path. This review is based only on capture files `03-committed.json`, `04-visible.json`, and the seven selected item rows in the committed snapshot. No code or DB readback was performed.
+
+## New evidence
+
+At state version 0, the committed snapshot has the active fisher profile/activity and the English `current_activity.summary` text. The same text appears as `observable_activity.value` in the profile source, but its wording is editorial policy: it embeds constraints about how to interpret the action and what outcomes must not be inferred. Matching profile/activity refs establishes applicability of the policy, not that this string is ready as a player-safe factual cue or fit for direct rendering.
+
+The same committed snapshot contains seven persisted items. One is `item_be91bc68b10267482d9cd1a6`, template `item_tpl_nov_fishing_net_v1`, display name «рыболовная сеть», held by this NPC at physical position `hands`. The visible projection includes the NPC’s identity and three equipped garments, but no net and no activity cue. This is snapshot evidence only; it does not establish PG item-row readback. The prior source inspection indicates exterior/equipment projection reads worn/equipped positions, which explains why a hand-held object is missing.
+
+## Revised minimum path
+
+Do not copy or translate `observable_activity.value`, and do not project `current_activity.summary`. Treat the approved value as a policy bound on permitted meaning. First make the existing player-safe scene projection include perceptible hand-held items through the current item/visibility owners, using committed placement and visual facts. Then expose activity only through an already authorized player-safe representation or an explicitly reviewed representation that derives from both the active temporal activity and its observable object/context. A profile/ref match alone is insufficient. If no such representation exists, keep the activity cue absent pending that owner-boundary decision; do not invent wording or new facts.
+
+This is a completeness gap across NPC/Temporal state and item visibility, not merely a missing NPC string. No DDL or new ledger is indicated. The source candidate’s false activation flags remain distinct from the exact activated start manifest; neither authorizes direct rendering of editorial policy.
+
+## Still unproven
+
+The capture does not prove current DB item-row readback, actual optical visibility of the held net under Spatial rules, or that the approved editorial policy is licensed as player-facing content. No PG/model calls, tests, or mutations were run.

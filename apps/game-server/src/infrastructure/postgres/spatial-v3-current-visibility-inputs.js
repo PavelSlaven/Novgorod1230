@@ -109,6 +109,7 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
       const resolved = resolveVisibleItemLabel({
         name: visibleItemName({ state: row.state }), template_id: row.template_id
       }, itemLabels);
+      if (resolved.kind === 'gap') gap(resolved.code);
       return resolved.kind === 'labeled' ? [{ entity_ref: {
         entity_kind: 'item', entity_id: row.item_id
       }, display_label: resolved.label }] : [];

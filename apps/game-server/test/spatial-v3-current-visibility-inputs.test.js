@@ -128,6 +128,31 @@ test('NPC hand items use current holder and hands placement; locked access does 
   assert.deepEqual((await readCommittedEntityExterior(input)).held_items, []);
 });
 
+test('NPC hand item label gaps fail closed instead of disappearing from current observation', async () => {
+  const appearance = { build: 'stocky', skin_tone: 'light', face_shape: 'broad',
+    hair: { color: 'dark_brown', length: 'short', style: 'straight',
+      facial_hair: 'short_beard' }, eyes: { color: 'gray' } };
+  let heldRow = { item_id: 'private-held-item-ref', template_id: 'unmapped-template',
+    state: {}, condition_state: 'serviceable', lifecycle_status: 'active',
+    access_state: 'locked', physical_position: 'hands', holder_npc_id: 'npc' };
+  const transaction = { async query(sql) {
+    if (sql.includes('FROM party_runtime.party_npcs')) return { rows: [{
+      identity_state: { sex_category: 'male', age_category: 'young_adult', appearance }
+    }] };
+    if (sql.includes("p.physical_position='hands'")) return { rows: [heldRow] };
+    return { rows: [] };
+  } };
+  const input = { transaction, partyId: 'party',
+    placement: { entity_kind: 'npc', entity_id: 'npc' } };
+  const hasTypedLabelGap = (error) => error.code === 'SCENE_ENTITY_PERCEPTION_DATA_GAP'
+    && error.details?.reason === 'player_safe_item_label_required'
+    && !JSON.stringify(error).includes('private-held-item-ref');
+
+  await assert.rejects(readCommittedEntityExterior(input), hasTypedLabelGap);
+  heldRow = { ...heldRow, state: { display_name: 'private-held-item-ref' } };
+  await assert.rejects(readCommittedEntityExterior(input), hasTypedLabelGap);
+});
+
 test('ground item exterior uses the validated committed item name', async () => {
   let row = { state: { contents: ['hidden'], ordinary_metadata: { name: 'Речная лодка' } }, condition_state: 'serviceable', anchor_id: null,
   template_id: 'approved-template',

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "m2c_npc_editorial_link_npc_runtime_profile_activity_m2c_npc_fisher_initial_work_observation_v1_v1",
+    "source_id": "m2c_npc_editorial_001",
+    "target_table": "spatial_v3_npc_runtime_profiles",
+    "target_record_id": "activity_m2c_npc_fisher_initial_work_observation_v1@1",
+    "support_type": "supports",
+    "summary": "Supports user-authorized player-safe observation authoring only; not a historical claim.",
+    "page_or_section": "Activity observation candidate",
+    "confidence": "low"
+  },
+  {
+    "id": "m2c_npc_editorial_link_npc_runtime_profile_m2c_npc_fisher_v1_v4",
+    "source_id": "m2c_npc_editorial_001",
+    "target_table": "spatial_v3_npc_runtime_profiles",
+    "target_record_id": "m2c_npc_fisher_v1@4",
+    "support_type": "supports",
+    "summary": "Carries forward active Fisher @1 with only the new activity profile references.",
+    "page_or_section": "Activity observation candidate",
+    "confidence": "low"
+  },
+  {
+    "id": "m2c_npc_editorial_link_g4_npc_composition_binding_m2c_g4_npc_composition_canonical_initial_novgorod_vikhtuy_work_storage_v1_v2",
+    "source_id": "m2c_npc_canonical_initial_editorial_001",
+    "target_table": "spatial_v3_g4_npc_composition_bindings",
+    "target_record_id": "m2c_g4_npc_composition_canonical_initial_novgorod_vikhtuy_work_storage_v1@2",
+    "support_type": "supports",
+    "summary": "Carries forward the active canonical-initial composition with Fisher @4; G4, G5 and other profile refs unchanged.",
+    "page_or_section": "Activity observation candidate",
+    "confidence": "low"
+  }
+]

@@ -53,3 +53,29 @@ SHA-256: 0f29ceb0a538c3e949d46d605dc81b228332b28912216c357b2311b1d113efb4
 Diff `0d29bb8e → f4674cffd` затрагивает только композиционный `WRITER`: возвращает ориентир «Обычно уместны 2–4 абзаца» и сцену вместо досье/отчёта, убирает требование метафинала об открытом выборе; `WORLD_STORY_BOUNDARY` остаётся тем же. Это соответствует §§2.0, 4–5 и не назначает новую world authority. **Scoped contract delta PASS.** Наблюдаемый protocol теперь 0 в обеих пробах, но artistry ≥8 не достигнут. Без текстов before для тех же запросов нельзя приписать изменение художественного балла именно этому delta.
 
 
+
+
+## Дополнительная диагностическая проба того же входа
+
+На том же cloud-clear-exact-normal.json выполнена одна новая проба gpt-6-sol medium. Внешнее задание агенту явно отделяло художественный текст артефакта от краткости рабочего общения. Production request.messages и код не менялись; это диагностическая вариация внешнего задания агенту, а не новый production wire или доказательство влияния caveman. Независимый gpt-6-sol high оценил результат 7/10, protocol 0, facts PASS. Порог 8 не достигнут; одного сравнения недостаточно для причинного вывода. Qwen не вызывался.
+
+Дословный ответ:
+
+```json
+{"prose":"В светлый летний день Любава, рыбачка, огляделась у речного берега. Под ногами лежала хвойная подстилка; сквозь неё проступали корни, а среди хвои виднелись небольшие древесные обломки. Неровность земли ощущалась даже сквозь низкую кожаную обувь.\n\nЛюбава перевела взгляд с нижнего яруса растительности на древесные кроны. Она задержалась на этом простом чередовании близкого и высокого, чувствуя, что сил у неё хватило бы на работу."}
+```
+
+Дословная независимая оценка:
+
+# Independent opening judgment
+
+Input: `C:/Users/Slaven/AppData/Local/Temp/d49-opening-no-metafinal-bench/cloud-clear-exact-normal.json` (`request.messages`).
+Output: `C:/Users/Slaven/AppData/Local/Temp/d49-opening-artifact-scope-raw.json`.
+Contract: `data/knowledge-source/corpus/DOCUMENTS/situational_prose_requirements.md` §§2.0, 4, 5, 16 at HEAD `f4674cffda83c9a91a148d5184198bc1b132dfea`.
+
+- artistry: **7/10**
+- protocol: **0** (no service report, command menu, or raw field list)
+- facts: **PASS**
+- gate (artistry >=8, protocol 0, facts PASS): **FAIL**
+
+Reasons: The prose stays within supplied facts. Looking around and shifting gaze are small movements; sensing uneven ground through shoes follows exposed roots; confidence about work follows stated sufficient strength. It covers Lyubava's role, riverbank, summer daylight, ground and vegetation without inventing people, routes, events, past, or stakes. The scene has a perceptual sequence, so it is not a protocol. Artistic quality falls below 8 because it largely advances from one supplied visual detail to the next; the appositive `Любава, рыбачка` and final abstract phrase `простом чередовании близкого и высокого` leave little distinct voice or felt present beyond inventory. The two paragraphs are not penalized for length, and absent history or stakes are not charged to the writer.

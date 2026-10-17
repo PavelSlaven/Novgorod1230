@@ -287,8 +287,9 @@ and adds no second transaction owner.
   в required_current_beat попадают только exact sensory strings, которых нет в
   предыдущем показанном package той же party, committed state version и позиции.
   Для первого хода authored-start читает неизменённые sensory facts из typed
-  opening_perceived_context в committed Stage 26 session, сформированного из
-  того же opening package; старые сессии без этого поля и любая несовпадающая
+  opening_perceived_context в committed Stage 26 session: natural/environment
+  scene facts и typed weather/light facts берутся из того же opening package
+  через player-safe projection. Старые сессии без этого поля и любая несовпадающая
   привязка сохраняют обязательность всех sensory facts. Новые scene facts и
   результаты наблюдения сущностей остаются required. Подтверждённое прибытие продвигает одно событие из player-safe факта места назначения,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums

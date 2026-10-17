@@ -63,7 +63,7 @@
 - fix(actors): omit inapplicable bald hair color/style before materialization draws and portrait projection; keep committed legacy bald readable and filter incompatible authored prerequisite choices before RNG; add an inactive D152 appearance candidate with 15% baldness for eligible men (#536)
 - fix(wk): pass the committed speaking NPC's occupation to conversation retrieval through the server port, without exposing occupation refs in prose requests (#615)
 - fix(spatial): keep landscape natural-source cover separate from entity visibility; preserve explicit barriers and current conditions (#594)
-- fix(narration): keep previously displayed sensory scene facts in full support without making unchanged background mandatory on direct looks; retain new facts and entity results (#749)
+- fix(narration): seed first-turn look coverage from typed natural and weather/light facts in the opening package, keeping unchanged background as support while new facts and entity results stay required (#749, D49)
 - fix(materialization): retain NPC name choice trace for filtered and exhausted pools using the original draw and existing run snapshots (#601)
 - fix(npc): exclude occupied scene name forms with the existing deterministic draw; exhausted pools retain a name with diagnostic provenance (#284); LW-108 closed
 - fix(game-server): project saved-screen entity refs as stable public keys; keep local-play diagnostics on public keys and visible evidence (#330)

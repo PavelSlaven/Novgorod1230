@@ -81,7 +81,7 @@ test('prose roles distinguish same-named visible objects without technical count
   repeatedRef.visible_objects[1].entity_ref = repeatedRef.visible_objects[0].entity_ref;
   assert.deepEqual(narrationWire({ visible_context: repeatedRef })
     ['Переданные сведения об обстановке']['Предметы и ориентиры'], [
-    'сухая ветка у вас в руках; сухая ветка замечена', 'нож при вас'
+    'сухая ветка у вас в руках', 'сухая ветка замечена', 'нож при вас'
   ]);
   const repeatedAfterOther = structuredClone(visible_context);
   repeatedAfterOther.visible_objects.splice(2, 0, {

@@ -168,14 +168,12 @@ function narrationVisibleDescriptions(records, path, groupName) {
   const emitted = new Set();
   return entries.flatMap(({ description, label, ref }) => {
     if (ref == null) return [description];
+    const refs = groups.get(label);
+    if (refs.size === 1) return [description];
     if (emitted.has(label)) return [];
     emitted.add(label);
-    const refs = groups.get(label);
-    if (refs.size > 1) {
-      const details = [...refs.values()].map(parts => parts.join(' ')).join('; ');
-      return [`Разные ${groupName}: ${details}${/[.!?]$/u.test(details) ? '' : '.'}`];
-    }
-    return [[...refs.values()][0].join('; ')];
+    const details = [...refs.values()].map(parts => parts.join(' ')).join('; ');
+    return [`Разные ${groupName}: ${details}${/[.!?]$/u.test(details) ? '' : '.'}`];
   });
 }
 

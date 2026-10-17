@@ -1205,6 +1205,11 @@ test('first screen receives natural perception after committed rehydrate without
     assert.deepEqual(result.screen.panels.route.data.movement?.options ?? [], canonical
       ? [{ label: 'переход', knowledge_state: 'known' }] : []);
     if (canonical) {
+      assert.equal(narratorInput.visible_scene_facts.find(({ fact_id }) =>
+        fact_id === 'opening:place').text,
+      `Текущее место: ${perception.scene.visible_scene}.`);
+      assert.deepEqual(narratorInput.opening_reader_control.assessments
+        .find(({ question }) => question === 'surroundings').fact_refs[0], 'opening:place');
       assert.equal(narratorInput.visible_npcs.length, lighting === 'clear' ? 1 : 0);
       if (lighting === 'clear') {
         assert.equal(narratorInput.visible_npcs[0].label, 'человек');
@@ -1282,7 +1287,12 @@ function openingApproval(pkg) {
 
 test('canonical empty-history package passes Stage 22/23 and rejects mismatched proof', async () => {
   const { perception, initialRule } = await approvedNaturalPerceptionFixture({ canonical: true });
+  perception.scene.visible_scene = 'Скрытое название из публикации';
+  perception.scene.canonical_g5_ref = { id: 'g5:opening', version: 1 };
+  perception.scene.approved_place_labels = new Map([['g5:opening@1',
+    { display_label: 'У речного берега' }]]);
   const input = openingPackage({ raw: true });
+  input.approvedProjection.opening_projection.place_label = 'Скрытое название из публикации';
   input.internal.player.dossier.knowledge.known_facts = [];
   delete input.internal.player.dossier.opening_context;
   input.internal.position = { ...input.visible.position, position_id: 'position:shore', g6_instance_id: 'g6:inside' };
@@ -1300,6 +1310,8 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
     visibility_state: 'concealed', state: { display_name: 'невидимый предмет' } });
   assert.equal(input.internal.player.dossier.identity.sex_category, 'female');
   const pkg = buildCanonicalOpeningVisibleContext(input);
+  assert.equal(input.naturalScenePerception.visible_context.visible_scene, 'У речного берега');
+  assert.doesNotMatch(JSON.stringify(pkg), /Скрытое название из публикации/u);
   const naturalTexts = input.naturalScenePerception.perceived_facts.map(({ text }) => text);
   assert.ok(naturalTexts.length > 1);
   const otherInput = structuredClone(input);
@@ -1309,15 +1321,18 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
     [pkg, naturalTexts],
     [buildCanonicalOpeningVisibleContext(otherInput), naturalTexts.slice(1)]
   ]) {
-    assert.match(opening.visible_scene_dossier.must_include
+    assert.equal(opening.visible_scene_dossier.must_include
       .find(({ category }) => category === 'surroundings').text,
-    /Главные воспринимаемые черты окружения/u);
+    `Текущее место: ${input.naturalScenePerception.visible_context.visible_scene}.`);
+    assert.equal(opening.visible_scene_facts.find(({ fact_id }) =>
+      fact_id === 'opening:place').text,
+    `Текущее место: ${input.naturalScenePerception.visible_context.visible_scene}.`);
     assert.deepEqual(opening.visible_scene_facts
       .filter(({ fact_id }) => fact_id.startsWith('opening:natural:'))
       .map(({ text }) => text), texts);
     assert.deepEqual(opening.opening_reader_control.assessments
       .find(({ question }) => question === 'surroundings').fact_refs,
-    texts.map((_, index) => `opening:natural:${index + 1}`));
+    ['opening:place', ...texts.map((_, index) => `opening:natural:${index + 1}`)]);
     for (const category of ['identity', 'body', 'carried_items']) {
       assert.ok(opening.visible_scene_dossier.must_include
         .some((entry) => entry.category === category));
@@ -1348,6 +1363,9 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
       const scene = JSON.parse(call.messages[1].content).сцена;
       const facts = scene.факты.map((fact) => typeof fact === 'string' ? fact : fact.текст);
       for (const text of texts) assert.ok(facts.includes(text));
+      assert.ok(facts.includes(opening.visible_scene_facts.find(({ fact_id }) =>
+        fact_id === 'opening:place').text));
+      assert.doesNotMatch(call.messages[1].content, /Скрытое название из публикации/u);
       assert.equal(scene.обязательный_смысл.some((text) =>
         /главные воспринимаемые черты окружения/u.test(text)), false);
       assert.deepEqual(scene.обязательный_смысл,

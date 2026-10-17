@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- test(npc): restore the held-item regression's Fisher and clear-weather preconditions after approved profile succession; retain every visibility, narration and reload assertion.
 - data(npc): prepare Fisher @5 with the approved regional scopes of @3 and the activity observation of @4; stage the canonical composition successor behind independent review and isolated-import authorization (D49).
 - fix(opening): retain every admitted visible NPC in the writer input even when its only fact repeats the visible label; preserve the same people through audit and repair (#594).
 - fix(npc): bind the D49 additional-start import and runtime selection to the separately recorded exact-scope authorization.

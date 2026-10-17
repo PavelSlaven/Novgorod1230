@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(narration): preserve committed seasonal, weather and light facts as scene support during ordinary turns, separately from the action's required result (#654, D49).
 - fix(narration): distinguish separately referenced people and objects with matching visible labels in natural Russian, preserving repeated references and unique-label descriptions (#654, D49).
 - fix(conversation): require the NPC speech auditor to preserve the source fact's subject, function, object and context when checking a claim (#247, D49).
 - fix(opening): place environmental orientation and the world/story boundary in system for writer, audit and repair; keep all perceived facts and references in the role inputs (#654, D49).

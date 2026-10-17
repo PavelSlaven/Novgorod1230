@@ -275,9 +275,10 @@ test('current scene rebuilds environment facts from the synchronized approved sn
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles }).current_visible_context;
 
-  assert.deepEqual(current.visible_changes, ['Осень.', 'Вечер.', 'Темно.',
+  for (const fact of ['Осень.', 'Вечер.', 'Темно.',
     'Небо затянуто облаками.', 'Идёт дождь.', 'Видимость снижена.',
-    'Сильный ветер.']);
+    'Сильный ветер.']) assert.ok(current.sensory_details.includes(fact));
+  assert.deepEqual(current.visible_changes, []);
   assert.ok(current.sensory_details.includes('На борту заметны царапины.'));
   assert.doesNotMatch(JSON.stringify(current), /Лето\.|Светло\.|Небо ясное|Осадков нет/u);
 });

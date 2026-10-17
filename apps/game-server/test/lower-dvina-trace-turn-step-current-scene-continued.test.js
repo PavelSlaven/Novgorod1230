@@ -381,3 +381,37 @@ test('current body reaches prose as felt condition without raw metrics', () => {
   }
   assert.deepEqual(state.body_state, body);
 });
+
+test('ordinary inspection carries committed season and weather to the writer', async () => {
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => assert.fail('fallback not expected') }
+  });
+  const state = committedState();
+  state.environment_snapshot = { schema: 'rus.approved_initial_environment.v1',
+    season: 'late_summer_open_water', day_part: 'daylight', light_state: 'daylight',
+    weather_state: { sky: 'overcast', precipitation: 'none',
+      visibility: 'normal', wind: 'calm_or_light' } };
+  const input = { consequence: { status: 'resolved', visible_seed: {
+    completed_steps: [{ step_index: 1, summary: 'осмотреть берег' }],
+    turn_step_1: { kind: 'semantic_activity', discovery_kind: 'inspect',
+      duration_minutes: 5, discovery_result: { resolution: 'no_change',
+        query: 'осмотреть берег' } }
+  } }, retrieved_state: state, body_update: { state_after: {} },
+  mode_resolution: { decision_trace: { remaining_intent: null,
+    step_traces: [{ approved_plan: { resolution: 'domain_request',
+      goal_result: 'pending', operations: [{ op: 'request_discovery' }], check: null } }] } } };
+  const visible = await projector.project(input);
+  const wire = narrationWire({ visible_context: visible }, { roleId: 'gameplay_narrator' });
+  for (const fact of ['Позднее лето.', 'Небо затянуто облаками.', 'Осадков нет.']) {
+    assert.ok(visible.sensory_details.includes(fact));
+    assert.ok(wire['Переданные сведения об обстановке']['Ощущения'].includes(fact));
+    assert.ok(!visible.visible_changes.includes(fact));
+  }
+  assert.ok(visible.visible_changes.some((change) => change.includes('Осмотр')));
+  assert.deepEqual(await projector.project(input), visible);
+
+  delete state.environment_snapshot;
+  const withoutEnvironment = await projector.project(input);
+  assert.ok(!withoutEnvironment.sensory_details.includes('Позднее лето.'));
+  assert.ok(!withoutEnvironment.sensory_details.includes('Небо затянуто облаками.'));
+});

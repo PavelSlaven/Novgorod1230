@@ -165,7 +165,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
         || spatiallyObservedItemIds.has(visibleObject.entity_ref?.entity_id)))
     .flatMap(({ physicalFacts }) => physicalFacts);
   const sensoryDetails = unique([...(placeFacts ?? []),
-    ...itemFacts]);
+    ...itemFacts, ...currentEnvironmentChanges(committedState)]);
   const currentUncertainties = currentSpatial?.uncertainties
     ?? committedState.current_visible_context?.uncertainties
     ?? playerSafe.current_visible_context?.uncertainties ?? [];
@@ -173,7 +173,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     version: 1,
     schema: 'visible_context_package',
     visible_scene: profile.display_name,
-    visible_changes: currentEnvironmentChanges(committedState),
+    visible_changes: [],
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
     visible_objects: uniqueLowerDvinaTraceVisibleObjects([

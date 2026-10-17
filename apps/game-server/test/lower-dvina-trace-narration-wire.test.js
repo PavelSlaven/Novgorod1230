@@ -84,6 +84,17 @@ test('writer and auditor distinguish same-named visible objects by identity and 
     ['Переданные сведения об обстановке']['Предметы и ориентиры'], [
     'сухая ветка у вас в руках', 'сухая ветка замечена', 'нож при вас'
   ]);
+  const repeatedAfterOther = structuredClone(visible_context);
+  repeatedAfterOther.visible_objects.splice(2, 0, {
+    ...repeatedAfterOther.visible_objects[0], visible_status: 'у вас в руках'
+  });
+  assert.deepEqual(narrationWire({ visible_context: repeatedAfterOther })
+    ['Переданные сведения об обстановке']['Предметы и ориентиры'], [
+    'Отдельный объект №1: сухая ветка у вас в руках',
+    'Отдельный объект №2: сухая ветка замечена',
+    'Отдельный объект №1: сухая ветка у вас в руках',
+    'нож при вас'
+  ]);
 });
 
 test('all prose roles retain described NPC and admitted path without internal fields', () => {

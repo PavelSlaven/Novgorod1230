@@ -129,10 +129,12 @@ function narrationVisibleDescriptions(records, path) {
   for (const record of records) {
     if (typeof record?.display_label !== 'string' || record.entity_ref == null) continue;
     const label = record.display_label.trim();
-    if (!refsByLabel.has(label)) refsByLabel.set(label, new Set());
-    refsByLabel.get(label).add(JSON.stringify([
+    if (!refsByLabel.has(label)) refsByLabel.set(label, new Map());
+    const ref = JSON.stringify([
       record.entity_ref.entity_kind, record.entity_ref.entity_id
-    ]));
+    ]);
+    const refs = refsByLabel.get(label);
+    if (!refs.has(ref)) refs.set(ref, refs.size + 1);
   }
   return records.flatMap((record, index) => {
     if (typeof record === 'string') {
@@ -160,7 +162,11 @@ function narrationVisibleDescriptions(records, path) {
       descriptions.indexOf(value) === position).join(' ');
     const distinct = record.entity_ref != null
       && refsByLabel.get(record.display_label?.trim())?.size > 1;
-    return [distinct ? `Отдельный объект №${index + 1}: ${description}` : description];
+    const ref = JSON.stringify([
+      record.entity_ref?.entity_kind, record.entity_ref?.entity_id
+    ]);
+    const marker = refsByLabel.get(record.display_label?.trim())?.get(ref);
+    return [distinct ? `Отдельный объект №${marker}: ${description}` : description];
   });
 }
 

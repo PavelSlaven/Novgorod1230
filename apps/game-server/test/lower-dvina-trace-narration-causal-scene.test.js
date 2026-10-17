@@ -37,7 +37,8 @@ function currentScene() {
 }
 
 function currentSceneState(scene = currentScene(), items = []) {
-  const position = { location_ref: 'shore', g5_anchor_id: 'shore-anchor' };
+  const position = { location_ref: 'shore', position_id: 'shore-position',
+    g5_anchor_id: 'shore-anchor' };
   const npcs = (scene.visible_npc ?? []).map((visibleNpc) => {
     const id = visibleNpc.entity_ref.entity_id;
     const cues = visibleNpc.observable_cues ?? {};
@@ -61,8 +62,7 @@ function currentSceneState(scene = currentScene(), items = []) {
   const spatialContext = { visible_scene: scene.visible_scene,
     sensory_details: scene.sensory_details ?? [], visible_objects: [],
     visible_npc: structuredClone(scene.visible_npc ?? []) };
-  return { actor_id: 'player', position: { location_ref: 'shore',
-    g5_anchor_id: 'shore-anchor' }, items: [...items, ...nearbyItems], npcs,
+  return { actor_id: 'player', position, items: [...items, ...nearbyItems], npcs,
     current_spatial_context: spatialContext,
     current_spatial_context_is_fresh: true,
     current_spatial_context_filters_entities: true,
@@ -296,15 +296,18 @@ test('direct look keeps all scene facts required when prior snapshot binding is 
   const scene = currentScene();
   for (const prior of [null, {
     party_id: 'other-party', committed_state_version: 7,
-    position: { location_ref: 'shore', g5_anchor_id: 'shore-anchor' },
+    position: { location_ref: 'shore', position_id: 'shore-position',
+      g5_anchor_id: 'shore-anchor' },
     context: currentScene()
   }, {
     party_id: 'party', committed_state_version: 6,
-    position: { location_ref: 'shore', g5_anchor_id: 'shore-anchor' },
+    position: { location_ref: 'shore', position_id: 'shore-position',
+      g5_anchor_id: 'shore-anchor' },
     context: currentScene()
   }, {
     party_id: 'party', committed_state_version: 7,
-    position: { location_ref: 'other-shore', g5_anchor_id: 'other-anchor' },
+    position: { location_ref: 'other-shore', position_id: 'shore-position',
+      g5_anchor_id: 'other-anchor' },
     context: currentScene()
   }]) {
     const state = currentSceneState(scene);

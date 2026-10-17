@@ -380,7 +380,12 @@ test('opening sends one readable Russian fact projection to writer and auditor',
   }
   for (const modelInput of [writerInput, auditorInput]) {
     const serialized = JSON.stringify(modelInput);
-    assert.doesNotMatch(serialized,
+    assert.deepEqual(modelInput.сцена.персонажи
+      .filter(({ факты }) => факты.length === 0).map(({ имя }) => имя),
+    modelInput === writerInput ? ['незнакомый рыбак'] : []);
+    assert.doesNotMatch(serialized.replace(
+      '"имя":"незнакомый рыбак","факты":[]',
+      '"имя":"незнакомый рыбак","факты":["нет наблюдений"]'),
       /visible_context_package|frame|clock|whole_minutes|weather_light_context|must_include|source_refs|fact_id|summer|daylight|"[^"]*":\s*\[\s*\]/u);
     assert.doesNotMatch(serialized, /male|young|blue|auburn|stocky|low_leather_shoe/u);
     assert.doesNotMatch(serialized, /Мир сцены задан только сведениями/u);

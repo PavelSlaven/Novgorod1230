@@ -19,4 +19,3 @@ verdict: PASS_WITH_NOTES for this delta only. No new contract conflict. Final D4
 
 Checks by this auditor: exact Git diff and clean status inspected; `git diff --check 3995a1959..982d20e` PASS. Focused/syntax/architecture/docs tests reported passed by author, not rerun here. No model call made.
 CBM: Parent-supplied Tier 2 search/trace used only for orientation. Generation `2026-10-16T05:26:03Z` indexes primary checkout, stale for this worktree. Own `check_index_coverage` reported `metadata_changed` on governing/contract/source and `missing` on focused test; current worktree files and exact Git diff support conclusions. `detect_changes` resolved primary checkout's unrelated `.claude/settings.local.json.bak-20261014-tools`, so it does not describe this delta. Token telemetry unavailable; no escalation.
-

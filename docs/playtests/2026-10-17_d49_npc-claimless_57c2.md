@@ -199,4 +199,3 @@
 | repair-dropped-claimless-original | верно PASS | valid | В исходной речи факт подтверждён источником, но исходного claim нет. §37.2 разрешает опустить его; новая речь нефактическая, сохранённое типизированное решение выразимо. |
 
 Итог: **12/14 правильных смысловых решений; 11/14 одновременно правильных и принимаемых валидатором. Общий gate FAIL.** Replay вызовом production `auditFreshNpcSpeech()` с сохранёнными wire и fake roleRunner: 13 структурно valid, 1 invalid (`fish-food-unsupported`). Wire verifier `verify.mjs`: 14/14 case IDs/request bodies совпали, модель одна, finish `stop`; он не оценивает семантику. Новых вызовов модели нет. Это один frozen run, без оценки стабильности по повторам.
-

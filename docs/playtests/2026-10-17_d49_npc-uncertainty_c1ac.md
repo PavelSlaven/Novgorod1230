@@ -304,4 +304,3 @@
 Проверки: `node .../verify.mjs .../d49-npc-uncertainty-qwen-result` — PASS: 13 точных request bodies, HTTP envelopes, `finish_reason=stop`, одна модель. Отдельный read-only replay всех 13 через импорт `auditFreshNpcSpeech`, `roleRunner.run` возвращал сохранённый `output` (13 вызовов, 0 вызовов модели): 4 `true`, 9 `TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED`, ни одного invalid-result/exception. `git rev-parse HEAD`, `git status --short`, `git diff --check` — указанный HEAD, чистое дерево, diff check PASS. Данные оценивались по `request_body`/`results.jsonl`, а не только по `expected` из `cases.json`.
 
 Ограничение: это квалификация сохранённых 13 Qwen ответов; нового вызова модели и статистики устойчивости по повторным сэмплам не было. Граф CBM из родительского исследования устарел относительно worktree; материальные файлы и сохранённые запросы сверены прямым чтением.
-

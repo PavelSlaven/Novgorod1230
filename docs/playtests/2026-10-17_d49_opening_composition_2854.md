@@ -30,21 +30,21 @@ SHA-256: e94d75c0ed1f2f4939230be5d10aadfdd150412d2209cb8accfdf9daa44b90fa
 
 ## CONTRACT AUDIT FINDING
 
-**audited_head:** `afb6e93f60d1e933adedb6a5319735c6a8577e1e`  
-**scope:** новый prompt delta authored opening; не повторный аудит всего D49.  
-**source_set:** root `AGENTS.md`; `docs/governance/{README,PRODUCT_CONSTITUTION,ARCHITECTURE_INVARIANTS,WORKFLOW_RULES,AUDIT_RULES,GIT_SAFETY_RULES}.md`; `CONTRACT_INDEX.md` §§1–8.1; `situational_prose_requirements.md` §§1–5; `apps/game-server/MODULE.md`, `packages/narration/MODULE.md`, `packages/new-game/MODULE.md`; изменённые prompt и test; cloud input/output.  
-**source_statuses:** governing-корпус `GOVERNING`; индекс `ACTIVE / navigation index`; situational prose `ACTIVE SPECIALIZATION`; MODULE owners — действующие границы владельцев.  
-**observed_implementation:** вместо инструкции связать факты в сцену prompt просит «один центр внимания» и включает необязательные детали, когда они углубляют впечатление; отдельно сохраняет предел «Взгляд и чувство не добавляют фактов мира, событий или поступков героя». Два теста проверяют новую дословную инструкцию. Diff не меняет role calls, adapter, authority или ownership.  
-**required_by_active_contract:** §2.0 разрешает ощущения, чувства, мысли и мелкие движения без новых фактов мира; §4.1 требует композиционный фокус; §4.3–4.4 отбор деталей без инвентаризации; §5 требует сценическую ориентацию и opening без выдумки недостающего.  
-**target_if_any:** нет.  
-**conflict:** нормативного конфликта в delta нет. Ограничивающее «Необязательные детали» не отменяет явные требования system охватить обязательный смысл и главные черты окружения. Формулировка про взгляд и чувство не запрещает разрешённые §2.0 мелкие движения тела.  
-**precedence_resolution:** governing → active prose specialization → MODULE/code/tests; одна модельная проба не меняет эту иерархию.  
-**first_bad_boundary:** нет в diff; качество оцененного output ниже порога художественной приёмки.  
-**correct_owner:** opening writer prompt у game-server adapter, композиция/приёмка — `@rus/narration` и Stage 22/23.  
-**required_code_delta:** для соответствия контракту отсутствует; для порога ≥8 автору нужна дальнейшая правка/валидация writer.  
-**required_docs_delta:** нет.  
-**required_tests:** одного structural теста недостаточно для художественной приёмки; нужен следующий cloud sample/владелецкий просмотр после правки.  
-**severity:** P2 (литературное качество этой пробы).  
+**audited_head:** `afb6e93f60d1e933adedb6a5319735c6a8577e1e`
+**scope:** новый prompt delta authored opening; не повторный аудит всего D49.
+**source_set:** root `AGENTS.md`; `docs/governance/{README,PRODUCT_CONSTITUTION,ARCHITECTURE_INVARIANTS,WORKFLOW_RULES,AUDIT_RULES,GIT_SAFETY_RULES}.md`; `CONTRACT_INDEX.md` §§1–8.1; `situational_prose_requirements.md` §§1–5; `apps/game-server/MODULE.md`, `packages/narration/MODULE.md`, `packages/new-game/MODULE.md`; изменённые prompt и test; cloud input/output.
+**source_statuses:** governing-корпус `GOVERNING`; индекс `ACTIVE / navigation index`; situational prose `ACTIVE SPECIALIZATION`; MODULE owners — действующие границы владельцев.
+**observed_implementation:** вместо инструкции связать факты в сцену prompt просит «один центр внимания» и включает необязательные детали, когда они углубляют впечатление; отдельно сохраняет предел «Взгляд и чувство не добавляют фактов мира, событий или поступков героя». Два теста проверяют новую дословную инструкцию. Diff не меняет role calls, adapter, authority или ownership.
+**required_by_active_contract:** §2.0 разрешает ощущения, чувства, мысли и мелкие движения без новых фактов мира; §4.1 требует композиционный фокус; §4.3–4.4 отбор деталей без инвентаризации; §5 требует сценическую ориентацию и opening без выдумки недостающего.
+**target_if_any:** нет.
+**conflict:** нормативного конфликта в delta нет. Ограничивающее «Необязательные детали» не отменяет явные требования system охватить обязательный смысл и главные черты окружения. Формулировка про взгляд и чувство не запрещает разрешённые §2.0 мелкие движения тела.
+**precedence_resolution:** governing → active prose specialization → MODULE/code/tests; одна модельная проба не меняет эту иерархию.
+**first_bad_boundary:** нет в diff; качество оцененного output ниже порога художественной приёмки.
+**correct_owner:** opening writer prompt у game-server adapter, композиция/приёмка — `@rus/narration` и Stage 22/23.
+**required_code_delta:** для соответствия контракту отсутствует; для порога ≥8 автору нужна дальнейшая правка/валидация writer.
+**required_docs_delta:** нет.
+**required_tests:** одного structural теста недостаточно для художественной приёмки; нужен следующий cloud sample/владелецкий просмотр после правки.
+**severity:** P2 (литературное качество этой пробы).
 **verdict:** `PASS_WITH_NOTES` для конструкции delta; **final acceptance этой cloud-пробы: BLOCK** из-за 5/10 < 8, при `facts=PASS` и `protocol=0`.
 
 **Проверки и пределы:** лично выполнены `git diff d82b7a10..HEAD`, `git diff --check`, `node --check` двух затронутых JS, `git status` — успешно. 33/33 focused и architecture/docs checks переданы ведущим, здесь не повторялись. CBM primary, по контексту передачи, stale (generation `2026-10-16T05:26:03Z`); вывод о локальном diff сверён прямым чтением исходника и MODULE. Provider wire реконструирован, не fresh capture: сообщение о `only system changed` для before/after/compare получено от ведущего; прошлые output и оценки не читались. Этот вывод касается одной cloud-пробы, не полной слепой серии §3.1.

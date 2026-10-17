@@ -285,7 +285,8 @@ test('repaired prerequisites reach O1 with catalog support, zero query evidence 
     assert.equal(atomic.resolution, 'materialize');
     assert.deepEqual(result.consequence_fragment.visible_seed.ordinary_presence_seed, {
       kind: 'ordinary_presence_seed', resolution: 'materialized',
-      query: entry.query, display_name: atomic.item.item_proposal.semantic_descriptor.name
+      query: entry.query, display_name: atomic.item.item_proposal.semantic_descriptor.name,
+      item_ref: atomic.item.item_id
     });
     assert.equal(atomic.item.item_proposal.semantic_descriptor.name,
       entry.query);

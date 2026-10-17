@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "dd231eeca77131c489c064d7c9b6bd94f027d320c9b424b86d43ca436610eba9",
-      "bytes": 40660,
+      "sha256": "bc6fae01014e5c1c5af03093ebec79a06a009f91410cf9e0a7a3c42c17101a7a",
+      "bytes": 40720,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -412,8 +412,8 @@
       "document_id": "temporal-world-and-interruptible-activities",
       "canonical_path": "corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
       "file_name": "temporal_world_and_interruptible_activities.md",
-      "sha256": "c97e697dfb2c25d94843414fbd1467283664b6f5f4478db4ef35f7322901bf89",
-      "bytes": 149061,
+      "sha256": "ce6ea9060ff706ba2de497a997579f9e5e9377f804551669b7841e4b5539fe49",
+      "bytes": 149976,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

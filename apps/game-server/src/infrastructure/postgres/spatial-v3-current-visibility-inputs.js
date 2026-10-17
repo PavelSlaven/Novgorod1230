@@ -64,7 +64,7 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
     gap('committed_entity_exterior_required');
   }
   if (placement.entity_kind === 'npc') {
-    const result = await transaction.query(`SELECT identity_state FROM party_runtime.party_npcs
+    const result = await transaction.query(`SELECT identity_state,machine_state FROM party_runtime.party_npcs
       WHERE party_id=$1 AND npc_id=$2`, [partyId, placement.entity_id]);
     if (result.rows.length !== 1) gap('committed_entity_exterior_required');
     const identity = result.rows[0].identity_state;
@@ -112,10 +112,12 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
       if (resolved.kind === 'gap') gap(resolved.code);
       return resolved.kind === 'labeled' ? [{ entity_ref: {
         entity_kind: 'item', entity_id: row.item_id
-      }, display_label: resolved.label }] : [];
+      }, display_label: resolved.label, item_template_ref: row.template_id }] : [];
     });
     return { sex_category: identity.sex_category, age_category: identity.age_category,
-      appearance, visible_equipment, held_items };
+      appearance, visible_equipment, held_items,
+      machine_status: result.rows[0].machine_state?.status ?? null,
+      current_activity: structuredClone(result.rows[0].machine_state?.current_activity ?? null) };
   }
   if (placement.entity_kind === 'item') {
     const result = await transaction.query(`SELECT i.state,i.condition_state,i.template_id,

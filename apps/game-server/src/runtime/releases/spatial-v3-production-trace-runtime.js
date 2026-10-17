@@ -267,7 +267,9 @@ export function createTraceTurnRuntime({
             bodyTimeEffectAdapter?.trustedBindingPin ?? null,
           trustedBodyNeedsProfile:
             bodyTimeEffectAdapter?.trustedBodyNeedsProfile ?? null
-        }).projectEnvironmentAtClock
+        }).projectEnvironmentAtClock,
+      approvedActivityRecords: materializationInputs
+        ?.approved_actor_temporal_bundle?.temporal_records ?? null
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
@@ -349,6 +351,8 @@ export function createTraceTurnRuntime({
     llmDiagnostics,
     onNpcSceneProjection: config.onNpcSceneProjection ?? null,
     authoredTurnProfile,
+    approvedActivityRecords: materializationInputs
+      ?.approved_actor_temporal_bundle?.temporal_records ?? null,
     postActionPerceptionProfile,
     spatialExpansionRuntime,
     spatialLocalSceneRuntime

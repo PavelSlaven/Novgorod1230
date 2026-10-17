@@ -26,6 +26,7 @@ export function createLowerDvinaTracePhase2ServiceFlow({
   contracts, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts,
   phase7Contracts, turn10Contracts, phase8Contracts, phase9Contracts,
   temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation,
+  approvedActivityRecords = null,
   bodyTimeEffectAdapter = null,
   partyId, loadPreparedMovementScene, projectCurrentScene, recordProjectionGap = null
 }) {
@@ -84,6 +85,7 @@ export function createLowerDvinaTracePhase2ServiceFlow({
     createVisibleProjector() {
       return createLowerDvinaTraceTurnStepVisibleProjector({
         calendarProfile: contracts.calendarProfile,
+        approvedActivityRecords,
         locationProfiles: phase3Contracts?.locationProfiles ?? null,
         scenePresentation,
         partyId, loadPreparedMovementScene, projectCurrentScene, recordProjectionGap,

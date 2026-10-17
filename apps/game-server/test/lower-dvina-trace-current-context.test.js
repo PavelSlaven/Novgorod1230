@@ -69,6 +69,43 @@ test('simultaneous routine changes preserve equal labels without ordinal prose',
   ]);
 });
 
+test('temporal current activity uses approved text plus currently visible held-item proof', () => {
+  const current = { ...scene(), visible_npc: [{
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc:fisher' },
+    display_label: 'рыбак', visible_status: 'STALE PRIVATE STATUS',
+    observable_cues: { held_items: [{
+      entity_ref: { entity_kind: 'item', entity_id: 'item:net' }, display_label: 'сеть'
+    }] }
+  }] };
+  const state = { current_visible_context: current, actor_id: 'player',
+    npcs: [{ instance_id: 'npc:fisher', machine_state: { status: 'active',
+      current_activity: { activity_ref: 'activity:fishing', status: 'active',
+        summary: 'PRIVATE TASK FOCUS' } } }],
+    items: [{ instance_id: 'item:net', template_id: 'item_tpl_net',
+      placement: { holder_npc_id: 'npc:fisher', physical_position: 'hands' } }] };
+  const record = { record_kind: 'activity_profile', status: 'approved', payload: {
+    activity_profile_id: 'activity:fishing',
+    player_safe_observation: 'Осматривает рыболовную сеть.',
+    resource_requirements: { required_items: [{ item_template_ref: 'item_tpl_net' }] }
+  } };
+  const project = (visibleContext = current, activityRecords = [record]) =>
+    enrichLowerDvinaTraceVisibleNpcCues({ visibleContext, committedState: state,
+      approvedActivityRecords: activityRecords });
+  assert.equal(project().visible_npc[0].visible_status, 'Осматривает рыболовную сеть.');
+  assert.doesNotMatch(JSON.stringify(project()), /PRIVATE TASK FOCUS/u);
+  assert.equal(Object.hasOwn(project({ ...current, visible_npc: [{
+    ...current.visible_npc[0], observable_cues: {}
+  }] }).visible_npc[0], 'visible_status'), false);
+  assert.equal(Object.hasOwn(project(current, [{ ...record, payload: {
+    ...record.payload, activity_profile_id: 'unknown'
+  } }]).visible_npc[0], 'visible_status'), false);
+  assert.equal(Object.hasOwn(project(current, [{ ...record, payload: {
+    ...record.payload, player_safe_observation: undefined
+  } }]).visible_npc[0], 'visible_status'), false);
+  state.items[0].template_id = 'wrong_template';
+  assert.equal(Object.hasOwn(project().visible_npc[0], 'visible_status'), false);
+});
+
 test('a remembered player utterance is not recast as received testimony', () => {
   const known = projectKnownContext({ actor_id: 'player' }, [], [
     { speaker_actor_id: 'player', content: 'Я не знаю дороги.' },

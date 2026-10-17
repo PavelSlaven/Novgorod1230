@@ -21,7 +21,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt, scenarioId,
     state, contracts, registry, repository, semanticResolver,
     turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
-    locationProfiles, scenePresentation,
+    locationProfiles, scenePresentation, approvedActivityRecords = null,
     itemLabels = {},
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
@@ -104,7 +104,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       currentSpatialContext: committedState.current_spatial_context,
       currentSpatialContextIsFresh: isFresh,
       currentSpatialContextFiltersEntities:
-        isFresh && committedState.current_spatial_context_filters_entities === true
+        isFresh && committedState.current_spatial_context_filters_entities === true,
+      approvedActivityRecords
     });
     return isFresh ? { ...projected,
       current_spatial_context: committedState.current_spatial_context,
@@ -117,6 +118,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       contracts, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts,
       phase7Contracts, turn10Contracts, phase8Contracts, phase9Contracts,
       temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation,
+      approvedActivityRecords,
       bodyTimeEffectAdapter,
       partyId, loadPreparedMovementScene, projectCurrentScene, recordProjectionGap: trace
     });

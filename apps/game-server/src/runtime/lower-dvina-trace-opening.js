@@ -1,5 +1,7 @@
 import { validateFirstGameScreen } from '@rus/presentation';
 import { detectHiddenLeaks, validateVisibleContext } from '@rus/visibility-knowledge-memory';
+import { playerSafeActivityObservation } from './lower-dvina-trace-player-safe-npc-details.js';
+import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 
 const FORBIDDEN_KEYS = new Set([
   'hidden_truth',
@@ -70,7 +72,8 @@ export function buildLowerDvinaTraceOpeningScreen({
 }
 
 export function buildAuthoredOpeningVisibleContext({ requestId, visible,
-  internal, approvedProjection, naturalScenePerception = null } = {}) {
+  internal, approvedProjection, naturalScenePerception = null,
+  approvedActivityRecords = null } = {}) {
   assertVisibleSource(visible, approvedProjection);
   if (naturalScenePerception != null && (naturalScenePerception.ok !== true
     || !validateVisibleContext(naturalScenePerception.visible_context).ok
@@ -97,15 +100,39 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
     .map((relation) => ({ npc_instance_id: npc.instance_id,
       npc_name: npc.identity_state?.canonical_name,
       relation_kind: relation.kind, standing: relation.standing })));
-  const visibleNpcs = localNpc.map((npc) => ({
+  const visibleNpcs = localNpc.map((npc) => {
+    const visibleNpc = naturalScenePerception?.visible_context?.visible_npc
+      ?.filter((entry) => entry?.entity_ref?.entity_kind === 'npc'
+        && entry.entity_ref.entity_id === npc.instance_id);
+    const clearCue = visibleNpc?.length === 1
+      && Array.isArray(visibleNpc[0].observable_cues?.held_items);
+    const heldItems = clearCue ? visibleNpc[0].observable_cues.held_items : [];
+    const templates = heldItems.flatMap((held) => {
+      const ref = held?.entity_ref;
+      if (ref?.entity_kind !== 'item') return [];
+      const matches = (internal.items ?? []).filter((item) =>
+        item.instance_id === ref.entity_id
+          && item.placement?.holder_npc_id === npc.instance_id
+          && item.placement?.physical_position === 'hands'
+          && item.placement?.container_id == null
+          && !runtimeItemRecordIsConcealed(item, { includeAccess: false }));
+      return matches.length === 1 ? [matches[0].template_id] : [];
+    });
+    const observation = clearCue ? playerSafeActivityObservation({
+      activity: npc.machine_state?.current_activity,
+      actorStatus: npc.machine_state?.status,
+      activityRecords: approvedActivityRecords,
+      heldItemTemplateIds: templates
+    }) : null;
+    return {
     npc_instance_id: npc.instance_id,
     label: relations.some(({ npc_instance_id: id }) => id === npc.instance_id)
       ? npc.identity_state?.canonical_name
       : npc.identity_state?.public_role_label,
-    current_activity: npc.machine_state?.current_activity?.summary ?? null,
+    ...(observation == null ? {} : { current_activity: observation }),
     recognition: relations.some(({ npc_instance_id: id }) => id === npc.instance_id)
       ? 'recognized' : 'unrecognized'
-  }));
+  }; });
   const visibleItems = playerItems.map((item) => ({
     item_instance_id: item.instance_id, label: item.state?.display_name,
     placement: 'held_by_player', condition: item.condition_state

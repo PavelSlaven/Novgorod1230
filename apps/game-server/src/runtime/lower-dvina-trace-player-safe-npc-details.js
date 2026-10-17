@@ -213,3 +213,29 @@ function safeConversationPresentation(value) {
 function safeText(value) {
   return typeof value === 'string' && value.trim() ? value.trim() : null;
 }
+
+export function playerSafeActivityObservation({ activity, actorStatus,
+  activityRecords, heldItemTemplateIds = [] } = {}) {
+  const activityRef = safeText(activity?.activity_ref);
+  if (actorStatus !== 'active' || activity?.status !== 'active'
+      || !activityRef || !Array.isArray(activityRecords)
+      || !Array.isArray(heldItemTemplateIds)) return null;
+  const matches = activityRecords.filter((record) =>
+    record?.status === 'approved'
+      && (record.record_kind === 'activity_profile'
+        || record.family_id === 'activity_profile')
+      && record.payload?.activity_profile_id === activityRef);
+  if (matches.length !== 1) return null;
+  const profile = matches[0].payload;
+  const observation = safeText(profile.player_safe_observation);
+  const required = profile.resource_requirements?.required_items ?? [];
+  if (!observation || !Array.isArray(required)) return null;
+  const held = heldItemTemplateIds.filter((value) => typeof value === 'string');
+  if (!required.every((item) => {
+    const template = safeText(item?.item_template_ref);
+    const quantity = Number(item?.quantity ?? 1);
+    return template && Number.isSafeInteger(quantity) && quantity > 0
+      && held.filter((value) => value === template).length >= quantity;
+  })) return null;
+  return observation;
+}

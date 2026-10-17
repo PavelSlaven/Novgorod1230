@@ -76,7 +76,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
   readCurrentConnectionDisclosure = null,
   readCurrentVisibleContext = null,
-  projectEnvironmentAtClock = null } = {}) {
+  projectEnvironmentAtClock = null,
+  approvedActivityRecords = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -165,7 +166,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
           initialNaturalPerceptionRulePin: naturalPin,
           naturalScenePerceptionInput,
           scenePresentation: screenPresentation?.scenePresentation ?? null,
-          itemLabels: screenPresentation?.itemLabels ?? {}
+          itemLabels: screenPresentation?.itemLabels ?? {},
+          approvedActivityRecords
         })
       );
       const journeyLocation = await loadPhase2JourneyLocation(
@@ -321,7 +323,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
             initialNaturalPerceptionRulePin: naturalPin,
             naturalScenePerceptionInput,
             scenePresentation: screenPresentation?.scenePresentation ?? null,
-            itemLabels: screenPresentation?.itemLabels ?? {}
+            itemLabels: screenPresentation?.itemLabels ?? {},
+            approvedActivityRecords
           }));
       const journeyLocation = await loadPhase2JourneyLocation(transaction,
         partyId, initial.actor_id);
@@ -554,7 +557,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       : withLowerDvinaTraceCurrentScene({
         committedState: refreshedScene,
         scenePresentation: presentation?.scenePresentation ?? null,
-        itemLabels: presentation?.itemLabels ?? {}
+        itemLabels: presentation?.itemLabels ?? {},
+        approvedActivityRecords
       }).current_visible_context;
     const screen = projectLowerDvinaTraceScreenPanels({
       payload: screenPayload,

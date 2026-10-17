@@ -31,6 +31,7 @@ import { ordinaryPresenceResolution, ordinarySceneDetails,
   './lower-dvina-trace-turn-step-ordinary-visible.js';
 export function createLowerDvinaTraceTurnStepVisibleProjector({
   fallback, calendarProfile = null, locationProfiles = null,
+  approvedActivityRecords = null,
   scenePresentation = null, partyId = null,
   loadPreparedMovementScene = null, projectCurrentScene = null,
   recordProjectionGap = null
@@ -232,7 +233,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             locationProfiles: locationProfiles
               ?? input?.retrieved_state?.location_profiles ?? null,
             scenePresentation: scenePresentation
-              ?? input?.retrieved_state?.scene_presentation ?? null
+              ?? input?.retrieved_state?.scene_presentation ?? null,
+            approvedActivityRecords
           });
       return finishVisibleProjection(overlayFireVisible(overlayOrdinaryPresence(
           overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence,
@@ -387,7 +389,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
       ? await fallback.project(input)
       : projectCurrentSceneForVisibleOverlay({
             input, directSeedKeys: directSeedKeys(seedEntries),
-            body, locationProfiles, scenePresentation
+            body, locationProfiles, scenePresentation, approvedActivityRecords
           });
     return overlayOrdinaryPresence(
       overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence,
@@ -405,7 +407,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   const currentScene = projectCurrentSceneForNoOperationDirect({
     input,
     directSeedKeys: directSeeds.map(([key]) => key),
-    body, locationProfiles, scenePresentation
+    body, locationProfiles, scenePresentation, approvedActivityRecords
   });
   if (currentScene != null) return overlayOrdinaryPresence(
     currentScene, ordinaryPresence,
@@ -415,7 +417,8 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   if (consequence.status === 'partial' && directSeeds.length === 0
       && consequence.visible_seed.clarification == null) {
     return overlayOrdinaryPresence(projectCurrentSceneForVisibleOverlay({
-      input, directSeedKeys: [], body, locationProfiles, scenePresentation }), ordinaryPresence,
+      input, directSeedKeys: [], body, locationProfiles, scenePresentation,
+      approvedActivityRecords }), ordinaryPresence,
       input?.ordinary_materialization_atomic_write_plan?.item);
   }
   return overlayOrdinaryPresence(deepFreeze({

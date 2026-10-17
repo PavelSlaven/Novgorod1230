@@ -213,6 +213,11 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     }),
     loadInternal: (partyId) => repository.loadInternal(partyId),
     loadVisible: (partyId) => repository.loadVisible(partyId),
+    getApprovedActivityRecords(scenarioId) {
+      return targetStarts.find(({ profile }) => profile.scenario_id === scenarioId)
+        ?.materialization_inputs?.approved_actor_temporal_bundle?.temporal_records
+        ?? null;
+    },
     ...(targetStartRuntime == null ? {} : {
       async loadNaturalScenePerceptionInput({ partyId, actorId, internal,
         initialState, transaction: suppliedTransaction = null }) {

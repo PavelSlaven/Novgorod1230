@@ -182,6 +182,8 @@ export async function createSpatialV3ProductionCompositionRoot({
     const authoredStartCatalog = targetContext == null ? null
       : createTargetAuthoredStartCatalog({ runtime: targetContext.runtime, release });
     const authoredRuntimeBindingResolver = authoredStartCatalog?.resolveRuntimeBinding ?? null;
+    const approvedActorTemporalRecords = targetContext?.runtime?.materialization_inputs
+      ?.approved_actor_temporal_bundle?.temporal_records ?? null;
     const targetStartPublication = authoredStartCatalog == null ? null
       : await authoredStartCatalog.loadPublication(release.scenario_binding_id);
     let committer;
@@ -236,7 +238,8 @@ export async function createSpatialV3ProductionCompositionRoot({
             transaction, partyId, actorId, observedPositionId: positionId, clock
           });
           return projectSpatialV3CurrentVisibleContext({ ...sources,
-            directionalExits, partyId, actorId, positionId });
+            directionalExits, partyId, actorId, positionId,
+            approvedActivityRecords: approvedActorTemporalRecords });
         };
         if (hasActiveTurnDeadline(turnBudget)) return withTurnDeadlineTransaction(
           pools.partyPool, turnBudget, read,
@@ -275,7 +278,8 @@ export async function createSpatialV3ProductionCompositionRoot({
           partyId, actorId, positionId, observedPositionId: positionId, siteId,
           state, directionalExits });
         const visible_context = projectSpatialV3CurrentVisibleContext({ ...sources,
-          partyId, actorId, positionId });
+          partyId, actorId, positionId,
+          approvedActivityRecords: approvedActorTemporalRecords });
         if (!transaction) await client.query('COMMIT');
         return { ok: true, position_id: positionId, site_id: siteId,
           visible_context };
@@ -321,7 +325,8 @@ export async function createSpatialV3ProductionCompositionRoot({
             },
             readFactualContext: factualContext.readFactualContext }),
           projectVisible: (input) => projectSpatialV3GeneratedExpansionVisiblePackage({
-            ...input, readCurrentSources: currentVisibility.readCurrentSources })
+            ...input, readCurrentSources: currentVisibility.readCurrentSources,
+            approvedActivityRecords })
         })
       });
     const bindingContext = Object.freeze({ env, config,
@@ -559,7 +564,8 @@ export async function readDestinationDirectionalExits({ context, current, worldB
 
 /** Expansion changes topology while the actor stays at the committed source position. */
 export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transaction, request,
-  closure, envelopeInput, readCurrentSources, onLabelGapsOmitted = null } = {}) {
+  closure, envelopeInput, readCurrentSources, approvedActivityRecords = null,
+  onLabelGapsOmitted = null } = {}) {
   const partyId = request.party_id; const actorId = request.actor_id;
   const positionId = requestCurrentPositionId(request);
   const sources = await readCurrentSources({ transaction, partyId, actorId, positionId,
@@ -567,7 +573,8 @@ export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transac
       journey_location: { scene_position_id: positionId } },
     directionalExits: closure.directional_exits });
   const visible = projectSpatialV3CurrentVisibleContext({ ...sources,
-    partyId, actorId, positionId });
+    partyId, actorId, positionId,
+    approvedActivityRecords });
   const { visible_context: playerContext } =
     projectVisibleContextForPlayerPackage(visible,
       { onLabelGapsOmitted, requireScene: true });

@@ -4,6 +4,8 @@ import { serverError } from '../errors.js';
 import { LOCAL_EDGE_OCCUPIED_STATUS } from './local-edge-occupancy.js';
 import { isVisibleItemLabelGap, resolveVisibleItemLabel } from
   './lower-dvina-trace-visible-item-label.js';
+import { playerSafeActivityObservation } from
+  './lower-dvina-trace-player-safe-npc-details.js';
 
 const text = (value) => typeof value === 'string' && value.trim() === value && value.length > 0;
 export const SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF = Object.freeze({
@@ -25,7 +27,8 @@ export async function readAndProjectSpatialV3CurrentVisibleContext({ transaction
 /** Compose only observations admitted by the current perception and disclosure owners.
  * Inputs may include proposed destination rows from that transaction. */
 export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, actorId,
-  positionId, entityObservations, localEdges, directionalExits, siteConnections = [] } = {}) {
+  positionId, entityObservations, localEdges, directionalExits, siteConnections = [],
+  approvedActivityRecords = null } = {}) {
   if (!Array.isArray(entityObservations) || !Array.isArray(localEdges)
     || !Array.isArray(directionalExits) || !Array.isArray(siteConnections)) gap('complete_current_visible_sources_required');
   const natural = projectG4NaturalPerception({ input: naturalInput, partyId, actorId, positionId });
@@ -55,7 +58,7 @@ export function projectSpatialV3CurrentVisibleContext({ naturalInput, partyId, a
     }
     seen.add(key);
     if (row.entity_kind === 'npc') {
-      visible_npc.push(projectVisibleNpcObservation(row));
+      visible_npc.push(projectVisibleNpcObservation(row, approvedActivityRecords));
       continue;
     }
     const record = { entity_ref: { entity_kind: row.entity_kind, entity_id: row.entity_id },
@@ -107,10 +110,20 @@ export function projectSpatialV3CurrentVisibleNpcs(entityObservations) {
   });
 }
 
-function projectVisibleNpcObservation(row) {
+function projectVisibleNpcObservation(row, approvedActivityRecords = null) {
+  const heldItems = row.visibility === 'clear'
+    ? (row.exterior.held_items ?? []) : [];
+  const activityObservation = row.visibility === 'clear'
+    ? playerSafeActivityObservation({
+      activity: row.exterior.current_activity,
+      actorStatus: row.exterior.machine_status,
+      activityRecords: approvedActivityRecords,
+      heldItemTemplateIds: heldItems.map((item) => item.item_template_ref)
+    }) : null;
   return { entity_ref: { entity_kind: 'npc', entity_id: row.entity_id },
     display_label: row.display_label,
     recognition: row.display_name === row.display_label ? 'recognized' : 'unrecognized',
+    ...(activityObservation == null ? {} : { visible_status: activityObservation }),
     observable_cues: row.visibility === 'clear' ? {
       identity: { ...(row.display_name === row.display_label
         ? { display_name: row.display_name } : {}),
@@ -120,7 +133,8 @@ function projectVisibleNpcObservation(row) {
           ? 'young' : row.exterior.age_category,
         appearance: structuredClone(row.exterior.appearance) },
       equipment: structuredClone(row.exterior.visible_equipment),
-      held_items: structuredClone(row.exterior.held_items ?? [])
+      held_items: heldItems.map(({ item_template_ref: _template, ...item }) =>
+        structuredClone(item))
     } : {} };
 }
 

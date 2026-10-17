@@ -182,7 +182,9 @@ export async function createSpatialV3ProductionCompositionRoot({
     const authoredStartCatalog = targetContext == null ? null
       : createTargetAuthoredStartCatalog({ runtime: targetContext.runtime, release });
     const authoredRuntimeBindingResolver = authoredStartCatalog?.resolveRuntimeBinding ?? null;
-    const approvedActorTemporalRecords = null;
+    const approvedActivityRecordsForBinding = (binding) =>
+      authoredStartCatalog?.resolveTargetStartRuntime?.(binding)
+        ?.materialization_inputs?.approved_activity_records ?? null;
     const targetStartPublication = authoredStartCatalog == null ? null
       : await authoredStartCatalog.loadPublication(release.scenario_binding_id);
     let committer;
@@ -225,9 +227,10 @@ export async function createSpatialV3ProductionCompositionRoot({
           readLocalMovementEligibility })
       });
     const readCurrentVisibleContext = currentVisibility == null ? null
-      : async ({ partyId, actorId, positionId, turnBudget, clock = null } = {}) => {
+      : async ({ partyId, actorId, positionId, turnBudget, clock = null,
+        state: committedState = null, runtimeBinding = null } = {}) => {
         const read = async (transaction) => {
-          const state = { party_id: partyId, actor_id: actorId,
+          const state = { ...committedState, party_id: partyId, actor_id: actorId,
             journey_location: { scene_position_id: positionId } };
           const sources = await currentVisibility.readCurrentSources({
             transaction, partyId, actorId, positionId, state,
@@ -238,7 +241,8 @@ export async function createSpatialV3ProductionCompositionRoot({
           });
           return projectSpatialV3CurrentVisibleContext({ ...sources,
             directionalExits, partyId, actorId, positionId,
-            approvedActivityRecords: approvedActorTemporalRecords });
+            approvedActivityRecords: approvedActivityRecordsForBinding(runtimeBinding
+              ?? state.runtime_binding ?? { scenario_id: state.scenario_id }) });
         };
         if (hasActiveTurnDeadline(turnBudget)) return withTurnDeadlineTransaction(
           pools.partyPool, turnBudget, read,
@@ -257,7 +261,7 @@ export async function createSpatialV3ProductionCompositionRoot({
     const siteTraversalCapability = targetContext == null ? null
       : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
     const projectDestination = targetContext == null ? null : async ({ transaction,
-      partyId, actorId, context, destinationPosition, destinationSite,
+      partyId, actorId, context, state = null, destinationPosition, destinationSite,
       destinationPositionId, destinationSiteId, current } = {}) => {
       const positionId = destinationPosition?.id ?? destinationPositionId;
       const siteId = destinationSite?.id ?? destinationSiteId;
@@ -278,7 +282,9 @@ export async function createSpatialV3ProductionCompositionRoot({
           state, directionalExits });
         const visible_context = projectSpatialV3CurrentVisibleContext({ ...sources,
           partyId, actorId, positionId,
-          approvedActivityRecords: approvedActorTemporalRecords });
+          approvedActivityRecords: approvedActivityRecordsForBinding(current?.runtime_binding
+            ?? state?.runtime_binding ?? { scenario_id: current?.scenario_id
+              ?? state?.scenario_id ?? context?.scenario_id }) });
         if (!transaction) await client.query('COMMIT');
         return { ok: true, position_id: positionId, site_id: siteId,
           visible_context };
@@ -325,7 +331,10 @@ export async function createSpatialV3ProductionCompositionRoot({
             readFactualContext: factualContext.readFactualContext }),
           projectVisible: (input) => projectSpatialV3GeneratedExpansionVisiblePackage({
             ...input, readCurrentSources: currentVisibility.readCurrentSources,
-            approvedActivityRecords })
+            approvedActivityRecords: approvedActivityRecordsForBinding(
+              input?.request?.runtime_binding ?? input?.request?.state?.runtime_binding
+                ?? { scenario_id: input?.request?.state?.scenario_id
+                  ?? input?.request?.scenario_id }) })
         })
       });
     const bindingContext = Object.freeze({ env, config,

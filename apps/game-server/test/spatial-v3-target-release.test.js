@@ -214,6 +214,9 @@ test('approved imported NPC observation follows the exact non-default start runt
   });
   assert.equal(selected.profile.scenario_id, 'vikhtuy');
   assert.equal(selected.materialization_inputs.approved_activity_records, activityRows);
+  assert.equal(catalog.resolveTargetStartRuntime({ scenario_id: 'vikhtuy' }), selected);
+  assert.equal(catalog.resolveTargetStartRuntime({ catalog_id: 'wrong', revision: 2,
+    scenario_id: 'vikhtuy' }), null);
   assert.equal(catalog.resolveTargetStartRuntime({
     catalog_id: 'novgorod_live_world_runtime_v17', revision: 9
   }), null);

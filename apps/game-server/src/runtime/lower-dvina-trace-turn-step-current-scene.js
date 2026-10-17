@@ -19,9 +19,23 @@ import { failCurrentScene, validCurrentScene, visibleNpc } from
   './lower-dvina-trace-turn-step-current-scene-validation.js';
 import { isMovementVisibleObject } from './spatial-v3-movement-objects.js';
 import { playerSafeWeatherLightFacts } from './player-safe-weather-light.js';
+
 import { playerSafeAppearanceSummary } from
   './lower-dvina-trace-player-safe-appearance.js';
 export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
+
+export function withResolvedLowerDvinaTraceCurrentScene({
+  resolveTargetStartRuntime = null, approvedActivityRecords = null, ...input
+} = {}) {
+  const state = input.committedState;
+  const runtime = typeof resolveTargetStartRuntime === 'function'
+    ? resolveTargetStartRuntime(state?.runtime_binding ?? { scenario_id: state?.scenario_id })
+    : null;
+  return withLowerDvinaTraceCurrentScene({ ...input,
+    approvedActivityRecords: typeof resolveTargetStartRuntime === 'function'
+      ? runtime?.materialization_inputs?.approved_activity_records ?? null
+      : approvedActivityRecords });
+}
 export function projectPerceivedPeopleAbsence({ currentVisibleContext,
   currentSpatialContextIsFresh, currentSpatialContextFiltersEntities }) {
   if (currentSpatialContextIsFresh !== true

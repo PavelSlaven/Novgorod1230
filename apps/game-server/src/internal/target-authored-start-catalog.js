@@ -22,10 +22,18 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
       const binding = catalogs.find((catalog) =>
         catalog.runtime_binding.revision === ref?.revision)
         ?.resolveRuntimeBinding(ref);
+      if (binding) {
+        const matches = runtime.starts.filter((start) =>
+          start.profile?.scenario_id === binding.scenario_id
+            && (start.bindingRevision ?? 1) === ref.revision);
+        return matches.length === 1 ? matches[0] : null;
+      }
+      if (ref?.catalog_id != null || ref?.revision != null) return null;
+      if (typeof ref?.scenario_id !== 'string' || !ref.scenario_id) return null;
       const matches = runtime.starts.filter((start) =>
-        start.profile?.scenario_id === binding?.scenario_id
-          && (start.bindingRevision ?? 1) === ref?.revision);
-      return binding && matches.length === 1 ? matches[0] : null;
+        start.profile?.scenario_id === ref.scenario_id
+          && (ref.revision == null || (start.bindingRevision ?? 1) === ref.revision));
+      return matches.length === 1 ? matches[0] : null;
     };
     return Object.freeze({ actor_catalog: runtime.starts[0].profile.actor_catalog,
       turn_profile: turnProfile, ordinary_profiles: ordinaryProfiles,
@@ -90,8 +98,16 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
       if (scenarioId === profile.scenario_id) return requestedRevision == null || requestedRevision === bindingRevision ? publication : null;
       return historicalCatalog?.loadPublication(scenarioId, { bindingRevision }) ?? null;
     },
-    resolveTargetStartRuntime: (ref) => ref?.catalog_id === runtimeBinding.catalog_id
-      && ref.revision === runtimeBinding.revision ? runtime : null,
+    resolveTargetStartRuntime: (ref) => {
+      if (ref?.catalog_id === runtimeBinding.catalog_id
+          && ref.revision === runtimeBinding.revision) return runtime;
+      if (ref?.catalog_id != null || ref?.revision != null) return null;
+      if (typeof ref?.scenario_id !== 'string' || !ref.scenario_id) return null;
+      const matches = [runtime].filter(({ profile }) =>
+        profile?.scenario_id === ref.scenario_id
+          && (ref.revision == null || (runtime.bindingRevision ?? 1) === ref.revision));
+      return matches.length === 1 ? matches[0] : null;
+    },
     resolveRuntimeBinding: (ref) => ref?.catalog_id === runtimeBinding.catalog_id && ref.revision === runtimeBinding.revision
       ? runtimeBinding : historicalCatalog?.resolveRuntimeBinding(ref) ?? null });
 }

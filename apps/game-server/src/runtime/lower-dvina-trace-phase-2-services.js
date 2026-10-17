@@ -7,7 +7,7 @@ import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
 import { createCommittedItemMechanicsResolver } from
   './lower-dvina-trace-committed-inventory.js';
 import { createLowerDvinaTracePhase2ServiceFlow } from './lower-dvina-trace-phase-2-service-flow.js';
-import { withLowerDvinaTraceCurrentScene } from
+import { withResolvedLowerDvinaTraceCurrentScene } from
   './lower-dvina-trace-turn-step-current-scene.js';
 import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
   './lower-dvina-trace-phase-2-player-safe.js';
@@ -22,6 +22,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     state, contracts, registry, repository, semanticResolver,
     turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
     locationProfiles, scenePresentation, approvedActivityRecords = null,
+    resolveTargetStartRuntime = null,
     itemLabels = {},
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
@@ -92,10 +93,16 @@ export function buildLowerDvinaTracePhase2Services(context) {
       repository.loadPreparedMovementScene({
         partyId: preparedPartyId, state: preparedState, clock, turnBudget
       }) : null;
+  const activityRecordsForState = (committedState) => {
+    if (typeof resolveTargetStartRuntime !== 'function') return approvedActivityRecords;
+    const runtime = resolveTargetStartRuntime(committedState?.runtime_binding
+      ?? { scenario_id: committedState?.scenario_id });
+    return runtime?.materialization_inputs?.approved_activity_records ?? null;
+  };
   const projectCurrentScene = (committedState) => {
     const isFresh = committedState.current_spatial_context_is_fresh === true
       && committedState.current_spatial_context != null;
-    const projected = withLowerDvinaTraceCurrentScene({
+    const projected = withResolvedLowerDvinaTraceCurrentScene({
       committedState,
       locationProfiles: locationProfiles ?? committedState.location_profiles ?? null,
       scenePresentation: scenePresentation
@@ -105,7 +112,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       currentSpatialContextIsFresh: isFresh,
       currentSpatialContextFiltersEntities:
         isFresh && committedState.current_spatial_context_filters_entities === true,
-      approvedActivityRecords
+      approvedActivityRecords,
+      resolveTargetStartRuntime
     });
     return isFresh ? { ...projected,
       current_spatial_context: committedState.current_spatial_context,
@@ -118,7 +126,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       contracts, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts,
       phase7Contracts, turn10Contracts, phase8Contracts, phase9Contracts,
       temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation,
-      approvedActivityRecords,
+      approvedActivityRecords: activityRecordsForState(state),
       bodyTimeEffectAdapter,
       partyId, loadPreparedMovementScene, projectCurrentScene, recordProjectionGap: trace
     });

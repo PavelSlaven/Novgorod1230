@@ -356,6 +356,7 @@ export function createTraceTurnRuntime({
     authoredTurnProfile,
     approvedActivityRecords: materializationInputs
       ?.approved_activity_records ?? null,
+    resolveTargetStartRuntime,
     postActionPerceptionProfile,
     spatialExpansionRuntime,
     spatialLocalSceneRuntime

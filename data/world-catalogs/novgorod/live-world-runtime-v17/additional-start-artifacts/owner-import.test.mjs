@@ -20,12 +20,14 @@ test('owner rows import approved observation profiles and select composition suc
   const rows = await buildAdditionalStartOwnerRows();
   const importAuthorization = await json(`${base}/live-world-runtime-v17/additional-start-artifacts/owner-import-authorization.json`);
   assert.doesNotThrow(() => assertAdditionalStartImportAuthorization(
-    importAuthorization, approval.candidate_sha256, rows));
+    importAuthorization, approval.candidate_sha256));
   assert.throws(() => assertAdditionalStartImportAuthorization(
-    importAuthorization, '0'.repeat(64), rows), /V17_ADDITIONAL_START_IMPORT_AUTHORIZATION_MISMATCH/u);
+    importAuthorization, '0'.repeat(64)), /V17_ADDITIONAL_START_IMPORT_AUTHORIZATION_MISMATCH/u);
   assert.throws(() => assertAdditionalStartImportAuthorization(
-    { ...importAuthorization, scope: 'production' }, approval.candidate_sha256, rows),
+    { ...importAuthorization, scope: 'production' }, approval.candidate_sha256),
   /V17_ADDITIONAL_START_IMPORT_AUTHORIZATION_MISMATCH/u);
+  assert.throws(() => assertAdditionalStartImportAuthorization(
+    null, approval.candidate_sha256), /V17_ADDITIONAL_START_IMPORT_AUTHORIZATION_MISMATCH/u);
   assert.equal(rows.runtimeProfiles.length, 2);
   const activity = one(rows.runtimeProfiles.filter((row) => row.profile_kind === 'activity'), 'activity profile');
   const fisher = one(rows.runtimeProfiles.filter((row) => row.id === 'm2c_npc_fisher_v1'), 'Fisher @4');

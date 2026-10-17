@@ -57,3 +57,17 @@ test('owner rows import approved observation profiles and select composition suc
   })));
   assert.equal(rows.npc.filter((row) => row.id === composition.id).length, 1);
 });
+
+test('lineage successor stays outside import until independent approval and authorization', async () => {
+  const { runtimeProfiles } = await buildAdditionalStartOwnerRows();
+  const fisher = runtimeProfiles.filter((row) => row.id === 'm2c_npc_fisher_v1')
+    .sort((a, b) => b.version - a.version)[0];
+  assert.equal(fisher.version, 4);
+  const candidate = await json(`${base}/m2c-npc/activity-observation-lineage-v2/candidate.json`);
+  assert.deepEqual(candidate.canonical_records.fisher_binding_successor.payload.regional_context_refs
+    .map(({ id, version }) => ({ id, version })), [
+    { id: 'm2c_npc_regional_novgorod_land_v1', version: 1 },
+    { id: 'm2c_npc_regional_novgorod_land_v1', version: 2 },
+    { id: 'm2c_npc_regional_novgorod_land_d2_v1', version: 1 }
+  ]);
+});

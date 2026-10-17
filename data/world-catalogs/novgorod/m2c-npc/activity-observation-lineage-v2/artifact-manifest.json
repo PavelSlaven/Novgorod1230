@@ -1,0 +1,22 @@
+{
+  "schema": "rus.m2c_npc_activity_observation_lineage_artifact_manifest.v1",
+  "candidate_id": "m2c_npc_activity_observation_lineage_v2",
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "input_sha256": {
+    "data/world-catalogs/novgorod/m2c-npc/activity-observation/candidate.json": "69e26bcded6e56e7453c88eac54be0ab4c7da1c9cc0c22de5c4f77c12d34308f",
+    "data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_npc_runtime_profiles.json": "139724bd1a703c1776c7c3d4ce2806aade781484f3248821b2a89d706be86968"
+  },
+  "artifact_sha256": {
+    "candidate.json": "316ed5e72a6eb8e12048757510f7c6d27163a3cbbfb2f4fc5273a31c904d032e",
+    "datasets/spatial_v3_npc_runtime_profiles.json": "f331dca9e58b642d52025dc639e905b1b40ec2a3c391b0b066f6b127c4786272",
+    "datasets/spatial_v3_g4_npc_composition_bindings.json": "4f0c34fff442db655b248a5937fe255789a1f8c7ca67ecdf217e6ac1c428a797",
+    "datasets/spatial_v3_authoring_versions.json": "6516eccb25a2b83dbb4cc7f73bbca080d78f0cfc8f98674831f727cb8b8fab3b"
+  },
+  "record_canonical_digests": {
+    "fisher_binding_successor": "e8c98d4821d8b9e1e0cc85ea6f919ead74353a6110bda9f31ff3532341e4fcdb",
+    "canonical_composition_successor": "dfde9ea8f2a7974a24a93d15b5c5c66d80463409afdf4b63b0c4aa9fb849c359"
+  }
+}

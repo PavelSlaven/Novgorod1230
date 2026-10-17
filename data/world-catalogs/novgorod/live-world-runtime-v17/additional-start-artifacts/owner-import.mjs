@@ -8,7 +8,9 @@ const root = resolve(import.meta.dirname, '../../../../..');
 const base = 'data/world-catalogs/novgorod';
 const here = `${base}/live-world-runtime-v17/additional-start-artifacts`;
 const observation = `${base}/m2c-npc/activity-observation`;
+const lineage = `${base}/m2c-npc/activity-observation-lineage-v2`;
 const importAuthorizationPath = `${here}/owner-import-authorization.json`;
+const lineageImportAuthorizationPath = `${here}/owner-import-authorization-v2.json`;
 const read = async (path) => readFile(resolve(root, path));
 const json = async (path) => JSON.parse(await read(path));
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -75,6 +77,42 @@ async function readApprovedActivityObservation() {
   return { candidate, profiles, compositions, versions };
 }
 
+async function readApprovedFisherLineage() {
+  let approval;
+  try { approval = await json(`${lineage}/approval.json`); }
+  catch (error) { if (error.code === 'ENOENT') return null; throw error; }
+  assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(approval.subject, 'm2c_npc_activity_observation_lineage_v2');
+  assert.equal(approval.import_authorized, false);
+  const candidatePath = `${lineage}/candidate.json`;
+  assert.equal(approval.candidate_path, candidatePath);
+  const bytes = await read(candidatePath);
+  assert.equal(sha(bytes), approval.candidate_sha256);
+  const authorization = await json(lineageImportAuthorizationPath);
+  assertAdditionalStartImportAuthorization(authorization, approval.candidate_sha256);
+  const manifest = await json(`${lineage}/artifact-manifest.json`);
+  assert.equal(manifest.artifact_sha256['candidate.json'], approval.candidate_sha256);
+  const load = async (file) => {
+    const datasetBytes = await read(`${lineage}/${file}`);
+    assert.equal(sha(datasetBytes), manifest.artifact_sha256[file]);
+    return JSON.parse(datasetBytes);
+  };
+  const candidate = JSON.parse(bytes);
+  const [profiles, compositions, versions] = await Promise.all([
+    load('datasets/spatial_v3_npc_runtime_profiles.json'),
+    load('datasets/spatial_v3_g4_npc_composition_bindings.json'),
+    load('datasets/spatial_v3_authoring_versions.json')
+  ]);
+  assert.deepEqual(profiles, [candidate.canonical_records.fisher_binding_successor]);
+  assert.deepEqual(compositions, [candidate.canonical_records.canonical_composition_successor]);
+  assert.deepEqual(versions, [...profiles, ...compositions].map((row) => ({
+    entity_kind: row.entity_kind, entity_id: row.id, version: row.version,
+    world_revision_id: row.world_revision_id, status: row.status,
+    canonical_digest: row.canonical_digest, provenance_ref: row.provenance_ref
+  })));
+  return { candidate, profiles, compositions };
+}
+
 export async function buildAdditionalStartOwnerRows() {
   const approval = await json(`${here}/owner-coverage-data-approval.json`);
   assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
@@ -139,6 +177,19 @@ export async function buildAdditionalStartOwnerRows() {
   npc[compositionIndex] = approveDerivedRow(selectedComposition);
   const runtimeProfiles = activityObservation.profiles.map(approveDerivedRow);
   assert.equal(runtimeProfiles.length, 2);
+  const approvedLineage = await readApprovedFisherLineage();
+  if (approvedLineage) {
+    assert.equal(approvedLineage.candidate.lineage.approved_observation_candidate.sha256,
+      sha(await read(`${observation}/candidate.json`)));
+    const [successor] = approvedLineage.profiles.map(approveDerivedRow);
+    assert.equal(successor.id, 'm2c_npc_fisher_v1');
+    assert.equal(successor.version, 5);
+    runtimeProfiles.push(successor);
+    const [composition] = approvedLineage.compositions.map(approveDerivedRow);
+    assert.equal(composition.id, selectedComposition.id);
+    assert.equal(composition.version, selectedComposition.version + 1);
+    npc[compositionIndex] = composition;
+  }
   const acoustic = candidate.starts.filter((start) => start.acoustic.coverage !== 'exact_approved')
     .map((start) => {
       const semantic = approval.semantic_acoustic_approval.scenario_id === start.scenario_id;

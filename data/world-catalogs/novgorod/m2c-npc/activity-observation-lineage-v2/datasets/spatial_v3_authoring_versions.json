@@ -1,0 +1,20 @@
+[
+  {
+    "entity_kind": "npc_runtime_profile",
+    "entity_id": "m2c_npc_fisher_v1",
+    "version": 5,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "e8c98d4821d8b9e1e0cc85ea6f919ead74353a6110bda9f31ff3532341e4fcdb",
+    "provenance_ref": "m2c_npc_editorial_001"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "entity_id": "m2c_g4_npc_composition_canonical_initial_novgorod_vikhtuy_work_storage_v1",
+    "version": 3,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "status": "candidate_approval_pending",
+    "canonical_digest": "dfde9ea8f2a7974a24a93d15b5c5c66d80463409afdf4b63b0c4aa9fb849c359",
+    "provenance_ref": "m2c_npc_canonical_initial_editorial_001"
+  }
+]

@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- data(npc): prepare Fisher @5 with the approved regional scopes of @3 and the activity observation of @4; stage the canonical composition successor behind independent review and isolated-import authorization (D49).
 - fix(opening): retain every admitted visible NPC in the writer input even when its only fact repeats the visible label; preserve the same people through audit and repair (#594).
 - fix(npc): bind the D49 additional-start import and runtime selection to the separately recorded exact-scope authorization.
 - fix(ci): give full-profile fast-rest 90 minutes after run 39045454832 reached the 75-minute timeout; other suites keep 75 minutes (green run 39032668663 took 73m35s).

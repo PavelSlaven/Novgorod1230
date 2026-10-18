@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import copy
 import tempfile
 import unittest
 from pathlib import Path
@@ -23,6 +24,64 @@ class GenerationInvariantTests(unittest.TestCase):
         binary.write_text("placeholder", encoding="utf-8")
         return generations.Coordinator(root / "experiment", native, binary, "unit_world")
 
+    def p3_request(self, operation_id: str = "speech-1") -> dict:
+        return {"schema": "p3_p4_semantic_request_v1", "operation_id": operation_id,
+            "intent": "Скажи это", "state_version": 1, "listener_ids": ["npc:1"],
+            "statement": {"utterance": "Скажи это"}, "observation_revision": 1,
+            "validated_semantic_input": {"validated_plan": {"speech": "Скажи это"},
+                "owner_context": {"conversation_id": "conversation-1"},
+                "working_state": {"statements": []}},
+            "native_operation": {"schema": "p3_native_operation_request_v1",
+                "operation_id": operation_id, "primitive": "speak",
+                "expected_native_observation": {"revision": 1}}}
+
+    def make_join_fixture(self, root: Path, mismatch_reload: bool = False):
+        native = root / "native"
+        native.mkdir()
+        binary = native / "cata_test"
+        binary.write_text("placeholder", encoding="utf-8")
+
+        class FakeP3Adapter:
+            def __init__(self):
+                self.applies = 0
+                self.reads = 0
+                self.mismatch_reload = mismatch_reload
+
+            def observation(self, user_dir: Path):
+                snapshot = json.loads((user_dir / "snapshot.json").read_text(encoding="utf-8"))
+                self.reads += 1
+                if self.mismatch_reload:
+                    snapshot = {**snapshot, "turn": snapshot["turn"] + 1}
+                return {"revision": snapshot["turn"], "native_snapshot": snapshot}
+
+            def create(self, user_dir: Path):
+                user_dir.mkdir(parents=True, exist_ok=True)
+                (user_dir / "save/unit_world").mkdir(parents=True, exist_ok=True)
+                (user_dir / "save/unit_world/master.gsav").write_bytes(b"save")
+                (user_dir / "save/unit_world/novgorod_rng_state").write_bytes(b"rng")
+                snapshot = {"turn": 1, "position": [0, 0, 0], "heard": []}
+                (user_dir / "snapshot.json").write_text(json.dumps(snapshot), encoding="utf-8")
+                return {"observation": self.observation(user_dir)}
+
+            def read(self, user_dir: Path):
+                return {"observation": self.observation(user_dir)}
+
+            def apply(self, user_dir: Path, request: dict):
+                self.applies += 1
+                before = json.loads((user_dir / "snapshot.json").read_text(encoding="utf-8"))
+                after = {**before, "turn": before["turn"] + 3, "heard": ["npc-native"]}
+                (user_dir / "snapshot.json").write_text(json.dumps(after), encoding="utf-8")
+                readback = {"operation_id": request["operation_id"], "status": "applied",
+                    "before": before, "after": after}
+                return {"before_observation": {"revision": before["turn"],
+                        "native_snapshot": before},
+                    "after_observation": {"revision": after["turn"], "native_snapshot": after},
+                    "native_readback": readback,
+                    "conversation_outcome": {"owner_result": "committed"}}
+
+        return generations.Coordinator(root / "experiment", native, binary, "unit_world",
+            p3_adapter=FakeP3Adapter())
+
     def test_snapshot_comparison_reports_uid_changes(self) -> None:
         left = {"items": [{"uid": 3589023, "type": "rock"}]}
         right = {"items": [{"uid": 3591375, "type": "rock"}]}
@@ -33,6 +92,158 @@ class GenerationInvariantTests(unittest.TestCase):
 
     def test_nearest_rank_p95_uses_rank_19_for_twenty_samples(self) -> None:
         self.assertEqual(generations._nearest_rank(list(map(float, range(1, 21))), 0.95), 19.0)
+
+    def test_p3_join_replay_returns_stored_owner_outcome_without_adapter_calls(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            coordinator = self.make_join_fixture(root)
+
+            def native_read(self, mode, user_dir, *args, **kwargs):
+                if mode != "read":
+                    raise AssertionError(f"unexpected P4 operation: {mode}")
+                snapshot = json.loads((user_dir / "snapshot.json").read_text(encoding="utf-8"))
+                return {"after": snapshot, "read_copy_ms": 0.1}, 0.1
+
+            try:
+                with patch.object(generations.Coordinator, "_native", native_read):
+                    coordinator.init()
+                    request = self.p3_request()
+                    first = coordinator.apply("speech-1", "p3_speech", semantic_request=request)
+                    calls = (coordinator.p3_adapter.applies, coordinator.p3_adapter.reads)
+                    replay = coordinator.apply("speech-1", "p3_speech", semantic_request=request)
+                    self.assertEqual(replay["status"], "already_applied")
+                    self.assertFalse(replay["native_apply_invoked"])
+                    self.assertEqual(replay["native_readback"], first["native_readback"])
+                    self.assertEqual(replay["conversation_outcome"], first["conversation_outcome"])
+                    self.assertEqual((coordinator.p3_adapter.applies, coordinator.p3_adapter.reads), calls)
+                    changed = self.p3_request()
+                    changed["intent"] = "Скажи другое"
+                    with self.assertRaisesRegex(ValueError, "different request"):
+                        coordinator.apply("speech-1", "p3_speech", semantic_request=changed)
+                    self.assertEqual((coordinator.p3_adapter.applies, coordinator.p3_adapter.reads), calls)
+            finally:
+                coordinator.close()
+
+    def test_p3_candidate_reload_mismatch_does_not_move_pointer(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            coordinator = self.make_join_fixture(root)
+
+            def native_read(self, mode, user_dir, *args, **kwargs):
+                snapshot = json.loads((user_dir / "snapshot.json").read_text(encoding="utf-8"))
+                return {"after": snapshot, "read_copy_ms": 0.1}, 0.1
+
+            try:
+                with patch.object(generations.Coordinator, "_native", native_read):
+                    coordinator.init()
+                    accepted = coordinator._pointer_value()["current"]
+                    coordinator.p3_adapter.mismatch_reload = True
+                    with self.assertRaisesRegex(RuntimeError, "candidate native P3 reload/readback mismatch"):
+                        coordinator.apply("speech-1", "p3_speech", semantic_request=self.p3_request())
+                    self.assertEqual(coordinator._pointer_value()["current"], accepted)
+                    self.assertEqual(coordinator.p3_adapter.applies, 1)
+            finally:
+                coordinator.close()
+
+    def test_p3_adapter_exception_leaves_pointer_unchanged(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            coordinator = self.make_join_fixture(Path(directory))
+            def native_read(self, mode, user_dir, *args, **kwargs):
+                snapshot = json.loads((user_dir / "snapshot.json").read_text(encoding="utf-8"))
+                return {"after": snapshot, "read_copy_ms": 0.1}, 0.1
+            try:
+                with patch.object(generations.Coordinator, "_native", native_read):
+                    coordinator.init()
+                    accepted = coordinator._pointer_value()["current"]
+                    with patch.object(coordinator.p3_adapter, "apply", side_effect=RuntimeError("owner failed")):
+                        with self.assertRaisesRegex(RuntimeError, "owner failed"):
+                            coordinator.apply("speech-1", "p3_speech", semantic_request=self.p3_request())
+                    self.assertEqual(coordinator._pointer_value()["current"], accepted)
+            finally:
+                lock = coordinator._lock_stream
+                coordinator.close()
+                self.assertTrue(lock.closed)
+
+    def test_p3_prepublication_failpoints_leave_pointer_unchanged(self) -> None:
+        for failpoint in ("after_native_save_before_semantic", "after_generation_rename_before_publish"):
+            with self.subTest(failpoint=failpoint), tempfile.TemporaryDirectory() as directory:
+                coordinator = self.make_join_fixture(Path(directory))
+                def native_read(self, mode, user_dir, *args, **kwargs):
+                    snapshot = json.loads((user_dir / "snapshot.json").read_text(encoding="utf-8"))
+                    return {"after": snapshot, "read_copy_ms": 0.1}, 0.1
+                try:
+                    with patch.object(generations.Coordinator, "_native", native_read):
+                        coordinator.init()
+                        accepted = coordinator._pointer_value()["current"]
+                        with patch.object(generations, "_kill_self", side_effect=KeyboardInterrupt):
+                            with self.assertRaises(KeyboardInterrupt):
+                                coordinator.apply("speech-1", "p3_speech", semantic_request=self.p3_request(),
+                                                  failpoint=failpoint)
+                        self.assertEqual(coordinator._pointer_value()["current"], accepted)
+                        self.assertEqual(coordinator.p3_adapter.applies, 1)
+                finally:
+                    coordinator.close()
+
+    def test_p3_postpublication_failpoint_replays_stored_outcome_without_apply(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            coordinator = self.make_join_fixture(Path(directory))
+            def native_read(self, mode, user_dir, *args, **kwargs):
+                snapshot = json.loads((user_dir / "snapshot.json").read_text(encoding="utf-8"))
+                return {"after": snapshot, "read_copy_ms": 0.1}, 0.1
+            try:
+                with patch.object(generations.Coordinator, "_native", native_read):
+                    coordinator.init()
+                    request = self.p3_request()
+                    with patch.object(generations, "_kill_self", side_effect=KeyboardInterrupt):
+                        with self.assertRaises(KeyboardInterrupt):
+                            coordinator.apply("speech-1", "p3_speech", semantic_request=request,
+                                              failpoint="after_atomic_before_receipt")
+                    applies = coordinator.p3_adapter.applies
+                    replay = coordinator.apply("speech-1", "p3_speech", semantic_request=request)
+                    self.assertEqual(replay["status"], "already_applied")
+                    self.assertFalse(replay["native_apply_invoked"])
+                    self.assertEqual(replay["conversation_outcome"], {"owner_result": "committed"})
+                    self.assertEqual(coordinator.p3_adapter.applies, applies)
+            finally:
+                coordinator.close()
+
+    def test_p3_keeps_prior_semantic_entries_and_rejects_changed_payload_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            coordinator = self.make_join_fixture(Path(directory))
+            def native_read(self, mode, user_dir, *args, **kwargs):
+                snapshot = json.loads((user_dir / "snapshot.json").read_text(encoding="utf-8"))
+                return {"after": snapshot, "read_copy_ms": 0.1}, 0.1
+            try:
+                with patch.object(generations.Coordinator, "_native", native_read):
+                    coordinator.init()
+                    first = self.p3_request("speech-1")
+                    coordinator.apply("speech-1", "p3_speech", semantic_request=first)
+                    second = self.p3_request("speech-2")
+                    second["observation_revision"] = 4
+                    second["native_operation"]["expected_native_observation"]["revision"] = 4
+                    coordinator.apply("speech-2", "p3_speech", semantic_request=second)
+                    third = self.p3_request("speech-3")
+                    third["observation_revision"] = 7
+                    third["native_operation"]["expected_native_observation"]["revision"] = 7
+                    coordinator.apply("speech-3", "p3_speech", semantic_request=third)
+                    entries = coordinator._validate_generation(coordinator._pointer_value()["current"])["operation_ids"]
+                    self.assertEqual([entry["id"] for entry in entries], ["speech-1", "speech-2", "speech-3"])
+                    variations = []
+                    changed = copy.deepcopy(first)
+                    changed["statement"]["utterance"] = "другое"
+                    variations.append(changed)
+                    changed = copy.deepcopy(first)
+                    changed["validated_semantic_input"]["validated_plan"]["speech"] = "другое"
+                    variations.append(changed)
+                    changed = copy.deepcopy(first)
+                    changed["observation_revision"] = 2
+                    changed["native_operation"]["expected_native_observation"]["revision"] = 2
+                    variations.append(changed)
+                    for changed in variations:
+                        with self.assertRaisesRegex(ValueError, "different request"):
+                            coordinator.apply("speech-1", "p3_speech", semantic_request=changed)
+            finally:
+                coordinator.close()
 
     def test_metrics_cannot_overwrite_an_earlier_evidence_directory(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

@@ -269,7 +269,7 @@ TEST_CASE( "Novgorod native turn scenarios use handle_action and do_turn", "[nov
     CHECK( ground_count( fixture_items.front(), fixture_center ) == 0 );
     CHECK( rock_uid > 0 );
     CHECK( carried_uid( fixture_items.front() ) > 0 );
-    CHECK( carried_uid( fixture_items.front() ) != rock_uid );
+    CHECK( carried_uid( fixture_items.front() ) == rock_uid );
 
     reset_scene();
     get_map().add_item( fixture_center, item( fixture_items[1] ) );
@@ -283,7 +283,7 @@ TEST_CASE( "Novgorod native turn scenarios use handle_action and do_turn", "[nov
     CHECK( get_avatar().amount_of( fixture_items[1] ) == 1 );
     CHECK( stick_uid > 0 );
     CHECK( carried_uid( fixture_items[1] ) > 0 );
-    CHECK( carried_uid( fixture_items[1] ) != stick_uid );
+    CHECK( carried_uid( fixture_items[1] ) == stick_uid );
     CHECK( ground_count( fixture_items[1], fixture_center ) == 0 );
 
     reset_scene();

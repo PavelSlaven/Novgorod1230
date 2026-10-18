@@ -1,5 +1,6 @@
 import {
-  buildConversationStatementEvent
+  buildConversationStatementEvent,
+  validateConversationStatementEvent
 } from '@rus/npc-runtime';
 import { npcResponseSignalRecords, playerSignalRecords } from
   './lower-dvina-trace-m2-conversation-signals.js';
@@ -63,6 +64,15 @@ export function projectPlayerPerception(context, working, statement, plan) {
   const audience = audienceForStatement(
     context, statement, context.actualNpcActors, []
   );
+  return projectPlayerStatementAudience(
+    context, working, statement, plan, audience
+  );
+}
+
+export function projectPlayerStatementAudience(
+  context, working, statement, plan, audience
+) {
+  validatePlayerStatementAudience(context, statement, audience);
   const supportingOperationPerception = evidencePresentationPerception(context);
   const evidencePerceptionRef = supportingOperationPerception !== null
     && supportingOperationPerception.result_kind !== 'not_perceived'
@@ -95,6 +105,109 @@ export function projectPlayerPerception(context, working, statement, plan) {
     sessionStatus: 'active',
     handoff: null
   });
+}
+
+function validatePlayerStatementAudience(context, statement, audience) {
+  const invalid = () => fail(
+    'TRACE_M2_PLAYER_AUDIENCE_INVALID',
+    'The player statement audience must be bound to this statement and its allowed NPC listeners.'
+  );
+  if (!validateConversationStatementEvent(statement)
+      || !audience || typeof audience !== 'object'
+      || Array.isArray(audience)
+      || Reflect.ownKeys(audience).length !== 5
+      || !['schema', 'statement_ref', 'actual_listener_refs',
+        'received_messages', 'witness_candidate_refs'].every((key) =>
+        Object.hasOwn(audience, key))
+      || audience.schema !== 'conversation_audience_projection_v1'
+      || !Array.isArray(audience.actual_listener_refs)
+      || !Array.isArray(audience.received_messages)
+      || !Array.isArray(audience.witness_candidate_refs)) invalid();
+
+  const exactRef = (value, kind, entityId) => value !== null
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && Reflect.ownKeys(value).length === 2
+    && value.entity_kind === kind
+    && typeof value.entity_id === 'string'
+    && value.entity_id.trim().length > 0
+    && (entityId === undefined || value.entity_id === entityId);
+  if (!exactRef(audience.statement_ref, 'conversation_statement',
+    statement.statement_id)) invalid();
+
+  const refKey = (value) => {
+    if (!value || Reflect.ownKeys(value).length !== 2
+        || !Object.hasOwn(value, 'entity_kind')
+        || !Object.hasOwn(value, 'entity_id')
+        || value.entity_kind !== 'npc'
+        || typeof value.entity_id !== 'string' || !value.entity_id.trim()) {
+      invalid();
+    }
+    return `${value.entity_kind}\u0000${value.entity_id}`;
+  };
+  const allowed = new Set(context.actualNpcActors.map(
+    ({ instance_id }) => `npc\u0000${instance_id}`
+  ));
+  if (allowed.size !== context.actualNpcActors.length) invalid();
+  const speakerKey = statement.speaker_ref.entity_kind === 'npc'
+    ? `npc\u0000${statement.speaker_ref.entity_id}` : null;
+  const listenerKeys = audience.actual_listener_refs.map(refKey);
+  if (new Set(listenerKeys).size !== listenerKeys.length
+      || listenerKeys.some((key) => !allowed.has(key) || key === speakerKey)
+      || audience.received_messages.length !== listenerKeys.length) invalid();
+
+  const messages = new Map();
+  const perceptionKeys = new Set();
+  const messageFields = [
+    'source_statement_ref', 'listener_ref', 'perception_result_ref',
+    'perception_result', 'perceived_at', 'same_time_batch_ref',
+    'comprehension', 'speaker_ref', 'utterance_text', 'claims',
+    'delivery_cues'
+  ];
+  for (const message of audience.received_messages) {
+    if (!message || typeof message !== 'object'
+        || Array.isArray(message)
+        || Reflect.ownKeys(message).length !== messageFields.length
+        || !messageFields.every((key) => Object.hasOwn(message, key))) invalid();
+    const key = refKey(message?.listener_ref);
+    if (!allowed.has(key) || key === speakerKey || messages.has(key)
+        || !exactRef(message.source_statement_ref,
+          'conversation_statement', statement.statement_id)
+        || !exactRef(message.perception_result_ref, 'perception_result')
+        || !exactRef(message.same_time_batch_ref, 'temporal_batch')
+        || !message.perceived_at || typeof message.perceived_at !== 'object'
+        || Array.isArray(message.perceived_at)
+        || Reflect.ownKeys(message.perceived_at).length !== 3
+        || !['whole_minutes', 'subminute_numerator',
+          'subminute_denominator'].every((key) =>
+          Object.hasOwn(message.perceived_at, key))
+        || !/^[0-9]+$/u.test(message.perceived_at.whole_minutes)
+        || !/^[0-9]+$/u.test(message.perceived_at.subminute_numerator)
+        || !/^[1-9][0-9]*$/u.test(message.perceived_at.subminute_denominator)
+        || !['not_perceived', 'perceived_unidentified', 'perceived_partial',
+          'recognized', 'misinterpreted'].includes(message.perception_result)
+        || !['full', 'partial', 'none'].includes(message.comprehension)
+        || (message.speaker_ref !== null
+          && !exactRef(message.speaker_ref,
+            statement.speaker_ref.entity_kind))
+        || !sameRef(message.speaker_ref, statement.speaker_ref)
+          && message.speaker_ref !== null
+        || (message.perception_result === 'not_perceived'
+          || message.comprehension === 'none')) invalid();
+    const perceptionKey = `${message.perception_result_ref.entity_kind}\u0000${message.perception_result_ref.entity_id}`;
+    if (perceptionKeys.has(perceptionKey)) invalid();
+    perceptionKeys.add(perceptionKey);
+    messages.set(key, message);
+  }
+  if (listenerKeys.some((key) => !messages.has(key))) invalid();
+  const witnessKeys = audience.witness_candidate_refs.map(refKey);
+  if (new Set(witnessKeys).size !== witnessKeys.length
+      || witnessKeys.some((key) => {
+        const message = messages.get(key);
+        return !message || message.speaker_ref === null
+          || message.comprehension !== 'full'
+          || message.perception_result === 'misinterpreted';
+      })) invalid();
 }
 export function applyNpcPlan(
   context,

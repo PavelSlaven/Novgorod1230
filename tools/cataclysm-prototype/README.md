@@ -142,6 +142,57 @@ cd /home/slaven/cataclysm-vertical-slice-repeat
 44.9518 s. Независимый повтор: exit 0, 26 009 assertions, 244 test cases passed за
 52.6634 s (тот же pinned version `0d8843f`).
 
+## P4: полные поколения и аварийные проверки
+
+P4 — отдельный исследовательский gate CR [#758](https://github.com/PavelSlaven/Novgorod1230/issues/758).
+См. [спецификацию](../../docs/implementation/cataclysm-p4-experiment.md) и
+[фактические результаты](../../docs/implementation/cataclysm-p4-results.md).
+Обнаруженные UID и latency failures означают **STOP / REVISE_APPROACH**;
+наличие harness не означает приёмку persistence или допуск к P5/P6.
+
+После установки P2 patch из команд выше добавить P4 patch и самостоятельный
+test source, затем повторить ту же CMake configure/build команду:
+
+```sh
+git -C /home/slaven/cataclysm-vertical-slice apply --check \
+  "$NOVGOROD/tools/cataclysm-prototype/native-persistence.patch"
+git -C /home/slaven/cataclysm-vertical-slice apply \
+  "$NOVGOROD/tools/cataclysm-prototype/native-persistence.patch"
+cp "$NOVGOROD/tools/cataclysm-prototype/novgorod_persistence_test.cpp" \
+  /home/slaven/cataclysm-vertical-slice/tests/novgorod_persistence_test.cpp
+cmake -S /home/slaven/cataclysm-vertical-slice \
+  -B /home/slaven/cataclysm-vertical-slice/build-clang-release -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
+  -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
+  -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
+cmake --build /home/slaven/cataclysm-vertical-slice/build-clang-release --parallel 8
+```
+
+Coordinator использует Python 3 stdlib и Linux `flock/fsync`; запускать в WSL.
+Все каталоги ниже должны быть новыми и принадлежать только эксперименту.
+`suite` выполняет реальные SIGKILL на process barriers, native reload и retry;
+ENOSPC внедряется записью в `/dev/full`. Это process-crash тест, не power-loss.
+
+```sh
+P4="$NOVGOROD/tools/cataclysm-prototype/generations.py"
+NATIVE=/home/slaven/cataclysm-vertical-slice
+BINARY="$NATIVE/build-clang-release/tests/cata_test"
+python3 "$NOVGOROD/tools/cataclysm-prototype/test_generations.py"
+python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch \
+  --native-root "$NATIVE" --binary "$BINARY" suite \
+  --evidence-root /home/slaven/cataclysm-evidence/new-p4-faults
+python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch \
+  --native-root "$NATIVE" --binary "$BINARY" metrics \
+  --evidence-root /home/slaven/cataclysm-evidence/new-p4-metrics \
+  --samples 20 --operation move_east
+```
+
+Exit 2 означает непройденный gate; отчёт сохраняется и не объявляется PASS.
+`move_east` — диагностический сценарий, потому что pickup не проходит строгую
+сверку UID после reload. Это не замена ordinary-item acceptance. Обычный
+`metrics` по умолчанию использует `pickup_rock` и сохраняет строгую проверку.
+Полная фикстура и accepted generations не предназначены для production.
+
 ## Лицензия исходника
 
 Upstream Cataclysm-DDA распространяет основную игру по CC BY-SA 3.0 с отдельными

@@ -1,0 +1,1640 @@
+{
+  "native": "/home/slaven/cataclysm-vertical-slice/build-clang-release/tests/cata_test",
+  "native_root": "/home/slaven/cataclysm-vertical-slice",
+  "purpose": "coordinator fault recovery on strictly validated move_east; pickup/stick UID cases remain independent blockers",
+  "scenarios": [
+    {
+      "fresh_process_recovery_read_latency_ms": 12225.418617000287,
+      "generation_id": "b6454bf59ef14b9abfce8ca84204df3f",
+      "native_retry_apply_invoked": true,
+      "operation_ids": [],
+      "result": "old",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 24894.683038999574,
+      "scenario": "before_effect",
+      "snapshot": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "fresh_process_recovery_read_latency_ms": 12240.458604000196,
+      "generation_id": "a56ac52d9a1f4a5bb3a2fc0d5ff9fd92",
+      "native_retry_apply_invoked": true,
+      "operation_ids": [],
+      "result": "old",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 24826.343164999344,
+      "scenario": "after_effect",
+      "snapshot": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "fresh_process_recovery_read_latency_ms": 12198.262449999675,
+      "generation_id": "b5845942031b4759b4ca42547fdcacd8",
+      "native_retry_apply_invoked": true,
+      "operation_ids": [],
+      "result": "old",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 24878.306908999548,
+      "scenario": "mid_native_save",
+      "snapshot": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "fresh_process_recovery_read_latency_ms": 12248.465654999563,
+      "generation_id": "d0d6f1ade56f4de59d8c020728c237af",
+      "native_retry_apply_invoked": true,
+      "operation_ids": [],
+      "result": "old",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 24668.740979000177,
+      "scenario": "after_native_save_before_semantic",
+      "snapshot": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "fresh_process_recovery_read_latency_ms": 12318.547679000403,
+      "generation_id": "294491f98eab4c88bd2b086156548e0f",
+      "native_retry_apply_invoked": true,
+      "operation_ids": [],
+      "result": "old",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 25068.566328000088,
+      "scenario": "after_generation_rename_before_publish",
+      "snapshot": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "fresh_process_recovery_read_latency_ms": 12052.638721000221,
+      "generation_id": "3e7183a40494408a9384944e430e2812",
+      "native_retry_apply_invoked": false,
+      "operation_ids": [
+        {
+          "id": "fault-after_atomic_before_receipt-operation",
+          "request": {
+            "operation": "move_east"
+          },
+          "status": "applied"
+        }
+      ],
+      "result": "new",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 12183.88360500012,
+      "scenario": "after_atomic_before_receipt",
+      "snapshot": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 100,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              62,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              61,
+              62,
+              0
+            ]
+          }
+        ],
+        "position": [
+          61,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "fresh_process_recovery_read_latency_ms": 12381.352795000566,
+      "generation_id": "bfd8b8ec8752497abf86522588cfae45",
+      "native_retry_apply_invoked": false,
+      "operation_ids": [
+        {
+          "id": "fault-after_receipt_narrator_failure-operation",
+          "request": {
+            "operation": "move_east"
+          },
+          "status": "applied"
+        }
+      ],
+      "result": "new",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 12200.216869999167,
+      "scenario": "after_receipt_narrator_failure",
+      "snapshot": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 100,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              62,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              61,
+              62,
+              0
+            ]
+          }
+        ],
+        "position": [
+          61,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "fresh_process_recovery_read_latency_ms": 12290.037728000243,
+      "generation_id": "d0e8989045594ee9979e895986ee26e3",
+      "native_retry_apply_invoked": false,
+      "operation_ids": [
+        {
+          "id": "fault-partial_activity-operation",
+          "request": {
+            "operation": "partial_hacksaw"
+          },
+          "status": "applied"
+        }
+      ],
+      "result": "new",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 12177.45263300003,
+      "scenario": "partial_activity",
+      "snapshot": {
+        "activity": "ACT_HACKSAW",
+        "activity_moves_left": 11150,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 100,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              62,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              61,
+              62,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "faults": [
+        "dev_full_ENOSPC",
+        "missing_required_file",
+        "malformed_native_file"
+      ],
+      "native_apply_calls": 3,
+      "result": "old",
+      "scenario": "write_missing_malformed"
+    },
+    {
+      "fresh_process_recovery_read_latency_ms": 12258.938160999605,
+      "generation_id": "81043f9b56c94f7e9d2f8673e6f15e06",
+      "native_retry_apply_invoked": true,
+      "operation_ids": [
+        {
+          "id": "cleanup-preservation-setup",
+          "request": {
+            "operation": "move_east"
+          },
+          "status": "applied"
+        }
+      ],
+      "result": "old",
+      "retry_blocked_by_native_readback": false,
+      "retry_operation_latency_ms": 24826.338556000337,
+      "scenario": "midcopy_and_cleanup_failure",
+      "snapshot": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 100,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              62,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              61,
+              62,
+              0
+            ]
+          }
+        ],
+        "position": [
+          61,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "apply_latency_ms": 24880.327093999767,
+      "current_generation_unchanged": true,
+      "native_apply_invoked": true,
+      "reason": "candidate native reload/readback mismatch: snapshot.items[7].uid: apply=3589059, reload=3590329",
+      "recovery_read_latency_ms": 12212.175116000253,
+      "result": "BLOCKED",
+      "scenario": "pickup_rock",
+      "snapshot_after": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      },
+      "snapshot_before": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "apply_latency_ms": 25102.309013000195,
+      "current_generation_unchanged": true,
+      "native_apply_invoked": true,
+      "reason": "candidate native reload/readback mismatch: snapshot.items[7].uid: apply=3589059, reload=3590329",
+      "recovery_read_latency_ms": 12297.555945000568,
+      "result": "BLOCKED",
+      "scenario": "pickup_stick",
+      "snapshot_after": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      },
+      "snapshot_before": {
+        "activity": "ACT_NULL",
+        "activity_moves_left": 0,
+        "cut_target_terrain": "t_chainfence",
+        "elapsed_seconds": 43200,
+        "items": [
+          {
+            "count": 1,
+            "location": "inventory",
+            "type": "debug_backpack",
+            "uid": 3585155
+          },
+          {
+            "count": 1,
+            "location": "wielded",
+            "type": "hacksaw",
+            "uid": 3585158
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rock",
+            "uid": 3585160
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "stick",
+            "uid": 3585162
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "2x4",
+            "uid": 3585164
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "string_36",
+            "uid": 3585166
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "rope_6",
+            "uid": 3585168
+          },
+          {
+            "count": 1,
+            "location": [
+              60,
+              60,
+              0
+            ],
+            "type": "nail",
+            "uid": 3585170
+          }
+        ],
+        "moves": 850,
+        "npcs": [
+          {
+            "id": 2,
+            "position": [
+              64,
+              60,
+              0
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              65,
+              62,
+              0
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              63,
+              64,
+              0
+            ]
+          }
+        ],
+        "position": [
+          60,
+          60,
+          0
+        ],
+        "turn": 43200
+      }
+    },
+    {
+      "candidate_readback_wall_ms": 12194.805162000193,
+      "malformed_candidate_published": false,
+      "result": "old_then_valid_init",
+      "scenario": "initial_candidate_validation",
+      "valid_generation_id": "dbefee08d13c48c8a1a14bef541375f6"
+    },
+    {
+      "native_apply_invoked": false,
+      "result": "uncertain_stop",
+      "scenario": "unknown_accepted_generation"
+    }
+  ],
+  "schema": 1,
+  "status": "BLOCKED"
+}

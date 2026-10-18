@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="cata_test" errors="0" failures="0" tests="19" hostname="tbd" time="12.190" timestamp="2026-10-18T20:53:11Z">
+    <properties>
+      <property name="filters" value="[novgorod_rng_state]"/>
+      <property name="random-seed" value="17"/>
+    </properties>
+    <testcase classname="cata_test.global" name="Novgorod native RNG state round-trips without advancing" time="0.000" status="run">
+      <system-out>
+NOVGOROD_RNG_CONTINUATION:1300022583
+      </system-out>
+    </testcase>
+    <testcase classname="cata_test.global" name="Novgorod native RNG sidecar write failure fails save" time="0.000" status="run"/>
+    <testcase classname="cata_test.global" name="Novgorod native load rejects malformed RNG sidecar" time="0.062" status="run"/>
+    <testcase classname="cata_test.global" name="Novgorod native load accepts a legacy save without RNG sidecar" time="0.000" status="run"/>
+    <system-out>
+NOVGOROD_RNG_CONTINUATION:1300022583
+    </system-out>
+    <system-err/>
+  </testsuite>
+</testsuites>

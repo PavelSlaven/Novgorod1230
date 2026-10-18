@@ -30,6 +30,17 @@ CDDA по-прежнему владеет физическим save/load; stagin
 останавливает retry как uncertain. Это отдельный изолированный probe, не новый
 production transaction path.
 
+Native deserialization переносит сохранённые item instances с прежними UID;
+обычная copy semantics создаёт новые identity. Native save/load также владеет
+файлом состояния RNG engine. Координатор требует этот файл в новом поколении,
+но не вычисляет и не восстанавливает RNG самостоятельно.
+
+Opt-in preload host держит только immutable definitions одного профиля.
+Каждый fork-child перенастраивает userdir/cache пути и полностью загружает
+физический мир из своего staging или validation scratch. Parent не загружает,
+не меняет и не сохраняет физический мир. Это ускорение bootstrap эксперимента,
+не общий RPC и не второй world owner.
+
 Инструмент не подключён к production runtime Novgorod, не читает пользовательские
 сохранения и не меняет active bindings. Он не предоставляет renderer, HTTP server,
 новую физику или LLM fallback. Native test readback

@@ -9,10 +9,12 @@ from __future__ import annotations
 
 import argparse
 import errno
+import hashlib
 import fcntl
 import json
 import math
 import os
+import re
 import selectors
 import shutil
 import signal
@@ -29,6 +31,218 @@ NATIVE_FILTER = "[novgorod_persistence]"
 OPERATIONS = {"pickup_rock", "pickup_stick", "move_east", "partial_hacksaw"}
 FAILPOINTS = {"before_effect", "after_native_save_before_semantic", "after_atomic_before_receipt",
               "mid_generation_copy", "after_generation_rename_before_publish"}
+PRELOAD_FAILPOINTS = {"after_effect", "mid_save"}
+
+
+def _profile_key(binary: Path, native_root: Path, user_dir: Path, world: str,
+                 profile_base: tuple[str, str] | None = None) -> str:
+    """Fingerprint the executable/revision and definition-affecting user profile."""
+    revision, binary_hash = profile_base or _profile_base(str(binary), str(native_root))
+    profile: dict[str, Any] = {"binary_sha256": binary_hash, "data_revision": revision,
+                               "world": world, "ordered_mods": ["dda"], "custom_mods": [],
+                               "interactions": [], "options": {}, "definition_metadata": {}}
+    for path in (user_dir / "config" / "mods.json", user_dir / "config" / "options.json",
+                 user_dir / "save" / world / "mods.json",
+                 user_dir / "save" / world / "worldoptions.json"):
+        if path.is_file():
+            value = json.loads(path.read_text(encoding="utf-8"))
+            profile["definition_metadata"][path.relative_to(user_dir).as_posix()] = value
+            if path.name == "options.json":
+                profile["options"] = value
+            elif path.name == "mods.json":
+                if not isinstance(value, list) or not all(isinstance(mod, str) for mod in value):
+                    raise ValueError(f"invalid ordered world mods list: {path}")
+                profile["ordered_mods"] = value
+            elif isinstance(value, dict):
+                profile["custom_mods"] = value.get("custom_mods", profile["custom_mods"])
+                profile["interactions"] = value.get("interactions", profile["interactions"])
+    world_mods = user_dir / "save" / world / "mods"
+    for directory in (world_mods, world_mods / "mod_interactions"):
+        if directory.exists():
+            if directory.is_symlink() or not directory.is_dir():
+                raise ValueError(f"invalid custom definition directory: {directory}")
+            for path in sorted(directory.rglob("*.json"), key=lambda item: item.relative_to(user_dir).as_posix()):
+                if path.is_symlink():
+                    raise ValueError(f"custom definition symlink rejected: {path.relative_to(user_dir)}")
+                if path.is_file():
+                    profile["definition_metadata"][path.relative_to(user_dir).as_posix()] = hashlib.sha256(
+                        path.read_bytes()).hexdigest()
+    return hashlib.sha256(json.dumps(profile, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def _profile_base(binary: str, native_root: str) -> tuple[str, str]:
+    revision = subprocess.run(["git", "-C", native_root, "rev-parse", "HEAD"],
+                              check=True, capture_output=True, text=True).stdout.strip()
+    data_diff = subprocess.run(["git", "-C", native_root, "diff", "--binary", "HEAD", "--", "data"],
+                               check=True, capture_output=True).stdout
+    untracked = subprocess.run(["git", "-C", native_root, "ls-files", "--others", "--exclude-standard", "--", "data"],
+                               check=True, capture_output=True, text=True).stdout.splitlines()
+    data_digest = hashlib.sha256(revision.encode("ascii"))
+    data_digest.update(data_diff)
+    for relative in sorted(untracked):
+        data_digest.update(relative.encode("utf-8"))
+        data_digest.update((Path(native_root) / relative).read_bytes())
+    return data_digest.hexdigest(), hashlib.sha256(Path(binary).read_bytes()).hexdigest()
+
+
+class NativeHost:
+    """One immutable definitions host; each request forks a fresh physical child."""
+
+    def __init__(self, binary: Path, native_root: Path, world: str, profile_userdir: Path,
+                 profile_key: str, profile_base: tuple[str, str] | None = None):
+        self.binary, self.native_root, self.world = binary, native_root, world
+        self.profile_base = profile_base or _profile_base(str(binary), str(native_root))
+        self.profile_key, self.profile_userdir = profile_key, profile_userdir
+        self._stdout_buffer = bytearray()
+        env = os.environ.copy()
+        env.update({"NOVGOROD_P4_MODE": "preload", "NOVGOROD_P4_WORLD": world,
+                    "NOVGOROD_P4_PROFILE_KEY": profile_key})
+        command = [str(binary), "--rng-seed", "17", f"--user-dir={profile_userdir}",
+                   "--reporter", "junit", "--out=/dev/null", NATIVE_FILTER]
+        self.process = subprocess.Popen(command, cwd=native_root, env=env, stdin=subprocess.PIPE,
+                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        startup_output = ""
+        try:
+            deadline = time.monotonic() + 120
+            while time.monotonic() < deadline:
+                line = self._read_line(deadline)
+                if line is None:
+                    break
+                if not line:
+                    if self.process.poll() is not None:
+                        break
+                    continue
+                decoded = line.decode("utf-8", errors="replace")
+                startup_output = (startup_output + decoded)[-6000:]
+                if decoded.startswith("NOVGOROD_PRELOAD_READY\t"):
+                    ready = json.loads(decoded.split("\t", 1)[1])
+                    if ready.get("profile_key") != profile_key or ready.get("parent_pid") != self.process.pid:
+                        raise RuntimeError("preload host READY profile/PID mismatch")
+                    self.ready = ready
+                    return
+                if decoded.startswith(("NOVGOROD_PRELOAD_REJECT\t", "NOVGOROD_PRELOAD_REFUSED:")):
+                    raise RuntimeError(f"preload host rejected startup: {decoded.strip()}")
+            raise RuntimeError(f"preload host exited or timed out before READY: {startup_output}")
+        except BaseException:
+            self.close(kill=True)
+            raise
+
+    def request(self, mode: str, user_dir: Path, operation: str | None = None,
+                failpoint: str | None = None, wait_kill: bool = False) -> tuple[dict[str, Any], float]:
+        if mode not in {"apply", "read"}:
+            raise ValueError(f"preload host does not support mode {mode}")
+        if operation is not None and operation not in OPERATIONS:
+            raise ValueError(f"unsupported native operation: {operation}")
+        if failpoint and failpoint not in PRELOAD_FAILPOINTS:
+            raise ValueError(f"unsupported preload child failpoint: {failpoint}")
+        started = time.perf_counter()
+        _size_and_files(user_dir)
+        key = _profile_key(self.binary, self.native_root, user_dir, self.world, self.profile_base)
+        if key != self.profile_key:
+            raise RuntimeError("preload host profile mismatch; cold restart required")
+        request = {"mode": mode, "userdir": str(user_dir.resolve()), "op": operation or "move_east",
+                   "failpoint": failpoint or "", "profile_key": key}
+        assert self.process.stdin is not None and self.process.stdout is not None
+        self.process.stdin.write((json.dumps(request, separators=(",", ":")) + "\n").encode("utf-8"))
+        self.process.stdin.flush()
+        child_pid: int | None = None
+        output: list[str] = []
+        marker = f"NOVGOROD_P4_FAILPOINT_REACHED:{failpoint}" if failpoint else None
+        killed = False
+        done: list[str] | None = None
+        deadline = time.monotonic() + 600
+        while time.monotonic() < deadline:
+            raw_line = self._read_line(deadline)
+            if raw_line is None:
+                break
+            if not raw_line:
+                if self.process.poll() is not None:
+                    break
+                continue
+            line = raw_line.decode("utf-8", errors="replace").rstrip("\n")
+            if not line.startswith("NOVGOROD_PRELOAD_"):
+                continue
+            frame = line[len("NOVGOROD_PRELOAD_"):]
+            if frame.startswith("CHILD\t"):
+                child_pid = int(frame.split("\t")[1])
+                if os.environ.get("NOVGOROD_P4_KILL_HOST_AFTER_CHILD") == "1":
+                    self.process.kill()
+                    self.process.wait(timeout=30)
+                    raise RuntimeError(f"injected preload host death; child pid={child_pid}")
+            elif frame.startswith("OUTPUT\t"):
+                output.append(bytes.fromhex(frame.split("\t", 1)[1]).decode("utf-8", errors="replace"))
+                if wait_kill and marker and not killed and marker in "".join(output):
+                    if child_pid is None:
+                        raise RuntimeError("preload failpoint arrived before CHILD frame")
+                    os.kill(child_pid, signal.SIGKILL)
+                    killed = True
+            elif frame.startswith("DONE\t"):
+                done = frame.split("\t")[1:]
+                break
+            elif frame.startswith("REJECT\t"):
+                raise RuntimeError(f"preload host rejected request: {frame}")
+        text = "".join(output)
+        if done is None:
+            raise RuntimeError(f"preload host died or timed out; child pid={child_pid}; child output: {text[-1200:]}")
+        if wait_kill:
+            if not killed:
+                raise TimeoutError(f"native failpoint not reached: {failpoint}")
+            host_alive = self.process.poll() is None
+            raise RuntimeError(f"native child killed at {failpoint}; host_alive_after_child_kill={host_alive}; {text[-1200:]}")
+        if len(done) < 3 or done[1] != "exit" or done[2] != "0":
+            raise RuntimeError(f"native {mode} child failed {done}: {text[-1200:]}")
+        result = None
+        for line in reversed(text.splitlines()):
+            try:
+                candidate = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(candidate, dict) and candidate.get("p4") is True:
+                result = candidate
+                break
+        if result is None or result.get("mode") != mode or result.get("world") != self.world:
+            raise RuntimeError(f"native {mode} did not return valid P4 JSON: {text[-1200:]}")
+        elapsed = (time.perf_counter() - started) * 1000
+        return result, elapsed
+
+    def close(self, kill: bool = False) -> None:
+        process = getattr(self, "process", None)
+        if process is None:
+            return
+        try:
+            if process.poll() is None:
+                if kill:
+                    process.kill()
+                elif process.stdin:
+                    process.stdin.write(b"QUIT\n")
+                    process.stdin.flush()
+                process.wait(timeout=30)
+        except (BrokenPipeError, OSError, subprocess.TimeoutExpired):
+            process.kill()
+            process.wait()
+        finally:
+            if process.stdin:
+                process.stdin.close()
+            if process.stdout:
+                process.stdout.close()
+
+    def _read_line(self, deadline: float) -> bytes | None:
+        while b"\n" not in self._stdout_buffer:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return None
+            assert self.process.stdout is not None
+            with selectors.DefaultSelector() as selector:
+                selector.register(self.process.stdout, selectors.EVENT_READ)
+                if not selector.select(remaining):
+                    return None
+            chunk = os.read(self.process.stdout.fileno(), 8192)
+            if not chunk:
+                return b""
+            self._stdout_buffer.extend(chunk)
+        line, _, rest = self._stdout_buffer.partition(b"\n")
+        self._stdout_buffer[:] = rest
+        return line + b"\n"
 
 
 class UncertainState(RuntimeError):
@@ -149,11 +363,17 @@ def _kill_self() -> None:
 
 
 class Coordinator:
-    def __init__(self, experiment_root: Path, native_root: Path, binary: Path, world: str):
+    def __init__(self, experiment_root: Path, native_root: Path, binary: Path, world: str,
+                 preload: bool = False, native_host: NativeHost | None = None):
         self.root = experiment_root.resolve()
         self.native_root = native_root.resolve()
         self.binary = binary.resolve()
         self.world = world
+        self.preload = preload or native_host is not None
+        self.native_host = native_host
+        self._owns_native_host = native_host is None
+        self._profile_scratch: Path | None = None
+        self._profile_base: tuple[str, str] | None = native_host.profile_base if native_host else None
         if not self.root.is_absolute() or not self.native_root.is_dir() or not self.binary.is_file():
             raise ValueError("experiment/native paths must exist and be absolute")
         if self.native_root in self.root.parents or self.root in self.native_root.parents:
@@ -175,6 +395,19 @@ class Coordinator:
 
     def _native(self, mode: str, user_dir: Path, operation: str | None = None,
                 failpoint: str | None = None, wait_kill: bool = False) -> tuple[dict[str, Any], float]:
+        if self.preload and mode in {"apply", "read"}:
+            if self.native_host is None:
+                _size_and_files(user_dir)
+                profile_scratch = self.work / f"profile-{uuid.uuid4().hex}"
+                shutil.copytree(user_dir, profile_scratch, symlinks=True, copy_function=shutil.copy2)
+                self._profile_base = _profile_base(str(self.binary), str(self.native_root))
+                key = _profile_key(self.binary, self.native_root, profile_scratch, self.world,
+                                   self._profile_base)
+                self.native_host = NativeHost(self.binary, self.native_root, self.world,
+                                              profile_scratch, key, self._profile_base)
+                # Failed startup inputs remain available for diagnosis.
+                self._profile_scratch = profile_scratch
+            return self.native_host.request(mode, user_dir, operation, failpoint, wait_kill)
         env = os.environ.copy()
         env["NOVGOROD_P4_MODE"] = mode
         env["NOVGOROD_P4_WORLD"] = self.world
@@ -236,6 +469,15 @@ class Coordinator:
             raise RuntimeError(f"native {mode} did not return valid P4 JSON: {text[-1200:]}")
         return result, elapsed
 
+    def close(self) -> None:
+        if self._owns_native_host and self.native_host is not None:
+            self.native_host.close()
+            self.native_host = None
+        if self._profile_scratch is not None and self._profile_scratch.exists():
+            _make_writable(self._profile_scratch)
+            shutil.rmtree(self._profile_scratch, ignore_errors=True)
+            self._profile_scratch = None
+
     def _pointer_value(self) -> dict[str, Any] | None:
         if not self.pointer.exists():
             return None
@@ -273,6 +515,11 @@ class Coordinator:
         if semantic.get("generation_id") != generation_id or semantic.get("world") != self.world:
             raise ValueError("generation identity/world mismatch")
         _, actual_files = _size_and_files(user_dir)
+        if self.preload and semantic.get("profile_key") is not None:
+            key = _profile_key(self.binary, self.native_root, user_dir, self.world,
+                               self._profile_base or _profile_base(str(self.binary), str(self.native_root)))
+            if semantic["profile_key"] != key:
+                raise ValueError("generation native profile key mismatch")
         if actual_files != semantic.get("native_files"):
             raise ValueError("native file list differs from semantic manifest")
         required = semantic.get("required_native_files")
@@ -454,13 +701,19 @@ class Coordinator:
             if result.get("after") != readback.get("after"):
                 raise RuntimeError("native create/read snapshots differ")
             total, native_files = _size_and_files(user_dir)
-            required_files = [f"save/{self.world}/master.gsav"]
+            required_files = [f"save/{self.world}/master.gsav",
+                              f"save/{self.world}/novgorod_rng_state"]
             if not set(required_files).issubset(native_files):
                 raise ValueError(f"native create omitted required persistence files: {required_files}")
             generation_id = uuid.uuid4().hex
             semantic = {"schema": 1, "generation_id": generation_id, "world": self.world,
                         "technical_facts": [], "operation_ids": [],
                         "required_native_files": required_files, "native_files": sorted(native_files)}
+            if self.preload:
+                self._profile_base = self.native_host.profile_base if self.native_host else _profile_base(
+                    str(self.binary), str(self.native_root))
+                semantic["profile_key"] = _profile_key(self.binary, self.native_root, user_dir, self.world,
+                                                       self._profile_base)
             _, copied_bytes, copy_ms = self._write_candidate(generation_id, user_dir, semantic, fault=fault)
             try:
                 _, candidate_readback, candidate_read_wall_ms = self._read_generation(generation_id)
@@ -527,15 +780,20 @@ class Coordinator:
                         "technical_facts": facts, "operation_ids": operations,
                         "required_native_files": old["required_native_files"],
                         "native_files": []}
+            if self.preload:
+                semantic["profile_key"] = _profile_key(
+                    self.binary, self.native_root, stage_user_dir, self.world,
+                    self._profile_base or (self.native_host.profile_base if self.native_host else
+                                           _profile_base(str(self.binary), str(self.native_root))))
             final, copied_bytes, copy_fsync_ms = self._write_candidate(
                 candidate_id, stage_user_dir, semantic, fault=fault, failpoint=failpoint)
             try:
                 read_start = time.perf_counter()
                 _, native_read, native_read_wall_ms = self._read_generation(candidate_id)
-                read_validation_ms = (time.perf_counter() - read_start) * 1000
                 if native_read.get("after") != actual:
                     difference = _first_difference(actual, native_read.get("after"))
                     raise RuntimeError(f"candidate native reload/readback mismatch: {difference}")
+                read_validation_ms = (time.perf_counter() - read_start) * 1000
             except BaseException:
                 self._remove_unaccepted_generation(candidate_id)
                 raise
@@ -545,11 +803,12 @@ class Coordinator:
             # The candidate is accepted before this receipt; callers may safely retry its ID.
             bootstrap_excluded_ms = float(native_read.get("bootstrap_ms", 0))
             core_data_excluded_ms = float(native_read.get("core_data_ms", 0))
-            candidate_reload_budget_ms = max(0.0, read_validation_ms - bootstrap_excluded_ms - core_data_excluded_ms)
-            apply_load_budget_ms = max(0.0, float(native_apply.get("load_ms", 0)) -
-                                       float(native_apply.get("core_data_ms", 0)))
-            budget_ms = (apply_load_budget_ms + float(native_apply.get("save_ms", 0)) +
-                         stage_copy_ms + copy_fsync_ms +
+            # The acceptance budget includes both full native operations and the
+            # complete candidate read/validation interval; only cold profile setup
+            # before a physical load is reported separately.
+            candidate_reload_budget_ms = read_validation_ms
+            apply_load_budget_ms = float(native_apply.get("load_ms", 0))
+            budget_ms = (stage_copy_ms + apply_wall_ms + copy_fsync_ms +
                          publication_ms + candidate_reload_budget_ms)
             return {"status": "applied", "operation_id": operation_id, "generation_id": candidate_id,
                     "native_apply_invoked": True, "before": before, "snapshot": actual,
@@ -606,9 +865,12 @@ def _run_child(script: Path, args: list[str], env: dict[str, str] | None = None,
 
 def _run_cli(script: Path, experiment: Path, native_root: Path, binary: Path, world: str,
              command: str, *args: str, extra_env: dict[str, str] | None = None,
-             kill_marker: str | None = None) -> tuple[int, dict[str, Any] | None, str, float]:
+             kill_marker: str | None = None, preload: bool = False) -> tuple[int, dict[str, Any] | None, str, float]:
     argv = ["--experiment-root", str(experiment), "--native-root", str(native_root),
-            "--binary", str(binary), "--world", world, command, *args]
+            "--binary", str(binary), "--world", world]
+    if preload:
+        argv.append("--preload")
+    argv.extend([command, *args])
     env = os.environ.copy()
     if extra_env:
         env.update(extra_env)
@@ -693,7 +955,8 @@ def run_fault_suite(script: Path, native_root: Path, binary: Path, evidence_root
         if special != "faults":
             args = ["--operation-id", operation_id, "--operation", operation]
             rc, apply_result, output, _ = _run_cli(script, case_root, native_root, binary, world, "apply",
-                                                    *args, extra_env=extra, kill_marker=marker)
+                                                    *args, extra_env=extra, kill_marker=marker,
+                                                    preload=bool(native_fault))
             if name == "after_receipt_narrator_failure" and rc == 0:
                 # Technical delivery failure occurs after durable receipt; no LLM/provider is invoked.
                 extra["NOVGOROD_P4_DELIVERY_FAIL"] = "1"
@@ -708,6 +971,8 @@ def run_fault_suite(script: Path, native_root: Path, binary: Path, evidence_root
                 native_mismatch = apply_result and "candidate native reload/readback mismatch" in apply_result.get("error", "")
                 if not stopped_after_publish and not native_mismatch:
                     raise RuntimeError(f"{name}: expected candidate accepted or a diagnosed native mismatch: {output[-900:]}")
+            if native_fault and (not apply_result or "host_alive_after_child_kill=True" not in apply_result.get("error", "")):
+                raise RuntimeError(f"{name}: child death did not leave preload parent alive")
         if name == "midcopy_and_cleanup_failure":
             cleanup = _run_cli(script, case_root, native_root, binary, world, "cleanup",
                                extra_env={"NOVGOROD_P4_CLEANUP_FAIL": "1"})
@@ -778,6 +1043,7 @@ def run_fault_suite(script: Path, native_root: Path, binary: Path, evidence_root
                      "cleanup_failure_preserved_current_previous": name == "midcopy_and_cleanup_failure",
                      "native_retry_apply_invoked": None if retry_blocked else retry[1].get("native_apply_invoked"),
                      "retry_blocked_by_native_readback": retry_blocked,
+                     "preload_child_kill_kept_host_alive": bool(native_fault),
                      "fresh_process_recovery_read_latency_ms": state[3],
                      "retry_operation_latency_ms": retry[3]})
     for operation in ("pickup_rock", "pickup_stick"):
@@ -814,6 +1080,39 @@ def run_fault_suite(script: Path, native_root: Path, binary: Path, evidence_root
                          "generation_id": applied["generation_id"]})
         else:
             raise RuntimeError(f"{operation} did not produce strict UID mismatch or valid roundtrip: {output[-900:]}")
+    host_root = evidence_root / "fault-preload-host-death"
+    host_root.mkdir(parents=True, exist_ok=True)
+    host_world = "p4_preload_host_death"
+    rc, created, output, _ = _run_cli(script, host_root, native_root, binary, host_world, "init")
+    if rc or not created:
+        raise RuntimeError(f"preload host-death fixture init failed: {output[-900:]}")
+    before_host_death = _run_cli(script, host_root, native_root, binary, host_world, "read")
+    pointer_before_host_death = json.loads((host_root / "current.json").read_text(encoding="utf-8"))
+    rc, host_death, output, _ = _run_cli(
+        script, host_root, native_root, binary, host_world, "apply", "--operation-id", "host-death-op",
+        "--operation", "move_east", extra_env={"NOVGOROD_P4_KILL_HOST_AFTER_CHILD": "1"}, preload=True)
+    error = host_death.get("error", "") if host_death else output
+    match = re.search(r"child pid=(\d+)", error)
+    if rc == 0 or not match:
+        raise RuntimeError(f"preload host-death injection did not kill the host: {output[-900:]}")
+    child_pid = int(match.group(1))
+    for _ in range(50):
+        try:
+            os.kill(child_pid, 0)
+        except ProcessLookupError:
+            break
+        time.sleep(0.02)
+    else:
+        raise RuntimeError(f"preload host death left child process {child_pid} alive")
+    after_host_death = _run_cli(script, host_root, native_root, binary, host_world, "read")
+    pointer_after_host_death = json.loads((host_root / "current.json").read_text(encoding="utf-8"))
+    if (before_host_death[0] or after_host_death[0] or
+            pointer_after_host_death != pointer_before_host_death or
+            after_host_death[1]["snapshot"] != before_host_death[1]["snapshot"]):
+        raise RuntimeError("preload host death changed accepted state or failed fresh-process recovery")
+    rows.append({"scenario": "preload_host_death", "result": "old",
+                 "host_death_killed_child": True, "accepted_pointer_unchanged": True,
+                 "fresh_process_recovery_read_latency_ms": after_host_death[3]})
     init_root = evidence_root / "fault-init-candidate-validation"
     init_root.mkdir(parents=True, exist_ok=True)
     init_world = "p4_init_candidate_validation"
@@ -849,7 +1148,7 @@ def run_fault_suite(script: Path, native_root: Path, binary: Path, evidence_root
                  "native_apply_invoked": False})
     report = {"schema": 1, "native": str(binary),
               "native_root": str(native_root),
-              "purpose": "coordinator fault recovery on strictly validated move_east; pickup/stick UID cases remain independent blockers",
+              "purpose": "complete-generation fault recovery; strict pickup UID results are reported independently",
               "status": "BLOCKED" if any(row.get("result") == "BLOCKED" or row.get("blocked_by_native_readback") or row.get("retry_blocked_by_native_readback") for row in rows) else "passed",
               "scenarios": rows}
     report_path = evidence_root / "fault-suite.json"
@@ -867,11 +1166,130 @@ def run_fault_suite(script: Path, native_root: Path, binary: Path, evidence_root
     return report
 
 
+def _run_preload_metrics(script: Path, native_root: Path, binary: Path, evidence_root: Path,
+                        samples: int, operation: str) -> dict[str, Any]:
+    """Measure one warm immutable-profile host against independent full-world roots."""
+    world = "p4_metrics_preload"
+    baseline = evidence_root / "metrics-baseline"
+    profile_userdir = evidence_root / "metrics-profile-userdir"
+    baseline.mkdir(parents=True, exist_ok=True)
+    base = Coordinator(baseline, native_root, binary, world)
+    try:
+        initialized = base.init()
+    finally:
+        base.close()
+        base._lock_stream.close()
+    accepted_userdir = baseline / "generations" / initialized["generation_id"] / "userdir"
+    copy_started = time.perf_counter()
+    shutil.copytree(accepted_userdir, profile_userdir, symlinks=True, copy_function=shutil.copy2)
+    profile_copy_ms = (time.perf_counter() - copy_started) * 1000
+    profile_base = _profile_base(str(binary), str(native_root))
+    key = _profile_key(binary, native_root, profile_userdir, world, profile_base)
+    host_started = time.perf_counter()
+    host = NativeHost(binary, native_root, world, profile_userdir, key, profile_base)
+    host_startup_ms = (time.perf_counter() - host_started) * 1000
+    cold_read_userdir = evidence_root / "metrics-cold-host-read"
+    try:
+        cold_copy_started = time.perf_counter()
+        cold_copy_bytes, _ = _copy_tree(accepted_userdir, cold_read_userdir)
+        _make_writable(cold_read_userdir)
+        cold_read_copy_ms = (time.perf_counter() - cold_copy_started) * 1000
+        cold_read_result, cold_child_wall_ms = host.request("read", cold_read_userdir)
+        if cold_read_result.get("after") != initialized["native"].get("after"):
+            raise RuntimeError("cold preload host recovery read differs from the accepted baseline")
+        cold_host_recovery_ms = profile_copy_ms + host_startup_ms + cold_read_copy_ms + cold_child_wall_ms
+    except BaseException:
+        host.close()
+        # Keep failed recovery inputs intact for diagnosis and replay.
+        raise
+    measurements: list[dict[str, Any]] = []
+    completed = False
+    try:
+        for index in range(samples + 1):
+            name = "warmup" if index == 0 else f"sample-{index:02d}"
+            root = evidence_root / f"metrics-{name}"
+            reset_copy_bytes, reset_copy_ms = _copy_tree(baseline, root)
+            coordinator = Coordinator(root, native_root, binary, world, preload=True, native_host=host)
+            try:
+                started = time.perf_counter()
+                result = coordinator.apply(f"metrics-{name}-{operation}", operation)
+                total_ms = (time.perf_counter() - started) * 1000
+            finally:
+                coordinator.close()
+                coordinator._lock_stream.close()
+            row = {"name": name, "operation_latency_ms": total_ms,
+                   "p4_budget_ms": result["p4_budget_ms"],
+                   "native_save_ms": result["native_save_ms"],
+                   "native_apply_load_ms": result["native_apply_load_ms"],
+                   "native_readback_load_ms": result["native_readback_load_ms"],
+                   "native_apply_bootstrap_ms": result["native_apply_bootstrap_ms"],
+                   "native_readback_bootstrap_ms": result["native_readback_bootstrap_ms"],
+                   "native_apply_core_data_ms": result["native_apply_core_data_ms"],
+                   "native_readback_core_data_ms": result["native_readback_core_data_ms"],
+                   "apply_load_budget_ms": result["apply_load_budget_ms"],
+                   "native_apply_wall_ms": result["native_apply_wall_ms"],
+                   "native_readback_wall_ms": result["native_readback_wall_ms"],
+                   "staging_copy_ms": result["staging_copy_ms"],
+                   "candidate_read_copy_ms": result["candidate_read_copy_ms"],
+                   "candidate_reload_budget_ms": result["candidate_reload_budget_ms"],
+                   "bootstrap_excluded_ms": result["bootstrap_excluded_ms"],
+                   "core_data_excluded_ms": result["core_data_excluded_ms"],
+                   "copy_fsync_ms": result["copy_fsync_ms"],
+                   "publication_ms": result["publication_ms"],
+                   "copy_bytes": result["copy_bytes"],
+                   "reset_copy_ms": reset_copy_ms, "reset_copy_bytes": reset_copy_bytes,
+                   "warm_child_wall_ms": result["native_apply_wall_ms"]}
+            if index:
+                measurements.append(row)
+            (evidence_root / "metrics-progress.json").write_text(
+                json.dumps({"last_completed": name, "samples": measurements},
+                           sort_keys=True, indent=2) + "\n", encoding="utf-8")
+        values = [row["p4_budget_ms"] for row in measurements]
+        p95 = _nearest_rank(values, 0.95)
+        report = {"schema": 1, "backend": "preload", "warmup_samples_excluded": 1,
+                  "samples": measurements, "operation": operation,
+                  "purpose": "diagnostic_only" if operation != "pickup_rock" else "persistence_acceptance_candidate",
+                  "p95_method": "nearest_rank", "p95_rank": math.ceil(0.95 * len(values)),
+                  "measured_sample_count": len(measurements), "p4_budget_p95_ms": p95,
+                  "max_generation_bytes": max(row["copy_bytes"] for row in measurements),
+                  "p4_budget_limit_ms": 5000, "generation_limit_bytes": MAX_BYTES,
+                  "meets_limits": p95 <= 5000 and max(row["copy_bytes"] for row in measurements) <= MAX_BYTES,
+                  "full_operation_latency_ms": [row["operation_latency_ms"] for row in measurements],
+                  "reset_copy_ms": [row["reset_copy_ms"] for row in measurements],
+                  "cold_profile_copy_ms": profile_copy_ms, "cold_host_startup_wall_ms": host_startup_ms,
+                  "cold_host_recovery_wall_ms": cold_host_recovery_ms,
+                  "cold_host_first_child_wall_ms": cold_child_wall_ms,
+                  "cold_host_read_copy_ms": cold_read_copy_ms, "cold_host_read_copy_bytes": cold_copy_bytes,
+                  "cold_host_phase_ms": {key: host.ready.get(key) for key in
+                                          ("bootstrap_ms", "static_data_ms", "metadata_ms", "core_data_ms")},
+                  "profile_key": key, "parent_pid": host.ready["parent_pid"]}
+        (evidence_root / "metrics.json").write_text(json.dumps(report, sort_keys=True, indent=2) + "\n",
+                                                     encoding="utf-8")
+        (evidence_root / "commands.json").write_text(json.dumps({
+            "native_root": str(native_root), "binary": str(binary), "script": str(script),
+            "operation": operation, "samples_argument": samples, "backend": "preload",
+            "command_template": f"python3 generations.py --experiment-root <unused-required-path> --native-root <native> --binary <cata_test> metrics --preload --evidence-root <evidence> --samples {samples} --operation {operation}",
+            "seed": 17, "reporter": "junit", "filter": NATIVE_FILTER,
+            "host_test_case": "Novgorod native save and resume probe",
+        }, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+        completed = True
+        return report
+    finally:
+        host.close()
+        if completed:
+            for child in [baseline, *evidence_root.glob("metrics-*")]:
+                if child.is_dir() and not child.is_symlink():
+                    _remove_writable_tree(child)
+
+
 def run_metrics(script: Path, native_root: Path, binary: Path, evidence_root: Path,
-                samples: int = 20, operation: str = "pickup_rock") -> dict[str, Any]:
+                samples: int = 20, operation: str = "pickup_rock", preload: bool = False) -> dict[str, Any]:
     if operation not in OPERATIONS:
         raise ValueError(f"unsupported native operation: {operation}")
-    evidence_root.mkdir(parents=True, exist_ok=True)
+    # Never replace an earlier acceptance report after its scratch roots are cleaned.
+    evidence_root.mkdir(parents=True, exist_ok=False)
+    if preload:
+        return _run_preload_metrics(script, native_root, binary, evidence_root, samples, operation)
     measurements = []
     for index in range(samples + 1):
         name = "warmup" if index == 0 else f"sample-{index:02d}"
@@ -923,7 +1341,7 @@ def run_metrics(script: Path, native_root: Path, binary: Path, evidence_root: Pa
     (evidence_root / "commands.json").write_text(json.dumps({
         "native_root": str(native_root), "binary": str(binary), "script": str(script),
         "operation": operation, "samples_argument": samples,
-        "command_template": "python3 generations.py --experiment-root <unused-required-path> --native-root <native> --binary <cata_test> metrics --evidence-root <evidence> --samples 20 --operation move_east",
+        "command_template": f"python3 generations.py --experiment-root <unused-required-path> --native-root <native> --binary <cata_test> metrics --evidence-root <evidence> --samples {samples} --operation {operation}",
         "seed": 17, "reporter": "junit", "filter": NATIVE_FILTER,
     }, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     for child in evidence_root.glob("metrics-*"):
@@ -938,6 +1356,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--native-root", type=Path, required=True)
     parser.add_argument("--binary", type=Path, required=True)
     parser.add_argument("--world", default="novgorod_p4")
+    parser.add_argument("--preload", action="store_true",
+                        help="reuse one immutable native definitions host for apply/read children")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("init")
     sub.add_parser("read")
@@ -952,6 +1372,7 @@ def _parse_args() -> argparse.Namespace:
     metrics.add_argument("--evidence-root", type=Path, required=True)
     metrics.add_argument("--samples", type=int, default=20)
     metrics.add_argument("--operation", choices=sorted(OPERATIONS), default="pickup_rock")
+    metrics.add_argument("--preload", dest="preload_metrics", action="store_true")
     return parser.parse_args()
 
 
@@ -968,29 +1389,34 @@ def main() -> int:
                 raise ValueError("P4 acceptance requires exactly 20 measured samples")
             report = run_metrics(Path(__file__).resolve(), args.native_root.resolve(),
                                  args.binary.resolve(), args.evidence_root.resolve(), args.samples,
-                                 args.operation)
+                                 args.operation, args.preload or getattr(args, "preload_metrics", False))
             print(json.dumps(report, sort_keys=True))
             return 0 if report["meets_limits"] else 2
-        coordinator = Coordinator(args.experiment_root, args.native_root, args.binary, args.world)
-        if args.command == "init":
-            result = coordinator.init(fault=os.environ.get("NOVGOROD_P4_CANDIDATE_FAULT"))
-        elif args.command == "read":
-            result = coordinator.read()
-        elif args.command == "apply":
-            result = coordinator.apply(args.operation_id, args.operation,
-                                       fault=os.environ.get("NOVGOROD_P4_CANDIDATE_FAULT"),
-                                       failpoint=os.environ.get("NOVGOROD_P4_COORDINATOR_FAILPOINT"),
-                                       native_failpoint=os.environ.get("NOVGOROD_P4_NATIVE_FAILPOINT"))
-        elif args.command == "cleanup":
-            coordinator._pointer_value()
-            coordinator._cleanup_work(fail=os.environ.get("NOVGOROD_P4_CLEANUP_FAIL") == "1")
-            result = {"status": "scratch_cleaned"}
-        else:
-            if os.environ.get("NOVGOROD_P4_DELIVERY_FAIL") != "1":
-                raise ValueError("deliver-failure is a test-only technical delivery simulation")
-            result = {"status": "technical_delivery_failed_after_receipt"}
-        print(json.dumps(result, sort_keys=True))
-        return 0
+        coordinator = Coordinator(args.experiment_root, args.native_root, args.binary, args.world,
+                                  preload=args.preload)
+        try:
+            if args.command == "init":
+                result = coordinator.init(fault=os.environ.get("NOVGOROD_P4_CANDIDATE_FAULT"))
+            elif args.command == "read":
+                result = coordinator.read()
+            elif args.command == "apply":
+                result = coordinator.apply(args.operation_id, args.operation,
+                                           fault=os.environ.get("NOVGOROD_P4_CANDIDATE_FAULT"),
+                                           failpoint=os.environ.get("NOVGOROD_P4_COORDINATOR_FAILPOINT"),
+                                           native_failpoint=os.environ.get("NOVGOROD_P4_NATIVE_FAILPOINT"))
+            elif args.command == "cleanup":
+                coordinator._pointer_value()
+                coordinator._cleanup_work(fail=os.environ.get("NOVGOROD_P4_CLEANUP_FAIL") == "1")
+                result = {"status": "scratch_cleaned"}
+            else:
+                if os.environ.get("NOVGOROD_P4_DELIVERY_FAIL") != "1":
+                    raise ValueError("deliver-failure is a test-only technical delivery simulation")
+                result = {"status": "technical_delivery_failed_after_receipt"}
+            print(json.dumps(result, sort_keys=True))
+            return 0
+        finally:
+            coordinator.close()
+            coordinator._lock_stream.close()
     except Exception as exc:
         print(json.dumps({"status": "failed", "error": str(exc)}, sort_keys=True), file=sys.stderr)
         return 1

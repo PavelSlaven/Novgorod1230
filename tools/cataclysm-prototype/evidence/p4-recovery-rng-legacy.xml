@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="cata_test" errors="0" failures="0" tests="7" hostname="tbd" time="12.215" timestamp="2026-10-18T20:54:36Z">
+    <properties>
+      <property name="filters" value="Novgorod native load accepts a legacy save without RNG sidecar"/>
+      <property name="random-seed" value="17"/>
+    </properties>
+    <testcase classname="cata_test.global" name="Novgorod native load accepts a legacy save without RNG sidecar" time="0.062" status="run"/>
+    <system-out/>
+    <system-err/>
+  </testsuite>
+</testsuites>

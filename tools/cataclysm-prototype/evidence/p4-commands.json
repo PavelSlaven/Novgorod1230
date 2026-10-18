@@ -1,0 +1,43 @@
+{
+  "metrics": {
+    "binary": "/home/slaven/cataclysm-vertical-slice/build-clang-release/tests/cata_test",
+    "command_template": "python3 generations.py --experiment-root <unused-required-path> --native-root /home/slaven/cataclysm-vertical-slice --binary /home/slaven/cataclysm-vertical-slice/build-clang-release/tests/cata_test metrics --evidence-root /home/slaven/cataclysm-evidence/p4/coordinator-final/metrics-move-east --samples 20 --operation move_east",
+    "coordinator_source_sha256_at_report": "a7d018a1fee65815382b9091ce95ff1ea9dd48d3173b646ccff09ff1bf2e63a1",
+    "filter": "[novgorod_persistence]",
+    "measurement_command": "wsl.exe -d Ubuntu-24.04 -- python3 /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-vertical-slice/Novgorod/tools/cataclysm-prototype/generations.py --experiment-root /home/slaven/cataclysm-evidence/p4/coordinator-final/metrics-cli-unused --native-root /home/slaven/cataclysm-vertical-slice --binary /home/slaven/cataclysm-vertical-slice/build-clang-release/tests/cata_test metrics --evidence-root /home/slaven/cataclysm-evidence/p4/coordinator-final/metrics-move-east --samples 20 --operation move_east",
+    "measurement_source_context": "apply coordinator implementation and timing formula were unchanged after the measured run; later edits added initial-generation validation and fault-suite cleanup/reporting",
+    "native_binary_sha256": "12799384a671554183056b95d2bd19056e14fe39e0d7dca856d4a1c4627e5d31",
+    "native_revision": "0d8843f1c500052c3e026e3da6f8edaf5e00b626",
+    "native_root": "/home/slaven/cataclysm-vertical-slice",
+    "operation": "move_east",
+    "reporter": "junit",
+    "samples_argument": 20,
+    "script": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-vertical-slice/Novgorod/tools/cataclysm-prototype/generations.py",
+    "seed": 17,
+    "worktree_base_revision": "8a54ac012543134ac0887b954fb59681d77b6275",
+    "worktree_revision": "8a54ac012543134ac0887b954fb59681d77b6275"
+  },
+  "fault_suite": {
+    "binary": "/home/slaven/cataclysm-vertical-slice/build-clang-release/tests/cata_test",
+    "command_template": "python3 generations.py --experiment-root <unused-required-path> --native-root <native> --binary <cata_test> suite --evidence-root <evidence>",
+    "failpoints": [
+      "after_atomic_before_receipt",
+      "after_effect",
+      "after_generation_rename_before_publish",
+      "after_native_save_before_semantic",
+      "before_effect",
+      "mid_generation_copy",
+      "mid_save"
+    ],
+    "filter": "[novgorod_persistence]",
+    "general_crash_operation": "move_east",
+    "native_root": "/home/slaven/cataclysm-vertical-slice",
+    "pickup_stick_strict_uid_cases": [
+      "pickup_rock",
+      "pickup_stick"
+    ],
+    "reporter": "junit",
+    "script": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-vertical-slice/Novgorod/tools/cataclysm-prototype/generations.py",
+    "seed": 17
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "source": "native-uid-evidence create/apply/read userdir",
+  "scope": "Observed native userdir files; probe stdout/stderr and derived disk-json report excluded. Not a claim about every possible future CDDA world.",
+  "file_count": 54,
+  "total_bytes": 1202136,
+  "files": [
+    {
+      "path": "achievements/Un Tapia-20261018182812777078321-1.json",
+      "bytes": 77
+    },
+    {
+      "path": "cache/config/lastworld.json.-4645315877514.fb",
+      "bytes": 72
+    },
+    {
+      "path": "config/lastworld.json",
+      "bytes": 75
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.ano.json",
+      "bytes": 43
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.apu.json",
+      "bytes": 6
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.log",
+      "bytes": 2
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.mm1/#VW4gVGFwaWE=.mm1.cold.zzip",
+      "bytes": 4096
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.mm1/#VW4gVGFwaWE=.mm1.hot.zzip",
+      "bytes": 95
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.mm1/#VW4gVGFwaWE=.mm1.warm.zzip",
+      "bytes": 95
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.pt",
+      "bytes": 4
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.sav.zzip",
+      "bytes": 12288
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.seen.-1.-1",
+      "bytes": 816
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.seen.-1.0",
+      "bytes": 816
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.seen.0.-1",
+      "bytes": 816
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.seen.0.0",
+      "bytes": 929
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWE=.zones.json",
+      "bytes": 276
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/#VW4gVGFwaWFfZGlhcnk=.json",
+      "bytes": 42
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/dimension_data.gsav",
+      "bytes": 31524
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/external_options.json",
+      "bytes": 41869
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-1.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-10.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-2.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-3.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-4.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-5.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-6.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-7.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-8.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.-9.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.0.zzip",
+      "bytes": 28672
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.1.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.10.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.2.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.3.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.4.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.5.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.6.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.7.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.8.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps/0.0.9.zzip",
+      "bytes": 8192
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/maps.dict",
+      "bytes": 102400
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/master.gsav",
+      "bytes": 34292
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/mmr.dict",
+      "bytes": 102400
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/mods.json",
+      "bytes": 26
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/overmaps/o.-1.-1.zzip",
+      "bytes": 208896
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/overmaps/o.-1.0.zzip",
+      "bytes": 200147
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/overmaps/o.0.-1.zzip",
+      "bytes": 87425
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/overmaps/o.0.0.zzip",
+      "bytes": 56401
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/overmaps.dict",
+      "bytes": 102400
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/uistate.json",
+      "bytes": 3601
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/world_timestamp.json",
+      "bytes": 25
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/worldoptions.json",
+      "bytes": 1731
+    },
+    {
+      "path": "save/P4UIDEvidence20261018/zones.json",
+      "bytes": 276
+    },
+    {
+      "path": "templates/Last Character.template",
+      "bytes": 15663
+    }
+  ]
+}

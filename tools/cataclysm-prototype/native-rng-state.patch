@@ -1,0 +1,131 @@
+--- a/src/rng.h
++++ b/src/rng.h
+@@ -5,6 +5,7 @@
+ #include <array>
+ #include <cstddef>
+ #include <functional>
++#include <iosfwd>
+ #include <iterator>
+ #include <optional>
+ #include <random>
+@@ -30,6 +31,8 @@
+ using cata_default_random_engine = std::minstd_rand0;
+ cata_default_random_engine::result_type rng_get_first_seed();
+ cata_default_random_engine &rng_get_engine();
++void rng_serialize_engine( std::ostream &out );
++bool rng_unserialize_engine( std::istream &in );
+ unsigned int rng_bits();
+ 
+ int rng( int lo, int hi );
+--- a/src/rng.cpp
++++ b/src/rng.cpp
+@@ -3,6 +3,8 @@
+ #include <algorithm>
+ #include <chrono>
+ #include <cmath>
++#include <istream>
++#include <ostream>
+ 
+ #include "calendar.h"
+ #include "cata_assert.h"
+@@ -211,6 +213,25 @@
+     return eng;
+ }
+ 
++void rng_serialize_engine( std::ostream &out )
++{
++    out << rng_get_engine() << '\n';
++}
++
++bool rng_unserialize_engine( std::istream &in )
++{
++    cata_default_random_engine restored;
++    if( !( in >> restored ) ) {
++        return false;
++    }
++    in >> std::ws;
++    if( !in.eof() || in.bad() ) {
++        return false;
++    }
++    rng_get_engine() = restored;
++    return true;
++}
++
+ void rng_set_engine_seed( unsigned int seed )
+ {
+     if( seed != 0 ) {
+--- a/src/game_io.cpp
++++ b/src/game_io.cpp
+@@ -76,6 +76,7 @@
+ #include "perf.h"
+ #include "pimpl.h"
+ #include "popup.h"
++#include "rng.h"
+ #include "safemode_ui.h"
+ #if defined(TILES)
+ #include "sdltiles.h"
+@@ -338,7 +339,9 @@
+     try {
+         world_generator->set_active_world( wptr );
+         g->setup();
+-        g->load( wptr->world_saves.front() );
++        if( !g->load( wptr->world_saves.front() ) ) {
++            return false;
++        }
+     } catch( const std::exception &err ) {
+         debugmsg( "cannot load world '%s': %s", world, err.what() );
+         return false;
+@@ -529,6 +532,16 @@
+     }
+ 
+     loading_ui::done();
++    const cata_path rng_state_file = worldpath / "novgorod_rng_state";
++    if( file_exist( rng_state_file ) ) {
++        bool restored = false;
++        if( !read_from_file( rng_state_file, [&restored]( std::istream &is ) {
++            restored = rng_unserialize_engine( is );
++        } ) || !restored ) {
++            debugmsg( "could not restore native RNG state" );
++            return false;
++        }
++    }
+     return true;
+ }
+ 
+@@ -801,6 +814,13 @@
+                 fout.imbue( std::locale::classic() );
+                 fout << total_time_played.count();
+             } );
++            if( !write_to_file( PATH_INFO::world_base_save_path() / "novgorod_rng_state",
++            []( std::ostream &fout ) {
++                rng_serialize_engine( fout );
++            }, _( "native RNG state" ) ) ) {
++                debugmsg( "game not saved: could not save native RNG state" );
++                return false;
++            }
+ #if defined(EMSCRIPTEN)
+             // This will allow the window to be closed without a prompt, until do_turn()
+             // is called.
+
+diff --git a/tests/test_main.cpp b/tests/test_main.cpp
+--- a/tests/test_main.cpp
++++ b/tests/test_main.cpp
+@@ -250,11 +250,13 @@
+     void sectionStarting( Catch::SectionInfo const &sectionInfo ) override {
+         TestEventListenerBase::sectionStarting( sectionInfo );
+         // Initialize the cata RNG with the Catch seed for reproducible tests
+         const unsigned int seed = m_config->rngSeed();
+-        if( seed ) {
+-            rng_set_engine_seed( seed );
+-        } else {
+-            rng_set_engine_seed( rng_get_first_seed() );
++        if( novgorod_p4_mode.empty() || novgorod_p4_mode == "create" ) {
++            if( seed ) {
++                rng_set_engine_seed( seed );
++            } else {
++                rng_set_engine_seed( rng_get_first_seed() );
++            }
+         }
+         // Clear the message log so on test failures we see only messages from
+         // during that test
+

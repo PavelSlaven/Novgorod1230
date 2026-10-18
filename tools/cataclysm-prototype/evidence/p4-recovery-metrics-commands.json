@@ -1,0 +1,13 @@
+{
+  "backend": "preload",
+  "binary": "/home/slaven/cataclysm-recovery/build-clang-release/tests/cata_test",
+  "command_template": "python3 generations.py --experiment-root <unused-required-path> --native-root <native> --binary <cata_test> metrics --preload --evidence-root <evidence> --samples 20 --operation move_east",
+  "filter": "[novgorod_persistence]",
+  "host_test_case": "Novgorod native save and resume probe",
+  "native_root": "/home/slaven/cataclysm-recovery",
+  "operation": "pickup_rock",
+  "reporter": "junit",
+  "samples_argument": 20,
+  "script": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/tools/cataclysm-prototype/generations.py",
+  "seed": 17
+}

@@ -1,0 +1,123 @@
+{
+  "base": "0d8843f1c500052c3e026e3da6f8edaf5e00b626",
+  "compared": [
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/do_turn.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/flexbuffer_cache.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/flexbuffer_cache.h"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/game.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/game.h"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/game_io.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/handle_action.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/item_contents.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/item_contents.h"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/item_pocket.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/item_pocket.h"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/json_loader.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/json_loader.h"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/rng.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/rng.h"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "src/savegame_json.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "tests/novgorod_item_uid_test.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "tests/novgorod_persistence_test.cpp"
+    },
+    {
+      "byte_match": false,
+      "lf_normalized_match": true,
+      "path": "tests/novgorod_preload_probe.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "tests/novgorod_rng_state_test.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "tests/novgorod_slice_test.cpp"
+    },
+    {
+      "byte_match": true,
+      "lf_normalized_match": true,
+      "path": "tests/test_main.cpp"
+    }
+  ],
+  "mismatches": [],
+  "patch_order": [
+    "native-input.patch",
+    "native-persistence.patch",
+    "native-item-identity.patch",
+    "native-rng-state.patch",
+    "native-preload.patch"
+  ]
+}

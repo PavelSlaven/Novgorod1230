@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="cata_test" errors="0" failures="0" tests="17" hostname="tbd" time="14.349" timestamp="2026-10-18T20:54:14Z">
+    <properties>
+      <property name="filters" value="[novgorod_rng_state]"/>
+      <property name="random-seed" value="17"/>
+    </properties>
+    <testcase classname="cata_test.global" name="Novgorod native RNG state round-trips without advancing" time="0.000" status="run">
+      <system-out>
+NOVGOROD_RNG_CONTINUATION:1300022583
+      </system-out>
+    </testcase>
+    <testcase classname="cata_test.global" name="Novgorod native RNG sidecar write failure fails save" time="2.215" status="run">
+      <system-err>
+23:54:12.531 ERROR : (error message will follow backtrace)
+    build-clang-release/tests/cata_test(+0xe47efa) [0x5a7850c26efa]
+    build-clang-release/tests/cata_test(+0xe46980) [0x5a7850c25980]
+    build-clang-release/tests/cata_test(+0xb6afbe) [0x5a7850949fbe]
+    build-clang-release/tests/cata_test(+0x11b52bc) [0x5a7850f942bc]
+    build-clang-release/tests/cata_test(+0x2d4fb73) [0x5a7852b2eb73]
+    build-clang-release/tests/cata_test(+0xe44319) [0x5a7850c23319]
+    build-clang-release/tests/cata_test(+0x2d4d70e) [0x5a7852b2c70e]
+    build-clang-release/tests/cata_test(+0x30ed5a3) [0x5a7852ecc5a3]
+    build-clang-release/tests/cata_test(+0x30eb5b7) [0x5a7852eca5b7]
+    build-clang-release/tests/cata_test(+0x30eaac9) [0x5a7852ec9ac9]
+    build-clang-release/tests/cata_test(+0x30f0a40) [0x5a7852ecfa40]
+    build-clang-release/tests/cata_test(+0x30efc34) [0x5a7852ecec34]
+    build-clang-release/tests/cata_test(+0x310d6c8) [0x5a7852eec6c8]
+    /lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca) [0x7cca7de2a1ca]
+    /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b) [0x7cca7de2a28b]
+    build-clang-release/tests/cata_test(+0x8b7d65) [0x5a7850696d65]
+
+    Attempting to repeat stack trace using debug symbols…
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+Backtrace emission took 2 seconds.
+(continued from above) ERROR : Failed to write native RNG state to "/home/slaven/cataclysm-recovery-evidence/uid-rng/fault-savefail4/userdir/save/p4_uid_rng_rock_rngfix/novgorod_rng_state": moving temporary file "/home/slaven/cataclysm-recovery-evidence/uid-rng/fault-savefail4/userdir/save/p4_uid_rng_rock_rngfix/novgorod_rng_state.1025.temp" failed
+      </system-err>
+    </testcase>
+    <testcase classname="cata_test.global" name="Novgorod native load rejects malformed RNG sidecar" time="0.000" status="run"/>
+    <testcase classname="cata_test.global" name="Novgorod native load accepts a legacy save without RNG sidecar" time="0.000" status="run"/>
+    <system-out>
+NOVGOROD_RNG_CONTINUATION:1300022583
+    </system-out>
+    <system-err>
+23:54:12.531 ERROR : (error message will follow backtrace)
+    build-clang-release/tests/cata_test(+0xe47efa) [0x5a7850c26efa]
+    build-clang-release/tests/cata_test(+0xe46980) [0x5a7850c25980]
+    build-clang-release/tests/cata_test(+0xb6afbe) [0x5a7850949fbe]
+    build-clang-release/tests/cata_test(+0x11b52bc) [0x5a7850f942bc]
+    build-clang-release/tests/cata_test(+0x2d4fb73) [0x5a7852b2eb73]
+    build-clang-release/tests/cata_test(+0xe44319) [0x5a7850c23319]
+    build-clang-release/tests/cata_test(+0x2d4d70e) [0x5a7852b2c70e]
+    build-clang-release/tests/cata_test(+0x30ed5a3) [0x5a7852ecc5a3]
+    build-clang-release/tests/cata_test(+0x30eb5b7) [0x5a7852eca5b7]
+    build-clang-release/tests/cata_test(+0x30eaac9) [0x5a7852ec9ac9]
+    build-clang-release/tests/cata_test(+0x30f0a40) [0x5a7852ecfa40]
+    build-clang-release/tests/cata_test(+0x30efc34) [0x5a7852ecec34]
+    build-clang-release/tests/cata_test(+0x310d6c8) [0x5a7852eec6c8]
+    /lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca) [0x7cca7de2a1ca]
+    /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b) [0x7cca7de2a28b]
+    build-clang-release/tests/cata_test(+0x8b7d65) [0x5a7850696d65]
+
+    Attempting to repeat stack trace using debug symbols…
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+    ??
+    ??:0
+Backtrace emission took 2 seconds.
+(continued from above) ERROR : Failed to write native RNG state to "/home/slaven/cataclysm-recovery-evidence/uid-rng/fault-savefail4/userdir/save/p4_uid_rng_rock_rngfix/novgorod_rng_state": moving temporary file "/home/slaven/cataclysm-recovery-evidence/uid-rng/fault-savefail4/userdir/save/p4_uid_rng_rock_rngfix/novgorod_rng_state.1025.temp" failed
+    </system-err>
+  </testsuite>
+</testsuites>

@@ -14,7 +14,9 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
+#include <random>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -41,6 +43,7 @@
 #include "npc.h"
 #include "player_activity.h"
 #include "player_helpers.h"
+#include "rng.h"
 #include "path_info.h"
 #include "zzip.h"
 #include "worldfactory.h"
@@ -143,7 +146,8 @@ static std::string p4_snapshot()
     for( size_t i = 0; i < npcs.size(); ++i ) {
         out << ( i ? "," : "" ) << npcs[i];
     }
-    out << "]}";
+    // The stream operator observes the engine without advancing it.
+    out << "],\"rng_state\":\"" << rng_get_engine() << "\"}";
     return out.str();
 }
 
@@ -343,7 +347,6 @@ TEST_CASE( "Novgorod native save and resume probe", "[.][novgorod_persistence]" 
     double save_ms = 0.0;
     if( mode == "create" ) {
         p4_create_fixture();
-        after = p4_snapshot();
         const auto start = std::chrono::steady_clock::now();
         REQUIRE( g->save() );
         save_ms = std::chrono::duration<double, std::milli>(
@@ -353,14 +356,14 @@ TEST_CASE( "Novgorod native save and resume probe", "[.][novgorod_persistence]" 
         before = p4_snapshot();
         p4_run_operation( operation );
         p4_failpoint( "after_effect" );
-        after = p4_snapshot();
         const auto start = std::chrono::steady_clock::now();
         REQUIRE( g->save() );
         save_ms = std::chrono::duration<double, std::milli>(
                       std::chrono::steady_clock::now() - start ).count();
-    } else {
-        after = p4_snapshot();
     }
+    REQUIRE( std::filesystem::is_regular_file(
+                 ( PATH_INFO::world_base_save_path() / "novgorod_rng_state" ).get_unrelative_path() ) );
+    after = p4_snapshot();
     const std::vector<int> disk_rock_uids = p4_disk_type_uids( "rock" );
     std::ostringstream disk_rock_json;
     disk_rock_json << "[";

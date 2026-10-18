@@ -145,27 +145,39 @@ cd /home/slaven/cataclysm-vertical-slice-repeat
 ## P4: полные поколения и аварийные проверки
 
 P4 — отдельный исследовательский gate CR [#758](https://github.com/PavelSlaven/Novgorod1230/issues/758).
-См. [спецификацию](../../docs/implementation/cataclysm-p4-experiment.md) и
-[фактические результаты](../../docs/implementation/cataclysm-p4-results.md).
-Обнаруженные UID и latency failures означают **STOP / REVISE_APPROACH**;
-наличие harness не означает приёмку persistence или допуск к P5/P6.
+См. [спецификацию](../../docs/implementation/cataclysm-p4-experiment.md),
+[исходный отрицательный результат](../../docs/implementation/cataclysm-p4-results.md)
+и [повторную проверку](../../docs/implementation/cataclysm-p4-recovery-results.md).
+Повторный fault suite и численные пороги прошли независимую техническую
+приёмку. Речевые T11/T12 остаются обязательными до P5/P6.
 
-После установки P2 patch из команд выше добавить P4 patch и самостоятельный
-test source, затем повторить ту же CMake configure/build команду:
+Отрицательный исход исходного прогона сохранён в отчёте. Продолжение CR #758
+использует новый checkout `/home/slaven/cataclysm-recovery`; воспроизведение
+исходного UID failure и происхождение сборки записаны в
+[recovery baseline](evidence/recovery-baseline.md). Новые overlays сохраняют UID
+при десериализации, native RNG state и добавляют opt-in preload host.
+Их наличие само по себе не закрывает P4.
+
+После установки `native-input.patch` в свежий checkout закреплённого SHA
+добавить overlays в указанном порядке. `NOVGOROD` указывает на текущий checkout
+этого репозитория в WSL. Все test sources копируются из той же ревизии:
 
 ```sh
-git -C /home/slaven/cataclysm-vertical-slice apply --check \
-  "$NOVGOROD/tools/cataclysm-prototype/native-persistence.patch"
-git -C /home/slaven/cataclysm-vertical-slice apply \
-  "$NOVGOROD/tools/cataclysm-prototype/native-persistence.patch"
-cp "$NOVGOROD/tools/cataclysm-prototype/novgorod_persistence_test.cpp" \
-  /home/slaven/cataclysm-vertical-slice/tests/novgorod_persistence_test.cpp
-cmake -S /home/slaven/cataclysm-vertical-slice \
-  -B /home/slaven/cataclysm-vertical-slice/build-clang-release -G Ninja \
+NATIVE=/home/slaven/cataclysm-recovery
+for overlay in native-persistence native-item-identity native-rng-state native-preload; do
+  git -C "$NATIVE" apply --check "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
+  git -C "$NATIVE" apply "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
+done
+for source in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe; do
+  cp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
+  cmp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
+done
+cmake -S "$NATIVE" \
+  -B "$NATIVE/build-clang-release" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-19 \
   -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=OFF -DCURSES=ON \
   -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
-cmake --build /home/slaven/cataclysm-vertical-slice/build-clang-release --parallel 8
+cmake --build "$NATIVE/build-clang-release" --parallel 8
 ```
 
 Coordinator использует Python 3 stdlib и Linux `flock/fsync`; запускать в WSL.
@@ -175,7 +187,7 @@ ENOSPC внедряется записью в `/dev/full`. Это process-crash 
 
 ```sh
 P4="$NOVGOROD/tools/cataclysm-prototype/generations.py"
-NATIVE=/home/slaven/cataclysm-vertical-slice
+NATIVE=/home/slaven/cataclysm-recovery
 BINARY="$NATIVE/build-clang-release/tests/cata_test"
 python3 "$NOVGOROD/tools/cataclysm-prototype/test_generations.py"
 python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch \
@@ -184,13 +196,17 @@ python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch 
 python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch \
   --native-root "$NATIVE" --binary "$BINARY" metrics \
   --evidence-root /home/slaven/cataclysm-evidence/new-p4-metrics \
-  --samples 20 --operation move_east
+  --samples 20 --operation pickup_rock --preload
 ```
 
 Exit 2 означает непройденный gate; отчёт сохраняется и не объявляется PASS.
-`move_east` — диагностический сценарий, потому что pickup не проходит строгую
-сверку UID после reload. Это не замена ordinary-item acceptance. Обычный
-`metrics` по умолчанию использует `pickup_rock` и сохраняет строгую проверку.
+`move_east` остаётся диагностическим сценарием, а приёмочные метрики используют
+`pickup_rock` со строгим сравнением UID и полного native RNG state. `--preload`
+исключает повторную подготовку immutable definitions: каждый свежий child
+загружает весь физический мир из файлов своего поколения. World load, save,
+копирование, fsync, публикация и validation входят в прежний бюджет 5 секунд.
+Cold whole-host recovery показывается отдельно; 20 samples после одного warmup
+и ограничение поколения 512 MiB сохраняются.
 Полная фикстура и accepted generations не предназначены для production.
 
 ## Лицензия исходника

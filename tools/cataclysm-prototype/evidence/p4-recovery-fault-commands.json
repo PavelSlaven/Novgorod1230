@@ -1,0 +1,23 @@
+{
+  "binary": "/home/slaven/cataclysm-recovery/build-clang-release/tests/cata_test",
+  "command_template": "python3 generations.py --experiment-root <unused-required-path> --native-root <native> --binary <cata_test> suite --evidence-root <evidence>",
+  "failpoints": [
+    "after_atomic_before_receipt",
+    "after_effect",
+    "after_generation_rename_before_publish",
+    "after_native_save_before_semantic",
+    "before_effect",
+    "mid_generation_copy",
+    "mid_save"
+  ],
+  "filter": "[novgorod_persistence]",
+  "general_crash_operation": "move_east",
+  "native_root": "/home/slaven/cataclysm-recovery",
+  "pickup_stick_strict_uid_cases": [
+    "pickup_rock",
+    "pickup_stick"
+  ],
+  "reporter": "junit",
+  "script": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/tools/cataclysm-prototype/generations.py",
+  "seed": 17
+}

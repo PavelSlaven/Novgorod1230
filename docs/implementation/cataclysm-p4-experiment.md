@@ -78,3 +78,44 @@ reload/readback и validation. Исключается только cold static/c
 `native_scope_audit` и `p4_feasibility`; код и результаты P4 ещё требуют
 самостоятельного аудита. Лид одобрил исполнение CR #758. Наличие спецификации
 и реализация harness не означают PASS. P5/P6 не допускаются при незакрытом P4.
+
+## Пересмотр seam после отрицательного результата
+
+Продолжение CR #758 сохраняет исходные критерии. На 2026-10-18 ведущий
+`/root` одобрил исправление native item identity (#759), инструментализацию
+загрузки и ограниченный preload/fork prototype (#760). Независимый
+`recovery_contract` проверил будущую границу измерений до реализации.
+Это разрешение на эксперимент, не приёмка P4 и не пересчёт старых результатов.
+
+Native deserialization должен переносить уже существующие item instances с
+сохранением UID; обычное копирование продолжает создавать новую identity.
+Проверки охватывают nested containers, fallback/restack/merge, обычную copy
+semantics и оба pickup из fault suite. UID остаётся в строгом readback.
+
+Инструментализация сохраняет прежний полный load timer и добавляет вложенные
+фазы static definitions, metadata и физического world load. Новый parent
+подготавливает immutable definitions одного профиля на отдельной scratch-копии
+metadata, но не вызывает `load(save_t)`, `start_game`, действия или save.
+Каждый запрос выполняется свежим fork-child: все userdir/save/config/cache
+пути указывают на его mutable staging либо candidate scratch, затем штатный
+native `load(save_t)` читает физический мир из файлов поколения. Parent ждёт
+ребёнка и остаётся без физического мира. До применения fork проверяется
+отсутствие фоновых потоков и унаследованных изменяемых ресурсов мира.
+
+Один host обслуживает только один неизменяемый профиль: binary/data revision,
+ordered mod list, custom mods/interactions и влияющие на definitions options.
+Несовпадение требует отказа или cold restart; многопрофильный cache не нужен.
+Все затраты физического world load, readback/validation, save, copy, fsync и
+publication остаются в прежнем бюджете. Cold static/core preparation до
+физического world load измеряется отдельно, как разрешено исходным протоколом.
+Полная cold whole-host recovery и warm child recovery публикуются раздельно.
+
+До приёмочного прогона требуется также native сохранение и восстановление
+текущего RNG engine state: сохранение одного world seed не доказывает
+продолжение последовательности. RNG остаётся у native owner, входит в полное
+поколение и проверяется continuation/reload и повторным readback. Coordinator
+не хранит отдельное authoritative RNG state. Неизменные fault matrix,
+20 samples после одного warmup, p95 ≤5 s и generation ≤512 MiB обязательны.
+Повторный технический gate принят по
+[результатам 2026-10-19](cataclysm-p4-recovery-results.md). Речевые T11/T12
+остаются OPEN до интеграции P3; этот технический PASS не разрешает P5/P6.

@@ -34,6 +34,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
   approvedActivityRecords = null,
   scenePresentation = null, partyId = null,
   loadPreparedMovementScene = null, projectCurrentScene = null,
+  projectEnvironmentAtClock = null,
   recordProjectionGap = null
 } = {}) {
   if (typeof fallback?.project !== 'function') {
@@ -113,6 +114,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           ...(clock == null ? {} : { clock: structuredClone(clock) })
         };
         delete targetState.current_visible_context;
+        let currentEnvironmentState = targetState;
         const committedDestination = destinationOrigin === 'canonical';
         const reusePreparedDestination = destinationCompletion
           && destinationDigestMatches;
@@ -155,6 +157,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           const loadedDestination = await loadPreparedMovementScene({
             partyId, state: targetState, clock
           });
+          currentEnvironmentState = loadedDestination;
           const projectedDestination = projectCurrentScene(loadedDestination)
             ?.current_visible_context;
           if (!plain(projectedDestination)) {
@@ -187,12 +190,24 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             ? 'Пройденный путь: ' + transition.line_name + '.' : null;
           destination.visible_changes = [route,
             fact == null ? 'Вы прибыли.' : arrivalChange(fact)].filter(Boolean);
-          if (input.time_update?.nearest_boundary == null) {
-            destination.sensory_details = [...new Set([
-              ...destination.sensory_details,
-              ...currentEnvironmentChanges(targetState)
-            ])];
+          if (currentEnvironmentState === targetState
+              && targetState.environment_snapshot?.schema
+                === 'rus.approved_initial_environment.v1') {
+            const projectionClock = clock ?? targetState.clock_weather_light?.clock
+              ?? targetState.clock;
+            if (typeof projectEnvironmentAtClock !== 'function'
+                || projectionClock == null) {
+              ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+            }
+            currentEnvironmentState = { ...targetState,
+              environment_snapshot: projectEnvironmentAtClock({
+                state: targetState, clock: projectionClock
+              }) };
           }
+          destination.sensory_details = [...new Set([
+            ...destination.sensory_details,
+            ...currentEnvironmentChanges(currentEnvironmentState)
+          ])];
         } else if (sourceEndpoint && traversal?.result?.result_kind === 'returned_to_departure') {
           const route = text(transition.line_name)
             ? 'Пройденный путь: ' + transition.line_name + '.' : null;

@@ -439,14 +439,15 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   async function loadPreparedMovementScene({ partyId, state, clock = null,
     turnBudget = null }) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
-    const clockPreparedState = clock == null ? state : {
-      ...state,
-      clock: structuredClone(clock),
-      clock_weather_light: {
-        ...structuredClone(state.clock_weather_light ?? {}),
-        clock: structuredClone(clock)
-      }
-    };
+    const clockPreparedState = clock == null ? state
+      : projectPhase2InitialEnvironment({
+        ...state,
+        clock: structuredClone(clock),
+        clock_weather_light: {
+          ...structuredClone(state.clock_weather_light ?? {}),
+          clock: structuredClone(clock)
+        }
+      }, projectEnvironmentAtClock);
     const { prepared_destination_visible_context: preparedDestinationVisibleContext,
       ...sceneInput } = clockPreparedState;
     const scene = await withSceneNpcs(readPool, partyId,

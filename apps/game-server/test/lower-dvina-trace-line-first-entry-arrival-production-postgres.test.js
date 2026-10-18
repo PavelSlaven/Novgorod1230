@@ -6,6 +6,8 @@ import { createGameHttpServer, listen } from '../src/index.js';
 import { projectPublicPayload } from '../src/public-boundary.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { playerSafeWeatherLightFacts } from
+  '../src/runtime/player-safe-weather-light.js';
 import {
   bootstrapV17PresenceE2e,
   createPresenceProductionRoot,
@@ -66,8 +68,10 @@ test('first free line arrival and the next turn read the same first-entry NPC an
   { timeout: 1_800_000 }, async (t) => {
     const env = await bootstrapV17PresenceE2e(t);
     const nextPlannerContexts = [];
+    const narrationRequests = [];
     const restore = installPresenceProductionE2eFetch({
       movementPrefs: { exactMovement: true },
+      requestLog: narrationRequests,
       turnStepPlanner({ request }) {
         if (request.root_player_action === TARGET_SMOKE_INPUT) {
           nextPlannerContexts.push(structuredClone(request.player_safe_state.current_visible_context));
@@ -88,6 +92,11 @@ test('first free line arrival and the next turn read the same first-entry NPC an
       request_id: 'line-first-entry-arrival-start' });
     const partyId = opening.party_id;
     await runtime.acknowledgeOpening(partyId, { client_ack_id: 'line-first-entry-arrival-ack' });
+    assert.equal(typeof productionProjector, 'function');
+    const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: env.partyPool,
+      readCurrentVisibleContext, projectCurrentSpatialContext: productionProjector,
+      committer: { async commit() { throw new Error('read-only test repository'); } } });
+
     const before = await env.partyPool.query(
       'SELECT npc_id FROM party_runtime.party_npcs WHERE party_id=$1', [partyId]);
     const beforeNpcIds = new Set(before.rows.map(({ npc_id }) => npc_id));
@@ -97,6 +106,30 @@ test('first free line arrival and the next turn read the same first-entry NPC an
     assert.equal(arrivalResponse.body.ok, true);
     const arrival = arrivalResponse.body.data;
     assert.equal(arrival.screen.screen_status, 'ready');
+    const committedState = await repository.loadPhase2State(partyId);
+    const currentEnvironment = committedState.environment_snapshot;
+    const expectedEnvironmentFacts = playerSafeWeatherLightFacts({
+      season: currentEnvironment?.season,
+      weather_state: currentEnvironment?.weather_state
+    }).map(({ text }) => text);
+    assert.ok(expectedEnvironmentFacts.length > 0,
+      'the current committed snapshot has player-safe season or weather facts');
+    const movementWriterRequest = narrationRequests.filter(({ system, user }) =>
+      system.startsWith('Верни только JSON {"prose"')
+      && user?.['Переданные сведения об обстановке'] != null).at(-1);
+    assert.ok(movementWriterRequest,
+      'the production movement turn reaches the fake writer provider');
+    if (process.env.NOVGOROD_CAPTURE_MOVEMENT_WRITER_REQUEST === '1') {
+      t.diagnostic(`MOVEMENT_WRITER_REQUEST=${movementWriterRequest.raw_body}`);
+    }
+    const movementWriterSensory = movementWriterRequest.user
+      ['Переданные сведения об обстановке']['Ощущения'];
+    assert.ok(Array.isArray(movementWriterSensory),
+      'the production movement writer receives sensory details');
+    for (const fact of expectedEnvironmentFacts) {
+      assert.ok(movementWriterSensory.includes(fact),
+        `the movement writer receives current approved environment fact: ${fact}`);
+    }
     const { rows: locations } = await env.partyPool.query(`SELECT location.scene_position_id,
         position.template_slot_key, g6.host_id AS site_id,
         COALESCE(site.canonical_g5_ref->>'entity_id',site.canonical_g5_ref->>'id') AS canonical_g5_id
@@ -148,10 +181,6 @@ test('first free line arrival and the next turn read the same first-entry NPC an
       labels.set(npc.npc_id, peopleSignature(arrival.screen, visible.display_label));
     }
 
-    assert.equal(typeof productionProjector, 'function');
-    const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: env.partyPool,
-      readCurrentVisibleContext, projectCurrentSpatialContext: productionProjector,
-      committer: { async commit() { throw new Error('read-only test repository'); } } });
     const nextState = await repository.loadPhase2State(partyId);
     for (const [id, signature] of labels) {
       assert.ok(nextState.npcs.some(({ instance_id }) => instance_id === id),

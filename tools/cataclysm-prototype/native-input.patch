@@ -1,0 +1,106 @@
+diff --git a/src/do_turn.cpp b/src/do_turn.cpp
+index 7e0c682..988e142 100644
+--- a/src/do_turn.cpp
++++ b/src/do_turn.cpp
+@@ -646,6 +646,10 @@ bool game::do_turn()
+                 m.process_falling();
+                 cleanup_dead();
+
++                if( test_mode && test_action_queue_enabled ) {
++                    m.build_map_cache( u.posz() );
++                    m.update_visibility_cache( u.posz() );
++                }
+                 mon_info_update();
+                 // Process any new sounds the player caused during their turn.
+                 for( npc &guy : all_npcs() ) {
+diff --git a/src/game.h b/src/game.h
+index abdf1ea..19d8794 100644
+--- a/src/game.h
++++ b/src/game.h
+@@ -220,6 +220,9 @@ class game
+         */
+         bool do_turn();
+
++        /** Test-only input seam; requires test_mode. */
++        void set_test_action_queue( std::vector<std::string> actions );
++
+         /** Loads static data that does not depend on mods or similar. */
+         void load_static_data();
+
+@@ -1039,6 +1042,9 @@ class game
+         void pickup( const tripoint_bub_ms &p );
+         void chat( const std::optional<tripoint_bub_ms> &p = std::nullopt ); // Talk to a nearby NPC  'C'
+     private:
++        std::vector<std::string> test_action_queue;
++        size_t test_action_index = 0;
++        bool test_action_queue_enabled = false;
+
+         // Internal methods to show "look around" info
+         void print_fields_info( const tripoint_bub_ms &lp, const catacurses::window &w_look, int column,
+diff --git a/src/handle_action.cpp b/src/handle_action.cpp
+index c927ec6..88a7843 100644
+--- a/src/handle_action.cpp
++++ b/src/handle_action.cpp
+@@ -7,6 +7,7 @@
+ #include <list>
+ #include <map>
+ #include <sstream>
++#include <stdexcept>
+ #include <string>
+ #include <utility>
+
+@@ -239,6 +240,32 @@ class user_turn
+ };
+ } // namespace
+
++namespace {
++std::function<void()> novgorod_test_input_observer;
++}
++
++void set_novgorod_test_input_observer( std::function<void()> observer );
++void set_novgorod_test_input_observer( std::function<void()> observer )
++{
++    if( !test_mode ) {
++        throw std::logic_error( "Novgorod input observer requires test_mode" );
++    }
++    novgorod_test_input_observer = std::move( observer );
++}
++
++void game::set_test_action_queue( std::vector<std::string> actions )
++{
++    if( !test_mode ) {
++        throw std::logic_error( "Novgorod action queue requires test_mode" );
++    }
++    if( !gamemode ) {
++        gamemode = std::make_unique<special_game>();
++    }
++    test_action_queue = std::move( actions );
++    test_action_index = 0;
++    test_action_queue_enabled = true;
++}
++
+ input_context game::get_player_input( std::string &action )
+ {
+     map &here = get_map();
+@@ -273,6 +300,21 @@ input_context game::get_player_input( std::string &action )
+     }
+
+     here.update_visibility_cache( pos.z() );
++
++    if( test_action_queue_enabled ) {
++        if( !test_mode ) {
++            throw std::logic_error( "Novgorod action queue requires test_mode" );
++        }
++        if( test_action_index >= test_action_queue.size() ) {
++            throw std::runtime_error( "NOVGOROD_TEST_INPUT_EXHAUSTED: no queued native action" );
++        }
++        if( novgorod_test_input_observer ) {
++            novgorod_test_input_observer();
++        }
++        action = test_action_queue[test_action_index++];
++        return ctxt;
++    }
++
+     const visibility_variables &cache = here.get_visibility_variables_cache();
+     const level_cache &map_cache = here.get_cache_ref( pos.z() );
+     const auto &visibility_cache = map_cache.visibility_cache;

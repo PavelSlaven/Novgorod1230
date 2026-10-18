@@ -1,0 +1,23 @@
+
+
+-----------------------------------------
+02:47:28.629 : Starting log.
+02:47:28.629 INFO : Cataclysm DDA version 0d8843f-dirty
+02:47:28.629 INFO : Randomness seeded to: 17
+
+02:47:28.629 INFO : Running Catch2 session:
+Filters: Novgorod native RNG state round-trips without advancing
+
+02:47:28.631 INFO : [options] C locale set to C
+02:47:28.631 INFO : [options] C++ locale set to C
+02:47:29.089 INFO : /home/slaven/cataclysm-recovery/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+02:47:30.016 WARNING : Dark Days Ahead pack load time:: 1314587us (avg: 1314587us) (count: 1)
+02:47:30.016 WARNING : TESTING DATA pack load time:: 51499us (avg: 51499us) (count: 1)
+02:47:40.738 INFO : Game data loaded
+NOVGOROD_RNG_CONTINUATION:197148476
+===============================================================================
+All tests passed (10 assertions in 1 test case)
+
+
+02:47:40.739 INFO : Finished in 12.1096 seconds
+02:47:40.739 INFO : Randomness seeded to: 17

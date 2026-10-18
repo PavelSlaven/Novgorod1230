@@ -1,0 +1,22 @@
+
+
+-----------------------------------------
+02:45:23.983 : Starting log.
+02:45:23.983 INFO : Cataclysm DDA version 0d8843f-dirty
+02:45:23.983 INFO : Randomness seeded to: 17
+
+02:45:23.983 INFO : Running Catch2 session:
+Filters: [novgorod_semantic]
+
+02:45:23.985 INFO : [options] C locale set to C
+02:45:23.985 INFO : [options] C++ locale set to C
+02:45:24.445 INFO : /home/slaven/cataclysm-recovery/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+02:45:25.425 WARNING : Dark Days Ahead pack load time:: 1374109us (avg: 1374109us) (count: 1)
+02:45:25.425 WARNING : TESTING DATA pack load time:: 47998us (avg: 47998us) (count: 1)
+02:45:36.094 INFO : Game data loaded
+===============================================================================
+All tests passed (38 assertions in 7 test cases)
+
+
+02:45:36.140 INFO : Finished in 12.1564 seconds
+02:45:36.140 INFO : Randomness seeded to: 17

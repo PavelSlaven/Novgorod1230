@@ -1,0 +1,7008 @@
+{
+  "schema": "p3_native_operation_readback_v1",
+  "operation_id": "run4-pickup-selected-uid",
+  "status": "applied",
+  "goal_result": "achieved",
+  "before": {
+    "position": [
+      60,
+      60,
+      0
+    ],
+    "moves": 800,
+    "turn": 43200,
+    "activity": "ACT_NULL",
+    "activity_moves_left": 21474836,
+    "clock": {
+      "native_turn": 43200,
+      "seconds_since_world_start": 43200
+    },
+    "inventory_items": [
+      {
+        "uid": 3585165,
+        "type": "backpack",
+        "charges": 0,
+        "count": 1,
+        "location": "inventory",
+        "holder": "1"
+      },
+      {
+        "uid": 3585180,
+        "type": "crude_firestarter",
+        "charges": 0,
+        "count": 1,
+        "location": "inventory",
+        "holder": "1"
+      },
+      {
+        "uid": 3585195,
+        "type": "flashlight",
+        "charges": 0,
+        "count": 1,
+        "location": "inventory",
+        "holder": "1"
+      }
+    ],
+    "ground_items": [
+      {
+        "uid": 3585159,
+        "type": "stick",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "59,60,0"
+      },
+      {
+        "uid": 3585155,
+        "type": "rock",
+        "charges": 1,
+        "count": 1,
+        "position_ref": "60,60,0"
+      },
+      {
+        "uid": 3585157,
+        "type": "stick",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "60,60,0"
+      },
+      {
+        "uid": 3588296,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588299,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588302,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588305,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588308,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588311,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588314,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588317,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588320,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588323,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588326,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588329,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588332,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588335,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588338,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588341,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588344,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588347,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588350,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588353,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588356,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588359,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588362,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588365,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588368,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588371,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588374,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588377,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588380,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588383,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588386,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588389,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588392,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588398,
+        "type": "inhaler",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588401,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588407,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588413,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588419,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588422,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588428,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588434,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588437,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588443,
+        "type": "bottle_plastic_small",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588446,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588449,
+        "type": "syringe",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588455,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588461,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588467,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588470,
+        "type": "steroid_eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588476,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588482,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588488,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588494,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588497,
+        "type": "steroid_eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588500,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588506,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588509,
+        "type": "syringe",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588515,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588518,
+        "type": "oxygen_tank",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588521,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588527,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588533,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588536,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588539,
+        "type": "bandages",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588545,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588551,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588554,
+        "type": "syringe",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588557,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588563,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588566,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588572,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588578,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588584,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588590,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588596,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588599,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588602,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588605,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588608,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588611,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588614,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588620,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588623,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588626,
+        "type": "adhesive_bandages",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588632,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588635,
+        "type": "nic_gum",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588641,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588644,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588647,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588650,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588653,
+        "type": "steroid_eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588659,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588665,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588671,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588674,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588677,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588683,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588686,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588692,
+        "type": "bottle_plastic_small",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588698,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588704,
+        "type": "bottle_plastic_small",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588707,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588710,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588716,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588719,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588722,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588728,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588731,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588734,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588740,
+        "type": "bottle_plastic_small",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588743,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588749,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588752,
+        "type": "caff_gum",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588758,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588761,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588767,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588773,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588776,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588779,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588782,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588785,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588791,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588797,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588800,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588803,
+        "type": "nic_gum",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588806,
+        "type": "bandages",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588809,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588815,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588818,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      }
+    ],
+    "visible_npcs": [
+      {
+        "actor_id": "2",
+        "position": [
+          60,
+          62,
+          0
+        ],
+        "assignment_id": "",
+        "assignment_status": "",
+        "progress": 0,
+        "interrupt_cause": ""
+      },
+      {
+        "actor_id": "3",
+        "position": [
+          61,
+          62,
+          0
+        ],
+        "assignment_id": "",
+        "assignment_status": "",
+        "progress": 0,
+        "interrupt_cause": ""
+      },
+      {
+        "actor_id": "4",
+        "position": [
+          58,
+          61,
+          0
+        ],
+        "assignment_id": "",
+        "assignment_status": "",
+        "progress": 0,
+        "interrupt_cause": ""
+      },
+      {
+        "actor_id": "5",
+        "position": [
+          62,
+          61,
+          0
+        ],
+        "assignment_id": "",
+        "assignment_status": "",
+        "progress": 0,
+        "interrupt_cause": ""
+      }
+    ]
+  },
+  "after": {
+    "position": [
+      60,
+      60,
+      0
+    ],
+    "moves": 100,
+    "turn": 43200,
+    "activity": "ACT_NULL",
+    "activity_moves_left": 21474836,
+    "clock": {
+      "native_turn": 43200,
+      "seconds_since_world_start": 43200
+    },
+    "inventory_items": [
+      {
+        "uid": 3585165,
+        "type": "backpack",
+        "charges": 0,
+        "count": 1,
+        "location": "inventory",
+        "holder": "1"
+      },
+      {
+        "uid": 3585180,
+        "type": "crude_firestarter",
+        "charges": 0,
+        "count": 1,
+        "location": "inventory",
+        "holder": "1"
+      },
+      {
+        "uid": 3585195,
+        "type": "flashlight",
+        "charges": 0,
+        "count": 1,
+        "location": "inventory",
+        "holder": "1"
+      },
+      {
+        "uid": 3585155,
+        "type": "rock",
+        "charges": 1,
+        "count": 1,
+        "location": "inventory",
+        "holder": "1"
+      }
+    ],
+    "ground_items": [
+      {
+        "uid": 3585159,
+        "type": "stick",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "59,60,0"
+      },
+      {
+        "uid": 3585157,
+        "type": "stick",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "60,60,0"
+      },
+      {
+        "uid": 3588296,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588299,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588302,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588305,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588308,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588311,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588314,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588317,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588320,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588323,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588326,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588329,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588332,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588335,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588338,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588341,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588344,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588347,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588350,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588353,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588356,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588359,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588362,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588365,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588368,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588371,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588374,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588377,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588380,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588383,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588386,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588389,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588392,
+        "type": "FMCNote",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588398,
+        "type": "inhaler",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588401,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588407,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588413,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588419,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588422,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588428,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588434,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588437,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588443,
+        "type": "bottle_plastic_small",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588446,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588449,
+        "type": "syringe",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588455,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588461,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588467,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588470,
+        "type": "steroid_eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588476,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588482,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588488,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588494,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588497,
+        "type": "steroid_eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588500,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588506,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588509,
+        "type": "syringe",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588515,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588518,
+        "type": "oxygen_tank",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588521,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588527,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588533,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588536,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588539,
+        "type": "bandages",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588545,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588551,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588554,
+        "type": "syringe",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588557,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588563,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588566,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588572,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588578,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588584,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588590,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588596,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588599,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588602,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588605,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588608,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588611,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588614,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588620,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588623,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588626,
+        "type": "adhesive_bandages",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588632,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588635,
+        "type": "nic_gum",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588641,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588644,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588647,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588650,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588653,
+        "type": "steroid_eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588659,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588665,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588671,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588674,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588677,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588683,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588686,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588692,
+        "type": "bottle_plastic_small",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588698,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588704,
+        "type": "bottle_plastic_small",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588707,
+        "type": "eyedrops",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588710,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588716,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588719,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588722,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588728,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588731,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588734,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588740,
+        "type": "bottle_plastic_small",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588743,
+        "type": "vitc_tablet",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588749,
+        "type": "bottle_plastic_pill_prescription",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588752,
+        "type": "caff_gum",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588758,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588761,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588767,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588773,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588776,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588779,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588782,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588785,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588791,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588797,
+        "type": "bottle_plastic_pill_painkiller",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588800,
+        "type": "nyquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588803,
+        "type": "nic_gum",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588806,
+        "type": "bandages",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588809,
+        "type": "cotton_ball",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588815,
+        "type": "bottle_plastic_pill_supplement",
+        "charges": 0,
+        "count": 1,
+        "position_ref": "61,61,0"
+      },
+      {
+        "uid": 3588818,
+        "type": "dayquil",
+        "charges": 5,
+        "count": 5,
+        "position_ref": "61,61,0"
+      }
+    ],
+    "visible_npcs": [
+      {
+        "actor_id": "2",
+        "position": [
+          60,
+          62,
+          0
+        ],
+        "assignment_id": "",
+        "assignment_status": "",
+        "progress": 0,
+        "interrupt_cause": ""
+      },
+      {
+        "actor_id": "3",
+        "position": [
+          61,
+          62,
+          0
+        ],
+        "assignment_id": "",
+        "assignment_status": "",
+        "progress": 0,
+        "interrupt_cause": ""
+      },
+      {
+        "actor_id": "4",
+        "position": [
+          58,
+          61,
+          0
+        ],
+        "assignment_id": "",
+        "assignment_status": "",
+        "progress": 0,
+        "interrupt_cause": ""
+      },
+      {
+        "actor_id": "5",
+        "position": [
+          62,
+          61,
+          0
+        ],
+        "assignment_id": "",
+        "assignment_status": "",
+        "progress": 0,
+        "interrupt_cause": ""
+      }
+    ]
+  },
+  "npc_projections": [
+    {
+      "actor_id": "2",
+      "position": [
+        60,
+        62,
+        0
+      ],
+      "native_turn": 43200,
+      "activity_id": "ACT_WAIT",
+      "activity_moves_left": 359900,
+      "assignment_id": "",
+      "assignment_status": "",
+      "progress": 0,
+      "interrupt_cause": "",
+      "visible_actors": [
+        {
+          "actor_id": "1",
+          "position": [
+            60,
+            60,
+            0
+          ]
+        },
+        {
+          "actor_id": "3",
+          "position": [
+            61,
+            62,
+            0
+          ]
+        },
+        {
+          "actor_id": "4",
+          "position": [
+            58,
+            61,
+            0
+          ]
+        },
+        {
+          "actor_id": "5",
+          "position": [
+            62,
+            61,
+            0
+          ]
+        }
+      ],
+      "visible_items": [
+        {
+          "item_ref": "item:3588296",
+          "item_uid": "3588296",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588299",
+          "item_uid": "3588299",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588302",
+          "item_uid": "3588302",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588305",
+          "item_uid": "3588305",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588308",
+          "item_uid": "3588308",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588311",
+          "item_uid": "3588311",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588314",
+          "item_uid": "3588314",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588317",
+          "item_uid": "3588317",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588320",
+          "item_uid": "3588320",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588323",
+          "item_uid": "3588323",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588326",
+          "item_uid": "3588326",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588329",
+          "item_uid": "3588329",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588332",
+          "item_uid": "3588332",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588335",
+          "item_uid": "3588335",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588338",
+          "item_uid": "3588338",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588341",
+          "item_uid": "3588341",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588344",
+          "item_uid": "3588344",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588347",
+          "item_uid": "3588347",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588350",
+          "item_uid": "3588350",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588353",
+          "item_uid": "3588353",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588356",
+          "item_uid": "3588356",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588359",
+          "item_uid": "3588359",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588362",
+          "item_uid": "3588362",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588365",
+          "item_uid": "3588365",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588368",
+          "item_uid": "3588368",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588371",
+          "item_uid": "3588371",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588374",
+          "item_uid": "3588374",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588377",
+          "item_uid": "3588377",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588380",
+          "item_uid": "3588380",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588383",
+          "item_uid": "3588383",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588386",
+          "item_uid": "3588386",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588389",
+          "item_uid": "3588389",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588392",
+          "item_uid": "3588392",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588398",
+          "item_uid": "3588398",
+          "type": "inhaler",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588401",
+          "item_uid": "3588401",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588407",
+          "item_uid": "3588407",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588413",
+          "item_uid": "3588413",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588419",
+          "item_uid": "3588419",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588422",
+          "item_uid": "3588422",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588428",
+          "item_uid": "3588428",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588434",
+          "item_uid": "3588434",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588437",
+          "item_uid": "3588437",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588443",
+          "item_uid": "3588443",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588446",
+          "item_uid": "3588446",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588449",
+          "item_uid": "3588449",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588455",
+          "item_uid": "3588455",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588461",
+          "item_uid": "3588461",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588467",
+          "item_uid": "3588467",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588470",
+          "item_uid": "3588470",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588476",
+          "item_uid": "3588476",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588482",
+          "item_uid": "3588482",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588488",
+          "item_uid": "3588488",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588494",
+          "item_uid": "3588494",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588497",
+          "item_uid": "3588497",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588500",
+          "item_uid": "3588500",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588506",
+          "item_uid": "3588506",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588509",
+          "item_uid": "3588509",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588515",
+          "item_uid": "3588515",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588518",
+          "item_uid": "3588518",
+          "type": "oxygen_tank",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588521",
+          "item_uid": "3588521",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588527",
+          "item_uid": "3588527",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588533",
+          "item_uid": "3588533",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588536",
+          "item_uid": "3588536",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588539",
+          "item_uid": "3588539",
+          "type": "bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588545",
+          "item_uid": "3588545",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588551",
+          "item_uid": "3588551",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588554",
+          "item_uid": "3588554",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588557",
+          "item_uid": "3588557",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588563",
+          "item_uid": "3588563",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588566",
+          "item_uid": "3588566",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588572",
+          "item_uid": "3588572",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588578",
+          "item_uid": "3588578",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588584",
+          "item_uid": "3588584",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588590",
+          "item_uid": "3588590",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588596",
+          "item_uid": "3588596",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588599",
+          "item_uid": "3588599",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588602",
+          "item_uid": "3588602",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588605",
+          "item_uid": "3588605",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588608",
+          "item_uid": "3588608",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588611",
+          "item_uid": "3588611",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588614",
+          "item_uid": "3588614",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588620",
+          "item_uid": "3588620",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588623",
+          "item_uid": "3588623",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588626",
+          "item_uid": "3588626",
+          "type": "adhesive_bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588632",
+          "item_uid": "3588632",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588635",
+          "item_uid": "3588635",
+          "type": "nic_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588641",
+          "item_uid": "3588641",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588644",
+          "item_uid": "3588644",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588647",
+          "item_uid": "3588647",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588650",
+          "item_uid": "3588650",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588653",
+          "item_uid": "3588653",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588659",
+          "item_uid": "3588659",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588665",
+          "item_uid": "3588665",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588671",
+          "item_uid": "3588671",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588674",
+          "item_uid": "3588674",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588677",
+          "item_uid": "3588677",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588683",
+          "item_uid": "3588683",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588686",
+          "item_uid": "3588686",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588692",
+          "item_uid": "3588692",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588698",
+          "item_uid": "3588698",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588704",
+          "item_uid": "3588704",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588707",
+          "item_uid": "3588707",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588710",
+          "item_uid": "3588710",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588716",
+          "item_uid": "3588716",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588719",
+          "item_uid": "3588719",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588722",
+          "item_uid": "3588722",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588728",
+          "item_uid": "3588728",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588731",
+          "item_uid": "3588731",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588734",
+          "item_uid": "3588734",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588740",
+          "item_uid": "3588740",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588743",
+          "item_uid": "3588743",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588749",
+          "item_uid": "3588749",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588752",
+          "item_uid": "3588752",
+          "type": "caff_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588758",
+          "item_uid": "3588758",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588761",
+          "item_uid": "3588761",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588767",
+          "item_uid": "3588767",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588773",
+          "item_uid": "3588773",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588776",
+          "item_uid": "3588776",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588779",
+          "item_uid": "3588779",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588782",
+          "item_uid": "3588782",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588785",
+          "item_uid": "3588785",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588791",
+          "item_uid": "3588791",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588797",
+          "item_uid": "3588797",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588800",
+          "item_uid": "3588800",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588803",
+          "item_uid": "3588803",
+          "type": "nic_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588806",
+          "item_uid": "3588806",
+          "type": "bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588809",
+          "item_uid": "3588809",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588815",
+          "item_uid": "3588815",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588818",
+          "item_uid": "3588818",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587416",
+          "item_uid": "3587416",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587422",
+          "item_uid": "3587422",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587428",
+          "item_uid": "3587428",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587434",
+          "item_uid": "3587434",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587446",
+          "item_uid": "3587446",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587452",
+          "item_uid": "3587452",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587461",
+          "item_uid": "3587461",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587479",
+          "item_uid": "3587479",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587491",
+          "item_uid": "3587491",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587506",
+          "item_uid": "3587506",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587512",
+          "item_uid": "3587512",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587521",
+          "item_uid": "3587521",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587527",
+          "item_uid": "3587527",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587533",
+          "item_uid": "3587533",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587539",
+          "item_uid": "3587539",
+          "type": "bottle_plastic_small",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587551",
+          "item_uid": "3587551",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587560",
+          "item_uid": "3587560",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587569",
+          "item_uid": "3587569",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587578",
+          "item_uid": "3587578",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587584",
+          "item_uid": "3587584",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587590",
+          "item_uid": "3587590",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587608",
+          "item_uid": "3587608",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587614",
+          "item_uid": "3587614",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587623",
+          "item_uid": "3587623",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587629",
+          "item_uid": "3587629",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        }
+      ],
+      "visible_targets": [
+        {
+          "target_ref": "59,61,0",
+          "position": [
+            59,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "60,61,0",
+          "position": [
+            60,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "61,61,0",
+          "position": [
+            61,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "59,62,0",
+          "position": [
+            59,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "60,62,0",
+          "position": [
+            60,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "61,62,0",
+          "position": [
+            61,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "59,63,0",
+          "position": [
+            59,
+            63,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "60,63,0",
+          "position": [
+            60,
+            63,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "61,63,0",
+          "position": [
+            61,
+            63,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        }
+      ]
+    },
+    {
+      "actor_id": "3",
+      "position": [
+        61,
+        62,
+        0
+      ],
+      "native_turn": 43200,
+      "activity_id": "ACT_WAIT",
+      "activity_moves_left": 359900,
+      "assignment_id": "",
+      "assignment_status": "",
+      "progress": 0,
+      "interrupt_cause": "",
+      "visible_actors": [
+        {
+          "actor_id": "1",
+          "position": [
+            60,
+            60,
+            0
+          ]
+        },
+        {
+          "actor_id": "2",
+          "position": [
+            60,
+            62,
+            0
+          ]
+        },
+        {
+          "actor_id": "4",
+          "position": [
+            58,
+            61,
+            0
+          ]
+        },
+        {
+          "actor_id": "5",
+          "position": [
+            62,
+            61,
+            0
+          ]
+        }
+      ],
+      "visible_items": [
+        {
+          "item_ref": "item:3588296",
+          "item_uid": "3588296",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588299",
+          "item_uid": "3588299",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588302",
+          "item_uid": "3588302",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588305",
+          "item_uid": "3588305",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588308",
+          "item_uid": "3588308",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588311",
+          "item_uid": "3588311",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588314",
+          "item_uid": "3588314",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588317",
+          "item_uid": "3588317",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588320",
+          "item_uid": "3588320",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588323",
+          "item_uid": "3588323",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588326",
+          "item_uid": "3588326",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588329",
+          "item_uid": "3588329",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588332",
+          "item_uid": "3588332",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588335",
+          "item_uid": "3588335",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588338",
+          "item_uid": "3588338",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588341",
+          "item_uid": "3588341",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588344",
+          "item_uid": "3588344",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588347",
+          "item_uid": "3588347",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588350",
+          "item_uid": "3588350",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588353",
+          "item_uid": "3588353",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588356",
+          "item_uid": "3588356",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588359",
+          "item_uid": "3588359",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588362",
+          "item_uid": "3588362",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588365",
+          "item_uid": "3588365",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588368",
+          "item_uid": "3588368",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588371",
+          "item_uid": "3588371",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588374",
+          "item_uid": "3588374",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588377",
+          "item_uid": "3588377",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588380",
+          "item_uid": "3588380",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588383",
+          "item_uid": "3588383",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588386",
+          "item_uid": "3588386",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588389",
+          "item_uid": "3588389",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588392",
+          "item_uid": "3588392",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588398",
+          "item_uid": "3588398",
+          "type": "inhaler",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588401",
+          "item_uid": "3588401",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588407",
+          "item_uid": "3588407",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588413",
+          "item_uid": "3588413",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588419",
+          "item_uid": "3588419",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588422",
+          "item_uid": "3588422",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588428",
+          "item_uid": "3588428",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588434",
+          "item_uid": "3588434",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588437",
+          "item_uid": "3588437",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588443",
+          "item_uid": "3588443",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588446",
+          "item_uid": "3588446",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588449",
+          "item_uid": "3588449",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588455",
+          "item_uid": "3588455",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588461",
+          "item_uid": "3588461",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588467",
+          "item_uid": "3588467",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588470",
+          "item_uid": "3588470",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588476",
+          "item_uid": "3588476",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588482",
+          "item_uid": "3588482",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588488",
+          "item_uid": "3588488",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588494",
+          "item_uid": "3588494",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588497",
+          "item_uid": "3588497",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588500",
+          "item_uid": "3588500",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588506",
+          "item_uid": "3588506",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588509",
+          "item_uid": "3588509",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588515",
+          "item_uid": "3588515",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588518",
+          "item_uid": "3588518",
+          "type": "oxygen_tank",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588521",
+          "item_uid": "3588521",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588527",
+          "item_uid": "3588527",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588533",
+          "item_uid": "3588533",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588536",
+          "item_uid": "3588536",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588539",
+          "item_uid": "3588539",
+          "type": "bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588545",
+          "item_uid": "3588545",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588551",
+          "item_uid": "3588551",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588554",
+          "item_uid": "3588554",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588557",
+          "item_uid": "3588557",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588563",
+          "item_uid": "3588563",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588566",
+          "item_uid": "3588566",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588572",
+          "item_uid": "3588572",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588578",
+          "item_uid": "3588578",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588584",
+          "item_uid": "3588584",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588590",
+          "item_uid": "3588590",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588596",
+          "item_uid": "3588596",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588599",
+          "item_uid": "3588599",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588602",
+          "item_uid": "3588602",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588605",
+          "item_uid": "3588605",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588608",
+          "item_uid": "3588608",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588611",
+          "item_uid": "3588611",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588614",
+          "item_uid": "3588614",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588620",
+          "item_uid": "3588620",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588623",
+          "item_uid": "3588623",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588626",
+          "item_uid": "3588626",
+          "type": "adhesive_bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588632",
+          "item_uid": "3588632",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588635",
+          "item_uid": "3588635",
+          "type": "nic_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588641",
+          "item_uid": "3588641",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588644",
+          "item_uid": "3588644",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588647",
+          "item_uid": "3588647",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588650",
+          "item_uid": "3588650",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588653",
+          "item_uid": "3588653",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588659",
+          "item_uid": "3588659",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588665",
+          "item_uid": "3588665",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588671",
+          "item_uid": "3588671",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588674",
+          "item_uid": "3588674",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588677",
+          "item_uid": "3588677",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588683",
+          "item_uid": "3588683",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588686",
+          "item_uid": "3588686",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588692",
+          "item_uid": "3588692",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588698",
+          "item_uid": "3588698",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588704",
+          "item_uid": "3588704",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588707",
+          "item_uid": "3588707",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588710",
+          "item_uid": "3588710",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588716",
+          "item_uid": "3588716",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588719",
+          "item_uid": "3588719",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588722",
+          "item_uid": "3588722",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588728",
+          "item_uid": "3588728",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588731",
+          "item_uid": "3588731",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588734",
+          "item_uid": "3588734",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588740",
+          "item_uid": "3588740",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588743",
+          "item_uid": "3588743",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588749",
+          "item_uid": "3588749",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588752",
+          "item_uid": "3588752",
+          "type": "caff_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588758",
+          "item_uid": "3588758",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588761",
+          "item_uid": "3588761",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588767",
+          "item_uid": "3588767",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588773",
+          "item_uid": "3588773",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588776",
+          "item_uid": "3588776",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588779",
+          "item_uid": "3588779",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588782",
+          "item_uid": "3588782",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588785",
+          "item_uid": "3588785",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588791",
+          "item_uid": "3588791",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588797",
+          "item_uid": "3588797",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588800",
+          "item_uid": "3588800",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588803",
+          "item_uid": "3588803",
+          "type": "nic_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588806",
+          "item_uid": "3588806",
+          "type": "bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588809",
+          "item_uid": "3588809",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588815",
+          "item_uid": "3588815",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588818",
+          "item_uid": "3588818",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587416",
+          "item_uid": "3587416",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587422",
+          "item_uid": "3587422",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587428",
+          "item_uid": "3587428",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587434",
+          "item_uid": "3587434",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587446",
+          "item_uid": "3587446",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587452",
+          "item_uid": "3587452",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587461",
+          "item_uid": "3587461",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587479",
+          "item_uid": "3587479",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587491",
+          "item_uid": "3587491",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587506",
+          "item_uid": "3587506",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587512",
+          "item_uid": "3587512",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587521",
+          "item_uid": "3587521",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587527",
+          "item_uid": "3587527",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587533",
+          "item_uid": "3587533",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587539",
+          "item_uid": "3587539",
+          "type": "bottle_plastic_small",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587551",
+          "item_uid": "3587551",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587560",
+          "item_uid": "3587560",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587569",
+          "item_uid": "3587569",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587578",
+          "item_uid": "3587578",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587584",
+          "item_uid": "3587584",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587590",
+          "item_uid": "3587590",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587608",
+          "item_uid": "3587608",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587614",
+          "item_uid": "3587614",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587623",
+          "item_uid": "3587623",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3587629",
+          "item_uid": "3587629",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            60,
+            63,
+            0
+          ]
+        }
+      ],
+      "visible_targets": [
+        {
+          "target_ref": "60,61,0",
+          "position": [
+            60,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "61,61,0",
+          "position": [
+            61,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "62,61,0",
+          "position": [
+            62,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "60,62,0",
+          "position": [
+            60,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "61,62,0",
+          "position": [
+            61,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "62,62,0",
+          "position": [
+            62,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "60,63,0",
+          "position": [
+            60,
+            63,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "61,63,0",
+          "position": [
+            61,
+            63,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "62,63,0",
+          "position": [
+            62,
+            63,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        }
+      ]
+    },
+    {
+      "actor_id": "4",
+      "position": [
+        58,
+        61,
+        0
+      ],
+      "native_turn": 43200,
+      "activity_id": "ACT_WAIT",
+      "activity_moves_left": 359900,
+      "assignment_id": "",
+      "assignment_status": "",
+      "progress": 0,
+      "interrupt_cause": "",
+      "visible_actors": [
+        {
+          "actor_id": "1",
+          "position": [
+            60,
+            60,
+            0
+          ]
+        },
+        {
+          "actor_id": "2",
+          "position": [
+            60,
+            62,
+            0
+          ]
+        },
+        {
+          "actor_id": "3",
+          "position": [
+            61,
+            62,
+            0
+          ]
+        },
+        {
+          "actor_id": "5",
+          "position": [
+            62,
+            61,
+            0
+          ]
+        }
+      ],
+      "visible_items": [
+        {
+          "item_ref": "item:3585159",
+          "item_uid": "3585159",
+          "type": "stick",
+          "position": [
+            59,
+            60,
+            0
+          ]
+        }
+      ],
+      "visible_targets": [
+        {
+          "target_ref": "57,60,0",
+          "position": [
+            57,
+            60,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "58,60,0",
+          "position": [
+            58,
+            60,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "59,60,0",
+          "position": [
+            59,
+            60,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "57,61,0",
+          "position": [
+            57,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "58,61,0",
+          "position": [
+            58,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "59,61,0",
+          "position": [
+            59,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "57,62,0",
+          "position": [
+            57,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "58,62,0",
+          "position": [
+            58,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "59,62,0",
+          "position": [
+            59,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        }
+      ]
+    },
+    {
+      "actor_id": "5",
+      "position": [
+        62,
+        61,
+        0
+      ],
+      "native_turn": 43200,
+      "activity_id": "ACT_WAIT",
+      "activity_moves_left": 359900,
+      "assignment_id": "",
+      "assignment_status": "",
+      "progress": 0,
+      "interrupt_cause": "",
+      "visible_actors": [
+        {
+          "actor_id": "1",
+          "position": [
+            60,
+            60,
+            0
+          ]
+        },
+        {
+          "actor_id": "2",
+          "position": [
+            60,
+            62,
+            0
+          ]
+        },
+        {
+          "actor_id": "3",
+          "position": [
+            61,
+            62,
+            0
+          ]
+        },
+        {
+          "actor_id": "4",
+          "position": [
+            58,
+            61,
+            0
+          ]
+        }
+      ],
+      "visible_items": [
+        {
+          "item_ref": "item:3588296",
+          "item_uid": "3588296",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588299",
+          "item_uid": "3588299",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588302",
+          "item_uid": "3588302",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588305",
+          "item_uid": "3588305",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588308",
+          "item_uid": "3588308",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588311",
+          "item_uid": "3588311",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588314",
+          "item_uid": "3588314",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588317",
+          "item_uid": "3588317",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588320",
+          "item_uid": "3588320",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588323",
+          "item_uid": "3588323",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588326",
+          "item_uid": "3588326",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588329",
+          "item_uid": "3588329",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588332",
+          "item_uid": "3588332",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588335",
+          "item_uid": "3588335",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588338",
+          "item_uid": "3588338",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588341",
+          "item_uid": "3588341",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588344",
+          "item_uid": "3588344",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588347",
+          "item_uid": "3588347",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588350",
+          "item_uid": "3588350",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588353",
+          "item_uid": "3588353",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588356",
+          "item_uid": "3588356",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588359",
+          "item_uid": "3588359",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588362",
+          "item_uid": "3588362",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588365",
+          "item_uid": "3588365",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588368",
+          "item_uid": "3588368",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588371",
+          "item_uid": "3588371",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588374",
+          "item_uid": "3588374",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588377",
+          "item_uid": "3588377",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588380",
+          "item_uid": "3588380",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588383",
+          "item_uid": "3588383",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588386",
+          "item_uid": "3588386",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588389",
+          "item_uid": "3588389",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588392",
+          "item_uid": "3588392",
+          "type": "FMCNote",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588398",
+          "item_uid": "3588398",
+          "type": "inhaler",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588401",
+          "item_uid": "3588401",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588407",
+          "item_uid": "3588407",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588413",
+          "item_uid": "3588413",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588419",
+          "item_uid": "3588419",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588422",
+          "item_uid": "3588422",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588428",
+          "item_uid": "3588428",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588434",
+          "item_uid": "3588434",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588437",
+          "item_uid": "3588437",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588443",
+          "item_uid": "3588443",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588446",
+          "item_uid": "3588446",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588449",
+          "item_uid": "3588449",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588455",
+          "item_uid": "3588455",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588461",
+          "item_uid": "3588461",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588467",
+          "item_uid": "3588467",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588470",
+          "item_uid": "3588470",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588476",
+          "item_uid": "3588476",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588482",
+          "item_uid": "3588482",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588488",
+          "item_uid": "3588488",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588494",
+          "item_uid": "3588494",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588497",
+          "item_uid": "3588497",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588500",
+          "item_uid": "3588500",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588506",
+          "item_uid": "3588506",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588509",
+          "item_uid": "3588509",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588515",
+          "item_uid": "3588515",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588518",
+          "item_uid": "3588518",
+          "type": "oxygen_tank",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588521",
+          "item_uid": "3588521",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588527",
+          "item_uid": "3588527",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588533",
+          "item_uid": "3588533",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588536",
+          "item_uid": "3588536",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588539",
+          "item_uid": "3588539",
+          "type": "bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588545",
+          "item_uid": "3588545",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588551",
+          "item_uid": "3588551",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588554",
+          "item_uid": "3588554",
+          "type": "syringe",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588557",
+          "item_uid": "3588557",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588563",
+          "item_uid": "3588563",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588566",
+          "item_uid": "3588566",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588572",
+          "item_uid": "3588572",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588578",
+          "item_uid": "3588578",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588584",
+          "item_uid": "3588584",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588590",
+          "item_uid": "3588590",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588596",
+          "item_uid": "3588596",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588599",
+          "item_uid": "3588599",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588602",
+          "item_uid": "3588602",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588605",
+          "item_uid": "3588605",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588608",
+          "item_uid": "3588608",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588611",
+          "item_uid": "3588611",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588614",
+          "item_uid": "3588614",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588620",
+          "item_uid": "3588620",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588623",
+          "item_uid": "3588623",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588626",
+          "item_uid": "3588626",
+          "type": "adhesive_bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588632",
+          "item_uid": "3588632",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588635",
+          "item_uid": "3588635",
+          "type": "nic_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588641",
+          "item_uid": "3588641",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588644",
+          "item_uid": "3588644",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588647",
+          "item_uid": "3588647",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588650",
+          "item_uid": "3588650",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588653",
+          "item_uid": "3588653",
+          "type": "steroid_eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588659",
+          "item_uid": "3588659",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588665",
+          "item_uid": "3588665",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588671",
+          "item_uid": "3588671",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588674",
+          "item_uid": "3588674",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588677",
+          "item_uid": "3588677",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588683",
+          "item_uid": "3588683",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588686",
+          "item_uid": "3588686",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588692",
+          "item_uid": "3588692",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588698",
+          "item_uid": "3588698",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588704",
+          "item_uid": "3588704",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588707",
+          "item_uid": "3588707",
+          "type": "eyedrops",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588710",
+          "item_uid": "3588710",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588716",
+          "item_uid": "3588716",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588719",
+          "item_uid": "3588719",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588722",
+          "item_uid": "3588722",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588728",
+          "item_uid": "3588728",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588731",
+          "item_uid": "3588731",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588734",
+          "item_uid": "3588734",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588740",
+          "item_uid": "3588740",
+          "type": "bottle_plastic_small",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588743",
+          "item_uid": "3588743",
+          "type": "vitc_tablet",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588749",
+          "item_uid": "3588749",
+          "type": "bottle_plastic_pill_prescription",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588752",
+          "item_uid": "3588752",
+          "type": "caff_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588758",
+          "item_uid": "3588758",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588761",
+          "item_uid": "3588761",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588767",
+          "item_uid": "3588767",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588773",
+          "item_uid": "3588773",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588776",
+          "item_uid": "3588776",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588779",
+          "item_uid": "3588779",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588782",
+          "item_uid": "3588782",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588785",
+          "item_uid": "3588785",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588791",
+          "item_uid": "3588791",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588797",
+          "item_uid": "3588797",
+          "type": "bottle_plastic_pill_painkiller",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588800",
+          "item_uid": "3588800",
+          "type": "nyquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588803",
+          "item_uid": "3588803",
+          "type": "nic_gum",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588806",
+          "item_uid": "3588806",
+          "type": "bandages",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588809",
+          "item_uid": "3588809",
+          "type": "cotton_ball",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588815",
+          "item_uid": "3588815",
+          "type": "bottle_plastic_pill_supplement",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        },
+        {
+          "item_ref": "item:3588818",
+          "item_uid": "3588818",
+          "type": "dayquil",
+          "position": [
+            61,
+            61,
+            0
+          ]
+        }
+      ],
+      "visible_targets": [
+        {
+          "target_ref": "61,60,0",
+          "position": [
+            61,
+            60,
+            0
+          ],
+          "terrain": "t_door_c",
+          "openable": true
+        },
+        {
+          "target_ref": "62,60,0",
+          "position": [
+            62,
+            60,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "63,60,0",
+          "position": [
+            63,
+            60,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "61,61,0",
+          "position": [
+            61,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "62,61,0",
+          "position": [
+            62,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "63,61,0",
+          "position": [
+            63,
+            61,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "61,62,0",
+          "position": [
+            61,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "62,62,0",
+          "position": [
+            62,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        },
+        {
+          "target_ref": "63,62,0",
+          "position": [
+            63,
+            62,
+            0
+          ],
+          "terrain": "t_floor",
+          "openable": false
+        }
+      ]
+    }
+  ],
+  "native_effect": {
+    "primitive": "pickup",
+    "actor_id": "1",
+    "effect_status": "confirmed",
+    "world_changed": true,
+    "elapsed_seconds": 0,
+    "elapsed_turns": 0,
+    "elapsedSeconds": 0,
+    "activity_before": "ACT_NULL",
+    "activity_after": "ACT_NULL",
+    "activity_moves_left_before": 21474836,
+    "activity_moves_left_after": 21474836
+  }
+}

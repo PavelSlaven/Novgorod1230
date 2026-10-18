@@ -1,0 +1,25 @@
+{
+  "schema": "p3_native_operation_request_v1",
+  "operation_id": "run4-firestarter",
+  "actor_id": "1",
+  "expected_native_observation": {
+    "actor_id": "1",
+    "turn": 43200
+  },
+  "primitive": "use_item",
+  "args": {
+    "method": "firestarter",
+    "target_direction": [
+      -1,
+      0
+    ]
+  },
+  "references": {
+    "items": {
+      "id": "3585180"
+    },
+    "targets": {
+      "id": "59,60,0"
+    }
+  }
+}

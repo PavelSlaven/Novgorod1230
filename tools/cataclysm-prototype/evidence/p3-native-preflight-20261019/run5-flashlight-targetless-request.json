@@ -1,0 +1,18 @@
+{
+  "schema": "p3_native_operation_request_v1",
+  "operation_id": "run5-flashlight-targetless",
+  "actor_id": "1",
+  "expected_native_observation": {
+    "actor_id": "1",
+    "turn": 43200
+  },
+  "primitive": "use_item",
+  "args": {
+    "method": "transform"
+  },
+  "references": {
+    "items": {
+      "id": "3585195"
+    }
+  }
+}

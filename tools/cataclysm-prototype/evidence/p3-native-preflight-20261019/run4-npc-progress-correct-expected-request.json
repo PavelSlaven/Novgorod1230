@@ -1,0 +1,18 @@
+{
+  "schema": "p3_native_operation_request_v1",
+  "operation_id": "run4-npc-progress-correct-expected",
+  "actor_id": "2",
+  "expected_native_observation": {
+    "actor_id": "2",
+    "turn": 43203
+  },
+  "primitive": "npc_move",
+  "args": {
+    "direction": [
+      0,
+      -1
+    ],
+    "assignment_id": "run4-npc-progress-correct-expected",
+    "intent": "move along observed native path"
+  }
+}

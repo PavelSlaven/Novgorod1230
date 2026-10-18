@@ -1,0 +1,16 @@
+{
+  "schema": "p3_native_operation_request_v1",
+  "operation_id": "run4-pickup-selected-uid",
+  "actor_id": "1",
+  "expected_native_observation": {
+    "actor_id": "1",
+    "turn": 43200
+  },
+  "primitive": "pickup",
+  "args": {},
+  "references": {
+    "items": {
+      "id": "3585155"
+    }
+  }
+}

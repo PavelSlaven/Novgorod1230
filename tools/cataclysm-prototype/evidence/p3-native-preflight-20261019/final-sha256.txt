@@ -1,0 +1,10 @@
+21652a074ce5664dee2e1f6efdc038bd582f711d92e80c81b020ee49c4029f83  /home/slaven/cataclysm-recovery/build-clang-release/tests/cata_test
+e98a1f9907e1b1c414b20509bf059a4b1354403a90930d61fda7743395a5f17f  /home/slaven/cataclysm-recovery/tests/novgorod_semantic_test.cpp
+c4e6f9163721ee662964c4b7c6870ec707395c1d9b7b6b3375837aeba7f33d58  /home/slaven/cataclysm-recovery/tests/novgorod_slice_test.cpp
+f3a89be21d054792102afa54346def6af0e8458d0d72f57a49b163885254faf5  /home/slaven/cataclysm-recovery/src/item.cpp
+e6224a9299168face83070884eaf925670811c67a33da9e808c36f1a7ac6956d  /home/slaven/cataclysm-recovery/src/item.h
+506e6631e73b4ceb847dbaecf2484797eb1b76718a960232f100de395d256250  /home/slaven/cataclysm-recovery/src/pickup.cpp
+b6614c3dc58a1a658c532f726d9396b2dc2855519a2babbd434d3027436f3b09  /home/slaven/cataclysm-recovery/src/json.h
+fd4c8bae5199ce5bbf31e8c0e753bc409204de9d84e34d02396db1e720318384  /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/tools/cataclysm-prototype/native-semantic-input.patch
+e98a1f9907e1b1c414b20509bf059a4b1354403a90930d61fda7743395a5f17f  /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/tools/cataclysm-prototype/novgorod_semantic_test.cpp
+c4e6f9163721ee662964c4b7c6870ec707395c1d9b7b6b3375837aeba7f33d58  /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/tools/cataclysm-prototype/novgorod_slice_test.cpp

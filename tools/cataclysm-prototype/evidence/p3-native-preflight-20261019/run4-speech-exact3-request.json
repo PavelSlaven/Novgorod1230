@@ -1,0 +1,13 @@
+{
+  "schema": "p3_native_operation_request_v1",
+  "operation_id": "run4-speech-exact3",
+  "actor_id": "1",
+  "expected_native_observation": {
+    "actor_id": "1",
+    "turn": 43200
+  },
+  "primitive": "speak",
+  "args": {
+    "utterance": "\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0441\u043b\u044b\u0448\u0438\u043c\u043e\u0441\u0442\u0438 \u0440\u0435\u0447\u0438."
+  }
+}

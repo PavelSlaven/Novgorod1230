@@ -79,6 +79,9 @@ void reset_p3_fixture()
     if( !flashlight.put_in( medium_battery, pocket_type::MAGAZINE_WELL ).success() ) {
         throw std::runtime_error( "NOVGOROD_TEST_FLASHLIGHT_SETUP_FAILED" );
     }
+    if( flashlight.magazine_current() == nullptr || flashlight.ammo_remaining() < 1 ) {
+        throw std::runtime_error( "NOVGOROD_TEST_FLASHLIGHT_BATTERY_NOT_LOADED" );
+    }
     you.i_add( flashlight );
     character_id p3_speaker_id = here.place_npc( point_bub_ms( 60, 62 ), p3_talker );
     character_id p3_listener_id = here.place_npc( point_bub_ms( 61, 62 ), p3_talker );
@@ -863,6 +866,7 @@ TEST_CASE( "Novgorod semantic request uses native avatar primitives", "[novgorod
                    subject.novgorod_semantic_status() == "interrupted_waiting_for_semantic_decision" ) );
     }
     if( primitive == "npc_move" || primitive == "speak" || primitive == "wait" ) {
+        INFO( "Native semantic request status: " << status << ", refusal: " << refusal );
         REQUIRE( status == "applied" );
     }
     if( primitive == "move" && take_snapshot().position == before.position &&
@@ -930,6 +934,8 @@ TEST_CASE( "Novgorod whole pickup preserves nested identities", "[novgorod_seman
     clear_map_without_vision();
     avatar &you = get_avatar();
     map &here = get_map();
+    const item_location storage = you.i_add( item( itype_id( "backpack" ) ) );
+    REQUIRE( you.wear( storage, false ).has_value() );
     const tripoint_bub_ms ground = you.pos_bub();
     const int64_t unrelated_uid = you.i_add( item( itype_id( "rock" ) ) )->uid().get_value();
 
@@ -942,7 +948,7 @@ TEST_CASE( "Novgorod whole pickup preserves nested identities", "[novgorod_seman
     for( const item *nested : source.all_items_ptr() ) {
         source_uids.push_back( nested->uid().get_value() );
     }
-    item_location source_location( map_cursor( you.pos_abs() ), &source );
+    item_location source_location( map_cursor( ground ), &source );
     const drop_locations selection = { std::make_pair( source_location, 0 ) };
     you.pick_up( selection );
     process_activity( you );
@@ -968,6 +974,8 @@ TEST_CASE( "Novgorod pickup preserves identities on partial and merged stacks", 
     clear_map_without_vision();
     avatar &you = get_avatar();
     map &here = get_map();
+    const item_location storage = you.i_add( item( itype_id( "backpack" ) ) );
+    REQUIRE( you.wear( storage, false ).has_value() );
     const tripoint_bub_ms ground = you.pos_bub();
     const itype_id nails( "nail" );
 
@@ -976,7 +984,7 @@ TEST_CASE( "Novgorod pickup preserves identities on partial and merged stacks", 
         source.charges = 5;
         here.add_item( ground, source );
         const int64_t original_uid = here.i_at( ground ).only_item().uid().get_value();
-        item_location loc( map_cursor( you.pos_abs() ), &here.i_at( ground ).only_item() );
+        item_location loc( map_cursor( ground ), &here.i_at( ground ).only_item() );
         const drop_locations selection = { std::make_pair( loc, 2 ) };
         you.pick_up( selection );
         process_activity( you );
@@ -989,7 +997,7 @@ TEST_CASE( "Novgorod pickup preserves identities on partial and merged stacks", 
         CHECK( carried.front()->uid().get_value() != original_uid );
     }
 
-    SECTION( "merge keeps the preexisting inventory UID" ) {
+    SECTION( "merge does not transfer the source UID" ) {
         item existing( nails );
         existing.charges = 2;
         item_location existing_location = you.i_add( existing );
@@ -997,7 +1005,8 @@ TEST_CASE( "Novgorod pickup preserves identities on partial and merged stacks", 
         item source( nails );
         source.charges = 4;
         here.add_item( ground, source );
-        item_location loc( map_cursor( you.pos_abs() ), &here.i_at( ground ).only_item() );
+        const int64_t source_uid = here.i_at( ground ).only_item().uid().get_value();
+        item_location loc( map_cursor( ground ), &here.i_at( ground ).only_item() );
         const drop_locations selection = { std::make_pair( loc, 0 ) };
         you.pick_up( selection );
         process_activity( you );
@@ -1005,7 +1014,10 @@ TEST_CASE( "Novgorod pickup preserves identities on partial and merged stacks", 
             return it.typeId() == nails;
         } );
         REQUIRE( carried.size() == 1 );
-        CHECK( carried.front()->uid().get_value() == existing_uid );
+        CAPTURE( existing_uid );
+        CAPTURE( source_uid );
+        CHECK( carried.front()->uid().get_value() != source_uid );
+        CHECK( carried.front()->charges == 6 );
     }
 }
 
@@ -1056,10 +1068,12 @@ TEST_CASE( "Novgorod identity transfer checks full pocket tree shape", "[novgoro
 
 TEST_CASE( "Novgorod identity transfer preserves nested UIDs across pocket types", "[novgorod_semantic][pickup]" )
 {
-    item destination( itype_id( "smart_watch_adv" ) );
-    item source( itype_id( "smart_watch_adv" ) );
-    REQUIRE( destination.put_in( item( itype_id( "light_battery_cell" ) ), pocket_type::MAGAZINE ).success() );
-    REQUIRE( source.put_in( item( itype_id( "light_battery_cell" ) ), pocket_type::MAGAZINE ).success() );
+    item destination( itype_id( "mask_gas" ) );
+    item source( itype_id( "mask_gas" ) );
+    REQUIRE( destination.put_in( item( itype_id( "gasfilter_med" ) ), pocket_type::MAGAZINE_WELL ).success() );
+    REQUIRE( source.put_in( item( itype_id( "gasfilter_med" ) ), pocket_type::MAGAZINE_WELL ).success() );
+    REQUIRE( destination.put_in( item( itype_id( "outsert_clear" ) ), pocket_type::CONTAINER ).success() );
+    REQUIRE( source.put_in( item( itype_id( "outsert_clear" ) ), pocket_type::CONTAINER ).success() );
     const int64_t expected_root_uid = source.uid().get_value();
     const std::vector<int64_t> expected_nested_uids = [&]() {
         std::vector<int64_t> values;

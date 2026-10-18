@@ -6,8 +6,22 @@
 **Воспроизведение:** [команды и pinned source](../../tools/cataclysm-prototype/README.md).
 
 Native проверки P1/P2 прошли. Это допуск к исследованию P4/P3, не готовый
-игровой срез и не production cutover. Независимая приёмка фиксируется отдельно
-для конкретного commit.
+игровой срез и не production cutover.
+
+Независимый Contract/data/code audit: **PASS_WITH_NOTES**, Codex (GPT-6),
+2026-10-18, commit `22e1d1da5eff19cb854d3f6132c259df1c85fa3b`.
+WR §21.1: утверждены authored technical fixture, пороги и evidence в
+`docs/implementation/cataclysm-p0-p2-experiment.md`, этом отчёте,
+`tools/cataclysm-prototype/novgorod_slice_test.cpp` и обоих
+`tools/cataclysm-prototype/evidence/seed-{17,23}.jsonl` на указанном commit.
+Проверяющий сверил код и сохранённые логи; новую сборку при аудите не запускал.
+Ограничения walking AUTOPEEK и дальнейших этапов остаются явными ниже.
+
+Repository checks: `docs:check`, `test:docs` (12/12), `architecture:check`,
+`git diff --check` прошли. Новый MODULE потребовал штатного `docs:generate`;
+после генерации повторные docs checks прошли. CBM `detect_changes` подтвердил
+11 путей; docs/tools исключены из индекса, поэтому выводы проверены прямым
+чтением всех changed sources и native upstream, а не полнотой графа.
 
 ## Сборка
 

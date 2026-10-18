@@ -156,6 +156,10 @@ export async function commitLowerDvinaTraceTurnStep({
     ? envelope.visible_context
     : {
       ...destinationVisibleContext,
+      sensory_details: [...new Set([
+        ...(destinationVisibleContext.sensory_details ?? []),
+        ...(envelope.visible_context.sensory_details ?? [])
+      ])],
       visible_objects: uniqueLowerDvinaTraceVisibleObjects([
         ...carriedVisibleObjects,
         ...(destinationVisibleContext.visible_objects ?? [])

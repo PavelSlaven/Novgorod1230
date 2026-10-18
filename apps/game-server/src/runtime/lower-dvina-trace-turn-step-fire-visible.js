@@ -113,6 +113,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           ...(clock == null ? {} : { clock: structuredClone(clock) })
         };
         delete targetState.current_visible_context;
+        let currentEnvironmentState = targetState;
         const committedDestination = destinationOrigin === 'canonical';
         const reusePreparedDestination = destinationCompletion
           && destinationDigestMatches;
@@ -155,6 +156,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           const loadedDestination = await loadPreparedMovementScene({
             partyId, state: targetState, clock
           });
+          currentEnvironmentState = loadedDestination;
           const projectedDestination = projectCurrentScene(loadedDestination)
             ?.current_visible_context;
           if (!plain(projectedDestination)) {
@@ -187,12 +189,10 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             ? 'Пройденный путь: ' + transition.line_name + '.' : null;
           destination.visible_changes = [route,
             fact == null ? 'Вы прибыли.' : arrivalChange(fact)].filter(Boolean);
-          if (input.time_update?.nearest_boundary == null) {
-            destination.sensory_details = [...new Set([
-              ...destination.sensory_details,
-              ...currentEnvironmentChanges(targetState)
-            ])];
-          }
+          destination.sensory_details = [...new Set([
+            ...destination.sensory_details,
+            ...currentEnvironmentChanges(currentEnvironmentState)
+          ])];
         } else if (sourceEndpoint && traversal?.result?.result_kind === 'returned_to_departure') {
           const route = text(transition.line_name)
             ? 'Пройденный путь: ' + transition.line_name + '.' : null;

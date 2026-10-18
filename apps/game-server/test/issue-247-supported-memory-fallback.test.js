@@ -103,7 +103,7 @@ test('semantic fallback keeps only exact memory, allowed WK, and current observa
       corrected.speech.claims = structuredClone(supportedClaims);
       return { output: {
         utterance_text: corrected.speech.utterance_text,
-        claims: corrected.speech.claims,
+        claim_ids: corrected.speech.claims.map(({ claim_id }) => claim_id),
         interpretation: {
           intent: corrected.interpretation.intent,
           grounded_contribution: corrected.interpretation.grounded_contribution

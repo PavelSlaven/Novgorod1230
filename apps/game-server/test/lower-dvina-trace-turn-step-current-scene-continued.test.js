@@ -57,13 +57,19 @@ test('generated arrival preserves carried items and current Spatial exits', asyn
 });
 
 test('completed traversals to the same shore keep their own route and current fog', async () => {
+  const clock = { whole_minutes: '333060', subminute_numerator: '0',
+    subminute_denominator: '1' };
   const destination = { version: 1, schema: 'visible_context_package',
     visible_scene: 'У речного берега', visible_changes: [], sensory_details: [],
     visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
     allowed_tensions: [], do_not_imply: [] };
   const projector = createLowerDvinaTraceTurnStepVisibleProjector({
     fallback: { async project() { assert.fail('prepared destination owns this projection'); } },
-    projectCurrentScene: () => ({ current_visible_context: destination })
+    projectCurrentScene: () => ({ current_visible_context: destination }),
+    projectEnvironmentAtClock: ({ state, clock: projectionClock }) => {
+      assert.deepEqual(projectionClock, clock);
+      return state.environment_snapshot;
+    }
   });
   const project = (line_name, result_kind = 'segment_completed') => projector.project({
     retrieved_state: { actor_id: 'actor', position: { position_id: 'source' },
@@ -71,7 +77,7 @@ test('completed traversals to the same shore keep their own route and current fo
         season: 'summer', day_part: 'daylight', light_state: 'daylight',
         weather_state: { sky: 'obscured', visibility: 'poor',
           precipitation: 'none', wind: 'calm_or_light' } } },
-    time_update: { nearest_boundary: null },
+    time_update: { clock_after: clock, nearest_boundary: null },
     consequence: { position_transition: {
       owner: '@rus/turn/spatial-v3-site-connection-traversal',
       from_position_ref: 'source', to_position_ref: 'destination',

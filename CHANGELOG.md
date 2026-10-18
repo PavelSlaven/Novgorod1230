@@ -2,6 +2,8 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(turn): preserve the admitted discovery operation and target when repairing only query or continuation identity; retain owner and semantic revalidation (D49).
+- fix(npc): select semantic repair claims by immutable source IDs, preserving the full speech audit and exact supported-claim checks (D49).
 - fix(game-web): render degraded committed factual delivery when optional exact NPC speech is absent.
 - test(npc): restore the held-item regression's Fisher and clear-weather preconditions after approved profile succession; retain every visibility, narration and reload assertion.
 - data(npc): prepare Fisher @5 with the approved regional scopes of @3 and the activity observation of @4; stage the canonical composition successor behind independent review and isolated-import authorization (D49).
@@ -799,6 +801,8 @@
 # Changelog
 
 ## Unreleased
+- fix(turn): preserve the admitted discovery operation and target when repairing only query or continuation identity; retain owner and semantic revalidation (D49).
+- fix(npc): select semantic repair claims by immutable source IDs, preserving the full speech audit and exact supported-claim checks (D49).
 
 - fix(narration): retain the confirmed traversal line and player-safe current weather in arrival prose context; pass descriptive visible routes to all prose roles.
 - fix(narration): restore direct coverage of every required episode fact after the rejected composition trial while retaining clear names for known people.

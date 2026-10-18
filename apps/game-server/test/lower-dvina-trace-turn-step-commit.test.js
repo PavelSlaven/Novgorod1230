@@ -241,6 +241,70 @@ for (const costKind of ['action', 'time']) {
     });
 }
 
+test('prepared time-boundary arrival refreshes environment without reloading scene',
+  async () => {
+    const oldEnvironment = { schema: 'rus.approved_initial_environment.v1',
+      season: 'summer', day_part: 'evening', light_state: 'daylight',
+      weather_state: { sky: 'clear', precipitation: 'none',
+        visibility: 'normal', wind: 'calm_or_light' } };
+    const currentEnvironment = { ...oldEnvironment, day_part: 'night',
+      light_state: 'dark', weather_state: { ...oldEnvironment.weather_state,
+        sky: 'overcast' } };
+    const clockAfter = { day: 2, whole_minutes: '1260' };
+    const destination = { version: 1, schema: 'visible_context_package',
+      visible_scene: 'Берег.', visible_changes: [],
+      sensory_details: ['Слышно движение воды.'], visible_npc: [],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: [] };
+    const transition = { owner: '@rus/turn/spatial-v3-site-connection-traversal',
+      from_position_ref: 'position:origin', to_position_ref: 'position:destination',
+      source_site_id: 'site:origin', destination_site_id: 'site:destination',
+      source_g6_instance_id: 'g6:origin', destination_g6_instance_id: 'g6:destination',
+      destination_visible_digest: canonicalDigest(destination) };
+    let projectedClock = null;
+    let sceneLoads = 0;
+    const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project: async () => assert.fail('prepared arrival reuses its seed') },
+      projectEnvironmentAtClock({ state, clock }) {
+        assert.deepEqual(state.environment_snapshot, oldEnvironment);
+        projectedClock = clock;
+        return currentEnvironment;
+      },
+      loadPreparedMovementScene: async () => {
+        sceneLoads += 1;
+        assert.fail('environment refresh must not reload the prepared scene');
+      },
+      projectCurrentScene: () => assert.fail('prepared arrival keeps seed context')
+    });
+    const result = await projector.project({
+      consequence: { position_transition: transition,
+        movement: { cost_kind: 'time' },
+        spatial_v3_traversal: { plan: { steps: [{ arrival_endpoint_snapshot: {
+          endpoint_ref: { endpoint_id: 'endpoint:destination' },
+          resolved_position_id: 'position:destination'
+        } }] }, result: { result_kind: 'segment_completed', endpoint_after: {
+          endpoint_id: 'endpoint:destination', resolved_position_id: 'position:destination'
+        } } },
+        visible_seed: { destination_site_origin: 'canonical',
+          destination_visible_context: destination } },
+      retrieved_state: { actor_id: 'actor-1', environment_snapshot: oldEnvironment,
+        clock: { day: 2, whole_minutes: '1199' },
+        position: { site_id: 'site:origin', position_id: 'position:origin' } },
+      time_update: { clock_after: clockAfter,
+        nearest_boundary: { kind: 'day_part', value: 'night' } }
+    });
+
+    assert.deepEqual(projectedClock, clockAfter);
+    assert.equal(sceneLoads, 0);
+    assert.ok(result.sensory_details.includes('Слышно движение воды.'));
+    assert.ok(result.sensory_details.includes('Ночь.'));
+    assert.ok(result.sensory_details.includes('Темно.'));
+    assert.ok(result.sensory_details.includes('Небо затянуто облаками.'));
+    assert.ok(!result.sensory_details.includes('Вечер.'));
+    assert.ok(!result.sensory_details.includes('Стоит светлое время дня.'));
+    assert.ok(!result.sensory_details.includes('Небо ясное.'));
+  });
+
 test('destination commit retains self context in reloaded narrator wire', async () => {
   const envelope = commitEnvelope({ clarification: false, check: false });
   envelope.visible_context.known_context = ['Старый берег.', 'Имя героя: Микула.'];

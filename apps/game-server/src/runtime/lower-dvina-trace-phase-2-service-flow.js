@@ -28,7 +28,8 @@ export function createLowerDvinaTracePhase2ServiceFlow({
   temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation,
   approvedActivityRecords = null,
   bodyTimeEffectAdapter = null,
-  partyId, loadPreparedMovementScene, projectCurrentScene, recordProjectionGap = null
+  partyId, loadPreparedMovementScene, projectCurrentScene,
+  projectEnvironmentAtClock = null, recordProjectionGap = null
 }) {
   const temporalAdvance = createTracePhase9TemporalAdvance({ fallback:
     createTracePhase8TemporalAdvance({ fallback:
@@ -88,7 +89,8 @@ export function createLowerDvinaTracePhase2ServiceFlow({
         approvedActivityRecords,
         locationProfiles: phase3Contracts?.locationProfiles ?? null,
         scenePresentation,
-        partyId, loadPreparedMovementScene, projectCurrentScene, recordProjectionGap,
+        partyId, loadPreparedMovementScene, projectCurrentScene,
+        projectEnvironmentAtClock, recordProjectionGap,
         fallback: createTracePhase9VisibleProjector({
           contracts: phase9Contracts, fallback: createTracePhase8VisibleProjector({
             contracts: phase8Contracts, fallback: createTracePhase7VisibleProjector({ fallback: createTracePhase6VisibleProjector({ scenePresentation, fallback: createTracePhase5VisibleProjector({

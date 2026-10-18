@@ -34,6 +34,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
   approvedActivityRecords = null,
   scenePresentation = null, partyId = null,
   loadPreparedMovementScene = null, projectCurrentScene = null,
+  projectEnvironmentAtClock = null,
   recordProjectionGap = null
 } = {}) {
   if (typeof fallback?.project !== 'function') {
@@ -189,6 +190,20 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             ? 'Пройденный путь: ' + transition.line_name + '.' : null;
           destination.visible_changes = [route,
             fact == null ? 'Вы прибыли.' : arrivalChange(fact)].filter(Boolean);
+          if (currentEnvironmentState === targetState
+              && targetState.environment_snapshot?.schema
+                === 'rus.approved_initial_environment.v1') {
+            const projectionClock = clock ?? targetState.clock_weather_light?.clock
+              ?? targetState.clock;
+            if (typeof projectEnvironmentAtClock !== 'function'
+                || projectionClock == null) {
+              ownerFail('TRACE_CURRENT_SCENE_PROJECTION_INVALID');
+            }
+            currentEnvironmentState = { ...targetState,
+              environment_snapshot: projectEnvironmentAtClock({
+                state: targetState, clock: projectionClock
+              }) };
+          }
           destination.sensory_details = [...new Set([
             ...destination.sensory_details,
             ...currentEnvironmentChanges(currentEnvironmentState)

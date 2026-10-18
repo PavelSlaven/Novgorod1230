@@ -2,6 +2,7 @@
 
 - fix(game-server): preserve each identical committed player utterance in visible projection and HTTP delivery while rejecting extra forged copies (#364).
 ## Unreleased
+- fix(narration): retain current arrival weather and season through commit, including reused destinations across time boundaries, while preserving natural observations (D49).
 - fix(turn): preserve the admitted discovery operation and target when repairing only query or continuation identity; retain owner and semantic revalidation (D49).
 - fix(npc): select semantic repair claims by immutable source IDs, preserving the full speech audit and exact supported-claim checks (D49).
 - fix(game-web): render degraded committed factual delivery when optional exact NPC speech is absent.
@@ -801,6 +802,7 @@
 # Changelog
 
 ## Unreleased
+- fix(narration): retain current arrival weather and season through commit, including reused destinations across time boundaries, while preserving natural observations (D49).
 - fix(turn): preserve the admitted discovery operation and target when repairing only query or continuation identity; retain owner and semantic revalidation (D49).
 - fix(npc): select semantic repair claims by immutable source IDs, preserving the full speech audit and exact supported-claim checks (D49).
 

@@ -5,6 +5,16 @@
 **Критерии до измерений:** [спецификация P4](cataclysm-p4-experiment.md).
 **Воспроизведение:** [README](../../tools/cataclysm-prototype/README.md).
 
+Независимый Contract/data/code audit: **PASS_WITH_NOTES для отрицательного
+эксперимента**, Codex (`p4_final_audit`), 2026-10-18, commit
+`4e2dace0ccaef7d40330b0bd7a25a79b029c5a08`. WR §21.1: утверждены technical
+fixtures, заранее заданные пороги и evidence в `cataclysm-p4-experiment.md`,
+этом отчёте, `tools/cataclysm-prototype/novgorod_persistence_test.cpp` и пяти
+`tools/cataclysm-prototype/evidence/p4-*.json` на указанном commit.
+Проверяющий прочитал governing/CONTRACT_INDEX, код и committed evidence;
+сборки и тесты при независимом аудите не перезапускал. Это одобрение
+воспроизводимого отчёта, не пройденный P4 gate.
+
 **Решение: STOP / REVISE_APPROACH. P4 не принят.** У выбранного fresh-process
 механизма превышен бюджет восстановления, а native reload меняет UID предмета.
 Это предусмотренное условие остановки P4 в плане #754. Пороги и поля сравнения
@@ -133,6 +143,11 @@ P4 test source совпали с исходниками измеренного b
 Repository checks: `docs:check` (8 generated files; production activation
 findings 0), `test:docs` (12/12), `architecture:check`, staged `git diff --check`
 прошли. Полный `npm test` выполняется отдельно в CI exact HEAD PR.
+
+CBM `detect_changes` подтвердил 15 путей реализации/данных. Coverage для
+`tools/`, `docs/`, `generated/` исключён; все выводы опираются на прямое чтение
+source/evidence и детерминированные проверки. Нулевое число graph symbols
+не использовалось как доказательство отсутствия изменений.
 
 ## Открытые границы
 

@@ -126,7 +126,7 @@ export function npcConversationInstructions(repair, request = null) {
   if (semanticRepair && !repairServiceText) {
     const speech = repair.original_output?.speech != null;
     const shape = speech
-      ? '{"utterance_text":"...","claims":[],"interpretation":{"intent":"...","grounded_contribution":"..."},"reason":"..."}'
+      ? '{"utterance_text":"...","claim_ids":[],"interpretation":{"intent":"...","grounded_contribution":"..."},"reason":"..."}'
       : '{"interpretation":{"intent":"...","grounded_contribution":"..."},"reason":"..."}';
     return [
       'MANDATORY SEMANTIC REPAIR: return only one JSON object with exactly',
@@ -137,7 +137,11 @@ export function npcConversationInstructions(repair, request = null) {
       'when concern_kinds names only part of the problem. Treat audit_feedback',
       'as diagnostic pointers, not evidence: verify each reason against exact',
       'request sources, inspect any quote in the full original_speech, and',
-      'preserve every supported fact that has a matching original claim. Reconstruct',
+      'preserve every supported fact that has a matching original claim. Select',
+      'supporting claims only by exact claim_id values from original_speech.claims;',
+      'return those strings in claim_ids, never rewritten claim objects. The',
+      'server restores exact original claims and rejects malformed, duplicate,',
+      'unknown or ambiguous IDs. Reconstruct',
       'interpretation and reason from request and preserved_decision.',
       'Grounding takes priority over wording. When speech is present,',
       'compose utterance_text anew from exact',
@@ -152,9 +156,9 @@ export function npcConversationInstructions(repair, request = null) {
       'Do not use original_speech as a sentence',
       'template: a small wording change can retain an unsupported assertion.',
       'Preserve',
-      'supported speech meaning, originally claimed supported facts and only an exact subset',
-      'of original claims, unchanged',
-      'including claim_id; add no claims. Every factual assertion needs exact',
+      'supported speech meaning and originally claimed supported facts. Select',
+      'only original claims that exactly support the repaired factual assertions;',
+      'add no facts. Every factual assertion needs exact',
       'support from request memory, current observations, player-safe context,',
       'world knowledge or permitted operation. A source for an event fact does',
       'not prove NPC personal observation, participation or established habit,',

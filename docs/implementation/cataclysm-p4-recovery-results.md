@@ -9,6 +9,11 @@
 Contract Auditor `p4_contract_acceptance` подтвердил результаты 2026-10-19;
 [полный аудит](../../tools/cataclysm-prototype/evidence/p4-recovery-contract-audit.md)
 фиксирует проверенный source snapshot, основания и ограничения.
+Проверенное содержимое реализации и evidence зафиксировано в commit
+`8fc063366db1579aa5e20420f0ec25d3aa04ce81` (PR #768). WR §21.1:
+`p4_contract_acceptance`, 2026-10-19, подтвердил technical fixtures,
+неизменные пороги и evidence этого P4 продолжения; applicable paths
+перечислены в его отчёте и списке доказательств ниже.
 Речевые T11/T12 остаются OPEN до результата P3; P5/P6 не разрешены этим отчётом.
 Предыдущий [отрицательный эксперимент](cataclysm-p4-results.md) сохраняет
 свой verdict и измерения.

@@ -54,7 +54,7 @@ function runner(reply) {
 function privateSemanticWire(output) {
   return { ...(output.speech == null ? {} : {
     utterance_text: output.speech.utterance_text,
-    claims: output.speech.claims
+    claim_ids: output.speech.claims.map(({ claim_id }) => claim_id)
   }), interpretation: {
     intent: output.interpretation.intent,
     grounded_contribution: output.interpretation.grounded_contribution
@@ -750,7 +750,7 @@ test('semantic grounding repair receives original output and concrete concerns',
           assert.doesNotMatch(call.messages[0].content,
             /rewrite the complete response|rewrite the response/u);
           return { utterance_text: 'Не стану об этом говорить.',
-            claims: [], interpretation: { intent: 'отказать',
+            claim_ids: [], interpretation: { intent: 'отказать',
               grounded_contribution: 'сохранить отказ' },
             reason: 'NPC отказался отвечать.' };
         }
@@ -802,7 +802,7 @@ test('repeated semantic grounding failure is typed after one model repair',
       rawRepair: true,
       responder(call, input) {
         if (call.role_id === 'npc_conversation_responder_format_repair') {
-          return { utterance_text: 'Я видел то, чего не было.', claims: [],
+          return { utterance_text: 'Я видел то, чего не было.', claim_ids: [],
             interpretation: { intent: 'отказать',
               grounded_contribution: 'сохранить отказ' },
             reason: 'NPC отказался отвечать.' };
@@ -1199,7 +1199,9 @@ test('semantic grounding repair rejects adding a claim', async () => {
   assert.equal(scenario.result, undefined);
 });
 
-test('semantic grounding repair rejects changing a claim', async () => {
+test('semantic grounding repair restores the selected original claim unchanged', async () => {
+  let auditCount = 0;
+  let originalClaim;
   const scenario = await runNpcConversationTurn({
     batchId: 'semantic-repair-claim-changed',
     responder(call, input) {
@@ -1214,14 +1216,24 @@ test('semantic grounding repair rejects changing a claim', async () => {
           ? 'Рыбацкая работа связана с сетями.' : 'Сети сушатся у дома.',
         form: 'assertion', speaker_posture: 'believed_true',
         source_knowledge_refs: [sourceRef], mentioned_entity_refs: [] }];
+      if (!repairing) originalClaim = structuredClone(output.speech.claims[0]);
       return output;
     },
-    audit: (call) => npcAuditReport(call, { pass: false,
-      concerns: [{ kind: 'unsupported_past_observation', reason: 'No exact supporting evidence.', quote: '' }] })
+    audit: (call) => {
+      auditCount += 1;
+      if (auditCount === 2) {
+        assert.deepEqual(JSON.parse(call.messages[1].content).plan.speech.claims,
+          [originalClaim]);
+      }
+      return npcAuditReport(call, { pass: false,
+        concerns: [{ kind: 'unsupported_past_observation',
+          reason: 'No exact supporting evidence.', quote: '' }] });
+    }
   });
 
-  assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
+  assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_INVALID');
   assert.equal(scenario.result, undefined);
+  assert.equal(auditCount, 2);
 });
 
 test('semantic grounding repair may remove a claim while revising the utterance',

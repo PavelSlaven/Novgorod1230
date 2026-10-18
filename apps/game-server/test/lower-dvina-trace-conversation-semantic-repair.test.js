@@ -111,17 +111,24 @@ async function runConversation(input, original, corrected, {
   assert.equal(validateConversationContributionPlan(corrected, input), true);
   const before = structuredClone(input);
   const calls = [];
+  const responses = [];
   let auditCount = 0;
   const roleRunner = { async run(call) {
     calls.push(structuredClone(call));
     if (process.env.ISSUE_247_PAYLOAD_LOG) appendFileSync(
       process.env.ISSUE_247_PAYLOAD_LOG,
       `${JSON.stringify({ case: input.request_id, call })}\n`);
-    if (call.role_id === auditor) return { output: audit(call, ++auditCount) };
+    if (call.role_id === auditor) {
+      const output = audit(call, ++auditCount);
+      responses.push({ role_id: call.role_id, output: structuredClone(output) });
+      return { output };
+    }
     assert.ok([responder, repairRole].includes(call.role_id), call.role_id);
-    return { output: structuredClone(call.role_id === responder
+    const output = structuredClone(call.role_id === responder
       ? original : Object.hasOwn(payload(call), 'marker_safe_decision')
-        ? corrected : repairOutput ?? privateRepair(corrected)) };
+        ? corrected : repairOutput ?? privateRepair(corrected));
+    responses.push({ role_id: call.role_id, output: structuredClone(output) });
+    return { output };
   } };
   const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     worldKnowledgeGrounder });
@@ -137,14 +144,14 @@ async function runConversation(input, original, corrected, {
     error = caught;
   }
   assert.deepEqual(input, before, 'repair must not mutate the factual request');
-  return { calls, result, error };
+  return { calls, responses, result, error };
 }
 
 function privateRepair(corrected) {
   return {
     ...(corrected.speech == null ? {} : {
       utterance_text: corrected.speech.utterance_text,
-      claims: corrected.speech.claims
+      claim_ids: corrected.speech.claims.map(({ claim_id }) => claim_id)
     }),
     interpretation: {
       intent: corrected.interpretation.intent,
@@ -243,10 +250,99 @@ test('grounding rejection calls one model repair with complete original speech, 
     assert.match(retry.messages[0].content,
       /Missing memory records do not prove the NPC lacks knowledge/u);
     assertOrdinaryRepairInput(retry, original);
+    const repairResponse = scenario.responses.find(({ role_id }) =>
+      role_id === repairRole).output;
+    assert.deepEqual(repairResponse.claim_ids,
+      corrected.speech.claims.map(({ claim_id }) => claim_id));
+    assert.equal(Object.hasOwn(repairResponse, 'claims'), false);
+    assert.match(retry.messages[0].content,
+      /"utterance_text":"\.\.\.","claim_ids":\[\]/u);
+    assert.match(retry.messages[0].content,
+      /never rewritten claim objects/u);
     assert.deepEqual(scenario.calls.map(({ role_id }) => role_id),
       [responder, auditor, repairRole, auditor]);
     exactModelReply(scenario, corrected);
   }
+});
+
+test('semantic repair resolves selected claim IDs to exact original claims', async () => {
+  const input = request('semantic-claim-id-selection');
+  const seen = observation(input);
+  const original = plan(input, `${seen.fact_text} Все сети рвутся до зимы.`);
+  original.speech.claims = [claim('fire', seen.fact_text, [seen.observation_ref]),
+    claim('nets', 'Все сети рвутся до зимы.', [seen.observation_ref])];
+  const corrected = plan(input, `${seen.fact_text} Об остальном говорить не берусь.`);
+  corrected.speech.claims = [structuredClone(original.speech.claims[0])];
+  const scenario = await runConversation(input, original, corrected);
+  const retry = singleRepair(scenario);
+  assert.deepEqual(scenario.responses.find(({ role_id }) =>
+    role_id === repairRole).output.claim_ids, ['fire']);
+  exactModelReply(scenario, corrected);
+  assert.deepEqual(scenario.result.plan.speech.claims,
+    [original.speech.claims[0]],
+    'the server must restore the exact selected source claim object');
+});
+
+test('semantic repair rejects malformed, unknown, repeated and ambiguous claim IDs before re-audit', async () => {
+  const invalidSelections = [
+    { name: 'malformed-list', claim_ids: 'fire' },
+    { name: 'malformed-value', claim_ids: [7] },
+    { name: 'empty-id', claim_ids: [''] },
+    { name: 'unknown', claim_ids: ['missing'] },
+    { name: 'repeated', claim_ids: ['fire', 'fire'] },
+    { name: 'old-object-wire', claims: [] }
+  ];
+  for (const selection of invalidSelections) {
+    const input = request(`semantic-claim-id-${selection.name}`);
+    const seen = observation(input);
+    const original = plan(input, seen.fact_text);
+    original.speech.claims = [claim('fire', seen.fact_text, [seen.observation_ref])];
+    const corrected = plan(input, 'Об этом сейчас говорить не берусь.');
+    const output = { ...privateRepair(corrected), ...selection };
+    delete output.name;
+    const scenario = await runConversation(input, original, corrected,
+      { repairOutput: output });
+    assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_NOT_APPLICABLE', selection.name);
+    assert.equal(scenario.result, undefined, selection.name);
+    assert.deepEqual(scenario.calls.map(({ role_id }) => role_id),
+      [responder, auditor, repairRole], selection.name);
+  }
+
+  const input = request('semantic-claim-id-ambiguous');
+  const seen = observation(input);
+  const original = plan(input, seen.fact_text);
+  original.speech.claims = [
+    claim('duplicate', seen.fact_text, [seen.observation_ref]),
+    claim('duplicate', 'Тот же ID, другое содержание.', [seen.observation_ref])
+  ];
+  const corrected = plan(input, 'Об этом сейчас говорить не берусь.');
+  const model = createLowerDvinaTraceNpcSemanticModel({ roleRunner: {
+    async run() { return { output: { ...privateRepair(corrected),
+      claim_ids: ['duplicate'] } }; }
+  } });
+  const rejectedPlan = await model(input, { repair: { original_output: original,
+    validation_errors: [{ category: 'semantic_grounding',
+      concern_kinds: ['unsupported_qualifier'] }] } });
+  const failure = await model.validateFreshPlan(rejectedPlan, input);
+  assert.equal(failure.pass, false);
+  assert.equal(failure.errors[0].code, 'TURN_NPC_PLAN_NOT_APPLICABLE');
+});
+
+test('a selected original claim does not make unsupported repaired speech pass grounding', async () => {
+  const input = request('semantic-claim-id-unsupported-fact');
+  const seen = observation(input);
+  const original = plan(input, seen.fact_text);
+  original.speech.claims = [claim('fire', seen.fact_text, [seen.observation_ref])];
+  const unsupported = plan(input,
+    `${seen.fact_text} За рекой уже стоит стража.`);
+  unsupported.speech.claims = structuredClone(original.speech.claims);
+  const scenario = await runConversation(input, original, unsupported, {
+    audit: (call) => rejected('unsupported_fact', call)
+  });
+  assert.equal(scenario.error?.code, 'TURN_NPC_PLAN_INVALID');
+  assert.deepEqual(scenario.calls.map(({ role_id }) => role_id),
+    [responder, auditor, repairRole, auditor]);
+  assert.equal(scenario.result, undefined);
 });
 
 test('first-contact identity and guarded behavior are repaired by the model with both concerns', async () => {

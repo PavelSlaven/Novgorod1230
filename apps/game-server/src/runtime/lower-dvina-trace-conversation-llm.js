@@ -373,7 +373,7 @@ function applyNpcSemanticRepair(original, output, request, errors) {
       || typeof original.interpretation !== 'object') return null;
   const speech = original.speech != null;
   const keys = speech
-    ? ['utterance_text', 'claims', 'interpretation', 'reason']
+    ? ['utterance_text', 'claim_ids', 'interpretation', 'reason']
     : ['interpretation', 'reason'];
   if (!hasExactKeys(output, keys)
       || !hasExactKeys(output.interpretation,
@@ -382,7 +382,11 @@ function applyNpcSemanticRepair(original, output, request, errors) {
       || typeof output.interpretation.grounded_contribution !== 'string'
       || typeof output.reason !== 'string'
       || (speech && (typeof output.utterance_text !== 'string'
-        || !Array.isArray(output.claims)))) return null;
+        || !Array.isArray(output.claim_ids)))) return null;
+  const claims = speech
+    ? restoreSemanticRepairClaims(output.claim_ids, original.speech.claims)
+    : null;
+  if (speech && claims === null) return null;
   const repaired = structuredClone(original);
   repaired.interpretation.intent = output.interpretation.intent;
   repaired.interpretation.grounded_contribution =
@@ -390,7 +394,7 @@ function applyNpcSemanticRepair(original, output, request, errors) {
   repaired.reason = output.reason;
   if (speech) {
     repaired.speech.utterance_text = output.utterance_text;
-    repaired.speech.claims = structuredClone(output.claims);
+    repaired.speech.claims = claims;
     const requiredTag = request.social_context?.npc_behavior
       ?.required_interaction_tag;
     if (typeof requiredTag === 'string' && requiredTag.length > 0
@@ -402,6 +406,29 @@ function applyNpcSemanticRepair(original, output, request, errors) {
     }
   }
   return repaired;
+}
+
+function restoreSemanticRepairClaims(claimIds, originalClaims) {
+  if (!Array.isArray(claimIds) || !Array.isArray(originalClaims)) return null;
+  const originalsById = new Map();
+  for (const claim of originalClaims) {
+    if (claim == null || typeof claim !== 'object' || Array.isArray(claim)
+        || typeof claim.claim_id !== 'string') continue;
+    const matches = originalsById.get(claim.claim_id) ?? [];
+    matches.push(claim);
+    originalsById.set(claim.claim_id, matches);
+  }
+  const used = new Set();
+  const claims = [];
+  for (const claimId of claimIds) {
+    if (typeof claimId !== 'string' || claimId.length === 0
+        || used.has(claimId)) return null;
+    const matches = originalsById.get(claimId);
+    if (matches?.length !== 1) return null;
+    used.add(claimId);
+    claims.push(structuredClone(matches[0]));
+  }
+  return claims;
 }
 
 function hasExactKeys(value, keys) {

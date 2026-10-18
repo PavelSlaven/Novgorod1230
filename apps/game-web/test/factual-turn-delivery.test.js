@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createUiStore, renderScreen, validatePublicScreen } from '../src/index.js';
+import { createUiStore, renderAppState, renderScreen, validatePublicScreen } from '../src/index.js';
 import { storedPendingTurn } from '../src/app/pending-turn.js';
 import { submitRecoverableTurn } from '../src/app/turn-submission.js';
 
@@ -73,6 +73,31 @@ test('degraded delivery with no confirmed beat remains neutral', () => {
   assert.match(html, /Ход сохранён\./u);
   assert.doesNotMatch(html, /<h2>Изменения<\/h2>|<h2>Неясное<\/h2>/u);
   assert.match(html, /У телеги мокрая ось\./u);
+});
+
+test('degraded committed delivery without optional speech renders on commit and reload', async () => {
+  const screen = factual({ visible_changes: [], uncertainties: [] });
+  delete screen.exact_npc_utterances;
+  assert.equal(validatePublicScreen(screen), screen);
+
+  const result = await submitRecoverableTurn({
+    async submitTurn() { return { screen }; }
+  }, storage(), 'party-1', { raw_text: 'Подхожу ближе.' });
+  const committed = createUiStore();
+  committed.setScreen(result.screen);
+  const committedHtml = renderAppState(committed.getState());
+  assert.match(committedHtml, /Восстановленное состояние после хода/u);
+  assert.match(committedHtml, /У телеги мокрая ось\./u);
+  assert.match(committedHtml, /Ход сохранён\./u);
+  assert.match(committedHtml, /data-turn-form/u);
+
+  const reloaded = createUiStore();
+  reloaded.setScreen(screen);
+  const reloadedHtml = renderAppState(reloaded.getState());
+  assert.match(reloadedHtml, /Восстановленное состояние после хода/u);
+  assert.match(reloadedHtml, /У телеги мокрая ось\./u);
+  assert.match(reloadedHtml, /Ход сохранён\./u);
+  assert.match(reloadedHtml, /data-turn-form/u);
 });
 
 test('NPC speech remains visible without an empty beat claim', () => {

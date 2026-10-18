@@ -1,10 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { requestTurnStepPlan, validateTurnStepPlan } from '@rus/turn';
-import { requestTurnStepPlanWithRepair } from
-  '../../../packages/turn/src/turn-step-loop.js';
+import { createTurnStepExecutionRegistry, requestTurnStepPlanWithRepair,
+  runTurnStepLoop } from '../../../packages/turn/src/turn-step-loop.js';
+import { createTurnStepDomainOwnerPreflight as
+  createProductionTurnStepDomainOwnerPreflight } from
+  '../../../packages/turn/src/turn-step-admission.js';
 import { createTurnStepDomainOwnerPreflight } from
   '../../../packages/turn/src/turn-step-domain-owner-preflight.js';
+import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
+  '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import {
@@ -160,6 +165,150 @@ test('semantic repair prompt preserves both discovery continuation shapes',
     assert.match(prompt,
       /Никогда не возвращай focused discovery query, начинающийся не с начала remaining_intent[\s\S]*Если вводное действие — подойти, обратить внимание или посмотреть — ведёт к осмотру того же текущего места, включи это вступление в query[\s\S]*Иначе сначала спланируй более раннее действие и сохрани discovery как последующее намерение/u);
 });
+
+test('production turn route keeps an admitted discovery target during query repair',
+  async () => {
+    const intent = 'осмотреть берег';
+    const locationRef = 'location:riverbank';
+    const result = await runProductionDiscoveryRepairTurn({ intent,
+      locationRef, initialTarget: locationRef, repairTarget: 'npc:visible',
+      repairKind: 'inspect' });
+
+    assert.equal(result.turn.step_traces.length, 1);
+    assert.equal(result.turn.step_traces[0].repaired, true);
+    assert.equal(result.turn.step_traces[0].applied, false);
+    assert.deepEqual(result.turn.step_traces[0].approved_plan.operations[0], {
+      op: 'request_discovery', actor_ref: 'actor:1',
+      discovery_kind: 'look', target_refs: [locationRef], query: intent
+    });
+    assert.equal(result.semanticAudits.length, 2,
+      'the owner and semantic grounding are revalidated after repair');
+    assert.deepEqual(result.semanticAudits.map(({ resolved_domain_operations }) =>
+      resolved_domain_operations.map(({ owner_kind }) => owner_kind)), [
+      ['ordinary_discovery'], ['ordinary_discovery']
+    ]);
+    assert.deepEqual(result.discoveryModes, ['different_action',
+      'focused_discovery']);
+  });
+
+test('production turn route keeps the admitted operation during discovery repair',
+  async () => {
+    const intent = 'осмотреть берег';
+    const locationRef = 'location:riverbank';
+    const result = await runProductionDiscoveryRepairTurn({ intent,
+      locationRef, initialTarget: locationRef, repairTarget: locationRef,
+      repairOperation: 'request_activity' });
+    const operation = result.turn.step_traces[0].approved_plan.operations[0];
+    assert.equal(result.turn.step_traces[0].repaired, true);
+    assert.equal(operation.op, 'request_discovery');
+    assert.equal(operation.target_refs[0], locationRef);
+    assert.equal(operation.query, intent);
+    assert.equal(result.semanticAudits.length, 2);
+    assert.deepEqual(result.discoveryModes, ['different_action',
+      'focused_discovery']);
+  });
+
+test('production turn route keeps an initially unowned discovery fail-closed',
+  async () => {
+    const intent = 'осмотреть берег';
+    await assert.rejects(() => runProductionDiscoveryRepairTurn({ intent,
+      locationRef: 'location:riverbank', initialTarget: 'npc:visible',
+      repairTarget: 'npc:visible' }), (error) => {
+      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+      assert.equal(error.details.repair_attempted, true);
+      assert.ok(error.details.errors.some(({ code }) =>
+        code === 'domain_owner_unavailable'));
+      return true;
+    });
+  });
+
+async function runProductionDiscoveryRepairTurn({ intent, locationRef,
+  initialTarget, repairTarget, repairKind = 'look',
+  repairOperation = 'request_discovery' }) {
+  const safeState = { position: { location_ref: locationRef },
+    current_visible_context: { visible_npc: [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc:visible' },
+      display_label: 'видимый человек', visible_status: 'стоит рядом'
+    }] },
+    ordinary_resolution: { discovery_available: true,
+      container_resolution_available: false, scene_seed_available: true } };
+  const semanticAudits = [];
+  const discoveryModes = [];
+  let plannerCalls = 0;
+  const groundingValidator = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+    roleRunner: { async run(call) {
+      const system = call.messages[0]?.content ?? '';
+      if (system.includes('Return only JSON with exactly mode and entity_refs.')) {
+        return { output: { mode: 'discovery', entity_refs: [] } };
+      }
+      const mode = discoveryModes.length === 0
+        ? 'different_action' : 'focused_discovery';
+      discoveryModes.push(mode);
+      return { output: { mode, consumed_intent:
+        mode === 'focused_discovery' ? intent : null } };
+    } }
+  });
+  const semanticPlanValidator = createProductionTurnStepDomainOwnerPreflight({
+    externalRegistry: null, semanticBindings: [], availableOptions: new Set(),
+    actor: { actor_ref: 'actor:1' }, committedState: {}, services: {
+      turnStepOrdinaryDiscoveryResolver: async () => {},
+      turnStepSemanticGroundingValidator(value) {
+        semanticAudits.push(structuredClone(value));
+        return groundingValidator(value);
+      }
+    }
+  });
+  const turnStepModel = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      if (call.role_id === 'turn_step_planner'
+          || call.role_id === 'turn_step_planner_repair') {
+        plannerCalls += 1;
+        const repairing = call.role_id === 'turn_step_planner_repair';
+        return { output: productionDiscoveryPlan({ intent,
+          targetRef: repairing ? repairTarget : initialTarget,
+          discoveryKind: repairing ? repairKind : 'look',
+          query: repairing ? intent : 'осмотреть людей',
+          operation: repairing ? repairOperation : 'request_discovery' }) };
+      }
+      const system = call.messages[0]?.content ?? '';
+      if (system.includes('Return only JSON with exactly mode and entity_refs.')) {
+        return { output: { mode: 'discovery', entity_refs: [] } };
+      }
+      throw new Error(`Unexpected fake provider role: ${call.role_id}`);
+    }
+  } });
+  const turn = await runTurnStepLoop({ requestId: 'request:repair',
+    rootTurnId: 'turn:repair', committedStateVersion: 17,
+    rootPlayerAction: intent, actor: { actor_ref: 'actor:1' },
+    initialWorkingProjection: {} }, {
+    turnStepModel,
+    semanticPlanValidator,
+    executionRegistry: createTurnStepExecutionRegistry(),
+    projectPlayerSafeState: async () => ({ player_safe_state: safeState,
+      available_domain_operations: [] }),
+    revalidateCommittedState: async () => ({ state_version: 17 }),
+    blockPlan: async () => true
+  });
+  assert.equal(plannerCalls, 2);
+  return { turn, semanticAudits, discoveryModes };
+}
+
+function productionDiscoveryPlan({ intent, targetRef, discoveryKind, query,
+  operation }) {
+  const discovery = { op: 'request_discovery', actor_ref: 'actor:1',
+    discovery_kind: discoveryKind, target_refs: [targetRef], query };
+  return { interpretation: { player_goal: intent,
+    grounded_attempt: intent, adaptation: 'literal' },
+  resolution: 'domain_request', goal_result: 'pending',
+  activity: { owner: 'domain', duration_class: null, effort: null },
+  operation_choice: null,
+  operations: [operation === 'request_activity'
+    ? { op: 'request_activity', actor_ref: 'actor:1',
+      activity_kind: 'wait', target_refs: [], description: 'ждать' }
+    : discovery],
+  check: null, continuation: null, clarification: null,
+  reason_code: 'ordinary_discovery', reason: 'Осмотр сцены.' };
+}
 
 test('continuation repair treats only the current suffix as executable', async () => {
   const current = 'затем развязываю узел';

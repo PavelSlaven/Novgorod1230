@@ -101,6 +101,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       original_output: structuredClone(originalOutput),
       structural_errors: structuredClone(structuralErrors)
     });
+    const discoveryIdentityRepair = ordinaryDiscoveryIdentityRepair(
+      originalOutput, structuralErrors, request);
     let repairedOutput = null;
     try {
       const repairedPlan = await requestAndValidateTurnStepPlan({
@@ -109,9 +111,13 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
           const output = await turnStepModel(modelRequest ?? safeRequest,
             repairContext);
           const normalized = planCanonicalization(output, request, 2);
-          repairedOutput = structuredClone(normalized?.plan ?? output);
+          const candidate = normalized?.plan ?? output;
+          repairedOutput = structuredClone(discoveryIdentityRepair == null
+            ? candidate
+            : preserveOrdinaryDiscoveryIdentity(discoveryIdentityRepair,
+              candidate, structuralErrors, request));
           canonicalizations = normalized?.diagnostics ?? [];
-          return normalized?.plan ?? output;
+          return repairedOutput;
         },
         semanticPlanValidator,
         preparedChainContext,
@@ -346,6 +352,41 @@ function planCanonicalization(plan, request, attempt) {
     plan: actor?.plan ?? source,
     diagnostics: [...(a1?.diagnostics ?? []), ...(actor?.diagnostics ?? [])]
   };
+}
+
+function ordinaryDiscoveryIdentityRepair(plan, errors, request) {
+  const repairablePaths = new Set([
+    '$.operations.0.query', '$.continuation.remaining_intent'
+  ]);
+  if (!Array.isArray(errors) || errors.length === 0
+      || errors.some(({ code, path }) => code !== 'ordinary_discovery_query_identity'
+        || !repairablePaths.has(path))) return null;
+  const operation = plan?.operations?.length === 1
+    ? plan.operations[0] : null;
+  if (operation?.op !== 'request_discovery'
+      || !isOrdinaryDiscoveryInScope({ operation,
+        playerSafeState: request.player_safe_state })) return null;
+  return { plan: structuredClone(plan) };
+}
+
+function preserveOrdinaryDiscoveryIdentity(repair, candidate, errors,
+  request) {
+  const originalOperation = repair.plan.operations[0];
+  const repairedOperation = candidate.operations?.length === 1
+    ? candidate.operations[0] : null;
+  if (repairedOperation?.op !== originalOperation.op
+      || repairedOperation.actor_ref !== originalOperation.actor_ref) {
+    return repair.plan;
+  }
+  if (!validateTurnStepPlan(candidate, { request }).ok) return candidate;
+  const projected = structuredClone(repair.plan);
+  if (errors.some(({ path }) => path === '$.operations.0.query')) {
+    projected.operations[0].query = repairedOperation.query;
+  }
+  if (errors.some(({ path }) => path === '$.continuation.remaining_intent')) {
+    projected.continuation = structuredClone(candidate.continuation);
+  }
+  return projected;
 }
 
 function executorActorRefCanonicalization(plan, request, attempt) {

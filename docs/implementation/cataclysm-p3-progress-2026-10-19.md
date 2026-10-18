@@ -21,7 +21,7 @@ Historical/code-level checks, with their scope preserved:
 - The native source review approved running the scoped identity preflight after the recursive tree-aware fix (`SAFE_TO_RUN`). It was not a P3 runtime acceptance verdict.
 - P4 recovery was technically accepted and merged in PR #768. Its recorded full `npm test` result used exact head `cb5fd4b2388757465d7400fd85a5cd4b317614e2` (CI run 39170915001, success); P4 p95 was 2814.188907999778 ms across 20 samples plus one warm-up, maximum generation size 1,205,151 bytes, and 15 fault cases passed. Those results do not prove P3 speech behavior.
 
-For this publication task, no native build, native run, paid model call, or full integration run was performed. The native and JS/Python results above come from the cited earlier handoffs and evidence, not from a new run here. Here, `npm run docs:check` passed (8 generated files, 0 activation findings), `npm run architecture:check` passed, and `git diff --cached --check -- . ':(exclude)**/*.patch' ':(exclude)*.patch'` passed. The native patch artifact has 14 whitespace-only lines; they are preserved byte-for-byte from the native worker snapshot and excluded from the whitespace check.
+For this publication task, no native build, native run, paid model call, or full integration run was performed. The native and JS/Python results above come from the cited earlier handoffs and evidence, not from a new run here. Here, `npm run docs:check` passed (8 generated files, 0 activation findings), `npm run architecture:check` passed, and `git -c core.whitespace=cr-at-eol diff --cached --check -- . ':(exclude)**/*.patch' ':(exclude)*.patch'` passed. The native patch artifact has 14 whitespace-only lines; they are preserved byte-for-byte from the native worker snapshot and excluded from the whitespace check.
 
 ## Problems found and current state
 
@@ -44,4 +44,4 @@ For this publication task, no native build, native run, paid model call, or full
 
 ## Snapshot boundary
 
-This report and source snapshot were copied into a separate publication worktree from the active P3 source checkout. The native patch and native test files were hashed before and after copying; hashes matched the copied files at capture time. Any native-worker edits after that capture are not included in this snapshot and remain unfinished follow-up work. No source checkout files were modified by this publication task.
+This report and source snapshot were copied into a separate publication worktree from the active P3 source checkout. All 11 tracked/untracked source files were hash-compared again at final review; source and snapshot hashes matched, and no source files changed after capture. The three native-worker files were also hashed before and after copying, with matching hashes. No source checkout files were modified by this publication task.

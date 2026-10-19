@@ -91,7 +91,7 @@ git branch --show-current
 
 ### 18.1. Обязательные навыки `caveman` и `ponytail`
 
-Во всех задачах применяй навык `caveman` в режиме `full`. Во всех задачах разработки применяй навык `ponytail` в режиме `full`. Навыки лежат в `.agents/skills/` и `.claude/skills/`. Отключай их или меняй режим только по явной просьбе пользователя (`stop caveman`, `stop ponytail`, `normal mode`, `caveman lite|full|ultra`, `ponytail lite|full|ultra`).
+В общении Claude с владельцем применяй навык `caveman` в режиме `full`. Codex и другие исполнители `caveman` не применяют: промпты для моделей, нормы, документация, тексты игры, commit и PR пишутся обычным полным языком. Во всех задачах разработки применяй навык `ponytail` в режиме `full`. Навыки лежат в `.agents/skills/` и `.claude/skills/`. Отключай их или меняй режим только по явной просьбе пользователя (`stop caveman`, `stop ponytail`, `normal mode`, `caveman lite|full|ultra`, `ponytail lite|full|ultra`).
 
 `caveman` управляет только краткостью общения. Он не является основанием сокращать необходимое исследование, реализацию, проверки или итоговый отчёт по §29. Код, документация, commit и PR пишутся обычным языком.
 

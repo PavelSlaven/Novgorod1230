@@ -20,7 +20,7 @@
     },
     {
       "path": "generated/knowledge-source/graph/manifest.json",
-      "sha256": "27172e61c8aa0b4380b285b74add02fd964c1904a80245e5a5c05654f8a5eadb",
+      "sha256": "04aed62157f50438d4478040c0fb72567e4ca8b51a6694fbf40a29725d182836",
       "bytes": 591
     },
     {
@@ -30,12 +30,12 @@
     },
     {
       "path": "generated/knowledge-source/rag/lexical-index.json",
-      "sha256": "a454ffc12d50b3d610325c3f80330dfb39eb380a484be7cd06d9b5094e90673f",
-      "bytes": 3394351
+      "sha256": "8a3f3cc4217fea91b5c62d3ecb68c140f310d280ffc08405f2d2c0a683c046b2",
+      "bytes": 3394536
     },
     {
       "path": "generated/knowledge-source/rag/manifest.json",
-      "sha256": "1b3c563c4a8d8f853dfaa9adffae5d393cfc243a2d512aaf34751472a718b28e",
+      "sha256": "714636f8fea090069875b9ea1988f7651dac29cd4c023bcd0ca4fc6de0e2c8cf",
       "bytes": 7543
     }
   ]

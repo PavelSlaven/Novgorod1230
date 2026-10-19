@@ -1,0 +1,7 @@
+{"kind":"synthetic_request","count":1,"role":"turn_step_planner"}
+{"kind":"synthetic_request","count":2,"role":"npc_conversation_responder"}
+{"kind":"synthetic_request","count":3,"role":"npc_conversation_grounding_auditor"}
+{"kind":"synthetic_request","count":4,"role":"turn_step_planner"}
+{"kind":"synthetic_request","count":5,"role":"npc_conversation_responder"}
+{"kind":"synthetic_request","count":6,"role":"npc_conversation_grounding_auditor"}
+{"kind":"synthetic_summary","count":6,"roles":["turn_step_planner","npc_conversation_responder","npc_conversation_grounding_auditor","turn_step_planner","npc_conversation_responder","npc_conversation_grounding_auditor"]}

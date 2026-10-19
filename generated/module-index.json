@@ -597,7 +597,7 @@
       ],
       "path": "tools/cataclysm-prototype",
       "public_entry": "—",
-      "purpose": "Изолированные native проверки пригодности Cataclysm-DDA для Novgorod и незавершённая живая dev-проба. Стенд использует отдельную копию upstream; dev launcher — отдельный постоянный userdir. Текущий STOP и проверенные границы: [результат задания 03](TASK03-LIVE-RESULT.md).",
+      "purpose": "Изолированные native проверки пригодности Cataclysm-DDA для Novgorod и живая dev-проба. Стенд использует отдельную копию upstream; dev launcher — отдельный постоянный userdir. Фактические проверки и границы: [результат задания 03](TASK03-LIVE-RESULT.md).",
       "version": null
     },
     {

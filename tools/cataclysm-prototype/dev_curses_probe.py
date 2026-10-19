@@ -66,13 +66,13 @@ def run_game(binary, data, userdir, world, log, exercise):
         menu_seconds = None
         if not any(token.lower() in bytes(output).lower() for token in loaded_tokens):
             menu_seconds = time.monotonic() - started
-            key(b"l", 0.3)
+            key(b"a", 0.3)
             key(b"\n")
             wait_for(loaded_tokens, 180)
         loaded_seconds = time.monotonic() - started
         inputs = []
         if exercise:
-            for value, name in [(b".", "wait"), (b"4", "move west"), (b"6", "move east")]:
+            for value, name in [(b".", "wait"), (b"\x1bOD", "move west"), (b"\x1bOC", "move east")]:
                 key(value, 0.5)
                 inputs.append(name)
             key(b"i")
@@ -126,7 +126,11 @@ def main():
     shutil.copytree(seed, userdir)
     config = userdir / "config"
     config.mkdir(exist_ok=True)
-    (config / "options.json").write_text(json.dumps([{"name": "USE_LANG", "value": "en"}]))
+    options_path = config / "options.json"
+    options = json.loads(options_path.read_text()) if options_path.exists() else []
+    options = [entry for entry in options if entry.get("name") != "USE_LANG"]
+    options.append({"name": "USE_LANG", "value": "en"})
+    options_path.write_text(json.dumps(options))
     worlds = [path for path in (userdir / "save").iterdir() if path.is_dir()]
     if len(worlds) != 1:
         raise RuntimeError("Probe requires exactly one copied world")

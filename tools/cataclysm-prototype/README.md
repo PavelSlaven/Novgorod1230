@@ -5,6 +5,11 @@
 Novgorod и не открывает пользовательские saves. Fixture P0–P2 описана в
 [`docs/implementation/cataclysm-p0-p2-experiment.md`](../../docs/implementation/cataclysm-p0-p2-experiment.md).
 
+Живая dev-проба с постоянным ext4 userdir запускается через
+[`run-p3-dev.ps1`](run-p3-dev.ps1); инструкция — [PLAY](PLAY.md),
+фактические проверки и ограничения — [результат задания 03](TASK03-LIVE-RESULT.md).
+Это отдельный игровой запуск; команды старого smoke ниже остаются стендом.
+
 ## Среда
 
 Проверенная платформа: Windows 11 Pro 10.0.26200, WSL2 Ubuntu 24.04.4,

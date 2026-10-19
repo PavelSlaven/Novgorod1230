@@ -84,6 +84,13 @@ if ! $native_only; then
     node="$HOME/.local/share/novgorod/node-v22.23.3-linux-x64/bin/node"
     [[ -x "$node" ]] || { echo 'Не установлен согласованный WSL Node v22.23.3.' >&2; exit 1; }
     [[ -n ${RUS_LLM_SETTINGS_PATH:-} && -r "$RUS_LLM_SETTINGS_PATH" ]] || { echo 'Задайте доступный RUS_LLM_SETTINGS_PATH.' >&2; exit 1; }
+    role_timeout_ms=$(cd -- "$launcher_dir" && "$node" --input-type=module -e '
+import { loadP3QwenSettingsOwner, validateP3RoleConfigs } from "./p3-boundary.js";
+const owner = await loadP3QwenSettingsOwner();
+const timeouts = validateP3RoleConfigs(process.env, owner).map(role => role.timeout_ms);
+if (timeouts.some(value => !Number.isSafeInteger(value) || value < 1)) throw new Error("P3_ROLE_TIMEOUT_INVALID");
+process.stdout.write(String(Math.max(...timeouts)));
+')
     if [[ -e "$socket" || -L "$socket" ]]; then
         [[ -S "$socket" && -O "$socket" && ! -L "$socket" ]] || { echo 'Неизвестный файл на месте socket; оставлен без изменений.' >&2; exit 1; }
         python3 - "$socket" <<'PY'
@@ -123,7 +130,7 @@ while True:
         time.sleep(0.05)
 PY
     export NOVGOROD_P3_SOCKET="$socket"
-    export NOVGOROD_P3_TIMEOUT_MS=120000
+    export NOVGOROD_P3_TIMEOUT_MS="$role_timeout_ms"
 fi
 printf '%s\n' 'Dev-проба, не P3 GO; T09 не закрыт. Проза: черновик, не сохранено.'
 cd -- "$runtime"

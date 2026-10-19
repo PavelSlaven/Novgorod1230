@@ -1,0 +1,104 @@
+import { createServer } from 'node:http';
+import { writeFile, unlink } from 'node:fs/promises';
+import { networkInterfaces } from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+if (process.platform !== 'linux') throw new Error('P3_SYNTHETIC_WSL_REQUIRED');
+const address = Object.values(networkInterfaces()).flat().find(row => row.family === 'IPv4'
+  && !row.internal && /^(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)/u.test(row.address))?.address;
+if (!address) throw new Error('P3_SYNTHETIC_LOCAL_PRIVATE_ADDRESS_REQUIRED');
+const outputDir = path.dirname(fileURLToPath(import.meta.url));
+const settingsPath = path.join(outputDir, `reply03d-synthetic-settings-${process.pid}.json`);
+let count = 0;
+let responderCount = 0;
+const roles = [];
+
+function classify(payload) {
+  const raw = payload?.messages?.at(-1)?.content;
+  const input = typeof raw === 'string' ? JSON.parse(raw) : null;
+  if (input?.request && input?.plan?.contribution_kind) {
+    return { role: 'npc_conversation_grounding_auditor', output: { pass: true, concerns: [] } };
+  }
+  const request = input?.request ?? input;
+  if (request?.schema === 'npc_conversation_response_request_v1') {
+    const player = request.allowed_references?.actor_refs?.find(ref => ref.entity_kind === 'player_character');
+    if (!player) throw new Error('P3_SYNTHETIC_NPC_REQUEST_INVALID');
+    const reply = ++responderCount === 1 ? 'Слышу. Первый ответ.' : 'Слышу. Второй ответ.';
+    return { role: input?.request ? 'npc_conversation_responder_format_repair'
+      : 'npc_conversation_responder', output: {
+      contribution_kind: 'speech', primary_addressee_ref: player,
+      intended_addressee_refs: [player], affected_actor_refs: [],
+      speech: { utterance_text: reply, dominant_act: 'answer', interaction_tags: [],
+        topic_refs: [], claims: [], response_expectation: { kind: 'none', target_refs: [] } },
+      interpretation: { intent: 'ответить', grounded_contribution: reply, adaptation: 'literal' },
+      resolution: 'automatic', activity: { duration_class: 'brief', effort: 'none' },
+      supporting_operations: [], check: null, handoff: null, reason: 'Ответ.' } };
+  }
+  if (typeof request?.remaining_intent === 'string') {
+    const utterance = /^Скажи дословно: «([^»]+)»$/u.exec(request.remaining_intent)?.[1];
+    if (!utterance) throw new Error('P3_SYNTHETIC_INTENT_UNSUPPORTED');
+    return { role: input?.request ? 'turn_step_planner_repair' : 'turn_step_planner', output: {
+      interpretation: { player_goal: request.remaining_intent,
+        grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+      resolution: 'direct', goal_result: 'achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      operations: [], check: null, continuation: null, clarification: null,
+      direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+        utterance_text: utterance, input_mode: 'verbatim',
+        delivery: { loudness: 2, duration_class: 'brief' } },
+      operation_family: null, operation_choice: null,
+      reason_code: 'player_utterance', reason: 'Speak the supplied words.' } };
+  }
+  throw new Error('P3_SYNTHETIC_ROLE_UNSUPPORTED');
+}
+
+const server = createServer(async (request, response) => {
+  count++;
+  try {
+    if (count > 10) throw new Error('P3_SYNTHETIC_REQUEST_CAP');
+    if (request.method !== 'POST' || request.url !== '/v1/chat/completions'
+        || request.headers.authorization !== 'Bearer synthetic-test') {
+      throw new Error('P3_SYNTHETIC_HTTP_REQUEST_INVALID');
+    }
+    let body = '';
+    for await (const chunk of request) {
+      body += chunk;
+      if (body.length > 2_000_000) throw new Error('P3_SYNTHETIC_BODY_TOO_LARGE');
+    }
+    const payload = JSON.parse(body);
+    const { role, output } = classify(payload);
+    roles.push(role);
+    response.writeHead(200, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ model: 'qwen3.8-27b',
+      choices: [{ message: { role: 'assistant', content: JSON.stringify(output) } }],
+      usage: { prompt_tokens: 10, completion_tokens: 10, total_tokens: 20 } }));
+    process.stdout.write(`${JSON.stringify({ kind: 'synthetic_request', count, role })}\n`);
+  } catch (error) {
+    response.writeHead(422, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ error: { code: error?.message ?? 'P3_SYNTHETIC_FAILED' } }));
+    process.stdout.write(`${JSON.stringify({ kind: 'synthetic_rejected', count,
+      code: /^[A-Z][A-Z0-9_]*$/u.test(error?.message ?? '')
+        ? error.message : 'P3_SYNTHETIC_FAILED' })}\n`);
+  }
+});
+server.listen(0, address);
+await new Promise(resolve => server.once('listening', resolve));
+const port = server.address().port;
+await writeFile(settingsPath, JSON.stringify({ version: 2, settings: {
+  mode: 'custom', compatibility: 'openai_compatible',
+  base_url: `http://${address}:${port}/v1`, model: 'qwen3.8-27b-uncensored-w4a16-tp2',
+  api_key: 'synthetic-test' } }), { flag: 'wx' });
+process.stdout.write(`${JSON.stringify({ kind: 'synthetic_ready', pid: process.pid,
+  settings_path: settingsPath, synthetic_request_cap: 10 })}\n`);
+let closing = false;
+async function close() {
+  if (closing) return;
+  closing = true;
+  server.close();
+  await new Promise(resolve => server.once('close', resolve));
+  await unlink(settingsPath);
+  process.stdout.write(`${JSON.stringify({ kind: 'synthetic_summary', count, roles })}\n`);
+}
+process.once('SIGINT', close);
+process.once('SIGTERM', close);

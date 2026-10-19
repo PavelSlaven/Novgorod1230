@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-10-19T06:57:03.601Z",
+  "head": "f0c4c0688",
+  "command": ".\\tools\\cataclysm-prototype\\run-p3-dev.ps1",
+  "runtime_binary_sha256": "a07f6576974ad06ba6838179eeda4d6598bf560e5b7b3eff02c3ff761075e64c",
+  "transport": "actual Windows PTY -> PS1 -> WSL curses -> resident coordinator -> local synthetic HTTP",
+  "native_userdir": "/home/slaven/cataclysm-recovery/task03-dev/userdir",
+  "selected_npc": "Workshop master (sole native CHAT candidate)",
+  "intents": [
+    "Скажи дословно: «Привет, слышишь меня?»",
+    "Скажи дословно: «Что ты делаешь?»"
+  ],
+  "native_heard_replies": [
+    "Слышу. Первый ответ.",
+    "Слышу. Второй ответ."
+  ],
+  "first_exit": 0,
+  "second_exit": 0,
+  "reload_contains_both_replies": true,
+  "fake_http_requests": 6,
+  "real_qwen_calls": 0,
+  "recovery_screen": false,
+  "limitations": [
+    "synthetic responses, not Qwen quality",
+    "optional generation hook/recovery screen absent",
+    "test_data recurrence messages remain"
+  ]
+}

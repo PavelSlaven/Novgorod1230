@@ -106,6 +106,9 @@ import os
 from pathlib import Path
 import socket
 import sys
+if '-e' in sys.argv:
+    print(93817, end='')
+    sys.exit(0)
 path = Path(sys.argv[-1])
 path.with_suffix('.pid').write_text(str(os.getpid()))
 server = socket.socket(socket.AF_UNIX)
@@ -124,8 +127,10 @@ while True:
                               capture_output=True, text=True, timeout=30)
 
     def test_readiness_and_cleanup_own_coordinator(self):
+        self.binary.write_text("#!/usr/bin/env bash\nprintf %s \"$NOVGOROD_P3_TIMEOUT_MS\" > ../timeout.txt\n")
         result = self.coordinator_launch()
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.root / "timeout.txt").read_text(), "93817")
         pid = int((self.root / "run/p3.pid").read_text())
         with self.assertRaises(ProcessLookupError):
             os.kill(pid, 0)

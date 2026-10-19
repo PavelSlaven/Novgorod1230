@@ -3,8 +3,8 @@
 ## Назначение
 
 Изолированные native проверки пригодности Cataclysm-DDA для Novgorod и
-незавершённая живая dev-проба. Стенд использует отдельную копию upstream;
-dev launcher — отдельный постоянный userdir. Текущий STOP и проверенные границы:
+живая dev-проба. Стенд использует отдельную копию upstream;
+dev launcher — отдельный постоянный userdir. Фактические проверки и границы:
 [результат задания 03](TASK03-LIVE-RESULT.md).
 
 ## Владеет
@@ -37,7 +37,8 @@ Native deserialization переносит сохранённые item instances 
 обычная copy semantics создаёт новые identity. Native save/load также владеет
 файлом состояния RNG engine в существующем стенде. Координатор требует его,
 но не вычисляет RNG самостоятельно. Live overlay ограничивает RNG sidecar
-режимом test_mode с явным P4 opt-in; нативная проверка guard ещё не выполнена.
+режимом test_mode с явным P4 opt-in. После обычного live save/reload sidecar
+в userdir отсутствует; focused native RNG проверки проходят.
 Журнал operation IDs, квитанции и сохранение каждой операции принадлежат
 отдельному отладочному coordinator, который live socket adapter не вызывает.
 Побитовый replay игры не требуется.
@@ -75,9 +76,12 @@ test-only `native-control-tests` проверяет сохранение каж�
 диагностические snapshots вне живого observation.
 Зелёный native тест не является приёмкой semantic/NPC/narration интеграции или
 production cutover. Live AF_UNIX adapter переиспользует прежний JS role runtime;
-owner промптов/LLM остаётся в packages и apps/game-server. Автоматический ответ
-первого услышавшего NPC заблокирован ревью до решения по адресату; текущий код
-нельзя считать принятым игровым путём. UI/smoke
+owner промптов/LLM остаётся в packages и apps/game-server. Общий родной CHAT
+фильтр и creature_select_menu выбирают адресата; private target_actor_ref
+заполняет существующий emit_interaction.target_actor_refs. Ответ допускается
+только выбранному услышавшему NPC после повторной проверки identity/visibility.
+Два последовательных intent и сохранение/повторный PS1 запуск проверены с
+локальным fake. Это не приёмка Qwen, P3 GO или production пути. UI/smoke
 команды и незавершённые области перечислены в [PLAY.md](PLAY.md). Task01
 curses smoke загрузил P1 мир и подтвердил save-and-quit; runtime data directory
 должен содержать `gfx`, а `--datadir` требует завершающий `/` в этой сборке.

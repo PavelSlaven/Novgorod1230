@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- test(cataclysm): P3 semantic/NPC/speech boundary и P4 semantic generation staging; source snapshot без приёмки, sealed T06–T10 остановлен до согласования локального Qwen владельцем (#769)
 - test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, P4 technical gate принят, речевые T11/T12 остаются OPEN (#768)
 - test(cataclysm): P4 complete generations и 14 crash/retry сценариев; strict UID и 20 latency samples фиксируют STOP/REVISE_APPROACH, без production activation (#764)
 - test(cataclysm): изолированный P0–P2 harness на pinned CDDA — native loop, items, activity, NPC, danger interrupt и измеренный readback; без production activation (#757)

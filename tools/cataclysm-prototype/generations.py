@@ -20,6 +20,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 import uuid
 from pathlib import Path
@@ -316,6 +317,37 @@ def _first_difference(left: Any, right: Any, path: str = "snapshot") -> str | No
     return None
 
 
+def _request_digest(request: dict[str, Any]) -> str:
+    payload = json.dumps(request, sort_keys=True, separators=(",", ":"),
+                         ensure_ascii=False, allow_nan=False)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _validate_p3_request(operation_id: str, request: dict[str, Any]) -> None:
+    if not isinstance(request, dict) or request.get("schema") != "p3_p4_semantic_request_v1":
+        raise ValueError("invalid P3 semantic request schema")
+    if request.get("operation_id") != operation_id:
+        raise ValueError("P3 semantic request operation ID mismatch")
+    if not isinstance(request.get("intent"), str) or not request["intent"].strip():
+        raise ValueError("P3 semantic request intent is required")
+    revision = request.get("observation_revision")
+    if not (isinstance(revision, str) and revision or isinstance(revision, int) and not isinstance(revision, bool)):
+        raise ValueError("P3 semantic observation revision is required")
+    native = request.get("native_operation")
+    if not isinstance(native, dict) or native.get("schema") != "p3_native_operation_request_v1":
+        raise ValueError("validated P3 native operation request is required")
+    if native.get("operation_id") != operation_id:
+        raise ValueError("P3 native operation ID mismatch")
+    if native.get("primitive") != "speak":
+        raise ValueError("P3 join currently supports native speech only")
+    expected = native.get("expected_native_observation")
+    if not isinstance(expected, dict) or expected.get("revision") != revision:
+        raise ValueError("P3 native observation revision mismatch")
+    semantic_input = request.get("validated_semantic_input")
+    if not isinstance(semantic_input, dict):
+        raise ValueError("validated semantic input is required")
+
+
 def _nearest_rank(values: list[float], percentile: float) -> float:
     if not values or not 0 < percentile <= 1:
         raise ValueError("nearest-rank percentile requires values and 0 < p <= 1")
@@ -362,9 +394,60 @@ def _kill_self() -> None:
     raise AssertionError("SIGKILL unexpectedly returned")
 
 
+class P3StageAdapter:
+    """Cold bridge to the existing P3 runner; native effects stay in stage userdirs."""
+
+    def __init__(self, binary: Path, native_root: Path, world: str,
+                 runner: Path | None = None, node: str = "node"):
+        self.binary = binary.resolve()
+        self.native_root = native_root.resolve()
+        self.world = world
+        self.runner = (runner or Path(__file__).with_name("p3-runner.js")).resolve()
+        self.node = node
+
+    def _run(self, mode: str, user_dir: Path,
+             request: dict[str, Any] | None = None) -> dict[str, Any]:
+        if mode not in {"create", "read", "apply"}:
+            raise ValueError("invalid P3 stage adapter mode")
+        with tempfile.TemporaryDirectory(prefix="p3-bridge-", dir=user_dir.parent) as scratch:
+            config_path = Path(scratch) / "native-config.json"
+            config_path.write_text(json.dumps({"binary": str(self.binary),
+                "nativeRoot": str(self.native_root), "nativeUserDir": str(user_dir.resolve()),
+                "world": self.world}, separators=(",", ":")), encoding="utf-8")
+            command = [self.node, str(self.runner), f"--coordinator-{mode}",
+                       "--native-config", str(config_path)]
+            if request is not None:
+                request_path = Path(scratch) / "request.json"
+                request_path.write_text(json.dumps(request, ensure_ascii=False,
+                    separators=(",", ":"), allow_nan=False), encoding="utf-8")
+                command.extend(["--request", str(request_path)])
+            completed = subprocess.run(command, cwd=self.native_root, capture_output=True,
+                text=True, timeout=180, check=False)
+            if completed.returncode:
+                detail = (completed.stderr or completed.stdout or "P3 stage adapter failed").strip()
+                raise RuntimeError(detail[:2000])
+            try:
+                result = json.loads(completed.stdout)
+            except json.JSONDecodeError as exc:
+                raise RuntimeError("P3 stage adapter returned invalid JSON") from exc
+            if not isinstance(result, dict):
+                raise RuntimeError("P3 stage adapter response must be an object")
+            return result
+
+    def create(self, user_dir: Path) -> dict[str, Any]:
+        return self._run("create", user_dir)
+
+    def read(self, user_dir: Path) -> dict[str, Any]:
+        return self._run("read", user_dir)
+
+    def apply(self, user_dir: Path, request: dict[str, Any]) -> dict[str, Any]:
+        return self._run("apply", user_dir, request)
+
+
 class Coordinator:
     def __init__(self, experiment_root: Path, native_root: Path, binary: Path, world: str,
-                 preload: bool = False, native_host: NativeHost | None = None):
+                 preload: bool = False, native_host: NativeHost | None = None,
+                 p3_adapter: Any | None = None):
         self.root = experiment_root.resolve()
         self.native_root = native_root.resolve()
         self.binary = binary.resolve()
@@ -374,6 +457,7 @@ class Coordinator:
         self._owns_native_host = native_host is None
         self._profile_scratch: Path | None = None
         self._profile_base: tuple[str, str] | None = native_host.profile_base if native_host else None
+        self.p3_adapter = p3_adapter
         if not self.root.is_absolute() or not self.native_root.is_dir() or not self.binary.is_file():
             raise ValueError("experiment/native paths must exist and be absolute")
         if self.native_root in self.root.parents or self.root in self.native_root.parents:
@@ -477,6 +561,8 @@ class Coordinator:
             _make_writable(self._profile_scratch)
             shutil.rmtree(self._profile_scratch, ignore_errors=True)
             self._profile_scratch = None
+        if not self._lock_stream.closed:
+            self._lock_stream.close()
 
     def _pointer_value(self) -> dict[str, Any] | None:
         if not self.pointer.exists():
@@ -534,6 +620,16 @@ class Coordinator:
             if not isinstance(entry, dict) or not isinstance(entry.get("id"), str) or entry["id"] in seen:
                 raise ValueError("invalid or duplicate executed operation ID")
             seen.add(entry["id"])
+            if "request_sha256" in entry:
+                _validate_p3_request(entry["id"], entry.get("request"))
+                if entry["request_sha256"] != _request_digest(entry["request"]):
+                    raise ValueError("P3 operation request digest mismatch")
+                if not all(isinstance(entry.get(key), dict) for key in
+                           ("native_readback", "conversation_outcome", "before_observation",
+                            "after_observation", "snapshot")):
+                    raise ValueError("P3 operation outcome is incomplete")
+                if entry["after_observation"].get("native_snapshot") != entry["native_readback"].get("after"):
+                    raise ValueError("P3 observation does not match original native after snapshot")
         return semantic
 
     def _publish(self, generation_id: str, previous_id: str | None) -> float:
@@ -676,6 +772,19 @@ class Coordinator:
         result["read_copy_ms"] = copy_ms
         return semantic, result, wall_ms
 
+    def _read_p3_generation(self, generation_id: str) -> dict[str, Any]:
+        if self.p3_adapter is None:
+            raise ValueError("P3 stage adapter is unavailable")
+        scratch = self.work / f"p3-read-{uuid.uuid4().hex}"
+        scratch.mkdir()
+        user_dir = scratch / "userdir"
+        try:
+            _copy_tree(self._generation_path(generation_id) / "userdir", user_dir)
+            _make_writable(user_dir)
+            return self.p3_adapter.read(user_dir)
+        finally:
+            shutil.rmtree(scratch, ignore_errors=True)
+
     def read(self) -> dict[str, Any]:
         pointer = self._pointer_value()
         if pointer is None:
@@ -696,10 +805,21 @@ class Coordinator:
         stage.mkdir()
         user_dir = stage / "userdir"
         try:
-            result, create_wall_ms = self._native("create", user_dir)
-            readback, read_wall_ms = self._native("read", user_dir)
-            if result.get("after") != readback.get("after"):
-                raise RuntimeError("native create/read snapshots differ")
+            p3_observation = None
+            if self.p3_adapter is None:
+                result, create_wall_ms = self._native("create", user_dir)
+                readback, read_wall_ms = self._native("read", user_dir)
+                if result.get("after") != readback.get("after"):
+                    raise RuntimeError("native create/read snapshots differ")
+            else:
+                create_start = time.perf_counter()
+                created = self.p3_adapter.create(user_dir)
+                create_wall_ms = (time.perf_counter() - create_start) * 1000
+                p3_observation = created.get("observation")
+                if not isinstance(p3_observation, dict):
+                    raise RuntimeError("P3 create returned no native observation")
+                readback, read_wall_ms = self._native("read", user_dir)
+                result = readback
             total, native_files = _size_and_files(user_dir)
             required_files = [f"save/{self.world}/master.gsav",
                               f"save/{self.world}/novgorod_rng_state"]
@@ -709,6 +829,10 @@ class Coordinator:
             semantic = {"schema": 1, "generation_id": generation_id, "world": self.world,
                         "technical_facts": [], "operation_ids": [],
                         "required_native_files": required_files, "native_files": sorted(native_files)}
+            if p3_observation is not None:
+                if not isinstance(p3_observation.get("native_snapshot"), dict):
+                    raise RuntimeError("P3 create observation has no physical snapshot")
+                semantic["p3_observation"] = p3_observation
             if self.preload:
                 self._profile_base = self.native_host.profile_base if self.native_host else _profile_base(
                     str(self.binary), str(self.native_root))
@@ -720,6 +844,14 @@ class Coordinator:
                 if candidate_readback.get("after") != result.get("after"):
                     difference = _first_difference(result.get("after"), candidate_readback.get("after"))
                     raise RuntimeError(f"initial candidate native reload/readback mismatch: {difference}")
+                if self.p3_adapter is not None:
+                    actual_observation = self._read_p3_generation(generation_id).get("observation")
+                    if not isinstance(actual_observation, dict) \
+                            or actual_observation.get("native_snapshot") != p3_observation.get("native_snapshot"):
+                        difference = _first_difference(p3_observation.get("native_snapshot"),
+                            actual_observation.get("native_snapshot")
+                            if isinstance(actual_observation, dict) else None, "p3_native_snapshot")
+                        raise RuntimeError(f"initial candidate P3 reload mismatch: {difference}")
             except BaseException:
                 self._remove_unaccepted_generation(generation_id)
                 raise
@@ -734,37 +866,81 @@ class Coordinator:
             shutil.rmtree(stage, ignore_errors=True)
 
     def apply(self, operation_id: str, operation: str, fault: str | None = None,
-              failpoint: str | None = None, native_failpoint: str | None = None) -> dict[str, Any]:
+              failpoint: str | None = None, native_failpoint: str | None = None,
+              semantic_request: dict[str, Any] | None = None) -> dict[str, Any]:
         if not operation_id or len(operation_id) > 200:
             raise ValueError("operation id must be 1..200 characters")
-        if operation not in OPERATIONS:
+        is_p3 = semantic_request is not None
+        if is_p3:
+            _validate_p3_request(operation_id, semantic_request)
+            if operation != "p3_speech" or self.p3_adapter is None:
+                raise ValueError("P3 speech requires the configured P3 stage adapter")
+        elif operation not in OPERATIONS:
             raise ValueError(f"unsupported native operation: {operation}")
         if failpoint and failpoint not in FAILPOINTS:
             raise ValueError(f"unsupported coordinator failpoint: {failpoint}")
-        if failpoint == "before_effect":
+        if failpoint == "before_effect" and semantic_request is None:
             _kill_self()
         pointer = self._pointer_value()
         if pointer is None:
             raise UncertainState("no accepted generation")
         previous_id = pointer["current"]
         old = self._validate_generation(previous_id)
-        request = {"operation": operation}
+        request = semantic_request if is_p3 else {"operation": operation}
+        request_sha256 = _request_digest(request) if is_p3 else None
         for entry in old["operation_ids"]:
             if entry["id"] == operation_id:
-                if entry["request"] != request:
+                if entry["request"] != request or (is_p3 and entry.get("request_sha256") != request_sha256):
                     raise ValueError("operation ID reused with a different request")
+                if is_p3:
+                    return {"status": "already_applied", "operation_id": operation_id,
+                        "generation_id": previous_id, "native_apply_invoked": False,
+                        "snapshot": entry["snapshot"], "native_readback": entry["native_readback"],
+                        "conversation_outcome": entry["conversation_outcome"],
+                        "before_observation": entry["before_observation"],
+                        "after_observation": entry["after_observation"],
+                        "p3_native_acceptance": "pending_native_acceptance"}
                 _, accepted_readback, _ = self._read_generation(previous_id)
                 return {"status": "already_applied", "operation_id": operation_id,
                         "generation_id": previous_id, "native_apply_invoked": False,
                         "snapshot": accepted_readback["after"]}
+        if failpoint == "before_effect":
+            _kill_self()
         stage = self.work / f"stage-{uuid.uuid4().hex}"
         stage.mkdir()
         stage_user_dir = stage / "userdir"
         try:
             stage_copy_bytes, stage_copy_ms = self._copy_generation_userdir(previous_id, stage_user_dir)
-            native_apply, apply_wall_ms = self._native("apply", stage_user_dir, operation,
-                                                       failpoint=native_failpoint,
-                                                       wait_kill=bool(native_failpoint))
+            p3_result = None
+            p3_after_observation = None
+            if is_p3:
+                before_read, _ = self._native("read", stage_user_dir)
+                p3_start = time.perf_counter()
+                p3_result = self.p3_adapter.apply(stage_user_dir, semantic_request)
+                apply_wall_ms = (time.perf_counter() - p3_start) * 1000
+                p3_before_observation = p3_result.get("before_observation")
+                p3_after_observation = p3_result.get("after_observation")
+                p3_native_readback = p3_result.get("native_readback")
+                if not isinstance(p3_before_observation, dict) \
+                        or not isinstance(p3_after_observation, dict) \
+                        or not isinstance(p3_native_readback, dict) \
+                        or not isinstance(p3_result.get("conversation_outcome"), dict):
+                    raise RuntimeError("P3 stage adapter returned incomplete semantic outcome")
+                if p3_before_observation.get("revision") != semantic_request["observation_revision"] \
+                        or p3_before_observation.get("native_snapshot") != p3_native_readback.get("before") \
+                        or p3_after_observation.get("native_snapshot") != p3_native_readback.get("after") \
+                        or p3_native_readback.get("operation_id") != operation_id \
+                        or p3_native_readback.get("status") != "applied":
+                    raise RuntimeError("P3 native readback does not match fresh observations/request")
+                after_read, native_read_wall_ms = self._native("read", stage_user_dir)
+                native_apply = {"before": before_read.get("after"), "after": after_read.get("after"),
+                    "save_ms": 0, "load_ms": 0, "bootstrap_ms": 0, "core_data_ms": 0}
+                native_read = after_read
+            else:
+                native_apply, apply_wall_ms = self._native("apply", stage_user_dir, operation,
+                    failpoint=native_failpoint, wait_kill=bool(native_failpoint))
+                native_read = None
+                native_read_wall_ms = 0.0
             if failpoint == "after_native_save_before_semantic":
                 _kill_self()
             before = native_apply.get("before")
@@ -772,14 +948,22 @@ class Coordinator:
             if not isinstance(actual, dict):
                 raise RuntimeError("native apply has no physical snapshot")
             candidate_id = uuid.uuid4().hex
-            operations = [*old["operation_ids"], {"id": operation_id, "request": request,
-                                                    "status": "applied"}]
+            operation_entry = {"id": operation_id, "request": request, "status": "applied"}
+            if is_p3:
+                operation_entry.update({"request_sha256": request_sha256,
+                    "native_readback": p3_native_readback,
+                    "conversation_outcome": p3_result["conversation_outcome"],
+                    "before_observation": p3_before_observation,
+                    "after_observation": p3_after_observation, "snapshot": actual})
+            operations = [*old["operation_ids"], operation_entry]
             facts = [*old["technical_facts"], {"operation_id": operation_id,
                                                 "operation": operation, "status": "applied"}]
             semantic = {"schema": 1, "generation_id": candidate_id, "world": self.world,
                         "technical_facts": facts, "operation_ids": operations,
                         "required_native_files": old["required_native_files"],
                         "native_files": []}
+            if is_p3:
+                semantic["p3_observation"] = p3_after_observation
             if self.preload:
                 semantic["profile_key"] = _profile_key(
                     self.binary, self.native_root, stage_user_dir, self.world,
@@ -793,6 +977,15 @@ class Coordinator:
                 if native_read.get("after") != actual:
                     difference = _first_difference(actual, native_read.get("after"))
                     raise RuntimeError(f"candidate native reload/readback mismatch: {difference}")
+                if is_p3:
+                    candidate_p3 = self._read_p3_generation(candidate_id)
+                    candidate_observation = candidate_p3.get("observation")
+                    if not isinstance(candidate_observation, dict) \
+                            or candidate_observation.get("native_snapshot") != p3_result["native_readback"].get("after"):
+                        difference = _first_difference(p3_result["native_readback"].get("after"),
+                            candidate_observation.get("native_snapshot")
+                            if isinstance(candidate_observation, dict) else None, "p3_native_snapshot")
+                        raise RuntimeError(f"candidate native P3 reload/readback mismatch: {difference}")
                 read_validation_ms = (time.perf_counter() - read_start) * 1000
             except BaseException:
                 self._remove_unaccepted_generation(candidate_id)
@@ -812,6 +1005,10 @@ class Coordinator:
                          publication_ms + candidate_reload_budget_ms)
             return {"status": "applied", "operation_id": operation_id, "generation_id": candidate_id,
                     "native_apply_invoked": True, "before": before, "snapshot": actual,
+                    **({"native_readback": p3_result["native_readback"],
+                       "conversation_outcome": p3_result["conversation_outcome"],
+                       "before_observation": p3_before_observation,
+                       "after_observation": p3_after_observation} if is_p3 else {}),
                     "native_save_ms": native_apply.get("save_ms"), "native_apply_load_ms": native_apply.get("load_ms"),
                     "native_readback_load_ms": native_read.get("load_ms"),
                     "native_apply_bootstrap_ms": native_apply.get("bootstrap_ms"),
@@ -826,7 +1023,9 @@ class Coordinator:
                     "bootstrap_excluded_ms": bootstrap_excluded_ms,
                     "core_data_excluded_ms": core_data_excluded_ms,
                     "copy_fsync_ms": copy_fsync_ms, "publication_ms": publication_ms,
-                    "read_validation_wall_ms": read_validation_ms, "p4_budget_ms": budget_ms,
+                    "read_validation_wall_ms": read_validation_ms,
+                    **({"p3_native_acceptance": "pending_native_acceptance"} if is_p3 else
+                       {"p4_budget_ms": budget_ms}),
                     "copy_bytes": copied_bytes, "native_operation": operation}
         finally:
             shutil.rmtree(stage, ignore_errors=True)
@@ -1358,12 +1557,17 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--world", default="novgorod_p4")
     parser.add_argument("--preload", action="store_true",
                         help="reuse one immutable native definitions host for apply/read children")
+    parser.add_argument("--p3-semantic", action="store_true",
+                        help="enable the cold P3 speech stage adapter for this experiment")
+    parser.add_argument("--p3-runner", type=Path, default=Path(__file__).with_name("p3-runner.js"))
+    parser.add_argument("--node", default="node")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("init")
     sub.add_parser("read")
     apply = sub.add_parser("apply")
     apply.add_argument("--operation-id", required=True)
-    apply.add_argument("--operation", required=True, choices=sorted(OPERATIONS))
+    apply.add_argument("--operation", required=True)
+    apply.add_argument("--semantic-request", type=Path)
     sub.add_parser("deliver-failure")
     sub.add_parser("cleanup")
     suite = sub.add_parser("suite")
@@ -1392,8 +1596,10 @@ def main() -> int:
                                  args.operation, args.preload or getattr(args, "preload_metrics", False))
             print(json.dumps(report, sort_keys=True))
             return 0 if report["meets_limits"] else 2
+        p3_adapter = P3StageAdapter(args.binary, args.native_root, args.world,
+            runner=args.p3_runner, node=args.node) if args.p3_semantic else None
         coordinator = Coordinator(args.experiment_root, args.native_root, args.binary, args.world,
-                                  preload=args.preload)
+                                  preload=args.preload, p3_adapter=p3_adapter)
         try:
             if args.command == "init":
                 result = coordinator.init(fault=os.environ.get("NOVGOROD_P4_CANDIDATE_FAULT"))
@@ -1403,7 +1609,9 @@ def main() -> int:
                 result = coordinator.apply(args.operation_id, args.operation,
                                            fault=os.environ.get("NOVGOROD_P4_CANDIDATE_FAULT"),
                                            failpoint=os.environ.get("NOVGOROD_P4_COORDINATOR_FAILPOINT"),
-                                           native_failpoint=os.environ.get("NOVGOROD_P4_NATIVE_FAILPOINT"))
+                                           native_failpoint=os.environ.get("NOVGOROD_P4_NATIVE_FAILPOINT"),
+                                           semantic_request=json.loads(args.semantic_request.read_text(encoding="utf-8"))
+                                           if args.semantic_request else None)
             elif args.command == "cleanup":
                 coordinator._pointer_value()
                 coordinator._cleanup_work(fail=os.environ.get("NOVGOROD_P4_CLEANUP_FAIL") == "1")

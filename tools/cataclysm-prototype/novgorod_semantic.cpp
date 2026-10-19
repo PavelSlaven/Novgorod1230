@@ -368,6 +368,7 @@ operation_result apply_operation( const JsonObject &request )
             throw std::runtime_error( "NOVGOROD_INVALID_OPERATION_REQUEST" );
         }
         const JsonObject expected = request.get_object( "expected_native_observation" );
+        expected.allow_omitted_members();
         if( expected.get_string( "actor_id" ) != op.actor_id ) {
             throw std::runtime_error( "NOVGOROD_STALE_ACTOR_ID" );
         }

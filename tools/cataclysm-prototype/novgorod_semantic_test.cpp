@@ -895,3 +895,55 @@ TEST_CASE( "Novgorod sole native CHAT candidate is selected automatically", "[no
     REQUIRE( chat_available_creatures().size() == 1 );
     CHECK( select_chat_target() == &subject );
 }
+
+TEST_CASE( "Novgorod real operation frame projects expected observation metadata", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    const std::string actor = std::to_string( get_avatar().getID().get_value() );
+    const npc &listener = *g->all_npcs().begin();
+    const std::string listener_id = std::to_string( listener.getID().get_value() );
+    std::string expected_actor = actor;
+    int expected_turn = to_turn<int>( calendar::turn );
+    std::string refusal;
+    SECTION( "current references and both clock fields" ) {}
+    SECTION( "stale actor still refused" ) {
+        expected_actor = "missing-actor";
+        refusal = "NOVGOROD_STALE_ACTOR_ID";
+    }
+    SECTION( "stale observation still refused" ) {
+        --expected_turn;
+        refusal = "NOVGOROD_STALE_NATIVE_OBSERVATION";
+    }
+    const std::string references = "{\"actors\":[{\"ref\":\"npc:" + listener_id +
+                                   "\",\"id\":\"" + listener_id + "\"}]}";
+    const std::string frame = "{\"type\":\"operation\",\"request\":{"
+                              "\"schema\":\"p3_native_operation_request_v1\","
+                              "\"operation_id\":\"live-1\",\"expected_native_observation\":{"
+                              "\"turn\":" + std::to_string( expected_turn ) +
+                              ",\"revision\":" + std::to_string( expected_turn ) +
+                              ",\"actor_id\":\"" + expected_actor + "\",\"references\":" + references +
+                              "},\"actor_id\":\"" + actor + "\",\"primitive\":\"speak\","
+                              "\"args\":{\"utterance\":\"Exact literal speech\"},\"references\":" + references +
+                              "},\"id\":\"1\"}";
+    const JsonObject wire = json_loader::from_string( frame ).get_object();
+    wire.allow_omitted_members();
+    const native_snapshot before = take_snapshot();
+    auto result = novgorod_semantic::apply_operation( wire.get_object( "request" ) );
+    if( refusal.empty() ) {
+        REQUIRE( result.applied );
+        result = novgorod_semantic::finish_operation();
+        get_avatar().cancel_activity();
+        const JsonObject readback = json_loader::from_string( result.json ).get_object();
+        readback.allow_omitted_members();
+        const JsonObject effect = readback.get_object( "native_effect" );
+        effect.allow_omitted_members();
+        CHECK( effect.get_string( "utterance" ) == "Exact literal speech" );
+    } else {
+        CHECK_FALSE( result.applied );
+        CHECK( result.json.find( refusal ) != std::string::npos );
+        CHECK( take_snapshot().world_signature == before.world_signature );
+        CHECK( get_avatar().activity.is_null() );
+    }
+    CHECK( calendar::turn == before.native_time );
+    CHECK( get_avatar().get_moves() == before.moves );
+}

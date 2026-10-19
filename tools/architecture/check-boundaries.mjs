@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { ROOT_MARKDOWN_ALLOWLIST } from '../docs-tools/src/documentation.js';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
-const sourceRoots = ['apps', 'packages'];
+const sourceRoots = ['apps', 'packages', 'tools/cataclysm-prototype'];
 const violations = [];
 
 for (const sourceRoot of sourceRoots) {
@@ -13,6 +13,13 @@ for (const sourceRoot of sourceRoots) {
     const rel = relative(root, file).replaceAll('\\', '/');
     const text = await readFile(file, 'utf8');
     for (const specifier of importsOf(text)) {
+      if (rel.startsWith('tools/cataclysm-prototype/') && specifier.startsWith('.')) {
+        const target = resolve(dirname(file), specifier).replaceAll('\\', '/');
+        const packageSource = target.match(/\/packages\/([^/]+)\/src(?:\/|$)/u);
+        if (packageSource) {
+          violations.push(`${rel}: relative import bypasses @rus/${packageSource[1]} package exports (${specifier})`);
+        }
+      }
       if (rel.startsWith('packages/') && specifier.includes('/apps/')) violations.push(`${rel}: packages may not import apps (${specifier})`);
       if (rel.startsWith('packages/') && specifier.includes('/legacy/')) {
         const allowed = rel === 'packages/new-game/src/legacy-adapter.js';
@@ -659,7 +666,7 @@ for (const cycle of findCycles(turnGraph)) {
 }
 const turnIndex = await readFile(join(turnRoot, 'src/index.js'), 'utf8');
 if (!turnIndex.includes("from './orchestrator.js'")) violations.push('Turn public API must export the modular orchestrator');
-if ((turnIndex.match(/\bexport\b/g) ?? []).length > 12) violations.push('Turn public API exceeds 12 export statements');
+if ((turnIndex.match(/\bexport\b/g) ?? []).length > 13) violations.push('Turn public API exceeds 13 export statements');
 const turnOrchestrator = await readFile(join(turnRoot, 'src/workflow-stages.js'), 'utf8');
 for (const requiredStage of [
   'normalize_intent', 'resolve_mode', 'load_context', 'availability', 'checks', 'consequence', 'time_update',

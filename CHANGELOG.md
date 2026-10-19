@@ -6,7 +6,8 @@
 
 - docs(context): карта родных механизмов CDDA (docs/context/cdda-native-map, генератор сводной таблицы в docs:check); навигация, не норма (#778)
 - docs(governance): AGENTS.md — правило CDDA reuse-first: готовые механизмы CDDA в первую очередь, расширять при необходимости, новые только при отсутствии; новый механизм называет проверенный родной (файл:строка) и почему не подошёл (#775)
-- test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, P4 technical gate принят, речевые T11/T12 остаются OPEN (#768)
+- fix(cataclysm): dev-проба curses через PS1 и owner settings; native delivery/save/restart, один NPC model repair вместо code заготовки, typed отказ с тишиной и родной факт слуха; Linux transport assertions усилены, NPC часть LW-034 устранена; P3 GO не подтверждён (#770, Refs #247, #329; заменяет #769)
+- test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, исторический P4 gate PASS отозван в #770, речевые T11/T12 остаются OPEN (#768)
 - test(cataclysm): P4 complete generations и 14 crash/retry сценариев; strict UID и 20 latency samples фиксируют STOP/REVISE_APPROACH, без production activation (#764)
 - test(cataclysm): изолированный P0–P2 harness на pinned CDDA — native loop, items, activity, NPC, danger interrupt и измеренный readback; без production activation (#757)
 - docs(plans): owner's scenario spec «След на Нижней Двине» (frame + instance generator at party start) and an example playthrough, verbatim, as design input for the v17 quest start (D101, D105) (#238)

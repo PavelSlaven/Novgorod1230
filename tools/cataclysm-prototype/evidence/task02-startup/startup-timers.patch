@@ -1,0 +1,71 @@
+--- a/src/game.cpp
++++ b/src/game.cpp
+@@ -688,0 +689 @@
++    cata_timer diagnostic_timer( "diagnostic.setup" );
+--- a/src/game_io.cpp
++++ b/src/game_io.cpp
+@@ -248,0 +249 @@
++    cata_timer diagnostic_timer( "diagnostic.core_data" );
+@@ -354,0 +356 @@
++    cata_timer diagnostic_timer( "diagnostic.native_world_load" );
+@@ -549,0 +552 @@
++    cata_timer diagnostic_timer( "diagnostic.load_world_modfiles" );
+@@ -578,3 +581,6 @@
+-    load_mod_data_from_dir( PATH_INFO::world_base_save_path() / "mods", "custom" );
+-    load_mod_interaction_data_from_dir( PATH_INFO::world_base_save_path() / "mods" /
+-                                        "mod_interactions", "custom" );
++    {
++        cata_timer diagnostic_timer( "diagnostic.world_custom_mods" );
++        load_mod_data_from_dir( PATH_INFO::world_base_save_path() / "mods", "custom" );
++        load_mod_interaction_data_from_dir( PATH_INFO::world_base_save_path() / "mods" /
++                                            "mod_interactions", "custom" );
++    }
+@@ -586,0 +593 @@
++    cata_timer diagnostic_timer( "diagnostic.load_packs" );
+@@ -600 +606,0 @@
+-    cata_timer::print_stats();
+--- a/src/init.cpp
++++ b/src/init.cpp
+@@ -1,0 +2 @@
++#include "perf.h"
+@@ -807,0 +809 @@
++    cata_timer diagnostic_timer( "diagnostic.finalize_loaded_data" );
+@@ -943,0 +946 @@
++        cata_timer diagnostic_step( "finalize." + e.first );
+@@ -955,0 +959 @@
++    cata_timer diagnostic_timer( "diagnostic.check_consistency" );
+--- a/tests/test_main.cpp
++++ b/tests/test_main.cpp
+@@ -43,0 +44 @@
++#include "perf.h"
+@@ -111,0 +113 @@
++    cata_timer diagnostic_init( "diagnostic.init_global_game_state" );
+@@ -112,0 +115,2 @@
++    {
++        cata_timer diagnostic_paths( "diagnostic.paths_options_init" );
+@@ -152,0 +157 @@
++    }
+@@ -157 +162,4 @@
+-    g->load_static_data();
++    {
++        cata_timer diagnostic_static( "diagnostic.static_data" );
++        g->load_static_data();
++    }
+@@ -167 +175,4 @@
+-        world_generator->init();
++        {
++            cata_timer diagnostic_metadata( "diagnostic.metadata" );
++            world_generator->init();
++        }
+--- a/tests/novgorod_persistence_test.cpp
++++ b/tests/novgorod_persistence_test.cpp
+@@ -37,0 +38 @@
++#include "perf.h"
+@@ -341,0 +343,2 @@
++    {
++    cata_timer diagnostic_readback( "diagnostic.readback_test_body" );
+@@ -383 +386,3 @@
+-}
++    }
++    cata_timer::print_stats();
++}

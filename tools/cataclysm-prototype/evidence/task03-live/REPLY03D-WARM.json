@@ -1,0 +1,35 @@
+{
+  "binary_sha256": "a07f6576974ad06ba6838179eeda4d6598bf560e5b7b3eff02c3ff761075e64c",
+  "world": "Waveland",
+  "copied_from": "/home/slaven/cataclysm-recovery/task03-dev/userdir",
+  "cache_before": true,
+  "runs": [
+    {
+      "menu_seconds": null,
+      "loaded_seconds": 12.633523835999995,
+      "inputs": [
+        "wait",
+        "move west",
+        "move east",
+        "inspect carried native item"
+      ],
+      "exit_code": 0,
+      "save_before": "b3284ade671f248f13592974ed3069569818a7cbfe30d7d9f8543b0ba2acec88",
+      "save_after": "c837b8048dd86dc541a69bcd4c562ccf4ade234aa3f30a26323a38dd237eb87d"
+    },
+    {
+      "menu_seconds": null,
+      "loaded_seconds": 16.32149533300003,
+      "inputs": [
+        "wait",
+        "move west",
+        "move east",
+        "inspect carried native item"
+      ],
+      "exit_code": 0,
+      "save_before": "c837b8048dd86dc541a69bcd4c562ccf4ade234aa3f30a26323a38dd237eb87d",
+      "save_after": "ef8bb98d47f5c627342c10471b22749d7dd712aed64c21287c63e30e0641f46d"
+    }
+  ],
+  "result": "PASS"
+}

@@ -155,6 +155,7 @@ export {
   createTurnStepExecutionRegistry,
   runTurnStepLoop
 } from './turn-step-loop.js';
+export { requestTurnStepPlanWithRepair } from './turn-step-plan-repair.js';
 export {
   advancePostAppliedActorStep,
   requireFactualEvents

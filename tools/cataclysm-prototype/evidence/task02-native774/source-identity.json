@@ -1,0 +1,30 @@
+{
+  "head": "c246e6c4b4eafd7853c2053d3268095efa3054b4",
+  "upstream": "0d8843f1c500052c3e026e3da6f8edaf5e00b626",
+  "files": [
+    {
+      "path": "tools/cataclysm-prototype/native-semantic-input.patch",
+      "sha256": "2e63a88683a957d9aa59bfd6c7e30a6dc7566ffd193ffdde82090789bc7c5b09"
+    },
+    {
+      "path": "artifacts/2026-10-19/nativebuild/cataclysm-source/src/json.h",
+      "sha256": "b6614c3dc58a1a658c532f726d9396b2dc2855519a2babbd434d3027436f3b09"
+    },
+    {
+      "path": "artifacts/2026-10-19/task02/main-repro-native-source/src/json.h",
+      "sha256": "42bb872e16165437b40c4f18d9cf2ba28793d984abaccbb15a709a4c29305143"
+    },
+    {
+      "path": "artifacts/2026-10-19/nativebuild/cataclysm-source/tests/json_test.cpp",
+      "sha256": "d0392c923a7dc4aca6679b8f806df96d2d55a89308d4af1c372d3aba2d6d774b"
+    },
+    {
+      "path": "artifacts/2026-10-19/task02/main-repro-native-source/tests/json_test.cpp",
+      "sha256": "d0392c923a7dc4aca6679b8f806df96d2d55a89308d4af1c372d3aba2d6d774b"
+    },
+    {
+      "path": "artifacts/2026-10-19/nativebuild/build-release/tests/cata_test",
+      "sha256": "d43a6aefb936f50db2fb7389a0736c04eb62a7240634f6c5e8b4edfaf24a0a5f"
+    }
+  ]
+}

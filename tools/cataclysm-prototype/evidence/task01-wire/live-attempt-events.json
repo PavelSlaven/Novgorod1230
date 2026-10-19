@@ -1,0 +1,14 @@
+[
+  {
+    "phase": "before",
+    "attempt": 1,
+    "role_id": "turn_step_planner",
+    "error": null
+  },
+  {
+    "phase": "after",
+    "attempt": 1,
+    "role_id": "turn_step_planner",
+    "error": null
+  }
+]

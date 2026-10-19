@@ -2,6 +2,11 @@
 
 **Статус:** REFERENCE / DOMAIN GUIDE; эксперимент, не production contract.
 **Дата:** 2026-10-18. **CR:** [#758](https://github.com/PavelSlaven/Novgorod1230/issues/758).
+**Исторический протокол стенда.** Задание 02 / D215/D216 отменило бюджет
+save+reload ≤5 с на операцию и заморозило preload/fork. Он был назначен
+исполнителем и не следует из исходного плана среза. Ниже сохранена история
+эксперимента, не разрешение развивать этот подход. Штатные save/start/recovery
+ворота и разделение отладки заданы в исправленном плане среза.
 **План:** [P4 и fault matrix](../plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md).
 **Вход:** P0–P2 приняты на `8a54ac012543134ac0887b954fb59681d77b6275`;
 CDDA pinned `0d8843f1c500052c3e026e3da6f8edaf5e00b626` и test-mode input patch.
@@ -93,29 +98,32 @@ Native deserialization должен переносить уже существу
 semantics и оба pickup из fault suite. UID остаётся в строгом readback.
 
 Инструментализация сохраняет прежний полный load timer и добавляет вложенные
-фазы static definitions, metadata и физического world load. Новый parent
-подготавливает immutable definitions одного профиля на отдельной scratch-копии
-metadata, но не вызывает `load(save_t)`, `start_game`, действия или save.
+фазы static definitions, metadata и физического world load. Фактический parent
+выполняет `g->setup()` с `load_world_modfiles()` на scratch-копии metadata;
+это полный world-specific setup, а не только immutable static definitions.
+Он не вызывает `load(save_t)`, `start_game`, действия или save.
 Каждый запрос выполняется свежим fork-child: все userdir/save/config/cache
 пути указывают на его mutable staging либо candidate scratch, затем штатный
 native `load(save_t)` читает физический мир из файлов поколения. Parent ждёт
-ребёнка и остаётся без физического мира. До применения fork проверяется
+ребёнка без загрузки save, но после world setup. До применения fork проверяется
 отсутствие фоновых потоков и унаследованных изменяемых ресурсов мира.
 
 Один host обслуживает только один неизменяемый профиль: binary/data revision,
 ordered mod list, custom mods/interactions и влияющие на definitions options.
 Несовпадение требует отказа или cold restart; многопрофильный cache не нужен.
 Все затраты физического world load, readback/validation, save, copy, fsync и
-publication остаются в прежнем бюджете. Cold static/core preparation до
-физического world load измеряется отдельно, как разрешено исходным протоколом.
+publication вошли в прежний child-бюджет. Parent `g->setup()` вместе с world mods
+из него исключены, что нарушило условие #760; прежнее описание этого как
+разрешённого исключения static/core было ошибочным.
 Полная cold whole-host recovery и warm child recovery публикуются раздельно.
 
-До приёмочного прогона требуется также native сохранение и восстановление
+В историческом отладочном протоколе требовалось также native сохранение и восстановление
 текущего RNG engine state: сохранение одного world seed не доказывает
 продолжение последовательности. RNG остаётся у native owner, входит в полное
 поколение и проверяется continuation/reload и повторным readback. Coordinator
 не хранит отдельное authoritative RNG state. Неизменные fault matrix,
 20 samples после одного warmup, p95 ≤5 s и generation ≤512 MiB обязательны.
-Повторный технический gate принят по
-[результатам 2026-10-19](cataclysm-p4-recovery-results.md). Речевые T11/T12
-остаются OPEN до интеграции P3; этот технический PASS не разрешает P5/P6.
+Прежнее объявление технического gate принятым исправлено по
+[результатам приёмки](cataclysm-p4-recovery-results.md): FAIL ворот, механизм принят.
+RNG sidecar, operation generations и receipts — только отладка по D215/D216.
+Речевые T11/T12 остаются OPEN; этот протокол не разрешает P3/P5/P6.

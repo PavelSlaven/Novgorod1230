@@ -1,0 +1,31 @@
+{
+  "kind": "synthetic_native_readback_live_coordinator_qwen_bench",
+  "configured_model_id": "qwen3.8-27b-uncensored-w4a16-tp2",
+  "call_cap": 5,
+  "role_attempt_count": 1,
+  "http_attempt_count": 1,
+  "role_http_count_match": true,
+  "operations": 0,
+  "result": {
+    "status": "refused",
+    "code": "P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED",
+    "applied_operations": 0,
+    "goal_result": "not_achieved"
+  },
+  "failure_code": null,
+  "attempts": [
+    {
+      "attempt": 1,
+      "role_id": "turn_step_planner",
+      "timeout_ms": 120000,
+      "http_status": 200,
+      "request_model_id": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "response_model_id": "qwen3.8-27b",
+      "max_tokens": 20000,
+      "prompt_tokens": 8172,
+      "completion_tokens": 296,
+      "total_tokens": 8468,
+      "elapsed_ms": 3175
+    }
+  ]
+}

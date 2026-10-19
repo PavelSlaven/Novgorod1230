@@ -1,0 +1,62 @@
+
+
+-----------------------------------------
+07:32:13.478 : Starting log.
+07:32:13.478 INFO : Cataclysm DDA version HEAD-HASH-dirty
+07:32:13.479 INFO : Randomness seeded to: 17
+
+07:32:13.479 INFO : Running Catch2 session:
+
+Filters: item_colony_ser_deser
+07:32:13.561 INFO : [options] C locale set to C
+07:32:13.561 INFO : [options] C++ locale set to C
+07:32:28.158 INFO : /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/main-repro-native-source/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+07:32:52.404 WARNING : Dark Days Ahead pack load time:: 34066369us (avg: 34066369us) (count: 1)
+07:32:52.404 WARNING : TESTING DATA pack load time:: 1056757us (avg: 1056757us) (count: 1)
+07:33:10.856 INFO : Game data loaded
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mutation-cata_test is a Catch v2.13.10 host application.
+Run with -? for options
+
+Randomness seeded to: 17
+
+-------------------------------------------------------------------------------
+item_colony_ser_deser
+  stackable items preserve distinct identities
+-------------------------------------------------------------------------------
+/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/native774/json_test.updated.cpp:877
+...............................................................................
+
+/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/native774/json_test.updated.cpp:901: FAILED:
+  CHECK( count_occurrences( json, "\"typeid\":\"test_rag\"" ) == 10 )
+with expansion:
+  1 == 10
+with messages:
+  json := "[[{"typeid":"test_rag","uid":3592125,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false},10]]"
+  distinct item identities must not be collapsed
+
+/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/native774/json_test.updated.cpp:917: FAILED:
+  CHECK( restored_uids == original_uids )
+with expansion:
+  { 3592127 (0x36cfbf), 3592128 (0x36cfc0), 3592129 (0x36cfc1), 3592130
+  (0x36cfc2), 3592131 (0x36cfc3), 3592132 (0x36cfc4), 3592133 (0x36cfc5),
+  3592134 (0x36cfc6), 3592135 (0x36cfc7), 3592125 (0x36cfbd) }
+  ==
+  { 3592116 (0x36cfb4), 3592117 (0x36cfb5), 3592118 (0x36cfb6), 3592119
+  (0x36cfb7), 3592120 (0x36cfb8), 3592121 (0x36cfb9), 3592122 (0x36cfba),
+  3592123 (0x36cfbb), 3592124 (0x36cfbc), 3592125 (0x36cfbd) }
+with messages:
+  json := "[[{"typeid":"test_rag","uid":3592125,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false},10]]"
+  should be identical to the original
+
+===============================================================================
+test cases:  1 |  0 passed | 1 failed
+assertions: 36 | 34 passed | 2 failed
+
+
+07:33:13.581 INFO : Test world Test World 测试世界 442 left for inspection.
+07:33:13.581 INFO : Finished in 57.3779 seconds
+07:33:13.581 INFO : Randomness seeded to: 17

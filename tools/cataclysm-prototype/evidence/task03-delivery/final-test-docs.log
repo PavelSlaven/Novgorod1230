@@ -1,0 +1,30 @@
+
+> rus-modules@0.23.0-migration.24 test:docs
+> node --test tools/docs-tools/test/documentation-generation.test.js tools/docs-tools/test/cdda-native-map-table.test.js
+
+✔ splitRow keeps escaped pipes and code spans inside one cell (1.4156ms)
+✔ needs table is assembled from area tables and counts coverage buckets (10.8001ms)
+✔ check detects a stale table and passes after the table is written (13.8061ms)
+✔ text outside the table markers keeps its CRLF line endings (9.5083ms)
+✔ a row with the wrong number of cells is rejected (7.1394ms)
+✔ the committed CDDA native map needs table is up to date (10.1129ms)
+✔ documentation outputs are deterministic (873.5599ms)
+✔ npm script catalog matches root scripts and current instructions reject dangling commands (954.7244ms)
+✔ agent instruction links resolve to repository files (55.2965ms)
+✔ agent skill stubs are identical across tools and point to existing canon (5.2173ms)
+✔ AGENTS.md router fits the agent context budget and links every governance file (2.5492ms)
+✔ governance corpus holds every former AGENTS.md section exactly once (2.1192ms)
+✔ canonical documentation preserves active guidance without obsolete workflow gates (2.1636ms)
+✔ committed documentation and generated data are reproducible (3803.0817ms)
+✔ MODULE_INDEX lists every production package exactly once (0.9441ms)
+✔ schema reference binds contract names and external DDL (0.7049ms)
+✔ world-base schema reference expands every column in multi-column ALTER TABLE (22.1479ms)
+✔ canonical document registry has unique existing targets and no obsolete root copies (8.8508ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5832.7237

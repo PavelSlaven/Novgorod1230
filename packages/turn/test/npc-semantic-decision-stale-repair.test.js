@@ -146,6 +146,41 @@ function rebuiltContext() {
   };
 }
 
+test('live NPC repair limit permits one retry across structural and semantic failures', async () => {
+  for (const responses of [
+    [{ schema: 'broken' }, { schema: 'still-broken' }],
+    [{ schema: 'broken' }, plan(request())]
+  ]) {
+    let calls = 0;
+    const input = { boundary: boundary(), request: request(),
+      maxRepairAttempts: 1,
+      semanticModel: async () => responses[calls++],
+      revalidateStateVersion: async () => 2 };
+    if (responses[1].schema === 'npc_step_plan_v1') {
+      assert.equal((await requestNpcSemanticDecision(input)).status, 'planned');
+    } else {
+      await assert.rejects(requestNpcSemanticDecision(input),
+        { code: 'TURN_NPC_PLAN_INVALID' });
+    }
+    assert.equal(calls, 2);
+  }
+  let calls = 0;
+  assert.equal((await requestNpcSemanticDecision({ boundary: boundary(),
+    request: request(), maxRepairAttempts: 1,
+    semanticModel: async source => { calls++; return plan(source); },
+    revalidateStateVersion: async () => 2 })).status, 'planned');
+  assert.equal(calls, 1);
+  calls = 0;
+  await assert.rejects(requestNpcSemanticDecision({ boundary: boundary(),
+    request: request(), maxRepairAttempts: 1,
+    semanticModel: async source => ++calls === 1 ? { schema: 'broken' } : plan(source),
+    revalidateStateVersion: async () => 2,
+    validateFreshPlan: async () => ({ pass: false, errors: [{ retryable: true,
+      code: 'semantic_grounding', path: '$.speech', message: 'Ungrounded speech.' }] })
+  }), { code: 'TURN_NPC_PLAN_INVALID' });
+  assert.equal(calls, 2);
+});
+
 test('stale invalid initial NPC response is rebuilt without format repair',
   async () => {
     const modelContexts = [];

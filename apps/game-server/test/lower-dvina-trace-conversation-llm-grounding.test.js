@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { validateConversationContributionPlan } from '@rus/npc-runtime';
+import { buildNpcDecisionBoundary, validateConversationContributionPlan } from
+  '@rus/npc-runtime';
+import { requestNpcSemanticDecision } from '@rus/turn';
 import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { npcConversationCandidates } from
@@ -146,7 +148,10 @@ test('first-contact identity and guarded behavior are required and repaired',
       npc_behavior: { required_interaction_tag: 'withhold' }
     };
     const incomplete = plan(input);
-    const fixture = runner(() => assert.fail('semantic auditor must not run'));
+    const output = plan(input);
+    output.speech.utterance_text = 'Я Еремей. Пока мне нечего тебе об этом сказать.';
+    output.speech.interaction_tags = ['withhold'];
+    const fixture = runner(() => output);
     const model = createLowerDvinaTraceNpcSemanticModel(fixture);
 
     const validation = await model.validateFreshPlan(incomplete, input);
@@ -163,11 +168,63 @@ test('first-contact identity and guarded behavior are required and repaired',
       validation_errors: validation.errors
     } });
     assert.equal(repaired.speech.utterance_text,
-      'Я Еремей. Об этом я ничего подтвердить не могу.');
+      output.speech.utterance_text);
+    assert.equal(repaired.speech.dominant_act, incomplete.speech.dominant_act);
     assert.deepEqual(repaired.speech.interaction_tags, ['withhold']);
+    assert.equal(fixture.calls.length, 1);
+    assert.equal(fixture.calls[0].role_id,
+      'npc_conversation_responder_format_repair');
+    assert.deepEqual(JSON.parse(fixture.calls[0].messages[1].content), {
+      request: input, original_output: incomplete,
+      validation_errors: validation.errors
+    });
   });
 
-test('semantic grounding failure keeps cited present facts and falls back safely',
+test('semantic repair rejects a changed speech act or contribution kind', async () => {
+  for (const change of ['speech_act', 'contribution_kind']) {
+    const input = request();
+    const boundary = buildNpcDecisionBoundary({
+      decision_mode: 'conversation', scheduled_at: input.requested_at,
+      npc_ref: input.npc_ref,
+      same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+      ...input.decision_reasons, state_version: String(input.state_version)
+    });
+    input.boundary_id = boundary.boundary_id;
+    const original = plan(input);
+    original.speech.utterance_text = 'Вчера я видел лодку у берега.';
+    const output = plan(input);
+    if (change === 'speech_act') {
+      output.speech.utterance_text = 'О какой лодке ты спрашиваешь?';
+      output.speech.dominant_act = 'question';
+    } else {
+      output.contribution_kind = 'silence';
+      output.speech = null;
+    }
+    const fixture = runner((call) => {
+      if (call.role_id === 'npc_conversation_responder') return original;
+      if (call.role_id === 'npc_conversation_responder_format_repair') return output;
+      return { pass: false, concerns: [{ kind: 'unsupported_past_observation' }] };
+    });
+    const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+    await assert.rejects(requestNpcSemanticDecision({
+      boundary, request: input, semanticModel: model,
+      validateFreshPlan: model.validateFreshPlan,
+      revalidateStateVersion: async () => input.state_version,
+      maxRepairAttempts: 1
+    }), (error) => {
+      assert.equal(error.code, 'TURN_NPC_MODEL_FAILED');
+      assert.equal(error.details.cause,
+        'NPC semantic repair must preserve contribution kind and speech act.');
+      return true;
+    });
+    assert.deepEqual(fixture.calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder', 'npc_conversation_grounding_auditor',
+      'npc_conversation_responder_format_repair'
+    ]);
+  }
+});
+
+test('semantic repair passes the original response and cited facts to the model',
   async () => {
     const input = request();
     const observation = {
@@ -187,32 +244,40 @@ test('semantic grounding failure keeps cited present facts and falls back safely
       content_summary: 'Вчера лодки не было.', form: 'assertion',
       speaker_posture: 'believed_true', source_knowledge_refs: [],
       mentioned_entity_refs: [] }];
-    const fixture = runner(() => assert.fail('repair must use safe fallback'));
+    const output = plan(input);
+    output.speech.utterance_text = 'На очаге не видно пламени. Про вчерашний день не скажу.';
+    output.speech.claims = [original.speech.claims[0]];
+    const fixture = runner(() => output);
+    const validationErrors = [{
+      code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+      category: 'semantic_grounding', retryable: true
+    }];
     const result = await createLowerDvinaTraceNpcSemanticModel(
       fixture)(input, { repair: {
       original_output: original,
-      validation_errors: [{
-        code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
-        category: 'semantic_grounding', retryable: true
-      }]
+      validation_errors: validationErrors
     } });
 
-    assert.equal(fixture.calls.length, 0);
+    assert.equal(fixture.calls.length, 1);
+    assert.deepEqual(JSON.parse(fixture.calls[0].messages[1].content), {
+      request: input, original_output: original,
+      validation_errors: validationErrors
+    });
     assert.equal(validateConversationContributionPlan(result, input), true);
-    assert.equal(result.speech.utterance_text,
-      'На очаге не видно пламени. Остального я подтвердить не могу.');
-    assert.deepEqual(result.speech.claims, [{
-      claim_id: 'fallback-current-observation-1',
-      content_summary: observation.fact_text, form: 'assertion',
-      speaker_posture: 'believed_true',
-      source_knowledge_refs: [observation.observation_ref],
-      mentioned_entity_refs: []
-    }]);
+    assert.equal(result.speech.utterance_text, output.speech.utterance_text);
+    assert.deepEqual(result.speech.claims, output.speech.claims);
   });
 
-test('semantic grounding fallback gives a direct safe reply and keeps self-introduction',
+test('a grounded model repair is accepted after the first speech audit fails',
   async () => {
     const input = request();
+    const boundary = buildNpcDecisionBoundary({
+      decision_mode: 'conversation', scheduled_at: input.requested_at,
+      npc_ref: input.npc_ref,
+      same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+      ...input.decision_reasons, state_version: String(input.state_version)
+    });
+    input.boundary_id = boundary.boundary_id;
     input.npc = { identity_state: { canonical_name: 'Еремей' } };
     input.memory = { records: [], received_messages: [] };
     input.public_conversation_history = [{
@@ -222,44 +287,75 @@ test('semantic grounding fallback gives a direct safe reply and keeps self-intro
     const original = plan(input);
     original.speech.utterance_text =
       'Здравствуйте. Я Еремей, рыбак. Онисима я не знаю и после крушения его не видел.';
-    original.speech.claims = [{ claim_id: 'unsupported',
-      content_summary: 'После крушения Онисима не видел.', form: 'assertion',
-      speaker_posture: 'believed_true', source_knowledge_refs: [],
-      mentioned_entity_refs: [] }];
-    const fixture = runner(() => assert.fail('repair must use safe fallback'));
+    const output = plan(input);
+    output.speech.utterance_text = 'Я Еремей. Про Онисима после крушения мне сказать нечего.';
+    const fixture = runner((call) => {
+      if (call.role_id === 'npc_conversation_responder') return original;
+      if (call.role_id === 'npc_conversation_responder_format_repair') return output;
+      const { plan: audited } = JSON.parse(call.messages[1].content);
+      return audited.speech.utterance_text === original.speech.utterance_text
+        ? { pass: false, concerns: [{ kind: 'unsupported_past_observation' }] }
+        : { pass: true, concerns: [] };
+    });
+    const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+    const result = await requestNpcSemanticDecision({
+      boundary, request: input, semanticModel: model,
+      validateFreshPlan: model.validateFreshPlan,
+      revalidateStateVersion: async () => input.state_version,
+      maxRepairAttempts: 1
+    });
 
-    const result = await createLowerDvinaTraceNpcSemanticModel(
-      fixture)(input, { repair: {
-      original_output: original,
-      validation_errors: [{
-        code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
-        category: 'semantic_grounding', retryable: true
-      }]
-    } });
-
-    assert.equal(fixture.calls.length, 0);
-    assert.equal(validateConversationContributionPlan(result, input), true);
-    assert.equal(result.speech.utterance_text,
-      'Я Еремей. Об этом я ничего подтвердить не могу.');
-    assert.doesNotMatch(result.speech.utterance_text,
-      /Вы спросили|«|»|не знаю|не видел/u);
-    assert.deepEqual(result.speech.claims, []);
+    assert.equal(result.status, 'planned');
+    assert.equal(validateConversationContributionPlan(result.plan, input), true);
+    assert.equal(result.plan.speech.utterance_text, output.speech.utterance_text);
+    assert.equal(result.plan.speech.dominant_act, original.speech.dominant_act);
+    assert.deepEqual(fixture.calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder', 'npc_conversation_grounding_auditor',
+      'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor'
+    ]);
+    const repairInput = JSON.parse(fixture.calls[2].messages[1].content);
+    assert.deepEqual(repairInput.request, input);
+    assert.deepEqual(repairInput.original_output,
+      assembleNpcConversationPlan(original, input));
+    assert.deepEqual(repairInput.validation_errors, [{
+      code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+      category: 'semantic_grounding', retryable: true,
+      concern_kinds: ['unsupported_past_observation'],
+      message: 'Rewrite the complete response without unsupported factual assertions.'
+    }]);
   });
 
-test('semantic grounding fallback ignores a non-string NPC name', async () => {
+test('two grounding failures return a typed error without a canned NPC response', async () => {
   const input = request();
-  input.npc = { identity_state: { canonical_name: 7 } };
+  const boundary = buildNpcDecisionBoundary({
+    decision_mode: 'conversation', scheduled_at: input.requested_at,
+    npc_ref: input.npc_ref,
+    same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+    ...input.decision_reasons, state_version: String(input.state_version)
+  });
+  input.boundary_id = boundary.boundary_id;
   const original = plan(input);
-  const fixture = runner(() => assert.fail('repair must use safe fallback'));
+  original.speech.utterance_text = 'Вчера я видел лодку у берега.';
+  const fixture = runner((call) => call.role_id === 'npc_conversation_grounding_auditor'
+    ? { pass: false, concerns: [{ kind: 'unsupported_past_observation' }] }
+    : original);
+  const model = createLowerDvinaTraceNpcSemanticModel(fixture);
 
-  const result = await createLowerDvinaTraceNpcSemanticModel(
-    fixture)(input, { repair: {
-    original_output: original,
-    validation_errors: [{ category: 'semantic_grounding' }]
-  } });
-
-  assert.equal(result.speech.utterance_text,
-    'Об этом я ничего подтвердить не могу.');
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary, request: input, semanticModel: model,
+    validateFreshPlan: model.validateFreshPlan,
+    revalidateStateVersion: async () => input.state_version,
+    maxRepairAttempts: 1
+  }), { code: 'TURN_NPC_PLAN_INVALID' });
+  assert.deepEqual(fixture.calls.map(({ role_id }) => role_id), [
+    'npc_conversation_responder', 'npc_conversation_grounding_auditor',
+    'npc_conversation_responder_format_repair', 'npc_conversation_grounding_auditor'
+  ]);
+  for (const call of fixture.calls.filter(({ role_id }) =>
+    role_id === 'npc_conversation_grounding_auditor')) {
+    assert.equal(JSON.parse(call.messages[1].content).plan.speech.utterance_text,
+      original.speech.utterance_text);
+  }
 });
 
 test('route contract candidate reaches initial and repair prompts', async () => {

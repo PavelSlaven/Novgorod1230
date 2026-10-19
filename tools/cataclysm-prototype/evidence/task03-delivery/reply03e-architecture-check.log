@@ -1,0 +1,5 @@
+
+> rus-modules@0.23.0-migration.24 architecture:check
+> node tools/architecture/check-boundaries.mjs
+
+Architecture boundaries: OK

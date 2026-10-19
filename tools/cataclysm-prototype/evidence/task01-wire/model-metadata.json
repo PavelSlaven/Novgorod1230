@@ -1,0 +1,27 @@
+{
+  "models": {
+    "http_status": 200,
+    "model_id": "qwen3.8-27b-uncensored-w4a16-tp2",
+    "metadata_keys": [
+      "n_ctx_train"
+    ],
+    "trained_context_tokens": 65536,
+    "model_status": "loaded"
+  },
+  "runtime": {
+    "context_window_tokens": null,
+    "status": "unknown"
+  },
+  "read_only_checks": [
+    {
+      "path": "/props",
+      "http_status": 404,
+      "result": "Not Found"
+    },
+    {
+      "path": "/openapi.json",
+      "http_status": 404,
+      "result": "Not Found"
+    }
+  ]
+}

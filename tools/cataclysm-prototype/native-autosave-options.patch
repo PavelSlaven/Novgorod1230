@@ -1,0 +1,11 @@
+--- a/src/options.cpp
++++ b/src/options.cpp
+@@ -1726,7 +1726,7 @@
+
+         add( "AUTOSAVE_TURNS", page_id, to_translation( "Game turns between autosaves" ),
+              to_translation( "Number of game turns between autosaves." ),
+-             10, 1000, 50
++             10, 3600, 50
+            );
+
+         get_option( "AUTOSAVE_TURNS" ).setPrerequisite( "AUTOSAVE" );

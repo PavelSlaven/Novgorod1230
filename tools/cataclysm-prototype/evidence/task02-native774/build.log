@@ -1,0 +1,3 @@
+[1/3] Building CXX object tests/CMakeFiles/cata_test.dir/json_test.cpp.o
+[2/3] Building CXX object tests/CMakeFiles/cata_test.dir/novgorod_semantic_test.cpp.o
+[3/3] Linking CXX executable tests/cata_test

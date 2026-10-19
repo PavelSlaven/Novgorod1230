@@ -1,0 +1,27 @@
+
+
+-----------------------------------------
+10:19:51.960 : Starting log.
+10:19:51.961 INFO : Cataclysm DDA version 0d8843f
+10:19:51.963 INFO : Randomness seeded to: 17
+
+10:19:51.966 INFO : Running Catch2 session:
+Filters: [novgorod_autosave]
+
+10:19:51.970 INFO : [options] C locale set to C
+10:19:51.972 INFO : [options] C++ locale set to C
+10:19:52.475 INFO : /home/slaven/cataclysm-recovery/task03-dev/source/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+10:19:53.551 WARNING : Dark Days Ahead pack load time:: 1504443us (avg: 1504443us) (count: 1)
+10:19:53.554 WARNING : TESTING DATA pack load time:: 52438us (avg: 52438us) (count: 1)
+10:20:09.535 INFO : Game data loaded
+0.000 s: Novgorod autosave accepts one game hour
+Native autosave: waiting 301 real seconds for the five-minute gate.
+301.415 s: Novgorod autosave writes at the native game hour boundary
+Native sleep: 28800 turns in 2.10246 real seconds, 0 autosaves after the baseline quicksave.
+2.470 s: Novgorod eight hours of native sleep respect five real minutes between saves
+===============================================================================
+All tests passed (86442 assertions in 3 test cases)
+
+
+10:25:13.423 INFO : Finished in 321.455 seconds
+10:25:13.424 INFO : Randomness seeded to: 17

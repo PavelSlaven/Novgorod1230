@@ -14,7 +14,7 @@
     "gameplay:acceptance:local": "node tools/local-play/local-gemma-acceptance.mjs",
     "playtest:public": "node tools/local-play/public-playtest.mjs",
     "llm-runtime:eval": "node tools/llm-runtime-eval/src/cli.mjs",
-    "test": "npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:game-base && npm run test:shadow && npm run test:cutover && npm run docs:check && npm run test:integration && npm run test:acceptance && npm run test:browser-e2e && npm run architecture:check",
+    "test": "npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:game-base && npm run test:shadow && npm run test:cutover && npm run docs:check && npm run test:integration && npm run test:acceptance && npm run test:browser-e2e && npm run architecture:check && npm run test:cataclysm-p3",
     "test:modules": "node --test test/modules/*.test.js",
     "test:legacy": "cd legacy && node --test --test-concurrency=1 test/*.test.js",
     "test:stage26": "node --test test/modules/stage26-*.test.js",
@@ -223,7 +223,8 @@
     "runtime-catalog:registry-check": "node scripts/generate-item-container-record-registry.mjs --check",
     "runtime-catalog:operator": "node tools/runtime-catalog-activation/src/cli.js",
     "lower-dvina:first-playable:production": "node scripts/run-lower-dvina-first-playable-production.mjs",
-    "lower-dvina:v3:production-cutover": "node scripts/run-lower-dvina-v3-production-cutover.mjs"
+    "lower-dvina:v3:production-cutover": "node scripts/run-lower-dvina-v3-production-cutover.mjs",
+    "test:cataclysm-p3": "node --test tools/cataclysm-prototype/p3-boundary.test.js tools/cataclysm-prototype/p3-live-coordinator.test.js && node tools/architecture/run-p3-python-tests.mjs"
   },
   "dependencies": {
     "embedded-postgres": "16.14.0-beta.17",

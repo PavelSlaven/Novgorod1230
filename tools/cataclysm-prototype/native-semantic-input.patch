@@ -1,0 +1,559 @@
+diff --git a/src/action.cpp b/src/action.cpp
+index a4ecef1..9b942a7 100644
+--- a/src/action.cpp
++++ b/src/action.cpp
+@@ -7,6 +7,7 @@
+ #include <memory>
+ #include <optional>
+ #include <string>
++#include <stdexcept>
+ #include <utility>
+ 
+ #include "avatar.h"
+@@ -1143,11 +1144,71 @@ action_id handle_main_menu()
+     }
+ }
+ 
++namespace {
++struct novgorod_adjacent_selection {
++    int64_t actor_id;
++    tripoint_bub_ms origin;
++    tripoint_rel_ms direction;
++};
++std::optional<novgorod_adjacent_selection> novgorod_test_adjacent_selection;
++bool novgorod_test_adjacent_selection_required = false;
++}
++
++void set_novgorod_test_adjacent_selection( int64_t actor_id, const tripoint_bub_ms &origin,
++        const tripoint_rel_ms &direction )
++{
++    if( !test_mode ) {
++        throw std::logic_error( "Novgorod adjacent selection requires test_mode" );
++    }
++    if( actor_id <= 0 || direction.x() < -1 || direction.x() > 1 ||
++        direction.y() < -1 || direction.y() > 1 || direction.z() < -1 || direction.z() > 1 ||
++        ( direction.x() == 0 && direction.y() == 0 && direction.z() == 0 ) ) {
++        throw std::invalid_argument( "NOVGOROD_TEST_ADJACENT_SELECTION_INVALID" );
++    }
++    novgorod_test_adjacent_selection = novgorod_adjacent_selection{ actor_id, origin, direction };
++    novgorod_test_adjacent_selection_required = true;
++}
++
++void require_novgorod_test_adjacent_selection()
++{
++    if( !test_mode ) {
++        throw std::logic_error( "Novgorod adjacent selection requires test_mode" );
++    }
++    novgorod_test_adjacent_selection_required = true;
++}
++
++void clear_novgorod_test_adjacent_selection()
++{
++    novgorod_test_adjacent_selection.reset();
++    novgorod_test_adjacent_selection_required = false;
++}
++
+ std::optional<tripoint_rel_ms> choose_direction( const std::string &message,
+         const bool allow_vertical, const bool allow_mouse, const int timeout,
+         const std::function<std::pair<bool, std::optional<tripoint_rel_ms>>(
+             const input_context &ctxt, const std::string &action )> &action_cb )
+ {
++    if( novgorod_test_adjacent_selection ) {
++        const novgorod_adjacent_selection selection = *novgorod_test_adjacent_selection;
++        novgorod_test_adjacent_selection.reset();
++        Character &actor = get_player_character();
++        if( !test_mode || actor.getID().get_value() != selection.actor_id ||
++            actor.pos_bub() != selection.origin || selection.direction.x() < -1 ||
++            selection.direction.x() > 1 || selection.direction.y() < -1 ||
++            selection.direction.y() > 1 || ( allow_vertical ?
++                ( selection.direction.z() < -1 || selection.direction.z() > 1 ) : selection.direction.z() != 0 ) ) {
++            throw std::runtime_error( "NOVGOROD_TEST_ADJACENT_SELECTION_STALE_OR_INVALID" );
++        }
++        if( selection.direction.x() > 0 ) {
++            actor.facing = FacingDirection::RIGHT;
++        } else if( selection.direction.x() < 0 ) {
++            actor.facing = FacingDirection::LEFT;
++        }
++        return selection.direction;
++    }
++    if( test_mode && novgorod_test_adjacent_selection_required ) {
++        throw std::runtime_error( "NOVGOROD_TEST_INPUT_EXHAUSTED: adjacent target missing" );
++    }
+     input_context ctxt( "DEFAULTMODE", keyboard_mode::keycode );
+     if( timeout >= 0 ) {
+         ctxt.set_timeout( timeout );
+diff --git a/src/action.h b/src/action.h
+index fd159c8..bbd3da3 100644
+--- a/src/action.h
++++ b/src/action.h
+@@ -511,6 +511,11 @@ std::optional<tripoint_bub_ms> choose_adjacent( const tripoint_bub_ms &pos,
+  *            exits with the return value set to the tripoint, or std::nullopt
+  *            if the tripoint is not a valid direction.
+  */
++void set_novgorod_test_adjacent_selection( int64_t actor_id, const tripoint_bub_ms &origin,
++        const tripoint_rel_ms &direction );
++void require_novgorod_test_adjacent_selection();
++void clear_novgorod_test_adjacent_selection();
++
+ std::optional<tripoint_rel_ms> choose_direction( const std::string &message,
+         bool allow_vertical = false, bool allow_mouse = false, int timeout = 50,
+         const std::function<std::pair<bool, std::optional<tripoint_rel_ms>>(
+diff --git a/src/game.cpp b/src/game.cpp
+index b00f641..878facf 100644
+--- a/src/game.cpp
++++ b/src/game.cpp
+@@ -5740,6 +5739,29 @@ void game::pickup()
+ {
+     map &here = get_map();
+ 
++    if( test_mode && test_pickup_uid > 0 ) {
++        const int64_t uid = test_pickup_uid;
++        test_pickup_uid = 0;
++        const tripoint_bub_ms origin = u.pos_bub();
++        for( int dx = -1; dx <= 1; ++dx ) {
++            for( int dy = -1; dy <= 1; ++dy ) {
++                const tripoint_bub_ms pos = origin + tripoint_rel_ms( dx, dy, 0 );
++                if( !u.sees( here, pos ) ) {
++                    continue;
++                }
++                for( item &candidate : here.i_at( pos ) ) {
++                    if( candidate.uid().get_value() == uid ) {
++                        drop_locations selected;
++                        selected.emplace_back( item_location( map_cursor( pos ), &candidate ), candidate.count() );
++                        u.pick_up( selected );
++                        return;
++                    }
++                }
++            }
++        }
++        throw std::runtime_error( "NOVGOROD_TEST_PICKUP_UID_STALE_OR_UNOBSERVED" );
++    }
++
+     // Prompt for which adjacent/current tile to pick up items from
+     const std::optional<tripoint_bub_ms> where_ = choose_adjacent_highlight(
+                 here, _( "Pick up items where?" ),
+diff --git a/src/game.h b/src/game.h
+index 64917b0..30376f9 100644
+--- a/src/game.h
++++ b/src/game.h
+@@ -222,6 +222,8 @@ class game
+ 
+         /** Test-only input seam; requires test_mode. */
+         void set_test_action_queue( std::vector<std::string> actions );
++        void set_test_item_use( int64_t uid, std::string method );
++        void set_test_pickup_uid( int64_t uid );
+ 
+         /** Loads static data that does not depend on mods or similar. */
+         void load_static_data();
+@@ -1043,6 +1045,10 @@ class game
+         void pickup( const tripoint_bub_ms &p );
+         void chat( const std::optional<tripoint_bub_ms> &p = std::nullopt ); // Talk to a nearby NPC  'C'
+     private:
++        int64_t test_item_use_uid = 0;
++        int64_t test_pickup_uid = 0;
++        std::string test_item_use_method;
++        bool test_item_use_enabled = false;
+         std::vector<std::string> test_action_queue;
+         size_t test_action_index = 0;
+         bool test_action_queue_enabled = false;
+diff --git a/src/handle_action.cpp b/src/handle_action.cpp
+index 88a7843..40f40d1 100644
+--- a/src/handle_action.cpp
++++ b/src/handle_action.cpp
+@@ -266,6 +266,24 @@ void game::set_test_action_queue( std::vector<std::string> actions )
+     test_action_queue_enabled = true;
+ }
+ 
++void game::set_test_pickup_uid( int64_t uid )
++{
++    if( !test_mode || uid <= 0 ) {
++        throw std::logic_error( "NOVGOROD_TEST_PICKUP_UID_INVALID" );
++    }
++    test_pickup_uid = uid;
++}
++
++void game::set_test_item_use( int64_t uid, std::string method )
++{
++    if( !test_mode || uid <= 0 || method.empty() ) {
++        throw std::logic_error( "NOVGOROD_TEST_ITEM_USE_INVALID" );
++    }
++    test_item_use_uid = uid;
++    test_item_use_method = std::move( method );
++    test_item_use_enabled = true;
++}
++
+ input_context game::get_player_input( std::string &action )
+ {
+     map &here = get_map();
+@@ -2695,7 +2713,36 @@ bool game::do_regular_action( action_id &act, avatar &player_character,
+         case ACTION_USE:
+             // Shell-users are presumed to be able to mess with their inventories, etc
+             // while in the shell.  Eating, gear-changing, and item use are OK.
+-            avatar_action::use_item( player_character );
++            if( test_item_use_enabled ) {
++                if( !test_mode ) {
++                    throw std::logic_error( "NOVGOROD_TEST_ITEM_USE_REQUIRES_TEST_MODE" );
++                }
++                struct reset_adjacent_selection {
++                    ~reset_adjacent_selection() {
++                        clear_novgorod_test_adjacent_selection();
++                    }
++                } reset_selection;
++                item_location selected_location;
++                player_character.visit_items( [&]( const item_location &candidate ) {
++                    if( candidate->uid().get_value() == test_item_use_uid ) {
++                        selected_location = candidate;
++                        return VisitResponse::ABORT;
++                    }
++                    return VisitResponse::NEXT;
++                } );
++                test_item_use_enabled = false;
++                if( !selected_location ) {
++                    throw std::runtime_error( "NOVGOROD_TEST_ITEM_UID_STALE" );
++                }
++                if( selected_location->type->use_methods.find( test_item_use_method ) ==
++                    selected_location->type->use_methods.end() ) {
++                    throw std::runtime_error( "NOVGOROD_TEST_ITEM_USE_METHOD_UNKNOWN" );
++                }
++                require_novgorod_test_adjacent_selection();
++                avatar_action::use_item( player_character, selected_location, test_item_use_method );
++            } else {
++                avatar_action::use_item( player_character );
++            }
+             break;
+ 
+         case ACTION_USE_WIELDED:
+diff --git a/src/item.cpp b/src/item.cpp
+index b642fe2..7a05c94 100644
+--- a/src/item.cpp
++++ b/src/item.cpp
+@@ -4944,6 +4944,54 @@ void item::mod_charges( int mod )
+     }
+ }
+ 
++bool item::transfer_identity_from( item &source )
++{
++    if( this == &source ) {
++        return false;
++    }
++    std::vector<std::pair<item *, item *>> identity_pairs;
++    const auto collect_pairs = [&]( const auto &self, item &destination, item &original ) -> bool {
++        if( destination.typeId() != original.typeId() ) {
++            return false;
++        }
++        identity_pairs.emplace_back( &destination, &original );
++        const std::vector<item_pocket *> destination_pockets =
++            destination.contents.get_pockets( []( const item_pocket & ) { return true; } );
++        const std::vector<item_pocket *> original_pockets =
++            original.contents.get_pockets( []( const item_pocket & ) { return true; } );
++        if( destination_pockets.size() != original_pockets.size() ) {
++            return false;
++        }
++        for( size_t i = 0; i < destination_pockets.size(); ++i ) {
++            item_pocket &destination_pocket = *destination_pockets[i];
++            item_pocket &original_pocket = *original_pockets[i];
++            if( destination_pocket.saved_type() != original_pocket.saved_type() ) {
++                return false;
++            }
++            std::list<item *> destination_items = destination_pocket.all_items_top();
++            std::list<item *> original_items = original_pocket.all_items_top();
++            if( destination_items.size() != original_items.size() ) {
++                return false;
++            }
++            auto destination_item = destination_items.begin();
++            auto original_item = original_items.begin();
++            for( ; destination_item != destination_items.end(); ++destination_item, ++original_item ) {
++                if( !self( self, **destination_item, **original_item ) ) {
++                    return false;
++                }
++            }
++        }
++        return true;
++    };
++    if( !collect_pairs( collect_pairs, *this, source ) ) {
++        return false;
++    }
++    for( const auto &[destination, original] : identity_pairs ) {
++        destination->uid_ = std::move( original->uid_ );
++    }
++    return true;
++}
++
+ void item::preserve_location( const tripoint_abs_ms &location )
+ {
+     if( has_flag( flag_PRESERVE_SPAWN_LOC ) && !has_var( "spawn_location" ) ) {
+diff --git a/src/item.h b/src/item.h
+index 697bad4..af9dfb2 100644
+--- a/src/item.h
++++ b/src/item.h
+@@ -247,6 +247,9 @@ class item
+             return uid_;
+         }
+ 
++        /** Transfer persistent identities from an equivalent whole-item copy. */
++        bool transfer_identity_from( item &source );
++
+         /**
+          * Filter converting this instance to another type preserving all other aspects
+          * @param new_type the type id to convert to
+diff --git a/src/json.h b/src/json.h
+index 4289c1e..bc3afe2 100644
+--- a/src/json.h
++++ b/src/json.h
+@@ -922,7 +922,7 @@ class JsonOut
+             int run_l = 1;
+             for( auto it = container.begin(); it != container.end(); ++it ) {
+                 const auto nxt = std::next( it );
+-                if( nxt == container.end() || !it->same_for_rle( *nxt ) ) {
++                if( nxt == container.end() || !it->same_for_rle( *nxt ) || it->uid() != nxt->uid() ) {
+                     if( run_l == 1 ) {
+                         write( *it );
+                     } else {
+diff --git a/src/npc.h b/src/npc.h
+index 41661c0..e6014e4 100644
+--- a/src/npc.h
++++ b/src/npc.h
+@@ -1227,6 +1227,16 @@ class npc : public Character
+         void assess_danger();
+         void act_on_danger_assessment();
+         bool is_safe() const;
++        void set_novgorod_semantic_intent( const std::string &assignment_id,
++                                           const std::string &intent_payload,
++                                           const tripoint_abs_ms &target );
++        bool has_novgorod_semantic_assignment() const;
++        const std::string &novgorod_semantic_assignment_id() const;
++        const std::string &novgorod_semantic_intent_payload() const;
++        const tripoint_abs_ms &novgorod_semantic_target() const;
++        const std::string &novgorod_semantic_status() const;
++        const std::string &novgorod_semantic_interrupt_cause() const;
++        int novgorod_semantic_progress() const;
+         // Functions which choose an action for a particular goal
+         npc_action method_of_fleeing();
+         npc_action method_of_attack();
+@@ -1719,6 +1729,13 @@ class npc : public Character
+         dialogue_chatbin chatbin;
+         int patience = 0; // Used when we expect the player to leave the area
+         npc_follower_rules rules;
++        // Native-owned durable state for an externally assigned Novgorod intent.
++        std::string novgorod_assignment_id;
++        std::string novgorod_intent_payload;
++        tripoint_abs_ms novgorod_intent_target = tripoint_abs_ms::invalid;
++        int novgorod_intent_progress = 0;
++        std::string novgorod_intent_status;
++        std::string novgorod_interrupt_cause;
+         bool marked_for_death = false; // If true, we die as soon as we respawn!
+         bool hit_by_player = false;
+         // if true, this NPC is a representative of their faction and, given radio, you can radio them
+diff --git a/src/npcmove.cpp b/src/npcmove.cpp
+index 24f9fd2..4a0d02c 100644
+--- a/src/npcmove.cpp
++++ b/src/npcmove.cpp
+@@ -14,6 +14,7 @@
+ #include <optional>
+ #include <ostream>
+ #include <set>
++#include <stdexcept>
+ #include <string>
+ #include <string_view>
+ #include <tuple>
+@@ -1534,6 +1535,63 @@ bool npc::may_drink_here() const
+            ai_cache.dangerous_explosives.empty() && may_occupy_here();
+ }
+ 
++void npc::set_novgorod_semantic_intent( const std::string &assignment_id,
++        const std::string &intent_payload, const tripoint_abs_ms &target )
++{
++    if( !test_mode || assignment_id.empty() || intent_payload.empty() ||
++        rl_dist( pos_abs(), target ) != 1 ) {
++        throw std::invalid_argument( "NOVGOROD_NPC_INTENT_INVALID" );
++    }
++    if( !novgorod_assignment_id.empty() && novgorod_assignment_id != assignment_id &&
++        novgorod_intent_status != "interrupted_waiting_for_semantic_decision" &&
++        novgorod_intent_status != "completed" ) {
++        throw std::runtime_error( "NOVGOROD_NPC_ASSIGNMENT_IDENTITY_MISMATCH" );
++    }
++    if( novgorod_assignment_id.empty() || novgorod_assignment_id != assignment_id ) {
++        novgorod_intent_progress = 0;
++    }
++    novgorod_assignment_id = assignment_id;
++    novgorod_intent_payload = intent_payload;
++    novgorod_intent_target = target;
++    novgorod_intent_status = "active";
++    novgorod_interrupt_cause.clear();
++}
++
++bool npc::has_novgorod_semantic_assignment() const
++{
++    return !novgorod_assignment_id.empty();
++}
++
++const std::string &npc::novgorod_semantic_assignment_id() const
++{
++    return novgorod_assignment_id;
++}
++
++const std::string &npc::novgorod_semantic_intent_payload() const
++{
++    return novgorod_intent_payload;
++}
++
++const tripoint_abs_ms &npc::novgorod_semantic_target() const
++{
++    return novgorod_intent_target;
++}
++
++const std::string &npc::novgorod_semantic_status() const
++{
++    return novgorod_intent_status;
++}
++
++const std::string &npc::novgorod_semantic_interrupt_cause() const
++{
++    return novgorod_interrupt_cause;
++}
++
++int npc::novgorod_semantic_progress() const
++{
++    return novgorod_intent_progress;
++}
++
+ void npc::move()
+ {
+     const map &here = get_map();
+@@ -1567,6 +1625,46 @@ void npc::move()
+         return;
+     }
+     act_on_danger_assessment();
++    if( !novgorod_assignment_id.empty() ) {
++        if( novgorod_intent_status == "interrupted_waiting_for_semantic_decision" ||
++            novgorod_intent_status == "completed" ) {
++            move_pause();
++            return;
++        }
++        std::string interrupt;
++        if( sees_dangerous_field( pos_bub() ) || has_effect( effect_npc_fire_bad ) ) {
++            interrupt = "native_dangerous_field";
++        } else if( !ai_cache.dangerous_explosives.empty() ) {
++            interrupt = "native_dangerous_explosive";
++        } else if( ai_cache.danger > NPC_DANGER_VERY_LOW ) {
++            interrupt = "native_danger_assessment";
++        }
++        if( !interrupt.empty() ) {
++            novgorod_intent_status = "interrupted_waiting_for_semantic_decision";
++            novgorod_interrupt_cause = interrupt;
++            move_pause();
++            return;
++        }
++        const tripoint_bub_ms target = here.get_bub( novgorod_intent_target );
++        if( rl_dist( pos_abs(), novgorod_intent_target ) != 1 || !can_move_to( target ) ) {
++            novgorod_intent_status = "interrupted_waiting_for_semantic_decision";
++            novgorod_interrupt_cause = "native_movement_refused";
++            move_pause();
++            return;
++        }
++        const tripoint_abs_ms before = pos_abs();
++        move_to( target );
++        if( pos_abs() != before ) {
++            ++novgorod_intent_progress;
++            if( pos_abs() == novgorod_intent_target ) {
++                novgorod_intent_status = "completed";
++            }
++        } else {
++            novgorod_intent_status = "interrupted_waiting_for_semantic_decision";
++            novgorod_interrupt_cause = "native_movement_not_applied";
++        }
++        return;
++    }
+     // drink from container on ground stops once unsafe or out of reach
+     if( activity.id() == ACT_CONSUME ) {
+         const consume_activity_actor *drink =
+diff --git a/src/pickup.cpp b/src/pickup.cpp
+index afd6846..94af5d5 100644
+--- a/src/pickup.cpp
++++ b/src/pickup.cpp
+@@ -10,6 +10,7 @@
+ #include <string>
+ #include <utility>
+ #include <vector>
++#include <unordered_set>
+ 
+ #include "activity_actor_definitions.h"
+ #include "auto_pickup.h"
+@@ -328,6 +329,13 @@ static bool pick_one_up( item_location &loc, int quantity, bool &got_water, bool
+             [[fallthrough]];
+         case STASH: {
+             int last_charges = newit.charges;
++            const bool whole_item = !it.count_by_charges() || quantity == 0 || quantity >= it.charges;
++            std::unordered_set<int64_t> prior_inventory_uids;
++            for( const item *existing : player_character.items_with( []( const item & ) {
++                     return true;
++                 } ) ) {
++                prior_inventory_uids.insert( existing->uid().get_value() );
++            }
+             ret_val<item_location> ret = player_character.i_add_or_fill( newit, true, nullptr, &it,
+                                          /*allow_drop=*/false, /*allow_wield=*/false, false );
+             item_location added_it = ret.value();
+@@ -347,6 +355,10 @@ static bool pick_one_up( item_location &loc, int quantity, bool &got_water, bool
+                     // merged to the original stack, restore original charges
+                     it.charges = last_charges;
+                 } else {
++                    // A whole item moved to a new inventory slot keeps its persistent identity.
++                    if( whole_item && prior_inventory_uids.count( added_it->uid().get_value() ) == 0 ) {
++                        added_it->transfer_identity_from( it );
++                    }
+                     // successfully added
+                     auto &entry = mapPickup[newit.tname()];
+                     entry.second += newit.count();
+diff --git a/src/savegame_json.cpp b/src/savegame_json.cpp
+index 1be5cd8..59e278b 100644
+--- a/src/savegame_json.cpp
++++ b/src/savegame_json.cpp
+@@ -2020,6 +2020,33 @@ void npc::deserialize( const JsonObject &data )
+ void npc::load( const JsonObject &data )
+ {
+     Character::load( data );
++    novgorod_assignment_id.clear();
++    novgorod_intent_payload.clear();
++    novgorod_intent_target = tripoint_abs_ms::invalid;
++    novgorod_intent_progress = 0;
++    novgorod_intent_status.clear();
++    novgorod_interrupt_cause.clear();
++    data.read( "novgorod_assignment_id", novgorod_assignment_id );
++    data.read( "novgorod_intent_payload", novgorod_intent_payload );
++    data.read( "novgorod_intent_target", novgorod_intent_target );
++    data.read( "novgorod_intent_progress", novgorod_intent_progress );
++    data.read( "novgorod_intent_status", novgorod_intent_status );
++    data.read( "novgorod_interrupt_cause", novgorod_interrupt_cause );
++    if( novgorod_assignment_id.empty() ) {
++        novgorod_intent_payload.clear();
++        novgorod_intent_target = tripoint_abs_ms::invalid;
++        novgorod_intent_progress = 0;
++        novgorod_intent_status.clear();
++        novgorod_interrupt_cause.clear();
++    } else if( novgorod_intent_payload.empty() ||
++               novgorod_intent_target == tripoint_abs_ms::invalid ||
++               novgorod_intent_progress < 0 ||
++               ( novgorod_intent_status != "active" &&
++                 novgorod_intent_status != "interrupted_waiting_for_semantic_decision" &&
++                 novgorod_intent_status != "completed" ) ) {
++        novgorod_intent_status = "interrupted_waiting_for_semantic_decision";
++        novgorod_interrupt_cause = "native_saved_assignment_invalid";
++    }
+ 
+     data.read( "last_player_seen_pos", last_player_seen_pos );
+     data.read( "guard_pos", guard_pos );
+@@ -2247,6 +2274,14 @@ void npc::store( JsonOut &json ) const
+ {
+     Character::store( json );
+ 
++    if( !novgorod_assignment_id.empty() ) {
++        json.member( "novgorod_assignment_id", novgorod_assignment_id );
++        json.member( "novgorod_intent_payload", novgorod_intent_payload );
++        json.member( "novgorod_intent_target", novgorod_intent_target );
++        json.member( "novgorod_intent_progress", novgorod_intent_progress );
++        json.member( "novgorod_intent_status", novgorod_intent_status );
++        json.member( "novgorod_interrupt_cause", novgorod_interrupt_cause );
++    }
+     json.member( "marked_for_death", marked_for_death );
+     json.member( "dead", dead );
+     json.member( "patience", patience );

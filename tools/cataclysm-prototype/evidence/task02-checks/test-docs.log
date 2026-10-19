@@ -1,0 +1,24 @@
+
+> rus-modules@0.23.0-migration.24 test:docs
+> node --test tools/docs-tools/test/documentation-generation.test.js
+
+✔ documentation outputs are deterministic (891.2541ms)
+✔ npm script catalog matches root scripts and current instructions reject dangling commands (937.988ms)
+✔ agent instruction links resolve to repository files (35.4335ms)
+✔ agent skill stubs are identical across tools and point to existing canon (5.2205ms)
+✔ AGENTS.md router fits the agent context budget and links every governance file (2.5314ms)
+✔ governance corpus holds every former AGENTS.md section exactly once (1.962ms)
+✔ canonical documentation preserves active guidance without obsolete workflow gates (1.6213ms)
+✔ committed documentation and generated data are reproducible (3690.8625ms)
+✔ MODULE_INDEX lists every production package exactly once (1.1747ms)
+✔ schema reference binds contract names and external DDL (0.7561ms)
+✔ world-base schema reference expands every column in multi-column ALTER TABLE (18.5176ms)
+✔ canonical document registry has unique existing targets and no obsolete root copies (10.5618ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5699.5621

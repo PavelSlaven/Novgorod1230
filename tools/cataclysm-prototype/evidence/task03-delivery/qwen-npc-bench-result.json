@@ -1,0 +1,56 @@
+{
+  "kind": "direct_existing_npc_reply_rolepath_synthetic_native_readback_no_planner",
+  "call_cap": 5,
+  "max_repair_attempts": 1,
+  "role_attempt_count": 2,
+  "http_attempt_count": 2,
+  "roles": [
+    {
+      "attempt": 1,
+      "role_id": "npc_conversation_responder"
+    },
+    {
+      "attempt": 2,
+      "role_id": "npc_conversation_grounding_auditor"
+    }
+  ],
+  "attempts": [
+    {
+      "attempt": 5,
+      "phase": "npc_bench",
+      "pid": 373,
+      "state": "completed",
+      "request_model_id": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "response_model_id": "qwen3.8-27b",
+      "max_tokens": 1000,
+      "prompt_tokens": 2915,
+      "completion_tokens": 318,
+      "total_tokens": 3233,
+      "http_status": 200,
+      "elapsed_ms": 3260,
+      "failure_code": null
+    },
+    {
+      "attempt": 6,
+      "phase": "npc_bench",
+      "pid": 373,
+      "state": "completed",
+      "request_model_id": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "response_model_id": "qwen3.8-27b",
+      "max_tokens": 256,
+      "prompt_tokens": 1153,
+      "completion_tokens": 11,
+      "total_tokens": 1164,
+      "http_status": 200,
+      "elapsed_ms": 697,
+      "failure_code": null
+    }
+  ],
+  "synthetic_native_operations": 1,
+  "result": {
+    "proposal_status": "planned",
+    "contribution_kind": "speech",
+    "native_readback_status": "applied"
+  },
+  "failure_code": null
+}

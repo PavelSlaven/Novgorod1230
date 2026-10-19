@@ -135,7 +135,7 @@ function staleDiscardedProposal(boundary, request, orderedSignals) {
 }
 async function requestFreshDecision({ boundary, request, orderedSignals,
   semanticModel, revalidateStateVersion, rebuildDecisionContext, mode,
-  validatePlan, validateFreshPlan }) {
+  validatePlan, validateFreshPlan, maxRepairAttempts }) {
   if (typeof semanticModel !== 'function') {
     fail('TURN_NPC_MODEL_MISSING', 'semanticModel must be a function');
   }
@@ -149,6 +149,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
   let currentRequest = request;
   let currentSignals = orderedSignals;
   let staleRebuilds = 0;
+  let repairAttempts = 0;
   decisionLoop: while (true) {
     const safeRequest = immutable(currentRequest);
     let repair = null;
@@ -259,7 +260,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         ? semanticRepairUsed : structuralRepairUsed;
       const semanticAfterStructural = semanticRepair
         && structuralRepairUsed && !semanticRepairUsed;
-      if (repairAlreadyUsed || (repair !== null && !semanticAfterStructural)) {
+      if (repairAttempts >= maxRepairAttempts || repairAlreadyUsed
+          || (repair !== null && !semanticAfterStructural)) {
         const reportedErrors = structuralErrors.length > 0
           ? structuralErrors : repairContext(rawPlan).validation_errors;
         fail(
@@ -272,6 +274,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       }
       if (semanticRepair) semanticRepairUsed = true;
       else structuralRepairUsed = true;
+      repairAttempts += 1;
       repair = repairContext(rawPlan, domainResult?.errors
         ?? (structuralErrors.length > 0 ? structuralErrors : null));
     }
@@ -359,8 +362,13 @@ export async function requestNpcSemanticDecision({
   revalidateStateVersion,
   rebuildDecisionContext = null,
   validatePlan = null,
-  validateFreshPlan = null
+  validateFreshPlan = null,
+  maxRepairAttempts = 2
 } = {}) {
+  if (!Number.isSafeInteger(maxRepairAttempts) || maxRepairAttempts < 0
+      || maxRepairAttempts > 2) {
+    fail('TURN_NPC_REPAIR_LIMIT_INVALID', 'maxRepairAttempts must be 0, 1, or 2');
+  }
   if (!validateNpcDecisionBoundary(boundary)) {
     fail('TURN_NPC_BOUNDARY_INVALID', 'boundary must match npc_decision_boundary_v1');
   }
@@ -422,7 +430,7 @@ export async function requestNpcSemanticDecision({
   }
 
   const inFlightKey = boundary.boundary_id;
-  const inputSnapshot = immutable({ boundary, request });
+  const inputSnapshot = immutable({ boundary, request, maxRepairAttempts });
   const existing = inFlightDecisions.get(inFlightKey);
   if (existing) {
     if (!isDeepStrictEqual(existing.inputSnapshot, inputSnapshot)) {
@@ -444,7 +452,8 @@ export async function requestNpcSemanticDecision({
     rebuildDecisionContext,
     mode,
     validatePlan,
-    validateFreshPlan
+    validateFreshPlan,
+    maxRepairAttempts
   });
   const inFlight = { inputSnapshot, pending };
   inFlightDecisions.set(inFlightKey, inFlight);

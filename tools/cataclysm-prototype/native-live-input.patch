@@ -1,0 +1,437 @@
+diff --git a/src/action.cpp b/src/action.cpp
+--- a/src/action.cpp
++++ b/src/action.cpp
+@@ -200,6 +200,8 @@
+             return "haul_toggle";
+         case ACTION_BUTCHER:
+             return "butcher";
++        case ACTION_NOVGOROD_SEMANTIC:
++            return "NOVGOROD_SEMANTIC";
+         case ACTION_CHAT:
+             return "chat";
+         case ACTION_LOOK:
+@@ -467,6 +469,7 @@
+         case ACTION_PANEL_MGMT:
+         case ACTION_RELOAD_TILESET:
+         case ACTION_TIMEOUT:
++        case ACTION_NOVGOROD_SEMANTIC:
+         case ACTION_TOGGLE_AUTO_FEATURES:
+         case ACTION_TOGGLE_AUTO_PULP_BUTCHER:
+         case ACTION_TOGGLE_AUTO_MINING:
+@@ -988,6 +991,7 @@
+             REGISTER_ACTION( ACTION_OPEN );
+             REGISTER_ACTION( ACTION_CLOSE );
+             REGISTER_ACTION( ACTION_CHAT );
++            REGISTER_ACTION( ACTION_NOVGOROD_SEMANTIC );
+             REGISTER_ACTION( ACTION_PICKUP );
+             REGISTER_ACTION( ACTION_PICKUP_ALL );
+             REGISTER_ACTION( ACTION_GRAB );
+@@ -1160,6 +1164,12 @@
+     if( !test_mode ) {
+         throw std::logic_error( "Novgorod adjacent selection requires test_mode" );
+     }
++    set_novgorod_adjacent_selection( actor_id, origin, direction );
++}
++
++void set_novgorod_adjacent_selection( int64_t actor_id, const tripoint_bub_ms &origin,
++        const tripoint_rel_ms &direction )
++{
+     if( actor_id <= 0 || direction.x() < -1 || direction.x() > 1 ||
+         direction.y() < -1 || direction.y() > 1 || direction.z() < -1 || direction.z() > 1 ||
+         ( direction.x() == 0 && direction.y() == 0 && direction.z() == 0 ) ) {
+@@ -1171,9 +1181,6 @@
+
+ void require_novgorod_test_adjacent_selection()
+ {
+-    if( !test_mode ) {
+-        throw std::logic_error( "Novgorod adjacent selection requires test_mode" );
+-    }
+     novgorod_test_adjacent_selection_required = true;
+ }
+
+@@ -1192,7 +1199,7 @@
+         const novgorod_adjacent_selection selection = *novgorod_test_adjacent_selection;
+         novgorod_test_adjacent_selection.reset();
+         Character &actor = get_player_character();
+-        if( !test_mode || actor.getID().get_value() != selection.actor_id ||
++        if( actor.getID().get_value() != selection.actor_id ||
+             actor.pos_bub() != selection.origin || selection.direction.x() < -1 ||
+             selection.direction.x() > 1 || selection.direction.y() < -1 ||
+             selection.direction.y() > 1 || ( allow_vertical ?
+@@ -1206,7 +1213,7 @@
+         }
+         return selection.direction;
+     }
+-    if( test_mode && novgorod_test_adjacent_selection_required ) {
++    if( novgorod_test_adjacent_selection_required ) {
+         throw std::runtime_error( "NOVGOROD_TEST_INPUT_EXHAUSTED: adjacent target missing" );
+     }
+     input_context ctxt( "DEFAULTMODE", keyboard_mode::keycode );
+diff --git a/src/action.h b/src/action.h
+--- a/src/action.h
++++ b/src/action.h
+@@ -22,6 +22,7 @@
+ enum action_id : int {
+     /** Invalid action used for various lookup errors */
+     ACTION_NULL = 0,
++    ACTION_NOVGOROD_SEMANTIC,
+
+     // Mouse actions
+     /**@{*/
+@@ -511,6 +512,8 @@
+  *            exits with the return value set to the tripoint, or std::nullopt
+  *            if the tripoint is not a valid direction.
+  */
++void set_novgorod_adjacent_selection( int64_t actor_id, const tripoint_bub_ms &origin,
++        const tripoint_rel_ms &direction );
+ void set_novgorod_test_adjacent_selection( int64_t actor_id, const tripoint_bub_ms &origin,
+         const tripoint_rel_ms &direction );
+ void require_novgorod_test_adjacent_selection();
+diff --git a/src/game.cpp b/src/game.cpp
+--- a/src/game.cpp
++++ b/src/game.cpp
+@@ -2625,6 +2625,7 @@
+         ctxt.register_action( "haul_toggle" );
+         ctxt.register_action( "butcher" );
+         ctxt.register_action( "chat" );
++        ctxt.register_action( "NOVGOROD_SEMANTIC", to_translation( "Свободное действие (dev-проба)" ) );
+         ctxt.register_action( "look" );
+         ctxt.register_action( "peek" );
+         ctxt.register_action( "listitems" );
+@@ -5740,7 +5741,7 @@
+ {
+     map &here = get_map();
+
+-    if( test_mode && test_pickup_uid > 0 ) {
++    if( test_pickup_uid > 0 ) {
+         const int64_t uid = test_pickup_uid;
+         test_pickup_uid = 0;
+         const tripoint_bub_ms origin = u.pos_bub();
+diff --git a/src/game.h b/src/game.h
+--- a/src/game.h
++++ b/src/game.h
+@@ -222,6 +222,10 @@
+
+         /** Test-only input seam; requires test_mode. */
+         void set_test_action_queue( std::vector<std::string> actions );
++        void set_novgorod_action_queue( std::vector<std::string> actions );
++        void set_novgorod_item_use( int64_t uid, std::string method );
++        void set_novgorod_pickup_uid( int64_t uid );
++        bool has_novgorod_actions() const;
+         void set_test_item_use( int64_t uid, std::string method );
+         void set_test_pickup_uid( int64_t uid );
+
+diff --git a/src/handle_action.cpp b/src/handle_action.cpp
+--- a/src/handle_action.cpp
++++ b/src/handle_action.cpp
+@@ -70,6 +70,7 @@
+ #include "math_parser_diag_value.h"
+ #include "mdarray.h"
+ #include "messages.h"
++#include "novgorod_semantic.h"
+ #include "monster.h"
+ #include "move_mode.h"
+ #include "mtype.h"
+@@ -258,6 +259,11 @@
+     if( !test_mode ) {
+         throw std::logic_error( "Novgorod action queue requires test_mode" );
+     }
++    set_novgorod_action_queue( std::move( actions ) );
++}
++
++void game::set_novgorod_action_queue( std::vector<std::string> actions )
++{
+     if( !gamemode ) {
+         gamemode = std::make_unique<special_game>();
+     }
+@@ -271,6 +277,14 @@
+     if( !test_mode || uid <= 0 ) {
+         throw std::logic_error( "NOVGOROD_TEST_PICKUP_UID_INVALID" );
+     }
++    set_novgorod_pickup_uid( uid );
++}
++
++void game::set_novgorod_pickup_uid( int64_t uid )
++{
++    if( uid <= 0 ) {
++        throw std::invalid_argument( "NOVGOROD_PICKUP_UID_INVALID" );
++    }
+     test_pickup_uid = uid;
+ }
+
+@@ -278,10 +292,23 @@
+ {
+     if( !test_mode || uid <= 0 || method.empty() ) {
+         throw std::logic_error( "NOVGOROD_TEST_ITEM_USE_INVALID" );
++    }
++    set_novgorod_item_use( uid, std::move( method ) );
++}
++
++void game::set_novgorod_item_use( int64_t uid, std::string method )
++{
++    if( uid <= 0 || method.empty() ) {
++        throw std::invalid_argument( "NOVGOROD_ITEM_USE_INVALID" );
+     }
+     test_item_use_uid = uid;
+     test_item_use_method = std::move( method );
+     test_item_use_enabled = true;
++}
++
++bool game::has_novgorod_actions() const
++{
++    return test_action_queue_enabled && test_action_index < test_action_queue.size();
+ }
+
+ input_context game::get_player_input( std::string &action )
+@@ -319,10 +346,15 @@
+
+     here.update_visibility_cache( pos.z() );
+
++    novgorod_semantic::on_input_boundary();
++    if( !u.activity.is_null() && !has_novgorod_actions() ) {
++        action = action_ident( ACTION_NULL );
++        return ctxt;
++    }
++    if( test_action_queue_enabled && !test_mode && !has_novgorod_actions() ) {
++        test_action_queue_enabled = false;
++    }
+     if( test_action_queue_enabled ) {
+-        if( !test_mode ) {
+-            throw std::logic_error( "Novgorod action queue requires test_mode" );
+-        }
+         if( test_action_index >= test_action_queue.size() ) {
+             throw std::runtime_error( "NOVGOROD_TEST_INPUT_EXHAUSTED: no queued native action" );
+         }
+@@ -2674,6 +2706,10 @@
+             butcher( mouse_target );
+             break;
+
++        case ACTION_NOVGOROD_SEMANTIC:
++            novgorod_semantic::live_input();
++            return false;
++
+         case ACTION_CHAT:
+             chat( mouse_target );
+             break;
+@@ -2714,9 +2750,6 @@
+             // Shell-users are presumed to be able to mess with their inventories, etc
+             // while in the shell.  Eating, gear-changing, and item use are OK.
+             if( test_item_use_enabled ) {
+-                if( !test_mode ) {
+-                    throw std::logic_error( "NOVGOROD_TEST_ITEM_USE_REQUIRES_TEST_MODE" );
+-                }
+                 struct reset_adjacent_selection {
+                     ~reset_adjacent_selection() {
+                         clear_novgorod_test_adjacent_selection();
+diff --git a/src/sounds.cpp b/src/sounds.cpp
+--- a/src/sounds.cpp
++++ b/src/sounds.cpp
+@@ -29,6 +29,7 @@
+ #include "monster.h"
+ #include "music.h"
+ #include "npc.h"
++#include "novgorod_semantic.h"
+ #include "output.h"
+ #include "overmapbuffer.h"
+ #include "player_activity.h"
+@@ -659,6 +660,9 @@
+             }
+         }
+         const std::string &description = sound.description.empty() ? _( "a noise" ) : sound.description;
++        if( sound.category == sound_t::speech && !sound.ambient ) {
++            novgorod_semantic::observe_heard_speech( *you, pos, description );
++        }
+         if( you->is_npc() ) {
+             if( !sound.ambient ) {
+                 npc *guy = dynamic_cast<npc *>( you );
+diff --git a/src/game_io.cpp b/src/game_io.cpp
+--- a/src/game_io.cpp
++++ b/src/game_io.cpp
+@@ -131,6 +131,13 @@
+     }
+ }
+
++static bool novgorod_p4_debug_rng_enabled()
++{
++    const char *mode = std::getenv( "NOVGOROD_P4_MODE" );
++    return test_mode && mode != nullptr && ( std::string_view( mode ) == "create" ||
++            std::string_view( mode ) == "apply" || std::string_view( mode ) == "read" );
++}
++
+ // Load everything that will not depend on any mods
+ void game::load_static_data()
+ {
+@@ -533,7 +540,7 @@
+
+     loading_ui::done();
+     const cata_path rng_state_file = worldpath / "novgorod_rng_state";
+-    if( file_exist( rng_state_file ) ) {
++    if( novgorod_p4_debug_rng_enabled() && file_exist( rng_state_file ) ) {
+         bool restored = false;
+         if( !read_from_file( rng_state_file, [&restored]( std::istream &is ) {
+             restored = rng_unserialize_engine( is );
+@@ -814,7 +821,7 @@
+                 fout.imbue( std::locale::classic() );
+                 fout << total_time_played.count();
+             } );
+-            if( !write_to_file( PATH_INFO::world_base_save_path() / "novgorod_rng_state",
++            if( novgorod_p4_debug_rng_enabled() && !write_to_file( PATH_INFO::world_base_save_path() / "novgorod_rng_state",
+             []( std::ostream &fout ) {
+                 rng_serialize_engine( fout );
+             }, _( "native RNG state" ) ) ) {
+diff --git a/src/npctalk.cpp b/src/npctalk.cpp
+--- a/src/npctalk.cpp
++++ b/src/npctalk.cpp
+@@ -1060,14 +1060,11 @@
+     }
+ }
+
+-void game::chat( const std::optional<tripoint_bub_ms> &p )
++std::vector<Creature *> chat_available_creatures()
+ {
+     map &here = get_map();
+-
+     Character &player_character = get_player_character();
+-    int volume = player_character.get_shout_volume();
+-
+-    const std::vector<Creature *> available = get_creatures_if( [&]( const Creature & guy ) {
++    return g->get_creatures_if( [&]( const Creature & guy ) {
+         // TODO: Get rid of the z-level check when z-level vision gets "better"
+         return ( guy.is_npc() || ( guy.is_monster() &&
+                                    guy.as_monster()->has_flag( mon_flag_CONVERSATION ) &&
+@@ -1075,6 +1072,24 @@
+                player_character.sees( here, guy.pos_bub( here ) ) &&
+                rl_dist( player_character.pos_abs(), guy.pos_abs() ) <= SEEX * 2;
+     } );
++}
++
++Creature *select_chat_target()
++{
++    const std::vector<Creature *> available = chat_available_creatures();
++    const int selected = creature_select_menu( available, _( "Talk to whom?" ), false );
++    return selected >= 0 && static_cast<size_t>( selected ) < available.size() ?
++           available[selected] : nullptr;
++}
++
++void game::chat( const std::optional<tripoint_bub_ms> &p )
++{
++    map &here = get_map();
++
++    Character &player_character = get_player_character();
++    int volume = player_character.get_shout_volume();
++
++    const std::vector<Creature *> available = chat_available_creatures();
+
+     if( p.has_value() ) {
+         Creature *target = get_creature_tracker().creature_at( *p );
+diff --git a/src/npctalk.h b/src/npctalk.h
+--- a/src/npctalk.h
++++ b/src/npctalk.h
+@@ -9,6 +9,10 @@
+ #include "type_id.h"
+
+ class Character;
++class Creature;
++
++std::vector<Creature *> chat_available_creatures();
++Creature *select_chat_target();
+ class item;
+ class JsonOut;
+ class JsonValue;
+diff --git a/src/character.h b/src/character.h
+--- a/src/character.h
++++ b/src/character.h
+@@ -3373,6 +3373,8 @@
+         virtual void wake_up();
+         // how loud a character can shout. based on mutations and clothing
+         int get_shout_volume() const;
++        static constexpr int minimum_voice_volume = 1;
++        int indoor_voice() const;
+         // shouts a message
+         void shout( std::string msg = "", bool order = false );
+         //signals player location to nemesis for "Hunted" trait
+diff --git a/src/npc.cpp b/src/npc.cpp
+--- a/src/npc.cpp
++++ b/src/npc.cpp
+@@ -2113,40 +2113,43 @@
+     }
+ }
+
+-int npc::indoor_voice() const
++int Character::indoor_voice() const
+ {
+     const map &here = get_map();
+
+     const int max_volume = get_shout_volume();
+-    const int min_volume = 1;
++    const int min_volume = minimum_voice_volume;
+     // Actual hearing distance is incredibly dependent on ambient noise and our noise propagation model is... rather binary
+     // But we'll assume people normally want to project their voice about 6 meters away.
+     int wanted_volume = 6;
+-    Character &player = get_player_character();
+-    const int distance_to_player = rl_dist( pos_abs(), player.pos_abs() );
+-    if( is_following() || is_ally( player ) ) {
+-        // heard only when volume beats distance plus the weather's sound_attn
+-        wanted_volume = distance_to_player + get_weather().weather_id->sound_attn + 1;
+-    } else if( is_enemy() && sees( here, player ) ) {
+-        // Battle cry! Bandits have no concept of indoor voice, even when not threatened.
+-        wanted_volume = max_volume;
+-    }
+-    // Possible fallthrough: neutral or unaware enemy NPCs talk at default wanted_volume
+-
+-    // Don't wake up friends when using our indoor voice
+-    for( const auto &bunk_buddy : get_cached_friends() ) {
+-        Character *char_buddy = nullptr;
+-        if( auto buddy = bunk_buddy.lock() ) {
+-            char_buddy = dynamic_cast<Character *>( buddy.get() );
+-        }
+-        if( !char_buddy ) {
+-            continue;
+-        }
+-        if( char_buddy->has_effect( effect_sleep ) ) {
+-            int distance_to_sleeper = rl_dist( pos_bub(), char_buddy->pos_bub() );
+-            if( wanted_volume >= distance_to_sleeper ) {
+-                // Speak just quietly enough to not disturb anyone
+-                wanted_volume = distance_to_sleeper - 1;
++    const npc *subject = as_npc();
++    if( subject ) {
++        Character &player = get_player_character();
++        const int distance_to_player = rl_dist( pos_abs(), player.pos_abs() );
++        if( subject->is_following() || subject->is_ally( player ) ) {
++            // heard only when volume beats distance plus the weather's sound_attn
++            wanted_volume = distance_to_player + get_weather().weather_id->sound_attn + 1;
++        } else if( subject->is_enemy() && sees( here, player ) ) {
++            // Battle cry! Bandits have no concept of indoor voice, even when not threatened.
++            wanted_volume = max_volume;
++        }
++        // Possible fallthrough: neutral or unaware enemy NPCs talk at default wanted_volume
++
++        // Don't wake up friends when using our indoor voice
++        for( const auto &bunk_buddy : subject->get_cached_friends() ) {
++            Character *char_buddy = nullptr;
++            if( auto buddy = bunk_buddy.lock() ) {
++                char_buddy = dynamic_cast<Character *>( buddy.get() );
++            }
++            if( !char_buddy ) {
++                continue;
++            }
++            if( char_buddy->has_effect( effect_sleep ) ) {
++                int distance_to_sleeper = rl_dist( pos_bub(), char_buddy->pos_bub() );
++                if( wanted_volume >= distance_to_sleeper ) {
++                    // Speak just quietly enough to not disturb anyone
++                    wanted_volume = distance_to_sleeper - 1;
++                }
+             }
+         }
+     }
+diff --git a/src/npc.h b/src/npc.h
+--- a/src/npc.h
++++ b/src/npc.h
+@@ -1123,7 +1123,6 @@
+             return say( string_format( line, std::forward<Args>( args )... ) );
+         }
+         void say( const std::string &line, sounds::sound_t spriority = sounds::sound_t::speech ) const;
+-        int indoor_voice() const;
+         void decide_needs();
+         void reboot();
+         void die( map *here, Creature *killer ) override;

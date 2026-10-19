@@ -1,0 +1,33 @@
+
+
+-----------------------------------------
+07:31:57.589 : Starting log.
+07:31:57.589 INFO : Cataclysm DDA version 0d8843f-dirty
+07:31:57.589 INFO : Randomness seeded to: 17
+
+07:31:57.589 INFO : Running Catch2 session:
+Filters: [item],[json],[pickup]
+
+07:31:57.681 INFO : [options] C locale set to C
+07:31:57.681 INFO : [options] C++ locale set to C
+07:32:09.348 INFO : /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/nativebuild/cataclysm-source/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+07:32:33.843 WARNING : Dark Days Ahead pack load time:: 32364656us (avg: 32364656us) (count: 1)
+07:32:33.843 WARNING : TESTING DATA pack load time:: 1141591us (avg: 1141591us) (count: 1)
+07:32:52.301 INFO : Game data loaded
+
+07:32:57.604 INFO : loading non-main map at (4,4,0) which overlaps with main map (abs_sub = (0,0,0))
+07:33:00.360 INFO : loading non-main map at (4,4,0) which overlaps with main map (abs_sub = (0,0,0))
+07:33:00.374 INFO : loading non-main map at (4,4,0) which overlaps with main map (abs_sub = (0,0,0))
+07:33:00.387 INFO : loading non-main map at (4,4,0) which overlaps with main map (abs_sub = (0,0,0))
+07:33:00.482 INFO : Setting language to: 'ru'
+07:33:00.483 INFO : [i18n] Scanning mod translations from /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/native774/postfix-controls-user/mods/
+07:33:00.486 INFO : [i18n] Scanning core translations from lang/mo/
+07:33:00.518 INFO : Setting language to: 'en'
+07:33:00.519 INFO : [i18n] Scanning mod translations from /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/native774/postfix-controls-user/mods/
+07:33:00.522 INFO : [i18n] Scanning core translations from lang/mo/
+===============================================================================
+All tests passed (164792 assertions in 161 test cases)
+
+07:33:07.319 WARNING : opendir [/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/native774/postfix-controls-user/cache] failed with "No such file or directory".
+07:33:08.635 INFO : Finished in 70.9485 seconds
+07:33:08.635 INFO : Randomness seeded to: 17

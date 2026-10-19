@@ -1,0 +1,129 @@
+import { once } from 'node:events';
+import { writeFile, mkdtemp, rm } from 'node:fs/promises';
+import { connect } from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { loadP3QwenSettingsOwner } from '../../tools/cataclysm-prototype/p3-boundary.js';
+import { startP3LiveCoordinator } from '../../tools/cataclysm-prototype/p3-live-coordinator.mjs';
+import { createP3LiveChannel } from '../../tools/cataclysm-prototype/p3-live-socket.js';
+import { matchesP3WireModelId } from '../../tools/cataclysm-prototype/p3-wire-smoke.mjs';
+
+const cap = 5;
+const synthetic = process.argv.includes('--synthetic');
+const resultPath = path.join(path.dirname(fileURLToPath(import.meta.url)),
+  synthetic ? 'reply03d-synthetic-bench-result.json' : 'reply03d-qwen-bench-result.json');
+const observation = { schema: 'p3_native_observation_v1', turn: 10, revision: 10,
+  actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
+    { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] }],
+  items: [], targets: [] };
+
+if (process.platform !== 'linux' || !process.env.RUS_LLM_SETTINGS_PATH) {
+  throw new Error('WSL Linux and RUS_LLM_SETTINGS_PATH are required');
+}
+const settingsOwner = await loadP3QwenSettingsOwner();
+const originalFetch = globalThis.fetch;
+const wire = [];
+const phases = [];
+let coordinator;
+let socket;
+let root;
+let result = null;
+let failureCode = null;
+let operations = 0;
+globalThis.fetch = async (input, options = {}) => {
+  const url = input instanceof Request ? input.url : String(input);
+  if (!new URL(url).pathname.endsWith('/chat/completions')) {
+    throw new Error('P3_BENCH_UNEXPECTED_HTTP_ENDPOINT');
+  }
+  if (wire.length >= cap) throw new Error('P3_BENCH_CALL_LIMIT');
+  const body = JSON.parse(String(options.body ?? '{}'));
+  const item = { http_status: null, request_model_id: body.model ?? null,
+    response_model_id: null, max_tokens: body.max_tokens ?? null,
+    prompt_tokens: null, completion_tokens: null, total_tokens: null,
+    elapsed_ms: null };
+  wire.push(item);
+  const started = Date.now();
+  try {
+    const response = await originalFetch(input, options);
+    item.http_status = response.status;
+    try {
+      const data = await response.clone().json();
+      item.response_model_id = typeof data?.model === 'string' ? data.model : null;
+      for (const key of ['prompt_tokens', 'completion_tokens', 'total_tokens']) {
+        item[key] = Number.isSafeInteger(data?.usage?.[key]) ? data.usage[key] : null;
+      }
+    } catch {}
+    if (response.ok && !matchesP3WireModelId(item.response_model_id)) {
+      throw new Error('P3_WIRE_UNEXPECTED_RESPONSE_MODEL');
+    }
+    return response;
+  } finally {
+    item.elapsed_ms = Date.now() - started;
+  }
+};
+
+try {
+  root = await mkdtemp(path.join(os.tmpdir(), 'p3-qwen-bench-'));
+  coordinator = await startP3LiveCoordinator({ socketPath: path.join(root, 'p3.sock'),
+    settingsOwner, config: { modelCallBudget: cap, npcMaxRepairAttempts: 1 } });
+  socket = connect(path.join(root, 'p3.sock'));
+  await once(socket, 'connect');
+  const channel = createP3LiveChannel(socket);
+  channel.bind('1');
+  channel.send({ type: 'intent', intent: 'Скажи дословно: «Привет, слышишь меня?»',
+    target_actor_ref: 'npc:8', observation });
+  while (true) {
+    const message = await channel.receive();
+    if (message.type === 'role_phase') {
+      phases.push({ role_id: message.role_id, timeout_ms: message.timeout_ms });
+    } else if (message.type === 'observe') {
+      channel.send({ type: 'observation', observation });
+    } else if (message.type === 'operation') {
+      const request = message.request;
+      const speak = request.primitive === 'speak' && operations < 2;
+      const speaker = request.actor_id;
+      operations++;
+      channel.send({ type: 'readback', readback: {
+        schema: 'p3_native_operation_readback_v1', operation_id: request.operation_id,
+        status: speak ? 'applied' : 'refused',
+        goal_result: speak ? 'achieved' : 'refused',
+        native_effect: speak ? { effect_status: 'confirmed', speakerId: speaker,
+          utterance: request.args.utterance,
+          actualHeardListenerIds: speaker === '7' ? ['8'] : ['7'] }
+          : { effect_status: 'refused' },
+        ...(speak ? {} : { refusal: { code: 'P3_BENCH_PRIMITIVE_UNSUPPORTED' } }),
+        before: { turn: 10 }, after: { turn: 10 }
+      } });
+    } else if (message.type === 'result') {
+      result = { status: message.status, code: message.code,
+        applied_operations: message.applied_operations, goal_result: message.goal_result };
+      break;
+    } else {
+      throw new Error('P3_BENCH_UNEXPECTED_FRAME');
+    }
+  }
+} catch (error) {
+  failureCode = /^[A-Z][A-Z0-9_]*$/u.test(error?.code ?? error?.message ?? '')
+    ? error.code ?? error.message : 'P3_BENCH_FAILED';
+} finally {
+  socket?.destroy();
+  await coordinator?.close();
+  if (root) await rm(root, { recursive: true, force: true });
+  globalThis.fetch = originalFetch;
+  const attempts = phases.map((phase, index) => ({ attempt: index + 1,
+    role_id: phase.role_id, timeout_ms: phase.timeout_ms,
+    ...(wire[index] ?? { http_status: null, request_model_id: null,
+      response_model_id: null, max_tokens: null, prompt_tokens: null,
+      completion_tokens: null, total_tokens: null, elapsed_ms: null }) }));
+  const report = { kind: synthetic ? 'synthetic_http_and_native_readback'
+    : 'synthetic_native_readback_live_coordinator_qwen_bench',
+    configured_model_id: settingsOwner.providerSnapshot().model,
+    call_cap: cap, role_attempt_count: coordinator?.budget.calls ?? 0,
+    http_attempt_count: wire.length, role_http_count_match: phases.length === wire.length,
+    operations, result, failure_code: failureCode, attempts };
+  await writeFile(resultPath, `${JSON.stringify(report, null, 2)}\n`, { flag: 'wx' });
+  process.stdout.write(`${JSON.stringify({ result_path: resultPath,
+    role_attempt_count: report.role_attempt_count,
+    http_attempt_count: report.http_attempt_count, failure_code: failureCode })}\n`);
+}

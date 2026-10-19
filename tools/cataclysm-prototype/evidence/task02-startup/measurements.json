@@ -1,0 +1,2506 @@
+{
+  "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "runs": [
+    {
+      "name": "create",
+      "mode": "create",
+      "argv": [
+        "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-native-build/cata_test",
+        "--rng-seed",
+        "17",
+        "--user-dir=/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-userdir",
+        "Novgorod native save and resume probe"
+      ],
+      "cwd": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-runtime-linked",
+      "exit_code": 0,
+      "wall_ms": 77876.472596,
+      "timers": [
+        {
+          "name": "diagnostic.init_global_game_state",
+          "ms": 70114.606,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.core_data",
+          "ms": 140.607,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.load_world_modfiles",
+          "ms": 57553.651,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.finalize_loaded_data",
+          "ms": 12000.43,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.check_consistency",
+          "ms": 4796.748,
+          "count": 1
+        },
+        {
+          "name": "finalize.ASCII Art",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Achievements",
+          "ms": 0.027,
+          "count": 1
+        },
+        {
+          "name": "finalize.Addictions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Ammo effects",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Anatomies",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Bash damage profiles",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Behaviors",
+          "ms": 0.044,
+          "count": 1
+        },
+        {
+          "name": "finalize.Bionics",
+          "ms": 0.021,
+          "count": 1
+        },
+        {
+          "name": "finalize.Body graphs",
+          "ms": 0.077,
+          "count": 1
+        },
+        {
+          "name": "finalize.Body parts",
+          "ms": 0.049,
+          "count": 1
+        },
+        {
+          "name": "finalize.Butchery Requirements",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Character Modifiers",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Cities",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Climbing aids",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Clothing Mods",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Construction Categories",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Construction Groups",
+          "ms": 0.004,
+          "count": 1
+        },
+        {
+          "name": "finalize.Constructions",
+          "ms": 0.377,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting recipes",
+          "ms": 5086.275,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting requirements",
+          "ms": 2.252,
+          "count": 1
+        },
+        {
+          "name": "finalize.Damage Types",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Damage info orders",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Dimensions",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Diseases",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Effect on conditions",
+          "ms": 0.012,
+          "count": 1
+        },
+        {
+          "name": "finalize.Emissions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Enchantments",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Event Statistics",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Event Transformations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Factions",
+          "ms": 0.03,
+          "count": 1
+        },
+        {
+          "name": "finalize.Faults",
+          "ms": 115.672,
+          "count": 1
+        },
+        {
+          "name": "finalize.Field types",
+          "ms": 0.332,
+          "count": 1
+        },
+        {
+          "name": "finalize.Flags",
+          "ms": 0.01,
+          "count": 1
+        },
+        {
+          "name": "finalize.Furniture",
+          "ms": 0.077,
+          "count": 2
+        },
+        {
+          "name": "finalize.Gates",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Harvest Drop Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Harvest lists",
+          "ms": 0.948,
+          "count": 1
+        },
+        {
+          "name": "finalize.Item Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Items",
+          "ms": 478.47,
+          "count": 1
+        },
+        {
+          "name": "finalize.Limb Scores",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Magic Types",
+          "ms": 0.004,
+          "count": 1
+        },
+        {
+          "name": "finalize.Map Extras",
+          "ms": 0.033,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mapgen parameters",
+          "ms": 7.879,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mapgen weights",
+          "ms": 1228.633,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial Art Techniques",
+          "ms": 0.004,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial Arts",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial arts",
+          "ms": 0.237,
+          "count": 1
+        },
+        {
+          "name": "finalize.Materials",
+          "ms": 0.532,
+          "count": 1
+        },
+        {
+          "name": "finalize.Math expressions",
+          "ms": 104.476,
+          "count": 1
+        },
+        {
+          "name": "finalize.Math functions",
+          "ms": 0.575,
+          "count": 1
+        },
+        {
+          "name": "finalize.Missions",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster Flags",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster factions",
+          "ms": 0.437,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster groups",
+          "ms": 0.19,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster types",
+          "ms": 32.521,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mood Faces",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Morale Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Move modes",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mutations",
+          "ms": 0.371,
+          "count": 1
+        },
+        {
+          "name": "finalize.NPC classes",
+          "ms": 0.264,
+          "count": 1
+        },
+        {
+          "name": "finalize.Option sliders",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap Special Migrations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap Vision Levels",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap connections",
+          "ms": 0.597,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap land use codes",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap locations",
+          "ms": 2.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap placeholders",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap specials",
+          "ms": 0.676,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap terrain",
+          "ms": 17.762,
+          "count": 1
+        },
+        {
+          "name": "finalize.Post-process generators",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Professions",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Proficiencies",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Proficiency Categories",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Qualities",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Recipe Groups",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Recipe groups",
+          "ms": 0.132,
+          "count": 1
+        },
+        {
+          "name": "finalize.Region Settings",
+          "ms": 0.131,
+          "count": 1
+        },
+        {
+          "name": "finalize.Relic Procedural Generations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scenarios",
+          "ms": 0.046,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scent Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scores",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Blacklists",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Consumption Rates",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Whitelists",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Species",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Speed Descriptions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Spells",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Start locations",
+          "ms": 0.324,
+          "count": 1
+        },
+        {
+          "name": "finalize.Sub body parts",
+          "ms": 0.026,
+          "count": 1
+        },
+        {
+          "name": "finalize.Terrain",
+          "ms": 1.795,
+          "count": 2
+        },
+        {
+          "name": "finalize.Terrain/Furniture Transforms",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Traps",
+          "ms": 0.01,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part categories",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part locations",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part migrations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle parts",
+          "ms": 5.829,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle prototypes",
+          "ms": 111.128,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weakpoint Families",
+          "ms": 0.117,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weapon Categories",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weather generators",
+          "ms": 0.012,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weather types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Widgets",
+          "ms": 1.391,
+          "count": 1
+        },
+        {
+          "name": "finalize.Wound Fixes",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Wounds",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Zone Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.load_packs",
+          "ms": 45550.029,
+          "count": 1
+        },
+        {
+          "name": "Dark Days Ahead pack load time",
+          "ms": 44202.847,
+          "count": 1
+        },
+        {
+          "name": "TESTING DATA pack load time",
+          "ms": 1344.017,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.world_custom_mods",
+          "ms": 3.179,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.paths_options_init",
+          "ms": 108.942,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.static_data",
+          "ms": 34.26,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.readback_test_body",
+          "ms": 7148.889,
+          "count": 1
+        }
+      ],
+      "native_metrics": {
+        "mode": "create",
+        "world": "startup_diagnostic",
+        "save_ms": 4016.12,
+        "load_ms": 0,
+        "core_data_ms": 0,
+        "bootstrap_ms": 70114.6
+      }
+    },
+    {
+      "name": "read-1",
+      "mode": "read",
+      "argv": [
+        "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-native-build/cata_test",
+        "--rng-seed",
+        "17",
+        "--user-dir=/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-userdir",
+        "Novgorod native save and resume probe"
+      ],
+      "cwd": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-runtime-linked",
+      "exit_code": 0,
+      "wall_ms": 68791.307627,
+      "timers": [
+        {
+          "name": "diagnostic.init_global_game_state",
+          "ms": 68203.164,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.metadata",
+          "ms": 50.376,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.native_world_load",
+          "ms": 2616.1,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.paths_options_init",
+          "ms": 98.297,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.setup",
+          "ms": 60610.492,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.core_data",
+          "ms": 135.216,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.load_world_modfiles",
+          "ms": 60473.331,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.finalize_loaded_data",
+          "ms": 10425.13,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.check_consistency",
+          "ms": 3787.181,
+          "count": 1
+        },
+        {
+          "name": "finalize.ASCII Art",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Achievements",
+          "ms": 0.024,
+          "count": 1
+        },
+        {
+          "name": "finalize.Addictions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Ammo effects",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Anatomies",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Bash damage profiles",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Behaviors",
+          "ms": 0.024,
+          "count": 1
+        },
+        {
+          "name": "finalize.Bionics",
+          "ms": 0.017,
+          "count": 1
+        },
+        {
+          "name": "finalize.Body graphs",
+          "ms": 0.074,
+          "count": 1
+        },
+        {
+          "name": "finalize.Body parts",
+          "ms": 0.049,
+          "count": 1
+        },
+        {
+          "name": "finalize.Butchery Requirements",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Character Modifiers",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Cities",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Climbing aids",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Clothing Mods",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Construction Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Construction Groups",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Constructions",
+          "ms": 0.446,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting recipes",
+          "ms": 4614.177,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting requirements",
+          "ms": 2.209,
+          "count": 1
+        },
+        {
+          "name": "finalize.Damage Types",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Damage info orders",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Dimensions",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Diseases",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Effect on conditions",
+          "ms": 0.011,
+          "count": 1
+        },
+        {
+          "name": "finalize.Emissions",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Enchantments",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Event Statistics",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Event Transformations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Factions",
+          "ms": 0.025,
+          "count": 1
+        },
+        {
+          "name": "finalize.Faults",
+          "ms": 107.069,
+          "count": 1
+        },
+        {
+          "name": "finalize.Field types",
+          "ms": 0.302,
+          "count": 1
+        },
+        {
+          "name": "finalize.Flags",
+          "ms": 0.009,
+          "count": 1
+        },
+        {
+          "name": "finalize.Furniture",
+          "ms": 0.081,
+          "count": 2
+        },
+        {
+          "name": "finalize.Gates",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Harvest Drop Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Harvest lists",
+          "ms": 0.956,
+          "count": 1
+        },
+        {
+          "name": "finalize.Item Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Items",
+          "ms": 493.221,
+          "count": 1
+        },
+        {
+          "name": "finalize.Limb Scores",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Magic Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Map Extras",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mapgen parameters",
+          "ms": 6.914,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mapgen weights",
+          "ms": 1171.071,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial Art Techniques",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial Arts",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial arts",
+          "ms": 0.199,
+          "count": 1
+        },
+        {
+          "name": "finalize.Materials",
+          "ms": 0.587,
+          "count": 1
+        },
+        {
+          "name": "finalize.Math expressions",
+          "ms": 71.774,
+          "count": 1
+        },
+        {
+          "name": "finalize.Math functions",
+          "ms": 0.654,
+          "count": 1
+        },
+        {
+          "name": "finalize.Missions",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster Flags",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster factions",
+          "ms": 0.442,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster groups",
+          "ms": 0.134,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster types",
+          "ms": 29.808,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mood Faces",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Morale Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Move modes",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mutations",
+          "ms": 0.351,
+          "count": 1
+        },
+        {
+          "name": "finalize.NPC classes",
+          "ms": 0.254,
+          "count": 1
+        },
+        {
+          "name": "finalize.Option sliders",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap Special Migrations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap Vision Levels",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap connections",
+          "ms": 0.546,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap land use codes",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap locations",
+          "ms": 2.074,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap placeholders",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap specials",
+          "ms": 0.696,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap terrain",
+          "ms": 16.585,
+          "count": 1
+        },
+        {
+          "name": "finalize.Post-process generators",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Professions",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Proficiencies",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Proficiency Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Qualities",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Recipe Groups",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Recipe groups",
+          "ms": 0.13,
+          "count": 1
+        },
+        {
+          "name": "finalize.Region Settings",
+          "ms": 0.237,
+          "count": 1
+        },
+        {
+          "name": "finalize.Relic Procedural Generations",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scenarios",
+          "ms": 0.041,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scent Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scores",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Blacklists",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Consumption Rates",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Whitelists",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Species",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Speed Descriptions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Spells",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Start locations",
+          "ms": 0.351,
+          "count": 1
+        },
+        {
+          "name": "finalize.Sub body parts",
+          "ms": 0.025,
+          "count": 1
+        },
+        {
+          "name": "finalize.Terrain",
+          "ms": 1.63,
+          "count": 2
+        },
+        {
+          "name": "finalize.Terrain/Furniture Transforms",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Traps",
+          "ms": 0.009,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part categories",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part locations",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part migrations",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle parts",
+          "ms": 6.428,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle prototypes",
+          "ms": 106.032,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weakpoint Families",
+          "ms": 0.111,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weapon Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weather generators",
+          "ms": 0.012,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weather types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Widgets",
+          "ms": 1.289,
+          "count": 1
+        },
+        {
+          "name": "finalize.Wound Fixes",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Wounds",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Zone Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.load_packs",
+          "ms": 50045.261,
+          "count": 1
+        },
+        {
+          "name": "Dark Days Ahead pack load time",
+          "ms": 48836.695,
+          "count": 1
+        },
+        {
+          "name": "TESTING DATA pack load time",
+          "ms": 1205.911,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.world_custom_mods",
+          "ms": 2.929,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.static_data",
+          "ms": 37.028,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.readback_test_body",
+          "ms": 3.118,
+          "count": 1
+        }
+      ],
+      "native_metrics": {
+        "mode": "read",
+        "world": "startup_diagnostic",
+        "save_ms": 0,
+        "load_ms": 63277.1,
+        "core_data_ms": 135.218,
+        "bootstrap_ms": 4926.03
+      }
+    },
+    {
+      "name": "read-2",
+      "mode": "read",
+      "argv": [
+        "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-native-build/cata_test",
+        "--rng-seed",
+        "17",
+        "--user-dir=/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-userdir",
+        "Novgorod native save and resume probe"
+      ],
+      "cwd": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-runtime-linked",
+      "exit_code": 0,
+      "wall_ms": 68828.166355,
+      "timers": [
+        {
+          "name": "diagnostic.init_global_game_state",
+          "ms": 68182.561,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.metadata",
+          "ms": 40.954,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.native_world_load",
+          "ms": 2982.855,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.paths_options_init",
+          "ms": 93.851,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.setup",
+          "ms": 60829.974,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.core_data",
+          "ms": 109.661,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.load_world_modfiles",
+          "ms": 60718.132,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.finalize_loaded_data",
+          "ms": 12245.01,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.check_consistency",
+          "ms": 4136.887,
+          "count": 1
+        },
+        {
+          "name": "finalize.ASCII Art",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Achievements",
+          "ms": 0.031,
+          "count": 1
+        },
+        {
+          "name": "finalize.Addictions",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Ammo effects",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Anatomies",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Bash damage profiles",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Behaviors",
+          "ms": 0.039,
+          "count": 1
+        },
+        {
+          "name": "finalize.Bionics",
+          "ms": 0.022,
+          "count": 1
+        },
+        {
+          "name": "finalize.Body graphs",
+          "ms": 0.085,
+          "count": 1
+        },
+        {
+          "name": "finalize.Body parts",
+          "ms": 0.071,
+          "count": 1
+        },
+        {
+          "name": "finalize.Butchery Requirements",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Character Modifiers",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Cities",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Climbing aids",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Clothing Mods",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Construction Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Construction Groups",
+          "ms": 0.004,
+          "count": 1
+        },
+        {
+          "name": "finalize.Constructions",
+          "ms": 0.417,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting recipes",
+          "ms": 5628.472,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting requirements",
+          "ms": 3.428,
+          "count": 1
+        },
+        {
+          "name": "finalize.Damage Types",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Damage info orders",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Dimensions",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Diseases",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Effect on conditions",
+          "ms": 0.013,
+          "count": 1
+        },
+        {
+          "name": "finalize.Emissions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Enchantments",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Event Statistics",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Event Transformations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Factions",
+          "ms": 0.03,
+          "count": 1
+        },
+        {
+          "name": "finalize.Faults",
+          "ms": 162.382,
+          "count": 1
+        },
+        {
+          "name": "finalize.Field types",
+          "ms": 0.475,
+          "count": 1
+        },
+        {
+          "name": "finalize.Flags",
+          "ms": 0.021,
+          "count": 1
+        },
+        {
+          "name": "finalize.Furniture",
+          "ms": 0.127,
+          "count": 2
+        },
+        {
+          "name": "finalize.Gates",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Harvest Drop Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Harvest lists",
+          "ms": 1.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Item Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Items",
+          "ms": 553.496,
+          "count": 1
+        },
+        {
+          "name": "finalize.Limb Scores",
+          "ms": 0.01,
+          "count": 1
+        },
+        {
+          "name": "finalize.Magic Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Map Extras",
+          "ms": 0.01,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mapgen parameters",
+          "ms": 9.066,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mapgen weights",
+          "ms": 1463.916,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial Art Techniques",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial Arts",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial arts",
+          "ms": 0.225,
+          "count": 1
+        },
+        {
+          "name": "finalize.Materials",
+          "ms": 0.676,
+          "count": 1
+        },
+        {
+          "name": "finalize.Math expressions",
+          "ms": 79.219,
+          "count": 1
+        },
+        {
+          "name": "finalize.Math functions",
+          "ms": 0.648,
+          "count": 1
+        },
+        {
+          "name": "finalize.Missions",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster Flags",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster factions",
+          "ms": 0.442,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster groups",
+          "ms": 0.205,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster types",
+          "ms": 34.687,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mood Faces",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Morale Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Move modes",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mutations",
+          "ms": 0.393,
+          "count": 1
+        },
+        {
+          "name": "finalize.NPC classes",
+          "ms": 0.261,
+          "count": 1
+        },
+        {
+          "name": "finalize.Option sliders",
+          "ms": 0.013,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap Special Migrations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap Vision Levels",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap connections",
+          "ms": 0.603,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap land use codes",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap locations",
+          "ms": 2.145,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap placeholders",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap specials",
+          "ms": 0.796,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap terrain",
+          "ms": 26.241,
+          "count": 1
+        },
+        {
+          "name": "finalize.Post-process generators",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Professions",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Proficiencies",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Proficiency Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Qualities",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Recipe Groups",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Recipe groups",
+          "ms": 0.149,
+          "count": 1
+        },
+        {
+          "name": "finalize.Region Settings",
+          "ms": 0.146,
+          "count": 1
+        },
+        {
+          "name": "finalize.Relic Procedural Generations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scenarios",
+          "ms": 0.057,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scent Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scores",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Blacklists",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Consumption Rates",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Whitelists",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Species",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Speed Descriptions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Spells",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Start locations",
+          "ms": 0.353,
+          "count": 1
+        },
+        {
+          "name": "finalize.Sub body parts",
+          "ms": 0.034,
+          "count": 1
+        },
+        {
+          "name": "finalize.Terrain",
+          "ms": 2.011,
+          "count": 2
+        },
+        {
+          "name": "finalize.Terrain/Furniture Transforms",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Traps",
+          "ms": 0.021,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part categories",
+          "ms": 0.01,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part locations",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part migrations",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle parts",
+          "ms": 8.529,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle prototypes",
+          "ms": 124.286,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weakpoint Families",
+          "ms": 0.129,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weapon Categories",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weather generators",
+          "ms": 0.013,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weather types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Widgets",
+          "ms": 1.354,
+          "count": 1
+        },
+        {
+          "name": "finalize.Wound Fixes",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Wounds",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Zone Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.load_packs",
+          "ms": 48469.411,
+          "count": 1
+        },
+        {
+          "name": "Dark Days Ahead pack load time",
+          "ms": 47064.035,
+          "count": 1
+        },
+        {
+          "name": "TESTING DATA pack load time",
+          "ms": 1402.497,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.world_custom_mods",
+          "ms": 3.7,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.static_data",
+          "ms": 29.303,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.readback_test_body",
+          "ms": 3.689,
+          "count": 1
+        }
+      ],
+      "native_metrics": {
+        "mode": "read",
+        "world": "startup_diagnostic",
+        "save_ms": 0,
+        "load_ms": 63853.9,
+        "core_data_ms": 109.663,
+        "bootstrap_ms": 4328.67
+      }
+    },
+    {
+      "name": "read-3",
+      "mode": "read",
+      "argv": [
+        "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-native-build/cata_test",
+        "--rng-seed",
+        "17",
+        "--user-dir=/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-userdir",
+        "Novgorod native save and resume probe"
+      ],
+      "cwd": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-runtime-linked",
+      "exit_code": 0,
+      "wall_ms": 64890.974885,
+      "timers": [
+        {
+          "name": "diagnostic.init_global_game_state",
+          "ms": 64271.869,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.metadata",
+          "ms": 49.948,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.native_world_load",
+          "ms": 2641.075,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.paths_options_init",
+          "ms": 104.698,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.setup",
+          "ms": 56625.912,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.core_data",
+          "ms": 144.179,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.load_world_modfiles",
+          "ms": 56479.645,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.finalize_loaded_data",
+          "ms": 11318.367,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.check_consistency",
+          "ms": 3996.482,
+          "count": 1
+        },
+        {
+          "name": "finalize.ASCII Art",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Achievements",
+          "ms": 0.032,
+          "count": 1
+        },
+        {
+          "name": "finalize.Addictions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Ammo effects",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Anatomies",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Bash damage profiles",
+          "ms": 0.004,
+          "count": 1
+        },
+        {
+          "name": "finalize.Behaviors",
+          "ms": 0.029,
+          "count": 1
+        },
+        {
+          "name": "finalize.Bionics",
+          "ms": 0.031,
+          "count": 1
+        },
+        {
+          "name": "finalize.Body graphs",
+          "ms": 0.141,
+          "count": 1
+        },
+        {
+          "name": "finalize.Body parts",
+          "ms": 0.065,
+          "count": 1
+        },
+        {
+          "name": "finalize.Butchery Requirements",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Character Modifiers",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Cities",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Climbing aids",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Clothing Mods",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Construction Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Construction Groups",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Constructions",
+          "ms": 0.402,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting recipes",
+          "ms": 5117.794,
+          "count": 1
+        },
+        {
+          "name": "finalize.Crafting requirements",
+          "ms": 2.678,
+          "count": 1
+        },
+        {
+          "name": "finalize.Damage Types",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Damage info orders",
+          "ms": 0.011,
+          "count": 1
+        },
+        {
+          "name": "finalize.Dimensions",
+          "ms": 0.004,
+          "count": 1
+        },
+        {
+          "name": "finalize.Diseases",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Effect on conditions",
+          "ms": 0.026,
+          "count": 1
+        },
+        {
+          "name": "finalize.Emissions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Enchantments",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Event Statistics",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Event Transformations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Factions",
+          "ms": 0.033,
+          "count": 1
+        },
+        {
+          "name": "finalize.Faults",
+          "ms": 152.49,
+          "count": 1
+        },
+        {
+          "name": "finalize.Field types",
+          "ms": 0.494,
+          "count": 1
+        },
+        {
+          "name": "finalize.Flags",
+          "ms": 0.013,
+          "count": 1
+        },
+        {
+          "name": "finalize.Furniture",
+          "ms": 0.089,
+          "count": 2
+        },
+        {
+          "name": "finalize.Gates",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Harvest Drop Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Harvest lists",
+          "ms": 1.004,
+          "count": 1
+        },
+        {
+          "name": "finalize.Item Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Items",
+          "ms": 526.843,
+          "count": 1
+        },
+        {
+          "name": "finalize.Limb Scores",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Magic Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Map Extras",
+          "ms": 0.008,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mapgen parameters",
+          "ms": 7.432,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mapgen weights",
+          "ms": 1244.627,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial Art Techniques",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial Arts",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Martial arts",
+          "ms": 0.215,
+          "count": 1
+        },
+        {
+          "name": "finalize.Materials",
+          "ms": 0.587,
+          "count": 1
+        },
+        {
+          "name": "finalize.Math expressions",
+          "ms": 80.552,
+          "count": 1
+        },
+        {
+          "name": "finalize.Math functions",
+          "ms": 0.569,
+          "count": 1
+        },
+        {
+          "name": "finalize.Missions",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster Flags",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster factions",
+          "ms": 0.463,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster groups",
+          "ms": 0.152,
+          "count": 1
+        },
+        {
+          "name": "finalize.Monster types",
+          "ms": 31.993,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mood Faces",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Morale Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Move modes",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Mutations",
+          "ms": 0.391,
+          "count": 1
+        },
+        {
+          "name": "finalize.NPC classes",
+          "ms": 0.267,
+          "count": 1
+        },
+        {
+          "name": "finalize.Option sliders",
+          "ms": 0.01,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap Special Migrations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap Vision Levels",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap connections",
+          "ms": 0.646,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap land use codes",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap locations",
+          "ms": 2.12,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap placeholders",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap specials",
+          "ms": 0.782,
+          "count": 1
+        },
+        {
+          "name": "finalize.Overmap terrain",
+          "ms": 21.22,
+          "count": 1
+        },
+        {
+          "name": "finalize.Post-process generators",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Professions",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Proficiencies",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Proficiency Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Qualities",
+          "ms": 0.032,
+          "count": 1
+        },
+        {
+          "name": "finalize.Recipe Groups",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Recipe groups",
+          "ms": 0.208,
+          "count": 1
+        },
+        {
+          "name": "finalize.Region Settings",
+          "ms": 0.153,
+          "count": 1
+        },
+        {
+          "name": "finalize.Relic Procedural Generations",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scenarios",
+          "ms": 0.046,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scent Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Scores",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Blacklists",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Consumption Rates",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Shopkeeper Whitelists",
+          "ms": 0.0,
+          "count": 1
+        },
+        {
+          "name": "finalize.Species",
+          "ms": 0.002,
+          "count": 1
+        },
+        {
+          "name": "finalize.Speed Descriptions",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Spells",
+          "ms": 0.005,
+          "count": 1
+        },
+        {
+          "name": "finalize.Start locations",
+          "ms": 0.443,
+          "count": 1
+        },
+        {
+          "name": "finalize.Sub body parts",
+          "ms": 0.037,
+          "count": 1
+        },
+        {
+          "name": "finalize.Terrain",
+          "ms": 1.809,
+          "count": 2
+        },
+        {
+          "name": "finalize.Terrain/Furniture Transforms",
+          "ms": 0.007,
+          "count": 1
+        },
+        {
+          "name": "finalize.Traps",
+          "ms": 0.01,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part categories",
+          "ms": 0.012,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part locations",
+          "ms": 0.006,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle part migrations",
+          "ms": 0.003,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle parts",
+          "ms": 7.469,
+          "count": 1
+        },
+        {
+          "name": "finalize.Vehicle prototypes",
+          "ms": 114.983,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weakpoint Families",
+          "ms": 0.124,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weapon Categories",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weather generators",
+          "ms": 0.018,
+          "count": 1
+        },
+        {
+          "name": "finalize.Weather types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Widgets",
+          "ms": 1.379,
+          "count": 1
+        },
+        {
+          "name": "finalize.Wound Fixes",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Wounds",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "finalize.Zone Types",
+          "ms": 0.001,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.load_packs",
+          "ms": 45159.036,
+          "count": 1
+        },
+        {
+          "name": "Dark Days Ahead pack load time",
+          "ms": 43816.113,
+          "count": 1
+        },
+        {
+          "name": "TESTING DATA pack load time",
+          "ms": 1340.801,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.world_custom_mods",
+          "ms": 2.23,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.static_data",
+          "ms": 32.656,
+          "count": 1
+        },
+        {
+          "name": "diagnostic.readback_test_body",
+          "ms": 3.404,
+          "count": 1
+        }
+      ],
+      "native_metrics": {
+        "mode": "read",
+        "world": "startup_diagnostic",
+        "save_ms": 0,
+        "load_ms": 59317.1,
+        "core_data_ms": 144.181,
+        "bootstrap_ms": 4954.75
+      }
+    }
+  ]
+}

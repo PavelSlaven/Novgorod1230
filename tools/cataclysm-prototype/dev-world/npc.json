@@ -1,0 +1,43 @@
+[
+  {
+    "type": "item_group",
+    "id": "novgorod_dev_master_worn",
+    "subtype": "collection",
+    "entries": [
+      { "item": "tunic" },
+      { "item": "loincloth_fur" },
+      { "item": "footrags_leather" }
+    ]
+  },
+  {
+    "type": "item_group",
+    "id": "novgorod_dev_master_carried",
+    "subtype": "collection",
+    "entries": [ { "item": "straw_basket" } ]
+  },
+  {
+    "type": "item_group",
+    "id": "novgorod_dev_master_weapon",
+    "subtype": "collection",
+    "entries": [ { "item": "stick" } ]
+  },
+  {
+    "type": "npc_class",
+    "id": "novgorod_dev_master_class",
+    "name": { "str": "Workshop master" },
+    "job_description": "I work in this courtyard.",
+    "common": false,
+    "worn_override": "novgorod_dev_master_worn",
+    "carry_override": "novgorod_dev_master_carried",
+    "weapon_override": "novgorod_dev_master_weapon"
+  },
+  {
+    "type": "npc",
+    "id": "novgorod_dev_master",
+    "name_unique": "Workshop master",
+    "class": "novgorod_dev_master_class",
+    "attitude": 0,
+    "mission": "GUARD",
+    "chat": "TALK_STRANGER_NEUTRAL"
+  }
+]

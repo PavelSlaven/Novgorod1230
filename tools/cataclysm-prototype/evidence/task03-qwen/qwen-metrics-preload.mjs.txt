@@ -1,0 +1,89 @@
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+
+const directory = process.env.P3_QWEN_LEDGER_DIR;
+if (!directory || !path.isAbsolute(directory)) throw new Error('P3_QWEN_LEDGER_ABSOLUTE_PATH_REQUIRED');
+const cap = Number(process.env.P3_QWEN_GLOBAL_CAP ?? 30);
+if (!Number.isSafeInteger(cap) || cap < 1 || cap > 30) throw new Error('P3_QWEN_GLOBAL_CAP_INVALID');
+mkdirSync(directory, { recursive: true });
+const phase = process.env.P3_QWEN_PHASE ?? 'unspecified';
+if (!/^[a-z0-9_-]{1,40}$/u.test(phase)) throw new Error('P3_QWEN_PHASE_INVALID');
+const count = () => readdirSync(directory).filter(name => /^attempt-\d{2}\.json$/u.test(name)).length;
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async (input, options = {}) => {
+  const url = input instanceof Request ? input.url : String(input);
+  if (!new URL(url).pathname.endsWith('/chat/completions')) return originalFetch(input, options);
+  const text = options.body ?? (input instanceof Request ? await input.clone().text() : '{}');
+  const body = JSON.parse(String(text));
+  const authorization = new Headers(options.headers ?? (input instanceof Request ? input.headers : undefined))
+    .get('authorization');
+  const parsedUrl = new URL(url);
+  const redactions = [url, url.replace(/\/chat\/completions(?:\?.*)?$/u, ''), parsedUrl.origin,
+    authorization, authorization?.replace(/^Bearer\s+/iu, '')]
+    .filter(value => typeof value === 'string' && value.length > 0)
+    .sort((left, right) => right.length - left.length);
+  const redact = value => typeof value === 'string'
+    ? redactions.reduce((safe, secret) => safe.split(secret).join('[REDACTED]'), value) : null;
+  let file;
+  let attempt;
+  for (let number = 1; number <= cap; number++) {
+    const candidate = path.join(directory, `attempt-${String(number).padStart(2, '0')}.json`);
+    try {
+      const descriptor = openSync(candidate, 'wx');
+      closeSync(descriptor);
+      file = candidate;
+      attempt = number;
+      break;
+    } catch (error) {
+      if (error.code !== 'EEXIST') throw new Error('P3_QWEN_LEDGER_RESERVATION_FAILED');
+    }
+  }
+  if (!file) throw Object.assign(new Error('P3_GLOBAL_ATTEMPT_BUDGET_EXHAUSTED'),
+    { code: 'P3_GLOBAL_ATTEMPT_BUDGET_EXHAUSTED' });
+  const item = { attempt, phase, pid: process.pid, state: 'reserved',
+    request_model_id: typeof body.model === 'string' ? body.model : null,
+    response_model_id: null, max_tokens: Number.isSafeInteger(body.max_tokens) ? body.max_tokens : null,
+    prompt_tokens: null, completion_tokens: null, total_tokens: null,
+    http_status: null, elapsed_ms: null, failure_code: null };
+  const save = () => writeFileSync(file, `${JSON.stringify(item)}\n`, 'utf8');
+  save();
+  const started = Date.now();
+  try {
+    const response = await originalFetch(input, options);
+    item.http_status = response.status;
+    try {
+      const data = await response.clone().json();
+      item.response_model_id = typeof data?.model === 'string' ? data.model : null;
+      for (const field of ['prompt_tokens', 'completion_tokens', 'total_tokens']) {
+        item[field] = Number.isSafeInteger(data?.usage?.[field]) ? data.usage[field] : null;
+      }
+      const choices = Array.isArray(data?.choices) ? data.choices.map(choice => ({
+        message: { content: redact(choice?.message?.content), refusal: redact(choice?.message?.refusal) },
+        finish_reason: redact(choice?.finish_reason)
+      })) : [];
+      writeFileSync(file.replace(/\.json$/u, '-response.json'), `${JSON.stringify({ choices })}\n`, { flag: 'wx' });
+    } catch {}
+    item.state = 'completed';
+    return response;
+  } catch (error) {
+    item.state = 'failed';
+    item.failure_code = 'P3_QWEN_TRANSPORT_FAILED';
+    throw error;
+  } finally {
+    item.elapsed_ms = Date.now() - started;
+    save();
+  }
+};
+
+export function ledgerSummary() {
+  const files = readdirSync(directory).filter(name => /^attempt-\d{2}\.json$/u.test(name)).sort();
+  const attempts = files.map(name => {
+    try { return JSON.parse(readFileSync(path.join(directory, name), 'utf8')); }
+    catch { return { state: 'reserved_incomplete' }; }
+  });
+  return { cap, used: count(), remaining: Math.max(0, cap - count()), attempts };
+}
+
+if (process.argv.includes('--summary') && existsSync(directory)) {
+  process.stdout.write(`${JSON.stringify(ledgerSummary())}\n`);
+}

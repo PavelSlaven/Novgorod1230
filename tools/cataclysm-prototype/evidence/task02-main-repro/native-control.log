@@ -1,0 +1,25 @@
+
+
+-----------------------------------------
+07:20:06.379 : Starting log.
+07:20:06.380 INFO : Cataclysm DDA version HEAD-HASH-dirty
+07:20:06.380 INFO : Randomness seeded to: 17
+
+07:20:06.380 INFO : Running Catch2 session:
+
+Filters: item_colony_ser_deser
+07:20:06.461 INFO : [options] C locale set to C
+07:20:06.461 INFO : [options] C++ locale set to C
+07:20:08.099 WARNING : opendir [data/cache] failed with "No such file or directory".
+07:20:27.453 INFO : /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/main-repro-native-source/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+07:21:13.771 WARNING : Dark Days Ahead pack load time:: 62559252us (avg: 62559252us) (count: 1)
+07:21:13.771 WARNING : TESTING DATA pack load time:: 1791776us (avg: 1791776us) (count: 1)
+07:21:31.930 INFO : Game data loaded
+===============================================================================
+All tests passed (15 assertions in 1 test case)
+
+
+07:21:31.941 INFO : Finished in 85.5495 seconds
+07:21:31.941 INFO : Randomness seeded to: 17
+
+CONTROL_EXIT=0

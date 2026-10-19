@@ -1,0 +1,54 @@
+[
+  {
+    "type": "overmap_terrain",
+    "id": "novgorod_dev_courtyard",
+    "name": "workshop courtyard",
+    "sym": "#",
+    "color": "brown",
+    "see_cost": "medium"
+  },
+  {
+    "type": "overmap_special",
+    "id": "novgorod_dev_courtyard_special",
+    "overmaps": [ { "point": [ 0, 0, 0 ], "overmap": "novgorod_dev_courtyard_north" } ],
+    "locations": [ "land" ],
+    "city_distance": [ 0, -1 ],
+    "city_sizes": [ 0, -1 ],
+    "occurrences": [ 1, 1 ]
+  },
+  {
+    "type": "start_location",
+    "id": "novgorod_dev_courtyard_start",
+    "name": "Workshop courtyard",
+    "terrain": [ "novgorod_dev_courtyard" ],
+    "flags": [ "ALLOW_OUTSIDE", "LONE_START" ]
+  },
+  {
+    "type": "profession",
+    "id": "novgorod_dev_visitor",
+    "name": "Workshop visitor",
+    "description": "A visitor to a small workshop courtyard.",
+    "points": 0,
+    "flags": [ "NO_BONUS_ITEMS" ],
+    "items": {
+      "both": {
+        "entries": [
+          { "item": "tunic" },
+          { "item": "loincloth_fur" },
+          { "item": "footrags_leather" }
+        ]
+      }
+    }
+  },
+  {
+    "type": "scenario",
+    "id": "novgorod_dev_courtyard_scenario",
+    "name": "Workshop courtyard",
+    "description": "Visit a fictional workshop courtyard near Novgorod.",
+    "points": 0,
+    "start_name": "Workshop courtyard",
+    "allowed_locs": [ "novgorod_dev_courtyard_start" ],
+    "professions": [ "novgorod_dev_visitor" ],
+    "flags": [ "LONE_START", "STANDARD" ]
+  }
+]

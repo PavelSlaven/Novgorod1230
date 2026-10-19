@@ -1,0 +1,5 @@
+
+> rus-modules@0.23.0-migration.24 knowledge:check
+> node tools/docs-tools/src/knowledge-cli.js check --root .
+
+Knowledge source: OK (44 documents; graph and RAG current)

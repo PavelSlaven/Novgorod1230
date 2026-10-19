@@ -546,3 +546,16 @@ test('second invalid NPC response returns a typed contract failure', async () =>
   }), (error) => error?.code === 'TURN_NPC_PLAN_INVALID');
   assert.equal(modelCalls, 2);
 });
+
+test('live conversation reply succeeds on first or second model output', async () => {
+  for (const firstInvalid of [false, true]) {
+    let calls = 0;
+    const result = await requestNpcSemanticDecision({ boundary: boundary(),
+      request: request(), maxRepairAttempts: 1,
+      semanticModel: async source => ++calls === 1 && firstInvalid
+        ? { schema: 'broken' } : plan(source),
+      revalidateStateVersion: async () => 2 });
+    assert.equal(result.status, 'planned');
+    assert.equal(calls, firstInvalid ? 2 : 1);
+  }
+});

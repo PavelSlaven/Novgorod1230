@@ -1,0 +1,14 @@
+-- BACKTRACE                     : ON
+-- LOCALIZE                      : ON
+-- USE_XDG_DIR                   : OFF
+-- USE_HOME_DIR                  : ON
+-- LANGUAGES                     :
+-- See doc/c++/COMPILING-CMAKE.md for details and more info --
+-- Searching for Curses library --
+-- Process LANGUAGES variable --
+-- Configuring done (2.8s)
+-- Generating done (1.5s)
+-- Build files have been written to: /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/main-repro-native-build
+[1/2] Building CXX object tests/CMakeFiles/cata_test.dir/fake_messages.cpp.o
+[2/2] Linking CXX executable tests/cata_test
+BUILD_WITH_FAKE_MESSAGES_EXIT=0

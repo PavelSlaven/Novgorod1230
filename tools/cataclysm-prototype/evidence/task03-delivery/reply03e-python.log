@@ -1,0 +1,6 @@
+PASS: default owner path from repo/outside cwd, explicit fake override, WSLENV forwarding/restoration, NativeOnly.
+...............................
+----------------------------------------------------------------------
+Ran 31 tests in 3.167s
+
+OK

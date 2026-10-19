@@ -1,0 +1,37 @@
+{
+  "code_head": "51cf8939cb08a57684b6bd457a2879b4970983de",
+  "binary_sha256": "98051fa26a89f6288f3ba65c1e81338e5465257e6bdbb8f67c3a7fd7dcac5ad5",
+  "build_verification": {
+    "command": "cmake --build /home/slaven/cataclysm-recovery/task03-dev/source/build-clang-release --parallel 8",
+    "exit_code": 0,
+    "output": "ninja: no work to do.",
+    "runtime_hash_matches": true
+  },
+  "native_focused": {
+    "cases": 13,
+    "assertions": 571,
+    "exit_code": 0
+  },
+  "ui": {
+    "first_exit_code": 0,
+    "reload_exit_code": 0,
+    "long_input": "Скажи дословно: «Добрый день, мастер. Я стою рядом и говорю обычным голосом. Ты меня слышишь?»",
+    "input_codepoints": 94,
+    "first_speech": "Да, я тебя слышу. Добрый день.",
+    "second_model_proposal": "Да, я тебя слышу.",
+    "second_heard_speech": "Об этом я ничего подтвердить не могу.",
+    "two_accepted_qwen_responses": false,
+    "save_reload": true,
+    "restoration_screen": false
+  },
+  "llm": {
+    "global_cap": 30,
+    "used": 14,
+    "remaining": 16,
+    "calls_this_stage": 10,
+    "live_calls_this_stage": 8,
+    "response_model_id": "qwen3.8-27b",
+    "http_status_all": 200
+  },
+  "status": "STOP_EXISTING_GROUNDING_SEMANTIC_REPLACEMENT"
+}

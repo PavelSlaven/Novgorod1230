@@ -1,3 +1,13 @@
+# Уточнение после итоговой приёмки
+
+2026-10-19, задание 02: нижеследующий отчёт — исторический снимок проверки.
+Он не обнаружил, что parent вызывает `g->setup()` с `load_world_modfiles()`
+до warm замера. Формулировка `definitions-only` и вывод о закрытии ворот
+опровергнуты итоговой приёмкой Opus high: P4 — FAIL ворот, механизм принят.
+Исходный текст сохранён без переписывания выводов проверяющего; актуальное
+объяснение — [P4 recovery results](../../../docs/implementation/cataclysm-p4-recovery-results.md).
+По D215/D216 host заморожен; старый operation-бюджет отменён.
+
 CONTRACT AUDIT FINDING — final P4 technical gate
 
 audited_head: fd0c252e76fffaa45aae4053a7418139b4aa1e9f; uncommitted scoped-file snapshot sha256 ee6f8ff44a3cbd5a00be433c247e3ef13918829efa44eae219c4f5fbf12e64ec

@@ -1,0 +1,8 @@
+Task03 JS/NPC handoff; observed HEAD d285e4bb2; no commit/push.
+Live coordinator now calls existing NPC conversation semantic owner after native-confirmed player speech. It selects one visible actor from actualHeardListenerIds, refreshes actor-safe native observation, validates a formal NPC conversation request, uses the existing responder and grounding auditor, and sends the exact NPC reply as a second native speak operation. No JS hearing or world write.
+NPC repair limit is optional in packages/turn/src/npc-semantic-decision.js: default 2 preserves old behavior; live config supplies 1 total, including structural then semantic failure. Fake bad+bad gives two NPC model calls and typed refusal after player speech; good first or second succeeds. Existing audit model calls use the same 30-call budget.
+Socket adapter allows exactly player speak then one distinct NPC speak on the same intent; applied operation count and pending readback are reported accurately. Wire smoke permits only configured alias qwen3.8-27b-uncensored-w4a16-tp2 and backend qwen3.8-27b. package.json test:cataclysm-p3 includes live coordinator tests.
+Windows npm run test:cataclysm-p3: 42/42 Node tests, 29/29 Python tests, log js-npm-test-cataclysm-p3-final.log.
+Windows NPC owner tests: 29/29, log js-npc-owner-tests-final.log.
+WSL Node 22.23.3 P3 tests: 42/42, log js-wsl-tests-final.log.
+git diff --check clean. No real Qwen calls. Native C++ edits and interactive run are owned by other agents; runtime E2E not claimed here. Contract Auditor triggered by NPC conversation and model topology; root to arrange final independent audit.

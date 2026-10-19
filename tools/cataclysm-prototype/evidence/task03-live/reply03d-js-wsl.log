@@ -1,0 +1,286 @@
+TAP version 13
+# Subtest: live NPC repair limit permits one retry across structural and semantic failures
+ok 1 - live NPC repair limit permits one retry across structural and semantic failures
+  ---
+  duration_ms: 13.674158
+  type: 'test'
+  ...
+# Subtest: stale invalid initial NPC response is rebuilt without format repair
+ok 2 - stale invalid initial NPC response is rebuilt without format repair
+  ---
+  duration_ms: 4.538024
+  type: 'test'
+  ...
+# Subtest: NPC state becoming stale during format repair rebuilds before application
+ok 3 - NPC state becoming stale during format repair rebuilds before application
+  ---
+  duration_ms: 3.939519
+  type: 'test'
+  ...
+# Subtest: one shared budget counts calls across role wrappers before transport
+ok 4 - one shared budget counts calls across role wrappers before transport
+  ---
+  duration_ms: 4.464538
+  type: 'test'
+  ...
+# Subtest: failed provider call records its exact request before transport and error after
+ok 5 - failed provider call records its exact request before transport and error after
+  ---
+  duration_ms: 0.729185
+  type: 'test'
+  ...
+# Subtest: runner accepts only P3 acceptance-matrix case identities
+ok 6 - runner accepts only P3 acceptance-matrix case identities
+  ---
+  duration_ms: 0.417213
+  type: 'test'
+  ...
+# Subtest: operation envelope resolves only references in current observation and registered primitive
+ok 7 - operation envelope resolves only references in current observation and registered primitive
+  ---
+  duration_ms: 3.181385
+  type: 'test'
+  ...
+# Subtest: mock readback schema enforces identity and actual before/after; does not prove native execution
+ok 8 - mock readback schema enforces identity and actual before/after; does not prove native execution
+  ---
+  duration_ms: 1.301
+  type: 'test'
+  ...
+# Subtest: native seam is explicitly unsupported until a native adapter is handed off
+ok 9 - native seam is explicitly unsupported until a native adapter is handed off
+  ---
+  duration_ms: 0.446165
+  type: 'test'
+  ...
+# Subtest: native file adapter reads current observation and correlates actual readback identity
+ok 10 - native file adapter reads current observation and correlates actual readback identity
+  ---
+  duration_ms: 24.290006
+  type: 'test'
+  ...
+# Subtest: native process transport passes fixed arguments to execFile with shell disabled
+ok 11 - native process transport passes fixed arguments to execFile with shell disabled
+  ---
+  duration_ms: 1.306021
+  type: 'test'
+  ...
+# Subtest: native refresh requires a new observation from the successful read process
+ok 12 - native refresh requires a new observation from the successful read process
+  ---
+  duration_ms: 7.590307
+  type: 'test'
+  ...
+# Subtest: free player intent crosses turn-step repair and typed registry before native mapping
+ok 13 - free player intent crosses turn-step repair and typed registry before native mapping
+  ---
+  duration_ms: 9.340742
+  type: 'test'
+  ...
+# Subtest: move_entity pickup intent reaches native for one observed UID only
+ok 14 - move_entity pickup intent reaches native for one observed UID only
+  ---
+  duration_ms: 2.298592
+  type: 'test'
+  ...
+# Subtest: current native readback projects goal and effect separately while legacy result stays compatible
+ok 15 - current native readback projects goal and effect separately while legacy result stays compatible
+  ---
+  duration_ms: 11.817355
+  type: 'test'
+  ...
+# Subtest: real turn owner validates injected model response; this is not a native execution assertion
+ok 16 - real turn owner validates injected model response; this is not a native execution assertion
+  ---
+  duration_ms: 0.96848
+  type: 'test'
+  ...
+# Subtest: generic turn loop dispatches open, wait, and exact speech through native envelopes
+ok 17 - generic turn loop dispatches open, wait, and exact speech through native envelopes
+  ---
+  duration_ms: 4.460745
+  type: 'test'
+  ...
+# Subtest: production operation choice hydrates one observed item target into the native envelope
+ok 18 - production operation choice hydrates one observed item target into the native envelope
+  ---
+  duration_ms: 6.963093
+  type: 'test'
+  ...
+# Subtest: production player_utterance reaches native speech and conversation owner exactly once
+ok 19 - production player_utterance reaches native speech and conversation owner exactly once
+  ---
+  duration_ms: 13.155278
+  type: 'test'
+  ...
+# Subtest: sealed package shares one attempt budget and evidence root across all reset mocks
+ok 20 - sealed package shares one attempt budget and evidence root across all reset mocks
+  ---
+  duration_ms: 129.169629
+  type: 'test'
+  ...
+# Subtest: NPC requests fail closed through the existing safe snapshot projector
+ok 21 - NPC requests fail closed through the existing safe snapshot projector
+  ---
+  duration_ms: 0.684526
+  type: 'test'
+  ...
+# Subtest: native speech validates current conversation identity and unique heard listeners before replay
+ok 22 - native speech validates current conversation identity and unique heard listeners before replay
+  ---
+  duration_ms: 0.381938
+  type: 'test'
+  ...
+# Subtest: native speech rejects either deaf listener in a two-listener heard set
+ok 23 - native speech rejects either deaf listener in a two-listener heard set
+  ---
+  duration_ms: 0.342159
+  type: 'test'
+  ...
+# Subtest: T09 NPC boundary replays the committed semantic checkpoint without another decision call
+ok 24 - T09 NPC boundary replays the committed semantic checkpoint without another decision call
+  ---
+  duration_ms: 0.567655
+  type: 'test'
+  ...
+# Subtest: T09 native NPC CLI flow builds safe request, validates decision, applies npc_move once, and replays
+ok 25 - T09 native NPC CLI flow builds safe request, validates decision, applies npc_move once, and replays
+  ---
+  duration_ms: 6.538471
+  type: 'test'
+  ...
+# Subtest: T10 applies exact native speech, heard actors, and elapsed native time once through conversation owner
+ok 26 - T10 applies exact native speech, heard actors, and elapsed native time once through conversation owner
+  ---
+  duration_ms: 0.882999
+  type: 'test'
+  ...
+# Subtest: T10 sealed fixture runs existing statement and audience owners with native heard IDs
+ok 27 - T10 sealed fixture runs existing statement and audience owners with native heard IDs
+  ---
+  duration_ms: 1.519762
+  type: 'test'
+  ...
+# Subtest: coordinator speech uses refreshed native heard IDs and checks physical snapshots
+ok 28 - coordinator speech uses refreshed native heard IDs and checks physical snapshots
+  ---
+  duration_ms: 1.729599
+  type: 'test'
+  ...
+# Subtest: coordinator speech rejects a stale observation before native apply
+ok 29 - coordinator speech rejects a stale observation before native apply
+  ---
+  duration_ms: 0.290914
+  type: 'test'
+  ...
+# Subtest: coordinator speech rejects canonical conversation or state mismatches before native apply
+ok 30 - coordinator speech rejects canonical conversation or state mismatches before native apply
+  ---
+  duration_ms: 0.253767
+  type: 'test'
+  ...
+# Subtest: effective config reports only approved nonsecret fields and rejects token mismatch
+ok 31 - effective config reports only approved nonsecret fields and rejects token mismatch
+  ---
+  duration_ms: 4.549327
+  type: 'test'
+  ...
+# Subtest: P3 role runtime uses existing provider adapter with fixed protocol overrides
+ok 32 - P3 role runtime uses existing provider adapter with fixed protocol overrides
+  ---
+  duration_ms: 3.102713
+  type: 'test'
+  ...
+# Subtest: P3 settings loader requires explicit file and private Qwen endpoint without applying settings
+ok 33 - P3 settings loader requires explicit file and private Qwen endpoint without applying settings
+  ---
+  duration_ms: 12.678896
+  type: 'test'
+  ...
+# Subtest: immutable operation handoff refuses overwrite; evidence run refuses restart and redacts secrets
+ok 34 - immutable operation handoff refuses overwrite; evidence run refuses restart and redacts secrets
+  ---
+  duration_ms: 9.259618
+  type: 'test'
+  ...
+# Subtest: evidence sanitizer removes secret-shaped fields and values
+ok 35 - evidence sanitizer removes secret-shaped fields and values
+  ---
+  duration_ms: 0.50933
+  type: 'test'
+  ...
+# Subtest: wire accepts only configured Qwen alias and its backend id
+ok 36 - wire accepts only configured Qwen alias and its backend id
+  ---
+  duration_ms: 1.107508
+  type: 'test'
+  ...
+# Subtest: resident socket handles readiness and repeated intents without a process adapter
+ok 37 - resident socket handles readiness and repeated intents without a process adapter
+  ---
+  duration_ms: 42.055353
+  type: 'test'
+  ...
+# Subtest: empty input and hidden snapshot are rejected before planning
+ok 38 - empty input and hidden snapshot are rejected before planning
+  ---
+  duration_ms: 9.472739
+  type: 'test'
+  ...
+# Subtest: model failure and malformed output cannot send native operations
+ok 39 - model failure and malformed output cannot send native operations
+  ---
+  duration_ms: 12.749602
+  type: 'test'
+  ...
+# Subtest: native refusal preserves the reason and stale wire id cannot confirm success
+ok 40 - native refusal preserves the reason and stale wire id cannot confirm success
+  ---
+  duration_ms: 12.088358
+  type: 'test'
+  ...
+# Subtest: socket adapter refresh uses actor-safe observation and admits only one operation
+ok 41 - socket adapter refresh uses actor-safe observation and admits only one operation
+  ---
+  duration_ms: 1.428171
+  type: 'test'
+  ...
+# Subtest: live literal speech needs no JS listener or conversation owner
+ok 42 - live literal speech needs no JS listener or conversation owner
+  ---
+  duration_ms: 12.259306
+  type: 'test'
+  ...
+# Subtest: witnesses, missing target, unheard target and vanished target do not call NPC model
+ok 43 - witnesses, missing target, unheard target and vanished target do not call NPC model
+  ---
+  duration_ms: 32.732441
+  type: 'test'
+  ...
+# Subtest: confirmed native listener gets one NPC model reply and native speech
+ok 44 - confirmed native listener gets one NPC model reply and native speech
+  ---
+  duration_ms: 18.019899
+  type: 'test'
+  ...
+# Subtest: two bad NPC replies stop after one repair without a native NPC operation
+ok 45 - two bad NPC replies stop after one repair without a native NPC operation
+  ---
+  duration_ms: 12.482315
+  type: 'test'
+  ...
+# Subtest: disconnect during planning cannot send an operation or kill the resident coordinator
+ok 46 - disconnect during planning cannot send an operation or kill the resident coordinator
+  ---
+  duration_ms: 13.675484
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22484.593404

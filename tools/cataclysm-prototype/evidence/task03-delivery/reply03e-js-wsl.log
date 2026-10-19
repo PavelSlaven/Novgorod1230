@@ -1,0 +1,347 @@
+TAP version 13
+# Subtest: one shared budget counts calls across role wrappers before transport
+ok 1 - one shared budget counts calls across role wrappers before transport
+  ---
+  duration_ms: 2.835516
+  type: 'test'
+  ...
+# Subtest: failed provider call records its exact request before transport and error after
+ok 2 - failed provider call records its exact request before transport and error after
+  ---
+  duration_ms: 0.522496
+  type: 'test'
+  ...
+# Subtest: runner accepts only P3 acceptance-matrix case identities
+ok 3 - runner accepts only P3 acceptance-matrix case identities
+  ---
+  duration_ms: 0.314299
+  type: 'test'
+  ...
+# Subtest: operation envelope resolves only references in current observation and registered primitive
+ok 4 - operation envelope resolves only references in current observation and registered primitive
+  ---
+  duration_ms: 2.790212
+  type: 'test'
+  ...
+# Subtest: mock readback schema enforces identity and actual before/after; does not prove native execution
+ok 5 - mock readback schema enforces identity and actual before/after; does not prove native execution
+  ---
+  duration_ms: 0.775846
+  type: 'test'
+  ...
+# Subtest: native seam is explicitly unsupported until a native adapter is handed off
+ok 6 - native seam is explicitly unsupported until a native adapter is handed off
+  ---
+  duration_ms: 0.190375
+  type: 'test'
+  ...
+# Subtest: native file adapter reads current observation and correlates actual readback identity
+ok 7 - native file adapter reads current observation and correlates actual readback identity
+  ---
+  duration_ms: 19.224503
+  type: 'test'
+  ...
+# Subtest: native process transport passes fixed arguments to execFile with shell disabled
+ok 8 - native process transport passes fixed arguments to execFile with shell disabled
+  ---
+  duration_ms: 1.314014
+  type: 'test'
+  ...
+# Subtest: native refresh requires a new observation from the successful read process
+ok 9 - native refresh requires a new observation from the successful read process
+  ---
+  duration_ms: 6.460022
+  type: 'test'
+  ...
+# Subtest: free player intent crosses turn-step repair and typed registry before native mapping
+ok 10 - free player intent crosses turn-step repair and typed registry before native mapping
+  ---
+  duration_ms: 6.989806
+  type: 'test'
+  ...
+# Subtest: move_entity pickup intent reaches native for one observed UID only
+ok 11 - move_entity pickup intent reaches native for one observed UID only
+  ---
+  duration_ms: 1.603189
+  type: 'test'
+  ...
+# Subtest: current native readback projects goal and effect separately while legacy result stays compatible
+ok 12 - current native readback projects goal and effect separately while legacy result stays compatible
+  ---
+  duration_ms: 9.144708
+  type: 'test'
+  ...
+# Subtest: real turn owner validates injected model response; this is not a native execution assertion
+ok 13 - real turn owner validates injected model response; this is not a native execution assertion
+  ---
+  duration_ms: 0.777117
+  type: 'test'
+  ...
+# Subtest: generic turn loop dispatches open, wait, and exact speech through native envelopes
+ok 14 - generic turn loop dispatches open, wait, and exact speech through native envelopes
+  ---
+  duration_ms: 3.382946
+  type: 'test'
+  ...
+# Subtest: production operation choice hydrates one observed item target into the native envelope
+ok 15 - production operation choice hydrates one observed item target into the native envelope
+  ---
+  duration_ms: 8.490152
+  type: 'test'
+  ...
+# Subtest: production player_utterance reaches native speech and conversation owner exactly once
+ok 16 - production player_utterance reaches native speech and conversation owner exactly once
+  ---
+  duration_ms: 28.469161
+  type: 'test'
+  ...
+# Subtest: sealed package shares one attempt budget and evidence root across all reset mocks
+ok 17 - sealed package shares one attempt budget and evidence root across all reset mocks
+  ---
+  duration_ms: 114.992845
+  type: 'test'
+  ...
+# Subtest: NPC requests fail closed through the existing safe snapshot projector
+ok 18 - NPC requests fail closed through the existing safe snapshot projector
+  ---
+  duration_ms: 0.57098
+  type: 'test'
+  ...
+# Subtest: native speech validates current conversation identity and unique heard listeners before replay
+ok 19 - native speech validates current conversation identity and unique heard listeners before replay
+  ---
+  duration_ms: 0.306752
+  type: 'test'
+  ...
+# Subtest: native speech rejects either deaf listener in a two-listener heard set
+ok 20 - native speech rejects either deaf listener in a two-listener heard set
+  ---
+  duration_ms: 0.2062
+  type: 'test'
+  ...
+# Subtest: T09 NPC boundary replays the committed semantic checkpoint without another decision call
+ok 21 - T09 NPC boundary replays the committed semantic checkpoint without another decision call
+  ---
+  duration_ms: 0.287164
+  type: 'test'
+  ...
+# Subtest: T09 native NPC CLI flow builds safe request, validates decision, applies npc_move once, and replays
+ok 22 - T09 native NPC CLI flow builds safe request, validates decision, applies npc_move once, and replays
+  ---
+  duration_ms: 4.804073
+  type: 'test'
+  ...
+# Subtest: T10 applies exact native speech, heard actors, and elapsed native time once through conversation owner
+ok 23 - T10 applies exact native speech, heard actors, and elapsed native time once through conversation owner
+  ---
+  duration_ms: 0.928579
+  type: 'test'
+  ...
+# Subtest: T10 sealed fixture runs existing statement and audience owners with native heard IDs
+ok 24 - T10 sealed fixture runs existing statement and audience owners with native heard IDs
+  ---
+  duration_ms: 2.464308
+  type: 'test'
+  ...
+# Subtest: coordinator speech uses refreshed native heard IDs and checks physical snapshots
+ok 25 - coordinator speech uses refreshed native heard IDs and checks physical snapshots
+  ---
+  duration_ms: 1.277358
+  type: 'test'
+  ...
+# Subtest: coordinator speech rejects a stale observation before native apply
+ok 26 - coordinator speech rejects a stale observation before native apply
+  ---
+  duration_ms: 0.2812
+  type: 'test'
+  ...
+# Subtest: coordinator speech rejects canonical conversation or state mismatches before native apply
+ok 27 - coordinator speech rejects canonical conversation or state mismatches before native apply
+  ---
+  duration_ms: 0.243215
+  type: 'test'
+  ...
+# Subtest: effective config reports only approved nonsecret fields and rejects token mismatch
+ok 28 - effective config reports only approved nonsecret fields and rejects token mismatch
+  ---
+  duration_ms: 2.549126
+  type: 'test'
+  ...
+# Subtest: P3 role runtime uses existing provider adapter with fixed protocol overrides
+ok 29 - P3 role runtime uses existing provider adapter with fixed protocol overrides
+  ---
+  duration_ms: 2.299136
+  type: 'test'
+  ...
+# Subtest: P3 settings loader requires explicit file and private Qwen endpoint without applying settings
+ok 30 - P3 settings loader requires explicit file and private Qwen endpoint without applying settings
+  ---
+  duration_ms: 11.272324
+  type: 'test'
+  ...
+# Subtest: immutable operation handoff refuses overwrite; evidence run refuses restart and redacts secrets
+ok 31 - immutable operation handoff refuses overwrite; evidence run refuses restart and redacts secrets
+  ---
+  duration_ms: 8.655799
+  type: 'test'
+  ...
+# Subtest: evidence sanitizer removes secret-shaped fields and values
+ok 32 - evidence sanitizer removes secret-shaped fields and values
+  ---
+  duration_ms: 0.616241
+  type: 'test'
+  ...
+# Subtest: wire accepts only configured Qwen alias and its backend id
+ok 33 - wire accepts only configured Qwen alias and its backend id
+  ---
+  duration_ms: 0.791736
+  type: 'test'
+  ...
+# Subtest: resident socket handles readiness and repeated intents without a process adapter
+ok 34 - resident socket handles readiness and repeated intents without a process adapter
+  ---
+  duration_ms: 43.785758
+  type: 'test'
+  ...
+# Subtest: empty input and hidden snapshot are rejected before planning
+ok 35 - empty input and hidden snapshot are rejected before planning
+  ---
+  duration_ms: 9.517377
+  type: 'test'
+  ...
+# Subtest: model failure and malformed output cannot send native operations
+ok 36 - model failure and malformed output cannot send native operations
+  ---
+  duration_ms: 13.346658
+  type: 'test'
+  ...
+# Subtest: native refusal preserves the reason and stale wire id cannot confirm success
+ok 37 - native refusal preserves the reason and stale wire id cannot confirm success
+  ---
+  duration_ms: 13.10336
+  type: 'test'
+  ...
+# Subtest: socket adapter refresh uses actor-safe observation and admits only one operation
+ok 38 - socket adapter refresh uses actor-safe observation and admits only one operation
+  ---
+  duration_ms: 2.314353
+  type: 'test'
+  ...
+# Subtest: live literal speech needs no JS listener or conversation owner
+ok 39 - live literal speech needs no JS listener or conversation owner
+  ---
+  duration_ms: 11.931139
+  type: 'test'
+  ...
+# Subtest: live speech delivery matrix preserves eight modes and refuses sustained before native
+    # Subtest: 1/instant
+    ok 1 - 1/instant
+      ---
+      duration_ms: 9.31287
+      type: 'test'
+      ...
+    # Subtest: 1/brief
+    ok 2 - 1/brief
+      ---
+      duration_ms: 9.103395
+      type: 'test'
+      ...
+    # Subtest: 1/sustained
+    ok 3 - 1/sustained
+      ---
+      duration_ms: 7.913755
+      type: 'test'
+      ...
+    # Subtest: 2/instant
+    ok 4 - 2/instant
+      ---
+      duration_ms: 8.531243
+      type: 'test'
+      ...
+    # Subtest: 2/brief
+    ok 5 - 2/brief
+      ---
+      duration_ms: 8.337869
+      type: 'test'
+      ...
+    # Subtest: 2/sustained
+    ok 6 - 2/sustained
+      ---
+      duration_ms: 7.940475
+      type: 'test'
+      ...
+    # Subtest: 3/instant
+    ok 7 - 3/instant
+      ---
+      duration_ms: 9.1292
+      type: 'test'
+      ...
+    # Subtest: 3/brief
+    ok 8 - 3/brief
+      ---
+      duration_ms: 7.534923
+      type: 'test'
+      ...
+    # Subtest: 3/sustained
+    ok 9 - 3/sustained
+      ---
+      duration_ms: 6.903996
+      type: 'test'
+      ...
+    # Subtest: 4/instant
+    ok 10 - 4/instant
+      ---
+      duration_ms: 9.006476
+      type: 'test'
+      ...
+    # Subtest: 4/brief
+    ok 11 - 4/brief
+      ---
+      duration_ms: 7.188462
+      type: 'test'
+      ...
+    # Subtest: 4/sustained
+    ok 12 - 4/sustained
+      ---
+      duration_ms: 14.867737
+      type: 'test'
+      ...
+    1..12
+ok 40 - live speech delivery matrix preserves eight modes and refuses sustained before native
+  ---
+  duration_ms: 108.638997
+  type: 'test'
+  ...
+# Subtest: witnesses, missing target, unheard target and vanished target do not call NPC model
+ok 41 - witnesses, missing target, unheard target and vanished target do not call NPC model
+  ---
+  duration_ms: 15.075716
+  type: 'test'
+  ...
+# Subtest: confirmed native listener gets one NPC model reply and native speech
+ok 42 - confirmed native listener gets one NPC model reply and native speech
+  ---
+  duration_ms: 12.151861
+  type: 'test'
+  ...
+# Subtest: two bad NPC replies stop after one repair without a native NPC operation
+ok 43 - two bad NPC replies stop after one repair without a native NPC operation
+  ---
+  duration_ms: 7.883333
+  type: 'test'
+  ...
+# Subtest: disconnect during planning cannot send an operation or kill the resident coordinator
+ok 44 - disconnect during planning cannot send an operation or kill the resident coordinator
+  ---
+  duration_ms: 11.919634
+  type: 'test'
+  ...
+1..44
+# tests 56
+# suites 0
+# pass 56
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22375.30262

@@ -1,19 +1,30 @@
-# Native prototype agent boundary
+# Dev-проба CDDA
 
-- Запускай только отдельный native `cataclysm` userdir и focused `cata_test`.
-- Это bare native agent harness: тестовый ввод вызывает штатные CDDA actions.
-- Не подключай provider/model, sealed T06–T12, production runtime или player saves.
-- Свободная речь и authored materialization не готовы; не заявляй их проверенными.
-- Один полностью автоматический P1 curses smoke из PowerShell в корне репозитория:
-  `powershell -ExecutionPolicy Bypass -File tools/cataclysm-prototype/run-p1-curses.ps1 -Smoke`.
-  Reset — повтори эту же команду: каждый запуск копирует неизменный P1 fixture в
-  новый userdir, выбирает English,
-  загружает мир,
-  выполняет ходы, делает `Esc` → `S` → `Y` для save-and-quit, затем `Q` → `Y`
-  для выхода. Лог, сравнение save/RNG hashes и exit code остаются в
-  `artifacts/YYYY-MM-DD/task01/p1-curses-*`.
-- Сборки используют фиксированный default `artifacts/2026-10-19/nativebuild`;
-  при переносе укажи `-NativeBuildRoot`. Для native focused tests и speech probe
-  используй `native-smoke.ps1`. Известные controls запускаются только явно через
-  `-Controls`.
-- Сборки, временные миры и evidence создавай только в `artifacts/YYYY-MM-DD/`.
+**Не P3 GO; T09 не закрыт. Проза — «черновик, не сохранено».**
+Текущий этап проверяет родной curses. Свободный текст/Qwen ещё не принят;
+baseline загрузка технической fixture обнаружила несовместимость item UID.
+До совместимой сборки запуск не считается готовым.
+
+После подготовки ext4 runtime из PowerShell в корне репозитория:
+
+```powershell
+.\tools\cataclysm-prototype\run-p3-dev.ps1 -NativeOnly
+```
+
+Мир постоянный: WSL `/home/slaven/cataclysm-recovery/task03-dev/userdir`.
+Первый запуск копирует отдельную fixture, повторный продолжает сохранение.
+Сейчас это техническая сцена `novgorod-dev`, не исторически подготовленный Новгород.
+Ходы: стрелки/цифры, `.` — ждать, `g` — подобрать, `i` — вещи.
+Сохранить и выйти: `Esc` → `S` → `Y`; выйти из главного меню: `Q` → `Y`.
+«Сохранить и продолжить» — родной Quicksave; назначение клавиши через `?`.
+Reset: та же команда с `-Reset`; прежний userdir сохраняется рядом как
+`userdir-before-reset-*`, затем создаётся новая копия fixture.
+
+Для будущего запуска с Qwen задайте `$env:RUS_LLM_SETTINGS_PATH` путём к своему
+файлу настроек LLM; launcher передаёт путь в WSL без печати содержимого.
+Без `-NativeOnly` launcher ждёт готовности resident coordinator и завершает
+свой процесс при выходе. Живую интеграцию ещё требуется проверить.
+Граница dev-пробы: `move`, `use_item`, `open`, `wait`, `speak`, `pickup`, цели
+в радиусе 1; за пределами — отказ, без утверждения о выполнении.
+Crash-atomic поколения/экран восстановления и назначенное движение NPC пока
+не готовы. Старый `run-p1-curses.ps1 -Smoke` остаётся отдельным тестовым стендом.

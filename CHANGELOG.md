@@ -5,6 +5,7 @@
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - docs(context): карта родных механизмов CDDA (docs/context/cdda-native-map, генератор сводной таблицы в docs:check); навигация, не норма (#778)
+- docs(governance): AGENTS.md — правило CDDA reuse-first: готовые механизмы CDDA в первую очередь, расширять при необходимости, новые только при отсутствии; новый механизм называет проверенный родной (файл:строка) и почему не подошёл (#775)
 - test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, P4 technical gate принят, речевые T11/T12 остаются OPEN (#768)
 - test(cataclysm): P4 complete generations и 14 crash/retry сценариев; strict UID и 20 latency samples фиксируют STOP/REVISE_APPROACH, без production activation (#764)
 - test(cataclysm): изолированный P0–P2 harness на pinned CDDA — native loop, items, activity, NPC, danger interrupt и измеренный readback; без production activation (#757)

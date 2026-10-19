@@ -141,8 +141,10 @@ audience projection у существующего conversation owner. Delivery m
 Read-only resolution существующего runtime из текущего process environment
 подтвердил доступные `turn_step_planner` и `npc_autonomous_decider`:
 DeepSeek `deepseek-v4-flash`, max tokens 20000, timeout 120000 ms, ключ присутствует.
-Значения temperature/top_p были null. Ведущий `/root` заранее одобряет
-prototype override temperature=0 и top_p=1; effective nonsecret config
+Первичная resolution показывала null для temperature/top_p; полный capture
+production-запроса перед стендом уточнил фактические значения: temperature=0,
+top_p=null. Ведущий `/root` заранее одобряет prototype override temperature=0
+и top_p=1; effective nonsecret config
 проверяется и сохраняется до первого model call. Conversation responder
 проверяется отдельно: тот же provider/model, temperature=0, top_p=1,
 max tokens 1000 и timeout 120000 ms. Любое несовпадение останавливает запуск

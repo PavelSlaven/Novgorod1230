@@ -4,6 +4,8 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { request as sampleRequest, plan as samplePlan } from '../../packages/turn/test/turn-step-contracts-fixture.js';
+import { createLowerDvinaTraceTurnStepModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { turnStepOperationChoices } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 import { createP3AttemptBudget, createP3EvidenceRun, createP3OperationEnvelope,
   applyP3CoordinatorSpeech,
   buildP3NpcRequest, requestP3TurnPlan, requireP3CaseId, resolveP3EffectiveConfig, sanitizeP3Evidence,
@@ -210,11 +212,13 @@ test('free player intent crosses turn-step repair and typed registry before nati
   assert.equal(targeted.references.targets, '60,59,0');
   const operationsByKind = Object.fromEntries(buildP3TurnOperations(current).map(op => [op.op, op]));
   assert.equal(operationsByKind.request_item_use.use_kind, 'operate');
+  assert.equal(buildP3TurnOperations(current).some(({ op }) => op === 'emit_interaction'), false);
   const openOperation = operationsByKind.request_container_access;
   assert.equal(mapP3TurnOperationToNative(openOperation, current).primitive, 'open');
   assert.deepEqual(mapP3TurnOperationToNative(openOperation, current).args.direction, [1, 0]);
   assert.equal(mapP3TurnOperationToNative(operationsByKind.request_activity, current).primitive, 'wait');
-  const speechOperation = { ...operationsByKind.emit_interaction, content: 'Привет, сосед!' };
+  const speechOperation = { op: 'emit_interaction', actor_ref: 'avatar',
+    target_actor_refs: ['npc:8'], interaction_kind: 'speech', content: 'Привет, сосед!' };
   const mappedSpeech = mapP3TurnOperationToNative(speechOperation, current);
   assert.equal(mappedSpeech.primitive, 'speak');
   assert.equal(mappedSpeech.args.utterance, 'Привет, сосед!');
@@ -264,6 +268,72 @@ test('move_entity pickup intent reaches native for one observed UID only', async
   assert.equal(requests.length, 1);
   assert.equal(requests[0].primitive, 'pickup');
   assert.deepEqual(requests[0].references.items, { ref: 'item:18', id: 'uid:18' });
+  assert.equal(result.working_projection.native_goal_result, 'achieved');
+});
+
+test('current native readback projects goal and effect separately while legacy result stays compatible', async () => {
+  const scenarios = [
+    { name: 'pickup', kind: 'pickup', goal: 'achieved', effect: 'confirmed', expected: 'achieved' },
+    { name: 'flashlight use', kind: 'item', itemType: 'flashlight', goal: 'achieved',
+      effect: 'confirmed', expected: 'achieved' },
+    { name: 'speech', kind: 'speech', goal: 'achieved', effect: 'confirmed', expected: 'achieved' },
+    { name: 'firestarter progress', kind: 'item', itemType: 'firestarter', goal: 'in_progress',
+      effect: 'progressing', expected: 'partially_achieved' },
+    { name: 'no effect', kind: 'item', itemType: 'flashlight', goal: 'not_achieved',
+      effect: 'none', expected: 'not_achieved' },
+    { name: 'refusal', kind: 'item', itemType: 'firestarter', goal: 'refused',
+      effect: 'refused', status: 'refused', expected: 'not_achieved' },
+    { name: 'confirmed effect without goal', kind: 'item', itemType: 'flashlight',
+      effect: 'confirmed', expectedError: 'P3_NATIVE_GOAL_RESULT_MISSING' }
+  ];
+  for (const [index, scenario] of scenarios.entries()) {
+    const current = { schema: 'p3_native_observation_v1', turn: 3, revision: 3,
+      actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
+        ...(scenario.kind === 'speech' ? [{ actor_ref: 'npc:8', actor_id: '8',
+          position: [61, 60, 0], visible: true }] : [])],
+      items: scenario.kind === 'pickup' ? [{ item_ref: 'item:18', item_uid: 'uid:18',
+        type: 'rock', position: [60, 61, 0] }] : scenario.kind === 'item'
+        ? [{ item_ref: 'item:9', item_uid: 'uid:9', type: scenario.itemType,
+          holder: '7', use_methods: ['activate'] }] : [], targets: [] };
+    const readback = { schema: 'p3_native_operation_readback_v1', status: scenario.status ?? 'applied',
+      ...(scenario.goal ? { goal_result: scenario.goal } : {}),
+      native_effect: { effect_status: scenario.effect,
+        ...(scenario.kind === 'speech' ? { speakerId: '7', utterance: 'Привет',
+          actualHeardListenerIds: [] } : {}) }, before: {}, after: {},
+      ...(scenario.status === 'refused' ? { refusal: { code: 'blocked' } } : {}) };
+    const result = runP3TurnStep({ intent: scenario.name, observation: current,
+      operationId: `current-readback-${index}`, nativeAdapter: {
+        writeOperationRequest: async () => {}, readOperationReadback: async () => ({}),
+        execute: async envelope => ({ ...readback, operation_id: envelope.operation_id })
+      }, turnStepModel: async request => {
+        const operation = scenario.kind === 'pickup'
+          ? { op: 'move_entity', entity_ref: 'uid:18',
+            placement: { relation: 'held_by', target_ref: 'avatar' } }
+          : scenario.kind === 'speech'
+            ? { op: 'emit_interaction', actor_ref: 'avatar', target_actor_refs: ['npc:8'],
+              interaction_kind: 'speech', content: 'Привет', instrument_refs: [] }
+            : request.available_domain_operations.find(({ op }) => op === 'request_item_use');
+        return { schema: 'turn_step_plan_v1', request_id: request.request_id,
+          committed_state_version: request.committed_state_version,
+          working_revision: request.working_revision, step_index: request.step_index,
+          interpretation: { player_goal: request.remaining_intent,
+            grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+          resolution: scenario.kind === 'pickup' ? 'direct' : 'domain_request', goal_result: 'pending',
+          activity: { owner: scenario.kind === 'pickup' ? 'semantic' : 'domain',
+            duration_class: scenario.kind === 'pickup' ? 'brief' : null,
+            effort: scenario.kind === 'pickup' ? 'light' : null }, operations: [operation], check: null,
+          continuation: null, clarification: null, direct_result_kind: null,
+          reason_code: 'native_readback_fixture', reason: 'project native result' };
+      } });
+    if (scenario.expectedError) {
+      await assert.rejects(result, { message: scenario.expectedError });
+      continue;
+    }
+    const projected = await result;
+    assert.equal(projected.working_projection.native_goal_result, scenario.expected, scenario.name);
+    assert.equal(projected.working_projection.native_readback.native_effect.effect_status,
+      scenario.effect, scenario.name);
+  }
 });
 
 test('real turn owner validates injected model response; this is not a native execution assertion', async () => {
@@ -288,18 +358,19 @@ test('generic turn loop dispatches open, wait, and exact speech through native e
       calls.push(envelope);
       return { schema: 'p3_native_operation_readback_v1', operation_id: envelope.operation_id,
         status: 'applied', effect_status: envelope.primitive === 'wait' ? 'unknown' : 'unknown',
+        ...(envelope.primitive === 'speak' ? { native_effect: { speakerId: '7',
+          utterance: envelope.args.utterance, actualHeardListenerIds: [] } } : {}),
         before: { turn: 3 }, after: { turn: 3 }, native_trace: { primitive: envelope.primitive } };
     }
   };
   for (const [opName, expectedPrimitive] of [
     ['request_item_use', 'use_item'], ['request_container_access', 'open'],
-    ['request_activity', 'wait'], ['emit_interaction', 'speak']
+    ['request_activity', 'wait']
   ]) {
     const result = await runP3TurnStep({ intent: 'Do the operation', observation: current,
       nativeAdapter, operationId: `typed-${opName}`, turnStepModel: async request => {
         const offered = request.available_domain_operations.find(({ op }) => op === opName);
-        const operation = opName === 'emit_interaction'
-          ? { ...offered, content: 'Точное сообщение' } : offered;
+        const operation = offered;
         return { schema: 'turn_step_plan_v1', request_id: request.request_id,
           committed_state_version: request.committed_state_version,
           working_revision: request.working_revision, step_index: request.step_index,
@@ -313,16 +384,147 @@ test('generic turn loop dispatches open, wait, and exact speech through native e
     const envelope = calls.at(-1);
     assert.equal(envelope.primitive, expectedPrimitive);
     assert.equal(result.working_projection.native_readback.native_trace.primitive, expectedPrimitive);
-    if (opName === 'emit_interaction') {
-      assert.equal(envelope.args.utterance, 'Точное сообщение');
-      assert.deepEqual(envelope.references.actors, [{ ref: 'npc:8', id: '8' }]);
-    }
     if (opName === 'request_item_use') assert.equal(envelope.args.method, 'activate');
     if (opName === 'request_activity') {
       assert.equal(result.working_projection.native_readback.status, 'applied');
       assert.equal(result.working_projection.native_goal_result, 'partially_achieved');
     } else assert.equal(result.working_projection.native_goal_result, 'not_achieved');
   }
+});
+
+test('production operation choice hydrates one observed item target into the native envelope', async () => {
+  const current = { schema: 'p3_native_observation_v1', turn: 3, revision: 3,
+    actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] }],
+    items: [{ item_ref: 'item:firestarter', item_uid: 'uid:firestarter', type: 'firestarter',
+      holder: '7', use_methods: ['activate'] }],
+    targets: [{ target_ref: 'target:left', position: [59, 60, 0] },
+      { target_ref: 'target:right', position: [61, 60, 0] },
+      { target_ref: 'target:far', position: [64, 60, 0] }] };
+  const itemChoices = buildP3TurnOperations(current)
+    .filter(({ op, item_ref }) => op === 'request_item_use' && item_ref === 'item:firestarter');
+  assert.deepEqual(itemChoices.map(({ target_refs }) => target_refs),
+    [[], ['target:left'], ['target:right']]);
+  let providerCalls = 0;
+  let nativeCalls = 0;
+  let captured;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
+    providerCalls++;
+    assert.equal(call.role_id, 'turn_step_planner');
+    const request = JSON.parse(call.messages[1].content);
+    const selected = turnStepOperationChoices(request).find(({ operation }) =>
+      operation.op === 'request_item_use' && operation.item_ref === 'item:firestarter'
+        && operation.target_refs[0] === 'target:right');
+    assert.ok(selected);
+    return { output: { interpretation: { player_goal: request.remaining_intent,
+      grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+      resolution: 'domain_request', goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      direct_result_kind: null, operation_family: 'request_item_use',
+      operation_choice: selected.choice_id, operations: [], check: null,
+      continuation: null, clarification: null, reason_code: 'targeted_item_use',
+      reason: 'Use the held firestarter on the observed adjacent target.' } };
+  } } });
+  const result = await runP3TurnStep({ intent: 'Используй кресало на правой цели',
+    observation: current, operationId: 'production-targetful-item-use', nativeAdapter: {
+      writeOperationRequest: async () => {}, readOperationReadback: async () => ({}),
+      async execute(envelope) { nativeCalls++; captured = envelope;
+        return { schema: 'p3_native_operation_readback_v1', operation_id: envelope.operation_id,
+          status: 'applied', goal_result: 'achieved',
+          native_effect: { effect_status: 'confirmed' }, before: {}, after: {} };
+      }
+    }, turnStepModel: model });
+  assert.equal(providerCalls, 1);
+  assert.equal(nativeCalls, 1);
+  assert.equal(captured.primitive, 'use_item');
+  assert.deepEqual(captured.args, { method: 'activate', target_direction: [1, 0] });
+  assert.equal(captured.references.targets.ref, 'target:right');
+  assert.equal(result.working_projection.native_goal_result, 'achieved');
+});
+
+test('production player_utterance reaches native speech and conversation owner exactly once', async () => {
+  const text = 'Приходи до рассвета!';
+  const intent = `Скажи дословно: «${text}»`;
+  const current = { schema: 'p3_native_observation_v1', turn: 120, revision: 120,
+    actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
+      { actor_ref: 'npc:8', actor_id: '8', position: [61, 60, 0], visible: true },
+      { actor_ref: 'npc:9', actor_id: '9', position: [60, 61, 0], visible: false }],
+    items: [], targets: [] };
+  const output = (request, delivery = { loudness: 2, duration_class: 'brief' },
+    speakerRef = 'avatar') => ({ interpretation: { player_goal: request.remaining_intent,
+      grounded_attempt: text, adaptation: 'literal' }, resolution: 'direct',
+    goal_result: 'achieved', activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: speakerRef,
+      utterance_text: text, input_mode: 'verbatim', delivery }, operation_family: null,
+    operation_choice: null, operations: [], check: null, continuation: null,
+    clarification: null, reason_code: 'player_utterance', reason: 'Speak the supplied words.' });
+  const validatedPlan = (request, delivery, speakerRef) => ({
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.remaining_intent,
+      grounded_attempt: text, adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: speakerRef,
+      utterance_text: text, input_mode: 'verbatim', delivery },
+    reason_code: 'player_utterance', reason: 'Speak the supplied words.'
+  });
+  let providerCalls = 0;
+  let nativeCalls = 0;
+  let captured;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
+    providerCalls++;
+    assert.equal(call.role_id, 'turn_step_planner');
+    const request = JSON.parse(call.messages[1].content);
+    assert.equal(request.remaining_intent, intent);
+    return { output: output(request) };
+  } } });
+  const nativeAdapter = { writeOperationRequest: async () => {},
+    readOperationReadback: async () => ({}),
+    async execute(envelope) {
+      nativeCalls++;
+      captured = envelope;
+      return { schema: 'p3_native_operation_readback_v1', operation_id: envelope.operation_id,
+        status: 'applied', goal_result: 'achieved',
+        before: { turn: 120, clock: { native_turn: 120, seconds_since_world_start: 3600 } },
+        after: { turn: 123, clock: { native_turn: 123, seconds_since_world_start: 3603 } },
+        native_effect: { effect_status: 'confirmed', speakerId: '7', utterance: text,
+          actualHeardListenerIds: ['8'], elapsedSeconds: 3 } };
+    } };
+  const result = await runP3TurnStep({ intent, observation: current,
+    operationId: 'production-player-utterance', nativeAdapter, turnStepModel: model,
+    conversationOwnerForSpeech: async ({ operation, readback }) => ({
+      ...createP3NativeSpeechOwnerFixture({ observation: current, readback, operation }),
+      replay: new Map()
+    }) });
+  assert.equal(providerCalls, 1);
+  assert.equal(nativeCalls, 1);
+  assert.equal(captured.primitive, 'speak');
+  assert.equal(captured.args.utterance, text);
+  assert.deepEqual(captured.references.actors.map(({ ref }) => ref), ['npc:8']);
+  assert.equal(result.working_projection.native_readback.native_effect.utterance, text);
+  assert.equal(result.working_projection.conversation_outcome.contribution_event.utterance_text, text);
+  assert.deepEqual(result.working_projection.conversation_outcome.native_speech.actual_heard_listener_ids,
+    ['8']);
+  assert.equal(result.working_projection.conversation_outcome.native_speech.elapsed_seconds, 3);
+
+  for (const delivery of [{ loudness: 1, duration_class: 'brief' },
+    { loudness: 2, duration_class: 'instant' }, { loudness: 2, duration_class: 'sustained' },
+    { loudness: 4, duration_class: 'brief' }]) {
+    await assert.rejects(runP3TurnStep({ intent, observation: current,
+      operationId: `unsupported-speech-${delivery.loudness}-${delivery.duration_class}`,
+      nativeAdapter, turnStepModel: async request => validatedPlan(request, delivery, 'avatar'),
+      conversationOwnerForSpeech: async () => { throw new Error('must not reach owner'); }
+    }), { message: 'P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED' });
+  }
+  await assert.rejects(runP3TurnStep({ intent, observation: current,
+    operationId: 'wrong-speech-speaker', nativeAdapter,
+    turnStepModel: async request => validatedPlan(request,
+      { loudness: 2, duration_class: 'brief' }, 'npc:9'),
+    conversationOwnerForSpeech: async () => { throw new Error('must not reach owner'); }
+  }), { code: 'TURN_STEP_PLAN_INVALID' });
+  assert.equal(nativeCalls, 1);
 });
 
 test('sealed package shares one attempt budget and evidence root across all reset mocks', async t => {
@@ -426,6 +628,7 @@ test('sealed package shares one attempt budget and evidence root across all rese
     .every(({ native_goal_result }) => native_goal_result === 'partially_achieved'));
   const t09 = result.reset_results.filter(({ case_id }) => case_id === 'T09');
   assert.equal(t09.length, 3);
+  assert.ok(t09.every(({ effect_status }) => effect_status === 'progressing'));
   assert.ok(t09.every(({ npc_semantic_decision_count, npc_replay_decision_count,
     npc_semantic_provider_calls, npc_native_operation_count, npc_replay_native_operation_count,
     npc_boundary, npc_replay }) => npc_semantic_decision_count === 1
@@ -488,8 +691,11 @@ test('T09 NPC boundary replays the committed semantic checkpoint without another
 });
 
 test('T09 native NPC CLI flow builds safe request, validates decision, applies npc_move once, and replays', async () => {
-  const projection = { actor_id: '8', native_turn: 120, assignment_id: '',
-    assignment_status: '', activity_id: 'ACT_WORK', visible_actors: [],
+  const projection = { actor_id: '8', native_turn: 120, assignment_id: 'duty-2',
+    assignment_status: 'interrupted_waiting_for_semantic_decision',
+    interrupt_cause: 'native_movement_not_applied',
+    native_snapshot: { private_world_snapshot_marker: 'must-not-reach-owner' },
+    activity_id: 'ACT_WORK', visible_actors: [],
     visible_items: [{ item_ref: 'item:41', item_uid: '41', type: 'hammer', position: [4, 4, 0] }],
     visible_targets: [{ target_ref: 'target:5:4:0', position: [5, 4, 0],
       terrain: 't_dirt', openable: false }] };
@@ -505,7 +711,7 @@ test('T09 native NPC CLI flow builds safe request, validates decision, applies n
     async execute(envelope) {
       nativeCalls++;
       assert.equal(envelope.primitive, 'npc_move');
-      assert.deepEqual(envelope.args, { direction: [1, 0], assignment_id: 'p3-duty-8',
+      assert.deepEqual(envelope.args, { direction: [1, 0], assignment_id: 'duty-2',
         intent: 'walk to the observed patch' });
       return { schema: 'p3_native_operation_readback_v1', operation_id: envelope.operation_id,
         status: 'applied', goal_result: 'in_progress', native_effect: {
@@ -535,6 +741,16 @@ test('T09 native NPC CLI flow builds safe request, validates decision, applies n
   const second = await runP3NativeNpcFlow({ nativeAdapter, actorId: '8', semanticModel, replay, evidence });
   assert.equal(buildP3NativeNpcDecisionInput(projection).request.schema,
     'npc_action_decision_request_v1');
+  assert.equal(first.request.npc_ref, 'npc-8');
+  assert.equal(first.request.npc.current_activity.status,
+    'interrupted_waiting_for_semantic_decision');
+  assert.match(first.request.decision_reasons.perceived_changes[0], /Duty duty-2/);
+  assert.match(first.request.decision_reasons.perceived_changes[0], /native_movement_not_applied/);
+  assert.equal(JSON.stringify(first.request).includes('must-not-reach-owner'), false);
+  const uninterrupted = buildP3NativeNpcDecisionInput({ ...projection,
+    assignment_status: 'decision_required' });
+  assert.equal(uninterrupted.request.decision_reasons.perceived_changes[0],
+    'Duty duty-2 requires a decision.');
   assert.deepEqual(second, first);
   assert.equal(semanticCalls, 1);
   assert.equal(nativeCalls, 1);
@@ -633,8 +849,7 @@ test('coordinator speech uses refreshed native heard IDs and checks physical sna
   const owner = createP3NativeSpeechOwnerFixture({ observation: { actors: [
     { actor_id: 'player-native' }, { actor_id: 'npc-native' }] }, readback,
   operation: { primitive: 'speak' } });
-  Object.assign(readback.native_effect, { conversationId: owner.ownerContext.conversationId,
-    exchangeId: owner.ownerContext.exchangeId, stateVersion: owner.ownerContext.stateVersion });
+  assert.equal(owner.validatedPlan.state_version, owner.ownerContext.stateVersion);
   let reads = 0;
   let executions = 0;
   const adapter = { writeOperationRequest() {}, readOperationReadback() {}, async refreshObservation() {
@@ -650,6 +865,9 @@ test('coordinator speech uses refreshed native heard IDs and checks physical sna
       owner_context: owner.ownerContext, working_state: owner.working } };
   const result = await applyP3CoordinatorSpeech({ nativeAdapter: adapter, request });
   assert.equal(executions, 1);
+  assert.equal('conversationId' in readback.native_effect, false);
+  assert.equal('exchangeId' in readback.native_effect, false);
+  assert.equal('stateVersion' in readback.native_effect, false);
   assert.deepEqual(result.conversation_outcome.working_state.audiences[0].actual_listener_refs,
     [{ entity_kind: 'npc', entity_id: 'npc-native' }]);
   assert.deepEqual(result.after_observation.native_snapshot, after);
@@ -663,10 +881,36 @@ test('coordinator speech rejects a stale observation before native apply', async
   const request = { schema: 'p3_p4_semantic_request_v1', operation_id: 'op', intent: 'speak',
     observation_revision: 10, native_operation: { schema: 'p3_native_operation_request_v1',
       operation_id: 'op', primitive: 'speak', expected_native_observation: { revision: 10 } },
-    validated_semantic_input: {} };
+    validated_semantic_input: { owner_context: { conversationId: 'conversation-1',
+      exchangeId: 'exchange-1', stateVersion: 10 },
+    validated_plan: { conversation_id: 'conversation-1', state_version: 10 }, working_state: {} } };
   await assert.rejects(applyP3CoordinatorSpeech({ nativeAdapter: adapter, request }),
     /P3_COORDINATOR_OBSERVATION_REVISION_MISMATCH/);
   assert.equal(executions, 0);
+});
+
+test('coordinator speech rejects canonical conversation or state mismatches before native apply', async () => {
+  for (const mismatch of ['conversation', 'state']) {
+    let refreshes = 0;
+    let executions = 0;
+    const adapter = { writeOperationRequest() {}, readOperationReadback() {},
+      async refreshObservation() { refreshes++; return { revision: 10, native_snapshot: {} }; },
+      async execute() { executions++; throw new Error('must not execute'); } };
+    const ownerContext = { conversationId: 'conversation-1', exchangeId: 'exchange-1', stateVersion: 10 };
+    const validatedPlan = { conversation_id: 'conversation-1', state_version: 10 };
+    if (mismatch === 'conversation') validatedPlan.conversation_id = 'conversation-other';
+    else validatedPlan.state_version = 11;
+    const request = { schema: 'p3_p4_semantic_request_v1', operation_id: `op-${mismatch}`,
+      intent: 'speak', observation_revision: 10,
+      native_operation: { schema: 'p3_native_operation_request_v1', operation_id: `op-${mismatch}`,
+        primitive: 'speak', expected_native_observation: { revision: 10 } },
+      validated_semantic_input: { owner_context: ownerContext, validated_plan: validatedPlan,
+        working_state: {} } };
+    await assert.rejects(applyP3CoordinatorSpeech({ nativeAdapter: adapter, request }),
+      /P3_COORDINATOR_SEMANTIC_IDENTITY_MISMATCH/);
+    assert.equal(refreshes, 0);
+    assert.equal(executions, 0);
+  }
 });
 
 test('effective config reports only approved nonsecret fields and rejects token mismatch', () => {

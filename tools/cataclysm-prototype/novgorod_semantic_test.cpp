@@ -34,7 +34,7 @@ static constexpr tripoint_bub_ms p3_fixture_center( 60, 60, 0 );
 static const ter_str_id p3_ter_floor( "t_floor" );
 static const ter_str_id p3_ter_wall( "t_wall" );
 static const ter_str_id p3_ter_door_c( "t_door_c" );
-static const npc_template_id p3_talker( "test_talker" );
+static const npc_template_id p3_talker( "NPC_debug" );
 static const efftype_id p3_deaf( "deaf" );
 static int64_t p3_pickup_uid = 0;
 
@@ -83,11 +83,10 @@ void reset_p3_fixture()
         throw std::runtime_error( "NOVGOROD_TEST_FLASHLIGHT_BATTERY_NOT_LOADED" );
     }
     you.i_add( flashlight );
-    character_id p3_speaker_id = here.place_npc( point_bub_ms( 60, 62 ), p3_talker );
-    character_id p3_listener_id = here.place_npc( point_bub_ms( 61, 62 ), p3_talker );
-    character_id deaf_listener_id = here.place_npc( point_bub_ms( 58, 61 ), p3_talker );
-    character_id second_deaf_listener_id = here.place_npc( point_bub_ms( 62, 61 ), p3_talker );
-    g->load_npcs();
+    character_id p3_speaker_id = spawn_npc( point_bub_ms( 60, 62 ), p3_talker.str() ).getID();
+    character_id p3_listener_id = spawn_npc( point_bub_ms( 61, 62 ), p3_talker.str() ).getID();
+    character_id deaf_listener_id = spawn_npc( point_bub_ms( 58, 61 ), p3_talker.str() ).getID();
+    character_id second_deaf_listener_id = spawn_npc( point_bub_ms( 62, 61 ), p3_talker.str() ).getID();
     for( const character_id &id : { p3_speaker_id, p3_listener_id, deaf_listener_id,
                                     second_deaf_listener_id } ) {
         g->find_npc( id )->set_attitude( NPCATT_NULL );
@@ -97,6 +96,22 @@ void reset_p3_fixture()
     for( const character_id &id : { p3_speaker_id, p3_listener_id, deaf_listener_id,
                                     second_deaf_listener_id } ) {
         g->find_npc( id )->assign_activity( wait_activity_actor( 1_hours ) );
+    }
+    std::vector<std::tuple<std::string, int, int, int>> fixture_ground_items;
+    for( const tripoint_bub_ms &p : here.points_in_radius( you.pos_bub(), 1 ) ) {
+        for( const item &it : here.i_at( p ) ) {
+            fixture_ground_items.emplace_back( it.typeId().str(), p.x(), p.y(), p.z() );
+        }
+    }
+    std::sort( fixture_ground_items.begin(), fixture_ground_items.end() );
+    std::vector<std::tuple<std::string, int, int, int>> expected_ground_items = {
+        { "rock", 60, 60, 0 },
+        { "stick", 60, 60, 0 },
+        { "stick", 59, 60, 0 }
+    };
+    std::sort( expected_ground_items.begin(), expected_ground_items.end() );
+    if( fixture_ground_items != expected_ground_items ) {
+        throw std::runtime_error( "NOVGOROD_P3_FIXTURE_GROUND_ITEMS_UNEXPECTED" );
     }
 }
 

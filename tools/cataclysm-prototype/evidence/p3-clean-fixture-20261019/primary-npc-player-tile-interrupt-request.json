@@ -1,0 +1,18 @@
+{
+  "schema": "p3_native_operation_request_v1",
+  "operation_id": "primary-npc-player-tile-interrupt",
+  "actor_id": "2",
+  "expected_native_observation": {
+    "actor_id": "2",
+    "turn": 43203
+  },
+  "primitive": "npc_move",
+  "args": {
+    "direction": [
+      0,
+      -1
+    ],
+    "assignment_id": "clean-interrupt",
+    "intent": "move into avatar-occupied observed tile"
+  }
+}

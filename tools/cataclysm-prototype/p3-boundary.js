@@ -242,7 +242,8 @@ export function createP3NativeSpeechOwnerFixture({ observation, readback, operat
         subminute_numerator: String(readback.before.clock.seconds_since_world_start % 60),
         subminute_denominator: '60' }, position: {}, environment: {} } };
   const validatedPlan = { schema: 'player_conversation_contribution_plan_v1',
-    request_id: `p3:${readback.operation_id}`, conversation_id: conversationId, state_version: 1,
+    request_id: `p3:${readback.operation_id}`, conversation_id: conversationId,
+    state_version: ownerContext.stateVersion,
     speaker_ref: playerRef, input_mode: 'freeform', contribution_kind: 'speech',
     primary_addressee_ref: targetRef, intended_addressee_refs: heard.map(actor =>
       ({ entity_kind: 'npc', entity_id: actor.instance_id })), affected_actor_refs: [],
@@ -303,6 +304,11 @@ export function buildP3NativeNpcDecisionInput(nativeProjection) {
   const visibleActors = nativeProjection.visible_actors.map(actor => ({
     actor_ref: `npc-${actor.actor_id}`, position: actor.position
   }));
+  const interruptionSummary = nativeProjection.assignment_status
+      === 'interrupted_waiting_for_semantic_decision'
+      && typeof nativeProjection.interrupt_cause === 'string'
+      && nativeProjection.interrupt_cause
+    ? ` Native interruption cause: ${nativeProjection.interrupt_cause}.` : '';
   const snapshots = {
     request_identity: { request_id: `npc-request-${turn}-${nativeProjection.actor_id}`,
       root_turn_id: `npc-turn-${turn}`, committed_state_version: stateVersion,
@@ -318,7 +324,7 @@ export function buildP3NativeNpcDecisionInput(nativeProjection) {
       can_continue_automatically: false },
     perception_snapshot: {
       perceived_changes: [{ source_event_ref: sourceEvent,
-        summary: `Duty ${nativeProjection.assignment_id} requires a decision.` }],
+        summary: `Duty ${nativeProjection.assignment_id} requires a decision.${interruptionSummary}` }],
       visible_scene: nativeProjection.visible_targets.map(({ terrain }) => terrain).filter(Boolean),
       present_actors: visibleActors, visible_objects: nativeProjection.visible_items.map(item => ({
         object_ref: item.item_ref, summary: item.type || item.item_ref
@@ -440,17 +446,15 @@ export function buildP3TurnOperations(observation) {
     ...observation.items.filter(({ holder, use_methods }) => holder === String(actor.actor_id)
       && Array.isArray(use_methods) && use_methods.length === 1
       && typeof use_methods[0] === 'string' && use_methods[0])
-      .map(item => ({ op: 'request_item_use', actor_ref: 'avatar',
-        item_ref: item.item_ref, use_kind: 'operate', target_refs: [] })),
+      .flatMap(item => [{ op: 'request_item_use', actor_ref: 'avatar',
+        item_ref: item.item_ref, use_kind: 'operate', target_refs: [] },
+      ...adjacentTargets.map(target => ({ op: 'request_item_use', actor_ref: 'avatar',
+        item_ref: item.item_ref, use_kind: 'operate', target_refs: [target.target_ref] }))]),
     ...adjacentTargets.filter(target => target.openable === true)
       .map(target => ({ op: 'request_container_access', actor_ref: 'avatar',
         container_ref: target.target_ref, access_kind: 'open' })),
     { op: 'request_activity', actor_ref: 'avatar', activity_kind: 'wait',
-      target_refs: [], description: 'Wait for the next period' },
-    ...observation.actors.filter(({ actor_ref, visible }) => actor_ref !== 'avatar' && visible === true)
-      .map(({ actor_ref }) => ({ op: 'emit_interaction', actor_ref: 'avatar',
-        target_actor_refs: [actor_ref], interaction_kind: 'speech', content: 'Speak to the visible listener',
-        instrument_refs: [] }))
+      target_refs: [], description: 'Wait for the next period' }
   ];
 }
 
@@ -563,6 +567,12 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
           : (await nativeAdapter.writeOperationRequest(envelope),
             await nativeAdapter.readOperationReadback(envelope));
         const readback = validateP3Readback(envelope, rawReadback);
+        if (mapped.primitive === 'speak' && readback.status === 'applied'
+            && (readback.native_effect?.utterance !== mapped.args.utterance
+              || readback.native_effect?.speakerId !== String(current.actors.find(({ actor_ref }) =>
+                actor_ref === 'avatar').actor_id))) {
+          throw new Error('P3_NATIVE_SPEECH_READBACK_MISMATCH');
+        }
         let conversationOutcome = null;
         if (mapped.primitive === 'speak' && readback.status === 'applied'
             && readback.native_effect?.actualHeardListenerIds?.length
@@ -582,11 +592,8 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
               nativeTime: readback.after?.clock,
               socialDeliveryResult: readback.native_effect?.socialDeliveryResult }, owner.replay);
         }
-        const nativeGoalResult = readback.status === 'refused'
-          || readback.effect_status === 'not_achieved' ? 'not_achieved'
-          : mapped.primitive === 'wait' || readback.effect_status === 'partially_achieved'
-            ? 'partially_achieved'
-            : readback.effect_status === 'achieved' ? 'achieved' : 'not_achieved';
+        const nativeResult = projectP3NativeReadback(readback, mapped.primitive);
+        const nativeGoalResult = nativeResult.goal_result;
         return { working_projection: { ...projection, native_readback: structuredClone(readback),
           ...(conversationOutcome ? { conversation_outcome: structuredClone(conversationOutcome) } : {}),
           native_goal_result: nativeGoalResult },
@@ -601,9 +608,28 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
       applyNativeOperation])),
     operationContract: { move_entity: { owner: 'p3_native', intent_only: true,
       supported_placement: { relation: 'held_by', target_ref: 'avatar' } } },
-    applySemanticActivity: async ({ working_projection: projection }) => ({
-      working_projection: projection, summary: 'semantic request dispatched'
-    })
+    applySemanticActivity: async ({ plan, request, working_projection: projection }) => {
+      if (plan.direct_result_kind !== 'player_utterance') return {
+        working_projection: projection, summary: 'semantic request dispatched'
+      };
+      const delivery = plan.utterance?.delivery;
+      if (delivery?.loudness !== 2 || delivery?.duration_class !== 'brief') {
+        throw new Error('P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED');
+      }
+      if (plan.utterance.speaker_ref !== (request.actor.actor_id ?? request.actor.actor_ref)) {
+        throw new Error('P3_PLAYER_UTTERANCE_SPEAKER_MISMATCH');
+      }
+      if (typeof conversationOwnerForSpeech !== 'function') {
+        throw new Error('P3_NATIVE_SPEECH_OWNER_REQUIRED');
+      }
+      const operation = { op: 'emit_interaction', actor_ref: 'avatar',
+        target_actor_refs: projection.native_observation.actors
+          .filter(({ actor_ref, visible }) => actor_ref !== 'avatar' && visible === true)
+          .map(({ actor_ref }) => actor_ref),
+        interaction_kind: 'speech', content: plan.utterance.utterance_text,
+        instrument_refs: [] };
+      return applyNativeOperation({ operation, working_projection: projection });
+    }
   });
   return runTurnStepLoop({ requestId: operationId, rootTurnId: operationId,
     committedStateVersion: 0, rootPlayerAction: intent,
@@ -769,6 +795,23 @@ export function validateP3Readback(request, readback) {
   return freezeTree(structuredClone(readback));
 }
 
+function projectP3NativeReadback(readback, primitive = null) {
+  const nativeEffectStatus = readback.native_effect?.effect_status;
+  const effectStatus = nativeEffectStatus ?? readback.effect_status ?? 'unknown';
+  let goalResult;
+  if (readback.status === 'refused' || readback.goal_result === 'refused'
+      || readback.goal_result === 'not_achieved') goalResult = 'not_achieved';
+  else if (readback.goal_result === 'achieved') goalResult = 'achieved';
+  else if (readback.goal_result === 'in_progress') goalResult = 'partially_achieved';
+  else if (readback.effect_status != null) {
+    goalResult = readback.effect_status === 'not_achieved' ? 'not_achieved'
+      : primitive === 'wait' || readback.effect_status === 'partially_achieved'
+        ? 'partially_achieved'
+        : readback.effect_status === 'achieved' ? 'achieved' : 'not_achieved';
+  } else throw new Error('P3_NATIVE_GOAL_RESULT_MISSING');
+  return { effect_status: effectStatus, goal_result: goalResult };
+}
+
 export function requireP3NativeSeam(nativeAdapter) {
   if (typeof nativeAdapter?.writeOperationRequest !== 'function'
       || typeof nativeAdapter?.readOperationReadback !== 'function') {
@@ -791,6 +834,12 @@ export async function applyP3CoordinatorSpeech({ nativeAdapter, request } = {}) 
     throw new Error('P3_COORDINATOR_REQUEST_INVALID');
   }
   const semantic = jsonObject(request.validated_semantic_input, 'validated semantic input');
+  const ownerContext = jsonObject(semantic.owner_context, 'validated conversation owner context');
+  const validatedPlan = jsonObject(semantic.validated_plan, 'validated conversation plan');
+  if (validatedPlan.conversation_id !== ownerContext.conversationId
+      || validatedPlan.state_version !== ownerContext.stateVersion) {
+    throw new Error('P3_COORDINATOR_SEMANTIC_IDENTITY_MISMATCH');
+  }
   const beforeObservation = await nativeAdapter.refreshObservation();
   if (beforeObservation.revision !== request.observation_revision) {
     throw new Error('P3_COORDINATOR_OBSERVATION_REVISION_MISMATCH');
@@ -804,10 +853,10 @@ export async function applyP3CoordinatorSpeech({ nativeAdapter, request } = {}) 
     throw new Error('P3_NATIVE_OBSERVATION_SNAPSHOT_MISMATCH');
   }
   const effect = readback.native_effect ?? {};
-  const conversationOutcome = applyP3NativeSpeech(semantic.owner_context, semantic.working_state,
-    semantic.validated_plan, { opId: readback.operation_id,
-      conversationId: effect.conversationId, exchangeId: effect.exchangeId,
-      stateVersion: effect.stateVersion, speakerId: effect.speakerId, utterance: effect.utterance,
+  const conversationOutcome = applyP3NativeSpeech(ownerContext, semantic.working_state,
+    validatedPlan, { opId: readback.operation_id,
+      conversationId: ownerContext.conversationId, exchangeId: ownerContext.exchangeId,
+      stateVersion: ownerContext.stateVersion, speakerId: effect.speakerId, utterance: effect.utterance,
       actualHeardListenerIds: effect.actualHeardListenerIds,
       elapsedSeconds: effect.elapsedSeconds ?? effect.elapsed_seconds,
       beforeTime: readback.before?.clock, nativeTime: readback.after?.clock,
@@ -1081,7 +1130,9 @@ export async function runP3SealedPackage({ casePack, nativeConfig, roleConfigs,
           variant_id, reset_id, result });
         resetResults.push({ case_id, variant_id, reset_id,
           status: npcBoundary?.native_readback?.status ?? readback?.status ?? 'no_native_readback',
-          effect_status: npcBoundary?.native_readback?.effect_status ?? readback?.effect_status ?? 'unknown',
+          effect_status: npcBoundary?.native_readback
+            ? projectP3NativeReadback(npcBoundary.native_readback).effect_status
+            : readback ? projectP3NativeReadback(readback).effect_status : 'unknown',
           native_goal_result: isT09 ? npcBoundary?.native_readback?.goal_result ?? 'unknown'
             : result.working_projection?.native_goal_result ?? 'unknown',
           ...(case_id === 'T09' ? { npc_boundary: npcBoundary,

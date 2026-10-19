@@ -120,7 +120,7 @@ diff --git a/src/game.cpp b/src/game.cpp
          ctxt.register_action( "haul_toggle" );
          ctxt.register_action( "butcher" );
          ctxt.register_action( "chat" );
-+        ctxt.register_action( "NOVGOROD_SEMANTIC", to_translation( "��������� �������� (dev-�����)" ) );
++        ctxt.register_action( "NOVGOROD_SEMANTIC", to_translation( "Свободное действие (dev-проба)" ) );
          ctxt.register_action( "look" );
          ctxt.register_action( "peek" );
          ctxt.register_action( "listitems" );

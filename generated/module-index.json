@@ -597,7 +597,7 @@
       ],
       "path": "tools/cataclysm-prototype",
       "public_entry": "—",
-      "purpose": "Изолированные native проверки пригодности Cataclysm-DDA для Novgorod. Инструмент запускается вручную на отдельной копии upstream и временном тестовом мире.",
+      "purpose": "Изолированные native проверки пригодности Cataclysm-DDA для Novgorod и незавершённая живая dev-проба. Стенд использует отдельную копию upstream; dev launcher — отдельный постоянный userdir. Текущий STOP и проверенные границы: [результат задания 03](TASK03-LIVE-RESULT.md).",
       "version": null
     },
     {
@@ -633,7 +633,8 @@
         "построением lexical RAG index (deterministic chunks, без embedding)",
         "генерацией `MODULE_INDEX.md` и schema reference",
         "generated manifest и проверкой reproducibility",
-        "canonical-path, seed-source и dated-artifact policy checks"
+        "canonical-path, seed-source и dated-artifact policy checks",
+        "проверкой и пересборкой сводной таблицы нужд в `docs/context/cdda-native-map/INDEX.md` (§6) из таблиц `areas/*.md` (`src/cdda-native-map-table.js`, тест `test/cdda-native-map-table.test.js`)"
       ],
       "path": "tools/docs-tools",
       "public_entry": "./src/index.js",

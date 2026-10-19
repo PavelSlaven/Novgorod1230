@@ -47,7 +47,7 @@ Release: `0.23.0-migration.24`
 | Tool | Path | Purpose |
 |---|---|---|
 | `@rus/audit-tools` | `tools/audit-tools` | Безопасная инвентаризация release/audit trees и проверка запрещённых путей. Пакет создаёт manifests, но не помещает ZIP или `dist` внутрь source tree. |
-| `tools/cataclysm-prototype` | `tools/cataclysm-prototype` | Изолированные native проверки пригодности Cataclysm-DDA для Novgorod. Инструмент запускается вручную на отдельной копии upstream и временном тестовом мире. |
+| `tools/cataclysm-prototype` | `tools/cataclysm-prototype` | Изолированные native проверки пригодности Cataclysm-DDA для Novgorod и незавершённая живая dev-проба. Стенд использует отдельную копию upstream; dev launcher — отдельный постоянный userdir. Текущий STOP и проверенные границы: [результат задания 03](TASK03-LIVE-RESULT.md). |
 | `@rus/cutover` | `tools/cutover` | Автономный migration-tool для управляемого 13-шагового переключения с legacy route на modular runtime. Инструмент применяет только versioned feature-flag profiles, запускает обязательные gates и выпускает доказуемый cutover report. |
 | `@rus/db-tools` | `tools/db-tools` | Автономные контракты и проверки для export/import/seed/audit операций БД. Инструмент не является runtime adapter и не выполняет SQL сам. |
 | `@rus/docs-tools` | `tools/docs-tools` | Автономные инструменты проверки document graph/RAG и воспроизводимой генерации канонической документации. |

@@ -1,0 +1,88 @@
+
+
+-----------------------------------------
+07:24:40.663 : Starting log.
+07:24:40.663 INFO : Cataclysm DDA version 0d8843f-dirty
+07:24:40.664 INFO : Randomness seeded to: 17
+
+07:24:40.664 INFO : Running Catch2 session:
+Filters: item_colony_ser_deser
+
+07:24:40.758 INFO : [options] C locale set to C
+07:24:40.758 INFO : [options] C++ locale set to C
+07:24:52.853 INFO : /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/nativebuild/cataclysm-source/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+07:25:14.616 WARNING : Dark Days Ahead pack load time:: 29982325us (avg: 29982325us) (count: 1)
+07:25:14.617 WARNING : TESTING DATA pack load time:: 937894us (avg: 937894us) (count: 1)
+07:25:33.643 INFO : Game data loaded
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cata_test is a Catch v2.13.10 host application.
+Run with -? for options
+
+Randomness seeded to: 17
+
+-------------------------------------------------------------------------------
+item_colony_ser_deser
+  identical items are collapsed
+-------------------------------------------------------------------------------
+/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/nativebuild/cataclysm-source/tests/json_test.cpp:877
+...............................................................................
+
+/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/nativebuild/cataclysm-source/tests/json_test.cpp:894: FAILED:
+  CHECK( count_occurrences( json, "\"typeid\":\"test_rag\"" ) == 1 )
+with expansion:
+  10 == 1
+with messages:
+  json := "[{"typeid":"test_rag","uid":3585151,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false},
+  {"typeid":"test_rag","uid":3585152,"item_vars":{"magazine_converted":1.
+  000000},"template_traits":[],"ethereal":false},{"typeid":"test_rag","uid":
+  3585153,"item_vars":{"magazine_converted":1.000000},"template_traits":[],
+  "ethereal":false},{"typeid":"test_rag","uid":3585154,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false},
+  {"typeid":"test_rag","uid":3585155,"item_vars":{"magazine_converted":1.
+  000000},"template_traits":[],"ethereal":false},{"typeid":"test_rag","uid":
+  3585156,"item_vars":{"magazine_converted":1.000000},"template_traits":[],
+  "ethereal":false},{"typeid":"test_rag","uid":3585157,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false},
+  {"typeid":"test_rag","uid":3585158,"item_vars":{"magazine_converted":1.
+  000000},"template_traits":[],"ethereal":false},{"typeid":"test_rag","uid":
+  3585159,"item_vars":{"magazine_converted":1.000000},"template_traits":[],
+  "ethereal":false},{"typeid":"test_rag","uid":3585160,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false}]"
+  should be compressed into the single item
+
+/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/nativebuild/cataclysm-source/tests/json_test.cpp:898: FAILED:
+  CHECK( json.find( "10" ) != std::string::npos )
+with expansion:
+  18446744073709551615 (0xffffffffffffffff)
+  !=
+  18446744073709551615 (0xffffffffffffffff)
+with messages:
+  json := "[{"typeid":"test_rag","uid":3585151,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false},
+  {"typeid":"test_rag","uid":3585152,"item_vars":{"magazine_converted":1.
+  000000},"template_traits":[],"ethereal":false},{"typeid":"test_rag","uid":
+  3585153,"item_vars":{"magazine_converted":1.000000},"template_traits":[],
+  "ethereal":false},{"typeid":"test_rag","uid":3585154,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false},
+  {"typeid":"test_rag","uid":3585155,"item_vars":{"magazine_converted":1.
+  000000},"template_traits":[],"ethereal":false},{"typeid":"test_rag","uid":
+  3585156,"item_vars":{"magazine_converted":1.000000},"template_traits":[],
+  "ethereal":false},{"typeid":"test_rag","uid":3585157,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false},
+  {"typeid":"test_rag","uid":3585158,"item_vars":{"magazine_converted":1.
+  000000},"template_traits":[],"ethereal":false},{"typeid":"test_rag","uid":
+  3585159,"item_vars":{"magazine_converted":1.000000},"template_traits":[],
+  "ethereal":false},{"typeid":"test_rag","uid":3585160,"item_vars":
+  {"magazine_converted":1.000000},"template_traits":[],"ethereal":false}]"
+  should contain the number of items
+
+===============================================================================
+test cases:  1 |  0 passed | 1 failed
+assertions: 15 | 13 passed | 2 failed
+
+
+07:25:36.522 INFO : Test world Test World 测试世界 308 left for inspection.
+07:25:36.522 INFO : Finished in 52.9798 seconds
+07:25:36.522 INFO : Randomness seeded to: 17

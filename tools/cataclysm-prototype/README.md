@@ -165,7 +165,10 @@ P4 — отдельный исследовательский gate CR [#758](http
 
 ```sh
 NATIVE="$NOVGOROD/artifacts/2026-10-19/nativebuild/cataclysm-source"
-for overlay in native-persistence native-item-identity native-rng-state native-preload native-semantic-input; do
+for overlay in native-persistence native-item-identity native-rng-state native-preload native-semantic-input native-control-tests; do
+  if [ "$overlay" = native-control-tests ]; then
+    grep -F 'it->uid() != nxt->uid()' "$NATIVE/src/json.h" >/dev/null || exit 1
+  fi
   git -C "$NATIVE" apply --check "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
   git -C "$NATIVE" apply "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
 done
@@ -180,6 +183,12 @@ cmake -S "$NATIVE" \
   -DTESTS=ON -DBUILD_TESTING=ON -DCATA_CCACHE=OFF
 cmake --build "$NATIVE/build-clang-release" --parallel 8
 ```
+
+`native-control-tests.patch` применяется только после `native-semantic-input`:
+он согласует upstream item-colony control с сохранением каждого native UID,
+проверяет пустые stackable items и отдельно сохраняет legacy RLE-read coverage.
+Runtime serializer этот test-only overlay не меняет. Обоснование изменения
+ожиданий по #774 — [test-change-rationale](evidence/task02-native774/test-change-rationale.md).
 
 Coordinator использует Python 3 stdlib и Linux `flock/fsync`; запускать в WSL.
 Все каталоги ниже должны быть новыми и принадлежать только эксперименту.

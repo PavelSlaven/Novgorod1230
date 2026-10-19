@@ -960,19 +960,18 @@ TEST_CASE( "Novgorod ACTION_USE preserves nested carried item location", "[novgo
 TEST_CASE( "Novgorod RLE preserves distinct item identities", "[novgorod_semantic][json][item]" )
 {
     cata::colony<item> original;
-    original.insert( item( itype_id( "backpack" ) ) );
-    original.insert( item( itype_id( "backpack" ) ) );
+    original.insert( item( itype_id( "test_rag" ) ) );
+    original.insert( item( itype_id( "test_rag" ) ) );
     auto first = original.begin();
-    first->put_in( item( itype_id( "rock" ) ), pocket_type::CONTAINER );
     auto second = std::next( first );
-    second->put_in( item( itype_id( "rock" ) ), pocket_type::CONTAINER );
+    REQUIRE( first->all_items_ptr().empty() );
+    REQUIRE( second->all_items_ptr().empty() );
+    REQUIRE( first->same_for_rle( *second ) );
+    REQUIRE( first->uid() != second->uid() );
 
     std::vector<int64_t> original_uids;
     for( const item &entry : original ) {
         original_uids.push_back( entry.uid().get_value() );
-        for( const item *nested : entry.all_items_ptr() ) {
-            original_uids.push_back( nested->uid().get_value() );
-        }
     }
 
     std::ostringstream serialized;
@@ -986,9 +985,6 @@ TEST_CASE( "Novgorod RLE preserves distinct item identities", "[novgorod_semanti
     std::vector<int64_t> restored_uids;
     for( const item &entry : restored ) {
         restored_uids.push_back( entry.uid().get_value() );
-        for( const item *nested : entry.all_items_ptr() ) {
-            restored_uids.push_back( nested->uid().get_value() );
-        }
     }
     CHECK( restored_uids == original_uids );
 }

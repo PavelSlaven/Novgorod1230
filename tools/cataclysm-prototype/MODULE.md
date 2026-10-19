@@ -59,7 +59,8 @@ Host заморожен как ускоритель стенда. Для игр�
 `create`/`apply` speech probe, nested item/UID regressions и item/JSON/pickup
 controls.
 Порядок подключения: `native-input`, `native-persistence`, `native-item-identity`,
-`native-rng-state`, `native-preload`, затем `native-semantic-input`; preload
+`native-rng-state`, `native-preload`, затем `native-semantic-input`; после них
+test-only `native-control-tests` проверяет сохранение каждого UID и чтение legacy RLE. Preload
 единолично включает P4 preload, semantic patch его не откатывает. Исходная ревизия и команды — в
 [README](README.md).
 Зелёный native тест не является приёмкой semantic/NPC/narration интеграции или

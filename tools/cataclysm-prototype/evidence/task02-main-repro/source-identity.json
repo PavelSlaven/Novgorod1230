@@ -1,0 +1,84 @@
+{
+  "main_commit": "25e705074e6741944cc36d38ce05ac2cbc8f3fff",
+  "upstream_commit": "0d8843f1c500052c3e026e3da6f8edaf5e00b626",
+  "checkout_head_at_repro_start": "287babfeb7c9d608279ed7f4245fb700529997de",
+  "main_archive_after_freshness": {
+    "checked_files": 770,
+    "different_files": []
+  },
+  "native_changes_from_pristine_upstream": {
+    "checked_files": 10433,
+    "different_files": [
+      "src/do_turn.cpp",
+      "src/flexbuffer_cache.cpp",
+      "src/flexbuffer_cache.h",
+      "src/game.cpp",
+      "src/game.h",
+      "src/game_io.cpp",
+      "src/handle_action.cpp",
+      "src/item_contents.cpp",
+      "src/item_contents.h",
+      "src/item_pocket.cpp",
+      "src/item_pocket.h",
+      "src/json_loader.cpp",
+      "src/json_loader.h",
+      "src/rng.cpp",
+      "src/rng.h",
+      "src/savegame_json.cpp",
+      "tests/CMakeLists.txt",
+      "tests/test_main.cpp"
+    ]
+  },
+  "main_overlays": [
+    {
+      "path": "tools/cataclysm-prototype/native-input.patch",
+      "sha256": "ef8d514c01453b72f83a2933d8449995fb91e5af1c062af2ff28ffe6ae1e1353"
+    },
+    {
+      "path": "tools/cataclysm-prototype/native-persistence.patch",
+      "sha256": "2845ce7fb8da59b4915c4f250d0bceb79a5ccf5c5e4a4f7b1c6670e4b314b5cc"
+    },
+    {
+      "path": "tools/cataclysm-prototype/native-item-identity.patch",
+      "sha256": "3722626370a645b70cec49f41b21583e657c66544e73f16c38bc03f207284fa2"
+    },
+    {
+      "path": "tools/cataclysm-prototype/native-rng-state.patch",
+      "sha256": "853dbcc70b0bcb4ec4346fb240a6ff476bbf0f1e860a2eaa630d92a0f7f31176"
+    },
+    {
+      "path": "tools/cataclysm-prototype/native-preload.patch",
+      "sha256": "0287c80135b1b6edd4ca529154ed858b819f5cc7015ec9366160f0b9143053a8"
+    }
+  ],
+  "native_test_copies": [
+    {
+      "path": "tests/novgorod_slice_test.cpp",
+      "matches_main": true
+    },
+    {
+      "path": "tests/novgorod_persistence_test.cpp",
+      "matches_main": true
+    },
+    {
+      "path": "tests/novgorod_item_uid_test.cpp",
+      "matches_main": true
+    },
+    {
+      "path": "tests/novgorod_rng_state_test.cpp",
+      "matches_main": true
+    },
+    {
+      "path": "tests/novgorod_preload_probe.cpp",
+      "matches_main": true
+    }
+  ],
+  "isolated_target_sources": [
+    "tests/test_main.cpp",
+    "tests/json_test.cpp",
+    "tests/fake_messages.cpp",
+    "tests/novgorod_preload_probe.cpp"
+  ],
+  "native_json_test_matches_pinned_upstream": true,
+  "all_modified_upstream_files_explained_by_main_overlays_and_narrow_target": true
+}

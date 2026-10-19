@@ -1,0 +1,22 @@
+
+
+-----------------------------------------
+07:31:40.732 : Starting log.
+07:31:40.732 INFO : Cataclysm DDA version 0d8843f-dirty
+07:31:40.733 INFO : Randomness seeded to: 17
+
+07:31:40.733 INFO : Running Catch2 session:
+Filters: item_colony_ser_deser,Novgorod RLE preserves distinct item identities
+
+07:31:40.820 INFO : [options] C locale set to C
+07:31:40.820 INFO : [options] C++ locale set to C
+07:31:55.344 INFO : /mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/nativebuild/cataclysm-source/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+07:32:18.362 WARNING : Dark Days Ahead pack load time:: 32632093us (avg: 32632093us) (count: 1)
+07:32:18.362 WARNING : TESTING DATA pack load time:: 1294962us (avg: 1294962us) (count: 1)
+07:32:37.010 INFO : Game data loaded
+===============================================================================
+All tests passed (43 assertions in 2 test cases)
+
+
+07:32:37.024 INFO : Finished in 56.2792 seconds
+07:32:37.024 INFO : Randomness seeded to: 17

@@ -1,0 +1,42 @@
+{
+  "head": "c246e6c4b4eafd7853c2053d3268095efa3054b4",
+  "files": [
+    {
+      "path": "tools/cataclysm-prototype/native-semantic-input.patch",
+      "sha256": "2e63a88683a957d9aa59bfd6c7e30a6dc7566ffd193ffdde82090789bc7c5b09"
+    },
+    {
+      "path": "tools/cataclysm-prototype/native-control-tests.patch",
+      "sha256": "3ab4a7228d8d0872fc25c81a00d3dbf6bc8cf7f167e102969fbfb5c5db186127"
+    },
+    {
+      "path": "tools/cataclysm-prototype/novgorod_semantic_test.cpp",
+      "sha256": "61e6eda5d4cd6ea3105a191f15fd5dc55e856533e16f8a0b64642d02bcf1b5c2"
+    },
+    {
+      "path": "artifacts/2026-10-19/nativebuild/cataclysm-source/src/json.h",
+      "sha256": "b6614c3dc58a1a658c532f726d9396b2dc2855519a2babbd434d3027436f3b09"
+    },
+    {
+      "path": "artifacts/2026-10-19/nativebuild/cataclysm-source/tests/json_test.cpp",
+      "sha256": "22f4962d131931ad60a8feda2bf3f5878402c572ec0d07e44d1a4250f3568971"
+    },
+    {
+      "path": "artifacts/2026-10-19/nativebuild/cataclysm-source/tests/novgorod_semantic_test.cpp",
+      "sha256": "61e6eda5d4cd6ea3105a191f15fd5dc55e856533e16f8a0b64642d02bcf1b5c2"
+    },
+    {
+      "path": "artifacts/2026-10-19/nativebuild/build-release/tests/cata_test",
+      "sha256": "f7f96ff2923aaa7aff45ebb6770fd4d1730a9d957a517bb053e12ded7bd6b248"
+    },
+    {
+      "path": "artifacts/2026-10-19/task02/native774/mutation-cata_test",
+      "sha256": "b7f16235c47089b833a13b77054a2aeba5a406939953bcef7eb6ec8eb13011eb"
+    }
+  ],
+  "overlay_reproduces_build_test": true,
+  "semantic_test_copy_matches": true,
+  "runtime_header_unchanged": true,
+  "semantic_patch_unchanged": true,
+  "mutation_method": "Updated control compiled against unchanged main headers (src/json.h lacks only the UID guard) and relinked with existing main objects. Original main binary/source unchanged."
+}

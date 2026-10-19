@@ -1,0 +1,75 @@
+--- a/tests/json_test.cpp
++++ b/tests/json_test.cpp
+@@ -874,7 +874,7 @@
+         } );
+     };
+ 
+-    SECTION( "identical items are collapsed" ) {
++    SECTION( "stackable items preserve distinct identities" ) {
+         cata::colony<item> col;
+         for( int i = 0; i < 10; ++i ) {
+             // currently tools cannot be stackable
+@@ -882,6 +882,13 @@
+         }
+         REQUIRE( col.size() == 10 );
+         REQUIRE( col.begin()->same_for_rle( *std::next( col.begin() ) ) );
++        std::vector<int64_t> original_uids;
++        for( const item &entry : col ) {
++            REQUIRE( entry.all_items_ptr().empty() );
++            original_uids.push_back( entry.uid().get_value() );
++        }
++        const std::set<int64_t> distinct_uids( original_uids.begin(), original_uids.end() );
++        REQUIRE( distinct_uids.size() == col.size() );
+ 
+         std::string json;
+         std::ostringstream os;
+@@ -890,12 +897,8 @@
+         json = os.str();
+         CAPTURE( json );
+         {
+-            INFO( "should be compressed into the single item" );
+-            CHECK( count_occurrences( json, "\"typeid\":\"test_rag\"" ) == 1 );
+-        }
+-        {
+-            INFO( "should contain the number of items" );
+-            CHECK( json.find( "10" ) != std::string::npos );
++            INFO( "distinct item identities must not be collapsed" );
++            CHECK( count_occurrences( json, "\"typeid\":\"test_rag\"" ) == 10 );
+         }
+         JsonValue jsin = json_loader::from_string( json );
+         cata::colony<item> read_val;
+@@ -905,7 +908,13 @@
+         }
+         {
+             INFO( "should be identical to the original " );
++            REQUIRE( read_val.size() == col.size() );
+             CHECK( is_same( col, read_val ) );
++            std::vector<int64_t> restored_uids;
++            for( const item &entry : read_val ) {
++                restored_uids.push_back( entry.uid().get_value() );
++            }
++            CHECK( restored_uids == original_uids );
+         }
+     }
+ 
+@@ -939,6 +948,20 @@
+             INFO( "should be identical to the original " );
+             CHECK( is_same( col, read_val ) );
+         }
++    }
++
++    SECTION( "legacy RLE without saved identities remains readable" ) {
++        JsonValue jsin = json_loader::from_string( R"([[{"typeid":"test_rag"},3]])" );
++        cata::colony<item> read_val;
++        REQUIRE( jsin.read( read_val ) );
++        REQUIRE( read_val.size() == 3 );
++        std::set<int64_t> restored_uids;
++        for( const item &entry : read_val ) {
++            CHECK( entry.typeId() == itype_test_rag );
++            CHECK( entry.all_items_ptr().empty() );
++            restored_uids.insert( entry.uid().get_value() );
++        }
++        CHECK( restored_uids.size() == read_val.size() );
+     }
+ 
+     SECTION( "incorrect items in json are skipped" ) {

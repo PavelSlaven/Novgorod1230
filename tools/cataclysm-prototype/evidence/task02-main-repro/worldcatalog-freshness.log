@@ -1,0 +1,56 @@
+✖ committed game-base-v1 generated files match a fresh rebuild (83398.0918ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83476.3919
+
+✖ failing tests:
+
+test at artifacts\2026-10-19\task02\main-repro-main\data\world-catalogs\novgorod\game-base-v1\scripts\generated-freshness.test.mjs:133:1
+✖ committed game-base-v1 generated files match a fresh rebuild (83398.0918ms)
+  AssertionError [ERR_ASSERTION]: stale or machine-dependent generated files in data/world-catalogs/novgorod/game-base-v1:
+  items-household-personal/reports/household_evidence_intake.json
+  items-household-personal/reports/household_inventory_coverage.json
+  items-household-personal/reports/item_catalog_coverage.json
+  items-household-personal/reports/item_exclusion_reconciliation.json
+  items-household-personal/reports/item_place_trace_coverage.json
+  places-binding/reports/category-registry-report.json
+  places-binding/reports/validation.json
+  social-strata-law/law_justice_governance/reports/counts.json
+  social-strata-law/law_justice_governance/reports/validation.json
+  social-strata-law/social_strata_legal_status/reports/counts.json
+  social-strata-law/social_strata_legal_status/reports/validation.json
+  Rebuild them with the builders listed in scripts/generated-freshness.test.mjs and commit the result.
+  + actual - expected
+
+  + [
+  +   'items-household-personal/reports/household_evidence_intake.json',
+  +   'items-household-personal/reports/household_inventory_coverage.json',
+  +   'items-household-personal/reports/item_catalog_coverage.json',
+  +   'items-household-personal/reports/item_exclusion_reconciliation.json',
+  +   'items-household-personal/reports/item_place_trace_coverage.json',
+  +   'places-binding/reports/category-registry-report.json',
+  +   'places-binding/reports/validation.json',
+  +   'social-strata-law/law_justice_governance/reports/counts.json',
+  +   'social-strata-law/law_justice_governance/reports/validation.json',
+  +   'social-strata-law/social_strata_legal_status/reports/counts.json',
+  +   'social-strata-law/social_strata_legal_status/reports/validation.json'
+  + ]
+  - []
+
+      at TestContext.<anonymous> (file:///C:/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/main-repro-main/data/world-catalogs/novgorod/game-base-v1/scripts/generated-freshness.test.mjs:149:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1306:25)
+      at Test.start (node:internal/test_runner/test:1177:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'items-household-personal/reports/household_evidence_intake.json', 'items-household-personal/reports/household_inventory_coverage.json', 'items-household-personal/reports/item_catalog_coverage.json', 'items-household-personal/reports/item_exclusion_reconciliation.json', 'items-household-personal/reports/item_place_trace_coverage.json', 'places-binding/reports/category-registry-report.json', 'places-binding/reports/validation.json', 'social-strata-law/law_justice_governance/reports/counts.json', 'social-strata-law/law_justice_governance/reports/validation.json', 'social-strata-law/social_strata_legal_status/reports/counts.json', 'social-strata-law/social_strata_legal_status/reports/validation.json' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -4,8 +4,8 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- test(cataclysm): P3 semantic/NPC/speech boundary и P4 staging; CI/exports, native UID и воспроизводимый P1 curses smoke проверены; локальный Qwen wire остановлен на response model ID, sealed T06–T12 и внешняя приёмка ожидают решения (#770, заменяет #769)
-- test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, P4 technical gate принят, речевые T11/T12 остаются OPEN (#768)
+- test(cataclysm): P3 boundary/CI и P1 curses smoke; план переведён на native manual/hourly save с rollback, прежние ворота P4 признаны незакрытыми, warm host заморожен; cold-start диагностика 64,9–68,8 с превышает 20 с; исправления reuse и P3 ждут архитектурной приёмки (#770, заменяет #769)
+- test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, исторический P4 gate PASS отозван в #770, речевые T11/T12 остаются OPEN (#768)
 - test(cataclysm): P4 complete generations и 14 crash/retry сценариев; strict UID и 20 latency samples фиксируют STOP/REVISE_APPROACH, без production activation (#764)
 - test(cataclysm): изолированный P0–P2 harness на pinned CDDA — native loop, items, activity, NPC, danger interrupt и измеренный readback; без production activation (#757)
 - docs(plans): owner's scenario spec «След на Нижней Двине» (frame + instance generator at party start) and an example playthrough, verbatim, as design input for the v17 quest start (D101, D105) (#238)

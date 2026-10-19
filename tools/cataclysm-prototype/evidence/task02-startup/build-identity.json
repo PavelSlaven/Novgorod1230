@@ -1,0 +1,21 @@
+{
+  "head": "287babfeb7c9d608279ed7f4245fb700529997de",
+  "compiler": "Ubuntu clang version 19.1.1 (1ubuntu1~24.04.2)",
+  "baseline_build": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/nativebuild/build-release",
+  "binary_sha256": "2e665836e5ff7656b8b5338e382cfcfc60eadfa7e700113d956665c8da0c46ff",
+  "runtime": "/mnt/c/Users/Slaven/.codex/worktrees/cataclysm-recovery/Novgorod/artifacts/2026-10-19/task02/startup-runtime-linked",
+  "source_baseline_sha256": {
+    "src/game.cpp": "9b66d1f49f57d497c7797db213fb344a91268b9532877f98550f8355d3926bfe",
+    "src/game_io.cpp": "e2f5548ec2112d5958558c111481a97d242f119704cbbe1dddc5c105af5ff779",
+    "src/init.cpp": "6b4b6d0f604ea0a3649a463bd687a63aefe618c5522120315e07ce13ef4d06f9",
+    "tests/test_main.cpp": "f666c86b1deb8dbb5545127820c95a57762bcc10bdf3fc443a90d12b26a6bbce",
+    "tests/novgorod_persistence_test.cpp": "877f1f1d307d9e571b560f8087fd9b0f7a405a04fd9edca4a7939d641fad341e"
+  },
+  "source_diagnostic_sha256": {
+    "src/game.cpp": "311ee397547de5bf143f05572a2680d26633a72e97d79e5629ec028afd0f3565",
+    "src/game_io.cpp": "810f82ac3df5863047b2ce12cbd0eb5b32fca94db073ef313af8fb64b0952298",
+    "src/init.cpp": "2122fb1feb26443e5b18776e39879da2712dcc95593f97acf4be36d50d1e1603",
+    "tests/test_main.cpp": "8ed29e162bb4161f885e0b5b58001c4247e268388150e4a8c9e13d3544d9df21",
+    "tests/novgorod_persistence_test.cpp": "20cc1912395c2c3cd15d8af5e4d150637f831862d2d4a99a86739884da41f54e"
+  }
+}

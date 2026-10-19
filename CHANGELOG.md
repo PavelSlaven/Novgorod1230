@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- docs(governance): AGENTS.md и WR §18.1 — `caveman` (full) только в общении Claude с владельцем; Codex и другие исполнители его не применяют, промпты для моделей, нормы, документация, тексты игры, commit и PR — обычным полным языком
+- docs(governance): AGENTS.md и WR §18.1 — `caveman` (full) только в общении Claude с владельцем; Codex и другие исполнители его не применяют, промпты для моделей, нормы, документация, тексты игры, commit и PR — обычным полным языком (#788)
 - docs(context): карта родных механизмов CDDA (docs/context/cdda-native-map, генератор сводной таблицы в docs:check); навигация, не норма (#778)
 - docs(governance): AGENTS.md — правило CDDA reuse-first: готовые механизмы CDDA в первую очередь, расширять при необходимости, новые только при отсутствии; новый механизм называет проверенный родной (файл:строка) и почему не подошёл (#775)
 - fix(cataclysm): dev-проба curses через PS1 и owner settings; native delivery/save/restart, один NPC model repair вместо code заготовки, typed отказ с тишиной и родной факт слуха; Linux transport assertions усилены, NPC часть LW-034 устранена; P3 GO не подтверждён (#770, Refs #247, #329; заменяет #769)

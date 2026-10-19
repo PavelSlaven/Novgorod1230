@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(governance): AGENTS.md — правило CDDA reuse-first: готовые механизмы CDDA в первую очередь, расширять при необходимости, новые только при отсутствии; новый механизм называет проверенный родной (файл:строка) и почему не подошёл (#775)
 - test(cataclysm): P3 boundary/CI и P1 curses smoke; план переведён на native manual/hourly save с rollback, прежние ворота P4 признаны незакрытыми, warm host заморожен; cold-start диагностика 64,9–68,8 с превышает 20 с; исправления reuse и P3 ждут архитектурной приёмки (#770, заменяет #769)
 - test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, исторический P4 gate PASS отозван в #770, речевые T11/T12 остаются OPEN (#768)
 - test(cataclysm): P4 complete generations и 14 crash/retry сценариев; strict UID и 20 latency samples фиксируют STOP/REVISE_APPROACH, без production activation (#764)

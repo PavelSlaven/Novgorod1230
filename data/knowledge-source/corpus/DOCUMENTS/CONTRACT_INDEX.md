@@ -49,7 +49,7 @@
 
 | Документ | Статус | Scope |
 |---|---|---|
-| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |
+| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию; CDDA reuse-first — обязательное обоснование нового механизма (проверенный родной механизм CDDA, файл:строка) |
 
 Governing-корпус `AGENTS.md` (§1.3) также включает:
 

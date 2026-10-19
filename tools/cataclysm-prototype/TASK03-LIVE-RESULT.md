@@ -26,6 +26,7 @@
 | P3 JS, WSL Node 22.23.3 | 42/42 PASS |
 | Launcher lifecycle, WSL | 12/12 PASS; Bash syntax PASS |
 | Dev-мод JSON | Парсинг четырёх файлов, 12 уникальных ID, карта 24×24, один заданный NPC — PASS |
+| После merge main #778 | `docs:generate`, `docs:check`, `knowledge:check`, `architecture:check` PASS; `test:docs` 18/18 PASS |
 | Старый baseline curses + прежняя fixture | FAIL: `item_location UID not found in container contents`; ошибка не обходилась |
 | Новая baseline curses сборка (семь прежних overlay) | PASS, SHA256 `9a5a51de8f6b63e8779d3470dd483db793b76b9d316db2647d78e206f73790cd` |
 | Live/autosave incremental / focused C++ | Остановлен по STOP на 61/460; ошибок до остановки 0, полного результата нет; тесты не запускались |
@@ -42,6 +43,15 @@ JS тесты здесь проверяют транспорт и отдельн
 Логи рядом: `task03-dev/build-baseline.log`, `task03-dev/build-incremental.log`.
 После решения распорядителя: `cmake --build /home/slaven/cataclysm-recovery/task03-dev/source/build-clang-release --parallel 8`.
 Runtime всё ещё содержит старый бинарник `971de2d2…`; новый baseline туда не подменялся.
+
+Checkpoint исходников и отчёта: `32117b355`; merge main `6a5292b29` (#778): `717c1f166`.
+Конфликт был только в generated manifest и устранён штатным генератором.
+CHANGELOG/package scripts сохранили обе ветви. Первая генерация обнаружила
+временные undeclared build artifacts; они перенесены внутри worktree в
+`.tmp.driveupload/task03/artifacts-checkpoint`, без удаления исходников/сборки.
+При checkpoint commit Git сообщил Permission denied своей автоматической очистки
+служебных worktree; commit/push успешны, ручной очистки не было. Последующие
+Git-команды выполнялись с отключённым auto-maintenance.
 
 ## Блокировка и решение, требуемое от распорядителя
 

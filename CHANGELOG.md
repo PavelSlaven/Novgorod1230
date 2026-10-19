@@ -5,7 +5,7 @@
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - docs(governance): AGENTS.md — правило CDDA reuse-first: готовые механизмы CDDA в первую очередь, расширять при необходимости, новые только при отсутствии; новый механизм называет проверенный родной (файл:строка) и почему не подошёл (#775)
-- test(cataclysm): P3 boundary/CI, UID/RLE controls и P1 curses smoke; план native manual/hourly save принят с условиями, warm host заморожен; main #775 влит, ext4 cold 20,028 с / warm 14,756–15,404 с; план живого P3-входа и M1–M3 ждёт OK до кода (#770, заменяет #769)
+- test(cataclysm): P3 boundary/CI, UID/RLE controls и P1 curses smoke; план native manual/hourly save принят с условиями, warm host заморожен; main #775 влит, ext4 cold 20,028 с / warm 14,756–15,404 с; план живого P3-входа согласован с D219 (родной autosave true/3600/5), реализация dev-пробы начата (#770, заменяет #769)
 - test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, исторический P4 gate PASS отозван в #770, речевые T11/T12 остаются OPEN (#768)
 - test(cataclysm): P4 complete generations и 14 crash/retry сценариев; strict UID и 20 latency samples фиксируют STOP/REVISE_APPROACH, без production activation (#764)
 - test(cataclysm): изолированный P0–P2 harness на pinned CDDA — native loop, items, activity, NPC, danger interrupt и измеренный readback; без production activation (#757)

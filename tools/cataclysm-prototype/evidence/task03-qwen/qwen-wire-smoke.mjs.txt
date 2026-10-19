@@ -1,0 +1,38 @@
+import { ledgerSummary } from './qwen-metrics-preload.mjs';
+import { existsSync } from 'node:fs';
+import { readFile, writeFile } from 'node:fs/promises';
+import { createP3AttemptBudget, createP3RoleRuntime, loadP3QwenSettingsOwner }
+  from '../../tools/cataclysm-prototype/p3-boundary.js';
+import { matchesP3WireModelId } from '../../tools/cataclysm-prototype/p3-wire-smoke.mjs';
+
+if (!process.env.P3_QWEN_LEDGER_DIR) throw new Error('P3_QWEN_LEDGER_REQUIRED');
+if (existsSync(new URL('./qwen-wire-result.json', import.meta.url))) throw new Error('P3_WIRE_RESULT_ALREADY_EXISTS');
+const saved = JSON.parse(await readFile(new URL('../../artifacts/2026-10-19/task01/wire/requests.json', import.meta.url), 'utf8'));
+const request = saved.find(item => item.role_id === 'turn_step_planner')?.pre_override;
+if (!request?.messages?.length) throw new Error('P3_WIRE_SAVED_PLANNER_REQUIRED');
+const settingsOwner = await loadP3QwenSettingsOwner();
+const budget = createP3AttemptBudget({ budget: 1 });
+const runtime = createP3RoleRuntime({ settingsOwner, budget });
+const previousAttempt = Math.max(0, ...ledgerSummary().attempts.map(item => item.attempt ?? 0));
+let report;
+try {
+  const output = await runtime.roleRunner.run(request);
+  const wire = ledgerSummary().attempts.filter(item => item.attempt > previousAttempt
+    && item.pid === process.pid && item.phase === (process.env.P3_QWEN_PHASE ?? 'unspecified')).at(-1);
+  if (!wire) throw new Error('P3_WIRE_HTTP_EVIDENCE_REQUIRED');
+  const model = wire.response_model_id;
+  report = { kind: 'same_role_runner_saved_planner_input_no_native', role_attempt_count: budget.calls,
+    provider_record_model: output?.provider_record?.model ?? null,
+    response_model_provenance: { source: 'http_ledger',
+      ledger_file: `attempt-${String(wire.attempt).padStart(2, '0')}.json`,
+      phase: wire.phase, http_status: wire.http_status },
+    response_model_id: model, identity_alias_771: matchesP3WireModelId(model),
+    failure_code: matchesP3WireModelId(model) ? null : 'P3_WIRE_UNEXPECTED_RESPONSE_MODEL' };
+} catch (error) {
+  report = { kind: 'same_role_runner_saved_planner_input_no_native', role_attempt_count: budget.calls,
+    identity_alias_771: false, failure_code: /^[A-Z][A-Z0-9_]*$/u.test(error?.code ?? error?.message ?? '')
+      ? error.code ?? error.message : 'P3_WIRE_FAILED' };
+}
+await writeFile(new URL('./qwen-wire-result.json', import.meta.url), `${JSON.stringify(report, null, 2)}\n`, { flag: 'wx' });
+process.stdout.write(`${JSON.stringify(report)}\n`);
+if (report.failure_code) process.exitCode = 1;

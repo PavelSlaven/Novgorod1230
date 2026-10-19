@@ -1,0 +1,15 @@
+{
+  "kind": "same_role_runner_saved_planner_input_no_native",
+  "role_attempt_count": 1,
+  "response_model_id": "qwen3.8-27b",
+  "identity_alias_771": true,
+  "failure_code": null,
+  "provider_record_model": "qwen3.8-27b-uncensored-w4a16-tp2",
+  "response_model_provenance": {
+    "source": "http_ledger",
+    "ledger_file": "attempt-01.json",
+    "phase": "wire",
+    "http_status": 200
+  },
+  "metadata_correction": "Corrected offline from saved HTTP ledger; no repeated model call."
+}

@@ -6,7 +6,7 @@
 
 - docs(context): карта родных механизмов CDDA (docs/context/cdda-native-map, генератор сводной таблицы в docs:check); навигация, не норма (#778)
 - docs(governance): AGENTS.md — правило CDDA reuse-first: готовые механизмы CDDA в первую очередь, расширять при необходимости, новые только при отсутствии; новый механизм называет проверенный родной (файл:строка) и почему не подошёл (#775)
-- test(cataclysm): dev-проба в curses через постоянный PS1 launcher; native CHAT addressee, AF_UNIX reconnect, один NPC repair и D219 autosave; два fake speech/save/restart PASS, final native19/299, warm12,634–16,321с; Qwen/P3 GO ещё не подтверждены (#770, заменяет #769)
+- test(cataclysm): dev-проба в curses через постоянный PS1 launcher и owner settings; native CHAT, AF_UNIX reconnect, один NPC repair; fake speech/save/restart PASS, D219 native3/86442 PASS; live Qwen wire и wait/save/restart PASS (4 вызова), речь STOP на canonical instant против brief-only adapter, P3 GO не подтверждён (#770, заменяет #769)
 - test(cataclysm): native UID/RNG и preload recovery; 15 fault scenarios, 20+1 samples с p95 2.814 s, исторический P4 gate PASS отозван в #770, речевые T11/T12 остаются OPEN (#768)
 - test(cataclysm): P4 complete generations и 14 crash/retry сценариев; strict UID и 20 latency samples фиксируют STOP/REVISE_APPROACH, без production activation (#764)
 - test(cataclysm): изолированный P0–P2 harness на pinned CDDA — native loop, items, activity, NPC, danger interrupt и измеренный readback; без production activation (#757)

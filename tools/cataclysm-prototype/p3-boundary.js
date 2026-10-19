@@ -11,7 +11,8 @@ import { createProductionLlmRoleRunner } from '../../apps/game-server/src/infras
 import { createLowerDvinaTraceTurnStepModel,
   createLowerDvinaTraceNpcAutonomousModel,
   createLowerDvinaTraceNpcSemanticModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
-import { buildNpcActionDecisionRequestFromSnapshots, validateNpcActionDecisionRequest }
+import { buildNpcActionDecisionRequestFromSnapshots,
+  buildNpcConversationResponseRequest, validateNpcActionDecisionRequest }
   from '@rus/npc-runtime';
 import { buildNpcDecisionBoundary, buildNpcDecisionSignal } from '@rus/npc-runtime';
 import { addElapsedTime } from '@rus/time-events-history';
@@ -27,7 +28,8 @@ const P3_ROLE_LIMITS = Object.freeze({
   npc_autonomous_decider: { envPrefix: 'NPC_AUTONOMOUS_DECIDER', maxTokens: 20_000 },
   npc_autonomous_decider_format_repair: { envPrefix: 'NPC_AUTONOMOUS_DECIDER_REPAIR', maxTokens: 20_000 },
   npc_conversation_responder: { envPrefix: 'NPC_CONVERSATION_RESPONDER', maxTokens: 1_000 },
-  npc_conversation_responder_format_repair: { envPrefix: 'NPC_CONVERSATION_RESPONDER_REPAIR', maxTokens: 1_000 }
+  npc_conversation_responder_format_repair: { envPrefix: 'NPC_CONVERSATION_RESPONDER_REPAIR', maxTokens: 1_000 },
+  npc_conversation_grounding_auditor: { envPrefix: 'NPC_CONVERSATION_GROUNDING_AUDITOR', maxTokens: 256 }
 });
 
 export function requireP3CaseId(caseId) {
@@ -409,6 +411,83 @@ export async function runP3NativeNpcFlow({ nativeAdapter, actorId, semanticModel
   return checkpoint;
 }
 
+export async function runP3NativeNpcReply({ nativeAdapter, observation, playerReadback,
+  semanticModel, maxRepairAttempts = 2 } = {}) {
+  const effect = playerReadback?.native_effect;
+  if (playerReadback?.status !== 'applied' || !Array.isArray(effect?.actualHeardListenerIds)
+      || typeof effect.utterance !== 'string' || !effect.utterance) return null;
+  const heard = new Set(effect.actualHeardListenerIds);
+  const npc = observation.actors.find(actor => actor.actor_ref?.startsWith('npc:')
+    && actor.visible === true && heard.has(actor.actor_id));
+  if (!npc) return null;
+  const current = await nativeAdapter.refreshObservation();
+  const actor = current.actors.find(row => row.actor_ref === npc.actor_ref
+    && row.actor_id === npc.actor_id && row.visible === true);
+  if (!actor) return null;
+  const player = current.actors.find(row => row.actor_ref === 'avatar');
+  if (!player) throw new Error('P3_AVATAR_OBSERVATION_MISSING');
+  const remainder = current.turn % 60;
+  const divisor = (left, right) => right === 0 ? left : divisor(right, left % right);
+  const common = divisor(remainder, 60) || 60;
+  const at = { whole_minutes: String(Math.floor(current.turn / 60)),
+    subminute_numerator: String(remainder / common), subminute_denominator: String(60 / common) };
+  const npcRef = { entity_kind: 'npc', entity_id: actor.actor_id };
+  const playerRef = { entity_kind: 'player_character', entity_id: player.actor_id };
+  const source = { entity_kind: 'event', entity_id: `p3-speech-${playerReadback.operation_id}` };
+  const signal = buildNpcDecisionSignal({ occurred_at: at, category: 'communication',
+    significance: 'material', source_event_ref: source, subject_ref: npcRef,
+    scope_refs: [], perception_required: false });
+  const signalRef = { entity_kind: 'npc_decision_signal', entity_id: signal.signal_id };
+  const stateVersion = current.turn + 1;
+  const boundary = buildNpcDecisionBoundary({ decision_mode: 'conversation',
+    scheduled_at: at, npc_ref: npcRef,
+    same_time_batch_ref: { entity_kind: 'temporal_batch',
+      entity_id: `p3-speech-${playerReadback.operation_id}` },
+    significance: 'material', categories: ['communication'], signal_refs: [signalRef],
+    state_version: String(stateVersion) });
+  const request = buildNpcConversationResponseRequest({
+    schema: 'npc_conversation_response_request_v1',
+    request_id: `p3-reply-${playerReadback.operation_id}-${actor.actor_id}`,
+    boundary_id: boundary.boundary_id,
+    conversation_id: `p3-conversation-${playerReadback.operation_id}`,
+    exchange_id: `p3-exchange-${playerReadback.operation_id}`,
+    state_version: stateVersion, requested_at: at, npc_ref: npcRef,
+    decision_reasons: { significance: 'material', categories: ['communication'],
+      signal_refs: [signalRef], perceived_changes: [effect.utterance] },
+    npc: { native_actor_id: actor.actor_id, position: actor.position },
+    perceived_message: {
+      source_statement_ref: { entity_kind: 'conversation_statement',
+        entity_id: `p3-player-speech-${playerReadback.operation_id}` },
+      perception_result_ref: { entity_kind: 'perception_result',
+        entity_id: `p3-heard-${playerReadback.operation_id}-${actor.actor_id}` } },
+    public_conversation_history: [{ speaker_ref: playerRef, utterance_text: effect.utterance }],
+    knowledge: {}, memory: {}, social_context: {}, available_resources: [],
+    allowed_references: { actor_refs: [npcRef, playerRef], entity_refs: [],
+      knowledge_refs: [], combat_target_refs: [] },
+    decision_scope: { conversation_mode: true, action_handoff_available: false,
+      combat_handoff_available: false, allowed_attribute_refs: [], allowed_skill_refs: [],
+      allowed_check_profile_refs: [], allowed_duration_classes: ['moment', 'brief', 'short', 'domain_owned'],
+      allowed_contribution_kinds: ['speech', 'silence'], operation_contract: {} }
+  });
+  const proposal = await requestNpcSemanticDecision({ boundary, request, semanticModel,
+    maxRepairAttempts, revalidateStateVersion: async () => stateVersion,
+    validateFreshPlan: semanticModel.validateFreshPlan ?? null });
+  if (proposal.status !== 'planned' || proposal.plan?.contribution_kind !== 'speech') {
+    return { proposal, native_readback: null };
+  }
+  const utterance = proposal.plan.speech.utterance_text;
+  const envelope = createP3OperationEnvelope({ observation: current,
+    operationId: `${playerReadback.operation_id}-npc-${actor.actor_id}`,
+    actorRef: actor.actor_ref, primitive: 'speak', args: { utterance },
+    registeredPrimitives: ['speak'] });
+  const readback = validateP3Readback(envelope, await nativeAdapter.execute(envelope));
+  if (readback.status === 'applied' && (readback.native_effect?.speakerId !== actor.actor_id
+      || readback.native_effect?.utterance !== utterance)) {
+    throw new Error('P3_NATIVE_SPEECH_READBACK_MISMATCH');
+  }
+  return { proposal, native_readback: readback };
+}
+
 export function selectP3NativeNpcFixture(observation) {
   const candidates = (observation?.npc_projections ?? []).filter(row =>
     /^\d+$/u.test(row.actor_id ?? '')
@@ -434,7 +513,8 @@ export function createP3RoleRuntime({ env = process.env, budget = createP3Attemp
       npc_autonomous_decider: 'npc_autonomous_decider',
       npc_autonomous_decider_format_repair: 'npc_autonomous_decider_format_repair',
       npc_conversation_responder: 'npc_conversation_responder',
-      npc_conversation_responder_format_repair: 'npc_conversation_responder_format_repair' })[roleId];
+      npc_conversation_responder_format_repair: 'npc_conversation_responder_format_repair',
+      npc_conversation_grounding_auditor: 'npc_conversation_grounding_auditor' })[roleId];
     if (!configRole) throw new Error(`P3_ROLE_UNSUPPORTED:${roleId}`);
     const effective = resolveP3EffectiveConfig({ roleId: configRole, env, settingsOwner });
     return provider.run({ ...call, overrides: { ...(call.overrides ?? {}),
@@ -480,7 +560,7 @@ export function buildP3TurnOperations(observation) {
   ];
 }
 
-export function mapP3TurnOperationToNative(operation, observation) {
+export function mapP3TurnOperationToNative(operation, observation, { nativeSpeechOnly = false } = {}) {
   const actor = observation.actors.find(({ actor_ref: ref }) => ref === 'avatar');
   if (!actor || (operation?.op !== 'move_entity' && operation?.actor_ref !== 'avatar')) {
     throw new Error('P3_TYPED_ACTOR_UNRESOLVED');
@@ -563,24 +643,25 @@ export function mapP3TurnOperationToNative(operation, observation) {
       throw new Error('P3_INTERACTION_UNSUPPORTED');
     }
     const refs = operation.target_actor_refs;
-    if (!Array.isArray(refs) || refs.length < 1 || new Set(refs).size !== refs.length
+    if (!Array.isArray(refs) || (!nativeSpeechOnly && refs.length < 1) || new Set(refs).size !== refs.length
         || refs.some(ref => !observation.actors.some(actorRow => actorRow.actor_ref === ref
           && actorRow.visible === true))) throw new Error('P3_TYPED_VISIBLE_LISTENER_UNRESOLVED');
     return { actorRef: 'avatar', primitive: 'speak', args: { utterance: operation.content },
-      references: { actors: refs } };
+      references: refs.length ? { actors: refs } : {} };
   }
   throw new Error('P3_TYPED_OPERATION_UNSUPPORTED');
 }
 
 export async function runP3TurnStep({ intent, observation, nativeAdapter,
-  turnStepModel, operationId = randomUUID(), conversationOwnerForSpeech = null } = {}) {
+  turnStepModel, operationId = randomUUID(), conversationOwnerForSpeech = null,
+  nativeSpeechOnly = false } = {}) {
   if (typeof intent !== 'string' || !intent.trim()) throw new TypeError('intent required');
   if (typeof turnStepModel !== 'function') throw new TypeError('turnStepModel required');
   requireP3NativeSeam(nativeAdapter);
   const initial = { actor_ref: 'avatar', native_observation: structuredClone(observation) };
   const applyNativeOperation = async ({ operation, working_projection: projection }) => {
         const current = projection.native_observation;
-        const mapped = mapP3TurnOperationToNative(operation, current);
+        const mapped = mapP3TurnOperationToNative(operation, current, { nativeSpeechOnly });
         const envelope = createP3OperationEnvelope({ operationId,
           observation: current, ...mapped,
           registeredPrimitives: ['move', 'use_item', 'open', 'wait', 'speak', 'pickup'] });
@@ -596,7 +677,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
           throw new Error('P3_NATIVE_SPEECH_READBACK_MISMATCH');
         }
         let conversationOutcome = null;
-        if (mapped.primitive === 'speak' && readback.status === 'applied'
+        if (!nativeSpeechOnly && mapped.primitive === 'speak' && readback.status === 'applied'
             && readback.native_effect?.actualHeardListenerIds?.length
             && typeof conversationOwnerForSpeech === 'function') {
           const owner = await conversationOwnerForSpeech({ operation: structuredClone(operation),
@@ -641,7 +722,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
       if (plan.utterance.speaker_ref !== (request.actor.actor_id ?? request.actor.actor_ref)) {
         throw new Error('P3_PLAYER_UTTERANCE_SPEAKER_MISMATCH');
       }
-      if (typeof conversationOwnerForSpeech !== 'function') {
+      if (!nativeSpeechOnly && typeof conversationOwnerForSpeech !== 'function') {
         throw new Error('P3_NATIVE_SPEECH_OWNER_REQUIRED');
       }
       const operation = { op: 'emit_interaction', actor_ref: 'avatar',
@@ -673,7 +754,8 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
 export function validateP3RoleConfigs(env = process.env, settingsOwner) {
   const roles = ['turn_step_planner', 'turn_step_planner_repair',
     'npc_autonomous_decider', 'npc_autonomous_decider_format_repair',
-    'npc_conversation_responder', 'npc_conversation_responder_format_repair'];
+    'npc_conversation_responder', 'npc_conversation_responder_format_repair',
+    'npc_conversation_grounding_auditor'];
   requireP3QwenSettingsOwner(settingsOwner);
   return Object.freeze(roles.map(roleId => resolveP3EffectiveConfig({ roleId, env, settingsOwner })));
 }

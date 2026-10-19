@@ -144,12 +144,19 @@ test('native process transport passes fixed arguments to execFile with shell dis
       invocation = { file, args, options }; return { stdout: '', stderr: '' };
     } });
   await adapter.runNative('apply');
-  assert.equal(invocation.file, 'wsl.exe');
   assert.equal(invocation.options.shell, false);
   assert.equal(invocation.options.windowsHide, true);
-  assert.equal(invocation.args.includes('NOVGOROD_P4_MODE=apply'), true);
-  assert.equal(invocation.args.includes('NOVGOROD_P4_WORLD=novgorod'), true);
-  assert.equal(invocation.args.includes('/home/cdda/build/tests/cata_test'), true);
+  if (process.platform === 'win32') {
+    assert.equal(invocation.file, 'wsl.exe');
+    assert.equal(invocation.args.includes('NOVGOROD_P4_MODE=apply'), true);
+    assert.equal(invocation.args.includes('NOVGOROD_P4_WORLD=novgorod'), true);
+    assert.equal(invocation.args.includes('/home/cdda/build/tests/cata_test'), true);
+  } else {
+    assert.equal(invocation.file, '/home/cdda/build/tests/cata_test');
+    assert.equal(invocation.options.cwd, '/home/cdda');
+    assert.equal(invocation.options.env.NOVGOROD_P4_MODE, 'apply');
+    assert.equal(invocation.options.env.NOVGOROD_P4_WORLD, 'novgorod');
+  }
   assert.equal(invocation.args.includes('[novgorod_semantic]'), true);
   await assert.rejects(adapter.runNative(' arbitrary'), /P3_NATIVE_MODE_INVALID/);
 });
@@ -962,7 +969,8 @@ test('effective config reports only approved nonsecret fields and rejects token 
     ['turn_step_planner', 20_000, 45_536], ['turn_step_planner_repair', 20_000, 45_536],
     ['npc_autonomous_decider', 20_000, 45_536], ['npc_autonomous_decider_format_repair', 20_000, 45_536],
     ['npc_conversation_responder', 1_000, 64_536],
-    ['npc_conversation_responder_format_repair', 1_000, 64_536]
+    ['npc_conversation_responder_format_repair', 1_000, 64_536],
+    ['npc_conversation_grounding_auditor', 256, 65_280]
   ]) {
     const effective = resolveP3EffectiveConfig({ roleId, env, settingsOwner });
     assert.equal(effective.max_tokens, tokens, roleId);
@@ -997,8 +1005,10 @@ test('P3 role runtime uses existing provider adapter with fixed protocol overrid
     maxTokens: call.overrides.maxTokens, requestTimeoutMs: call.overrides.requestTimeoutMs },
   { temperature: 0, topP: 1, maxTokens: 1_000, requestTimeoutMs: 120_000 });
   await runtime.roleRunner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner', messages: [] });
+  await runtime.roleRunner.run({ scope: 'turn_runtime',
+    role_id: 'npc_conversation_grounding_auditor', messages: [] });
   assert.deepEqual(executionConfigs.map(({ contextBudget }) => contextBudget.hardInputLimitTokens),
-    [64_536, 45_536]);
+    [64_536, 45_536, 65_280]);
 });
 
 test('P3 settings loader requires explicit file and private Qwen endpoint without applying settings', async () => {

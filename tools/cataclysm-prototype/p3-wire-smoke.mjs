@@ -2,7 +2,7 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { createP3AttemptBudget, createP3RoleRuntime,
   loadP3QwenSettingsOwner, runP3NativeNpcFlow, runP3TurnStep,
@@ -11,6 +11,10 @@ import { createP3AttemptBudget, createP3RoleRuntime,
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const evidenceDir = path.join(root, 'artifacts', '2026-10-19', 'task01', 'wire');
 const expectedModel = 'qwen3.8-27b-uncensored-w4a16-tp2';
+const expectedBackendModel = 'qwen3.8-27b';
+export function matchesP3WireModelId(value) {
+  return value === expectedModel || value === expectedBackendModel;
+}
 const expectedWindow = 65_536;
 const runtimeMetadataContext = null;
 const liveCallLimit = 5;
@@ -209,7 +213,7 @@ async function readModelMetadata(settingsOwner) {
   let data = null;
   try { data = await response.json(); } catch {}
   const models = Array.isArray(data?.data) ? data.data : [];
-  const model = models.find(item => item?.id === expectedModel) ?? null;
+  const model = models.find(item => matchesP3WireModelId(item?.id)) ?? null;
   return { status: response.status, elapsed_ms: Date.now() - started,
     model_id: model?.id ?? null,
     max_model_len: Number.isSafeInteger(model?.max_model_len) ? model.max_model_len : null };
@@ -225,7 +229,7 @@ async function liveCalls() {
   }
   const { settingsOwner, safeRoles, contextBudgets } = await loadConfig();
   const metadata = JSON.parse(await readFile(path.join(evidenceDir, 'model-metadata.json'), 'utf8'));
-  if (metadata.models?.http_status !== 200 || metadata.models?.model_id !== expectedModel) {
+  if (metadata.status !== 200 || !matchesP3WireModelId(metadata.model_id)) {
     throw new Error('P3_WIRE_MODEL_METADATA_MISMATCH');
   }
 
@@ -297,7 +301,7 @@ async function liveCalls() {
       try {
         const result = await runtime.roleRunner.run(before);
         const responseModel = result?.provider_record?.model ?? null;
-        if (responseModel !== expectedModel) modelMismatch = true;
+        if (!matchesP3WireModelId(responseModel)) modelMismatch = true;
         attempts.push({ attempt: index + 1, role_id: before.role_id,
           status: modelMismatch ? 'stopped_unexpected_response_model' : 'ok',
           response_model_id: responseModel,
@@ -311,7 +315,7 @@ async function liveCalls() {
       }
       const wire = liveWire.at(-1);
       if (wire && wire.status >= 200 && wire.status < 300
-          && wire.response_model_id !== expectedModel) modelMismatch = true;
+          && !matchesP3WireModelId(wire.response_model_id)) modelMismatch = true;
       if (wire && wire.status != null && (wire.status < 200 || wire.status >= 300)) continue;
       if (modelMismatch) break;
     }
@@ -343,7 +347,7 @@ async function liveCalls() {
   const successfulCalls = attemptsWithWire.length === liveCallTarget
     && attemptsWithWire.every(({ http_status, response_model_id, prompt_tokens,
       completion_tokens, total_tokens }) => http_status === 200
-        && response_model_id === expectedModel
+        && matchesP3WireModelId(response_model_id)
         && Number.isSafeInteger(prompt_tokens)
         && Number.isSafeInteger(completion_tokens)
         && Number.isSafeInteger(total_tokens));
@@ -355,7 +359,7 @@ async function liveCalls() {
     settings: { provider: 'openai_compatible', model: expectedModel, host_class: 'private-lan' },
     model_metadata: metadata, role_configs: safeRoles, context_budgets: contextBudgets,
     configured_context_window_tokens: expectedWindow,
-    trained_context_tokens: metadata.models?.trained_context_tokens ?? null,
+    trained_context_tokens: null,
     runtime_metadata_context_tokens: runtimeMetadataContext,
     request_output_budget_tokens: outputTokenBudget,
     request_input_context_ceiling_tokens: expectedWindow - outputTokenBudget,
@@ -395,7 +399,9 @@ async function main(args) {
     evidence_directory: evidenceDir })}\n`);
 }
 
-main(process.argv.slice(2)).catch(error => {
-  process.stderr.write(`${safeError(error).code ?? safeError(error).message}\n`);
-  process.exitCode = 2;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  main(process.argv.slice(2)).catch(error => {
+    process.stderr.write(`${safeError(error).code ?? safeError(error).message}\n`);
+    process.exitCode = 2;
+  });
+}

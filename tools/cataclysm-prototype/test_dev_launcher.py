@@ -1,4 +1,5 @@
 import fcntl
+import json
 import os
 from pathlib import Path
 import socket
@@ -22,6 +23,12 @@ class DevLauncherTest(unittest.TestCase):
         self.binary.write_text("#!/usr/bin/env bash\nprintf '%s\\n' \"$@\" > ../argv.txt\n")
         self.binary.chmod(0o755)
         (self.root / "fixture/save/novgorod-dev/seed.txt").write_text("seed")
+        config = self.root / "fixture/config"
+        config.mkdir()
+        (config / "options.json").write_text(json.dumps([
+            {"name": "AUTOSAVE", "value": "true"},
+            {"name": "AUTOSAVE_TURNS", "value": "3600"},
+            {"name": "AUTOSAVE_MINUTES", "value": "5"}]))
 
     def launch(self, *args):
         return subprocess.run(["bash", str(LAUNCHER), "--runtime-root", str(self.root),
@@ -49,6 +56,25 @@ class DevLauncherTest(unittest.TestCase):
         self.assertEqual(len(backups), 1)
         self.assertEqual((backups[0] / "save/novgorod-dev/seed.txt").read_text(), "saved gameplay")
         self.assertEqual((self.root / "userdir/save/novgorod-dev/seed.txt").read_text(), "seed")
+
+    def test_autosave_profile_is_checked_without_overwriting(self):
+        self.assertEqual(self.launch().returncode, 0)
+        options = self.root / "userdir/config/options.json"
+        options.write_text('[{"name":"AUTOSAVE","value":"false"}]')
+        before = options.read_bytes()
+        self.assertNotEqual(self.launch().returncode, 0)
+        self.assertEqual(options.read_bytes(), before)
+
+    def test_semantic_keybinding_uses_native_default_mode(self):
+        self.assertEqual(self.launch().returncode, 0)
+        keybindings = self.root / "userdir/config/keybindings.json"
+        binding = json.loads(keybindings.read_text())[0]
+        self.assertEqual(binding["id"], "NOVGOROD_SEMANTIC")
+        self.assertEqual(binding["category"], "DEFAULTMODE")
+        self.assertEqual(binding["bindings"][0]["key"], ["F12"])
+        keybindings.write_text("[]")
+        self.assertEqual(self.launch().returncode, 0)
+        self.assertEqual(keybindings.read_text(), "[]")
 
     def test_lock_blocks_second_launcher_without_seeding(self):
         with (self.root / "run/session.lock").open("w") as lock:

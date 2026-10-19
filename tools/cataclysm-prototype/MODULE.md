@@ -2,8 +2,10 @@
 
 ## Назначение
 
-Изолированные native проверки пригодности Cataclysm-DDA для Novgorod. Инструмент
-запускается вручную на отдельной копии upstream и временном тестовом мире.
+Изолированные native проверки пригодности Cataclysm-DDA для Novgorod и
+незавершённая живая dev-проба. Стенд использует отдельную копию upstream;
+dev launcher — отдельный постоянный userdir. Текущий STOP и проверенные границы:
+[результат задания 03](TASK03-LIVE-RESULT.md).
 
 ## Владеет
 
@@ -34,9 +36,11 @@ production transaction path.
 Native deserialization переносит сохранённые item instances с прежними UID;
 обычная copy semantics создаёт новые identity. Native save/load также владеет
 файлом состояния RNG engine в существующем стенде. Координатор требует его,
-но не вычисляет RNG самостоятельно. В целевом игровом пути этот файл, журнал
-operation IDs, квитанции и сохранение каждой операции остаются только отладкой;
-такое отделение ещё не реализовано. Побитовый replay игры не требуется.
+но не вычисляет RNG самостоятельно. Live overlay ограничивает RNG sidecar
+режимом test_mode с явным P4 opt-in; нативная проверка guard ещё не выполнена.
+Журнал operation IDs, квитанции и сохранение каждой операции принадлежат
+отдельному отладочному coordinator, который live socket adapter не вызывает.
+Побитовый replay игры не требуется.
 
 Opt-in preload host выполняет `g->setup()` и `load_world_modfiles()` одного
 профиля до запуска измеряемого child. Это world-specific setup, включая моды,
@@ -44,12 +48,13 @@ Opt-in preload host выполняет `g->setup()` и `load_world_modfiles()` �
 Каждый fork-child перенастраивает userdir/cache пути и полностью загружает
 сохранение из staging или validation scratch. Parent не вызывает
 `load(save_t)`, действия или `save()`; это не означает отсутствия world setup.
-Host заморожен как ускоритель стенда. Для игры планируется один живой CDDA
-с `game::save()` по запросу и раз в игровой час, а не fork/process на операцию.
+Host заморожен как ускоритель стенда. Для игры используется один живой CDDA
+с родным сохранением по запросу и autosave true/3600 turns/5 real minutes.
+Часовой рубеж также подчиняется родному ограничению реального времени.
 Прежний бюджет ≤5 с на операцию отменён; новые ворота описаны в плане среза.
 
-Инструмент не подключён к production runtime Novgorod, не читает пользовательские
-сохранения и не меняет active bindings. Он не предоставляет renderer, HTTP server,
+Инструмент не подключён к production runtime Novgorod и не меняет active bindings.
+Dev launcher читает только собственный постоянный userdir. Он не предоставляет renderer, HTTP server,
 новую физику или LLM fallback. Native test readback
 предназначен исследователю, не является разрешённой player-safe проекцией.
 
@@ -63,8 +68,16 @@ controls.
 test-only `native-control-tests` проверяет сохранение каждого UID и чтение legacy RLE. Preload
 единолично включает P4 preload, semantic patch его не откатывает. Исходная ревизия и команды — в
 [README](README.md).
+После этих семи overlay подключается `native-live-input`, затем
+`native-autosave-options`. `novgorod_semantic.cpp/.h` копируются в src,
+`novgorod_semantic_test.cpp` и `novgorod_autosave_test.cpp` — в tests.
+Общие observation/apply/readback принадлежат src; test wrapper сохраняет
+диагностические snapshots вне живого observation.
 Зелёный native тест не является приёмкой semantic/NPC/narration интеграции или
-production cutover. P3 seams доступны только bare native test agent; UI/smoke
+production cutover. Live AF_UNIX adapter переиспользует прежний JS role runtime;
+owner промптов/LLM остаётся в packages и apps/game-server. Автоматический ответ
+первого услышавшего NPC заблокирован ревью до решения по адресату; текущий код
+нельзя считать принятым игровым путём. UI/smoke
 команды и незавершённые области перечислены в [PLAY.md](PLAY.md). Task01
 curses smoke загрузил P1 мир и подтвердил save-and-quit; runtime data directory
 должен содержать `gfx`, а `--datadir` требует завершающий `/` в этой сборке.

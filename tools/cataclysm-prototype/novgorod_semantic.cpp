@@ -1,0 +1,738 @@
+#include "novgorod_semantic.h"
+
+#include <algorithm>
+#include <chrono>
+#include <climits>
+#include <cstdlib>
+#include <cstring>
+#include <functional>
+#include <optional>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+
+#ifndef _WIN32
+#include <cerrno>
+#include <fcntl.h>
+#include <poll.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+#endif
+
+#include "action.h"
+#include "activity_actor_definitions.h"
+#include "avatar.h"
+#include "calendar.h"
+#include "character.h"
+#include "field.h"
+#include "game.h"
+#include "game_constants.h"
+#include "item.h"
+#include "itype.h"
+#include "input.h"
+#include "mapdata.h"
+#include "translations.h"
+#include "item_location.h"
+#include "json.h"
+#include "json_loader.h"
+#include "map.h"
+#include "messages.h"
+#include "npc.h"
+#include "output.h"
+#include "popup.h"
+#include "sounds.h"
+#include "string_input_popup.h"
+#include "ui_manager.h"
+
+namespace novgorod_semantic
+{
+namespace
+{
+std::vector<int> position_of( const tripoint_bub_ms &p )
+{
+    return { p.x(), p.y(), p.z() };
+}
+
+std::string p3_target_ref( const tripoint_bub_ms &p )
+{
+    return std::to_string( p.x() ) + "," + std::to_string( p.y() ) + "," +
+           std::to_string( p.z() );
+}
+
+void write_npc_physical_projections( JsonOut &out, const avatar &observer, map &here )
+{
+    out.member( "npc_projections" );
+    out.start_array();
+    for( const npc &guy : g->all_npcs() ) {
+        if( !observer.sees( here, static_cast<const Creature &>( guy ) ) ) {
+            continue;
+        }
+        out.start_object();
+        out.member( "actor_id", std::to_string( guy.getID().get_value() ) );
+        out.member( "position", position_of( guy.pos_bub() ) );
+        out.member( "native_turn", to_turn<int>( calendar::turn ) );
+        out.member( "activity_id", guy.activity.id().str() );
+        out.member( "activity_moves_left", guy.activity.moves_left );
+        out.member( "visible_actors" );
+        out.start_array();
+        if( guy.sees( here, static_cast<const Creature &>( observer ) ) ) {
+            out.start_object();
+            out.member( "actor_id", std::to_string( observer.getID().get_value() ) );
+            out.member( "position", position_of( observer.pos_bub() ) );
+            out.end_object();
+        }
+        for( const npc &other : g->all_npcs() ) {
+            if( other.getID() == guy.getID() || !guy.sees( here, static_cast<const Creature &>( other ) ) ) {
+                continue;
+            }
+            out.start_object();
+            out.member( "actor_id", std::to_string( other.getID().get_value() ) );
+            out.member( "position", position_of( other.pos_bub() ) );
+            out.end_object();
+        }
+        out.end_array();
+        out.member( "visible_items" );
+        out.start_array();
+        for( const tripoint_bub_ms &pos : here.points_in_radius( guy.pos_bub(), 1 ) ) {
+            if( !guy.sees( here, pos ) ) {
+                continue;
+            }
+            for( const item &it : here.i_at( pos ) ) {
+                out.start_object();
+                out.member( "item_ref", "item:" + std::to_string( it.uid().get_value() ) );
+                out.member( "item_uid", std::to_string( it.uid().get_value() ) );
+                out.member( "type", it.typeId().str() );
+                out.member( "position", position_of( pos ) );
+                out.end_object();
+            }
+        }
+        out.end_array();
+        out.member( "visible_targets" );
+        out.start_array();
+        for( const tripoint_bub_ms &pos : here.points_in_radius( guy.pos_bub(), 1 ) ) {
+            if( !guy.sees( here, pos ) ) {
+                continue;
+            }
+            out.start_object();
+            out.member( "target_ref", p3_target_ref( pos ) );
+            out.member( "position", position_of( pos ) );
+            out.member( "terrain", here.ter( pos ).id().str() );
+            out.member( "openable", here.open_door( guy, pos, !here.is_outside( pos ), true ) );
+            out.end_object();
+        }
+        out.end_array();
+        out.end_object();
+    }
+    out.end_array();
+}
+
+} // namespace
+
+void write_observation( JsonOut &out )
+{
+    avatar &you = get_avatar();
+    map &here = get_map();
+    here.update_visibility_cache( you.posz() );
+    out.start_object();
+    out.member( "schema", "p3_native_observation_v1" );
+    out.member( "turn", to_turn<int>( calendar::turn ) );
+    out.member( "revision", to_turn<int>( calendar::turn ) );
+    out.member( "actors" );
+    out.start_array();
+    out.start_object();
+    out.member( "actor_ref", "avatar" );
+    out.member( "visible", true );
+    out.member( "actor_id", std::to_string( you.getID().get_value() ) );
+    out.member( "position", position_of( you.pos_bub() ) );
+    out.end_object();
+    for( const npc &guy : g->all_npcs() ) {
+        if( !you.sees( here, static_cast<const Creature &>( guy ) ) ) {
+            continue;
+        }
+        out.start_object();
+        out.member( "actor_ref", "npc:" + std::to_string( guy.getID().get_value() ) );
+        out.member( "visible", true );
+        out.member( "actor_id", std::to_string( guy.getID().get_value() ) );
+        out.member( "position", position_of( guy.pos_bub() ) );
+        out.end_object();
+    }
+    out.end_array();
+    write_npc_physical_projections( out, you, here );
+    out.member( "items" );
+    out.start_array();
+    for( const item *it : you.items_with( []( const item & ) { return true; } ) ) {
+        out.start_object();
+        out.member( "item_ref", "item:" + std::to_string( it->uid().get_value() ) );
+        out.member( "item_uid", std::to_string( it->uid().get_value() ) );
+        out.member( "type", it->typeId().str() );
+        out.member( "use_methods" );
+        out.start_array();
+        for( const auto &method : it->type->use_methods ) {
+            out.write( method.first );
+        }
+        out.end_array();
+        out.member( "holder", std::to_string( you.getID().get_value() ) );
+        out.end_object();
+    }
+    for( const tripoint_bub_ms &p : here.points_in_radius( you.pos_bub(), 1 ) ) {
+        if( !you.sees( here, p ) ) {
+            continue;
+        }
+        for( const item &it : here.i_at( p ) ) {
+            out.start_object();
+            out.member( "item_ref", "item:" + std::to_string( it.uid().get_value() ) );
+            out.member( "item_uid", std::to_string( it.uid().get_value() ) );
+            out.member( "type", it.typeId().str() );
+            out.member( "use_methods" );
+            out.start_array();
+            for( const auto &method : it.type->use_methods ) {
+                out.write( method.first );
+            }
+            out.end_array();
+            out.member( "position", position_of( p ) );
+            out.end_object();
+        }
+    }
+    out.end_array();
+    out.member( "targets" );
+    out.start_array();
+    for( const tripoint_bub_ms &p : here.points_in_radius( you.pos_bub(), 1 ) ) {
+        if( p == you.pos_bub() || !you.sees( here, p ) ) {
+            continue;
+        }
+        out.start_object();
+        out.member( "target_ref", p3_target_ref( p ) );
+        out.member( "position", position_of( p ) );
+        out.member( "terrain", here.ter( p ).id().str() );
+        out.member( "openable", here.open_door( you, p, !here.is_outside( p ), true ) );
+        out.end_object();
+    }
+    out.end_array();
+    out.end_object();
+}
+
+namespace
+{
+struct local_fact {
+    tripoint_bub_ms position;
+    time_point time;
+    int moves;
+    std::string activity;
+    int activity_moves_left;
+};
+
+local_fact current_fact()
+{
+    const avatar &you = get_avatar();
+    return { you.pos_bub(), calendar::turn, you.get_moves(), you.activity.id().str(),
+             you.activity.moves_left };
+}
+
+void write_fact( JsonOut &out, const local_fact &fact )
+{
+    out.start_object();
+    out.member( "position", position_of( fact.position ) );
+    out.member( "turn", to_turn<int>( fact.time ) );
+    out.member( "moves", fact.moves );
+    out.member( "activity", fact.activity );
+    out.member( "activity_moves_left", fact.activity_moves_left );
+    out.member( "clock" );
+    out.start_object();
+    out.member( "native_turn", to_turn<int>( fact.time ) );
+    out.member( "seconds_since_world_start", to_seconds<int64_t>( fact.time - calendar::turn_zero ) );
+    out.end_object();
+    out.end_object();
+}
+
+struct operation_evidence {
+    std::string id;
+    std::string primitive;
+    std::string actor_id;
+    local_fact before;
+    tripoint_bub_ms target;
+    std::string terrain;
+    std::string furniture;
+    int64_t item_uid = 0;
+    std::string item_type;
+    int charges = 0;
+    bool active = false;
+    std::string local_map_before;
+    std::string utterance;
+    tripoint_bub_ms speaker_position;
+    std::vector<std::string> heard;
+    std::string refusal;
+};
+
+std::optional<operation_evidence> evidence;
+
+const item *carried_item( int64_t uid )
+{
+    for( const item *it : get_avatar().items_with( []( const item & ) { return true; } ) ) {
+        if( it->uid().get_value() == uid ) {
+            return it;
+        }
+    }
+    return nullptr;
+}
+
+std::string local_map_fact( const tripoint_bub_ms &center )
+{
+    map &here = get_map();
+    std::ostringstream out;
+    for( const tripoint_bub_ms &pos : here.points_in_radius( center, 1 ) ) {
+        out << pos.x() << ',' << pos.y() << ',' << pos.z() << ':'
+            << here.ter( pos ).id().str() << ':' << here.furn( pos ).id().str();
+        for( const auto &entry : here.get_field( pos ) ) {
+            out << ':' << entry.first.str() << '=' << entry.second.get_field_intensity();
+        }
+        for( const item &it : here.i_at( pos ) ) {
+            out << ':' << it.uid().get_value() << '=' << it.typeId().str() << '=' << it.charges;
+        }
+        out << ';';
+    }
+    return out.str();
+}
+
+std::string move_action( int x, int y )
+{
+    if( x == 1 && y == 0 ) return action_ident( ACTION_MOVE_RIGHT );
+    if( x == -1 && y == 0 ) return action_ident( ACTION_MOVE_LEFT );
+    if( x == 0 && y == -1 ) return action_ident( ACTION_MOVE_FORTH );
+    if( x == 0 && y == 1 ) return action_ident( ACTION_MOVE_BACK );
+    if( x == 1 && y == -1 ) return action_ident( ACTION_MOVE_FORTH_RIGHT );
+    if( x == -1 && y == -1 ) return action_ident( ACTION_MOVE_FORTH_LEFT );
+    if( x == 1 && y == 1 ) return action_ident( ACTION_MOVE_BACK_RIGHT );
+    if( x == -1 && y == 1 ) return action_ident( ACTION_MOVE_BACK_LEFT );
+    throw std::runtime_error( "NOVGOROD_INVALID_MOVE_DIRECTION" );
+}
+
+tripoint_rel_ms request_direction( const JsonObject &args )
+{
+    const std::vector<int> direction = args.has_member( "direction" ) ?
+                                       args.get_int_array( "direction" ) : args.get_int_array( "target_direction" );
+    if( direction.size() != 2 || direction[0] < -1 || direction[0] > 1 ||
+        direction[1] < -1 || direction[1] > 1 || ( direction[0] == 0 && direction[1] == 0 ) ) {
+        throw std::runtime_error( "NOVGOROD_INVALID_MOVE_DIRECTION" );
+    }
+    return tripoint_rel_ms( direction[0], direction[1], 0 );
+}
+
+npc &visible_npc_by_id( const std::string &actor_id )
+{
+    avatar &you = get_avatar();
+    for( npc &guy : g->all_npcs() ) {
+        if( std::to_string( guy.getID().get_value() ) == actor_id &&
+            you.sees( get_map(), static_cast<const Creature &>( guy ) ) ) {
+            return guy;
+        }
+    }
+    throw std::runtime_error( "NOVGOROD_STALE_OR_INVISIBLE_NPC_ACTOR" );
+}
+
+void check_target( const JsonObject &request, const tripoint_bub_ms &target )
+{
+    if( !get_avatar().sees( get_map(), target ) ) {
+        throw std::runtime_error( "NOVGOROD_TARGET_NOT_OBSERVED" );
+    }
+    if( request.get_object( "references" ).get_object( "targets" ).get_string( "id" ) !=
+        p3_target_ref( target ) ) {
+        throw std::runtime_error( "NOVGOROD_TARGET_REFERENCE_MISMATCH" );
+    }
+}
+} // namespace
+
+operation_result apply_operation( const JsonObject &request )
+{
+    if( evidence ) {
+        throw std::logic_error( "NOVGOROD_NATIVE_OPERATION_ALREADY_ACTIVE" );
+    }
+    avatar &you = get_avatar();
+    map &here = get_map();
+    here.update_visibility_cache( you.posz() );
+    operation_evidence next;
+    next.before = current_fact();
+    next.target = you.pos_bub();
+    evidence = next;
+    try {
+        operation_evidence &op = *evidence;
+        op.id = request.get_string( "operation_id" );
+        op.primitive = request.get_string( "primitive" );
+        op.actor_id = request.get_string( "actor_id" );
+        const std::string avatar_id = std::to_string( you.getID().get_value() );
+        if( request.get_string( "schema" ) != "p3_native_operation_request_v1" || op.id.empty() ) {
+            throw std::runtime_error( "NOVGOROD_INVALID_OPERATION_REQUEST" );
+        }
+        const JsonObject expected = request.get_object( "expected_native_observation" );
+        if( expected.get_string( "actor_id" ) != op.actor_id ) {
+            throw std::runtime_error( "NOVGOROD_STALE_ACTOR_ID" );
+        }
+        const JsonValue revision = expected.has_member( "turn" ) ?
+                                   expected.get_member( "turn" ) : expected.get_member( "revision" );
+        const int expected_turn = revision.test_int() ? revision.get_int() : std::stoi( revision.get_string() );
+        if( expected_turn != to_turn<int>( calendar::turn ) ) {
+            throw std::runtime_error( "NOVGOROD_STALE_NATIVE_OBSERVATION" );
+        }
+        const JsonObject args = request.get_object( "args" );
+        if( op.primitive != "speak" && op.actor_id != avatar_id ) {
+            throw std::runtime_error( "NOVGOROD_AVATAR_ACTOR_REQUIRED" );
+        }
+        std::vector<std::string> actions;
+        if( op.primitive == "move" || op.primitive == "open" ) {
+            const tripoint_rel_ms direction = request_direction( args );
+            op.target = you.pos_bub() + direction;
+            if( !you.sees( here, op.target ) ) {
+                throw std::runtime_error( "NOVGOROD_TARGET_NOT_OBSERVED" );
+            }
+            op.terrain = here.ter( op.target ).id().str();
+            op.furniture = here.furn( op.target ).id().str();
+            if( op.primitive == "move" ) {
+                actions.push_back( move_action( direction.x(), direction.y() ) );
+            } else {
+                check_target( request, op.target );
+                if( !here.open_door( you, op.target, !here.is_outside( op.target ), true ) ) {
+                    throw std::runtime_error( "NOVGOROD_TARGET_NOT_OPENABLE" );
+                }
+                set_novgorod_adjacent_selection( you.getID().get_value(), you.pos_bub(), direction );
+                actions.push_back( action_ident( ACTION_OPEN ) );
+            }
+        } else if( op.primitive == "pickup" || op.primitive == "use_item" ) {
+            const std::string uid = request.get_object( "references" ).get_object( "items" ).get_string( "id" );
+            size_t parsed = 0;
+            op.item_uid = std::stoll( uid, &parsed );
+            if( parsed != uid.size() || op.item_uid <= 0 ) {
+                throw std::runtime_error( "NOVGOROD_ITEM_UID_INVALID" );
+            }
+            if( op.primitive == "pickup" ) {
+                bool observed = false;
+                for( const tripoint_bub_ms &pos : here.points_in_radius( you.pos_bub(), 1 ) ) {
+                    if( !you.sees( here, pos ) ) continue;
+                    for( const item &candidate : here.i_at( pos ) ) {
+                        observed = observed || candidate.uid().get_value() == op.item_uid;
+                    }
+                }
+                if( !observed ) throw std::runtime_error( "NOVGOROD_ITEM_NOT_OBSERVED_ON_GROUND" );
+                g->set_novgorod_pickup_uid( op.item_uid );
+                actions.push_back( action_ident( ACTION_PICKUP ) );
+            } else {
+                const item *it = carried_item( op.item_uid );
+                if( !it ) throw std::runtime_error( "NOVGOROD_ITEM_NOT_OBSERVED_IN_INVENTORY" );
+                const std::string method = args.get_string( "method" );
+                if( it->type->use_methods.find( method ) == it->type->use_methods.end() ) {
+                    throw std::runtime_error( "NOVGOROD_TEST_ITEM_USE_METHOD_UNKNOWN" );
+                }
+                op.item_type = it->typeId().str();
+                op.charges = it->charges;
+                op.active = it->active;
+                op.local_map_before = local_map_fact( you.pos_bub() );
+                if( args.has_member( "target_direction" ) ) {
+                    const tripoint_rel_ms direction = request_direction( args );
+                    op.target = you.pos_bub() + direction;
+                    check_target( request, op.target );
+                    set_novgorod_adjacent_selection( you.getID().get_value(), you.pos_bub(), direction );
+                }
+                g->set_novgorod_item_use( op.item_uid, method );
+                actions.push_back( action_ident( ACTION_USE ) );
+            }
+        } else if( op.primitive == "wait" || op.primitive == "speak" ) {
+            if( op.primitive == "speak" ) {
+                op.utterance = args.has_member( "utterance" ) ? args.get_string( "utterance" ) : args.get_string( "content" );
+                if( op.utterance.empty() ) throw std::runtime_error( "NOVGOROD_UTTERANCE_REQUIRED" );
+                Character *speaker = &you;
+                int volume = you.normal_voice();
+                if( op.actor_id != avatar_id ) {
+                    npc &subject = visible_npc_by_id( op.actor_id );
+                    speaker = &subject;
+                    volume = subject.indoor_voice();
+                }
+                if( speaker->is_mute() || speaker->is_hallucination() ) {
+                    throw std::runtime_error( "NOVGOROD_NATIVE_SPEAKER_CANNOT_SPEAK" );
+                }
+                op.speaker_position = speaker->pos_bub();
+                sounds::sound( op.speaker_position, volume, sounds::sound_t::speech, op.utterance,
+                               false, "speech" );
+            }
+            you.assign_activity( wait_activity_actor( 3_seconds ) );
+        } else {
+            throw std::runtime_error( "NOVGOROD_UNSUPPORTED_NATIVE_PRIMITIVE" );
+        }
+        if( !actions.empty() ) {
+            if( test_mode ) actions.push_back( action_ident( ACTION_PAUSE ) );
+            g->set_novgorod_action_queue( std::move( actions ) );
+        }
+        return { true, "" };
+    } catch( const std::exception &error ) {
+        evidence->refusal = error.what();
+        clear_novgorod_test_adjacent_selection();
+        return finish_operation();
+    }
+}
+
+void observe_heard_speech( const Character &listener, const tripoint_bub_ms &source,
+                           const std::string &description )
+{
+    if( !evidence || evidence->utterance.empty() || evidence->speaker_position != source ||
+        evidence->utterance != description ) return;
+    const std::string id = std::to_string( listener.getID().get_value() );
+    if( id != evidence->actor_id &&
+        std::find( evidence->heard.begin(), evidence->heard.end(), id ) == evidence->heard.end() ) {
+        evidence->heard.push_back( id );
+    }
+}
+
+operation_result finish_operation()
+{
+    if( !evidence ) throw std::logic_error( "NOVGOROD_NO_NATIVE_OPERATION" );
+    clear_novgorod_test_adjacent_selection();
+    operation_evidence op = std::move( *evidence );
+    evidence.reset();
+    const local_fact after = current_fact();
+    const int elapsed = to_seconds<int>( after.time - op.before.time );
+    bool changed = false;
+    if( op.primitive == "move" || op.primitive == "open" ) {
+        changed = after.position != op.before.position || op.terrain != get_map().ter( op.target ).id().str() ||
+                  op.furniture != get_map().furn( op.target ).id().str();
+        if( op.refusal.empty() && !changed ) op.refusal = op.primitive == "move" ?
+                    "NOVGOROD_NATIVE_MOVEMENT_NOT_APPLIED" : "NOVGOROD_NATIVE_OPEN_NOT_APPLIED";
+    } else if( op.primitive == "pickup" ) {
+        changed = carried_item( op.item_uid ) != nullptr;
+    } else if( op.primitive == "use_item" ) {
+        const item *it = carried_item( op.item_uid );
+        changed = !it || it->typeId().str() != op.item_type || it->charges != op.charges || it->active != op.active ||
+                  op.local_map_before != local_map_fact( op.before.position );
+    } else if( op.primitive == "speak" ) {
+        changed = op.refusal.empty() && !op.utterance.empty();
+    } else if( op.primitive == "wait" ) {
+        changed = elapsed >= 3;
+    }
+    const bool applied = op.refusal.empty();
+    const bool progressing = applied && after.activity != "ACT_NULL" && after.activity_moves_left > 0;
+    const std::string effect = !applied ? "refused" : changed ? "confirmed" : progressing ? "progressing" : "none";
+    const std::string goal = !applied ? "refused" : changed ? "achieved" : progressing ? "in_progress" : "not_achieved";
+    std::ostringstream stream;
+    JsonOut out( stream );
+    out.start_object();
+    out.member( "schema", "p3_native_operation_readback_v1" );
+    out.member( "operation_id", op.id );
+    out.member( "status", applied ? "applied" : "refused" );
+    out.member( "goal_result", goal );
+    out.member( "before" ); write_fact( out, op.before );
+    out.member( "after" ); write_fact( out, after );
+    out.member( "native_effect" );
+    out.start_object();
+    out.member( "primitive", op.primitive );
+    out.member( "actor_id", op.actor_id );
+    out.member( "effect_status", effect );
+    out.member( "world_changed", changed );
+    out.member( "elapsed_seconds", elapsed );
+    out.member( "elapsedSeconds", elapsed );
+    out.member( "activity_before", op.before.activity );
+    out.member( "activity_after", after.activity );
+    if( !op.utterance.empty() ) {
+        out.member( "speakerId", op.actor_id );
+        out.member( "utterance", op.utterance );
+        out.member( "native_sound", applied ? op.utterance : "" );
+        out.member( "actualHeardListenerIds", op.heard );
+    }
+    out.end_object();
+    if( !applied ) {
+        out.member( "refusal" ); out.start_object();
+        out.member( "code", op.refusal ); out.end_object();
+    }
+    out.end_object();
+    return { applied, stream.str() };
+}
+
+#ifndef _WIN32
+namespace
+{
+int live_fd = -1;
+uint64_t intent_counter = 0;
+std::string live_id;
+std::string incoming;
+bool awaiting_native = false;
+using steady_clock = std::chrono::steady_clock;
+steady_clock::time_point deadline;
+
+void disconnect()
+{
+    if( live_fd >= 0 ) close( live_fd );
+    live_fd = -1;
+    incoming.clear();
+    awaiting_native = false;
+    live_id.clear();
+}
+
+void reset_deadline( int timeout_ms )
+{
+    if( timeout_ms <= 0 ) throw std::runtime_error( "NOVGOROD_INVALID_ROLE_TIMEOUT" );
+    deadline = steady_clock::now() + std::chrono::milliseconds( timeout_ms );
+}
+
+void wait_socket( short events )
+{
+    static_popup wait_popup;
+    wait_popup.on_top( true ).wait_message( "%s", "Qwen думает…" );
+    for( ;; ) {
+        if( steady_clock::now() >= deadline ) throw std::runtime_error( "NOVGOROD_COORDINATOR_TIMEOUT" );
+        ui_manager::redraw();
+        refresh_display();
+        inp_mngr.pump_events();
+        pollfd descriptor { live_fd, events, 0 };
+        const int ready = poll( &descriptor, 1, 100 );
+        if( ready < 0 && errno != EINTR ) throw std::runtime_error( "NOVGOROD_COORDINATOR_POLL_FAILED" );
+        if( ready > 0 ) {
+            if( descriptor.revents & events ) return;
+            if( descriptor.revents & ( POLLHUP | POLLERR | POLLNVAL ) ) {
+                throw std::runtime_error( "NOVGOROD_COORDINATOR_DISCONNECTED" );
+            }
+        }
+    }
+}
+
+void send_line( const std::string &json )
+{
+    const std::string line = json + "\n";
+    size_t sent = 0;
+    while( sent < line.size() ) {
+        const ssize_t count = send( live_fd, line.data() + sent, line.size() - sent, MSG_NOSIGNAL );
+        if( count > 0 ) sent += static_cast<size_t>( count );
+        else if( count < 0 && ( errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR ) ) wait_socket( POLLOUT );
+        else throw std::runtime_error( "NOVGOROD_COORDINATOR_SEND_FAILED" );
+    }
+}
+
+std::string receive_line()
+{
+    for( ;; ) {
+        const size_t end = incoming.find( '\n' );
+        if( end != std::string::npos ) {
+            std::string line = incoming.substr( 0, end );
+            incoming.erase( 0, end + 1 );
+            return line;
+        }
+        wait_socket( POLLIN );
+        char buffer[8192];
+        const ssize_t count = recv( live_fd, buffer, sizeof( buffer ), 0 );
+        if( count > 0 ) incoming.append( buffer, static_cast<size_t>( count ) );
+        else if( count < 0 && ( errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR ) ) continue;
+        else throw std::runtime_error( "NOVGOROD_COORDINATOR_DISCONNECTED" );
+    }
+}
+
+std::string observation_message( const std::string &type, const std::string &intent = "" )
+{
+    std::ostringstream stream;
+    JsonOut out( stream );
+    out.start_object();
+    out.member( "type", type );
+    out.member( "id", live_id );
+    if( type == "intent" ) out.member( "intent", intent );
+    out.member( "observation" );
+    write_observation( out );
+    out.end_object();
+    return stream.str();
+}
+
+void send_readback( const operation_result &result )
+{
+    // live_id is generated locally as a decimal counter, never remote JSON text.
+    send_line( "{\"type\":\"readback\",\"id\":\"" + live_id + "\",\"readback\":" + result.json + "}" );
+}
+
+void await_coordinator()
+{
+    for( ;; ) {
+        const JsonObject message = json_loader::from_string( receive_line() ).get_object();
+        message.allow_omitted_members();
+        if( message.get_string( "id", "" ) != live_id ) continue;
+        const std::string type = message.get_string( "type" );
+        if( type == "role_phase" ) {
+            reset_deadline( message.get_int( "timeout_ms" ) );
+        } else if( type == "observe" ) {
+            send_line( observation_message( "observation" ) );
+        } else if( type == "operation" ) {
+            const operation_result result = apply_operation( message.get_object( "request" ) );
+            if( result.applied ) {
+                awaiting_native = true;
+                return;
+            }
+            send_readback( result );
+        } else if( type == "result" ) {
+            const std::string text = message.get_string( "message", "" );
+            if( !text.empty() ) add_msg( "%s", text );
+            live_id.clear();
+            return;
+        } else {
+            throw std::runtime_error( "NOVGOROD_COORDINATOR_MESSAGE_INVALID" );
+        }
+    }
+}
+
+void connect_coordinator()
+{
+    const char *path = std::getenv( "NOVGOROD_P3_SOCKET" );
+    sockaddr_un address {};
+    address.sun_family = AF_UNIX;
+    if( path == nullptr || *path == '\0' || std::strlen( path ) >= sizeof( address.sun_path ) ) {
+        throw std::runtime_error( "NOVGOROD_COORDINATOR_SOCKET_REQUIRED" );
+    }
+    std::strcpy( address.sun_path, path );
+    live_fd = socket( AF_UNIX, SOCK_STREAM, 0 );
+    if( live_fd < 0 || connect( live_fd, reinterpret_cast<const sockaddr *>( &address ), sizeof( address ) ) < 0 ) {
+        throw std::runtime_error( "NOVGOROD_COORDINATOR_CONNECT_FAILED" );
+    }
+    const int flags = fcntl( live_fd, F_GETFL, 0 );
+    if( flags < 0 || fcntl( live_fd, F_SETFL, flags | O_NONBLOCK ) < 0 ) {
+        throw std::runtime_error( "NOVGOROD_COORDINATOR_SOCKET_FLAGS_FAILED" );
+    }
+}
+} // namespace
+#endif
+
+void live_input()
+{
+#ifdef _WIN32
+    add_msg( "%s", "Живая dev-проба запускается в WSL." );
+#else
+    const std::string intent = string_input_popup().title( "Свободное действие (dev-проба)" ).width( 70 ).query_string();
+    if( intent.find_first_not_of( " \t\r\n" ) == std::string::npos ) return;
+    try {
+        if( live_fd < 0 ) connect_coordinator();
+        live_id = std::to_string( ++intent_counter );
+        const char *configured_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
+        if( configured_timeout == nullptr ) throw std::runtime_error( "NOVGOROD_ROLE_TIMEOUT_REQUIRED" );
+        reset_deadline( std::stoi( configured_timeout ) );
+        send_line( observation_message( "intent", intent ) );
+        await_coordinator();
+    } catch( const std::exception &error ) {
+        disconnect();
+        add_msg( "%s: %s", "Dev-проба: связь прервана", error.what() );
+    }
+#endif
+}
+
+void on_input_boundary()
+{
+#ifndef _WIN32
+    if( !awaiting_native || g->has_novgorod_actions() ) return;
+    if( evidence && ( evidence->primitive == "wait" || evidence->primitive == "speak" ) &&
+        !get_avatar().activity.is_null() ) return;
+    awaiting_native = false;
+    try {
+        const operation_result result = finish_operation();
+        const char *configured_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
+        if( configured_timeout == nullptr ) throw std::runtime_error( "NOVGOROD_ROLE_TIMEOUT_REQUIRED" );
+        reset_deadline( std::stoi( configured_timeout ) );
+        send_readback( result );
+        await_coordinator();
+    } catch( const std::exception &error ) {
+        disconnect();
+        add_msg( "%s: %s", "Действие уже исполнено; связь прервана", error.what() );
+    }
+#endif
+}
+
+} // namespace novgorod_semantic

@@ -1,0 +1,10 @@
+[
+  {
+    "type": "MOD_INFO",
+    "id": "novgorod_dev_world",
+    "name": "Novgorod Dev Courtyard",
+    "description": "A small fictional thirteenth-century courtyard for native gameplay tests.",
+    "category": "content",
+    "dependencies": [ "dda" ]
+  }
+]

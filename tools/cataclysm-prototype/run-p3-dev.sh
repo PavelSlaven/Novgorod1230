@@ -37,12 +37,32 @@ fi
 if [[ ! -e "$userdir" ]]; then
     mkdir -- "$userdir"
     cp -a -- "$fixture" "$userdir/save"
+    [[ ! -d "$runtime_root/fixture/config" ]] || cp -a -- "$runtime_root/fixture/config" "$userdir/config"
 fi
 [[ -d "$userdir/save" ]] || { echo 'Userdir повреждён: save отсутствует. Автосброс запрещён.' >&2; exit 1; }
 [[ -z $(find "$userdir" -type l -print -quit) ]] || { echo 'Ссылки внутри userdir не поддерживаются.' >&2; exit 1; }
 mapfile -d '' worlds < <(find "$userdir/save" -mindepth 1 -maxdepth 1 -type d -print0)
 [[ ${#worlds[@]} == 1 ]] || { echo 'Нужен ровно один dev-мир; сохранения не изменены.' >&2; exit 1; }
 world=$(basename -- "${worlds[0]}")
+python3 - "$userdir" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+config = Path(sys.argv[1]) / "config"
+try:
+    options = {entry["name"]: str(entry["value"]).lower()
+               for entry in json.loads((config / "options.json").read_text())}
+except (OSError, ValueError, KeyError, TypeError):
+    raise SystemExit("Отсутствует корректный dev-профиль native options.")
+required = {"AUTOSAVE": "true", "AUTOSAVE_TURNS": "3600", "AUTOSAVE_MINUTES": "5"}
+if any(options.get(key) != value for key, value in required.items()):
+    raise SystemExit("Требуется native AUTOSAVE=true, AUTOSAVE_TURNS=3600, AUTOSAVE_MINUTES=5.")
+keybindings = config / "keybindings.json"
+if not keybindings.exists():
+    keybindings.write_text(json.dumps([{"id": "NOVGOROD_SEMANTIC", "version": 2,
+        "category": "DEFAULTMODE", "bindings": [{"input_method": "keyboard_any", "key": ["F12"]}]}]) + "\n")
+PY
 socket="$run_dir/p3.sock"
 coordinator_pid=''
 game_pid=''
@@ -90,8 +110,7 @@ import sys
 import time
 
 path, pid = sys.argv[1], int(sys.argv[2])
-deadline = time.monotonic() + 20
-while time.monotonic() < deadline:
+while True:
     try:
         os.kill(pid, 0)
         with socket.socket(socket.AF_UNIX) as client:
@@ -102,8 +121,6 @@ while time.monotonic() < deadline:
         raise SystemExit("Coordinator завершился до readiness; запуск остановлен.")
     except (ConnectionRefusedError, FileNotFoundError, TimeoutError):
         time.sleep(0.05)
-else:
-    raise SystemExit("Coordinator не готов за 20 секунд; запуск остановлен.")
 PY
     export NOVGOROD_P3_SOCKET="$socket"
     export NOVGOROD_P3_TIMEOUT_MS=120000

@@ -1,0 +1,309 @@
+import assert from 'node:assert/strict';
+import { once } from 'node:events';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { connect } from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import test from 'node:test';
+import { randomUUID } from 'node:crypto';
+import { createLlmSettingsOwner } from '@rus/game-server';
+import { startP3LiveCoordinator } from './p3-live-coordinator.mjs';
+import { createP3LiveChannel, createP3NativeSocketAdapter } from './p3-live-socket.js';
+import { matchesP3WireModelId } from './p3-wire-smoke.mjs';
+
+const observation = { schema: 'p3_native_observation_v1', turn: 10, revision: 10,
+  actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] }],
+  items: [], targets: [{ target_ref: 'tile:east', position: [61, 60, 0] }] };
+
+test('wire accepts only configured Qwen alias and its backend id', () => {
+  assert.equal(matchesP3WireModelId('qwen3.8-27b-uncensored-w4a16-tp2'), true);
+  assert.equal(matchesP3WireModelId('qwen3.8-27b'), true);
+  assert.equal(matchesP3WireModelId('qwen3.8-27b-other'), false);
+  assert.equal(matchesP3WireModelId('qwen3.8-72b'), false);
+});
+
+function plan(request, operation) {
+  return { schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.remaining_intent,
+      grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [operation], check: null, continuation: null, clarification: null,
+    direct_result_kind: null, reason_code: 'native_action', reason: 'Attempt a native action.' };
+}
+
+async function fixture(t, decide, decideNpc = null) {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'p3-live-'));
+  const socketPath = process.platform === 'win32' ? `\\\\.\\pipe\\p3-live-${randomUUID()}`
+    : path.join(dir, 'p3.sock');
+  const settingsOwner = createLlmSettingsOwner({ initialRecord: { version: 2,
+    settings: { mode: 'custom', compatibility: 'openai_compatible',
+      base_url: 'http://127.0.0.1:11437/v1', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
+      api_key: 'synthetic-test' } } });
+  let calls = 0;
+  const coordinator = await startP3LiveCoordinator({ socketPath, settingsOwner, env: {},
+    runtimeFactory: ({ budget }) => {
+      const runner = budget.wrap({ async run({ role_id, request }) {
+        calls++;
+        if (role_id === 'npc_conversation_grounding_auditor') return true;
+        return role_id?.startsWith('npc_') ? decideNpc(request, calls) : decide(request, calls);
+      } });
+      const npcConversationModel = decideNpc && ((request, context) =>
+        runner.run({ role_id: context.repair ? 'npc_conversation_responder_format_repair'
+          : 'npc_conversation_responder', request }));
+      if (npcConversationModel) npcConversationModel.validateFreshPlan = (_plan, request) =>
+        runner.run({ role_id: 'npc_conversation_grounding_auditor', request });
+      return { turnStepModel: request => runner.run({ role_id: 'turn_step_planner', request }),
+        npcConversationModel };
+    } });
+  t.after(async () => { await coordinator.close(); await rm(dir, { recursive: true, force: true }); });
+  return { coordinator, get calls() { return calls; }, async client() {
+    const socket = connect(socketPath);
+    const channel = createP3LiveChannel(socket);
+    await once(socket, 'connect');
+    return { socket, channel };
+  } };
+}
+
+test('resident socket handles readiness and repeated intents without a process adapter', async t => {
+  const scene = await fixture(t, request => plan(request, { op: 'request_movement',
+    actor_ref: 'avatar', target_ref: 'tile:east', movement_kind: 'local' }));
+  const ready = await scene.client();
+  ready.socket.end();
+  assert.equal(scene.calls, 0);
+  for (const id of ['1', '2']) {
+    const { socket, channel } = await scene.client();
+    channel.bind(id);
+    channel.send({ type: 'intent', intent: 'Шаг на восток', observation });
+    assert.deepEqual(await channel.receive(), { type: 'role_phase', id,
+      role_id: 'turn_step_planner', timeout_ms: 120_000 });
+    const operation = await channel.receive();
+    assert.equal(operation.type, 'operation');
+    assert.equal(operation.request.primitive, 'move');
+    assert.deepEqual(operation.request.args, { direction: [1, 0] });
+    assert.equal(JSON.stringify(operation).includes('userdir'), false);
+    channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+      operation_id: operation.request.operation_id, status: 'applied', goal_result: 'achieved',
+      native_effect: { effect_status: 'confirmed' }, before: { turn: 10 }, after: { turn: 11 } },
+      observation: { ...observation, turn: 11, revision: 11 } });
+    const result = await channel.receive();
+    assert.equal(result.id, id);
+    assert.equal(result.status, 'completed');
+    assert.equal(result.applied_operations, 1);
+    socket.end();
+  }
+  assert.equal(scene.calls, 2);
+});
+
+test('empty input and hidden snapshot are rejected before planning', async t => {
+  const scene = await fixture(t, () => { throw new Error('must not plan'); });
+  for (const input of [
+    { intent: '', observation },
+    { intent: 'Осмотрись', observation: { ...observation, native_snapshot: {} } }
+  ]) {
+    const { socket, channel } = await scene.client();
+    channel.bind('3');
+    channel.send({ type: 'intent', ...input });
+    const result = await channel.receive();
+    assert.equal(result.status, 'refused');
+    assert.equal(result.applied_operations, 0);
+    socket.end();
+  }
+  assert.equal(scene.calls, 0);
+});
+
+test('model failure and malformed output cannot send native operations', async t => {
+  const scene = await fixture(t, (_request, calls) => {
+    if (calls === 1) throw new Error('private URL and token must not leak');
+    return {};
+  });
+  for (const id of ['4', '5']) {
+    const { socket, channel } = await scene.client();
+    channel.bind(id);
+    channel.send({ type: 'intent', intent: 'Неизвестное действие', observation });
+    let result;
+    do { result = await channel.receive(); } while (result.type === 'role_phase');
+    assert.equal(result.type, 'result');
+    assert.equal(result.status, 'refused');
+    assert.equal(result.applied_operations, 0);
+    assert.equal(JSON.stringify(result).includes('private URL'), false);
+    socket.end();
+  }
+});
+
+test('native refusal preserves the reason and stale wire id cannot confirm success', async t => {
+  const scene = await fixture(t, request => plan(request, { op: 'request_activity',
+    actor_ref: 'avatar', activity_kind: 'wait', target_refs: [], description: 'wait' }));
+  for (const stale of [false, true]) {
+    const { socket, channel } = await scene.client();
+    channel.bind('6');
+    channel.send({ type: 'intent', intent: 'Подожди', observation });
+    await channel.receive();
+    const operation = await channel.receive();
+    const message = { type: 'readback', id: stale ? 'old' : '6', readback: {
+      schema: 'p3_native_operation_readback_v1', operation_id: operation.request.operation_id,
+      status: 'refused', goal_result: 'refused', native_effect: { effect_status: 'refused' },
+      refusal: { code: 'P3_NATIVE_STALE_REFERENCE' }, before: {}, after: {} } };
+    socket.write(`${JSON.stringify(message)}\n`);
+    const result = await channel.receive();
+    assert.equal(result.status, 'refused');
+    assert.equal(result.code, stale ? 'P3_LIVE_INTENT_IDENTITY_MISMATCH' : 'P3_NATIVE_STALE_REFERENCE');
+    assert.equal(result.applied_operations, stale ? null : 0);
+    socket.end();
+  }
+});
+
+test('socket adapter refresh uses actor-safe observation and admits only one operation', async () => {
+  const sent = [];
+  const request = { operation_id: 'adapter-1' };
+  const queue = [{ type: 'observation', observation }, { type: 'readback', readback: {
+    schema: 'p3_native_operation_readback_v1', operation_id: request.operation_id,
+    status: 'applied', goal_result: 'in_progress', native_effect: { effect_status: 'progressing' },
+    before: {}, after: {} } }];
+  const adapter = createP3NativeSocketAdapter({ observation,
+    channel: { send: message => sent.push(message), receive: async () => queue.shift() } });
+  assert.deepEqual(await adapter.refreshObservation(), observation);
+  assert.equal((await adapter.execute(request)).goal_result, 'in_progress');
+  await assert.rejects(adapter.execute(request), /P3_LIVE_ONE_OPERATION_BOUNDARY/);
+  assert.deepEqual(sent.map(message => message.type), ['observe', 'operation']);
+});
+
+test('live literal speech needs no JS listener or conversation owner', async t => {
+  const utterance = '<name>, слышишь?';
+  const scene = await fixture(t, request => ({ ...plan(request, {}),
+    resolution: 'direct', goal_result: 'achieved', operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+      utterance_text: utterance, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'brief' } } }));
+  const { socket, channel } = await scene.client();
+  channel.bind('7');
+  channel.send({ type: 'intent', intent: `Скажи дословно: ${utterance}`, observation });
+  await channel.receive();
+  const operation = await channel.receive();
+  assert.equal(operation.type, 'operation');
+  assert.equal(operation.request.primitive, 'speak');
+  assert.deepEqual(operation.request.args, { utterance });
+  assert.deepEqual(operation.request.references, {});
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: operation.request.operation_id, status: 'applied', goal_result: 'in_progress',
+    native_effect: { effect_status: 'progressing', speakerId: '7', utterance,
+      actualHeardListenerIds: ['native-listener-outside-visible-list'] },
+    before: { turn: 10 }, after: { turn: 10 } } });
+  const result = await channel.receive();
+  assert.equal(result.status, 'completed');
+  assert.equal(result.goal_result, 'partially_achieved');
+  assert.equal(scene.calls, 1);
+  socket.end();
+});
+
+test('confirmed native listener gets one NPC model reply and native speech', async t => {
+  const utterance = 'Слышишь меня?';
+  const npc = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] };
+  const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
+  const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
+    goal_result: 'achieved', operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+      utterance_text: utterance, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'brief' } } }), request => ({
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: request.npc_ref, contribution_kind: 'speech',
+    primary_addressee_ref: request.allowed_references.actor_refs[1],
+    intended_addressee_refs: [request.allowed_references.actor_refs[1]],
+    affected_actor_refs: [], speech: { utterance_text: 'Слышу.',
+      dominant_act: 'answer', interaction_tags: [], topic_refs: [], claims: [],
+      response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: 'ответить', grounded_contribution: 'Я слышу.',
+      adaptation: 'literal' }, resolution: 'automatic',
+    activity: { duration_class: 'brief', effort: 'none' },
+    supporting_operations: [], check: null, handoff: null, reason: 'Ответ.' }));
+  const { socket, channel } = await scene.client();
+  channel.bind('10');
+  channel.send({ type: 'intent', intent: utterance, observation: sceneObservation });
+  assert.equal((await channel.receive()).role_id, 'turn_step_planner');
+  const first = await channel.receive();
+  assert.equal(first.request.primitive, 'speak');
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: first.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['8'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await channel.receive()).type, 'observe');
+  channel.send({ type: 'observation', observation: sceneObservation });
+  const npcPhase = await channel.receive();
+  assert.equal(npcPhase.role_id, 'npc_conversation_responder', JSON.stringify(npcPhase));
+  assert.equal((await channel.receive()).role_id, 'npc_conversation_grounding_auditor');
+  const second = await channel.receive();
+  assert.equal(second.request.primitive, 'speak');
+  assert.equal(second.request.actor_id, '8');
+  assert.deepEqual(second.request.args, { utterance: 'Слышу.' });
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: second.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '8', utterance: 'Слышу.',
+      actualHeardListenerIds: ['7'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  const result = await channel.receive();
+  assert.equal(result.status, 'completed');
+  assert.equal(result.applied_operations, 2);
+  assert.equal(scene.calls, 3);
+  socket.end();
+});
+
+test('two bad NPC replies stop after one repair without a native NPC operation', async t => {
+  const utterance = 'Ответь';
+  const npc = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] };
+  const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
+  const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
+    goal_result: 'achieved', operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+      utterance_text: utterance, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'brief' } } }), () => ({}));
+  const { socket, channel } = await scene.client();
+  channel.bind('11');
+  channel.send({ type: 'intent', intent: utterance, observation: sceneObservation });
+  await channel.receive();
+  const first = await channel.receive();
+  channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: first.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['8'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await channel.receive()).type, 'observe');
+  channel.send({ type: 'observation', observation: sceneObservation });
+  assert.equal((await channel.receive()).role_id, 'npc_conversation_responder');
+  assert.equal((await channel.receive()).role_id, 'npc_conversation_responder_format_repair');
+  const result = await channel.receive();
+  assert.equal(result.type, 'result');
+  assert.equal(result.status, 'refused');
+  assert.equal(result.applied_operations, 1);
+  assert.equal(result.goal_result, 'partially_achieved');
+  assert.equal(scene.calls, 3);
+  socket.end();
+});
+
+test('disconnect during planning cannot send an operation or kill the resident coordinator', async t => {
+  let release;
+  const waiting = new Promise(resolve => { release = resolve; });
+  const scene = await fixture(t, async (request, calls) => {
+    if (calls === 1) await waiting;
+    return plan(request, { op: 'request_activity', actor_ref: 'avatar',
+      activity_kind: 'wait', target_refs: [], description: 'wait' });
+  });
+  const first = await scene.client();
+  first.channel.bind('8');
+  first.channel.send({ type: 'intent', intent: 'Подожди', observation });
+  assert.equal((await first.channel.receive()).type, 'role_phase');
+  first.socket.destroy();
+  await once(first.socket, 'close');
+  release();
+  await new Promise(setImmediate);
+  const second = await scene.client();
+  second.channel.bind('9');
+  second.channel.send({ type: 'intent', intent: 'Подожди снова', observation });
+  assert.equal((await second.channel.receive()).type, 'role_phase');
+  assert.equal((await second.channel.receive()).type, 'operation');
+  second.socket.destroy();
+});

@@ -3,6 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { resolveLlmExecutionConfig } from '@rus/llm-runtime';
 import { createLlmSettingsOwner } from '@rus/game-server';
 import { request as sampleRequest, plan as samplePlan } from '../../packages/turn/test/turn-step-contracts-fixture.js';
 import { createLowerDvinaTraceTurnStepModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
@@ -556,8 +557,9 @@ test('sealed package shares one attempt budget and evidence root across all rese
   const nativeConfigs = [];
   const operationIds = [];
   const roleConfigs = Array.from({ length: 6 }, (_, index) => ({ role_id: `role-${index}`,
-    provider: 'deepseek', model: 'deepseek-v4-flash', temperature: 0, top_p: 1,
-    max_tokens: 20_000, timeout_ms: 120_000, api_key_present: true,
+    provider: 'openai_compatible', model: 'qwen3.8-27b-uncensored-w4a16-tp2', temperature: 0, top_p: 1,
+    max_tokens: 20_000, context_window_tokens: 65_536, input_limit_tokens: 45_536,
+    timeout_ms: 120_000, api_key_present: true,
     api_key: 'must-not-persist' }));
   const result = await runP3SealedPackage({ casePack, roleConfigs, nativeConfig: {
     evidence_root: path.join(temp, 'evidence'), nativeUserDir: '/native/users',
@@ -942,34 +944,47 @@ test('coordinator speech rejects canonical conversation or state mismatches befo
 
 test('effective config reports only approved nonsecret fields and rejects token mismatch', () => {
   const settingsOwner = qwenSettingsOwner();
-  const env = { DEEPSEEK_API_KEY: 'test-secret' };
+  const env = { DEEPSEEK_API_KEY: 'test-secret', TURN_STEP_PLANNER_HARD_INPUT_LIMIT_TOKENS: '600000' };
   const config = resolveP3EffectiveConfig({ roleId: 'turn_step_planner', env, settingsOwner });
   assert.deepEqual({ provider: config.provider, model: config.model, temperature: config.temperature,
-    top_p: config.top_p, max_tokens: config.max_tokens, timeout_ms: config.timeout_ms,
+    top_p: config.top_p, max_tokens: config.max_tokens, context_window_tokens: config.context_window_tokens,
+    input_limit_tokens: config.input_limit_tokens, timeout_ms: config.timeout_ms,
     api_key_present: config.api_key_present }, { provider: 'openai_compatible', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
-    temperature: 0, top_p: 1, max_tokens: 20_000, timeout_ms: 120_000, api_key_present: true });
+    temperature: 0, top_p: 1, max_tokens: 20_000, context_window_tokens: 65_536,
+    input_limit_tokens: 45_536, timeout_ms: 120_000, api_key_present: true });
   assert.equal(JSON.stringify(config).includes('test-secret'), false);
   assert.equal(resolveP3EffectiveConfig({ roleId: 'npc_conversation_responder',
     env: { DEEPSEEK_API_KEY: 'test-secret', NPC_CONVERSATION_RESPONDER_MAX_TOKENS: '2000' }, settingsOwner }).max_tokens, 1_000);
   assert.equal(resolveP3EffectiveConfig({ roleId: 'turn_step_planner',
     env: { DEEPSEEK_API_KEY: 'test-secret', TURN_STEP_PLANNER_MODEL: 'other-model' }, settingsOwner }).model,
   'qwen3.8-27b-uncensored-w4a16-tp2');
-  for (const [roleId, tokens] of [
-    ['turn_step_planner', 20_000], ['turn_step_planner_repair', 20_000],
-    ['npc_autonomous_decider', 20_000], ['npc_autonomous_decider_format_repair', 20_000],
-    ['npc_conversation_responder', 1_000],
-    ['npc_conversation_responder_format_repair', 1_000]
-  ]) assert.equal(resolveP3EffectiveConfig({ roleId, env, settingsOwner }).max_tokens, tokens, roleId);
+  for (const [roleId, tokens, inputLimit] of [
+    ['turn_step_planner', 20_000, 45_536], ['turn_step_planner_repair', 20_000, 45_536],
+    ['npc_autonomous_decider', 20_000, 45_536], ['npc_autonomous_decider_format_repair', 20_000, 45_536],
+    ['npc_conversation_responder', 1_000, 64_536],
+    ['npc_conversation_responder_format_repair', 1_000, 64_536]
+  ]) {
+    const effective = resolveP3EffectiveConfig({ roleId, env, settingsOwner });
+    assert.equal(effective.max_tokens, tokens, roleId);
+    assert.equal(effective.context_window_tokens, 65_536, roleId);
+    assert.equal(effective.input_limit_tokens, inputLimit, roleId);
+  }
   assert.throws(() => resolveP3EffectiveConfig({ roleId: 'unrecognized_role', env }),
     /P3_ROLE_UNSUPPORTED/);
 });
 
 test('P3 role runtime uses existing provider adapter with fixed protocol overrides', async () => {
   let call;
+  const executionConfigs = [];
   const settingsOwner = qwenSettingsOwner();
   const runtime = createP3RoleRuntime({ env: {}, settingsOwner,
-    execute: async value => { call = value; return { status: 'ok', parsed_json: { ok: true },
-      provider: 'deepseek', model: 'deepseek-v4-flash', scope: value.scope,
+    execute: async value => {
+      call = value;
+      executionConfigs.push(resolveLlmExecutionConfig({ scope: value.scope, roleId: value.roleId,
+        env: value.env, overrides: value.overrides,
+        runtimeProviderOverride: value.runtimeProviderOverride }).config);
+      return { status: 'ok', parsed_json: { ok: true },
+      provider: 'openai_compatible', model: 'qwen3.8-27b-uncensored-w4a16-tp2', scope: value.scope,
       role_id: value.roleId, durationMs: 1 }; } });
   const result = await runtime.roleRunner.run({ scope: 'turn_runtime',
     role_id: 'npc_conversation_responder_format_repair', messages: [],
@@ -981,6 +996,9 @@ test('P3 role runtime uses existing provider adapter with fixed protocol overrid
   assert.deepEqual({ temperature: call.overrides.temperature, topP: call.overrides.topP,
     maxTokens: call.overrides.maxTokens, requestTimeoutMs: call.overrides.requestTimeoutMs },
   { temperature: 0, topP: 1, maxTokens: 1_000, requestTimeoutMs: 120_000 });
+  await runtime.roleRunner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner', messages: [] });
+  assert.deepEqual(executionConfigs.map(({ contextBudget }) => contextBudget.hardInputLimitTokens),
+    [64_536, 45_536]);
 });
 
 test('P3 settings loader requires explicit file and private Qwen endpoint without applying settings', async () => {

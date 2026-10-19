@@ -21,6 +21,14 @@ import { applyPlayerPlan, projectPlayerStatementAudience } from
 
 export const P3_ATTEMPT_BUDGET = 72;
 export const P3_CASE_IDS = Object.freeze(['T06', 'T07', 'T08', 'T09', 'T10']);
+const P3_ROLE_LIMITS = Object.freeze({
+  turn_step_planner: { envPrefix: 'TURN_STEP_PLANNER', maxTokens: 20_000 },
+  turn_step_planner_repair: { envPrefix: 'TURN_STEP_PLANNER_REPAIR', maxTokens: 20_000 },
+  npc_autonomous_decider: { envPrefix: 'NPC_AUTONOMOUS_DECIDER', maxTokens: 20_000 },
+  npc_autonomous_decider_format_repair: { envPrefix: 'NPC_AUTONOMOUS_DECIDER_REPAIR', maxTokens: 20_000 },
+  npc_conversation_responder: { envPrefix: 'NPC_CONVERSATION_RESPONDER', maxTokens: 1_000 },
+  npc_conversation_responder_format_repair: { envPrefix: 'NPC_CONVERSATION_RESPONDER_REPAIR', maxTokens: 1_000 }
+});
 
 export function requireP3CaseId(caseId) {
   if (!P3_CASE_IDS.includes(caseId)) throw new Error('P3_CASE_NOT_IN_ACCEPTANCE_MATRIX');
@@ -63,16 +71,16 @@ export function createP3AttemptBudget({ budget = P3_ATTEMPT_BUDGET,
 }
 
 export function resolveP3EffectiveConfig({ roleId, env = process.env, settingsOwner } = {}) {
-  const expectedTokens = ({ turn_step_planner: 20_000, turn_step_planner_repair: 20_000,
-    npc_autonomous_decider: 20_000, npc_autonomous_decider_format_repair: 20_000,
-    npc_conversation_responder: 1_000,
-    npc_conversation_responder_format_repair: 1_000 })[roleId];
-  if (!expectedTokens) throw new Error(`P3_ROLE_UNSUPPORTED:${roleId}`);
+  const roleLimit = P3_ROLE_LIMITS[roleId];
+  if (!roleLimit) throw new Error(`P3_ROLE_UNSUPPORTED:${roleId}`);
+  const { envPrefix, maxTokens: expectedTokens } = roleLimit;
   requireP3QwenSettingsOwner(settingsOwner);
+  const inputLimitTokens = 65_536 - expectedTokens;
+  const p3Env = makeP3Env(env);
   const providerSnapshot = settingsOwner?.providerSnapshot();
   const runtimeProviderOverride = providerSnapshot ? { compatibility: providerSnapshot.compatibility,
     baseUrl: providerSnapshot.baseUrl, model: providerSnapshot.model, apiKey: providerSnapshot.apiKey } : null;
-  const resolution = resolveLlmExecutionConfig({ scope: 'turn_runtime', roleId, env, runtimeProviderOverride,
+  const resolution = resolveLlmExecutionConfig({ scope: 'turn_runtime', roleId, env: p3Env, runtimeProviderOverride,
     overrides: { temperature: 0, topP: 1, maxTokens: expectedTokens } });
   if (!resolution.enabled) throw new Error(`P3_ROLE_CONFIG_DISABLED:${resolution.reason}`);
   const config = resolution.config;
@@ -81,8 +89,12 @@ export function resolveP3EffectiveConfig({ roleId, env = process.env, settingsOw
     throw new Error(`P3_ROLE_CONFIG_MISMATCH:${roleId}`);
   }
   if (config.maxTokens !== expectedTokens) throw new Error(`P3_ROLE_TOKEN_LIMIT_MISMATCH:${roleId}`);
+  if (config.contextBudget?.hardInputLimitTokens !== inputLimitTokens) {
+    throw new Error(`P3_ROLE_INPUT_LIMIT_MISMATCH:${roleId}`);
+  }
   return Object.freeze({ role_id: roleId, provider: config.provider, model: config.model,
     temperature: config.temperature, top_p: config.topP, max_tokens: config.maxTokens,
+    context_window_tokens: 65_536, input_limit_tokens: inputLimitTokens,
     timeout_ms: config.requestTimeoutMs, api_key_present: typeof config.apiKey === 'string'
       && config.apiKey.length > 0 });
 }
@@ -411,8 +423,9 @@ export function selectP3NativeNpcFixture(observation) {
 export function createP3RoleRuntime({ env = process.env, budget = createP3AttemptBudget(),
   execute, settingsOwner } = {}) {
   requireP3QwenSettingsOwner(settingsOwner);
-  validateP3RoleConfigs(env, settingsOwner);
-  const provider = createProductionLlmRoleRunner({ env, settings: settingsOwner,
+  const p3Env = makeP3Env(env);
+  validateP3RoleConfigs(p3Env, settingsOwner);
+  const provider = createProductionLlmRoleRunner({ env: p3Env, settings: settingsOwner,
     ...(execute ? { execute } : {}) });
   const roleRunner = budget.wrap({ async run(call) {
     const roleId = call.role_id ?? '';
@@ -433,6 +446,14 @@ export function createP3RoleRuntime({ env = process.env, budget = createP3Attemp
     npcAutonomousModel: createLowerDvinaTraceNpcAutonomousModel({ roleRunner }),
     npcConversationModel: createLowerDvinaTraceNpcSemanticModel({ roleRunner }),
     budget });
+}
+
+function makeP3Env(env) {
+  return Object.freeze(Object.fromEntries([
+    ...Object.entries(env),
+    ...Object.values(P3_ROLE_LIMITS).map(({ envPrefix, maxTokens }) =>
+      [`${envPrefix}_HARD_INPUT_LIMIT_TOKENS`, String(65_536 - maxTokens)])
+  ]));
 }
 
 export function buildP3TurnOperations(observation) {
@@ -690,7 +711,7 @@ function isPrivateLanHost(hostname) {
 
 function sanitizeP3RoleConfigs(configs) {
   const fields = ['role_id', 'provider', 'model', 'temperature', 'top_p',
-    'max_tokens', 'timeout_ms', 'api_key_present'];
+    'max_tokens', 'context_window_tokens', 'input_limit_tokens', 'timeout_ms', 'api_key_present'];
   if (!Array.isArray(configs) || configs.length !== 6) {
     throw new Error('P3_SEALED_ROLE_CONFIG_REQUIRED');
   }
@@ -699,7 +720,9 @@ function sanitizeP3RoleConfigs(configs) {
     if (typeof config.role_id !== 'string' || typeof config.provider !== 'string'
         || typeof config.model !== 'string' || typeof config.api_key_present !== 'boolean'
         || !Number.isFinite(config.temperature) || !Number.isFinite(config.top_p)
-        || !Number.isSafeInteger(config.max_tokens) || !Number.isSafeInteger(config.timeout_ms)) {
+        || !Number.isSafeInteger(config.max_tokens) || !Number.isSafeInteger(config.timeout_ms)
+        || config.context_window_tokens !== 65_536
+        || config.input_limit_tokens !== config.context_window_tokens - config.max_tokens) {
       throw new Error('P3_SEALED_ROLE_CONFIG_INVALID');
     }
     return Object.fromEntries(fields.map(key => [key, config[key]]));

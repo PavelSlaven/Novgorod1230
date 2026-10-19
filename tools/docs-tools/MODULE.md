@@ -10,7 +10,8 @@
 - построением lexical RAG index (deterministic chunks, без embedding);
 - генерацией `MODULE_INDEX.md` и schema reference;
 - generated manifest и проверкой reproducibility;
-- canonical-path, seed-source и dated-artifact policy checks.
+- canonical-path, seed-source и dated-artifact policy checks;
+- проверкой и пересборкой сводной таблицы нужд в `docs/context/cdda-native-map/INDEX.md` (§6) из таблиц `areas/*.md` (`src/cdda-native-map-table.js`, тест `test/cdda-native-map-table.test.js`).
 
 ## Не делает
 
@@ -26,7 +27,8 @@
 ## CLI
 
 - `npm run docs:generate` — воспроизводимо обновляет generated reference и `MODULE_INDEX.md`;
-- `npm run docs:check` — сравнивает committed output с повторной генерацией и проверяет policies.
+- `npm run docs:check` — сравнивает committed output с повторной генерацией и проверяет policies; последним шагом запускает `cdda-native-map-table.js --check`, который сообщает об устаревшей таблице нужд;
+- `node tools/docs-tools/src/cdda-native-map-table.js` — пересобирает таблицу нужд в `INDEX.md` между маркерами `BEGIN/END NEEDS TABLE`.
 
 ## Инварианты
 

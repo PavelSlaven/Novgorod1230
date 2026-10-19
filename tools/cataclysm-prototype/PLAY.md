@@ -4,12 +4,15 @@
 Сцена — вымышленный двор мастера; вне него остаётся обычный мир CDDA.
 Две реплики NPC и save/restart проверены с локальным fake; Qwen ещё не проверен.
 
-В PowerShell задайте `$env:RUS_LLM_SETTINGS_PATH` путём к существующему файлу
-настроек согласованного локального Qwen, затем из корня репозитория:
+Из корня репозитория в PowerShell:
 
 ```powershell
 .\tools\cataclysm-prototype\run-p3-dev.ps1
 ```
+
+Launcher берёт существующие настройки Qwen из `%LOCALAPPDATA%\Novgorod1230\llm-settings.json`
+по правилу владельца game-server. Файл не копируется и не меняется.
+Для другого файла заранее задайте `$env:RUS_LLM_SETTINGS_PATH`.
 
 Мир постоянный: WSL `/home/slaven/cataclysm-recovery/task03-dev/userdir`.
 Первый запуск копирует fixture; повторный продолжает сохранение.
@@ -21,8 +24,8 @@
 Сохранить и выйти: `Esc` → `S` → `Y`; главное меню: `Q` → `Y`.
 Родной autosave включён: 3600 ходов / минимум 5 реальных минут.
 Сброс: та же команда с `-Reset`; старый userdir остаётся в `userdir-before-reset-*`.
-Без LLM: та же команда с `-NativeOnly`. Settings передаются в WSL;
-launcher поднимает coordinator и завершает его при выходе.
+Без LLM: та же команда с `-NativeOnly`.
+При запуске с LLM настройки передаются в WSL; coordinator завершается при выходе.
 
 Граница: `move`, `use_item`, `open`, `wait`, `speak`, `pickup`, радиус 1;
 вне её — отказ. Знания/память NPC пока пусты; ответ не означает память.

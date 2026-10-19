@@ -1,0 +1,1 @@
+{"phase":"gateway","http_status":200,"elapsed_ms":19,"configured_model":"qwen3.8-27b-uncensored-w4a16-tp2","matching_model_ids":["qwen3.8-27b-uncensored-w4a16-tp2"],"model_calls":0,"transport":"WSL to configured private gateway","settings_copied":false}

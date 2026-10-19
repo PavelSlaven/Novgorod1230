@@ -1,0 +1,1 @@
+{"attempt":17,"phase":"semantic_repair_live","pid":430,"state":"completed","request_model_id":"qwen3.8-27b-uncensored-w4a16-tp2","response_model_id":"qwen3.8-27b","max_tokens":1000,"prompt_tokens":3337,"completion_tokens":381,"total_tokens":3718,"http_status":200,"elapsed_ms":3505,"failure_code":null}

@@ -1,0 +1,13 @@
+
+> rus-modules@0.23.0-migration.24 docs:check
+> node tools/docs-tools/src/cli.js check --root . && node tools/spatial-v3/check-production-activation-boundary.mjs && node tools/docs-tools/src/cdda-native-map-table.js --check
+
+Documentation/generated data: OK (8 generated files)
+{
+  "schema": "rus.spatial-v3.production-activation-boundary-check.v1",
+  "finding_count": 0,
+  "current_production_owner": "production_v3",
+  "activation_operation": "versioned production activation cutover",
+  "historical_p28_commit": "2ec109c99c5e2b33f43dc5f89735e6e72686299b"
+}
+CDDA native map needs table: OK (236 rows {"полное":119,"частичное":104,"нет":10,"иное":3})

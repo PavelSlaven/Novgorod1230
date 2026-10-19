@@ -1,0 +1,69 @@
+import { ledgerSummary } from './qwen-metrics-preload.mjs';
+import { existsSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
+import { createP3AttemptBudget, createP3RoleRuntime, loadP3QwenSettingsOwner,
+  runP3NativeNpcReply } from '../../tools/cataclysm-prototype/p3-boundary.js';
+import { matchesP3WireModelId } from '../../tools/cataclysm-prototype/p3-wire-smoke.mjs';
+
+const resultFile = new URL('./qwen-npc-bench-result.json', import.meta.url);
+if (existsSync(resultFile)) throw new Error('P3_NPC_BENCH_RESULT_ALREADY_EXISTS');
+if (process.env.P3_QWEN_PHASE !== 'npc_bench') throw new Error('P3_NPC_BENCH_PHASE_REQUIRED');
+const previousAttempt = Math.max(0, ...ledgerSummary().attempts.map(item => item.attempt ?? 0));
+const wireAttempts = () => ledgerSummary().attempts.filter(item => item.attempt > previousAttempt
+  && item.pid === process.pid && item.phase === 'npc_bench');
+const roles = [];
+const budget = createP3AttemptBudget({ budget: 5, onAttempt: async event => {
+  if (event.phase === 'before') roles.push({ attempt: event.attempt, role_id: event.input.role_id });
+} });
+const settingsOwner = await loadP3QwenSettingsOwner();
+const runtime = createP3RoleRuntime({ settingsOwner, budget });
+const observation = { schema: 'p3_native_observation_v1', turn: 10, revision: 10,
+  actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
+    { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] }],
+  items: [], targets: [] };
+const playerReadback = { schema: 'p3_native_operation_readback_v1',
+  operation_id: 'npc-bench-player-fixture', status: 'applied', goal_result: 'achieved',
+  native_effect: { effect_status: 'confirmed', speakerId: '7',
+    utterance: 'Привет, слышишь меня?', actualHeardListenerIds: ['8'], elapsedSeconds: 3 },
+  before: { turn: 10 }, after: { turn: 13 } };
+let nativeOperations = 0;
+let result = null;
+let failureCode = null;
+const nativeAdapter = {
+  async refreshObservation() { return { ...structuredClone(observation), turn: 13, revision: 13 }; },
+  async execute(request) {
+    if (wireAttempts().some(item => !matchesP3WireModelId(item.response_model_id))) {
+      throw new Error('P3_WIRE_UNEXPECTED_RESPONSE_MODEL');
+    }
+    if (nativeOperations || request.primitive !== 'speak' || request.actor_id !== '8') {
+      throw new Error('P3_NPC_BENCH_UNEXPECTED_NATIVE_OPERATION');
+    }
+    nativeOperations++;
+    return { schema: 'p3_native_operation_readback_v1', operation_id: request.operation_id,
+      status: 'applied', goal_result: 'achieved', native_effect: { effect_status: 'confirmed',
+        speakerId: request.actor_id, utterance: request.args.utterance,
+        actualHeardListenerIds: ['7'], elapsedSeconds: 3 },
+      before: { turn: 13 }, after: { turn: 16 } };
+  }
+};
+try {
+  const reply = await runP3NativeNpcReply({ nativeAdapter, observation, playerReadback,
+    semanticModel: runtime.npcConversationModel, targetActorRef: 'npc:8', maxRepairAttempts: 1 });
+  result = { proposal_status: reply?.proposal?.status ?? null,
+    contribution_kind: reply?.proposal?.plan?.contribution_kind ?? null,
+    native_readback_status: reply?.native_readback?.status ?? null };
+  if (wireAttempts().some(item => !matchesP3WireModelId(item.response_model_id))) {
+    throw new Error('P3_WIRE_UNEXPECTED_RESPONSE_MODEL');
+  }
+} catch (error) {
+  failureCode = /^[A-Z][A-Z0-9_]*$/u.test(error?.code ?? error?.message ?? '')
+    ? error.code ?? error.message : 'P3_NPC_BENCH_FAILED';
+}
+const report = { kind: 'direct_existing_npc_reply_rolepath_synthetic_native_readback_no_planner',
+  call_cap: 5, max_repair_attempts: 1, role_attempt_count: budget.calls,
+  http_attempt_count: wireAttempts().length, roles, attempts: wireAttempts(),
+  synthetic_native_operations: nativeOperations, result, failure_code: failureCode };
+await writeFile(resultFile, `${JSON.stringify(report, null, 2)}\n`, { flag: 'wx' });
+process.stdout.write(`${JSON.stringify({ role_attempt_count: budget.calls,
+  http_attempt_count: report.http_attempt_count, failure_code: failureCode })}\n`);
+if (failureCode) process.exitCode = 1;

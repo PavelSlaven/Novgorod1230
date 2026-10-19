@@ -1,0 +1,23 @@
+
+
+-----------------------------------------
+10:51:18.007 : Starting log.
+10:51:18.008 INFO : Cataclysm DDA version 0d8843f
+10:51:18.010 INFO : Randomness seeded to: 12345
+
+10:51:18.012 INFO : Running Catch2 session:
+Filters: [novgorod_live]
+
+10:51:18.018 INFO : [options] C locale set to C
+10:51:18.020 INFO : [options] C++ locale set to C
+10:51:18.897 INFO : /home/slaven/cataclysm-recovery/task03-dev/source/src/mod_tracker.h:68: Tried check if 'charging_station_2x2' had a duplicate, but type 'overmap_special' does not track object sources
+10:51:20.404 WARNING : Dark Days Ahead pack load time:: 2116305us (avg: 2116305us) (count: 1)
+10:51:20.407 WARNING : TESTING DATA pack load time:: 72374us (avg: 72374us) (count: 1)
+10:51:37.103 INFO : Game data loaded
+
+10:51:37.321 WARNING : opendir [/home/slaven/cataclysm-recovery/task03-dev/reply03e-native-focused/cache] failed with "No such file or directory".===============================================================================
+All tests passed (571 assertions in 13 test cases)
+
+
+10:51:48.984 INFO : Finished in 30.9669 seconds
+10:51:48.986 INFO : Randomness seeded to: 12345

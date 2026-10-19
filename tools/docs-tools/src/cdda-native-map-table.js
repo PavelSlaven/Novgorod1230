@@ -105,7 +105,7 @@ export async function buildNeedsTable(mapDirectory) {
 export async function renderIndex(mapDirectory) {
   const { table, stats } = await buildNeedsTable(mapDirectory);
   const path = join(mapDirectory, 'INDEX.md');
-  const current = (await readFile(path, 'utf8')).replace(/\r\n|\r/gu, '\n');
+  const current = await readFile(path, 'utf8');
   const begin = current.indexOf(BEGIN_MARKER);
   const end = current.indexOf(END_MARKER);
   if (begin < 0 || end < begin) throw new Error(`${path}: needs-table markers are missing or out of order`);

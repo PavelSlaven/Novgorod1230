@@ -83,6 +83,24 @@ test('check detects a stale table and passes after the table is written', async 
   }
 });
 
+test('text outside the table markers keeps its CRLF line endings', async () => {
+  const { fixtureRoot, mapDirectory } = await createFixture();
+  try {
+    const path = join(mapDirectory, 'INDEX.md');
+    const original = ['# Индекс', '', BEGIN_MARKER, 'stale', END_MARKER, '', 'tail', ''].join('\r\n');
+    await writeFile(path, original);
+    await writeNeedsTable(mapDirectory);
+    const index = await readFile(path, 'utf8');
+    const head = original.slice(0, original.indexOf(BEGIN_MARKER) + BEGIN_MARKER.length);
+    const tail = original.slice(original.indexOf(END_MARKER));
+    assert.ok(index.startsWith(head));
+    assert.ok(index.endsWith(tail));
+    assert.equal((await checkNeedsTable(mapDirectory)).ok, true);
+  } finally {
+    await rm(fixtureRoot, { recursive: true, force: true });
+  }
+});
+
 test('a row with the wrong number of cells is rejected', async () => {
   const { fixtureRoot, mapDirectory } = await createFixture();
   try {

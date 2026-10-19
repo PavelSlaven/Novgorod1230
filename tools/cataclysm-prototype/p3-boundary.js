@@ -87,7 +87,7 @@ export function resolveP3EffectiveConfig({ roleId, env = process.env, settingsOw
   if (!resolution.enabled) throw new Error(`P3_ROLE_CONFIG_DISABLED:${resolution.reason}`);
   const config = resolution.config;
   if (config.provider !== 'openai_compatible' || config.model !== 'qwen3.8-27b-uncensored-w4a16-tp2'
-      || config.temperature !== 0 || config.topP !== 1 || config.requestTimeoutMs !== 120_000) {
+      || config.temperature !== 0 || config.topP !== 1) {
     throw new Error(`P3_ROLE_CONFIG_MISMATCH:${roleId}`);
   }
   if (config.maxTokens !== expectedTokens) throw new Error(`P3_ROLE_TOKEN_LIMIT_MISMATCH:${roleId}`);
@@ -412,12 +412,14 @@ export async function runP3NativeNpcFlow({ nativeAdapter, actorId, semanticModel
 }
 
 export async function runP3NativeNpcReply({ nativeAdapter, observation, playerReadback,
-  semanticModel, maxRepairAttempts = 2 } = {}) {
+  semanticModel, targetActorRef = null, maxRepairAttempts = 2 } = {}) {
   const effect = playerReadback?.native_effect;
   if (playerReadback?.status !== 'applied' || !Array.isArray(effect?.actualHeardListenerIds)
-      || typeof effect.utterance !== 'string' || !effect.utterance) return null;
+      || typeof effect.utterance !== 'string' || !effect.utterance
+      || typeof targetActorRef !== 'string' || !/^npc:\d+$/u.test(targetActorRef)) return null;
   const heard = new Set(effect.actualHeardListenerIds);
-  const npc = observation.actors.find(actor => actor.actor_ref?.startsWith('npc:')
+  const npc = observation.actors.find(actor => actor.actor_ref === targetActorRef
+    && actor.actor_id === targetActorRef.slice(4)
     && actor.visible === true && heard.has(actor.actor_id));
   if (!npc) return null;
   const current = await nativeAdapter.refreshObservation();
@@ -654,14 +656,21 @@ export function mapP3TurnOperationToNative(operation, observation, { nativeSpeec
 
 export async function runP3TurnStep({ intent, observation, nativeAdapter,
   turnStepModel, operationId = randomUUID(), conversationOwnerForSpeech = null,
-  nativeSpeechOnly = false } = {}) {
+  nativeSpeechOnly = false, targetActorRef = null } = {}) {
   if (typeof intent !== 'string' || !intent.trim()) throw new TypeError('intent required');
   if (typeof turnStepModel !== 'function') throw new TypeError('turnStepModel required');
   requireP3NativeSeam(nativeAdapter);
+  const selectedNpc = nativeSpeechOnly && typeof targetActorRef === 'string'
+    && /^npc:\d+$/u.test(targetActorRef) && observation.actors.some(actor =>
+      actor.actor_ref === targetActorRef && actor.actor_id === targetActorRef.slice(4)
+      && actor.visible === true)
+    ? targetActorRef : null;
   const initial = { actor_ref: 'avatar', native_observation: structuredClone(observation) };
   const applyNativeOperation = async ({ operation, working_projection: projection }) => {
         const current = projection.native_observation;
-        const mapped = mapP3TurnOperationToNative(operation, current, { nativeSpeechOnly });
+        const selectedOperation = nativeSpeechOnly && operation?.op === 'emit_interaction'
+          ? { ...operation, target_actor_refs: selectedNpc ? [selectedNpc] : [] } : operation;
+        const mapped = mapP3TurnOperationToNative(selectedOperation, current, { nativeSpeechOnly });
         const envelope = createP3OperationEnvelope({ operationId,
           observation: current, ...mapped,
           registeredPrimitives: ['move', 'use_item', 'open', 'wait', 'speak', 'pickup'] });
@@ -726,9 +735,10 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
         throw new Error('P3_NATIVE_SPEECH_OWNER_REQUIRED');
       }
       const operation = { op: 'emit_interaction', actor_ref: 'avatar',
-        target_actor_refs: projection.native_observation.actors
-          .filter(({ actor_ref, visible }) => actor_ref !== 'avatar' && visible === true)
-          .map(({ actor_ref }) => actor_ref),
+        target_actor_refs: nativeSpeechOnly ? (selectedNpc ? [selectedNpc] : [])
+          : projection.native_observation.actors
+            .filter(({ actor_ref, visible }) => actor_ref !== 'avatar' && visible === true)
+            .map(({ actor_ref }) => actor_ref),
         interaction_kind: 'speech', content: plan.utterance.utterance_text,
         instrument_refs: [] };
       return applyNativeOperation({ operation, working_projection: projection });

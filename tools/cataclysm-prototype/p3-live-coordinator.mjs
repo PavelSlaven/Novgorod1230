@@ -55,12 +55,14 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
       adapter = createP3NativeSocketAdapter({ channel, observation });
       const result = await runP3TurnStep({ intent: message.intent, observation,
         nativeAdapter: adapter, turnStepModel: runtime.turnStepModel,
-        operationId: `live-${message.id}`, nativeSpeechOnly: true });
+        operationId: `live-${message.id}`, nativeSpeechOnly: true,
+        targetActorRef: message.target_actor_ref });
       const playerReadback = result.working_projection.native_readback;
       const npcReply = playerReadback?.status === 'applied'
           && playerReadback.native_effect?.utterance !== undefined
         ? await runP3NativeNpcReply({ nativeAdapter: adapter, observation,
           playerReadback, semanticModel: runtime.npcConversationModel,
+          targetActorRef: message.target_actor_ref,
           maxRepairAttempts: config.npcMaxRepairAttempts }) : null;
       const readback = adapter.lastReadback;
       const applied = readback?.status === 'applied';
@@ -70,7 +72,8 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
           : result.working_projection.native_goal_result ?? 'not_achieved',
         code: readback?.refusal?.code ?? (applied ? null : 'P3_LIVE_NO_NATIVE_ACTION'),
         message: applied ? 'Родное действие принято. Черновик, не сохранено.'
-          : 'Действие не выполнено.',
+          : readback ? 'Родное действие отклонено. Черновик, не сохранено.'
+            : 'Действие вне границ dev-пробы: можно идти, поднять или использовать предмет, открыть, ждать и говорить рядом (радиус 1).',
         stop_reason: result.stop_reason });
     } catch (error) {
       if (!socket.destroyed && socket.writable && error?.message !== 'P3_LIVE_CONNECTION_CLOSED') {
@@ -83,7 +86,11 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
           goal_result: unknown ? 'unknown' : applied ? 'partially_achieved' : 'not_achieved',
           message: unknown ? 'Результат родного действия не подтверждён. Черновик, не сохранено.'
             : applied ? 'Действие уже начато; дальнейшая обработка не завершена. Черновик, не сохранено.'
-            : 'Действие не выполнено: семантический координатор недоступен или отказал.' });
+            : code === 'P3_LIVE_BUSY'
+              ? 'Предыдущее действие ещё обрабатывается. Повторите после его завершения.'
+              : /^(?:P3_(?:TYPED_|NATIVE_MOVE_TARGET_NOT_ADJACENT|PICKUP_INTENT_UNSUPPORTED|ITEM_|CONTAINER_|ACTIVITY_|INTERACTION_|PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED)|TURN_STEP_PLAN_INVALID)/u.test(code)
+                ? 'Действие вне границ dev-пробы: можно идти, поднять или использовать предмет, открыть, ждать и говорить рядом (радиус 1).'
+                : 'Действие не выполнено: семантический координатор недоступен или отказал.' });
       }
     } finally {
       if (ownsRequest) activeChannel = null;

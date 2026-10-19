@@ -227,12 +227,13 @@
 - `temporal-v4:vocabularies`
 - `temporal-v4:vocabularies-check`
 
-## test (41)
+## test (42)
 
 - `test`
 - `test:acceptance`
 - `test:apps`
 - `test:browser-e2e`
+- `test:cataclysm-p3`
 - `test:cutover`
 - `test:docs`
 - `test:domain`

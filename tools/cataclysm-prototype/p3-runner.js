@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { createP3AttemptBudget, createP3EvidenceRun, P3_ATTEMPT_BUDGET, requireP3CaseId, resolveP3EffectiveConfig,
   createP3NativeFileAdapter, createP3NativeProcessAdapter,
   applyP3CoordinatorSpeech,
-  createP3RoleRuntime, runP3TurnStep, validateP3RoleConfigs,
+  createP3RoleRuntime, loadP3QwenSettingsOwner, runP3TurnStep, validateP3RoleConfigs,
   runP3SealedPackage, runP3NativeNpcFlow, validateP3Readback, writeP3OperationRequest } from './p3-boundary.js';
 
 const usage = `P3 JS boundary (no provider or native process is launched)
@@ -20,6 +20,7 @@ const usage = `P3 JS boundary (no provider or native process is launched)
   --validate-readback REQUEST.json READBACK.json`;
 
 async function jsonFile(file) { return JSON.parse(await readFile(file, 'utf8')); }
+async function loadSettingsOwner() { return loadP3QwenSettingsOwner({ env: process.env }); }
 function coordinatorNativeAdapter(config) {
   return createP3NativeProcessAdapter({ binary: config.binary, nativeRoot: config.nativeRoot,
     nativeUserDir: config.nativeUserDir, hostUserDir: config.nativeUserDir, world: config.world,
@@ -28,8 +29,9 @@ function coordinatorNativeAdapter(config) {
 async function main(args) {
   if (args.length === 0 || args.includes('--help')) { process.stdout.write(`${usage}\n`); return; }
   if (args[0] === '--validate-config' && args.length === 1) {
+    const settingsOwner = await loadSettingsOwner();
     const roles = ['turn_step_planner', 'npc_autonomous_decider', 'npc_conversation_responder'];
-    const configs = roles.map(role_id => resolveP3EffectiveConfig({ roleId: role_id }));
+    const configs = roles.map(role_id => resolveP3EffectiveConfig({ roleId: role_id, settingsOwner }));
     process.stdout.write(`${JSON.stringify({ provider_calls: 0, effective_roles: configs }, null, 2)}\n`);
     return;
   }
@@ -87,7 +89,8 @@ async function main(args) {
       && args[3] === '--intent') {
     const nativeConfig = await jsonFile(args[2]);
     const intent = args[4];
-    const configs = validateP3RoleConfigs();
+    const settingsOwner = await loadSettingsOwner();
+    const configs = validateP3RoleConfigs(process.env, settingsOwner);
     const operationId = randomUUID();
     const evidence = await createP3EvidenceRun(nativeConfig.evidence_root,
       { operationId, metadata: { case_id: nativeConfig.case_id ?? null,
@@ -97,7 +100,7 @@ async function main(args) {
     const budget = createP3AttemptBudget({
       onAttempt: event => evidence.record({ event: 'provider_attempt', ...event })
     });
-    const roles = createP3RoleRuntime({ budget });
+    const roles = createP3RoleRuntime({ budget, settingsOwner });
     const adapter = createP3NativeProcessAdapter(nativeConfig);
     const observation = await adapter.refreshObservation();
     const result = await runP3TurnStep({ intent, observation, nativeAdapter: adapter,
@@ -111,7 +114,8 @@ async function main(args) {
   if (args[0] === '--run-npc' && args.length === 5 && args[1] === '--native-config'
       && args[3] === '--actor-id') {
     const nativeConfig = await jsonFile(args[2]);
-    const configs = validateP3RoleConfigs();
+    const settingsOwner = await loadSettingsOwner();
+    const configs = validateP3RoleConfigs(process.env, settingsOwner);
     const operationId = randomUUID();
     const evidence = await createP3EvidenceRun(nativeConfig.evidence_root,
       { operationId, metadata: { case_id: nativeConfig.case_id ?? 'T09',
@@ -121,7 +125,7 @@ async function main(args) {
     const budget = createP3AttemptBudget({
       onAttempt: event => evidence.record({ event: 'provider_attempt', ...event })
     });
-    const roles = createP3RoleRuntime({ budget });
+    const roles = createP3RoleRuntime({ budget, settingsOwner });
     const nativeAdapter = createP3NativeProcessAdapter(nativeConfig);
     const checkpoint = await runP3NativeNpcFlow({ nativeAdapter, actorId: args[4],
       semanticModel: roles.npcAutonomousModel, evidence });
@@ -134,9 +138,10 @@ async function main(args) {
       && args[3] === '--case-pack') {
     const nativeConfig = await jsonFile(args[2]);
     const casePack = await jsonFile(args[4]);
-    const configs = validateP3RoleConfigs();
+    const settingsOwner = await loadSettingsOwner();
+    const configs = validateP3RoleConfigs(process.env, settingsOwner);
     const result = await runP3SealedPackage({ casePack, nativeConfig, roleConfigs: configs,
-      createRuntime: ({ budget }) => createP3RoleRuntime({ budget }) });
+      createRuntime: ({ budget }) => createP3RoleRuntime({ budget, settingsOwner }) });
     process.stdout.write(`${JSON.stringify({ ...result, role_config: configs }, null, 2)}\n`);
     return;
   }

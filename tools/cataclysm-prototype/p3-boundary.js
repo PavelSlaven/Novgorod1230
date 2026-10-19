@@ -3,10 +3,10 @@ import { execFile } from 'node:child_process';
 import { appendFile, mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { isDeepStrictEqual, promisify } from 'node:util';
-import { requestTurnStepPlanWithRepair } from '../../packages/turn/src/turn-step-plan-repair.js';
-import { requestNpcSemanticDecision } from '../../packages/turn/src/npc-semantic-decision.js';
-import { createTurnStepExecutionRegistry, runTurnStepLoop } from '../../packages/turn/src/turn-step-loop.js';
-import { resolveLlmExecutionConfig } from '../../packages/llm-runtime/src/provider-config.js';
+import { requestTurnStepPlanWithRepair, requestNpcSemanticDecision,
+  createTurnStepExecutionRegistry, runTurnStepLoop } from '@rus/turn';
+import { resolveLlmExecutionConfig } from '@rus/llm-runtime';
+import { createLlmSettingsFileStore, createLlmSettingsOwner } from '@rus/game-server';
 import { createProductionLlmRoleRunner } from '../../apps/game-server/src/infrastructure/provider/deepseek.js';
 import { createLowerDvinaTraceTurnStepModel,
   createLowerDvinaTraceNpcAutonomousModel,
@@ -62,17 +62,21 @@ export function createP3AttemptBudget({ budget = P3_ATTEMPT_BUDGET,
   };
 }
 
-export function resolveP3EffectiveConfig({ roleId, env = process.env } = {}) {
+export function resolveP3EffectiveConfig({ roleId, env = process.env, settingsOwner } = {}) {
   const expectedTokens = ({ turn_step_planner: 20_000, turn_step_planner_repair: 20_000,
     npc_autonomous_decider: 20_000, npc_autonomous_decider_format_repair: 20_000,
     npc_conversation_responder: 1_000,
     npc_conversation_responder_format_repair: 1_000 })[roleId];
   if (!expectedTokens) throw new Error(`P3_ROLE_UNSUPPORTED:${roleId}`);
-  const resolution = resolveLlmExecutionConfig({ scope: 'turn_runtime', roleId, env,
+  requireP3QwenSettingsOwner(settingsOwner);
+  const providerSnapshot = settingsOwner?.providerSnapshot();
+  const runtimeProviderOverride = providerSnapshot ? { compatibility: providerSnapshot.compatibility,
+    baseUrl: providerSnapshot.baseUrl, model: providerSnapshot.model, apiKey: providerSnapshot.apiKey } : null;
+  const resolution = resolveLlmExecutionConfig({ scope: 'turn_runtime', roleId, env, runtimeProviderOverride,
     overrides: { temperature: 0, topP: 1, maxTokens: expectedTokens } });
   if (!resolution.enabled) throw new Error(`P3_ROLE_CONFIG_DISABLED:${resolution.reason}`);
   const config = resolution.config;
-  if (config.provider !== 'deepseek' || config.model !== 'deepseek-v4-flash'
+  if (config.provider !== 'openai_compatible' || config.model !== 'qwen3.8-27b-uncensored-w4a16-tp2'
       || config.temperature !== 0 || config.topP !== 1 || config.requestTimeoutMs !== 120_000) {
     throw new Error(`P3_ROLE_CONFIG_MISMATCH:${roleId}`);
   }
@@ -97,7 +101,6 @@ export async function requestP3NpcDecision(input = {}, onDecision = async () => 
   return result;
 }
 
-/** Make one semantic choice for a native duty boundary; replay returns its checkpoint. */
 export async function runP3NpcBoundary({ nativeProjection, snapshots, decision,
   semanticModel, replay = new Map(), buildRequest = buildP3NpcRequest,
   requestDecision = requestP3NpcDecision } = {}) {
@@ -124,7 +127,6 @@ export async function runP3NpcBoundary({ nativeProjection, snapshots, decision,
   return structuredClone(checkpoint);
 }
 
-/** Apply native speech only through the existing conversation owner after readback validation. */
 export function applyP3NativeSpeech(ownerContext, working, validatedPlan, native, replay,
   conversationOwner = { applyPlayerPlan,
     projectPlayerStatementAudience }) {
@@ -268,7 +270,6 @@ export function buildP3NpcRequest(snapshots = {}) {
   return request;
 }
 
-/** Build the smallest NPC-safe semantic request from CDDA's filtered projection. */
 export function buildP3NativeNpcDecisionInput(nativeProjection) {
   if (!nativeProjection || typeof nativeProjection.actor_id !== 'string'
       || !Number.isSafeInteger(nativeProjection.native_turn)
@@ -340,7 +341,6 @@ export function buildP3NativeNpcDecisionInput(nativeProjection) {
       revalidateStateVersion: async () => stateVersion }, request: snapshotsRequest };
 }
 
-/** Semantic NPC plan crosses native boundary only after requestNpcSemanticDecision validates it. */
 export async function executeP3NativeNpcBoundary({ nativeProjection, snapshots, decision,
   semanticModel, nativeAdapter, nativeObservation, replay = new Map(),
   requestDecision = requestP3NpcDecision } = {}) {
@@ -409,9 +409,10 @@ export function selectP3NativeNpcFixture(observation) {
 }
 
 export function createP3RoleRuntime({ env = process.env, budget = createP3AttemptBudget(),
-  execute } = {}) {
-  validateP3RoleConfigs(env);
-  const provider = createProductionLlmRoleRunner({ env,
+  execute, settingsOwner } = {}) {
+  requireP3QwenSettingsOwner(settingsOwner);
+  validateP3RoleConfigs(env, settingsOwner);
+  const provider = createProductionLlmRoleRunner({ env, settings: settingsOwner,
     ...(execute ? { execute } : {}) });
   const roleRunner = budget.wrap({ async run(call) {
     const roleId = call.role_id ?? '';
@@ -422,7 +423,7 @@ export function createP3RoleRuntime({ env = process.env, budget = createP3Attemp
       npc_conversation_responder: 'npc_conversation_responder',
       npc_conversation_responder_format_repair: 'npc_conversation_responder_format_repair' })[roleId];
     if (!configRole) throw new Error(`P3_ROLE_UNSUPPORTED:${roleId}`);
-    const effective = resolveP3EffectiveConfig({ roleId: configRole, env });
+    const effective = resolveP3EffectiveConfig({ roleId: configRole, env, settingsOwner });
     return provider.run({ ...call, overrides: { ...(call.overrides ?? {}),
       temperature: effective.temperature, topP: effective.top_p,
       maxTokens: effective.max_tokens, requestTimeoutMs: effective.timeout_ms } });
@@ -648,11 +649,43 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
   });
 }
 
-export function validateP3RoleConfigs(env = process.env) {
+export function validateP3RoleConfigs(env = process.env, settingsOwner) {
   const roles = ['turn_step_planner', 'turn_step_planner_repair',
     'npc_autonomous_decider', 'npc_autonomous_decider_format_repair',
     'npc_conversation_responder', 'npc_conversation_responder_format_repair'];
-  return Object.freeze(roles.map(roleId => resolveP3EffectiveConfig({ roleId, env })));
+  requireP3QwenSettingsOwner(settingsOwner);
+  return Object.freeze(roles.map(roleId => resolveP3EffectiveConfig({ roleId, env, settingsOwner })));
+}
+
+export async function loadP3QwenSettingsOwner({ env = process.env } = {}) {
+  const filePath = typeof env.RUS_LLM_SETTINGS_PATH === 'string' ? env.RUS_LLM_SETTINGS_PATH.trim() : '';
+  if (!filePath) throw new Error('P3_LLM_SETTINGS_PATH_REQUIRED');
+  const initialRecord = await createLlmSettingsFileStore({ filePath }).load();
+  if (!initialRecord) throw new Error('P3_LLM_SETTINGS_REQUIRED');
+  const settingsOwner = createLlmSettingsOwner({ initialRecord });
+  requireP3QwenSettingsOwner(settingsOwner, { requirePrivateEndpoint: true });
+  return settingsOwner;
+}
+
+function requireP3QwenSettingsOwner(settingsOwner, { requirePrivateEndpoint = false } = {}) {
+  if (typeof settingsOwner?.providerSnapshot !== 'function') throw new Error('P3_LLM_SETTINGS_OWNER_REQUIRED');
+  const snapshot = settingsOwner.providerSnapshot();
+  let url;
+  try { url = new URL(snapshot.baseUrl); } catch { throw new Error('P3_QWEN_SETTINGS_REQUIRED'); }
+  if (snapshot.mode !== 'custom' || snapshot.compatibility !== 'openai_compatible'
+      || snapshot.model !== 'qwen3.8-27b-uncensored-w4a16-tp2' || !snapshot.apiKey
+      || (requirePrivateEndpoint && (url.protocol !== 'http:' || !isPrivateLanHost(url.hostname)))) {
+    throw new Error('P3_QWEN_SETTINGS_REQUIRED');
+  }
+  return snapshot;
+}
+
+function isPrivateLanHost(hostname) {
+  const match = /^(?:10\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})|172\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})|192\.168\.(\d{1,3})\.(\d{1,3}))$/u.exec(hostname);
+  if (!match) return false;
+  const octets = hostname.split('.').map(Number);
+  if (octets.some(value => value > 255)) return false;
+  return !hostname.startsWith('172.') || (octets[1] >= 16 && octets[1] <= 31);
 }
 
 function sanitizeP3RoleConfigs(configs) {
@@ -822,7 +855,6 @@ export function requireP3NativeSeam(nativeAdapter) {
   return nativeAdapter;
 }
 
-/** Execute one already validated speech request without asking a model to plan again. */
 export async function applyP3CoordinatorSpeech({ nativeAdapter, request } = {}) {
   requireP3NativeSeam(nativeAdapter);
   jsonObject(request, 'coordinator request');
@@ -979,7 +1011,7 @@ export function createP3NativeProcessAdapter({ binary, nativeRoot, nativeUserDir
   });
 }
 
-const SECRET_KEY = /(?:authorization|api[-_]?key|secret|credential|password|token|headers?)/i;
+const SECRET_KEY = /^(?:token|authorization|headers?|api[-_]?key|secret|credential|password|access[-_]?token|refresh[-_]?token|auth[-_]?token|bearer[-_]?token)$|(?:^|[_-])(?:authorization|headers?|api[-_]?key|secret|credential|password)(?:$|[_-])/i;
 const SECRET_TEXT = /(?:Bearer\s+[^\s,}"']+|sk-[A-Za-z0-9_-]{8,}|["']?(?:api[_-]?key|authorization|password)["']?\s*[:=]\s*(?:Bearer\s+)?)\S*/gi;
 export function sanitizeP3Evidence(value) {
   if (Array.isArray(value)) return value.map(sanitizeP3Evidence);
@@ -1106,7 +1138,11 @@ export async function runP3SealedPackage({ casePack, nativeConfig, roleConfigs,
         const readback = result?.working_projection?.native_readback ?? null;
         let npcBoundary = null;
         let npcReplay = null;
-        let npcSemanticCalls = 0;
+        let npcSemanticDecisionCount = 0;
+        let npcReplayDecisionCount = 0;
+        let npcSemanticProviderCalls = 0;
+        let npcNativeOperationCount = 0;
+        let npcReplayNativeOperationCount = 0;
         if (isT09) {
           if (typeof runtime.npcAutonomousModel !== 'function') {
             throw new Error('P3_SEALED_NPC_MODEL_REQUIRED');
@@ -1115,14 +1151,36 @@ export async function runP3SealedPackage({ casePack, nativeConfig, roleConfigs,
           const actorId = selectP3NativeNpcFixture(npcObservation);
           if (!actorId) throw new Error('P3_NATIVE_NPC_FIXTURE_ACTOR_UNAVAILABLE');
           const replay = new Map();
+          let decisions = 0;
+          let operations = 0;
+          const measuredModel = input => {
+            decisions++;
+            return runtime.npcAutonomousModel(input);
+          };
+          const measuredNative = { ...native,
+            ...(typeof native.execute === 'function' ? { async execute(...args) {
+              operations++;
+              return native.execute(...args);
+            } } : { async writeOperationRequest(...args) {
+              operations++;
+              return native.writeOperationRequest(...args);
+            } }) };
           const callsBeforeNpc = budget.calls;
-          npcBoundary = await runP3NativeNpcFlow({ nativeAdapter: native, actorId,
-            nativeObservation: npcObservation, semanticModel: runtime.npcAutonomousModel,
+          const decisionsBeforeNpc = decisions;
+          const operationsBeforeNpc = operations;
+          npcBoundary = await runP3NativeNpcFlow({ nativeAdapter: measuredNative, actorId,
+            nativeObservation: npcObservation, semanticModel: measuredModel,
             replay, evidence });
-          npcSemanticCalls = budget.calls - callsBeforeNpc;
-          npcReplay = await runP3NativeNpcFlow({ nativeAdapter: native, actorId,
-            nativeObservation: npcObservation, semanticModel: runtime.npcAutonomousModel,
+          npcSemanticDecisionCount = decisions - decisionsBeforeNpc;
+          npcNativeOperationCount = operations - operationsBeforeNpc;
+          const replayDecisionsBefore = decisions;
+          const replayOperationsBefore = operations;
+          npcReplay = await runP3NativeNpcFlow({ nativeAdapter: measuredNative, actorId,
+            nativeObservation: npcObservation, semanticModel: measuredModel,
             replay, evidence });
+          npcReplayDecisionCount = decisions - replayDecisionsBefore;
+          npcReplayNativeOperationCount = operations - replayOperationsBefore;
+          npcSemanticProviderCalls = budget.calls - callsBeforeNpc;
           await evidence.record({ event: 'native_npc_boundary_replay', case_id,
             variant_id, reset_id, checkpoint: npcReplay });
         }
@@ -1136,10 +1194,10 @@ export async function runP3SealedPackage({ casePack, nativeConfig, roleConfigs,
           native_goal_result: isT09 ? npcBoundary?.native_readback?.goal_result ?? 'unknown'
             : result.working_projection?.native_goal_result ?? 'unknown',
           ...(case_id === 'T09' ? { npc_boundary: npcBoundary,
-            npc_replay: npcReplay, npc_semantic_decision_count: npcBoundary ? 1 : 0,
-            npc_replay_decision_count: 0, npc_semantic_provider_calls: npcSemanticCalls,
-            npc_native_operation_count: npcBoundary?.native_readback ? 1 : 0,
-            npc_replay_native_operation_count: 0 } : {}),
+            npc_replay: npcReplay, npc_semantic_decision_count: npcSemanticDecisionCount,
+            npc_replay_decision_count: npcReplayDecisionCount, npc_semantic_provider_calls: npcSemanticProviderCalls,
+            npc_native_operation_count: npcNativeOperationCount,
+            npc_replay_native_operation_count: npcReplayNativeOperationCount } : {}),
           ...(case_id === 'T10' ? { social_statement: result.working_projection?.conversation_outcome
             ? 'owner_applied' : 'not_evaluated_context_unavailable' } : {}) });
       }

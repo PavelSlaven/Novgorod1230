@@ -3,6 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { createLlmSettingsOwner } from '@rus/game-server';
 import { request as sampleRequest, plan as samplePlan } from '../../packages/turn/test/turn-step-contracts-fixture.js';
 import { createLowerDvinaTraceTurnStepModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { turnStepOperationChoices } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
@@ -14,9 +15,15 @@ import { createP3AttemptBudget, createP3EvidenceRun, createP3OperationEnvelope,
   buildP3TurnOperations, createP3NativeFileAdapter, createP3NativeProcessAdapter,
   mapP3TurnOperationToNative,
   createP3RoleRuntime, readP3NativeObservation, requireP3NativeSeam, runP3TurnStep,
+  loadP3QwenSettingsOwner,
   runP3SealedPackage, createP3NativeSpeechOwnerFixture,
   validateP3Readback, validateP3SealedCasePack,
   writeP3OperationRequest } from './p3-boundary.js';
+
+const qwenSettingsOwner = () => createLlmSettingsOwner({ initialRecord: {
+  version: 2, settings: { mode: 'custom', compatibility: 'openai_compatible',
+    base_url: 'http://127.0.0.1:8000/v1', model: 'qwen3.8-27b-uncensored-w4a16-tp2', api_key: 'test-secret' }
+} });
 
 const observation = { turn: 4, revision: 4, actors: [{ actor_ref: 'actor', actor_id: 'avatar' }],
   items: [{ item_ref: 'item', item_uid: 'uid:9' }], targets: [{ target_ref: 'target' }] };
@@ -673,6 +680,26 @@ test('native speech validates current conversation identity and unique heard lis
   /P3_NATIVE_SPEECH_HEARD_SET_INVALID/);
 });
 
+test('native speech rejects either deaf listener in a two-listener heard set', () => {
+  const plan = { speaker_ref: { entity_id: 'player-1' }, speech: { utterance_text: 'Точное слово' } };
+  const base = { conversationId: 'conversation-1', exchangeId: 'exchange-1', stateVersion: 7,
+    nativeSpeakerActorId: 'native-7', playerActorRef: { entity_id: 'player-1' } };
+  const native = { opId: 'speech-op', conversationId: 'conversation-1', exchangeId: 'exchange-1',
+    stateVersion: 7, speakerId: 'native-7', utterance: 'Точное слово',
+    actualHeardListenerIds: ['native-8', 'native-9'], elapsedSeconds: 3,
+    beforeTime: { native_turn: 10, seconds_since_world_start: 10 },
+    nativeTime: { native_turn: 13, seconds_since_world_start: 13 } };
+  for (const deafId of native.actualHeardListenerIds) {
+    const actualNpcActors = native.actualHeardListenerIds.map((native_actor_id, index) => ({
+      native_actor_id, instance_id: `npc-${index}`, machine_state: {
+        hearing_capability: native_actor_id === deafId ? 'none' : 'normal'
+      }
+    }));
+    assert.throws(() => applyP3NativeSpeech({ ...base, actualNpcActors }, {}, plan,
+      native, new Map()), /P3_NATIVE_SPEECH_LISTENER_ID_UNRESOLVED/);
+  }
+});
+
 test('T09 NPC boundary replays the committed semantic checkpoint without another decision call', async () => {
   const replay = new Map();
   let decisions = 0;
@@ -914,31 +941,33 @@ test('coordinator speech rejects canonical conversation or state mismatches befo
 });
 
 test('effective config reports only approved nonsecret fields and rejects token mismatch', () => {
+  const settingsOwner = qwenSettingsOwner();
   const env = { DEEPSEEK_API_KEY: 'test-secret' };
-  const config = resolveP3EffectiveConfig({ roleId: 'turn_step_planner', env });
+  const config = resolveP3EffectiveConfig({ roleId: 'turn_step_planner', env, settingsOwner });
   assert.deepEqual({ provider: config.provider, model: config.model, temperature: config.temperature,
     top_p: config.top_p, max_tokens: config.max_tokens, timeout_ms: config.timeout_ms,
-    api_key_present: config.api_key_present }, { provider: 'deepseek', model: 'deepseek-v4-flash',
+    api_key_present: config.api_key_present }, { provider: 'openai_compatible', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
     temperature: 0, top_p: 1, max_tokens: 20_000, timeout_ms: 120_000, api_key_present: true });
   assert.equal(JSON.stringify(config).includes('test-secret'), false);
   assert.equal(resolveP3EffectiveConfig({ roleId: 'npc_conversation_responder',
-    env: { DEEPSEEK_API_KEY: 'test-secret', NPC_CONVERSATION_RESPONDER_MAX_TOKENS: '2000' } }).max_tokens, 1_000);
-  assert.throws(() => resolveP3EffectiveConfig({ roleId: 'turn_step_planner',
-    env: { DEEPSEEK_API_KEY: 'test-secret', TURN_STEP_PLANNER_MODEL: 'other-model' } }),
-  /P3_ROLE_CONFIG_MISMATCH/);
+    env: { DEEPSEEK_API_KEY: 'test-secret', NPC_CONVERSATION_RESPONDER_MAX_TOKENS: '2000' }, settingsOwner }).max_tokens, 1_000);
+  assert.equal(resolveP3EffectiveConfig({ roleId: 'turn_step_planner',
+    env: { DEEPSEEK_API_KEY: 'test-secret', TURN_STEP_PLANNER_MODEL: 'other-model' }, settingsOwner }).model,
+  'qwen3.8-27b-uncensored-w4a16-tp2');
   for (const [roleId, tokens] of [
     ['turn_step_planner', 20_000], ['turn_step_planner_repair', 20_000],
     ['npc_autonomous_decider', 20_000], ['npc_autonomous_decider_format_repair', 20_000],
     ['npc_conversation_responder', 1_000],
     ['npc_conversation_responder_format_repair', 1_000]
-  ]) assert.equal(resolveP3EffectiveConfig({ roleId, env }).max_tokens, tokens, roleId);
+  ]) assert.equal(resolveP3EffectiveConfig({ roleId, env, settingsOwner }).max_tokens, tokens, roleId);
   assert.throws(() => resolveP3EffectiveConfig({ roleId: 'unrecognized_role', env }),
     /P3_ROLE_UNSUPPORTED/);
 });
 
 test('P3 role runtime uses existing provider adapter with fixed protocol overrides', async () => {
   let call;
-  const runtime = createP3RoleRuntime({ env: { DEEPSEEK_API_KEY: 'test-secret' },
+  const settingsOwner = qwenSettingsOwner();
+  const runtime = createP3RoleRuntime({ env: {}, settingsOwner,
     execute: async value => { call = value; return { status: 'ok', parsed_json: { ok: true },
       provider: 'deepseek', model: 'deepseek-v4-flash', scope: value.scope,
       role_id: value.roleId, durationMs: 1 }; } });
@@ -946,10 +975,31 @@ test('P3 role runtime uses existing provider adapter with fixed protocol overrid
     role_id: 'npc_conversation_responder_format_repair', messages: [],
     overrides: { maxTokens: 20_000, temperature: 0.8, topP: 0.5 } });
   assert.deepEqual(result.output, { ok: true });
+  assert.equal(call.runtimeProviderOverride.model, 'qwen3.8-27b-uncensored-w4a16-tp2');
+  assert.equal(call.runtimeProviderOverride.compatibility, 'openai_compatible');
   assert.equal(runtime.budget.calls, 1);
   assert.deepEqual({ temperature: call.overrides.temperature, topP: call.overrides.topP,
     maxTokens: call.overrides.maxTokens, requestTimeoutMs: call.overrides.requestTimeoutMs },
   { temperature: 0, topP: 1, maxTokens: 1_000, requestTimeoutMs: 120_000 });
+});
+
+test('P3 settings loader requires explicit file and private Qwen endpoint without applying settings', async () => {
+  await assert.rejects(loadP3QwenSettingsOwner({ env: {} }), /P3_LLM_SETTINGS_PATH_REQUIRED/);
+  const temp = await mkdtemp(path.join(os.tmpdir(), 'p3-settings-'));
+  const file = path.join(temp, 'settings.json');
+  const record = { version: 2, settings: { mode: 'custom', compatibility: 'openai_compatible',
+    base_url: 'http://192.168.1.100:11437/v1', model: 'qwen3.8-27b-uncensored-w4a16-tp2',
+    api_key: 'private-test-key' }, ordinary_materialization_identity: null, qualification_version: null };
+  await writeFile(file, JSON.stringify(record));
+  const settingsOwner = await loadP3QwenSettingsOwner({ env: { RUS_LLM_SETTINGS_PATH: file } });
+  assert.equal(settingsOwner.providerSnapshot().model, record.settings.model);
+  assert.equal(settingsOwner.providerSnapshot().baseUrl, record.settings.base_url);
+  await assert.rejects(loadP3QwenSettingsOwner({ env: {} }), /P3_LLM_SETTINGS_PATH_REQUIRED/);
+  await writeFile(file, JSON.stringify({ ...record, settings: { ...record.settings,
+    base_url: 'https://api.example.com/v1' } }));
+  await assert.rejects(loadP3QwenSettingsOwner({ env: { RUS_LLM_SETTINGS_PATH: file } }),
+    /P3_QWEN_SETTINGS_REQUIRED/);
+  await rm(temp, { recursive: true, force: true });
 });
 
 test('immutable operation handoff refuses overwrite; evidence run refuses restart and redacts secrets', async t => {
@@ -975,4 +1025,7 @@ test('immutable operation handoff refuses overwrite; evidence run refuses restar
 test('evidence sanitizer removes secret-shaped fields and values', () => {
   assert.deepEqual(sanitizeP3Evidence({ apiKey: 'secret', reply: 'Authorization: Bearer abcdefgh123456' }),
     { apiKey: '[REDACTED]', reply: '[REDACTED]' });
+  assert.deepEqual(sanitizeP3Evidence({ max_tokens: 20_000, usage: { input_tokens: 50,
+    output_tokens: 12, total_tokens: 62 } }), { max_tokens: 20_000,
+    usage: { input_tokens: 50, output_tokens: 12, total_tokens: 62 } });
 });

@@ -524,22 +524,47 @@ test('production player_utterance reaches native speech and conversation owner e
     ['8']);
   assert.equal(result.working_projection.conversation_outcome.native_speech.elapsed_seconds, 3);
 
-  for (const delivery of [{ loudness: 1, duration_class: 'brief' },
-    { loudness: 2, duration_class: 'instant' }, { loudness: 2, duration_class: 'sustained' },
-    { loudness: 4, duration_class: 'brief' }]) {
+  assert.deepEqual(captured.args.delivery, { loudness: 2, duration_class: 'brief' });
+  for (const loudness of [1, 2, 3, 4]) {
+    for (const duration_class of ['instant', 'brief']) {
+      const delivery = { loudness, duration_class };
+      await runP3TurnStep({ intent, observation: current,
+        operationId: `supported-speech-${loudness}-${duration_class}`,
+        nativeAdapter, turnStepModel: async request => validatedPlan(request, delivery, 'avatar'),
+        conversationOwnerForSpeech: async ({ operation, readback }) => {
+          assert.equal(Object.hasOwn(operation, 'delivery'), false);
+          return { ...createP3NativeSpeechOwnerFixture({ observation: current, readback, operation }),
+            replay: new Map() };
+        }
+      });
+      assert.deepEqual(captured.args.delivery, delivery);
+      assert.equal(captured.args.utterance, text);
+    }
     await assert.rejects(runP3TurnStep({ intent, observation: current,
-      operationId: `unsupported-speech-${delivery.loudness}-${delivery.duration_class}`,
-      nativeAdapter, turnStepModel: async request => validatedPlan(request, delivery, 'avatar'),
+      operationId: `unsupported-speech-${loudness}-sustained`, nativeAdapter,
+      turnStepModel: async request => validatedPlan(request,
+        { loudness, duration_class: 'sustained' }, 'avatar'),
       conversationOwnerForSpeech: async () => { throw new Error('must not reach owner'); }
     }), { message: 'P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED' });
   }
+  const callsBeforeInvalid = nativeCalls;
+  for (const delivery of [undefined, null, {}, { loudness: 2 }, { duration_class: 'brief' },
+    { loudness: 0, duration_class: 'brief' }, { loudness: 5, duration_class: 'brief' },
+    { loudness: 1.5, duration_class: 'brief' }, { loudness: '2', duration_class: 'brief' },
+    { loudness: 2, duration_class: 'long' }, { loudness: 2, duration_class: 'brief', extra: true }]) {
+    await assert.rejects(runP3TurnStep({ intent, observation: current,
+      operationId: 'malformed-speech-delivery', nativeAdapter,
+      turnStepModel: async request => validatedPlan(request, delivery, 'avatar')
+    }), { code: 'TURN_STEP_PLAN_INVALID' });
+  }
+  assert.equal(nativeCalls, callsBeforeInvalid);
   await assert.rejects(runP3TurnStep({ intent, observation: current,
     operationId: 'wrong-speech-speaker', nativeAdapter,
     turnStepModel: async request => validatedPlan(request,
       { loudness: 2, duration_class: 'brief' }, 'npc:9'),
     conversationOwnerForSpeech: async () => { throw new Error('must not reach owner'); }
   }), { code: 'TURN_STEP_PLAN_INVALID' });
-  assert.equal(nativeCalls, 1);
+  assert.equal(nativeCalls, 9);
 });
 
 test('sealed package shares one attempt budget and evidence root across all reset mocks', async t => {

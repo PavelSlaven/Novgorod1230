@@ -188,7 +188,8 @@ test('live literal speech needs no JS listener or conversation owner', async t =
   const operation = await channel.receive();
   assert.equal(operation.type, 'operation');
   assert.equal(operation.request.primitive, 'speak');
-  assert.deepEqual(operation.request.args, { utterance });
+  assert.deepEqual(operation.request.args, { utterance,
+    delivery: { loudness: 2, duration_class: 'brief' } });
   assert.deepEqual(operation.request.references, {});
   channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
     operation_id: operation.request.operation_id, status: 'applied', goal_result: 'in_progress',
@@ -200,6 +201,47 @@ test('live literal speech needs no JS listener or conversation owner', async t =
   assert.equal(result.goal_result, 'partially_achieved');
   assert.equal(scene.calls, 1);
   socket.end();
+});
+
+test('live speech delivery matrix preserves eight modes and refuses sustained before native', async t => {
+  for (const loudness of [1, 2, 3, 4]) {
+    for (const duration_class of ['instant', 'brief', 'sustained']) {
+      await t.test(`${loudness}/${duration_class}`, async t => {
+        const utterance = 'Слышишь?';
+        const delivery = { loudness, duration_class };
+        const scene = await fixture(t, request => ({ ...plan(request, {}),
+          resolution: 'direct', goal_result: 'achieved', operations: [],
+          activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+          direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+            utterance_text: utterance, input_mode: 'verbatim', delivery } }));
+        const { socket, channel } = await scene.client();
+        channel.bind(String(100 + loudness * 3 + ['instant', 'brief', 'sustained'].indexOf(duration_class)));
+        channel.send({ type: 'intent', intent: `Скажи дословно: ${utterance}`, observation });
+        await channel.receive();
+        const response = await channel.receive();
+        if (duration_class === 'sustained') {
+          assert.equal(response.type, 'result');
+          assert.equal(response.status, 'refused');
+          assert.equal(response.code, 'P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED');
+          assert.equal(response.message, 'Долгая речь в dev-пробе не поддерживается');
+          assert.equal(response.applied_operations, 0);
+          assert.equal(response.goal_result, 'not_achieved');
+        } else {
+          assert.equal(response.type, 'operation');
+          assert.deepEqual(response.request.args, { utterance, delivery });
+          channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+            operation_id: response.request.operation_id, status: 'applied', goal_result: 'achieved',
+            native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+              actualHeardListenerIds: [] }, before: { turn: 10 }, after: { turn: 11 } } });
+          const result = await channel.receive();
+          assert.equal(result.status, 'completed');
+          assert.equal(result.applied_operations, 1);
+        }
+        assert.equal(scene.calls, 1);
+        socket.end();
+      });
+    }
+  }
 });
 
 test('witnesses, missing target, unheard target and vanished target do not call NPC model', async t => {

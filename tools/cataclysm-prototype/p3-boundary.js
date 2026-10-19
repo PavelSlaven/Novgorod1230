@@ -666,11 +666,12 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
       && actor.visible === true)
     ? targetActorRef : null;
   const initial = { actor_ref: 'avatar', native_observation: structuredClone(observation) };
-  const applyNativeOperation = async ({ operation, working_projection: projection }) => {
+  const applyNativeOperation = async ({ operation, working_projection: projection, delivery }) => {
         const current = projection.native_observation;
         const selectedOperation = nativeSpeechOnly && operation?.op === 'emit_interaction'
           ? { ...operation, target_actor_refs: selectedNpc ? [selectedNpc] : [] } : operation;
         const mapped = mapP3TurnOperationToNative(selectedOperation, current, { nativeSpeechOnly });
+        if (delivery) mapped.args.delivery = structuredClone(delivery);
         const envelope = createP3OperationEnvelope({ operationId,
           observation: current, ...mapped,
           registeredPrimitives: ['move', 'use_item', 'open', 'wait', 'speak', 'pickup'] });
@@ -725,7 +726,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
         working_projection: projection, summary: 'semantic request dispatched'
       };
       const delivery = plan.utterance?.delivery;
-      if (delivery?.loudness !== 2 || delivery?.duration_class !== 'brief') {
+      if (delivery.duration_class === 'sustained') {
         throw new Error('P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED');
       }
       if (plan.utterance.speaker_ref !== (request.actor.actor_id ?? request.actor.actor_ref)) {
@@ -741,7 +742,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
             .map(({ actor_ref }) => actor_ref),
         interaction_kind: 'speech', content: plan.utterance.utterance_text,
         instrument_refs: [] };
-      return applyNativeOperation({ operation, working_projection: projection });
+      return applyNativeOperation({ operation, working_projection: projection, delivery });
     }
   });
   return runTurnStepLoop({ requestId: operationId, rootTurnId: operationId,

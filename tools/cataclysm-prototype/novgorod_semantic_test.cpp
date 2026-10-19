@@ -352,7 +352,8 @@ TEST_CASE( "Novgorod semantic request uses native avatar primitives", "[novgorod
 namespace
 {
 std::string live_request( const std::string &primitive, const std::string &actor_id,
-                          const std::string &utterance = "", const std::vector<int> &direction = {} )
+                          const std::string &utterance = "", const std::vector<int> &direction = {},
+                          const std::string &delivery = "" )
 {
     std::ostringstream stream;
     JsonOut out( stream );
@@ -366,6 +367,11 @@ std::string live_request( const std::string &primitive, const std::string &actor
     out.member( "turn", to_turn<int>( calendar::turn ) ); out.end_object();
     out.member( "args" ); out.start_object();
     if( primitive == "speak" ) out.member( "utterance", utterance );
+    if( !delivery.empty() ) {
+        out.member( "delivery" );
+        *out.get_stream() << delivery;
+        out.set_need_separator();
+    }
     if( !direction.empty() ) out.member( "direction", direction );
     out.end_object();
     out.end_object();
@@ -453,6 +459,86 @@ TEST_CASE( "Novgorod live speech preserves tags and uses actual native hearing",
         }
     }
     CHECK( std::find( heard.begin(), heard.end(), actor ) == heard.end() );
+}
+
+TEST_CASE( "Novgorod speech delivery uses native volume and duration", "[novgorod_live][novgorod_delivery]" )
+{
+    for( int loudness = 1; loudness <= 4; ++loudness ) {
+        for( const std::string duration : { "instant", "brief", "sustained" } ) {
+            CAPTURE( loudness, duration );
+            reset_p3_fixture();
+            avatar &you = get_avatar();
+            const native_snapshot before = take_snapshot();
+            const int native_cost = you.get_speed();
+            const int native_volume = loudness == 1 ? Character::minimum_voice_volume :
+                                      loudness == 2 ? you.indoor_voice() : you.get_shout_volume();
+            const std::string delivery = "{\"loudness\":" + std::to_string( loudness ) +
+                                         ",\"duration_class\":\"" + duration + "\"}";
+            const std::string request = live_request( "speak", std::to_string( you.getID().get_value() ),
+                                        "one exact native emission", {}, delivery );
+            sounds::reset_sounds();
+            auto result = novgorod_semantic::apply_operation( json_loader::from_string( request ).get_object() );
+            CHECK( result.applied == ( duration != "sustained" ) );
+            CHECK( sounds::get_monster_sounds().first.size() == ( result.applied ? 1 : 0 ) );
+            if( result.applied ) {
+                if( duration == "instant" ) {
+                    CHECK( you.activity.is_null() );
+                    CHECK( you.get_moves() == before.moves - native_cost );
+                    for( npc &listener : g->all_npcs() ) sounds::process_sound_markers( &listener );
+                } else {
+                    REQUIRE_FALSE( you.activity.is_null() );
+                    CHECK( you.activity.moves_left == to_moves<int>( 3_seconds ) );
+                    for( int turn = 0; turn < 20 && !you.activity.is_null(); ++turn ) {
+                        g->set_test_action_queue( { action_ident( ACTION_PAUSE ) } );
+                        g->do_turn();
+                    }
+                    REQUIRE( you.activity.is_null() );
+                }
+                result = novgorod_semantic::finish_operation();
+                const JsonObject readback = json_loader::from_string( result.json ).get_object();
+                readback.allow_omitted_members();
+                const JsonObject effect = readback.get_object( "native_effect" );
+                effect.allow_omitted_members();
+                CHECK( effect.get_int( "sound_volume" ) == native_volume );
+                CHECK( effect.get_string( "native_sound" ) == "one exact native emission" );
+                if( duration == "instant" ) CHECK( effect.get_int( "elapsed_seconds" ) == 0 );
+                else CHECK( effect.get_int( "elapsed_seconds" ) >= 3 );
+            } else {
+                CHECK( result.json.find( "NOVGOROD_SUSTAINED_SPEECH_UNSUPPORTED" ) != std::string::npos );
+                CHECK( take_snapshot().world_signature == before.world_signature );
+                CHECK( calendar::turn == before.native_time );
+                CHECK( you.get_moves() == before.moves );
+                CHECK( you.activity.is_null() );
+            }
+        }
+    }
+}
+
+TEST_CASE( "Novgorod malformed speech delivery refuses before emission", "[novgorod_live][novgorod_delivery]" )
+{
+    reset_p3_fixture();
+    const native_snapshot before = take_snapshot();
+    for( const std::string delivery : {
+             "null", "[]", "{}", "{\"loudness\":2}", "{\"duration_class\":\"brief\"}",
+             "{\"loudness\":\"2\",\"duration_class\":\"brief\"}",
+             "{\"loudness\":2.5,\"duration_class\":\"brief\"}",
+             "{\"loudness\":true,\"duration_class\":\"brief\"}",
+             "{\"loudness\":0,\"duration_class\":\"brief\"}",
+             "{\"loudness\":5,\"duration_class\":\"brief\"}",
+             "{\"loudness\":2,\"duration_class\":null}",
+             "{\"loudness\":2,\"duration_class\":\"brief\",\"extra\":true}",
+             "{\"loudness\":2,\"duration_class\":\"unknown\"}" } ) {
+        CAPTURE( delivery );
+        sounds::reset_sounds();
+        const auto result = run_live_request( live_request( "speak",
+                            std::to_string( get_avatar().getID().get_value() ), "must not emit", {}, delivery ) );
+        CHECK_FALSE( result.applied );
+        CHECK( sounds::get_monster_sounds().first.empty() );
+        CHECK( take_snapshot().world_signature == before.world_signature );
+        CHECK( calendar::turn == before.native_time );
+        CHECK( get_avatar().get_moves() == before.moves );
+        CHECK( get_avatar().activity.is_null() );
+    }
 }
 
 TEST_CASE( "Novgorod live movement shares native dispatch and bounds", "[novgorod_live]" )
@@ -730,7 +816,7 @@ struct live_peer {
     int listener = -1;
     pid_t child = -1;
 
-    explicit live_peer( bool timeout ) {
+    explicit live_peer( bool timeout, const std::string &expected_target = "" ) {
         if( had_socket ) old_socket = std::getenv( "NOVGOROD_P3_SOCKET" );
         if( had_timeout ) old_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
         sockaddr_un address {};
@@ -762,6 +848,8 @@ struct live_peer {
             observation.allow_omitted_members();
             if( frame.get_string( "intent" ) != "literal intent" ||
                 observation.has_member( "native_snapshot" ) ) _exit( 4 );
+            if( frame.get_string( "target_actor_ref", "" ) != expected_target ||
+                frame.has_member( "target_actor_ref" ) != !expected_target.empty() ) _exit( 8 );
             const std::string response = timeout ?
                 "{\"type\":\"role_phase\",\"id\":\"" + id + "\",\"timeout_ms\":1}\n" :
                 "{\"type\":\"operation\",\"id\":\"" + previous_id + "\",\"request\":{}}\n" +
@@ -814,6 +902,33 @@ TEST_CASE( "Novgorod real live client reconnects and discards foreign replies", 
     CHECK( calendar::turn == before.native_time );
     CHECK( get_avatar().get_moves() == before.moves );
     CHECK( get_avatar().activity.is_null() );
+}
+
+TEST_CASE( "Novgorod native CHAT selection reaches real intent frame", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    clear_npcs();
+    const Creature *target = nullptr;
+    std::string expected_target;
+    SECTION( "sole NPC candidate" ) {
+        npc &subject = spawn_npc( point_bub_ms( 60, 62 ), p3_talker.str() );
+        subject.death_eocs.clear();
+        get_map().update_visibility_cache( get_avatar().posz() );
+        target = select_chat_target();
+        REQUIRE( target == &subject );
+        expected_target = "npc:" + std::to_string( subject.getID().get_value() );
+    }
+    SECTION( "empty selection" ) {
+        target = select_chat_target();
+        REQUIRE( target == nullptr );
+    }
+    SECTION( "non NPC target" ) {
+        target = &get_avatar();
+    }
+    live_peer peer( false, expected_target );
+    REQUIRE_NOTHROW( novgorod_semantic::submit_live_intent( "literal intent", target ) );
+    REQUIRE_NOTHROW( novgorod_semantic::submit_live_intent( "literal intent", target ) );
+    peer.completed();
 }
 
 TEST_CASE( "Novgorod real live client timeout leaves native world unchanged", "[novgorod_live]" )

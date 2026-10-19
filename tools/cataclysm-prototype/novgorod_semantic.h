@@ -7,6 +7,7 @@
 #include "coords_fwd.h"
 
 class Character;
+class Creature;
 class JsonObject;
 class JsonOut;
 
@@ -23,6 +24,7 @@ operation_result finish_operation();
 void observe_heard_speech( const Character &listener, const tripoint_bub_ms &source,
                            const std::string &description );
 void submit_live_intent( const std::string &intent, const std::string &target_actor_ref = "" );
+void submit_live_intent( const std::string &intent, const Creature *target );
 void live_input();
 void on_input_boundary();
 }

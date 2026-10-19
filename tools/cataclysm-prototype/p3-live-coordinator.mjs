@@ -88,6 +88,8 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
             : applied ? 'Действие уже начато; дальнейшая обработка не завершена. Черновик, не сохранено.'
             : code === 'P3_LIVE_BUSY'
               ? 'Предыдущее действие ещё обрабатывается. Повторите после его завершения.'
+              : code === 'P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED'
+                ? 'Долгая речь в dev-пробе не поддерживается'
               : /^(?:P3_(?:TYPED_|NATIVE_MOVE_TARGET_NOT_ADJACENT|PICKUP_INTENT_UNSUPPORTED|ITEM_|CONTAINER_|ACTIVITY_|INTERACTION_|PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED)|TURN_STEP_PLAN_INVALID)/u.test(code)
                 ? 'Действие вне границ dev-пробы: можно идти, поднять или использовать предмет, открыть, ждать и говорить рядом (радиус 1).'
                 : 'Действие не выполнено: семантический координатор недоступен или отказал.' });

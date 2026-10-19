@@ -80,8 +80,17 @@ owner промптов/LLM остаётся в packages и apps/game-server. О�
 фильтр и creature_select_menu выбирают адресата; private target_actor_ref
 заполняет существующий emit_interaction.target_actor_refs. Ответ допускается
 только выбранному услышавшему NPC после повторной проверки identity/visibility.
-Два последовательных intent и сохранение/повторный PS1 запуск проверены с
-локальным fake. Это не приёмка Qwen, P3 GO или production пути. UI/smoke
+Canonical player delivery переносится только в private native args: loudness 1
+использует родной minimum_voice_volume, 2 — общий Character::indoor_voice,
+3/4 — get_shout_volume. Правило indoor_voice вынесено из npc без копии;
+родной источник — upstream npc.cpp:2116–2155. Instant оплачивает родную цену
+chat (npctalk.cpp:1541) без дополнительной wait activity; brief сохраняет
+прежнюю activity. Sustained отклоняется до native execute с явным сообщением.
+Canonical emit_interaction и prompt owner не меняются. Native popup использует
+собственный предел 1024 display columns вместо прежнего width 70.
+Исторический PS1 E2E с fake описан в [TASK03-LIVE-RESULT](TASK03-LIVE-RESULT.md),
+первый провод Qwen — в [TASK03-QWEN-RESULT](TASK03-QWEN-RESULT.md).
+Эти проверки не означают P3 GO или production cutover. UI/smoke
 команды и незавершённые области перечислены в [PLAY.md](PLAY.md). Task01
 curses smoke загрузил P1 мир и подтвердил save-and-quit; runtime data directory
 должен содержать `gfx`, а `--datadir` требует завершающий `/` в этой сборке.

@@ -263,6 +263,7 @@ struct operation_evidence {
     bool active = false;
     std::string local_map_before;
     std::string utterance;
+    int sound_volume = 0;
     tripoint_bub_ms speaker_position;
     std::vector<std::string> heard;
     std::string refusal;
@@ -440,24 +441,44 @@ operation_result apply_operation( const JsonObject &request )
                 actions.push_back( action_ident( ACTION_USE ) );
             }
         } else if( op.primitive == "wait" || op.primitive == "speak" ) {
+            bool brief = true;
             if( op.primitive == "speak" ) {
+                int loudness = 2;
+                if( args.has_member( "delivery" ) ) {
+                    const JsonObject delivery = args.get_object( "delivery" );
+                    delivery.allow_omitted_members();
+                    if( delivery.size() != 2 || !delivery.has_int( "loudness" ) ||
+                        !delivery.has_string( "duration_class" ) ) {
+                        throw std::runtime_error( "NOVGOROD_SPEECH_DELIVERY_INVALID" );
+                    }
+                    loudness = delivery.get_int( "loudness" );
+                    const std::string duration = delivery.get_string( "duration_class" );
+                    if( loudness < 1 || loudness > 4 ||
+                        ( duration != "instant" && duration != "brief" && duration != "sustained" ) ) {
+                        throw std::runtime_error( "NOVGOROD_SPEECH_DELIVERY_INVALID" );
+                    }
+                    if( duration == "sustained" ) {
+                        throw std::runtime_error( "NOVGOROD_SUSTAINED_SPEECH_UNSUPPORTED" );
+                    }
+                    brief = duration == "brief";
+                }
                 op.utterance = args.has_member( "utterance" ) ? args.get_string( "utterance" ) : args.get_string( "content" );
                 if( op.utterance.empty() ) throw std::runtime_error( "NOVGOROD_UTTERANCE_REQUIRED" );
                 Character *speaker = &you;
-                int volume = you.normal_voice();
                 if( op.actor_id != avatar_id ) {
-                    npc &subject = visible_npc_by_id( op.actor_id );
-                    speaker = &subject;
-                    volume = subject.indoor_voice();
+                    speaker = &visible_npc_by_id( op.actor_id );
                 }
                 if( speaker->is_mute() || speaker->is_hallucination() ) {
                     throw std::runtime_error( "NOVGOROD_NATIVE_SPEAKER_CANNOT_SPEAK" );
                 }
+                op.sound_volume = loudness == 1 ? Character::minimum_voice_volume :
+                                   loudness == 2 ? speaker->indoor_voice() : speaker->get_shout_volume();
                 op.speaker_position = speaker->pos_bub();
-                sounds::sound( op.speaker_position, volume, sounds::sound_t::speech, op.utterance,
+                sounds::sound( op.speaker_position, op.sound_volume, sounds::sound_t::speech, op.utterance,
                                false, "speech" );
+                if( !brief ) you.mod_moves( -you.get_speed() );
             }
-            you.assign_activity( wait_activity_actor( 3_seconds ) );
+            if( brief ) you.assign_activity( wait_activity_actor( 3_seconds ) );
         } else {
             throw std::runtime_error( "NOVGOROD_UNSUPPORTED_NATIVE_PRIMITIVE" );
         }
@@ -537,6 +558,7 @@ operation_result finish_operation()
         out.member( "speakerId", op.actor_id );
         out.member( "utterance", op.utterance );
         out.member( "native_sound", applied ? op.utterance : "" );
+        out.member( "sound_volume", op.sound_volume );
         out.member( "actualHeardListenerIds", op.heard );
     }
     out.end_object();
@@ -720,21 +742,21 @@ void submit_live_intent( const std::string &intent, const std::string &target_ac
 #endif
 }
 
+void submit_live_intent( const std::string &intent, const Creature *target )
+{
+    const npc *subject = target ? target->as_npc() : nullptr;
+    submit_live_intent( intent, subject ? "npc:" + std::to_string( subject->getID().get_value() ) : "" );
+}
+
 void live_input()
 {
 #ifdef _WIN32
     add_msg( "%s", "Живая dev-проба запускается в WSL." );
 #else
-    const std::string intent = string_input_popup().title( "Свободное действие (dev-проба)" ).width( 70 ).query_string();
+    const std::string intent = string_input_popup().title( "Свободное действие (dev-проба)" ).query_string();
     if( intent.find_first_not_of( " \t\r\n" ) == std::string::npos ) return;
-    std::string target_actor_ref;
-    if( Creature *chosen = select_chat_target() ) {
-        if( npc *target = chosen->as_npc() ) {
-            target_actor_ref = "npc:" + std::to_string( target->getID().get_value() );
-        }
-    }
     try {
-        submit_live_intent( intent, target_actor_ref );
+        submit_live_intent( intent, select_chat_target() );
     } catch( const std::exception &error ) {
         disconnect();
         add_msg( "%s: %s", "Dev-проба: связь прервана", error.what() );

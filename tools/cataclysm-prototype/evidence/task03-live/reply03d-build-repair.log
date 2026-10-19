@@ -1,0 +1,4 @@
+[1/4] Building CXX object src/CMakeFiles/cataclysm-common.dir/novgorod_semantic.cpp.o
+[2/4] Building CXX object tests/CMakeFiles/cata_test.dir/novgorod_semantic_test.cpp.o
+[3/4] Linking CXX executable src/cataclysm
+[4/4] Linking CXX executable tests/cata_test

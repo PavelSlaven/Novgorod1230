@@ -26,6 +26,7 @@
 #include "activity_actor_definitions.h"
 #include "avatar.h"
 #include "calendar.h"
+#include "cached_options.h"
 #include "character.h"
 #include "field.h"
 #include "game.h"
@@ -41,6 +42,7 @@
 #include "map.h"
 #include "messages.h"
 #include "npc.h"
+#include "npctalk.h"
 #include "output.h"
 #include "popup.h"
 #include "sounds.h"
@@ -285,8 +287,8 @@ std::string local_map_fact( const tripoint_bub_ms &center )
     for( const tripoint_bub_ms &pos : here.points_in_radius( center, 1 ) ) {
         out << pos.x() << ',' << pos.y() << ',' << pos.z() << ':'
             << here.ter( pos ).id().str() << ':' << here.furn( pos ).id().str();
-        for( const auto &entry : here.get_field( pos ) ) {
-            out << ':' << entry.first.str() << '=' << entry.second.get_field_intensity();
+        for( const auto &entry : here.field_at( pos ) ) {
+            out << ':' << entry.first.id().str() << '=' << entry.second.get_field_intensity();
         }
         for( const item &it : here.i_at( pos ) ) {
             out << ':' << it.uid().get_value() << '=' << it.typeId().str() << '=' << it.charges;
@@ -322,11 +324,10 @@ tripoint_rel_ms request_direction( const JsonObject &args )
 
 npc &visible_npc_by_id( const std::string &actor_id )
 {
-    avatar &you = get_avatar();
-    for( npc &guy : g->all_npcs() ) {
-        if( std::to_string( guy.getID().get_value() ) == actor_id &&
-            you.sees( get_map(), static_cast<const Creature &>( guy ) ) ) {
-            return guy;
+    for( Creature *candidate : chat_available_creatures() ) {
+        npc *guy = candidate->as_npc();
+        if( guy && std::to_string( guy->getID().get_value() ) == actor_id ) {
+            return *guy;
         }
     }
     throw std::runtime_error( "NOVGOROD_STALE_OR_INVISIBLE_NPC_ACTOR" );
@@ -346,6 +347,7 @@ void check_target( const JsonObject &request, const tripoint_bub_ms &target )
 
 operation_result apply_operation( const JsonObject &request )
 {
+    request.allow_omitted_members();
     if( evidence ) {
         throw std::logic_error( "NOVGOROD_NATIVE_OPERATION_ALREADY_ACTIVE" );
     }
@@ -573,13 +575,15 @@ void reset_deadline( int timeout_ms )
 
 void wait_socket( short events )
 {
-    static_popup wait_popup;
-    wait_popup.on_top( true ).wait_message( "%s", "Qwen думает…" );
+    std::optional<static_popup> wait_popup;
+    if( !test_mode ) wait_popup.emplace().on_top( true ).wait_message( "%s", "Qwen думает…" );
     for( ;; ) {
         if( steady_clock::now() >= deadline ) throw std::runtime_error( "NOVGOROD_COORDINATOR_TIMEOUT" );
-        ui_manager::redraw();
-        refresh_display();
-        inp_mngr.pump_events();
+        if( !test_mode ) {
+            ui_manager::redraw();
+            refresh_display();
+            inp_mngr.pump_events();
+        }
         pollfd descriptor { live_fd, events, 0 };
         const int ready = poll( &descriptor, 1, 100 );
         if( ready < 0 && errno != EINTR ) throw std::runtime_error( "NOVGOROD_COORDINATOR_POLL_FAILED" );
@@ -622,14 +626,18 @@ std::string receive_line()
     }
 }
 
-std::string observation_message( const std::string &type, const std::string &intent = "" )
+std::string observation_message( const std::string &type, const std::string &intent = "",
+                                 const std::string &target_actor_ref = "" )
 {
     std::ostringstream stream;
     JsonOut out( stream );
     out.start_object();
     out.member( "type", type );
     out.member( "id", live_id );
-    if( type == "intent" ) out.member( "intent", intent );
+    if( type == "intent" ) {
+        out.member( "intent", intent );
+        if( !target_actor_ref.empty() ) out.member( "target_actor_ref", target_actor_ref );
+    }
     out.member( "observation" );
     write_observation( out );
     out.end_object();
@@ -663,7 +671,7 @@ void await_coordinator()
         } else if( type == "result" ) {
             const std::string text = message.get_string( "message", "" );
             if( !text.empty() ) add_msg( "%s", text );
-            live_id.clear();
+            disconnect();
             return;
         } else {
             throw std::runtime_error( "NOVGOROD_COORDINATOR_MESSAGE_INVALID" );
@@ -692,6 +700,25 @@ void connect_coordinator()
 } // namespace
 #endif
 
+void submit_live_intent( const std::string &intent, const std::string &target_actor_ref )
+{
+#ifndef _WIN32
+    try {
+        if( live_fd >= 0 ) throw std::logic_error( "NOVGOROD_NATIVE_INTENT_ALREADY_ACTIVE" );
+        connect_coordinator();
+        live_id = std::to_string( ++intent_counter );
+        const char *configured_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
+        if( configured_timeout == nullptr ) throw std::runtime_error( "NOVGOROD_ROLE_TIMEOUT_REQUIRED" );
+        reset_deadline( std::stoi( configured_timeout ) );
+        send_line( observation_message( "intent", intent, target_actor_ref ) );
+        await_coordinator();
+    } catch( ... ) {
+        disconnect();
+        throw;
+    }
+#endif
+}
+
 void live_input()
 {
 #ifdef _WIN32
@@ -699,14 +726,14 @@ void live_input()
 #else
     const std::string intent = string_input_popup().title( "Свободное действие (dev-проба)" ).width( 70 ).query_string();
     if( intent.find_first_not_of( " \t\r\n" ) == std::string::npos ) return;
+    std::string target_actor_ref;
+    if( Creature *chosen = select_chat_target() ) {
+        if( npc *target = chosen->as_npc() ) {
+            target_actor_ref = "npc:" + std::to_string( target->getID().get_value() );
+        }
+    }
     try {
-        if( live_fd < 0 ) connect_coordinator();
-        live_id = std::to_string( ++intent_counter );
-        const char *configured_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
-        if( configured_timeout == nullptr ) throw std::runtime_error( "NOVGOROD_ROLE_TIMEOUT_REQUIRED" );
-        reset_deadline( std::stoi( configured_timeout ) );
-        send_line( observation_message( "intent", intent ) );
-        await_coordinator();
+        submit_live_intent( intent, target_actor_ref );
     } catch( const std::exception &error ) {
         disconnect();
         add_msg( "%s: %s", "Dev-проба: связь прервана", error.what() );

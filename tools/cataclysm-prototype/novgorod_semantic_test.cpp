@@ -8,6 +8,16 @@
 #include <tuple>
 #include <vector>
 
+#ifndef _WIN32
+#include <cstring>
+#include <poll.h>
+#include <signal.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#endif
+
 #include "action.h"
 #include "activity_actor_definitions.h"
 #include "avatar.h"
@@ -15,6 +25,7 @@
 #include "cata_catch.h"
 #include "character.h"
 #include "game.h"
+#include "game_constants.h"
 #include "item.h"
 #include "item_location.h"
 #include "json.h"
@@ -23,6 +34,7 @@
 #include "map_helpers.h"
 #include "map_selector.h"
 #include "npc.h"
+#include "npctalk.h"
 #include "novgorod_semantic.h"
 #include "path_info.h"
 #include "player_helpers.h"
@@ -48,6 +60,9 @@ void reset_p3_fixture()
         loop_started = true;
     }
     clear_avatar();
+    for( npc &subject : g->all_npcs() ) {
+        subject.death_eocs.clear();
+    }
     clear_map();
     clear_npcs();
     avatar &you = get_avatar();
@@ -91,6 +106,7 @@ void reset_p3_fixture()
     character_id second_deaf_listener_id = spawn_npc( point_bub_ms( 62, 61 ), p3_talker.str() ).getID();
     for( const character_id &id : { p3_speaker_id, p3_listener_id, deaf_listener_id,
                                     second_deaf_listener_id } ) {
+        g->find_npc( id )->death_eocs.clear();
         g->find_npc( id )->set_attitude( NPCATT_NULL );
     }
     g->find_npc( deaf_listener_id )->add_effect( p3_deaf, 1_hours, false, 3 );
@@ -305,6 +321,7 @@ TEST_CASE( "Novgorod semantic request uses native avatar primitives", "[novgorod
     std::string request_json( ( std::istreambuf_iterator<char>( request_stream ) ),
                               std::istreambuf_iterator<char>() );
     const JsonObject request = json_loader::from_string( request_json ).get_object();
+    request.allow_omitted_members();
     const std::string primitive = request.get_string( "primitive" );
     novgorod_semantic::operation_result result = novgorod_semantic::apply_operation( request );
     if( result.applied ) {
@@ -316,10 +333,13 @@ TEST_CASE( "Novgorod semantic request uses native avatar primitives", "[novgorod
         result = novgorod_semantic::finish_operation();
     }
     const JsonObject readback = json_loader::from_string( result.json ).get_object();
+    readback.allow_omitted_members();
     CHECK( readback.get_string( "operation_id" ) == request.get_string( "operation_id" ) );
     if( result.applied && primitive == "speak" ) {
         const JsonObject effect = readback.get_object( "native_effect" );
+        effect.allow_omitted_members();
         const JsonObject args = request.get_object( "args" );
+        args.allow_omitted_members();
         CHECK( effect.get_string( "utterance" ) == args.get_string( "utterance", args.get_string( "content", "" ) ) );
         CHECK( effect.get_int( "elapsed_seconds" ) >= 0 );
     }
@@ -354,7 +374,9 @@ std::string live_request( const std::string &primitive, const std::string &actor
 
 novgorod_semantic::operation_result run_live_request( const std::string &json )
 {
-    auto result = novgorod_semantic::apply_operation( json_loader::from_string( json ).get_object() );
+    const JsonObject request = json_loader::from_string( json ).get_object();
+    request.allow_omitted_members();
+    auto result = novgorod_semantic::apply_operation( request );
     if( result.applied ) {
         if( g->has_novgorod_actions() ) g->do_turn();
         for( int turn = 0; turn < 20 && !get_avatar().activity.is_null(); ++turn ) {
@@ -374,6 +396,7 @@ TEST_CASE( "Novgorod live observation excludes diagnostic and legacy intent stat
     JsonOut out( stream );
     novgorod_semantic::write_observation( out );
     const JsonObject observation = json_loader::from_string( stream.str() ).get_object();
+    observation.allow_omitted_members();
     CHECK_FALSE( observation.has_member( "native_snapshot" ) );
     CHECK( stream.str().find( "assignment_id" ) == std::string::npos );
     CHECK( stream.str().find( "interrupt_cause" ) == std::string::npos );
@@ -415,7 +438,9 @@ TEST_CASE( "Novgorod live speech preserves tags and uses actual native hearing",
     const auto result = run_live_request( live_request( "speak", actor, utterance ) );
     REQUIRE( result.applied );
     const JsonObject readback = json_loader::from_string( result.json ).get_object();
+    readback.allow_omitted_members();
     const JsonObject effect = readback.get_object( "native_effect" );
+    effect.allow_omitted_members();
     CHECK( effect.get_string( "utterance" ) == utterance );
     CHECK( effect.get_string( "native_sound" ) == utterance );
     CHECK( effect.get_int( "elapsed_seconds" ) >= 3 );
@@ -436,9 +461,10 @@ TEST_CASE( "Novgorod live movement shares native dispatch and bounds", "[novgoro
     avatar &you = get_avatar();
     const std::string actor = std::to_string( you.getID().get_value() );
     SECTION( "unseen equivalent diagonal" ) {
+        const tripoint_abs_ms before = you.pos_abs();
         const auto result = run_live_request( live_request( "move", actor, "", { -1, -1 } ) );
         REQUIRE( result.applied );
-        CHECK( you.pos_bub() == p3_fixture_center + tripoint_rel_ms( -1, -1, 0 ) );
+        CHECK( you.pos_abs() == before + tripoint_rel_ms( -1, -1, 0 ) );
     }
     SECTION( "outside local radius" ) {
         const native_snapshot before = take_snapshot();
@@ -690,4 +716,182 @@ TEST_CASE( "Novgorod identity transfer preserves nested UIDs across pocket types
         actual_nested_uids.push_back( nested->uid().get_value() );
     }
     CHECK( actual_nested_uids == expected_nested_uids );
+}
+
+#ifndef _WIN32
+namespace
+{
+struct live_peer {
+    std::string path = "/tmp/novgorod-client-" + std::to_string( getpid() ) + ".sock";
+    std::string old_socket;
+    std::string old_timeout;
+    bool had_socket = std::getenv( "NOVGOROD_P3_SOCKET" ) != nullptr;
+    bool had_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" ) != nullptr;
+    int listener = -1;
+    pid_t child = -1;
+
+    explicit live_peer( bool timeout ) {
+        if( had_socket ) old_socket = std::getenv( "NOVGOROD_P3_SOCKET" );
+        if( had_timeout ) old_timeout = std::getenv( "NOVGOROD_P3_TIMEOUT_MS" );
+        sockaddr_un address {};
+        address.sun_family = AF_UNIX;
+        std::strcpy( address.sun_path, path.c_str() );
+        unlink( path.c_str() );
+        listener = socket( AF_UNIX, SOCK_STREAM, 0 );
+        REQUIRE( listener >= 0 );
+        REQUIRE( bind( listener, reinterpret_cast<sockaddr *>( &address ), sizeof( address ) ) == 0 );
+        REQUIRE( listen( listener, 2 ) == 0 );
+        setenv( "NOVGOROD_P3_SOCKET", path.c_str(), 1 );
+        setenv( "NOVGOROD_P3_TIMEOUT_MS", "120000", 1 );
+        child = fork();
+        REQUIRE( child >= 0 );
+        if( child != 0 ) return;
+        std::string previous_id = "foreign";
+        for( int attempt = 0; attempt < ( timeout ? 1 : 2 ); ++attempt ) {
+            pollfd pending { listener, POLLIN, 0 };
+            if( poll( &pending, 1, 5000 ) <= 0 ) _exit( 2 );
+            const int peer = accept( listener, nullptr, nullptr );
+            if( peer < 0 ) _exit( 3 );
+            std::string line;
+            char ch;
+            while( recv( peer, &ch, 1, 0 ) == 1 && ch != '\n' ) line += ch;
+            const JsonObject frame = json_loader::from_string( line ).get_object();
+            frame.allow_omitted_members();
+            const std::string id = frame.get_string( "id" );
+            const JsonObject observation = frame.get_object( "observation" );
+            observation.allow_omitted_members();
+            if( frame.get_string( "intent" ) != "literal intent" ||
+                observation.has_member( "native_snapshot" ) ) _exit( 4 );
+            const std::string response = timeout ?
+                "{\"type\":\"role_phase\",\"id\":\"" + id + "\",\"timeout_ms\":1}\n" :
+                "{\"type\":\"operation\",\"id\":\"" + previous_id + "\",\"request\":{}}\n" +
+                "{\"type\":\"result\",\"id\":\"" + id + "\"}\n";
+            if( send( peer, response.data(), response.size(), MSG_NOSIGNAL ) !=
+                static_cast<ssize_t>( response.size() ) ) _exit( 5 );
+            pollfd completion { peer, POLLIN, 0 };
+            if( poll( &completion, 1, 5000 ) <= 0 ) _exit( 6 );
+            char unexpected;
+            if( recv( peer, &unexpected, 1, 0 ) != 0 ) _exit( 7 );
+            previous_id = id;
+            shutdown( peer, SHUT_WR );
+            close( peer );
+        }
+        _exit( 0 );
+    }
+
+    ~live_peer() {
+        if( child > 0 ) {
+            kill( child, SIGKILL );
+            waitpid( child, nullptr, 0 );
+        }
+        if( listener >= 0 ) close( listener );
+        unlink( path.c_str() );
+        if( had_socket ) setenv( "NOVGOROD_P3_SOCKET", old_socket.c_str(), 1 );
+        else unsetenv( "NOVGOROD_P3_SOCKET" );
+        if( had_timeout ) setenv( "NOVGOROD_P3_TIMEOUT_MS", old_timeout.c_str(), 1 );
+        else unsetenv( "NOVGOROD_P3_TIMEOUT_MS" );
+    }
+
+    void completed() {
+        int status = 0;
+        REQUIRE( waitpid( child, &status, 0 ) == child );
+        child = -1;
+        REQUIRE( WIFEXITED( status ) );
+        CHECK( WEXITSTATUS( status ) == 0 );
+    }
+};
+}
+
+TEST_CASE( "Novgorod real live client reconnects and discards foreign replies", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    const native_snapshot before = take_snapshot();
+    live_peer peer( false );
+    REQUIRE_NOTHROW( novgorod_semantic::submit_live_intent( "literal intent" ) );
+    REQUIRE_NOTHROW( novgorod_semantic::submit_live_intent( "literal intent" ) );
+    peer.completed();
+    CHECK( take_snapshot().world_signature == before.world_signature );
+    CHECK( calendar::turn == before.native_time );
+    CHECK( get_avatar().get_moves() == before.moves );
+    CHECK( get_avatar().activity.is_null() );
+}
+
+TEST_CASE( "Novgorod real live client timeout leaves native world unchanged", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    const native_snapshot before = take_snapshot();
+    live_peer peer( true );
+    CHECK_THROWS_WITH( novgorod_semantic::submit_live_intent( "literal intent" ),
+                       "NOVGOROD_COORDINATOR_TIMEOUT" );
+    peer.completed();
+    CHECK( take_snapshot().world_signature == before.world_signature );
+    CHECK( calendar::turn == before.native_time );
+    CHECK( get_avatar().get_moves() == before.moves );
+    CHECK( get_avatar().activity.is_null() );
+}
+#endif
+
+TEST_CASE( "Novgorod semantic NPC speech shares native CHAT candidates", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    avatar &you = get_avatar();
+    npc &subject = *g->all_npcs().begin();
+    const std::string actor = std::to_string( subject.getID().get_value() );
+    bool expected_eligible = true;
+    SECTION( "visible nearby" ) {}
+    SECTION( "dead NPC excluded by native creature traversal" ) {
+        expected_eligible = false;
+        subject.die( &get_map(), nullptr );
+    }
+    SECTION( "sleep remains eligible" ) {
+        subject.add_effect( efftype_id( "sleep" ), 1_hours );
+    }
+    SECTION( "beyond CHAT radius" ) {
+        expected_eligible = false;
+        subject.setpos( get_map(), you.pos_bub() + tripoint_rel_ms( SEEX * 2 + 1, 0, 0 ) );
+    }
+    SECTION( "other level" ) {
+        expected_eligible = false;
+        subject.setpos( get_map(), you.pos_bub() + tripoint_rel_ms( 0, 0, 1 ) );
+    }
+    SECTION( "behind wall" ) {
+        expected_eligible = false;
+        subject.setpos( get_map(), you.pos_bub() + tripoint_rel_ms( 0, -2, 0 ) );
+    }
+    get_map().invalidate_map_cache( you.posz() );
+    get_map().build_map_cache( you.posz() );
+    get_map().update_visibility_cache( you.posz() );
+    const auto candidates = chat_available_creatures();
+    const bool eligible = std::find( candidates.begin(), candidates.end(), &subject ) != candidates.end();
+    CHECK( eligible == expected_eligible );
+    const auto result = novgorod_semantic::apply_operation( json_loader::from_string(
+                            live_request( "speak", actor, "literal speech" ) ).get_object() );
+    CHECK( result.applied == eligible );
+    if( result.applied ) {
+        const auto finished = novgorod_semantic::finish_operation();
+        CHECK( finished.applied );
+        you.cancel_activity();
+    }
+}
+
+TEST_CASE( "Novgorod empty native CHAT selection keeps ordinary avatar speech", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    clear_npcs();
+    CHECK( chat_available_creatures().empty() );
+    CHECK( select_chat_target() == nullptr );
+    const auto result = run_live_request( live_request( "speak",
+                        std::to_string( get_avatar().getID().get_value() ), "ordinary speech" ) );
+    CHECK( result.applied );
+}
+
+TEST_CASE( "Novgorod sole native CHAT candidate is selected automatically", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    clear_npcs();
+    npc &subject = spawn_npc( point_bub_ms( 60, 62 ), p3_talker.str() );
+    subject.death_eocs.clear();
+    get_map().update_visibility_cache( get_avatar().posz() );
+    REQUIRE( chat_available_creatures().size() == 1 );
+    CHECK( select_chat_target() == &subject );
 }

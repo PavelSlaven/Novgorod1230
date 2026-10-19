@@ -317,3 +317,62 @@ diff --git a/src/game_io.cpp b/src/game_io.cpp
              []( std::ostream &fout ) {
                  rng_serialize_engine( fout );
              }, _( "native RNG state" ) ) ) {
+diff --git a/src/npctalk.cpp b/src/npctalk.cpp
+--- a/src/npctalk.cpp
++++ b/src/npctalk.cpp
+@@ -1060,14 +1060,11 @@
+     }
+ }
+
+-void game::chat( const std::optional<tripoint_bub_ms> &p )
++std::vector<Creature *> chat_available_creatures()
+ {
+     map &here = get_map();
+-
+     Character &player_character = get_player_character();
+-    int volume = player_character.get_shout_volume();
+-
+-    const std::vector<Creature *> available = get_creatures_if( [&]( const Creature & guy ) {
++    return g->get_creatures_if( [&]( const Creature & guy ) {
+         // TODO: Get rid of the z-level check when z-level vision gets "better"
+         return ( guy.is_npc() || ( guy.is_monster() &&
+                                    guy.as_monster()->has_flag( mon_flag_CONVERSATION ) &&
+@@ -1075,6 +1072,24 @@
+                player_character.sees( here, guy.pos_bub( here ) ) &&
+                rl_dist( player_character.pos_abs(), guy.pos_abs() ) <= SEEX * 2;
+     } );
++}
++
++Creature *select_chat_target()
++{
++    const std::vector<Creature *> available = chat_available_creatures();
++    const int selected = creature_select_menu( available, _( "Talk to whom?" ), false );
++    return selected >= 0 && static_cast<size_t>( selected ) < available.size() ?
++           available[selected] : nullptr;
++}
++
++void game::chat( const std::optional<tripoint_bub_ms> &p )
++{
++    map &here = get_map();
++
++    Character &player_character = get_player_character();
++    int volume = player_character.get_shout_volume();
++
++    const std::vector<Creature *> available = chat_available_creatures();
+
+     if( p.has_value() ) {
+         Creature *target = get_creature_tracker().creature_at( *p );
+diff --git a/src/npctalk.h b/src/npctalk.h
+--- a/src/npctalk.h
++++ b/src/npctalk.h
+@@ -9,6 +9,10 @@
+ #include "type_id.h"
+
+ class Character;
++class Creature;
++
++std::vector<Creature *> chat_available_creatures();
++Creature *select_chat_target();
+ class item;
+ class JsonOut;
+ class JsonValue;

@@ -22,6 +22,7 @@ operation_result apply_operation( const JsonObject &request );
 operation_result finish_operation();
 void observe_heard_speech( const Character &listener, const tripoint_bub_ms &source,
                            const std::string &description );
+void submit_live_intent( const std::string &intent, const std::string &target_actor_ref = "" );
 void live_input();
 void on_input_boundary();
 }

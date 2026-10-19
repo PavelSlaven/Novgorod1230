@@ -138,3 +138,37 @@ Evidence фиксирует именно проверенный HEAD и binary h
 На старте этапа использованы 4/30 вызовов, осталось 26; repairs входят в тот же
 счётчик, плохой NPC-ответ специально не провоцируется. 5b только после пунктов 1–4.
 Новый срок STOP — 10:30Z, либо готовность 1–4, либо блокировка.
+
+## Reply-03f: решение D210 по semantic repair (2026-10-19)
+
+Владелец разрешил исправить известную заготовку в существующем game-server owner
+(Refs #247, #329). При semantic_grounding используется тот же roleRunner repair:
+исходный request, original_output и validation_errors; код не составляет речь.
+Существующий счётчик и dev config допускают один repair. Второй неприменимый
+ответ даёт typed error; P3 не выполняет NPC speech и сообщает игроку, что NPC
+не ответил. Уже исполненное родное действие игрока не отменяется и не повторяется.
+Semantic repair сохраняет contribution_kind и dominant_act; их смена отклоняется
+существующим typed failure. Код не сравнивает смысл свободного текста по regex
+и не создаёт дополнительного LLM-аудитора.
+Prompt functions/text, public schemas, packages/turn counter остаются прежними.
+Строка active conversation §37.2 о semantic repair пока не внесена: отдельная
+CORPUS_EDIT задача по решению владельца; корпус в этом PR не правится.
+
+Опционально передать в существующий NPC request родной факт слуха из readback:
+только выбранный NPC, реально попавший в actual heard listeners, и услышанный
+текст. Использовать existing observation schema/builders; если они не подходят,
+отложить без новых полей и без полной памяти/knowledge/social integration.
+
+Fake checks: rejection → один model repair → принятая точная речь; два rejection
+→ typed error/тишина. В обоих responder/repair calls ровно2; grounding auditor
+считается отдельно, все реальные HTTP calls входят в общий бюджет30.
+Полный test:apps обязателен; test:domain — если менялись packages. Linux fixed-args
+process adapter test исправить с сохранением строгих argv/shell assertions,
+проверить Windows/WSL. Затем живой PS1: две реплики Qwen подряд, журнал P;
+не скрывать repair/тишину и не менять промпты ради успешного ответа.
+
+В начале продолжения использовано14/30, осталось16. После code commit+push и
+живого прогона — отчёт/evidence commit+push. Дождаться full-npm-test именно
+последнего HEAD через gh run watch; во время этого прогона лишних push нет.
+STOP: готовность 1/3/4 и зелёный final CI, блокировка или 10:45Z. После STOP
+никаких push: внешний аудит принимает точный переданный HEAD.

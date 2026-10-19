@@ -1,6 +1,5 @@
 import { serverError } from '../errors.js';
 import {
-  npcConversationCandidates,
   npcConversationInstructions,
   playerConversationInstructions
 } from './lower-dvina-trace-phase-2-llm-prompts.js';
@@ -46,13 +45,6 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
   requireRoleRunner(roleRunner);
   const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
-    const semanticRepair = repair?.validation_errors?.some(
-      ({ category }) => category === 'semantic_grounding'
-    ) === true;
-    if (semanticRepair && npcConversationCandidates(request).some(
-      (candidate) => candidate.contribution_kind === 'speech'
-        && candidate.supporting_operations.length === 0
-    )) return semanticGroundingFallback(repair.original_output, request);
     const modelRequest = worldKnowledgeGrounder == null ? request
       : await worldKnowledgeGrounder.ground(request, 'conversation');
     const response = await roleRunner.run({
@@ -69,72 +61,29 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         role: 'user',
         content: JSON.stringify(repair ? {
           request: modelRequest,
-          ...(semanticRepair ? {} : {
-            original_output: repair.original_output
-          }),
+          original_output: repair.original_output,
           validation_errors: repair.validation_errors
         } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
-    return assembleNpcConversationPlan(response.output, request);
+    const plan = assembleNpcConversationPlan(response.output, request);
+    if (repair?.validation_errors?.some(
+      ({ category }) => category === 'semantic_grounding'
+    ) && (plan.contribution_kind !== repair.original_output?.contribution_kind
+      || plan.speech?.dominant_act
+        !== repair.original_output?.speech?.dominant_act)) {
+      throw serverError('TURN_NPC_PLAN_INVALID',
+        'NPC semantic repair must preserve contribution kind and speech act.',
+        { status: 503 });
+    }
+    return plan;
   };
   model.validateFreshPlan = async (plan, request) => {
     const presentation = validateRequiredNpcPresentation(plan, request);
     return presentation ?? auditFreshNpcSpeech({ roleRunner, plan, request });
   };
   return model;
-}
-
-function semanticGroundingFallback(original, request) {
-  const observations = new Map((request.memory?.current_observations ?? [])
-    .map((entry) => [entry.observation_ref?.entity_id, entry]));
-  const retained = new Map();
-  for (const claim of original?.speech?.claims ?? []) {
-    for (const reference of claim?.source_knowledge_refs ?? []) {
-      const observation = reference?.entity_kind === 'perception_result'
-        ? observations.get(reference.entity_id) : null;
-      if (observation) retained.set(reference.entity_id, observation);
-    }
-  }
-  const facts = [...retained.values()];
-  const introducedName = requiredFirstContactName(request)
-    ?? playerSafeSelfIntroductionName(original?.speech?.utterance_text);
-  const introduction = introducedName ? `Я ${introducedName}.` : null;
-  const requiredTag = request.social_context?.npc_behavior
-    ?.required_interaction_tag;
-  const uncertainty = facts.length === 0
-    ? 'Об этом я ничего подтвердить не могу.'
-    : 'Остального я подтвердить не могу.';
-  const utterance = [introduction, ...facts.map(({ fact_text }) => fact_text),
-    uncertainty].filter(Boolean).join(' ');
-  return assembleNpcConversationPlan({
-    contribution_kind: 'speech',
-    speech: {
-      utterance_text: utterance,
-      dominant_act: 'answer',
-      interaction_tags: typeof requiredTag === 'string' && requiredTag
-        ? [requiredTag] : [],
-      topic_refs: [],
-      claims: facts.map((entry, index) => ({
-        claim_id: `fallback-current-observation-${index + 1}`,
-        content_summary: entry.fact_text, form: 'assertion',
-        speaker_posture: 'believed_true',
-        source_knowledge_refs: [structuredClone(entry.observation_ref)],
-        mentioned_entity_refs: []
-      })),
-      response_expectation: { kind: 'none', target_refs: [] }
-    },
-    interpretation: {
-      intent: 'Ответить только по подтверждённым сведениям.',
-      grounded_contribution: utterance,
-      adaptation: 'literal'
-    },
-    resolution: 'automatic',
-    activity: { duration_class: 'domain_owned', effort: 'none' },
-    supporting_operations: [], check: null, handoff: null,
-    reason: 'Ответ ограничен точными текущими наблюдениями.'
-  }, request);
 }
 
 function validateRequiredNpcPresentation(plan, request) {

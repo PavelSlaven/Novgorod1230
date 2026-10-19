@@ -38,7 +38,7 @@
 | 031 | `lower-dvina-trace-expansion-commands.js`, `spatial-v3-local-scene-movement.js` | непрозрачные ошибки расширения, тихие фильтры | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 032 | `apps/game-server/src`, `bootstrap-live-world-v17.mjs` | digest-пины в runtime | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 033 | `load-spatial-v3-bindings.js`, `production-spatial-v3.js` | два пути composition: v16 и v17 | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
-| 034 | `lower-dvina-trace-visible-scene-items.js`, `lower-dvina-trace-conversation-llm.js` | код пишет прозу и реплики NPC | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
+| 034 | `lower-dvina-trace-visible-scene-items.js`, `lower-dvina-trace-turn-step-current-scene.js` | код пишет прозу сцены | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 035 | `scripts/bootstrap-live-world-v17.mjs` | bootstrap v17 без календаря | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 036 | `scripts/*.test.mjs`, `test/spatial-v3/` | тесты M2c вне гейта, заглушки планировщика | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 037 | `data/world-catalogs/novgorod/` | утверждения данных разбросаны | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
@@ -157,8 +157,8 @@
 - **Как жить.** Путь v16 не развивать; если тест v16 зелёный, а v17 падает, чинить v17.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
-### LW-034 — код пишет прозу и реплики NPC (ветка PR #98)
-- **Что.** `lower-dvina-trace-visible-scene-items.js` и `lower-dvina-trace-turn-step-current-scene.js` собирают русские фразы для игрока из шаблонов; при сбое grounding `lower-dvina-trace-conversation-llm.js` подставляет реплику NPC, собранную кодом, и она коммитится как речь NPC.
+### LW-034 — код пишет прозу сцены (ветка PR #98)
+- **Что.** `lower-dvina-trace-visible-scene-items.js` и `lower-dvina-trace-turn-step-current-scene.js` собирают русские фразы для игрока из шаблонов.
 - **Как жить.** Новых шаблонных фраз не добавлять. Код отдаёт структурные факты, прозу пишет рассказчик, речь NPC — модель NPC или типизированный отказ.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 

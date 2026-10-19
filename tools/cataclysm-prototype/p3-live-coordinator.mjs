@@ -85,6 +85,7 @@ export async function startP3LiveCoordinator({ socketPath, env = process.env,
           applied_operations: unknown ? null : adapter?.appliedOperations ?? 0,
           goal_result: unknown ? 'unknown' : applied ? 'partially_achieved' : 'not_achieved',
           message: unknown ? 'Результат родного действия не подтверждён. Черновик, не сохранено.'
+            : applied && /^TURN_NPC_/u.test(code) ? 'Выбранный собеседник не ответил.'
             : applied ? 'Действие уже начато; дальнейшая обработка не завершена. Черновик, не сохранено.'
             : code === 'P3_LIVE_BUSY'
               ? 'Предыдущее действие ещё обрабатывается. Повторите после его завершения.'

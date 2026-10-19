@@ -435,6 +435,8 @@ export async function runP3NativeNpcReply({ nativeAdapter, observation, playerRe
     subminute_numerator: String(remainder / common), subminute_denominator: String(60 / common) };
   const npcRef = { entity_kind: 'npc', entity_id: actor.actor_id };
   const playerRef = { entity_kind: 'player_character', entity_id: player.actor_id };
+  const perceptionRef = { entity_kind: 'perception_result',
+    entity_id: `p3-heard-${playerReadback.operation_id}-${actor.actor_id}` };
   const source = { entity_kind: 'event', entity_id: `p3-speech-${playerReadback.operation_id}` };
   const signal = buildNpcDecisionSignal({ occurred_at: at, category: 'communication',
     significance: 'material', source_event_ref: source, subject_ref: npcRef,
@@ -460,12 +462,13 @@ export async function runP3NativeNpcReply({ nativeAdapter, observation, playerRe
     perceived_message: {
       source_statement_ref: { entity_kind: 'conversation_statement',
         entity_id: `p3-player-speech-${playerReadback.operation_id}` },
-      perception_result_ref: { entity_kind: 'perception_result',
-        entity_id: `p3-heard-${playerReadback.operation_id}-${actor.actor_id}` } },
+      perception_result_ref: perceptionRef },
     public_conversation_history: [{ speaker_ref: playerRef, utterance_text: effect.utterance }],
-    knowledge: {}, memory: {}, social_context: {}, available_resources: [],
+    knowledge: {}, memory: { current_observations: [{ observation_ref: perceptionRef,
+      fact_text: `NPC услышал реплику игрока ${JSON.stringify(effect.utterance)}.` }] },
+    social_context: {}, available_resources: [],
     allowed_references: { actor_refs: [npcRef, playerRef], entity_refs: [],
-      knowledge_refs: [], combat_target_refs: [] },
+      knowledge_refs: [perceptionRef], combat_target_refs: [] },
     decision_scope: { conversation_mode: true, action_handoff_available: false,
       combat_handoff_available: false, allowed_attribute_refs: [], allowed_skill_refs: [],
       allowed_check_profile_refs: [], allowed_duration_classes: ['moment', 'brief', 'short', 'domain_owned'],

@@ -148,16 +148,20 @@ test('native process transport passes fixed arguments to execFile with shell dis
   assert.equal(invocation.options.windowsHide, true);
   if (process.platform === 'win32') {
     assert.equal(invocation.file, 'wsl.exe');
-    assert.equal(invocation.args.includes('NOVGOROD_P4_MODE=apply'), true);
-    assert.equal(invocation.args.includes('NOVGOROD_P4_WORLD=novgorod'), true);
-    assert.equal(invocation.args.includes('/home/cdda/build/tests/cata_test'), true);
+    assert.deepEqual(invocation.args, ['--distribution', 'Ubuntu', '--cd', '/home/cdda',
+      '--exec', '/usr/bin/env', 'NOVGOROD_P4_MODE=apply', 'NOVGOROD_P4_WORLD=novgorod',
+      '/home/cdda/build/tests/cata_test', '--rng-seed', '17', '--user-dir=/tmp/p3/reset-1',
+      '[novgorod_semantic]']);
+    assert.equal(invocation.options.cwd, undefined);
+    assert.equal(invocation.options.env, undefined);
   } else {
     assert.equal(invocation.file, '/home/cdda/build/tests/cata_test');
+    assert.deepEqual(invocation.args, ['--rng-seed', '17', '--user-dir=/tmp/p3/reset-1',
+      '[novgorod_semantic]']);
     assert.equal(invocation.options.cwd, '/home/cdda');
     assert.equal(invocation.options.env.NOVGOROD_P4_MODE, 'apply');
     assert.equal(invocation.options.env.NOVGOROD_P4_WORLD, 'novgorod');
   }
-  assert.equal(invocation.args.includes('[novgorod_semantic]'), true);
   await assert.rejects(adapter.runNative(' arbitrary'), /P3_NATIVE_MODE_INVALID/);
 });
 

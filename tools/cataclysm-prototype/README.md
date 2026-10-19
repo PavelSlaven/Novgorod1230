@@ -148,11 +148,12 @@ P4 — отдельный исследовательский gate CR [#758](http
 См. [спецификацию](../../docs/implementation/cataclysm-p4-experiment.md),
 [исходный отрицательный результат](../../docs/implementation/cataclysm-p4-results.md)
 и [повторную проверку](../../docs/implementation/cataclysm-p4-recovery-results.md).
-Повторный fault suite и численные пороги прошли независимую техническую
-приёмку. Речевые T11/T12 остаются обязательными до P5/P6.
+Прежняя техническая приёмка не заметила исключения world setup из замера.
+Итоговая приёмка: FAIL прежних ворот, механизм принят. Новые P4a/P4b открыты;
+речевые T11/T12 проверяются после P3 до P6.
 
 Отрицательный исход исходного прогона сохранён в отчёте. Продолжение CR #758
-использует новый checkout `/home/slaven/cataclysm-recovery`; воспроизведение
+использовало checkout `/home/slaven/cataclysm-recovery` (теперь только чтение); воспроизведение
 исходного UID failure и происхождение сборки записаны в
 [recovery baseline](evidence/recovery-baseline.md). Новые overlays сохраняют UID
 при десериализации, native RNG state и добавляют opt-in preload host.
@@ -163,8 +164,8 @@ P4 — отдельный исследовательский gate CR [#758](http
 этого репозитория в WSL. Все test sources копируются из той же ревизии:
 
 ```sh
-NATIVE=/home/slaven/cataclysm-recovery
-for overlay in native-persistence native-item-identity native-rng-state native-semantic-input native-preload; do
+NATIVE="$NOVGOROD/artifacts/2026-10-19/nativebuild/cataclysm-source"
+for overlay in native-persistence native-item-identity native-rng-state native-preload native-semantic-input; do
   git -C "$NATIVE" apply --check "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
   git -C "$NATIVE" apply "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
 done
@@ -187,7 +188,7 @@ ENOSPC внедряется записью в `/dev/full`. Это process-crash 
 
 ```sh
 P4="$NOVGOROD/tools/cataclysm-prototype/generations.py"
-NATIVE=/home/slaven/cataclysm-recovery
+NATIVE="$NOVGOROD/artifacts/2026-10-19/nativebuild/cataclysm-source"
 BINARY="$NATIVE/build-clang-release/tests/cata_test"
 python3 "$NOVGOROD/tools/cataclysm-prototype/test_generations.py"
 python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch \
@@ -202,11 +203,13 @@ python3 "$P4" --experiment-root /home/slaven/cataclysm-evidence/new-p4-dispatch 
 Exit 2 означает непройденный gate; отчёт сохраняется и не объявляется PASS.
 `move_east` остаётся диагностическим сценарием, а приёмочные метрики используют
 `pickup_rock` со строгим сравнением UID и полного native RNG state. `--preload`
-исключает повторную подготовку immutable definitions: каждый свежий child
-загружает весь физический мир из файлов своего поколения. World load, save,
-копирование, fsync, публикация и validation входят в прежний бюджет 5 секунд.
-Cold whole-host recovery показывается отдельно; 20 samples после одного warmup
-и ограничение поколения 512 MiB сохраняются.
+вынес из старого warm замера весь parent `g->setup()` с `load_world_modfiles()`;
+child загружает сохранение из своего поколения. Поэтому описание parent как
+«definitions-only» неверно, а старый результат не закрывает условие #760.
+По D215/D216 preload host заморожен как ускоритель отладки; бюджет ≤5 с на
+операцию отменён. 20 warm samples остаются историческими измерениями.
+Штатный целевой путь — live CDDA, native save по запросу и каждый игровой час;
+save ≤5 с, полный start/recovery ≤20 с, поколение ≤512 МиБ ещё надо подтвердить.
 Полная фикстура и accepted generations не предназначены для production.
 
 ## Лицензия исходника

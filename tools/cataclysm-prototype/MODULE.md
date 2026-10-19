@@ -23,23 +23,30 @@ CDDA владеет физическими переходами, часами, �
 Read-only observer фиксирует состояние на границе ввода; обнаружение угрозы и
 safe mode исполняет штатный `mon_info_update`, не observer.
 
-P4 coordinator — единственный владелец принятия общего поколения в эксперименте.
+P4 coordinator — единственный владелец принятия общего поколения в отладочном эксперименте.
 CDDA по-прежнему владеет физическим save/load; staging mutable, принятые каталоги
-неизменны, current/previous публикуются одной атомарной записью. Python не хранит
-вторую копию физического мира в semantic JSON. Неизвестное принятое состояние
+неизменны, current/previous публикуются одной атомарной записью. Текущие P3-ветки
+сохраняют `snapshot` и `native_readback` в semantic JSON; это выявленный дубль
+физической проекции, подлежащий удалению из штатного пути. Неизвестное принятое состояние
 останавливает retry как uncertain. Это отдельный изолированный probe, не новый
 production transaction path.
 
 Native deserialization переносит сохранённые item instances с прежними UID;
 обычная copy semantics создаёт новые identity. Native save/load также владеет
-файлом состояния RNG engine. Координатор требует этот файл в новом поколении,
-но не вычисляет и не восстанавливает RNG самостоятельно.
+файлом состояния RNG engine в существующем стенде. Координатор требует его,
+но не вычисляет RNG самостоятельно. В целевом игровом пути этот файл, журнал
+operation IDs, квитанции и сохранение каждой операции остаются только отладкой;
+такое отделение ещё не реализовано. Побитовый replay игры не требуется.
 
-Opt-in preload host держит только immutable definitions одного профиля.
+Opt-in preload host выполняет `g->setup()` и `load_world_modfiles()` одного
+профиля до запуска измеряемого child. Это world-specific setup, включая моды,
+не только static/core definitions; его стоимость исключалась из старого warm p95.
 Каждый fork-child перенастраивает userdir/cache пути и полностью загружает
-физический мир из своего staging или validation scratch. Parent не загружает,
-не меняет и не сохраняет физический мир. Это ускорение bootstrap эксперимента,
-не общий RPC и не второй world owner.
+сохранение из staging или validation scratch. Parent не вызывает
+`load(save_t)`, действия или `save()`; это не означает отсутствия world setup.
+Host заморожен как ускоритель стенда. Для игры планируется один живой CDDA
+с `game::save()` по запросу и раз в игровой час, а не fork/process на операцию.
+Прежний бюджет ≤5 с на операцию отменён; новые ворота описаны в плане среза.
 
 Инструмент не подключён к production runtime Novgorod, не читает пользовательские
 сохранения и не меняет active bindings. Он не предоставляет renderer, HTTP server,
@@ -52,8 +59,8 @@ Opt-in preload host держит только immutable definitions одного
 `create`/`apply` speech probe, nested item/UID regressions и item/JSON/pickup
 controls.
 Порядок подключения: `native-input`, `native-persistence`, `native-item-identity`,
-`native-rng-state`, `native-semantic-input`, затем `native-preload`; последний
-единолично включает P4 preload после P3 patch. Исходная ревизия и команды — в
+`native-rng-state`, `native-preload`, затем `native-semantic-input`; preload
+единолично включает P4 preload, semantic patch его не откатывает. Исходная ревизия и команды — в
 [README](README.md).
 Зелёный native тест не является приёмкой semantic/NPC/narration интеграции или
 production cutover. P3 seams доступны только bare native test agent; UI/smoke
@@ -66,5 +73,6 @@ curses smoke загрузил P1 мир и подтвердил save-and-quit; r
 P4 — opt-in `[novgorod_persistence]`, `generations.py` и отдельная fault matrix;
 обычный upstream test lifecycle сохраняется без P4 environment. Python unit
 checks проверяют coordinator invariants и сами по себе не доказывают native
-persistence. Пороги и границы измерений заданы до сравнения в
-[спецификации P4](../../docs/implementation/cataclysm-p4-experiment.md).
+persistence. [Спецификация P4](../../docs/implementation/cataclysm-p4-experiment.md)
+хранит исторический протокол стенда; штатные ворота и граница отладки — в
+[плане среза](../../docs/plans/Novgorod1230_Cataclysm_Vertical_Slice_Implementation_Plan_2026-10-19.md).

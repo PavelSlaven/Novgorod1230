@@ -48,10 +48,20 @@ Opt-in preload host держит только immutable definitions одного
 
 ## Проверка
 
-Исполняемый путь — upstream `cata_test` с проверками `[novgorod_slice]`.
-Порядок подключения, исходная ревизия и команды принадлежат [README](README.md).
+Исполняемый путь — upstream `cata_test`; task01 smoke использует P3
+`create`/`apply` speech probe, nested item/UID regressions и item/JSON/pickup
+controls.
+Порядок подключения: `native-input`, `native-persistence`, `native-item-identity`,
+`native-rng-state`, `native-semantic-input`, затем `native-preload`; последний
+единолично включает P4 preload после P3 patch. Исходная ревизия и команды — в
+[README](README.md).
 Зелёный native тест не является приёмкой semantic/NPC/narration интеграции или
-production cutover.
+production cutover. P3 seams доступны только bare native test agent; UI/smoke
+команды и незавершённые области перечислены в [PLAY.md](PLAY.md). Task01
+curses smoke загрузил P1 мир и подтвердил save-and-quit; runtime data directory
+должен содержать `gfx`, а `--datadir` требует завершающий `/` в этой сборке.
+Ограничения и PTY evidence записаны в
+`artifacts/2026-10-19/task01/native-handoff.md`.
 
 P4 — opt-in `[novgorod_persistence]`, `generations.py` и отдельная fault matrix;
 обычный upstream test lifecycle сохраняется без P4 environment. Python unit

@@ -1,0 +1,69 @@
+{
+  "head": "5883a62fd283febd6fb81dafe5f53f2d566e92a5",
+  "upstream": "0d8843f1c500052c3e026e3da6f8edaf5e00b626",
+  "patches": [
+    "native-input.patch",
+    "native-persistence.patch",
+    "native-item-identity.patch",
+    "native-rng-state.patch",
+    "native-preload.patch",
+    "native-semantic-input.patch"
+  ],
+  "source_identity": {
+    "files": 31,
+    "zero_diff": true,
+    "report": "source-identity.json"
+  },
+  "binaries": {
+    "cataclysm": "9DD6B168505CC817DAEE48D68806D6D8ED597756045153CC6697C61D84C1C7BA",
+    "cata_test": "D43A6AEFB936F50DB2FB7389A0736C04EB62A7240634F6C5E8B4EDFAF24A0A5F"
+  },
+  "focused_tests": {
+    "cases": 11,
+    "assertions": 98,
+    "passed": true,
+    "filter": "[novgorod_semantic][item],[novgorod_semantic][pickup],[novgorod_semantic][json],[novgorod_item_uid]",
+    "evidence": "artifacts/2026-10-19/task01/native-smoke-20261019-061401/novgorod-focused.raw.log"
+  },
+  "speech_probe": {
+    "status": "applied",
+    "goal_result": "achieved",
+    "assertions_create": 9,
+    "assertions_apply": 13,
+    "heard": [
+      "2",
+      "3"
+    ],
+    "deaf_listeners_false": [
+      "4",
+      "5"
+    ],
+    "evidence": "artifacts/2026-10-19/task01/native-smoke-20261019-061401/speech-listeners/novgorod-p3-operation-readback.json"
+  },
+  "curses_smoke": {
+    "userdir": "artifacts/2026-10-19/task01/p1-curses-20261019-062524",
+    "process_exit": 0,
+    "save_changed": true,
+    "rng_changed": true,
+    "log": "artifacts/2026-10-19/task01/p1-curses-20261019-062524/curses.pty",
+    "verification": "artifacts/2026-10-19/task01/p1-curses-20261019-062524/verification.json",
+    "changed_files": [
+      "#VW4gVGFwaWE=.sav.zzip",
+      "dimension_data.gsav",
+      "novgorod_rng_state"
+    ],
+    "before": {
+      "#VW4gVGFwaWE=.sav.zzip": "4fb49e94f2f750696ed2f86eb059838bad47c7249e3cd21fffba20c448eb2a43",
+      "dimension_data.gsav": "f47d0843ecc37a480e6e682694fb0b17f6a9b39117cec7ca6c23c860d2421b35",
+      "novgorod_rng_state": "e1449f7d9483b038ff3857015d9435046ca2b14e6da514dbfd659225816a1e0b"
+    },
+    "after": {
+      "#VW4gVGFwaWE=.sav.zzip": "8aa24cd0b301c3ead765d07ec7786c1febbc48956a300605eb371753a8618067",
+      "dimension_data.gsav": "cfe63648e48f2e6ae6fabe53ba54e9a047b188486b654873ae04820aabac5bd8",
+      "novgorod_rng_state": "963a8b850cff2f9971df3b39a20d4b952ae23d4504086a47fbe60902cf49aa1e"
+    },
+    "harness_sha256": "5A8DB37977FD91FF914D782AB5A6CA929C35C3C948A49AF52690C907E87707D9",
+    "executed_harness_sha256": "0ED808444D192AA21E695D09441900A4DD61CB8F472646101F853FEA89EE75B1",
+    "post_run_source_normalization": "CRLF to LF and trailing empty lines only; executed hash retained separately"
+  }
+}

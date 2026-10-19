@@ -1,0 +1,207 @@
+{
+  "upstream": "0d8843f1c500052c3e026e3da6f8edaf5e00b626",
+  "patch_order": [
+    "native-input.patch",
+    "native-persistence.patch",
+    "native-item-identity.patch",
+    "native-rng-state.patch",
+    "native-preload.patch",
+    "native-semantic-input.patch"
+  ],
+  "compared_files": 31,
+  "zero_diff": true,
+  "files": [
+    {
+      "path": "src/do_turn.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "a1d2e38f7601db6a9c48b76fa823d23b981c76d24cf49d6a25b71a8fb4684f57",
+      "build_copy_sha256": "a1d2e38f7601db6a9c48b76fa823d23b981c76d24cf49d6a25b71a8fb4684f57"
+    },
+    {
+      "path": "src/game.h",
+      "equal": true,
+      "upstream_patched_sha256": "eec21cb4a91b211f8e74441249c80888447334a3215b1d9a2bfa2b80acb0efaa",
+      "build_copy_sha256": "eec21cb4a91b211f8e74441249c80888447334a3215b1d9a2bfa2b80acb0efaa"
+    },
+    {
+      "path": "src/handle_action.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "54c13b3133f3973fb083dd64527c7684c945f8bcde468f5f1d25e2d3ac012166",
+      "build_copy_sha256": "54c13b3133f3973fb083dd64527c7684c945f8bcde468f5f1d25e2d3ac012166"
+    },
+    {
+      "path": "src/game.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "9b66d1f49f57d497c7797db213fb344a91268b9532877f98550f8355d3926bfe",
+      "build_copy_sha256": "9b66d1f49f57d497c7797db213fb344a91268b9532877f98550f8355d3926bfe"
+    },
+    {
+      "path": "src/game_io.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "e2f5548ec2112d5958558c111481a97d242f119704cbbe1dddc5c105af5ff779",
+      "build_copy_sha256": "e2f5548ec2112d5958558c111481a97d242f119704cbbe1dddc5c105af5ff779"
+    },
+    {
+      "path": "tests/test_main.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "f666c86b1deb8dbb5545127820c95a57762bcc10bdf3fc443a90d12b26a6bbce",
+      "build_copy_sha256": "f666c86b1deb8dbb5545127820c95a57762bcc10bdf3fc443a90d12b26a6bbce"
+    },
+    {
+      "path": "src/item_contents.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "fd88408d620d3fde7e30ff5fb93572d8a5188cd0bcc57faf7661e85525bc4ae8",
+      "build_copy_sha256": "fd88408d620d3fde7e30ff5fb93572d8a5188cd0bcc57faf7661e85525bc4ae8"
+    },
+    {
+      "path": "src/item_contents.h",
+      "equal": true,
+      "upstream_patched_sha256": "c5cf74b3c95c1caf1d5d67fdbf1f46a71292c3badf5872f6200043ae42470406",
+      "build_copy_sha256": "c5cf74b3c95c1caf1d5d67fdbf1f46a71292c3badf5872f6200043ae42470406"
+    },
+    {
+      "path": "src/item_pocket.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "ad555108bb7eabbe281344973927a6d1fbdc057eb70a8ba8f842aa702ec2f161",
+      "build_copy_sha256": "ad555108bb7eabbe281344973927a6d1fbdc057eb70a8ba8f842aa702ec2f161"
+    },
+    {
+      "path": "src/item_pocket.h",
+      "equal": true,
+      "upstream_patched_sha256": "7a49a2191c9af57d6929187375603b096c5b7afb1c953700b15e25e6eed6b773",
+      "build_copy_sha256": "7a49a2191c9af57d6929187375603b096c5b7afb1c953700b15e25e6eed6b773"
+    },
+    {
+      "path": "src/savegame_json.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "be6e176c67d768b74977cbb865599cba011d117b32d65b83669ff500d02eda43",
+      "build_copy_sha256": "be6e176c67d768b74977cbb865599cba011d117b32d65b83669ff500d02eda43"
+    },
+    {
+      "path": "src/rng.h",
+      "equal": true,
+      "upstream_patched_sha256": "4048cc6323bb4539c8e3d399508c5644c1793c7e21d14bb24f0b305f710edea6",
+      "build_copy_sha256": "4048cc6323bb4539c8e3d399508c5644c1793c7e21d14bb24f0b305f710edea6"
+    },
+    {
+      "path": "src/rng.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "b4a792e9286f9ef071fda3606f40086fcc6b14023576092eb25b9d55b39bda1f",
+      "build_copy_sha256": "b4a792e9286f9ef071fda3606f40086fcc6b14023576092eb25b9d55b39bda1f"
+    },
+    {
+      "path": "src/flexbuffer_cache.h",
+      "equal": true,
+      "upstream_patched_sha256": "4fda71113f3d34c01cd73abe6b265331491d10f5af3858870233613a732a77db",
+      "build_copy_sha256": "4fda71113f3d34c01cd73abe6b265331491d10f5af3858870233613a732a77db"
+    },
+    {
+      "path": "src/flexbuffer_cache.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "294ab0a98027461ee78f02e64b8bc6bd6cce031336302379ee57a7221e1ee1fc",
+      "build_copy_sha256": "294ab0a98027461ee78f02e64b8bc6bd6cce031336302379ee57a7221e1ee1fc"
+    },
+    {
+      "path": "src/json_loader.h",
+      "equal": true,
+      "upstream_patched_sha256": "b1c261e617c0e10f2ad055a41cd648a6c7b674dc0eba826eee602604e2098c28",
+      "build_copy_sha256": "b1c261e617c0e10f2ad055a41cd648a6c7b674dc0eba826eee602604e2098c28"
+    },
+    {
+      "path": "src/json_loader.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "7fe00e791141784545636b0331d82d144da8846bfdef8520787dbf7e50c270b7",
+      "build_copy_sha256": "7fe00e791141784545636b0331d82d144da8846bfdef8520787dbf7e50c270b7"
+    },
+    {
+      "path": "src/action.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "0d21951618475ce50bca79c8aa17041f4a8389acd888d1a5250013e0eeca0430",
+      "build_copy_sha256": "0d21951618475ce50bca79c8aa17041f4a8389acd888d1a5250013e0eeca0430"
+    },
+    {
+      "path": "src/action.h",
+      "equal": true,
+      "upstream_patched_sha256": "a6011e664702e53d160d47cf2c1c333ee1c2bd5ad46681a7e510dc4115f2a093",
+      "build_copy_sha256": "a6011e664702e53d160d47cf2c1c333ee1c2bd5ad46681a7e510dc4115f2a093"
+    },
+    {
+      "path": "src/item.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "f3a89be21d054792102afa54346def6af0e8458d0d72f57a49b163885254faf5",
+      "build_copy_sha256": "f3a89be21d054792102afa54346def6af0e8458d0d72f57a49b163885254faf5"
+    },
+    {
+      "path": "src/item.h",
+      "equal": true,
+      "upstream_patched_sha256": "e6224a9299168face83070884eaf925670811c67a33da9e808c36f1a7ac6956d",
+      "build_copy_sha256": "e6224a9299168face83070884eaf925670811c67a33da9e808c36f1a7ac6956d"
+    },
+    {
+      "path": "src/json.h",
+      "equal": true,
+      "upstream_patched_sha256": "b6614c3dc58a1a658c532f726d9396b2dc2855519a2babbd434d3027436f3b09",
+      "build_copy_sha256": "b6614c3dc58a1a658c532f726d9396b2dc2855519a2babbd434d3027436f3b09"
+    },
+    {
+      "path": "src/npc.h",
+      "equal": true,
+      "upstream_patched_sha256": "d19c6e35ba1e29bedaf61d24e14a11897738f25ab7a6c79b30a18bce1526e48a",
+      "build_copy_sha256": "d19c6e35ba1e29bedaf61d24e14a11897738f25ab7a6c79b30a18bce1526e48a"
+    },
+    {
+      "path": "src/npcmove.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "7d5f3057fe973dde65de8282c1d6c7561e4eb841d20c573eb20ce9aea763461e",
+      "build_copy_sha256": "7d5f3057fe973dde65de8282c1d6c7561e4eb841d20c573eb20ce9aea763461e"
+    },
+    {
+      "path": "src/pickup.cpp",
+      "equal": true,
+      "upstream_patched_sha256": "506e6631e73b4ceb847dbaecf2484797eb1b76718a960232f100de395d256250",
+      "build_copy_sha256": "506e6631e73b4ceb847dbaecf2484797eb1b76718a960232f100de395d256250"
+    },
+    {
+      "path": "tools/cataclysm-prototype/novgorod_semantic_test.cpp",
+      "build_copy": "tests/novgorod_semantic_test.cpp",
+      "equal": true,
+      "repo_sha256": "253eeb6ad9adb7237e0ba825863ecbaa2c1611a8004a020667b017074942cfa6",
+      "build_copy_sha256": "253eeb6ad9adb7237e0ba825863ecbaa2c1611a8004a020667b017074942cfa6"
+    },
+    {
+      "path": "tools/cataclysm-prototype/novgorod_item_uid_test.cpp",
+      "build_copy": "tests/novgorod_item_uid_test.cpp",
+      "equal": true,
+      "repo_sha256": "35a6b2339dc60e739642d3eb32464768dd10de4dad6debd2c747ae6a76bcf0d3",
+      "build_copy_sha256": "35a6b2339dc60e739642d3eb32464768dd10de4dad6debd2c747ae6a76bcf0d3"
+    },
+    {
+      "path": "tools/cataclysm-prototype/novgorod_persistence_test.cpp",
+      "build_copy": "tests/novgorod_persistence_test.cpp",
+      "equal": true,
+      "repo_sha256": "877f1f1d307d9e571b560f8087fd9b0f7a405a04fd9edca4a7939d641fad341e",
+      "build_copy_sha256": "877f1f1d307d9e571b560f8087fd9b0f7a405a04fd9edca4a7939d641fad341e"
+    },
+    {
+      "path": "tools/cataclysm-prototype/novgorod_preload_probe.cpp",
+      "build_copy": "tests/novgorod_preload_probe.cpp",
+      "equal": true,
+      "repo_sha256": "2e0425746e80b115a7885688feafaf58b1e2d7813a7f60723b8fe685cec4c547",
+      "build_copy_sha256": "2e0425746e80b115a7885688feafaf58b1e2d7813a7f60723b8fe685cec4c547"
+    },
+    {
+      "path": "tools/cataclysm-prototype/novgorod_rng_state_test.cpp",
+      "build_copy": "tests/novgorod_rng_state_test.cpp",
+      "equal": true,
+      "repo_sha256": "bdec577f9391b889eaea68a849c139783d2b16d9a38407708461b6f91b78be8c",
+      "build_copy_sha256": "bdec577f9391b889eaea68a849c139783d2b16d9a38407708461b6f91b78be8c"
+    },
+    {
+      "path": "tools/cataclysm-prototype/novgorod_slice_test.cpp",
+      "build_copy": "tests/novgorod_slice_test.cpp",
+      "equal": true,
+      "repo_sha256": "c4e6f9163721ee662964c4b7c6870ec707395c1d9b7b6b3375837aeba7f33d58",
+      "build_copy_sha256": "c4e6f9163721ee662964c4b7c6870ec707395c1d9b7b6b3375837aeba7f33d58"
+    }
+  ]
+}

@@ -1,5 +1,4 @@
 diff --git a/src/flexbuffer_cache.h b/src/flexbuffer_cache.h
-index 5e7c000..0000000 100644
 --- a/src/flexbuffer_cache.h
 +++ b/src/flexbuffer_cache.h
 @@ -52,6 +52,9 @@ class flexbuffer_cache
@@ -13,7 +12,6 @@ index 5e7c000..0000000 100644
          // Throw exceptions on IO and parse errors.
          static shared_flexbuffer parse( std::filesystem::path json_source_path,
 diff --git a/src/flexbuffer_cache.cpp b/src/flexbuffer_cache.cpp
-index 8ca0000..0000000 100644
 --- a/src/flexbuffer_cache.cpp
 +++ b/src/flexbuffer_cache.cpp
 @@ -431,6 +431,15 @@ flexbuffer_cache::flexbuffer_cache( const std::filesystem::path &cache_directory,
@@ -33,7 +31,6 @@ index 8ca0000..0000000 100644
  
  std::shared_ptr<parsed_flexbuffer> flexbuffer_cache::parse( std::filesystem::path json_source_path,
 diff --git a/src/game.cpp b/src/game.cpp
-index dc478f0..0000000 100644
 --- a/src/game.cpp
 +++ b/src/game.cpp
 @@ -696,6 +696,7 @@ void game::setup()
@@ -46,7 +43,6 @@ index dc478f0..0000000 100644
              load_core_data();
              novgorod_p4_core_data_ms += std::chrono::duration<double, std::milli>(
 diff --git a/src/json_loader.h b/src/json_loader.h
-index 90a0000..0000000 100644
 --- a/src/json_loader.h
 +++ b/src/json_loader.h
 @@ -22,5 +22,8 @@ class json_loader
@@ -59,7 +55,6 @@ index 90a0000..0000000 100644
          // Like json_loader::from_path, except instead of parsing data from a file, will parse data from a string in memory.
          static JsonValue from_string( std::string data ) noexcept( false );
 diff --git a/src/json_loader.cpp b/src/json_loader.cpp
-index 3c82000..0000000 100644
 --- a/src/json_loader.cpp
 +++ b/src/json_loader.cpp
 @@ -113,6 +113,21 @@ std::optional<JsonValue> from_path_at_offset_opt_impl( const cata_path &source_f
@@ -85,8 +80,8 @@ index 3c82000..0000000 100644
  std::optional<JsonValue> json_loader::from_path_at_offset_opt( const cata_path &source_file,
          size_t offset ) noexcept( false )
 diff --git a/tests/test_main.cpp b/tests/test_main.cpp
---- --- a/tests/test_main.cpp
-+++ +++ b/tests/test_main.cpp
+--- a/tests/test_main.cpp
++++ b/tests/test_main.cpp
 @@ -59,6 +59,10 @@
  
  static const mod_id MOD_INFORMATION_dda( "dda" );

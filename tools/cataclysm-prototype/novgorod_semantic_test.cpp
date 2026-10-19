@@ -65,9 +65,6 @@ void reset_p3_fixture()
     here.add_item( p3_fixture_center, item( itype_id( "stick" ) ) );
     here.add_item( p3_fixture_center + tripoint_rel_ms( -1, 0, 0 ), item( itype_id( "stick" ) ) );
     item_location backpack = you.i_add( item( itype_id( "backpack" ) ) );
-    if( !you.wear( backpack, false ).has_value() ) {
-        throw std::runtime_error( "NOVGOROD_TEST_BACKPACK_SETUP_FAILED" );
-    }
     item firestarter( itype_id( "crude_firestarter" ) );
     item battery( itype_id( "light_battery_cell" ) );
     battery.ammo_set( battery.ammo_default(), 100 );
@@ -84,6 +81,9 @@ void reset_p3_fixture()
     }
     if( !backpack->put_in( flashlight, pocket_type::CONTAINER ).success() ) {
         throw std::runtime_error( "NOVGOROD_TEST_FLASHLIGHT_CONTAINER_SETUP_FAILED" );
+    }
+    if( !you.wear( backpack, false ).has_value() ) {
+        throw std::runtime_error( "NOVGOROD_TEST_BACKPACK_SETUP_FAILED" );
     }
     character_id p3_speaker_id = spawn_npc( point_bub_ms( 60, 62 ), p3_talker.str() ).getID();
     character_id p3_listener_id = spawn_npc( point_bub_ms( 61, 62 ), p3_talker.str() ).getID();
@@ -676,8 +676,7 @@ TEST_CASE( "Novgorod semantic request uses native avatar primitives", "[novgorod
     std::string furniture_after;
     tripoint_bub_ms effect_target;
     std::vector<std::pair<std::string, bool>> listeners;
-    bool deaf_fixture_seen = false;
-    bool deaf_fixture_heard = false;
+    std::vector<std::pair<std::string, bool>> deaf_listeners;
 
     try {
         if( expected.get_string( "actor_id" ) != actor_id ) {
@@ -804,8 +803,7 @@ TEST_CASE( "Novgorod semantic request uses native avatar primitives", "[novgorod
                     const std::string listener_id = std::to_string( listener.getID().get_value() );
                     listeners.emplace_back( listener_id, heard );
                     if( listener.is_deaf() ) {
-                        deaf_fixture_seen = true;
-                        deaf_fixture_heard = heard;
+                        deaf_listeners.emplace_back( listener_id, heard );
                     }
                 }
             }
@@ -896,8 +894,11 @@ TEST_CASE( "Novgorod semantic request uses native avatar primitives", "[novgorod
         REQUIRE( std::any_of( listeners.begin(), listeners.end(), []( const auto &listener ) {
             return listener.second;
         } ) );
-        REQUIRE( deaf_fixture_seen );
-        REQUIRE_FALSE( deaf_fixture_heard );
+        REQUIRE( deaf_listeners.size() == 2 );
+        for( const auto &deaf_listener : deaf_listeners ) {
+            CAPTURE( deaf_listener.first );
+            REQUIRE_FALSE( deaf_listener.second );
+        }
         REQUIRE( to_seconds<int>( calendar::turn - before.native_time ) == 3 );
     }
     if( status == "applied" && primitive == "wait" ) {
@@ -949,6 +950,7 @@ TEST_CASE( "Novgorod ACTION_USE preserves nested carried item location", "[novgo
         REQUIRE( current );
         CHECK( current->typeId() == expected_type );
         CHECK( current.where() == item_location::type::container );
+        REQUIRE( current.parent_item() );
         CHECK( current.parent_item()->uid().get_value() == parent_uid );
         CHECK( current.parent_pocket() == parent_pocket );
     };

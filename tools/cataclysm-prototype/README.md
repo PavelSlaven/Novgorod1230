@@ -164,11 +164,11 @@ P4 — отдельный исследовательский gate CR [#758](http
 
 ```sh
 NATIVE=/home/slaven/cataclysm-recovery
-for overlay in native-persistence native-item-identity native-rng-state native-preload; do
+for overlay in native-persistence native-item-identity native-rng-state native-semantic-input native-preload; do
   git -C "$NATIVE" apply --check "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
   git -C "$NATIVE" apply "$NOVGOROD/tools/cataclysm-prototype/$overlay.patch" || exit 1
 done
-for source in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe; do
+for source in novgorod_slice_test novgorod_persistence_test novgorod_item_uid_test novgorod_rng_state_test novgorod_preload_probe novgorod_semantic_test; do
   cp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
   cmp "$NOVGOROD/tools/cataclysm-prototype/$source.cpp" "$NATIVE/tests/$source.cpp" || exit 1
 done
@@ -215,3 +215,40 @@ Upstream Cataclysm-DDA распространяет основную игру п
 исключениями для компонентов. Любые добавленные в этот прототип test/patch-файлы
 следуют тому же режиму атрибуции и share-alike; сторонние файлы переносятся только
 после отдельной проверки их лицензии.
+
+
+## Windows / WSL smoke для native прототипа
+
+Все локальные сборки, пользовательские каталоги и evidence хранятся под
+`artifacts/YYYY-MM-DD/`. Исходник `/home/slaven/cataclysm-recovery` — только
+локальный cache закреплённого upstream commit; команды этого раздела не меняют
+его и не обращаются к сети. Перед запуском в PowerShell из корня репозитория:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/cataclysm-prototype/run-p1-curses.ps1 -Smoke
+powershell -ExecutionPolicy Bypass -File tools/cataclysm-prototype/native-smoke.ps1
+```
+
+Первая команда подготавливает runtime `data/gfx`, копирует P1 save fixture в
+свежий userdir и автоматизирует выбор языка, загрузку мира, игровые действия,
+save-and-quit и выход из приложения. PTY log, process exit code и до/после
+SHA-256 save/RNG readback сохраняются рядом с userdir. Default build root
+зафиксирован как `artifacts/2026-10-19/nativebuild`; переопредели его через
+`-NativeBuildRoot`. Новые userdirs и evidence используют текущую дату.
+
+Вторая команда запускает native `create`/`apply` speech listener readback и
+focused `cata_test` (11 cases / 98 assertions); известные item/JSON/pickup
+controls запускаются отдельно и только по явному `-Controls`. Результаты task01
+зафиксированы в `evidence/task01-native/` и в dated artifacts.
+
+Последовательность шести overlays важна: сначала `native-input.patch`, затем
+`native-persistence.patch`, `native-item-identity.patch`, `native-rng-state.patch`,
+`native-preload.patch` и последним `native-semantic-input.patch`. Семантический
+patch содержит P3 native seams и nested item-location fix; preload patch
+единолично добавляет `preload` в P4 mode, сохраняя `create`, `apply` и `read`.
+P3 доступен только для bare native test agent. Свободная речь и авторская
+materialization не готовы; T06–T12 не запускаются этим инструментом.
+
+`PLAY.md` — краткая граница для агента, запускающего native UI или smoke.
+`run-p1-curses.ps1` и `native-smoke.ps1` используют только зафиксированный
+локальный native build; если его нет, сначала выполните сборку по командам выше.

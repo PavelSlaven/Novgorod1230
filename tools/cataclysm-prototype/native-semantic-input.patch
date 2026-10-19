@@ -102,16 +102,6 @@ diff --git a/src/game.cpp b/src/game.cpp
 index b00f641..878facf 100644
 --- a/src/game.cpp
 +++ b/src/game.cpp
-@@ -695,8 +695,7 @@ void game::setup()
- 
-         const char *p4_mode = std::getenv( "NOVGOROD_P4_MODE" );
-         if( test_mode && p4_mode != nullptr &&
--            ( std::string_view( p4_mode ) == "apply" || std::string_view( p4_mode ) == "read" ||
--              std::string_view( p4_mode ) == "preload" ) ) {
-+            ( std::string_view( p4_mode ) == "apply" || std::string_view( p4_mode ) == "read" ) ) {
-             const auto core_data_start = std::chrono::steady_clock::now();
-             load_core_data();
-             novgorod_p4_core_data_ms += std::chrono::duration<double, std::milli>(
 @@ -5740,6 +5739,29 @@ void game::pickup()
  {
      map &here = get_map();

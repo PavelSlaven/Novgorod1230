@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(process): HOW_WE_WORK — Codex для кода среза CDDA: руководитель `gpt-6-sol` ultra, `gpt-6-astra` только ревью планов и приёмка, помощники по сложности (по умолчанию `gpt-6-luna` high, не выше `gpt-6.1-sol`), окно 500K; Codex без `caveman` (`stop caveman` по WR §18.1)
 - docs(context): карта родных механизмов CDDA (docs/context/cdda-native-map, генератор сводной таблицы в docs:check); навигация, не норма (#778)
 - docs(governance): AGENTS.md — правило CDDA reuse-first: готовые механизмы CDDA в первую очередь, расширять при необходимости, новые только при отсутствии; новый механизм называет проверенный родной (файл:строка) и почему не подошёл (#775)
 - fix(cataclysm): dev-проба curses через PS1 и owner settings; native delivery/save/restart, один NPC model repair вместо code заготовки, typed отказ с тишиной и родной факт слуха; Linux transport assertions усилены, NPC часть LW-034 устранена; P3 GO не подтверждён (#770, Refs #247, #329; заменяет #769)

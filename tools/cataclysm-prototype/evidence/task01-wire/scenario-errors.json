@@ -1,0 +1,26 @@
+[
+  {
+    "scenario": "planner_1",
+    "error": {
+      "name": "Error",
+      "code": "transport_error",
+      "message": "Provider request failed."
+    }
+  },
+  {
+    "scenario": "planner_2",
+    "error": {
+      "name": "Error",
+      "code": "transport_error",
+      "message": "Provider request failed."
+    }
+  },
+  {
+    "scenario": "npc_autonomous_decider",
+    "error": {
+      "name": "TurnWorkflowError",
+      "code": "TURN_NPC_MODEL_FAILED",
+      "message": "NPC semantic model request failed"
+    }
+  }
+]

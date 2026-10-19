@@ -1,0 +1,50 @@
+[
+  {
+    "phase": "before",
+    "attempt": 1,
+    "role_id": "turn_step_planner",
+    "error": null
+  },
+  {
+    "phase": "after",
+    "attempt": 1,
+    "role_id": "turn_step_planner",
+    "error": {
+      "name": "Error",
+      "code": "transport_error",
+      "message": "Provider request failed."
+    }
+  },
+  {
+    "phase": "before",
+    "attempt": 2,
+    "role_id": "turn_step_planner",
+    "error": null
+  },
+  {
+    "phase": "after",
+    "attempt": 2,
+    "role_id": "turn_step_planner",
+    "error": {
+      "name": "Error",
+      "code": "transport_error",
+      "message": "Provider request failed."
+    }
+  },
+  {
+    "phase": "before",
+    "attempt": 3,
+    "role_id": "npc_autonomous_decider",
+    "error": null
+  },
+  {
+    "phase": "after",
+    "attempt": 3,
+    "role_id": "npc_autonomous_decider",
+    "error": {
+      "name": "Error",
+      "code": "transport_error",
+      "message": "Provider request failed."
+    }
+  }
+]

@@ -1,0 +1,111 @@
+{
+  "status": "dry_capture_only_no_network_no_model_calls_no_native_writes",
+  "settings": {
+    "provider": "openai_compatible",
+    "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+    "host_class": "private-lan",
+    "credentials_present": true
+  },
+  "role_configs": [
+    {
+      "role_id": "turn_step_planner",
+      "provider": "openai_compatible",
+      "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "temperature": 0,
+      "top_p": 1,
+      "max_tokens": 20000,
+      "timeout_ms": 120000,
+      "context_window_tokens": 65536,
+      "input_limit_tokens": 45536,
+      "context_budget": null
+    },
+    {
+      "role_id": "turn_step_planner_repair",
+      "provider": "openai_compatible",
+      "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "temperature": 0,
+      "top_p": 1,
+      "max_tokens": 20000,
+      "timeout_ms": 120000,
+      "context_window_tokens": 65536,
+      "input_limit_tokens": 45536,
+      "context_budget": null
+    },
+    {
+      "role_id": "npc_autonomous_decider",
+      "provider": "openai_compatible",
+      "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "temperature": 0,
+      "top_p": 1,
+      "max_tokens": 20000,
+      "timeout_ms": 120000,
+      "context_window_tokens": 65536,
+      "input_limit_tokens": 45536,
+      "context_budget": null
+    },
+    {
+      "role_id": "npc_autonomous_decider_format_repair",
+      "provider": "openai_compatible",
+      "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "temperature": 0,
+      "top_p": 1,
+      "max_tokens": 20000,
+      "timeout_ms": 120000,
+      "context_window_tokens": 65536,
+      "input_limit_tokens": 45536,
+      "context_budget": null
+    },
+    {
+      "role_id": "npc_conversation_responder",
+      "provider": "openai_compatible",
+      "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "temperature": 0,
+      "top_p": 1,
+      "max_tokens": 1000,
+      "timeout_ms": 120000,
+      "context_window_tokens": 65536,
+      "input_limit_tokens": 64536,
+      "context_budget": null
+    },
+    {
+      "role_id": "npc_conversation_responder_format_repair",
+      "provider": "openai_compatible",
+      "model": "qwen3.8-27b-uncensored-w4a16-tp2",
+      "temperature": 0,
+      "top_p": 1,
+      "max_tokens": 1000,
+      "timeout_ms": 120000,
+      "context_window_tokens": 65536,
+      "input_limit_tokens": 64536,
+      "context_budget": null
+    }
+  ],
+  "context_budgets": [
+    {
+      "role_id": "turn_step_planner",
+      "request_max_tokens": 20000,
+      "context_window_tokens": 65536,
+      "input_limit_tokens": 45536
+    },
+    {
+      "role_id": "npc_autonomous_decider",
+      "request_max_tokens": 20000,
+      "context_window_tokens": 65536,
+      "input_limit_tokens": 45536
+    }
+  ],
+  "configured_context_window_tokens": 65536,
+  "trained_context_tokens": 65536,
+  "runtime_metadata_context_tokens": null,
+  "native_observation": {
+    "schema": "p3_native_observation_v1",
+    "revision": 43200,
+    "actors": 5,
+    "targets": 8,
+    "npc_projections": 4
+  },
+  "attempts": 3,
+  "serialized_requests": 3,
+  "errors": 3,
+  "acceptance_claim": false
+}

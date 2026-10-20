@@ -21,6 +21,8 @@ import { loadP3NpcProfile } from './p3-npc-profile.js';
 import { buildP3NpcConversationSubject, p3Error, p3GameTimeOfTurn } from './p3-npc-subject.js';
 import { applyPlayerPlan, projectPlayerStatementAudience } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-statements.js';
+import { requiredVerbatimUtteranceText } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-shared.js';
 
 export const P3_ATTEMPT_BUDGET = 72;
 export const P3_CASE_IDS = Object.freeze(['T06', 'T07', 'T08', 'T09', 'T10']);
@@ -568,7 +570,7 @@ function makeP3Env(env) {
   ]));
 }
 
-export function buildP3TurnOperations(observation, targetActorRef = null) {
+export function buildP3TurnOperations(observation, targetActorRef = null, speechText = null) {
   const actor = observation.actors.find(({ actor_ref: ref }) => ref === 'avatar');
   if (!actor) throw new Error('P3_AVATAR_OBSERVATION_MISSING');
   const [x, y, z] = actor.position;
@@ -589,8 +591,8 @@ export function buildP3TurnOperations(observation, targetActorRef = null) {
         container_ref: target.target_ref, access_kind: 'open' })),
     { op: 'request_activity', actor_ref: 'avatar', activity_kind: 'wait',
       target_refs: [], description: 'Wait for the next period' },
-    ...(targetActorRef ? [{ op: 'emit_interaction', actor_ref: 'avatar',
-      target_actor_refs: [targetActorRef], interaction_kind: 'speech', content: 'speech',
+    ...(targetActorRef && speechText ? [{ op: 'emit_interaction', actor_ref: 'avatar',
+      target_actor_refs: [targetActorRef], interaction_kind: 'speech', content: speechText,
       instrument_refs: [] }] : [])
   ];
 }
@@ -698,6 +700,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
       actor.actor_ref === targetActorRef && actor.actor_id === targetActorRef.slice(4)
       && actor.visible === true)
     ? targetActorRef : null;
+  const speechText = selectedNpc ? requiredVerbatimUtteranceText({ raw_text: intent }) : null;
   const initial = { actor_ref: 'avatar', native_observation: structuredClone(observation) };
   const applyNativeOperation = async ({ operation, working_projection: projection, delivery }) => {
         const current = projection.native_observation;
@@ -792,7 +795,7 @@ export async function runP3TurnStep({ intent, observation, nativeAdapter,
         ...(selectedNpc ? { active_interlocutor: { entity_ref: { entity_kind: 'npc',
           entity_id: selectedNpc }, display_label: current.actors.find(({ actor_ref }) =>
           actor_ref === selectedNpc).name.trim() } } : {}) },
-      available_domain_operations: buildP3TurnOperations(current, selectedNpc) };
+      available_domain_operations: buildP3TurnOperations(current, selectedNpc, speechText) };
     },
     revalidateCommittedState: async () => ({ state_version: 0 })
   });

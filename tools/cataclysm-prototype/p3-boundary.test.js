@@ -1460,13 +1460,14 @@ test('planner request names the selected interlocutor and offers speech only wit
     { entity_ref: { entity_kind: 'npc', entity_id: 'npc:9' }, display_label: 'Жирко' });
   const speech = targeted.available_domain_operations.filter(({ op }) => op === 'emit_interaction');
   assert.deepEqual(speech, [{ op: 'emit_interaction', actor_ref: 'avatar',
-    target_actor_refs: ['npc:9'], interaction_kind: 'speech', content: 'speech',
+    target_actor_refs: ['npc:9'], interaction_kind: 'speech', content: 'Скажи привет',
     instrument_refs: [] }]);
   assert.equal(targeted.available_domain_operations.at(-1).op, 'emit_interaction');
   const plain = await capture(current, null);
   assert.equal('active_interlocutor' in plain.player_safe_state, false);
   assert.equal(plain.available_domain_operations.some(({ op }) => op === 'emit_interaction'), false);
-  assert.equal(buildP3TurnOperations(current, 'npc:9').some(({ op }) => op === 'emit_interaction'), true);
+  assert.equal(buildP3TurnOperations(current, 'npc:9', 'Привет')
+    .some(({ op }) => op === 'emit_interaction'), true);
 });
 
 function chosenOperationOutput(request, selected) {

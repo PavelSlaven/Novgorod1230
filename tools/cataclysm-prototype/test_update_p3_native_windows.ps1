@@ -72,6 +72,10 @@ try {
     if ($LASTEXITCODE -or $folded -contains 'src/old.txt' -or $folded -notcontains 'src/new.txt') {
         throw 'Fixture did not trigger rename detection'
     }
+    $cachedPaths = @(& git -C $base diff --cached --no-renames --name-only $baseSha)
+    if ($LASTEXITCODE -or $cachedPaths -notcontains 'src/old.txt' -or $cachedPaths -notcontains 'src/new.txt') {
+        throw 'Cached diff did not report both rename paths'
+    }
 } finally {
     $env:GIT_INDEX_FILE = $priorIndex
     if (Test-Path -LiteralPath $renameIndex) { Remove-Item -LiteralPath $renameIndex }
@@ -93,6 +97,11 @@ Assert-StageCount 0
 & pwsh @arguments
 if ($LASTEXITCODE) { throw "First prepare failed; fixture: $root" }
 Assert-StageCount 1
+$updaterText = Get-Content -LiteralPath $Updater -Raw
+if (-not $updaterText.Contains('Invoke-Git $BuildRoot @(''diff'', ''--no-renames'', ''--name-only'', $BaseSha)') -or
+    -not $updaterText.Contains('Invoke-Git $BuildRoot @(''diff'', ''--cached'', ''--no-renames'', ''--name-only'', $BaseSha)')) {
+    throw 'Build diff checks do not disable rename detection'
+}
 if (-not (Test-Path (Join-Path $build 'src/sequence.txt'))) { throw 'Build path was not created' }
 if (([System.IO.File]::ReadAllText((Join-Path $build 'src/sequence.txt'))) -ne "step8`n") { throw 'Patch order is wrong' }
 if ([Convert]::ToHexString([System.IO.File]::ReadAllBytes((Join-Path $build 'src/novgorod_semantic.cpp'))) -ne '00010AFF') {

@@ -142,8 +142,8 @@ try {
         if (-not $trackedPaths.Contains($relative)) { throw "Unknown build path: $relative" }
     }
     $changedTracked = @(
-        Invoke-Git $BuildRoot @('diff', '--name-only', $BaseSha)
-        Invoke-Git $BuildRoot @('diff', '--cached', '--name-only', $BaseSha)
+        Invoke-Git $BuildRoot @('diff', '--no-renames', '--name-only', $BaseSha)
+        Invoke-Git $BuildRoot @('diff', '--cached', '--no-renames', '--name-only', $BaseSha)
     )
     foreach ($path in $changedTracked) {
         $relative = $path.Replace('\', '/')

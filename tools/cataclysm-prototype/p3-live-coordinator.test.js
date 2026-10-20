@@ -45,7 +45,9 @@ async function fixture(t, decide, decideNpc = null, execute = null, config = nul
       api_key: 'synthetic-test' } } });
   let calls = 0;
   const roles = [];
+  const journal = [];
   const coordinator = await startP3LiveCoordinator({ socketPath, settingsOwner, env: {},
+    journal: record => journal.push(record),
     ...(execute ? { execute } : {}), ...(config ? { config } : {}),
     runtimeFactory: execute ? createP3RoleRuntime : ({ budget }) => {
       const runner = budget.wrap({ async run({ role_id, request }) {
@@ -63,7 +65,8 @@ async function fixture(t, decide, decideNpc = null, execute = null, config = nul
         npcConversationModel };
     } });
   t.after(async () => { await coordinator.close(); await rm(dir, { recursive: true, force: true }); });
-  return { coordinator, get calls() { return calls; }, get roles() { return [...roles]; }, async client() {
+  return { coordinator, get calls() { return calls; }, get roles() { return [...roles]; },
+    get journal() { return [...journal]; }, async client() {
     const socket = connect(socketPath);
     const channel = createP3LiveChannel(socket);
     await once(socket, 'connect');
@@ -225,7 +228,7 @@ test('live speech delivery matrix preserves eight modes and refuses sustained be
           assert.equal(response.type, 'result');
           assert.equal(response.status, 'refused');
           assert.equal(response.code, 'P3_PLAYER_UTTERANCE_DELIVERY_UNSUPPORTED');
-          assert.equal(response.message, 'Долгая речь в dev-пробе не поддерживается');
+          assert.equal(response.message, 'Долгая речь в dev-пробе не поддерживается. Черновик, не сохранено.');
           assert.equal(response.applied_operations, 0);
           assert.equal(response.goal_result, 'not_achieved');
         } else {
@@ -353,6 +356,12 @@ test('confirmed native listener gets one NPC model reply and native speech', asy
   assert.equal(result.status, 'completed');
   assert.equal(result.applied_operations, 2);
   assert.equal(scene.calls, 3);
+  assert.equal(scene.journal.length, 1);
+  const [phrase] = scene.journal;
+  assert.deepEqual({ id: phrase.id, outcome: phrase.outcome, code: phrase.code,
+    category: phrase.category, calls: phrase.calls }, { id: '10', outcome: 'ok', code: null,
+    category: null, calls: 3 });
+  assert.ok(Number.isInteger(phrase.t_enter) && phrase.t_native_reply >= phrase.t_enter);
   assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
     'npc_conversation_grounding_auditor']);
   socket.end();
@@ -402,6 +411,9 @@ test('turn call limit refuses the extra call with its own text and resets on the
   assert.equal(refused.goal_result, 'partially_achieved');
   assert.equal(refused.message, 'Предел вызовов модели на ход (2) исчерпан, ход остановлен. Черновик, не сохранено.');
   assert.equal(scene.calls, 2);
+  assert.deepEqual(scene.journal.map(({ id, outcome, code, category, calls }) =>
+    ({ id, outcome, code, category, calls })), [{ id: '20', outcome: 'failure',
+    code: 'P3_TURN_CALL_BUDGET_EXHAUSTED', category: null, calls: 2 }]);
   first.socket.end();
   const second = await scene.client();
   second.channel.bind('21');
@@ -420,7 +432,8 @@ test('turn call limit refuses the extra call with its own text and resets on the
 
 test('two bad NPC replies stop after one repair without a native NPC operation', async t => {
   const utterance = 'Ответь';
-  const npc = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] };
+  const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
+    position: [61, 60, 0] };
   const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
   const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
     goal_result: 'achieved', operations: [],
@@ -447,18 +460,68 @@ test('two bad NPC replies stop after one repair without a native NPC operation',
   assert.equal(result.status, 'refused');
   assert.equal(result.applied_operations, 1);
   assert.equal(result.goal_result, 'partially_achieved');
-  assert.equal(result.message, 'Выбранный собеседник не ответил.');
+  assert.equal(result.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+  assert.equal(result.category, 'format');
+  assert.equal(result.message,
+    'Жирко: ответа нет — ответ модели не прошёл проверку формы. Черновик, не сохранено.');
   assert.equal(scene.calls, 3);
   assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
     'npc_conversation_responder_format_repair']);
+  assert.deepEqual(scene.journal.map(({ outcome, code, category, calls, t_native_reply }) =>
+    ({ outcome, code, category, calls, t_native_reply })), [{ outcome: 'failure',
+    code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE', category: 'format', calls: 3,
+    t_native_reply: null }]);
   socket.end();
+});
+
+test('another NPC failure after the player spoke names the listener and is not a contract verdict', async t => {
+  for (const [name, speaker] of [['Жирко', 'Жирко'], [undefined, 'Собеседник']]) {
+    await t.test(speaker, async t => {
+      const utterance = 'Ответь';
+      const npc = { actor_ref: 'npc:8', actor_id: '8', ...(name ? { name } : {}),
+        visible: true, position: [61, 60, 0] };
+      const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
+      const scene = await fixture(t, request => ({ ...plan(request, {}), resolution: 'direct',
+        goal_result: 'achieved', operations: [],
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+        direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+          utterance_text: utterance, input_mode: 'verbatim',
+          delivery: { loudness: 2, duration_class: 'brief' } } }), () => {
+        throw new Error('backend down');
+      });
+      const { socket, channel } = await scene.client();
+      channel.bind('12');
+      channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+        target_actor_ref: 'npc:8' });
+      await channel.receive();
+      const first = await channel.receive();
+      channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+        operation_id: first.request.operation_id, status: 'applied', goal_result: 'achieved',
+        native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+          actualHeardListenerIds: ['8'] }, before: { turn: 10 }, after: { turn: 10 } } });
+      assert.equal((await channel.receive()).type, 'observe');
+      channel.send({ type: 'observation', observation: sceneObservation });
+      assert.equal((await channel.receive()).role_id, 'npc_conversation_responder');
+      const result = await channel.receive();
+      assert.equal(result.code, 'TURN_NPC_MODEL_FAILED');
+      assert.equal(Object.hasOwn(result, 'category'), false);
+      assert.equal(result.message,
+        `${speaker}: ответа нет — обработка ответа прервана. Черновик, не сохранено.`);
+      assert.doesNotMatch(result.message, /Мастер|не ответил/u);
+      assert.deepEqual(scene.journal.map(({ outcome, code, category }) =>
+        ({ outcome, code, category })), [{ outcome: 'failure', code: 'TURN_NPC_MODEL_FAILED',
+        category: null }]);
+      socket.end();
+    });
+  }
 });
 
 test('registered NPC responder repairs grounding through the real role path', async t => {
   for (const repairAccepted of [true, false]) {
     await t.test(repairAccepted ? 'accepted repair speaks its exact words' : 'rejected repair stays silent', async t => {
       const utterance = 'На площади волк. Ты видел его раньше?';
-      const npc = { actor_ref: 'npc:8', actor_id: '8', visible: true, position: [61, 60, 0] };
+      const npc = { actor_ref: 'npc:8', actor_id: '8', name: 'Жирко', visible: true,
+        position: [61, 60, 0] };
       const witness = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [60, 61, 0] };
       const sceneObservation = { ...observation, actors: [...observation.actors, npc, witness] };
       const roles = [];
@@ -534,9 +597,11 @@ test('registered NPC responder repairs grounding through the real role path', as
       assert.equal(result.status, repairAccepted ? 'completed' : 'refused');
       assert.equal(result.applied_operations, repairAccepted ? 2 : 1);
       if (!repairAccepted) {
-        assert.equal(result.code, 'TURN_NPC_PLAN_INVALID');
+        assert.equal(result.code, 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE');
+        assert.equal(result.category, 'semantic');
         assert.equal(result.goal_result, 'partially_achieved');
-        assert.equal(result.message, 'Выбранный собеседник не ответил.');
+        assert.equal(result.message,
+          'Жирко: ответа нет — ответ модели не прошёл проверку смысла. Черновик, не сохранено.');
       }
       assert.deepEqual(roles, ['turn_step_planner', 'npc_conversation_responder',
         'npc_conversation_grounding_auditor', 'npc_conversation_responder_format_repair',
@@ -544,6 +609,24 @@ test('registered NPC responder repairs grounding through the real role path', as
       assert.equal(responderInputs.length, 2);
       assert.equal(audits, 2);
       assert.equal(scene.coordinator.budget.calls, 5);
+      assert.equal(scene.journal.length, 1);
+      const [phrase] = scene.journal;
+      assert.equal(phrase.id, repairAccepted ? '201' : '202');
+      assert.deepEqual(phrase.roles.map(({ role_id, repair_kind, ok }) =>
+        ({ role_id, repair_kind, ok })), [['turn_step_planner', null],
+        ['npc_conversation_responder', null], ['npc_conversation_grounding_auditor', null],
+        ['npc_conversation_responder_format_repair', 'semantic'],
+        ['npc_conversation_grounding_auditor', null]].map(([role_id, repair_kind]) =>
+        ({ role_id, repair_kind, ok: true })));
+      assert.ok(phrase.roles.every(({ ms }) => Number.isInteger(ms) && ms >= 0));
+      assert.deepEqual({ outcome: phrase.outcome, code: phrase.code, category: phrase.category,
+        calls: phrase.calls }, repairAccepted
+        ? { outcome: 'repair', code: null, category: null, calls: 5 }
+        : { outcome: 'failure', code: 'TURN_NPC_CONVERSATION_CONTRACT_FAILURE',
+          category: 'semantic', calls: 5 });
+      assert.ok(Number.isInteger(phrase.t_enter));
+      if (repairAccepted) assert.ok(phrase.t_native_reply >= phrase.t_enter);
+      else assert.equal(phrase.t_native_reply, null);
       const perceptionRef = { entity_kind: 'perception_result',
         entity_id: `p3-heard-${playerOperation.request.operation_id}-8` };
       assert.deepEqual(responderInputs[0].npc_ref, { entity_kind: 'npc', entity_id: '8' });

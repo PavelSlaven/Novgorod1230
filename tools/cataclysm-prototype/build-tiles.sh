@@ -55,7 +55,9 @@ build_sdl SDL_ttf -DSDLTTF_VENDORED=OFF -DSDLTTF_STRICT=ON -DSDLTTF_PLUTOSVG=OFF
 
 # With the default USE_PREFIX_DATA_DIR=ON the game looks for translations under /usr/local/share/locale
 # instead of lang/mo next to the runtime, so Russian silently falls back to English.
+# Without the link-path RPATH, cmake --install strips RUNPATH and the installed cataclysm-tiles cannot find SDL3 in its prefix.
 cmake -S "$source_dir" -B "$build_dir" -G Ninja -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_COMPILER=clang-19 -DCMAKE_CXX_COMPILER=clang++-19 -DTILES=ON -DSOUND=OFF \
-    -DUSE_PREFIX_DATA_DIR=OFF -DTESTS=OFF -DBUILD_TESTING=OFF -DCATA_CCACHE=OFF
+    -DUSE_PREFIX_DATA_DIR=OFF -DTESTS=OFF -DBUILD_TESTING=OFF -DCATA_CCACHE=OFF \
+    -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON
 cmake --build "$build_dir" --target cataclysm-tiles -j"$jobs"

@@ -22,7 +22,7 @@ fixture="$runtime_root/fixture/save"
 binary="$runtime/$binary_name"
 [[ $(findmnt -n -o FSTYPE -T "$runtime_root") == ext4 ]] || { echo 'Runtime должен находиться на ext4 WSL.' >&2; exit 1; }
 if [[ $binary_name == cataclysm-tiles && ! -x "$binary" ]]; then
-    printf 'Нет графического бинаря %s. Запустите текстовую игру (run-p3-dev.ps1 -Text или run-p3-dev.sh --text) или подготовьте runtime: python3 -I %s/prepare_p3_runtime.py --runtime-root %s --source <исходник CDDA> --tiles-binary <cataclysm-tiles>\n' "$binary" "$launcher_dir" "$runtime_root" >&2
+    printf 'Нет графического бинаря %s. Запустите текстовую игру (run-p3-dev.ps1 без ключа -Tiles или run-p3-dev.sh --text) или подготовьте runtime: python3 -I %s/prepare_p3_runtime.py --runtime-root %s --source <исходник CDDA> --tiles-build <каталог сборки cataclysm-tiles>\n' "$binary" "$launcher_dir" "$runtime_root" >&2
     exit 1
 fi
 [[ -x "$binary" && -d "$runtime/data" && -d "$runtime/gfx" && -d "$runtime/data/gfx" && -d "$fixture" ]] || { echo 'Runtime не подготовлен: нужны binary, data/gfx и fixture/save.' >&2; exit 1; }

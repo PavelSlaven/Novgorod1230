@@ -1,9 +1,11 @@
 import argparse
+import fcntl
 import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
 import shutil
+import subprocess
 import tarfile
 import tempfile
 
@@ -65,16 +67,67 @@ def set_options(path):
     path.write_text(json.dumps(entries, indent=2, ensure_ascii=False) + "\n")
 
 
+def check_build(build):
+    cache = build / "CMakeCache.txt"
+    lines = cache.read_text().splitlines() if cache.is_file() else []
+    for required in ("CMAKE_BUILD_TYPE:STRING=Release", "USE_PREFIX_DATA_DIR:BOOL=OFF"):
+        if required not in lines:
+            raise SystemExit(f"Сборка {build}: в {cache} нет строки {required}.")
+
+
+def take_session_lock(root):
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "run").mkdir(exist_ok=True)
+    lock = (root / "run/session.lock").open("a")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        lock.close()
+        raise SystemExit("Этот dev-мир запущен: run/session.lock занят; runtime не изменён.")
+    return lock
+
+
+def build_runtime(staging, args, archive, prefix, members):
+    for build in filter(None, (args.text_build, args.tiles_build)):
+        subprocess.run(["cmake", "--install", str(build), "--prefix", str(staging)], check=True)
+    with tempfile.TemporaryDirectory(prefix="novgorod-assets-") as extracted:
+        archive.extractall(extracted, members=members, filter="data")
+        (staging / TRANSLATION).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(Path(extracted, prefix, TRANSLATION), staging / TRANSLATION)
+        shutil.copytree(MOD, staging / "data/mods/novgorod_dev_world")
+        shutil.copytree(Path(extracted, prefix, TILESET), staging / TILESET, dirs_exist_ok=True)
+    shutil.copytree(staging / "gfx", staging / "data/gfx", dirs_exist_ok=True)
+
+
+def swap_runtime(root, staging):
+    runtime = root / "runtime"
+    if not runtime.exists():
+        os.rename(staging, runtime)
+        return
+    # A running game reads runtime, and a half-built runtime must never become visible.
+    old = root / f"runtime.old-{os.getpid()}"
+    os.rename(runtime, old)
+    try:
+        os.rename(staging, runtime)
+    except BaseException:
+        os.rename(old, runtime)
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
+    shutil.rmtree(old)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Готовит runtime root для run-p3-dev: "
-                                     "data, мод, бинари, официальный перевод и тайлсет, опции fixture.")
+                                     "cmake --install, мод, официальный перевод и тайлсет, опции fixture.")
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--source", type=Path, required=True, help="исходник CDDA с патчами прототипа")
     parser.add_argument("--assets-dir", type=Path, default=Path.home() / "cdda-assets")
-    parser.add_argument("--text-binary", type=Path)
-    parser.add_argument("--tiles-binary", type=Path)
+    parser.add_argument("--text-build", type=Path, help="каталог сборки CMake текстовой версии")
+    parser.add_argument("--tiles-build", type=Path, help="каталог сборки CMake версии с тайлами")
     parser.add_argument("--fixture", type=Path, help="каталог с save/ и config/ для нового runtime root")
     args = parser.parse_args(argv)
+    if not (args.text_build or args.tiles_build):
+        raise SystemExit("Нужен хотя бы один из ключей --text-build и --tiles-build.")
     root = args.runtime_root
     fixture = root / "fixture"
     if args.fixture and fixture.exists():
@@ -85,33 +138,30 @@ def main(argv=None):
     for directory in (args.source / "data", args.source / "gfx"):
         if not directory.is_dir():
             raise SystemExit(f"Нет каталога исходника {directory}")
-    binaries = {"cataclysm": args.text_binary, "cataclysm-tiles": args.tiles_binary}
-    for binary in filter(None, binaries.values()):
-        if not (binary.is_file() and os.access(binary, os.X_OK)):
-            raise SystemExit(f"Нет исполняемого файла {binary}")
-    with tarfile.open(verified_archive(args.assets_dir)) as archive, \
-            tempfile.TemporaryDirectory(prefix="novgorod-assets-") as staging:
+    for build in filter(None, (args.text_build, args.tiles_build)):
+        check_build(build)
+    with tarfile.open(verified_archive(args.assets_dir)) as archive:
         prefix, members = wanted_members(archive)
-        archive.extractall(staging, members=members, filter="data")
-        runtime = root / "runtime"
-        runtime.mkdir(parents=True, exist_ok=True)
-        data = runtime / "data"
-        if data.exists():
-            shutil.rmtree(data)
-        shutil.copytree(args.source / "data", data)
-        for gfx in (runtime / "gfx", data / "gfx"):
-            shutil.copytree(args.source / "gfx", gfx, dirs_exist_ok=True)
-        shutil.copytree(MOD, data / "mods/novgorod_dev_world")
-        shutil.copytree(Path(staging, prefix, TILESET), data / TILESET)
-        (runtime / TRANSLATION).parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(Path(staging, prefix, TRANSLATION), runtime / TRANSLATION)
-    for name, binary in binaries.items():
-        if binary:
-            shutil.copy2(binary, runtime / name)
-    if args.fixture:
-        shutil.copytree(args.fixture / "save", fixture / "save")
-        shutil.copytree(args.fixture / "config", fixture / "config")
-    set_options(fixture / "config/options.json")
+        lock = take_session_lock(root)
+        try:
+            help_dir = args.source / "data/help"
+            if not help_dir.exists():
+                help_dir.mkdir()
+                print(f"Создан пустой {help_dir}: его перечисляет data/CMakeLists.txt CDDA, "
+                      "без него cmake --install падает.")
+            staging = Path(tempfile.mkdtemp(prefix="runtime.new-", dir=root))
+            try:
+                build_runtime(staging, args, archive, prefix, members)
+            except BaseException:
+                shutil.rmtree(staging, ignore_errors=True)
+                raise
+            swap_runtime(root, staging)
+            if args.fixture:
+                shutil.copytree(args.fixture / "save", fixture / "save")
+                shutil.copytree(args.fixture / "config", fixture / "config")
+            set_options(fixture / "config/options.json")
+        finally:
+            lock.close()
 
 
 if __name__ == "__main__":

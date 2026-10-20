@@ -72,8 +72,8 @@ class BuildTilesTest(unittest.TestCase):
         self.assertIn("-DSDLIMAGE_VENDORED=OFF", configures[1])
         self.assertIn("-DSDLTTF_VENDORED=OFF", configures[2])
         cdda = configures[3]
-        for flag in ["-DTILES=ON", "-DSOUND=OFF", "-DUSE_PREFIX_DATA_DIR=OFF", "-DCMAKE_BUILD_TYPE=Release",
-                     f"-B {self.build}"]:
+        for flag in ["-DTILES=ON", "-DSOUND=OFF", "-DUSE_PREFIX_DATA_DIR=OFF", "-DTESTS=OFF", "-DBUILD_TESTING=OFF",
+                     "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON", "-DCMAKE_BUILD_TYPE=Release", f"-B {self.build}"]:
             self.assertIn(flag, cdda)
         self.assertIn(f"CMAKE_PREFIX_PATH={self.prefix}|", cdda)
         self.assertIn(f"PKG_CONFIG_PATH={self.prefix}/lib/pkgconfig", cdda)

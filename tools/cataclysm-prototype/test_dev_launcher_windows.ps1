@@ -25,7 +25,7 @@ try {
     $defaultLaunch = $launcherCalls[-1]
     Assert-Equal $defaultLaunch.Settings (Join-Path $env:LOCALAPPDATA "Novgorod1230/llm-settings.json")
     Assert-Equal $defaultLaunch.WslEnv "EXISTING/u:ANOTHER/p:RUS_LLM_SETTINGS_PATH/p"
-    Assert-Equal ($defaultLaunch.Arguments -join '|') "--exec|bash|/mnt/c/repo with spaces/run-p3-dev.sh|--runtime-root|/home/test/runtime with spaces|--reset"
+    Assert-Equal ($defaultLaunch.Arguments -join '|') "--exec|bash|/mnt/c/repo with spaces/run-p3-dev.sh|--runtime-root|/home/test/runtime with spaces|--reset|--text"
     Assert-Equal $env:RUS_LLM_SETTINGS_PATH $null
     Assert-Equal $env:WSLENV "EXISTING/u:RUS_LLM_SETTINGS_PATH/u:ANOTHER/p"
 
@@ -34,6 +34,7 @@ try {
         $outsideRoot = (Get-Location).Path
         & $launcher
         Assert-Equal $launcherCalls[-1].Settings $defaultLaunch.Settings
+        Assert-Equal ($launcherCalls[-1].Arguments -join '|') "--exec|bash|/mnt/c/repo with spaces/run-p3-dev.sh|--runtime-root|/home/slaven/cataclysm-recovery/task03-dev|--text"
         Assert-Equal (Get-Location).Path $outsideRoot
         Assert-Equal $env:RUS_LLM_SETTINGS_PATH $null
     } finally {
@@ -49,12 +50,17 @@ try {
     function node { throw "NativeOnly must not resolve LLM settings." }
     & $launcher -NativeOnly
     Assert-Equal $launcherCalls[-1].Settings $null
-    Assert-Equal $launcherCalls[-1].Arguments[-1] "--native-only"
+    Assert-Equal ($launcherCalls[-1].Arguments -join '|') "--exec|bash|/mnt/c/repo with spaces/run-p3-dev.sh|--runtime-root|/home/slaven/cataclysm-recovery/task03-dev|--native-only|--text"
     Assert-Equal $env:RUS_LLM_SETTINGS_PATH $null
 
-    & $launcher -NativeOnly -Text
-    Assert-Equal ($launcherCalls[-1].Arguments -join '|') "--exec|bash|/mnt/c/repo with spaces/run-p3-dev.sh|--runtime-root|/home/slaven/cataclysm-recovery/task03-dev|--native-only|--text"
-    Write-Output "PASS: default owner path from repo/outside cwd, explicit fake override, WSLENV forwarding/restoration, NativeOnly, Text."
+    $tilesOutput = & $launcher -NativeOnly -Tiles 6>&1 | Out-String
+    Assert-Equal ($launcherCalls[-1].Arguments -join '|') "--exec|bash|/mnt/c/repo with spaces/run-p3-dev.sh|--runtime-root|/home/slaven/cataclysm-recovery/task03-dev|--native-only"
+    Assert-Equal $tilesOutput.Trim() "Окно WSLg может не появиться на рабочем столе Windows; текстовая версия запускается без ключа -Tiles."
+
+    $launcherParameters = @((Get-Command $launcher).Parameters.Keys)
+    Assert-Equal ($launcherParameters -contains "Text") $false
+    Assert-Equal ($launcherParameters -contains "Tiles") $true
+    Write-Output "PASS: default owner path from repo/outside cwd, explicit fake override, WSLENV forwarding/restoration, NativeOnly, default --text, Tiles without --text with WSLg message, -Text removed."
 } finally {
     foreach ($name in $previous.Keys) {
         [Environment]::SetEnvironmentVariable($name, $previous[$name], "Process")

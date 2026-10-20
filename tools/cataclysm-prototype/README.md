@@ -12,11 +12,13 @@ Novgorod и не открывает пользовательские saves. Fixt
 
 ## Графика и русский язык
 
-По умолчанию dev-запуск открывает графический `runtime/cataclysm-tiles` с
-официальным русским переводом и тайлсетом UltimateCataclysm. Текстовая игра —
-`run-p3-dev.ps1 -Text` (`run-p3-dev.sh --text`). Если выбранного бинаря нет,
-запускалка останавливается и не переключает режим сама; без графического бинаря
-она называет оба выхода: `-Text` и команду подготовки runtime.
+`run-p3-dev.sh` по умолчанию открывает графический `runtime/cataclysm-tiles` с
+официальным русским переводом и тайлсетом UltimateCataclysm, текстовая игра —
+`run-p3-dev.sh --text`. `run-p3-dev.ps1` на Windows по умолчанию запускает
+текстовую игру, графику — с ключом `-Tiles`: окно WSLg может не появиться на
+рабочем столе Windows. Если выбранного бинаря нет, запускалка останавливается и
+не переключает режим сама; без графического бинаря она называет оба выхода:
+текстовую версию и команду подготовки runtime.
 
 Перевод и тайлсет берутся из закреплённого официального архива CDDA
 `cdda-experimental-2026-10-18-0359` (Linux, with graphics); URL и sha256 —
@@ -61,14 +63,25 @@ Runtime root готовит скрипт (в WSL, из корня этого р�
 python3 -I tools/cataclysm-prototype/prepare_p3_runtime.py \
   --runtime-root "$HOME/cataclysm-<задача>/runtime-root" \
   --source "$CDDA" \
-  --text-binary "$CDDA/build-release/src/cataclysm" \
-  --tiles-binary "$CDDA/build-tiles/src/cataclysm-tiles" \
+  --text-build "$CDDA/build-clang-release" \
+  --tiles-build "$CDDA/build-tiles" \
   --fixture <каталог с save/ и config/options.json>
 ```
 
-`--source` — исходник CDDA с overlays прототипа. Скрипт сверяет sha256 архива
-до любых записей, заменяет `runtime/data` копией `data/` исходника, кладёт мод
-`dev-world`, тайлсет, перевод и указанные бинари, а в
+`--source` — исходник CDDA с overlays прототипа; `--text-build` и
+`--tiles-build` — каталоги сборок CMake (нужен хотя бы один) с
+`CMAKE_BUILD_TYPE=Release` и `USE_PREFIX_DATA_DIR=OFF`, иначе скрипт
+отказывает. Скрипт сверяет sha256 архива до любых записей, берёт
+`run/session.lock` (запущенная игра — отказ, runtime не меняется) и собирает
+новый runtime рядом, во временном каталоге: родной `cmake --install` каждой
+сборки, затем перевод, мод `dev-world`, тайлсет и копия `gfx/` в `data/gfx`
+(с `--datadir` игра ищет тайлсеты там, `src/path_info.cpp:538-544`). Готовый
+каталог подменяет `runtime` переименованием; при ошибке прежний runtime
+остаётся. В `data/CMakeLists.txt` CDDA перечислен каталог `help`, которого в
+исходнике нет; без него `cmake --install` падает, поэтому скрипт создаёт пустой
+`data/help` и печатает об этом строку. `build-tiles.sh` конфигурирует сборку с
+`-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON`: иначе установка срезает путь к
+SDL3 из префикса. В
 `fixture/config/options.json` выставляет `USE_LANG=ru`, `USE_TILES=true`,
 `TILES=UltimateCataclysm` и `SDL_KEYBOARD_MODE=keycode`. В родном режиме
 `keychar` при русской раскладке буквенные горячие клавиши приходят кириллицей

@@ -127,3 +127,93 @@ fetch allowlist offline checks passed
 
 Вывод C:\Users\Slaven\NovgorodNative\work\assess-a4-06d9.mjs, дословно:
 {"baselineLines":18,"baselineSha256":"019341f796a395e8b85ae048781206558a7405c687ab5238a01b6bd085cf9ad7","newRecords":1,"bytes":0,"expectedRemainingBytes":281288432,"rowCeiling":345000000,"oneRunLimit":378702524,"firstRunOkBytes":42938915,"newOkBytes":0,"combinedOkBytes":42938915,"outcomes":{"denied":1},"failed":[{"index":1,"outcome":"denied","reason":"redirect-host","url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","redirectHost":"sf-eu-introserv-3.dl.sourceforge.net"}],"outsideTable":[],"repeatedPriorFiles":[],"expectedPorts":24,"installedPorts":11,"missingPorts":["brotli","bzip2","directx-dxc","freetype","libflac","libogg","libvorbis","mpg123","sdl3-mixer","sdl3-shadercross","sdl3-ttf","spirv-cross","spirv-headers"],"extraPorts":[],"wrongVersions":[],"wrongTriplets":[],"problems":["1 new fetch outcomes are not ok","installed ports differ from the dry-run"]}
+
+06d10, перед правкой fetch.mjs скопирован в work/fetch-before-06d10.mjs. SHA256 обоих до правки: db529d030b782c9eb9544384fc3e3f4166ec6e201c945f2326f5abb237bc8e6a. После правки SHA256 fetch.mjs: bf520ceefc6060acd3b9eae6ecb2d2a7fb9e4c8b1f0ef0b3f04ebf484c84117d. Длина изменилась со 185 до 214 строк. Изменение оставляет прежние аргументы CLI и проверку каждой попытки; после отказа denied/redirect-host перебирает другие разрешённые записи с тем же SHA512 в порядке списка. Иные исходы прекращают перебор. Каждая попытка отдельно записывается в fetch.log, запасная содержит безопасное поле fallbackFrom. SHA256 fetch-allow.json остался 853f2ecaca898816f4fce4f8f7afa262ba18d733da9d43385de2b3b6b0ee2fff.
+
+Вывод git diff --no-index --stat, дословно:
+ ...Users\\Slaven\\NovgorodNative\\work\\fetch.mjs" | 33 ++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
+
+До правки отдельно запущены сценарии one и three нового офлайн-теста; оба завершились с кодом 1, как требовалось. Вывод сценария one, дословно:
+✖ one: forbidden redirect uses the next matching URL and logs its origin (28.6764ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32.7506
+
+✖ failing tests:
+
+test at ..\..\..\..\NovgorodNative\work\test-fetch-fallback-06d10.mjs:37:37
+✖ one: forbidden redirect uses the next matching URL and logs its origin (28.6764ms)
+  Error: Redirect host is not allowed
+      at fail (file:///C:/Users/Slaven/NovgorodNative/work/fetch.mjs:49:11)
+      at download (file:///C:/Users/Slaven/NovgorodNative/work/fetch.mjs:100:9)
+      at async TestContext.<anonymous> (file:///C:/Users/Slaven/NovgorodNative/work/test-fetch-fallback-06d10.mjs:80:16)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+Вывод сценария three, дословно:
+✖ three: two forbidden alternatives are followed by the third in table order (33.1352ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39.0239
+
+✖ failing tests:
+
+test at ..\..\..\..\NovgorodNative\work\test-fetch-fallback-06d10.mjs:37:37
+✖ three: two forbidden alternatives are followed by the third in table order (33.1352ms)
+  Error: Redirect host is not allowed
+      at fail (file:///C:/Users/Slaven/NovgorodNative/work/fetch.mjs:49:11)
+      at download (file:///C:/Users/Slaven/NovgorodNative/work/fetch.mjs:100:9)
+      at async TestContext.<anonymous> (file:///C:/Users/Slaven/NovgorodNative/work/test-fetch-fallback-06d10.mjs:109:3)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+После правки новый офлайн-тест завершился с кодом 0: семь сценариев прошли. Вывод, дословно:
+✔ one: forbidden redirect uses the next matching URL and logs its origin (59.3834ms)
+✔ two: an entry with another SHA512 is never tried (10.7101ms)
+✔ three: two forbidden alternatives are followed by the third in table order (25.1925ms)
+✔ four: HTTP 500 on an alternative stops further attempts (13.7521ms)
+✔ five: all forbidden candidates each produce one record (17.6822ms)
+✔ six: a URL absent from the table cannot start fallback (9.7305ms)
+✔ seven: HTTP 404 on the first URL cannot start fallback (17.9889ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 162.0518
+
+Прежний офлайн-тест загрузчика завершился с кодом 0. Вывод, дословно:
+{"tablePairs":36,"sourceforgeVariants":20,"roundOneEntries":10,"entries":66}
+production-list copy sha512: check failed as required
+production-list copy maxBytes: check failed as required
+production-list copy missing: check failed as required
+production-list copy extra: check failed as required
+production-list copy redirectExtra: check failed as required
+production-list copy redirectMissing: check failed as required
+fetch allowlist offline checks passed
+
+Проверка списка по таблице завершилась с кодом 0. Вывод, дословно:
+{"tablePairs":36,"sourceforgeVariants":20,"roundOneEntries":10,"entries":66}
+
+Перед установкой рабочее дерево было чистым на HEAD 0f9502605dac8708d01e0515ecfe325c13942466. fetch.log: 19 строк, 6458 байт, SHA256 91445d7aa85b301bb01fb184b2bd4e05c1724c69bb2d79feaf4eb73020c3a586; база — work/a4-baseline-06d10.json. Свободное место C: по DriveInfo — 595197165568 байт. Каталог C:\Program Files\PowerShell\7 находился в PATH. Офлайн-предпроверка install-p3-native-dependencies.ps1 без ключа -Install завершилась кодом 0 и нашла C:\Program Files\PowerShell\7\pwsh.exe.
+
+Единственная команда A4:
+& 'C:\Program Files\PowerShell\7\pwsh.exe' -NoProfile -File 'C:\Users\Slaven\.codex\worktrees\cataclysm-recovery\Novgorod\tools\cataclysm-prototype\install-p3-native-dependencies.ps1' -Install
+
+Команда завершилась кодом 1. Лог: C:\Users\Slaven\NovgorodNative\work\vcpkg-install-20261020T1915216292576Z.log; интервал между созданием и последней записью лога — 94,6 с. После завершения свободно на C: 595186376704 байта. Скрипт сверки насчитал 8 новых записей загрузчика и 3585740 байт против ожидаемых 281288432 и предела 378702524. Четыре исхода denied/redirect-host для mpg123 закончились проверенным успехом запасной попытки через deac-riga.dl.sourceforge.net. Отклонённые хосты: sf-eu-introserv-3.dl.sourceforge.net, deac-fra.dl.sourceforge.net, cfhcable.dl.sourceforge.net. Ещё три загрузки завершились ok. URL вне таблицы и повторов файлов первого прогона нет. Сумма ok за три прогона — 46524655 байт при потолке 345000000. Установлено 14 из 24 ожидаемых портов; у установленных версии и триплет x64-windows-static совпадают с dry-run. Установка остановилась на libflac: в install-x64-windows-static-rel-out.log строка 22 — fatal error RC1107: invalid usage; use RC /? for Help, при компиляции version.rc.res. Лог ошибки: C:\Users\Slaven\NovgorodNative\sources\vcpkg-f6672d8\buildtrees\libflac\install-x64-windows-static-rel-out.log. По условию ненулевого кода A4 — СТОП, повторов и MSBuild нет.
+
+Вывод work/assess-a4-06d10.mjs, дословно:
+{"head":"0f9502605dac8708d01e0515ecfe325c13942466","baselineLines":19,"baselineSha256":"91445d7aa85b301bb01fb184b2bd4e05c1724c69bb2d79feaf4eb73020c3a586","newRecords":8,"bytes":3585740,"expectedRemainingBytes":281288432,"rowCeiling":345000000,"oneRunLimit":378702524,"firstRunOkBytes":42938915,"secondRunOkBytes":0,"newOkBytes":3585740,"combinedOkBytes":46524655,"outcomes":{"denied":4,"ok":4},"failed":[{"index":1,"outcome":"denied","reason":"redirect-host","url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","redirectHost":"sf-eu-introserv-3.dl.sourceforge.net","sha512":"9b7aa93b692132da7eb8dcfef12ce91bf66bf8475af50e9c57d7b80225f96c0e74264e518e558371af1f4cf6d2afda5b3dfc844949fd747db7ac7c44d0e9f6ad"},{"index":2,"outcome":"denied","reason":"redirect-host","url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","redirectHost":"deac-fra.dl.sourceforge.net","sha512":"9b7aa93b692132da7eb8dcfef12ce91bf66bf8475af50e9c57d7b80225f96c0e74264e518e558371af1f4cf6d2afda5b3dfc844949fd747db7ac7c44d0e9f6ad"},{"index":3,"outcome":"denied","reason":"redirect-host","url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","redirectHost":"sf-eu-introserv-3.dl.sourceforge.net","sha512":"9b7aa93b692132da7eb8dcfef12ce91bf66bf8475af50e9c57d7b80225f96c0e74264e518e558371af1f4cf6d2afda5b3dfc844949fd747db7ac7c44d0e9f6ad"},{"index":4,"outcome":"denied","reason":"redirect-host","url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","redirectHost":"cfhcable.dl.sourceforge.net","sha512":"9b7aa93b692132da7eb8dcfef12ce91bf66bf8475af50e9c57d7b80225f96c0e74264e518e558371af1f4cf6d2afda5b3dfc844949fd747db7ac7c44d0e9f6ad"}],"unresolved":[],"fallbackChains":[{"sha512":"c8e119462205cfd8bbe22b0aff112625d3e51ca11de97e4de06a46fb43a0768d7ec9c245b299b09b7aa4d811c6fc7b57856eaa1c217e82cca9b3ad1c0e545cbe","entries":["https://github.com/xiph/flac/archive/1.5.0.tar.gz"],"attempts":[{"index":8,"url":"https://github.com/xiph/flac/archive/1.5.0.tar.gz","outcome":"ok","reason":"verified","bytes":974901}]},{"sha512":"c247e1da8b12f8b33272fafb6d7c171a1a2687c3632977439fa60b96ccc2ad751d88a2931bb3e18e1ddf2eea2e82cdd0aab087b2ec5393a9228c703476fa0167","entries":["https://github.com/xiph/ogg/archive/v1.3.6.tar.gz"],"attempts":[{"index":6,"url":"https://github.com/xiph/ogg/archive/v1.3.6.tar.gz","outcome":"ok","reason":"verified","bytes":254178}]},{"sha512":"bfb6f5dbfd49ed38b2b08b3667c06d02e68f649068a050f21a3cc7e1e56b27afd546aaa3199c4f6448f03f6e66a82f9a9dc2241c826d3d1d4acbd38339b9e9fb","entries":["https://github.com/xiph/vorbis/archive/v1.3.7.tar.gz"],"attempts":[{"index":7,"url":"https://github.com/xiph/vorbis/archive/v1.3.7.tar.gz","outcome":"ok","reason":"verified","bytes":1234573}]},{"sha512":"9b7aa93b692132da7eb8dcfef12ce91bf66bf8475af50e9c57d7b80225f96c0e74264e518e558371af1f4cf6d2afda5b3dfc844949fd747db7ac7c44d0e9f6ad","entries":["https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=astuteinternet","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=ayera","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=cfhcable","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=deac-riga","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=excellmedia","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=freefr","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=gigenet","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=iweb","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=jaist","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=jztkft","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=managedway","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=nchc","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=netactuate","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=netcologne","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=netix","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=phoenixnap","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=pilotfiber","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=tenet","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=ufpr","https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download?use_mirror=versaweb"],"attempts":[{"index":1,"url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","outcome":"denied","reason":"redirect-host","bytes":0},{"index":2,"url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","outcome":"denied","reason":"redirect-host","bytes":0},{"index":3,"url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","outcome":"denied","reason":"redirect-host","bytes":0},{"index":4,"url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","outcome":"denied","reason":"redirect-host","bytes":0},{"index":5,"url":"https://sourceforge.net/projects/mpg123/files/mpg123/1.33.4/mpg123-1.33.4.tar.bz2/download","outcome":"ok","reason":"verified","bytes":1122088}]}],"forbiddenHosts":["sf-eu-introserv-3.dl.sourceforge.net","deac-fra.dl.sourceforge.net","cfhcable.dl.sourceforge.net"],"outsideTable":[],"repeatedPriorFiles":[],"repeatedSecondFiles":[],"expectedPorts":24,"installedPorts":14,"missingPorts":["brotli","bzip2","directx-dxc","freetype","libflac","sdl3-mixer","sdl3-shadercross","sdl3-ttf","spirv-cross","spirv-headers"],"extraPorts":[],"wrongVersions":[],"wrongTriplets":[],"problems":["installed ports differ from the dry-run"]}

@@ -88,6 +88,13 @@ chat (npctalk.cpp:1541) без дополнительной wait activity; brief
 прежнюю activity. Sustained отклоняется до native execute с явным сообщением.
 Canonical emit_interaction и prompt owner не меняются. Native popup использует
 собственный предел 1024 display columns вместо прежнего width 70.
+Шёпот игрока (loudness 1) не слышит никто, даже сосед: родной `process_sound_markers`
+вычитает расстояние из громкости (`sounds.cpp:626`) и отбрасывает звук с
+`heard_volume <= 0` (`sounds.cpp:628`), а `minimum_voice_volume` равен 1
+(`character.h:3376`). Поэтому `actualHeardListenerIds` при loudness 1 пуст,
+при loudness 2 (`indoor_voice`) список содержит близкого NPC.
+Тест `[novgorod_live]` «whispered avatar speech» фиксирует это измеренное
+поведение; мост его не обходит и порог не меняет.
 Исторический PS1 E2E с fake описан в [TASK03-LIVE-RESULT](TASK03-LIVE-RESULT.md),
 первый провод Qwen — в [TASK03-QWEN-RESULT](TASK03-QWEN-RESULT.md).
 Эти проверки не означают P3 GO или production cutover. UI/smoke

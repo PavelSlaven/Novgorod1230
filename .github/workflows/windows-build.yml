@@ -24,12 +24,12 @@ jobs:
       # The overlays were cut from an LF tree; CDDA's .gitattributes would otherwise check sources out as CRLF on Windows.
       - name: Check out with LF line endings
         run: git config --global core.autocrlf input
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           repository: CleverRaven/Cataclysm-DDA
           ref: ${{ env.CDDA_SHA }}
           persist-credentials: false
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           path: novgorod
           sparse-checkout: tools/cataclysm-prototype
@@ -57,9 +57,9 @@ jobs:
       - name: Add the dev world mod
         run: Copy-Item -Recurse novgorod\tools\cataclysm-prototype\dev-world data\mods\novgorod_dev_world
       - name: Install dependencies (windows msvc) (1/4)
-        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce
       - name: Install dependencies (windows msvc) (2/4)
-        uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2 # v11.6
+        uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2
         id: runvcpkg
         with:
           vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
@@ -68,7 +68,7 @@ jobs:
         run: |
           vcpkg integrate install --vcpkg-root '${{ runner.workspace }}\b\vcpkg'
       - name: Cache vcpkg packages (Windows)
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: msvc-full-features/vcpkg_installed
           key: vcpkg-installed-sdl3-${{ hashFiles('msvc-full-features/vcpkg.json', '.github/vcpkg_triplets/x64-windows-static.cmake') }}-f6672d8e480ccdecddfad3fd1b838ba369ffe6cd
@@ -121,7 +121,7 @@ jobs:
             Get-ChildItem $userdir -Recurse -Filter debug.log | Get-Content -Tail 40
           }
           if ($codes['novgorod_dev_world'] -ne 0) { throw "--check-mods novgorod_dev_world exited with $($codes['novgorod_dev_world'])" }
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: novgorod-cdda-windows-tiles-x64
           path: bindist

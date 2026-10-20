@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   diagnoseConversationPlan,
   diagnoseMixedScriptRepair,
+  projectNpcConversationSubject,
   validateConversationContributionPlan,
   validateNpcConversationResponseRequest
 } from '../src/index.js';
@@ -16,6 +17,12 @@ const MIXED_MESSAGE = 'This word mixes Latin and Cyrillic letters.';
 const REPAIR_MESSAGE = 'Format repair may change only the spelling of the listed mixed-script words.';
 
 function request() {
+  const subject = projectNpcConversationSubject({
+    npc_ref: ref('npc', 'speaker'),
+    npc_snapshot: { instance_id: 'speaker' },
+    current_activity_snapshot: { status: 'idle', can_continue_automatically: false },
+    additional_knowledge_refs: [ref('known_fact', 'fact-1')]
+  });
   return {
     schema: 'npc_conversation_response_request_v1',
     request_id: 'request-2',
@@ -31,20 +38,20 @@ function request() {
       signal_refs: [ref('npc_decision_signal', 'signal-a'), ref('npc_decision_signal', 'signal-z')],
       perceived_changes: ['Услышан прямой вопрос.']
     },
-    npc: {},
+    npc: subject.npc,
     perceived_message: {
       source_statement_ref: ref('conversation_statement', 'statement-1'),
       perception_result_ref: ref('perception_result', 'perception-1')
     },
     public_conversation_history: [],
-    knowledge: {},
-    memory: {},
+    knowledge: subject.knowledge,
+    memory: subject.memory,
     social_context: {},
-    available_resources: [],
+    available_resources: subject.available_resources,
     allowed_references: {
       actor_refs: [ref('npc', 'listener'), ref('npc', 'speaker'), ref('player_character', 'player')],
       entity_refs: [ref('place', 'abc')],
-      knowledge_refs: [ref('known_fact', 'fact-1')],
+      knowledge_refs: subject.knowledge_refs,
       combat_target_refs: []
     },
     decision_scope: {

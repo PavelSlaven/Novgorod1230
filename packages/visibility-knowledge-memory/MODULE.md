@@ -31,6 +31,16 @@ base/outer/headwear item на slot и завершает `assertPortraitSpecV1`.
 historical/incomplete/ambiguous state возвращается `null`; projection не делает
 draw, не исправляет и не сохраняет state.
 
+`projectConversationMemory(rawRecords, { npc_ref, limit = 40, label_of, time_of })`
+и `validateConversationMemoryRecord(record)` задают схему сырой разговорной
+памяти NPC `{ kind: heard | said | silence, speaker_ref, listener_ref, text, turn }`
+(ссылки — EntityRef `npc` или `player_character`; у `silence` текст пустой) и её
+проекцию в `memory.recent_events` и `public_conversation_history` запроса ответа
+(контракт разговора §24.1). Последние `limit` записей становятся событиями с
+русской summary глазами NPC; подписи участников и время даёт вызывающий через
+`label_of` и `time_of`. Хранит записи владелец состояния мира; проекция их не
+меняет и не толкует; невалидная запись — `TypeError`, а не пропуск.
+
 `projectPlayerSafeOrdinaryResolutionCapability` доступен через узкий subpath
 `@rus/visibility-knowledge-memory/ordinary-resolution-capability`, принимает
 только exact own-data marker и возвращает detached frozen allow-list.

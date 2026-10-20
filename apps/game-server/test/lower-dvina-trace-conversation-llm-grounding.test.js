@@ -14,6 +14,13 @@ import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const subjectOf = (extra = {}) => projectNpcConversationSubject({
+  npc_ref: ref('npc', 'npc-1'),
+  npc_snapshot: { instance_id: 'npc-1' },
+  current_activity_snapshot: { status: 'idle', can_continue_automatically: false },
+  ...extra
+});
+const subject = subjectOf();
 function request(required = {}) {
   return {
     schema: 'npc_conversation_response_request_v1', request_id: 'npc-request',
@@ -21,11 +28,12 @@ function request(required = {}) {
     state_version: 1, requested_at: { whole_minutes: '1', subminute_numerator: '0', subminute_denominator: '1' },
     npc_ref: ref('npc', 'npc-1'), decision_reasons: { significance: 'material', categories: ['communication'],
       signal_refs: [ref('npc_decision_signal', 'signal-1')], perceived_changes: ['Игрок обратился к NPC.'] },
-    npc: {}, perceived_message: { source_statement_ref: ref('conversation_statement', 'statement-1'),
+    npc: subject.npc, perceived_message: { source_statement_ref: ref('conversation_statement', 'statement-1'),
       perception_result_ref: ref('perception_result', 'perception-1') },
-    public_conversation_history: [], knowledge: {}, memory: {}, social_context: {}, available_resources: [],
+    public_conversation_history: [], knowledge: subject.knowledge, memory: subject.memory, social_context: {}, available_resources: subject.available_resources,
     allowed_references: { actor_refs: [ref('npc', 'npc-1'), ref('player_character', 'player-1')],
-      entity_refs: [ref('item', 'item-1')], knowledge_refs: [], combat_target_refs: [] },
+      entity_refs: [ref('item', 'item-1')], knowledge_refs: [...subject.knowledge_refs],
+      combat_target_refs: [] },
     decision_scope: { conversation_mode: true, action_handoff_available: false, combat_handoff_available: false,
       allowed_attribute_refs: ['influence'], allowed_skill_refs: ['conversation'], allowed_check_profile_refs: ['hard'],
       allowed_duration_classes: ['domain_owned'], operation_contract: { emit_interaction: {} }, ...required }
@@ -233,9 +241,9 @@ test('semantic repair passes the original response and cited facts to the model'
       source_type: 'direct_perception', observed_at: input.requested_at,
       fact_text: 'На очаге не видно пламени.'
     };
-    input.memory = { recent_events: [], received_messages: [],
-      current_observations: [observation] };
-    input.allowed_references.knowledge_refs.push(observation.observation_ref);
+    const observed = subjectOf({ current_observations: [observation] });
+    input.memory = observed.memory;
+    input.allowed_references.knowledge_refs = observed.knowledge_refs;
     const original = plan(input);
     original.speech.claims = [{ claim_id: 'fire',
       content_summary: observation.fact_text, form: 'assertion',
@@ -279,8 +287,12 @@ test('a grounded model repair is accepted after the first speech audit fails',
       ...input.decision_reasons, state_version: String(input.state_version)
     });
     input.boundary_id = boundary.boundary_id;
-    input.npc = { identity: { name_or_label: 'Еремей' } };
-    input.memory = { recent_events: [], received_messages: [] };
+    input.npc = projectNpcConversationSubject({ npc_ref: input.npc_ref,
+      npc_snapshot: { instance_id: 'npc-1',
+        identity_state: { canonical_name: 'Еремей' } },
+      current_activity_snapshot: { status: 'idle',
+        can_continue_automatically: false } }).npc;
+    input.available_resources = input.npc.available_resources;
     input.public_conversation_history = [{
       speaker_ref: ref('player_character', 'player-1'),
       utterance_text: 'Спрашиваю про лодочника Онисима и крушение.'
@@ -362,7 +374,9 @@ test('two grounding failures return a typed error without a canned NPC response'
 test('route contract candidate reaches initial and repair prompts', async () => {
   const input = request();
   input.allowed_references.entity_refs.push(ref('route', 'route-1'));
-  input.allowed_references.knowledge_refs.push(ref('knowledge_scope', 'knowledge-1'));
+  input.allowed_references.knowledge_refs = subjectOf({
+    additional_knowledge_refs: [ref('knowledge_scope', 'knowledge-1')]
+  }).knowledge_refs;
   input.decision_scope.operation_contract = { disclose_known_route: { owner: '@rus/visibility-knowledge-memory',
     route_ref: 'route-1', source_knowledge_scope_ref: 'knowledge-1' } };
   const [, candidate] = npcConversationCandidates(input);

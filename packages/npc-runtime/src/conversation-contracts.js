@@ -161,7 +161,8 @@ export function validateNpcConversationResponseRequest(value) {
       value.npc_ref,
       value.decision_scope
     )
-    && jsonSafe(value);
+    && jsonSafe(value)
+    && validateNpcConversationResponseSubject(value);
 }
 
 export function buildNpcConversationResponseRequest(value) {

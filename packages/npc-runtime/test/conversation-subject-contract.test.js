@@ -159,14 +159,24 @@ test('optional projection fields may be absent', () => {
   assert.equal(validateNpcConversationResponseSubject(value), true);
 });
 
-test('the strict validator is not wired into the request validator', () => {
-  const loose = mutate((draft) => {
-    draft.npc = {};
-    draft.knowledge = {};
-    draft.memory = {};
-  });
-  assert.equal(validateNpcConversationResponseRequest(loose), true);
-  assert.equal(validateNpcConversationResponseSubject(loose), false);
+test('the request validator applies the strict subject validator', async (t) => {
+  const loose = {
+    'an empty npc block': (draft) => { draft.npc = {}; },
+    'an empty knowledge block': (draft) => { draft.knowledge = {}; },
+    'an empty memory block': (draft) => { draft.memory = {}; },
+    'all three empty': (draft) => {
+      draft.npc = {};
+      draft.knowledge = {};
+      draft.memory = {};
+    }
+  };
+  for (const [name, change] of Object.entries(loose)) {
+    await t.test(name, () => {
+      const value = mutate(change);
+      assert.equal(validateNpcConversationResponseSubject(value), false);
+      assert.equal(validateNpcConversationResponseRequest(value), false);
+    });
+  }
 });
 
 test('a request that is not a record is rejected', () => {

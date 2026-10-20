@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   buildNpcDecisionBoundary,
-  buildNpcSemanticDecisionTrace
+  buildNpcSemanticDecisionTrace,
+  projectNpcConversationSubject
 } from '@rus/npc-runtime';
 import { canonicalDigest } from '@rus/materialization';
 import { requestNpcSemanticDecision } from '../src/npc-semantic-decision.js';
@@ -35,6 +36,11 @@ function boundary(overrides = {}) {
 }
 
 function request(overrides = {}) {
+  const subject = projectNpcConversationSubject({
+    npc_ref: ref('npc', 'speaker'),
+    npc_snapshot: { instance_id: 'speaker' },
+    current_activity_snapshot: { status: 'idle', can_continue_automatically: false }
+  });
   return {
     schema: 'npc_conversation_response_request_v1',
     request_id: 'request-1',
@@ -50,23 +56,23 @@ function request(overrides = {}) {
       signal_refs: [ref('npc_decision_signal', 'signal-1')],
       perceived_changes: ['Услышана реплика.']
     },
-    npc: {},
+    npc: subject.npc,
     perceived_message: {
       source_statement_ref: ref('conversation_statement', 'statement-1'),
       perception_result_ref: ref('perception_result', 'perception-1')
     },
     public_conversation_history: [],
-    knowledge: {},
-    memory: {},
+    knowledge: subject.knowledge,
+    memory: subject.memory,
     social_context: {},
-    available_resources: [],
+    available_resources: subject.available_resources,
     allowed_references: {
       actor_refs: [
         ref('npc', 'speaker'),
         ref('player_character', 'player')
       ],
       entity_refs: [],
-      knowledge_refs: [],
+      knowledge_refs: subject.knowledge_refs,
       combat_target_refs: []
     },
     decision_scope: {

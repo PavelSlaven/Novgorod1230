@@ -1,12 +1,18 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildNpcDecisionBoundary } from '@rus/npc-runtime';
+import { buildNpcDecisionBoundary, projectNpcConversationSubject } from
+  '@rus/npc-runtime';
 import { requestNpcSemanticDecision } from '@rus/turn';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const subject = projectNpcConversationSubject({
+  npc_ref: ref('npc', 'npc-1'),
+  npc_snapshot: { instance_id: 'npc-1' },
+  current_activity_snapshot: { status: 'idle', can_continue_automatically: false }
+});
 const RESPONDER = 'npc_conversation_responder';
 const REPAIR = 'npc_conversation_responder_format_repair';
 const AUDITOR = 'npc_conversation_grounding_auditor';
@@ -21,14 +27,15 @@ function request() {
     decision_reasons: { significance: 'material', categories: ['communication'],
       signal_refs: [ref('npc_decision_signal', 'signal-1')],
       perceived_changes: ['Игрок обратился к NPC.'] },
-    npc: {}, perceived_message: {
+    npc: subject.npc, perceived_message: {
       source_statement_ref: ref('conversation_statement', 'statement-1'),
       perception_result_ref: ref('perception_result', 'perception-1')
-    }, public_conversation_history: [], knowledge: {}, memory: {},
-    social_context: {}, available_resources: [],
+    }, public_conversation_history: [], knowledge: subject.knowledge, memory: subject.memory,
+    social_context: {}, available_resources: subject.available_resources,
     allowed_references: {
       actor_refs: [ref('npc', 'npc-1'), ref('player_character', 'player-1')],
-      entity_refs: [], knowledge_refs: [], combat_target_refs: []
+      entity_refs: [], knowledge_refs: [...subject.knowledge_refs],
+      combat_target_refs: []
     },
     decision_scope: {
       conversation_mode: true, action_handoff_available: false,

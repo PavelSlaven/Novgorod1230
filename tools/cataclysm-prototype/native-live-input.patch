@@ -159,11 +159,10 @@ diff --git a/src/handle_action.cpp b/src/handle_action.cpp
      test_pickup_uid = uid;
  }
 
-@@ -278,10 +292,23 @@
- {
+@@ -279,11 +293,24 @@
      if( !test_mode || uid <= 0 || method.empty() ) {
          throw std::logic_error( "NOVGOROD_TEST_ITEM_USE_INVALID" );
-+    }
+     }
 +    set_novgorod_item_use( uid, std::move( method ) );
 +}
 +
@@ -171,18 +170,20 @@ diff --git a/src/handle_action.cpp b/src/handle_action.cpp
 +{
 +    if( uid <= 0 || method.empty() ) {
 +        throw std::invalid_argument( "NOVGOROD_ITEM_USE_INVALID" );
-     }
++    }
      test_item_use_uid = uid;
      test_item_use_method = std::move( method );
      test_item_use_enabled = true;
-+}
-+
+ }
+
 +bool game::has_novgorod_actions() const
 +{
 +    return test_action_queue_enabled && test_action_index < test_action_queue.size();
- }
-
++}
++
  input_context game::get_player_input( std::string &action )
+ {
+     map &here = get_map();
 @@ -319,10 +346,15 @@
 
      here.update_visibility_cache( pos.z() );
@@ -353,8 +354,39 @@ diff --git a/src/character.h b/src/character.h
 diff --git a/src/npc.cpp b/src/npc.cpp
 --- a/src/npc.cpp
 +++ b/src/npc.cpp
-@@ -2113,40 +2113,43 @@
+@@ -2077,10 +2077,16 @@
+ void npc::say( const std::string &line, const sounds::sound_t spriority ) const
+ {
+     std::string formatted_line = line;
++    parse_tags( formatted_line, get_player_character(), *this );
++    say_formatted( formatted_line, spriority );
++}
++
++std::string npc::say_formatted( const std::string &formatted_line,
++                                const sounds::sound_t spriority ) const
++{
+     Character &player_character = get_player_character();
+-    parse_tags( formatted_line, player_character, *this );
+     if( is_mute() ) {
+-        return;
++        return {};
      }
+
+     if( player_character.is_deaf() && !player_character.is_blind() ) {
+@@ -2094,7 +2100,7 @@
+     // Hallucinations don't make noise when they speak
+     if( is_hallucination() ) {
+         add_msg( _( "%1$s saying \"%2$s\"" ), get_name(), formatted_line );
+-        return;
++        return {};
+     }
+
+     std::string sound = string_format( _( "%1$s saying \"%2$s\"" ), get_name(), formatted_line );
+@@ -2111,42 +2117,46 @@
+                        sound, false, "speech",
+                        male ? "NPC_m_loud" : "NPC_f_loud" );
+     }
++    return sound;
  }
 
 -int npc::indoor_voice() const
@@ -384,15 +416,6 @@ diff --git a/src/npc.cpp b/src/npc.cpp
 -        Character *char_buddy = nullptr;
 -        if( auto buddy = bunk_buddy.lock() ) {
 -            char_buddy = dynamic_cast<Character *>( buddy.get() );
--        }
--        if( !char_buddy ) {
--            continue;
--        }
--        if( char_buddy->has_effect( effect_sleep ) ) {
--            int distance_to_sleeper = rl_dist( pos_bub(), char_buddy->pos_bub() );
--            if( wanted_volume >= distance_to_sleeper ) {
--                // Speak just quietly enough to not disturb anyone
--                wanted_volume = distance_to_sleeper - 1;
 +    const npc *subject = as_npc();
 +    if( subject ) {
 +        Character &player = get_player_character();
@@ -403,7 +426,15 @@ diff --git a/src/npc.cpp b/src/npc.cpp
 +        } else if( subject->is_enemy() && sees( here, player ) ) {
 +            // Battle cry! Bandits have no concept of indoor voice, even when not threatened.
 +            wanted_volume = max_volume;
-+        }
+         }
+-        if( !char_buddy ) {
+-            continue;
+-        }
+-        if( char_buddy->has_effect( effect_sleep ) ) {
+-            int distance_to_sleeper = rl_dist( pos_bub(), char_buddy->pos_bub() );
+-            if( wanted_volume >= distance_to_sleeper ) {
+-                // Speak just quietly enough to not disturb anyone
+-                wanted_volume = distance_to_sleeper - 1;
 +        // Possible fallthrough: neutral or unaware enemy NPCs talk at default wanted_volume
 +
 +        // Don't wake up friends when using our indoor voice
@@ -427,11 +458,13 @@ diff --git a/src/npc.cpp b/src/npc.cpp
 diff --git a/src/npc.h b/src/npc.h
 --- a/src/npc.h
 +++ b/src/npc.h
-@@ -1123,7 +1123,6 @@
+@@ -1123,7 +1123,8 @@
              return say( string_format( line, std::forward<Args>( args )... ) );
          }
          void say( const std::string &line, sounds::sound_t spriority = sounds::sound_t::speech ) const;
 -        int indoor_voice() const;
++        std::string say_formatted( const std::string &formatted_line,
++                                   sounds::sound_t spriority = sounds::sound_t::speech ) const;
          void decide_needs();
          void reboot();
          void die( map *here, Creature *killer ) override;

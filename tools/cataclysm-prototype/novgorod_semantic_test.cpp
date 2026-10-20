@@ -24,6 +24,8 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "faction.h"
+#include "flag.h"
 #include "game.h"
 #include "game_constants.h"
 #include "item.h"
@@ -33,11 +35,14 @@
 #include "map.h"
 #include "map_helpers.h"
 #include "map_selector.h"
+#include "math_parser_diag_value.h"
+#include "messages.h"
 #include "npc.h"
 #include "npctalk.h"
 #include "novgorod_semantic.h"
 #include "path_info.h"
 #include "player_helpers.h"
+#include "translations.h"
 #include "type_id.h"
 #include "sounds.h"
 
@@ -353,7 +358,7 @@ namespace
 {
 std::string live_request( const std::string &primitive, const std::string &actor_id,
                           const std::string &utterance = "", const std::vector<int> &direction = {},
-                          const std::string &delivery = "" )
+                          const std::string &delivery = "", const std::string &addressees = "" )
 {
     std::ostringstream stream;
     JsonOut out( stream );
@@ -374,6 +379,13 @@ std::string live_request( const std::string &primitive, const std::string &actor
     }
     if( !direction.empty() ) out.member( "direction", direction );
     out.end_object();
+    if( !addressees.empty() ) {
+        out.member( "references" ); out.start_object();
+        out.member( "actors" );
+        *out.get_stream() << addressees;
+        out.set_need_separator();
+        out.end_object();
+    }
     out.end_object();
     return stream.str();
 }
@@ -392,6 +404,189 @@ novgorod_semantic::operation_result run_live_request( const std::string &json )
         result = novgorod_semantic::finish_operation();
     }
     return result;
+}
+
+const std::string memory_key = "novgorod_conversation_memory";
+
+struct memory_record {
+    std::string kind;
+    std::string speaker_ref;
+    std::string listener_ref;
+    std::string text;
+    int turn = 0;
+};
+
+std::string json_string( const std::string &text )
+{
+    std::ostringstream stream;
+    JsonOut out( stream );
+    out.write( text );
+    return stream.str();
+}
+
+std::string raw_request( const std::string &primitive, const std::string &actor_id,
+                         const std::string &args_json, const std::string &actors_json = "" )
+{
+    std::string json = "{\"schema\":\"p3_native_operation_request_v1\",\"operation_id\":\"focused-live\","
+                       "\"actor_id\":" + json_string( actor_id ) + ",\"primitive\":" + json_string( primitive ) +
+                       ",\"expected_native_observation\":{\"actor_id\":" + json_string( actor_id ) +
+                       ",\"turn\":" + std::to_string( to_turn<int>( calendar::turn ) ) + "},\"args\":" + args_json;
+    if( !actors_json.empty() ) {
+        json += ",\"references\":{\"actors\":" + actors_json + "}";
+    }
+    return json + "}";
+}
+
+JsonObject parse_object( const std::string &json )
+{
+    const JsonObject object = json_loader::from_string( json ).get_object();
+    object.allow_omitted_members();
+    return object;
+}
+
+std::string id_text( const Character &guy )
+{
+    return std::to_string( guy.getID().get_value() );
+}
+
+std::string npc_ref( const Character &guy )
+{
+    return "npc:" + id_text( guy );
+}
+
+npc &npc_by_id( const character_id &id )
+{
+    npc *guy = g->find_npc( id );
+    REQUIRE( guy != nullptr );
+    return *guy;
+}
+
+std::vector<character_id> fixture_ids()
+{
+    std::vector<character_id> ids;
+    for( npc &guy : g->all_npcs() ) {
+        ids.push_back( guy.getID() );
+    }
+    return ids;
+}
+
+character_id make_npc( int x, int y )
+{
+    npc &guy = spawn_npc( point_bub_ms( x, y ), p3_talker.str() );
+    guy.death_eocs.clear();
+    guy.set_attitude( NPCATT_NULL );
+    guy.assign_activity( wait_activity_actor( 1_hours ) );
+    return guy.getID();
+}
+
+std::vector<memory_record> memory_from_array( const JsonArray &array )
+{
+    std::vector<memory_record> records;
+    for( const JsonObject record : array ) {
+        record.allow_omitted_members();
+        records.push_back( { record.get_string( "kind" ), record.get_string( "speaker_ref" ),
+                             record.get_string( "listener_ref" ), record.get_string( "text" ),
+                             record.get_int( "turn" ) } );
+    }
+    return records;
+}
+
+std::string memory_raw( const npc &guy )
+{
+    const diag_value *value = guy.maybe_get_value( memory_key );
+    return value == nullptr ? std::string() : value->str();
+}
+
+std::vector<memory_record> memory_of( const npc &guy )
+{
+    const std::string raw = memory_raw( guy );
+    if( raw.empty() ) {
+        return {};
+    }
+    const JsonValue value = json_loader::from_string( raw );
+    return memory_from_array( value.get_array() );
+}
+
+void check_record( const memory_record &record, const std::string &kind,
+                   const std::string &speaker_ref, const std::string &listener_ref,
+                   const std::string &text, int turn )
+{
+    CHECK( record.kind == kind );
+    CHECK( record.speaker_ref == speaker_ref );
+    CHECK( record.listener_ref == listener_ref );
+    CHECK( record.text == text );
+    CHECK( record.turn == turn );
+}
+
+std::string message_log()
+{
+    std::string log;
+    for( const auto &message : Messages::recent_messages( 500 ) ) {
+        log += message.second;
+        log += '\n';
+    }
+    return log;
+}
+
+void process_all_sounds()
+{
+    for( npc &guy : g->all_npcs() ) {
+        sounds::process_sound_markers( &guy );
+    }
+    sounds::process_sound_markers( &get_avatar() );
+}
+
+novgorod_semantic::operation_result complete_operation()
+{
+    if( g->has_novgorod_actions() ) {
+        g->do_turn();
+    }
+    for( int turn = 0; turn < 20 && !get_avatar().activity.is_null(); ++turn ) {
+        g->set_test_action_queue( { action_ident( ACTION_PAUSE ) } );
+        g->do_turn();
+    }
+    return novgorod_semantic::finish_operation();
+}
+
+novgorod_semantic::operation_result run_npc_request( const std::string &json )
+{
+    auto result = novgorod_semantic::apply_operation( parse_object( json ) );
+    if( result.applied ) {
+        process_all_sounds();
+        result = complete_operation();
+    }
+    return result;
+}
+
+novgorod_semantic::operation_result run_instant_avatar_speech( const std::string &utterance,
+        const std::string &addressees, int loudness = 3 )
+{
+    avatar &you = get_avatar();
+    you.set_moves( 1000 );
+    sounds::reset_sounds();
+    const std::string delivery = "{\"loudness\":" + std::to_string( loudness ) +
+                                 ",\"duration_class\":\"instant\"}";
+    auto result = novgorod_semantic::apply_operation( parse_object( live_request( "speak",
+                  id_text( you ), utterance, {}, delivery, addressees ) ) );
+    if( result.applied ) {
+        for( npc &listener : g->all_npcs() ) {
+            sounds::process_sound_markers( &listener );
+        }
+        result = novgorod_semantic::finish_operation();
+    }
+    return result;
+}
+
+std::vector<std::string> heard_ids( const std::string &readback_json )
+{
+    const JsonObject effect = parse_object( readback_json ).get_object( "native_effect" );
+    effect.allow_omitted_members();
+    return effect.get_string_array( "actualHeardListenerIds" );
+}
+
+bool contains( const std::vector<std::string> &values, const std::string &value )
+{
+    return std::find( values.begin(), values.end(), value ) != values.end();
 }
 } // namespace
 
@@ -430,25 +625,29 @@ TEST_CASE( "Novgorod live speech preserves tags and uses actual native hearing",
     avatar &you = get_avatar();
     const std::string utterance = "<come_here> [literal] %s — Я сказал ровно это.";
     std::string actor = std::to_string( you.getID().get_value() );
+    std::string addressees;
+    std::string expected_sound = utterance;
     SECTION( "avatar" ) {}
     SECTION( "NPC" ) {
         for( npc &guy : g->all_npcs() ) {
             if( !guy.is_deaf() ) {
                 actor = std::to_string( guy.getID().get_value() );
+                addressees = "[\"avatar\"]";
+                expected_sound = string_format( _( "%1$s saying \"%2$s\"" ), guy.get_name(), utterance );
                 break;
             }
         }
     }
     sounds::reset_sounds();
     you.set_moves( 0 );
-    const auto result = run_live_request( live_request( "speak", actor, utterance ) );
+    const auto result = run_live_request( live_request( "speak", actor, utterance, {}, "", addressees ) );
     REQUIRE( result.applied );
     const JsonObject readback = json_loader::from_string( result.json ).get_object();
     readback.allow_omitted_members();
     const JsonObject effect = readback.get_object( "native_effect" );
     effect.allow_omitted_members();
     CHECK( effect.get_string( "utterance" ) == utterance );
-    CHECK( effect.get_string( "native_sound" ) == utterance );
+    CHECK( effect.get_string( "native_sound" ) == expected_sound );
     CHECK( effect.get_int( "elapsed_seconds" ) >= 3 );
     const std::vector<std::string> heard = effect.get_string_array( "actualHeardListenerIds" );
     CHECK_FALSE( heard.empty() );
@@ -980,7 +1179,7 @@ TEST_CASE( "Novgorod semantic NPC speech shares native CHAT candidates", "[novgo
     const bool eligible = std::find( candidates.begin(), candidates.end(), &subject ) != candidates.end();
     CHECK( eligible == expected_eligible );
     const auto result = novgorod_semantic::apply_operation( json_loader::from_string(
-                            live_request( "speak", actor, "literal speech" ) ).get_object() );
+                            live_request( "speak", actor, "literal speech", {}, "", "[\"avatar\"]" ) ).get_object() );
     CHECK( result.applied == eligible );
     if( result.applied ) {
         const auto finished = novgorod_semantic::finish_operation();
@@ -1061,4 +1260,496 @@ TEST_CASE( "Novgorod real operation frame projects expected observation metadata
     }
     CHECK( calendar::turn == before.native_time );
     CHECK( get_avatar().get_moves() == before.moves );
+}
+
+namespace
+{
+void refresh_visibility()
+{
+    map &here = get_map();
+    const int z = get_avatar().posz();
+    here.invalidate_map_cache( z );
+    here.build_map_cache( z );
+    here.update_visibility_cache( z );
+}
+
+std::string replace_token( std::string text, const std::string &token, const std::string &value )
+{
+    for( size_t at = text.find( token ); at != std::string::npos;
+         at = text.find( token, at + value.size() ) ) {
+        text.replace( at, token.size(), value );
+    }
+    return text;
+}
+
+struct item_row {
+    std::string ref;
+    std::string type;
+    std::string label;
+    std::string placement;
+    bool ground;
+    std::vector<int> position;
+    std::string owner;
+};
+
+std::string uid_ref( const item &it )
+{
+    return "item:" + std::to_string( it.uid().get_value() );
+}
+} // namespace
+
+TEST_CASE( "Novgorod NPC speech keeps native variable tags literal", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    avatar &you = get_avatar();
+    const std::vector<character_id> ids = fixture_ids();
+    REQUIRE( ids.size() == 4 );
+    const character_id far_id = make_npc( 125, 62 );
+    refresh_visibility();
+    const std::string secret = "SECRET_9_VALUE";
+    for( npc &guy : g->all_npcs() ) {
+        guy.set_value( "task04_secret", secret );
+    }
+    you.set_value( "task04_secret", secret );
+    npc &speaker = npc_by_id( ids[0] );
+    npc &hearer = npc_by_id( ids[1] );
+    const std::string utterance = "<npc_val:task04_secret> <u_val:task04_secret> %s [x] — как есть";
+    Messages::clear_messages();
+    sounds::reset_sounds();
+    you.set_moves( 0 );
+    const auto result = run_npc_request( raw_request( "speak", id_text( speaker ),
+                                         "{\"utterance\":" + json_string( utterance ) + "}", "[\"avatar\"]" ) );
+    REQUIRE( result.applied );
+    CHECK( result.json.find( secret ) == std::string::npos );
+    const JsonObject effect = parse_object( result.json ).get_object( "native_effect" );
+    effect.allow_omitted_members();
+    CHECK( effect.get_string( "utterance" ) == utterance );
+    CHECK( effect.get_string( "native_sound" ) ==
+           string_format( _( "%1$s saying \"%2$s\"" ), speaker.get_name(), utterance ) );
+    const std::vector<std::string> heard = effect.get_string_array( "actualHeardListenerIds" );
+    CHECK( contains( heard, id_text( hearer ) ) );
+    CHECK_FALSE( contains( heard, id_text( npc_by_id( far_id ) ) ) );
+    const std::string log = message_log();
+    CHECK( log.find( secret ) == std::string::npos );
+    CHECK( log.find( "<npc_val:task04_secret>" ) != std::string::npos );
+    for( npc &guy : g->all_npcs() ) {
+        CHECK( memory_raw( guy ).find( secret ) == std::string::npos );
+    }
+    const std::vector<memory_record> said = memory_of( speaker );
+    REQUIRE( said.size() == 1 );
+    CHECK( said[0].kind == "said" );
+    CHECK( said[0].text == utterance );
+
+    Messages::clear_messages();
+    sounds::reset_sounds();
+    speaker.say( "<npc_val:task04_secret> end" );
+    process_all_sounds();
+    const std::string native_log = message_log();
+    CHECK( native_log.find( secret + " end" ) != std::string::npos );
+    CHECK( native_log.find( "<npc_val" ) == std::string::npos );
+}
+
+TEST_CASE( "Novgorod NPC silence is visible behaviour without sound", "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    avatar &you = get_avatar();
+    const std::vector<character_id> ids = fixture_ids();
+    npc &speaker = npc_by_id( ids[0] );
+    refresh_visibility();
+    const std::string behavior = "молчит, поджав губы 100% %s";
+    const std::string args = "{\"contribution_kind\":\"silence\",\"visible_behavior\":" +
+                             json_string( behavior ) + "}";
+    SECTION( "visible NPC" ) {
+        Messages::clear_messages();
+        sounds::reset_sounds();
+        you.set_moves( 0 );
+        const int applied_turn = to_turn<int>( calendar::turn );
+        auto result = novgorod_semantic::apply_operation( parse_object( raw_request( "speak",
+                      id_text( speaker ), args, "[\"avatar\"]" ) ) );
+        REQUIRE( result.applied );
+        CHECK( sounds::get_monster_sounds().first.empty() );
+        CHECK( sounds::get_monster_sounds().second.empty() );
+        result = complete_operation();
+        REQUIRE( result.applied );
+        const JsonObject readback = parse_object( result.json );
+        CHECK( readback.get_string( "status" ) == "applied" );
+        const JsonObject effect = readback.get_object( "native_effect" );
+        effect.allow_omitted_members();
+        CHECK( effect.get_bool( "world_changed" ) );
+        CHECK( effect.get_string( "contribution_kind" ) == "silence" );
+        CHECK( effect.get_string( "speakerId" ) == id_text( speaker ) );
+        CHECK( effect.get_string( "visible_behavior" ) == behavior );
+        CHECK( effect.get_string_array( "actualHeardListenerIds" ).empty() );
+        CHECK_FALSE( effect.has_member( "utterance" ) );
+        CHECK_FALSE( effect.has_member( "native_sound" ) );
+        CHECK( message_log().find( behavior ) != std::string::npos );
+        const std::vector<memory_record> records = memory_of( speaker );
+        REQUIRE( records.size() == 1 );
+        check_record( records[0], "silence", npc_ref( speaker ), "avatar", "", applied_turn );
+        for( const npc &guy : g->all_npcs() ) {
+            if( guy.getID() != speaker.getID() ) {
+                CHECK( memory_raw( guy ).empty() );
+            }
+        }
+    }
+    SECTION( "NPC the player cannot see" ) {
+        speaker.setpos( get_map(), you.pos_bub() + tripoint_rel_ms( 0, -2, 0 ) );
+        refresh_visibility();
+        const std::string log_before = message_log();
+        sounds::reset_sounds();
+        const auto result = novgorod_semantic::apply_operation( parse_object( raw_request( "speak",
+                            id_text( speaker ), args, "[\"avatar\"]" ) ) );
+        CHECK_FALSE( result.applied );
+        CHECK( result.json.find( "NOVGOROD_STALE_OR_INVISIBLE_NPC_ACTOR" ) != std::string::npos );
+        CHECK( message_log() == log_before );
+        CHECK( memory_raw( speaker ).empty() );
+    }
+}
+
+TEST_CASE( "Novgorod speech refusals leave the native world unchanged", "[novgorod_live]" )
+{
+    struct refusal_case {
+        std::string name;
+        bool npc_actor;
+        bool mute;
+        std::string args;
+        std::string actors;
+        std::string code;
+    };
+    const std::string silence = "{\"contribution_kind\":\"silence\",\"visible_behavior\":\"молчит\"}";
+    const std::string say = "{\"utterance\":\"слово\"}";
+    const std::vector<refusal_case> cases = {
+        { "avatar silence", false, false, silence, "", "NOVGOROD_SILENCE_REQUIRES_NPC" },
+        { "silence without behavior", true, false, "{\"contribution_kind\":\"silence\"}", "[\"avatar\"]",
+          "NOVGOROD_SILENCE_BEHAVIOR_REQUIRED" },
+        { "silence with empty behavior", true, false,
+          "{\"contribution_kind\":\"silence\",\"visible_behavior\":\"\"}", "[\"avatar\"]",
+          "NOVGOROD_SILENCE_BEHAVIOR_REQUIRED" },
+        { "silence with utterance", true, false,
+          "{\"contribution_kind\":\"silence\",\"visible_behavior\":\"молчит\",\"utterance\":\"слово\"}",
+          "[\"avatar\"]", "NOVGOROD_SPEECH_ARGS_INVALID" },
+        { "kind speech", false, false, "{\"utterance\":\"слово\",\"contribution_kind\":\"speech\"}", "",
+          "NOVGOROD_SPEECH_ARGS_INVALID" },
+        { "kind whisper", false, false, "{\"utterance\":\"слово\",\"contribution_kind\":\"whisper\"}", "",
+          "NOVGOROD_SPEECH_ARGS_INVALID" },
+        { "reason on speech", false, false, "{\"utterance\":\"слово\",\"reason\":\"потому\"}", "",
+          "NOVGOROD_SPEECH_ARGS_INVALID" },
+        { "reason on silence", true, false,
+          "{\"contribution_kind\":\"silence\",\"visible_behavior\":\"молчит\",\"reason\":\"потому\"}",
+          "[\"avatar\"]", "NOVGOROD_SPEECH_ARGS_INVALID" },
+        { "NPC speech without references", true, false, say, "", "NOVGOROD_SPEECH_ADDRESSEE_REQUIRED" },
+        { "NPC speech with empty addressees", true, false, say, "[]", "NOVGOROD_SPEECH_ADDRESSEE_REQUIRED" },
+        { "NPC speech with two addressees", true, false, say, "[\"avatar\",\"npc:%L\"]",
+          "NOVGOROD_SPEECH_ADDRESSEE_REQUIRED" },
+        { "NPC silence without references", true, false, silence, "", "NOVGOROD_SPEECH_ADDRESSEE_REQUIRED" },
+        { "unknown NPC addressee", false, false, say, "[\"npc:99999\"]", "NOVGOROD_SPEECH_ADDRESSEE_INVALID" },
+        { "malformed addressee", false, false, say, "[\"bogus\"]", "NOVGOROD_SPEECH_ADDRESSEE_INVALID" },
+        { "duplicate addressee", false, false, say, "[\"avatar\",\"avatar\"]",
+          "NOVGOROD_SPEECH_ADDRESSEE_INVALID" },
+        { "hidden NPC addressee", false, false, say, "[\"npc:%H\"]", "NOVGOROD_SPEECH_ADDRESSEE_INVALID" },
+        { "numeric addressee", false, false, say, "[5]", "NOVGOROD_SPEECH_ADDRESSEE_INVALID" },
+        { "null addressee", false, false, say, "[null]", "NOVGOROD_SPEECH_ADDRESSEE_INVALID" },
+        { "addressees not an array", false, false, say, "\"avatar\"", "NOVGOROD_SPEECH_ADDRESSEE_INVALID" },
+        { "NPC speech with delivery", true, false,
+          "{\"utterance\":\"слово\",\"delivery\":{\"loudness\":2,\"duration_class\":\"brief\"}}",
+          "[\"avatar\"]", "NOVGOROD_NPC_SPEECH_DELIVERY_UNSUPPORTED" },
+        { "mute NPC", true, true, say, "[\"avatar\"]", "NOVGOROD_NATIVE_SPEAKER_CANNOT_SPEAK" },
+    };
+    for( const refusal_case &c : cases ) {
+        CAPTURE( c.name );
+        reset_p3_fixture();
+        avatar &you = get_avatar();
+        const std::vector<character_id> ids = fixture_ids();
+        const character_id hidden_id = make_npc( 60, 58 );
+        refresh_visibility();
+        npc &speaker = npc_by_id( ids[0] );
+        if( c.mute ) {
+            item mask( itype_id( "hat_knit" ) );
+            mask.set_flag( flag_MUTE );
+            speaker.wear_item( mask, false );
+            REQUIRE( speaker.is_mute() );
+        }
+        const std::string actor = c.npc_actor ? id_text( speaker ) : id_text( you );
+        std::string actors = replace_token( c.actors, "%L", id_text( npc_by_id( ids[1] ) ) );
+        actors = replace_token( actors, "%H", id_text( npc_by_id( hidden_id ) ) );
+        const native_snapshot before = take_snapshot();
+        const std::string log_before = message_log();
+        sounds::reset_sounds();
+        const auto result = novgorod_semantic::apply_operation( parse_object( raw_request( "speak", actor,
+                            c.args, actors ) ) );
+        CHECK_FALSE( result.applied );
+        CHECK( result.json.find( c.code ) != std::string::npos );
+        CHECK( sounds::get_monster_sounds().first.empty() );
+        CHECK( take_snapshot().world_signature == before.world_signature );
+        CHECK( calendar::turn == before.native_time );
+        CHECK( you.get_moves() == before.moves );
+        CHECK( you.activity.is_null() );
+        CHECK( message_log() == log_before );
+        for( const npc &guy : g->all_npcs() ) {
+            CHECK( memory_raw( guy ).empty() );
+        }
+    }
+}
+
+TEST_CASE( "Novgorod conversation memory records what was heard said and kept silent",
+           "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    avatar &you = get_avatar();
+    const std::vector<character_id> ids = fixture_ids();
+    REQUIRE( ids.size() == 4 );
+    refresh_visibility();
+    npc &speaker = npc_by_id( ids[0] );
+    npc &listener = npc_by_id( ids[1] );
+    npc &deaf_one = npc_by_id( ids[2] );
+    npc &deaf_two = npc_by_id( ids[3] );
+    const std::string utterance = "Слушай, <come_here> 100% %s";
+    SECTION( "avatar speech to an NPC" ) {
+        const int turn = to_turn<int>( calendar::turn );
+        const auto result = run_instant_avatar_speech( utterance, "[\"npc:" + id_text( listener ) + "\"]" );
+        REQUIRE( result.applied );
+        const std::vector<std::string> heard = heard_ids( result.json );
+        CHECK( contains( heard, id_text( speaker ) ) );
+        CHECK( contains( heard, id_text( listener ) ) );
+        const std::vector<memory_record> speaker_records = memory_of( speaker );
+        REQUIRE( speaker_records.size() == 1 );
+        check_record( speaker_records[0], "heard", "avatar", npc_ref( listener ), utterance, turn );
+        const std::vector<memory_record> listener_records = memory_of( listener );
+        REQUIRE( listener_records.size() == 1 );
+        check_record( listener_records[0], "heard", "avatar", npc_ref( listener ), utterance, turn );
+        CHECK( memory_raw( deaf_one ).empty() );
+        CHECK( memory_raw( deaf_two ).empty() );
+        CHECK( you.maybe_get_value( memory_key ) == nullptr );
+    }
+    SECTION( "avatar speech without addressee writes no heard record" ) {
+        const auto result = run_instant_avatar_speech( utterance, "" );
+        REQUIRE( result.applied );
+        CHECK( contains( heard_ids( result.json ), id_text( listener ) ) );
+        for( const npc &guy : g->all_npcs() ) {
+            CHECK( memory_raw( guy ).empty() );
+        }
+    }
+    SECTION( "records accumulate in order" ) {
+        const std::string addressee = "[\"npc:" + id_text( listener ) + "\"]";
+        REQUIRE( run_instant_avatar_speech( "первое", addressee ).applied );
+        calendar::turn += 5_seconds;
+        REQUIRE( run_instant_avatar_speech( "второе", addressee ).applied );
+        const std::vector<memory_record> records = memory_of( listener );
+        REQUIRE( records.size() == 2 );
+        CHECK( records[0].text == "первое" );
+        CHECK( records[1].text == "второе" );
+        CHECK( records[1].turn == records[0].turn + 5 );
+    }
+    SECTION( "NPC speech to the avatar" ) {
+        sounds::reset_sounds();
+        you.set_moves( 0 );
+        const int turn = to_turn<int>( calendar::turn );
+        auto result = novgorod_semantic::apply_operation( parse_object( raw_request( "speak",
+                      id_text( speaker ), "{\"utterance\":" + json_string( utterance ) + "}",
+                      "[\"avatar\"]" ) ) );
+        REQUIRE( result.applied );
+        process_all_sounds();
+        const std::vector<memory_record> said = memory_of( speaker );
+        REQUIRE( said.size() == 1 );
+        check_record( said[0], "said", npc_ref( speaker ), "avatar", utterance, turn );
+        const std::vector<memory_record> heard = memory_of( listener );
+        REQUIRE( heard.size() == 1 );
+        check_record( heard[0], "heard", npc_ref( speaker ), "avatar", utterance, turn );
+        CHECK( memory_raw( deaf_one ).empty() );
+        CHECK( memory_raw( deaf_two ).empty() );
+        result = complete_operation();
+        REQUIRE( result.applied );
+        CHECK( memory_of( speaker ).size() == 1 );
+        CHECK( memory_of( listener ).size() == 1 );
+    }
+}
+
+TEST_CASE( "Novgorod frame exports NPC identity opinion memory and visible items", "[novgorod_live]" )
+{
+    const bool male = GENERATE( true, false );
+    CAPTURE( male );
+    reset_p3_fixture();
+    clear_npcs();
+    avatar &you = get_avatar();
+    map &here = get_map();
+    for( const tripoint_bub_ms &p : here.points_on_zlevel( 0 ) ) {
+        here.i_clear( p );
+    }
+    const faction_id merchants( "free_merchants" );
+    const faction_id followers( "your_followers" );
+    const character_id guy_id = make_npc( 60, 62 );
+    npc &guy = npc_by_id( guy_id );
+    clear_character( guy, true );
+    guy.setpos( here, tripoint_bub_ms( 60, 62, 0 ) );
+    guy.male = male;
+    guy.set_fac( merchants );
+    guy.personality.aggression = 3;
+    guy.personality.bravery = -2;
+    guy.personality.collector = 5;
+    guy.personality.altruism = 7;
+    guy.op_of_u.trust = 4;
+    guy.op_of_u.fear = 2;
+    guy.op_of_u.value = 6;
+    guy.op_of_u.anger = 1;
+    item held( itype_id( "rock" ) );
+    held.set_owner( merchants );
+    guy.set_wielded_item( held );
+    item pack( itype_id( "backpack" ) );
+    REQUIRE( pack.put_in( item( itype_id( "stick" ) ), pocket_type::CONTAINER ).success() );
+    REQUIRE( guy.wear_item( pack, false ).has_value() );
+
+    const item &first = here.add_item( tripoint_bub_ms( 64, 63, 0 ), item( itype_id( "rock" ) ) );
+    const std::string first_ref = uid_ref( first );
+    item owned( itype_id( "stick" ) );
+    owned.set_owner( followers );
+    const item &second = here.add_item( tripoint_bub_ms( 61, 65, 0 ), owned );
+    const std::string second_ref = uid_ref( second );
+    const item &third = here.add_item( tripoint_bub_ms( 62, 62, 0 ), item( itype_id( "stick" ) ) );
+    const std::string third_ref = uid_ref( third );
+    const std::string rock_label = item( itype_id( "rock" ) ).type_name();
+    const std::string stick_label = item( itype_id( "stick" ) ).type_name();
+    for( const tripoint_bub_ms &wall : here.points_in_radius( tripoint_bub_ms( 80, 70, 0 ), 1 ) ) {
+        here.ter_set( wall, p3_ter_wall );
+    }
+    here.ter_set( tripoint_bub_ms( 80, 70, 0 ), p3_ter_floor );
+    here.add_item( tripoint_bub_ms( 80, 70, 0 ), item( itype_id( "rock" ) ) );
+    refresh_visibility();
+    REQUIRE( you.sees( here, guy.pos_bub() ) );
+
+    std::vector<item_row> expected;
+    const item *wielded = guy.get_wielded_item().get_item();
+    REQUIRE( wielded != nullptr );
+    expected.push_back( { uid_ref( *wielded ), "rock", wielded->type_name(), "wielded", false, {},
+                          "free_merchants" } );
+    int worn_count = 0;
+    std::vector<const item *> worn_items;
+    guy.worn.inv_dump( worn_items );
+    for( const item *worn_ptr : worn_items ) {
+        const item &worn_item = *worn_ptr;
+        ++worn_count;
+        expected.push_back( { uid_ref( worn_item ), "backpack", worn_item.type_name(), "worn", false, {},
+                              worn_item.get_owner().str() } );
+        for( const item *inner : worn_item.all_items_top() ) {
+            expected.push_back( { uid_ref( *inner ), "stick", inner->type_name(), "carried", false, {},
+                                  inner->get_owner().str() } );
+        }
+    }
+    REQUIRE( worn_count == 1 );
+    REQUIRE( expected.size() == 3 );
+    expected.push_back( { first_ref, "rock", rock_label, "ground", true, { 64, 63, 0 }, "" } );
+    expected.push_back( { second_ref, "stick", stick_label, "ground", true, { 61, 65, 0 }, "your_followers" } );
+    expected.push_back( { third_ref, "stick", stick_label, "ground", true, { 62, 62, 0 }, "" } );
+
+    std::ostringstream stream;
+    JsonOut out( stream );
+    novgorod_semantic::write_observation( out );
+    const JsonObject observation = parse_object( stream.str() );
+    bool found = false;
+    for( const JsonObject projection : observation.get_array( "npc_projections" ) ) {
+        projection.allow_omitted_members();
+        if( projection.get_string( "actor_id" ) != id_text( guy ) ) {
+            continue;
+        }
+        found = true;
+        CHECK( projection.get_string( "name" ) == guy.get_name() );
+        CHECK( projection.get_string( "template_id" ) == guy.idz.str() );
+        CHECK( projection.get_string( "template_id" ) == "NPC_debug" );
+        CHECK( projection.get_string( "gender" ) == ( male ? "male" : "female" ) );
+        const JsonObject personality = projection.get_object( "personality" );
+        personality.allow_omitted_members();
+        CHECK( personality.get_int( "aggression" ) == 3 );
+        CHECK( personality.get_int( "bravery" ) == -2 );
+        CHECK( personality.get_int( "collector" ) == 5 );
+        CHECK( personality.get_int( "altruism" ) == 7 );
+        CHECK( projection.get_string( "faction_id" ) == "free_merchants" );
+        const JsonObject opinion = projection.get_object( "opinion_of_avatar" );
+        opinion.allow_omitted_members();
+        CHECK( opinion.get_int( "trust" ) == 4 );
+        CHECK( opinion.get_int( "fear" ) == 2 );
+        CHECK( opinion.get_int( "value" ) == 6 );
+        CHECK( opinion.get_int( "anger" ) == 1 );
+        CHECK( projection.get_array( "conversation_memory" ).empty() );
+        const JsonArray items = projection.get_array( "visible_items" );
+        REQUIRE( items.size() == expected.size() );
+        size_t index = 0;
+        for( const JsonObject row : items ) {
+            row.allow_omitted_members();
+            const item_row &want = expected[index++];
+            CAPTURE( want.ref );
+            CHECK( row.get_string( "item_ref" ) == want.ref );
+            CHECK( "item:" + row.get_string( "item_uid" ) == want.ref );
+            CHECK( row.get_string( "type" ) == want.type );
+            CHECK( row.get_string( "label" ) == want.label );
+            CHECK( row.get_string( "placement" ) == want.placement );
+            CHECK( row.get_string( "owner_faction_id" ) == want.owner );
+            if( want.ground ) {
+                CHECK( row.get_int_array( "position" ) == want.position );
+            } else {
+                CHECK( row.has_null( "position" ) );
+            }
+        }
+    }
+    CHECK( found );
+    bool avatar_entry = false;
+    bool npc_entry = false;
+    for( const JsonObject actor : observation.get_array( "actors" ) ) {
+        actor.allow_omitted_members();
+        if( actor.get_string( "actor_ref" ) == npc_ref( guy ) ) {
+            npc_entry = true;
+            CHECK( actor.get_string( "name" ) == guy.get_name() );
+        } else if( actor.get_string( "actor_ref" ) == "avatar" ) {
+            avatar_entry = true;
+            CHECK_FALSE( actor.has_member( "name" ) );
+        }
+    }
+    CHECK( npc_entry );
+    CHECK( avatar_entry );
+
+    you.set_moves( 0 );
+    const auto result = run_npc_request( raw_request( "speak", id_text( guy ), "{\"utterance\":\"слово\"}",
+                                         "[\"avatar\"]" ) );
+    REQUIRE( result.applied );
+    std::ostringstream later_stream;
+    JsonOut later_out( later_stream );
+    novgorod_semantic::write_observation( later_out );
+    const JsonObject later = parse_object( later_stream.str() );
+    bool exported_found = false;
+    for( const JsonObject projection : later.get_array( "npc_projections" ) ) {
+        projection.allow_omitted_members();
+        if( projection.get_string( "actor_id" ) != id_text( guy ) ) {
+            continue;
+        }
+        exported_found = true;
+        const std::vector<memory_record> exported =
+            memory_from_array( projection.get_array( "conversation_memory" ) );
+        const std::vector<memory_record> stored = memory_of( guy );
+        REQUIRE( stored.size() == 1 );
+        REQUIRE( exported.size() == 1 );
+        check_record( exported[0], stored[0].kind, stored[0].speaker_ref, stored[0].listener_ref,
+                      stored[0].text, stored[0].turn );
+        CHECK( exported[0].kind == "said" );
+    }
+    CHECK( exported_found );
+}
+
+TEST_CASE( "Novgorod whispered avatar speech is heard only as far as native sound reaches",
+           "[novgorod_live]" )
+{
+    reset_p3_fixture();
+    clear_npcs();
+    const character_id near_id = make_npc( 59, 61 );
+    const character_id far_id = make_npc( 125, 60 );
+    refresh_visibility();
+    const int loudness = GENERATE( 1, 2 );
+    CAPTURE( loudness );
+    const std::string near_text = id_text( npc_by_id( near_id ) );
+    const auto result = run_instant_avatar_speech( "тихо", "[\"npc:" + near_text + "\"]", loudness );
+    REQUIRE( result.applied );
+    const std::vector<std::string> heard = heard_ids( result.json );
+    CHECK_FALSE( contains( heard, id_text( npc_by_id( far_id ) ) ) );
+    if( loudness == 1 ) {
+        CHECK( heard.empty() );
+    } else {
+        CHECK( heard == std::vector<std::string>{ near_text } );
+    }
 }

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { resolveLlmExecutionConfig } from '@rus/llm-runtime';
 import { createLlmSettingsOwner } from '@rus/game-server';
+import { requestTurnStepPlanWithRepair } from '@rus/turn';
 import { request as sampleRequest, plan as samplePlan } from '../../packages/turn/test/turn-step-contracts-fixture.js';
 import { createLowerDvinaTraceTurnStepModel } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { turnStepOperationChoices } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
@@ -1425,6 +1426,81 @@ test('planner request names the selected interlocutor and offers speech only wit
   assert.equal('active_interlocutor' in plain.player_safe_state, false);
   assert.equal(plain.available_domain_operations.some(({ op }) => op === 'emit_interaction'), false);
   assert.equal(buildP3TurnOperations(current, 'npc:9').some(({ op }) => op === 'emit_interaction'), true);
+});
+
+function chosenOperationOutput(request, selected) {
+  return { interpretation: { player_goal: request.remaining_intent,
+    grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    direct_result_kind: null, operation_family: selected.operation.op,
+    operation_choice: selected.choice_id, operations: [], check: null,
+    continuation: null, clarification: null, reason_code: 'offered_operation',
+    reason: 'Choose the offered operation.' };
+}
+
+test('production speech choice speaks the player words to the selected interlocutor', async () => {
+  for (const [intent, words] of [
+    ['Здравствуй, Жирко. Чей это двор?', 'Здравствуй, Жирко. Чей это двор?'],
+    ['Скажи ему: «Приходи до рассвета!»', 'Приходи до рассвета!']
+  ]) {
+    let providerCalls = 0;
+    let captured;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
+      providerCalls++;
+      const request = JSON.parse(call.messages[1].content);
+      const selected = turnStepOperationChoices(request)
+        .find(({ operation }) => operation.op === 'emit_interaction');
+      assert.ok(selected);
+      return { output: chosenOperationOutput(request, selected) };
+    } } });
+    const result = await runP3TurnStep({ intent, observation: replyFrame({ turn: 3 }),
+      operationId: 'production-speech-choice', nativeSpeechOnly: true, targetActorRef: 'npc:9',
+      nativeAdapter: { writeOperationRequest: async () => {}, readOperationReadback: async () => ({}),
+        async execute(envelope) {
+          captured = envelope;
+          return { schema: 'p3_native_operation_readback_v1', operation_id: envelope.operation_id,
+            status: 'applied', goal_result: 'achieved', before: { turn: 3 }, after: { turn: 3 },
+            native_effect: { effect_status: 'confirmed', speakerId: '7',
+              utterance: envelope.args.utterance, actualHeardListenerIds: ['9'] } };
+        } },
+      turnStepModel: model });
+    assert.equal(providerCalls, 1);
+    assert.equal(captured.primitive, 'speak');
+    assert.equal(captured.args.utterance, words);
+    assert.deepEqual(captured.references.actors.map(({ ref }) => ref), ['npc:9']);
+    assert.equal(result.working_projection.native_readback.status, 'applied');
+  }
+});
+
+test('every offered P3 domain operation passes production plan validation when chosen', async () => {
+  const current = { schema: 'p3_native_observation_v1', turn: 3, revision: 3,
+    actors: [{ actor_ref: 'avatar', actor_id: '7', position: [60, 60, 0] },
+      { actor_ref: 'npc:8', actor_id: '8', position: [61, 61, 0], visible: true, name: 'Жирко' }],
+    items: [{ item_ref: 'item:9', item_uid: '9', type: 'rock', holder: '7', use_methods: ['activate'] }],
+    targets: [{ target_ref: 'tile:east', position: [61, 60, 0], openable: true }] };
+  let request;
+  await assert.rejects(runP3TurnStep({ intent: 'Сделай что-нибудь', observation: current,
+    nativeAdapter: { writeOperationRequest: async () => {}, readOperationReadback: async () => ({}) },
+    operationId: 'offered-operations', nativeSpeechOnly: true, targetActorRef: 'npc:8',
+    turnStepModel: async seen => { request = seen; throw new Error('stop'); } }), /stop/);
+  const choices = turnStepOperationChoices(request);
+  assert.equal(choices.length, request.available_domain_operations.length);
+  assert.deepEqual([...new Set(choices.map(({ operation }) => operation.op))].sort(),
+    ['emit_interaction', 'request_activity', 'request_container_access', 'request_item_use',
+      'request_movement']);
+  for (const selected of choices) {
+    let calls = 0;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run() {
+      calls++;
+      return { output: chosenOperationOutput(request, selected) };
+    } } });
+    const result = await requestTurnStepPlanWithRepair({ request, turnStepModel: model })
+      .catch(error => assert.fail(`${selected.choice_id}: ${error.message}`));
+    assert.equal(calls, 1, selected.choice_id);
+    assert.equal(result.repaired, false, selected.choice_id);
+    assert.deepEqual(result.plan.operations, [selected.operation], selected.choice_id);
+  }
 });
 
 const prototypeRoot = path.dirname(fileURLToPath(import.meta.url));

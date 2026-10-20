@@ -27,6 +27,13 @@ export function npcConversationSubject({
       'The NPC own identity and subjective machine state are required.'
     );
   }
+  // Fail closed on a missing scope although its content is deliberately kept out of the request.
+  if (!plainRecord(actor.knowledge_profile_snapshot)) {
+    fail(
+      'TRACE_M2_NPC_KNOWLEDGE_GAP',
+      'The NPC own knowledge profile snapshot is required.'
+    );
+  }
   return projectNpcConversationSubject({
     npc_ref: npcRef,
     npc_snapshot: character === null ? actor : {

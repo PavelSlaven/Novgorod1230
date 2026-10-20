@@ -16,6 +16,16 @@ function Invoke-Git([string] $root, [string[]] $arguments) {
     if ($null -ne $result) { Write-Output $result }
 }
 
+function Invoke-IndexGit([string[]] $arguments) {
+    $previousIndex = $env:GIT_INDEX_FILE
+    try {
+        $env:GIT_INDEX_FILE = $indexPath
+        Invoke-Git $BaseRoot $arguments
+    } finally {
+        $env:GIT_INDEX_FILE = $previousIndex
+    }
+}
+
 function Resolve-Root([string] $path) {
     $full = [System.IO.Path]::GetFullPath($path)
     if ($full -eq [System.IO.Path]::GetPathRoot($full)) { return $full }
@@ -74,111 +84,129 @@ $stampText = ($inputs.GetEnumerator() | ForEach-Object { "$($_.Key)=$($_.Value)"
 $stampBytes = [System.Text.Encoding]::UTF8.GetBytes($stampText)
 $stamp = [Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($stampBytes)).ToLowerInvariant()
 
-if (-not (Test-Path -LiteralPath $StageParent)) { New-Item -ItemType Directory -Path $StageParent | Out-Null }
-$stageRoot = Join-Path $StageParent ('cdda-patched-' + [guid]::NewGuid().ToString('N'))
-Write-Host "Stage worktree: $stageRoot"
-Invoke-Git $BaseRoot @('worktree', 'add', '--quiet', '--detach', $stageRoot, $BaseSha) | Out-Null
-foreach ($name in $patchNames) {
-    $patch = Join-Path $OverlayRoot "$name.patch"
-    Invoke-Git $stageRoot @('apply', '--check', $patch) | Out-Null
-    Invoke-Git $stageRoot @('apply', $patch) | Out-Null
-}
-foreach ($name in @('novgorod_semantic.cpp', 'novgorod_semantic.h')) {
-    $destination = Join-Path $stageRoot "src/$name"
-    [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($destination)) | Out-Null
-    [System.IO.File]::Copy((Join-Path $OverlayRoot $name), $destination, $true)
-}
-
-$managed = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-foreach ($path in @(Invoke-Git $stageRoot @('diff', '--name-only', $BaseSha))) { [void]$managed.Add($path.Replace('\', '/')) }
-foreach ($path in @(Invoke-Git $stageRoot @('ls-files', '--others', '--exclude-standard'))) { [void]$managed.Add($path.Replace('\', '/')) }
-foreach ($name in @('novgorod_semantic.cpp', 'novgorod_semantic.h')) { [void]$managed.Add("src/$name") }
-
-$previous = $null
-if (Test-Path -LiteralPath $manifestPath -PathType Leaf) {
-    $previous = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-    if ($previous.base -ne $BaseSha) { throw 'Existing build manifest has another base SHA' }
-    foreach ($property in $previous.paths.PSObject.Properties) { [void]$managed.Add($property.Name) }
-    foreach ($property in $previous.pending.PSObject.Properties) { [void]$managed.Add($property.Name) }
-}
-if (-not (Test-Path -LiteralPath $BuildRoot -PathType Container)) {
-    if ($previous) { throw 'Build worktree disappeared while its manifest remains' }
-    $parent = Split-Path -Parent $BuildRoot
-    if (-not (Test-Path -LiteralPath $parent)) { New-Item -ItemType Directory -Path $parent | Out-Null }
-    Invoke-Git $BaseRoot @('worktree', 'add', '--quiet', '--detach', $BuildRoot, $BaseSha) | Out-Null
-    Write-Manifest ([ordered]@{ base = $BaseSha; paths = [ordered]@{} })
-    $previous = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-} elseif (-not $previous) {
-    throw "Existing build has no manifest: $BuildRoot"
-}
-$buildSha = (Invoke-Git $BuildRoot @('rev-parse', 'HEAD')).Trim()
-if ($buildSha -ne $BaseSha) { throw 'Build worktree is not at the pinned base SHA' }
-
-$previousPaths = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-foreach ($property in $previous.paths.PSObject.Properties) { [void]$previousPaths.Add($property.Name) }
-foreach ($property in $previous.pending.PSObject.Properties) { [void]$previousPaths.Add($property.Name) }
-foreach ($relative in $previousPaths) {
-    $actual = Get-Sha (Join-Path $BuildRoot $relative)
-    $old = $previous.paths.PSObject.Properties[$relative]
-    $pending = if ($previous.pending) { $previous.pending.PSObject.Properties[$relative] } else { $null }
-    if ($actual -ne $old.Value -and (-not $pending -or $actual -ne $pending.Value)) {
-        throw "Foreign byte edit in managed build path: $relative"
+$indexPath = Join-Path ([System.IO.Path]::GetTempPath()) ('p3-native-' + [guid]::NewGuid().ToString('N') + '.index')
+try {
+    Invoke-IndexGit @('read-tree', $BaseSha) | Out-Null
+    foreach ($name in $patchNames) {
+        $patch = Join-Path $OverlayRoot "$name.patch"
+        Invoke-IndexGit @('apply', '--cached', '--check', $patch) | Out-Null
+        Invoke-IndexGit @('apply', '--cached', $patch) | Out-Null
     }
-}
-$ignoredPaths = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-$status = @(Invoke-Git $BuildRoot @('status', '--porcelain', '--ignored', '--untracked-files=all', '-z')) -join "`n"
-foreach ($entry in $status.Split([char]0)) {
-    if ($entry.StartsWith('!! ')) { [void]$ignoredPaths.Add($entry.Substring(3).Replace('\', '/')) }
-}
-$trackedPaths = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-foreach ($path in @(Invoke-Git $BuildRoot @('ls-files'))) { [void]$trackedPaths.Add($path.Replace('\', '/')) }
-foreach ($file in Get-ChildItem -LiteralPath $BuildRoot -Recurse -Force -File) {
-    $relative = [System.IO.Path]::GetRelativePath($BuildRoot, $file.FullName).Replace('\', '/')
-    if (Test-Generated $relative) { continue }
-    if ($managed.Contains($relative)) { continue }
-    if (-not $trackedPaths.Contains($relative)) { throw "Unknown build path: $relative" }
-}
-$changedTracked = @(
-    Invoke-Git $BuildRoot @('diff', '--name-only', $BaseSha)
-    Invoke-Git $BuildRoot @('diff', '--cached', '--name-only', $BaseSha)
-)
-foreach ($path in $changedTracked) {
-    $relative = $path.Replace('\', '/')
-    if (Test-Generated $relative) { continue }
-    if ($previousPaths.Contains($relative)) { continue }
-    if (-not $managed.Contains($relative)) {
-        throw "Foreign byte edit in build path: $relative"
-    }
-    throw "Foreign byte edit in newly managed build path: $relative"
-}
-foreach ($relative in $managed) {
-    if ($previousPaths.Contains($relative)) { continue }
-    if (-not $trackedPaths.Contains($relative) -and (Test-Path -LiteralPath (Join-Path $BuildRoot $relative) -PathType Leaf)) {
-        throw "Foreign addition at newly managed build path: $relative"
-    }
-}
 
-$newPaths = [ordered]@{}
-$oldPaths = [ordered]@{}
-foreach ($relative in @($managed | Sort-Object)) {
-    $oldPaths[$relative] = Get-Sha (Join-Path $BuildRoot $relative)
-    $newPaths[$relative] = Get-Sha (Join-Path $stageRoot $relative)
-}
-Write-Manifest ([ordered]@{ base = $BaseSha; stamp = $previous.stamp; paths = $oldPaths; pending = $newPaths })
-foreach ($relative in @($managed | Sort-Object)) {
-    $source = Join-Path $stageRoot $relative
-    $target = Join-Path $BuildRoot $relative
-    $wanted = $newPaths[$relative]
-    $actual = Get-Sha $target
-    if ($wanted -ne $actual) {
-        if ($wanted) {
-            [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($target)) | Out-Null
-            [System.IO.File]::Copy($source, $target, $true)
-        } elseif (Test-Path -LiteralPath $target -PathType Leaf) {
-            Remove-Item -LiteralPath $target
+    $managed = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($path in @(Invoke-IndexGit @('diff', '--cached', '--name-only', $BaseSha))) { [void]$managed.Add($path.Replace('\', '/')) }
+    foreach ($name in @('novgorod_semantic.cpp', 'novgorod_semantic.h')) { [void]$managed.Add("src/$name") }
+
+    $previous = $null
+    if (Test-Path -LiteralPath $manifestPath -PathType Leaf) {
+        $previous = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+        if ($previous.base -ne $BaseSha) { throw 'Existing build manifest has another base SHA' }
+        foreach ($property in $previous.paths.PSObject.Properties) { [void]$managed.Add($property.Name) }
+        foreach ($property in $previous.pending.PSObject.Properties) { [void]$managed.Add($property.Name) }
+    }
+    if (-not (Test-Path -LiteralPath $BuildRoot -PathType Container)) {
+        if ($previous) { throw 'Build worktree disappeared while its manifest remains' }
+        $parent = Split-Path -Parent $BuildRoot
+        if (-not (Test-Path -LiteralPath $parent)) { New-Item -ItemType Directory -Path $parent | Out-Null }
+        Invoke-Git $BaseRoot @('worktree', 'add', '--quiet', '--detach', $BuildRoot, $BaseSha) | Out-Null
+        Write-Manifest ([ordered]@{ base = $BaseSha; paths = [ordered]@{} })
+        $previous = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+    } elseif (-not $previous) {
+        throw "Existing build has no manifest: $BuildRoot"
+    }
+    $buildSha = (Invoke-Git $BuildRoot @('rev-parse', 'HEAD')).Trim()
+    if ($buildSha -ne $BaseSha) { throw 'Build worktree is not at the pinned base SHA' }
+
+    $previousPaths = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($property in $previous.paths.PSObject.Properties) { [void]$previousPaths.Add($property.Name) }
+    foreach ($property in $previous.pending.PSObject.Properties) { [void]$previousPaths.Add($property.Name) }
+    foreach ($relative in $previousPaths) {
+        $actual = Get-Sha (Join-Path $BuildRoot $relative)
+        $old = $previous.paths.PSObject.Properties[$relative]
+        $pending = if ($previous.pending) { $previous.pending.PSObject.Properties[$relative] } else { $null }
+        if ($actual -ne $old.Value -and (-not $pending -or $actual -ne $pending.Value)) {
+            throw "Foreign byte edit in managed build path: $relative"
         }
     }
+    $ignoredPaths = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $status = @(Invoke-Git $BuildRoot @('status', '--porcelain', '--ignored', '--untracked-files=all', '-z')) -join "`n"
+    foreach ($entry in $status.Split([char]0)) {
+        if ($entry.StartsWith('!! ')) { [void]$ignoredPaths.Add($entry.Substring(3).Replace('\', '/')) }
+    }
+    $trackedPaths = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($path in @(Invoke-Git $BuildRoot @('ls-files'))) { [void]$trackedPaths.Add($path.Replace('\', '/')) }
+    foreach ($file in Get-ChildItem -LiteralPath $BuildRoot -Recurse -Force -File) {
+        $relative = [System.IO.Path]::GetRelativePath($BuildRoot, $file.FullName).Replace('\', '/')
+        if (Test-Generated $relative) { continue }
+        if ($managed.Contains($relative)) { continue }
+        if (-not $trackedPaths.Contains($relative)) { throw "Unknown build path: $relative" }
+    }
+    $changedTracked = @(
+        Invoke-Git $BuildRoot @('diff', '--name-only', $BaseSha)
+        Invoke-Git $BuildRoot @('diff', '--cached', '--name-only', $BaseSha)
+    )
+    foreach ($path in $changedTracked) {
+        $relative = $path.Replace('\', '/')
+        if (Test-Generated $relative) { continue }
+        if ($previousPaths.Contains($relative)) { continue }
+        if (-not $managed.Contains($relative)) {
+            throw "Foreign byte edit in build path: $relative"
+        }
+        throw "Foreign byte edit in newly managed build path: $relative"
+    }
+    foreach ($relative in $managed) {
+        if ($previousPaths.Contains($relative)) { continue }
+        if (-not $trackedPaths.Contains($relative) -and (Test-Path -LiteralPath (Join-Path $BuildRoot $relative) -PathType Leaf)) {
+            throw "Foreign addition at newly managed build path: $relative"
+        }
+    }
+
+    if ($previous.stamp -eq $stamp -and -not $previous.pending) {
+        Write-Host "Already prepared $BuildRoot; stamp $stamp"
+        return
+    }
+
+    if (-not (Test-Path -LiteralPath $StageParent)) { New-Item -ItemType Directory -Path $StageParent | Out-Null }
+    $stageRoot = Join-Path $StageParent ('cdda-patched-' + [guid]::NewGuid().ToString('N'))
+    [System.IO.Directory]::CreateDirectory($stageRoot) | Out-Null
+    Write-Host "Stage files: $stageRoot"
+    $indexedPaths = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($path in @(Invoke-IndexGit @('ls-files'))) { [void]$indexedPaths.Add($path.Replace('\', '/')) }
+    foreach ($relative in $managed) {
+        if ($indexedPaths.Contains($relative)) {
+            Invoke-IndexGit @('checkout-index', "--prefix=$($stageRoot.Replace('\', '/'))/", '--', $relative) | Out-Null
+        }
+    }
+    foreach ($name in @('novgorod_semantic.cpp', 'novgorod_semantic.h')) {
+        $destination = Join-Path $stageRoot "src/$name"
+        [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($destination)) | Out-Null
+        [System.IO.File]::Copy((Join-Path $OverlayRoot $name), $destination, $true)
+    }
+
+    $newPaths = [ordered]@{}
+    $oldPaths = [ordered]@{}
+    foreach ($relative in @($managed | Sort-Object)) {
+        $oldPaths[$relative] = Get-Sha (Join-Path $BuildRoot $relative)
+        $newPaths[$relative] = Get-Sha (Join-Path $stageRoot $relative)
+    }
+    Write-Manifest ([ordered]@{ base = $BaseSha; stamp = $previous.stamp; paths = $oldPaths; pending = $newPaths })
+    foreach ($relative in @($managed | Sort-Object)) {
+        $source = Join-Path $stageRoot $relative
+        $target = Join-Path $BuildRoot $relative
+        $wanted = $newPaths[$relative]
+        $actual = Get-Sha $target
+        if ($wanted -ne $actual) {
+            if ($wanted) {
+                [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($target)) | Out-Null
+                [System.IO.File]::Copy($source, $target, $true)
+            } elseif (Test-Path -LiteralPath $target -PathType Leaf) {
+                Remove-Item -LiteralPath $target
+            }
+        }
+    }
+    $next = [ordered]@{ base = $BaseSha; stamp = $stamp; paths = $newPaths }
+    Write-Manifest $next
+    Write-Host "Prepared $BuildRoot from $stageRoot; stamp $stamp"
+} finally {
+    if (Test-Path -LiteralPath $indexPath -PathType Leaf) { Remove-Item -LiteralPath $indexPath }
 }
-$next = [ordered]@{ base = $BaseSha; stamp = $stamp; paths = $newPaths }
-Write-Manifest $next
-Write-Host "Prepared $BuildRoot from $stageRoot; stamp $stamp"

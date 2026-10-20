@@ -37,22 +37,34 @@ export function requireP3CaseId(caseId) {
   return caseId;
 }
 
-export function createP3AttemptBudget({ budget = P3_ATTEMPT_BUDGET,
+export function createP3AttemptBudget({ budget = P3_ATTEMPT_BUDGET, scope = 'process',
   onAttempt = async () => {} } = {}) {
   if (!Number.isSafeInteger(budget) || budget < 1 || budget > P3_ATTEMPT_BUDGET) {
     throw new TypeError('budget must be between 1 and 72');
   }
+  if (scope !== 'process' && scope !== 'turn') throw new TypeError('scope must be process or turn');
   let calls = 0;
+  let turnCalls = 0;
+  let turnExhausted = false;
   return {
     get calls() { return calls; },
+    get turnCalls() { return turnCalls; },
+    get turnExhausted() { return turnExhausted; },
+    beginTurn() {
+      if (scope !== 'turn') throw new Error('beginTurn requires turn scope');
+      turnCalls = 0;
+      turnExhausted = false;
+    },
     wrap(roleRunner) {
       if (typeof roleRunner?.run !== 'function') throw new TypeError('roleRunner.run required');
       return { async run(input) {
-        if (calls >= budget) {
-          const error = new Error('P3_GLOBAL_ATTEMPT_BUDGET_EXHAUSTED');
-          error.code = 'P3_GLOBAL_ATTEMPT_BUDGET_EXHAUSTED';
-          throw error;
+        if ((scope === 'turn' ? turnCalls : calls) >= budget) {
+          const code = scope === 'turn' ? 'P3_TURN_CALL_BUDGET_EXHAUSTED'
+            : 'P3_GLOBAL_ATTEMPT_BUDGET_EXHAUSTED';
+          turnExhausted = scope === 'turn';
+          throw Object.assign(new Error(code), { code });
         }
+        turnCalls++;
         const attempt = ++calls;
         await onAttempt({ phase: 'before', attempt, input, output: null, error: null });
         try {

@@ -43,6 +43,33 @@ test('one shared budget counts calls across role wrappers before transport', asy
   assert.deepEqual(events.map(({ phase, attempt }) => [phase, attempt]),
     [['before', 1], ['after', 1], ['before', 2], ['after', 2]]);
   assert.throws(() => createP3AttemptBudget({ budget: 73 }), /between 1 and 72/);
+  assert.throws(() => budget.beginTurn(), /turn scope/);
+});
+
+test('turn budget passes the seventh call and refuses the eighth in one turn', async () => {
+  let sent = 0;
+  const budget = createP3AttemptBudget({ scope: 'turn', budget: 7 });
+  const runner = budget.wrap({ async run(value) { sent++; return value; } });
+  budget.beginTurn();
+  for (let call = 1; call <= 7; call++) await runner.run({ call });
+  await assert.rejects(runner.run({ call: 8 }), { code: 'P3_TURN_CALL_BUDGET_EXHAUSTED' });
+  assert.equal(sent, 7);
+  assert.equal(budget.turnCalls, 7);
+  budget.beginTurn();
+  assert.equal(budget.turnCalls, 0);
+  await runner.run({ call: 1 });
+  assert.equal(budget.calls, 8);
+  assert.throws(() => createP3AttemptBudget({ scope: 'session' }), /scope/);
+});
+
+test('turn budget has no process limit across a hundred full turns', async () => {
+  const budget = createP3AttemptBudget({ scope: 'turn', budget: 7 });
+  const runner = budget.wrap({ async run(value) { return value; } });
+  for (let turn = 0; turn < 100; turn++) {
+    budget.beginTurn();
+    for (let call = 0; call < 7; call++) await runner.run({ turn, call });
+  }
+  assert.equal(budget.calls, 700);
 });
 
 test('failed provider call records its exact request before transport and error after', async () => {

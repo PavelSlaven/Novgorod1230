@@ -7,7 +7,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { randomUUID } from 'node:crypto';
 import { createLlmSettingsOwner } from '@rus/game-server';
-import { startP3LiveCoordinator } from './p3-live-coordinator.mjs';
+import { loadP3DevConfig, startP3LiveCoordinator } from './p3-live-coordinator.mjs';
 import { createP3RoleRuntime } from './p3-boundary.js';
 import { createP3LiveChannel, createP3NativeSocketAdapter } from './p3-live-socket.js';
 import { matchesP3WireModelId } from './p3-wire-smoke.mjs';
@@ -35,7 +35,7 @@ function plan(request, operation) {
     direct_result_kind: null, reason_code: 'native_action', reason: 'Attempt a native action.' };
 }
 
-async function fixture(t, decide, decideNpc = null, execute = null) {
+async function fixture(t, decide, decideNpc = null, execute = null, config = null) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'p3-live-'));
   const socketPath = process.platform === 'win32' ? `\\\\.\\pipe\\p3-live-${randomUUID()}`
     : path.join(dir, 'p3.sock');
@@ -46,7 +46,7 @@ async function fixture(t, decide, decideNpc = null, execute = null) {
   let calls = 0;
   const roles = [];
   const coordinator = await startP3LiveCoordinator({ socketPath, settingsOwner, env: {},
-    ...(execute ? { execute } : {}),
+    ...(execute ? { execute } : {}), ...(config ? { config } : {}),
     runtimeFactory: execute ? createP3RoleRuntime : ({ budget }) => {
       const runner = budget.wrap({ async run({ role_id, request }) {
         calls++;
@@ -356,6 +356,66 @@ test('confirmed native listener gets one NPC model reply and native speech', asy
   assert.deepEqual(scene.roles, ['turn_step_planner', 'npc_conversation_responder',
     'npc_conversation_grounding_auditor']);
   socket.end();
+});
+
+test('dev config is seven calls per turn and rejects the process budget key', async () => {
+  assert.deepEqual(await loadP3DevConfig(), { turnCallBudget: 7, npcMaxRepairAttempts: 2 });
+  for (const config of [{ modelCallBudget: 30, npcMaxRepairAttempts: 1 },
+    { turnCallBudget: 7, modelCallBudget: 30, npcMaxRepairAttempts: 2 },
+    { turnCallBudget: 0, npcMaxRepairAttempts: 2 }, { turnCallBudget: 73, npcMaxRepairAttempts: 2 },
+    { turnCallBudget: 7, npcMaxRepairAttempts: 3 }]) {
+    await assert.rejects(startP3LiveCoordinator({ socketPath: 'unused', config }),
+      /P3_LIVE_CONFIG_INVALID/);
+  }
+});
+
+test('turn call limit refuses the extra call with its own text and resets on the next intent', async t => {
+  const utterance = 'Слышишь меня?';
+  const npc = { actor_ref: 'npc:9', actor_id: '9', visible: true, position: [61, 60, 0] };
+  const sceneObservation = { ...observation, actors: [...observation.actors, npc] };
+  const scene = await fixture(t, request => request.remaining_intent === utterance
+    ? { ...plan(request, {}), resolution: 'direct', goal_result: 'achieved', operations: [],
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      direct_result_kind: 'player_utterance', utterance: { speaker_ref: 'avatar',
+        utterance_text: utterance, input_mode: 'verbatim',
+        delivery: { loudness: 2, duration_class: 'brief' } } }
+    : plan(request, { op: 'request_movement', actor_ref: 'avatar', target_ref: 'tile:east',
+      movement_kind: 'local' }), () => ({}), null, { turnCallBudget: 2, npcMaxRepairAttempts: 2 });
+  const first = await scene.client();
+  first.channel.bind('20');
+  first.channel.send({ type: 'intent', intent: utterance, observation: sceneObservation,
+    target_actor_ref: 'npc:9' });
+  assert.equal((await first.channel.receive()).role_id, 'turn_step_planner');
+  const speech = await first.channel.receive();
+  first.channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: speech.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed', speakerId: '7', utterance,
+      actualHeardListenerIds: ['9'] }, before: { turn: 10 }, after: { turn: 10 } } });
+  assert.equal((await first.channel.receive()).type, 'observe');
+  first.channel.send({ type: 'observation', observation: sceneObservation });
+  assert.equal((await first.channel.receive()).role_id, 'npc_conversation_responder');
+  const refused = await first.channel.receive();
+  assert.equal(refused.type, 'result');
+  assert.equal(refused.status, 'refused');
+  assert.equal(refused.code, 'P3_TURN_CALL_BUDGET_EXHAUSTED');
+  assert.equal(refused.applied_operations, 1);
+  assert.equal(refused.goal_result, 'partially_achieved');
+  assert.equal(refused.message, 'Предел вызовов модели на ход (2) исчерпан, ход остановлен. Черновик, не сохранено.');
+  assert.equal(scene.calls, 2);
+  first.socket.end();
+  const second = await scene.client();
+  second.channel.bind('21');
+  second.channel.send({ type: 'intent', intent: 'Шаг на восток', observation });
+  assert.equal((await second.channel.receive()).role_id, 'turn_step_planner');
+  const move = await second.channel.receive();
+  second.channel.send({ type: 'readback', readback: { schema: 'p3_native_operation_readback_v1',
+    operation_id: move.request.operation_id, status: 'applied', goal_result: 'achieved',
+    native_effect: { effect_status: 'confirmed' }, before: { turn: 10 }, after: { turn: 11 } },
+    observation: { ...observation, turn: 11, revision: 11 } });
+  assert.equal((await second.channel.receive()).status, 'completed');
+  assert.equal(scene.coordinator.budget.turnCalls, 1);
+  assert.equal(scene.calls, 3);
+  second.socket.end();
 });
 
 test('two bad NPC replies stop after one repair without a native NPC operation', async t => {

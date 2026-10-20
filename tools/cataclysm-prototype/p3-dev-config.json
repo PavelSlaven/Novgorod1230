@@ -1,4 +1,4 @@
 {
-  "modelCallBudget": 30,
-  "npcMaxRepairAttempts": 1
+  "turnCallBudget": 7,
+  "npcMaxRepairAttempts": 2
 }

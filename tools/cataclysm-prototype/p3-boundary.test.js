@@ -1302,6 +1302,47 @@ test('two phrases of one pair share conversation_id and the current phrase is no
   });
 });
 
+test('the current phrase heard between the readback turns is removed once and an earlier same phrase stays', async () => {
+  await withProfilesDir(async profilesDir => {
+    const readback = { ...playerSpeechReadback({ utterance: 'Здравствуй.', turn: 12 }),
+      before: { turn: 9 } };
+    const history = request => request.public_conversation_history.map(
+      ({ utterance_text: text }) => text);
+    const first = replyHarness({ frame: replyFrame({ turn: 12, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй.', 10)] })] }),
+    nativeReadback: npcSpeechReadback, profilesDir });
+    await first.run('Здравствуй.', { playerReadback: readback });
+    const [meeting] = first.requests;
+    assert.deepEqual(history(meeting), ['Здравствуй.']);
+    assert.deepEqual(meeting.memory.recent_events, []);
+    assert.deepEqual([meeting.npc.relationships[0].status, meeting.npc.relationships[0].relation],
+      ['first_meeting', 'незнакомый человек']);
+    const second = replyHarness({ frame: replyFrame({ turn: 12, projections: [npcProjection('9', {
+      conversation_memory: [heardRecord('Здравствуй.', 5), saidRecord('Слышу тебя.', 6),
+        heardRecord('Здравствуй.', 11)] })] }), nativeReadback: npcSpeechReadback, profilesDir });
+    await second.run('Здравствуй.', { playerReadback: readback });
+    const [again] = second.requests;
+    assert.deepEqual(history(again), ['Здравствуй.', 'Слышу тебя.', 'Здравствуй.']);
+    assert.equal(again.memory.recent_events.length, 2);
+    assert.equal(again.npc.relationships[0].status, 'acquainted');
+  });
+});
+
+test('the native null activity reaches the NPC as idle and a real activity as in progress', async () => {
+  await withProfilesDir(async profilesDir => {
+    const activity = async activityId => {
+      const harness = replyHarness({ frame: replyFrame({ projections: [npcProjection('9', {
+        activity_id: activityId })] }), nativeReadback: npcSpeechReadback, profilesDir });
+      await harness.run();
+      return harness.requests[0].npc.current_activity;
+    };
+    assert.deepEqual(await activity('ACT_NULL'), { activity_ref: null, summary: null,
+      status: 'idle', can_continue_automatically: false });
+    assert.deepEqual(await activity('ACT_WAIT'), { activity_ref: 'ACT_WAIT', summary: null,
+      status: 'in_progress', can_continue_automatically: false });
+  });
+});
+
 test('speech plan sends the utterance with the avatar addressee and checks the readback', async () => {
   await withProfilesDir(async profilesDir => {
     const harness = replyHarness({ frame: replyFrame(), nativeReadback: npcSpeechReadback,

@@ -87,6 +87,9 @@ gh run download "$(gh run list -R PavelSlaven/Novgorod1230 -w windows-build.yml 
 слеш обязателен): в MSVC-сборке `data`, `gfx` и `lang/mo` ищутся от базы. Ключ
 `USE_PREFIX_DATA_DIR=OFF` относится только к CMake-сборке Linux.
 
+Шаг `--check-mods` некритичный: на раннере он возвращает 1 и для чистого
+`dda`, поэтому зелёный прогон загрузку мода не доказывает.
+
 Шейдеры родная цель `compile_shaders` компилирует в `data/shaders` исходника,
 поэтому runtime готовится после графической сборки.
 

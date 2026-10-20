@@ -20,7 +20,7 @@ function Get-P3NativeBuildEnvironment {
         VCPKG_DEFAULT_BINARY_CACHE = $binaryCache
         VCPKG_DISABLE_METRICS = '1'
         VCPKG_OVERLAY_TRIPLETS = Join-Path $BuildRoot '.github/vcpkg_triplets'
-        X_VCPKG_ASSET_SOURCES = "clear;x-script,`"$NodeExe`" `"$fetch`" {url} {dst} {sha512};x-block-origin"
+        X_VCPKG_ASSET_SOURCES = "clear;x-script,`"$NodeExe`" `"$fetch`" {url} {dst} {sha512} 120000;x-block-origin"
         VCPKG_BINARY_SOURCES = $null
         VCPKG_ROOT = $VcpkgRoot
         GIT_CONFIG_COUNT = '1'
@@ -61,7 +61,7 @@ function Invoke-P3NativeBuildTool {
     $startInfo.RedirectStandardError = $true
     foreach ($argument in $ArgumentList) { [void] $startInfo.ArgumentList.Add($argument) }
     foreach ($name in @($startInfo.Environment.Keys)) {
-        if ($name -clike 'Vcpkg*' -or $name -ceq 'Platform') {
+        if ($name -like 'Vcpkg*' -or $name -eq 'Platform') {
             [void] $startInfo.Environment.Remove($name)
         }
     }
@@ -102,4 +102,50 @@ function Invoke-P3NativeBuildTool {
         $process.Dispose()
         $writer.Dispose()
     }
+}
+
+function Invoke-P3NativeDependencyInstall {
+    param(
+        [Parameter(Mandatory)][string] $NativeRoot,
+        [Parameter(Mandatory)][string] $BuildRoot,
+        [Parameter(Mandatory)][string] $NodeExe,
+        [Parameter(Mandatory)][string] $VcpkgRoot,
+        [Parameter(Mandatory)][string] $InstallRoot,
+        [switch] $PreflightOnly
+    )
+
+    if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Запустите установку зависимостей через PowerShell 7 (pwsh).' }
+    $powershellDirectory = 'C:\Program Files\PowerShell\7'
+    if (-not (Test-Path -LiteralPath (Join-Path $powershellDirectory 'pwsh.exe') -PathType Leaf)) {
+        throw "PowerShell 7 не найден: $powershellDirectory. Установка зависимостей не начата."
+    }
+    $pathDirectories = @($env:PATH -split ';' | ForEach-Object { $_.Trim().Trim('"').TrimEnd([char[]]'\/').Replace('/', '\') })
+    if ($powershellDirectory -notin $pathDirectories) {
+        throw "Каталог PowerShell 7 отсутствует в унаследованном PATH: $powershellDirectory. Установка зависимостей не начата."
+    }
+    $NativeRoot = [System.IO.Path]::GetFullPath($NativeRoot)
+    $BuildRoot = [System.IO.Path]::GetFullPath($BuildRoot)
+    $VcpkgRoot = [System.IO.Path]::GetFullPath($VcpkgRoot)
+    $InstallRoot = [System.IO.Path]::GetFullPath($InstallRoot)
+    $manifestRoot = Join-Path $BuildRoot 'msvc-full-features'
+    $vcpkgExe = Join-Path $VcpkgRoot 'vcpkg.exe'
+    foreach ($path in @($vcpkgExe, $NodeExe, (Join-Path $manifestRoot 'vcpkg.json'))) {
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Не найден обязательный файл: $path. Установка зависимостей не начата." }
+    }
+    if ($InstallRoot -eq (Join-Path $manifestRoot 'vcpkg_installed')) {
+        throw 'Для зависимостей требуется отдельный InstallRoot вне msvc-full-features/vcpkg_installed.'
+    }
+    $environment = Get-P3NativeBuildEnvironment -NativeRoot $NativeRoot -BuildRoot $BuildRoot -NodeExe $NodeExe -VcpkgRoot $VcpkgRoot
+    $offlineEnvironment = $environment.Clone()
+    $offlineEnvironment['X_VCPKG_ASSET_SOURCES'] = 'clear;x-block-origin'
+    $preflightLog = Join-Path $NativeRoot 'work/vcpkg-powershell-preflight.log'
+    $exitCode = Invoke-P3NativeBuildTool -FilePath $vcpkgExe -ArgumentList @('fetch', 'powershell-core') -WorkingDirectory $manifestRoot -Environment $offlineEnvironment -LogPath $preflightLog
+    if ($exitCode -ne 0) {
+        throw "Офлайн-предпроверка powershell-core завершилась с кодом $exitCode. Установка зависимостей не начата. Лог: $preflightLog"
+    }
+    if ($PreflightOnly) { return }
+    $installLog = Join-Path $NativeRoot 'work/vcpkg-install.log'
+    $arguments = @('install', '--triplet', 'x64-windows-static', "--x-install-root=$InstallRoot", '--clean-buildtrees-after-build', '--clean-packages-after-build')
+    $exitCode = Invoke-P3NativeBuildTool -FilePath $vcpkgExe -ArgumentList $arguments -WorkingDirectory $manifestRoot -Environment $environment -LogPath $installLog
+    if ($exitCode -ne 0) { throw "Установка зависимостей vcpkg завершилась с кодом $exitCode. Лог: $installLog" }
 }

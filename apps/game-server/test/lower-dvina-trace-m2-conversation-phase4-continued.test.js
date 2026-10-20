@@ -69,8 +69,7 @@ test('Ratsha responds once to the post-elapsed surrender demand boundary', async
   );
   assert.deepEqual(
     exchange.npcRequest.knowledge,
-    currentContracts.actors.ratsha_storehouse_helper
-      .knowledge_profile_snapshot
+    { beliefs: [], hypotheses: [], known_facts: [] }
   );
 });
 

@@ -7,7 +7,8 @@ import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel } fr
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { npcConversationCandidates } from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
-import { currentSceneObservationProjection, ownNpcProjection } from
+import { projectNpcConversationSubject } from '@rus/npc-runtime';
+import { currentSceneObservationProjection } from
   '../src/runtime/lower-dvina-trace-m2-conversation-projections.js';
 import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
@@ -71,7 +72,7 @@ test('speech audit rejects invented past work from a current schedule',
       status: 'active',
       summary: 'Сейчас осматривает и чинит принадлежащие ему сети.'
     } } };
-    input.memory = { records: [], received_messages: [] };
+    input.memory = { recent_events: [], received_messages: [] };
     const unsupported = plan(input);
     unsupported.speech.utterance_text =
       'На рассвете я был у реки и проверял сети.';
@@ -98,7 +99,7 @@ test('speech audit rejects invented past work from a current schedule',
     assert.match(fixture.calls[0].messages[0].content,
       /memory\.current_observations grounds only its exact present fact_text/u);
     assert.match(fixture.calls[0].messages[0].content,
-      /Mandatory failure: when memory\.records has no exact supporting record/u);
+      /Mandatory failure: when memory\.recent_events has no exact supporting event/u);
     assert.equal(fixture.calls[0].overrides.maxTokens, 256);
   });
 
@@ -107,7 +108,7 @@ test('speech audit applies to another NPC, place, and earlier time', async () =>
   input.npc = { machine_state: { current_activity: {
     status: 'active', summary: 'Сейчас перебирает верёвки.'
   } } };
-  input.memory = { records: [], received_messages: [] };
+  input.memory = { recent_events: [], received_messages: [] };
   const unsupported = plan(input);
   unsupported.speech.utterance_text =
     'Вчера до твоего прихода я видел людей у переправы.';
@@ -142,9 +143,9 @@ test('source-free NPC claims fail before the semantic auditor call', async () =>
 test('first-contact identity and guarded behavior are required and repaired',
   async () => {
     const input = request();
-    input.npc = { identity_state: { canonical_name: 'Еремей' } };
+    input.npc = { identity: { name_or_label: 'Еремей' } };
     input.social_context = {
-      first_contact_introduction: { canonical_name: 'Еремей' },
+      first_contact_introduction: {},
       npc_behavior: { required_interaction_tag: 'withhold' }
     };
     const incomplete = plan(input);
@@ -232,7 +233,7 @@ test('semantic repair passes the original response and cited facts to the model'
       source_type: 'direct_perception', observed_at: input.requested_at,
       fact_text: 'На очаге не видно пламени.'
     };
-    input.memory = { records: [], received_messages: [],
+    input.memory = { recent_events: [], received_messages: [],
       current_observations: [observation] };
     input.allowed_references.knowledge_refs.push(observation.observation_ref);
     const original = plan(input);
@@ -278,8 +279,8 @@ test('a grounded model repair is accepted after the first speech audit fails',
       ...input.decision_reasons, state_version: String(input.state_version)
     });
     input.boundary_id = boundary.boundary_id;
-    input.npc = { identity_state: { canonical_name: 'Еремей' } };
-    input.memory = { records: [], received_messages: [] };
+    input.npc = { identity: { name_or_label: 'Еремей' } };
+    input.memory = { recent_events: [], received_messages: [] };
     input.public_conversation_history = [{
       speaker_ref: ref('player_character', 'player-1'),
       utterance_text: 'Спрашиваю про лодочника Онисима и крушение.'
@@ -387,9 +388,10 @@ test('conversation production model receives planner-selected role, material, an
   const input = request();
   input.requested_at = { whole_minutes: String(365 * 1440),
     subminute_numerator: '0', subminute_denominator: '1' };
-  input.npc = ownNpcProjection({ ref: input.npc_ref, instance_id: 'npc-1',
-    role_ref: { id: 'nov_role_fisher', source: 'approved_scenario_profile' },
-    identity_state: {}, machine_state: {} });
+  input.npc = projectNpcConversationSubject({ npc_ref: input.npc_ref,
+    npc_snapshot: { instance_id: 'npc-1',
+      role_ref: { id: 'nov_role_fisher', source: 'approved_scenario_profile' },
+      identity_state: {}, machine_state: {} } }).npc;
   input.actor = { role_ref: 'untrusted-role' };
   input.npc_safe_state = { role_ref: 'untrusted-safe-role' };
   let query;

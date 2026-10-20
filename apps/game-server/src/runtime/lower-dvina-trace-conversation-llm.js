@@ -151,11 +151,9 @@ function validateRequiredNpcPresentation(plan, request) {
 }
 
 function requiredFirstContactName(request) {
-  const name = request?.social_context?.first_contact_introduction
-    ?.canonical_name;
-  return typeof name === 'string' && name.trim()
-      && name.trim() === request?.npc?.identity_state?.canonical_name
-    ? name.trim() : null;
+  if (request?.social_context?.first_contact_introduction == null) return null;
+  const name = request?.npc?.identity?.name_or_label;
+  return typeof name === 'string' && name.trim() ? name.trim() : null;
 }
 
 export function createLowerDvinaTraceNpcDecisionSelector({ roleRunner } = {}) {

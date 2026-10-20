@@ -1,19 +1,30 @@
 import { serverError } from '../errors.js';
+import { CLAIM_KINDS_RULE, FACTUAL_ASSERTION_RULE } from
+  './lower-dvina-trace-phase-2-conversation-prompt-contract.js';
 
 const PROMPT = [
   'Return only {"pass":true,"concerns":[]} or',
-  '{"pass":false,"concerns":[{"kind":"<brief stable kind>"}]}.',
+  '{"pass":false,"concerns":[{"kind":"<brief stable kind>","path":"<JSON path of the',
+  'assertion in plan>","quote":"<exact unsupported words from plan>"}]}.',
   'Audit the supplied NPC speech plan against only its supplied subjective',
   'request. Check every factual assertion in utterance_text, claims, reason,',
   'interpretation, topic_refs, and supporting_operations. Every factual',
   'assertion needs matching exact request evidence and every claim needs',
-  'matching source_knowledge_refs. claims:[] is valid only when the utterance',
+  'matching source_knowledge_refs.', FACTUAL_ASSERTION_RULE, CLAIM_KINDS_RULE,
+  'claims:[] is valid only when the utterance',
   'contains no factual assertion. Default to pass:false when speech asserts',
   'a current object, condition, resource, amenity, availability, or permission',
   'that no exact request field establishes, even when it is plausible for the',
   'place or social situation. A received statement proves only that its',
   'speaker said it, not that its content is true. Knowledge admission rules',
-  'permit categories but do not create facts. npc.machine_state.current_activity',
+  'permit categories but do not create facts. A cited knowledge.known_facts entry',
+  'grounds that fact; a cited knowledge.beliefs entry grounds the speaker stating it',
+  'as the speaker own belief; a cited npc_identity ref grounds the speaker own name,',
+  'age, origin, and craft from npc.identity and npc.social_role;',
+  'perceived_message.perception_result_ref grounds that the speaker hears the current',
+  'message. A knowingly_false claim that cites the known fact it contradicts or hides',
+  'is a lawful deliberate lie and passes. Reject a believed_true assertion whose cited',
+  'ref does not state it. npc.current_activity',
   'describes only requested_at; it never proves earlier or future work, place,',
   'observation, or experience. Past first-person activity or observation needs',
   'an exact memory record. An empty or missing memory never proves a negative',
@@ -22,11 +33,11 @@ const PROMPT = [
   'matching observation_ref is cited in source_knowledge_refs; it proves no past',
   'observation, cause, or hidden fact.',
   'Route guidance needs the matching exact supplied',
-  'disclose_known_route operation and refs. Ordinary questions, refusals,',
-  'uncertainty, and clearly subjective present speech may pass without a claim.',
-  'Mandatory failure: when memory.records has no exact supporting record, reject',
-  'every first-person assertion that the NPC saw, did not see, remembers, does not',
-  'remember, did, or did not do something earlier. A prior statement by this NPC',
+  'disclose_known_route operation and refs.',
+  'Mandatory failure: when memory.recent_events has no exact supporting event, reject',
+  'every first-person assertion that the NPC saw, did, or experienced something',
+  'earlier, and every assertion that it did not. Saying that the NPC does not remember',
+  'or does not know is uncertainty and passes. A prior statement by this NPC',
   'in public_conversation_history is still only a statement, never evidence that',
   'the asserted observation happened. Mandatory failure: a current-observation',
   'citation supports only its exact fact_text, never a nearby possible condition,',
@@ -38,7 +49,7 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request }) {
   if (plan?.contribution_kind !== 'speech') return true;
   if (plan.speech.claims.some(
     (claim) => claim.source_knowledge_refs.length === 0
-  )) return unsupported(['claim_without_source_knowledge']);
+  )) return unsupported([{ kind: 'claim_without_source_knowledge' }]);
   const response = await roleRunner.run({
     scope: 'turn_runtime',
     role_id: 'npc_conversation_grounding_auditor',
@@ -53,18 +64,20 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request }) {
     'NPC speech grounding auditor returned an invalid result.', { status: 503 }
   );
   return response.output.pass ? true : unsupported(
-    response.output.concerns.map(({ kind }) => kind)
+    response.output.concerns
   );
 }
 
-function unsupported(concernKinds) {
-  return { pass: false, errors: [{
+function unsupported(concerns) {
+  return { pass: false, errors: concerns.map(({ kind, path, quote }) => ({
     code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
     category: 'semantic_grounding',
     retryable: true,
-    concern_kinds: concernKinds,
+    concern_kinds: [kind],
+    ...(path === undefined ? {} : { path }),
+    ...(quote === undefined ? {} : { quote }),
     message: 'Rewrite the complete response without unsupported factual assertions.'
-  }] };
+  })) };
 }
 
 function valid(value) {
@@ -74,6 +87,8 @@ function valid(value) {
     && (value.pass ? value.concerns.length === 0 : value.concerns.length > 0)
     && value.concerns.every((concern) => concern != null
       && typeof concern === 'object' && !Array.isArray(concern)
-      && Object.keys(concern).length === 1
-      && typeof concern.kind === 'string' && concern.kind.trim().length > 0);
+      && Object.keys(concern).every((key) => ['kind', 'path', 'quote'].includes(key))
+      && typeof concern.kind === 'string' && concern.kind.trim().length > 0
+      && ['path', 'quote'].every((key) => concern[key] === undefined
+        || typeof concern[key] === 'string'));
 }

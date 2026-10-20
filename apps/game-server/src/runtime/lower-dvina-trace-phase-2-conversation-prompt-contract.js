@@ -15,6 +15,25 @@ export const PLAYER_CONVERSATION_PLAN_SHAPE = JSON.stringify({
   activity: { duration_class: '<copy allowed duration class>', effort: 'none' },
   supporting_operations: [], check: null, handoff: null
 });
+export const FACTUAL_ASSERTION_RULE = [
+  'A factual assertion is a statement about the world, a place, a person, an object,',
+  'an earlier event, or the speaker own name, origin, craft, or possessions.',
+  'Greetings, questions, requests, refusals, uncertainty, not knowing, and the speaker',
+  'present feelings or opinions are not factual assertions by themselves; a factual',
+  'assertion inside any of them, such as who owns a thing named in a refusal, still',
+  'needs its claim.'
+].join(' ');
+export const CLAIM_KINDS_RULE = [
+  'Every claim is one of four kinds. Knowledge: speaker_posture believed_true, and',
+  'source_knowledge_refs cite the exact known fact, memory event, current observation,',
+  'npc_identity, or perceived_message ref that states it. Belief: speaker_posture',
+  'believed_true, source_knowledge_refs cite the exact knowledge.beliefs ref, and the',
+  'utterance says it as the speaker own belief. Deliberate lie: speaker_posture',
+  'knowingly_false, and source_knowledge_refs cite the exact known fact that the lie',
+  'contradicts or hides; a lie is only something said and never becomes a fact of the',
+  'world. Any other assertion presented as knowledge is an invention and is not allowed.'
+].join(' ');
+
 export const NPC_CONVERSATION_PLAN_SHAPE = JSON.stringify({
   schema: 'conversation_contribution_plan_v1', request_id: '<copy request_id>',
   boundary_id: '<copy boundary_id>', conversation_id: '<copy conversation_id>',
@@ -25,7 +44,13 @@ export const NPC_CONVERSATION_PLAN_SHAPE = JSON.stringify({
   intended_addressee_refs: [{ entity_kind: '<copy entity_kind>', entity_id: '<copy entity_id>' }],
   affected_actor_refs: [],
   speech: { utterance_text: '<NPC speech>', dominant_act: '<one allowed act>',
-    interaction_tags: [], topic_refs: [], claims: [],
+    interaction_tags: [], topic_refs: [], claims: [{
+      claim_id: '<new short id>', content_summary: '<the asserted fact in Russian>',
+      form: 'assertion',
+      speaker_posture: '<believed_true, knowingly_false, mixed, uncertain, or withheld>',
+      source_knowledge_refs: [{ entity_kind: '<copy entity_kind>', entity_id: '<copy entity_id>' }],
+      mentioned_entity_refs: [{ entity_kind: '<copy entity_kind>', entity_id: '<copy entity_id>' }]
+    }],
     response_expectation: { kind: 'none', target_refs: [] } },
   interpretation: { intent: '<intent>', grounded_contribution: '<grounded contribution>',
     adaptation: 'literal' }, resolution: 'automatic',

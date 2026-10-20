@@ -2,7 +2,7 @@
   {
     "type": "overmap_terrain",
     "id": "novgorod_dev_courtyard",
-    "name": "workshop courtyard",
+    "name": "двор мастерской",
     "sym": "#",
     "color": "brown",
     "see_cost": "medium"
@@ -19,15 +19,15 @@
   {
     "type": "start_location",
     "id": "novgorod_dev_courtyard_start",
-    "name": "Workshop courtyard",
+    "name": "Двор мастерской",
     "terrain": [ "novgorod_dev_courtyard" ],
     "flags": [ "ALLOW_OUTSIDE", "LONE_START" ]
   },
   {
     "type": "profession",
     "id": "novgorod_dev_visitor",
-    "name": "Workshop visitor",
-    "description": "A visitor to a small workshop courtyard.",
+    "name": "Гость мастерской",
+    "description": "Гость небольшого двора мастерской.",
     "points": 0,
     "flags": [ "NO_BONUS_ITEMS" ],
     "items": {
@@ -43,10 +43,10 @@
   {
     "type": "scenario",
     "id": "novgorod_dev_courtyard_scenario",
-    "name": "Workshop courtyard",
-    "description": "Visit a fictional workshop courtyard near Novgorod.",
+    "name": "Двор мастерской",
+    "description": "Побывать в вымышленном дворе мастерской под Новгородом.",
     "points": 0,
-    "start_name": "Workshop courtyard",
+    "start_name": "Двор мастерской",
     "allowed_locs": [ "novgorod_dev_courtyard_start" ],
     "professions": [ "novgorod_dev_visitor" ],
     "flags": [ "LONE_START", "STANDARD" ]

@@ -93,6 +93,10 @@ export function projectNpcSafeSubject({
   knowledge_snapshot = null,
   memory_snapshot = null
 } = {}) {
+  if (npc_snapshot === null || typeof npc_snapshot !== 'object'
+      || Array.isArray(npc_snapshot)) {
+    throw new TypeError('NPC request snapshots must include the NPC snapshot');
+  }
   const machineState = npc_snapshot?.machine_state ?? {};
   const identityState = npc_snapshot?.identity_state ?? {};
   const socialRole = npc_snapshot?.social_role ?? {};

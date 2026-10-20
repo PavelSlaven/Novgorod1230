@@ -1361,9 +1361,57 @@ NPC-safe context. `primary_addressee_ref`, `intended_addressee_refs`,
 — в `combat_target_refs`. Синтаксически корректная, но отсутствующая в этих
 наборах ссылка отклоняется до factual commit.
 
+### 24.1. Форма `npc`, `knowledge` и `memory`
+
+Поля `npc`, `knowledge` и `memory` имеют форму одноимённых полей
+`npc_action_decision_request_v1` (`npc_autonomous_decision_contract.md` §15).
+Их строит одна общая NPC-safe проекция `@rus/npc-runtime` из сохранённых
+снимков NPC. Второй формы тех же понятий для разговора нет.
+
+- `npc`: `profile_level`; `identity {name_or_label, age_range, origin}`;
+  `social_role {role_ref, status, authority[], dependencies[]}`;
+  `attributes[]`; `skills[]`; `body_state`; `mood`;
+  `temperament[] {temperament_ref, summary, state, intensity}`;
+  `values[] {value_ref, summary, state, intensity}`;
+  `goals[] {goal_ref, summary, state, priority}`;
+  `fears[] {fear_ref, summary, state, intensity}`;
+  `obligations[] {obligation_ref, actor_ref, summary, status}`;
+  `relationships[] {relationship_ref, actor_ref, relation, status, trust, hostility, dependency}`;
+  `current_activity {activity_ref, summary, status, can_continue_automatically}`;
+  `available_resources[]`. Поле `available_resources` верхнего уровня запроса
+  совпадает с `npc.available_resources` той же проекции.
+- `knowledge`:
+  `known_facts[] {fact_ref, source_event_ref, resource_ref, process_ref, summary, state, confidence}`;
+  `beliefs[] {belief_ref, source_event_ref, summary, state, confidence}`;
+  `hypotheses[] {hypothesis_ref, source_event_ref, summary, state, confidence}`.
+  Ошибочное убеждение находится в `beliefs`, а не в `known_facts`.
+- `memory`: `recent_events[]` и `relevant_long_term_events[]`
+  `{event_ref, source_event_ref, summary, occurred_at}`;
+  `previous_decisions[] {request_ref, boundary_ref}`. Разговор добавляет
+  `current_observations[] {observation_ref, source_type: "direct_perception", observed_at, fact_text}`
+  и `received_messages[]` — записи §33.1, полученные этим NPC как слушателем.
+- `state` и `confidence` берут значения из словарей автономного контракта;
+  `occurred_at` и `observed_at` — игровое время; `summary` и `fact_text` —
+  строки.
+- Ссылка — EntityRef `{entity_kind, entity_id}`. Ref известного факта
+  (`known_fact`), убеждения (`belief`), гипотезы (`hypothesis`), события
+  памяти (`memory_event`), наблюдения (`perception_result`) и идентичности
+  NPC (`npc_identity`) входит в `allowed_references.knowledge_refs` в
+  каноническом порядке. Ref видимой вещи входит в `entity_refs`.
+- Поле личности, которого нет в сохранённом снимке, остаётся контрактным
+  `null` или пустым массивом. Код сценария его не подставляет.
+
+Разговорная память. Сырая запись — `{kind: heard | said | silence,
+speaker_ref, listener_ref, text, turn}`; её хранит владелец состояния мира
+(в живом пути CDDA — значения самого NPC). Схему записи и её проекцию в
+`memory.recent_events` и `public_conversation_history` задаёт
+`@rus/visibility-knowledge-memory`; запрос собирает `@rus/npc-runtime`.
+В живом пути CDDA `conversation_id` постоянен для пары NPC — игрок; полная
+сессия разговора (§7) остаётся за `@rus/turn`.
+
 ## 25. Контекст NPC
 
-NPC responder получает:
+NPC responder получает перечисленное ниже в форме §24.1:
 
 ### Восприятие
 
@@ -3069,6 +3117,7 @@ invariants:
   - The request contains only messages and conversation history actually perceived by this NPC.
   - Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.
   - Hidden reasons, objective unknown facts and other model prompts are excluded.
+  - The npc, knowledge and memory fields use the npc_action_decision_request_v1 shapes built by the shared NPC-safe projection; memory additionally carries current_observations and received_messages.
   - Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set.
   - Every check attribute, skill and profile reference must belong to the explicit decision_scope allowlists.
   - activity.duration_class belongs to decision_scope.allowed_duration_classes.

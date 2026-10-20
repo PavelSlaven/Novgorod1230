@@ -1,0 +1,64 @@
+[
+  {
+    "id": "flint_steel",
+    "copy-from": "flint_steel",
+    "type": "ITEM",
+    "subtypes": [ "TOOL" ],
+    "name": { "str": "кресало", "str_pl": "кресала" },
+    "description": "Стальное кресало с кремнём: им высекают искру на трут, чтобы развести огонь."
+  },
+  {
+    "id": "tinder",
+    "copy-from": "tinder",
+    "type": "ITEM",
+    "subtypes": [ "AMMO" ],
+    "name": { "str_sp": "трут" },
+    "description": "Сухой трут: мелко разделённый горючий материал, легко занимается от искры."
+  },
+  {
+    "id": "firewood",
+    "copy-from": "firewood",
+    "type": "ITEM",
+    "name": { "str": "полено", "str_pl": "поленья" },
+    "description": "Колотое полено для очага; горит долго и ровно."
+  },
+  {
+    "id": "stick",
+    "copy-from": "stick",
+    "type": "ITEM",
+    "name": { "str": "палка", "str_pl": "палки" },
+    "description": "Ровная крепкая палка по руке: можно опереться, можно и ударить."
+  },
+  {
+    "id": "tunic",
+    "copy-from": "tunic",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "рубаха", "str_pl": "рубахи" },
+    "description": "Простая длинная рубаха до колен."
+  },
+  {
+    "id": "loincloth_fur",
+    "copy-from": "loincloth_fur",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "меховая набедренная повязка", "str_pl": "меховые набедренные повязки" },
+    "description": "Меховая шкура, повязанная на бёдрах."
+  },
+  {
+    "id": "footrags_leather",
+    "copy-from": "footrags_leather",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str_sp": "кожаные обмотки на ноги (пара)" },
+    "description": "Куски кожи, обмотанные вокруг ступней; лучше, чем босиком."
+  },
+  {
+    "id": "straw_basket",
+    "copy-from": "straw_basket",
+    "type": "ITEM",
+    "subtypes": [ "ARMOR" ],
+    "name": { "str": "соломенная корзина", "str_pl": "соломенные корзины" },
+    "description": "Плетённая из соломы корзина для мелкой поклажи."
+  }
+]

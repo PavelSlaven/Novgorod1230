@@ -24,8 +24,8 @@
   {
     "type": "npc_class",
     "id": "novgorod_dev_master_class",
-    "name": { "str": "Workshop master" },
-    "job_description": "I work in this courtyard.",
+    "name": { "str": "плотник" },
+    "job_description": "Плотничаю на своём дворе.",
     "common": false,
     "worn_override": "novgorod_dev_master_worn",
     "carry_override": "novgorod_dev_master_carried",
@@ -34,7 +34,10 @@
   {
     "type": "npc",
     "id": "novgorod_dev_master",
-    "name_unique": "Workshop master",
+    "name_unique": "Жирко",
+    "gender": "male",
+    "faction": "novgorod_dev_master_household",
+    "personality": { "aggression": 1, "bravery": 2, "collector": 3, "altruism": 0 },
     "class": "novgorod_dev_master_class",
     "attitude": 0,
     "mission": "GUARD",

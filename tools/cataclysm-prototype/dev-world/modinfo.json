@@ -2,8 +2,8 @@
   {
     "type": "MOD_INFO",
     "id": "novgorod_dev_world",
-    "name": "Novgorod Dev Courtyard",
-    "description": "A small fictional thirteenth-century courtyard for native gameplay tests.",
+    "name": "Новгород: двор для проверок",
+    "description": "Небольшой вымышленный двор XIII века для проверок живой игры.",
     "category": "content",
     "dependencies": [ "dda" ]
   }

@@ -44,7 +44,8 @@
         { "item": "firewood", "x": 10, "y": 12, "chance": 100 },
         { "item": "stick", "x": 10, "y": 12, "chance": 100 }
       ],
-      "place_npcs": [ { "class": "novgorod_dev_master", "x": 13, "y": 11 } ]
+      "place_npcs": [ { "class": "novgorod_dev_master", "x": 13, "y": 11, "unique_id": "novgorod_dev_master" } ],
+      "faction_owner": [ { "id": "novgorod_dev_master_household", "x": [ 0, 23 ], "y": [ 0, 23 ] } ]
     }
   }
 ]
